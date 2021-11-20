@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="67" height="65" viewBox="0 0 67 65">
+  <g id="Next_Window_Arrow" data-name="Next Window Arrow" transform="translate(0 64.999) rotate(-90)">
+    <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.001 0)" fill="none" stroke="#133c8b" stroke-width="4">
+      <ellipse cx="32.5" cy="33.5" rx="32.5" ry="33.5" stroke="none"/>
+      <ellipse cx="32.5" cy="33.5" rx="30.5" ry="31.5" fill="none"/>
+    </g>
+    <path id="chevron-back-sharp" d="M9.954,0,0,9.954l9.954,9.954" transform="translate(22.092 38.442) rotate(-90)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+  </g>
+</svg>

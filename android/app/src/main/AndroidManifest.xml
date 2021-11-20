@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.geoverse_app_rn">
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -10,15 +9,41 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+
+      <!-- You will only need to add this meta-data tag, but make sure it's a child of application -->
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o"/>
+
+      <!-- You will also only need to add this uses-library tag -->
+      <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
       <activity
         android:name=".MainActivity"
-        android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-        android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize">
+        android:label="@string/app_name"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="true"
+        android:launchMode="singleTask">
+        <!-- ⚠️ add android:exported="true" and android:launchMode="singleTask" above -->
+        <!-- remove the <intent-filter> from .MainActivity -->
+      </activity>
+
+      <!-- add the following lines (use the theme you created at step 2) -->
+      <activity
+        android:name="com.zoontek.rnbootsplash.RNBootSplashActivity"
+        android:theme="@style/BootTheme"
+        android:launchMode="singleTask">
         <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
+          <action android:name="android.intent.action.MAIN" />
+          <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        <!-- add your deep linking instructions inside the RNBootSplashActivity declaration -->
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="YOUR APP SCHEME" /> <!-- replace this with your custom scheme -->
         </intent-filter>
       </activity>
     </application>
