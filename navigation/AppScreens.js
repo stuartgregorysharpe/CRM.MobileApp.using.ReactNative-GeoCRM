@@ -16,7 +16,11 @@ export default function AppScreens() {
           backgroundColor: PRIMARY_COLOR,
         }
       }}>
-        <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="Root" 
+          component={BottomTabNavigator} 
+          options={{ headerShown: false }} 
+        />
       </Stack.Navigator>
     </Fragment>
   );

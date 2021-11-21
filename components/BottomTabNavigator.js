@@ -37,6 +37,9 @@ export default function BottomTabNavigator({ navigation }) {
         },
         tabBarStyle: {
           backgroundColor: "#fff",
+          height: 60,
+          paddingTop: 10,
+          paddingBottom: 10
         }
       }}>
       <BottomTab.Screen
