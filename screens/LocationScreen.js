@@ -7,14 +7,18 @@ import {
   Image, 
   TouchableOpacity, 
   Animated,
-  Easing
+  Easing,
+  ScrollView
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import OutsideView from 'react-native-detect-press-outside';
+import { Avatar, Button, Title } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
+import FilterButton from '../components/FilterButton';
+import Divider from '../components/Divider';
 import { PRIMARY_COLOR } from '../constants/Colors';
 
 const markers = [
@@ -67,9 +71,7 @@ const filterButtonList = [
 
 const MarkerView = () => (
   <Fragment>
-    <View style={styles.layoutBarContent}>
-      <View style={styles.layoutBar}></View>
-    </View>
+    <Divider />
     <View style={styles.markerContent}>
       {markers.map((marker, key) => (
         <View style={styles.markerBox} key={key}>
@@ -81,32 +83,28 @@ const MarkerView = () => (
   </Fragment>
 );
 
-const FilterButton = (props) => (
-  <View style={styles.filterButtonBox}>
-    <Text style={styles.filterText}>{props.text}</Text>
-    <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />
-  </View>
-);
-
-const FilterView = () => {
+const FilterView = ({navigation}) => {
   return (
-    <Fragment>
-      <View style={styles.layoutBarContent}>
-        <View style={styles.layoutBar}></View>
-      </View>
+    <ScrollView style={{maxHeight: 400, backgroundColor: '#F9F9F9'}}>
+      <Divider />
       <View style={styles.filterHeader}>
-        <Text style={styles.filterHeaderText}>Filter your search</Text>
-        <TouchableOpacity style={styles.filterClearButton}>
-          <Text style={styles.filterClearButtonText}>Clear Filters</Text>
-        </TouchableOpacity>
+        <Title>Filter your search</Title>
+        <Button color="#DC143C" uppercase={false} onPress={() => console.log('Pressed')}>
+          Clear Filters
+        </Button>
       </View>
       {filterButtonList.map((list, key) => (
         <FilterButton text={list} key={key} />
       ))}
-      <TouchableOpacity style={styles.applyFilterButton}>
-        <Text style={styles.applyFilterButtonText}>Apply Filters</Text>
-      </TouchableOpacity>
-    </Fragment>
+      <Button 
+        mode="contained" 
+        color={PRIMARY_COLOR} 
+        uppercase={false} 
+        labelStyle={{fontSize: 18}} 
+        onPress={() => navigation.navigate('LocationInfo')}>
+        Apply Filters
+      </Button>
+    </ScrollView>
   )
 }
 
@@ -114,8 +112,6 @@ export default function LocationScreen(props) {
   const markerRef = useRef(null);
   const filterRef = useRef(null);
 
-  const [showModal, setShowModal] = useState(false);
-  
   const markerAnimatedValue = useRef(new Animated.Value(1)).current;
   const filterAnimatedValue = useRef(new Animated.Value(1)).current;
 
@@ -145,7 +141,7 @@ export default function LocationScreen(props) {
 
   const filterTranslateY = filterAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 450],
+    outputRange: [0, 550],
     extrapolate: 'clamp',
   });
 
@@ -168,9 +164,8 @@ export default function LocationScreen(props) {
   return (
     <SafeAreaView>
       <OutsideView
-        childRef={markerRef, filterRef}
+        childRef={filterRef}
         onPressOutside={() => {
-          setShowModal(false);
           markerStartAnimation(1);
           filterStartAnimation(1);
         }}>
@@ -185,7 +180,7 @@ export default function LocationScreen(props) {
             ref={filterRef}
             style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
           >
-            <FilterView />
+            <FilterView navigation={props.navigation} />
           </Animated.View>
           <View style={styles.autoCompleteBox}>
             <GooglePlacesAutocomplete
@@ -211,13 +206,11 @@ export default function LocationScreen(props) {
             />
             <FontAwesomeIcon style={styles.searchIcon} size={25} color="#9D9FA2" icon={ faSearch } />
             <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-              setShowModal(true);
               filterStartAnimation(0);
               markerStartAnimation(1);
             }}>
               <Image style={styles.filterImage} source={require('../assets/images/Filter.png')} />
             </TouchableOpacity>
-            
           </View>
           <MapView
             provider={PROVIDER_GOOGLE}
@@ -229,13 +222,15 @@ export default function LocationScreen(props) {
             region={mapRegion}
           >
           </MapView>
-          <TouchableOpacity onPress={onPressZoomIn}>
-            <View style={styles.plusButton}>
-              <FontAwesomeIcon size={20} color="#fff" icon={ faPlus } />
-            </View>
+          <TouchableOpacity style={styles.plusButton} onPress={onPressZoomIn}>
+            <Avatar.Text 
+              size={50}
+              label="+"
+              style={{ backgroundColor: PRIMARY_COLOR }}
+              labelStyle={{fontSize: 30}}
+            />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
-            setShowModal(true);
             markerStartAnimation(0);
             filterStartAnimation(1);
           }}>
@@ -280,13 +275,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 30,
     bottom: 40,
-    backgroundColor: PRIMARY_COLOR,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   pinKey: {
     position: 'absolute',
@@ -304,17 +292,6 @@ const styles = StyleSheet.create({
     elevation: 2,
     zIndex: 2,
     padding: 10,
-  },
-  layoutBarContent: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  layoutBar: {
-    width: 140,
-    height: 4,
-    backgroundColor: '#D8D8D8',
-    borderRadius: 2
   },
   markerContent: {
     display: 'flex',
@@ -340,49 +317,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10
-  },
-  filterHeaderText: {
-    fontSize: 20,
-    color: '#000',
-    fontWeight: '600'
-  },
-  filterClearButtonText: {
-    color: '#DC143C'
-  },
-  filterButtonBox: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderRadius: 7,
-    marginBottom: 10,
-    shadowColor: '#00000014',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 1,
-    zIndex: 1
-  },
-  filterText: {
-    color: '#23282D',
-    fontSize: 16
-  },
-  dropdownImage: {
-    width: 25,
-    height: 25
-  },
-  applyFilterButton: {
-    padding: 10,
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 7
-  },
-  applyFilterButtonText: {
-    fontSize: 18,
-    color: '#fff',
-    textAlign: 'center'
   }
 });

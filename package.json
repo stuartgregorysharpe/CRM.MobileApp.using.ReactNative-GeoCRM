@@ -26,6 +26,7 @@
     "react-native-detect-press-outside": "^1.0.4",
     "react-native-google-places-autocomplete": "^2.4.1",
     "react-native-maps": "^0.29.4",
+    "react-native-paper": "^4.10.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",
     "react-native-svg": "^12.1.1",

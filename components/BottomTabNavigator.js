@@ -1,12 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useState } from 'react';
-import { Pressable, View, Image, Text } from 'react-native';
-import ToggleSwitch from 'toggle-switch-react-native'
+import React, { Fragment, useState } from 'react';
+import { Image } from 'react-native';
+import ToggleSwitch from 'toggle-switch-react-native';
 
 import HomeScreen from '../screens/HomeScreen';
 import CRMScreen from '../screens/CRMScreen';
 import CalendarScreen from '../screens/CalendarScreen';
-import PiplineScreen from '../screens/PiplineScreen';
+import PipelineScreen from '../screens/PipelineScreen';
 import MoreScreen from '../screens/MoreScreen';
 
 import { PRIMARY_COLOR } from '../constants/Colors';
@@ -16,8 +16,8 @@ const BottomTab = createBottomTabNavigator();
 export default function BottomTabNavigator({ navigation }) {
 
   const tabBarIconStyle = {
-    height: 20,
-    width: 20,
+    height: 18,
+    width: 18,
   }
 
   return (
@@ -47,7 +47,12 @@ export default function BottomTabNavigator({ navigation }) {
         component={HomeScreen}
         options={{
           title: 'Home',
-          tabBarIcon: () => <Image source={require("../assets/images/bottom_icon/home_black_24dp.png")} style={tabBarIconStyle} />,
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp.png")} style={tabBarIconStyle} />}
+              {focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp_blue.png")} style={tabBarIconStyle} />}
+            </Fragment>
+          ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
           ),
@@ -56,13 +61,19 @@ export default function BottomTabNavigator({ navigation }) {
             fontSize: 16
           },
         }}
+        
       />
       <BottomTab.Screen
         name="CRMScreen"
         component={CRMScreen}
         options={{
           title: 'CRM',
-          tabBarIcon: () => <Image source={require("../assets/images/bottom_icon/location_arrow.png")} style={tabBarIconStyle} />,
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <Image source={require("../assets/images/bottom_icon/location_arrow.png")} style={tabBarIconStyle} />}
+              {focused && <Image source={require("../assets/images/bottom_icon/location_arrow_blue.png")} style={tabBarIconStyle} />}
+            </Fragment>
+          ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
           ),
@@ -77,7 +88,12 @@ export default function BottomTabNavigator({ navigation }) {
         component={CalendarScreen}
         options={{
           title: 'Calendar',
-          tabBarIcon: () => <Image source={require("../assets/images/bottom_icon/calendar_event_fill.png")} style={tabBarIconStyle} />,
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill.png")} style={tabBarIconStyle} />}
+              {focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill_blue.png")} style={tabBarIconStyle} />}
+            </Fragment>
+          ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
           ),
@@ -88,11 +104,16 @@ export default function BottomTabNavigator({ navigation }) {
         }}
       />
       <BottomTab.Screen
-        name="PiplineScreen"
-        component={PiplineScreen}
+        name="PipelineScreen"
+        component={PipelineScreen}
         options={{
-          title: 'Pipline',
-          tabBarIcon: () => <Image source={require("../assets/images/bottom_icon/filter_list_black_24dp.png")} style={tabBarIconStyle} />,
+          title: 'Pipeline',
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <Image source={require("../assets/images/bottom_icon/pipeline.png")} style={tabBarIconStyle} />}
+              {focused && <Image source={require("../assets/images/bottom_icon/pipeline_blue.png")} style={tabBarIconStyle} />}
+            </Fragment>
+          ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
           ),
@@ -107,7 +128,12 @@ export default function BottomTabNavigator({ navigation }) {
         component={MoreScreen}
         options={{
           title: 'More',
-          tabBarIcon: () => <Image source={require("../assets/images/bottom_icon/android_more_horizontal.png")} style={tabBarIconStyle} />,
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <Image source={require("../assets/images/bottom_icon/android_more_horizontal.png")} style={tabBarIconStyle} />}
+              {focused && <Image source={require("../assets/images/bottom_icon/android_more_horizontal_blue.png")} style={tabBarIconStyle} />}
+            </Fragment>
+          ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
           ),

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function Pipline(props) {
+export default function Pipeline(props) {
   return (
     <SafeAreaView>
       <View>
-        <Text>Pipline</Text>
+        <Text>Pipeline</Text>
       </View>
     </SafeAreaView>
   )
