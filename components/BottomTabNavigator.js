@@ -159,11 +159,12 @@ function HeaderRightView() {
     marginRight: 16,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   }
 
   const labelStyle = {
     color: '#fff',
+    fontSize: 12,
     fontFamily: 'Gilroy-Medium'
   }
   return (
@@ -173,7 +174,7 @@ function HeaderRightView() {
       labelStyle={labelStyle}
       onColor="#fff"
       offColor="#a3c0f9"
-      size="medium"
+      size="small"
       thumbOnStyle={{ backgroundColor: PRIMARY_COLOR }}
       thumbOffStyle={{ backgroundColor: PRIMARY_COLOR }}
       isOn={toggleSwitch}
