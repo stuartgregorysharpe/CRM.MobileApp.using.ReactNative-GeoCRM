@@ -57,11 +57,11 @@ export default function BottomTabNavigator({ navigation }) {
             <HeaderRightView navigation={navigation}/>
           ),
           tabBarLabelStyle: {
-            color: "#B8B8B8",
-            fontSize: 16
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
           },
+          tabBarActiveTintColor: PRIMARY_COLOR,
         }}
-        
       />
       <BottomTab.Screen
         name="CRMScreen"
@@ -78,9 +78,10 @@ export default function BottomTabNavigator({ navigation }) {
             <HeaderRightView navigation={navigation}/>
           ),
           tabBarLabelStyle: {
-            color: "#B8B8B8",
-            fontSize: 16
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
           },
+          tabBarActiveTintColor: PRIMARY_COLOR,
         }}
       />
       <BottomTab.Screen
@@ -98,9 +99,10 @@ export default function BottomTabNavigator({ navigation }) {
             <HeaderRightView navigation={navigation}/>
           ),
           tabBarLabelStyle: {
-            color: "#B8B8B8",
-            fontSize: 16
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
           },
+          tabBarActiveTintColor: PRIMARY_COLOR,
         }}
       />
       <BottomTab.Screen
@@ -118,9 +120,10 @@ export default function BottomTabNavigator({ navigation }) {
             <HeaderRightView navigation={navigation}/>
           ),
           tabBarLabelStyle: {
-            color: "#B8B8B8",
-            fontSize: 16
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
           },
+          tabBarActiveTintColor: PRIMARY_COLOR,
         }}
       />
       <BottomTab.Screen
@@ -138,9 +141,10 @@ export default function BottomTabNavigator({ navigation }) {
             <HeaderRightView navigation={navigation}/>
           ),
           tabBarLabelStyle: {
-            color: "#B8B8B8",
-            fontSize: 16
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
           },
+          tabBarActiveTintColor: PRIMARY_COLOR,
         }}
       />
     </BottomTab.Navigator>
@@ -158,7 +162,8 @@ function HeaderRightView() {
   }
 
   const labelStyle = {
-    color: '#fff'
+    color: '#fff',
+    fontFamily: 'Gilroy-Medium'
   }
   return (
     <ToggleSwitch

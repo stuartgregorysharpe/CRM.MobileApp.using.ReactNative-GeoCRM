@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
-import { Card, Title, Paragraph } from 'react-native-paper';
+import { Image, StyleSheet } from 'react-native';
+import { Card } from 'react-native-paper';
 
 export default function FilterButton(props) {
   return (
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
   },
   cardtitle: {
     color: '#23282D',
-    fontSize: 16
+    fontSize: 16,
+    fontFamily: 'Gilroy-Medium',
   },
   dropdownImage: {
     width: 25,

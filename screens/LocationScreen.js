@@ -88,8 +88,16 @@ const FilterView = ({navigation}) => {
     <ScrollView style={{maxHeight: 400, backgroundColor: '#F9F9F9'}}>
       <Divider />
       <View style={styles.filterHeader}>
-        <Title>Filter your search</Title>
-        <Button color="#DC143C" uppercase={false} onPress={() => console.log('Pressed')}>
+        <Title style={{fontFamily: 'Product Sans-Bold'}}>Filter your search</Title>
+        <Button 
+          labelStyle={{
+            fontFamily: 'Product Sans-Regular', 
+            letterSpacing: 0.2
+          }}
+          color="#DC143C" 
+          uppercase={false} 
+          onPress={() => console.log('Pressed')}
+        >
           Clear Filters
         </Button>
       </View>
@@ -100,7 +108,11 @@ const FilterView = ({navigation}) => {
         mode="contained" 
         color={PRIMARY_COLOR} 
         uppercase={false} 
-        labelStyle={{fontSize: 18}} 
+        labelStyle={{
+          fontSize: 18, 
+          fontFamily: 'Gilroy-Bold', 
+          letterSpacing: 0.2
+        }} 
         onPress={() => navigation.navigate('LocationInfo')}>
         Apply Filters
       </Button>
@@ -118,7 +130,7 @@ export default function LocationScreen(props) {
   const markerStartAnimation = (toValue) => {
     Animated.timing(markerAnimatedValue, {
       toValue,
-      duration: 1000,
+      duration: 500,
       easing: Easing.linear,
       useNativeDriver: false,
     }).start();
@@ -127,7 +139,7 @@ export default function LocationScreen(props) {
   const filterStartAnimation = (toValue) => {
     Animated.timing(filterAnimatedValue, {
       toValue,
-      duration: 1000,
+      duration: 500,
       easing: Easing.linear,
       useNativeDriver: false,
     }).start();
@@ -190,12 +202,14 @@ export default function LocationScreen(props) {
                   paddingRight: 50,
                   color: '#5d5d5d',
                   fontSize: 16,
+                  fontFamily: 'Gilroy-Medium',
+                  backgroundColor: '#fff',
                 },
                 predefinedPlacesDescription: {
                   color: '#1faadb',
                 },
               }}
-              placeholder='Search'
+              placeholder='Search.....'
               onPress={(data, details = null) => {
                 console.log(data, details);
               }}
@@ -247,7 +261,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: '100%',
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: '#F9F9F9'
   },
   map: {
     flexGrow: 1
@@ -288,7 +303,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#F9F9F9',
     elevation: 2,
     zIndex: 2,
     padding: 10,
@@ -310,6 +325,10 @@ const styles = StyleSheet.create({
     width: 22,
     height: 30,
     marginRight: 10
+  },
+  markerText: {
+    color: '#23282D',
+    fontFamily: 'Gilroy-Medium'
   },
   filterHeader: {
     display: 'flex',
