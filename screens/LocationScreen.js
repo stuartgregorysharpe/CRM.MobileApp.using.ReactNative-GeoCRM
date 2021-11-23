@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   markerImage: {
-    width: 22,
+    width: 18,
     height: 30,
     marginRight: 10
   },
