@@ -244,10 +244,13 @@ export default function LocationScreen(props) {
               labelStyle={{fontSize: 30}}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            markerStartAnimation(0);
-            filterStartAnimation(1);
-          }}>
+          <TouchableOpacity 
+            style={styles.pinKeyButton}
+            onPress={() => {
+              markerStartAnimation(0);
+              filterStartAnimation(1);
+            }}
+          >
             <Image style={styles.pinKey} source={require('../assets/images/Pin_Key.png')} />
           </TouchableOpacity>
         </View>
@@ -270,14 +273,17 @@ const styles = StyleSheet.create({
   plusButton: {
     position: 'absolute',
     right: 30,
-    bottom: 40,
+    bottom: 45,
   },
-  pinKey: {
+  pinKeyButton: {
     position: 'absolute',
     right: 10,
     bottom: 10,
-    width: 92,
-    height: 22,
+    padding: 5
+  },
+  pinKey: {
+    width: 80,
+    height: 18,
   },
   transitionView: {
     position: 'absolute',
