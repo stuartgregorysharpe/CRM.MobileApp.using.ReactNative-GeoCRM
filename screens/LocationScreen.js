@@ -198,10 +198,10 @@ export default function LocationScreen(props) {
             <GooglePlacesAutocomplete
               styles={{
                 textInput: {
-                  paddingLeft: 42,
+                  paddingLeft: 36,
                   paddingRight: 50,
                   color: '#5d5d5d',
-                  fontSize: 16,
+                  fontSize: 12,
                   fontFamily: 'Gilroy-Medium',
                   backgroundColor: '#fff',
                 },
@@ -218,7 +218,7 @@ export default function LocationScreen(props) {
                 language: 'en',
               }}
             />
-            <FontAwesomeIcon style={styles.searchIcon} size={25} color="#9D9FA2" icon={ faSearch } />
+            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
             <TouchableOpacity style={styles.filterImageButton} onPress={() => {
               filterStartAnimation(0);
               markerStartAnimation(1);
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: 'absolute',
-    top: 20,
+    top: 24,
     left: 20
   },
   filterImageButton: {
