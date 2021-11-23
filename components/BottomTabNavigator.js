@@ -31,6 +31,7 @@ export default function BottomTabNavigator({ navigation }) {
         tabBarShowLabel: true,
         headerTitleStyle:  {
           color: "#fff",
+          fontFamily: 'Product Sans-Regular'
         },
         tabBarIconStyle: {
           color: "#fff",

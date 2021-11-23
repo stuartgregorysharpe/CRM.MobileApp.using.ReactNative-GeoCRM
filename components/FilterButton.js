@@ -9,6 +9,7 @@ export default function FilterButton(props) {
         title={props.text}
         titleStyle={styles.cardtitle}
         subtitle={props.subText}
+        subtitleStyle={{fontFamily: 'Gilroy-Medium'}}
         right={() => <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />}
       />
     </Card>

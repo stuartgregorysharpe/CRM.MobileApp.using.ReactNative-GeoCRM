@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function AddLeadScreen(props) {
+export default function LocationSpecificInfoScreen(props) {
   return (
     <SafeAreaView>
       <View>
-        <Text>SearchResultScreen</Text>
+        <Text>LocationSpecificInfoScreen</Text>
       </View>
     </SafeAreaView>
   )

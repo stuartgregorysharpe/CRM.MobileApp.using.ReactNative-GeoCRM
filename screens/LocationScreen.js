@@ -11,9 +11,9 @@ import {
   ScrollView
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import OutsideView from 'react-native-detect-press-outside';
 import { Avatar, Button, Title } from 'react-native-paper';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -267,25 +267,6 @@ const styles = StyleSheet.create({
   map: {
     flexGrow: 1
   },
-  autoCompleteBox: {
-    position: 'relative',
-    padding: 16,
-    height: 76,
-  },
-  searchIcon: {
-    position: 'absolute',
-    top: 25,
-    left: 25
-  },
-  filterImageButton: {
-    position: 'absolute',
-    top: 23,
-    right: 25,
-  },
-  filterImage: {
-    width: 30,
-    height: 30
-  },
   plusButton: {
     position: 'absolute',
     right: 30,
@@ -307,6 +288,25 @@ const styles = StyleSheet.create({
     elevation: 2,
     zIndex: 2,
     padding: 10,
+  },
+  autoCompleteBox: {
+    position: 'relative',
+    padding: 10,
+    height: 66,
+  },
+  searchIcon: {
+    position: 'absolute',
+    top: 20,
+    left: 20
+  },
+  filterImageButton: {
+    position: 'absolute',
+    top: 18,
+    right: 20,
+  },
+  filterImage: {
+    width: 30,
+    height: 30
   },
   markerContent: {
     display: 'flex',
