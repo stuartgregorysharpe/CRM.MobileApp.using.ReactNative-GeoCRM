@@ -260,6 +260,9 @@ export default function LocationScreen(props) {
           >
             <SlidUpArrow />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.goToAddLead} onPress={() => props.navigation.navigate("AddLead")}>
+            <Text style={styles.goToAddLeadText}>Go to AddLead</Text>
+          </TouchableOpacity>
         </View>
       </OutsideView>
     </SafeAreaView>
@@ -280,12 +283,14 @@ const styles = StyleSheet.create({
   plusButton: {
     position: 'absolute',
     right: 30,
-    bottom: 45,
+    // bottom: 45,
+    bottom: 65
   },
   pinKeyButton: {
     position: 'absolute',
     right: 10,
-    bottom: 10,
+    // bottom: 10,
+    bottom: 30,
     padding: 5
   },
   slidUpArrow: {
@@ -367,5 +372,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10
+  },
+  goToAddLead: {
+    position: 'absolute',
+    bottom: 5,
+    right: 10,
+    backgroundColor: '#fff',
+    borderColor: PRIMARY_COLOR,
+    borderRadius: 4,
+    borderWidth: 1,
+    padding: 2
+  },
+  goToAddLeadText: {
+    color: PRIMARY_COLOR
   }
 });
