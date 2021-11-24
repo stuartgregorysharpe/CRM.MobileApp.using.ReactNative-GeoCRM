@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   markerImage: {
     width: 18,
-    height: 30,
+    height: 26,
     marginRight: 10
   },
   markerText: {
