@@ -15,7 +15,7 @@ import OutsideView from 'react-native-detect-press-outside';
 import { Avatar, Button, Title } from 'react-native-paper';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 import FilterButton from '../components/FilterButton';
 import Divider from '../components/Divider';
@@ -119,6 +119,13 @@ const FilterView = ({navigation}) => {
     </ScrollView>
   )
 }
+
+const SlidUpArrow = () => (
+  <View style={styles.slidUpArrow}>
+    <Text style={styles.slidUpArrowText}>Pin Key</Text>
+    <FontAwesomeIcon size={12} icon={faChevronUp} color={PRIMARY_COLOR} />
+  </View>
+)
 
 export default function LocationScreen(props) {
   const markerRef = useRef(null);
@@ -251,7 +258,7 @@ export default function LocationScreen(props) {
               filterStartAnimation(1);
             }}
           >
-            <Image style={styles.pinKey} source={require('../assets/images/Pin_Key.png')} />
+            <SlidUpArrow />
           </TouchableOpacity>
         </View>
       </OutsideView>
@@ -280,6 +287,23 @@ const styles = StyleSheet.create({
     right: 10,
     bottom: 10,
     padding: 5
+  },
+  slidUpArrow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: PRIMARY_COLOR,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    paddingLeft: 8,
+    paddingRight: 8
+  },
+  slidUpArrowText: {
+    color: PRIMARY_COLOR,
+    fontSize: 13,
+    fontFamily: 'Gilroy-Medium',
+    marginRight: 8,
   },
   pinKey: {
     width: 80,

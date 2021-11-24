@@ -23,6 +23,9 @@ export default function BottomTabNavigator({ navigation }) {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
+      tabBarOptions={{
+        keyboardHidesTabBar: true
+      }}
       screenOptions={{
         tabBarActiveTintColor: "#fff",
         headerStyle: {
