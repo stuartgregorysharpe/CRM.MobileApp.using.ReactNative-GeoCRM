@@ -85,7 +85,7 @@ const MarkerView = () => (
 
 const FilterView = ({navigation}) => {
   return (
-    <ScrollView style={{maxHeight: 400, backgroundColor: '#F9F9F9'}}>
+    <ScrollView style={{maxHeight: 420, backgroundColor: '#F9F9F9'}}>
       <Divider />
       <View style={styles.filterHeader}>
         <Title style={{fontFamily: 'Product Sans-Bold'}}>Filter your search</Title>
