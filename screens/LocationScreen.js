@@ -297,7 +297,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 6,
     paddingLeft: 8,
-    paddingRight: 8
+    paddingRight: 8,
+    paddingBottom: 1
   },
   slidUpArrowText: {
     color: PRIMARY_COLOR,
