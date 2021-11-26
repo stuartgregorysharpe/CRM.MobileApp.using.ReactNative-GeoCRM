@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { 
   SafeAreaView, 
   Text, 
@@ -58,7 +58,18 @@ const specificInfo = [
   }
 ]
 
-export default function LocationSpecificInfoScreen() {
+export default function LocationSpecificInfoScreen(props) {
+  useEffect(() => {
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'flex',
+        height: 60,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: "#fff",
+      },
+    });
+  })
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>

@@ -131,6 +131,18 @@ export default function LocationScreen(props) {
   const markerRef = useRef(null);
   const filterRef = useRef(null);
 
+  useEffect(() => {
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'flex',
+        height: 60,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: "#fff",
+      },
+    });
+  })
+
   const markerAnimatedValue = useRef(new Animated.Value(1)).current;
   const filterAnimatedValue = useRef(new Animated.Value(1)).current;
 
@@ -200,6 +212,7 @@ export default function LocationScreen(props) {
                   paddingRight: 50,
                   color: '#5d5d5d',
                   fontSize: 12,
+                  backgroundColor: '#fff',
                   fontFamily: 'Gilroy-Medium',
                   shadowColor: '#00000014',
                   shadowOffset: { width: 0, height: 5 },
@@ -277,7 +290,7 @@ const styles = StyleSheet.create({
   },
   pinKeyButton: {
     position: 'absolute',
-    right: 10,
+    right: 9,
     bottom: 10,
     padding: 5
   },

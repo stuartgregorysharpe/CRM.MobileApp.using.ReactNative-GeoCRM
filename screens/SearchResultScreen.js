@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -107,6 +107,17 @@ const ResultItem = ({item}) => (
 )
 
 export default function SearchResultScreen(props) {
+  useEffect(() => {
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'flex',
+        height: 60,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: "#fff",
+      },
+    });
+  })
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
@@ -120,6 +131,10 @@ export default function SearchResultScreen(props) {
                 fontSize: 16,
                 fontFamily: 'Gilroy-Medium',
                 backgroundColor: '#fff',
+                shadowColor: '#00000014',
+                shadowOffset: { width: 0, height: 5 },
+                shadowOpacity: 1,
+                elevation: 1,
               },
               predefinedPlacesDescription: {
                 color: '#1faadb',
@@ -171,12 +186,14 @@ const styles = StyleSheet.create({
   searchIcon: {
     position: 'absolute',
     top: 20,
-    left: 20
+    left: 20,
+    elevation: 1
   },
   filterImageButton: {
     position: 'absolute',
     top: 18,
     right: 20,
+    elevation: 1
   },
   filterImage: {
     width: 30,

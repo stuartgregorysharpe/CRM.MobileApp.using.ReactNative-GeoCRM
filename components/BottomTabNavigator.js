@@ -23,9 +23,6 @@ export default function BottomTabNavigator({ navigation }) {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
-      // tabBarOptions={{
-      //   keyboardHidesTabBar: true
-      // }}
       screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
@@ -87,6 +84,13 @@ export default function BottomTabNavigator({ navigation }) {
             fontFamily: 'Gilroy-Medium'
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarStyle: {
+            display: 'flex',
+            height: 60,
+            paddingTop: 10,
+            paddingBottom: 10,
+            backgroundColor: "#fff",
+          }
         }}
       />
       <BottomTab.Screen

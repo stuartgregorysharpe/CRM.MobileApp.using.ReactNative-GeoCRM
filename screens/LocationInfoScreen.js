@@ -17,6 +17,13 @@ import Divider from '../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
 export default function LocationInfoScreen(props) {
+  useEffect(() => {
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'none',
+      },
+    });
+  })
   return (
     <SafeAreaView style={{position: 'relative'}}>
       <View style={styles.dividerBar}>
@@ -58,7 +65,7 @@ export default function LocationInfoScreen(props) {
           <Text style={styles.nextButtonText}>Access CRM</Text>
           <FontAwesomeIcon size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => props.navigation.navigate("AddLead")}>
+        <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => props.navigation.navigate("SearchResult")}>
           <Text style={[styles.checkInButtonText]}>Check In</Text>
           <FontAwesomeIcon size={25} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>

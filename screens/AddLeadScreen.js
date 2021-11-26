@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, Text, View, StyleSheet, ScrollView } from 'react-native';
 import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -6,7 +6,19 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Divider from '../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
-export default function AddLeadScreen() {
+export default function AddLeadScreen(props) {
+  useEffect(() => {
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'flex',
+        height: 60,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: "#fff",
+      },
+    });
+  })
+
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
   const [contactPerson, setContactPerson] = useState('');

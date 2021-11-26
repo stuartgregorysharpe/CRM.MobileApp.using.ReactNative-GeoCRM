@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LocationScreen from './LocationScreen';
@@ -9,35 +9,40 @@ import AddLeadScreen from './AddLeadScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function CRMScreen() {
+export default function CRMScreen({navigation}) {
   return (
     <Fragment>
       <Stack.Navigator>
         <Stack.Screen
           name="Root"
-          component={LocationScreen}
           options={{ header: () => null }}
-        />
+        >
+          {props => <LocationScreen {...props} screenProps={navigation} />}
+        </Stack.Screen>
         <Stack.Screen
           name="LocationInfo"
-          component={LocationInfoScreen}
           options={{ header: () => null }}
-        />
+        >
+          {props => <LocationInfoScreen {...props} screenProps={navigation} />}
+        </Stack.Screen>
         <Stack.Screen
           name="LocationSpecificInfo"
-          component={LocationSpecificInfoScreen}
           options={{ header: () => null }}
-        />
+        >
+          {props => <LocationSpecificInfoScreen {...props} screenProps={navigation} />}
+        </Stack.Screen>
         <Stack.Screen
           name="SearchResult"
-          component={SearchResultScreen}
           options={{ header: () => null }}
-        />
+        >
+          {props => <SearchResultScreen {...props} screenProps={navigation} />}
+        </Stack.Screen>
         <Stack.Screen
           name="AddLead"
-          component={AddLeadScreen}
           options={{ header: () => null }}
-        />
+        >
+          {props => <AddLeadScreen {...props} screenProps={navigation} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </Fragment>
   );
