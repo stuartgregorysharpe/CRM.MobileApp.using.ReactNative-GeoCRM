@@ -171,15 +171,6 @@ export default function LocationScreen(props) {
     longitudeDelta: 0.0121
   })
 
-  const onPressZoomIn = () => {
-    setMapRegion({
-      latitude: mapRegion.latitude,
-      longitude: mapRegion.longitude,
-      latitudeDelta: mapRegion.latitudeDelta * 2,
-      longitudeDelta: mapRegion.longitudeDelta * 2
-    })
-  }
-
   return (
     <SafeAreaView>
       <OutsideView
@@ -246,13 +237,8 @@ export default function LocationScreen(props) {
             region={mapRegion}
           >
           </MapView>
-          <TouchableOpacity style={styles.plusButton} onPress={onPressZoomIn}>
-            <Avatar.Text 
-              size={50}
-              label="+"
-              style={{ backgroundColor: PRIMARY_COLOR }}
-              labelStyle={{fontSize: 30}}
-            />
+          <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
+            <Image style={styles.plusButtonImage} source={require("../assets/images/Round_Btn_Default_Dark.png")}/>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.pinKeyButton}
@@ -262,9 +248,6 @@ export default function LocationScreen(props) {
             }}
           >
             <SlidUpArrow />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.goToAddLead} onPress={() => props.navigation.navigate("AddLead")}>
-            <Text style={styles.goToAddLeadText}>Go to AddLead</Text>
           </TouchableOpacity>
         </View>
       </OutsideView>
@@ -285,15 +268,17 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     position: 'absolute',
-    right: 30,
-    // bottom: 45,
-    bottom: 65
+    right: 20,
+    bottom: 40,
+  },
+  plusButtonImage: {
+    width: 70,
+    height: 70
   },
   pinKeyButton: {
     position: 'absolute',
     right: 10,
-    // bottom: 10,
-    bottom: 30,
+    bottom: 10,
     padding: 5
   },
   slidUpArrow: {
