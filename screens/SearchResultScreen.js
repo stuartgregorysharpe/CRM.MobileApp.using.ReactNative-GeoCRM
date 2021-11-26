@@ -131,7 +131,7 @@ export default function SearchResultScreen(props) {
                 fontSize: 16,
                 fontFamily: 'Gilroy-Medium',
                 backgroundColor: '#fff',
-                shadowColor: '#00000014',
+                shadowColor: '#808080',
                 shadowOffset: { width: 0, height: 5 },
                 shadowOpacity: 1,
                 elevation: 1,

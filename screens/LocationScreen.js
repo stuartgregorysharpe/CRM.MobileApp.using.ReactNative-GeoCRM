@@ -214,7 +214,7 @@ export default function LocationScreen(props) {
                   fontSize: 12,
                   backgroundColor: '#fff',
                   fontFamily: 'Gilroy-Medium',
-                  shadowColor: '#00000014',
+                  shadowColor: '#808080',
                   shadowOffset: { width: 0, height: 5 },
                   shadowOpacity: 1,
                   elevation: 1,
