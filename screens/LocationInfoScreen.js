@@ -171,9 +171,6 @@ const styles = StyleSheet.create({
     height: 16,
     marginRight: 8
   },
-  accessButton: {
-
-  },
   checkInButton: {
     backgroundColor: PRIMARY_COLOR,
   }

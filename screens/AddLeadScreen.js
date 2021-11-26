@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView } from 'react-native';
+import { 
+  SafeAreaView, 
+  Text, 
+  View, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity 
+} from 'react-native';
 import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 import Divider from '../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
@@ -10,11 +19,7 @@ export default function AddLeadScreen(props) {
   useEffect(() => {
     props.screenProps.setOptions({
       tabBarStyle: {
-        display: 'flex',
-        height: 60,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: "#fff",
+        display: 'none',
       },
     });
   })
@@ -128,6 +133,10 @@ export default function AddLeadScreen(props) {
           value={group}
           onChangeText={text => getGroup(text)}
         />
+        <TouchableOpacity style={styles.addButton} onPress={() => props.navigation.navigate("SearchResult")}>
+          <Text style={[styles.addButtonText]}>Check In</Text>
+          <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )
@@ -173,5 +182,28 @@ const styles = StyleSheet.create({
     top: 2,
     right: 0,
     fontSize: 12
+  },
+  addButton: {
+    position: 'relative',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: PRIMARY_COLOR,
+    borderRadius: 7,
+    backgroundColor: PRIMARY_COLOR
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Gilroy-Bold'
+  },
+  addButtonIcon: {
+    position: 'absolute',
+    right: 10
   }
 })
