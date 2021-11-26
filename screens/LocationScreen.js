@@ -304,11 +304,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingLeft: 8,
     paddingRight: 8,
-    paddingBottom: 1
+    paddingTop: 2,
+    paddingBottom: 2
   },
   slidUpArrowText: {
     color: PRIMARY_COLOR,
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: 'Gilroy-Medium',
     marginRight: 8,
   },
