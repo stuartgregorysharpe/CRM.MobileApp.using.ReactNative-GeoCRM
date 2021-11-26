@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LocationScreen from './LocationScreen';
 import LocationInfoScreen from './LocationInfoScreen';
-// import LocationSpecificInfoScreen from './LocationSpecificInfoScreen';
+import LocationSpecificInfoScreen from './LocationSpecificInfoScreen';
 import SearchResultScreen from './SearchResultScreen';
 import AddLeadScreen from './AddLeadScreen';
 
@@ -23,11 +23,11 @@ export default function CRMScreen() {
           component={LocationInfoScreen}
           options={{ header: () => null }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="LocationSpecificInfo"
           component={LocationSpecificInfoScreen}
           options={{ header: () => null }}
-        /> */}
+        />
         <Stack.Screen
           name="SearchResult"
           component={SearchResultScreen}

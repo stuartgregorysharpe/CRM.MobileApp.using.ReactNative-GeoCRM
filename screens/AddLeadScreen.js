@@ -4,7 +4,7 @@ import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import Divider from '../components/Divider';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
 export default function AddLeadScreen() {
   const [customerName, setCustomerName] = useState('');
@@ -24,7 +24,7 @@ export default function AddLeadScreen() {
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
-        <Divider />
+        <Divider style={{marginBottom: 20}} />
         <View style={styles.header}>
           <Title style={{fontFamily: 'Product Sans-Bold'}}>Add Lead</Title>
           <Button 
@@ -123,6 +123,7 @@ export default function AddLeadScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: BG_COLOR,
     padding: 10,
     marginBottom: 10
   },
@@ -135,10 +136,11 @@ const styles = StyleSheet.create({
   },
   map: {
     width: '100%',
-    height: 300,
+    height: 230,
     marginBottom: 10
   },
   textInput: {
+    height: 50,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 10
   },

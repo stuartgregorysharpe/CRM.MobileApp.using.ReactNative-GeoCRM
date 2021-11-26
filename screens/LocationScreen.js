@@ -19,7 +19,7 @@ import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 import FilterButton from '../components/FilterButton';
 import Divider from '../components/Divider';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
 const markers = [
   {
@@ -71,7 +71,7 @@ const filterButtonList = [
 
 const MarkerView = () => (
   <Fragment>
-    <Divider />
+    <Divider style={{marginBottom: 20}} />
     <View style={styles.markerContent}>
       {markers.map((marker, key) => (
         <View style={styles.markerBox} key={key}>
@@ -86,7 +86,7 @@ const MarkerView = () => (
 const FilterView = ({navigation}) => {
   return (
     <ScrollView style={{maxHeight: 420, backgroundColor: '#F9F9F9'}}>
-      <Divider />
+      <Divider style={{marginBottom: 20}} />
       <View style={styles.filterHeader}>
         <Title style={{fontFamily: 'Product Sans-Bold'}}>Filter your search</Title>
         <Button 
@@ -210,7 +210,10 @@ export default function LocationScreen(props) {
                   color: '#5d5d5d',
                   fontSize: 12,
                   fontFamily: 'Gilroy-Medium',
-                  backgroundColor: '#fff',
+                  shadowColor: '#00000014',
+                  shadowOffset: { width: 0, height: 5 },
+                  shadowOpacity: 1,
+                  elevation: 1,
                 },
                 predefinedPlacesDescription: {
                   color: '#1faadb',
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
     height: '100%',
     display: 'flex',
     justifyContent: 'space-between',
-    backgroundColor: '#F9F9F9'
+    backgroundColor: BG_COLOR,
   },
   map: {
     flexGrow: 1
@@ -333,16 +336,20 @@ const styles = StyleSheet.create({
   searchIcon: {
     position: 'absolute',
     top: 24,
-    left: 20
+    left: 20,
+    elevation: 1
   },
   filterImageButton: {
     position: 'absolute',
     top: 18,
     right: 20,
+    zIndex: 10,
+    elevation: 1
   },
   filterImage: {
     width: 30,
-    height: 30
+    height: 30,
+    zIndex: 10,
   },
   markerContent: {
     display: 'flex',

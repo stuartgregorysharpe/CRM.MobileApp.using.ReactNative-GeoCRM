@@ -4,7 +4,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
 const resultItemText = [
   {
@@ -109,7 +109,7 @@ const ResultItem = ({item}) => (
 export default function SearchResultScreen(props) {
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView style={styles.container}>
         <View style={styles.autoCompleteBox}>
           <GooglePlacesAutocomplete
             styles={{
@@ -154,6 +154,9 @@ export default function SearchResultScreen(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: BG_COLOR,
+  },
   title: {
     color: PRIMARY_COLOR,
     fontSize: 16,

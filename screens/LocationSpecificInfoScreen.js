@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import LocationInfoInput from '../components/LocationInfoInput';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import FilterButton from '../components/FilterButton';
 
 const specificInfo = [
@@ -106,6 +106,7 @@ export default function LocationSpecificInfoScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: BG_COLOR,
     padding: 10
   },
   headerBox: {

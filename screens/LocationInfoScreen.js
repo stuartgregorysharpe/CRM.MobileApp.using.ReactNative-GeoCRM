@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { 
   SafeAreaView, 
   Text, 
@@ -14,13 +14,15 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import LocationInfoInput from '../components/LocationInfoInput';
 import FilterButton from '../components/FilterButton';
 import Divider from '../components/Divider';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
 export default function LocationInfoScreen(props) {
   return (
-    <SafeAreaView>
-      <ScrollView style={styles.container}>
+    <SafeAreaView style={{position: 'relative'}}>
+      <View style={styles.dividerBar}>
         <Divider />
+      </View>
+      <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
@@ -50,24 +52,32 @@ export default function LocationInfoScreen(props) {
         <FilterButton text="Contact: Jack Reacher" />
         <FilterButton text="Navigation" />
         <FilterButton text="Activity & Comments" subText="Jack Submitted a Brand Facings Task 4 days ago" />
-        <View style={styles.nextButtonBar}>
-          <TouchableOpacity style={styles.nextButton} onPress={() => props.navigation.navigate("LocationSpecificInfo")}>
-            <Text style={styles.nextButtonText}>Access CRM</Text>
-            <FontAwesomeIcon size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.nextButton} onPress={() => props.navigation.navigate("AddLead")}>
-            <Text style={styles.nextButtonText}>Check In</Text>
-            <FontAwesomeIcon size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+      <View style={styles.nextButtonBar}>
+        <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => props.navigation.navigate("LocationSpecificInfo")}>
+          <Text style={styles.nextButtonText}>Access CRM</Text>
+          <FontAwesomeIcon size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => props.navigation.navigate("AddLead")}>
+          <Text style={[styles.checkInButtonText]}>Check In</Text>
+          <FontAwesomeIcon size={25} color="#fff" icon={ faAngleDoubleRight } />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  dividerBar: {
+    backgroundColor: BG_COLOR,
+    height: 20,
+    display: 'flex',
+    justifyContent: 'center',
+  },
   container: {
-    padding: 10
+    backgroundColor: BG_COLOR,
+    padding: 10,
+    marginBottom: 90
   },
   headerBox: {
     display: 'flex',
@@ -84,15 +94,17 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: PRIMARY_COLOR,
+    fontSize: 12,
     textAlign: 'left',
     fontFamily: 'Gilroy-Medium',
   },
   dateText: {
     color: '#0AD10A',
+    fontSize: 12,
     fontFamily: 'Gilroy-Medium',
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#000',
     fontFamily: 'Gilroy-Bold',
     lineHeight: 22
@@ -113,11 +125,15 @@ const styles = StyleSheet.create({
     borderRadius: 7
   },
   nextButtonBar: {
+    backgroundColor: BG_COLOR,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
-    marginBottom: 40,
+    padding: 10
   },
   nextButton: {
     width: '47%',
@@ -128,22 +144,30 @@ const styles = StyleSheet.create({
     height: 50,
     paddingLeft: 10,
     paddingRight: 10,
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
-    borderRadius: 7
+    borderRadius: 7,
   },
   nextButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 16,
     fontFamily: 'Gilroy-Bold'
   },
-  nextButtonIcon: {
-    color: PRIMARY_COLOR,
-    fontSize: 24
+  checkInButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Gilroy-Bold'
   },
   fontIcon: {
     width: 15,
     height: 16,
     marginRight: 8
+  },
+  accessButton: {
+
+  },
+  checkInButton: {
+    backgroundColor: PRIMARY_COLOR,
   }
 });

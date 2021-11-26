@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   Text, 
-  View, 
+  View,
+  ScrollView,
   StyleSheet,
   Image,
   TouchableOpacity
@@ -24,13 +25,13 @@ export default function LocationInfoInput() {
   const [commonlyPurchasedItems, setCommonlyPurchasedItems] = useState('');
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.shadowBox}>
         <Text style={styles.shadowBoxText}>Stage</Text>
         <View style={{flexGrow: 1}}>
           <Button 
             mode="contained" 
-            style={{width: 200}} 
+            style={{width: 180}} 
             labelStyle={{
               fontSize: 16,
               fontFamily: 'Gilroy-Medium',
@@ -51,7 +52,7 @@ export default function LocationInfoInput() {
           <View style={{flexGrow: 1}}>
             <Button 
               mode="contained" 
-              style={{width: 150}} 
+              style={{width: 140}} 
               labelStyle={{
                 fontSize: 16,
                 fontFamily: 'Gilroy-Medium',
@@ -185,6 +186,10 @@ export default function LocationInfoInput() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    // flexGrow: 1,
+    // height: 100
+  },
   shadowBox: {
     padding: 10,
     display: 'flex',
@@ -202,7 +207,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   shadowBoxText: {
-    width: 100,
+    width: 80,
     color: '#23282D',
     fontFamily: 'Gilroy-Medium'
   },
@@ -215,8 +220,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   refreshImage: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginLeft: 10,
   },
   inputBox: {
@@ -226,8 +231,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   textInput: {
+    height: 50,
     fontFamily: 'Gilroy-Medium',
-    marginBottom: 10,
+    marginBottom: 10
+    
   },
   textInputWidthOne: {
     width: '100%'
