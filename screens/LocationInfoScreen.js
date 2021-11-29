@@ -26,9 +26,9 @@ export default function LocationInfoScreen(props) {
   })
   return (
     <SafeAreaView style={{position: 'relative'}}>
-      <View style={styles.dividerBar}>
+      <TouchableOpacity style={styles.dividerBar} onPress={() => props.navigation.navigate("Root")}>
         <Divider />
-      </View>
+      </TouchableOpacity>
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
           <View>

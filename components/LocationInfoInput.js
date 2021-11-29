@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { 
   Text, 
   View,
-  ScrollView,
   StyleSheet,
   Image,
   TouchableOpacity
 } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { TextInput } from 'react-native-paper';
 
 export default function LocationInfoInput() {
   const [gateKeeperName, setGateKeeperName] = useState('');

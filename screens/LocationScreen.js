@@ -83,7 +83,7 @@ const MarkerView = () => (
   </Fragment>
 );
 
-const FilterView = ({navigation}) => {
+const FilterView = () => {
   return (
     <ScrollView style={{maxHeight: 420, backgroundColor: '#F9F9F9'}}>
       <Divider style={{marginBottom: 20}} />
@@ -113,7 +113,7 @@ const FilterView = ({navigation}) => {
           fontFamily: 'Gilroy-Bold', 
           letterSpacing: 0.2
         }} 
-        onPress={() => navigation.navigate('LocationInfo')}>
+        onPress={() => console.log("pressed")}>
         Apply Filters
       </Button>
     </ScrollView>
@@ -177,12 +177,36 @@ export default function LocationScreen(props) {
   });
 
   const [mapRegion, setMapRegion] = useState({
-    latitude: 37.78825,
-    longitude: -122.4324,
+    latitude: -33.891321,
+    longitude: 18.505649,
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121
-  })
+  });
 
+  const [markers, setMarkers] = useState([
+    {
+      latlng: {
+        latitude: -33.896821,
+        longitude: 18.506450
+      },
+      path: require('../assets/images/map-marker/Green_Star.png')
+    },
+    {
+      latlng: {
+        latitude: -33.891248,
+        longitude: 18.510959
+      },
+      path: require('../assets/images/map-marker/Red_Triangle.png')
+    },
+    {
+      latlng: {
+        latitude: -33.888103,
+        longitude: 18.501482
+      },
+      path: require('../assets/images/map-marker/Purple_X.png')
+    }
+  ])
+  
   return (
     <SafeAreaView>
       <OutsideView
@@ -202,7 +226,7 @@ export default function LocationScreen(props) {
             ref={filterRef}
             style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
           >
-            <FilterView navigation={props.navigation} />
+            <FilterView />
           </Animated.View>
           <View style={styles.autoCompleteBox}>
             <GooglePlacesAutocomplete
@@ -248,7 +272,23 @@ export default function LocationScreen(props) {
             showsMyLocationButton = {true}
             zoomEnabled = {true}
             region={mapRegion}
+            onPress={(e) => console.log(e)}
           >
+            {markers.map((marker, key) => (
+              <Marker
+                key={key}
+                coordinate={marker.latlng}
+                image={marker.path}
+                onPress={() => props.navigation.navigate('LocationInfo')}
+              />  
+            ))}
+            <Marker
+              coordinate={mapRegion}
+            >
+              <View style={styles.ringFence}>
+                <View style={styles.ringPoint}></View>
+              </View>
+            </Marker>
           </MapView>
           <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
             <Image style={styles.plusButtonImage} source={require("../assets/images/Round_Btn_Default_Dark.png")}/>
@@ -391,5 +431,24 @@ const styles = StyleSheet.create({
   },
   goToAddLeadText: {
     color: PRIMARY_COLOR
+  },
+  ringFence: {
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: PRIMARY_COLOR,
+    width: 70,
+    height: 70,
+    borderRadius: 100
+  },
+  ringPoint: {
+    position: 'absolute',
+    top: 25,
+    left: 25,
+    width: 20,
+    height: 20,
+    backgroundColor: PRIMARY_COLOR,
+    borderRadius: 10,
+    borderColor: '#fff',
+    borderWidth: 3
   }
 });
