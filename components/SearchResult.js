@@ -1,9 +1,7 @@
-import React, {useEffect} from 'react';
-import { SafeAreaView, View, ScrollView, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import { View, ScrollView, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
+import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 
 const resultItemText = [
@@ -106,98 +104,38 @@ const ResultItem = ({item}) => (
   </View>
 )
 
-export default function SearchResultScreen(props) {
-  useEffect(() => {
-    props.screenProps.setOptions({
-      tabBarStyle: {
-        display: 'flex',
-        height: 60,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: "#fff",
-      },
-    });
-  })
+export default function SearchResult({onClose}) {
   return (
-    <SafeAreaView>
-      <ScrollView style={styles.container}>
-        <View style={styles.autoCompleteBox}>
-          <GooglePlacesAutocomplete
-            styles={{
-              textInput: {
-                paddingLeft: 42,
-                paddingRight: 50,
-                color: '#5d5d5d',
-                fontSize: 16,
-                fontFamily: 'Gilroy-Medium',
-                backgroundColor: '#fff',
-                shadowColor: '#808080',
-                shadowOffset: { width: 0, height: 5 },
-                shadowOpacity: 1,
-                elevation: 1,
-              },
-              predefinedPlacesDescription: {
-                color: '#1faadb',
-              },
-            }}
-            placeholder='Search.....'
-            onPress={(data, details = null) => {
-              console.log(data, details);
-            }}
-            query={{
-              key: 'AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o',
-              language: 'en',
-            }}
-          />
-          <FontAwesomeIcon style={styles.searchIcon} size={25} color="#9D9FA2" icon={ faSearch } />
-          <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-            filterStartAnimation(0);
-            markerStartAnimation(1);
-          }}>
-            <Image style={styles.filterImage} source={require('../assets/images/Filter.png')} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.searchResultContent}>
-          <Text style={styles.title}>Current Location</Text>
-          {resultItemText.map((item, key) => (
-            <ResultItem key={key} item={item} />
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      <TouchableOpacity style={styles.dividerBar} onPress={() => onClose()}>
+        <Divider />
+      </TouchableOpacity>
+      <View style={styles.searchResultContent}>
+        <Text style={styles.title}>Current Location</Text>
+        {resultItemText.map((item, key) => (
+          <ResultItem key={key} item={item} />
+        ))}
+      </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
+    height: Dimensions.get('window').height - 225
+  },
+  dividerBar: {
+    backgroundColor: BG_COLOR,
+    height: 20,
+    display: 'flex',
+    justifyContent: 'center',
   },
   title: {
     color: PRIMARY_COLOR,
     fontSize: 16,
     fontFamily: 'Gilroy-Bold',
     padding: 14
-  },
-  autoCompleteBox: {
-    position: 'relative',
-    padding: 10,
-    height: 66,
-  },
-  searchIcon: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    elevation: 1
-  },
-  filterImageButton: {
-    position: 'absolute',
-    top: 18,
-    right: 20,
-    elevation: 1
-  },
-  filterImage: {
-    width: 30,
-    height: 30
   },
   resultItem: {
     maxWidth: '100%',

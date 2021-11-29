@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import OutsideView from 'react-native-detect-press-outside';
-import { Avatar, Button, Title } from 'react-native-paper';
+import { Button, Title } from 'react-native-paper';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
+import SearchResult from '../components/SearchResult';
 import FilterButton from '../components/FilterButton';
 import Divider from '../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
@@ -130,6 +131,7 @@ const SlidUpArrow = () => (
 export default function LocationScreen(props) {
   const markerRef = useRef(null);
   const filterRef = useRef(null);
+  const searchResultRef = useRef(null);
 
   useEffect(() => {
     props.screenProps.setOptions({
@@ -145,6 +147,7 @@ export default function LocationScreen(props) {
 
   const markerAnimatedValue = useRef(new Animated.Value(1)).current;
   const filterAnimatedValue = useRef(new Animated.Value(1)).current;
+  const searchResultAnimatedValue = useRef(new Animated.Value(1)).current;
 
   const markerStartAnimation = (toValue) => {
     Animated.timing(markerAnimatedValue, {
@@ -164,6 +167,15 @@ export default function LocationScreen(props) {
     }).start();
   };
 
+  const searchResultStartAnimation = (toValue) => {
+    Animated.timing(searchResultAnimatedValue, {
+      toValue,
+      duration: 500,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+  };
+
   const markerTranslateY = markerAnimatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 350],
@@ -171,6 +183,12 @@ export default function LocationScreen(props) {
   });
 
   const filterTranslateY = filterAnimatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 550],
+    extrapolate: 'clamp',
+  });
+  
+  const searchResultTranslateY = searchResultAnimatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 550],
     extrapolate: 'clamp',
@@ -228,6 +246,12 @@ export default function LocationScreen(props) {
           >
             <FilterView />
           </Animated.View>
+          <Animated.View
+            ref={searchResultRef}
+            style={[styles.transitionView, { transform: [{ translateY: searchResultTranslateY }] }]}
+          >
+            <SearchResult onClose={() => searchResultStartAnimation(1)}/>
+          </Animated.View>
           <View style={styles.autoCompleteBox}>
             <GooglePlacesAutocomplete
               styles={{
@@ -250,6 +274,9 @@ export default function LocationScreen(props) {
               placeholder='Search.....'
               onPress={(data, details = null) => {
                 console.log(data, details);
+              }}
+              textInputProps={{
+                onChange: () => { searchResultStartAnimation(0); }
               }}
               query={{
                 key: 'AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o',
@@ -280,7 +307,7 @@ export default function LocationScreen(props) {
                 coordinate={marker.latlng}
                 image={marker.path}
                 onPress={() => props.navigation.navigate('LocationInfo')}
-              />  
+              />
             ))}
             <Marker
               coordinate={mapRegion}

@@ -65,7 +65,7 @@ export default function LocationInfoScreen(props) {
           <Text style={styles.nextButtonText}>Access CRM</Text>
           <FontAwesomeIcon size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => props.navigation.navigate("SearchResult")}>
+        <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => console.log("pressed")}>
           <Text style={[styles.checkInButtonText]}>Check In</Text>
           <FontAwesomeIcon size={25} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>
