@@ -29,20 +29,9 @@ export default function LocationInfoInput() {
       <View style={styles.shadowBox}>
         <Text style={styles.shadowBoxText}>Stage</Text>
         <View style={{flexGrow: 1}}>
-          <Button 
-            mode="contained" 
-            style={{width: 180}} 
-            labelStyle={{
-              fontSize: 16,
-              fontFamily: 'Gilroy-Medium',
-              letterSpacing: 0.2
-            }}
-            color={PRIMARY_COLOR} 
-            uppercase={false} 
-            onPress={() => console.log("pressed")}
-          >
-            Opportunity
-          </Button>
+          <TouchableOpacity style={[styles.button, {width: 180}]}>
+            <Text style={styles.buttonText}>Opportunity</Text>
+          </TouchableOpacity>
         </View>
         <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />
       </View>
@@ -50,20 +39,9 @@ export default function LocationInfoInput() {
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
           <View style={{flexGrow: 1}}>
-            <Button 
-              mode="contained" 
-              style={{width: 140}} 
-              labelStyle={{
-                fontSize: 16,
-                fontFamily: 'Gilroy-Medium',
-                letterSpacing: 0.2
-              }}
-              color={PRIMARY_COLOR} 
-              uppercase={false} 
-              onPress={() => console.log("pressed")}
-            >
-              Invalid Lead
-            </Button>
+            <TouchableOpacity style={[styles.button, {width: 140}]}>
+              <Text style={styles.buttonText}>Invalid Lead</Text>
+            </TouchableOpacity>
           </View>
           <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />
         </View>
@@ -242,4 +220,18 @@ const styles = StyleSheet.create({
   textInputWidthTwo: {
     width: '47%'
   },
+  button: {
+    backgroundColor: 'rgba(21, 90, 161, 0.31)',
+    paddingTop: 10,
+    paddingBottom: 10,
+    textAlign: 'center',
+    borderRadius: 7
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: '#000',
+    fontSize: 16,
+    fontFamily: 'Gilroy-Medium',
+    letterSpacing: 0.2,
+  }
 });
