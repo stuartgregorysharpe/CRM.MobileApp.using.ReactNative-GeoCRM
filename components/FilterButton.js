@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   cardtitle: {
     color: '#23282D',
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Gilroy-Medium',
   },
   cardSubtitle: {

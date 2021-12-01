@@ -90,7 +90,6 @@ export default function MoreScreen(props) {
         items.push(payload.user_scopes.geo_rep.modules_nav_order[index].replace("_", " "));
       }
     }
-    console.log(items)
     setOrderList(items);
   }, [])
 
@@ -98,7 +97,7 @@ export default function MoreScreen(props) {
     <SafeAreaView>
       <ScrollView style={styles.container}>
         {orderList.map((list, key) => (
-          <TouchableOpacity style={styles.listItem}>
+          <TouchableOpacity style={styles.listItem} key={key}>
             <Text style={styles.listItemText}>{list.slice(0, 1).toUpperCase() + list.slice(1)}</Text>
           </TouchableOpacity>
         ))}

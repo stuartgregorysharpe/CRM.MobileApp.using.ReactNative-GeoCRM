@@ -91,8 +91,8 @@ const resultItemText = [
   },
 ]
 
-const ResultItem = ({item}) => (
-  <View style={styles.resultItem}>
+const ResultItem = ({navigation, item, onClose}) => (
+  <TouchableOpacity style={styles.resultItem} onPress={() => {navigation.navigate('LocationInfo'); onClose();}}>
     <View style={{maxWidth: '48%'}}>
       <Text style={styles.subTitle}>{item.title}</Text>
       <Text style={styles.text}>{item.text}</Text>
@@ -101,10 +101,10 @@ const ResultItem = ({item}) => (
       <Text style={[styles.subTitle, styles.textRight]}>{item.number}</Text>
       <Text style={[styles.text, styles.textRight, {color: item.color}]}>{item.result}</Text>
     </View>
-  </View>
+  </TouchableOpacity>
 )
 
-export default function SearchResult({onClose}) {
+export default function SearchResult({navigation, onClose}) {
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity style={styles.dividerBar} onPress={() => onClose()}>
@@ -113,7 +113,7 @@ export default function SearchResult({onClose}) {
       <View style={styles.searchResultContent}>
         <Text style={styles.title}>Current Location</Text>
         {resultItemText.map((item, key) => (
-          <ResultItem key={key} item={item} />
+          <ResultItem key={key} navigation={navigation} item={item} onClose={() => onClose()} />
         ))}
       </View>
     </ScrollView>
@@ -142,20 +142,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 14,
+    padding: 8,
     borderTopWidth: 1,
     borderColor: '#e7e7e7'
   },
   subTitle: {
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: 16,
     fontFamily: 'Gilroy-Bold',
     color: '#23282D',
     marginBottom: 4
   },
   text: {
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: 14,
     fontFamily: 'Gilroy-Medium',
     color: '#9D9FA2',
   },

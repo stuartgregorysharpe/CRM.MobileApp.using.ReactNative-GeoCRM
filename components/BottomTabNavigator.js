@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
 import { Image } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
+import { useDispatch } from 'react-redux';
 
 import HomeScreen from '../screens/HomeScreen';
 import CRMScreen from '../screens/CRMScreen';
@@ -10,11 +11,13 @@ import PipelineScreen from '../screens/PipelineScreen';
 import MoreScreen from '../screens/MoreScreen';
 
 import { PRIMARY_COLOR } from '../constants/Colors';
+import { SLIDE_STATUS } from '../actions/actionTypes';
 
 const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator({ navigation }) {
-  
+  const dispatch = useDispatch();
+
   const tabBarIconStyle = {
     height: 18,
     width: 18,
@@ -92,6 +95,14 @@ export default function BottomTabNavigator({ navigation }) {
             backgroundColor: "#fff",
           }
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            console.log("dfsdfsd")
+            dispatch({type: SLIDE_STATUS, payload: false})
+            navigation.navigate("CRMScreen");
+          },
+        })}
       />
       <BottomTab.Screen
         name="CalendarScreen"

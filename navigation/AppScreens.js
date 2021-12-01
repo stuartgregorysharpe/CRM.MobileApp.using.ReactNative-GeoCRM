@@ -11,11 +11,13 @@ export default function AppScreens() {
   return (
     <Fragment>
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
-      <Stack.Navigator screenOptions={{
-        headerStyle: {
-          backgroundColor: PRIMARY_COLOR,
-        }
-      }}>
+      <Stack.Navigator 
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: PRIMARY_COLOR,
+          }
+        }}
+      >
         <Stack.Screen 
           name="Root" 
           component={BottomTabNavigator} 

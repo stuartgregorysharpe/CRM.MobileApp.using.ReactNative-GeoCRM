@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { 
   SafeAreaView, 
   Text, 
@@ -6,7 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
@@ -63,11 +64,11 @@ export default function LocationInfoScreen(props) {
       <View style={styles.nextButtonBar}>
         <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => props.navigation.navigate("LocationSpecificInfo")}>
           <Text style={styles.nextButtonText}>Access CRM</Text>
-          <FontAwesomeIcon size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
+          <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => console.log("pressed")}>
           <Text style={[styles.checkInButtonText]}>Check In</Text>
-          <FontAwesomeIcon size={25} color="#fff" icon={ faAngleDoubleRight } />
+          <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -84,20 +85,20 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
     padding: 10,
-    marginBottom: 90
+    marginBottom: 80
   },
   headerBox: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 20
+    marginBottom: 12
   },
   subtitleBox: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   subtitle: {
     color: PRIMARY_COLOR,
@@ -111,13 +112,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Gilroy-Medium',
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#000',
     fontFamily: 'Gilroy-Bold',
-    lineHeight: 22
+    lineHeight: 20
   },
   addressText: {
-    maxWidth: 210,
+    maxWidth: 175,
   },
   walmartImageBox: {
     flexGrow: 1,
@@ -125,8 +126,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   walmartImage: {
-    width: 120,
-    height: 120,
+    width: 90,
+    height: 90,
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
     borderRadius: 7
@@ -134,6 +135,7 @@ const styles = StyleSheet.create({
   nextButtonBar: {
     backgroundColor: BG_COLOR,
     position: 'absolute',
+    top: Dimensions.get('window').height - 140,
     bottom: 0,
     left: 0,
     right: 0,
@@ -148,9 +150,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 50,
-    paddingLeft: 10,
-    paddingRight: 10,
+    height: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
     marginBottom: 20,
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
@@ -158,12 +160,12 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     color: PRIMARY_COLOR,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Gilroy-Bold'
   },
   checkInButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Gilroy-Bold'
   },
   fontIcon: {

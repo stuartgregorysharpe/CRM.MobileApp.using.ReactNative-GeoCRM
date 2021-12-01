@@ -8,8 +8,10 @@ import {
   TouchableOpacity, 
   Animated,
   Easing,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import OutsideView from 'react-native-detect-press-outside';
 import { Button, Title } from 'react-native-paper';
@@ -21,6 +23,7 @@ import SearchResult from '../components/SearchResult';
 import FilterButton from '../components/FilterButton';
 import Divider from '../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import { SLIDE_STATUS } from '../actions/actionTypes';
 
 const markers = [
   {
@@ -129,11 +132,15 @@ const SlidUpArrow = () => (
 )
 
 export default function LocationScreen(props) {
+  const crmStatus = useSelector(state => state.crm);
+  const dispatch = useDispatch();
+
   const markerRef = useRef(null);
   const filterRef = useRef(null);
   const searchResultRef = useRef(null);
 
   useEffect(() => {
+    console.log(crmStatus.crmSlideStatus)
     props.screenProps.setOptions({
       tabBarStyle: {
         display: 'flex',
@@ -143,7 +150,7 @@ export default function LocationScreen(props) {
         backgroundColor: "#fff",
       },
     });
-  })
+  });
 
   const markerAnimatedValue = useRef(new Animated.Value(1)).current;
   const filterAnimatedValue = useRef(new Animated.Value(1)).current;
@@ -187,10 +194,10 @@ export default function LocationScreen(props) {
     outputRange: [0, 550],
     extrapolate: 'clamp',
   });
-  
+
   const searchResultTranslateY = searchResultAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 550],
+    outputRange: [0, Dimensions.get('window').height],
     extrapolate: 'clamp',
   });
 
@@ -232,27 +239,35 @@ export default function LocationScreen(props) {
         onPressOutside={() => {
           markerStartAnimation(1);
           filterStartAnimation(1);
+          dispatch({ type: SLIDE_STATUS, payload: false });
         }}>
         <View style={styles.container}>
           <Animated.View
             ref={markerRef}
             style={[styles.transitionView, { transform: [{ translateY: markerTranslateY }] }]}
           >
-            <MarkerView />
+            {crmStatus.crmSlideStatus && <MarkerView />}
           </Animated.View>
           <Animated.View
             ref={filterRef}
             style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
           >
-            <FilterView />
+            {crmStatus.crmSlideStatus && <FilterView />}
           </Animated.View>
           <Animated.View
             ref={searchResultRef}
             style={[styles.transitionView, { transform: [{ translateY: searchResultTranslateY }] }]}
           >
-            <SearchResult onClose={() => searchResultStartAnimation(1)}/>
+            {crmStatus.crmSlideStatus && <SearchResult 
+              navigation={props.navigation} 
+              onClose={() => { 
+                searchResultStartAnimation(1); 
+                dispatch({ type: SLIDE_STATUS, payload: false });
+              }}
+            />}
           </Animated.View>
           <View style={styles.autoCompleteBox}>
+            <Text>{crmStatus.crmSlideStatus}</Text>
             <GooglePlacesAutocomplete
               styles={{
                 textInput: {
@@ -276,7 +291,10 @@ export default function LocationScreen(props) {
                 console.log(data, details);
               }}
               textInputProps={{
-                onChange: () => { searchResultStartAnimation(0); }
+                onChange: () => { 
+                  searchResultStartAnimation(0); 
+                  dispatch({type: SLIDE_STATUS, payload: true});  
+                }
               }}
               query={{
                 key: 'AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o',
@@ -287,6 +305,7 @@ export default function LocationScreen(props) {
             <TouchableOpacity style={styles.filterImageButton} onPress={() => {
               filterStartAnimation(0);
               markerStartAnimation(1);
+              dispatch({type: SLIDE_STATUS, payload: true});
             }}>
               <Image style={styles.filterImage} source={require('../assets/images/Filter.png')} />
             </TouchableOpacity>
@@ -305,17 +324,25 @@ export default function LocationScreen(props) {
               <Marker
                 key={key}
                 coordinate={marker.latlng}
-                image={marker.path}
                 onPress={() => props.navigation.navigate('LocationInfo')}
-              />
+              >
+                <Image style={{width: 24, height: 30}} source={marker.path}/>
+              </Marker>
             ))}
-            <Marker
-              coordinate={mapRegion}
-            >
-              <View style={styles.ringFence}>
-                <View style={styles.ringPoint}></View>
-              </View>
-            </Marker>
+            <MapView.Circle
+              center = {mapRegion}
+              radius = { 200 }
+              strokeWidth = { 1 }
+              strokeColor = {PRIMARY_COLOR}
+              fillColor = { 'rgba(230,238,255,0.5)' }
+            />
+            <MapView.Circle
+              center = {mapRegion}
+              radius = { 30 }
+              strokeWidth = { 3 }
+              strokeColor = { '#fff' }
+              fillColor = { PRIMARY_COLOR }
+            />
           </MapView>
           <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
             <Image style={styles.plusButtonImage} source={require("../assets/images/Round_Btn_Default_Dark.png")}/>
@@ -325,6 +352,7 @@ export default function LocationScreen(props) {
             onPress={() => {
               markerStartAnimation(0);
               filterStartAnimation(1);
+              dispatch({type: SLIDE_STATUS, payload: true});
             }}
           >
             <SlidUpArrow />
@@ -436,6 +464,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   markerText: {
+    fontSize: 12,
     color: '#23282D',
     fontFamily: 'Gilroy-Medium'
   },
@@ -459,23 +488,4 @@ const styles = StyleSheet.create({
   goToAddLeadText: {
     color: PRIMARY_COLOR
   },
-  ringFence: {
-    position: 'relative',
-    borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
-    width: 70,
-    height: 70,
-    borderRadius: 100
-  },
-  ringPoint: {
-    position: 'absolute',
-    top: 25,
-    left: 25,
-    width: 20,
-    height: 20,
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 10,
-    borderColor: '#fff',
-    borderWidth: 3
-  }
 });

@@ -161,9 +161,10 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   textInput: {
-    height: 50,
+    fontSize: 14,
+    height: 40,
     fontFamily: 'Gilroy-Medium',
-    marginBottom: 10
+    marginBottom: 8
   },
   linkBox: {
     position: 'relative',
@@ -188,10 +189,10 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 20,
+    height: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
     borderRadius: 7,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Gilroy-Bold'
   },
   addButtonIcon: {

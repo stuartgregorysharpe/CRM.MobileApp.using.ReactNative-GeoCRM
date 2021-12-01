@@ -162,12 +162,8 @@ export default function LocationInfoInput() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // flexGrow: 1,
-    // height: 100
-  },
   shadowBox: {
-    padding: 10,
+    padding: 8,
     display: 'flex',
     flexGrow: 1,
     flexDirection: 'row',
@@ -180,7 +176,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     zIndex: 1,
     borderRadius: 7,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   shadowBoxText: {
     width: 80,
@@ -188,16 +184,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Gilroy-Medium'
   },
   dropdownImage: {
-    width: 30,
-    height: 30
+    width: 24,
+    height: 24
   },
   refreshBox: {
     display: 'flex',
     flexDirection: 'row'
   },
   refreshImage: {
-    width: 55,
-    height: 55,
+    width: 48,
+    height: 48,
     marginLeft: 10,
   },
   inputBox: {
@@ -207,9 +203,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   textInput: {
-    height: 50,
+    height: 40,
+    fontSize: 14,
     fontFamily: 'Gilroy-Medium',
-    marginBottom: 10
+    marginBottom: 8
     
   },
   textInputWidthOne: {
@@ -220,15 +217,15 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'rgba(21, 90, 161, 0.31)',
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
     textAlign: 'center',
     borderRadius: 7
   },
   buttonText: {
     textAlign: 'center',
     color: '#000',
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Gilroy-Medium',
     letterSpacing: 0.2,
   }
