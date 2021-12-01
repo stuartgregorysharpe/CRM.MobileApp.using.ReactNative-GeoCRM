@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Image } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 
@@ -14,7 +14,7 @@ import { PRIMARY_COLOR } from '../constants/Colors';
 const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator({ navigation }) {
-
+  
   const tabBarIconStyle = {
     height: 18,
     width: 18,
