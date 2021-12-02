@@ -12,8 +12,8 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
-import Divider from '../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import Divider from '../../components/Divider';
+import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
 
 export default function AddLeadScreen(props) {
   useEffect(() => {

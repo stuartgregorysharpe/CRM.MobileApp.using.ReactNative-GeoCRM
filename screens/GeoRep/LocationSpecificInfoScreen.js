@@ -11,48 +11,48 @@ import { Card } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
-import LocationInfoInput from '../components/LocationInfoInput';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
-import FilterButton from '../components/FilterButton';
+import LocationInfoInput from '../../components/LocationInfoInput';
+import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import FilterButton from '../../components/FilterButton';
 
 const specificInfo = [
   {
-    icon: require('../assets/images/person_sharp.png'),
+    icon: require('../../assets/images/person_sharp.png'),
     title: 'Company & Contacts',
     text: 'View all information ->'
   },
   {
-    icon: require('../assets/images/file_earmark_text_fill.png'),
+    icon: require('../../assets/images/file_earmark_text_fill.png'),
     title: 'Forms',
     text: 'Specific to this location ->'
   },
   {
-    icon: require('../assets/images/chatboxes.png'),
+    icon: require('../../assets/images/chatboxes.png'),
     title: 'Activity & Comments',
     text: 'Activity tree ->'
   },
   {
-    icon: require('../assets/images/filter_list_black.png'),
+    icon: require('../../assets/images/filter_list_black.png'),
     title: 'Sales Pipeline',
     text: 'Specific to this location ->'
   },
   {
-    icon: require('../assets/images/exclamation_triangle_fill.png'),
+    icon: require('../../assets/images/exclamation_triangle_fill.png'),
     title: 'Action Items',
     text: 'Specific actions to be addressed ->'
   },
   {
-    icon: require('../assets/images/sale.png'),
+    icon: require('../../assets/images/sale.png'),
     title: 'Sales',
     text: 'Quotes, orders and returns ->'
   },
   {
-    icon: require('../assets/images/camera.png'),
+    icon: require('../../assets/images/camera.png'),
     title: 'Location Image',
     text: 'Take an image for this location ->'
   },
   {
-    icon: require('../assets/images/geo.png'),
+    icon: require('../../assets/images/geo.png'),
     title: 'Geo Location',
     text: 'Update geo co-ordinates ->'
   }

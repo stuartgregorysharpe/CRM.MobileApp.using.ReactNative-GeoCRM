@@ -1,23 +1,19 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Image } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { useDispatch } from 'react-redux';
 
-import HomeScreen from '../screens/HomeScreen';
-import CRMScreen from '../screens/CRMScreen';
-import CalendarScreen from '../screens/CalendarScreen';
-import PipelineScreen from '../screens/PipelineScreen';
-import MoreScreen from '../screens/MoreScreen';
+import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
+import NewsScreen from '../screens/GeoLife/NewsScreen';
+import LocationsLifeScreen from '../screens/GeoLife/LocationsLifeScreen';
+import CheckInScreen from '../screens/GeoLife/CheckInScreen';
+import LifeMoreScreen from '../screens/GeoLife/LifeMoreScreen';
 
 import { PRIMARY_COLOR } from '../constants/Colors';
-import { SLIDE_STATUS } from '../actions/actionTypes';
 
 const BottomTab = createBottomTabNavigator();
 
-export default function BottomTabNavigator({ navigation }) {
-  const dispatch = useDispatch();
-
+export default function RepBottomTabNavigator({ navigation }) {
   const tabBarIconStyle = {
     height: 18,
     width: 18,
@@ -25,7 +21,7 @@ export default function BottomTabNavigator({ navigation }) {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeLife"
       screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
@@ -48,10 +44,10 @@ export default function BottomTabNavigator({ navigation }) {
         }
       }}>
       <BottomTab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeLife"
+        component={HomeLifeScreen}
         options={{
-          title: 'Home',
+          title: 'Home Life',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp.png")} style={tabBarIconStyle} />}
@@ -69,10 +65,10 @@ export default function BottomTabNavigator({ navigation }) {
         }}
       />
       <BottomTab.Screen
-        name="CRMScreen"
-        component={CRMScreen}
+        name="News"
+        component={NewsScreen}
         options={{
-          title: 'CRM',
+          title: 'News',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <Image source={require("../assets/images/bottom_icon/location_arrow.png")} style={tabBarIconStyle} />}
@@ -87,28 +83,13 @@ export default function BottomTabNavigator({ navigation }) {
             fontFamily: 'Gilroy-Medium'
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
-          tabBarStyle: {
-            display: 'flex',
-            height: 60,
-            paddingTop: 10,
-            paddingBottom: 10,
-            backgroundColor: "#fff",
-          }
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            console.log("dfsdfsd")
-            dispatch({type: SLIDE_STATUS, payload: false})
-            navigation.navigate("CRMScreen");
-          },
-        })}
       />
       <BottomTab.Screen
-        name="CalendarScreen"
-        component={CalendarScreen}
+        name="LocationsLife"
+        component={LocationsLifeScreen}
         options={{
-          title: 'Calendar',
+          title: 'Locations Life',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill.png")} style={tabBarIconStyle} />}
@@ -126,10 +107,10 @@ export default function BottomTabNavigator({ navigation }) {
         }}
       />
       <BottomTab.Screen
-        name="PipelineScreen"
-        component={PipelineScreen}
+        name="CheckIn"
+        component={CheckInScreen}
         options={{
-          title: 'Pipeline',
+          title: 'Check In',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <Image source={require("../assets/images/bottom_icon/pipeline.png")} style={tabBarIconStyle} />}
@@ -147,8 +128,8 @@ export default function BottomTabNavigator({ navigation }) {
         }}
       />
       <BottomTab.Screen
-        name="MoreScreen"
-        component={MoreScreen}
+        name="LifeMore"
+        component={LifeMoreScreen}
         options={{
           title: 'More',
           tabBarIcon: ({focused}) => (

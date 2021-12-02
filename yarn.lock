@@ -2805,6 +2805,11 @@
     "hyphenate-style-name" "^1.0.2"
     "isobject" "^3.0.1"
 
+"css-mediaquery@^0.1.2":
+  "integrity" "sha1-aiw3NEkoYYYxxUvTPO3TAdoYvqA="
+  "resolved" "https://registry.npmjs.org/css-mediaquery/-/css-mediaquery-0.1.2.tgz"
+  "version" "0.1.2"
+
 "css-select@^2.1.0":
   "integrity" "sha512-Dqk7LQKpwLoH3VovzZnkzegqNSuAziQyNZUcrdDM401iY+R5NkGBXGmtO05/yaXQziALuPogeG0b7UAgjnTJTQ=="
   "resolved" "https://registry.npmjs.org/css-select/-/css-select-2.1.0.tgz"
@@ -5900,6 +5905,11 @@
   "resolved" "https://registry.npmjs.org/object-keys/-/object-keys-1.1.1.tgz"
   "version" "1.1.1"
 
+"object-resolve-path@^1.1.0":
+  "integrity" "sha1-p/j5Poogr4DkQhe6fbVDFtnRIjI="
+  "resolved" "https://registry.npmjs.org/object-resolve-path/-/object-resolve-path-1.1.1.tgz"
+  "version" "1.1.1"
+
 "object-visit@^1.0.0":
   "integrity" "sha1-95xEk68MU3e1n+OdOV5BBC3QRbs="
   "resolved" "https://registry.npmjs.org/object-visit/-/object-visit-1.0.1.tgz"
@@ -6450,6 +6460,19 @@
   "integrity" "sha512-XiUD6Ls5kf+bOXNSyrPK1gx4cnUEMt1hvWWFuXZeCT9McoY2Vh1sXShotKwetp6jSi0l+SzeNm3hA1izhm8Riw=="
   "resolved" "https://registry.npmjs.org/react-native-detect-press-outside/-/react-native-detect-press-outside-1.0.4.tgz"
   "version" "1.0.4"
+
+"react-native-extended-stylesheet-breakpoints@^1.1.0":
+  "integrity" "sha512-gbUYJF3EAvd3GeR9yb1TdA8ET7YtF1/ARb9j/JcoUPVdXJanjUntuM37BHKj5pFSM83NY+xFQ6cFnJU/ZsABoA=="
+  "resolved" "https://registry.npmjs.org/react-native-extended-stylesheet-breakpoints/-/react-native-extended-stylesheet-breakpoints-1.1.0.tgz"
+  "version" "1.1.0"
+
+"react-native-extended-stylesheet@^0.12.0":
+  "integrity" "sha512-y4MEI+a9F8qtAKEjxKbwqotJg1FqKfl6vaiF25ULZ/VGkWI4GNTnsFunU9x6B3XJ6ly1E8O9fybO63u6UazL/A=="
+  "resolved" "https://registry.npmjs.org/react-native-extended-stylesheet/-/react-native-extended-stylesheet-0.12.0.tgz"
+  "version" "0.12.0"
+  dependencies:
+    "css-mediaquery" "^0.1.2"
+    "object-resolve-path" "^1.1.0"
 
 "react-native-gesture-handler@>= 1.0.0":
   "integrity" "sha512-cBGMi1IEsIVMgoox4RvMx7V2r6bNKw0uR1Mu1o7NbuHS6BRSVLq0dP34l2ecnPlC+jpWd3le6Yg1nrdCjby2Mw=="

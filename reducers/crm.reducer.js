@@ -10,7 +10,6 @@ const initialState = {
 export default (state=initialState, action) => {
     switch(action.type) {
         case SLIDE_STATUS:
-            console.log(action)
             return {
                 ...state,
                 crmSlideStatus: action.payload 

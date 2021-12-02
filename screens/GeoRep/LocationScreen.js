@@ -19,47 +19,47 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
-import SearchResult from '../components/SearchResult';
-import FilterButton from '../components/FilterButton';
-import Divider from '../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
-import { SLIDE_STATUS } from '../actions/actionTypes';
+import SearchResult from '../../components/SearchResult';
+import FilterButton from '../../components/FilterButton';
+import Divider from '../../components/Divider';
+import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const markers = [
   {
-    path: require('../assets/images/map-marker/Purple_X.png'),
+    path: require('../../assets/images/map-marker/Purple_X.png'),
     text: 'Invalid Lead / Vacant'
   },
   {
-    path: require('../assets/images/map-marker/Red_X.png'),
+    path: require('../../assets/images/map-marker/Red_X.png'),
     text: 'DNK Request'
   },
   {
-    path: require('../assets/images/map-marker/Red_Star.png'),
+    path: require('../../assets/images/map-marker/Red_Star.png'),
     text: 'No Contant - DM (F)'
   },
   {
-    path: require('../assets/images/map-marker/Red_Triangle.png'),
+    path: require('../../assets/images/map-marker/Red_Triangle.png'),
     text: 'No Access - Final'
   },
   {
-    path: require('../assets/images/map-marker/Grey_Triangle.png'),
+    path: require('../../assets/images/map-marker/Grey_Triangle.png'),
     text: 'Not Interested'
   },
   {
-    path: require('../assets/images/map-marker/Gold_Star.png'),
+    path: require('../../assets/images/map-marker/Gold_Star.png'),
     text: 'Closed Won'
   },
   {
-    path: require('../assets/images/map-marker/Green_Star.png'),
+    path: require('../../assets/images/map-marker/Green_Star.png'),
     text: 'Re-loop'
   },
   {
-    path: require('../assets/images/map-marker/Orange_Star.png'),
+    path: require('../../assets/images/map-marker/Orange_Star.png'),
     text: 'Priority Re-loop'
   },
   {
-    path: require('../assets/images/map-marker/Turquoise.png'),
+    path: require('../../assets/images/map-marker/Turquoise.png'),
     text: 'Language Barrier'
   }
 ];
@@ -214,21 +214,21 @@ export default function LocationScreen(props) {
         latitude: -33.896821,
         longitude: 18.506450
       },
-      path: require('../assets/images/map-marker/Green_Star.png')
+      path: require('../../assets/images/map-marker/Green_Star.png')
     },
     {
       latlng: {
         latitude: -33.891248,
         longitude: 18.510959
       },
-      path: require('../assets/images/map-marker/Red_Triangle.png')
+      path: require('../../assets/images/map-marker/Red_Triangle.png')
     },
     {
       latlng: {
         latitude: -33.888103,
         longitude: 18.501482
       },
-      path: require('../assets/images/map-marker/Purple_X.png')
+      path: require('../../assets/images/map-marker/Purple_X.png')
     }
   ])
   
@@ -267,7 +267,6 @@ export default function LocationScreen(props) {
             />}
           </Animated.View>
           <View style={styles.autoCompleteBox}>
-            <Text>{crmStatus.crmSlideStatus}</Text>
             <GooglePlacesAutocomplete
               styles={{
                 textInput: {
@@ -307,7 +306,7 @@ export default function LocationScreen(props) {
               markerStartAnimation(1);
               dispatch({type: SLIDE_STATUS, payload: true});
             }}>
-              <Image style={styles.filterImage} source={require('../assets/images/Filter.png')} />
+              <Image style={styles.filterImage} source={require('../../assets/images/Filter.png')} />
             </TouchableOpacity>
           </View>
           <MapView
@@ -345,7 +344,7 @@ export default function LocationScreen(props) {
             />
           </MapView>
           <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
-            <Image style={styles.plusButtonImage} source={require("../assets/images/Round_Btn_Default_Dark.png")}/>
+            <Image style={styles.plusButtonImage} source={require("../../assets/images/Round_Btn_Default_Dark.png")}/>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.pinKeyButton}

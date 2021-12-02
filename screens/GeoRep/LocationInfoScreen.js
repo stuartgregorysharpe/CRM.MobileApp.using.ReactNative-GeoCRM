@@ -12,10 +12,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
-import LocationInfoInput from '../components/LocationInfoInput';
-import FilterButton from '../components/FilterButton';
-import Divider from '../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import LocationInfoInput from '../../components/LocationInfoInput';
+import FilterButton from '../../components/FilterButton';
+import Divider from '../../components/Divider';
+import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
 
 export default function LocationInfoScreen(props) {
   useEffect(() => {
@@ -34,26 +34,26 @@ export default function LocationInfoScreen(props) {
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
-              <Image style={styles.fontIcon} source={require('../assets/images/person_sharp.png')} />
+              <Image style={styles.fontIcon} source={require('../../assets/images/person_sharp.png')} />
               <Text style={styles.subtitle}>Customer Name</Text>
             </View>
             <Text style={styles.title}>Walmart Mayberg</Text>
           </View>
           <View style={styles.subtitleBox}>
-            <Image style={styles.fontIcon} source={require('../assets/images/Green_Pin.png')} />
+            <Image style={styles.fontIcon} source={require('../../assets/images/Green_Pin.png')} />
             <Text style={styles.dateText}>Visited Recently: 28 May 2021</Text>
           </View>
         </View>
         <View style={styles.headerBox}>
           <View style={styles.addressText}>
             <View style={styles.subtitleBox}>
-              <Image style={styles.fontIcon} source={require('../assets/images/location_arrow.png')} />
+              <Image style={styles.fontIcon} source={require('../../assets/images/location_arrow.png')} />
               <Text style={styles.subtitle}>Address</Text>
             </View>
             <Text style={styles.title}>Mayberg Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa</Text>
           </View>
           <View style={styles.walmartImageBox}>
-            <Image style={styles.walmartImage} source={require("../assets/images/walmart.png")} />
+            <Image style={styles.walmartImage} source={require("../../assets/images/walmart.png")} />
           </View>
         </View>
         <LocationInfoInput />
