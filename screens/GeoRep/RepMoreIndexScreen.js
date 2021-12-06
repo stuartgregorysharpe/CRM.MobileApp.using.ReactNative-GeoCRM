@@ -1,5 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import { SafeAreaView, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, {
+  useState, 
+  useEffect
+} from 'react';
+import { 
+  SafeAreaView, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity 
+} from 'react-native';
 import { useSelector } from 'react-redux';
 
 export default function RepMoreIndexScreen({navigation, screenProps}) {

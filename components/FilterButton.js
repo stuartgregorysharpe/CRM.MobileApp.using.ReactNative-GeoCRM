@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
+import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
 
 export default function FilterButton(props) {
@@ -10,7 +11,7 @@ export default function FilterButton(props) {
         <Text style={styles.cardtitle}>{props.text}</Text>
         {props.subText && <Text style={styles.cardSubtitle}>{props.subText}</Text>}
       </View>
-      <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />
+      <SvgIcon icon="Drop_Down" width='23px' height='23px' />
     </View>
   )
 }
@@ -18,14 +19,14 @@ export default function FilterButton(props) {
 const styles = StyleSheet.create({
   card: {
     marginBottom: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 4,
-    padding: 10,
-    height: 50,
+    padding: 8,
+    height: 44,
   },
   cardtitle: {
     color: '#23282D',
@@ -35,8 +36,4 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: 12,
   },
-  dropdownImage: {
-    width: 25,
-    height: 25,
-  }
 })

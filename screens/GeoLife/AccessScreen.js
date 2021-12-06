@@ -4,7 +4,7 @@ import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 export default function AccessScreen(props) {
   useEffect(() => {
     props.screenProps.setOptions({
-      title: "Access"
+      title: "Access Control"
     })
   });
   return (

@@ -1,8 +1,27 @@
-import React from 'react';
-import { View, ScrollView, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import React, { 
+  useState
+} from 'react';
+import { 
+  View, 
+  ScrollView, 
+  Text,
+  TextInput,
+  TouchableOpacity
+} from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+  setWidthBreakpoints,
+  parse
+} from 'react-native-extended-stylesheet-breakpoints';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-import Divider from './Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import SvgIcon from '../../components/SvgIcon';
+import { 
+  PRIMARY_COLOR, 
+  BG_COLOR 
+} from '../../constants/Colors';
+import { boxShadow } from '../../constants/Styles';
 
 const resultItemText = [
   {
@@ -91,8 +110,8 @@ const resultItemText = [
   },
 ]
 
-const ResultItem = ({navigation, item, onClose}) => (
-  <TouchableOpacity style={styles.resultItem} onPress={() => {navigation.navigate('LocationInfo'); onClose();}}>
+const ResultItem = ({navigation, item}) => (
+  <TouchableOpacity style={styles.resultItem} onPress={() => {navigation.navigate('LocationInfo');}}>
     <View style={{maxWidth: '48%'}}>
       <Text style={styles.subTitle}>{item.title}</Text>
       <Text style={styles.text}>{item.text}</Text>
@@ -104,60 +123,97 @@ const ResultItem = ({navigation, item, onClose}) => (
   </TouchableOpacity>
 )
 
-export default function SearchResult({navigation, onClose}) {
+export default function LocationSearchScreen({navigation}) {
+  const [text, setText] = useState('');
   return (
-    <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.dividerBar} onPress={() => onClose()}>
-        <Divider />
-      </TouchableOpacity>
-      <View style={styles.searchResultContent}>
+    <View style={styles.container}>
+      <View style={styles.searchBox}>
+        <TextInput
+          style={[styles.searchInput, boxShadow]}
+          placeholder='Search.....'
+          value={text}
+          onChangeText={text => setText(text)}
+        />
+        <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+        <TouchableOpacity style={styles.filterImageButton}>
+          <SvgIcon icon="Filter" width="30px" height="30px" />
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={{marginBottom: 70}}>
         <Text style={styles.title}>Current Location</Text>
         {resultItemText.map((item, key) => (
-          <ResultItem key={key} navigation={navigation} item={item} onClose={() => onClose()} />
+          <ResultItem key={key} navigation={navigation} item={item} />
         ))}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   )
 }
 
-const styles = StyleSheet.create({
+const perWidth = setWidthBreakpoints(850);
+
+const styles = EStyleSheet.create(parse({
   container: {
     backgroundColor: BG_COLOR,
-    height: Dimensions.get('window').height - 225
   },
-  dividerBar: {
-    backgroundColor: BG_COLOR,
-    height: 20,
-    display: 'flex',
-    justifyContent: 'center',
+  searchBox: {
+    position: 'relative',
+    padding: 10,
+  },
+  searchInput: {
+    paddingLeft: 36,
+    paddingRight: 50,
+    color: '#5d5d5d',
+    fontSize: 12,
+    backgroundColor: '#fff',
+    borderRadius: 7,
+    fontFamily: 'Gilroy-Medium',
+    height: 45,
+  },
+  searchIcon: {
+    position: 'absolute',
+    top: 24,
+    left: 20,
+    elevation: 1,
+    zIndex: 1
+  },
+  filterImageButton: {
+    position: 'absolute',
+    top: 18,
+    right: 20,
+    zIndex: 1,
+    elevation: 1
   },
   title: {
     color: PRIMARY_COLOR,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Gilroy-Bold',
-    padding: 14
+    paddingLeft: 14,
+    marginBottom: 10
   },
   resultItem: {
     maxWidth: '100%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 14,
+    paddingRight: 14,
     borderTopWidth: 1,
     borderColor: '#e7e7e7'
   },
   subTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Gilroy-Bold',
     color: '#23282D',
     marginBottom: 4
   },
   text: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Gilroy-Medium',
     color: '#9D9FA2',
   },
   textRight: {
     textAlign: 'right'
   }
-})
+}));

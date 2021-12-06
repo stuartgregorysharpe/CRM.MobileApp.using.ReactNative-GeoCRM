@@ -1,65 +1,90 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react';
+import React, { 
+  Fragment, 
+  useState, 
+  useEffect, 
+  useRef 
+} from 'react';
 import { 
   SafeAreaView, 
-  Text, 
+  Text,
+  TextInput,
   View, 
-  StyleSheet, 
-  Image, 
   TouchableOpacity, 
   Animated,
   Easing,
-  ScrollView,
-  Dimensions
+  Dimensions,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import OutsideView from 'react-native-detect-press-outside';
-import { Button, Title } from 'react-native-paper';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+  setWidthBreakpoints,
+  parse
+} from 'react-native-extended-stylesheet-breakpoints';
+import { 
+  useSelector, 
+  useDispatch 
+} from 'react-redux';
+import MapView, { 
+  Marker, 
+  PROVIDER_GOOGLE 
+} from 'react-native-maps';
+import { 
+  Button, 
+  Title 
+} from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faSearch, 
+  faChevronUp 
+} from '@fortawesome/free-solid-svg-icons';
 
-import SearchResult from '../../components/SearchResult';
+import AddLead from '../../components/AddLead';
+import LocationInfo from '../../components/LocationInfo';
 import FilterButton from '../../components/FilterButton';
+import MarkerIcon from '../../components/Marker';
+import SvgIcon from '../../components/SvgIcon';
 import Divider from '../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import { 
+  PRIMARY_COLOR, 
+  BG_COLOR 
+} from '../../constants/Colors';
+import { boxShadow } from '../../constants/Styles';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
-const markers = [
+const markerIcons = [
   {
-    path: require('../../assets/images/map-marker/Purple_X.png'),
+    icon: 'Purple_X',
     text: 'Invalid Lead / Vacant'
   },
   {
-    path: require('../../assets/images/map-marker/Red_X.png'),
+    icon: 'Red_X',
     text: 'DNK Request'
   },
   {
-    path: require('../../assets/images/map-marker/Red_Star.png'),
+    icon: 'Red_Star',
     text: 'No Contant - DM (F)'
   },
   {
-    path: require('../../assets/images/map-marker/Red_Triangle.png'),
+    icon: 'Red_Triangle',
     text: 'No Access - Final'
   },
   {
-    path: require('../../assets/images/map-marker/Grey_Triangle.png'),
+    icon: 'Grey_Triangle',
     text: 'Not Interested'
   },
   {
-    path: require('../../assets/images/map-marker/Gold_Star.png'),
+    icon: 'Gold_Star',
     text: 'Closed Won'
   },
   {
-    path: require('../../assets/images/map-marker/Green_Star.png'),
+    icon: 'Green_Star',
     text: 'Re-loop'
   },
   {
-    path: require('../../assets/images/map-marker/Orange_Star.png'),
+    icon: 'Orange_Star',
     text: 'Priority Re-loop'
   },
   {
-    path: require('../../assets/images/map-marker/Turquoise.png'),
+    icon: 'Turquoise',
     text: 'Language Barrier'
   }
 ];
@@ -73,24 +98,32 @@ const filterButtonList = [
   "Lead Status"
 ]
 
-const MarkerView = () => (
-  <Fragment>
-    <Divider style={{marginBottom: 20}} />
-    <View style={styles.markerContent}>
-      {markers.map((marker, key) => (
-        <View style={styles.markerBox} key={key}>
-          <Image style={styles.markerImage} source={marker.path} />
-          <Text style={styles.markerText}>{marker.text}</Text>
-        </View>
-      ))}
-    </View>
-  </Fragment>
-);
-
-const FilterView = () => {
+const MarkerView = () => {
+  const dispatch = useDispatch();
   return (
-    <ScrollView style={{maxHeight: 420, backgroundColor: '#F9F9F9'}}>
-      <Divider style={{marginBottom: 20}} />
+    <Fragment>
+      <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+        <Divider />
+      </TouchableOpacity>
+      <View style={styles.markerContent}>
+        {markerIcons.map((markerIcon, key) => (
+          <View style={styles.markerBox} key={key}>
+            <MarkerIcon style={styles.markerIcon} icon={markerIcon.icon} width="28px" height="28px" />
+            <Text style={styles.markerText}>{markerIcon.text}</Text>
+          </View>
+        ))}
+      </View>
+    </Fragment>
+  )
+};
+
+const FilterView = ({navigation}) => {
+  const dispatch = useDispatch();
+  return (
+    <View style={{backgroundColor: '#F9F9F9'}}>
+      <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+        <Divider />
+      </TouchableOpacity>
       <View style={styles.filterHeader}>
         <Title style={{fontFamily: 'Product Sans-Bold'}}>Filter your search</Title>
         <Button 
@@ -117,10 +150,10 @@ const FilterView = () => {
           fontFamily: 'Gilroy-Bold', 
           letterSpacing: 0.2
         }} 
-        onPress={() => console.log("pressed")}>
+        onPress={() => navigation.navigate("LocationInfo")}>
         Apply Filters
       </Button>
-    </ScrollView>
+    </View>
   )
 }
 
@@ -132,15 +165,15 @@ const SlidUpArrow = () => (
 )
 
 export default function LocationScreen(props) {
-  const crmStatus = useSelector(state => state.crm);
+  const crmStatus = useSelector(state => state.crm.crmSlideStatus);
   const dispatch = useDispatch();
 
   const markerRef = useRef(null);
   const filterRef = useRef(null);
-  const searchResultRef = useRef(null);
+  const addLeadRef = useRef(null);
+  const locationInfoRef = useRef(null);
 
   useEffect(() => {
-    console.log(crmStatus.crmSlideStatus)
     props.screenProps.setOptions({
       tabBarStyle: {
         display: 'flex',
@@ -150,11 +183,19 @@ export default function LocationScreen(props) {
         backgroundColor: "#fff",
       },
     });
+    if (crmStatus) {
+      props.screenProps.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        },
+      });
+    }
   });
 
   const markerAnimatedValue = useRef(new Animated.Value(1)).current;
   const filterAnimatedValue = useRef(new Animated.Value(1)).current;
-  const searchResultAnimatedValue = useRef(new Animated.Value(1)).current;
+  const addLeadAnimatedValue = useRef(new Animated.Value(1)).current;
+  const locationInfoAnimatedValue = useRef(new Animated.Value(1)).current;
 
   const markerStartAnimation = (toValue) => {
     Animated.timing(markerAnimatedValue, {
@@ -174,8 +215,17 @@ export default function LocationScreen(props) {
     }).start();
   };
 
-  const searchResultStartAnimation = (toValue) => {
-    Animated.timing(searchResultAnimatedValue, {
+  const addLeadStartAnimation = (toValue) => {
+    Animated.timing(addLeadAnimatedValue, {
+      toValue,
+      duration: 500,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const locationInfoStartAnimation = (toValue) => {
+    Animated.timing(locationInfoAnimatedValue, {
       toValue,
       duration: 500,
       easing: Easing.linear,
@@ -195,9 +245,15 @@ export default function LocationScreen(props) {
     extrapolate: 'clamp',
   });
 
-  const searchResultTranslateY = searchResultAnimatedValue.interpolate({
+  const addLeadTranslateY = addLeadAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').height],
+    outputRange: [0, Dimensions.get('window').height + 100],
+    extrapolate: 'clamp',
+  });
+
+  const locationInfoTranslateY = locationInfoAnimatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, Dimensions.get('window').height + 100],
     extrapolate: 'clamp',
   });
 
@@ -214,155 +270,146 @@ export default function LocationScreen(props) {
         latitude: -33.896821,
         longitude: 18.506450
       },
-      path: require('../../assets/images/map-marker/Green_Star.png')
+      icon: "Green_Star"
     },
     {
       latlng: {
         latitude: -33.891248,
         longitude: 18.510959
       },
-      path: require('../../assets/images/map-marker/Red_Triangle.png')
+      icon: "Red_Triangle"
     },
     {
       latlng: {
         latitude: -33.888103,
         longitude: 18.501482
       },
-      path: require('../../assets/images/map-marker/Purple_X.png')
+      icon: "Purple_X"
     }
-  ])
+  ]);
+
+  const animation = (name) => {
+    dispatch({type: SLIDE_STATUS, payload: true});
+    markerStartAnimation(1);
+    filterStartAnimation(1);
+    addLeadStartAnimation(1);
+    locationInfoStartAnimation(1);
+    switch(name) {
+      case "marker":
+        markerStartAnimation(0);
+        return;
+      case "filter":
+        filterStartAnimation(0);
+        return;
+      case "addLead":
+        addLeadStartAnimation(0);
+        return;
+      case "locationInfo":
+        locationInfoStartAnimation(0);
+        return;
+      default:
+        return;
+    }
+  }
   
   return (
     <SafeAreaView>
-      <OutsideView
-        childRef={filterRef}
-        onPressOutside={() => {
-          markerStartAnimation(1);
-          filterStartAnimation(1);
-          dispatch({ type: SLIDE_STATUS, payload: false });
-        }}>
-        <View style={styles.container}>
-          <Animated.View
-            ref={markerRef}
-            style={[styles.transitionView, { transform: [{ translateY: markerTranslateY }] }]}
+      <View style={styles.container}>
+        {crmStatus && <Animated.View
+          ref={markerRef}
+          style={[styles.transitionView, { transform: [{ translateY: markerTranslateY }] }]}
+        >
+          <MarkerView />
+        </Animated.View>}
+        {crmStatus && <Animated.View
+          ref={filterRef}
+          style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
+        >
+          <FilterView navigation={props.navigation} />
+        </Animated.View>}
+        {crmStatus && <Animated.View
+          ref={addLeadRef}
+          style={[styles.transitionView, { transform: [{ translateY: addLeadTranslateY }] }]}
+        >
+          <AddLead props={props} />
+        </Animated.View>}
+        {crmStatus && <Animated.View
+          ref={locationInfoRef}
+          style={[styles.transitionView, { transform: [{ translateY: locationInfoTranslateY }] }]}
+        >
+          <LocationInfo navigation={props.navigation} />
+        </Animated.View>}
+        <View style={styles.searchBox}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=> props.navigation.navigate("LocationSearch")}
           >
-            {crmStatus.crmSlideStatus && <MarkerView />}
-          </Animated.View>
-          <Animated.View
-            ref={filterRef}
-            style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
-          >
-            {crmStatus.crmSlideStatus && <FilterView />}
-          </Animated.View>
-          <Animated.View
-            ref={searchResultRef}
-            style={[styles.transitionView, { transform: [{ translateY: searchResultTranslateY }] }]}
-          >
-            {crmStatus.crmSlideStatus && <SearchResult 
-              navigation={props.navigation} 
-              onClose={() => { 
-                searchResultStartAnimation(1); 
-                dispatch({ type: SLIDE_STATUS, payload: false });
-              }}
-            />}
-          </Animated.View>
-          <View style={styles.autoCompleteBox}>
-            <GooglePlacesAutocomplete
-              styles={{
-                textInput: {
-                  paddingLeft: 36,
-                  paddingRight: 50,
-                  color: '#5d5d5d',
-                  fontSize: 12,
-                  backgroundColor: '#fff',
-                  fontFamily: 'Gilroy-Medium',
-                  shadowColor: '#808080',
-                  shadowOffset: { width: 0, height: 5 },
-                  shadowOpacity: 1,
-                  elevation: 1,
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb',
-                },
-              }}
-              placeholder='Search.....'
-              onPress={(data, details = null) => {
-                console.log(data, details);
-              }}
-              textInputProps={{
-                onChange: () => { 
-                  searchResultStartAnimation(0); 
-                  dispatch({type: SLIDE_STATUS, payload: true});  
-                }
-              }}
-              query={{
-                key: 'AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o',
-                language: 'en',
-              }}
-            />
-            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-            <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-              filterStartAnimation(0);
-              markerStartAnimation(1);
-              dispatch({type: SLIDE_STATUS, payload: true});
-            }}>
-              <Image style={styles.filterImage} source={require('../../assets/images/Filter.png')} />
-            </TouchableOpacity>
-          </View>
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            showsUserLocation = {true}
-            followUserLocation = {true}
-            showsMyLocationButton = {true}
-            zoomEnabled = {true}
-            region={mapRegion}
-            onPress={(e) => console.log(e)}
-          >
-            {markers.map((marker, key) => (
-              <Marker
-                key={key}
-                coordinate={marker.latlng}
-                onPress={() => props.navigation.navigate('LocationInfo')}
-              >
-                <Image style={{width: 24, height: 30}} source={marker.path}/>
-              </Marker>
-            ))}
-            <MapView.Circle
-              center = {mapRegion}
-              radius = { 200 }
-              strokeWidth = { 1 }
-              strokeColor = {PRIMARY_COLOR}
-              fillColor = { 'rgba(230,238,255,0.5)' }
-            />
-            <MapView.Circle
-              center = {mapRegion}
-              radius = { 30 }
-              strokeWidth = { 3 }
-              strokeColor = { '#fff' }
-              fillColor = { PRIMARY_COLOR }
-            />
-          </MapView>
-          <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
-            <Image style={styles.plusButtonImage} source={require("../../assets/images/Round_Btn_Default_Dark.png")}/>
+            <View pointerEvents="none">
+              <TextInput
+                style={[styles.searchInput, boxShadow]}
+                placeholder='Search.....'
+              />
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.pinKeyButton}
-            onPress={() => {
-              markerStartAnimation(0);
-              filterStartAnimation(1);
-              dispatch({type: SLIDE_STATUS, payload: true});
-            }}
-          >
-            <SlidUpArrow />
+          <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+          <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
+            <SvgIcon icon="Filter" width="30px" height="30px" />
           </TouchableOpacity>
         </View>
-      </OutsideView>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          showsUserLocation = {true}
+          followUserLocation = {true}
+          showsMyLocationButton = {true}
+          zoomEnabled = {true}
+          region={mapRegion}
+          onPress={(e) => console.log(e)}
+        >
+          {markers.map((marker, key) => (
+            <Marker
+              key={key}
+              coordinate={marker.latlng}
+              onPress={() => animation("locationInfo")}
+            >
+              <MarkerIcon style={styles.markerIcon} icon={marker.icon} width="28px" height="28px" />
+            </Marker>
+          ))}
+          <MapView.Circle
+            center = {mapRegion}
+            radius = { 200 }
+            strokeWidth = { 1 }
+            strokeColor = {PRIMARY_COLOR}
+            fillColor = { 'rgba(230,238,255,0.5)' }
+          />
+          <MapView.Circle
+            center = {mapRegion}
+            radius = { 30 }
+            strokeWidth = { 3 }
+            strokeColor = { '#fff' }
+            fillColor = { PRIMARY_COLOR }
+          />
+        </MapView>
+        <TouchableOpacity 
+          style={styles.plusButton} 
+          onPress={() => animation("addLead")}
+        >
+          <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.pinKeyButton}
+          onPress={() => animation("marker")}
+        >
+          <SlidUpArrow />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
 
-const styles = StyleSheet.create({
+const perWidth = setWidthBreakpoints(850);
+
+const styles = EStyleSheet.create(parse({
   container: {
     position: 'relative',
     height: '100%',
@@ -378,14 +425,11 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 40,
   },
-  plusButtonImage: {
-    width: 70,
-    height: 70
-  },
   pinKeyButton: {
     position: 'absolute',
-    right: 9,
-    bottom: 10,
+    right: perWidth('auto', 9),
+    left: perWidth(9, 'auto'),
+    bottom: perWidth(40, 10),
     padding: 5
   },
   slidUpArrow: {
@@ -421,28 +465,32 @@ const styles = StyleSheet.create({
     zIndex: 2,
     padding: 10,
   },
-  autoCompleteBox: {
-    position: 'relative',
+  searchBox: {
+    position: perWidth('absolute', 'relative'),
+    width: '100%',
     padding: 10,
-    height: 66,
+    zIndex: 1,
+    elevation: 1
+  },
+  searchInput: {
+    paddingLeft: 36,
+    paddingRight: 50,
+    color: '#5d5d5d',
+    fontSize: 12,
+    backgroundColor: '#fff',
+    borderRadius: 7,
+    fontFamily: 'Gilroy-Medium',
+    height: 45,
   },
   searchIcon: {
     position: 'absolute',
     top: 24,
     left: 20,
-    elevation: 1
   },
   filterImageButton: {
     position: 'absolute',
     top: 18,
     right: 20,
-    zIndex: 10,
-    elevation: 1
-  },
-  filterImage: {
-    width: 30,
-    height: 30,
-    zIndex: 10,
   },
   markerContent: {
     display: 'flex',
@@ -451,15 +499,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   markerBox: {
-    width: '45%',
+    width: perWidth('30%', '45%'),
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20
   },
-  markerImage: {
-    width: 18,
-    height: 26,
+  markerIcon: {
     marginRight: 10
   },
   markerText: {
@@ -487,4 +533,4 @@ const styles = StyleSheet.create({
   goToAddLeadText: {
     color: PRIMARY_COLOR
   },
-});
+}));

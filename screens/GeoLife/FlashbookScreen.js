@@ -4,7 +4,7 @@ import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 export default function FlashbookScreen(props) {
   useEffect(() => {
     props.screenProps.setOptions({
-      title: "Flashbook"
+      title: "FlashBook"
     })
   });
   return (

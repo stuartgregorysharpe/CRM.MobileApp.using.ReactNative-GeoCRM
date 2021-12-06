@@ -1,75 +1,81 @@
-import React, {useEffect} from 'react';
+import React, {
+  useEffect
+} from 'react';
 import { 
   SafeAreaView, 
   Text, 
   View, 
   ScrollView,
-  StyleSheet,
-  Image,
+  TouchableOpacity,
 } from 'react-native';
+import { 
+  useSelector, 
+  useDispatch 
+} from 'react-redux';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+  setWidthBreakpoints,
+  parse
+} from 'react-native-extended-stylesheet-breakpoints';
 import { Card } from 'react-native-paper';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import LocationInfoInput from '../../components/LocationInfoInput';
-import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import { 
+  PRIMARY_COLOR, 
+  BG_COLOR 
+} from '../../constants/Colors';
 import FilterButton from '../../components/FilterButton';
+import SvgIcon from '../../components/SvgIcon';
+import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const specificInfo = [
   {
-    icon: require('../../assets/images/person_sharp.png'),
+    icon: "Person_Sharp",
     title: 'Company & Contacts',
     text: 'View all information ->'
   },
   {
-    icon: require('../../assets/images/file_earmark_text_fill.png'),
+    icon: "File_Earmark_Text_Fill",
     title: 'Forms',
     text: 'Specific to this location ->'
   },
   {
-    icon: require('../../assets/images/chatboxes.png'),
+    icon: "ChatBoxes",
     title: 'Activity & Comments',
     text: 'Activity tree ->'
   },
   {
-    icon: require('../../assets/images/filter_list_black.png'),
+    icon: "Pipeline",
     title: 'Sales Pipeline',
     text: 'Specific to this location ->'
   },
   {
-    icon: require('../../assets/images/exclamation_triangle_fill.png'),
+    icon: "Exclamation_Triangle_Fill",
     title: 'Action Items',
     text: 'Specific actions to be addressed ->'
   },
   {
-    icon: require('../../assets/images/sale.png'),
+    icon: "Sale",
     title: 'Sales',
     text: 'Quotes, orders and returns ->'
   },
   {
-    icon: require('../../assets/images/camera.png'),
+    icon: "Camera",
     title: 'Location Image',
     text: 'Take an image for this location ->'
   },
   {
-    icon: require('../../assets/images/geo.png'),
+    icon: "Geo",
     title: 'Geo Location',
     text: 'Update geo co-ordinates ->'
   }
 ]
 
 export default function LocationSpecificInfoScreen(props) {
+  const dispatch = useDispatch();
   useEffect(() => {
-    props.screenProps.setOptions({
-      tabBarStyle: {
-        display: 'flex',
-        height: 60,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: "#fff",
-      },
-    });
-  })
+    dispatch({type: SLIDE_STATUS, payload: false});
+  });
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
@@ -77,19 +83,19 @@ export default function LocationSpecificInfoScreen(props) {
           <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'}}>
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
-                <FontAwesomeIcon style={styles.headerIcon} color="#fff" size={12} icon={faUser} />
+                <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
                 <Text style={styles.subtitle}>Customer Name</Text>
               </View>
               <Text style={styles.title}>Best Deal Trading</Text>
             </View>
             <View style={styles.subtitleBox}>
-              <FontAwesomeIcon style={styles.headerIcon} color="#fff" size={12} icon={faUser} />
+              <SvgIcon style={styles.headerIcon} icon="Insert_Invitation" width='16px' height='16px' />
               <Text style={styles.subtitle}>Last Interaction: 12 June 2021</Text>
             </View>
           </View>
           <View style={styles.headerTitleBox}>
             <View style={styles.subtitleBox}>
-              <FontAwesomeIcon style={styles.headerIcon} color="#fff" size={12} icon={faUser} />
+              <SvgIcon style={styles.headerIcon} icon="Location_Arrow_White" width='14px' height='14px' />
               <Text style={styles.subtitle}>Address</Text>
             </View>
             <Text style={styles.title}>Century City Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa</Text>
@@ -102,7 +108,7 @@ export default function LocationSpecificInfoScreen(props) {
             <Card key={key} style={styles.card}>
               <Card.Content>
                 <View style={styles.cardTitleBox}>
-                  <Image style={styles.cardIcon} source={info.icon} />
+                  <SvgIcon style={styles.cardIcon} icon={info.icon} width="15px" height="15px" />
                   <Text style={styles.cardTitle}>{info.title}</Text>
                 </View>
                 <Text style={styles.cardText}>{info.text}</Text>
@@ -111,22 +117,28 @@ export default function LocationSpecificInfoScreen(props) {
           ))}
         </View>
       </ScrollView>
+      <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
+        <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
 
-const styles = StyleSheet.create({
+const perWidth = setWidthBreakpoints(850);
+
+const styles = EStyleSheet.create(parse({
   container: {
     backgroundColor: BG_COLOR,
     padding: 10
   },
   headerBox: {
     backgroundColor: PRIMARY_COLOR,
-    padding: 8,
-    marginBottom: 10
+    padding: 10,
+    paddingBottom: 0,
+    marginBottom: 8
   },
   headerTitleBox: {
-    marginBottom: 16
+    marginBottom: 8
   },
   subtitleBox: {
     display: 'flex',
@@ -135,6 +147,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subtitle: {
+    fontSize: 12,
     color: '#fff',
     textAlign: 'left',
     fontFamily: 'Gilroy-Medium',
@@ -144,7 +157,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Gilroy-Medium',
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#fff',
     fontFamily: 'Gilroy-Bold',
     lineHeight: 22
@@ -160,19 +173,17 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   card: {
-    marginBottom: 10,
-    width: '48%'
+    marginBottom: 8,
+    width: '48%',
   },
   cardTitleBox: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16
+    marginBottom: 12
   },
   cardIcon: {
-    width: 16,
-    height: 16,
-    marginRight: 8
+    marginRight: 6
   },
   cardTitle: {
     color: '#23282D',
@@ -187,5 +198,12 @@ const styles = StyleSheet.create({
     color: '#9D9FA2',
     fontSize: 12,
     fontFamily: 'Product Sans-Regular'
-  }
-})
+  },
+  plusButton: {
+    position: 'absolute',
+    bottom: 40,
+    right: 20,
+    zIndex: 1,
+    elevation: 1,
+  },
+}));

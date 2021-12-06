@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Text, 
   View,
@@ -8,7 +8,22 @@ import {
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
+import SvgIcon from './SvgIcon';
+
 export default function LocationInfoInput() {
+  const gateKeeperNameRef = useRef();
+  const previousStateRef = useRef();
+  const furthestOpenStageRef = useRef();
+  const notesRef = useRef();
+  const workTimeRef = useRef();
+  const modifiedDateRef = useRef();
+  const retensionWeekRef = useRef();
+  const retainedSalesRef = useRef();
+  const retainedSalesPercentRef = useRef();
+  const quillCashRef = useRef();
+  const currentProviderRef = useRef();
+  const commonlyPurchasedItemsRef = useRef();
+
   const [gateKeeperName, setGateKeeperName] = useState('');
   const [previousState, setPreviousStage] = useState('');
   const [furthestOpenStage, setFurthestOpenStage] = useState('');
@@ -24,138 +39,248 @@ export default function LocationInfoInput() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.shadowBox}>
-        <Text style={styles.shadowBoxText}>Stage</Text>
-        <View style={{flexGrow: 1}}>
-          <TouchableOpacity style={[styles.button, {width: 180}]}>
-            <Text style={styles.buttonText}>Opportunity</Text>
-          </TouchableOpacity>
+      <View style={styles.refreshBox}>
+        <View style={styles.shadowBox}>
+          <Text style={styles.shadowBoxText}>Stage</Text>
+          <View style={{flexGrow: 1}}>
+            <TouchableOpacity style={[styles.button, {width: 150}]}>
+              <Text style={styles.buttonText}>Opportunity</Text>
+            </TouchableOpacity>
+          </View>
+          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </View>
-        <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />
       </View>
       <View style={styles.refreshBox}>
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
           <View style={{flexGrow: 1}}>
-            <TouchableOpacity style={[styles.button, {width: 140}]}>
+            <TouchableOpacity style={[styles.button, {width: 120}]}>
               <Text style={styles.buttonText}>Invalid Lead</Text>
             </TouchableOpacity>
           </View>
-          <Image style={styles.dropdownImage} source={require("../assets/images/Drop_Down.png")} />
+          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </View>
         <TouchableOpacity>
           <Image style={styles.refreshImage} source={require("../assets/images/Re_Loop_Button.png")} />
         </TouchableOpacity>
       </View>
       <View style={styles.inputBox}>
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthOne]}
-          label="GateKeeper Name"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={gateKeeperName}
-          onChangeText={text => setGateKeeperName(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthOne]}
-          label="Previous Stage and Outcome"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={previousState}
-          onChangeText={text => setPreviousStage(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthOne]}
-          label="Furthest Open Stage and Outcome"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={furthestOpenStage}
-          onChangeText={text => setFurthestOpenStage(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthOne]}
-          label="Notes"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={notes}
-          onChangeText={text => setNotes(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthTwo]}
-          label="Date/Time to Work"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={workTime}
-          onChangeText={text => setWorkTime(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthTwo]}
-          label="Outcome modified Date"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={modifiedDate}
-          onChangeText={text => setModifiedDate(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthTwo]}
-          label="Retension Week"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={retensionWeek}
-          onChangeText={text => setRetensionWeek(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthTwo]}
-          label="Retained Sales"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={retainedSales}
-          onChangeText={text => setRetainedSales(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthTwo]}
-          label="Retained Sales Percent"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={retainedSalesPercent}
-          onChangeText={text => setRetainedSalesPercent(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthTwo]}
-          label="Quill Cash Available"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={quillCash}
-          onChangeText={text => setQuillCash(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthOne]}
-          label="Current Provider"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={currentProvider}
-          onChangeText={text => setCurrentProvider(text)}
-        />
-        <TextInput
-          style={[styles.textInput, styles.textInputWidthOne]}
-          label="Commonly Purchased Items"
-          mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
-          value={commonlyPurchasedItems}
-          onChangeText={text => setCommonlyPurchasedItems(text)}
-        />
+        <TouchableOpacity
+          style={styles.textInputWidthOne}
+          activeOpacity={1}
+          onPress={()=>gateKeeperNameRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref = {gateKeeperNameRef}
+              style={styles.textInput}
+              label="GateKeeper Name"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={gateKeeperName}
+              onChangeText={text => setGateKeeperName(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthOne}
+          activeOpacity={1}
+          onPress={()=>previousStateRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref = {previousStateRef}
+              style={styles.textInput}
+              label="Previous Stage and Outcome"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={previousState}
+              onChangeText={text => setPreviousStage(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthOne}
+          activeOpacity={1}
+          onPress={()=>furthestOpenStageRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={furthestOpenStageRef}
+              style={styles.textInput}
+              label="Furthest Open Stage and Outcome"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={furthestOpenStage}
+              onChangeText={text => setFurthestOpenStage(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthOne}
+          activeOpacity={1}
+          onPress={()=>notesRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={notesRef}
+              style={styles.textInput}
+              label="Notes"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={notes}
+              onChangeText={text => setNotes(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthTwo}
+          activeOpacity={1}
+          onPress={()=>workTimeRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={workTimeRef}
+              style={styles.textInput}
+              label="Date/Time to Work"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={workTime}
+              onChangeText={text => setWorkTime(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthTwo}
+          activeOpacity={1}
+          onPress={()=>modifiedDateRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={modifiedDateRef}
+              style={styles.textInput}
+              label="Outcome modified Date"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={modifiedDate}
+              onChangeText={text => setModifiedDate(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthTwo}
+          activeOpacity={1}
+          onPress={()=>retensionWeekRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={retensionWeekRef}
+              style={styles.textInput}
+              label="Retension Week"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={retensionWeek}
+              onChangeText={text => setRetensionWeek(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthTwo}
+          activeOpacity={1}
+          onPress={()=>retainedSalesRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={retainedSalesRef}
+              style={styles.textInput}
+              label="Retained Sales"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={retainedSales}
+              onChangeText={text => setRetainedSales(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthTwo}
+          activeOpacity={1}
+          onPress={()=>retainedSalesPercentRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={retainedSalesPercentRef}
+              style={styles.textInput}
+              label="Retained Sales Percent"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={retainedSalesPercent}
+              onChangeText={text => setRetainedSalesPercent(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthTwo}
+          activeOpacity={1}
+          onPress={()=>quillCashRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={quillCashRef}
+              style={styles.textInput}
+              label="Quill Cash Available"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={quillCash}
+              onChangeText={text => setQuillCash(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthOne}
+          activeOpacity={1}
+          onPress={()=>currentProviderRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={currentProviderRef}
+              style={styles.textInput}
+              label="Current Provider"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={currentProvider}
+              onChangeText={text => setCurrentProvider(text)}
+            />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.textInputWidthOne}
+          activeOpacity={1}
+          onPress={()=>commonlyPurchasedItemsRef.current.focus()}
+        >
+          <View pointerEvents="none">
+            <TextInput
+              ref={commonlyPurchasedItemsRef}
+              style={styles.textInput}
+              label="Commonly Purchased Items"
+              mode="outlined"
+              outlineColor="#133C8B"
+              activeOutlineColor="#9D9FA2"
+              value={commonlyPurchasedItems}
+              onChangeText={text => setCommonlyPurchasedItems(text)}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -164,6 +289,7 @@ export default function LocationInfoInput() {
 const styles = StyleSheet.create({
   shadowBox: {
     padding: 8,
+    height: 45,
     display: 'flex',
     flexGrow: 1,
     flexDirection: 'row',
@@ -176,24 +302,22 @@ const styles = StyleSheet.create({
     elevation: 1,
     zIndex: 1,
     borderRadius: 7,
-    marginBottom: 8,
   },
   shadowBoxText: {
-    width: 80,
+    fontSize: 13,
+    width: 90,
     color: '#23282D',
     fontFamily: 'Gilroy-Medium'
   },
-  dropdownImage: {
-    width: 24,
-    height: 24
-  },
   refreshBox: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   refreshImage: {
-    width: 48,
-    height: 48,
+    width: 45,
+    height: 45,
     marginLeft: 10,
   },
   inputBox: {
@@ -207,7 +331,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
-    
   },
   textInputWidthOne: {
     width: '100%'
@@ -225,7 +348,7 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     color: '#000',
-    fontSize: 15,
+    fontSize: 13,
     fontFamily: 'Gilroy-Medium',
     letterSpacing: 0.2,
   }

@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
-import { Image } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { useDispatch } from 'react-redux';
 
@@ -10,18 +9,16 @@ import CalendarScreen from '../screens/GeoRep/CalendarScreen';
 import PipelineScreen from '../screens/GeoRep/PipelineScreen';
 import RepMoreScreen from '../screens/GeoRep/RepMoreScreen';
 
+import SvgIcon from './SvgIcon';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
+
+import {View, Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native'
 
 const BottomTab = createBottomTabNavigator();
 
 export default function RepBottomTabNavigator({ navigation }) {
   const dispatch = useDispatch();
-
-  const tabBarIconStyle = {
-    height: 18,
-    width: 18,
-  }
 
   return (
     <BottomTab.Navigator
@@ -54,8 +51,8 @@ export default function RepBottomTabNavigator({ navigation }) {
           title: 'Home',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Home_Black_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Home_Black" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -75,9 +72,17 @@ export default function RepBottomTabNavigator({ navigation }) {
           title: 'CRM',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/location_arrow.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/location_arrow_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity 
+              style={styles.header} 
+              activeOpacity={1}
+              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
+            >
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
@@ -103,8 +108,8 @@ export default function RepBottomTabNavigator({ navigation }) {
           title: 'Calendar',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Calendar_Event_Fill_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Calendar_Event_Fill" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -124,8 +129,8 @@ export default function RepBottomTabNavigator({ navigation }) {
           title: 'Pipeline',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/pipeline.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/pipeline_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -145,8 +150,8 @@ export default function RepBottomTabNavigator({ navigation }) {
           title: 'More',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/android_more_horizontal.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/android_more_horizontal_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Android_More_Horizontal_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Android_More_Horizontal" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -195,3 +200,12 @@ function HeaderRightView() {
     />
   )
 }
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: PRIMARY_COLOR,
+    position: 'absolute',
+    width: Dimensions.get('window').width,
+    height: '100%'
+  }
+})

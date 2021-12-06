@@ -1,23 +1,17 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState } from 'react';
-import { Image } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 
 import ContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import SalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
 
+import SvgIcon from './SvgIcon';
 import { PRIMARY_COLOR } from '../constants/Colors';
 
 const BottomTab = createBottomTabNavigator();
 
 export default function RepBottomTabNavigator({ navigation }) {
-
-  const tabBarIconStyle = {
-    height: 18,
-    width: 18,
-  }
-
   return (
     <BottomTab.Navigator
       initialRouteName="CRMLocations"
@@ -46,11 +40,11 @@ export default function RepBottomTabNavigator({ navigation }) {
         name="CRMLocations"
         component={CRMLocationsScreen}
         options={{
-          title: 'CRM Locations',
+          title: 'CRM',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/home_black_24dp_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Home_Black_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Home_Black" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -67,11 +61,11 @@ export default function RepBottomTabNavigator({ navigation }) {
         name="SalesPipeline"
         component={SalesPipelineScreen}
         options={{
-          title: 'Sales Pipeline',
+          title: 'Pipeline',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/location_arrow.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/location_arrow_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -91,8 +85,8 @@ export default function RepBottomTabNavigator({ navigation }) {
           title: 'Content Library',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill.png")} style={tabBarIconStyle} />}
-              {focused && <Image source={require("../assets/images/bottom_icon/calendar_event_fill_blue.png")} style={tabBarIconStyle} />}
+              {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (

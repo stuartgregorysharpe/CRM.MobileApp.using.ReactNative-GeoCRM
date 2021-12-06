@@ -4,7 +4,7 @@ import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 export default function WellBeingScreen(props) {
   useEffect(() => {
     props.screenProps.setOptions({
-      title: "Well Being"
+      title: "Well-being"
     })
   });
   return (
