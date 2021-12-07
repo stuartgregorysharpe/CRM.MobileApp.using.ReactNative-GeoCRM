@@ -7,25 +7,25 @@ import {
   View, 
   ScrollView,
   TouchableOpacity,
+  Image
 } from 'react-native';
-import { 
-  useSelector, 
-  useDispatch 
-} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {
   setWidthBreakpoints,
   parse
 } from 'react-native-extended-stylesheet-breakpoints';
-import { Card } from 'react-native-paper';
 
 import LocationInfoInput from '../../components/LocationInfoInput';
 import { 
   PRIMARY_COLOR, 
-  BG_COLOR 
+  BG_COLOR,
+  TEXT_COLOR
 } from '../../constants/Colors';
+import { boxShadow } from '../../constants/Styles';
 import FilterButton from '../../components/FilterButton';
 import SvgIcon from '../../components/SvgIcon';
+import MarkerIcon from '../../components/Marker';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const specificInfo = [
@@ -69,7 +69,14 @@ const specificInfo = [
     title: 'Geo Location',
     text: 'Update geo co-ordinates ->'
   }
-]
+];
+
+const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
+  <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
+    <Text style={styles.text}>{text}</Text>
+    {icon && <MarkerIcon icon={icon} width="20px" height="20px" />}
+  </View>
+);
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
@@ -102,22 +109,46 @@ export default function LocationSpecificInfoScreen(props) {
           </View>
           <FilterButton text="Contact: Jack Reacher" />
         </View>
-        <LocationInfoInput />
-        <View style={styles.cardContainer}>
-          {specificInfo.map((info, key) => (
-            <Card key={key} style={styles.card}>
-              <Card.Content>
+        <View style={styles.innerContainer}>
+          <View style={styles.locationInfoBox}>
+            <View style={[styles.cardBox, boxShadow]}>
+              <Text style={styles.boldText}>Outcome</Text>
+              <View style={{display: 'flex', flexDirection: 'row', position: 'relative'}}>
+                <View style={styles.outComeBox}>
+                  <Rectangle style={{width: '48%'}} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
+                  <Rectangle style={{width: '48%'}} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
+                  <Rectangle style={{width: '48%'}} text="Priority Re-loop" icon="Orange_Star" backgroundColor="#fff" borderColor="#97ACC2" />
+                  <Rectangle style={{width: '48%'}} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" />
+                </View>
+                <TouchableOpacity>
+                  <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <LocationInfoInput />
+          </View>
+          <View style={styles.cardContainer}>
+            <View style={[styles.cardBox, boxShadow]}>
+              <Text style={styles.boldText}>Stage</Text>
+              <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
+              <Rectangle text="Contact" backgroundColor="#15A1234F" />
+              <Rectangle text="DM" backgroundColor="#155AA14F" />
+              <Rectangle text="Presentation" backgroundColor="#fff" borderColor="#97ACC2" />
+              <Rectangle style={{marginBottom: 0}} text="Order" backgroundColor="#fff" borderColor="#97ACC2" />
+            </View>
+            {specificInfo.map((info, key) => (
+              <View key={key} style={[styles.card, boxShadow]}>
                 <View style={styles.cardTitleBox}>
                   <SvgIcon style={styles.cardIcon} icon={info.icon} width="15px" height="15px" />
                   <Text style={styles.cardTitle}>{info.title}</Text>
                 </View>
                 <Text style={styles.cardText}>{info.text}</Text>
-              </Card.Content>
-            </Card>
-          ))}
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.plusButton} onPress={() => props.navigation.navigate("AddLead")}>
+      <TouchableOpacity style={styles.plusButton}>
         <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
       </TouchableOpacity>
     </SafeAreaView>
@@ -165,19 +196,54 @@ const styles = EStyleSheet.create(parse({
   headerIcon: {
     marginRight: 8
   },
+  innerContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: perWidth('row-reverse', 'column')
+  },
+  locationInfoBox: {
+    width: perWidth('63%', '100%')
+  },
   cardContainer: {
+    width: perWidth('33%', '100%'),
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: 10
   },
-  card: {
+  cardBox: {
+    display: perWidth('flex', 'none'),
+    width: '100%',
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: '#fff',
     marginBottom: 8,
-    width: '48%',
+  },
+  boldText: {
+    fontSize: 18,
+    color: TEXT_COLOR,
+    fontFamily: 'Gilroy-Bold',
+    marginBottom: 8
+  },
+  text: {
+    fontSize: 16,
+    color: TEXT_COLOR,
+    fontFamily: 'Gilroy-Medium'
+  },
+  card: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    marginBottom: 8,
+    width: perWidth('100%', '48%'),
+    padding: 12,
+    height: 80,
+    borderRadius: 10,
   },
   cardTitleBox: {
     display: 'flex',
+    width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12
@@ -186,7 +252,7 @@ const styles = EStyleSheet.create(parse({
     marginRight: 6
   },
   cardTitle: {
-    color: '#23282D',
+    color: TEXT_COLOR,
     fontFamily: 'Gilroy-Bold',
   },
   cardTextBox: {
@@ -206,4 +272,29 @@ const styles = EStyleSheet.create(parse({
     zIndex: 1,
     elevation: 1,
   },
+  rectangle: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 30,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderRadius: 7,
+    marginBottom: 8,
+  },
+  refreshImage: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 68,
+    height: 68
+  },
+  outComeBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    marginRight: 88,
+  }
 }));

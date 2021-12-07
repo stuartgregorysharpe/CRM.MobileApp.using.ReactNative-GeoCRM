@@ -7,8 +7,14 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {
+  setWidthBreakpoints,
+  parse
+} from 'react-native-extended-stylesheet-breakpoints';
 
 import SvgIcon from './SvgIcon';
+import { TEXT_COLOR } from '../constants/Colors';
 
 export default function LocationInfoInput() {
   const gateKeeperNameRef = useRef();
@@ -64,13 +70,14 @@ export default function LocationInfoInput() {
           <Image style={styles.refreshImage} source={require("../assets/images/Re_Loop_Button.png")} />
         </TouchableOpacity>
       </View>
+      <Text style={styles.boldText}>Campaign: Quill Test</Text>
       <View style={styles.inputBox}>
         <TouchableOpacity
           style={styles.textInputWidthOne}
           activeOpacity={1}
           onPress={()=>gateKeeperNameRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {gateKeeperNameRef}
               style={styles.textInput}
@@ -88,7 +95,7 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>previousStateRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {previousStateRef}
               style={styles.textInput}
@@ -106,7 +113,7 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>furthestOpenStageRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={furthestOpenStageRef}
               style={styles.textInput}
@@ -124,7 +131,7 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>notesRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={notesRef}
               style={styles.textInput}
@@ -142,11 +149,11 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>workTimeRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={workTimeRef}
               style={styles.textInput}
-              label="Date/Time to Work"
+              label={<Text style={{backgroundColor: '#F9F9F9'}}>Date/Time to Work</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -160,11 +167,11 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>modifiedDateRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={modifiedDateRef}
               style={styles.textInput}
-              label="Outcome modified Date"
+              label={<Text style={{backgroundColor: '#F9F9F9'}}>Outcome modified Date</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -178,11 +185,11 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>retensionWeekRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={retensionWeekRef}
               style={styles.textInput}
-              label="Retension Week"
+              label={<Text style={{backgroundColor: '#F9F9F9'}}>Retension Week</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -196,11 +203,11 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>retainedSalesRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={retainedSalesRef}
               style={styles.textInput}
-              label="Retained Sales"
+              label={<Text style={{backgroundColor: '#F9F9F9'}}>Retained Sales</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -214,11 +221,11 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>retainedSalesPercentRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={retainedSalesPercentRef}
               style={styles.textInput}
-              label="Retained Sales Percent"
+              label={<Text style={{backgroundColor: '#F9F9F9'}}>Retained Sales Percent</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -232,11 +239,11 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>quillCashRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={quillCashRef}
               style={styles.textInput}
-              label="Quill Cash Available"
+              label={<Text style={{backgroundColor: '#F9F9F9'}}>Quill Cash Available</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -250,7 +257,7 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>currentProviderRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={currentProviderRef}
               style={styles.textInput}
@@ -268,7 +275,7 @@ export default function LocationInfoInput() {
           activeOpacity={1}
           onPress={()=>commonlyPurchasedItemsRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref={commonlyPurchasedItemsRef}
               style={styles.textInput}
@@ -286,7 +293,9 @@ export default function LocationInfoInput() {
   )
 }
 
-const styles = StyleSheet.create({
+const perWidth = setWidthBreakpoints(850);
+
+const styles = EStyleSheet.create(parse({
   shadowBox: {
     padding: 8,
     height: 45,
@@ -306,11 +315,11 @@ const styles = StyleSheet.create({
   shadowBoxText: {
     fontSize: 13,
     width: 90,
-    color: '#23282D',
+    color: TEXT_COLOR,
     fontFamily: 'Gilroy-Medium'
   },
   refreshBox: {
-    display: 'flex',
+    display: perWidth('none', 'flex'),
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
@@ -329,6 +338,8 @@ const styles = StyleSheet.create({
   textInput: {
     height: 40,
     fontSize: 14,
+    lineHeight: 30,
+    backgroundColor: '#F9F9F9',
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
@@ -351,5 +362,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Gilroy-Medium',
     letterSpacing: 0.2,
+  },
+  boldText: {
+    display: perWidth('flex', 'none'),
+    fontSize: 18,
+    fontFamily: 'Gilroy-Bold',
+    color: TEXT_COLOR,
+    marginBottom: 8,
+    paddingLeft: 10
   }
-});
+}));

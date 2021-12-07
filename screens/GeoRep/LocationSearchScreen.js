@@ -1,27 +1,41 @@
 import React, { 
-  useState
+  useState,
+  useEffect,
+  useRef
 } from 'react';
 import { 
+  SafeAreaView,
   View, 
   ScrollView, 
   Text,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated,
+  Easing,
+  Dimensions
 } from 'react-native';
+import { 
+  useSelector,
+  useDispatch
+} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {
   setWidthBreakpoints,
   parse
 } from 'react-native-extended-stylesheet-breakpoints';
+import OutsideView from 'react-native-detect-press-outside';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
+import FilterView from '../../components/FilterView';
 import SvgIcon from '../../components/SvgIcon';
 import { 
   PRIMARY_COLOR, 
-  BG_COLOR 
+  BG_COLOR,
+  TEXT_COLOR
 } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
+import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const resultItemText = [
   {
@@ -111,7 +125,7 @@ const resultItemText = [
 ]
 
 const ResultItem = ({navigation, item}) => (
-  <TouchableOpacity style={styles.resultItem} onPress={() => {navigation.navigate('LocationInfo');}}>
+  <TouchableOpacity style={styles.resultItem} onPress={() => {navigation.navigate('LocationSpecificInfo');}}>
     <View style={{maxWidth: '48%'}}>
       <Text style={styles.subTitle}>{item.title}</Text>
       <Text style={styles.text}>{item.text}</Text>
@@ -124,28 +138,73 @@ const ResultItem = ({navigation, item}) => (
 )
 
 export default function LocationSearchScreen({navigation}) {
+  const dispatch = useDispatch();
+  const crmStatus = useSelector(state => state.crm.crmSlideStatus);
+
+  useEffect(() => {
+    dispatch({type: SLIDE_STATUS, payload: false});
+  }, []);
+
   const [text, setText] = useState('');
+
+  const filterRef = useRef(null);
+  const filterAnimatedValue = useRef(new Animated.Value(1)).current;
+  const filterStartAnimation = (toValue) => {
+    Animated.timing(filterAnimatedValue, {
+      toValue,
+      duration: 500,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+  };
+  const filterTranslateY = filterAnimatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, Dimensions.get('window').height + 100],
+    extrapolate: 'clamp',
+  });
+
+  const animation = (name) => {
+    dispatch({type: SLIDE_STATUS, payload: true});
+    filterStartAnimation(0);
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.searchBox}>
-        <TextInput
-          style={[styles.searchInput, boxShadow]}
-          placeholder='Search.....'
-          value={text}
-          onChangeText={text => setText(text)}
-        />
-        <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-        <TouchableOpacity style={styles.filterImageButton}>
-          <SvgIcon icon="Filter" width="30px" height="30px" />
-        </TouchableOpacity>
-      </View>
-      <ScrollView style={{marginBottom: 70}}>
-        <Text style={styles.title}>Current Location</Text>
-        {resultItemText.map((item, key) => (
-          <ResultItem key={key} navigation={navigation} item={item} />
-        ))}
-      </ScrollView>
-    </View>
+    <SafeAreaView>
+      <OutsideView 
+        childRef={filterRef}
+        onPressOutside={() => {
+          dispatch({type: SLIDE_STATUS, payload: false});
+        }}
+      >
+        <View style={styles.container}>
+          {crmStatus && <Animated.View
+            ref={filterRef}
+            style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
+          >
+            <FilterView navigation={navigation} />
+          </Animated.View>}
+          <View style={styles.searchBox}>
+            <TextInput
+              style={[styles.searchInput, boxShadow]}
+              placeholder='Search.....'
+              value={text}
+              onChangeText={text => setText(text)}
+              onFocus={() => dispatch({type: SLIDE_STATUS, payload: false})}
+            />
+            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+            <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
+              <SvgIcon icon="Filter" width="30px" height="30px" />
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={{marginBottom: 70}}>
+            <Text style={styles.title}>Current Location</Text>
+            {resultItemText.map((item, key) => (
+              <ResultItem key={key} navigation={navigation} item={item} />
+            ))}
+          </ScrollView>
+        </View>
+      </OutsideView>
+    </SafeAreaView>
   )
 }
 
@@ -153,7 +212,9 @@ const perWidth = setWidthBreakpoints(850);
 
 const styles = EStyleSheet.create(parse({
   container: {
+    position: 'relative',
     backgroundColor: BG_COLOR,
+    marginBottom: 60,
   },
   searchBox: {
     position: 'relative',
@@ -205,7 +266,7 @@ const styles = EStyleSheet.create(parse({
   subTitle: {
     fontSize: 14,
     fontFamily: 'Gilroy-Bold',
-    color: '#23282D',
+    color: TEXT_COLOR,
     marginBottom: 4
   },
   text: {
@@ -215,5 +276,15 @@ const styles = EStyleSheet.create(parse({
   },
   textRight: {
     textAlign: 'right'
-  }
+  },
+  transitionView: {
+    position: 'absolute',
+    bottom: 70,
+    left: 0,
+    right: 0,
+    backgroundColor: '#F9F9F9',
+    elevation: 2,
+    zIndex: 2,
+    padding: 10,
+  },
 }));

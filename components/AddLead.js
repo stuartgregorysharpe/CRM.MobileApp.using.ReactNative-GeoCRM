@@ -92,7 +92,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>customerNameRef.current.focus()}
         >
-            <View pointerEvents="none">
+            <View>
               <TextInput
                 ref = {customerNameRef}
                 style={styles.textInput}
@@ -113,7 +113,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>addressRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {addressRef}
               style={styles.textInput}
@@ -130,7 +130,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>contactPersonRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {contactPersonRef} 
               style={styles.textInput}
@@ -147,7 +147,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>contactEmailRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {contactEmailRef} 
               style={styles.textInput}
@@ -164,7 +164,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>contactMobileRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {contactMobileRef} 
               style={styles.textInput}
@@ -181,7 +181,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>locationTypeRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {locationTypeRef} 
               style={styles.textInput}
@@ -198,7 +198,7 @@ export default function AddLead() {
           activeOpacity={1}
           onPress={()=>groupRef.current.focus()}
         >
-          <View pointerEvents="none">
+          <View>
             <TextInput
               ref = {groupRef} 
               style={styles.textInput}
@@ -242,7 +242,9 @@ const styles = EStyleSheet.create(parse({
   },
   textInput: {
     fontSize: 14,
+    lineHeight: 30,
     height: 40,
+    backgroundColor: '#F9F9F9',
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },

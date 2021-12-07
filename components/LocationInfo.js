@@ -1,11 +1,15 @@
-import * as React from 'react';
+import React, { 
+  useState,
+  useEffect 
+} from 'react';
   import { 
     Text, 
     View, 
     ScrollView,
     Image,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    Keyboard
   } from 'react-native';
   import { useDispatch } from 'react-redux';
   import EStyleSheet from 'react-native-extended-stylesheet';
@@ -28,12 +32,28 @@ import * as React from 'react';
   
   export default function LocationInfo({navigation}) {
     const dispatch = useDispatch();
+    
+    const [keyboardStatus, setKeyboardStatus] = useState(false);
+    useEffect(() => {
+      const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+        setKeyboardStatus(true);
+      });
+      const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+        setKeyboardStatus(false);
+      });
+  
+      return () => {
+        showSubscription.remove();
+        hideSubscription.remove();
+      };
+    }, []);
+
     return (
       <View style={styles.container}>
         <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
           <Divider />
         </TouchableOpacity>
-        <ScrollView style={styles.innerContainer}>
+        <ScrollView style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: 50}]}>
           <View style={styles.headerBox}>
             <View>
               <View style={styles.subtitleBox}>
@@ -63,8 +83,9 @@ import * as React from 'react';
           <FilterButton text="Contact: Jack Reacher" />
           <FilterButton text="Navigation" />
           <FilterButton text="Activity & Comments" subText="Jack Submitted a Brand Facings Task 4 days ago" />
+          <View style={{height: 10}}></View>
         </ScrollView>
-        <View style={styles.nextButtonBar}>
+        {!keyboardStatus && <View style={styles.nextButtonBar}>
           <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => navigation.navigate("LocationSpecificInfo")}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
             <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
@@ -73,7 +94,7 @@ import * as React from 'react';
             <Text style={[styles.checkInButtonText]}>Check In</Text>
             <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
           </TouchableOpacity>
-        </View>
+        </View>}
       </View>
     )
   }
@@ -83,7 +104,7 @@ import * as React from 'react';
   const styles = EStyleSheet.create(parse({
     container: {
       backgroundColor: BG_COLOR,
-      maxHeight: Dimensions.get('window').height - 100
+      height: Dimensions.get('window').height - 100
     },
     innerContainer: {
       backgroundColor: BG_COLOR,

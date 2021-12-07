@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
+import { TEXT_COLOR } from '../constants/Colors';
 
 export default function FilterButton(props) {
   return (
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     height: 44,
   },
   cardtitle: {
-    color: '#23282D',
+    color: TEXT_COLOR,
     fontSize: 14,
     fontFamily: 'Gilroy-Medium',
   },

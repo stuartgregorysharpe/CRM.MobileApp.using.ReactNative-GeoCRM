@@ -27,25 +27,23 @@ import MapView, {
   Marker, 
   PROVIDER_GOOGLE 
 } from 'react-native-maps';
-import { 
-  Button, 
-  Title 
-} from 'react-native-paper';
+import OutsideView from 'react-native-detect-press-outside';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { 
   faSearch, 
-  faChevronUp 
+  faChevronUp, 
 } from '@fortawesome/free-solid-svg-icons';
 
 import AddLead from '../../components/AddLead';
 import LocationInfo from '../../components/LocationInfo';
-import FilterButton from '../../components/FilterButton';
+import FilterView from '../../components/FilterView';
 import MarkerIcon from '../../components/Marker';
 import SvgIcon from '../../components/SvgIcon';
 import Divider from '../../components/Divider';
 import { 
   PRIMARY_COLOR, 
-  BG_COLOR 
+  BG_COLOR,
+  TEXT_COLOR
 } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
@@ -89,15 +87,6 @@ const markerIcons = [
   }
 ];
 
-const filterButtonList = [
-  "Campaign",
-  "Lead Bucket",
-  "Stage",
-  "Outcome",
-  "Outcome Modified Date",
-  "Lead Status"
-]
-
 const MarkerView = () => {
   const dispatch = useDispatch();
   return (
@@ -116,46 +105,6 @@ const MarkerView = () => {
     </Fragment>
   )
 };
-
-const FilterView = ({navigation}) => {
-  const dispatch = useDispatch();
-  return (
-    <View style={{backgroundColor: '#F9F9F9'}}>
-      <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
-        <Divider />
-      </TouchableOpacity>
-      <View style={styles.filterHeader}>
-        <Title style={{fontFamily: 'Product Sans-Bold'}}>Filter your search</Title>
-        <Button 
-          labelStyle={{
-            fontFamily: 'Product Sans-Regular', 
-            letterSpacing: 0.2
-          }}
-          color="#DC143C" 
-          uppercase={false} 
-          onPress={() => console.log('Pressed')}
-        >
-          Clear Filters
-        </Button>
-      </View>
-      {filterButtonList.map((list, key) => (
-        <FilterButton text={list} key={key} />
-      ))}
-      <Button 
-        mode="contained" 
-        color={PRIMARY_COLOR} 
-        uppercase={false} 
-        labelStyle={{
-          fontSize: 18, 
-          fontFamily: 'Gilroy-Bold', 
-          letterSpacing: 0.2
-        }} 
-        onPress={() => navigation.navigate("LocationInfo")}>
-        Apply Filters
-      </Button>
-    </View>
-  )
-}
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -235,13 +184,13 @@ export default function LocationScreen(props) {
 
   const markerTranslateY = markerAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 350],
+    outputRange: [0, Dimensions.get('window').height + 100],
     extrapolate: 'clamp',
   });
 
   const filterTranslateY = filterAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 550],
+    outputRange: [0, Dimensions.get('window').height + 100],
     extrapolate: 'clamp',
   });
 
@@ -314,95 +263,106 @@ export default function LocationScreen(props) {
   
   return (
     <SafeAreaView>
-      <View style={styles.container}>
-        {crmStatus && <Animated.View
-          ref={markerRef}
-          style={[styles.transitionView, { transform: [{ translateY: markerTranslateY }] }]}
-        >
-          <MarkerView />
-        </Animated.View>}
-        {crmStatus && <Animated.View
-          ref={filterRef}
-          style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
-        >
-          <FilterView navigation={props.navigation} />
-        </Animated.View>}
-        {crmStatus && <Animated.View
-          ref={addLeadRef}
-          style={[styles.transitionView, { transform: [{ translateY: addLeadTranslateY }] }]}
-        >
-          <AddLead props={props} />
-        </Animated.View>}
-        {crmStatus && <Animated.View
-          ref={locationInfoRef}
-          style={[styles.transitionView, { transform: [{ translateY: locationInfoTranslateY }] }]}
-        >
-          <LocationInfo navigation={props.navigation} />
-        </Animated.View>}
-        <View style={styles.searchBox}>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={()=> props.navigation.navigate("LocationSearch")}
+      <OutsideView 
+        childRef={filterRef}
+        onPressOutside={() => {
+          dispatch({type: SLIDE_STATUS, payload: false});
+        }}
+      >
+        <View style={styles.container}>
+          {crmStatus && <Animated.View
+            ref={markerRef}
+            style={[styles.transitionView, { transform: [{ translateY: markerTranslateY }] }]}
           >
-            <View pointerEvents="none">
-              <TextInput
-                style={[styles.searchInput, boxShadow]}
-                placeholder='Search.....'
-              />
-            </View>
+            <MarkerView />
+          </Animated.View>}
+          {crmStatus && <Animated.View
+            ref={filterRef}
+            style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
+          >
+            <FilterView navigation={props.navigation} />
+          </Animated.View>}
+          {crmStatus && <Animated.View
+            ref={addLeadRef}
+            style={[styles.transitionView, { transform: [{ translateY: addLeadTranslateY }] }]}
+          >
+            <AddLead props={props} />
+          </Animated.View>}
+          {crmStatus && <Animated.View
+            ref={locationInfoRef}
+            style={[styles.transitionView, { transform: [{ translateY: locationInfoTranslateY }] }]}
+          >
+            <LocationInfo navigation={props.navigation} />
+          </Animated.View>}
+          <View style={styles.searchBox}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={()=> {
+                dispatch({type: SLIDE_STATUS, payload: false});
+                props.navigation.navigate("LocationSearch");
+              }}
+            >
+              <View pointerEvents='none'>
+                <TextInput
+                  style={[styles.searchInput, boxShadow]}
+                  placeholder='Search.....'
+                />
+              </View>
+            </TouchableOpacity>
+            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+            <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
+              <SvgIcon icon="Filter" width="30px" height="30px" />
+            </TouchableOpacity>
+          </View>
+          <MapView
+            moveOnMarkerPress={false}
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            showsUserLocation = {true}
+            followUserLocation = {true}
+            showsMyLocationButton = {true}
+            zoomEnabled = {true}
+            region={mapRegion}
+            onPress={(e) => console.log(e)}
+          >
+            {markers.map((marker, key) => (
+              <Marker
+                key={key}
+                coordinate={marker.latlng}
+                onPress={() => animation("locationInfo")}
+              >
+                <MarkerIcon style={styles.markerIcon} icon={marker.icon} width="34px" height="34px" />
+              </Marker>
+            ))}
+            <MapView.Circle
+              center = {mapRegion}
+              radius = { 200 }
+              strokeWidth = { 1 }
+              strokeColor = {PRIMARY_COLOR}
+              fillColor = { 'rgba(230,238,255,0.5)' }
+            />
+            <MapView.Circle
+              center = {mapRegion}
+              radius = { 30 }
+              strokeWidth = { 3 }
+              strokeColor = { '#fff' }
+              fillColor = { PRIMARY_COLOR }
+            />
+          </MapView>
+          <TouchableOpacity 
+            style={styles.plusButton} 
+            onPress={() => animation("addLead")}
+          >
+            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
           </TouchableOpacity>
-          <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-          <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
-            <SvgIcon icon="Filter" width="30px" height="30px" />
+          <TouchableOpacity 
+            style={styles.pinKeyButton}
+            onPress={() => animation("marker")}
+          >
+            <SlidUpArrow />
           </TouchableOpacity>
         </View>
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          showsUserLocation = {true}
-          followUserLocation = {true}
-          showsMyLocationButton = {true}
-          zoomEnabled = {true}
-          region={mapRegion}
-          onPress={(e) => console.log(e)}
-        >
-          {markers.map((marker, key) => (
-            <Marker
-              key={key}
-              coordinate={marker.latlng}
-              onPress={() => animation("locationInfo")}
-            >
-              <MarkerIcon style={styles.markerIcon} icon={marker.icon} width="28px" height="28px" />
-            </Marker>
-          ))}
-          <MapView.Circle
-            center = {mapRegion}
-            radius = { 200 }
-            strokeWidth = { 1 }
-            strokeColor = {PRIMARY_COLOR}
-            fillColor = { 'rgba(230,238,255,0.5)' }
-          />
-          <MapView.Circle
-            center = {mapRegion}
-            radius = { 30 }
-            strokeWidth = { 3 }
-            strokeColor = { '#fff' }
-            fillColor = { PRIMARY_COLOR }
-          />
-        </MapView>
-        <TouchableOpacity 
-          style={styles.plusButton} 
-          onPress={() => animation("addLead")}
-        >
-          <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.pinKeyButton}
-          onPress={() => animation("marker")}
-        >
-          <SlidUpArrow />
-        </TouchableOpacity>
-      </View>
+      </OutsideView>
     </SafeAreaView>
   )
 }
@@ -510,15 +470,8 @@ const styles = EStyleSheet.create(parse({
   },
   markerText: {
     fontSize: 12,
-    color: '#23282D',
+    color: TEXT_COLOR,
     fontFamily: 'Gilroy-Medium'
-  },
-  filterHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10
   },
   goToAddLead: {
     position: 'absolute',
