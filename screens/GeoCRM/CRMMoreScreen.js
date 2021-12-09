@@ -1,11 +1,11 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function Pipeline(props) {
+export default function CRMMoreScreen(props) {
   return (
     <SafeAreaView>
       <View>
-        <Text>Pipeline</Text>
+        <Text>CRMMoreScreen</Text>
       </View>
     </SafeAreaView>
   )

@@ -265,6 +265,68 @@ const Location_Arrow = `
   </svg>
 `;
 
+const Check = `
+  <svg id="done_black_24dp_7_" data-name="done_black_24dp (7)" xmlns="http://www.w3.org/2000/svg" width="68.645" height="68.645" viewBox="0 0 68.645 68.645">
+    <path id="Path_5308" data-name="Path 5308" d="M0,0H68.645V68.645H0Z" fill="none"/>
+    <path id="Path_5309" data-name="Path 5309" d="M19.417,35.918,7.4,23.905l-4,4L19.417,43.927,53.739,9.6l-4-4Z" transform="translate(6.325 10.417)" fill="#133c8b"/>
+  </svg>
+`;
+
+const Close = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="59" height="59" viewBox="0 0 59 59">
+    <g id="Group_4932" data-name="Group 4932" transform="translate(-905 -158)">
+      <g id="Ellipse_132" data-name="Ellipse 132" transform="translate(905 158)" fill="#fff" stroke="#23282d" stroke-width="4">
+        <circle cx="29.5" cy="29.5" r="29.5" stroke="none"/>
+        <circle cx="29.5" cy="29.5" r="27.5" fill="none"/>
+      </g>
+      <g id="close_black_24dp_2_" data-name="close_black_24dp (2)" transform="translate(909.535 162.535)">
+        <path id="Path_5282" data-name="Path 5282" d="M0,0H49.931V49.931H0Z" fill="none"/>
+        <path id="Path_5283" data-name="Path 5283" d="M34.126,7.933,31.193,5,19.563,16.63,7.933,5,5,7.933l11.63,11.63L5,31.193l2.933,2.933L19.563,22.5l11.63,11.63,2.933-2.933L22.5,19.563Z" transform="translate(5.402 5.402)" fill="#23282d"/>
+      </g>
+    </g>
+  </svg>
+`;
+
+const Account_Circle = `
+  <svg id="account_circle_black_24dp_2_" data-name="account_circle_black_24dp (2)" xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.436" viewBox="0 0 70.435 70.436">
+    <path id="Path_4402" data-name="Path 4402" d="M0,0H70.435V70.436H0Z" fill="none"/>
+    <path id="Path_4403" data-name="Path 4403" d="M31.348,2A29.348,29.348,0,1,0,60.7,31.348,29.359,29.359,0,0,0,31.348,2ZM16.879,49.779c1.262-2.641,8.951-5.224,14.469-5.224s13.236,2.583,14.469,5.224a23.259,23.259,0,0,1-28.937,0Zm33.134-4.255c-4.2-5.107-14.381-6.838-18.665-6.838s-14.469,1.732-18.665,6.838a23.479,23.479,0,1,1,37.331,0ZM31.348,13.739A10.272,10.272,0,1,0,41.62,24.011,10.246,10.246,0,0,0,31.348,13.739Zm0,14.674a4.4,4.4,0,1,1,4.4-4.4A4.4,4.4,0,0,1,31.348,28.413Z" transform="translate(3.87 3.87)" fill="#133c8b"/>
+  </svg>
+`;
+
+const Cloud_Off = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.435" viewBox="0 0 70.435 70.435">
+    <g id="cloud_off_black_24dp" transform="translate(-0.001)">
+      <path id="Path_4396" data-name="Path 4396" d="M0,0H70.435V70.435H0Z" transform="translate(0.001)" fill="none"/>
+      <path id="Path_4397" data-name="Path 4397" d="M70.435,36.554A14.6,14.6,0,0,0,56.788,22,21.981,21.981,0,0,0,35.218,4.271,21.7,21.7,0,0,0,24.506,7.118l4.373,4.373a15.836,15.836,0,0,1,6.339-1.35A16.132,16.132,0,0,1,51.359,26.282v1.467h4.4A8.79,8.79,0,0,1,61.014,43.6l4.138,4.138A14.576,14.576,0,0,0,70.435,36.554ZM12.942,3.86,8.8,8l8.129,8.129H15.7a17.6,17.6,0,0,0,1.908,35.1H52.034L57.9,57.1l4.138-4.138Zm4.666,41.5a11.739,11.739,0,0,1,0-23.478h5.077L46.164,45.358Z" transform="translate(0.001 7.468)" fill="#133c8b"/>
+    </g>
+  </svg>
+`;
+
+const Support_Agent = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="71" height="70" viewBox="0 0 71 70">
+    <g id="support_agent_black_24dp" transform="translate(0 -0.198)">
+      <g id="Group_4808" data-name="Group 4808" transform="translate(0 0)">
+        <rect id="Rectangle_2833" data-name="Rectangle 2833" width="71" height="70" transform="translate(0 0.198)" fill="none"/>
+      </g>
+      <g id="Group_4810" data-name="Group 4810" transform="translate(6.046 8.869)">
+        <g id="Group_4809" data-name="Group 4809">
+          <path id="Path_4399" data-name="Path 4399" d="M57.761,30.059C57.761,13.947,45.259,3,31.348,3,17.584,3,4.935,13.712,4.935,30.235A5.775,5.775,0,0,0,2,35.283v5.87a5.887,5.887,0,0,0,5.87,5.87H10.8V29.12a20.544,20.544,0,1,1,41.087,0V49.957H28.413v5.87H51.892a5.887,5.887,0,0,0,5.87-5.87v-3.58A5.426,5.426,0,0,0,60.7,41.563v-6.75A5.4,5.4,0,0,0,57.761,30.059Z" transform="translate(-2 -3)" fill="#133c8b"/>
+          <ellipse id="Ellipse_129" data-name="Ellipse 129" cx="3.5" cy="3" rx="3.5" ry="3" transform="translate(16.955 26.33)" fill="#133c8b"/>
+          <ellipse id="Ellipse_130" data-name="Ellipse 130" cx="2.5" cy="3" rx="2.5" ry="3" transform="translate(35.955 26.33)" fill="#133c8b"/>
+          <path id="Path_4400" data-name="Path 4400" d="M41.207,20.762A17.729,17.729,0,0,0,23.745,6c-8.892,0-18.46,7.366-17.7,18.929A23.7,23.7,0,0,0,20.311,7.643,23.587,23.587,0,0,0,41.207,20.762Z" transform="translate(5.75 2.804)" fill="#133c8b"/>
+        </g>
+      </g>
+    </g>
+  </svg>
+`;
+
+const Angle_Left = `
+<svg xmlns="http://www.w3.org/2000/svg" width="32.311" height="61.743" viewBox="0 0 32.311 61.743">
+  <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill="#133c8b"/>
+</svg>
+`;
+
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
         {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -279,7 +341,6 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Geo" && <SvgXml style={style} xml={Geo} width={width} height={height} />}
         {icon == "Location_Arrow_White" && <SvgXml style={style} xml={Location_Arrow_White} width={width} height={height} />}
         {icon == "Filter" && <SvgXml style={style} xml={Filter} width={width} height={height} />}
-        {icon == "Filter_List_Black" && <SvgXml style={style} xml={Filter_List_Black} width={width} height={height} />}
         {icon == "Location_Arrow" && <SvgXml style={style} xml={Location_Arrow} width={width} height={height} />}
         {icon == "Location_Arrow_Gray" && <SvgXml style={style} xml={Location_Arrow_Gray} width={width} height={height} />}
         {icon == "Home_Black_Gray" && <SvgXml style={style} xml={Home_Black_Gray} width={width} height={height} />}
@@ -292,5 +353,11 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Pipeline" && <SvgXml style={style} xml={Pipeline} width={width} height={height} />}
         {icon == "Insert_Invitation" && <SvgXml style={style} xml={Insert_Invitation} width={width} height={height} />}
         {icon == "Green_Star" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
+        {icon == "Check" && <SvgXml style={style} xml={Check} width={width} height={height} />}
+        {icon == "Close" && <SvgXml style={style} xml={Close} width={width} height={height} />}
+        {icon == "Account_Circle" && <SvgXml style={style} xml={Account_Circle} width={width} height={height} />}
+        {icon == "Cloud_Off" && <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />}
+        {icon == "Support_Agent" && <SvgXml style={style} xml={Support_Agent} width={width} height={height} />}
+        {icon == "Angle_Left" && <SvgXml style={style} xml={Angle_Left} width={width} height={height} />}
     </Fragment>
 );

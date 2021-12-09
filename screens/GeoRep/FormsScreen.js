@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function OfflineSyncScreen(props) {
+export default function FormsScreen(props) {
   // useEffect(() => {
   //   props.screenProps.setOptions({
-  //     title: "Sync"
+  //     title: "Forms"
   //   })
   // });
   return (
     <SafeAreaView>
       <View>
-        <Text>OfflineSyncScreen</Text>
+        <Text>HelpScreen</Text>
       </View>
     </SafeAreaView>
   )

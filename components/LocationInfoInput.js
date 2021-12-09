@@ -14,7 +14,7 @@ import {
 } from 'react-native-extended-stylesheet-breakpoints';
 
 import SvgIcon from './SvgIcon';
-import { TEXT_COLOR } from '../constants/Colors';
+import { TEXT_COLOR, BG_COLOR } from '../constants/Colors';
 
 export default function LocationInfoInput() {
   const gateKeeperNameRef = useRef();
@@ -153,7 +153,7 @@ export default function LocationInfoInput() {
             <TextInput
               ref={workTimeRef}
               style={styles.textInput}
-              label={<Text style={{backgroundColor: '#F9F9F9'}}>Date/Time to Work</Text>}
+              label={<Text style={{backgroundColor: BG_COLOR}}>Date/Time to Work</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -171,7 +171,7 @@ export default function LocationInfoInput() {
             <TextInput
               ref={modifiedDateRef}
               style={styles.textInput}
-              label={<Text style={{backgroundColor: '#F9F9F9'}}>Outcome modified Date</Text>}
+              label={<Text style={{backgroundColor: BG_COLOR}}>Outcome modified Date</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -189,7 +189,7 @@ export default function LocationInfoInput() {
             <TextInput
               ref={retensionWeekRef}
               style={styles.textInput}
-              label={<Text style={{backgroundColor: '#F9F9F9'}}>Retension Week</Text>}
+              label={<Text style={{backgroundColor: BG_COLOR}}>Retension Week</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -207,7 +207,7 @@ export default function LocationInfoInput() {
             <TextInput
               ref={retainedSalesRef}
               style={styles.textInput}
-              label={<Text style={{backgroundColor: '#F9F9F9'}}>Retained Sales</Text>}
+              label={<Text style={{backgroundColor: BG_COLOR}}>Retained Sales</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -225,7 +225,7 @@ export default function LocationInfoInput() {
             <TextInput
               ref={retainedSalesPercentRef}
               style={styles.textInput}
-              label={<Text style={{backgroundColor: '#F9F9F9'}}>Retained Sales Percent</Text>}
+              label={<Text style={{backgroundColor: BG_COLOR}}>Retained Sales Percent</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -243,7 +243,7 @@ export default function LocationInfoInput() {
             <TextInput
               ref={quillCashRef}
               style={styles.textInput}
-              label={<Text style={{backgroundColor: '#F9F9F9'}}>Quill Cash Available</Text>}
+              label={<Text style={{backgroundColor: BG_COLOR}}>Quill Cash Available</Text>}
               mode="outlined"
               outlineColor="#133C8B"
               activeOutlineColor="#9D9FA2"
@@ -339,7 +339,7 @@ const styles = EStyleSheet.create(parse({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: BG_COLOR,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },

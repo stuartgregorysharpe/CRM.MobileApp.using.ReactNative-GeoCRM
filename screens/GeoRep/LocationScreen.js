@@ -114,7 +114,7 @@ const SlidUpArrow = () => (
 )
 
 export default function LocationScreen(props) {
-  const crmStatus = useSelector(state => state.crm.crmSlideStatus);
+  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const dispatch = useDispatch();
 
   const markerRef = useRef(null);
@@ -420,7 +420,7 @@ const styles = EStyleSheet.create(parse({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: BG_COLOR,
     elevation: 2,
     zIndex: 2,
     padding: 10,

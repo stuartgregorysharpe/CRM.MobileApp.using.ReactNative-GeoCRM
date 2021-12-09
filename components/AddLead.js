@@ -244,7 +244,7 @@ const styles = EStyleSheet.create(parse({
     fontSize: 14,
     lineHeight: 30,
     height: 40,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: BG_COLOR,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },

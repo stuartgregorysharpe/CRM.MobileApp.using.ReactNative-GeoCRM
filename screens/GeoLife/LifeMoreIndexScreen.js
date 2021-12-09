@@ -7,11 +7,11 @@ export default function MoreScreen({navigation, screenProps}) {
 
   const [orderList, setOrderList] = useState([]);
 
-  useEffect(() => {
-    screenProps.setOptions({
-      title: "More"
-    });
-  });
+  // useEffect(() => {
+  //   screenProps.setOptions({
+  //     title: "More"
+  //   });
+  // });
 
   useEffect(() => {
     let items = [];

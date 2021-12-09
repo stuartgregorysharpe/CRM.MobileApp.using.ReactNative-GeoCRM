@@ -16,11 +16,11 @@ export default function RepMoreIndexScreen({navigation, screenProps}) {
 
   const [orderList, setOrderList] = useState([]);
 
-  useEffect(() => {
-    screenProps.setOptions({
-      title: "More"
-    });
-  });
+  // useEffect(() => {
+  //   screenProps.setOptions({
+  //     title: "More"
+  //   });
+  // });
 
   useEffect(() => {
     let items = [];
@@ -81,7 +81,7 @@ export default function RepMoreIndexScreen({navigation, screenProps}) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10
+    padding: 10,
   },
   listItem: {
     marginBottom: 10

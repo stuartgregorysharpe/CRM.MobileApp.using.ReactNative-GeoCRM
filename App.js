@@ -12,7 +12,7 @@ EStyleSheet.build({
   $textColor: '#0275d8'
 });
 
-function App() {
+export default function App() {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
@@ -23,5 +23,3 @@ function App() {
     </Provider>
   );
 }
-
-export default App;

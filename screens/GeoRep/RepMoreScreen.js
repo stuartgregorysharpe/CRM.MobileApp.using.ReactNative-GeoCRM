@@ -10,12 +10,10 @@ import HelpScreen from './HelpScreen';
 import MessagesScreen from './MessagesScreen';
 import OfflineSyncScreen from './OfflineSyncScreen';
 import RecordedSalesScreen from './RecordedSalesScreen';
-import SalesPipelineScreen from './SalesPipelineScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function RepMoreScreen({navigation}) {
-
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -71,12 +69,6 @@ export default function RepMoreScreen({navigation}) {
         options={{ header: () => null }}
       >
         {props => <RecordedSalesScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>
-      <Stack.Screen
-        name="SalesPipeline"
-        options={{ header: () => null }}
-      >
-        {props => <SalesPipelineScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

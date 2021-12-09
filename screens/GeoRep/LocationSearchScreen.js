@@ -139,7 +139,7 @@ const ResultItem = ({navigation, item}) => (
 
 export default function LocationSearchScreen({navigation}) {
   const dispatch = useDispatch();
-  const crmStatus = useSelector(state => state.crm.crmSlideStatus);
+  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
@@ -282,7 +282,7 @@ const styles = EStyleSheet.create(parse({
     bottom: 70,
     left: 0,
     right: 0,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: BG_COLOR,
     elevation: 2,
     zIndex: 2,
     padding: 10,

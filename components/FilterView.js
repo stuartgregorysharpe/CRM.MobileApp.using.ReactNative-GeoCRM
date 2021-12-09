@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 
 import Divider from './Divider';
 import FilterButton from './FilterButton';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 
 const filterButtonList = [
@@ -25,7 +25,7 @@ const filterButtonList = [
 export default function FilterView({navigation}) {
   const dispatch = useDispatch();
   return (
-    <View style={{backgroundColor: '#F9F9F9'}}>
+    <View style={{backgroundColor: BG_COLOR}}>
       <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
