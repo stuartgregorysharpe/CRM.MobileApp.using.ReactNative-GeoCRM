@@ -1,14 +1,15 @@
 import {
   SLIDE_STATUS,
   CHANGE_PROFILE_STATUS,
-  CHANGE_MORE_STATUS
+  CHANGE_MORE_STATUS,
+  SHOW_MORE_COMPONENT
 } from '../actions/actionTypes';
 
 const initialState = {
   crmSlideStatus: false,
   showProfile: 1,
   showMoreScreen: 1,
-  visibleMore: false
+  visibleMore: ''
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -29,7 +30,7 @@ export default (state=initialState, action) => {
         ...state,
         showMoreScreen: action.payload
       }
-    case 'CHANGE_COMPONENT':
+    case SHOW_MORE_COMPONENT:
       return {
         ...state,
         visibleMore: action.payload

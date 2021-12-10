@@ -1,36 +1,15 @@
-import React, {
-  useState, 
-  useRef 
-} from 'react';
-import { 
-  Text, 
-  View, 
-  ScrollView, 
-  TouchableOpacity,
-  Dimensions
-} from 'react-native';
+import React, {useState, useRef } from 'react';
+import { Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse
-} from 'react-native-extended-stylesheet-breakpoints';
-import { 
-  TextInput, 
-  Button, 
-  Title 
-} from 'react-native-paper';
-import MapView, { 
-  PROVIDER_GOOGLE 
-} from 'react-native-maps';
+import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
+import { TextInput, Button, Title } from 'react-native-paper';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 import Divider from './Divider';
-import { 
-  PRIMARY_COLOR, 
-  BG_COLOR 
-} from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 
 export default function AddLead() {

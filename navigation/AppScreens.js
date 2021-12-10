@@ -1,12 +1,6 @@
 import React, { Fragment, useEffect, useRef } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { 
-  StatusBar,
-  Animated,
-  Easing,
-  Dimensions,
-  StyleSheet
-} from 'react-native';
+import { StatusBar, Animated, Easing, Dimensions, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { PRIMARY_COLOR } from '../constants/Colors';

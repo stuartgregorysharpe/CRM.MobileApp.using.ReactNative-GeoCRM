@@ -1,38 +1,12 @@
-import React, { 
-  Fragment, 
-  useState, 
-  useEffect, 
-  useRef 
-} from 'react';
-import { 
-  SafeAreaView, 
-  Text,
-  TextInput,
-  View, 
-  TouchableOpacity, 
-  Animated,
-  Easing,
-  Dimensions,
-} from 'react-native';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse
-} from 'react-native-extended-stylesheet-breakpoints';
-import { 
-  useSelector, 
-  useDispatch 
-} from 'react-redux';
-import MapView, { 
-  Marker, 
-  PROVIDER_GOOGLE 
-} from 'react-native-maps';
+import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
+import { useSelector, useDispatch } from 'react-redux';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import OutsideView from 'react-native-detect-press-outside';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { 
-  faSearch, 
-  faChevronUp, 
-} from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 import AddLead from '../../components/AddLead';
 import LocationInfo from '../../components/LocationInfo';
@@ -40,11 +14,7 @@ import FilterView from '../../components/FilterView';
 import MarkerIcon from '../../components/Marker';
 import SvgIcon from '../../components/SvgIcon';
 import Divider from '../../components/Divider';
-import { 
-  PRIMARY_COLOR, 
-  BG_COLOR,
-  TEXT_COLOR
-} from '../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 

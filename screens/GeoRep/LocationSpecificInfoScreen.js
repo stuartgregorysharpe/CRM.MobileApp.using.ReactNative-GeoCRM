@@ -1,27 +1,11 @@
-import React, {
-  useEffect
-} from 'react';
-import { 
-  SafeAreaView, 
-  Text, 
-  View, 
-  ScrollView,
-  TouchableOpacity,
-  Image
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse
-} from 'react-native-extended-stylesheet-breakpoints';
+import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
 import LocationInfoInput from '../../components/LocationInfoInput';
-import { 
-  PRIMARY_COLOR, 
-  BG_COLOR,
-  TEXT_COLOR
-} from '../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import FilterButton from '../../components/FilterButton';
 import SvgIcon from '../../components/SvgIcon';
@@ -267,7 +251,7 @@ const styles = EStyleSheet.create(parse({
   },
   plusButton: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 20,
     right: 20,
     zIndex: 1,
     elevation: 1,

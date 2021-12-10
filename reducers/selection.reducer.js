@@ -32,6 +32,7 @@ const initialState = {
           10: "offline_sync",
           11: "recorded_sales",
           12: "sales_pipeline",
+          13: "support"
         }
       },
       "geo_life": {

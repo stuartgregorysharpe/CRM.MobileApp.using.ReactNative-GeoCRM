@@ -1,40 +1,13 @@
-import React, { 
-  useState,
-  useEffect,
-  useRef
-} from 'react';
-import { 
-  SafeAreaView,
-  View, 
-  ScrollView, 
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Animated,
-  Easing,
-  Dimensions
-} from 'react-native';
-import { 
-  useSelector,
-  useDispatch
-} from 'react-redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse
-} from 'react-native-extended-stylesheet-breakpoints';
+import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import OutsideView from 'react-native-detect-press-outside';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import FilterView from '../../components/FilterView';
-import SvgIcon from '../../components/SvgIcon';
-import { 
-  PRIMARY_COLOR, 
-  BG_COLOR,
-  TEXT_COLOR
-} from '../../constants/Colors';
-import { boxShadow } from '../../constants/Styles';
+import SearchBar from '../../components/SearchBar';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const resultItemText = [
@@ -145,8 +118,6 @@ export default function LocationSearchScreen({navigation}) {
     dispatch({type: SLIDE_STATUS, payload: false});
   }, []);
 
-  const [text, setText] = useState('');
-
   const filterRef = useRef(null);
   const filterAnimatedValue = useRef(new Animated.Value(1)).current;
   const filterStartAnimation = (toValue) => {
@@ -163,7 +134,7 @@ export default function LocationSearchScreen({navigation}) {
     extrapolate: 'clamp',
   });
 
-  const animation = (name) => {
+  const animation = () => {
     dispatch({type: SLIDE_STATUS, payload: true});
     filterStartAnimation(0);
   }
@@ -183,19 +154,7 @@ export default function LocationSearchScreen({navigation}) {
           >
             <FilterView navigation={navigation} />
           </Animated.View>}
-          <View style={styles.searchBox}>
-            <TextInput
-              style={[styles.searchInput, boxShadow]}
-              placeholder='Search.....'
-              value={text}
-              onChangeText={text => setText(text)}
-              onFocus={() => dispatch({type: SLIDE_STATUS, payload: false})}
-            />
-            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-            <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
-              <SvgIcon icon="Filter" width="30px" height="30px" />
-            </TouchableOpacity>
-          </View>
+          <SearchBar animation={animation} />
           <ScrollView style={{marginBottom: 70}}>
             <Text style={styles.title}>Current Location</Text>
             {resultItemText.map((item, key) => (
@@ -215,34 +174,6 @@ const styles = EStyleSheet.create(parse({
     position: 'relative',
     backgroundColor: BG_COLOR,
     marginBottom: 60,
-  },
-  searchBox: {
-    position: 'relative',
-    padding: 10,
-  },
-  searchInput: {
-    paddingLeft: 36,
-    paddingRight: 50,
-    color: '#5d5d5d',
-    fontSize: 12,
-    backgroundColor: '#fff',
-    borderRadius: 7,
-    fontFamily: 'Gilroy-Medium',
-    height: 45,
-  },
-  searchIcon: {
-    position: 'absolute',
-    top: 24,
-    left: 20,
-    elevation: 1,
-    zIndex: 1
-  },
-  filterImageButton: {
-    position: 'absolute',
-    top: 18,
-    right: 20,
-    zIndex: 1,
-    elevation: 1
   },
   title: {
     color: PRIMARY_COLOR,

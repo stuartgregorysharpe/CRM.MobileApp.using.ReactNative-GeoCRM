@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function ClubScreen(props) {
-  // useEffect(() => {
-  //   props.screenProps.setOptions({
-  //     title: "Club"
-  //   })
-  // });
+export default function ClubScreen({screenProps}) {
+  useEffect(() => {
+    if (screenProps) {
+      screenProps.setOptions({
+        title: "Club"
+      });
+    }
+  });
   return (
     <SafeAreaView>
       <View>

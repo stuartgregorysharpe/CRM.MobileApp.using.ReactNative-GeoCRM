@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function ProfileScreen(props) {
-  // useEffect(() => {
-  //   props.screenProps.setOptions({
-  //     title: "Profile"
-  //   })
-  // });
+export default function ProfileScreen({screenProps}) {
+  useEffect(() => {
+    if (screenProps) {
+      screenProps.setOptions({
+        title: "Profile"
+      });
+    }
+  });
   return (
     <SafeAreaView>
       <View>

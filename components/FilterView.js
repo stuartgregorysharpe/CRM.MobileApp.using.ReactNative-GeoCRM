@@ -29,7 +29,7 @@ export default function FilterView({navigation}) {
       <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
-      <View style={styles.filterHeader}>
+      <View style={styles.sliderHeader}>
         <Title style={{fontFamily: 'Product Sans-Bold'}}>Filter your search</Title>
         <Button 
           labelStyle={{
@@ -63,7 +63,7 @@ export default function FilterView({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  filterHeader: {
+  sliderHeader: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',

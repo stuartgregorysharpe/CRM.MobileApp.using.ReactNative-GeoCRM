@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
-export default function OfflineSyncScreen(props) {
-  // useEffect(() => {
-  //   props.screenProps.setOptions({
-  //     title: "Sync"
-  //   })
-  // });
+export default function OfflineSyncScreen({screenProps}) {
+  useEffect(() => {
+    if (screenProps) {
+      screenProps.setOptions({
+        title: "Sync"
+      });
+    }
+  });
   return (
     <SafeAreaView>
       <View>

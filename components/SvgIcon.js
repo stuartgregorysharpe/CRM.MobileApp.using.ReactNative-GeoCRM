@@ -247,6 +247,38 @@ const Pipeline = `
   </svg>
 `;
 
+const Travel_Explore_Gray = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="71" height="71" viewBox="0 0 71 71">
+    <g id="travel_explore_black_24dp" transform="translate(0 0.167)">
+      <rect id="Rectangle_2834" data-name="Rectangle 2834" width="71" height="71" transform="translate(0 -0.167)" fill="none"/>
+      <path id="Path_4401" data-name="Path 4401" d="M52.772,45.729a14.13,14.13,0,0,0,2.054-7.044A13.207,13.207,0,1,0,41.62,51.892a14.13,14.13,0,0,0,7.044-2.054l9.391,9.391,4.109-4.109Zm-11.152.293a7.337,7.337,0,1,1,7.337-7.337A7.266,7.266,0,0,1,41.62,46.022Zm-10.272,8.8V60.7A29.348,29.348,0,1,1,60.109,25.478H54.034A23.478,23.478,0,0,0,40.152,9.6v1.2a5.887,5.887,0,0,1-5.87,5.87h-5.87v5.87a2.943,2.943,0,0,1-2.935,2.935h-5.87v5.87h5.87v8.8H22.544L8.486,26.095a23.824,23.824,0,0,0-.616,5.253A23.51,23.51,0,0,0,31.348,54.826Z" transform="translate(3.503 3.934)" fill="#b8b8b8"/>
+    </g>
+  </svg>
+`;
+
+const Travel_Explore = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="71" height="71" viewBox="0 0 71 71">
+    <g id="travel_explore_black_24dp" transform="translate(0 0.167)">
+      <rect id="Rectangle_2834" data-name="Rectangle 2834" width="71" height="71" transform="translate(0 -0.167)" fill="none"/>
+      <path id="Path_4401" data-name="Path 4401" d="M52.772,45.729a14.13,14.13,0,0,0,2.054-7.044A13.207,13.207,0,1,0,41.62,51.892a14.13,14.13,0,0,0,7.044-2.054l9.391,9.391,4.109-4.109Zm-11.152.293a7.337,7.337,0,1,1,7.337-7.337A7.266,7.266,0,0,1,41.62,46.022Zm-10.272,8.8V60.7A29.348,29.348,0,1,1,60.109,25.478H54.034A23.478,23.478,0,0,0,40.152,9.6v1.2a5.887,5.887,0,0,1-5.87,5.87h-5.87v5.87a2.943,2.943,0,0,1-2.935,2.935h-5.87v5.87h5.87v8.8H22.544L8.486,26.095a23.824,23.824,0,0,0-.616,5.253A23.51,23.51,0,0,0,31.348,54.826Z" transform="translate(3.503 3.934)" fill="#133c8b"/>
+    </g>
+  </svg>
+`;
+
+const Ballot_Gray = `
+  <svg id="ballot_black_24dp" xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.435" viewBox="0 0 70.435 70.435">
+    <path id="Path_4394" data-name="Path 4394" d="M0,0H70.435V70.435H0Z" fill="none"/>
+    <path id="Path_4395" data-name="Path 4395" d="M32.348,16.207H47.022v5.87H32.348Zm0,20.544H47.022v5.87H32.348ZM49.957,3H8.87A5.887,5.887,0,0,0,3,8.87V49.957a5.887,5.887,0,0,0,5.87,5.87H49.957a5.887,5.887,0,0,0,5.87-5.87V8.87A5.887,5.887,0,0,0,49.957,3Zm0,46.957H8.87V8.87H49.957ZM26.478,11.8H11.8V26.478H26.478ZM23.544,23.544h-8.8v-8.8h8.8Zm2.935,8.8H11.8V47.022H26.478ZM23.544,44.087h-8.8v-8.8h8.8Z" transform="translate(5.804 5.804)" fill="#b8b8b8"/>
+  </svg>
+`;
+
+const Ballot = `
+  <svg id="ballot_black_24dp" xmlns="http://www.w3.org/2000/svg" width="80.202" height="80.202" viewBox="0 0 80.202 80.202">
+    <path id="Path_4394" data-name="Path 4394" d="M0,0H80.2V80.2H0Z" fill="none"/>
+    <path id="Path_4395" data-name="Path 4395" d="M36.417,18.038H53.126v6.683H36.417Zm0,23.392H53.126v6.683H36.417ZM56.468,3H9.683A6.7,6.7,0,0,0,3,9.683V56.468a6.7,6.7,0,0,0,6.683,6.683H56.468a6.7,6.7,0,0,0,6.683-6.683V9.683A6.7,6.7,0,0,0,56.468,3Zm0,53.468H9.683V9.683H56.468ZM29.734,13.025H13.025V29.734H29.734ZM26.392,26.392H16.367V16.367H26.392Zm3.342,10.025H13.025V53.126H29.734ZM26.392,49.784H16.367V39.759H26.392Z" transform="translate(7.025 7.025)" fill="#133c8b"/>
+  </svg>
+`;
+
 const Location_Arrow_White = `
   <svg xmlns="http://www.w3.org/2000/svg" width="33.527" height="33.522" viewBox="0 0 33.527 33.522">
     <path id="location-arrow" d="M33.356,2.214,18.118,32.689a1.4,1.4,0,0,1-1.357.833,2.015,2.015,0,0,1-.358-.047,1.438,1.438,0,0,1-.846-.535,1.5,1.5,0,0,1-.32-.94V18.285H1.524a1.5,1.5,0,0,1-.94-.321,1.437,1.437,0,0,1-.535-.845,1.543,1.543,0,0,1,.095-1,1.435,1.435,0,0,1,.69-.714L31.308.167A1.43,1.43,0,0,1,32,0,1.416,1.416,0,0,1,33.07.453a1.417,1.417,0,0,1,.44.821A1.451,1.451,0,0,1,33.356,2.214Z" transform="translate(-0.005)" fill="#fff"/>
@@ -303,6 +335,24 @@ const Cloud_Off = `
   </svg>
 `;
 
+const Support_Agent_Gray = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="71" height="70" viewBox="0 0 71 70">
+    <g id="support_agent_black_24dp" transform="translate(0 -0.198)">
+      <g id="Group_4808" data-name="Group 4808" transform="translate(0 0)">
+        <rect id="Rectangle_2833" data-name="Rectangle 2833" width="71" height="70" transform="translate(0 0.198)" fill="none"/>
+      </g>
+      <g id="Group_4810" data-name="Group 4810" transform="translate(6.046 8.869)">
+        <g id="Group_4809" data-name="Group 4809">
+          <path id="Path_4399" data-name="Path 4399" d="M57.761,30.059C57.761,13.947,45.259,3,31.348,3,17.584,3,4.935,13.712,4.935,30.235A5.775,5.775,0,0,0,2,35.283v5.87a5.887,5.887,0,0,0,5.87,5.87H10.8V29.12a20.544,20.544,0,1,1,41.087,0V49.957H28.413v5.87H51.892a5.887,5.887,0,0,0,5.87-5.87v-3.58A5.426,5.426,0,0,0,60.7,41.563v-6.75A5.4,5.4,0,0,0,57.761,30.059Z" transform="translate(-2 -3)" fill="#b8b8b8"/>
+          <ellipse id="Ellipse_129" data-name="Ellipse 129" cx="3.5" cy="3" rx="3.5" ry="3" transform="translate(16.955 26.33)" fill="#b8b8b8"/>
+          <ellipse id="Ellipse_130" data-name="Ellipse 130" cx="2.5" cy="3" rx="2.5" ry="3" transform="translate(35.955 26.33)" fill="#b8b8b8"/>
+          <path id="Path_4400" data-name="Path 4400" d="M41.207,20.762A17.729,17.729,0,0,0,23.745,6c-8.892,0-18.46,7.366-17.7,18.929A23.7,23.7,0,0,0,20.311,7.643,23.587,23.587,0,0,0,41.207,20.762Z" transform="translate(5.75 2.804)" fill="#b8b8b8"/>
+        </g>
+      </g>
+    </g>
+  </svg>
+`;
+
 const Support_Agent = `
   <svg xmlns="http://www.w3.org/2000/svg" width="71" height="70" viewBox="0 0 71 70">
     <g id="support_agent_black_24dp" transform="translate(0 -0.198)">
@@ -322,9 +372,79 @@ const Support_Agent = `
 `;
 
 const Angle_Left = `
-<svg xmlns="http://www.w3.org/2000/svg" width="32.311" height="61.743" viewBox="0 0 32.311 61.743">
-  <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill="#133c8b"/>
+  <svg xmlns="http://www.w3.org/2000/svg" width="32.311" height="61.743" viewBox="0 0 32.311 61.743">
+    <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill="#133c8b"/>
+  </svg>
+`;
+
+const Description = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="76.132" height="76.133" viewBox="0 0 76.132 76.133">
+    <g id="description_black_24dp_2_" data-name="description_black_24dp (2)" transform="translate(0 0)">
+      <path id="Path_4109" data-name="Path 4109" d="M0,0H76.132V76.133H0Z" transform="translate(0 0)" fill="none"/>
+      <path id="Path_4110" data-name="Path 4110" d="M16.689,46.411H42.066v6.344H16.689Zm0-12.689H42.066v6.344H16.689ZM35.722,2H10.344A6.363,6.363,0,0,0,4,8.344V59.1a6.336,6.336,0,0,0,6.313,6.344h38.1A6.363,6.363,0,0,0,54.755,59.1V21.033ZM48.41,59.1H10.344V8.344H32.55V24.205H48.41Z" transform="translate(8.689 4.344)" fill="#133c8b"/>
+    </g>
+  </svg>
+`;
+
+const Wallpaper = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="76.132" height="76.133" viewBox="0 0 76.132 76.133">
+    <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(0 0)">
+      <path id="Path_4107" data-name="Path 4107" d="M0,0H76.132V76.133H0Z" transform="translate(0 0)" fill="none"/>
+      <path id="Path_4108" data-name="Path 4108" d="M8.344,8.344H30.55V2H8.344A6.363,6.363,0,0,0,2,8.344V30.55H8.344Zm19.033,28.55L14.689,52.755H52.755L43.238,40.066l-6.44,8.6ZM49.583,22.619a4.758,4.758,0,1,0-4.758,4.758A4.752,4.752,0,0,0,49.583,22.619ZM59.1,2H36.894V8.344H59.1V30.55h6.344V8.344A6.363,6.363,0,0,0,59.1,2Zm0,57.1H36.894v6.344H59.1A6.363,6.363,0,0,0,65.443,59.1V36.894H59.1ZM8.344,36.894H2V59.1a6.363,6.363,0,0,0,6.344,6.344H30.55V59.1H8.344Z" transform="translate(4.344 4.344)" fill="#133c8b"/>
+    </g>
+  </svg>
+`;
+
+const Video_Library = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="73.289" height="73.289" viewBox="0 0 73.289 73.289">
+    <g id="video_library_black_24dp" transform="translate(0 0)">
+      <path id="Path_4111" data-name="Path 4111" d="M0,0H73.289V73.289H0Z" transform="translate(0 0)" fill="none"/>
+      <path id="Path_4112" data-name="Path 4112" d="M8.107,14.215H2V56.967a6.125,6.125,0,0,0,6.107,6.107H50.859V56.967H8.107ZM56.967,2H20.322a6.125,6.125,0,0,0-6.107,6.107V44.752a6.125,6.125,0,0,0,6.107,6.107H56.967a6.125,6.125,0,0,0,6.107-6.107V8.107A6.125,6.125,0,0,0,56.967,2Zm0,42.752H20.322V8.107H56.967ZM32.537,12.688V40.171L50.859,26.43Z" transform="translate(4.107 4.108)" fill="#133c8b"/>
+    </g>
+  </svg>
+`;
+
+const Path = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="66.904" height="84.171" viewBox="0 0 66.904 84.171">
+    <path id="Path_4114" data-name="Path 4114" d="M83.211,41.452A33.452,33.452,0,1,0,24.272,63.088l-.011,0,.13.148c.076.088.154.175.23.262L49.789,92.171l25.172-28.75.158-.18.137-.157-.011,0A33.3,33.3,0,0,0,83.211,41.452ZM49.759,59.311A17.859,17.859,0,1,1,67.618,41.452,17.879,17.879,0,0,1,49.759,59.311Z" transform="translate(-16.307 -8)" fill="#143f76"/>
+  </svg>
+`;
+
+const Contact_Mail = `
+  <svg id="contact_mail_black_24dp_1_" data-name="contact_mail_black_24dp (1)" xmlns="http://www.w3.org/2000/svg" width="65.682" height="65.682" viewBox="0 0 65.682 65.682">
+    <path id="Path_5312" data-name="Path 5312" d="M0,0H65.682V65.682H0Z" fill="none"/>
+    <path id="Path_5313" data-name="Path 5313" d="M60.208,3H5.473A5.49,5.49,0,0,0,0,8.473V46.788a5.49,5.49,0,0,0,5.473,5.473H60.208a5.466,5.466,0,0,0,5.446-5.473l.027-38.314A5.49,5.49,0,0,0,60.208,3Zm0,43.788H5.473V8.473H60.208ZM57.471,11.21H38.314V24.894H57.471Zm-2.737,5.473-6.842,4.789-6.842-4.789V13.947l6.842,4.789,6.842-4.789Zm-30.1,10.947a8.21,8.21,0,1,0-8.21-8.21A8.234,8.234,0,0,0,24.631,27.631Zm0-10.947a2.737,2.737,0,1,1-2.737,2.737A2.745,2.745,0,0,1,24.631,16.684Zm16.42,23.509c0-6.842-10.865-9.8-16.42-9.8S8.21,33.35,8.21,40.192v3.859H41.051ZM15,38.578a19.466,19.466,0,0,1,9.633-2.737,19.271,19.271,0,0,1,9.633,2.737Z" transform="translate(0 5.21)" fill="#133c8b"/>
+  </svg>
+`;
+
+const WhatsApp = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="63.994" height="64" viewBox="0 0 63.994 64">
+    <path id="icons8-whatsapp" d="M34.037,2a31.966,31.966,0,0,0-27.7,47.925L2,66l16.744-3.956a31.94,31.94,0,0,0,15.275,3.887h.012A31.966,31.966,0,1,0,34.037,2Zm-.006,6.4A25.566,25.566,0,1,1,21.813,56.425L19.656,55.25l-2.381.563-6.3,1.488,1.538-5.713.694-2.563-1.325-2.3A25.564,25.564,0,0,1,34.031,8.4ZM22.725,19.2a2.934,2.934,0,0,0-2.131,1,8.931,8.931,0,0,0-2.8,6.656c0,3.93,2.862,7.728,3.262,8.262s5.525,8.85,13.644,12.05c6.745,2.659,8.116,2.134,9.581,2s4.728-1.928,5.394-3.794a6.709,6.709,0,0,0,.469-3.8c-.2-.333-.731-.531-1.531-.931s-4.724-2.328-5.456-2.594-1.269-.4-1.8.4-2.058,2.594-2.525,3.125-.931.606-1.731.206a21.988,21.988,0,0,1-6.425-3.969,24.058,24.058,0,0,1-4.444-5.525c-.464-.8-.044-1.234.356-1.631.358-.358.794-.933,1.194-1.4a5.556,5.556,0,0,0,.8-1.331,1.478,1.478,0,0,0-.068-1.4c-.2-.4-1.752-4.344-2.463-5.925-.6-1.328-1.23-1.359-1.8-1.381C23.786,19.2,23.256,19.2,22.725,19.2Z" transform="translate(-2 -2)" fill="#123a86"/>
+  </svg>
+`;
+
+const Quiz = `
+<svg id="quiz_black_24dp" xmlns="http://www.w3.org/2000/svg" width="74" height="74" viewBox="0 0 74 74">
+  <g id="Group_4931" data-name="Group 4931">
+    <path id="Path_5310" data-name="Path 5310" d="M0,0H74V74H0Z" fill="none"/>
+  </g>
+  <g id="Group_4932" data-name="Group 4932" transform="translate(6.167 6.167)">
+    <path id="Path_5311" data-name="Path 5311" d="M8.167,14.333H2V57.5a6.185,6.185,0,0,0,6.167,6.167H51.333V57.5H8.167ZM57.5,2h-37a6.185,6.185,0,0,0-6.167,6.167v37A6.185,6.185,0,0,0,20.5,51.333h37a6.185,6.185,0,0,0,6.167-6.167v-37A6.185,6.185,0,0,0,57.5,2Zm0,43.167h-37v-37h37ZM37.489,27.16c1.264-2.251,3.638-3.577,5.026-5.55,1.48-2.1.648-5.982-3.515-5.982-2.713,0-4.07,2.066-4.625,3.792l-4.224-1.757a9.189,9.189,0,0,1,8.818-6.413,8.721,8.721,0,0,1,7.739,3.885c1.141,1.85,1.788,5.334.031,7.924-1.942,2.867-3.792,3.731-4.81,5.581-.4.74-.555,1.233-.555,3.638H36.687C36.718,31.014,36.5,28.948,37.489,27.16ZM35.762,38.846A3.192,3.192,0,0,1,39,35.639a3.222,3.222,0,0,1,0,6.444A3.237,3.237,0,0,1,35.762,38.846Z" transform="translate(-2 -2)" fill="#133c8b"/>
+  </g>
 </svg>
+`;
+
+const File_Download = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="57" height="57" viewBox="0 0 57 57">
+    <g id="file_download_black_24dp_1_" data-name="file_download_black_24dp (1)" transform="translate(0.039 0.158)">
+      <g id="Group_4404" data-name="Group 4404" transform="translate(0.119 0)">
+        <rect id="Rectangle_2390" data-name="Rectangle 2390" width="57" height="57" transform="translate(-0.158 -0.158)" fill="none"/>
+      </g>
+      <g id="Group_4405" data-name="Group 4405" transform="translate(8.844 8.715)">
+        <path id="Path_4198" data-name="Path 4198" d="M37.715,30.49v7.225H8.816V30.49H4v7.225a4.831,4.831,0,0,0,4.816,4.816h28.9a4.831,4.831,0,0,0,4.816-4.816V30.49Zm-2.408-9.633-3.4-3.4-6.237,6.213V4H20.857V23.675L14.62,17.462l-3.4,3.4L23.266,32.9Z" transform="translate(-4 -4)" fill="#133c8b"/>
+      </g>
+    </g>
+  </svg>
 `;
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
@@ -351,6 +471,10 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Calendar_Event_Fill" && <SvgXml style={style} xml={Calendar_Event_Fill} width={width} height={height} />}
         {icon == "Pipeline_Gray" && <SvgXml style={style} xml={Pipeline_Gray} width={width} height={height} />}
         {icon == "Pipeline" && <SvgXml style={style} xml={Pipeline} width={width} height={height} />}
+        {icon == "Travel_Explore_Gray" && <SvgXml style={style} xml={Travel_Explore_Gray} width={width} height={height} />}
+        {icon == "Travel_Explore" && <SvgXml style={style} xml={Travel_Explore} width={width} height={height} />}
+        {icon == "Ballot_Gray" && <SvgXml style={style} xml={Ballot_Gray} width={width} height={height} />}
+        {icon == "Ballot" && <SvgXml style={style} xml={Ballot} width={width} height={height} />}
         {icon == "Insert_Invitation" && <SvgXml style={style} xml={Insert_Invitation} width={width} height={height} />}
         {icon == "Green_Star" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
         {icon == "Check" && <SvgXml style={style} xml={Check} width={width} height={height} />}
@@ -358,6 +482,15 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Account_Circle" && <SvgXml style={style} xml={Account_Circle} width={width} height={height} />}
         {icon == "Cloud_Off" && <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />}
         {icon == "Support_Agent" && <SvgXml style={style} xml={Support_Agent} width={width} height={height} />}
+        {icon == "Support_Agent_Gray" && <SvgXml style={style} xml={Support_Agent_Gray} width={width} height={height} />}
         {icon == "Angle_Left" && <SvgXml style={style} xml={Angle_Left} width={width} height={height} />}
+        {icon == "Description" && <SvgXml style={style} xml={Description} width={width} height={height} />}
+        {icon == "Wallpaper" && <SvgXml style={style} xml={Wallpaper} width={width} height={height} />}
+        {icon == "Video_Library" && <SvgXml style={style} xml={Video_Library} width={width} height={height} />}
+        {icon == "Path" && <SvgXml style={style} xml={Path} width={width} height={height} />}
+        {icon == "Contact_Mail" && <SvgXml style={style} xml={Contact_Mail} width={width} height={height} />}
+        {icon == "WhatsApp" && <SvgXml style={style} xml={WhatsApp} width={width} height={height} />}
+        {icon == "Quiz" && <SvgXml style={style} xml={Quiz} width={width} height={height} />}
+        {icon == "File_Download" && <SvgXml style={style} xml={File_Download} width={width} height={height} />}
     </Fragment>
 );

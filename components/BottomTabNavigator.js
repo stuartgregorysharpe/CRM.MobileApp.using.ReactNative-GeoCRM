@@ -16,12 +16,11 @@ import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/SalesPipelineScreen';
-import RepMoreScreen from '../screens/GeoRep/RepMoreScreen';
+import SupportScreen from '../screens/GeoRep/SupportScreen';
 
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import CRMSalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
-import CRMMoreScreen from '../screens/GeoCRM/CRMMoreScreen';
 
 import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
 import NewsScreen from '../screens/GeoLife/NewsScreen';
@@ -31,7 +30,7 @@ import AccessScreen from '../screens/GeoLife/AccessScreen';
 import ClubScreen from '../screens/GeoLife/ClubScreen';
 import FlashbookScreen from '../screens/GeoLife/FlashbookScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
-import ContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
+import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
 import LifeFormsScreen from '../screens/GeoLife/FormsScreen';
 import LifeHelpScreen from '../screens/GeoLife/HelpScreen';
 import LoyaltyCardsScreen from '../screens/GeoLife/LoyaltyCardsScreen';
@@ -41,14 +40,16 @@ import ProfileScreen from '../screens/GeoLife/ProfileScreen';
 import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
-import LifeMoreScreen from '../screens/GeoLife/LifeMoreScreen';
+
+import MoreNavigator from './MoreNavigator';
 
 import SvgIcon from './SvgIcon';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { 
   SLIDE_STATUS,
   CHANGE_MORE_STATUS,
-  CHANGE_PROFILE_STATUS
+  CHANGE_PROFILE_STATUS,
+  SHOW_MORE_COMPONENT
 } from '../actions/actionTypes';
 
 import {
@@ -65,7 +66,6 @@ export default function RepBottomTabNavigator({navigation}) {
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
-  const showMoreScreen = useSelector(state => state.rep.showMoreScreen);
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
   const bottomList = {
@@ -90,15 +90,14 @@ export default function RepBottomTabNavigator({navigation}) {
   };
 
   useEffect(() => {
-    console.log(visibleMore)
-    if (visibleMore) {
+    if (visibleMore != '') {
       navigation.navigate("More");
+      dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
     }
-  });
+  }, [visibleMore]);
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
@@ -226,8 +225,8 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'Content Library',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -292,8 +291,8 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'Web Links',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -405,6 +404,36 @@ export default function RepBottomTabNavigator({navigation}) {
               {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
             </Fragment>
+          ),
+          headerRight: () => (
+            <HeaderRightView navigation={navigation} />
+          ),
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
+          },
+          tabBarActiveTintColor: PRIMARY_COLOR,
+        }}
+      />}
+
+      {selectProject == 'geo_rep' && bottomList[0].includes('support') && <BottomTab.Screen
+        name="Support"
+        component={SupportScreen}
+        options={{
+          title: 'SupportScreen',
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <SvgIcon icon="Support_Agent_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Support_Agent" width='20px' height='20px' />}
+            </Fragment>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity 
+              style={styles.header} 
+              activeOpacity={1}
+              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
+            >
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
@@ -596,14 +625,14 @@ export default function RepBottomTabNavigator({navigation}) {
       />}
 
       {selectProject == 'geo_life' && bottomList[1].includes('content_library') && <BottomTab.Screen
-        name="ContentLibrary"
-        component={ContentLibraryScreen}
+        name="LifeContentLibrary"
+        component={LifeContentLibraryScreen}
         options={{
           title: 'Content Library',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -778,8 +807,8 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'Web Links',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -868,8 +897,8 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'Content Library',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -887,13 +916,14 @@ export default function RepBottomTabNavigator({navigation}) {
 
       <BottomTab.Screen
         name="More"
-        component={RepMoreScreen}
+        component={MoreNavigator}
         options={{
           title: 'More',
-          tabBarIcon: () => (
+          tabBarLabel: 'More',
+          tabBarIcon: ({focused}) => (
             <Fragment>
-              {showMoreScreen == 1 && <SvgIcon icon="Android_More_Horizontal_Gray" width='20px' height='20px' />}
-              {showMoreScreen == 0 && <SvgIcon icon="Android_More_Horizontal" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Android_More_Horizontal_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Android_More_Horizontal" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -908,10 +938,9 @@ export default function RepBottomTabNavigator({navigation}) {
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
-            console.log("3434", visibleMore)
-            if (visibleMore) {
-              dispatch({type: "CHANGE_COMPONENT", payload: false});
+            if (visibleMore != '') {
               navigation.navigate("More");
+              dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
             } else {
               dispatch({type: CHANGE_MORE_STATUS, payload: 0});   
             }

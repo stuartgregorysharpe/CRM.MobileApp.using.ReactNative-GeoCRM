@@ -1,17 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { 
-  Text, 
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity
-} from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse
-} from 'react-native-extended-stylesheet-breakpoints';
+import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
 import SvgIcon from './SvgIcon';
 import { TEXT_COLOR, BG_COLOR } from '../constants/Colors';
