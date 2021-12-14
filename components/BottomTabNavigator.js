@@ -11,12 +11,11 @@ import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
-import RepHelpScreen from '../screens/GeoRep/HelpScreen';
+import RepSupportScreen from '../screens/GeoRep/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/SalesPipelineScreen';
-import SupportScreen from '../screens/GeoRep/SupportScreen';
 
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
@@ -32,11 +31,10 @@ import FlashbookScreen from '../screens/GeoLife/FlashbookScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
 import LifeFormsScreen from '../screens/GeoLife/FormsScreen';
-import LifeHelpScreen from '../screens/GeoLife/HelpScreen';
+import LifeSupportScreen from '../screens/GeoLife/SupportScreen';
 import LoyaltyCardsScreen from '../screens/GeoLife/LoyaltyCardsScreen';
 import LunchOrdersScreen from '../screens/GeoLife/LunchOrdersScreen';
 import LifeMessagesScreen from '../screens/GeoLife/MessagesScreen';
-import ProfileScreen from '../screens/GeoLife/ProfileScreen';
 import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
@@ -92,7 +90,9 @@ export default function RepBottomTabNavigator({navigation}) {
   useEffect(() => {
     if (visibleMore != '') {
       navigation.navigate("More");
-      dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+      setTimeout(() => {
+        dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+      });
     }
   }, [visibleMore]);
 
@@ -172,6 +172,35 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            dispatch({type: SLIDE_STATUS, payload: false});
+            navigation.navigate("CRM");
+          },
+        })}
+      />}
+
+      {selectProject == 'geo_rep' && bottomList[0].includes('web_links') && <BottomTab.Screen
+        name="RepWebLinks"
+        component={RepWebLinksScreen}
+        options={{
+          title: 'Web Links',
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
+            </Fragment>
+          ),
+          headerRight: () => (
+            <HeaderRightView navigation={navigation} />
+          ),
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
+          },
+          tabBarActiveTintColor: PRIMARY_COLOR,
+        }}
       />}
 
       {selectProject == 'geo_rep' && bottomList[0].includes('calendar') && <BottomTab.Screen
@@ -223,6 +252,7 @@ export default function RepBottomTabNavigator({navigation}) {
         component={RepContentLibraryScreen}
         options={{
           title: 'Content Library',
+          tabBarLabel: 'Content',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
@@ -284,50 +314,6 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('web_links') && <BottomTab.Screen
-        name="RepWebLinks"
-        component={RepWebLinksScreen}
-        options={{
-          title: 'Web Links',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation} />
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-      />}
-
-      {selectProject == 'geo_rep' && bottomList[0].includes('help') && <BottomTab.Screen
-        name="RepHelp"
-        component={RepHelpScreen}
-        options={{
-          title: 'Help',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation} />
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-      />}
-
       {selectProject == 'geo_rep' && bottomList[0].includes('messages') && <BottomTab.Screen
         name="RepMessages"
         component={RepMessagesScreen}
@@ -354,7 +340,8 @@ export default function RepBottomTabNavigator({navigation}) {
         name="OfflineSync"
         component={OfflineSyncScreen}
         options={{
-          title: 'Sync',
+          title: 'Offline Sync Items',
+          tabBarLabel: 'Sync',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
@@ -417,10 +404,10 @@ export default function RepBottomTabNavigator({navigation}) {
       />}
 
       {selectProject == 'geo_rep' && bottomList[0].includes('support') && <BottomTab.Screen
-        name="Support"
-        component={SupportScreen}
+        name="RepSupport"
+        component={RepSupportScreen}
         options={{
-          title: 'SupportScreen',
+          title: 'Support',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Support_Agent_Gray" width='20px' height='20px' />}
@@ -444,6 +431,13 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            dispatch({type: SLIDE_STATUS, payload: false});
+            navigation.navigate("RepSupport");
+          },
+        })}
       />}
 
       {/* Life Bottom Navigator */}
@@ -629,6 +623,7 @@ export default function RepBottomTabNavigator({navigation}) {
         component={LifeContentLibraryScreen}
         options={{
           title: 'Content Library',
+          tabBarLabel: 'Content',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
@@ -651,28 +646,6 @@ export default function RepBottomTabNavigator({navigation}) {
         component={LifeFormsScreen}
         options={{
           title: 'Forms',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation}/>
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-      />}
-
-      {selectProject == 'geo_life' && bottomList[1].includes('help') && <BottomTab.Screen
-        name="LifeHelp"
-        component={LifeHelpScreen}
-        options={{
-          title: 'Help',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
@@ -756,28 +729,6 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('profile') && <BottomTab.Screen
-        name="ProfileScreen"
-        component={ProfileScreen}
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation}/>
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-      />}
-
       {selectProject == 'geo_life' && bottomList[1].includes('report_fraud') && <BottomTab.Screen
         name="ReportFraudScreen"
         component={ReportFraudScreen}
@@ -844,6 +795,43 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
+      {selectProject == 'geo_life' && bottomList[1].includes('support') && <BottomTab.Screen
+        name="LifeSupport"
+        component={LifeSupportScreen}
+        options={{
+          title: 'Support',
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <SvgIcon icon="Support_Agent_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Support_Agent" width='20px' height='20px' />}
+            </Fragment>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity 
+              style={styles.header} 
+              activeOpacity={1}
+              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
+            >
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <HeaderRightView navigation={navigation}/>
+          ),
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
+          },
+          tabBarActiveTintColor: PRIMARY_COLOR,
+        }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            dispatch({type: SLIDE_STATUS, payload: false});
+            navigation.navigate("LifeSupport");
+          },
+        })}
+      />}
+
       {/* CRM Bottom navigator */}
 
       {selectProject == 'geo_crm' && bottomList[2].includes('crm_locations') && <BottomTab.Screen
@@ -895,6 +883,7 @@ export default function RepBottomTabNavigator({navigation}) {
         component={CRMContentLibraryScreen}
         options={{
           title: 'Content Library',
+          tabBarLabel: 'Content',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
@@ -926,6 +915,14 @@ export default function RepBottomTabNavigator({navigation}) {
               {focused && <SvgIcon icon="Android_More_Horizontal" width='20px' height='20px' />}
             </Fragment>
           ),
+          headerLeft: () => (
+            <TouchableOpacity 
+              style={styles.header} 
+              activeOpacity={1}
+              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
+            >
+            </TouchableOpacity>
+          ),
           headerRight: () => (
             <HeaderRightView navigation={navigation}/>
           ),
@@ -938,6 +935,7 @@ export default function RepBottomTabNavigator({navigation}) {
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
+            dispatch({type: SLIDE_STATUS, payload: false});
             if (visibleMore != '') {
               navigation.navigate("More");
               dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
@@ -991,13 +989,11 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   headerRightView: {
-    display: 'flex',
     flexDirection: 'row',
     marginRight: 12
   },
   toggleSwitch: {
     marginRight: 12,
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -1007,17 +1003,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Gilroy-Medium'
   },
   headerAvatar: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: '#fff',
     borderWidth: 2,
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
     borderRadius: 20
   },
   headerAvatarText: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#fff',
     fontFamily: 'Gilroy-Bold'
   }

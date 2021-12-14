@@ -19,6 +19,7 @@ import LocationInfoInput from './LocationInfoInput';
 import FilterButton from './FilterButton';
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
   
 export default function LocationInfo({navigation}) {
@@ -90,7 +91,7 @@ export default function LocationInfo({navigation}) {
   )
 }
 
-const perWidth = setWidthBreakpoints(850);
+const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
@@ -102,14 +103,12 @@ const styles = EStyleSheet.create(parse({
     padding: 10,
   },
   headerBox: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 12
   },
   subtitleBox: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 4,
@@ -136,12 +135,11 @@ const styles = EStyleSheet.create(parse({
   },
   walmartImageBox: {
     flexGrow: 1,
-    display: 'flex',
-    alignItems: 'center'
+    alignItems: perWidth('flex-end', 'center')
   },
   walmartImage: {
-    width: 90,
-    height: 90,
+    width: perWidth(140, 90),
+    height: perWidth(140, 90),
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
     borderRadius: 7
@@ -152,7 +150,6 @@ const styles = EStyleSheet.create(parse({
     bottom: 0,
     left: 0,
     right: 0,
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
@@ -162,7 +159,6 @@ const styles = EStyleSheet.create(parse({
   },
   nextButton: {
     width: '47%',
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

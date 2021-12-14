@@ -6,6 +6,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 
 import SvgIcon from './SvgIcon';
 import { TEXT_COLOR, BG_COLOR } from '../constants/Colors';
+import { breakPoint } from '../constants/Breakpoint';
 
 export default function LocationInfoInput() {
   const gateKeeperNameRef = useRef();
@@ -284,13 +285,12 @@ export default function LocationInfoInput() {
   )
 }
 
-const perWidth = setWidthBreakpoints(850);
+const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   shadowBox: {
     padding: 8,
     height: 45,
-    display: 'flex',
     flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -321,7 +321,6 @@ const styles = EStyleSheet.create(parse({
     marginLeft: 10,
   },
   inputBox: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap'

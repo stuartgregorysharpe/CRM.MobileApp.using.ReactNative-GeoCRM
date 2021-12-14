@@ -26,6 +26,7 @@
     "react-native-detect-press-outside": "^1.0.4",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-extended-stylesheet-breakpoints": "^1.1.0",
+    "react-native-hide-show-password-input": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-maps": "^0.29.4",
     "react-native-paper": "^4.10.1",

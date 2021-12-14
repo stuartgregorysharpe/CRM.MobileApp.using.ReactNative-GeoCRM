@@ -21,7 +21,6 @@ export default function Card({icon, title, subtitle , image, showSlider}) {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -2,7 +2,8 @@ import * as React from 'react';
 import {
   View,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  ScrollView
 } from 'react-native';
 import {
   Button,
@@ -25,7 +26,7 @@ const filterButtonList = [
 export default function FilterView({navigation}) {
   const dispatch = useDispatch();
   return (
-    <View style={{backgroundColor: BG_COLOR}}>
+    <ScrollView style={styles.container}>
       <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
@@ -58,13 +59,15 @@ export default function FilterView({navigation}) {
         onPress={() => console.log("pressed")}>
         Apply Filters
       </Button>
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: BG_COLOR
+  },
   sliderHeader: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

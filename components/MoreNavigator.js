@@ -10,12 +10,11 @@ import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
-import RepHelpScreen from '../screens/GeoRep/HelpScreen';
+import RepSupportScreen from '../screens/GeoRep/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/SalesPipelineScreen';
-import SupportScreen from '../screens/GeoRep/SupportScreen';
 
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
@@ -31,11 +30,10 @@ import FlashbookScreen from '../screens/GeoLife/FlashbookScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
 import LifeFormsScreen from '../screens/GeoLife/FormsScreen';
-import LifeHelpScreen from '../screens/GeoLife/HelpScreen';
+import LifeSupportScreen from '../screens/GeoLife/SupportScreen';
 import LoyaltyCardsScreen from '../screens/GeoLife/LoyaltyCardsScreen';
 import LunchOrdersScreen from '../screens/GeoLife/LunchOrdersScreen';
 import LifeMessagesScreen from '../screens/GeoLife/MessagesScreen';
-import ProfileScreen from '../screens/GeoLife/ProfileScreen';
 import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
@@ -43,8 +41,42 @@ import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 const Stack = createNativeStackNavigator();
 
 export default function RepMoreScreen({navigation}) {
+  const payload = useSelector(state => state.selection.payload);
   const visibleMore = useSelector(state => state.rep.visibleMore);
   const selectProject = useSelector(state => state.selection.selectProject);
+
+  const componentLists = {
+    0: [
+      payload.user_scopes.geo_rep.modules_nav_order[4],
+      payload.user_scopes.geo_rep.modules_nav_order[5],
+      payload.user_scopes.geo_rep.modules_nav_order[6],
+      payload.user_scopes.geo_rep.modules_nav_order[7],
+      payload.user_scopes.geo_rep.modules_nav_order[8],
+      payload.user_scopes.geo_rep.modules_nav_order[9],
+      payload.user_scopes.geo_rep.modules_nav_order[10],
+      payload.user_scopes.geo_rep.modules_nav_order[11],
+      payload.user_scopes.geo_rep.modules_nav_order[12],
+    ],
+    1: [
+      payload.user_scopes.geo_life.modules_nav_order[4],
+      payload.user_scopes.geo_life.modules_nav_order[5],
+      payload.user_scopes.geo_life.modules_nav_order[6],
+      payload.user_scopes.geo_life.modules_nav_order[7],
+      payload.user_scopes.geo_life.modules_nav_order[8],
+      payload.user_scopes.geo_life.modules_nav_order[9],
+      payload.user_scopes.geo_life.modules_nav_order[10],
+      payload.user_scopes.geo_life.modules_nav_order[11],
+      payload.user_scopes.geo_life.modules_nav_order[12],
+      payload.user_scopes.geo_life.modules_nav_order[13],
+      payload.user_scopes.geo_life.modules_nav_order[14],
+      payload.user_scopes.geo_life.modules_nav_order[15],
+      payload.user_scopes.geo_life.modules_nav_order[16],
+      payload.user_scopes.geo_life.modules_nav_order[17]
+    ],
+    2: [
+      payload.user_scopes.geo_crm.modules_nav_order[4]
+    ]
+  };
 
   useEffect(() => {
     ChangeScreen(visibleMore);
@@ -76,8 +108,8 @@ export default function RepMoreScreen({navigation}) {
       case 'RepWebLinks':
         navigation.navigate("RepWebLinks");
         return;
-      case 'RepHelp':
-        navigation.navigate("RepHelp");
+      case 'RepSupport':
+        navigation.navigate("RepSupport");
         return;
       case 'RepMessages':
         navigation.navigate("RepMessages");
@@ -135,8 +167,8 @@ export default function RepMoreScreen({navigation}) {
       case 'LifeForms':
         navigation.navigate("LifeForms");
         return;
-      case 'LifeHelp':
-        navigation.navigate("LifeHelp");
+      case 'LifeSupport':
+        navigation.navigate("LifeSupport");
         return;
       case 'LoyaltyCards':
         navigation.navigate("LoyaltyCards");
@@ -146,9 +178,6 @@ export default function RepMoreScreen({navigation}) {
         return;
       case 'LifeMessages':
         navigation.navigate("LifeMessages");
-        return;
-      case 'Profile':
-        navigation.navigate("Profile");
         return;
       case 'ReportFraud':
         navigation.navigate("ReportFraud");
@@ -168,106 +197,100 @@ export default function RepMoreScreen({navigation}) {
     <Stack.Navigator>
       {/* rep More screen */}
 
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('home_geo') && <Stack.Screen
         name="Home"
         options={{ header: () => null }}
       >
         {props => <HomeScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('crm_locations') && <Stack.Screen
         name="CRM"
         options={{ header: () => null }}
       >
         {props => <CRMScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="Calendar"
-        options={{ header: () => null }}
-      >
-        {props => <CalendarScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="RepForms"
-        options={{ header: () => null }}
-      >
-        {props => <RepFormsScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="RepContentLibrary"
-        options={{ header: () => null }}
-      >
-        {props => <RepContentLibraryScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="ProductSales"
-        options={{ header: () => null }}
-      >
-        {props => <ProductSalesScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="Notifications"
-        options={{ header: () => null }}
-      >
-        {props => <NotificationsScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('web_links') && <Stack.Screen
         name="RepWebLinks"
         options={{ header: () => null }}
       >
         {props => <RepWebLinksScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="RepHelp"
+      {selectProject == 'geo_rep' && componentLists[0].includes('calendar') && <Stack.Screen
+        name="Calendar"
         options={{ header: () => null }}
       >
-        {props => <RepHelpScreen {...props} screenProps={navigation} />}
+        {props => <CalendarScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('forms') && <Stack.Screen
+        name="RepForms"
+        options={{ header: () => null }}
+      >
+        {props => <RepFormsScreen {...props} screenProps={navigation} />}
+      </Stack.Screen>}
+      {selectProject == 'geo_rep' && componentLists[0].includes('content_library') && <Stack.Screen
+        name="RepContentLibrary"
+        options={{ header: () => null }}
+      >
+        {props => <RepContentLibraryScreen {...props} screenProps={navigation} />}
+      </Stack.Screen>}
+      {selectProject == 'geo_rep' && componentLists[0].includes('product_sales') && <Stack.Screen
+        name="ProductSales"
+        options={{ header: () => null }}
+      >
+        {props => <ProductSalesScreen {...props} screenProps={navigation} />}
+      </Stack.Screen>}
+      {selectProject == 'geo_rep' && componentLists[0].includes('notifications') && <Stack.Screen
+        name="Notifications"
+        options={{ header: () => null }}
+      >
+        {props => <NotificationsScreen {...props} screenProps={navigation} />}
+      </Stack.Screen>}
+      {selectProject == 'geo_rep' && componentLists[0].includes('support') && <Stack.Screen
+        name="RepSupport"
+        options={{ header: () => null }}
+      >
+        {props => <RepSupportScreen {...props} screenProps={navigation} />}
+      </Stack.Screen>}
+      {selectProject == 'geo_rep' && componentLists[0].includes('messages') && <Stack.Screen
         name="RepMessages"
         options={{ header: () => null }}
       >
         {props => <RepMessagesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('offline_sync') && <Stack.Screen
         name="OfflineSync"
         options={{ header: () => null }}
       >
         {props => <OfflineSyncScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('recorded_sales') && <Stack.Screen
         name="RecordedSales"
         options={{ header: () => null }}
       >
         {props => <RecordedSalesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
+      {selectProject == 'geo_rep' && componentLists[0].includes('sales_pipeline') && <Stack.Screen
         name="RepSalesPipeline"
         options={{ header: () => null }}
       >
         {props => <RepSalesPipelineScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_rep' && <Stack.Screen
-        name="Support"
-        options={{ header: () => null }}
-      >
-        {props => <SupportScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
 
       {/* crm More Screen */}
 
-      {selectProject == 'geo_crm' && <Stack.Screen
+      {selectProject == 'geo_crm' && componentLists[2].includes('content_library') && <Stack.Screen
         name="CRMContentLibrary"
         options={{ header: () => null }}
       >
         {props => <CRMContentLibraryScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_crm' && <Stack.Screen
+      {selectProject == 'geo_crm' && componentLists[2].includes('crm_locations') && <Stack.Screen
         name="CRMLocations"
         options={{ header: () => null }}
       >
         {props => <CRMLocationsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_crm' && <Stack.Screen
+      {selectProject == 'geo_crm' && componentLists[2].includes('sales_pipeline') && <Stack.Screen
         name="CRMSalesPipeline"
         options={{ header: () => null }}
       >
@@ -276,109 +299,103 @@ export default function RepMoreScreen({navigation}) {
 
       {/* life More screen */}
 
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('home_life') && <Stack.Screen
         name="HomeLife"
         options={{ header: () => null }}
       >
         {props => <HomeLifeScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('news') && <Stack.Screen
         name="News"
         options={{ header: () => null }}
       >
         {props => <NewsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('locations_life') && <Stack.Screen
         name="LocationsLife"
         options={{ header: () => null }}
       >
         {props => <LocationsLifeScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('check_in') && <Stack.Screen
         name="CheckIn"
         options={{ header: () => null }}
       >
         {props => <CheckInScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('access') && <Stack.Screen
         name="Access"
         options={{ header: () => null }}
       >
         {props => <AccessScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('club') && <Stack.Screen
         name="Club"
         options={{ header: () => null }}
       >
         {props => <ClubScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('flashbook') && <Stack.Screen
         name="Flashbook"
         options={{ header: () => null }}
       >
         {props => <FlashbookScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('business_directory') && <Stack.Screen
         name="BusinessDirectory"
         options={{ header: () => null }}
       >
         {props => <BusinessDirectoryScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('content_library') && <Stack.Screen
         name="LifeContentLibrary"
         options={{ header: () => null }}
       >
         {props => <LifeContentLibraryScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('forms') && <Stack.Screen
         name="LifeForms"
         options={{ header: () => null }}
       >
         {props => <LifeFormsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
-        name="LifeHelp"
+      {selectProject == 'geo_life' && componentLists[1].includes('support') && <Stack.Screen
+        name="LifeSupport"
         options={{ header: () => null }}
       >
-        {props => <LifeHelpScreen {...props} screenProps={navigation} />}
+        {props => <LifeSupportScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('loyalty_cards') && <Stack.Screen
         name="LoyaltyCards"
         options={{ header: () => null }}
       >
         {props => <LoyaltyCardsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('lunch_orders') && <Stack.Screen
         name="LunchOrders"
         options={{ header: () => null }}
       >
         {props => <LunchOrdersScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('messages') && <Stack.Screen
         name="LifeMessages"
         options={{ header: () => null }}
       >
         {props => <LifeMessagesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
-        name="Profile"
-        options={{ header: () => null }}
-      >
-        {props => <ProfileScreen {...props} screenProps={navigation} />}
-      </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('report_fraud') && <Stack.Screen
         name="ReportFraud"
         options={{ header: () => null }}
       >
         {props => <ReportFraudScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('web_links') && <Stack.Screen
         name="LifeWebLinks"
         options={{ header: () => null }}
       >
         {props => <LifeWebLinksScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
-      {selectProject == 'geo_life' && <Stack.Screen
+      {selectProject == 'geo_life' && componentLists[1].includes('well_being') && <Stack.Screen
         name="WellBeing"
         options={{ header: () => null }}
       >

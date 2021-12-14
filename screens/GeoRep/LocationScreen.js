@@ -1,10 +1,9 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
+import React, { Fragment, useState, useEffect } from 'react';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { useSelector, useDispatch } from 'react-redux';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import OutsideView from 'react-native-detect-press-outside';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,8 +13,10 @@ import FilterView from '../../components/FilterView';
 import MarkerIcon from '../../components/Marker';
 import SvgIcon from '../../components/SvgIcon';
 import Divider from '../../components/Divider';
+import GrayBackground from '../../components/GrayBackground';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
+import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const markerIcons = [
@@ -87,15 +88,11 @@ export default function LocationScreen(props) {
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const dispatch = useDispatch();
 
-  const markerRef = useRef(null);
-  const filterRef = useRef(null);
-  const addLeadRef = useRef(null);
-  const locationInfoRef = useRef(null);
+  const [showItem, setShowItem] = useState(0);
 
   useEffect(() => {
     props.screenProps.setOptions({
       tabBarStyle: {
-        display: 'flex',
         height: 60,
         paddingTop: 10,
         paddingBottom: 10,
@@ -109,71 +106,6 @@ export default function LocationScreen(props) {
         },
       });
     }
-  });
-
-  const markerAnimatedValue = useRef(new Animated.Value(1)).current;
-  const filterAnimatedValue = useRef(new Animated.Value(1)).current;
-  const addLeadAnimatedValue = useRef(new Animated.Value(1)).current;
-  const locationInfoAnimatedValue = useRef(new Animated.Value(1)).current;
-
-  const markerStartAnimation = (toValue) => {
-    Animated.timing(markerAnimatedValue, {
-      toValue,
-      duration: 500,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const filterStartAnimation = (toValue) => {
-    Animated.timing(filterAnimatedValue, {
-      toValue,
-      duration: 500,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const addLeadStartAnimation = (toValue) => {
-    Animated.timing(addLeadAnimatedValue, {
-      toValue,
-      duration: 500,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const locationInfoStartAnimation = (toValue) => {
-    Animated.timing(locationInfoAnimatedValue, {
-      toValue,
-      duration: 500,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const markerTranslateY = markerAnimatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').height + 100],
-    extrapolate: 'clamp',
-  });
-
-  const filterTranslateY = filterAnimatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').height + 100],
-    extrapolate: 'clamp',
-  });
-
-  const addLeadTranslateY = addLeadAnimatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').height + 100],
-    extrapolate: 'clamp',
-  });
-
-  const locationInfoTranslateY = locationInfoAnimatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').height + 100],
-    extrapolate: 'clamp',
   });
 
   const [mapRegion, setMapRegion] = useState({
@@ -209,22 +141,18 @@ export default function LocationScreen(props) {
 
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
-    markerStartAnimation(1);
-    filterStartAnimation(1);
-    addLeadStartAnimation(1);
-    locationInfoStartAnimation(1);
     switch(name) {
       case "marker":
-        markerStartAnimation(0);
+        setShowItem(1);
         return;
       case "filter":
-        filterStartAnimation(0);
+        setShowItem(2);
         return;
       case "addLead":
-        addLeadStartAnimation(0);
+        setShowItem(3);
         return;
       case "locationInfo":
-        locationInfoStartAnimation(0);
+        setShowItem(4);
         return;
       default:
         return;
@@ -233,117 +161,94 @@ export default function LocationScreen(props) {
   
   return (
     <SafeAreaView>
-      <OutsideView 
-        childRef={filterRef}
-        onPressOutside={() => {
-          dispatch({type: SLIDE_STATUS, payload: false});
-        }}
+      <GrayBackground />
+      {crmStatus && <View
+        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
       >
-        <View style={styles.container}>
-          {crmStatus && <Animated.View
-            ref={markerRef}
-            style={[styles.transitionView, { transform: [{ translateY: markerTranslateY }] }]}
+        {showItem == 1 && <MarkerView />}
+        {showItem == 2 && <FilterView navigation={props.navigation} />}
+        {showItem == 3 && <AddLead screenProps={props.screenProps} />}
+        {showItem == 4 && <LocationInfo navigation={props.navigation} />}
+      </View>}
+      <View style={styles.container}>
+        <View style={styles.searchBox}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=> {
+              dispatch({type: SLIDE_STATUS, payload: false});
+              props.navigation.navigate("LocationSearch");
+            }}
           >
-            <MarkerView />
-          </Animated.View>}
-          {crmStatus && <Animated.View
-            ref={filterRef}
-            style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
-          >
-            <FilterView navigation={props.navigation} />
-          </Animated.View>}
-          {crmStatus && <Animated.View
-            ref={addLeadRef}
-            style={[styles.transitionView, { transform: [{ translateY: addLeadTranslateY }] }]}
-          >
-            <AddLead props={props} />
-          </Animated.View>}
-          {crmStatus && <Animated.View
-            ref={locationInfoRef}
-            style={[styles.transitionView, { transform: [{ translateY: locationInfoTranslateY }] }]}
-          >
-            <LocationInfo navigation={props.navigation} />
-          </Animated.View>}
-          <View style={styles.searchBox}>
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={()=> {
-                dispatch({type: SLIDE_STATUS, payload: false});
-                props.navigation.navigate("LocationSearch");
-              }}
-            >
-              <View pointerEvents='none'>
-                <TextInput
-                  style={[styles.searchInput, boxShadow]}
-                  placeholder='Search.....'
-                />
-              </View>
-            </TouchableOpacity>
-            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-            <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
-              <SvgIcon icon="Filter" width="30px" height="30px" />
-            </TouchableOpacity>
-          </View>
-          <MapView
-            moveOnMarkerPress={false}
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            showsUserLocation = {true}
-            followUserLocation = {true}
-            showsMyLocationButton = {true}
-            zoomEnabled = {true}
-            region={mapRegion}
-            onPress={(e) => console.log(e)}
-          >
-            {markers.map((marker, key) => (
-              <Marker
-                key={key}
-                coordinate={marker.latlng}
-                onPress={() => animation("locationInfo")}
-              >
-                <MarkerIcon style={styles.markerIcon} icon={marker.icon} width="34px" height="34px" />
-              </Marker>
-            ))}
-            <MapView.Circle
-              center = {mapRegion}
-              radius = { 200 }
-              strokeWidth = { 1 }
-              strokeColor = {PRIMARY_COLOR}
-              fillColor = { 'rgba(230,238,255,0.5)' }
-            />
-            <MapView.Circle
-              center = {mapRegion}
-              radius = { 30 }
-              strokeWidth = { 3 }
-              strokeColor = { '#fff' }
-              fillColor = { PRIMARY_COLOR }
-            />
-          </MapView>
-          <TouchableOpacity 
-            style={styles.plusButton} 
-            onPress={() => animation("addLead")}
-          >
-            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+            <View pointerEvents='none'>
+              <TextInput
+                style={[styles.searchInput, boxShadow]}
+                placeholder='Search.....'
+              />
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.pinKeyButton}
-            onPress={() => animation("marker")}
-          >
-            <SlidUpArrow />
+          <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+          <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
+            <SvgIcon icon="Filter" width="30px" height="30px" />
           </TouchableOpacity>
         </View>
-      </OutsideView>
+        <MapView
+          moveOnMarkerPress={false}
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          showsUserLocation = {true}
+          followUserLocation = {true}
+          showsMyLocationButton = {true}
+          zoomEnabled = {true}
+          region={mapRegion}
+          onPress={(e) => console.log(e)}
+        >
+          {markers.map((marker, key) => (
+            <Marker
+              key={key}
+              coordinate={marker.latlng}
+              onPress={() => animation("locationInfo")}
+            >
+              <MarkerIcon style={styles.markerIcon} icon={marker.icon} width="34px" height="34px" />
+            </Marker>
+          ))}
+          <MapView.Circle
+            center = {mapRegion}
+            radius = { 200 }
+            strokeWidth = { 1 }
+            strokeColor = {PRIMARY_COLOR}
+            fillColor = { 'rgba(230,238,255,0.5)' }
+          />
+          <MapView.Circle
+            center = {mapRegion}
+            radius = { 30 }
+            strokeWidth = { 3 }
+            strokeColor = { '#fff' }
+            fillColor = { PRIMARY_COLOR }
+          />
+        </MapView>
+        <TouchableOpacity 
+          style={styles.plusButton} 
+          onPress={() => animation("addLead")}
+        >
+          <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.pinKeyButton}
+          onPress={() => animation("marker")}
+        >
+          <SlidUpArrow />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
 
-const perWidth = setWidthBreakpoints(850);
+const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
     position: 'relative',
     height: '100%',
-    display: 'flex',
     justifyContent: 'space-between',
     backgroundColor: BG_COLOR,
   },
@@ -363,7 +268,6 @@ const styles = EStyleSheet.create(parse({
     padding: 5
   },
   slidUpArrow: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
@@ -423,14 +327,12 @@ const styles = EStyleSheet.create(parse({
     right: 20,
   },
   markerContent: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap'
   },
   markerBox: {
     width: perWidth('30%', '45%'),
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20

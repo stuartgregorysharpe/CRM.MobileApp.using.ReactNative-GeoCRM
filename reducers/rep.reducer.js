@@ -2,10 +2,12 @@ import {
   SLIDE_STATUS,
   CHANGE_PROFILE_STATUS,
   CHANGE_MORE_STATUS,
-  SHOW_MORE_COMPONENT
+  SHOW_MORE_COMPONENT,
+  CHANGE_LOGIN_STATUS
 } from '../actions/actionTypes';
 
 const initialState = {
+  statusLogin: false,
   crmSlideStatus: false,
   showProfile: 1,
   showMoreScreen: 1,
@@ -15,6 +17,11 @@ const initialState = {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state=initialState, action) => {
   switch(action.type) {
+    case CHANGE_LOGIN_STATUS:
+      return {
+        ...state,
+        statusLogin: action.payload
+      }
     case SLIDE_STATUS:
       return {
         ...state,

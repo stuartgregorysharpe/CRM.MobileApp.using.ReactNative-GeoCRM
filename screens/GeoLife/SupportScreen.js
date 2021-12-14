@@ -11,6 +11,7 @@ import SvgIcon from '../../components/SvgIcon';
 import GrayBackground from '../../components/GrayBackground';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import { boxShadow } from '../../constants/Styles';
 
 const lists = [
   {
@@ -67,16 +68,16 @@ function CreateTicket({closeSlider}) {
           </TouchableOpacity>
           <Portal>
             <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 1")}>
+              <TouchableOpacity style={[styles.pickerItem, boxShadow]} onPress={selectItem.bind(null, "Issue 1")}>
                 <Text style={styles.pickerItemText}>Issue 1</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 2")}>
+              <TouchableOpacity style={[styles.pickerItem, boxShadow]} onPress={selectItem.bind(null, "Issue 2")}>
                 <Text style={styles.pickerItemText}>Issue 2</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 3")}>
+              <TouchableOpacity style={[styles.pickerItem, boxShadow]} onPress={selectItem.bind(null, "Issue 3")}>
                 <Text style={styles.pickerItemText}>Issue 3</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 4")}>
+              <TouchableOpacity style={[styles.pickerItem, boxShadow]} onPress={selectItem.bind(null, "Issue 4")}>
                 <Text style={styles.pickerItemText}>Issue 4</Text>
               </TouchableOpacity>
             </Modal>
@@ -257,6 +258,7 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     padding: 10,
+    backgroundColor: '#fff',
     borderRadius: 7,
     marginBottom: 8
   },

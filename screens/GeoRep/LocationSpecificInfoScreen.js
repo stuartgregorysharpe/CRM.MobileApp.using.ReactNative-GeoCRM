@@ -10,6 +10,7 @@ import { boxShadow } from '../../constants/Styles';
 import FilterButton from '../../components/FilterButton';
 import SvgIcon from '../../components/SvgIcon';
 import MarkerIcon from '../../components/Marker';
+import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const specificInfo = [
@@ -71,7 +72,7 @@ export default function LocationSpecificInfoScreen(props) {
     <SafeAreaView>
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
-          <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'}}>
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
                 <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
@@ -87,17 +88,22 @@ export default function LocationSpecificInfoScreen(props) {
           <View style={styles.headerTitleBox}>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.headerIcon} icon="Location_Arrow_White" width='14px' height='14px' />
-              <Text style={styles.subtitle}>Address</Text>
+              <Text style={styles.subtitle}>Address:</Text>
             </View>
             <Text style={styles.title}>Century City Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa</Text>
+            <TouchableOpacity style={styles.checkoutButton}>
+              <Text style={styles.checkoutButtonText}>Check out</Text>
+            </TouchableOpacity>
           </View>
-          <FilterButton text="Contact: Jack Reacher" />
+          <View style={styles.filterButton}>
+            <FilterButton text="Contact: Jack Reacher" />
+          </View>
         </View>
         <View style={styles.innerContainer}>
           <View style={styles.locationInfoBox}>
             <View style={[styles.cardBox, boxShadow]}>
               <Text style={styles.boldText}>Outcome</Text>
-              <View style={{display: 'flex', flexDirection: 'row', position: 'relative'}}>
+              <View style={{flexDirection: 'row', position: 'relative'}}>
                 <View style={styles.outComeBox}>
                   <Rectangle style={{width: '48%'}} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
                   <Rectangle style={{width: '48%'}} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
@@ -139,7 +145,7 @@ export default function LocationSpecificInfoScreen(props) {
   )
 }
 
-const perWidth = setWidthBreakpoints(850);
+const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
@@ -153,13 +159,16 @@ const styles = EStyleSheet.create(parse({
     marginBottom: 8
   },
   headerTitleBox: {
+    flexDirection: perWidth('row', 'column'),
+    alignItems: 'flex-start',
     marginBottom: 8
   },
   subtitleBox: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    height: 20,
     marginBottom: 8,
+    marginRight: 8
   },
   subtitle: {
     fontSize: 12,
@@ -175,13 +184,13 @@ const styles = EStyleSheet.create(parse({
     fontSize: 14,
     color: '#fff',
     fontFamily: 'Gilroy-Bold',
-    lineHeight: 22
+    lineHeight: 22,
+    maxWidth: 300
   },
   headerIcon: {
     marginRight: 8
   },
   innerContainer: {
-    display: 'flex',
     justifyContent: 'space-between',
     flexDirection: perWidth('row-reverse', 'column')
   },
@@ -190,7 +199,6 @@ const styles = EStyleSheet.create(parse({
   },
   cardContainer: {
     width: perWidth('33%', '100%'),
-    display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
@@ -216,7 +224,6 @@ const styles = EStyleSheet.create(parse({
     fontFamily: 'Gilroy-Medium'
   },
   card: {
-    display: 'flex',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     marginBottom: 8,
@@ -226,7 +233,6 @@ const styles = EStyleSheet.create(parse({
     borderRadius: 10,
   },
   cardTitleBox: {
-    display: 'flex',
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -240,7 +246,6 @@ const styles = EStyleSheet.create(parse({
     fontFamily: 'Gilroy-Bold',
   },
   cardTextBox: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -257,7 +262,6 @@ const styles = EStyleSheet.create(parse({
     elevation: 1,
   },
   rectangle: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -275,10 +279,28 @@ const styles = EStyleSheet.create(parse({
     height: 68
   },
   outComeBox: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     marginRight: 88,
+  },
+  filterButton: {
+    display: perWidth('none', 'flex')
+  },
+  checkoutButton: {
+    display: perWidth('flex', 'none'),
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginLeft: 'auto',
+    width: 160,
+    height: 40,
+    borderRadius: 20
+  },
+  checkoutButtonText: {
+    fontSize: 16,
+    color: PRIMARY_COLOR,
+    fontFamily: 'Product Sans-Medium',
   }
 }));

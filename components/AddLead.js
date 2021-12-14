@@ -1,4 +1,4 @@
-import React, {useState, useRef } from 'react';
+import React, {useState, useEffect, useRef } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -10,9 +10,10 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 
-export default function AddLead() {
+export default function AddLead({screenProps}) {
   const dispatch = useDispatch();
 
   const customerNameRef = useRef();
@@ -37,7 +38,8 @@ export default function AddLead() {
     longitude: -122.4324,
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121
-  })
+  });
+
   return (
       <ScrollView style={styles.container}>
         <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
@@ -198,17 +200,18 @@ export default function AddLead() {
   )
 }
 
-const perWidth = setWidthBreakpoints(850);
+const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: 'BG_COLOR',
     padding: 10,
     marginBottom: 10,
-    maxHeight: Dimensions.get('window').height - 100
+    height: Dimensions.get('window').height - 100,
+    zIndex: 100,
+    elevation: 100
   },
   header: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -1,17 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { 
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from './SvgIcon';
 import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
-import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT } from '../actions/actionTypes';
+import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
 
 const lists = {
   0: [
@@ -26,6 +19,12 @@ const lists = {
       name: "CRM",
       navigator: "CRM",
       navOrder: "crm_locations"
+    },
+    {
+      icon: "Travel_Explore",
+      name: "Web Links",
+      navigator: "RepWebLinks",
+      navOrder: "web_links"
     },
     {
       icon: "Calendar_Event_Fill",
@@ -58,18 +57,6 @@ const lists = {
       navOrder: "notifications"
     },
     {
-      icon: "Travel_Explore",
-      name: "Web Links",
-      navigator: "RepWebLinks",
-      navOrder: "web_links"
-    },
-    {
-      icon: "Account_Circle",
-      name: "Help",
-      navigator: "RepHelp",
-      navOrder: "help"
-    },
-    {
       icon: "Account_Circle",
       name: "Messages",
       navigator: "RepMessages",
@@ -77,7 +64,7 @@ const lists = {
     },
     {
       icon: "Cloud_Off",
-      name: "Sync",
+      name: "Offline Sync Items",
       navigator: "OfflineSync",
       navOrder: "offline_sync"
     },
@@ -96,9 +83,9 @@ const lists = {
     {
       icon: "Support_Agent",
       name: "Support",
-      navigator: "Support",
+      navigator: "RepSupport",
       navOrder: "support"
-    },
+    }
   ],
   1: [
     {
@@ -163,12 +150,6 @@ const lists = {
     },
     {
       icon: "Account_Circle",
-      name: "Help",
-      navigator: "LifeHelp",
-      navOrder: "help"
-    },
-    {
-      icon: "Account_Circle",
       name: "Loyalty Cards",
       navigator: "LoyaltyCards",
       navOrder: "loyalty_cards"
@@ -187,12 +168,6 @@ const lists = {
     },
     {
       icon: "Account_Circle",
-      name: "Profile",
-      navigator: "Profile",
-      navOrder: "profile"
-    },
-    {
-      icon: "Account_Circle",
       name: "Report Fraud",
       navigator: "ReportFraud",
       navOrder: "report_fraud"
@@ -208,6 +183,12 @@ const lists = {
       name: "Well-being",
       navigator: "WellBeing",
       navOrder: "well_being"
+    },
+    {
+      icon: "Support_Agent",
+      name: "Support",
+      navigator: "LifeSupport",
+      navOrder: "support"
     }
   ],
   2: [
@@ -248,7 +229,6 @@ export default function Profile() {
       payload.user_scopes.geo_rep.modules_nav_order[10],
       payload.user_scopes.geo_rep.modules_nav_order[11],
       payload.user_scopes.geo_rep.modules_nav_order[12],
-      payload.user_scopes.geo_rep.modules_nav_order[13],
     ],
     1: [
       payload.user_scopes.geo_life.modules_nav_order[4],
@@ -291,6 +271,19 @@ export default function Profile() {
           </View>
         </View>
         <View style={styles.selectBox}>
+        <TouchableOpacity 
+          style={styles.selectButton} 
+          onPress={() => {
+            dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+            setTimeout(() => {
+              dispatch({type: CHANGE_PROFILE_STATUS, payload: 0});
+            })
+          }}>
+          <SvgIcon style={{marginRight: 8}} icon="Account_Circle" width='22px' height='22px' />
+          <Text style={styles.selectName}>Profile</Text>
+          <SvgIcon icon="Angle_Left" width='18px' height='18px' />
+        </TouchableOpacity>
+
           {selectProject == 'geo_rep' && lists[0].map((list, index) => (
             <Fragment key={index}>
               {componentLists[0].includes(list.navOrder) && <TouchableOpacity 
@@ -299,9 +292,9 @@ export default function Profile() {
                   dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                 }}>
-                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='24px' height='24px' />
+                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>
-                <SvgIcon icon="Angle_Left" width='20px' height='20px' />
+                <SvgIcon icon="Angle_Left" width='18px' height='18px' />
               </TouchableOpacity>}
             </Fragment>
           ))}
@@ -314,9 +307,9 @@ export default function Profile() {
                   dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                 }}>
-                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='24px' height='24px' />
+                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>
-                <SvgIcon icon="Angle_Left" width='20px' height='20px' />
+                <SvgIcon icon="Angle_Left" width='18px' height='18px' />
               </TouchableOpacity>}
             </Fragment>
           ))}
@@ -329,25 +322,15 @@ export default function Profile() {
                   dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                 }}>
-                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='24px' height='24px' />
+                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>
-                <SvgIcon icon="Angle_Left" width='20px' height='20px' />
+                <SvgIcon icon="Angle_Left" width='18px' height='18px' />
               </TouchableOpacity>}
             </Fragment>
           ))}
-
-          {/* <TouchableOpacity style={styles.selectButton} onPress={() => {
-            dispatch({type: SHOW_MORE_COMPONENT, payload: 'OfflineSyncItems'});
-            dispatch({type: CHANGE_MORE_STATUS, payload: 1});
-          }}>
-            <SvgIcon style={{marginRight: 8}} icon="Cloud_Off" width='24px' height='24px' />
-            <Text style={styles.selectName}>Offline Sync Items</Text>
-            <SvgIcon icon="Angle_Left" width='20px' height='20px' />
-          </TouchableOpacity> */}
-
           <TouchableOpacity style={styles.selectButton}>
             <Text style={styles.selectName}>Logout</Text>
-            <SvgIcon icon="Angle_Left" width='20px' height='20px' />
+            <Image style={{width: 20, height: 20}} source={require('../assets/images/sign_out.png')} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -357,7 +340,7 @@ export default function Profile() {
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
+    width: '100%',
     height: '100%',
     marginLeft: 'auto',
     backgroundColor: BG_COLOR,
@@ -369,7 +352,6 @@ const styles = StyleSheet.create({
   avatarBox: {
     position: 'relative',
     width: '100%',
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 12,
@@ -382,7 +364,6 @@ const styles = StyleSheet.create({
     right: 0,
   },
   avatar: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: PRIMARY_COLOR,
@@ -414,7 +395,6 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   selectButton: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -425,8 +405,8 @@ const styles = StyleSheet.create({
   },
   selectName: {
     flexGrow: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Gilroy-Medium',
     color: TEXT_COLOR
   }
-})
+});

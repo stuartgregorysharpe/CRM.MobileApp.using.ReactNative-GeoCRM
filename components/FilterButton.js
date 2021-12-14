@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 10,
     backgroundColor: '#fff',
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

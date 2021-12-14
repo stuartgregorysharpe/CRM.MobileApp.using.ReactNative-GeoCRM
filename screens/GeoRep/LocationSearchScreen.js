@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Animated, Easing, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import OutsideView from 'react-native-detect-press-outside';
+import GrayBackground from '../../components/GrayBackground';
 
 import FilterView from '../../components/FilterView';
 import SearchBar from '../../components/SearchBar';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
+import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
 const resultItemText = [
@@ -114,66 +115,45 @@ export default function LocationSearchScreen({navigation}) {
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
 
+  const [showItem, setShowItem] = useState(0);
+
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
   }, []);
 
-  const filterRef = useRef(null);
-  const filterAnimatedValue = useRef(new Animated.Value(1)).current;
-  const filterStartAnimation = (toValue) => {
-    Animated.timing(filterAnimatedValue, {
-      toValue,
-      duration: 500,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  };
-  const filterTranslateY = filterAnimatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').height + 100],
-    extrapolate: 'clamp',
-  });
-
   const animation = () => {
     dispatch({type: SLIDE_STATUS, payload: true});
-    filterStartAnimation(0);
+    setShowItem(1);
   }
 
   return (
     <SafeAreaView>
-      <OutsideView 
-        childRef={filterRef}
-        onPressOutside={() => {
-          dispatch({type: SLIDE_STATUS, payload: false});
-        }}
+      <GrayBackground />
+      {crmStatus && <View
+        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
       >
-        <View style={styles.container}>
-          {crmStatus && <Animated.View
-            ref={filterRef}
-            style={[styles.transitionView, { transform: [{ translateY: filterTranslateY }] }]}
-          >
-            <FilterView navigation={navigation} />
-          </Animated.View>}
-          <SearchBar animation={animation} />
-          <ScrollView style={{marginBottom: 70}}>
-            <Text style={styles.title}>Current Location</Text>
-            {resultItemText.map((item, key) => (
-              <ResultItem key={key} navigation={navigation} item={item} />
-            ))}
-          </ScrollView>
-        </View>
-      </OutsideView>
+        {showItem == 1 && <FilterView navigation={navigation} />}
+      </View>}
+      <View style={styles.container}>
+        <SearchBar animation={animation} />
+        <ScrollView>
+          <Text style={styles.title}>Current Location</Text>
+          {resultItemText.map((item, key) => (
+            <ResultItem key={key} navigation={navigation} item={item} />
+          ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
 
-const perWidth = setWidthBreakpoints(850);
+const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
     position: 'relative',
     backgroundColor: BG_COLOR,
-    marginBottom: 60,
+    height: '100%'
   },
   title: {
     color: PRIMARY_COLOR,
@@ -184,7 +164,6 @@ const styles = EStyleSheet.create(parse({
   },
   resultItem: {
     maxWidth: '100%',
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 8,
@@ -210,7 +189,7 @@ const styles = EStyleSheet.create(parse({
   },
   transitionView: {
     position: 'absolute',
-    bottom: 70,
+    bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: BG_COLOR,

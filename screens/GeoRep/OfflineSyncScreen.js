@@ -5,7 +5,7 @@ export default function OfflineSyncScreen({screenProps}) {
   useEffect(() => {
     if (screenProps) {
       screenProps.setOptions({
-        title: "Sync"
+        title: "Offline Sync Items"
       });
     }
   });

@@ -11,7 +11,6 @@ export default function Divider(props) {
 
 const styles = StyleSheet.create({
   layoutBarContent: {
-    display: 'flex',
     alignItems: 'center',
   },
   layoutBar: {

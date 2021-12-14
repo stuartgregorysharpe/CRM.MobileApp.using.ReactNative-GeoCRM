@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     backgroundColor: BG_COLOR
   },
   tabContainer: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 12,
@@ -157,7 +156,6 @@ const styles = StyleSheet.create({
     right: 10
   },
   itemContainer: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -174,7 +172,6 @@ const styles = StyleSheet.create({
     width: '35%',
   },
   itemTitleBox: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 4
