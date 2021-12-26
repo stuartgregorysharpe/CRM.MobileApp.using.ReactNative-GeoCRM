@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'geoverse_app_rn' do
+target 'GeoCRM' do
   config = use_native_modules!
 
   use_react_native!(
@@ -12,7 +12,11 @@ target 'geoverse_app_rn' do
     :hermes_enabled => false
   )
 
-  target 'geoverse_app_rnTests' do
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
+  target 'GeoCRMTests' do
     inherit! :complete
     # Pods for testing
   end

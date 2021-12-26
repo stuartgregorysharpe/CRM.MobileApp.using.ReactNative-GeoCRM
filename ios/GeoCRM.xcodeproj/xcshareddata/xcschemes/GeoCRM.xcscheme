@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "geoverse_app_rn.app"
-               BlueprintName = "geoverse_app_rn"
-               ReferencedContainer = "container:geoverse_app_rn.xcodeproj">
+               BuildableName = "GeoCRM.app"
+               BlueprintName = "GeoCRM"
+               ReferencedContainer = "container:GeoCRM.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "geoverse_app_rnTests.xctest"
-               BlueprintName = "geoverse_app_rnTests"
-               ReferencedContainer = "container:geoverse_app_rn.xcodeproj">
+               BuildableName = "GeoCRMTests.xctest"
+               BlueprintName = "GeoCRMTests"
+               ReferencedContainer = "container:GeoCRM.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "geoverse_app_rn.app"
-            BlueprintName = "geoverse_app_rn"
-            ReferencedContainer = "container:geoverse_app_rn.xcodeproj">
+            BuildableName = "GeoCRM.app"
+            BlueprintName = "GeoCRM"
+            ReferencedContainer = "container:GeoCRM.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "geoverse_app_rn.app"
-            BlueprintName = "geoverse_app_rn"
-            ReferencedContainer = "container:geoverse_app_rn.xcodeproj">
+            BuildableName = "GeoCRM.app"
+            BlueprintName = "GeoCRM"
+            ReferencedContainer = "container:GeoCRM.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

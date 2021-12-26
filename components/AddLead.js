@@ -42,11 +42,11 @@ export default function AddLead({screenProps}) {
 
   return (
       <ScrollView style={styles.container}>
-        <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+        <TouchableOpacity style={{padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
           <Divider />
         </TouchableOpacity>
         <View style={styles.header}>
-          <Title style={{fontFamily: 'Product Sans-Bold'}}>Add Lead</Title>
+          <Title style={{ fontFamily: 'Product Sans-Bold' }}>Add Lead</Title>
           <Button 
             labelStyle={{
               fontFamily: 'Product Sans-Regular', 
@@ -205,9 +205,6 @@ const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(parse({
   container: {
     backgroundColor: 'BG_COLOR',
-    padding: 10,
-    marginBottom: 10,
-    height: Dimensions.get('window').height - 100,
     zIndex: 100,
     elevation: 100
   },

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
 import LocationInfoInput from '../../components/LocationInfoInput';
+import Skeleton from '../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import FilterButton from '../../components/FilterButton';
@@ -65,24 +66,27 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
+  const locationInfo = useSelector(state => state.location.locationInfo);
+
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
   });
+
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
                 <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
-                <Text style={styles.subtitle}>Customer Name</Text>
+                <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name}</Text>
               </View>
-              <Text style={styles.title}>Best Deal Trading</Text>
+              <Text style={styles.title}>{locationInfo.location_name.value}</Text>
             </View>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.headerIcon} icon="Insert_Invitation" width='16px' height='16px' />
-              <Text style={styles.subtitle}>Last Interaction: 12 June 2021</Text>
+              <Text style={styles.subtitle}>Last Interaction: {locationInfo.last_interaction}</Text>
             </View>
           </View>
           <View style={styles.headerTitleBox}>
@@ -90,7 +94,7 @@ export default function LocationSpecificInfoScreen(props) {
               <SvgIcon style={styles.headerIcon} icon="Location_Arrow_White" width='14px' height='14px' />
               <Text style={styles.subtitle}>Address:</Text>
             </View>
-            <Text style={styles.title}>Century City Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa</Text>
+            <Text style={styles.title}>{locationInfo.address}</Text>
             <TouchableOpacity style={styles.checkoutButton}>
               <Text style={styles.checkoutButtonText}>Check out</Text>
             </TouchableOpacity>
@@ -103,12 +107,15 @@ export default function LocationSpecificInfoScreen(props) {
           <View style={styles.locationInfoBox}>
             <View style={[styles.cardBox, boxShadow]}>
               <Text style={styles.boldText}>Outcome</Text>
-              <View style={{flexDirection: 'row', position: 'relative'}}>
+              <View style={{ flexDirection: 'row', position: 'relative' }}>
                 <View style={styles.outComeBox}>
-                  <Rectangle style={{width: '48%'}} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
-                  <Rectangle style={{width: '48%'}} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{width: '48%'}} text="Priority Re-loop" icon="Orange_Star" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{width: '48%'}} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" />
+                  {locationInfo.outcomes.map((item, key) => (
+                    <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
+                  ))}
+                  {/* <Rectangle style={{ width: '48%' }} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
+                  <Rectangle style={{ width: '48%' }} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
+                  <Rectangle style={{ width: '48%' }} text="Priority Re-loop" icon="Orange_Star" backgroundColor="#fff" borderColor="#97ACC2" />
+                  <Rectangle style={{ width: '48%' }} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" /> */}
                 </View>
                 <TouchableOpacity>
                   <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
@@ -120,13 +127,16 @@ export default function LocationSpecificInfoScreen(props) {
           <View style={styles.cardContainer}>
             <View style={[styles.cardBox, boxShadow]}>
               <Text style={styles.boldText}>Stage</Text>
-              <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
+              {locationInfo.stages.map((item, key) => (
+                <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
+              ))}
+              {/* <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
               <Rectangle text="Contact" backgroundColor="#15A1234F" />
               <Rectangle text="DM" backgroundColor="#155AA14F" />
               <Rectangle text="Presentation" backgroundColor="#fff" borderColor="#97ACC2" />
-              <Rectangle style={{marginBottom: 0}} text="Order" backgroundColor="#fff" borderColor="#97ACC2" />
+              <Rectangle style={{ marginBottom: 0 }} text="Order" backgroundColor="#fff" borderColor="#97ACC2" /> */}
             </View>
-            {specificInfo.map((info, key) => (
+            {/* {specificInfo.map((info, key) => (
               <View key={key} style={[styles.card, boxShadow]}>
                 <View style={styles.cardTitleBox}>
                   <SvgIcon style={styles.cardIcon} icon={info.icon} width="15px" height="15px" />
@@ -134,9 +144,10 @@ export default function LocationSpecificInfoScreen(props) {
                 </View>
                 <Text style={styles.cardText}>{info.text}</Text>
               </View>
-            ))}
+            ))} */}
           </View>
         </View>
+        <View style={{height: 60}}></View>
       </ScrollView>
       <TouchableOpacity style={styles.plusButton}>
         <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
@@ -150,7 +161,7 @@ const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(parse({
   container: {
     backgroundColor: BG_COLOR,
-    padding: 10
+    padding: 10,
   },
   headerBox: {
     backgroundColor: PRIMARY_COLOR,
@@ -256,7 +267,7 @@ const styles = EStyleSheet.create(parse({
   },
   plusButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 80,
     right: 20,
     zIndex: 1,
     elevation: 1,

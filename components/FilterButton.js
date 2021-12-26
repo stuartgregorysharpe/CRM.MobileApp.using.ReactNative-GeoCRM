@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
@@ -7,13 +7,13 @@ import { TEXT_COLOR } from '../constants/Colors';
 
 export default function FilterButton(props) {
   return (
-    <View style={[styles.card, boxShadow]}>
+    <TouchableOpacity style={[styles.card, boxShadow]} onPress={props.onPress}>
       <View>
         <Text style={styles.cardtitle}>{props.text}</Text>
         {props.subText && <Text style={styles.cardSubtitle}>{props.subText}</Text>}
       </View>
       <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-    </View>
+    </TouchableOpacity>
   )
 }
   

@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import SvgIcon from './SvgIcon';
 import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
-import { CHANGE_BOTTOM_TAB_LIST, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
+import { CHANGE_SELECT_PROJECT, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
 
 export default function Profile() {
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
+  const userInfo = useSelector(state => state.auth.userInfo);
 
   return (
     <View style={styles.innerContainer}>
@@ -20,49 +21,49 @@ export default function Profile() {
         <Text style={styles.headerTitle}>Profile</Text>
         <View style={styles.avatar}>
           <Text style={styles.avatarLabel}>
-            {payload.user_scopes.geo_rep.user_name.split(' ')[0] && payload.user_scopes.geo_rep.user_name.split(' ')[0][0].toUpperCase()}
-            {payload.user_scopes.geo_rep.user_name.split(' ')[1] && payload.user_scopes.geo_rep.user_name.split(' ')[1][0].toUpperCase()}  
+            {userInfo.user_name.split(' ')[0] && userInfo.user_name.split(' ')[0][0].toUpperCase()}
+            {userInfo.user_name.split(' ')[1] && userInfo.user_name.split(' ')[1][0].toUpperCase()}  
           </Text>
         </View>
       </View>
       <View style={styles.profileInfo}>
-        <View style={{width: '48%'}}>
+        <View style={{ width: '48%' }}>
           <Text style={styles.label}>User Name:</Text>
           <Text style={styles.label}>Email Address:</Text>
           <Text style={styles.label}>Contact Details:</Text>
         </View>
-        <View style={{width: '48%'}}>
-          <Text style={styles.text}>{payload.user_scopes.geo_rep.user_name}</Text>
-          <Text style={styles.text}>{payload.user_scopes.geo_rep.user_email}</Text>
+        <View style={{ width: '48%' }}>
+          <Text style={styles.text}>{userInfo.user_name}</Text>
+          <Text style={styles.text}>{userInfo.user_email}</Text>
           <Text style={styles.text}>+27 81 691 7262</Text>
         </View>
       </View>
       <View style={styles.projectBox}>
         <Text style={styles.projectTitle}>App & Projects</Text>
         <View style={styles.selectBox}>
-          <TouchableOpacity style={styles.selectButton} onPress={() => {
-            dispatch({type: CHANGE_BOTTOM_TAB_LIST, payload: 'geo_rep'});
+          {payload.user_scopes.geo_rep && <TouchableOpacity style={styles.selectButton} onPress={() => {
+            dispatch({type: CHANGE_SELECT_PROJECT, payload: 'geo_rep'});
             dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
           }}>
-            <Text style={styles.selectName}>Geo Rep</Text>
+            <Text style={styles.selectName}>{payload.user_scopes.geo_rep.project_custom_name}</Text>
             {selectProject == 'geo_rep' && <SvgIcon icon="Check" width='20px' height='20px' />}
-          </TouchableOpacity>
+          </TouchableOpacity>}
 
-          <TouchableOpacity style={styles.selectButton} onPress={() => {
-            dispatch({type: CHANGE_BOTTOM_TAB_LIST, payload: 'geo_life'});
+          {payload.user_scopes.geo_life && <TouchableOpacity style={styles.selectButton} onPress={() => {
+            dispatch({type: CHANGE_SELECT_PROJECT, payload: 'geo_life'});
             dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
           }}>
-            <Text style={styles.selectName}>Geo Life</Text>
+            <Text style={styles.selectName}>{payload.user_scopes.geo_life.project_custom_name}</Text>
             {selectProject == 'geo_life' && <SvgIcon icon="Check" width='20px' height='20px' />}
-          </TouchableOpacity>
+          </TouchableOpacity>}
 
-          <TouchableOpacity style={styles.selectButton} onPress={() => {
-            dispatch({type: CHANGE_BOTTOM_TAB_LIST, payload: 'geo_crm'});
+          {payload.user_scopes.geo_crm && <TouchableOpacity style={styles.selectButton} onPress={() => {
+            dispatch({type: CHANGE_SELECT_PROJECT, payload: 'geo_crm'});
             dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
           }}>
-            <Text style={styles.selectName}>Geo CRM</Text>
+            <Text style={styles.selectName}>{payload.user_scopes.geo_crm.project_custom_name}</Text>
             {selectProject == 'geo_crm' && <SvgIcon icon="Check" width='20px' height='20px' />}
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
       </View>
     </View>

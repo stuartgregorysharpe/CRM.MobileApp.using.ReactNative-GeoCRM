@@ -3,17 +3,20 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
-import { TEXT_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
 
-export default function Card({icon, title, subtitle , image, showSlider}) {
+export default function Card({icon, title, subtitle , image, number, onPress}) {
   return (
-    <TouchableOpacity style={[styles.cardContainer, boxShadow]} onPress={showSlider}>
+    <TouchableOpacity style={[styles.cardContainer, boxShadow]} onPress={onPress}>
       {icon && <SvgIcon style={styles.leftIcon} icon={icon} width='24px' height='24px' />}
       {image && <Image style={styles.image} source={image} />}
-      <View style={{flexGrow: 1}}>
+      <View style={{ flexGrow: 1 }}>
         <Text style={styles.title}>{title}</Text>
         {subtitle && <Text style={styles.subTitile}>{subtitle}</Text>}
       </View>
+      {number && <View style={styles.numberBox}>
+        <Text style={styles.number}>{number}</Text>
+      </View>}
       <SvgIcon icon="Angle_Left" width='20px' height='20px' />
     </TouchableOpacity>
   )
@@ -49,5 +52,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Gilroy-Medium',
     color: TEXT_COLOR,
     marginTop: 4
+  },
+  numberBox: {
+    width: 24,
+    height: 24,
+    backgroundColor: PRIMARY_COLOR,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2,
+    marginRight: 4
+  },
+  number: {
+    fontFamily: 'Gilroy-Medium',
+    fontSize: 14,
+    color: '#fff'
   }
 })

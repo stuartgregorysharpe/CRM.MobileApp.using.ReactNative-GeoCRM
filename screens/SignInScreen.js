@@ -1,22 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from 'react-native-paper';
-import PasswordInputText from 'react-native-hide-show-password-input';
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
+import { baseURL } from '../constants';
 import { PRIMARY_COLOR } from '../constants/Colors';
+import { Login } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 
-export default function SignIn({screenProps}) {
+export default function SignIn() {
   const dispatch = useDispatch();
+  const loginStatus = useSelector(state => state.auth.loginStatus);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
+  const [isPassword, setIsPassword] = useState(true);
+
+  const passwordInput = useRef();
+
+  useEffect(() => {
+    if (loginStatus == "failed") {
+      setPasswordError(true);
+    }
+  }, [loginStatus])
+
+  const handleNext = () => {
+    if (email == '') {
+      setEmailError(true);
+      return;
+    }
+    dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
+    axios
+      .post(`${baseURL}/authentication_api/Auth/check_aad_login`, { email })
+      .then((res) => {
+        if (res.data.success.allow_aad_login == 0) {
+          setStep(true);
+          passwordInput.current.focus()
+          dispatch({ type: CHANGE_LOGIN_STATUS, payload: "logout" });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setEmailError(true);
+      });
+  }
 
   const handleSubmit = () => {
     if (email == '') {
@@ -25,10 +59,12 @@ export default function SignIn({screenProps}) {
     }
     if (password == '') {
       setPasswordError(true);
+      return;
     }
-    // setStep(true);
-    // dispatch({type: CHANGE_LOGIN_STATUS, payload: true});
+    dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
+    dispatch(Login(email, password));
   }
+
   return (
     <SafeAreaView>
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
@@ -39,7 +75,7 @@ export default function SignIn({screenProps}) {
         <View style={styles.textInputBox}>
           <TextInput
             style={styles.textInput}
-            label={<Text style={{backgroundColor: PRIMARY_COLOR}}>Email</Text>}
+            label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Email</Text>}
             mode="outlined"
             outlineColor="#fff"
             activeOutlineColor="#fff"
@@ -52,29 +88,35 @@ export default function SignIn({screenProps}) {
           />
           {emailError && <Text style={styles.errorText}>Please Input your email</Text>}
         </View>
-        <PasswordInputText
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        {!step && <View style={styles.textInputBox}>
+        {step && <View style={styles.textInputBox}>
           <TextInput
             style={styles.textInput}
-            label={<Text style={{backgroundColor: PRIMARY_COLOR}}>Password</Text>}
+            ref={passwordInput}
+            label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Password</Text>}
             mode="outlined"
             outlineColor="#fff"
             activeOutlineColor="#fff"
             value={password}
-            secureTextEntry={true}
+            secureTextEntry={isPassword ? true : false}
             onChangeText={text => {
               setPassword(text);
               setPasswordError(false);
             }}
             theme={{ colors: { text: '#fff', placeholder: '#fff' } }}
           />
+          <Icon
+            style={styles.eyeIcon}
+            name={isPassword ? `visibility-off` : `visibility`}
+            size={25}
+            color="#fff"
+            onPress={() => setIsPassword(!isPassword)}
+          />
           {passwordError && <Text style={styles.errorText}>Please Input Password</Text>}
         </View>}
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={[styles.submitButtonText]}>{step ? `Sign In` : `Next`}</Text>
+        <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
+          <Text style={[styles.submitButtonText]}>
+            {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
+          </Text>
           <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
         {step && <TouchableOpacity onPress={() => console.log("pressed")}>
@@ -94,8 +136,8 @@ const styles = StyleSheet.create({
     padding: 20
   },
   logo: {
-    width: 240,
-    height: 64,
+    width: 250,
+    height: 62,
     marginBottom: 8
   },
   title: {
@@ -103,8 +145,8 @@ const styles = StyleSheet.create({
     fontSize: 24
   },
   textInputBox: {
+    position: 'relative',
     marginTop: 12,
-    marginBottom: 24
   },
   textInput: {
     height: 40,
@@ -114,6 +156,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
+  eyeIcon: {
+    position: 'absolute',
+    top: 14,
+    right: 8
+  },
   submitButton: {
     position: 'relative',
     width: '100%',
@@ -122,6 +169,7 @@ const styles = StyleSheet.create({
     height: 40,
     paddingLeft: 20,
     paddingRight: 20,
+    marginTop: 24,
     marginBottom: 24,
     borderRadius: 7,
     backgroundColor: '#fff'
@@ -140,7 +188,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   errorText: {
-    color: 'yellow',
+    color: 'red',
     textAlign: 'center'
   }
 })

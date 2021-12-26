@@ -1,33 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Text, TextInput } from 'react-native';
-import { Title, Modal, Portal, Button, Provider } from 'react-native-paper';
+import React, { useRef, useState, useEffect } from 'react';
+import { SafeAreaView, View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { Modal, Portal, Provider, TextInput } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
-import Card from '../../components/Card';
-import Divider from '../../components/Divider';
 import SvgIcon from '../../components/SvgIcon';
-import GrayBackground from '../../components/GrayBackground';
-import { SLIDE_STATUS } from '../../actions/actionTypes';
+import { boxShadow } from '../../constants/Styles';
 import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
 
-const lists = [
-  {
-    icon: "Contact_Mail",
-    title: "Create Support Ticket"
-  },
-  {
-    icon: "Quiz",
-    title: "FAQ"
-  },
-  {
-    icon: "WhatsApp",
-    title: "Contact WhatsApp Support"
-  },
-];
-
-function CreateTicket({closeSlider}) {
+const Ticket = () => {
+  const emailRef = useRef();
+  const [email, setEmail] = useState('');
   const [modaVisible, setModalVisible] = useState(false);
   const [picker, setPicker] = useState('');
 
@@ -37,75 +21,81 @@ function CreateTicket({closeSlider}) {
   }
 
   return (
-    <ScrollView style={styles.sliderContainer}>
-      <TouchableOpacity style={{padding: 6}} onPress={closeSlider}>
-        <Divider />
+    <View>
+      <Text style={styles.description}>
+        Please fill in the above fields and upload any relevant screenshots that could help identify the problem your experiencing.
+      </Text>
+      <TouchableOpacity
+        style={{ width: '100%' }}
+        activeOpacity={1}
+        onPress={() => emailRef.current.focus()}
+      >
+        <View>
+          <TextInput
+            ref = {emailRef}
+            style={styles.textInput}
+            label="Email"
+            mode="outlined"
+            outlineColor="#133C8B"
+            activeOutlineColor="#9D9FA2"
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+        </View>
       </TouchableOpacity>
-      <View style={styles.sliderHeader}>
-        <Title style={{fontFamily: 'Product Sans-Bold'}}>Create a ticket</Title>
-        <Button 
-          labelStyle={{
-            fontFamily: 'Product Sans-Regular', 
-            letterSpacing: 0.2
-          }}
-          color="#DC143C" 
-          uppercase={false} 
-          onPress={() => console.log('Pressed')}
-        >
-          Clear
-        </Button>
-      </View>
-      <View style={styles.textFieldBox}>
-        <View style={styles.textFieldItem}>
-          <TextInput placeholder='Contact Details' style={styles.textField} />
+      <TouchableOpacity
+        style={{ width: '100%' }}
+        activeOpacity={1}
+        onPress={() => setModalVisible(true)}
+      >
+        <View pointerEvents="none">
+          <TextInput
+            style={styles.textInput}
+            label={picker == '' ? "Select Issue" : picker}
+            mode="outlined"
+            outlineColor="#133C8B"
+            activeOutlineColor="#9D9FA2"
+          />
+          <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
         </View>
-        <View style={styles.textFieldItem}>
-          <TouchableOpacity style={[styles.textField, styles.picker]} onPress={() => setModalVisible(true)}>
-            {picker == '' && <Text>Select Issue</Text>}
-            <Text>{picker}</Text>
-            <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-          </TouchableOpacity>
-          <Portal>
-            <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 1")}>
-                <Text style={styles.pickerItemText}>Issue 1</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 2")}>
-                <Text style={styles.pickerItemText}>Issue 2</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 3")}>
-                <Text style={styles.pickerItemText}>Issue 3</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 4")}>
-                <Text style={styles.pickerItemText}>Issue 4</Text>
-              </TouchableOpacity>
-            </Modal>
-          </Portal>
-        </View>
-        <View style={styles.textFieldItem}>
-          <TextInput placeholder='Issue details can be entered here' style={styles.textField} />
-        </View>
-      </View>
+      </TouchableOpacity>
+      <TextInput
+        style={styles.textArea}
+        mode="outlined"
+        outlineColor="#133C8B"
+        activeOutlineColor="#9D9FA2"
+        placeholder="Issue details can be entered here..."
+        multiline={true}
+        numberOfLines={4}
+      />
       <TouchableOpacity style={styles.downloadButton}>
         <Text style={styles.downloadText}>Upload Image</Text>
         <SvgIcon icon="File_Download" width='18px' height='18px' />
       </TouchableOpacity>
-      <Text style={styles.description}>
-        Please fill in the above fields and upload any relevant screenshots that could help identify the problem your experiencing.
-      </Text>
-
-      <TouchableOpacity style={styles.submitButton} onPress={() => console.log("pressed")}>
-        <Text style={[styles.submitButtonText]}>Submit</Text>
-        <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
-      </TouchableOpacity>
-    </ScrollView>
+      <Portal>
+        <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
+          <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 1")}>
+            <Text style={styles.pickerItemText}>Issue 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 2")}>
+            <Text style={styles.pickerItemText}>Issue 2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 3")}>
+            <Text style={styles.pickerItemText}>Issue 3</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, "Issue 4")}>
+            <Text style={styles.pickerItemText}>Issue 4</Text>
+          </TouchableOpacity>
+        </Modal>
+      </Portal>
+    </View>
   )
 }
 
 export default function SupportScreen({navigation, screenProps}) {
-  const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const [showItem, setShowItem] = useState(0);
+  const [tabIndex, setTabIndex] = useState(1);
+  
 
   useEffect(() => {
     navigation.setOptions({
@@ -142,41 +132,29 @@ export default function SupportScreen({navigation, screenProps}) {
       }
     }
   });
-  
-  const showSlider = (index) => {
-    switch(index) {
-      case 0:
-        setShowItem(1);
-        dispatch({type: SLIDE_STATUS, payload: true});
-        return;
-      case 1:
-        setShowItem(2);
-        return;
-      case 2:
-        setShowItem(3);
-        return;
-      default:
-        return;
-    }
-  }
 
   return (
     <Provider>
       <SafeAreaView>
-        <GrayBackground />
-        {crmStatus && <View
-          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-        >
-          {showItem == 1 && <CreateTicket 
-            closeSlider={() => {
-              dispatch({type: SLIDE_STATUS, payload: false});
-            }} 
-          />}
-        </View>}
-        <ScrollView style={styles.container}>
-          {lists.map((item, index) => (
-            <Card icon={item.icon} title={item.title} subtitle={item.subtitle} key={index} showSlider={showSlider.bind(null, index)} />
-          ))}
+        <ScrollView style={styles.container} contentContainerStyle={{ height: '100%', justifyContent: 'space-between' }}>
+          <View style={[styles.tabContainer, boxShadow]}>
+            <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(1)}>
+            <Text style={[styles.tabText, tabIndex == 1 ? styles.tabActiveText : {}]}>Ticket</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(2)}>
+              <Text style={[styles.tabText, tabIndex == 2 ? styles.tabActiveText : {}]}>FAQ</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(3)}>
+            <Text style={[styles.tabText, tabIndex == 3 ? styles.tabActiveText : {}]}>WhatsApp</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexGrow: 1 }}>
+            {tabIndex == 1 && <Ticket />}
+          </View>
+          <TouchableOpacity style={styles.submitButton} onPress={() => console.log("pressed")}>
+            <Text style={[styles.submitButtonText]}>Submit</Text>
+            <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </Provider>
@@ -186,27 +164,44 @@ export default function SupportScreen({navigation, screenProps}) {
 const styles = StyleSheet.create({
   container: {
     minHeight: '100%',
-    backgroundColor: BG_COLOR,
-    padding: 10
-  },
-  transitionView: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: BG_COLOR,
-    elevation: 2,
-    zIndex: 2,
+    backgroundColor: 'BG_COLOR',
     padding: 10,
   },
-  sliderContainer: {
-    maxHeight: Dimensions.get('window').height - 100,
-  },
-  sliderHeader: {
+  tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10
+    justifyContent: 'space-around',
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderRadius: 7,
+    backgroundColor: '#fff',
+    marginBottom: 8
+  },
+  tabText: {
+    fontFamily: 'Gilroy-Medium',
+    fontSize: 15,
+    color: '#9D9FA2'
+  },
+  tabActiveText: {
+    color: PRIMARY_COLOR,
+    fontFamily: 'Gilroy-Bold',
+    borderBottomColor: PRIMARY_COLOR,
+    borderBottomWidth: 2,
+    paddingBottom: 2,
+  },
+  textInput: {
+    height: 40,
+    fontSize: 14,
+    lineHeight: 30,
+    backgroundColor: BG_COLOR,
+    fontFamily: 'Gilroy-Medium',
+    marginBottom: 8
+  },
+  textArea: {
+    fontSize: 14,
+    lineHeight: 30,
+    backgroundColor: BG_COLOR,
+    fontFamily: 'Gilroy-Medium',
+    marginBottom: 20,
   },
   submitButton: {
     position: 'relative',
@@ -230,26 +225,6 @@ const styles = StyleSheet.create({
   submitButtonIcon: {
     position: 'absolute',
     right: 10
-  },
-  textFieldBox: {
-    marginBottom: 12
-  },
-  textFieldItem: {
-    marginBottom: 10
-  },
-  textField: {
-    backgroundColor: '#fff',
-    borderRadius: 7,
-    borderColor: PRIMARY_COLOR,
-    borderWidth: 1,
-    paddingLeft: 8,
-    paddingRight: 8,
-    height: 40
-  },
-  picker: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
   },
   pickerItemBox: {
     backgroundColor: BG_COLOR, 
@@ -282,11 +257,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Product Sans-Medium',
     color: PRIMARY_COLOR
   },
+  pickerIcon: {
+    position: 'absolute',
+    top: 15,
+    right: 8
+  },
   description: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'Product Sans-Bold',
-    textAlign: 'center',
     color: '#000',
-    marginBottom: 100
+    paddingTop: 12,
+    marginBottom: 20
   }
 })

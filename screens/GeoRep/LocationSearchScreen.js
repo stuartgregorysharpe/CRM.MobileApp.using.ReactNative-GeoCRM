@@ -1,149 +1,143 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import GrayBackground from '../../components/GrayBackground';
 
+import LocationInfo from '../../components/LocationInfo';
 import FilterView from '../../components/FilterView';
 import SearchBar from '../../components/SearchBar';
+import Skeleton from '../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
+import { getLocationInfo } from '../../actions/location.action';
 
-const resultItemText = [
-  {
-    title: 'Prospective Client',
-    number: '0.06 mi',
-    text: '3412 W Magnolia Blvd',
-    result: 'Opportunity: Invalid lead',
-    color: '#8850BF'
-  },
-  {
-    title: 'Prospective Client',
-    number: '0.18 mi',
-    text: '3407 W Olive Ave',
-    result: 'Contact: Language Barrier',
-    color: '#12E1FC'
-  },
-  {
-    title: 'Prospective Client',
-    number: '0.08 mi',
-    text: '3727 W Magnolia Blvd',
-    result: 'Presentation: DNK Request',
-    color: '#DC143C'
-  },
-  {
-    title: 'Prospective Client',
-    number: '0.16 mi',
-    text: '3111 N Kenwood St',
-    result: 'DM: Priority Re-loop',
-    color: '#DC143C'
-  },
-  {
-    title: 'Prospective Client',
-    number: '1.12 mi',
-    text: '3500 W Olive Ave',
-    result: 'Opportunity: House Account',
-    color: '#8850BF'
-  },
-  {
-    title: 'Prospective Client',
-    number: '1.24 mi',
-    text: '2333 N Ontario St',
-    result: 'DM: DNK Request',
-    color: '#DC143C'
-  },
-  {
-    title: 'Prospective Client',
-    number: '1.98 mi',
-    text: '3519 W Pacific Ave',
-    result: 'DM: Priority Re-loop',
-    color: '#DC143C'
-  },
-  {
-    title: 'Prospective Client',
-    number: '2.17 mi',
-    text: '2500 W Burbank Blvd',
-    result: 'Contact: House Account',
-    color: '#12E1FC'
-  },
-  {
-    title: 'Prospective Client',
-    number: '2.17 mi',
-    text: '2000 N Hollywood Way',
-    result: 'Re-loop: No Contact (DM)',
-    color: '#0AD10A'
-  },
-  {
-    title: 'Prospective Client',
-    number: '2.48 mi',
-    text: '3523 W Burbank Blvd',
-    result: 'DM: Priority Re-loop',
-    color: '#F7931E'
-  },
-  {
-    title: 'Prospective Client',
-    number: '3.11 mi',
-    text: '731 N Hollywood Way',
-    result: 'DM: DNK Request',
-    color: '#DC143C'
-  },
-  {
-    title: 'African American Library',
-    number: '3.41 mi',
-    text: '1200 Victor St Houston',
-    result: 'Order: Closed Won - Call Center',
-    color: '#D9AE30'
-  },
-]
+const ResultItem = ({navigation, item, animation}) => {
+  const dispatch = useDispatch();
 
-const ResultItem = ({navigation, item}) => (
-  <TouchableOpacity style={styles.resultItem} onPress={() => {navigation.navigate('LocationSpecificInfo');}}>
-    <View style={{maxWidth: '48%'}}>
-      <Text style={styles.subTitle}>{item.title}</Text>
-      <Text style={styles.text}>{item.text}</Text>
-    </View>
-    <View style={{maxWidth: '48%'}}>
-      <Text style={[styles.subTitle, styles.textRight]}>{item.number}</Text>
-      <Text style={[styles.text, styles.textRight, {color: item.color}]}>{item.result}</Text>
-    </View>
-  </TouchableOpacity>
-)
+  return (
+    <TouchableOpacity style={styles.resultItem} onPress={() => {
+      animation();
+      dispatch(getLocationInfo(Number(item.location_id)));
+    }}>
+      <View style={{ maxWidth: '48%' }}>
+        <Text style={styles.subTitle}>{item.name}</Text>
+        <Text style={styles.text}>{item.address}</Text>
+      </View>
+      <View style={{ maxWidth: '48%' }}>
+        <Text style={[styles.subTitle, styles.textRight]}>
+          {item.distance} mi
+        </Text>
+        <Text style={[styles.text, styles.textRight]}>{item.status}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
 
 export default function LocationSearchScreen({navigation}) {
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+  const statusLocationSearchLists = useSelector(state => state.location.statusLocationSearchLists);
+  const locationSearchLists = useSelector(state => state.location.locationSearchLists);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
 
+  const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
+
+  const getDistance = (prelatlng, currentlatlng) => {
+    const prevLatInRad = toRad(Number(prelatlng.latitude));
+    const prevLongInRad = toRad(Number(prelatlng.longitude));
+    const latInRad = toRad(currentlatlng.latitude);
+    const longInRad = toRad(currentlatlng.longitude);
+  
+    return (
+      // In mile
+      3963 *
+      Math.acos(
+        Math.sin(prevLatInRad) * Math.sin(latInRad) +
+          Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
+      )
+    );
+  }
+  
+  const toRad = (angle) => {
+    return (angle * Math.PI) / 180;
+  }
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
   }, []);
 
-  const animation = () => {
+  useEffect(() => {
+    let items = [];
+    locationSearchLists.map((list, key) => {
+      let item = {
+        name: list.name,
+        address: list.address,
+        distance: getDistance(list.coordinates, currentLocation).toFixed(2),
+        status: list.status,
+        location_id: list.location_id
+      }
+      items.push(item);
+    });
+    items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+    setOrderLists(items);
+  }, [locationSearchLists]);
+
+  const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
-    setShowItem(1);
+    switch(name) {
+      case "filter":
+        setShowItem(1);
+        return;
+      case "locationInfo":
+        setShowItem(2);
+        return;
+      default:
+        return;
+    }
+  }
+
+  if (statusLocationSearchLists == "request") {
+    return (
+      <SafeAreaView>
+        <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
+          {Array.from(Array(6)).map((_, key) => (
+            <Skeleton key={key} />  
+          ))}
+        </View>
+      </SafeAreaView>
+    )
   }
 
   return (
-    <SafeAreaView>
-      <GrayBackground />
-      {crmStatus && <View
-        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-      >
-        {showItem == 1 && <FilterView navigation={navigation} />}
-      </View>}
-      <View style={styles.container}>
-        <SearchBar animation={animation} />
-        <ScrollView>
-          <Text style={styles.title}>Current Location</Text>
-          {resultItemText.map((item, key) => (
-            <ResultItem key={key} navigation={navigation} item={item} />
-          ))}
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+    <Provider>
+      <SafeAreaView>
+        <GrayBackground />
+        {crmStatus && showItem == 1 && <View
+          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+        >
+          <FilterView navigation={navigation} />
+        </View>}
+        {crmStatus && showItem == 2 && <View
+          style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+        >
+          <LocationInfo navigation={navigation} />
+        </View>}
+        <View style={styles.container}>
+          <SearchBar animation={() => animation("filter")} />
+          <ScrollView>
+            <Text style={styles.title}>Current Location</Text>
+            {orderLists.map((locationSearchList, key) => (
+              <ResultItem key={key} navigation={navigation} item={locationSearchList} animation={() => animation("locationInfo")} />
+            ))}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </Provider>
   )
 }
 
@@ -153,7 +147,8 @@ const styles = EStyleSheet.create(parse({
   container: {
     position: 'relative',
     backgroundColor: BG_COLOR,
-    height: '100%'
+    height: '100%',
+    paddingBottom: 70
   },
   title: {
     color: PRIMARY_COLOR,

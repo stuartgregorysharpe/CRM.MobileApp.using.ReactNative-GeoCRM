@@ -3,13 +3,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaView, StatusBar, Animated, Easing, Dimensions, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import SignIn from '../screens/SignIn';
+import SignInScreen from '../screens/SignInScreen';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import Profile from '../components/Profile';
 import More from '../components/More';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { grayBackground } from '../constants/Styles';
-import { CHANGE_PROFILE_STATUS, CHANGE_MORE_STATUS } from '../actions/actionTypes';
+import { SLIDE_STATUS, CHANGE_PROFILE_STATUS, CHANGE_MORE_STATUS } from '../actions/actionTypes';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +17,13 @@ export default function AppScreens() {
   const dispatch = useDispatch();
   const showProfile = useSelector(state => state.rep.showProfile);
   const showMoreScreen = useSelector(state => state.rep.showMoreScreen);
-  const statusLogin = useSelector(state => state.rep.statusLogin);
+  const loginStatus = useSelector(state => state.auth.loginStatus);
+
+  useEffect(() => {
+    dispatch({type: SLIDE_STATUS, payload: false});
+    dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
+    dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+  }, []);
 
   useEffect(() => {
     moreStartAnimation(showMoreScreen);
@@ -49,17 +55,17 @@ export default function AppScreens() {
 
   const moreTranslateX = moreAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').width + 100],
+    outputRange: [0, Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width + 100 : Dimensions.get('window').height + 100 ],
     extrapolate: 'clamp',
   });
   const profileTranslateX = profileAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, -Dimensions.get('window').width - 100],
+    outputRange: [0, Dimensions.get('window').width > Dimensions.get('window').height ? -Dimensions.get('window').width - 100 : -Dimensions.get('window').height - 100 ],
     extrapolate: 'clamp',
   });
-  if (!statusLogin) {
+  if (loginStatus != "success") {
     return (
-      <SignIn />
+      <SignInScreen />
     )
   }
   return (

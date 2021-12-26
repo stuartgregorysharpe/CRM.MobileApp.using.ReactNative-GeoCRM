@@ -47,7 +47,7 @@ function CalendarItem({title, location, time, distance}) {
     <View style={styles.itemContainer}>
       <View style={styles.itemLeft}>
         <View style={styles.itemTitleBox}>
-          <SvgIcon style={{marginRight: 4}} icon="Location_Arrow" width='12px' height='12px' />
+          <SvgIcon style={{ marginRight: 4 }} icon="Location_Arrow" width='12px' height='12px' />
           <Text style={styles.itemTitle}>{title}</Text>
         </View>
         <Text style={styles.itemText}>{location}</Text>
@@ -56,7 +56,6 @@ function CalendarItem({title, location, time, distance}) {
         <Text style={[styles.itemTitle, {textAlign: 'center'}]}>{time}</Text>
         <TouchableOpacity style={styles.itemButton}>
           <Text style={styles.itemButtonText}>Check In</Text>
-          {/* <FontAwesomeIcon style={styles.itemButtonIcon} size={14} color="#fff" icon={ faChevronRight } /> */}
           <FontAwesomeIcon style={styles.itemButtonIcon} size={16} color="#fff" icon={ faCheckCircle } />
         </TouchableOpacity>
         <Text style={[styles.itemText, {textAlign: 'center'}]}>{distance}</Text>
@@ -185,7 +184,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     fontFamily: 'Gilroy-Medium',
-    color: '#9D9FA2'
+    color: '#9D9FA2',
+    maxHeight: 36
   },
   itemButton: {
     position: 'relative',

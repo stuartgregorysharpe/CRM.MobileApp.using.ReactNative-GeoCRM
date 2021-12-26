@@ -1,48 +1,79 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
+import { useSelector } from 'react-redux';
 
 import SvgIcon from './SvgIcon';
 import { TEXT_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 
 export default function LocationInfoInput() {
-  const gateKeeperNameRef = useRef();
-  const previousStateRef = useRef();
-  const furthestOpenStageRef = useRef();
-  const notesRef = useRef();
-  const workTimeRef = useRef();
-  const modifiedDateRef = useRef();
-  const retensionWeekRef = useRef();
-  const retainedSalesRef = useRef();
-  const retainedSalesPercentRef = useRef();
-  const quillCashRef = useRef();
-  const currentProviderRef = useRef();
-  const commonlyPurchasedItemsRef = useRef();
+  const locationInfo = useSelector(state => state.location.locationInfo);
+  const dispositionRef = useRef();
+  const [dispositionValue, setDispositionValue] = useState([]);
+  const [datePickerMode, setDatePickerMode] = useState("date");
+  const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
+  const [dateTimeKey, setDateTimeKey] = useState(null);
 
-  const [gateKeeperName, setGateKeeperName] = useState('');
-  const [previousState, setPreviousStage] = useState('');
-  const [furthestOpenStage, setFurthestOpenStage] = useState('');
-  const [notes, setNotes] = useState('');
-  const [workTime, setWorkTime] = useState('');
-  const [modifiedDate, setModifiedDate] = useState('');
-  const [retensionWeek, setRetensionWeek] = useState('');
-  const [retainedSales, setRetainedSales] = useState('');
-  const [retainedSalesPercent, setRetainedSalesPercent] = useState('');
-  const [quillCash, setQuillCash] = useState('');
-  const [currentProvider, setCurrentProvider] = useState('');
-  const [commonlyPurchasedItems, setCommonlyPurchasedItems] = useState('');
+  useEffect(() => {
+    let items = [];
+    locationInfo.disposition_fields.forEach(element => {
+      items.push(element.value)
+    });
+    setDispositionValue(items);
+  }, [locationInfo])
+
+  const handleChangeText = (text, field, key) => {
+    if (field.rule_characters.split(',')[0] == "<" && text.length > Number(field.rule_characters.split(',')[1])) {
+      return;
+    }
+    if (
+      (field.field_type == "alphanumeric" && (
+        text[text.length - 1].charCodeAt() < 48 || 
+        (text[text.length - 1].charCodeAt() > 57 && text[text.length - 1].charCodeAt() < 65) || 
+        (text[text.length - 1].charCodeAt() > 90 && text[text.length - 1].charCodeAt() < 97) || 
+        text[text.length - 1].charCodeAt() > 122
+      )) || (field.field_type == "numeric" && (text[text.length - 1].charCodeAt() < 48 || text[text.length - 1].charCodeAt() > 57))
+    ) return;
+    setDispositionValue([...dispositionValue.slice(0, key), text, ...dispositionValue.slice(key + 1, dispositionValue.length)])
+  }
+
+  const handleFocus = (fieldType, key) => {
+    setDateTimeKey(key);
+    if (fieldType == "date") {
+      setDatePickerMode("date");
+      setDateTimePickerVisibility(true);
+    }
+    if (fieldType == "datetime") {
+      setDatePickerMode("datetime");
+      setDateTimePickerVisibility(true);
+    }
+  }
+
+  const handleConfirm = (date) => {
+    let datetime = "";
+    if (datePickerMode == "date") {
+      datetime = String(date.getFullYear()) + "-" + String(date.getMonth() + 1) + "-" + String(date.getDate());
+    } else if (datePickerMode == "datetime") {
+      datetime = String(date.getFullYear()) + "-" + String(date.getMonth() + 1) + "-" + String(date.getDate()) + " " + String(date.getHours()) + ":" + String(date.getMinutes());
+    }
+    setDispositionValue([...dispositionValue.slice(0, dateTimeKey), datetime, ...dispositionValue.slice(dateTimeKey + 1, dispositionValue.length)])
+    setDateTimePickerVisibility(false)
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.refreshBox}>
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Stage</Text>
-          <View style={{flexGrow: 1}}>
+          <View style={{ flexGrow: 1 }}>
             <TouchableOpacity style={[styles.button, {width: 150}]}>
-              <Text style={styles.buttonText}>Opportunity</Text>
+              <Text style={styles.buttonText}>
+                {locationInfo.stages.find(x=> x.stage_id ==locationInfo.current_stage_id).stage_name}
+              </Text>
             </TouchableOpacity>
           </View>
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
@@ -51,9 +82,11 @@ export default function LocationInfoInput() {
       <View style={styles.refreshBox}>
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
-          <View style={{flexGrow: 1}}>
+          <View style={{ flexGrow: 1 }}>
             <TouchableOpacity style={[styles.button, {width: 120}]}>
-              <Text style={styles.buttonText}>Invalid Lead</Text>
+              <Text style={styles.buttonText}>
+                {locationInfo.outcomes.find(x=> x.outcome_id ==locationInfo.current_outcome_id).outcome_name}
+              </Text>
             </TouchableOpacity>
           </View>
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
@@ -64,223 +97,43 @@ export default function LocationInfoInput() {
       </View>
       <Text style={styles.boldText}>Campaign: Quill Test</Text>
       <View style={styles.inputBox}>
-        <TouchableOpacity
-          style={styles.textInputWidthOne}
-          activeOpacity={1}
-          onPress={()=>gateKeeperNameRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {gateKeeperNameRef}
-              style={styles.textInput}
-              label="GateKeeper Name"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={gateKeeperName}
-              onChangeText={text => setGateKeeperName(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthOne}
-          activeOpacity={1}
-          onPress={()=>previousStateRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {previousStateRef}
-              style={styles.textInput}
-              label="Previous Stage and Outcome"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={previousState}
-              onChangeText={text => setPreviousStage(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthOne}
-          activeOpacity={1}
-          onPress={()=>furthestOpenStageRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={furthestOpenStageRef}
-              style={styles.textInput}
-              label="Furthest Open Stage and Outcome"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={furthestOpenStage}
-              onChangeText={text => setFurthestOpenStage(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthOne}
-          activeOpacity={1}
-          onPress={()=>notesRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={notesRef}
-              style={styles.textInput}
-              label="Notes"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={notes}
-              onChangeText={text => setNotes(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthTwo}
-          activeOpacity={1}
-          onPress={()=>workTimeRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={workTimeRef}
-              style={styles.textInput}
-              label={<Text style={{backgroundColor: BG_COLOR}}>Date/Time to Work</Text>}
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={workTime}
-              onChangeText={text => setWorkTime(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthTwo}
-          activeOpacity={1}
-          onPress={()=>modifiedDateRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={modifiedDateRef}
-              style={styles.textInput}
-              label={<Text style={{backgroundColor: BG_COLOR}}>Outcome modified Date</Text>}
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={modifiedDate}
-              onChangeText={text => setModifiedDate(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthTwo}
-          activeOpacity={1}
-          onPress={()=>retensionWeekRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={retensionWeekRef}
-              style={styles.textInput}
-              label={<Text style={{backgroundColor: BG_COLOR}}>Retension Week</Text>}
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={retensionWeek}
-              onChangeText={text => setRetensionWeek(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthTwo}
-          activeOpacity={1}
-          onPress={()=>retainedSalesRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={retainedSalesRef}
-              style={styles.textInput}
-              label={<Text style={{backgroundColor: BG_COLOR}}>Retained Sales</Text>}
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={retainedSales}
-              onChangeText={text => setRetainedSales(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthTwo}
-          activeOpacity={1}
-          onPress={()=>retainedSalesPercentRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={retainedSalesPercentRef}
-              style={styles.textInput}
-              label={<Text style={{backgroundColor: BG_COLOR}}>Retained Sales Percent</Text>}
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={retainedSalesPercent}
-              onChangeText={text => setRetainedSalesPercent(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthTwo}
-          activeOpacity={1}
-          onPress={()=>quillCashRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={quillCashRef}
-              style={styles.textInput}
-              label={<Text style={{backgroundColor: BG_COLOR}}>Quill Cash Available</Text>}
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={quillCash}
-              onChangeText={text => setQuillCash(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthOne}
-          activeOpacity={1}
-          onPress={()=>currentProviderRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={currentProviderRef}
-              style={styles.textInput}
-              label="Current Provider"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={currentProvider}
-              onChangeText={text => setCurrentProvider(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.textInputWidthOne}
-          activeOpacity={1}
-          onPress={()=>commonlyPurchasedItemsRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref={commonlyPurchasedItemsRef}
-              style={styles.textInput}
-              label="Commonly Purchased Items"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={commonlyPurchasedItems}
-              onChangeText={text => setCommonlyPurchasedItems(text)}
-            />
-          </View>
-        </TouchableOpacity>
+        {locationInfo.disposition_fields.map((field, key) => (
+          <TouchableOpacity
+            key={key}
+            style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
+            activeOpacity={1}
+            onPress={()=>{
+              if (field.rule_editable == 0) return;
+              dispositionRef.current.focus();
+            }}
+          >
+            <View>
+              <TextInput
+                type={field.field_type}
+                ref={dispositionRef}
+                keyboardType={field.field_type == "numeric" ? 'numeric' : 'default'}
+                style={styles.textInput}
+                label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={dispositionValue[key]}
+                disabled={field.rule_editable == 0}
+                onChangeText={text => handleChangeText(text, field, key)}
+                onPressIn={handleFocus.bind(null, field.field_type, key)}
+                left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
+                right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
+              />
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
+      <DateTimePickerModal
+        isVisible={isDateTimePickerVisible}
+        mode={datePickerMode}
+        onConfirm={handleConfirm}
+        onCancel={() => setDateTimePickerVisibility(false)}
+      />
     </View>
   )
 }

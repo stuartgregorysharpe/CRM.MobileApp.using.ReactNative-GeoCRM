@@ -139,14 +139,23 @@ const Turquoise = `
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
-        {icon == "Purple_X" && <SvgXml style={style} xml={Purple_X} width={width} height={height} />}
-        {icon == "Red_X" && <SvgXml style={style} xml={Red_X} width={width} height={height} />}
-        {icon == "Red_Star" && <SvgXml style={style} xml={Red_Star} width={width} height={height} />}
-        {icon == "Red_Triangle" && <SvgXml style={style} xml={Red_Triangle} width={width} height={height} />}
-        {icon == "Grey_Triangle" && <SvgXml style={style} xml={Grey_Triangle} width={width} height={height} />}
-        {icon == "Gold_Star" && <SvgXml style={style} xml={Gold_Star} width={width} height={height} />}
-        {icon == "Green_Star" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
-        {icon == "Orange_Star" && <SvgXml style={style} xml={Orange_Star} width={width} height={height} />}
-        {icon == "Turquoise" && <SvgXml style={style} xml={Turquoise} width={width} height={height} />}
+        {icon == "Purple_X.png" && <SvgXml style={style} xml={Purple_X} width={width} height={height} />}
+        {icon == "Red_X.png" && <SvgXml style={style} xml={Red_X} width={width} height={height} />}
+        {icon == "Red_Star.png" && <SvgXml style={style} xml={Red_Star} width={width} height={height} />}
+        {icon == "Red_Triangle.png" && <SvgXml style={style} xml={Red_Triangle} width={width} height={height} />}
+        {icon == "Grey_Triangle.png" && <SvgXml style={style} xml={Grey_Triangle} width={width} height={height} />}
+        {icon == "Gold_Star.png" && <SvgXml style={style} xml={Gold_Star} width={width} height={height} />}
+        {icon == "Green_Star.png" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
+        {icon == "Orange-Star.png" && <SvgXml style={style} xml={Orange_Star} width={width} height={height} />}
+        {icon == "Turquoise.png" && <SvgXml style={style} xml={Turquoise} width={width} height={height} />}
+        {icon == "purple_X_20211215.png" && <SvgXml style={style} xml={Purple_X} width={width} height={height} />}
+        {icon == "red_X_20211215.png" && <SvgXml style={style} xml={Red_X} width={width} height={height} />}
+        {icon == "red_star_20211215.png" && <SvgXml style={style} xml={Red_Star} width={width} height={height} />}
+        {icon == "red_triangle_20211215.png" && <SvgXml style={style} xml={Red_Triangle} width={width} height={height} />}
+        {icon == "grey_triangle_20211215.png" && <SvgXml style={style} xml={Grey_Triangle} width={width} height={height} />}
+        {icon == "gold_star_20211215.png" && <SvgXml style={style} xml={Gold_Star} width={width} height={height} />}
+        {icon == "green_star_20211215.png" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
+        {icon == "orange_star_20211215.png" && <SvgXml style={style} xml={Orange_Star} width={width} height={height} />}
+        {icon == "blue_star_20211215.png" && <SvgXml style={style} xml={Turquoise} width={width} height={height} />}
     </Fragment>
 );

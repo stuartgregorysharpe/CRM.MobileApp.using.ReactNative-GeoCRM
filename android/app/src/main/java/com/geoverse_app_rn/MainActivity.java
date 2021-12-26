@@ -17,6 +17,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "geoverse_app_rn";
+    return "GeoCRM";
   }
 }

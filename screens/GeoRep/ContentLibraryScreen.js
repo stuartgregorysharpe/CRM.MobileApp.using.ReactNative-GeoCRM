@@ -1,49 +1,117 @@
-import React, { useEffect } from 'react';
-import { SafeAreaView, View, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, View, StyleSheet, ScrollView, Text } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Searchbar from '../../components/SearchBar';
 import Card from '../../components/Card';
 import { BG_COLOR } from '../../constants/Colors';
+import { CHANGE_LIBRARY_CHILD_STATUS } from '../../actions/actionTypes';
 
-const lists = [
+const libraryLists = [
   {
-    icon: "Description",
     title: "Best Practice Examples",
-    subtitle: "21.96kb, Modified on 2021_05_29"
+    number: 11,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      }
+    ]
   },
   {
-    icon: "Wallpaper",
     title: "Price List May 2020",
-    subtitle: "21.96kb, Modified on 2021_05_29"
+    number: 6,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      }
+    ]
   },
   {
-    icon: "Description",
     title: "Policies & Procedures",
-    subtitle: "21.96kb, Modified on 2021_05_29"
+    number: 2,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      },
+      {
+        icon: "Wallpaper",
+        title: "Mobile Phone Policy",
+        subtitle: "43.96kb, Modified on 2021_05_29"
+      },
+      {
+        icon: "Description",
+        title: "Health & Safety Policy.",
+        subtitle: "23.96kb, Modified on 2021_05_29"
+      },
+      {
+        icon: "Description",
+        title: "Internet & Email Policy",
+        subtitle: "21.96kb, Modified on 2021_05_29"
+      },
+      {
+        icon: "Video_Library",
+        title: "Help Video",
+        subtitle: "21.96kb, Modified on 2021_05_29"
+      }
+    ]
   },
   {
-    icon: "Description",
     title: "Trade Presenters",
-    subtitle: "21.96kb, Modified on 2021_05_29"
+    number: 4,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      }
+    ]
   },
   {
-    icon: "Video_Library",
     title: "Training Videos",
-    subtitle: "21.96kb, Modified on 2021_05_29"
+    number: 3,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      }
+    ]
   },
   {
-    icon: "Description",
     title: "Promo Grid",
-    subtitle: "21.96kb, Modified on 2021_05_29"
+    number: 8,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      }
+    ]
   },
   {
-    icon: "Description",
     title: "Field Sales Guide",
-    subtitle: "21.96kb, Modified on 2021_05_29"
-  }
+    number: 1,
+    children: [
+      {
+        icon: "Description",
+        title: "Code & Conduct",
+        subtitle: "71.96kb, Modified on 2021_05_29"
+      }
+    ]
+  },
 ];
 
 export default function ContentLibraryScreen({screenProps}) {
+  const showLibraryChild = useSelector(state => state.rep.showLibraryChild);
+  const dispatch = useDispatch();
+  const [childList, setChildList] = useState({});
+
   useEffect(() => {
     if (screenProps) {
       screenProps.setOptions({
@@ -51,13 +119,33 @@ export default function ContentLibraryScreen({screenProps}) {
       });
     }
   });
+
+  const showChildItem = (index) => {
+    dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
+    setChildList(libraryLists[index]);
+  }
+
+  if (showLibraryChild) {
+    return (
+      <SafeAreaView>
+        <ScrollView style={styles.container}>
+          <View style={styles.innerContainer}>
+            <Text style={{ fontSize: 18, color: '#000', fontFamily: 'Gilroy-Bold', marginBottom: 10 }}>{childList.title}</Text>
+            {childList.children.map((item, index) => (
+              <Card icon={item.icon} title={item.title} subtitle={item.subtitle} key={index} />
+            ))}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
         <Searchbar />
         <View style={styles.innerContainer}>
-          {lists.map((item, index) => (
-            <Card icon={item.icon} title={item.title} subtitle={item.subtitle} key={index} />
+          {libraryLists.map((item, index) => (
+            <Card title={item.title} number={item.number} key={index} onPress={showChildItem.bind(null, index)}/>
           ))}
         </View>
       </ScrollView>

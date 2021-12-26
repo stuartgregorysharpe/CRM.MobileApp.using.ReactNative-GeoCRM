@@ -1,10 +1,16 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from './SvgIcon';
 import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
-import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
+import { 
+  CHANGE_MORE_STATUS, 
+  SHOW_MORE_COMPONENT, 
+  CHANGE_PROFILE_STATUS,
+  CHANGE_LIBRARY_CHILD_STATUS,
+  CHANGE_LOGIN_STATUS
+} from '../actions/actionTypes';
 
 const lists = {
   0: [
@@ -80,12 +86,12 @@ const lists = {
       navigator: "RepSalesPipeline",
       navOrder: "sales_pipeline"
     },
-    {
-      icon: "Support_Agent",
-      name: "Support",
-      navigator: "RepSupport",
-      navOrder: "support"
-    }
+    // {
+    //   icon: "Support_Agent",
+    //   name: "Support",
+    //   navigator: "RepSupport",
+    //   navOrder: "support"
+    // }
   ],
   1: [
     {
@@ -184,12 +190,12 @@ const lists = {
       navigator: "WellBeing",
       navOrder: "well_being"
     },
-    {
-      icon: "Support_Agent",
-      name: "Support",
-      navigator: "LifeSupport",
-      navOrder: "support"
-    }
+    // {
+    //   icon: "Support_Agent",
+    //   name: "Support",
+    //   navigator: "LifeSupport",
+    //   navOrder: "support"
+    // }
   ],
   2: [
     {
@@ -217,39 +223,50 @@ export default function Profile() {
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
+  const userInfo = useSelector(state => state.auth.userInfo);
 
-  const componentLists = {
-    0: [
-      payload.user_scopes.geo_rep.modules_nav_order[4],
-      payload.user_scopes.geo_rep.modules_nav_order[5],
-      payload.user_scopes.geo_rep.modules_nav_order[6],
-      payload.user_scopes.geo_rep.modules_nav_order[7],
-      payload.user_scopes.geo_rep.modules_nav_order[8],
-      payload.user_scopes.geo_rep.modules_nav_order[9],
-      payload.user_scopes.geo_rep.modules_nav_order[10],
-      payload.user_scopes.geo_rep.modules_nav_order[11],
-      payload.user_scopes.geo_rep.modules_nav_order[12],
-    ],
-    1: [
-      payload.user_scopes.geo_life.modules_nav_order[4],
-      payload.user_scopes.geo_life.modules_nav_order[5],
-      payload.user_scopes.geo_life.modules_nav_order[6],
-      payload.user_scopes.geo_life.modules_nav_order[7],
-      payload.user_scopes.geo_life.modules_nav_order[8],
-      payload.user_scopes.geo_life.modules_nav_order[9],
-      payload.user_scopes.geo_life.modules_nav_order[10],
-      payload.user_scopes.geo_life.modules_nav_order[11],
-      payload.user_scopes.geo_life.modules_nav_order[12],
-      payload.user_scopes.geo_life.modules_nav_order[13],
-      payload.user_scopes.geo_life.modules_nav_order[14],
-      payload.user_scopes.geo_life.modules_nav_order[15],
-      payload.user_scopes.geo_life.modules_nav_order[16],
-      payload.user_scopes.geo_life.modules_nav_order[17]
-    ],
-    2: [
-      payload.user_scopes.geo_crm.modules_nav_order[4]
-    ]
-  };
+  const [ componentListOne, setComponentListOne ] = useState([]);
+  const [ componentListTwo, setComponentListTwo ] = useState([]);
+  const [ componentListThree, setComponentListThree ] = useState([]);
+
+  useEffect(() => {
+    if (payload.user_scopes.geo_rep) {
+      setComponentListOne([
+        payload.user_scopes.geo_rep.modules_nav_order[4],
+        payload.user_scopes.geo_rep.modules_nav_order[5],
+        payload.user_scopes.geo_rep.modules_nav_order[6],
+        payload.user_scopes.geo_rep.modules_nav_order[7],
+        payload.user_scopes.geo_rep.modules_nav_order[8],
+        payload.user_scopes.geo_rep.modules_nav_order[9],
+        payload.user_scopes.geo_rep.modules_nav_order[10],
+        payload.user_scopes.geo_rep.modules_nav_order[11],
+        payload.user_scopes.geo_rep.modules_nav_order[12],
+      ]);
+    }
+    if (payload.user_scopes.geo_life) {
+      setComponentListTwo([
+        payload.user_scopes.geo_life.modules_nav_order[4],
+        payload.user_scopes.geo_life.modules_nav_order[5],
+        payload.user_scopes.geo_life.modules_nav_order[6],
+        payload.user_scopes.geo_life.modules_nav_order[7],
+        payload.user_scopes.geo_life.modules_nav_order[8],
+        payload.user_scopes.geo_life.modules_nav_order[9],
+        payload.user_scopes.geo_life.modules_nav_order[10],
+        payload.user_scopes.geo_life.modules_nav_order[11],
+        payload.user_scopes.geo_life.modules_nav_order[12],
+        payload.user_scopes.geo_life.modules_nav_order[13],
+        payload.user_scopes.geo_life.modules_nav_order[14],
+        payload.user_scopes.geo_life.modules_nav_order[15],
+        payload.user_scopes.geo_life.modules_nav_order[16],
+        payload.user_scopes.geo_life.modules_nav_order[17]
+      ]);
+    }
+    if (payload.user_scopes.geo_crm) {
+      setComponentListThree([
+        payload.user_scopes.geo_crm.modules_nav_order[4]
+      ]);
+    };
+  }, [payload]);
 
   return (
     <SafeAreaView>
@@ -260,13 +277,13 @@ export default function Profile() {
           </TouchableOpacity>
           <View style={styles.avatar}>
             <Text style={styles.avatarLabel}>
-              {payload.user_scopes.geo_rep.user_name.split(' ')[0] && payload.user_scopes.geo_rep.user_name.split(' ')[0][0].toUpperCase()}
-              {payload.user_scopes.geo_rep.user_name.split(' ')[1] && payload.user_scopes.geo_rep.user_name.split(' ')[1][0].toUpperCase()}
+              {userInfo.user_name.split(' ')[0] && userInfo.user_name.split(' ')[0][0].toUpperCase()}
+              {userInfo.user_name.split(' ')[1] && userInfo.user_name.split(' ')[1][0].toUpperCase()}
             </Text>
           </View>
-          <View style={{width: '48%'}}>
-            <Text style={styles.boldText}>{payload.user_scopes.geo_rep.user_name}</Text>
-            <Text style={styles.text}>{payload.user_scopes.geo_rep.user_email}</Text>
+          <View style={{ width: '48%' }}>
+            <Text style={styles.boldText}>{userInfo.user_name}</Text>
+            <Text style={styles.text}>{userInfo.user_email}</Text>
             <Text style={styles.text}>+27 81 691 7262</Text>
           </View>
         </View>
@@ -279,20 +296,21 @@ export default function Profile() {
               dispatch({type: CHANGE_PROFILE_STATUS, payload: 0});
             })
           }}>
-          <SvgIcon style={{marginRight: 8}} icon="Account_Circle" width='22px' height='22px' />
+          <SvgIcon style={{ marginRight: 8 }} icon="Account_Circle" width='22px' height='22px' />
           <Text style={styles.selectName}>Profile</Text>
           <SvgIcon icon="Angle_Left" width='18px' height='18px' />
         </TouchableOpacity>
 
           {selectProject == 'geo_rep' && lists[0].map((list, index) => (
             <Fragment key={index}>
-              {componentLists[0].includes(list.navOrder) && <TouchableOpacity 
+              {componentListOne.includes(list.navOrder) && <TouchableOpacity 
                 style={styles.selectButton} 
                 onPress={() => {
-                  dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+                  dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+                  dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                 }}>
-                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='22px' height='22px' />
+                <SvgIcon style={{ marginRight: 8 }} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>
                 <SvgIcon icon="Angle_Left" width='18px' height='18px' />
               </TouchableOpacity>}
@@ -301,13 +319,14 @@ export default function Profile() {
 
           {selectProject == 'geo_life' && lists[1].map((list, index) => (
             <Fragment key={index}>
-              {componentLists[1].includes(list.navOrder) && <TouchableOpacity 
+              {componentListTwo.includes(list.navOrder) && <TouchableOpacity 
                 style={styles.selectButton} 
                 onPress={() => {
-                  dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+                  dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+                  dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                 }}>
-                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='22px' height='22px' />
+                <SvgIcon style={{ marginRight: 8 }} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>
                 <SvgIcon icon="Angle_Left" width='18px' height='18px' />
               </TouchableOpacity>}
@@ -316,21 +335,35 @@ export default function Profile() {
 
           {selectProject == 'geo_crm' && lists[2].map((list, index) => (
             <Fragment key={index}>
-              {componentLists[2].includes(list.navOrder) && <TouchableOpacity 
+              {componentListThree.includes(list.navOrder) && <TouchableOpacity 
                 style={styles.selectButton} 
                 onPress={() => {
-                  dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+                  dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+                  dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
                 }}>
-                <SvgIcon style={{marginRight: 8}} icon={list.icon} width='22px' height='22px' />
+                <SvgIcon style={{ marginRight: 8 }} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>
                 <SvgIcon icon="Angle_Left" width='18px' height='18px' />
               </TouchableOpacity>}
             </Fragment>
           ))}
-          <TouchableOpacity style={styles.selectButton}>
+
+          <TouchableOpacity 
+            style={styles.selectButton} 
+            onPress={() => {
+              dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+              dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+              dispatch({type: SHOW_MORE_COMPONENT, payload: "RepSupport"});
+            }}>
+            <SvgIcon style={{ marginRight: 8 }} icon="Support_Agent" width='22px' height='22px' />
+            <Text style={styles.selectName}>Support</Text>
+            <SvgIcon icon="Angle_Left" width='18px' height='18px' />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.selectButton} onPress={() => dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"})}>
             <Text style={styles.selectName}>Logout</Text>
-            <Image style={{width: 20, height: 20}} source={require('../assets/images/sign_out.png')} />
+            <Image style={{ width: 20, height: 20 }} source={require('../assets/images/sign_out.png')} />
           </TouchableOpacity>
         </View>
       </ScrollView>

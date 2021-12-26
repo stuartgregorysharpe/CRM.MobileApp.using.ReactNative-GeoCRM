@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions } from 'react-native';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +12,7 @@ import AddLead from '../../components/AddLead';
 import LocationInfo from '../../components/LocationInfo';
 import FilterView from '../../components/FilterView';
 import MarkerIcon from '../../components/Marker';
+import Skeleton from '../../components/Skeleton';
 import SvgIcon from '../../components/SvgIcon';
 import Divider from '../../components/Divider';
 import GrayBackground from '../../components/GrayBackground';
@@ -19,50 +21,45 @@ import { boxShadow } from '../../constants/Styles';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 
-const markerIcons = [
-  {
-    icon: 'Purple_X',
-    text: 'Invalid Lead / Vacant'
-  },
-  {
-    icon: 'Red_X',
-    text: 'DNK Request'
-  },
-  {
-    icon: 'Red_Star',
-    text: 'No Contant - DM (F)'
-  },
-  {
-    icon: 'Red_Triangle',
-    text: 'No Access - Final'
-  },
-  {
-    icon: 'Grey_Triangle',
-    text: 'Not Interested'
-  },
-  {
-    icon: 'Gold_Star',
-    text: 'Closed Won'
-  },
-  {
-    icon: 'Green_Star',
-    text: 'Re-loop'
-  },
-  {
-    icon: 'Orange_Star',
-    text: 'Priority Re-loop'
-  },
-  {
-    icon: 'Turquoise',
-    text: 'Language Barrier'
-  }
-];
+import { 
+  getLocationPinKey, 
+  getLocationFilters,
+  getLocationSearchList,
+  getLocationInfo,
+} from '../../actions/location.action';
 
 const MarkerView = () => {
   const dispatch = useDispatch();
+  const statusPinKeys = useSelector(state => state.location.statusPinKeys);
+  const pins = useSelector(state => state.location.locationPins);
+  const [markerIcons, setMarkerIcons] = useState([]);
+
+  useEffect(() => {
+    let items = [];
+    pins.map((pin, key) => {
+      items.push({
+        text: pin.label,
+        icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1]
+      })
+    })
+    setMarkerIcons(items)
+  }, [pins])
+
+  if (statusPinKeys == "request") {
+    return (
+      <SafeAreaView>
+        <View style={{padding: 10, justifyContent: 'center'}}>
+          {Array.from(Array(6)).map((_, key) => (
+            <Skeleton key={key} />  
+          ))}
+        </View>
+      </SafeAreaView>
+    )
+  }
+
   return (
     <Fragment>
-      <TouchableOpacity style={{padding: 6}} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+      <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
       <View style={styles.markerContent}>
@@ -86,6 +83,8 @@ const SlidUpArrow = () => (
 
 export default function LocationScreen(props) {
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+  const locationMaps = useSelector(state => state.location.locationMaps);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
 
   const [showItem, setShowItem] = useState(0);
@@ -93,6 +92,7 @@ export default function LocationScreen(props) {
   useEffect(() => {
     props.screenProps.setOptions({
       tabBarStyle: {
+        position: 'absolute',
         height: 60,
         paddingTop: 10,
         paddingBottom: 10,
@@ -108,36 +108,21 @@ export default function LocationScreen(props) {
     }
   });
 
-  const [mapRegion, setMapRegion] = useState({
-    latitude: -33.891321,
-    longitude: 18.505649,
-    latitudeDelta: 0.015,
-    longitudeDelta: 0.0121
-  });
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    };
+  }, [crmStatus]);
 
-  const [markers, setMarkers] = useState([
-    {
-      latlng: {
-        latitude: -33.896821,
-        longitude: 18.506450
-      },
-      icon: "Green_Star"
-    },
-    {
-      latlng: {
-        latitude: -33.891248,
-        longitude: 18.510959
-      },
-      icon: "Red_Triangle"
-    },
-    {
-      latlng: {
-        latitude: -33.888103,
-        longitude: 18.501482
-      },
-      icon: "Purple_X"
+  const handleBackButtonClick = () => {
+    if (crmStatus) {
+      dispatch({type: SLIDE_STATUS, payload: false});
+      return true;
     }
-  ]);
+    props.navigation.goBack();
+    return true;
+  }
 
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
@@ -158,88 +143,108 @@ export default function LocationScreen(props) {
         return;
     }
   }
-  
+
   return (
-    <SafeAreaView>
-      <GrayBackground />
-      {crmStatus && <View
-        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-      >
-        {showItem == 1 && <MarkerView />}
-        {showItem == 2 && <FilterView navigation={props.navigation} />}
-        {showItem == 3 && <AddLead screenProps={props.screenProps} />}
-        {showItem == 4 && <LocationInfo navigation={props.navigation} />}
-      </View>}
-      <View style={styles.container}>
-        <View style={styles.searchBox}>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={()=> {
-              dispatch({type: SLIDE_STATUS, payload: false});
-              props.navigation.navigate("LocationSearch");
+    <Provider>
+      <SafeAreaView>
+        <GrayBackground />
+        {crmStatus && (showItem == 1 || showItem == 2) && <View
+          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+        >
+          {showItem == 1 && <MarkerView />}
+          {showItem == 2 && <FilterView navigation={props.navigation} />}
+        </View>}
+        {crmStatus && (showItem == 3 || showItem == 4) && <View
+          style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+        >
+          {showItem == 3 && <AddLead screenProps={props.screenProps} />}
+          {showItem == 4 && <LocationInfo navigation={props.navigation} />}
+        </View>}
+        <View style={styles.container}>
+          <View style={styles.searchBox}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={()=> {
+                dispatch({type: SLIDE_STATUS, payload: false});
+                dispatch(getLocationSearchList());
+                props.navigation.navigate("LocationSearch");
+              }}
+            >
+              <View pointerEvents='none'>
+                <TextInput
+                  style={[styles.searchInput, boxShadow]}
+                  placeholder='Search.....'
+                />
+              </View>
+            </TouchableOpacity>
+            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+            <TouchableOpacity style={styles.filterImageButton} onPress={() => {
+              dispatch(getLocationFilters());
+              animation("filter");
+            }}>
+              <SvgIcon icon="Filter" width="30px" height="30px" />
+            </TouchableOpacity>
+          </View>
+          <MapView
+            moveOnMarkerPress={false}
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            showsUserLocation = {true}
+            followUserLocation = {true}
+            showsMyLocationButton = {true}
+            zoomEnabled = {true}
+            region={{
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+              latitudeDelta: 0.015,
+              longitudeDelta: 0.0121
+            }}
+            onPress={(e) => console.log(e)}
+          >
+            {locationMaps.map((locationMap, key) => (
+              <Marker
+                key={key}
+                coordinate={{
+                  latitude: Number(locationMap.coordinates.latitude),
+                  longitude: Number(locationMap.coordinates.longitude)
+                }}
+                onPress={() => {
+                  dispatch(getLocationInfo(Number(locationMap.location_id)));
+                  animation("locationInfo");
+                }}
+              >
+                <MarkerIcon style={styles.markerIcon} icon={locationMap.pin_image} width="34px" height="34px" />
+              </Marker>
+            ))}
+            <MapView.Circle
+              center = {{
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude
+              }}
+              radius = { 200 }
+              strokeWidth = { 1 }
+              strokeColor = {PRIMARY_COLOR}
+              fillColor = { 'rgba(230,238,255,0.5)' }
+            />
+          </MapView>
+          <TouchableOpacity 
+            style={styles.plusButton} 
+            onPress={() => animation("addLead")}
+          >
+            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.pinKeyButton}
+            onPress={() => {
+              dispatch(getLocationPinKey());
+              animation("marker");
             }}
           >
-            <View pointerEvents='none'>
-              <TextInput
-                style={[styles.searchInput, boxShadow]}
-                placeholder='Search.....'
-              />
-            </View>
-          </TouchableOpacity>
-          <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-          <TouchableOpacity style={styles.filterImageButton} onPress={() => animation("filter")}>
-            <SvgIcon icon="Filter" width="30px" height="30px" />
+            <SlidUpArrow />
           </TouchableOpacity>
         </View>
-        <MapView
-          moveOnMarkerPress={false}
-          provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          showsUserLocation = {true}
-          followUserLocation = {true}
-          showsMyLocationButton = {true}
-          zoomEnabled = {true}
-          region={mapRegion}
-          onPress={(e) => console.log(e)}
-        >
-          {markers.map((marker, key) => (
-            <Marker
-              key={key}
-              coordinate={marker.latlng}
-              onPress={() => animation("locationInfo")}
-            >
-              <MarkerIcon style={styles.markerIcon} icon={marker.icon} width="34px" height="34px" />
-            </Marker>
-          ))}
-          <MapView.Circle
-            center = {mapRegion}
-            radius = { 200 }
-            strokeWidth = { 1 }
-            strokeColor = {PRIMARY_COLOR}
-            fillColor = { 'rgba(230,238,255,0.5)' }
-          />
-          <MapView.Circle
-            center = {mapRegion}
-            radius = { 30 }
-            strokeWidth = { 3 }
-            strokeColor = { '#fff' }
-            fillColor = { PRIMARY_COLOR }
-          />
-        </MapView>
-        <TouchableOpacity 
-          style={styles.plusButton} 
-          onPress={() => animation("addLead")}
-        >
-          <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.pinKeyButton}
-          onPress={() => animation("marker")}
-        >
-          <SlidUpArrow />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </Provider>
   )
 }
 
@@ -251,6 +256,7 @@ const styles = EStyleSheet.create(parse({
     height: '100%',
     justifyContent: 'space-between',
     backgroundColor: BG_COLOR,
+    paddingBottom: 60
   },
   map: {
     flexGrow: 1
@@ -258,13 +264,13 @@ const styles = EStyleSheet.create(parse({
   plusButton: {
     position: 'absolute',
     right: 20,
-    bottom: 40,
+    bottom: 100,
   },
   pinKeyButton: {
     position: 'absolute',
     right: perWidth('auto', 9),
     left: perWidth(9, 'auto'),
-    bottom: perWidth(40, 10),
+    bottom: perWidth(100, 70),
     padding: 5
   },
   slidUpArrow: {

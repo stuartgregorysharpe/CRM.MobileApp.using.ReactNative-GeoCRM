@@ -1,1 +1,1 @@
-export const breakPoint = 850;
+export const breakPoint = 700;

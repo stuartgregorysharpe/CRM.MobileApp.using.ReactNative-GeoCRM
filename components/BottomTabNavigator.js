@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import GetLocation from 'react-native-get-location';
 
 import HomeScreen from '../screens/GeoRep/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRMScreen';
@@ -11,7 +12,6 @@ import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
-import RepSupportScreen from '../screens/GeoRep/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
@@ -31,7 +31,6 @@ import FlashbookScreen from '../screens/GeoLife/FlashbookScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
 import LifeFormsScreen from '../screens/GeoLife/FormsScreen';
-import LifeSupportScreen from '../screens/GeoLife/SupportScreen';
 import LoyaltyCardsScreen from '../screens/GeoLife/LoyaltyCardsScreen';
 import LunchOrdersScreen from '../screens/GeoLife/LunchOrdersScreen';
 import LifeMessagesScreen from '../screens/GeoLife/MessagesScreen';
@@ -47,8 +46,10 @@ import {
   SLIDE_STATUS,
   CHANGE_MORE_STATUS,
   CHANGE_PROFILE_STATUS,
-  SHOW_MORE_COMPONENT
+  SHOW_MORE_COMPONENT,
+  CHANGE_LIBRARY_CHILD_STATUS,
 } from '../actions/actionTypes';
+import { getLocationsMap, getLocationInfo } from '../actions/location.action';
 
 import {
   StyleSheet, 
@@ -66,26 +67,143 @@ export default function RepBottomTabNavigator({navigation}) {
   const selectProject = useSelector(state => state.selection.selectProject);
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
-  const bottomList = {
-    0: [
-      payload.user_scopes.geo_rep.modules_nav_order[0],
-      payload.user_scopes.geo_rep.modules_nav_order[1],
-      payload.user_scopes.geo_rep.modules_nav_order[2],
-      payload.user_scopes.geo_rep.modules_nav_order[3]
-    ],
-    1: [
-      payload.user_scopes.geo_life.modules_nav_order[0],
-      payload.user_scopes.geo_life.modules_nav_order[1],
-      payload.user_scopes.geo_life.modules_nav_order[2],
-      payload.user_scopes.geo_life.modules_nav_order[3]
-    ],
-    2: [
-      payload.user_scopes.geo_crm.modules_nav_order[0],
-      payload.user_scopes.geo_crm.modules_nav_order[1],
-      payload.user_scopes.geo_crm.modules_nav_order[2],
-      payload.user_scopes.geo_crm.modules_nav_order[3]
-    ]
-  };
+  const [ bottomListOne, setBottomListOne ] = useState([]);
+  const [ bottomListTwo, setBottomListTwo ] = useState([]);
+  const [ bottomListThree, setBottomListThree ] = useState([]);
+
+  useEffect(() => {
+    if (payload.user_scopes.geo_rep) {
+      setBottomListOne([
+        payload.user_scopes.geo_rep.modules_nav_order[0],
+        payload.user_scopes.geo_rep.modules_nav_order[1],
+        payload.user_scopes.geo_rep.modules_nav_order[2],
+        payload.user_scopes.geo_rep.modules_nav_order[3]
+      ]);
+    }
+    if (payload.user_scopes.geo_life) {
+      setBottomListTwo([
+        payload.user_scopes.geo_life.modules_nav_order[0],
+        payload.user_scopes.geo_life.modules_nav_order[1],
+        payload.user_scopes.geo_life.modules_nav_order[2],
+        payload.user_scopes.geo_life.modules_nav_order[3]
+      ]);
+    }
+    if (payload.user_scopes.geo_crm) {
+      setBottomListThree([
+        payload.user_scopes.geo_crm.modules_nav_order[0],
+        payload.user_scopes.geo_crm.modules_nav_order[1],
+        payload.user_scopes.geo_crm.modules_nav_order[2],
+        payload.user_scopes.geo_crm.modules_nav_order[3]
+      ])
+    }
+  }, [payload]);
+
+  useEffect(() => {
+    navigation.navigate('Root', { screen: 'Home' });
+    if (selectProject == 'geo_rep') {
+      switch(payload.user_scopes.geo_rep.modules_nav_order[0]) {
+        case 'home_geo':
+          navigation.navigate('Root', { screen: 'Home' });
+          return;
+        case 'crm_locations':
+          navigation.navigate('Root', { screen: 'CRM' });
+          return;
+        case 'web_links':
+          navigation.navigate('Root', { screen: 'RepWebLinks' });
+          return;
+        case 'calendar':
+          navigation.navigate('Root', { screen: 'Calendar' });
+          return;
+        case 'forms':
+          navigation.navigate('Root', { screen: 'RepForms' });
+          return;
+        case 'content_library':
+          navigation.navigate('Root', { screen: 'RepContentLibrary' });
+          return;
+        case 'product_sales':
+          navigation.navigate('Root', { screen: 'ProductSales' });
+          return;
+        case 'notifications':
+          navigation.navigate('Root', { screen: 'Notifications' });
+          return;
+        case 'messages':
+          navigation.navigate('Root', { screen: 'RepMessages' });
+          return;
+        case 'offline_sync':
+          navigation.navigate('Root', { screen: 'OfflineSync' });
+          return;
+        case 'recorded_sales':
+          navigation.navigate('Root', { screen: 'RecordedSales' });
+          return;
+        case 'sales_pipeline':
+          navigation.navigate('Root', { screen: 'RepSalesPipeline' });
+          return;
+      }
+    } else if (selectProject == 'geo_life') {
+      switch(payload.user_scopes.geo_life.modules_nav_order[0]) {
+        case 'home_life':
+          navigation.navigate('Root', { screen: 'HomeLife' });
+          return;
+        case 'news':
+          navigation.navigate('Root', { screen: 'News' });
+          return;
+        case 'locations_life':
+          navigation.navigate('Root', { screen: 'LocationsLife' });
+          return;
+        case 'check_in':
+          navigation.navigate('Root', { screen: 'CheckIn' });
+          return;
+        case 'access':
+          navigation.navigate('Root', { screen: 'Access' });
+          return;
+        case 'club':
+          navigation.navigate('Root', { screen: 'Club' });
+          return;
+        case 'flashbook':
+          navigation.navigate('Root', { screen: 'Flashbook' });
+          return;
+        case 'business_directory':
+          navigation.navigate('Root', { screen: 'BusinessDirectory' });
+          return;
+        case 'content_library':
+          navigation.navigate('Root', { screen: 'LifeContentLibrary' });
+          return;
+        case 'forms':
+          navigation.navigate('Root', { screen: 'LifeForms' });
+          return;
+        case 'loyalty_cards':
+          navigation.navigate('Root', { screen: 'LoyaltyCards' });
+          return;
+        case 'lunch_orders':
+          navigation.navigate('Root', { screen: 'LunchOrdersScreen' });
+          return;
+        case 'messages':
+          navigation.navigate('Root', { screen: 'LifeMessagesScreen' });
+          return;
+        case 'report_fraud':
+          navigation.navigate('Root', { screen: 'ReportFraudScreen' });
+          return;
+        case 'web_links':
+          navigation.navigate('Root', { screen: 'LifeWebLinksScreen' });
+          return;
+        case 'well_being':
+          navigation.navigate('Root', { screen: 'WellBeingScreen' });
+          return;
+      }
+    } else if (selectProject == 'geo_crm') {
+      switch(payload.user_scopes.geo_crm.modules_nav_order[0]) {
+        case 'crm_locations':
+          navigation.navigate('Root', { screen: 'CRMLocations' });
+          return;
+        case 'sales_pipeline':
+          navigation.navigate('Root', { screen: 'CRMSalesPipeline' });
+          return;
+        case 'content_library':
+          navigation.navigate('Root', { screen: 'CRMContentLibrary' });
+          return;
+      }
+    }
+  }, [bottomListOne, bottomListTwo, bottomListThree]);
 
   useEffect(() => {
     if (visibleMore != '') {
@@ -95,6 +213,11 @@ export default function RepBottomTabNavigator({navigation}) {
       });
     }
   }, [visibleMore]);
+
+  useEffect(() => {
+    dispatch(getLocationsMap());
+    dispatch(getLocationInfo(1005));
+  }, [])
 
   return (
     <BottomTab.Navigator
@@ -122,7 +245,7 @@ export default function RepBottomTabNavigator({navigation}) {
 
       {/* Rep Bottom Navigator */}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('home_geo') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('home_geo') && <BottomTab.Screen
         name="Home"
         component={HomeScreen}
         options={{
@@ -144,7 +267,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('crm_locations') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('crm_locations') && <BottomTab.Screen
         name="CRM"
         component={CRMScreen}
         options={{
@@ -176,12 +299,13 @@ export default function RepBottomTabNavigator({navigation}) {
           tabPress: (e) => {
             e.preventDefault();
             dispatch({type: SLIDE_STATUS, payload: false});
-            navigation.navigate("CRM");
+            dispatch(getLocationsMap());
+            navigation.navigate('CRM', { screen: 'Root' });
           },
         })}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('web_links') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('web_links') && <BottomTab.Screen
         name="RepWebLinks"
         component={RepWebLinksScreen}
         options={{
@@ -203,7 +327,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('calendar') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('calendar') && <BottomTab.Screen
         name="Calendar"
         component={CalendarScreen}
         options={{
@@ -225,7 +349,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('forms') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('forms') && <BottomTab.Screen
         name="RepForms"
         component={RepFormsScreen}
         options={{
@@ -247,7 +371,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('content_library') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('content_library') && <BottomTab.Screen
         name="RepContentLibrary"
         component={RepContentLibraryScreen}
         options={{
@@ -268,9 +392,16 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+            navigation.navigate("RepContentLibrary");
+          },
+        })}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('product_sales') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('product_sales') && <BottomTab.Screen
         name="ProductSales"
         component={ProductSalesScreen}
         options={{
@@ -292,7 +423,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('notifications') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('notifications') && <BottomTab.Screen
         name="Notifications"
         component={NotificationsScreen}
         options={{
@@ -314,7 +445,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('messages') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('messages') && <BottomTab.Screen
         name="RepMessages"
         component={RepMessagesScreen}
         options={{
@@ -336,7 +467,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('offline_sync') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('offline_sync') && <BottomTab.Screen
         name="OfflineSync"
         component={OfflineSyncScreen}
         options={{
@@ -359,7 +490,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('recorded_sales') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('recorded_sales') && <BottomTab.Screen
         name="RecordedSales"
         component={RecordedSalesScreen}
         options={{
@@ -381,7 +512,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('sales_pipeline') && <BottomTab.Screen
+      {selectProject == 'geo_rep' && bottomListOne.includes('sales_pipeline') && <BottomTab.Screen
         name="RepSalesPipeline"
         component={RepSalesPipelineScreen}
         options={{
@@ -403,46 +534,9 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_rep' && bottomList[0].includes('support') && <BottomTab.Screen
-        name="RepSupport"
-        component={RepSupportScreen}
-        options={{
-          title: 'Support',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Support_Agent_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Support_Agent" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerLeft: () => (
-            <TouchableOpacity 
-              style={styles.header} 
-              activeOpacity={1}
-              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
-            >
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation} />
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-        listeners={({navigation}) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            dispatch({type: SLIDE_STATUS, payload: false});
-            navigation.navigate("RepSupport");
-          },
-        })}
-      />}
-
       {/* Life Bottom Navigator */}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('home_life') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('home_life') && <BottomTab.Screen
         name="HomeLife"
         component={HomeLifeScreen}
         options={{
@@ -464,7 +558,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('news') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('news') && <BottomTab.Screen
         name="News"
         component={NewsScreen}
         options={{
@@ -486,7 +580,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('locations_life') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('locations_life') && <BottomTab.Screen
         name="LocationsLife"
         component={LocationsLifeScreen}
         options={{
@@ -508,7 +602,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('check_in') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('check_in') && <BottomTab.Screen
         name="CheckIn"
         component={CheckInScreen}
         options={{
@@ -530,7 +624,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('access') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('access') && <BottomTab.Screen
         name="Access"
         component={AccessScreen}
         options={{
@@ -552,7 +646,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('club') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('club') && <BottomTab.Screen
         name="Club"
         component={ClubScreen}
         options={{
@@ -574,7 +668,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('flashbook') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('flashbook') && <BottomTab.Screen
         name="Flashbook"
         component={FlashbookScreen}
         options={{
@@ -596,7 +690,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('business_directory') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('business_directory') && <BottomTab.Screen
         name="BusinessDirectory"
         component={BusinessDirectoryScreen}
         options={{
@@ -618,7 +712,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('content_library') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('content_library') && <BottomTab.Screen
         name="LifeContentLibrary"
         component={LifeContentLibraryScreen}
         options={{
@@ -639,9 +733,16 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+            navigation.navigate("LifeContentLibrary");
+          },
+        })}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('forms') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('forms') && <BottomTab.Screen
         name="LifeForms"
         component={LifeFormsScreen}
         options={{
@@ -663,7 +764,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('loyalty_cards') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('loyalty_cards') && <BottomTab.Screen
         name="LoyaltyCards"
         component={LoyaltyCardsScreen}
         options={{
@@ -685,7 +786,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('lunch_orders') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('lunch_orders') && <BottomTab.Screen
         name="LunchOrdersScreen"
         component={LunchOrdersScreen}
         options={{
@@ -707,7 +808,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('messages') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('messages') && <BottomTab.Screen
         name="LifeMessagesScreen"
         component={LifeMessagesScreen}
         options={{
@@ -729,7 +830,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('report_fraud') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('report_fraud') && <BottomTab.Screen
         name="ReportFraudScreen"
         component={ReportFraudScreen}
         options={{
@@ -751,7 +852,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('web_links') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('web_links') && <BottomTab.Screen
         name="LifeWebLinksScreen"
         component={LifeWebLinksScreen}
         options={{
@@ -773,7 +874,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('well_being') && <BottomTab.Screen
+      {selectProject == 'geo_life' && bottomListTwo.includes('well_being') && <BottomTab.Screen
         name="WellBeingScreen"
         component={WellBeingScreen}
         options={{
@@ -795,46 +896,9 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_life' && bottomList[1].includes('support') && <BottomTab.Screen
-        name="LifeSupport"
-        component={LifeSupportScreen}
-        options={{
-          title: 'Support',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Support_Agent_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Support_Agent" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerLeft: () => (
-            <TouchableOpacity 
-              style={styles.header} 
-              activeOpacity={1}
-              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
-            >
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation}/>
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-        listeners={({navigation}) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            dispatch({type: SLIDE_STATUS, payload: false});
-            navigation.navigate("LifeSupport");
-          },
-        })}
-      />}
-
       {/* CRM Bottom navigator */}
 
-      {selectProject == 'geo_crm' && bottomList[2].includes('crm_locations') && <BottomTab.Screen
+      {selectProject == 'geo_crm' && bottomListThree.includes('crm_locations') && <BottomTab.Screen
         name="CRMLocations"
         component={CRMLocationsScreen}
         options={{
@@ -856,7 +920,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_crm' && bottomList[2].includes('sales_pipeline') && <BottomTab.Screen
+      {selectProject == 'geo_crm' && bottomListThree.includes('sales_pipeline') && <BottomTab.Screen
         name="CRMSalesPipeline"
         component={CRMSalesPipelineScreen}
         options={{
@@ -878,7 +942,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
-      {selectProject == 'geo_crm' && bottomList[2].includes("content_library") && <BottomTab.Screen
+      {selectProject == 'geo_crm' && bottomListThree.includes("content_library") && <BottomTab.Screen
         name="CRMContentLibrary"
         component={CRMContentLibraryScreen}
         options={{
@@ -951,7 +1015,7 @@ export default function RepBottomTabNavigator({navigation}) {
 
 function HeaderRightView() {
   const dispatch = useDispatch();
-  const payload = useSelector(state => state.selection.payload);
+  const userInfo = useSelector(state => state.auth.userInfo);
 
   const [toggleSwitch, setToggleSwitch] = useState(true);
 
@@ -973,8 +1037,8 @@ function HeaderRightView() {
       />
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({type: CHANGE_PROFILE_STATUS, payload: 0})}>
         <Text style={styles.headerAvatarText}>
-          {payload.user_scopes.geo_rep.user_name.split(' ')[0] && payload.user_scopes.geo_rep.user_name.split(' ')[0][0].toUpperCase()}
-          {payload.user_scopes.geo_rep.user_name.split(' ')[1] && payload.user_scopes.geo_rep.user_name.split(' ')[1][0].toUpperCase()}
+          {userInfo.user_name.split(' ')[0] && userInfo.user_name.split(' ')[0][0].toUpperCase()}
+          {userInfo.user_name.split(' ')[1] && userInfo.user_name.split(' ')[1][0].toUpperCase()}
         </Text>
       </TouchableOpacity>
     </View>

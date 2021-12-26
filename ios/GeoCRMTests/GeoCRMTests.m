@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface geoverse_app_rnTests : XCTestCase
+@interface GeoCRMTests : XCTestCase
 
 @end
 
-@implementation geoverse_app_rnTests
+@implementation GeoCRMTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {
