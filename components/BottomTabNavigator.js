@@ -37,7 +37,7 @@ import LifeMessagesScreen from '../screens/GeoLife/MessagesScreen';
 import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
-
+import Fonts from '../constants/Fonts';
 import MoreNavigator from './MoreNavigator';
 
 import SvgIcon from './SvgIcon';
@@ -230,7 +230,7 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarShowLabel: true,
         headerTitleStyle:  {
           color: "#fff",
-          fontFamily: 'Product Sans-Regular'
+          fontFamily: Fonts.primaryRegular
         },
         tabBarIconStyle: {
           color: "#fff",
@@ -309,7 +309,7 @@ export default function RepBottomTabNavigator({navigation}) {
         name="RepWebLinks"
         component={RepWebLinksScreen}
         options={{
-          title: 'Web Linkssss',
+          title: 'Web Links',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
@@ -856,7 +856,7 @@ export default function RepBottomTabNavigator({navigation}) {
         name="LifeWebLinksScreen"
         component={LifeWebLinksScreen}
         options={{
-          title: 'Web Links ss',
+          title: 'Web Links',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}

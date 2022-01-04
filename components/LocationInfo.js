@@ -51,7 +51,6 @@ export default function LocationInfo({navigation}) {
       </View>
     )
   }
-
   
 
   return (

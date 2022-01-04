@@ -1,9 +1,16 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+
 platform :ios, '11.0'
 
 target 'GeoCRM' do
+
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'GoogleMaps'
+  pod 'Google-Maps-iOS-Utils'
+
   config = use_native_modules!
 
   use_react_native!(
@@ -12,9 +19,12 @@ target 'GeoCRM' do
     :hermes_enabled => false
   )
 
+
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
+
 
   target 'GeoCRMTests' do
     inherit! :complete

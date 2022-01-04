@@ -225,7 +225,7 @@ const styles = EStyleSheet.create(parse({
     lineHeight: 30,
     height: 40,
     backgroundColor: BG_COLOR,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },
   linkBox: {
@@ -234,13 +234,13 @@ const styles = EStyleSheet.create(parse({
   },
   linkBoxText: {
     color: PRIMARY_COLOR,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     textDecorationLine: 'underline',
     textDecorationColor: PRIMARY_COLOR,
     textAlign: 'center'
   },
   accuracyText: {
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     position: 'absolute',
     top: 2,
     right: 0,
@@ -263,7 +263,7 @@ const styles = EStyleSheet.create(parse({
   addButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold'
+    fontFamily: Fonts.secondaryBold
   },
   addButtonIcon: {
     position: 'absolute',

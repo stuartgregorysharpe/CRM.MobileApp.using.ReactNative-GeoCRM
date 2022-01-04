@@ -13,6 +13,7 @@ import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import { getLocationInfo } from '../../actions/location.action';
+import Fonts from '../../constants/Fonts';
 
 const ResultItem = ({navigation, item, animation}) => {
 
@@ -155,7 +156,7 @@ const styles = EStyleSheet.create(parse({
   title: {
     color: PRIMARY_COLOR,
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     paddingLeft: 14,
     marginBottom: 10
   },
@@ -172,13 +173,13 @@ const styles = EStyleSheet.create(parse({
   },
   subTitle: {
     fontSize: 14,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     color: TEXT_COLOR,
     marginBottom: 4
   },
   text: {
     fontSize: 12,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     color: '#9D9FA2',
   },
   textRight: {

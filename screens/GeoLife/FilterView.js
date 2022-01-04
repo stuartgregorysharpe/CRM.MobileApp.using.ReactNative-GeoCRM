@@ -81,7 +81,7 @@ export default function FilterView({navigation}) {
         uppercase={false} 
         labelStyle={{
           fontSize: 18, 
-          fontFamily: 'Gilroy-Bold', 
+          fontFamily: Fonts.secondaryBold, 
           letterSpacing: 0.2
         }} 
         onPress={() => console.log("pressed")}>

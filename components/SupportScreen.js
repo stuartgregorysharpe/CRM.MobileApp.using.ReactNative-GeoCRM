@@ -168,7 +168,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'BG_COLOR',
     padding: 10,
   },
-  
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -179,13 +178,13 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   tabText: {
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
     fontSize: 15,
     color: '#9D9FA2'
   },
   tabActiveText: {
     color: PRIMARY_COLOR,
-    fontFamily: Fonts.secondaryBold,
+    fontFamily: 'Gilroy-Bold',
     borderBottomColor: PRIMARY_COLOR,
     borderBottomWidth: 2,
     paddingBottom: 2,
@@ -195,14 +194,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: BG_COLOR,
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
   textArea: {
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: BG_COLOR,
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
     marginBottom: 20,
   },
   submitButton: {
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: Fonts.secondaryBold
+    fontFamily: 'Gilroy-Bold'
   },
   submitButtonIcon: {
     position: 'absolute',
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
   },
   pickerItemText: {
     fontSize: 16,
-    fontFamily: Fonts.secondaryMedium
+    fontFamily: 'Gilroy-Medium'
   },
   downloadButton: {
     flexDirection: 'row',

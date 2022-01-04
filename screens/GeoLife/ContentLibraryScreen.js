@@ -130,7 +130,7 @@ export default function ContentLibraryScreen({screenProps}) {
       <SafeAreaView>
         <ScrollView style={styles.container}>
           <View style={styles.innerContainer}>
-            <Text style={{ fontSize: 18, color: '#000', fontFamily: 'Gilroy-Bold' }}>{childList.title}</Text>
+            <Text style={{ fontSize: 18, color: '#000', fontFamily: Fonts.secondaryBold }}>{childList.title}</Text>
             {childList.children.map((item, index) => (
               <Card icon={item.icon} title={item.title} subtitle={item.subtitle} key={index} />
             ))}

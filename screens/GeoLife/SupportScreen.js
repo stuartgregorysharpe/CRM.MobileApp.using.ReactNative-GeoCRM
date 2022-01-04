@@ -11,6 +11,7 @@ import SvgIcon from '../../components/SvgIcon';
 import GrayBackground from '../../components/GrayBackground';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
 
 const lists = [
   {
@@ -42,10 +43,10 @@ function CreateTicket({closeSlider}) {
         <Divider />
       </TouchableOpacity>
       <View style={styles.sliderHeader}>
-        <Title style={{ fontFamily: 'Product Sans-Bold' }}>Create a ticket</Title>
+        <Title style={{ fontFamily: Fonts.primaryBold }}>Create a ticket</Title>
         <Button 
           labelStyle={{
-            fontFamily: 'Product Sans-Regular', 
+            fontFamily: Fonts.primaryRegular, 
             letterSpacing: 0.2
           }}
           color="#DC143C" 
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold'
+    fontFamily: Fonts.secondaryBold
   },
   submitButtonIcon: {
     position: 'absolute',
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
   },
   pickerItemText: {
     fontSize: 16,
-    fontFamily: 'Gilroy-Medium'
+    fontFamily: Fonts.secondaryMedium
   },
   downloadButton: {
     flexDirection: 'row',
@@ -280,12 +281,12 @@ const styles = StyleSheet.create({
   },
   downloadText: {
     fontSize: 13,
-    fontFamily: 'Product Sans-Medium',
+    fontFamily: Fonts.primaryMedium,
     color: PRIMARY_COLOR
   },
   description: {
     fontSize: 14,
-    fontFamily: 'Product Sans-Bold',
+    fontFamily: Fonts.primaryBold,
     textAlign: 'center',
     color: '#000',
     marginBottom: 100

@@ -8,6 +8,7 @@ import SvgIcon from '../../components/SvgIcon';
 import { PRIMARY_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import { BG_COLOR } from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
 
 const lists = [
   {
@@ -121,13 +122,13 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   tabText: {
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     fontSize: 15,
     color: '#9D9FA2'
   },
   tabActiveText: {
     color: PRIMARY_COLOR,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     borderBottomColor: PRIMARY_COLOR,
     borderBottomWidth: 2,
     paddingBottom: 2,
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Product Sans-Regular'
+    fontFamily: Fonts.primaryRegular
   },
   startButtonIcon: {
     position: 'absolute',
@@ -177,13 +178,13 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 14,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     color: PRIMARY_COLOR
   },
   itemText: {
     fontSize: 13,
     lineHeight: 18,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     color: '#9D9FA2',
     maxHeight: 36
   },
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
   },
   itemButtonText: {
     fontSize: 14,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     textAlign: 'center',
     color: '#fff'
   },

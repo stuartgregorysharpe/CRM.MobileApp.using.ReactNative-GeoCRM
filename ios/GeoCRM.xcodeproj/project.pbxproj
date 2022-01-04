@@ -11,32 +11,18 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		7C35C73DAF0FDC6C0CB51134 /* libPods-GeoCRM-GeoCRMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		99FE2CF2520B4569B05581FF /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3391F36D94374DB19A1A4E48 /* Gilroy-Bold.ttf */; };
-		055808A90E5749FCB28BA8E2 /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B122FFC682954F24A427C76C /* Gilroy-Heavy.ttf */; };
-		771C57F34830406D84A2C7D5 /* Gilroy-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9424A6279279431DA6C5B8EC /* Gilroy-Light.ttf */; };
-		86F73356017749BCB7E38F20 /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A9DD2B306364CAAB7F637EC /* Gilroy-Medium.ttf */; };
-		F4BDE277C02940C19C98C720 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EE9E188F5B74BBF9660E02F /* Gilroy-Regular.ttf */; };
-		ADBAD049740948E082AD4DCF /* Product Sans-Bold-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CAC9047FF5F440DDA606696D /* Product Sans-Bold-Italic.ttf */; };
-		0AD69B1C7CB8436193BA4F76 /* Product Sans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B94CC4A42006494E81CBB66D /* Product Sans-Bold.ttf */; };
-		6D5B4E6CF4F44B33AE91BFCD /* Product Sans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D71EFD29FEDA4694AA3AA095 /* Product Sans-Italic.ttf */; };
-		1A97408D01C748F6AB122AE8 /* Product Sans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98728ABBB8E84675BF9CB550 /* Product Sans-Regular.ttf */; };
-		33AE75515D5049BD8EF4CBBA /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DC83D5FEE434BEE80EBD3E5 /* AntDesign.ttf */; };
-		8F4CD1F47BA84B77903E9F97 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2BADB3E40B6403EA5086E32 /* Entypo.ttf */; };
-		1BB0E211F8C0418890C55125 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F7ACA2B4561414DA890D10A /* EvilIcons.ttf */; };
-		FF2FEB5ED23248ABAB0B7311 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB63846FC6DE429582C73239 /* Feather.ttf */; };
-		61A207A91CC14EAF886B73A1 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A220B048102B415180169FF9 /* FontAwesome.ttf */; };
-		D00676164CBC44F799AFAFB0 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCDE584588EB444EAC5719F1 /* FontAwesome5_Brands.ttf */; };
-		F12FA9D9F45B4D7BACB859B1 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D1CE2D14B074A31A8555CCE /* FontAwesome5_Regular.ttf */; };
-		1E9BE073275740C18A2366EF /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F5698A1DAE94B9AA636CDBC /* FontAwesome5_Solid.ttf */; };
-		85D141D5C3F44F9BAD30A9E7 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3193234556A456C81F585C2 /* Fontisto.ttf */; };
-		457216A9403A42D6B70D2609 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 256418C012E34180BFE1F698 /* Foundation.ttf */; };
-		3119CDAF18B647AFB921E111 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 33672D7E46E241188162EC9C /* Ionicons.ttf */; };
-		50E6AF3F751E4AE8806B496C /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E97BAEC539A4E768E322D38 /* MaterialCommunityIcons.ttf */; };
-		4FA5964CB74B4633894D59FF /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1E6F7CF954D46FC856F85AF /* MaterialIcons.ttf */; };
-		ECCC900578DA4687996F32C9 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06E5CAFE497D4B46A4E56582 /* Octicons.ttf */; };
-		07BF9E2744054C928CC92FFE /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5046DEA209FB417B96E1EBAE /* SimpleLineIcons.ttf */; };
-		1D4FE4F5670B4A018E53BF9D /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F0DEA89A36664E0384668028 /* Zocial.ttf */; };
+		9648F3902784C0E200D70181 /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3822784BE7900D70181 /* Gilroy-Bold.ttf */; };
+		9648F3912784C0E400D70181 /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3852784BE7900D70181 /* Gilroy-Heavy.ttf */; };
+		9648F3922784C0E600D70181 /* Gilroy-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3862784BE7900D70181 /* Gilroy-Light.ttf */; };
+		9648F3932784C0EA00D70181 /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3832784BE7900D70181 /* Gilroy-Medium.ttf */; };
+		9648F3942784C0ED00D70181 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3842784BE7900D70181 /* Gilroy-Regular.ttf */; };
+		9648F3982784C18D00D70181 /* Product Sans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3952784C18D00D70181 /* Product Sans-Bold.ttf */; };
+		9648F3992784C18D00D70181 /* Product Sans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3962784C18D00D70181 /* Product Sans-Italic.ttf */; };
+		9648F39A2784C18D00D70181 /* Product Sans-Bold-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3972784C18D00D70181 /* Product Sans-Bold-Italic.ttf */; };
+		9648F39B2784C1D100D70181 /* Product Sans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F38C2784BEEA00D70181 /* Product Sans-Regular.ttf */; };
+		FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,33 +45,24 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = GeoCRM/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = GeoCRM/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = GeoCRM/main.m; sourceTree = "<group>"; };
+		1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GeoCRM-GeoCRMTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CBCE01EB5A9644E5D43DD4D /* Pods-GeoCRM-GeoCRMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM-GeoCRMTests.release.xcconfig"; path = "Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests.release.xcconfig"; sourceTree = "<group>"; };
+		569F6159E6BF9F8BDE6EA0E2 /* Pods-GeoCRM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM.release.xcconfig"; path = "Target Support Files/Pods-GeoCRM/Pods-GeoCRM.release.xcconfig"; sourceTree = "<group>"; };
+		6F0246DDE599D83C03C3AD20 /* Pods-GeoCRM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM.debug.xcconfig"; path = "Target Support Files/Pods-GeoCRM/Pods-GeoCRM.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GeoCRM/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9648F3542784B85300D70181 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
+		9648F3822784BE7900D70181 /* Gilroy-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Bold.ttf"; path = "../../assets/fonts/Gilroy-Bold.ttf"; sourceTree = "<group>"; };
+		9648F3832784BE7900D70181 /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Medium.ttf"; path = "../../assets/fonts/Gilroy-Medium.ttf"; sourceTree = "<group>"; };
+		9648F3842784BE7900D70181 /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Regular.ttf"; path = "../../assets/fonts/Gilroy-Regular.ttf"; sourceTree = "<group>"; };
+		9648F3852784BE7900D70181 /* Gilroy-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Heavy.ttf"; path = "../../assets/fonts/Gilroy-Heavy.ttf"; sourceTree = "<group>"; };
+		9648F3862784BE7900D70181 /* Gilroy-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Light.ttf"; path = "../../assets/fonts/Gilroy-Light.ttf"; sourceTree = "<group>"; };
+		9648F38C2784BEEA00D70181 /* Product Sans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Regular.ttf"; path = "../../assets/fonts/Product Sans-Regular.ttf"; sourceTree = "<group>"; };
+		9648F3952784C18D00D70181 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
+		9648F3962784C18D00D70181 /* Product Sans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Italic.ttf"; path = "../../assets/fonts/Product Sans-Italic.ttf"; sourceTree = "<group>"; };
+		9648F3972784C18D00D70181 /* Product Sans-Bold-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold-Italic.ttf"; path = "../../assets/fonts/Product Sans-Bold-Italic.ttf"; sourceTree = "<group>"; };
+		97B75C796F3A17C8220A95FC /* Pods-GeoCRM-GeoCRMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM-GeoCRMTests.debug.xcconfig"; path = "Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GeoCRM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		3391F36D94374DB19A1A4E48 /* Gilroy-Bold.ttf */ = {isa = PBXFileReference; name = "Gilroy-Bold.ttf"; path = "../assets/fonts/Gilroy-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		B122FFC682954F24A427C76C /* Gilroy-Heavy.ttf */ = {isa = PBXFileReference; name = "Gilroy-Heavy.ttf"; path = "../assets/fonts/Gilroy-Heavy.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9424A6279279431DA6C5B8EC /* Gilroy-Light.ttf */ = {isa = PBXFileReference; name = "Gilroy-Light.ttf"; path = "../assets/fonts/Gilroy-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		0A9DD2B306364CAAB7F637EC /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; name = "Gilroy-Medium.ttf"; path = "../assets/fonts/Gilroy-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		3EE9E188F5B74BBF9660E02F /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; name = "Gilroy-Regular.ttf"; path = "../assets/fonts/Gilroy-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		CAC9047FF5F440DDA606696D /* Product Sans-Bold-Italic.ttf */ = {isa = PBXFileReference; name = "Product Sans-Bold-Italic.ttf"; path = "../assets/fonts/Product Sans-Bold-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		B94CC4A42006494E81CBB66D /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; name = "Product Sans-Bold.ttf"; path = "../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		D71EFD29FEDA4694AA3AA095 /* Product Sans-Italic.ttf */ = {isa = PBXFileReference; name = "Product Sans-Italic.ttf"; path = "../assets/fonts/Product Sans-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		98728ABBB8E84675BF9CB550 /* Product Sans-Regular.ttf */ = {isa = PBXFileReference; name = "Product Sans-Regular.ttf"; path = "../assets/fonts/Product Sans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		2DC83D5FEE434BEE80EBD3E5 /* AntDesign.ttf */ = {isa = PBXFileReference; name = "AntDesign.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		A2BADB3E40B6403EA5086E32 /* Entypo.ttf */ = {isa = PBXFileReference; name = "Entypo.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		6F7ACA2B4561414DA890D10A /* EvilIcons.ttf */ = {isa = PBXFileReference; name = "EvilIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		DB63846FC6DE429582C73239 /* Feather.ttf */ = {isa = PBXFileReference; name = "Feather.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		A220B048102B415180169FF9 /* FontAwesome.ttf */ = {isa = PBXFileReference; name = "FontAwesome.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		DCDE584588EB444EAC5719F1 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; name = "FontAwesome5_Brands.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		4D1CE2D14B074A31A8555CCE /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; name = "FontAwesome5_Regular.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		3F5698A1DAE94B9AA636CDBC /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; name = "FontAwesome5_Solid.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		D3193234556A456C81F585C2 /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		256418C012E34180BFE1F698 /* Foundation.ttf */ = {isa = PBXFileReference; name = "Foundation.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		33672D7E46E241188162EC9C /* Ionicons.ttf */ = {isa = PBXFileReference; name = "Ionicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		1E97BAEC539A4E768E322D38 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; name = "MaterialCommunityIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F1E6F7CF954D46FC856F85AF /* MaterialIcons.ttf */ = {isa = PBXFileReference; name = "MaterialIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		06E5CAFE497D4B46A4E56582 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		5046DEA209FB417B96E1EBAE /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F0DEA89A36664E0384668028 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C35C73DAF0FDC6C0CB51134 /* libPods-GeoCRM-GeoCRMTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +105,7 @@
 		13B07FAE1A68108700A75B9A /* GeoCRM */ = {
 			isa = PBXGroup;
 			children = (
+				9648F3542784B85300D70181 /* Product Sans-Bold.ttf */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -140,8 +120,21 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */,
+				1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6B99F19D135C0849E9E611AC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6F0246DDE599D83C03C3AD20 /* Pods-GeoCRM.debug.xcconfig */,
+				569F6159E6BF9F8BDE6EA0E2 /* Pods-GeoCRM.release.xcconfig */,
+				97B75C796F3A17C8220A95FC /* Pods-GeoCRM-GeoCRMTests.debug.xcconfig */,
+				4CBCE01EB5A9644E5D43DD4D /* Pods-GeoCRM-GeoCRMTests.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -154,12 +147,13 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9648F35B2784BB8600D70181 /* Resources */,
 				13B07FAE1A68108700A75B9A /* GeoCRM */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* GeoCRMTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				4D7D9C5E274B4E4B9A0C9C5C /* Resources */,
+				6B99F19D135C0849E9E611AC /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -175,38 +169,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4D7D9C5E274B4E4B9A0C9C5C /* Resources */ = {
-			isa = "PBXGroup";
+		9648F35B2784BB8600D70181 /* Resources */ = {
+			isa = PBXGroup;
 			children = (
-				3391F36D94374DB19A1A4E48 /* Gilroy-Bold.ttf */,
-				B122FFC682954F24A427C76C /* Gilroy-Heavy.ttf */,
-				9424A6279279431DA6C5B8EC /* Gilroy-Light.ttf */,
-				0A9DD2B306364CAAB7F637EC /* Gilroy-Medium.ttf */,
-				3EE9E188F5B74BBF9660E02F /* Gilroy-Regular.ttf */,
-				CAC9047FF5F440DDA606696D /* Product Sans-Bold-Italic.ttf */,
-				B94CC4A42006494E81CBB66D /* Product Sans-Bold.ttf */,
-				D71EFD29FEDA4694AA3AA095 /* Product Sans-Italic.ttf */,
-				98728ABBB8E84675BF9CB550 /* Product Sans-Regular.ttf */,
-				2DC83D5FEE434BEE80EBD3E5 /* AntDesign.ttf */,
-				A2BADB3E40B6403EA5086E32 /* Entypo.ttf */,
-				6F7ACA2B4561414DA890D10A /* EvilIcons.ttf */,
-				DB63846FC6DE429582C73239 /* Feather.ttf */,
-				A220B048102B415180169FF9 /* FontAwesome.ttf */,
-				DCDE584588EB444EAC5719F1 /* FontAwesome5_Brands.ttf */,
-				4D1CE2D14B074A31A8555CCE /* FontAwesome5_Regular.ttf */,
-				3F5698A1DAE94B9AA636CDBC /* FontAwesome5_Solid.ttf */,
-				D3193234556A456C81F585C2 /* Fontisto.ttf */,
-				256418C012E34180BFE1F698 /* Foundation.ttf */,
-				33672D7E46E241188162EC9C /* Ionicons.ttf */,
-				1E97BAEC539A4E768E322D38 /* MaterialCommunityIcons.ttf */,
-				F1E6F7CF954D46FC856F85AF /* MaterialIcons.ttf */,
-				06E5CAFE497D4B46A4E56582 /* Octicons.ttf */,
-				5046DEA209FB417B96E1EBAE /* SimpleLineIcons.ttf */,
-				F0DEA89A36664E0384668028 /* Zocial.ttf */,
+				9648F3972784C18D00D70181 /* Product Sans-Bold-Italic.ttf */,
+				9648F3952784C18D00D70181 /* Product Sans-Bold.ttf */,
+				9648F3962784C18D00D70181 /* Product Sans-Italic.ttf */,
+				9648F38C2784BEEA00D70181 /* Product Sans-Regular.ttf */,
+				9648F3822784BE7900D70181 /* Gilroy-Bold.ttf */,
+				9648F3852784BE7900D70181 /* Gilroy-Heavy.ttf */,
+				9648F3862784BE7900D70181 /* Gilroy-Light.ttf */,
+				9648F3832784BE7900D70181 /* Gilroy-Medium.ttf */,
+				9648F3842784BE7900D70181 /* Gilroy-Regular.ttf */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -215,9 +192,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "GeoCRMTests" */;
 			buildPhases = (
+				CD669D6B835B4C7CD7F879CE /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				57D5898F520A04723D9CA11A /* [CP] Embed Pods Frameworks */,
+				9B8782E5DBE50B1AD2255E04 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -233,11 +213,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "GeoCRM" */;
 			buildPhases = (
+				FBB82FE34ACB47659ADBBCA4 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				48998C689A6ABFBC990DFA6D /* [CP] Embed Pods Frameworks */,
+				D229A256AE6C67358B4B4A73 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -296,33 +279,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9648F3932784C0EA00D70181 /* Gilroy-Medium.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				9648F3992784C18D00D70181 /* Product Sans-Italic.ttf in Resources */,
+				9648F39B2784C1D100D70181 /* Product Sans-Regular.ttf in Resources */,
+				9648F3942784C0ED00D70181 /* Gilroy-Regular.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				99FE2CF2520B4569B05581FF /* Gilroy-Bold.ttf in Resources */,
-				055808A90E5749FCB28BA8E2 /* Gilroy-Heavy.ttf in Resources */,
-				771C57F34830406D84A2C7D5 /* Gilroy-Light.ttf in Resources */,
-				86F73356017749BCB7E38F20 /* Gilroy-Medium.ttf in Resources */,
-				F4BDE277C02940C19C98C720 /* Gilroy-Regular.ttf in Resources */,
-				ADBAD049740948E082AD4DCF /* Product Sans-Bold-Italic.ttf in Resources */,
-				0AD69B1C7CB8436193BA4F76 /* Product Sans-Bold.ttf in Resources */,
-				6D5B4E6CF4F44B33AE91BFCD /* Product Sans-Italic.ttf in Resources */,
-				1A97408D01C748F6AB122AE8 /* Product Sans-Regular.ttf in Resources */,
-				33AE75515D5049BD8EF4CBBA /* AntDesign.ttf in Resources */,
-				8F4CD1F47BA84B77903E9F97 /* Entypo.ttf in Resources */,
-				1BB0E211F8C0418890C55125 /* EvilIcons.ttf in Resources */,
-				FF2FEB5ED23248ABAB0B7311 /* Feather.ttf in Resources */,
-				61A207A91CC14EAF886B73A1 /* FontAwesome.ttf in Resources */,
-				D00676164CBC44F799AFAFB0 /* FontAwesome5_Brands.ttf in Resources */,
-				F12FA9D9F45B4D7BACB859B1 /* FontAwesome5_Regular.ttf in Resources */,
-				1E9BE073275740C18A2366EF /* FontAwesome5_Solid.ttf in Resources */,
-				85D141D5C3F44F9BAD30A9E7 /* Fontisto.ttf in Resources */,
-				457216A9403A42D6B70D2609 /* Foundation.ttf in Resources */,
-				3119CDAF18B647AFB921E111 /* Ionicons.ttf in Resources */,
-				50E6AF3F751E4AE8806B496C /* MaterialCommunityIcons.ttf in Resources */,
-				4FA5964CB74B4633894D59FF /* MaterialIcons.ttf in Resources */,
-				ECCC900578DA4687996F32C9 /* Octicons.ttf in Resources */,
-				07BF9E2744054C928CC92FFE /* SimpleLineIcons.ttf in Resources */,
-				1D4FE4F5670B4A018E53BF9D /* Zocial.ttf in Resources */,
+				9648F39A2784C18D00D70181 /* Product Sans-Bold-Italic.ttf in Resources */,
+				9648F3922784C0E600D70181 /* Gilroy-Light.ttf in Resources */,
+				9648F3982784C18D00D70181 /* Product Sans-Bold.ttf in Resources */,
+				9648F3902784C0E200D70181 /* Gilroy-Bold.ttf in Resources */,
+				9648F3912784C0E400D70181 /* Gilroy-Heavy.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +309,118 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		48998C689A6ABFBC990DFA6D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM/Pods-GeoCRM-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM/Pods-GeoCRM-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GeoCRM/Pods-GeoCRM-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		57D5898F520A04723D9CA11A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9B8782E5DBE50B1AD2255E04 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CD669D6B835B4C7CD7F879CE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GeoCRM-GeoCRMTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D229A256AE6C67358B4B4A73 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM/Pods-GeoCRM-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GeoCRM/Pods-GeoCRM-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GeoCRM/Pods-GeoCRM-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FBB82FE34ACB47659ADBBCA4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GeoCRM-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -395,6 +474,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97B75C796F3A17C8220A95FC /* Pods-GeoCRM-GeoCRMTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -421,6 +501,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4CBCE01EB5A9644E5D43DD4D /* Pods-GeoCRM-GeoCRMTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -444,10 +525,12 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6F0246DDE599D83C03C3AD20 /* Pods-GeoCRM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K2CA4SDD3C;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -469,10 +552,12 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 569F6159E6BF9F8BDE6EA0E2 /* Pods-GeoCRM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K2CA4SDD3C;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -523,6 +608,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -588,6 +674,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
