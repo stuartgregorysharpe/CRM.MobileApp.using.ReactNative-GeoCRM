@@ -85,8 +85,7 @@ export default function LocationSearchScreen({navigation}) {
       }
       items.push(item);
     });
-    items.sort((a, b) => a.distance > b.distance ? 1 : -1);
-    console.log("location items", items);
+    items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
     setOrderLists(items);
   }, [locationSearchLists]);
 

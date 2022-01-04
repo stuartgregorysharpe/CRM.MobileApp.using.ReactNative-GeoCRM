@@ -80,7 +80,7 @@ export default function LocationSpecificInfoScreen(props) {
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
                 <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
-                <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name}</Text>
+                <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name ? locationInfo.location_name.custom_field_name : ''}</Text>
               </View>
               <Text style={styles.title}>{locationInfo.location_name.value}</Text>
             </View>

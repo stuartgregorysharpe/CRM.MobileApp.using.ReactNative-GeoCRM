@@ -26,7 +26,10 @@ export default function LocationInfo({navigation}) {
   const dispatch = useDispatch();
   const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
   const locationInfo = useSelector(state => state.location.locationInfo);
-  
+  console.log("---- location info ----");
+  console.log(locationInfo);
+  console.log("---- location info end ----");
+
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -52,6 +55,8 @@ export default function LocationInfo({navigation}) {
     )
   }
 
+  
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
@@ -62,13 +67,13 @@ export default function LocationInfo({navigation}) {
           <View>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='16px' height='16px' />
-              <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name}</Text>
+              <Text style={styles.subtitle}>{locationInfo ? locationInfo.location_name.custom_field_name : ''}</Text>
             </View>
-            <Text style={styles.title}>{locationInfo.location_name.value}</Text>
+            <Text style={styles.title}>{ locationInfo ? locationInfo.location_name.value : ''}</Text>
           </View>
           <View style={styles.subtitleBox}>
             <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
-            <Text style={styles.dateText}>Visited Recently: {locationInfo.last_visit}</Text>
+            <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
           </View>
         </View>
         <View style={styles.headerBox}>
@@ -77,13 +82,19 @@ export default function LocationInfo({navigation}) {
               <SvgIcon style={styles.fontIcon} icon="Location_Arrow" width='16px' height='16px' />
               <Text style={styles.subtitle}>Address</Text>
             </View>
-            <Text style={styles.title}>{locationInfo.address}</Text>
+            <Text style={styles.title}>{locationInfo ? locationInfo.address : ''}</Text>
           </View>
           <View style={styles.walmartImageBox}>
             <Image style={styles.walmartImage} source={require("../assets/images/walmart.png")} />
           </View>
         </View>
-        <LocationInfoInput />
+    
+
+        {
+          locationInfo ? <LocationInfoInput /> : <View></View>
+        }
+        
+        
         {/* <FilterButton text="Contact: Jack Reacher" />
         <FilterButton text="Navigation" />
         <FilterButton text="Activity & Comments" subText="Jack Submitted a Brand Facings Task 4 days ago" /> */}
