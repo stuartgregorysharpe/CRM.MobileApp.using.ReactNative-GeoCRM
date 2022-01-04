@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import GrayBackground from '../../components/GrayBackground';
-
 import LocationInfo from '../../components/LocationInfo';
 import FilterView from '../../components/FilterView';
 import SearchBar from '../../components/SearchBar';
@@ -16,8 +15,8 @@ import { SLIDE_STATUS } from '../../actions/actionTypes';
 import { getLocationInfo } from '../../actions/location.action';
 
 const ResultItem = ({navigation, item, animation}) => {
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   return (
     <TouchableOpacity style={styles.resultItem} onPress={() => {
       animation();
@@ -31,13 +30,14 @@ const ResultItem = ({navigation, item, animation}) => {
         <Text style={[styles.subTitle, styles.textRight]}>
           {item.distance} mi
         </Text>
-        <Text style={[styles.text, styles.textRight]}>{item.status}</Text>
+        <Text style={[styles.text, styles.textRight,{color:item.status_text_color}]}>{item.status}</Text>
       </View>
     </TouchableOpacity>
   )
 }
 
 export default function LocationSearchScreen({navigation}) {
+
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const statusLocationSearchLists = useSelector(state => state.location.statusLocationSearchLists);
@@ -73,17 +73,20 @@ export default function LocationSearchScreen({navigation}) {
 
   useEffect(() => {
     let items = [];
+    
     locationSearchLists.map((list, key) => {
       let item = {
         name: list.name,
         address: list.address,
         distance: getDistance(list.coordinates, currentLocation).toFixed(2),
         status: list.status,
-        location_id: list.location_id
+        location_id: list.location_id,
+        status_text_color:list.status_text_color
       }
       items.push(item);
     });
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+    console.log("location items", items);
     setOrderLists(items);
   }, [locationSearchLists]);
 

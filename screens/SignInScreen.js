@@ -16,7 +16,7 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const loginStatus = useSelector(state => state.auth.loginStatus);
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('carl@cydcor.com');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);

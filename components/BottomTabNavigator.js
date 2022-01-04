@@ -309,7 +309,7 @@ export default function RepBottomTabNavigator({navigation}) {
         name="RepWebLinks"
         component={RepWebLinksScreen}
         options={{
-          title: 'Web Links',
+          title: 'Web Linkssss',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
@@ -856,7 +856,7 @@ export default function RepBottomTabNavigator({navigation}) {
         name="LifeWebLinksScreen"
         component={LifeWebLinksScreen}
         options={{
-          title: 'Web Links',
+          title: 'Web Links ss',
           tabBarIcon: ({focused}) => (
             <Fragment>
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
