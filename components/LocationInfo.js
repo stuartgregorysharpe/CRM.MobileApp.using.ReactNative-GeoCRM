@@ -25,10 +25,7 @@ import { SLIDE_STATUS } from '../actions/actionTypes';
 export default function LocationInfo({navigation}) {
   const dispatch = useDispatch();
   const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
-  const locationInfo = useSelector(state => state.location.locationInfo);
-  console.log("---- location info ----");
-  console.log(locationInfo);
-  console.log("---- location info end ----");
+  const locationInfo = useSelector(state => state.location.locationInfo);  
 
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
