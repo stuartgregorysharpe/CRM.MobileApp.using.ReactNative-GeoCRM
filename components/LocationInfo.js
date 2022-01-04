@@ -42,7 +42,7 @@ export default function LocationInfo({navigation}) {
     };
   }, []);
 
-  if (statusLocationInfo == "request") {
+  if (statusLocationInfo == "request" || !locationInfo) {
     return (
       <View style={[styles.container, {padding: 10, justifyContent: 'center', height: '100%'}]}>
         {Array.from(Array(6)).map((_, key) => (

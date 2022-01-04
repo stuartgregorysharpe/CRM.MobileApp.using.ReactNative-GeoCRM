@@ -155,6 +155,7 @@ export const getLocationInfo = (location_id) => (dispatch, getState) => {
       }
     })
     .then((res) => {
+      console.log("Location Info CRM: ",JSON.stringify(res));
       if (res.data == undefined) {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
