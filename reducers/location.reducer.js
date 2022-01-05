@@ -8,7 +8,8 @@ import {
   CHANGE_LOCATION_MAP,
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
-  CHANGE_LOCATION_INFO
+  CHANGE_LOCATION_INFO,
+  STATUS_STAGE_OUTCOME_UPDATE
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -22,11 +23,12 @@ const initialState = {
   locationFilters: [],
   locationSearchLists: [],
   locationInfo: {},
+  statusStageOutcomeUpdate:'init'
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (state=initialState, action) => {
-  switch(action.type) {
+export default (state = initialState, action) => {
+  switch (action.type) {
     case STATUS_PIN_KEY:
       return {
         ...state,
@@ -77,7 +79,12 @@ export default (state=initialState, action) => {
         ...state,
         locationInfo: action.payload
       }
-    default: 
+    case STATUS_STAGE_OUTCOME_UPDATE:
+      return {
+        ...state,
+        statusStageOutcomeUpdate: action.payload
+      }
+    default:
       return state;
   }
 }

@@ -1,22 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { Text, View, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { TextInput, } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import uuid from 'react-native-uuid';
 
 import SvgIcon from './SvgIcon';
 import { TEXT_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
+import CustomPicker from './CustomPicker';
+import { postStageOutcomUpdate } from '../actions/location.action';
+import CustomLoading from './CustomLoading';
 
 export default function LocationInfoInput() {
+  const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
   const dispositionRef = useRef();
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
   const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
   const [dateTimeKey, setDateTimeKey] = useState(null);
+  const statusStageOutcomeUpdate = useSelector(state => state.location.statusStageOutcomeUpdate);
+
+  const [stageModalVisible, setStageModalVisible] = useState(false);
+  const [outComeModalVisible, setOutComeModalVisible] = useState(false);
+  const [selectedOutcomeId, setSelectedOutComeId] = useState(locationInfo.outcomes.find(x => x.outcome_id == locationInfo.current_outcome_id).outcome_id);
+  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
+  const [selectedOutcomes, setSelectedOutcomes] = useState([]);
+  const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
 
   useEffect(() => {
     let items = [];
@@ -24,6 +37,8 @@ export default function LocationInfoInput() {
       items.push(element.value)
     });
     setDispositionValue(items);
+
+    setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
   }, [locationInfo])
 
   const handleChangeText = (text, field, key) => {
@@ -32,9 +47,9 @@ export default function LocationInfoInput() {
     }
     if (
       (field.field_type == "alphanumeric" && (
-        text[text.length - 1].charCodeAt() < 48 || 
-        (text[text.length - 1].charCodeAt() > 57 && text[text.length - 1].charCodeAt() < 65) || 
-        (text[text.length - 1].charCodeAt() > 90 && text[text.length - 1].charCodeAt() < 97) || 
+        text[text.length - 1].charCodeAt() < 48 ||
+        (text[text.length - 1].charCodeAt() > 57 && text[text.length - 1].charCodeAt() < 65) ||
+        (text[text.length - 1].charCodeAt() > 90 && text[text.length - 1].charCodeAt() < 97) ||
         text[text.length - 1].charCodeAt() > 122
       )) || (field.field_type == "numeric" && (text[text.length - 1].charCodeAt() < 48 || text[text.length - 1].charCodeAt() > 57))
     ) return;
@@ -64,18 +79,69 @@ export default function LocationInfoInput() {
     setDateTimePickerVisibility(false)
   };
 
+  const stagesModal = () => {
+    return (
+      <CustomPicker visible={stageModalVisible} onModalClose={() => setStageModalVisible(!stageModalVisible)} renderItems={
+        locationInfo.stages.map((stage, key) => (
+          <View style={styles.pickerItem} key={key}>
+            <TouchableOpacity onPress={() => {
+              setSelectedStageId(stage.stage_id);
+              setSelectedOutComeId(null);
+              setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));
+              setStageModalVisible(!stageModalVisible);
+            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={styles.pickerItemText}>{stage.stage_name}</Text>
+              {stage.stage_id == selectedStageId && <SvgIcon icon="Check" width='23px' height='23px' />}
+            </TouchableOpacity>
+
+          </View>
+        ))
+      } />
+    )
+  }
+
+  const outComesModal=()=>{
+    return (
+      <CustomPicker visible={outComeModalVisible} onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} renderItems={
+        selectedOutcomes.map((outcome, key) => (
+          <View style={styles.pickerItem} key={key}>
+            <TouchableOpacity onPress={() => {
+              setIdempotencyKey(uuid.v4());
+              setSelectedOutComeId(outcome.outcome_id);
+
+              setOutComeModalVisible(!outComeModalVisible);
+              let request={
+                "location_id": locationInfo.location_id,
+                "stage_id": selectedStageId,
+                "outcome_id": selectedOutcomeId,
+                "campaign_id": 1,
+                "indempotency_key":idempotencyKey
+              }
+              dispatch(postStageOutcomUpdate(request));
+            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
+              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
+            </TouchableOpacity>
+
+          </View>
+        ))
+      } />
+    )
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.refreshBox}>
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Stage</Text>
           <View style={{ flexGrow: 1 }}>
-            <TouchableOpacity style={[styles.button, {width: 150}]}>
+            <TouchableOpacity style={[styles.button, { width: 150 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
               <Text style={styles.buttonText}>
-                {locationInfo.stages.find(x=> x.stage_id ==locationInfo.current_stage_id).stage_name}
+                {locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name}
               </Text>
             </TouchableOpacity>
           </View>
+
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </View>
       </View>
@@ -83,9 +149,9 @@ export default function LocationInfoInput() {
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
           <View style={{ flexGrow: 1 }}>
-            <TouchableOpacity style={[styles.button, {width: 120}]}>
+            <TouchableOpacity style={[styles.button, { width: 120 }]} onPress={()=>setOutComeModalVisible(!outComeModalVisible)}>
               <Text style={styles.buttonText}>
-                {locationInfo.outcomes.find(x=> x.outcome_id ==locationInfo.current_outcome_id).outcome_name}
+                {selectedOutcomeId ? locationInfo.outcomes.find(x => x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -102,7 +168,7 @@ export default function LocationInfoInput() {
             key={key}
             style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
             activeOpacity={1}
-            onPress={()=>{
+            onPress={() => {
               if (field.rule_editable == 0) return;
               dispositionRef.current.focus();
             }}
@@ -121,8 +187,8 @@ export default function LocationInfoInput() {
                 disabled={field.rule_editable == 0}
                 onChangeText={text => handleChangeText(text, field, key)}
                 onPressIn={handleFocus.bind(null, field.field_type, key)}
-                left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
-                right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
+                left={field.add_prefix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_prefix} />}
+                right={field.add_suffix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_suffix} />}
               />
             </View>
           </TouchableOpacity>
@@ -134,6 +200,10 @@ export default function LocationInfoInput() {
         onConfirm={handleConfirm}
         onCancel={() => setDateTimePickerVisibility(false)}
       />
+      {stagesModal()}
+      {outComesModal()}
+      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={statusStageOutcomeUpdate=='request'}/>}
+
     </View>
   )
 }
@@ -213,5 +283,46 @@ const styles = EStyleSheet.create(parse({
     color: TEXT_COLOR,
     marginBottom: 8,
     paddingLeft: 10
-  }
+  },
+  pickerItemText: {
+    fontSize: 18,
+    color: 'black'
+  },
+  pickerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  pickerContent: {
+    backgroundColor: BG_COLOR,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    backgroundColor: '#00000055'
+  },
+  modalView: {
+    margin: 20,
+    width: '90%',
+    backgroundColor: "white",
+    borderRadius: 7,
+    padding: 20,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
 }));
