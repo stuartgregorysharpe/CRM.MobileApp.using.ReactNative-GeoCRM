@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView} from 'react-native';
 import { Provider } from 'react-native-paper';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import GrayBackground from '../../components/GrayBackground';
@@ -20,7 +20,7 @@ const ResultItem = ({navigation, item, animation}) => {
   const dispatch = useDispatch();
   return (
     <TouchableOpacity style={styles.resultItem} onPress={() => {
-      animation();
+      animation();      
       dispatch(getLocationInfo(Number(item.location_id)));
     }}>
       <View style={{ maxWidth: '48%' }}>
@@ -116,36 +116,43 @@ export default function LocationSearchScreen({navigation}) {
     )
   }
 
+
   return (
     <Provider>
-      <SafeAreaView>
-        <GrayBackground />
-        {crmStatus && showItem == 1 && <View
-          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-        >
-          <FilterView navigation={navigation} />
-        </View>}
-        {crmStatus && showItem == 2 && <View
-          style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-        >
-          <LocationInfo navigation={navigation} />
-        </View>}
-        <View style={styles.container}>
-          <SearchBar animation={() => animation("filter")} />
-          <ScrollView>
-            <Text style={styles.title}>Current Location</Text>
-            {orderLists.map((locationSearchList, key) => (
-              <ResultItem key={key} navigation={navigation} item={locationSearchList} animation={() => animation("locationInfo")} />
-            ))}
-          </ScrollView>
-        </View>
+      <SafeAreaView style={{flex:1}}>
+        
+          <GrayBackground />
+          {crmStatus && showItem == 1 && <View
+            style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+          >
+            <FilterView navigation={navigation} />
+          </View>}
+
+          {crmStatus && showItem == 2 &&
+            <View
+              style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
+              <LocationInfo navigation={navigation} /> 
+            </View>
+          }
+
+            <View style={styles.container}>
+              <SearchBar animation={() => animation("filter")} />
+
+              <ScrollView>
+                <Text style={styles.title}>Current Location</Text>
+                {orderLists.map((locationSearchList, key) => (
+                  <ResultItem key={key} navigation={navigation} item={locationSearchList} animation={() => animation("locationInfo")} />
+                ))}
+              </ScrollView>
+            </View>
+
+
       </SafeAreaView>
     </Provider>
   )
 }
 
 const perWidth = setWidthBreakpoints(breakPoint);
-
 const styles = EStyleSheet.create(parse({
   container: {
     position: 'relative',
@@ -160,6 +167,7 @@ const styles = EStyleSheet.create(parse({
     paddingLeft: 14,
     marginBottom: 10
   },
+
   resultItem: {
     maxWidth: '100%',
     flexDirection: 'row',

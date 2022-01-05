@@ -15,48 +15,6 @@ import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 
-const specificInfo = [
-  {
-    icon: "Person_Sharp",
-    title: 'Company & Contacts',
-    text: 'View all information ->'
-  },
-  {
-    icon: "File_Earmark_Text_Fill",
-    title: 'Forms',
-    text: 'Specific to this location ->'
-  },
-  {
-    icon: "ChatBoxes",
-    title: 'Activity & Comments',
-    text: 'Activity tree ->'
-  },
-  {
-    icon: "Pipeline",
-    title: 'Sales Pipeline',
-    text: 'Specific to this location ->'
-  },
-  {
-    icon: "Exclamation_Triangle_Fill",
-    title: 'Action Items',
-    text: 'Specific actions to be addressed ->'
-  },
-  {
-    icon: "Sale",
-    title: 'Sales',
-    text: 'Quotes, orders and returns ->'
-  },
-  {
-    icon: "Camera",
-    title: 'Location Image',
-    text: 'Take an image for this location ->'
-  },
-  {
-    icon: "Geo",
-    title: 'Geo Location',
-    text: 'Update geo co-ordinates ->'
-  }
-];
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
@@ -81,13 +39,13 @@ export default function LocationSpecificInfoScreen(props) {
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
                 <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
-                <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name ? locationInfo.location_name.custom_field_name : ''}</Text>
+                <Text style={styles.subtitle}>{locationInfo ? locationInfo.location_name.custom_field_name : ''}</Text>
               </View>
-              <Text style={styles.title}>{locationInfo.location_name.value}</Text>
+              <Text style={styles.title}>{locationInfo ? locationInfo.location_name.value : ''}</Text>
             </View>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.headerIcon} icon="Insert_Invitation" width='16px' height='16px' />
-              <Text style={styles.subtitle}>Last Interaction: {locationInfo.last_interaction}</Text>
+              <Text style={styles.subtitle}>Last Interaction: { locationInfo ? locationInfo.last_interaction : ''}</Text>
             </View>
           </View>
           <View style={styles.headerTitleBox}>
@@ -95,7 +53,7 @@ export default function LocationSpecificInfoScreen(props) {
               <SvgIcon style={styles.headerIcon} icon="Location_Arrow_White" width='14px' height='14px' />
               <Text style={styles.subtitle}>Address:</Text>
             </View>
-            <Text style={styles.title}>{locationInfo.address}</Text>
+            <Text style={styles.title}>{ locationInfo ? locationInfo.address : ''}</Text>
             <TouchableOpacity style={styles.checkoutButton}>
               <Text style={styles.checkoutButtonText}>Check out</Text>
             </TouchableOpacity>
@@ -109,15 +67,15 @@ export default function LocationSpecificInfoScreen(props) {
             <View style={[styles.cardBox, boxShadow]}>
               <Text style={styles.boldText}>Outcome</Text>
               <View style={{ flexDirection: 'row', position: 'relative' }}>
-                <View style={styles.outComeBox}>
-                  {locationInfo.outcomes.map((item, key) => (
-                    <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
-                  ))}
-                  {/* <Rectangle style={{ width: '48%' }} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
-                  <Rectangle style={{ width: '48%' }} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{ width: '48%' }} text="Priority Re-loop" icon="Orange_Star" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{ width: '48%' }} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" /> */}
-                </View>
+                {
+                  locationInfo && 
+                  <View style={styles.outComeBox}>
+                    {locationInfo.outcomes.map((item, key) => (
+                      <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
+                    ))}                  
+                  </View>
+                }
+                
                 <TouchableOpacity>
                   <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
                 </TouchableOpacity>
@@ -126,26 +84,15 @@ export default function LocationSpecificInfoScreen(props) {
             <LocationInfoInput />
           </View>
           <View style={styles.cardContainer}>
-            <View style={[styles.cardBox, boxShadow]}>
-              <Text style={styles.boldText}>Stage</Text>
-              {locationInfo.stages.map((item, key) => (
-                <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
-              ))}
-              {/* <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
-              <Rectangle text="Contact" backgroundColor="#15A1234F" />
-              <Rectangle text="DM" backgroundColor="#155AA14F" />
-              <Rectangle text="Presentation" backgroundColor="#fff" borderColor="#97ACC2" />
-              <Rectangle style={{ marginBottom: 0 }} text="Order" backgroundColor="#fff" borderColor="#97ACC2" /> */}
-            </View>
-            {/* {specificInfo.map((info, key) => (
-              <View key={key} style={[styles.card, boxShadow]}>
-                <View style={styles.cardTitleBox}>
-                  <SvgIcon style={styles.cardIcon} icon={info.icon} width="15px" height="15px" />
-                  <Text style={styles.cardTitle}>{info.title}</Text>
-                </View>
-                <Text style={styles.cardText}>{info.text}</Text>
+            {
+              locationInfo &&
+              <View style={[styles.cardBox, boxShadow]}>
+                <Text style={styles.boldText}>Stage</Text>
+                {locationInfo.stages.map((item, key) => (
+                  <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
+                ))}              
               </View>
-            ))} */}
+            }                        
           </View>
         </View>
         <View style={{height: 60}}></View>

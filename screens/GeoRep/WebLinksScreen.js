@@ -37,7 +37,7 @@ export default function WebLinksScreen({screenProps}) {
     }
   });
   return (
-    <SafeAreaView>
+    // <SafeAreaView>
       <ScrollView style={styles.container}>
         <Searchbar />
         <View style={styles.innerContainer}>
@@ -49,14 +49,16 @@ export default function WebLinksScreen({screenProps}) {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    // </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+   // backgroundColor:'red',
     minHeight: '100%',
-    backgroundColor: BG_COLOR
+    backgroundColor: BG_COLOR,
+    
   },
   innerContainer: {
     padding: 10

@@ -15,11 +15,10 @@ import { postStageOutcomUpdate } from '../actions/location.action';
 import CustomLoading from './CustomLoading';
 
 export default function LocationInfoInput() {
+
   const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
-  console.log(" ------- location info ------");
-  console.log(locationInfo);
-  console.log(" ------- location info end ------");
+
   const dispositionRef = useRef();
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
@@ -35,6 +34,7 @@ export default function LocationInfoInput() {
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
 
   useEffect(() => {
+    if(!locationInfo.disposition_fields) return;
     let items = [];
     locationInfo.disposition_fields.forEach(element => {
       items.push(element.value)
@@ -62,6 +62,7 @@ export default function LocationInfoInput() {
   const handleFocus = (fieldType, key) => {
     setDateTimeKey(key);
     if (fieldType == "date") {
+      //hide keybard 
       setDatePickerMode("date");
       setDateTimePickerVisibility(true);
     }
@@ -134,20 +135,27 @@ export default function LocationInfoInput() {
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.refreshBox}>
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Stage</Text>
           <View style={{ flexGrow: 1 }}>
-            <TouchableOpacity style={[styles.button, { width: 150 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
-              <Text style={styles.buttonText}>
-                {locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name}
-              </Text>
+
+            <TouchableOpacity style={[styles.button, {width: 150}]}>
+              {
+                locationInfo &&
+                <Text style={styles.buttonText}>
+                  {locationInfo.stages.find(x=> x.stage_id ==locationInfo.current_stage_id).stage_name}
+                </Text>
+              }
+
             </TouchableOpacity>
           </View>
 
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </View>
       </View>
+
       <View style={styles.refreshBox}>
         <View style={styles.shadowBox}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
@@ -168,38 +176,43 @@ export default function LocationInfoInput() {
 
       <Text style={styles.boldText}>Campaign: Quill Test</Text>
 
-      <View style={styles.inputBox}>
-        {locationInfo.disposition_fields.map((field, key) => (
-          <TouchableOpacity
-            key={key}
-            style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
-            activeOpacity={1}
-            onPress={() => {
-              if (field.rule_editable == 0) return;
-              dispositionRef.current.focus();
-            }}
-          >
-            <View>
-              <TextInput
-                type={field.field_type}
-                ref={dispositionRef}
-                keyboardType={field.field_type === "alphanumeric" ? 'numeric' : 'default'}
-                style={styles.textInput}
-                label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
-                mode="outlined"
-                outlineColor="#133C8B"
-                activeOutlineColor="#9D9FA2"
-                value={dispositionValue[key]}
-                disabled={field.rule_editable == 0}
-                onChangeText={text => handleChangeText(text, field, key)}
-                onPressIn={handleFocus.bind(null, field.field_type, key)}
-                left={field.add_prefix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_prefix} />}
-                right={field.add_suffix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_suffix} />}
-              />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {
+        locationInfo.disposition_fields &&
+        <View style={styles.inputBox}>
+
+            {locationInfo.disposition_fields.map((field, key) => (
+              <TouchableOpacity
+                key={key}
+                style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
+                activeOpacity={1}
+                onPress={()=>{                 
+                  if (field.rule_editable == 0) return;
+                  dispositionRef.current.focus();
+                }}
+              >
+                <View>
+                  <TextInput
+                    type={field.field_type}
+                    ref={dispositionRef}
+                    keyboardType={field.field_type === "alphanumeric" ? 'numeric' : 'default'}
+                    style={styles.textInput}
+                    label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                    mode="outlined"
+                    outlineColor="#133C8B"
+                    activeOutlineColor="#9D9FA2"
+                    value={dispositionValue[key]}
+                    disabled={field.rule_editable == 0}
+                    onChangeText={text => handleChangeText(text, field, key)}
+                    onPressIn={handleFocus.bind(null, field.field_type, key)}
+                    left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
+                    right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+      }
+      
       <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
         mode={datePickerMode}
@@ -225,8 +238,8 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'center',
     backgroundColor: '#fff',
     shadowColor: '#00000014',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,
     shadowRadius: 0,
     elevation: 1,
     zIndex: 1,
