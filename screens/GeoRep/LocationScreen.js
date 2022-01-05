@@ -27,6 +27,7 @@ import {
   getLocationSearchList,
   getLocationInfo,
 } from '../../actions/location.action';
+import Fonts from '../../constants/Fonts';
 
 const MarkerView = () => {
   const dispatch = useDispatch();
@@ -288,7 +289,7 @@ const styles = EStyleSheet.create(parse({
   slidUpArrowText: {
     color: PRIMARY_COLOR,
     fontSize: 12,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     marginRight: 8,
   },
   pinKey: {
@@ -319,7 +320,7 @@ const styles = EStyleSheet.create(parse({
     fontSize: 12,
     backgroundColor: '#fff',
     borderRadius: 7,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     height: 45,
   },
   searchIcon: {
@@ -349,7 +350,7 @@ const styles = EStyleSheet.create(parse({
   markerText: {
     fontSize: 12,
     color: TEXT_COLOR,
-    fontFamily: 'Gilroy-Medium'
+    fontFamily: Fonts.secondaryMedium
   },
   goToAddLead: {
     position: 'absolute',

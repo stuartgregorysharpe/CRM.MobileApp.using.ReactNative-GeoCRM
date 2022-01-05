@@ -37,7 +37,7 @@ import LifeMessagesScreen from '../screens/GeoLife/MessagesScreen';
 import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
-
+import Fonts from '../constants/Fonts';
 import MoreNavigator from './MoreNavigator';
 
 import SvgIcon from './SvgIcon';
@@ -230,7 +230,7 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarShowLabel: true,
         headerTitleStyle:  {
           color: "#fff",
-          fontFamily: 'Product Sans-Regular'
+          fontFamily: Fonts.primaryRegular
         },
         tabBarIconStyle: {
           color: "#fff",

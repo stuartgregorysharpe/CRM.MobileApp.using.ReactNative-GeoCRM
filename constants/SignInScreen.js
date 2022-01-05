@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 15,
-    fontFamily: Fonts.secondaryBold
+    fontFamily: 'Gilroy-Bold'
   },
   submitButtonIcon: {
     position: 'absolute',

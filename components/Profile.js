@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import SvgIcon from './SvgIcon';
 import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
 import { CHANGE_SELECT_PROJECT, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
+import Fonts from '../constants/Fonts';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingLeft: 8,
     color: PRIMARY_COLOR,
-    fontFamily: 'Product Sans-Regular',
+    fontFamily: Fonts.primaryRegular,
     fontSize: 22,
     borderBottomColor: PRIMARY_COLOR,
     borderBottomWidth: 2

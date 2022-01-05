@@ -186,16 +186,16 @@ const styles = EStyleSheet.create(parse({
     fontSize: 12,
     color: '#fff',
     textAlign: 'left',
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
   },
   dateText: {
     color: '#0AD10A',
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
   },
   title: {
     fontSize: 14,
     color: '#fff',
-    fontFamily: Fonts.secondaryBold,
+    fontFamily: 'Gilroy-Bold',
     lineHeight: 22,
     maxWidth: 300
   },
@@ -227,13 +227,13 @@ const styles = EStyleSheet.create(parse({
   boldText: {
     fontSize: 18,
     color: TEXT_COLOR,
-    fontFamily: Fonts.secondaryBold,
+    fontFamily: 'Gilroy-Bold',
     marginBottom: 8
   },
   text: {
     fontSize: 16,
     color: TEXT_COLOR,
-    fontFamily: Fonts.secondaryMedium
+    fontFamily: 'Gilroy-Medium'
   },
   card: {
     justifyContent: 'space-between',
@@ -255,7 +255,7 @@ const styles = EStyleSheet.create(parse({
   },
   cardTitle: {
     color: TEXT_COLOR,
-    fontFamily: Fonts.secondaryBold,
+    fontFamily: 'Gilroy-Bold',
   },
   cardTextBox: {
     flexDirection: 'row',

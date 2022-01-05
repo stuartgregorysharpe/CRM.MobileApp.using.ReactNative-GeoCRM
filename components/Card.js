@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
 import { PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 export default function Card({icon, title, subtitle , image, number, onPress}) {
   return (
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontFamily: 'Product Sans-Bold',
+    fontFamily: Fonts.primaryBold,
     color: '#000'
   },
   subTitile: {

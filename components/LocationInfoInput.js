@@ -17,6 +17,9 @@ import CustomLoading from './CustomLoading';
 export default function LocationInfoInput() {
   const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
+  console.log(" ------- location info ------");
+  console.log(locationInfo);
+  console.log(" ------- location info end ------");
   const dispositionRef = useRef();
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
@@ -161,7 +164,10 @@ export default function LocationInfoInput() {
           <Image style={styles.refreshImage} source={require("../assets/images/Re_Loop_Button.png")} />
         </TouchableOpacity>
       </View>
+
+
       <Text style={styles.boldText}>Campaign: Quill Test</Text>
+
       <View style={styles.inputBox}>
         {locationInfo.disposition_fields.map((field, key) => (
           <TouchableOpacity
@@ -177,7 +183,7 @@ export default function LocationInfoInput() {
               <TextInput
                 type={field.field_type}
                 ref={dispositionRef}
-                keyboardType={field.field_type == "numeric" ? 'numeric' : 'default'}
+                keyboardType={field.field_type === "alphanumeric" ? 'numeric' : 'default'}
                 style={styles.textInput}
                 label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                 mode="outlined"
