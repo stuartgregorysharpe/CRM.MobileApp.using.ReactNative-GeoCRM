@@ -13,6 +13,8 @@ import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 export default function AddLead({screenProps}) {
   const dispatch = useDispatch();
@@ -42,7 +44,7 @@ export default function AddLead({screenProps}) {
   });
 
   return (
-      <ScrollView style={styles.container}>
+      <KeyboardAwareScrollView style={styles.container}>
         <TouchableOpacity style={{padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
           <Divider />
         </TouchableOpacity>
@@ -197,7 +199,7 @@ export default function AddLead({screenProps}) {
           <Text style={[styles.addButtonText]}>Add</Text>
           <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-      </ScrollView>
+      </KeyboardAwareScrollView>
   )
 }
 
@@ -225,7 +227,7 @@ const styles = EStyleSheet.create(parse({
     lineHeight: 30,
     height: 40,
     backgroundColor: BG_COLOR,
-    fontFamily: Fonts.secondaryMediumMedium,
+    fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },
   linkBox: {
@@ -234,13 +236,12 @@ const styles = EStyleSheet.create(parse({
   },
   linkBoxText: {
     color: PRIMARY_COLOR,
-    fontFamily: Fonts.secondaryMediumMedium,
-    textDecorationLine: 'underline',
+    fontFamily: Fonts.secondaryMedium,    
     textDecorationColor: PRIMARY_COLOR,
     textAlign: 'center'
   },
   accuracyText: {
-    fontFamily: Fonts.secondaryMediumMedium,
+    fontFamily: Fonts.secondaryMedium,
     position: 'absolute',
     top: 2,
     right: 0,

@@ -83,6 +83,7 @@ const SlidUpArrow = () => (
 )
 
 export default function LocationScreen(props) {
+
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const locationMaps = useSelector(state => state.location.locationMaps);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -149,18 +150,25 @@ export default function LocationScreen(props) {
     <Provider>
       <SafeAreaView>
         <GrayBackground />
+
+
         {crmStatus && (showItem == 1 || showItem == 2) && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 1 && <MarkerView />}
           {showItem == 2 && <FilterView navigation={props.navigation} />}
         </View>}
+
+        
         {crmStatus && (showItem == 3 || showItem == 4) && <View
           style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 3 && <AddLead screenProps={props.screenProps} />}
           {showItem == 4 && <LocationInfo navigation={props.navigation} />}
         </View>}
+
+        
+
         <View style={styles.container}>
           <View style={styles.searchBox}>
             <TouchableOpacity

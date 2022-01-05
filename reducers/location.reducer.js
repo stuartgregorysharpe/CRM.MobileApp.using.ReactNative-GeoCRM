@@ -73,9 +73,11 @@ export default (state=initialState, action) => {
         locationSearchLists: action.payload
       }
     case CHANGE_LOCATION_INFO:
+      console.log("changed location info");
       return {
         ...state,
-        locationInfo: action.payload
+        locationInfo: action.payload,
+        statusLocationInfo: "success"
       }
     default: 
       return state;

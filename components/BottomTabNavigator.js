@@ -56,8 +56,12 @@ import {
   Dimensions, 
   TouchableOpacity,
   View,
-  Text
+  Text,
+  Platform
 } from 'react-native'
+import { white } from 'react-native-paper/lib/typescript/styles/colors';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { style } from '../constants/Styles';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -221,11 +225,13 @@ export default function RepBottomTabNavigator({navigation}) {
 
   return (
     <BottomTab.Navigator
-      screenOptions={{
+      screenOptions={{                
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
+        headerTitleAlign:'left',
         headerStyle: {
           backgroundColor: PRIMARY_COLOR,
+          height:62,
         },
         tabBarShowLabel: true,
         headerTitleStyle:  {
@@ -235,12 +241,14 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarIconStyle: {
           color: "#fff",
         },
+        headerStatusBarHeight:Platform.OS == 'ios' ? 0 : 0,      
         tabBarStyle: {
-          backgroundColor: "#fff",
-          height: 60,
+          height:60,
+          backgroundColor: "#fff", 
           paddingTop: 10,
           paddingBottom: 10,
-        }
+        },
+        
       }}>
 
       {/* Rep Bottom Navigator */}
@@ -267,6 +275,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
       />}
 
+
       {selectProject == 'geo_rep' && bottomListOne.includes('crm_locations') && <BottomTab.Screen
         name="CRM"
         component={CRMScreen}
@@ -274,6 +283,7 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'CRM',
           tabBarIcon: ({focused}) => (
             <Fragment>
+              
               {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
@@ -283,7 +293,7 @@ export default function RepBottomTabNavigator({navigation}) {
               style={styles.header} 
               activeOpacity={1}
               onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
-            >
+            >            
             </TouchableOpacity>
           ),
           headerRight: () => (
@@ -291,7 +301,7 @@ export default function RepBottomTabNavigator({navigation}) {
           ),
           tabBarLabelStyle: {
             fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
+            fontFamily: Fonts.secondaryMedium
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
@@ -311,7 +321,7 @@ export default function RepBottomTabNavigator({navigation}) {
         options={{
           title: 'Web Links',
           tabBarIcon: ({focused}) => (
-            <Fragment>
+            <Fragment>              
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
             </Fragment>
@@ -1052,9 +1062,11 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: '100%'
   },
-  headerRightView: {
+  headerRightView: {        
     flexDirection: 'row',
-    marginRight: 12
+    marginRight: 12,    
+    marginBottom:20,
+    marginTop:20
   },
   toggleSwitch: {
     marginRight: 12,
@@ -1076,6 +1088,7 @@ const styles = StyleSheet.create({
     borderRadius: 20
   },
   headerAvatarText: {
+    marginTop:2,
     fontSize: 18,
     color: '#fff',
     fontFamily: 'Gilroy-Bold'

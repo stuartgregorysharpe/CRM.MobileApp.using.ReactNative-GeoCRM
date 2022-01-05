@@ -15,49 +15,6 @@ import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 
-const specificInfo = [
-  {
-    icon: "Person_Sharp",
-    title: 'Company & Contacts',
-    text: 'View all information ->'
-  },
-  {
-    icon: "File_Earmark_Text_Fill",
-    title: 'Forms',
-    text: 'Specific to this location ->'
-  },
-  {
-    icon: "ChatBoxes",
-    title: 'Activity & Comments',
-    text: 'Activity tree ->'
-  },
-  {
-    icon: "Pipeline",
-    title: 'Sales Pipeline',
-    text: 'Specific to this location ->'
-  },
-  {
-    icon: "Exclamation_Triangle_Fill",
-    title: 'Action Items',
-    text: 'Specific actions to be addressed ->'
-  },
-  {
-    icon: "Sale",
-    title: 'Sales',
-    text: 'Quotes, orders and returns ->'
-  },
-  {
-    icon: "Camera",
-    title: 'Location Image',
-    text: 'Take an image for this location ->'
-  },
-  {
-    icon: "Geo",
-    title: 'Geo Location',
-    text: 'Update geo co-ordinates ->'
-  }
-];
-
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
     <Text style={styles.text}>{text}</Text>
@@ -76,8 +33,12 @@ export default function LocationSpecificInfoScreen(props) {
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
+
+        
         <View style={styles.headerBox}>
+        
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
                 <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
@@ -119,16 +80,18 @@ export default function LocationSpecificInfoScreen(props) {
                   <Rectangle style={{ width: '48%' }} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" /> */}
                 </View>
                 <TouchableOpacity>
-                  <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
+                  {/* <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} /> */}
                 </TouchableOpacity>
               </View>
             </View>
+            
             <LocationInfoInput />
+
           </View>
           <View style={styles.cardContainer}>
             <View style={[styles.cardBox, boxShadow]}>
               <Text style={styles.boldText}>Stage</Text>
-              {locationInfo.stages.map((item, key) => (
+              {locationInfo && locationInfo.stages.map((item, key) => (
                 <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
               ))}
               {/* <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
