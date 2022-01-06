@@ -7,16 +7,16 @@ import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function AddLead({screenProps}) {
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const customerNameRef = useRef();
   const addressRef = useRef();
   const contactEmailRef = useRef();
@@ -42,7 +42,7 @@ export default function AddLead({screenProps}) {
   });
 
   return (
-      <ScrollView style={styles.container}>
+      <KeyboardAwareScrollView style={styles.container}>
         <TouchableOpacity style={{padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
           <Divider />
         </TouchableOpacity>
@@ -197,7 +197,7 @@ export default function AddLead({screenProps}) {
           <Text style={[styles.addButtonText]}>Add</Text>
           <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-      </ScrollView>
+      </KeyboardAwareScrollView>
   )
 }
 
@@ -225,7 +225,7 @@ const styles = EStyleSheet.create(parse({
     lineHeight: 30,
     height: 40,
     backgroundColor: BG_COLOR,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },
   linkBox: {
@@ -234,13 +234,13 @@ const styles = EStyleSheet.create(parse({
   },
   linkBoxText: {
     color: PRIMARY_COLOR,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     textDecorationLine: 'underline',
     textDecorationColor: PRIMARY_COLOR,
     textAlign: 'center'
   },
   accuracyText: {
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     position: 'absolute',
     top: 2,
     right: 0,
@@ -263,7 +263,7 @@ const styles = EStyleSheet.create(parse({
   addButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold'
+    fontFamily: Fonts.secondaryBold
   },
   addButtonIcon: {
     position: 'absolute',

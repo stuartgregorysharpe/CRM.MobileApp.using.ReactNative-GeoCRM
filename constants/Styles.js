@@ -1,10 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet , Platform} from "react-native";
 import { BG_COLOR } from "./Colors";
+import Fonts from "./Fonts";
 
 export const boxShadow = StyleSheet.create({
   shadowColor: '#808080',
   shadowOffset: { width: 0, height: 5 },
-  shadowOpacity: 1,
+  shadowOpacity: Platform.OS == 'ios' ? 0.1 : 0.8,
   elevation: 1,
 });
 
@@ -16,3 +17,16 @@ export const grayBackground = StyleSheet.create({
   zIndex: 1,
   elevation: 1
 });
+
+export const style = StyleSheet.create({
+
+  header: {
+    fontFamily:Fonts.primaryBold, 
+    color:"#FFF" , 
+    fontSize:16 , 
+    marginLeft:20
+  },
+  
+})
+
+

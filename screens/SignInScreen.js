@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar , Dimensions , KeyboardAvoidingView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from 'react-native-paper';
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -12,13 +12,16 @@ import { PRIMARY_COLOR } from '../constants/Colors';
 import { Login } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 
 export default function SignIn() {
   const dispatch = useDispatch();
   const loginStatus = useSelector(state => state.auth.loginStatus);
-
-  const [email, setEmail] = useState('carl@cydcor.com');
-  const [password, setPassword] = useState('Test2021#');
+//carl@cydcor.com
+//Test2021#
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
@@ -67,7 +70,11 @@ export default function SignIn() {
   }
 
   return (
-    <SafeAreaView>
+    // <SafeAreaView style={{flex:1}}>
+
+      <KeyboardAwareScrollView style={{flex:1}}> 
+      <KeyboardAvoidingView style={{flex:1}}>      
+
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
       <View style={styles.container}>
         <Image style={styles.logo} source={require("../assets/images/logo.png")} />
@@ -124,18 +131,21 @@ export default function SignIn() {
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}
       </View>
-    </SafeAreaView>
+      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    // </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: PRIMARY_COLOR,
-    width: '100%',
-    height: '100%',
+    backgroundColor: PRIMARY_COLOR,  
+    //flex:1,
+    height:Dimensions.get("screen").height,
     justifyContent: 'center',
-    padding: 20
+    padding: 25
   },
+
   logo: {
     width: 250,
     height: 62,
@@ -162,19 +172,22 @@ const styles = StyleSheet.create({
     top: 14,
     right: 8
   },
-  submitButton: {
-    position: 'relative',
-    width: '100%',
+
+
+  submitButton: {    
+    
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,
     paddingLeft: 20,
     paddingRight: 20,
-    marginTop: 24,
+    marginTop: 20,
     marginBottom: 24,
     borderRadius: 7,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    marginBottom:10
   },
+
   submitButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 15,

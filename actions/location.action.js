@@ -62,6 +62,8 @@ export const getLocationsMap = () => (dispatch, getState) => {
         .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-map`, {
           params: {
             user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
+            // current_latitude: -33.898004,
+            // current_longitude: 18.523551,
             current_latitude: location.latitude,
             current_longitude: location.longitude
           },
@@ -129,7 +131,7 @@ export const getLocationSearchList = () => (dispatch, getState) => {
         Authorization: 'Bearer ' + getState().selection.token
       }
     })
-    .then((res) => {
+    .then((res) => {      
       if (res.data == undefined) {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
@@ -139,14 +141,16 @@ export const getLocationSearchList = () => (dispatch, getState) => {
         dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items })
       }
     })
-    .catch((err) => {
+    .catch((err) => {    
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);
     })
 }
 
 export const getLocationInfo = (location_id) => (dispatch, getState) => {
-  dispatch({ type: STATUS_LOCATION_INFO, payload: 'request' });
+
+
+  dispatch({type: STATUS_LOCATION_INFO, payload: 'request'});
   axios
     .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-info`, {
       params: {
@@ -157,15 +161,13 @@ export const getLocationInfo = (location_id) => (dispatch, getState) => {
         Authorization: 'Bearer ' + getState().selection.token,
       }
     })
-    .then((res) => {
-      console.log("Location Info CRM: ", JSON.stringify(res));
+    .then((res) => {      
       if (res.data == undefined) {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
-      }
-      dispatch({ type: STATUS_LOCATION_INFO, payload: 'success' });
-      dispatch({ type: CHANGE_LOCATION_INFO, payload: res.data })
-    })
+      }      
+      dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})    
+    })  
     .catch((err) => {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);

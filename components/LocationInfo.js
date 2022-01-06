@@ -5,7 +5,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Keyboard
+  Keyboard,
+  Dimensions
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -21,11 +22,14 @@ import Skeleton from './Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
-  
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 export default function LocationInfo({navigation}) {
+
   const dispatch = useDispatch();
   const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
   const locationInfo = useSelector(state => state.location.locationInfo);  
+  console.log("view location info", locationInfo);
 
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
@@ -51,19 +55,25 @@ export default function LocationInfo({navigation}) {
       </View>
     )
   }
-  
+
 
   return (
+
+
     <View style={styles.container}>
       <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
-      <ScrollView style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: 50}]}>
+
+
+      
+
+      <KeyboardAwareScrollView style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: 50}]}>
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='16px' height='16px' />
-              <Text style={styles.subtitle}>{locationInfo ? locationInfo.location_name.custom_field_name : ''}</Text>
+              {/* <Text style={styles.subtitle}>{locationInfo ? locationInfo.location_name.custom_field_name : ''}</Text> */}
             </View>
             <Text style={styles.title}>{ locationInfo ? locationInfo.location_name.value : ''}</Text>
           </View>
@@ -83,20 +93,17 @@ export default function LocationInfo({navigation}) {
           <View style={styles.walmartImageBox}>
             <Image style={styles.walmartImage} source={require("../assets/images/walmart.png")} />
           </View>
-        </View>
-    
+        </View>    
 
         {
           locationInfo ? <LocationInfoInput /> : <View></View>
-        }
-        
-        
-        {/* <FilterButton text="Contact: Jack Reacher" />
-        <FilterButton text="Navigation" />
-        <FilterButton text="Activity & Comments" subText="Jack Submitted a Brand Facings Task 4 days ago" /> */}
+        }                        
         <View style={{ height: 20 }}></View>
-      </ScrollView>
-      {!keyboardStatus && <View style={styles.nextButtonBar}>
+      </KeyboardAwareScrollView>
+
+
+      {/* !keyboardStatus && */}
+      { <View style={styles.nextButtonBar}>
         <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => navigation.navigate("LocationSpecificInfo")}>
           <Text style={styles.nextButtonText}>Access CRM</Text>
           <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
@@ -114,6 +121,8 @@ const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
+    
+    height:Dimensions.get("window").height - 150,
     backgroundColor: BG_COLOR,
   },
   innerContainer: {
