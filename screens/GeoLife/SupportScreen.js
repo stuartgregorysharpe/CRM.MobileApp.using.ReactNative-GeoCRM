@@ -124,6 +124,7 @@ export default function SupportScreen({navigation, screenProps}) {
         },
       });
     }
+    
     if (screenProps) {
       screenProps.setOptions({
         title: "Support",

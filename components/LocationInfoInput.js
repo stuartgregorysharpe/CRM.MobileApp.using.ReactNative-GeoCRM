@@ -16,10 +16,7 @@ import CustomLoading from './CustomLoading';
 
 export default function LocationInfoInput() {
   const dispatch = useDispatch();
-  const locationInfo = useSelector(state => state.location.locationInfo);
-  console.log(" ------- location info ------");
-  console.log(locationInfo);
-  console.log(" ------- location info end ------");
+  const locationInfo = useSelector(state => state.location.locationInfo);  
   const dispositionRef = useRef();
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");

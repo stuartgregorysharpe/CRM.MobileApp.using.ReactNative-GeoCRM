@@ -81,6 +81,11 @@ export default function SignIn() {
             outlineColor="#fff"
             activeOutlineColor="#fff"
             value={email}
+            onSubmitEditing={()=>{              
+              handleNext();
+            }}
+            returnKeyType="next" 
+            keyboardType="email-address"
             onChangeText={text => {
               setEmail(text);
               setEmailError(false);
@@ -89,6 +94,7 @@ export default function SignIn() {
           />
           {emailError && <Text style={styles.errorText}>Please Input your email</Text>}
         </View>
+
         {step && <View style={styles.textInputBox}>
           <TextInput
             style={styles.textInput}
