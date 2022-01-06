@@ -11,9 +11,10 @@ import SearchBar from '../../components/SearchBar';
 import Skeleton from '../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
-import { SLIDE_STATUS } from '../../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../actions/actionTypes';
 import { getLocationInfo } from '../../actions/location.action';
 import Fonts from '../../constants/Fonts';
+import CustomHeader from '../../components/Header/CustomHeader';
 
 const ResultItem = ({navigation, item, animation}) => {
 
@@ -95,13 +96,17 @@ export default function LocationSearchScreen({navigation}) {
     switch(name) {
       case "filter":
         setShowItem(1);
+        dispatch({type: BACK_ICON_STATUS, payload: false});    
         return;
       case "locationInfo":
         setShowItem(2);
+        dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       default:
+        dispatch({type: BACK_ICON_STATUS, payload: false});
         return;
     }
+    
   }
 
   if (statusLocationSearchLists == "request") {
@@ -120,7 +125,7 @@ export default function LocationSearchScreen({navigation}) {
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
-        
+          
           <GrayBackground />
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
@@ -133,7 +138,7 @@ export default function LocationSearchScreen({navigation}) {
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
               <LocationInfo navigation={navigation} /> 
             </View>
-          }
+          } 
 
             <View style={styles.container}>
               <SearchBar animation={() => animation("filter")} />

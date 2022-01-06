@@ -15,6 +15,7 @@ import {
   CHANGE_CURRENT_LOCATION,
   STATUS_STAGE_OUTCOME_UPDATE
 } from "./actionTypes";
+import { setToken } from '../constants/Storage';
 
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
@@ -30,6 +31,7 @@ export const getLocationPinKey = () => (dispatch, getState) => {
     .then((res) => {
       if (res.data == undefined) {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+        setToken(null);
         return;
       }
       if (res.data.status == 'success') {
@@ -73,6 +75,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
         })
         .then((res) => {
           if (res.data == undefined) {
+            setToken(null);
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
           }
@@ -106,6 +109,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
     })
     .then((res) => {
       if (res.data == undefined) {
+        setToken(null);
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
@@ -133,6 +137,7 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     })
     .then((res) => {      
       if (res.data == undefined) {
+        setToken(null);
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
@@ -163,6 +168,7 @@ export const getLocationInfo = (location_id) => (dispatch, getState) => {
     })
     .then((res) => {      
       if (res.data == undefined) {
+        setToken(null);
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }      
@@ -192,6 +198,7 @@ export const postStageOutcomUpdate = (request) => (dispatch, getState) => {
     .then((res) => {
       console.log("postStageOutcomUpdate: ", JSON.stringify(res));
       if (res.data == undefined) {
+        setToken(null);
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }

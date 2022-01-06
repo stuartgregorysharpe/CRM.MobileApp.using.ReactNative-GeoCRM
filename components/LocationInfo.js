@@ -6,7 +6,8 @@ import {
   Image,
   TouchableOpacity,
   Keyboard,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -21,8 +22,9 @@ import Divider from './Divider';
 import Skeleton from './Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
-import { SLIDE_STATUS } from '../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS } from '../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import DeviceInfo from 'react-native-device-info';
 
 export default function LocationInfo({navigation}) {
 
@@ -61,21 +63,27 @@ export default function LocationInfo({navigation}) {
 
 
     <View style={styles.container}>
-      <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+
+      <TouchableOpacity style={{ padding: 6 }} onPress={() => {
+        dispatch({type: SLIDE_STATUS, payload: false});
+        dispatch({type: BACK_ICON_STATUS, payload: false})        
+      }}>
         <Divider />
       </TouchableOpacity>
-
-
       
 
-      <KeyboardAwareScrollView style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: 50}]}>
+      <KeyboardAwareScrollView 
+        enableOnAndroid={true}
+        enableAutomaticScroll={(Platform.OS === 'ios')}
+        extraHeight={130} extraScrollHeight={130}
+        behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: 50}]}>
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='16px' height='16px' />
               {/* <Text style={styles.subtitle}>{locationInfo ? locationInfo.location_name.custom_field_name : ''}</Text> */}
             </View>
-            <Text style={styles.title}>{ locationInfo ? locationInfo.location_name.value : ''}</Text>
+            <Text style={styles.title}>{ locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
           </View>
           <View style={styles.subtitleBox}>
             <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
@@ -98,12 +106,13 @@ export default function LocationInfo({navigation}) {
         {
           locationInfo ? <LocationInfoInput /> : <View></View>
         }                        
-        <View style={{ height: 20 }}></View>
+        <View style={{ height: 20 }}></View>  
+
       </KeyboardAwareScrollView>
 
+      <View style={{ height: 20 }}></View>
 
-      {/* !keyboardStatus && */}
-      { <View style={styles.nextButtonBar}>
+      {!keyboardStatus &&  <View style={styles.nextButtonBar}>
         <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => navigation.navigate("LocationSpecificInfo")}>
           <Text style={styles.nextButtonText}>Access CRM</Text>
           <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
@@ -113,16 +122,27 @@ export default function LocationInfo({navigation}) {
           <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>
       </View>}
+      
     </View>
   )
 }
 
 const perWidth = setWidthBreakpoints(breakPoint);
+const getHeight = () =>{
+  if(Platform.OS == 'ios') {
+    return Dimensions.get("window").height - 150;
+  }else{
+    if(DeviceInfo.isTablet()){
+      return Dimensions.get("window").height - 110; 
+    }else{
+      return Dimensions.get("window").height - 90;
+    }
+  }
+}
 
 const styles = EStyleSheet.create(parse({
-  container: {
-    
-    height:Dimensions.get("window").height - 150,
+  container: {  
+    height: getHeight(),
     backgroundColor: BG_COLOR,
   },
   innerContainer: {
@@ -135,6 +155,7 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'flex-start',
     marginBottom: 12
   },
+
   subtitleBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -172,16 +193,20 @@ const styles = EStyleSheet.create(parse({
     borderRadius: 7
   },
   nextButtonBar: {
-    backgroundColor: BG_COLOR,
+    
     position: 'absolute',
-    bottom: 6,
+    bottom: DeviceInfo.isTablet() ? 0 : 0,
     left: -10,
     right: -10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingLeft: 10,    
+    paddingRight: 10,    
+    paddingTop:10,
+    paddingBottom:DeviceInfo.isTablet() ? 0 : 10,    
     borderColor: 'rgba(0, 0, 0, 0.2)',
-    borderTopWidth: 0.5
+    borderTopWidth: 0.5,
+    //zIndex: 1,
   },
   nextButton: {
     width: '47%',

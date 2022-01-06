@@ -10,7 +10,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
-import { SLIDE_STATUS } from '../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -24,8 +24,6 @@ export default function AddLead({screenProps}) {
   const contactMobileRef = useRef();
   const locationTypeRef = useRef();
   const groupRef = useRef();
-
-
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
   const [contactPerson, setContactPerson] = useState('');
@@ -43,7 +41,10 @@ export default function AddLead({screenProps}) {
 
   return (
       <KeyboardAwareScrollView style={styles.container}>
-        <TouchableOpacity style={{padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+        <TouchableOpacity style={{padding: 6 }} onPress={() => {
+          dispatch({type: SLIDE_STATUS, payload: false})
+          dispatch({type: BACK_ICON_STATUS, payload: false})
+        }}>
           <Divider />
         </TouchableOpacity>
         <View style={styles.header}>

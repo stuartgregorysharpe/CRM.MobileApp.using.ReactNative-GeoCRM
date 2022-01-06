@@ -1,4 +1,5 @@
 import { CHANGE_LOGIN_STATUS, CHANGE_USER_INFO } from "../actions/actionTypes";
+import { setToken } from "../constants/Storage";
 
 const initialState = {
   loginStatus: "logout",
@@ -9,6 +10,7 @@ const initialState = {
 export default (state=initialState, action) => {
   switch(action.type) {
     case CHANGE_LOGIN_STATUS:
+      
       return {
         ...state,
         loginStatus: action.payload
