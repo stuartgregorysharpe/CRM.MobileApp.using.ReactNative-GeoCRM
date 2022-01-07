@@ -28,6 +28,7 @@ import {
 } from '../../actions/location.action';
 import Fonts from '../../constants/Fonts';
 import CustomHeader from '../../components/Header/CustomHeader';
+import SearchBar from '../../components/SearchBar';
 
 const MarkerView = () => {
   const dispatch = useDispatch();
@@ -173,6 +174,8 @@ export default function LocationScreen(props) {
 
         <View style={styles.container}>
 
+          
+          {/* <SearchBar animation={() => animation("filter")} /> */}
 
           <View style={styles.searchBox}>
             <TouchableOpacity

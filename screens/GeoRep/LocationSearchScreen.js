@@ -12,7 +12,7 @@ import Skeleton from '../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../actions/actionTypes';
-import { getLocationInfo } from '../../actions/location.action';
+import { getLocationFilters, getLocationInfo } from '../../actions/location.action';
 import Fonts from '../../constants/Fonts';
 import CustomHeader from '../../components/Header/CustomHeader';
 
@@ -94,16 +94,16 @@ export default function LocationSearchScreen({navigation}) {
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
     switch(name) {
-      case "filter":
+      case "filter":        
+        dispatch(getLocationFilters());
         setShowItem(1);
-        dispatch({type: BACK_ICON_STATUS, payload: false});    
         return;
       case "locationInfo":
         setShowItem(2);
         dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       default:
-        dispatch({type: BACK_ICON_STATUS, payload: false});
+        
         return;
     }
     
@@ -141,6 +141,7 @@ export default function LocationSearchScreen({navigation}) {
           } 
 
             <View style={styles.container}>
+
               <SearchBar animation={() => animation("filter")} />
 
               <ScrollView>
@@ -150,8 +151,7 @@ export default function LocationSearchScreen({navigation}) {
                 ))}
               </ScrollView>
             </View>
-
-
+            
       </SafeAreaView>
     </Provider>
   )

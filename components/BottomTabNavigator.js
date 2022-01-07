@@ -220,8 +220,7 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   useEffect(() => {
-    dispatch(getLocationsMap());
-    dispatch(getLocationInfo(1005));
+    dispatch(getLocationsMap());    
   }, [])
 
   const getHeaderHeight = () => {

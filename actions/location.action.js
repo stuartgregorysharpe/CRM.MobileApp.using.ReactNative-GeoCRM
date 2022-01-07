@@ -31,7 +31,7 @@ export const getLocationPinKey = () => (dispatch, getState) => {
     .then((res) => {
       if (res.data == undefined) {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        setToken(null);
+       
         return;
       }
       if (res.data.status == 'success') {
@@ -74,11 +74,18 @@ export const getLocationsMap = () => (dispatch, getState) => {
           }
         })
         .then((res) => {
-          if (res.data == undefined) {
+          
+          if (res.data == undefined) {            
+            dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+            return;
+          }
+
+          if(res.data.error){
             setToken(null);
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
           }
+
           if (res.data.status == 'success') {
             dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
             dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations })
@@ -109,7 +116,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
     })
     .then((res) => {
       if (res.data == undefined) {
-        setToken(null);
+        
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
@@ -137,7 +144,7 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     })
     .then((res) => {      
       if (res.data == undefined) {
-        setToken(null);
+        
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
@@ -154,7 +161,6 @@ export const getLocationSearchList = () => (dispatch, getState) => {
 
 export const getLocationInfo = (location_id) => (dispatch, getState) => {
 
-
   dispatch({type: STATUS_LOCATION_INFO, payload: 'request'});
   axios
     .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-info`, {
@@ -168,7 +174,7 @@ export const getLocationInfo = (location_id) => (dispatch, getState) => {
     })
     .then((res) => {      
       if (res.data == undefined) {
-        setToken(null);
+        
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }      
@@ -198,7 +204,7 @@ export const postStageOutcomUpdate = (request) => (dispatch, getState) => {
     .then((res) => {
       console.log("postStageOutcomUpdate: ", JSON.stringify(res));
       if (res.data == undefined) {
-        setToken(null);
+        
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
