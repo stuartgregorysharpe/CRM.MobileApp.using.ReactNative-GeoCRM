@@ -10,10 +10,14 @@ import axios from 'axios';
 import { baseURL } from '../constants';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { Login } from '../actions/auth.action';
-import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
+import { CHANGE_LOGIN_STATUS ,
+  CHANGE_USER_INFO, 
+  CHANGE_PROJECT_PAYLOAD,
+  CHANGE_ACCESS_TOKEN} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { getToken, getUserData } from '../constants/Storage';
+import jwt_decode from "jwt-decode";
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -26,14 +30,29 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
-
   const passwordInput = useRef();
 
   useEffect(() => {
+
+    initView();
+    
     if (loginStatus == "failed") {
       setPasswordError(true);
     }
   }, [loginStatus])
+
+  const initView = async () =>{    
+    var token = await getToken();
+    if(token != null){      
+      var userData = await getUserData();
+      console.log("token", token);
+      console.log("userData", userData);
+      dispatch({ type: CHANGE_USER_INFO, payload: userData });
+      dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
+      dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
+    }
+  }
 
   const handleNext = () => {
     if (email == '') {
@@ -69,10 +88,13 @@ export default function SignIn() {
     dispatch(Login(email, password));
   }
 
-  return (
-    // <SafeAreaView style={{flex:1}}>
-
-      <KeyboardAwareScrollView style={{flex:1}}> 
+  return (    
+    <KeyboardAwareScrollView 
+      contentContainerStyle={{ flexGrow: 1 }} 
+      enableOnAndroid={true}
+      enableAutomaticScroll={(Platform.OS === 'ios')}
+      extraHeight={130} extraScrollHeight={130}
+      behavior="padding" style={{flex:1}}>
       <KeyboardAvoidingView style={{flex:1}}>      
 
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
@@ -88,6 +110,11 @@ export default function SignIn() {
             outlineColor="#fff"
             activeOutlineColor="#fff"
             value={email}
+            onSubmitEditing={()=>{
+              handleNext();
+            }}
+            returnKeyType="next"
+            keyboardType="email-address"
             onChangeText={text => {
               setEmail(text);
               setEmailError(false);
@@ -106,6 +133,11 @@ export default function SignIn() {
             activeOutlineColor="#fff"
             value={password}
             secureTextEntry={isPassword ? true : false}
+            returnKeyType="done"
+            secureTextEntry={true}
+            onSubmitEditing={()=>{
+              handleSubmit();
+            }}
             onChangeText={text => {
               setPassword(text);
               setPasswordError(false);
@@ -132,8 +164,7 @@ export default function SignIn() {
         </TouchableOpacity>}
       </View>
       </KeyboardAvoidingView>
-      </KeyboardAwareScrollView>
-    // </SafeAreaView>
+      </KeyboardAwareScrollView>    
   )
 }
 

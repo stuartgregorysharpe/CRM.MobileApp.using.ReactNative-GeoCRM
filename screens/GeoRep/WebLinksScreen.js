@@ -4,6 +4,7 @@ import { SafeAreaView, View, StyleSheet, ScrollView } from 'react-native';
 import Searchbar from '../../components/SearchBar';
 import Card from '../../components/Card';
 import { BG_COLOR } from '../../constants/Colors';
+import { getWebLinks } from '../../actions/weblinks.action';
 
 const lists = [
   {
@@ -35,9 +36,11 @@ export default function WebLinksScreen({screenProps}) {
         title: "Web Links"
       });
     }
+    //dispatch(getWebLinks());
   });
+
   return (
-    // <SafeAreaView>
+   
       <ScrollView style={styles.container}>
         <Searchbar />
         <View style={styles.innerContainer}>
@@ -49,16 +52,15 @@ export default function WebLinksScreen({screenProps}) {
           ))}
         </View>
       </ScrollView>
-    // </SafeAreaView>
+    
   )
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-   // backgroundColor:'red',
+  container: {   
     minHeight: '100%',
-    backgroundColor: BG_COLOR,
-    
+    backgroundColor: BG_COLOR,    
   },
   innerContainer: {
     padding: 10

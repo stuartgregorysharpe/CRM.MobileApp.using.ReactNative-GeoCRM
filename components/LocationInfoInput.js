@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Text, View, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useRef, useEffect , createRef} from 'react';
+import { Text, View, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput, } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -18,7 +18,7 @@ export default function LocationInfoInput() {
 
   const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
-  const dispositionRef = useRef();
+  const dispositionRef = useRef([]);
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
   const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
@@ -28,9 +28,10 @@ export default function LocationInfoInput() {
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);
   const [selectedOutcomeId, setSelectedOutComeId] = useState(locationInfo.outcomes.find(x => x.outcome_id == locationInfo.current_outcome_id).outcome_id);
-  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
+  const [selectedStageId, setSelectedStageId] = useState( locationInfo.current_stage_id ? locationInfo.stages.find(xx => xx.stage_id == locationInfo.current_stage_id).stage_id : 0);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
+
 
   useEffect(() => {
     if(!locationInfo.disposition_fields) return;
@@ -39,11 +40,16 @@ export default function LocationInfoInput() {
       items.push(element.value)
     });
     setDispositionValue(items);
-
     setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
   }, [locationInfo])
 
   const handleChangeText = (text, field, key) => {
+
+    if (field.field_type == "date" || field.field_type == "datetime") {
+      //hide keybard 
+      Keyboard.dismiss();
+    }
+
     if (field.rule_characters.split(',')[0] == "<" && text.length > Number(field.rule_characters.split(',')[1])) {
       return;
     }
@@ -58,18 +64,38 @@ export default function LocationInfoInput() {
     setDispositionValue([...dispositionValue.slice(0, key), text, ...dispositionValue.slice(key + 1, dispositionValue.length)])
   }
 
-  const handleFocus = (fieldType, key) => {
+  const handleFocus = (fieldType, key, isEditable) => {
     setDateTimeKey(key);
-    if (fieldType == "date") {
-      //hide keybard 
-      setDatePickerMode("date");
-      setDateTimePickerVisibility(true);
+    if (fieldType == "date") {    
+      Keyboard.dismiss();      
+      if(isEditable == 1){
+        setDatePickerMode("date");      
+        setDateTimePickerVisibility(true);
+      }      
     }
     if (fieldType == "datetime") {
-      setDatePickerMode("datetime");
-      setDateTimePickerVisibility(true);
+      Keyboard.dismiss();
+      console.log("hide keybard");
+      if( isEditable == 1){
+        setDatePickerMode("datetime");
+        setDateTimePickerVisibility(true);
+      }      
     }
+  };
+
+  handleEmpty = () => {
+
   }
+
+  getDisableStatus = (filedType, isEditable) =>{
+    if(filedType == 'date' || filedType == 'datetime'){
+      return true;
+    }
+    if(isEditable == 0){
+      return true;
+    }
+    return false;
+  } 
 
   const handleConfirm = (date) => {
     let datetime = "";
@@ -81,6 +107,8 @@ export default function LocationInfoInput() {
     setDispositionValue([...dispositionValue.slice(0, dateTimeKey), datetime, ...dispositionValue.slice(dateTimeKey + 1, dispositionValue.length)])
     setDateTimePickerVisibility(false)
   };
+
+
 
   const stagesModal = () => {
     return (
@@ -142,7 +170,7 @@ export default function LocationInfoInput() {
 
             <TouchableOpacity style={[styles.button, {width: 150}]}>
               {
-                locationInfo &&
+                locationInfo && locationInfo.stages && locationInfo.current_stage_id &&
                 <Text style={styles.buttonText}>
                   {locationInfo.stages.find(x=> x.stage_id ==locationInfo.current_stage_id).stage_name}
                 </Text>
@@ -184,32 +212,40 @@ export default function LocationInfoInput() {
                 key={key}
                 style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
                 activeOpacity={1}
-                onPress={()=>{                 
-                  if (field.rule_editable == 0) return;
-                  dispositionRef.current.focus();
+                onPress={()=>{     
+                  //if (field.rule_editable == 0) return;                  
                 }}
               >
                 <View>
                   <TextInput
                     type={field.field_type}
-                    ref={dispositionRef}
-                    keyboardType={field.field_type === "alphanumeric" ? 'numeric' : 'default'}
+                    ref={(element) => { dispositionRef.current[key] = element }}
+                    // autoFocus={true}
+                    keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
+                    returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                     style={styles.textInput}
                     label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                     mode="outlined"
                     outlineColor="#133C8B"
                     activeOutlineColor="#9D9FA2"
                     value={dispositionValue[key]}
-                    disabled={field.rule_editable == 0}
+                    disabled = {getDisableStatus(field.field_type, field.rule_editable)}
                     onChangeText={text => handleChangeText(text, field, key)}
-                    onPressIn={handleFocus.bind(null, field.field_type, key)}
+                    //blurOnSubmit={false}
+                    onSubmitEditing={()=>{
+                      //if(Number(key + 1) <= locationInfo.disposition_fields.length - 1 ){                                                
+                        //dispositionRef.current[key + 1].focus();
+                        //dispositionRef.current[key + 1].scrollIntoView({block:"start", beavior:"smooth"});
+                      //}                      
+                    }}
+                    onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : this.handleEmpty() }
                     left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
                     right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
                   />
                 </View>
               </TouchableOpacity>
             ))}
-          </View>
+        </View>
       }
       
       <DateTimePickerModal
@@ -229,6 +265,10 @@ export default function LocationInfoInput() {
 const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
+
+  container:{
+    flex:1,
+  },
   shadowBox: {
     padding: 8,
     height: 45,

@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-
 import AddLead from '../../components/AddLead';
 import LocationInfo from '../../components/LocationInfo';
 import FilterView from '../../components/FilterView';
@@ -19,7 +18,7 @@ import GrayBackground from '../../components/GrayBackground';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import { breakPoint } from '../../constants/Breakpoint';
-import { SLIDE_STATUS } from '../../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../actions/actionTypes';
 
 import { 
   getLocationPinKey, 
@@ -28,6 +27,8 @@ import {
   getLocationInfo,
 } from '../../actions/location.action';
 import Fonts from '../../constants/Fonts';
+import CustomHeader from '../../components/Header/CustomHeader';
+import SearchBar from '../../components/SearchBar';
 
 const MarkerView = () => {
   const dispatch = useDispatch();
@@ -82,6 +83,7 @@ const SlidUpArrow = () => (
   </View>
 )
 
+
 export default function LocationScreen(props) {
 
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
@@ -93,11 +95,11 @@ export default function LocationScreen(props) {
 
   useEffect(() => {
     props.screenProps.setOptions({
+     
       tabBarStyle: {
         position: 'absolute',
-        height: 60,
-        paddingTop: 10,
-        paddingBottom: 10,
+        height: 50,      
+        paddingBottom: Platform.OS == "android" ? 5 : 0,          
         backgroundColor: "#fff",
       },
     });
@@ -108,6 +110,7 @@ export default function LocationScreen(props) {
         },
       });
     }
+
   });
 
   useEffect(() => {
@@ -137,6 +140,7 @@ export default function LocationScreen(props) {
         return;
       case "addLead":
         setShowItem(3);
+        dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       case "locationInfo":
         setShowItem(4);
@@ -148,7 +152,7 @@ export default function LocationScreen(props) {
 
   return (
     <Provider>
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
         <GrayBackground />
 
 
@@ -158,7 +162,6 @@ export default function LocationScreen(props) {
           {showItem == 1 && <MarkerView />}
           {showItem == 2 && <FilterView navigation={props.navigation} />}
         </View>}
-
         
         {crmStatus && (showItem == 3 || showItem == 4) && <View
           style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
@@ -170,6 +173,10 @@ export default function LocationScreen(props) {
         
 
         <View style={styles.container}>
+
+          
+          {/* <SearchBar animation={() => animation("filter")} /> */}
+
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
@@ -194,6 +201,8 @@ export default function LocationScreen(props) {
               <SvgIcon icon="Filter" width="30px" height="30px" />
             </TouchableOpacity>
           </View>
+
+          
           <MapView
             moveOnMarkerPress={false}
             provider={PROVIDER_GOOGLE}
@@ -236,6 +245,7 @@ export default function LocationScreen(props) {
               fillColor = { 'rgba(230,238,255,0.5)' }
             />
           </MapView>
+
           <TouchableOpacity 
             style={styles.plusButton} 
             onPress={() => animation("addLead")}
@@ -260,15 +270,16 @@ export default function LocationScreen(props) {
 const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
-  container: {
-    position: 'relative',
-    height: '100%',
+  container: {    
+    
+    flex:1,
     justifyContent: 'space-between',
-    backgroundColor: BG_COLOR,
+    backgroundColor: BG_COLOR,    
     paddingBottom: 60
   },
   map: {
-    flexGrow: 1
+    flexGrow: 1,
+    height:Dimensions.get("screen").height - 150,    
   },
   plusButton: {
     position: 'absolute',
