@@ -151,7 +151,8 @@ export default function LocationSearchScreen({navigation}) {
                 ))}
               </ScrollView>
             </View>
-            
+
+
       </SafeAreaView>
     </Provider>
   )
