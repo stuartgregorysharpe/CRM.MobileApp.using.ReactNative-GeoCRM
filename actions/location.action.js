@@ -46,6 +46,8 @@ export const getLocationPinKey = () => (dispatch, getState) => {
 }
 
 export const getLocationsMap = () => (dispatch, getState) => {
+
+  console.log("cal map");
   dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });
   GetLocation.getCurrentPosition({
     enableHighAccuracy: true,
@@ -75,6 +77,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
         })
         .then((res) => {
           
+          console.log("map res",res.data);
           if (res.data == undefined) {            
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
@@ -92,11 +95,14 @@ export const getLocationsMap = () => (dispatch, getState) => {
           }
         })
         .catch((err) => {
+          console.log("map errorw", err);  
+          setToken(null);
           dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
           console.log(err);
         })
     })
     .catch(error => {
+      console.log("map error", error);  
       const { code, message } = error;
       console.warn(code, message);
     });

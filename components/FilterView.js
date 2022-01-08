@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ import Skeleton from './Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import SvgIcon from './SvgIcon';
 
 export default function FilterView({navigation}) {
   const dispatch = useDispatch();
@@ -73,7 +74,9 @@ export default function FilterView({navigation}) {
         </Button>
       </View>
       {locationFilters.map((locationFilter, key) => (
-        <FilterButton text={locationFilter.filter_label} key={key} onPress={selectFilter.bind(null, key)}/>
+        <FilterButton text={locationFilter.filter_label} key={key} 
+          onPress={selectFilter.bind(null, key)}
+          />
       ))}
       <Button 
         mode="contained" 
@@ -88,27 +91,55 @@ export default function FilterView({navigation}) {
         Apply Filters
       </Button>
       <Portal>
-      <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerContent}>
-        {showFilter.map((item, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <Text style={styles.pickerItemText}>{item[Object.keys(item)[0]]}</Text>
-            <CheckBox
-              value={selectFilters[selectFilterId][key]}
-              onValueChange={value => {
-                setSelectFilters([
-                  ...selectFilters.slice(0, selectFilterId),
-                  [
-                    ...selectFilters[selectFilterId].slice(0, key),
-                    value,
-                    ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
-                  ],
-                  ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
-                ])
-              }}
-            />
-          </View>  
-        ))}
+
+      <Modal 
+        
+        visible={modaVisible} 
+        transparent={true}
+        onDismiss={() => setModalVisible(false)} 
+        onRequestClose={() => setModalVisible(true)}
+        contentContainerStyle={styles.pickerContent}>
+          <View style={{flex:1}}>
+            
+          <TouchableOpacity style={styles.closeModal} onPress={() =>{        
+            setModalVisible(false)
+          }}>
+            {/* <SvgIcon icon="Close" width="30px" height="30px" /> */}
+            <Text style={{fontSize:18, fontFamily:Fonts.secondaryRegular}}>Close</Text>
+          </TouchableOpacity>
+          
+            <ScrollView style={{flex:1}}>                
+                {showFilter.map((item, key) => (
+
+                  <View style={{}} key={key}>
+                    {
+                      item[Object.keys(item)[0]] != null &&
+                      <View style={styles.pickerItem} key={key}>
+                        <Text style={styles.pickerItemText}>{item[Object.keys(item)[0]]}</Text>
+                        <CheckBox
+                          value={selectFilters[selectFilterId][key]}
+                          onValueChange={value => {
+                            setSelectFilters([
+                              ...selectFilters.slice(0, selectFilterId),
+                              [
+                                ...selectFilters[selectFilterId].slice(0, key),
+                                value,
+                                ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
+                              ],
+                              ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
+                            ])
+                          }}
+                        />
+                      </View>
+                    }
+                    
+                  </View>  
+                ))}
+          </ScrollView>
+          </View>
+        
       </Modal>
+
     </Portal>
     </ScrollView>
   )
@@ -125,20 +156,35 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   pickerContent: {
+    height:Dimensions.get("window").height * 0.7,  
+    margin:20,
     backgroundColor: BG_COLOR,
     paddingTop: 10,
     paddingBottom:10,
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 0,
+    borderRadius:5,
+    elevation:1,
+    
   },
-  pickerItem: {
+
+
+  pickerItem: {    
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: 8,
+    paddingRight:20,
     paddingBottom: 8
   },
   pickerItemText: {
     fontSize: 18
+  },
+  closeModal:{
+    flexDirection:'row',    
+    justifyContent:'flex-end',        
+    paddingRight:15,
+    paddingTop:10,
+    marginBottom:10
   }
 })

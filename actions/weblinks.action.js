@@ -1,30 +1,35 @@
 
 import axios from "axios";
 
-export const getWebLinks = () => (dispatch, getState) => {    
-    axios
-      .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/weblinks`, {
-        params: {          
-        },
-        headers: {
-          Authorization: 'Bearer ' + getState().selection.token
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          
-          dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-          return;
-        }
+export function getWebLinks(base_url, token, params)
+{    
+    return new Promise(function(resolve, reject) {    
+        
+        console.log("axis", `${base_url}/weblinks`);
+        console.log("token", token);
+        axios
+        .get(`${base_url}/weblinks`, {
+          params: params,
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        })
+        .then((res) => {      
+          console.log("suc")  ;
+          if (res.data == undefined) {            
+            resolve([]);
+          }
+          console.log(res.data);
+          if(res.data.status == "success"){
+            resolve(res.data.weblinks);
+          }else{
+            resolve([]);
+          }
+        })
+        .catch((err) => {        
+          console.log("load list4", err);
+          reject(err);          
+        })        
 
-        console.log("res.data.weblinks" , res.data.weblinks);
-        if (res.data.status == 'success') {
-          dispatch({ type: CHANGE_LOCATION_FILTERS, payload: res.data.weblinks })
-        }
-
-      })
-      .catch((err) => {
-        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        console.log(err);
-      })
-  }
+    });    
+}

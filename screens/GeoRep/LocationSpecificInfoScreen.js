@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
-import LocationInfoInput from '../../components/LocationInfoInput';
+import LocationInfoInput from './CRM/LocationInfoInput';
 import Skeleton from '../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
@@ -80,7 +80,7 @@ export default function LocationSpecificInfoScreen(props) {
                   <Rectangle style={{ width: '48%' }} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" /> */}
                 </View>
                 <TouchableOpacity>
-                  {/* <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} /> */}
+                  
                 </TouchableOpacity>
               </View>
             </View>

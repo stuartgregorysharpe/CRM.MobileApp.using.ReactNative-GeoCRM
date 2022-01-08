@@ -24,8 +24,8 @@ export default function SignIn() {
   const loginStatus = useSelector(state => state.auth.loginStatus);
 //carl@cydcor.com
 //Test2021#
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('carl@cydcor.com');
+  const [password, setPassword] = useState('Test2021#');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
@@ -45,7 +45,6 @@ export default function SignIn() {
     var token = await getToken();
     if(token != null){      
       var userData = await getUserData();
-      console.log("token", token);
       console.log("userData", userData);
       dispatch({ type: CHANGE_USER_INFO, payload: userData });
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
@@ -70,7 +69,7 @@ export default function SignIn() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        
         setEmailError(true);
       });
   }
@@ -90,6 +89,7 @@ export default function SignIn() {
 
   return (    
     <KeyboardAwareScrollView 
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ flexGrow: 1 }} 
       enableOnAndroid={true}
       enableAutomaticScroll={(Platform.OS === 'ios')}
@@ -124,42 +124,51 @@ export default function SignIn() {
           {emailError && <Text style={styles.errorText}>Please Input your email</Text>}
         </View>
         {step && <View style={styles.textInputBox}>
-          <TextInput
-            style={styles.textInput}
-            ref={passwordInput}
-            label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Password</Text>}
-            mode="outlined"
-            outlineColor="#fff"
-            activeOutlineColor="#fff"
-            value={password}
-            secureTextEntry={isPassword ? true : false}
-            returnKeyType="done"
-            secureTextEntry={true}
-            onSubmitEditing={()=>{
-              handleSubmit();
-            }}
-            onChangeText={text => {
-              setPassword(text);
-              setPasswordError(false);
-            }}
-            theme={{ colors: { text: '#fff', placeholder: '#fff' } }}
-          />
-          <Icon
-            style={styles.eyeIcon}
-            name={isPassword ? `visibility-off` : `visibility`}
-            size={25}
-            color="#fff"
-            onPress={() => setIsPassword(!isPassword)}
-          />
+          
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              style={[styles.textInput, { flex:1}]}
+              ref={passwordInput}
+              label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Password</Text>}
+              mode="outlined"
+              outlineColor="#fff"
+              activeOutlineColor="#fff"
+              value={password}
+              secureTextEntry={isPassword ? true : false}
+              returnKeyType="done"            
+              onSubmitEditing={()=>{
+                handleSubmit();
+              }}
+              onChangeText={text => {
+                setPassword(text);
+                setPasswordError(false);
+              }}
+              theme={{ colors: { text: '#fff', placeholder: '#fff' } }}
+            />
+
+            <TouchableOpacity style={[styles.eyeIcon, {  }]} onPress={() => {
+              setIsPassword(!isPassword)          
+            }}> 
+              <Icon            
+                name={!isPassword ? `visibility-off` : `visibility`}
+                size={25}
+                color="#fff"
+                onPress={() => setIsPassword(!isPassword)}
+              />
+            </TouchableOpacity>   
+          </View>
+                 
           {passwordError && <Text style={styles.errorText}>Please Input Password</Text>}
         </View>}
+
+        
         <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
           <Text style={[styles.submitButtonText]}>
             {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
           </Text>
           <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-        {step && <TouchableOpacity onPress={() => console.log("pressed")}>
+        {step && <TouchableOpacity onPress={() => {}}>
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}
       </View>
@@ -200,8 +209,10 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     position: 'absolute',
-    top: 14,
-    right: 8
+    top: 4,
+    right: 8,
+    padding:10,
+    zIndex:101
   },
 
 
