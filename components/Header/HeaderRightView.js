@@ -73,8 +73,8 @@ export default function HeaderRightView() {
         
         borderColor: '#fff',
         borderWidth: 2,
-        width: 34,
-        height: 34,
+        width: 32,
+        height: 32,
         borderRadius: 20
     },
     headerAvatarText: {

@@ -2,13 +2,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HomeScreen from '../screens/GeoRep/HomeScreen';
-import CRMScreen from '../screens/GeoRep/CRMScreen';
-import CalendarScreen from '../screens/GeoRep/CalendarScreen';
+import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
+import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/FormsScreen';
-import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
+import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
-import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
+import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
@@ -114,6 +114,7 @@ export default function RepBottomTabNavigator({navigation}) {
           navigation.navigate('Root', { screen: 'CRM' });
           return;
         case 'web_links':
+          console.log("web links called");
           navigation.navigate('Root', { screen: 'RepWebLinks' });
           return;
         case 'calendar':
@@ -234,10 +235,11 @@ export default function RepBottomTabNavigator({navigation}) {
       if(DeviceInfo.isTablet()){
         return 82;
       }else{
-        return 72;
+        return 74;
       }
     }
   }
+  
   const getHeaderMargin = () => {
     if(Platform.OS == 'ios'){
       if(DeviceInfo.isTablet()){
@@ -247,9 +249,9 @@ export default function RepBottomTabNavigator({navigation}) {
       }
     }else{
       if(DeviceInfo.isTablet()){
-        return 20;
+        return 22;
       }else{
-        return 20;
+        return 22;
       }
     }
   }
@@ -257,24 +259,7 @@ export default function RepBottomTabNavigator({navigation}) {
   return (
       
     <BottomTab.Navigator
-            
-      // tabBarOptions={{
-      //   style:{
-      //     paddingTop:50,
-      //     height:50
-      //   },
-      //   tabStyle:{        
-      //     height:50,
-        
-      //     marginTop:0,
-      //     padding:0, 
-      //     marginBottom:10,
-      //   },
-      //   labelStyle:{
-      //     margin : 0
-      //   }
-      // }}
-
+                 
       screenOptions={{                
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
@@ -297,8 +282,7 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarStyle: {
           height:50,          
           paddingTop: 0,     
-          paddingBottom: Platform.OS == "android" ? 5 : 0,          
-                  
+          paddingBottom: Platform.OS == "android" ? 4 : 0,                  
         },        
         
       }}>

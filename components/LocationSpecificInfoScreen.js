@@ -14,6 +14,7 @@ import MarkerIcon from '../../components/Marker';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
+import Images from '../constants/Images';
 
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
@@ -77,7 +78,7 @@ export default function LocationSpecificInfoScreen(props) {
                 }
                 
                 <TouchableOpacity>
-                  <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
+                  <Image style={styles.refreshImage} source={Images.loopButton} />
                 </TouchableOpacity>
               </View>
             </View>

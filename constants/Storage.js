@@ -1,12 +1,11 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import jwt_decode from "jwt-decode";
 export const storeUserData = async (value) => {
     try {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('@user', jsonValue)
-    } catch (e) {
-      // saving error
+    } catch (e) {      
       console.log("error", e);
     }
 }
@@ -37,4 +36,17 @@ export const getToken = async () => {
     } catch(e) {
         return null;      
     }
+}
+
+export const getBaseUrl = async () => {  
+  try{
+    var token = await getToken();  
+    var data = token != null ? jwt_decode(token) : null;
+    var base_url =  data.user_scopes.geo_rep.base_url;
+    return base_url;
+  }catch(e) {
+    console.log(e);
+    return null;
+  }
+  
 }
