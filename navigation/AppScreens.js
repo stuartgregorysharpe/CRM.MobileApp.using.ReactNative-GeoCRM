@@ -100,7 +100,7 @@ export default function AppScreens() {
 
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
 
-      
+
       <Stack.Navigator 
         screenOptions={{
           headerStyle: {
@@ -113,14 +113,14 @@ export default function AppScreens() {
           component={BottomTabNavigator}
           options={{ headerShown: false }} 
         />
-
+        
         <Stack.Screen
           name="WebViewScreen"
           navigationOptions={{headerShown:false}}
           options={{ header: () => false}}> 
             {props => <WebViewScreen {...props} />}
         </Stack.Screen>
-        
+       
       </Stack.Navigator>
     </SafeAreaView>
   );
@@ -129,7 +129,7 @@ export default function AppScreens() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '100%',    
+    height: '100%',
   },
   transitionView: {
     position: 'absolute',

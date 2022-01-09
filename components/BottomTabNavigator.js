@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
+import ToggleSwitch from 'toggle-switch-react-native';
 import { useDispatch, useSelector } from 'react-redux';
+
 import HomeScreen from '../screens/GeoRep/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
@@ -46,6 +48,8 @@ import {
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
   BACK_ICON_STATUS,
+  LOCATION_CONFIRM_MODAL_VISIBLE,
+  CHANGE_BOTTOM_TAB_ACTION
 } from '../actions/actionTypes';
 import { getLocationsMap, getLocationInfo } from '../actions/location.action';
 
@@ -71,6 +75,7 @@ export default function RepBottomTabNavigator({navigation}) {
   const selectProject = useSelector(state => state.selection.selectProject);
   const visibleMore = useSelector(state => state.rep.visibleMore);
   const backIconStatus = useSelector(state => state.rep.backIconStatus);
+  const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
 
   const [ bottomListOne, setBottomListOne ] = useState([]);
   const [ bottomListTwo, setBottomListTwo ] = useState([]);
@@ -221,7 +226,7 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   useEffect(() => {
-    dispatch(getLocationsMap());    
+    dispatch(getLocationsMap());
   }, [])
 
   const getHeaderHeight = () => {
@@ -257,16 +262,16 @@ export default function RepBottomTabNavigator({navigation}) {
   }
 
   return (
-      
+
     <BottomTab.Navigator
-                 
-      screenOptions={{                
+
+      screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
         headerTitleAlign:'left',
-        
+
         headerStyle: {
-          backgroundColor: PRIMARY_COLOR,          
+          backgroundColor: PRIMARY_COLOR,
           height: getHeaderHeight()
         },
         tabBarShowLabel: true,
@@ -278,13 +283,12 @@ export default function RepBottomTabNavigator({navigation}) {
           color: "#fff",
         },
         headerStatusBarHeight:getHeaderMargin(),
-        
         tabBarStyle: {
           height:50,          
           paddingTop: 0,     
           paddingBottom: Platform.OS == "android" ? 4 : 0,                  
-        },        
-        
+        },
+
       }}>
 
       {/* Rep Bottom Navigator */}
@@ -309,6 +313,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Home"});
+              return;
+            }
+            navigation.navigate('Home');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('crm_locations') && <BottomTab.Screen
@@ -317,7 +332,7 @@ export default function RepBottomTabNavigator({navigation}) {
         options={{
           title: 'CRM',
           tabBarIcon: ({focused}) => (
-            <Fragment>              
+            <Fragment>
               {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
@@ -340,15 +355,21 @@ export default function RepBottomTabNavigator({navigation}) {
               <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
             </View></TouchableOpacity>)
           },
-          
+
           headerLeft: () => (
-            <TouchableOpacity
+            <TouchableOpacity 
               style={[styles.header,{justifyContent:'center'}]} 
               activeOpacity={1}
               onPress={() => {
                 dispatch({type: SLIDE_STATUS, payload: false})
                 dispatch({type: BACK_ICON_STATUS, payload: false})
-              }}>            
+                if (statusDispositionInfo) {
+                  dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+                  return;
+                }
+                dispatch({type: SLIDE_STATUS, payload: false});
+              }}
+            >
             </TouchableOpacity>
           ),
 
@@ -364,14 +385,20 @@ export default function RepBottomTabNavigator({navigation}) {
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
+            dispatch(getLocationsMap());
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "CRM"});
+              return;
+            }
             dispatch({type: SLIDE_STATUS, payload: false});
             dispatch({type: BACK_ICON_STATUS, payload: false});
             dispatch(getLocationsMap());
             navigation.navigate('CRM', { screen: 'Root' });
-            
+
           },
         })}
-      />} 
+      />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('web_links') && <BottomTab.Screen
         name="RepWebLinks"
@@ -379,7 +406,7 @@ export default function RepBottomTabNavigator({navigation}) {
         options={{
           title: 'Web Links',
           tabBarIcon: ({focused}) => (
-            <Fragment>              
+            <Fragment>
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
             </Fragment>
@@ -393,6 +420,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepWebLinks"});
+              return;
+            }
+            navigation.navigate('RepWebLinks');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('calendar') && <BottomTab.Screen
@@ -415,6 +453,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Calendar"});
+              return;
+            }
+            navigation.navigate('Calendar');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('forms') && <BottomTab.Screen
@@ -437,6 +486,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepForms"});
+              return;
+            }
+            navigation.navigate('RepForms');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('content_library') && <BottomTab.Screen
@@ -463,6 +523,11 @@ export default function RepBottomTabNavigator({navigation}) {
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepContentLibrary"});
+              return;
+            }
             dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
             navigation.navigate("RepContentLibrary");
           },
@@ -489,6 +554,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "ProductSales"});
+              return;
+            }
+            navigation.navigate('ProductSales');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('notifications') && <BottomTab.Screen
@@ -511,6 +587,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Notifications"});
+              return;
+            }
+            navigation.navigate('Notifications');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('messages') && <BottomTab.Screen
@@ -533,6 +620,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepMessages"});
+              return;
+            }
+            navigation.navigate('RepMessages');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('offline_sync') && <BottomTab.Screen
@@ -556,6 +654,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "OfflineSync"});
+              return;
+            }
+            navigation.navigate('OfflineSync');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('recorded_sales') && <BottomTab.Screen
@@ -578,6 +687,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RecordedSales"});
+              return;
+            }
+            navigation.navigate('RecordedSales');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('sales_pipeline') && <BottomTab.Screen
@@ -600,6 +720,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepSalesPipeline"});
+              return;
+            }
+            navigation.navigate('RepSalesPipeline');
+          },
+        })}
       />}
 
       {/* Life Bottom Navigator */}
@@ -1077,8 +1208,8 @@ export default function RepBottomTabNavigator({navigation}) {
           },
         })}
       />
-    </BottomTab.Navigator>    
-    
+    </BottomTab.Navigator>
+
   );
 }
 

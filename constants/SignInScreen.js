@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar , Dimensions , KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from 'react-native-paper';
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -10,21 +10,15 @@ import axios from 'axios';
 import { baseURL } from '../constants';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { Login } from '../actions/auth.action';
-import { CHANGE_LOGIN_STATUS ,
-  CHANGE_USER_INFO, 
-  CHANGE_PROJECT_PAYLOAD,
-  CHANGE_ACCESS_TOKEN } from '../actions/actionTypes';
+import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { getToken, getUserData } from '../constants/Storage';
-import jwt_decode from "jwt-decode";
 
 export default function SignIn() {
   const dispatch = useDispatch();
   const loginStatus = useSelector(state => state.auth.loginStatus);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('carl@cydcor.com');
+  const [password, setPassword] = useState('Test2021#');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
@@ -33,25 +27,10 @@ export default function SignIn() {
   const passwordInput = useRef();
 
   useEffect(() => {
-    
-    initView();
-    
     if (loginStatus == "failed") {
       setPasswordError(true);
     }
   }, [loginStatus])
-
-  const initView = async () =>{    
-    var token = await getToken();
-    if(token != null){      
-      var userData = await getUserData();
-      console.log("userData", userData);
-      dispatch({ type: CHANGE_USER_INFO, payload: userData });
-      dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
-      dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })
-      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
-    }
-  }
 
   const handleNext = () => {
     if (email == '') {
@@ -88,14 +67,7 @@ export default function SignIn() {
   }
 
   return (
-    <KeyboardAwareScrollView 
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ flexGrow: 1 }} 
-      enableOnAndroid={true}
-      enableAutomaticScroll={(Platform.OS === 'ios')}
-      extraHeight={130} extraScrollHeight={130}
-      behavior="padding" style={{flex:1}}>
-      <KeyboardAvoidingView style={{flex:1}}>      
+    <SafeAreaView>
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
       <View style={styles.container}>
         <Image style={styles.logo} source={require("../assets/images/logo.png")} />
@@ -109,11 +81,6 @@ export default function SignIn() {
             outlineColor="#fff"
             activeOutlineColor="#fff"
             value={email}
-            onSubmitEditing={()=>{
-              handleNext();
-            }}
-            returnKeyType="next"
-            keyboardType="email-address"
             onChangeText={text => {
               setEmail(text);
               setEmailError(false);
@@ -123,9 +90,8 @@ export default function SignIn() {
           {emailError && <Text style={styles.errorText}>Please Input your email</Text>}
         </View>
         {step && <View style={styles.textInputBox}>
-        <View style={{flexDirection: 'row'}}>
           <TextInput
-            style={[styles.textInput, { flex:1}]}
+            style={styles.textInput}
             ref={passwordInput}
             label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Password</Text>}
             mode="outlined"
@@ -133,55 +99,43 @@ export default function SignIn() {
             activeOutlineColor="#fff"
             value={password}
             secureTextEntry={isPassword ? true : false}
-            returnKeyType="done"            
-              onSubmitEditing={()=>{
-                handleSubmit();
-              }}
             onChangeText={text => {
               setPassword(text);
               setPasswordError(false);
             }}
             theme={{ colors: { text: '#fff', placeholder: '#fff' } }}
           />
-
-          <TouchableOpacity style={[styles.eyeIcon, {  }]} onPress={() => {
-              setIsPassword(!isPassword)          
-            }}> 
           <Icon
-            name={!isPassword ? `visibility-off` : `visibility`}
+            style={styles.eyeIcon}
+            name={isPassword ? `visibility-off` : `visibility`}
             size={25}
             color="#fff"
             onPress={() => setIsPassword(!isPassword)}
           />
-          </TouchableOpacity>   
-          </View>
-
           {passwordError && <Text style={styles.errorText}>Please Input Password</Text>}
         </View>}
-        
-                <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
+        <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
           <Text style={[styles.submitButtonText]}>
             {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
           </Text>
           <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-        {step && <TouchableOpacity onPress={() => {}}>
+        {step && <TouchableOpacity onPress={() => console.log("pressed")}>
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}
       </View>
-      </KeyboardAvoidingView>
-      </KeyboardAwareScrollView>  
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: PRIMARY_COLOR,
-    height:Dimensions.get("screen").height,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
-    padding: 25
+    padding: 20
   },
-
   logo: {
     width: 250,
     height: 62,
@@ -205,31 +159,26 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     position: 'absolute',
-    top: 4,
-    right: 8,
-    padding:10,
-    zIndex:101
+    top: 14,
+    right: 8
   },
-
-
   submitButton: {
-
+    position: 'relative',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,
     paddingLeft: 20,
     paddingRight: 20,
-    marginTop: 20,
+    marginTop: 24,
     marginBottom: 24,
     borderRadius: 7,
-    backgroundColor: '#fff',
-    marginBottom:10
+    backgroundColor: '#fff'
   },
-  
   submitButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 15,
-    fontFamily: Fonts.secondaryBold
+    fontFamily: 'Gilroy-Bold'
   },
   submitButtonIcon: {
     position: 'absolute',

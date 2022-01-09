@@ -25,13 +25,13 @@ export default function Card({icon, title, subtitle , image, number, onPress}) {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    flex:1,    
+    flex:1, 
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingLeft: 12,
-    paddingRight: 12,    
+    paddingRight: 12,
     borderRadius: 7,
     marginBottom: 10
   },

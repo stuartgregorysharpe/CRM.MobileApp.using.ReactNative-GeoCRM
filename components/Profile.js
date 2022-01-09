@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: '100%',
     height: Platform.OS == 'ios' ? '120%' : '100%',
-    backgroundColor: BG_COLOR, 
+    backgroundColor: BG_COLOR,
     padding: 12,
     paddingTop: 70,
     borderWidth: 1,

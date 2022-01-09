@@ -28,9 +28,9 @@ export default function SearchBar({isFilter, animation, onSearch}) {
       <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
       {
         isFilter && 
-        <TouchableOpacity style={styles.filterImageButton} onPress={animation}>
-          <SvgIcon icon="Filter" width="30px" height="30px" />
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.filterImageButton} onPress={animation}>
+        <SvgIcon icon="Filter" width="30px" height="30px" />
+      </TouchableOpacity>
       }      
 
       {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     zIndex: 1
   },
-  
+
   filterImageButton: {
     position: 'absolute',
     top: 18,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     elevation: 1
   },
-
+  
   closeButtonStyle: {
     position: 'absolute',
     top: 12,
