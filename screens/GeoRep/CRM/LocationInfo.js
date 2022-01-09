@@ -22,7 +22,7 @@ import Divider from '../../../components/Divider';
 import Skeleton from '../../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATU, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS } from '../../../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS } from '../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';

@@ -183,7 +183,7 @@ export const getLocationInfo = (location_id) => (dispatch, getState) => {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
-      dispatch({type: STATUS_LOCATION_INFO, payload: 'success'});
+      //dispatch({type: STATUS_LOCATION_INFO, payload: 'success'});
       dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
     })
     .catch((err) => {

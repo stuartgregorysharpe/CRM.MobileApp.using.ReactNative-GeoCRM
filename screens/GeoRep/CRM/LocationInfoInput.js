@@ -8,7 +8,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 
 import SvgIcon from '../../../components/SvgIcon';
-import { TEXT_COLOR, BG_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import CustomPicker from '../../../components/CustomPicker';
 import { postStageOutcomUpdate } from '../../../actions/location.action';
@@ -393,6 +393,9 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: 'rgba(21, 90, 161, 0.31)',
     paddingTop: 5,
     paddingBottom: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    minWidth: 60,
     textAlign: 'center',
     borderRadius: 7
   },
