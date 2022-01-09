@@ -8,23 +8,42 @@ import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 
-export default function SearchBar({animation}) {
+export default function SearchBar({isFilter, animation, onSearch}) {
   const dispatch = useDispatch();
 
   const [text, setText] = useState('');
   return (
-    <View style={styles.searchBox}>
+    <View style={styles.searchBox} keyboardShouldPersistTaps="handled">
       <TextInput
         style={[styles.searchInput, boxShadow]}
         placeholder='Search.....'
         value={text}
-        onChangeText={text => setText(text)}
+        onChangeText={text => {
+          setText(text);
+          onSearch(text);
+          
+        }}
         onFocus={() => dispatch({type: SLIDE_STATUS, payload: false})}
       />
       <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+      {
+        isFilter && 
       <TouchableOpacity style={styles.filterImageButton} onPress={animation}>
         <SvgIcon icon="Filter" width="30px" height="30px" />
       </TouchableOpacity>
+      }      
+
+      {
+        !isFilter && text != '' &&
+        <TouchableOpacity style={styles.closeButtonStyle} onPress={() =>{          
+          setText('');
+          onSearch('');
+        }}>
+          <SvgIcon icon="Close" width="20px" height="20px" />
+        </TouchableOpacity>
+      }
+
+
     </View>
   )
 }
@@ -51,6 +70,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     zIndex: 1
   },
+
   filterImageButton: {
     position: 'absolute',
     top: 18,
@@ -58,4 +78,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
     elevation: 1
   },
+  
+  closeButtonStyle: {
+    position: 'absolute',
+    top: 12,
+    right: 10,
+    zIndex: 1,
+    elevation: 1,
+    padding:10,
+  },
+
 })

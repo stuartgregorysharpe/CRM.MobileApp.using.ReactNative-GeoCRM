@@ -13,10 +13,12 @@ import uuid from 'react-native-uuid';
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
-import { SLIDE_STATUS } from '../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function AddLead({screenProps}) {
+
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
 
@@ -93,7 +95,10 @@ export default function AddLead({screenProps}) {
 
   return (
       <ScrollView style={styles.container}>
-        <TouchableOpacity style={{padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+        <TouchableOpacity style={{padding: 6 }} onPress={() => {
+          dispatch({type: SLIDE_STATUS, payload: false})
+          dispatch({type: BACK_ICON_STATUS, payload: false})
+        }}>
           <Divider />
         </TouchableOpacity>
         <View style={styles.header}>
@@ -282,7 +287,7 @@ const styles = EStyleSheet.create(parse({
     lineHeight: 30,
     height: 40,
     backgroundColor: BG_COLOR,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },
   linkBox: {
@@ -291,13 +296,13 @@ const styles = EStyleSheet.create(parse({
   },
   linkBoxText: {
     color: PRIMARY_COLOR,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     textDecorationLine: 'underline',
     textDecorationColor: PRIMARY_COLOR,
     textAlign: 'center'
   },
   accuracyText: {
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     position: 'absolute',
     top: 2,
     right: 0,
@@ -320,7 +325,7 @@ const styles = EStyleSheet.create(parse({
   addButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold'
+    fontFamily: Fonts.secondaryBold
   },
   addButtonIcon: {
     position: 'absolute',

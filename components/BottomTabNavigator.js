@@ -4,13 +4,13 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import HomeScreen from '../screens/GeoRep/HomeScreen';
-import CRMScreen from '../screens/GeoRep/CRMScreen';
-import CalendarScreen from '../screens/GeoRep/CalendarScreen';
+import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
+import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/FormsScreen';
-import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
+import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
-import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
+import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
@@ -38,7 +38,7 @@ import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 import Fonts from '../constants/Fonts';
 import MoreNavigator from './MoreNavigator';
-
+import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { 
@@ -47,6 +47,7 @@ import {
   CHANGE_PROFILE_STATUS,
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
+  BACK_ICON_STATUS,
   LOCATION_CONFIRM_MODAL_VISIBLE,
   CHANGE_BOTTOM_TAB_ACTION
 } from '../actions/actionTypes';
@@ -57,8 +58,14 @@ import {
   Dimensions, 
   TouchableOpacity,
   View,
-  Text
+  Text,
+  Platform,
+  Image
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import HeaderRightView from './Header/HeaderRightView';
+import Images from '../constants/Images';
+
 
 const BottomTab = createBottomTabNavigator();
 
@@ -67,6 +74,7 @@ export default function RepBottomTabNavigator({navigation}) {
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
   const visibleMore = useSelector(state => state.rep.visibleMore);
+  const backIconStatus = useSelector(state => state.rep.backIconStatus);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
 
   const [ bottomListOne, setBottomListOne ] = useState([]);
@@ -111,6 +119,7 @@ export default function RepBottomTabNavigator({navigation}) {
           navigation.navigate('Root', { screen: 'CRM' });
           return;
         case 'web_links':
+          console.log("web links called");
           navigation.navigate('Root', { screen: 'RepWebLinks' });
           return;
         case 'calendar':
@@ -218,16 +227,52 @@ export default function RepBottomTabNavigator({navigation}) {
 
   useEffect(() => {
     dispatch(getLocationsMap());
-    dispatch(getLocationInfo(1005));
   }, [])
 
+  const getHeaderHeight = () => {
+    if(Platform.OS == 'ios'){
+      if(DeviceInfo.isTablet()){
+        return 82;
+      }else{
+        return 62;
+      }
+    }else{
+      if(DeviceInfo.isTablet()){
+        return 82;
+      }else{
+        return 74;
+      }
+    }
+  }
+  
+  const getHeaderMargin = () => {
+    if(Platform.OS == 'ios'){
+      if(DeviceInfo.isTablet()){
+        return 20;
+      }else{
+        return 0;
+      }
+    }else{
+      if(DeviceInfo.isTablet()){
+        return 22;
+      }else{
+        return 22;
+      }
+    }
+  }
+
   return (
+
     <BottomTab.Navigator
+
       screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
+        headerTitleAlign:'left',
+
         headerStyle: {
           backgroundColor: PRIMARY_COLOR,
+          height: getHeaderHeight()
         },
         tabBarShowLabel: true,
         headerTitleStyle:  {
@@ -237,12 +282,13 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarIconStyle: {
           color: "#fff",
         },
+        headerStatusBarHeight:getHeaderMargin(),
         tabBarStyle: {
-          backgroundColor: "#fff",
-          height: 60,
-          paddingTop: 10,
-          paddingBottom: 10,
-        }
+          height:50,          
+          paddingTop: 0,     
+          paddingBottom: Platform.OS == "android" ? 4 : 0,                  
+        },
+
       }}>
 
       {/* Rep Bottom Navigator */}
@@ -291,11 +337,32 @@ export default function RepBottomTabNavigator({navigation}) {
               {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
           ),
+          headerTitle:(props) =>{
+            return(<TouchableOpacity onPress={
+              () =>{
+                dispatch({type: SLIDE_STATUS, payload: false})
+                dispatch({type: BACK_ICON_STATUS, payload: false});                
+              }}> 
+              <View style={styles.layoutBar}>              
+                {
+                  backIconStatus && 
+                  <Image
+                  resizeMethod='resize'  
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />  
+                }                          
+              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+            </View></TouchableOpacity>)
+          },
+
           headerLeft: () => (
             <TouchableOpacity 
-              style={styles.header} 
+              style={[styles.header,{justifyContent:'center'}]} 
               activeOpacity={1}
               onPress={() => {
+                dispatch({type: SLIDE_STATUS, payload: false})
+                dispatch({type: BACK_ICON_STATUS, payload: false})
                 if (statusDispositionInfo) {
                   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
                   return;
@@ -305,12 +372,13 @@ export default function RepBottomTabNavigator({navigation}) {
             >
             </TouchableOpacity>
           ),
+
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),
           tabBarLabelStyle: {
             fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
+            fontFamily: Fonts.secondaryMedium
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
@@ -324,7 +392,10 @@ export default function RepBottomTabNavigator({navigation}) {
               return;
             }
             dispatch({type: SLIDE_STATUS, payload: false});
+            dispatch({type: BACK_ICON_STATUS, payload: false});
+            dispatch(getLocationsMap());
             navigation.navigate('CRM', { screen: 'Root' });
+
           },
         })}
       />}
@@ -1138,40 +1209,11 @@ export default function RepBottomTabNavigator({navigation}) {
         })}
       />
     </BottomTab.Navigator>
+
   );
 }
 
-function HeaderRightView() {
-  const dispatch = useDispatch();
-  const userInfo = useSelector(state => state.auth.userInfo);
 
-  const [toggleSwitch, setToggleSwitch] = useState(true);
-
-  return (
-    <View style={styles.headerRightView}>
-      <ToggleSwitch
-        style={styles.toggleSwitch}
-        label={toggleSwitch ? "Online" : "Offline"}
-        labelStyle={styles.toggleSwitchLabel}
-        onColor="#fff"
-        offColor="#a3c0f9"
-        size="small"
-        thumbOnStyle={{ backgroundColor: PRIMARY_COLOR }}
-        thumbOffStyle={{ backgroundColor: PRIMARY_COLOR }}
-        isOn={toggleSwitch}
-        onToggle={toggleSwitch => {
-          setToggleSwitch(toggleSwitch);
-        }}
-      />
-      <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({type: CHANGE_PROFILE_STATUS, payload: 0})}>
-        <Text style={styles.headerAvatarText}>
-          {userInfo.user_name.split(' ')[0] && userInfo.user_name.split(' ')[0][0].toUpperCase()}
-          {userInfo.user_name.split(' ')[1] && userInfo.user_name.split(' ')[1][0].toUpperCase()}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
   header: {
@@ -1180,32 +1222,13 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: '100%'
   },
-  headerRightView: {
-    flexDirection: 'row',
-    marginRight: 12
+  layoutBar: {        
+
+    flexDirection:'row',
+    
+    justifyContent:'center',
+    alignItems:'center',
+
   },
-  toggleSwitch: {
-    marginRight: 12,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  toggleSwitchLabel: {
-    color: '#fff',
-    fontSize: 12,
-    fontFamily: 'Gilroy-Medium'
-  },
-  headerAvatar: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#fff',
-    borderWidth: 2,
-    width: 32,
-    height: 32,
-    borderRadius: 20
-  },
-  headerAvatarText: {
-    fontSize: 18,
-    color: '#fff',
-    fontFamily: 'Gilroy-Bold'
-  }
+  
 })
