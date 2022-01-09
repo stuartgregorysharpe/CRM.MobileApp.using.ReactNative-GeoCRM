@@ -6,6 +6,7 @@ import Searchbar from '../../components/SearchBar';
 import Card from '../../components/Card';
 import { BG_COLOR } from '../../constants/Colors';
 import { CHANGE_LIBRARY_CHILD_STATUS } from '../../actions/actionTypes';
+import Fonts from '../../constants/Fonts';
 
 const libraryLists = [
   {

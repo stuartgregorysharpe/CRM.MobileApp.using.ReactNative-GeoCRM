@@ -5,6 +5,7 @@ import {
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
   CHANGE_CURRENT_LOCATION,
+  BACK_ICON_STATUS,
   CHANGE_DISPOSITION_INFO,
   CHANGE_LOCATION_ACTION,
   CHANGE_BOTTOM_TAB_ACTION,
@@ -12,6 +13,7 @@ import {
 } from '../actions/actionTypes';
 
 const initialState = {
+  backIconStatus:false,
   crmSlideStatus: false,
   showProfile: 1,
   showMoreScreen: 1,
@@ -30,6 +32,11 @@ const initialState = {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state=initialState, action) => {
   switch(action.type) {
+    case BACK_ICON_STATUS:
+      return {
+        ...state,
+        backIconStatus: action.payload 
+      }
     case SLIDE_STATUS:
       return {
         ...state,

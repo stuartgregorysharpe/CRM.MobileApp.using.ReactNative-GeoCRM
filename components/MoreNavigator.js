@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
-
 import HomeScreen from '../screens/GeoRep/HomeScreen';
-import CRMScreen from '../screens/GeoRep/CRMScreen';
-import CalendarScreen from '../screens/GeoRep/CalendarScreen';
+import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
+import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/FormsScreen';
-import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
+import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
-import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
-import RepSupportScreen from '../screens/GeoRep/SupportScreen';
+import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
+import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/SalesPipelineScreen';
-
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import CRMSalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
-
 import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
 import NewsScreen from '../screens/GeoLife/NewsScreen';
 import LocationsLifeScreen from '../screens/GeoLife/LocationsLifeScreen';

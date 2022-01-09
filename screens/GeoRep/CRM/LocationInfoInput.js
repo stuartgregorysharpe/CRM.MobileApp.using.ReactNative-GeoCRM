@@ -14,11 +14,15 @@ import CustomPicker from '../../../components/CustomPicker';
 import { postStageOutcomUpdate } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
+import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../actions/actionTypes';
 
-export default function LocationInfoInput() {
+export default function LocationInfoInput({navigation, screenProps, statusSubmit}) {
 
   const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
+  const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
+  const locationAction = useSelector(state => state.rep.locationAction);
+  const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
   const dispositionRef = useRef([]);
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
@@ -29,10 +33,17 @@ export default function LocationInfoInput() {
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);
   const [selectedOutcomeId, setSelectedOutComeId] = useState(locationInfo.outcomes.find(x => x.outcome_id == locationInfo.current_outcome_id).outcome_id);
-  const [selectedStageId, setSelectedStageId] = useState( locationInfo.current_stage_id ? locationInfo.stages.find(xx => xx.stage_id == locationInfo.current_stage_id).stage_id : 0);
+  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
+  const [submitKey, setSubmitKey] = useState(false);
 
+  useEffect(() => {
+    setSubmitKey(false);
+    dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
+    dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
+    dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: null});
+  }, []);
 
   useEffect(() => {
     if(!locationInfo.disposition_fields) return;
@@ -41,11 +52,39 @@ export default function LocationInfoInput() {
       items.push(element.value)
     });
     setDispositionValue(items);
+
     setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
   }, [locationInfo])
 
-  const handleChangeText = (text, field, key) => {
+  useEffect(() => {
+    if (!submitKey) {
+      setSubmitKey(true);
+      return;
+    }
+    handleSubmit();
+  }, [statusSubmit])
 
+  const handleSubmit = () => {
+    console.log(statusSubmit)
+    let postData = {
+      "location_id": locationInfo.location_id,
+      "campaign_id": 1,
+      "disposition_fields": []
+    }
+    locationInfo.disposition_fields.forEach((item, key) => {
+      console.log(item, key)
+      postData.disposition_fields.push({
+        "disposition_field_id": item.disposition_field_id,
+        "value": dispositionValue[key]
+      })
+    });
+    setIdempotencyKey(uuid.v4());
+    dispatch(postDispositionFields(postData, idempotencyKey));
+    dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
+  }
+
+  const handleChangeText = (text, field, key) => {
+    dispatch({type: CHANGE_DISPOSITION_INFO, payload: true});
     if (field.field_type == "date" || field.field_type == "datetime") {
       //hide keybard 
       Keyboard.dismiss();
@@ -99,6 +138,7 @@ export default function LocationInfoInput() {
   } 
 
   const handleConfirm = (date) => {
+    setChangeValue(true);
     let datetime = "";
     if (datePickerMode == "date") {
       datetime = String(date.getFullYear()) + "-" + String(date.getMonth() + 1) + "-" + String(date.getDate());
@@ -109,7 +149,39 @@ export default function LocationInfoInput() {
     setDateTimePickerVisibility(false)
   };
 
+  const discard = () => {
+    dispatch({type: SLIDE_STATUS, payload: false});
+    if (locationAction) {
+      navigation.navigate(locationAction);
+    }
+    if (bottomTabAction) {
+      if (bottomTabAction == "CRM") {
+        screenProps.navigate(bottomTabAction, { screen: 'Root' });
+      } else {
+        screenProps.navigate(bottomTabAction);
+      }
+    }
+    dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: false});
+  }
 
+  const confirmModal = () => {
+    return (
+      <CustomPicker visible={locationConfirmModalVisible} onModalClose={() => dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: false})} renderItems = {
+        <View>
+          <Text style={styles.confirmModalTitle}>Please note</Text>
+          <Text style={styles.confirmModalDesc}>Returning to previous page will discard any changes made to this location.</Text>
+          <View  style={styles.confirmModalButtonBar}>
+            <TouchableOpacity style={styles.confirmModalButton} onPress={() => dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: false})}>
+              <Text styles={styles.confirmModalCancelButton}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.confirmModalButton} onPress={discard}>
+              <Text style={styles.confirmModalDiscardButton}>Discard</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      } />
+    )
+  }
 
   const stagesModal = () => {
     return (
@@ -132,9 +204,9 @@ export default function LocationInfoInput() {
     )
   }
 
-  const outComesModal=()=>{
+  const outComesModal = () => {
     return (
-      <CustomPicker visible={outComeModalVisible} onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} renderItems={
+      <CustomPicker visible={outComeModalVisible} onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} renderItems= {
         selectedOutcomes.map((outcome, key) => (
           <View style={styles.pickerItem} key={key}>
             <TouchableOpacity onPress={() => {
@@ -142,7 +214,7 @@ export default function LocationInfoInput() {
               setSelectedOutComeId(outcome.outcome_id);
 
               setOutComeModalVisible(!outComeModalVisible);
-              let request={
+              let request = {
                 "location_id": locationInfo.location_id,
                 "stage_id": selectedStageId,
                 "outcome_id": selectedOutcomeId,
@@ -165,37 +237,31 @@ export default function LocationInfoInput() {
     <View style={styles.container}>
       
       <View style={styles.refreshBox}>
-        <View style={styles.shadowBox}>
-          <Text style={styles.shadowBoxText}>Stage</Text>
-          <View style={{ flexGrow: 1 }}>
-
-            <TouchableOpacity style={[styles.button, {width: 150}]}>
-              {
-                locationInfo && locationInfo.stages && locationInfo.current_stage_id &&
-                <Text style={styles.buttonText}>
-                  {locationInfo.stages.find(x=> x.stage_id ==locationInfo.current_stage_id).stage_name}
-                </Text>
-              }
-
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
+      <Text style={styles.shadowBoxText}>Stage</Text>
+      <View>
+            <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
+              <Text style={styles.buttonText}>
+                {locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name}
+              </Text>
+            </View>
           </View>
-
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-        </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.refreshBox}>
-        <View style={styles.shadowBox}>
+        <TouchableOpacity style={styles.shadowBox} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
-          <View style={{ flexGrow: 1 }}>
-            <TouchableOpacity style={[styles.button, { width: 120 }]} onPress={()=>setOutComeModalVisible(!outComeModalVisible)}>
-              <Text style={styles.buttonText}>
+          <View style={{flexShrink: 1}}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText} numberOfLines={5}>
                 {selectedOutcomeId ? locationInfo.outcomes.find(x => x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
               </Text>
             </TouchableOpacity>
           </View>
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-        </View>
+        </TouchableOpacity>
         <TouchableOpacity>
           <Image style={styles.refreshImage} source={Images.loopButton} />
         </TouchableOpacity>
@@ -213,7 +279,7 @@ export default function LocationInfoInput() {
                 key={key}
                 style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
                 activeOpacity={1}
-                onPress={()=>{     
+                onPress={() => {     
                   //if (field.rule_editable == 0) return;                  
                 }}
               >
@@ -257,6 +323,7 @@ export default function LocationInfoInput() {
       />
       {stagesModal()}
       {outComesModal()}
+      {confirmModal()}
       {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={statusStageOutcomeUpdate=='request'}/>}
 
     </View>
@@ -276,6 +343,7 @@ const styles = EStyleSheet.create(parse({
     flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: '#fff',
     shadowColor: '#00000014',
     shadowOffset: { width: 1, height: 1 },
@@ -384,4 +452,39 @@ const styles = EStyleSheet.create(parse({
     shadowRadius: 4,
     elevation: 5
   },
+  plusButton: {
+    position: 'absolute',
+    bottom: 80,
+    right: 20,
+    zIndex: 1,
+    elevation: 1,
+  },
+  confirmModalTitle: {
+    fontSize: 18,
+    textAlign: 'center',
+    color: PRIMARY_COLOR,
+    marginBottom: 8
+  },
+  confirmModalDesc: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: 16
+  },
+  confirmModalButtonBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  confirmModalButton: {
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+  confirmModalCancelButton: {
+    color: 'gray',
+    fontSize: 16
+  },
+  confirmModalDiscardButton: {
+    color: PRIMARY_COLOR,
+    fontSize: 16
+  }
 }));

@@ -22,18 +22,21 @@ import Divider from '../../../components/Divider';
 import Skeleton from '../../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATU, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS } from '../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
 
-export default function LocationInfo({navigation}) {
+export default function LocationInfo({navigation, screenProps}) {
 
   const dispatch = useDispatch();
   const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
-  const locationInfo = useSelector(state => state.location.locationInfo);  
+  const locationInfo = useSelector(state => state.location.locationInfo);
+  const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
+  const features = useSelector(state => state.selection.payload.features);  
   console.log("view location info", locationInfo);
 
+  const [statusSubmit, setStatusSubmit] = useState(true);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -66,6 +69,10 @@ export default function LocationInfo({navigation}) {
     <View style={styles.container}>
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
+        if (statusDispositionInfo) {
+          dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+          return;
+        }
         dispatch({type: SLIDE_STATUS, payload: false});
         dispatch({type: BACK_ICON_STATUS, payload: false})        
       }}>
@@ -77,7 +84,7 @@ export default function LocationInfo({navigation}) {
         enableOnAndroid={true}
         enableAutomaticScroll={(Platform.OS === 'ios')}
         extraHeight={130} extraScrollHeight={130}
-        behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: 50}]}>
+        behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: (features && (features.includes("access_crm") || features.includes("checkin"))) ? 50 : 0}]}>
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
@@ -105,7 +112,7 @@ export default function LocationInfo({navigation}) {
         </View>    
 
         {
-          locationInfo ? <LocationInfoInput /> : <View></View>
+          locationInfo ? <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} /> : <View></View>
         }                        
         <View style={{ height: 20 }}></View>  
 
@@ -113,17 +120,33 @@ export default function LocationInfo({navigation}) {
 
       <View style={{ height: 20 }}></View>
 
-      {!keyboardStatus &&  <View style={styles.nextButtonBar}>
-        <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => navigation.navigate("LocationSpecificInfo")}>
+      {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && <View style={styles.nextButtonBar}>
+        {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {
+          if (statusDispositionInfo) {
+            dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+            dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
+            return;
+          }
+          navigation.navigate("LocationSpecificInfo");
+        }}>
           <Text style={styles.nextButtonText}>Access CRM</Text>
           <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => navigation.navigate("LocationSpecificInfo")}>
+        </TouchableOpacity>}
+        {features && features.includes("checkin") && <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => {
+          if (statusDispositionInfo) {
+            dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+            dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
+            return;
+          }
+          navigation.navigate("LocationSpecificInfo");
+        }}>
           <Text style={[styles.checkInButtonText]}>Check In</Text>
           <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </View>}
-      
+      <TouchableOpacity style={styles.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
+        <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
+      </TouchableOpacity>      
     </View>
   )
 }
@@ -236,5 +259,12 @@ const styles = EStyleSheet.create(parse({
   },
   checkInButton: {
     backgroundColor: PRIMARY_COLOR,
-  }
+  },
+  plusButton: {
+    position: 'absolute',
+    bottom: 80,
+    right: 20,
+    zIndex: 1,
+    elevation: 1,
+  },
 }));

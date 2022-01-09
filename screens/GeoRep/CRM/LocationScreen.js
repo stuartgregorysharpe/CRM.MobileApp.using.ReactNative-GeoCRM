@@ -19,6 +19,7 @@ import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
 import { boxShadow } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationsMap } from '../../actions/location.action';
 
 import { 
   getLocationPinKey, 
@@ -166,7 +167,7 @@ export default function LocationScreen(props) {
           style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 3 && <AddLead screenProps={props.screenProps} />}
-          {showItem == 4 && <LocationInfo navigation={props.navigation} />}
+          {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps} />}
         </View>}
 
         
@@ -247,7 +248,10 @@ export default function LocationScreen(props) {
 
           <TouchableOpacity 
             style={styles.plusButton} 
-            onPress={() => animation("addLead")}
+            onPress={() => {
+              dispatch(getLocationsMap());
+              animation("addLead");
+            }}
           >
             <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
           </TouchableOpacity>
