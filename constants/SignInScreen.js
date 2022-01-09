@@ -17,7 +17,7 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const loginStatus = useSelector(state => state.auth.loginStatus);
 
-  const [email, setEmail] = useState('residential@cydcor.com');
+  const [email, setEmail] = useState('carl@cydcor.com');
   const [password, setPassword] = useState('Test2021#');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 15,
-    fontFamily: Fonts.secondaryBold
+    fontFamily: 'Gilroy-Bold'
   },
   submitButtonIcon: {
     position: 'absolute',

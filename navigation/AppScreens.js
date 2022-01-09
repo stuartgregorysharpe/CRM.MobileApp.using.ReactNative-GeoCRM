@@ -10,7 +10,6 @@ import More from '../components/More';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { grayBackground } from '../constants/Styles';
 import { SLIDE_STATUS, CHANGE_PROFILE_STATUS, CHANGE_MORE_STATUS } from '../actions/actionTypes';
-import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,8 +68,6 @@ export default function AppScreens() {
       <SignInScreen />
     )
   }
-
-
   return (
     <SafeAreaView style={styles.container}>
 
@@ -99,8 +96,6 @@ export default function AppScreens() {
       </Animated.View>
 
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
-
-      
       <Stack.Navigator 
         screenOptions={{
           headerStyle: {
@@ -113,14 +108,6 @@ export default function AppScreens() {
           component={BottomTabNavigator}
           options={{ headerShown: false }} 
         />
-
-        <Stack.Screen
-          name="WebViewScreen"
-          navigationOptions={{headerShown:false}}
-          options={{ header: () => false}}> 
-            {props => <WebViewScreen {...props} />}
-        </Stack.Screen>
-        
       </Stack.Navigator>
     </SafeAreaView>
   );
@@ -129,7 +116,7 @@ export default function AppScreens() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '100%',    
+    height: '100%'
   },
   transitionView: {
     position: 'absolute',

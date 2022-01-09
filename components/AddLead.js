@@ -1,22 +1,25 @@
 import React, {useState, useEffect, useRef } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import uuid from 'react-native-uuid';
+
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS } from '../actions/actionTypes';
+import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function AddLead({screenProps}) {
-
   const dispatch = useDispatch();
+  const currentLocation = useSelector(state => state.rep.currentLocation);
+
   const customerNameRef = useRef();
   const addressRef = useRef();
   const contactEmailRef = useRef();
@@ -24,6 +27,9 @@ export default function AddLead({screenProps}) {
   const contactMobileRef = useRef();
   const locationTypeRef = useRef();
   const groupRef = useRef();
+  const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
+
+
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
   const [contactPerson, setContactPerson] = useState('');
@@ -32,19 +38,62 @@ export default function AddLead({screenProps}) {
   const [locationType, setLocationType] = useState('');
   const [group, getGroup] = useState('');
 
-  const [mapRegion, setMapRegion] = useState({
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.015,
-    longitudeDelta: 0.0121
-  });
+  const reverseGeocoding = () => {
+    let data = {
+      result_type: "street_address",
+      latlng: [currentLocation.latitude, currentLocation.longitude],
+      key: "AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw"
+    }
+    axios
+      .post('https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding', data)
+      .then((res) => {
+        console.log(res.data)
+      })
+  }
+
+  const handleSubmit = () => {
+    setIdempotencyKey(uuid.v4());
+    const submitData = {
+      "coordinates": {
+          "latitude": String(currentLocation.latitude),
+          "longitude": String(currentLocation.longitude)
+      },
+      "custom_master_fields":[
+        {
+            "custom_master_field_id": "9",
+            "value": customerName,
+        },
+        {
+            "custom_master_field_id": "12",
+            "value": address,
+        },
+        {
+            "custom_master_field_id": "13",
+            "value": contactPerson,
+        },
+        {
+            "custom_master_field_id": "14",
+            "value": contactEmail,
+        },
+        {
+            "custom_master_field_id": "15",
+            "value": contactMobile,
+        },
+        {
+            "custom_master_field_id": "16",
+            "value": locationType,
+        },
+        {
+            "custom_master_field_id": "17",
+            "value": group,
+        },
+      ]
+    }
+  }
 
   return (
-      <KeyboardAwareScrollView style={styles.container}>
-        <TouchableOpacity style={{padding: 6 }} onPress={() => {
-          dispatch({type: SLIDE_STATUS, payload: false})
-          dispatch({type: BACK_ICON_STATUS, payload: false})
-        }}>
+      <ScrollView style={styles.container}>
+        <TouchableOpacity style={{padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
           <Divider />
         </TouchableOpacity>
         <View style={styles.header}>
@@ -68,7 +117,12 @@ export default function AddLead({screenProps}) {
           followUserLocation = {true}
           showsMyLocationButton = {true}
           zoomEnabled = {true}
-          region={mapRegion}
+          region={{
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.0121
+          }}
         >
         </MapView>
         <TouchableOpacity
@@ -89,7 +143,9 @@ export default function AddLead({screenProps}) {
           </View>
         </TouchableOpacity>
         <View style={styles.linkBox}>
-          <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+          <TouchableOpacity onPress={reverseGeocoding}>
+            <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+          </TouchableOpacity>
           <Text style={styles.accuracyText}>Accuracy: 22m</Text>
         </View>
         <TouchableOpacity
@@ -194,11 +250,11 @@ export default function AddLead({screenProps}) {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.addButton} onPress={() => console.log("pressed")}>
+        <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
           <Text style={[styles.addButtonText]}>Add</Text>
           <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>
-      </KeyboardAwareScrollView>
+      </ScrollView>
   )
 }
 
@@ -226,7 +282,7 @@ const styles = EStyleSheet.create(parse({
     lineHeight: 30,
     height: 40,
     backgroundColor: BG_COLOR,
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
   linkBox: {
@@ -235,13 +291,13 @@ const styles = EStyleSheet.create(parse({
   },
   linkBoxText: {
     color: PRIMARY_COLOR,
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
     textDecorationLine: 'underline',
     textDecorationColor: PRIMARY_COLOR,
     textAlign: 'center'
   },
   accuracyText: {
-    fontFamily: Fonts.secondaryMedium,
+    fontFamily: 'Gilroy-Medium',
     position: 'absolute',
     top: 2,
     right: 0,
@@ -264,7 +320,7 @@ const styles = EStyleSheet.create(parse({
   addButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: Fonts.secondaryBold
+    fontFamily: 'Gilroy-Bold'
   },
   addButtonIcon: {
     position: 'absolute',

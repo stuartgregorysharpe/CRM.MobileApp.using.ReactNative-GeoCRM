@@ -1,14 +1,16 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
+import ToggleSwitch from 'toggle-switch-react-native';
 import { useDispatch, useSelector } from 'react-redux';
+
 import HomeScreen from '../screens/GeoRep/HomeScreen';
-import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
-import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
+import CRMScreen from '../screens/GeoRep/CRMScreen';
+import CalendarScreen from '../screens/GeoRep/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/FormsScreen';
-import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
+import RepContentLibraryScreen from '../screens/GeoRep/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
-import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
+import RepWebLinksScreen from '../screens/GeoRep/WebLinksScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
@@ -36,7 +38,7 @@ import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 import Fonts from '../constants/Fonts';
 import MoreNavigator from './MoreNavigator';
-import DeviceInfo from 'react-native-device-info';
+
 import SvgIcon from './SvgIcon';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { 
@@ -45,7 +47,8 @@ import {
   CHANGE_PROFILE_STATUS,
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
-  BACK_ICON_STATUS,
+  LOCATION_CONFIRM_MODAL_VISIBLE,
+  CHANGE_BOTTOM_TAB_ACTION
 } from '../actions/actionTypes';
 import { getLocationsMap, getLocationInfo } from '../actions/location.action';
 
@@ -54,14 +57,8 @@ import {
   Dimensions, 
   TouchableOpacity,
   View,
-  Text,
-  Platform,
-  Image
+  Text
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderRightView from './Header/HeaderRightView';
-import Images from '../constants/Images';
-
 
 const BottomTab = createBottomTabNavigator();
 
@@ -70,7 +67,7 @@ export default function RepBottomTabNavigator({navigation}) {
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
   const visibleMore = useSelector(state => state.rep.visibleMore);
-  const backIconStatus = useSelector(state => state.rep.backIconStatus);
+  const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
 
   const [ bottomListOne, setBottomListOne ] = useState([]);
   const [ bottomListTwo, setBottomListTwo ] = useState([]);
@@ -114,7 +111,6 @@ export default function RepBottomTabNavigator({navigation}) {
           navigation.navigate('Root', { screen: 'CRM' });
           return;
         case 'web_links':
-          console.log("web links called");
           navigation.navigate('Root', { screen: 'RepWebLinks' });
           return;
         case 'calendar':
@@ -221,53 +217,17 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   useEffect(() => {
-    dispatch(getLocationsMap());    
+    dispatch(getLocationsMap());
+    dispatch(getLocationInfo(1005));
   }, [])
 
-  const getHeaderHeight = () => {
-    if(Platform.OS == 'ios'){
-      if(DeviceInfo.isTablet()){
-        return 82;
-      }else{
-        return 62;
-      }
-    }else{
-      if(DeviceInfo.isTablet()){
-        return 82;
-      }else{
-        return 74;
-      }
-    }
-  }
-  
-  const getHeaderMargin = () => {
-    if(Platform.OS == 'ios'){
-      if(DeviceInfo.isTablet()){
-        return 20;
-      }else{
-        return 0;
-      }
-    }else{
-      if(DeviceInfo.isTablet()){
-        return 22;
-      }else{
-        return 22;
-      }
-    }
-  }
-
   return (
-      
     <BottomTab.Navigator
-                 
-      screenOptions={{                
+      screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
-        headerTitleAlign:'left',
-        
         headerStyle: {
-          backgroundColor: PRIMARY_COLOR,          
-          height: getHeaderHeight()
+          backgroundColor: PRIMARY_COLOR,
         },
         tabBarShowLabel: true,
         headerTitleStyle:  {
@@ -277,14 +237,12 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarIconStyle: {
           color: "#fff",
         },
-        headerStatusBarHeight:getHeaderMargin(),
-        
         tabBarStyle: {
-          height:50,          
-          paddingTop: 0,     
-          paddingBottom: Platform.OS == "android" ? 4 : 0,                  
-        },        
-        
+          backgroundColor: "#fff",
+          height: 60,
+          paddingTop: 10,
+          paddingBottom: 10,
+        }
       }}>
 
       {/* Rep Bottom Navigator */}
@@ -309,6 +267,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Home"});
+              return;
+            }
+            navigation.navigate('Home');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('crm_locations') && <BottomTab.Screen
@@ -317,61 +286,48 @@ export default function RepBottomTabNavigator({navigation}) {
         options={{
           title: 'CRM',
           tabBarIcon: ({focused}) => (
-            <Fragment>              
+            <Fragment>
               {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
           ),
-          headerTitle:(props) =>{
-            return(<TouchableOpacity onPress={
-              () =>{
-                dispatch({type: SLIDE_STATUS, payload: false})
-                dispatch({type: BACK_ICON_STATUS, payload: false});                
-              }}> 
-              <View style={styles.layoutBar}>              
-                {
-                  backIconStatus && 
-                  <Image
-                  resizeMethod='resize'  
-                  style={{width:15,height:20, marginRight:5}}
-                  source={Images.backIcon}
-                />  
-                }                          
-              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
-            </View></TouchableOpacity>)
-          },
-          
           headerLeft: () => (
-            <TouchableOpacity
-              style={[styles.header,{justifyContent:'center'}]} 
+            <TouchableOpacity 
+              style={styles.header} 
               activeOpacity={1}
               onPress={() => {
-                dispatch({type: SLIDE_STATUS, payload: false})
-                dispatch({type: BACK_ICON_STATUS, payload: false})
-              }}>            
+                if (statusDispositionInfo) {
+                  dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+                  return;
+                }
+                dispatch({type: SLIDE_STATUS, payload: false});
+              }}
+            >
             </TouchableOpacity>
           ),
-
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),
           tabBarLabelStyle: {
             fontSize: 12,
-            fontFamily: Fonts.secondaryMedium
+            fontFamily: 'Gilroy-Medium'
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
-            dispatch({type: SLIDE_STATUS, payload: false});
-            dispatch({type: BACK_ICON_STATUS, payload: false});
             dispatch(getLocationsMap());
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "CRM"});
+              return;
+            }
+            dispatch({type: SLIDE_STATUS, payload: false});
             navigation.navigate('CRM', { screen: 'Root' });
-            
           },
         })}
-      />} 
+      />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('web_links') && <BottomTab.Screen
         name="RepWebLinks"
@@ -379,7 +335,7 @@ export default function RepBottomTabNavigator({navigation}) {
         options={{
           title: 'Web Links',
           tabBarIcon: ({focused}) => (
-            <Fragment>              
+            <Fragment>
               {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
             </Fragment>
@@ -393,6 +349,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepWebLinks"});
+              return;
+            }
+            navigation.navigate('RepWebLinks');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('calendar') && <BottomTab.Screen
@@ -415,6 +382,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Calendar"});
+              return;
+            }
+            navigation.navigate('Calendar');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('forms') && <BottomTab.Screen
@@ -437,6 +415,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepForms"});
+              return;
+            }
+            navigation.navigate('RepForms');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('content_library') && <BottomTab.Screen
@@ -463,6 +452,11 @@ export default function RepBottomTabNavigator({navigation}) {
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepContentLibrary"});
+              return;
+            }
             dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
             navigation.navigate("RepContentLibrary");
           },
@@ -489,6 +483,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "ProductSales"});
+              return;
+            }
+            navigation.navigate('ProductSales');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('notifications') && <BottomTab.Screen
@@ -511,6 +516,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Notifications"});
+              return;
+            }
+            navigation.navigate('Notifications');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('messages') && <BottomTab.Screen
@@ -533,6 +549,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepMessages"});
+              return;
+            }
+            navigation.navigate('RepMessages');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('offline_sync') && <BottomTab.Screen
@@ -556,6 +583,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "OfflineSync"});
+              return;
+            }
+            navigation.navigate('OfflineSync');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('recorded_sales') && <BottomTab.Screen
@@ -578,6 +616,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RecordedSales"});
+              return;
+            }
+            navigation.navigate('RecordedSales');
+          },
+        })}
       />}
 
       {selectProject == 'geo_rep' && bottomListOne.includes('sales_pipeline') && <BottomTab.Screen
@@ -600,6 +649,17 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepSalesPipeline"});
+              return;
+            }
+            navigation.navigate('RepSalesPipeline');
+          },
+        })}
       />}
 
       {/* Life Bottom Navigator */}
@@ -1077,12 +1137,41 @@ export default function RepBottomTabNavigator({navigation}) {
           },
         })}
       />
-    </BottomTab.Navigator>    
-    
+    </BottomTab.Navigator>
   );
 }
 
+function HeaderRightView() {
+  const dispatch = useDispatch();
+  const userInfo = useSelector(state => state.auth.userInfo);
 
+  const [toggleSwitch, setToggleSwitch] = useState(true);
+
+  return (
+    <View style={styles.headerRightView}>
+      <ToggleSwitch
+        style={styles.toggleSwitch}
+        label={toggleSwitch ? "Online" : "Offline"}
+        labelStyle={styles.toggleSwitchLabel}
+        onColor="#fff"
+        offColor="#a3c0f9"
+        size="small"
+        thumbOnStyle={{ backgroundColor: PRIMARY_COLOR }}
+        thumbOffStyle={{ backgroundColor: PRIMARY_COLOR }}
+        isOn={toggleSwitch}
+        onToggle={toggleSwitch => {
+          setToggleSwitch(toggleSwitch);
+        }}
+      />
+      <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({type: CHANGE_PROFILE_STATUS, payload: 0})}>
+        <Text style={styles.headerAvatarText}>
+          {userInfo.user_name.split(' ')[0] && userInfo.user_name.split(' ')[0][0].toUpperCase()}
+          {userInfo.user_name.split(' ')[1] && userInfo.user_name.split(' ')[1][0].toUpperCase()}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   header: {
@@ -1091,13 +1180,32 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: '100%'
   },
-  layoutBar: {        
-
-    flexDirection:'row',
-    
-    justifyContent:'center',
-    alignItems:'center',
-
+  headerRightView: {
+    flexDirection: 'row',
+    marginRight: 12
   },
-  
+  toggleSwitch: {
+    marginRight: 12,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  toggleSwitchLabel: {
+    color: '#fff',
+    fontSize: 12,
+    fontFamily: 'Gilroy-Medium'
+  },
+  headerAvatar: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#fff',
+    borderWidth: 2,
+    width: 32,
+    height: 32,
+    borderRadius: 20
+  },
+  headerAvatarText: {
+    fontSize: 18,
+    color: '#fff',
+    fontFamily: 'Gilroy-Bold'
+  }
 })

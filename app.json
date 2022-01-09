@@ -1,8 +1,4 @@
 {
   "name": "GeoCRM",
-  "displayName": "Geo CRM",
-  "androidStatusBar": {
-    "backgroundColor": "#000000"
-  }
+  "displayName": "Geo CRM"
 }
-

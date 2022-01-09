@@ -1,8 +1,8 @@
 import React from 'react';
-import { View,Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { BG_COLOR } from '../constants/Colors';
 
-const CustomPicker = ({visible, onModalClose,renderItems }) => {
+const CustomPicker = ({visible, onModalClose, renderItems }) => {
     return (
         <Modal animationType="slide"
             transparent={true}

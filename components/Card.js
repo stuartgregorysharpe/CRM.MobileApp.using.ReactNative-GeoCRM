@@ -10,8 +10,8 @@ export default function Card({icon, title, subtitle , image, number, onPress}) {
   return (
     <TouchableOpacity style={[styles.cardContainer, boxShadow]} onPress={onPress}>
       {icon && <SvgIcon style={styles.leftIcon} icon={icon} width='24px' height='24px' />}
-      {image && <Image style={styles.image} source={{uri:image}} />}
-      <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:10, paddingBottom:10 }}>
+      {image && <Image style={styles.image} source={image} />}
+      <View style={{ flexGrow: 1 }}>
         <Text style={styles.title}>{title}</Text>
         {subtitle && <Text style={styles.subTitile}>{subtitle}</Text>}
       </View>
@@ -25,13 +25,13 @@ export default function Card({icon, title, subtitle , image, number, onPress}) {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    flex:1,    
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
     paddingLeft: 12,
-    paddingRight: 12,    
+    paddingRight: 12,
+    height: 70,
     borderRadius: 7,
     marginBottom: 10
   },

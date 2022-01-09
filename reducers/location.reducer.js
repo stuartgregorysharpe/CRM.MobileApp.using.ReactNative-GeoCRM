@@ -9,7 +9,8 @@ import {
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
   CHANGE_LOCATION_INFO,
-  STATUS_STAGE_OUTCOME_UPDATE
+  STATUS_STAGE_OUTCOME_UPDATE,
+  STATUS_DISPOSITION_FIELDS_UPDATE
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -23,7 +24,8 @@ const initialState = {
   locationFilters: [],
   locationSearchLists: [],
   locationInfo: {},
-  statusStageOutcomeUpdate:'init'
+  statusStageOutcomeUpdate:'init',
+  statusLocationInfoUpdate: 'init'
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -75,16 +77,19 @@ export default (state = initialState, action) => {
         locationSearchLists: action.payload
       }
     case CHANGE_LOCATION_INFO:
-      console.log("changed location info");
       return {
         ...state,
-        locationInfo: action.payload,
-        statusLocationInfo: "success"
+        locationInfo: action.payload
       }
     case STATUS_STAGE_OUTCOME_UPDATE:
       return {
         ...state,
         statusStageOutcomeUpdate: action.payload
+      }
+   case STATUS_DISPOSITION_FIELDS_UPDATE:
+      return {
+         ...state,
+         statusLocationInfoUpdate: action.payload
       }
     default:
       return state;

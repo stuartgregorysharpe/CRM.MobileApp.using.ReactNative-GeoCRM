@@ -11,7 +11,6 @@ import {
   CHANGE_LIBRARY_CHILD_STATUS,
   CHANGE_LOGIN_STATUS
 } from '../actions/actionTypes';
-import { setToken } from '../constants/Storage';
 
 const lists = {
   0: [
@@ -362,10 +361,7 @@ export default function Profile() {
             <SvgIcon icon="Angle_Left" width='18px' height='18px' />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.selectButton} onPress={() => {
-            dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"});
-            setToken(null);
-          }}>
+          <TouchableOpacity style={styles.selectButton} onPress={() => dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"})}>
             <Text style={styles.selectName}>Logout</Text>
             <Image style={{ width: 20, height: 20 }} source={require('../assets/images/sign_out.png')} />
           </TouchableOpacity>

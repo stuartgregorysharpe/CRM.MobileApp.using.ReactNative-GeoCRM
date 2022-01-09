@@ -5,11 +5,13 @@ import {
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
   CHANGE_CURRENT_LOCATION,
-  BACK_ICON_STATUS
+  CHANGE_DISPOSITION_INFO,
+  CHANGE_LOCATION_ACTION,
+  CHANGE_BOTTOM_TAB_ACTION,
+  LOCATION_CONFIRM_MODAL_VISIBLE
 } from '../actions/actionTypes';
 
 const initialState = {
-  backIconStatus:false,
   crmSlideStatus: false,
   showProfile: 1,
   showMoreScreen: 1,
@@ -18,17 +20,16 @@ const initialState = {
   currentLocation: {
     latitude: 0,
     longitude: 0
-  }
+  },
+  statusDispositionInfo: false,
+  locationAction: null,
+  bottomTabAction: null,
+  locationConfirmModalVisible: false
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state=initialState, action) => {
   switch(action.type) {
-    case BACK_ICON_STATUS:
-      return {
-        ...state,
-        backIconStatus: action.payload 
-      }
     case SLIDE_STATUS:
       return {
         ...state,
@@ -58,6 +59,26 @@ export default (state=initialState, action) => {
       return {
         ...state,
         currentLocation: action.payload
+      }
+    case CHANGE_DISPOSITION_INFO:
+      return {
+        ...state,
+        statusDispositionInfo: action.payload
+      }
+    case CHANGE_LOCATION_ACTION:
+      return {
+        ...state,
+        locationAction: action.payload
+      }
+    case CHANGE_BOTTOM_TAB_ACTION:
+      return {
+        ...state,
+        locationAction: action.payload
+      }
+    case LOCATION_CONFIRM_MODAL_VISIBLE:
+      return {
+        ...state,
+        locationConfirmModalVisible: action.payload
       }
     default: 
       return state;
