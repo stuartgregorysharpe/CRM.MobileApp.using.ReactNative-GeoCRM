@@ -14,7 +14,6 @@ import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
-import CustomHeader from '../../../components/Header/CustomHeader';
 
 const ResultItem = ({navigation, item, animation}) => {
 
@@ -45,7 +44,6 @@ export default function LocationSearchScreen({navigation}) {
   const statusLocationSearchLists = useSelector(state => state.location.statusLocationSearchLists);
   const locationSearchLists = useSelector(state => state.location.locationSearchLists);
   const currentLocation = useSelector(state => state.rep.currentLocation);
-
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
 
@@ -102,11 +100,9 @@ export default function LocationSearchScreen({navigation}) {
         setShowItem(2);
         dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
-      default:
-        
+      default:        
         return;
-    }
-    
+    }    
   }
 
   if (statusLocationSearchLists == "request") {
@@ -120,7 +116,6 @@ export default function LocationSearchScreen({navigation}) {
       </SafeAreaView>
     )
   }
-
 
   return (
     <Provider>

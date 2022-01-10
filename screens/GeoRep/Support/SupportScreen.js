@@ -84,7 +84,6 @@ export default function SupportScreen({navigation, screenProps}) {
           <View style={{ flexGrow: 1 }}>
             {tabIndex == 1 && <Ticket ref={ticketRef} /> }
             {tabIndex == 2 && <Faq /> }
-
           </View>
 
           {

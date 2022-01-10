@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Searchbar from '../../../components/SearchBar';
 import Card from '../../../components/Card';
 import { BG_COLOR } from '../../../constants/Colors';
-import { CHANGE_LIBRARY_CHILD_STATUS } from '../../../actions/actionTypes';
+import { BACK_ICON_STATUS, CHANGE_LIBRARY_CHILD_STATUS } from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
 import { downloadPDF, getContentLibrary } from '../../../actions/contentLibrary.action';
@@ -51,6 +51,7 @@ export default function ContentLibraryScreen(props) {
   const showChildItem = (index) => {
     dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
     setChildList(searchLibraryLists[index]);
+    dispatch({type: BACK_ICON_STATUS, payload: true})
   }
   const getResourceIcon = (title) =>{
     if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
@@ -125,9 +126,7 @@ export default function ContentLibraryScreen(props) {
                     }).catch((error) =>{
                       console.log("error", error);
                     });
-                    
-                    
-                                        
+                                                                                
                   }                  
                 }}
                  />              
