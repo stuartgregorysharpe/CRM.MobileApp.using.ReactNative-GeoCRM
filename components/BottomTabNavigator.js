@@ -398,39 +398,6 @@ export default function RepBottomTabNavigator({navigation}) {
         })}
       />}
 
-      {selectProject == 'geo_rep' && bottomListOne.includes('web_links') && <BottomTab.Screen
-        name="RepWebLinks"
-        component={RepWebLinksScreen}
-        options={{
-          title: 'Web Links',
-          tabBarIcon: ({focused}) => (
-            <Fragment>
-              {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
-            </Fragment>
-          ),
-          headerRight: () => (
-            <HeaderRightView navigation={navigation} />
-          ),
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontFamily: 'Gilroy-Medium'
-          },
-          tabBarActiveTintColor: PRIMARY_COLOR,
-        }}
-        listeners={({navigation}) => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            if (statusDispositionInfo) {
-              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepWebLinks"});
-              return;
-            }
-            navigation.navigate('RepWebLinks');
-          },
-        })}
-      />}
-
       {selectProject == 'geo_rep' && bottomListOne.includes('calendar') && <BottomTab.Screen
         name="Calendar"
         component={CalendarScreen}
@@ -547,6 +514,39 @@ export default function RepBottomTabNavigator({navigation}) {
             }
             dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
             navigation.navigate("RepContentLibrary");
+          },
+        })}
+      />}
+      
+      {selectProject == 'geo_rep' && bottomListOne.includes('web_links') && <BottomTab.Screen
+        name="RepWebLinks"
+        component={RepWebLinksScreen}
+        options={{
+          title: 'Web Links',
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <SvgIcon icon="Travel_Explore_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Travel_Explore" width='20px' height='20px' />}
+            </Fragment>
+          ),
+          headerRight: () => (
+            <HeaderRightView navigation={navigation} />
+          ),
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
+          },
+          tabBarActiveTintColor: PRIMARY_COLOR,
+        }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepWebLinks"});
+              return;
+            }
+            navigation.navigate('RepWebLinks');
           },
         })}
       />}

@@ -33,7 +33,7 @@ export default function LocationInfo({navigation, screenProps}) {
   const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
   const locationInfo = useSelector(state => state.location.locationInfo);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
-  const features = useSelector(state => state.selection.payload.features);  
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);  
   console.log("view location info", locationInfo);
 
   const [statusSubmit, setStatusSubmit] = useState(true);
