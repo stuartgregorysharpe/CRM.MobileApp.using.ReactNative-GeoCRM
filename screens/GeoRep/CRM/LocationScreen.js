@@ -30,7 +30,6 @@ import {
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 
-
 const MarkerView = () => {
   const dispatch = useDispatch();
   const statusPinKeys = useSelector(state => state.location.statusPinKeys);
@@ -154,9 +153,9 @@ export default function LocationScreen(props) {
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
+
         <GrayBackground />
-
-
+        
         {crmStatus && (showItem == 1 || showItem == 2) && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
@@ -183,6 +182,7 @@ export default function LocationScreen(props) {
               activeOpacity={1}
               onPress={()=> {
                 dispatch({type: SLIDE_STATUS, payload: false});
+                dispatch({type: BACK_ICON_STATUS, payload: true});
                 dispatch(getLocationSearchList());
                 props.navigation.navigate("LocationSearch");
               }}
@@ -196,14 +196,13 @@ export default function LocationScreen(props) {
             </TouchableOpacity>
             <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
             <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-              dispatch(getLocationFilters());
+              dispatch(getLocationFilters());              
               animation("filter");
             }}>
               <SvgIcon icon="Filter" width="30px" height="30px" />
             </TouchableOpacity>
           </View>
 
-          
           <MapView
             moveOnMarkerPress={false}
             provider={PROVIDER_GOOGLE}
@@ -218,8 +217,8 @@ export default function LocationScreen(props) {
               latitudeDelta: 0.015,
               longitudeDelta: 0.0121
             }}
-            onPress={(e) => console.log(e)}
-          >
+            onPress={(e) => console.log(e)}>
+
             {locationMaps.map((locationMap, key) => (
               <Marker
                 key={key}
@@ -235,17 +234,18 @@ export default function LocationScreen(props) {
                 <MarkerIcon style={styles.markerIcon} icon={locationMap.pin_image} width="34px" height="34px" />
               </Marker>
             ))}
+
             <MapView.Circle
-              center = {{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude
-              }}
-              radius = { 200 }
-              strokeWidth = { 1 }
-              strokeColor = {PRIMARY_COLOR}
-              fillColor = { 'rgba(230,238,255,0.5)' }
-            />
-          </MapView>
+                center = {{
+                  latitude: currentLocation.latitude,
+                  longitude: currentLocation.longitude
+                }}
+                radius = { 200 }
+                strokeWidth = { 1 }
+                strokeColor = {PRIMARY_COLOR}
+                fillColor = { 'rgba(230,238,255,0.5)' }
+              />
+            </MapView>
 
           <TouchableOpacity 
             style={styles.plusButton} 

@@ -262,9 +262,8 @@ export default function RepBottomTabNavigator({navigation}) {
   }
 
   return (
-
     <BottomTab.Navigator
-
+      
       screenOptions={{
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
@@ -288,7 +287,6 @@ export default function RepBottomTabNavigator({navigation}) {
           paddingTop: 0,     
           paddingBottom: Platform.OS == "android" ? 4 : 0,                  
         },
-
       }}>
 
       {/* Rep Bottom Navigator */}
@@ -340,10 +338,12 @@ export default function RepBottomTabNavigator({navigation}) {
           headerTitle:(props) =>{
             return(<TouchableOpacity onPress={
               () =>{
-                dispatch({type: SLIDE_STATUS, payload: false})
-                dispatch({type: BACK_ICON_STATUS, payload: false});                
-              }}> 
-              <View style={styles.layoutBar}>              
+                dispatch({type: SLIDE_STATUS, payload: false});
+                dispatch({type: BACK_ICON_STATUS, payload: false});                                                
+                navigation.popToTop();
+                console.log(props);
+              }}>
+              <View style={styles.layoutBar}> 
                 {
                   backIconStatus && 
                   <Image
@@ -355,7 +355,6 @@ export default function RepBottomTabNavigator({navigation}) {
               <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
             </View></TouchableOpacity>)
           },
-
           headerLeft: () => (
             <TouchableOpacity 
               style={[styles.header,{justifyContent:'center'}]} 
@@ -368,8 +367,7 @@ export default function RepBottomTabNavigator({navigation}) {
                   return;
                 }
                 dispatch({type: SLIDE_STATUS, payload: false});
-              }}
-            >
+              }}>
             </TouchableOpacity>
           ),
 
@@ -395,7 +393,7 @@ export default function RepBottomTabNavigator({navigation}) {
             dispatch({type: BACK_ICON_STATUS, payload: false});
             dispatch(getLocationsMap());
             navigation.navigate('CRM', { screen: 'Root' });
-
+            
           },
         })}
       />}
@@ -478,6 +476,25 @@ export default function RepBottomTabNavigator({navigation}) {
               {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
           ),
+          headerTitle:(props) =>{
+            return(<TouchableOpacity onPress={
+              () =>{                
+                dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+                dispatch({type: BACK_ICON_STATUS, payload: false});
+                //navigation.navigate('Root', { screen: 'RepContentLibrary' });          
+              }}>
+              <View style={styles.layoutBar}> 
+                {
+                  backIconStatus && 
+                  <Image
+                  resizeMethod='resize'  
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />  
+                }                          
+              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+            </View></TouchableOpacity>)
+          },
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),
