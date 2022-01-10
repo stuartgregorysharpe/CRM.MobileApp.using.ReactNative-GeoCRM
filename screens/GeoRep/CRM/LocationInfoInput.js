@@ -15,7 +15,6 @@ import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/l
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
-import { postDispositionFields } from '../../../actions/location.action';
 
 export default function LocationInfoInput({navigation, screenProps, statusSubmit, showLoopSlider}) {
 
