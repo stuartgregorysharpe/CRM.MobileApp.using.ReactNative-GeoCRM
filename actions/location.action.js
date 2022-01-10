@@ -59,10 +59,10 @@ export const getLocationsMap = () => (dispatch, getState) => {
     .then(location => {
       dispatch({
         type: CHANGE_CURRENT_LOCATION, payload: {
-          latitude: 34.175031,
-          longitude: -118.349383,
-          //latitude: location.latitude,
-          //longitude: location.longitude,
+          // latitude: -33.898004,
+          // longitude: 18.523551,
+          latitude: location.latitude,
+          longitude: location.longitude,
         }
       })
       axios
