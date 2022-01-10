@@ -21,11 +21,16 @@ export const grayBackground = StyleSheet.create({
 export const style = StyleSheet.create({
 
   header: {
-    fontFamily:Fonts.primaryBold, 
+    fontFamily:Fonts.primaryRegular, 
     color:"#FFF" , 
-    fontSize:16 , 
-    marginLeft:20
+    fontSize:20 , 
+    fontWeight:"400",
+    marginLeft:0,
+    
+    
   },
+
+
   
 })
 

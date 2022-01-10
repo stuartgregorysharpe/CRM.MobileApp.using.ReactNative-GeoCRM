@@ -55,7 +55,8 @@
         </intent-filter>
       </activity>
 
-        <!--        android.support.v4.content.FileProvider-->
+        <!-- android.support.v4.content.FileProvider-->
+
     <provider
         android:name="androidx.core.content.FileProvider"
         android:authorities="com.geoverse_app_rn.provider"

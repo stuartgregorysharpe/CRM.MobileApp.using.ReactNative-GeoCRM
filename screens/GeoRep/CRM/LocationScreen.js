@@ -133,6 +133,7 @@ export default function LocationScreen(props) {
     switch(name) {
       case "marker":
         setShowItem(1);
+        
         return;
       case "filter":
         setShowItem(2);
@@ -143,6 +144,7 @@ export default function LocationScreen(props) {
         return;
       case "locationInfo":
         setShowItem(4);
+        dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       default:
         return;
@@ -170,9 +172,7 @@ export default function LocationScreen(props) {
         </View>}
 
         
-
         <View style={styles.container}>
-
           
           {/* <SearchBar animation={() => animation("filter")} /> */}
 
