@@ -361,7 +361,7 @@ export default function RepBottomTabNavigator({navigation}) {
               activeOpacity={1}
               onPress={() => {
                 dispatch({type: SLIDE_STATUS, payload: false})
-                dispatch({type: BACK_ICON_STATUS, payload: false})
+                //dispatch({type: BACK_ICON_STATUS, payload: false})
                 if (statusDispositionInfo) {
                   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
                   return;

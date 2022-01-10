@@ -148,13 +148,13 @@ export default function LocationScreen(props) {
         return;
     }
   }
-
+  
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
 
         <GrayBackground />
-        
+
         {crmStatus && (showItem == 1 || showItem == 2) && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >

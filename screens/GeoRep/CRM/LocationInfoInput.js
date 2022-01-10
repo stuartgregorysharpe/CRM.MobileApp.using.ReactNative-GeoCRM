@@ -11,7 +11,7 @@ import SvgIcon from '../../../components/SvgIcon';
 import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import CustomPicker from '../../../components/CustomPicker';
-import { postStageOutcomUpdate } from '../../../actions/location.action';
+import { postDispositionFields, postStageOutcomUpdate } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
@@ -80,6 +80,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     });
     setIdempotencyKey(uuid.v4());
     dispatch(postDispositionFields(postData, idempotencyKey));
+
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
 

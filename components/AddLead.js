@@ -9,13 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import uuid from 'react-native-uuid';
-
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function AddLead({screenProps}) {
 
