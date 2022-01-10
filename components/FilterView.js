@@ -211,8 +211,6 @@ const styles = StyleSheet.create({
     elevation:1,
 
   },
-
-
   pickerItem: {
     flexDirection: 'row',
     alignItems: 'center',

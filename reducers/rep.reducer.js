@@ -1,5 +1,6 @@
 import {
   SLIDE_STATUS,
+  SUB_SLIDE_STATUS,
   CHANGE_PROFILE_STATUS,
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
@@ -15,6 +16,7 @@ import {
 const initialState = {
   backIconStatus:false,
   crmSlideStatus: false,
+  subSlideStatus: false,
   showProfile: 1,
   showMoreScreen: 1,
   visibleMore: '',
@@ -41,6 +43,11 @@ export default (state=initialState, action) => {
       return {
         ...state,
         crmSlideStatus: action.payload 
+      }
+    case SUB_SLIDE_STATUS:
+      return {
+        ...state,
+        subSlideStatus: action.payload 
       }
     case CHANGE_PROFILE_STATUS:
       return {
