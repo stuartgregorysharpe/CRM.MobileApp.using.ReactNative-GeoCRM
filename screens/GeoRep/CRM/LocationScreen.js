@@ -19,13 +19,14 @@ import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
 import { boxShadow } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationsMap } from '../../../actions/location.action';
 
 import { 
   getLocationPinKey, 
   getLocationFilters,
   getLocationSearchList,
   getLocationInfo,
+  getLocationsMap,
+  getLeadFields
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 
@@ -109,7 +110,6 @@ export default function LocationScreen(props) {
         },
       });
     }
-
   });
 
   useEffect(() => {
@@ -246,23 +246,25 @@ export default function LocationScreen(props) {
               />
             </MapView>
 
-            <TouchableOpacity
-              style={styles.plusButton} 
-              onPress={() => {
-                dispatch(getLocationsMap());
-                animation("addLead");
-              }}>
-              <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.pinKeyButton}
-              onPress={() => {
-                dispatch(getLocationPinKey());
-                animation("marker");
-              }}>
-              <SlidUpArrow />
-            </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.plusButton} 
+            onPress={() => {
+              dispatch(getLocationsMap());
+              dispatch(getLeadFields());
+              animation("addLead");
+            }}
+          >
+            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.pinKeyButton}
+            onPress={() => {
+              dispatch(getLocationPinKey());
+              animation("marker");
+            }}
+          >
+            <SlidUpArrow />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </Provider>

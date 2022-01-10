@@ -14,7 +14,9 @@ import {
   CHANGE_LOCATION_INFO,
   CHANGE_CURRENT_LOCATION,
   STATUS_STAGE_OUTCOME_UPDATE,
-  STATUS_DISPOSITION_FIELDS_UPDATE
+  STATUS_DISPOSITION_FIELDS_UPDATE,
+  STATUS_LOCATION_LEADFIELDS,
+  CHANGE_LOCATION_LEADFIELDS
 } from "./actionTypes";
 import { setToken } from '../constants/Storage';
 
@@ -166,6 +168,55 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     })
 }
 
+export const getLeadFields = () => (dispatch, getState) => {
+  dispatch({ type: STATUS_LOCATION_LEADFIELDS, payload: 'request' });
+  axios
+    .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/leadfields`, {
+      params: {
+        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
+      },
+      headers: {
+        Authorization: 'Bearer ' + getState().selection.token
+      }
+    })
+    .then((res) => {
+      if (res.data == undefined) {
+
+        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+        return;
+      }
+      if (res.data.status == 'success') {
+        dispatch({ type: STATUS_LOCATION_LEADFIELDS, payload: 'success' });
+        dispatch({ type: CHANGE_LOCATION_LEADFIELDS, payload: res.data })
+      }
+    })
+    .catch((err) => {
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+      console.log(err);
+    })
+}
+
+export const postLeadFields = (postData, idempotencyKey) => (dispatch, getState) => {
+  dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });
+  console.log("idempotencyKey", idempotencyKey)
+  axios
+    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/leadfields`, JSON.stringify(postData), {
+      headers: {
+        Authorization: 'Bearer ' + getState().selection.token,
+        'Indempotency-Key': idempotencyKey
+      }
+    })
+    .then((res) => {
+      console.log("postleadfields", res)
+      dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'success'});
+    })
+    .catch((err) => {
+      console.log("error", err)
+      dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'failure'});
+      console.log(err.response);
+    })
+}
+
 export const getLocationInfo = (location_id) => (dispatch, getState) => {
 
   dispatch({ type: STATUS_LOCATION_INFO, payload: 'request' });
@@ -185,7 +236,7 @@ export const getLocationInfo = (location_id) => (dispatch, getState) => {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
-      //dispatch({type: STATUS_LOCATION_INFO, payload: 'success'});
+      // dispatch({type: STATUS_LOCATION_INFO, payload: 'success'});
       dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
     })
     .catch((err) => {
@@ -230,18 +281,13 @@ export const postDispositionFields = (postData, idempotencyKey) => (dispatch, ge
   dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });
   console.log("idempotencyKey", idempotencyKey)
   axios
-    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, JSON.stringify(postData), {
+    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, postData, {
       headers: {
         Authorization: 'Bearer ' + getState().selection.token,
         'Indempotency-Key': idempotencyKey
       }
     })
     .then((res) => {
-      console.log("disposition update", JSON.stringify(res.data))
-      if (res.data == undefined) {
-        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        return;
-      }
       dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'success'});
     })
     .catch((err) => {

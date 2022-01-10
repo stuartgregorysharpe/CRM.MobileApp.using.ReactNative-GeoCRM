@@ -9,16 +9,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import uuid from 'react-native-uuid';
+
+import Skeleton from './Skeleton';
 import Divider from './Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../actions/actionTypes';
+import { postLeadFields } from '../actions/location.action';
 import Fonts from '../constants/Fonts';
 
 export default function AddLead({screenProps}) {
 
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const statusLocationLeadfields = useSelector(state => state.location.statusLocationLeadfields);
+  const locationLeadfields = useSelector(state => state.location.locationLeadfields);
 
   const customerNameRef = useRef();
   const addressRef = useRef();
@@ -32,11 +37,25 @@ export default function AddLead({screenProps}) {
 
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
-  const [contactPerson, setContactPerson] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactMobile, setContactMobile] = useState('');
-  const [locationType, setLocationType] = useState('');
-  const [group, getGroup] = useState('');
+  const [suburb, setSuburb] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [country, setCountry] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [leadStatus, setLeadStatus] = useState('');
+
+  useEffect(()=> {
+    if (locationLeadfields.custom_master_fields) {
+      setCustomerName(locationLeadfields.custom_master_fields[0].value);
+      setAddress(locationLeadfields.custom_master_fields[1].value);
+      setSuburb(locationLeadfields.custom_master_fields[2].value);
+      setCity(locationLeadfields.custom_master_fields[3].value);
+      setState(locationLeadfields.custom_master_fields[4].value);
+      setCountry(locationLeadfields.custom_master_fields[5].value);
+      setPincode(locationLeadfields.custom_master_fields[6].value);
+      setLeadStatus(locationLeadfields.custom_master_fields[7].value);
+    }
+  }, [locationLeadfields])
 
   const reverseGeocoding = () => {
     let data = {
@@ -45,15 +64,16 @@ export default function AddLead({screenProps}) {
       key: "AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw"
     }
     axios
-      .post('https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding', data)
+      .post('https://maps.googleapis.com/maps/api/geocode/json', data)
       .then((res) => {
+        console.log("geocodeing");
         console.log(res.data)
       })
   }
 
   const handleSubmit = () => {
     setIdempotencyKey(uuid.v4());
-    const submitData = {
+    const postData = {
       "coordinates": {
           "latitude": String(currentLocation.latitude),
           "longitude": String(currentLocation.longitude)
@@ -69,26 +89,42 @@ export default function AddLead({screenProps}) {
         },
         {
             "custom_master_field_id": "13",
-            "value": contactPerson,
+            "value": suburb,
         },
         {
             "custom_master_field_id": "14",
-            "value": contactEmail,
+            "value": city,
         },
         {
             "custom_master_field_id": "15",
-            "value": contactMobile,
+            "value": state,
         },
         {
             "custom_master_field_id": "16",
-            "value": locationType,
+            "value": country,
         },
         {
             "custom_master_field_id": "17",
-            "value": group,
+            "value": pincode,
         },
+        {
+          "custom_master_field_id": "34",
+          "value": leadStatus,
+        }
       ]
     }
+
+    dispatch(postLeadFields(postData, idempotencyKey));
+  }
+
+  if (statusLocationLeadfields == "request" || !locationLeadfields) {
+    return (
+      <View style={[styles.container, {padding: 10, justifyContent: 'center', height: '100%'}]}>
+        {Array.from(Array(6)).map((_, key) => (
+          <Skeleton key={key} />  
+        ))}
+      </View>
+    )
   }
 
   return (
@@ -128,131 +164,150 @@ export default function AddLead({screenProps}) {
           }}
         >
         </MapView>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>customerNameRef.current.focus()}
-        >
+        {locationLeadfields.custom_master_fields && <View>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>customerNameRef.current.focus()}
+          >
+              <View>
+                <TextInput
+                  ref = {customerNameRef}
+                  style={styles.textInput}
+                  label={locationLeadfields.custom_master_fields[0].field_name}
+                  mode="outlined"
+                  outlineColor="#133C8B"
+                  activeOutlineColor="#9D9FA2"
+                  value={customerName}
+                  onChangeText={text => setCustomerName(text)}
+                />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.linkBox}>
+            <TouchableOpacity onPress={reverseGeocoding}>
+              <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+            </TouchableOpacity>
+            <Text style={styles.accuracyText}>Accuracy: 22m</Text>
+          </View>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>addressRef.current.focus()}
+          >
             <View>
               <TextInput
-                ref = {customerNameRef}
+                ref = {addressRef}
                 style={styles.textInput}
-                label="Customer Name"
+                label={locationLeadfields.custom_master_fields[1].field_name}
                 mode="outlined"
                 outlineColor="#133C8B"
                 activeOutlineColor="#9D9FA2"
-                value={customerName}
-                onChangeText={text => setCustomerName(text)}
+                value={address}
+                onChangeText={text => setAddress(text)}
               />
-          </View>
-        </TouchableOpacity>
-        <View style={styles.linkBox}>
-          <TouchableOpacity onPress={reverseGeocoding}>
-            <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+            </View>
           </TouchableOpacity>
-          <Text style={styles.accuracyText}>Accuracy: 22m</Text>
-        </View>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>addressRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {addressRef}
-              style={styles.textInput}
-              label="Address"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={address}
-              onChangeText={text => setAddress(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>contactPersonRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {contactPersonRef} 
-              style={styles.textInput}
-              label="Primary Contact Person"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={contactPerson}
-              onChangeText={text => setContactPerson(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>contactEmailRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {contactEmailRef} 
-              style={styles.textInput}
-              label="Primary Contact Email"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={contactEmail}
-              onChangeText={text => setContactEmail(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>contactMobileRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {contactMobileRef} 
-              style={styles.textInput}
-              label="Primary Contact Mobile"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={contactMobile}
-              onChangeText={text => setContactMobile(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>locationTypeRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {locationTypeRef} 
-              style={styles.textInput}
-              label="Location Type"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={locationType}
-              onChangeText={text => setLocationType(text)}
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={()=>groupRef.current.focus()}
-        >
-          <View>
-            <TextInput
-              ref = {groupRef} 
-              style={styles.textInput}
-              label="Group"
-              mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
-              value={group}
-              onChangeText={text => getGroup(text)}
-            />
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>contactPersonRef.current.focus()}
+          >
+            <View>
+              <TextInput
+                ref = {contactPersonRef} 
+                style={styles.textInput}
+                label={locationLeadfields.custom_master_fields[2].field_name}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={suburb}
+                onChangeText={text => setSuburb(text)}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>contactEmailRef.current.focus()}
+          >
+            <View>
+              <TextInput
+                ref = {contactEmailRef} 
+                style={styles.textInput}
+                label={locationLeadfields.custom_master_fields[3].field_name}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={city}
+                onChangeText={text => setCity(text)}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>contactMobileRef.current.focus()}
+          >
+            <View>
+              <TextInput
+                ref = {contactMobileRef} 
+                style={styles.textInput}
+                label={locationLeadfields.custom_master_fields[4].field_name}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={state}
+                onChangeText={text => setState(text)}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>locationTypeRef.current.focus()}
+          >
+            <View>
+              <TextInput
+                ref = {locationTypeRef} 
+                style={styles.textInput}
+                label={locationLeadfields.custom_master_fields[5].field_name}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={country}
+                onChangeText={text => setCountry(text)}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>groupRef.current.focus()}
+          >
+            <View>
+              <TextInput
+                ref = {groupRef} 
+                style={styles.textInput}
+                label={locationLeadfields.custom_master_fields[6].field_name}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={pincode}
+                onChangeText={text => setPincode(text)}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={()=>groupRef.current.focus()}
+          >
+            <View>
+              <TextInput
+                ref = {groupRef} 
+                style={styles.textInput}
+                label={locationLeadfields.custom_master_fields[7].field_name}
+                mode="outlined"
+                outlineColor="#133C8B"
+                activeOutlineColor="#9D9FA2"
+                value={leadStatus}
+                onChangeText={text => setLeadStatus(text)}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>}
         <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
           <Text style={[styles.addButtonText]}>Add</Text>
           <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />

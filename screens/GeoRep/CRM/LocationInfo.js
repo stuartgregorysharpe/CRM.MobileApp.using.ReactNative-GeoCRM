@@ -15,6 +15,8 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
+import { grayBackground } from '../../../constants/Styles';
+import RefreshSlider from '../../../components/RefreshSlider';
 import SvgIcon from '../../../components/SvgIcon';
 import LocationInfoInput from './LocationInfoInput';
 import FilterButton from '../../../components/FilterButton';
@@ -22,7 +24,7 @@ import Divider from '../../../components/Divider';
 import Skeleton from '../../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS } from '../../../actions/actionTypes';
+import { BACK_ICON_STATUS, SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
@@ -33,12 +35,15 @@ export default function LocationInfo({navigation, screenProps}) {
   const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
   const locationInfo = useSelector(state => state.location.locationInfo);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
-  const features = useSelector(state => state.selection.payload.features);  
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);  
+  const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
+  const [showItem, setShowItem] = useState(0);
   console.log("view location info", locationInfo);
 
   const [statusSubmit, setStatusSubmit] = useState(true);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
+    dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
     });
@@ -52,6 +57,11 @@ export default function LocationInfo({navigation, screenProps}) {
     };
   }, []);
 
+  const showLoopSlider = () => {
+    setShowItem(1);
+    dispatch({type: SUB_SLIDE_STATUS, payload: true});
+  }
+
   if (statusLocationInfo == "request" || !locationInfo) {
     return (
       <View style={[styles.container, {padding: 10, justifyContent: 'center', height: '100%'}]}>
@@ -64,10 +74,17 @@ export default function LocationInfo({navigation, screenProps}) {
 
 
   return (
-
-
     <View style={styles.container}>
-
+      {subSlideStatus && <TouchableOpacity
+        activeOpacity={1} 
+        style={grayBackground}
+        onPress={() => dispatch({type: SUB_SLIDE_STATUS, payload: false})}
+      ></TouchableOpacity>}
+      {subSlideStatus && <View
+        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+      >
+        <RefreshSlider />
+      </View>}
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         if (statusDispositionInfo) {
           dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
@@ -113,7 +130,7 @@ export default function LocationInfo({navigation, screenProps}) {
         </View>    
 
         {
-          locationInfo ? <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} /> : <View></View>
+          locationInfo ? <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} /> : <View></View>
         }                        
         <View style={{ height: 20 }}></View>  
 
@@ -170,6 +187,7 @@ const styles = EStyleSheet.create(parse({
   container: {  
     height: getHeight(),
     backgroundColor: BG_COLOR,
+    margin: -10
   },
   innerContainer: {
     backgroundColor: BG_COLOR,
@@ -219,15 +237,14 @@ const styles = EStyleSheet.create(parse({
     borderRadius: 7
   },
   nextButtonBar: {
-    
     position: 'absolute',
     bottom: DeviceInfo.isTablet() ? 0 : 0,
     left: -10,
     right: -10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft: 10,    
-    paddingRight: 10,    
+    paddingLeft: 20,    
+    paddingRight: 20,    
     paddingTop:10,
     paddingBottom:DeviceInfo.isTablet() ? 0 : 10,    
     borderColor: 'rgba(0, 0, 0, 0.2)',
@@ -268,5 +285,15 @@ const styles = EStyleSheet.create(parse({
     right: 20,
     zIndex: 1,
     elevation: 1,
+  },
+  transitionView: {
+    position: 'absolute',
+    bottom: -20,
+    left: 0,
+    right: 0,
+    backgroundColor: BG_COLOR,
+    elevation: 2,
+    zIndex: 2,
+    padding: 10,
   },
 }));
