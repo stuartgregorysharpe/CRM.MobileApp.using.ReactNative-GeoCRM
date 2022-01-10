@@ -63,7 +63,7 @@ export default function AddLead({screenProps}) {
       key: "AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw"
     }
     axios
-      .post('https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding', data)
+      .post('https://maps.googleapis.com/maps/api/geocode/json', data)
       .then((res) => {
         console.log("geocodeing");
         console.log(res.data)

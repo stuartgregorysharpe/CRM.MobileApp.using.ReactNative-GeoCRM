@@ -59,10 +59,10 @@ export const getLocationsMap = () => (dispatch, getState) => {
     .then(location => {
       dispatch({
         type: CHANGE_CURRENT_LOCATION, payload: {
-          // latitude: -33.898004,
-          // longitude: 18.523551,
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude: 34.175031,
+          longitude: -118.349383,
+          //latitude: location.latitude,
+          //longitude: location.longitude,
         }
       })
       axios
@@ -279,7 +279,7 @@ export const postDispositionFields = (postData, idempotencyKey) => (dispatch, ge
   dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });
   console.log("idempotencyKey", idempotencyKey)
   axios
-    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, JSON.stringify(postData), {
+    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, postData, {
       headers: {
         Authorization: 'Bearer ' + getState().selection.token,
         'Indempotency-Key': idempotencyKey
