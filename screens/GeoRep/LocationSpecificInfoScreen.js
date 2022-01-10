@@ -1,62 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
 import LocationInfoInput from './CRM/LocationInfoInput';
-import Skeleton from '../../components/Skeleton';
+import RefreshSlider from '../../components/RefreshSlider';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
 import { boxShadow } from '../../constants/Styles';
 import FilterButton from '../../components/FilterButton';
 import SvgIcon from '../../components/SvgIcon';
 import MarkerIcon from '../../components/Marker';
 import { breakPoint } from '../../constants/Breakpoint';
-import { SLIDE_STATUS } from '../../actions/actionTypes';
+import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
-
-const specificInfo = [
-  {
-    icon: "Person_Sharp",
-    title: 'Company & Contacts',
-    text: 'View all information ->'
-  },
-  {
-    icon: "File_Earmark_Text_Fill",
-    title: 'Forms',
-    text: 'Specific to this location ->'
-  },
-  {
-    icon: "ChatBoxes",
-    title: 'Activity & Comments',
-    text: 'Activity tree ->'
-  },
-  {
-    icon: "Pipeline",
-    title: 'Sales Pipeline',
-    text: 'Specific to this location ->'
-  },
-  {
-    icon: "Exclamation_Triangle_Fill",
-    title: 'Action Items',
-    text: 'Specific actions to be addressed ->'
-  },
-  {
-    icon: "Sale",
-    title: 'Sales',
-    text: 'Quotes, orders and returns ->'
-  },
-  {
-    icon: "Camera",
-    title: 'Location Image',
-    text: 'Take an image for this location ->'
-  },
-  {
-    icon: "Geo",
-    title: 'Geo Location',
-    text: 'Update geo co-ordinates ->'
-  }
-];
+import { grayBackground } from '../../constants/Styles';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
@@ -68,15 +26,35 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
+  const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
+  const [showItem, setShowItem] = useState(0);
 
   const [statusSubmit, setStatusSubmit] = useState(true);
+  const showLoopSlider = () => {
+    setShowItem(1);
+    dispatch({type: SUB_SLIDE_STATUS, payload: true});
+  }
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
   });
 
+  useEffect(() => {
+    dispatch({type: SUB_SLIDE_STATUS, payload: false});
+  }, []);
+
   return (
     <SafeAreaView>
+      {subSlideStatus && <TouchableOpacity
+        activeOpacity={1} 
+        style={grayBackground}
+        onPress={() => {dispatch({type: SUB_SLIDE_STATUS, payload: false})}}
+      ></TouchableOpacity>}
+      {subSlideStatus && <View
+        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+      >
+        <RefreshSlider />
+      </View>}
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -121,7 +99,7 @@ export default function LocationSpecificInfoScreen(props) {
                 </TouchableOpacity>
               </View>
             </View>
-            <LocationInfoInput navigation={props.navigation} screenProps={props.screenProps} statusSubmit={statusSubmit} />
+            <LocationInfoInput navigation={props.navigation} screenProps={props.screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} />
           </View>
           <View style={styles.cardContainer}>
             <View style={[styles.cardBox, boxShadow]}>
@@ -312,5 +290,15 @@ const styles = EStyleSheet.create(parse({
     fontSize: 16,
     color: PRIMARY_COLOR,
     fontFamily: Fonts.primaryMedium,
-  }
+  },
+  transitionView: {
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
+    right: 0,
+    backgroundColor: BG_COLOR,
+    elevation: 2,
+    zIndex: 2,
+    padding: 10,
+  },
 }));

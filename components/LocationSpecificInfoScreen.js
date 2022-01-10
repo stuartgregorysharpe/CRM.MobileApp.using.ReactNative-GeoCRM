@@ -12,7 +12,7 @@ import FilterButton from '../../components/FilterButton';
 import SvgIcon from '../../components/SvgIcon';
 import MarkerIcon from '../../components/Marker';
 import { breakPoint } from '../../constants/Breakpoint';
-import { SLIDE_STATUS } from '../../actions/actionTypes';
+import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 import Images from '../constants/Images';
 
@@ -30,6 +30,7 @@ export default function LocationSpecificInfoScreen(props) {
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
+    dispatch({type: SUB_SLIDE_STATUS, payload: false});
   });
 
   return (

@@ -91,6 +91,23 @@ const Gold_Star = `
     </g>
   </svg>
 `
+
+const Yellow_Pin = `
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="86" height="87" viewBox="0 0 86 87">
+    <defs>
+      <clipPath id="clip-path">
+      <rect id="Rectangle_2617" data-name="Rectangle 2617" width="86" height="87" transform="translate(0.135 -0.131)" fill="none"/>
+      </clipPath>
+    </defs>
+    <g id="Green_Star" data-name="Green Star" transform="translate(-0.135 0.131)">
+      <g id="Group_4581" data-name="Group 4581" clip-path="url(#clip-path)">
+        <path id="Path_4367" data-name="Path 4367" d="M74.159,36.926A28.926,28.926,0,1,0,23.194,55.635l-.009,0,.112.128c.066.076.133.151.2.227l21.762,24.8,21.767-24.86.135-.156.12-.136-.011,0a28.79,28.79,0,0,0,6.889-18.709" transform="translate(-2.206 -1.082)" fill="#e3e924"/>
+        <path id="Path_4368" data-name="Path 4368" d="M46.631,28.274l2,4.724.969,2.29,2.476.207,5.1.433L53.294,39.29l-1.877,1.63.557,2.434,1.155,4.972-4.374-2.641-2.125-1.32-2.125,1.279-4.373,2.641,1.155-4.971.557-2.435-1.877-1.629-3.878-3.363,5.095-.433,2.476-.207.97-2.29,2-4.682M45.312,20.8,41.17,30.573a1.431,1.431,0,0,1-1.2.868l-10.591.9a1.431,1.431,0,0,0-.816,2.509l8.045,6.97a1.429,1.429,0,0,1,.457,1.407L34.652,53.583a1.432,1.432,0,0,0,2.135,1.551l9.1-5.5a1.434,1.434,0,0,1,1.48,0l9.1,5.5a1.432,1.432,0,0,0,2.134-1.551L56.193,43.226a1.431,1.431,0,0,1,.457-1.407l8.046-6.97a1.432,1.432,0,0,0-.817-2.509l-10.59-.9a1.434,1.434,0,0,1-1.2-.868L47.949,20.8a1.432,1.432,0,0,0-2.636,0" transform="translate(-3.798 -2.696)" fill="#fff"/>
+      </g>
+    </g>
+  </svg>
+  `
+
 const Green_Star = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="86" height="87" viewBox="0 0 86 87">
     <defs>
@@ -145,6 +162,7 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Red_Triangle.png" && <SvgXml style={style} xml={Red_Triangle} width={width} height={height} />}
         {icon == "Grey_Triangle.png" && <SvgXml style={style} xml={Grey_Triangle} width={width} height={height} />}
         {icon == "Gold_Star.png" && <SvgXml style={style} xml={Gold_Star} width={width} height={height} />}
+        {icon == "Yellow_Pin.png" && <SvgXml style={style} xml={Yellow_Pin} width={width} height={height} />}
         {icon == "Green_Star.png" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
         {icon == "Orange-Star.png" && <SvgXml style={style} xml={Orange_Star} width={width} height={height} />}
         {icon == "Turquoise.png" && <SvgXml style={style} xml={Turquoise} width={width} height={height} />}
