@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect , createRef} from 'react';
-import { Text, View, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { TextInput, } from 'react-native-paper';
+import { Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -15,8 +15,9 @@ import { postStageOutcomUpdate } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
+import { postDispositionFields } from '../../../actions/location.action';
 
-export default function LocationInfoInput({navigation, screenProps, statusSubmit}) {
+export default function LocationInfoInput({navigation, screenProps, statusSubmit, showLoopSlider}) {
 
   const dispatch = useDispatch();
   const locationInfo = useSelector(state => state.location.locationInfo);
@@ -37,6 +38,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
   const [submitKey, setSubmitKey] = useState(false);
+  const showItem = 0
 
   useEffect(() => {
     setSubmitKey(false);
@@ -122,7 +124,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     }
   };
 
-  handleEmpty = () => {
+  const handleEmpty = () => {
 
   }
 
@@ -234,7 +236,6 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.refreshBox}>
       <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
       <Text style={styles.shadowBoxText}>Stage</Text>
@@ -261,7 +262,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
           </View>
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={showLoopSlider}>
           <Image style={styles.refreshImage} source={Images.loopButton} />
         </TouchableOpacity>
       </View>
@@ -304,7 +305,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
                         //dispositionRef.current[key + 1].scrollIntoView({block:"start", beavior:"smooth"});
                       //}                      
                     }}
-                    onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : this.handleEmpty() }
+                    onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : handleEmpty.bind(null) }
                     left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
                     right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
                   />
@@ -488,5 +489,5 @@ const styles = EStyleSheet.create(parse({
   confirmModalDiscardButton: {
     color: PRIMARY_COLOR,
     fontSize: 16
-  }
+  },
 }));

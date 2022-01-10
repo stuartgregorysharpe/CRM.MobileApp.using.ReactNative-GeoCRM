@@ -43,6 +43,7 @@ import SvgIcon from './SvgIcon';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { 
   SLIDE_STATUS,
+  SUB_SLIDE_STATUS,
   CHANGE_MORE_STATUS,
   CHANGE_PROFILE_STATUS,
   SHOW_MORE_COMPONENT,
@@ -1182,7 +1183,10 @@ export default function RepBottomTabNavigator({navigation}) {
             <TouchableOpacity 
               style={styles.header} 
               activeOpacity={1}
-              onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
+              onPress={() => {
+                dispatch({type: SLIDE_STATUS, payload: false});
+                dispatch({type: SUB_SLIDE_STATUS, payload: false});
+              }}
             >
             </TouchableOpacity>
           ),
