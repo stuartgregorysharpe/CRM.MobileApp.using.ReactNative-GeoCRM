@@ -127,6 +127,7 @@ export default function LocationInfo({navigation, screenProps}) {
             dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
             return;
           }
+          
           navigation.navigate("LocationSpecificInfo");
         }}>
           <Text style={styles.nextButtonText}>Access CRM</Text>

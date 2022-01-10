@@ -203,7 +203,7 @@ export const Ticket = forwardRef((props, ref) => {
           <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
 
             {supportIssues.map((item, index) => (
-                <TouchableOpacity style={styles.pickerItem} onPress={selectItem.bind(null, item)}>
+                <TouchableOpacity key={index} style={styles.pickerItem} onPress={selectItem.bind(null, item)}>
                 <Text style={styles.pickerItemText}>{item}</Text>
                 </TouchableOpacity>
             ))}
