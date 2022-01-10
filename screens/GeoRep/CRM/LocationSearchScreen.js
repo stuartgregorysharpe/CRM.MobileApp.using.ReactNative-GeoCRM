@@ -98,7 +98,7 @@ export default function LocationSearchScreen({navigation}) {
         return;
       case "locationInfo":
         setShowItem(2);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        //dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       default:        
         return;
