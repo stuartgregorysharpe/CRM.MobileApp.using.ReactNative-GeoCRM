@@ -32,7 +32,9 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
 
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);
-  const [selectedOutcomeId, setSelectedOutComeId] = useState(locationInfo.outcomes.find(x => x.outcome_id == locationInfo.current_outcome_id).outcome_id);
+
+  console.log("locationInfo",locationInfo);  
+  const [selectedOutcomeId, setSelectedOutComeId] = useState(locationInfo.outcomes.find(xx =>   locationInfo.current_outcome_id && xx.outcome_id === locationInfo.current_outcome_id ).outcome_id);
   const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());

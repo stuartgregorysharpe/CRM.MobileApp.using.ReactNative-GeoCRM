@@ -71,7 +71,7 @@ export default function LocationSpecificInfoScreen(props) {
                 {
                   locationInfo && 
                   <View style={styles.outComeBox}>
-                    {locationInfo.outcomes.map((item, key) => (
+                    {locationInfo.outcomes && locationInfo.outcomes.map((item, key) => (
                       <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
                     ))}                  
                   </View>

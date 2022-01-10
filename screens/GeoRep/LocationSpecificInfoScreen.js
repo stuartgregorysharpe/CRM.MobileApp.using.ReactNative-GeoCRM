@@ -112,13 +112,9 @@ export default function LocationSpecificInfoScreen(props) {
               <Text style={styles.boldText}>Outcome</Text>
               <View style={{ flexDirection: 'row', position: 'relative' }}>
                 <View style={styles.outComeBox}>
-                  {locationInfo.outcomes.map((item, key) => (
+                  { locationInfo.outcomes && locationInfo.outcomes.map((item, key) => (
                     <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
-                  ))}
-                  {/* <Rectangle style={{ width: '48%' }} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
-                  <Rectangle style={{ width: '48%' }} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{ width: '48%' }} text="Priority Re-loop" icon="Orange_Star" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{ width: '48%' }} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" /> */}
+                  ))}                  
                 </View>
                 <TouchableOpacity>
                   <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
