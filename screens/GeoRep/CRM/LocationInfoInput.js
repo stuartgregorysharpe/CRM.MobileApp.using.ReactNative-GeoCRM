@@ -65,7 +65,6 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   }, [statusSubmit])
 
   const handleSubmit = () => {
-    console.log(statusSubmit)
     let postData = {
       "location_id": locationInfo.location_id,
       "campaign_id": 1,
