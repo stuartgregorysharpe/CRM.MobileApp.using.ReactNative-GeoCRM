@@ -20,8 +20,8 @@ const initialState = {
   visibleMore: '',
   showLibraryChild: false,
   currentLocation: {
-    latitude: 0,
-    longitude: 0
+    latitude: 34.175031,
+    longitude: -118.349383
   },
   statusDispositionInfo: false,
   locationAction: null,
