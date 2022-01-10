@@ -59,18 +59,20 @@ export const getLocationsMap = () => (dispatch, getState) => {
     .then(location => {
       dispatch({
         type: CHANGE_CURRENT_LOCATION, payload: {
-          // latitude: -33.898004,
-          // longitude: 18.523551,
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude: -33.898004,
+          longitude: 18.523551,
+          // latitude: location.latitude,
+          // longitude: location.longitude,
         }
       })
       axios
         .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-map`, {
           params: {
             user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-            current_latitude: location.latitude,
-            current_longitude: location.longitude
+            current_latitude: -33.898004,
+            current_longitude: 18.523551,
+            // current_latitude: location.latitude,
+            // current_longitude: location.longitude
           },
           headers: {
             Authorization: 'Bearer ' + getState().selection.token

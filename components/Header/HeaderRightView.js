@@ -65,20 +65,17 @@ export default function HeaderRightView() {
        fontSize: 12,
        fontFamily: 'Gilroy-Medium'
     },
-
-    headerAvatar: {
-        
-        justifyContent: 'center',
-        // alignItems: 'center',
-        
+    headerAvatar: {        
+        justifyContent: 'center',        
         borderColor: '#fff',
         borderWidth: 2,
         width: 32,
         height: 32,
         borderRadius: 20
     },
-    headerAvatarText: {
-        //marginTop:2,
+
+    
+    headerAvatarText: {        
         fontSize: 17,
         color: '#fff',
         fontFamily: 'Gilroy-Bold',

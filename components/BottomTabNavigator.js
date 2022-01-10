@@ -340,7 +340,7 @@ export default function RepBottomTabNavigator({navigation}) {
             return(<TouchableOpacity onPress={
               () =>{
                 dispatch({type: SLIDE_STATUS, payload: false});
-                dispatch({type: BACK_ICON_STATUS, payload: false});                                                
+                dispatch({type: BACK_ICON_STATUS, payload: false});                                    
                 navigation.popToTop();
                 console.log(props);
               }}>
@@ -367,7 +367,7 @@ export default function RepBottomTabNavigator({navigation}) {
                   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
                   return;
                 }
-                dispatch({type: SLIDE_STATUS, payload: false});
+                
               }}>
             </TouchableOpacity>
           ),

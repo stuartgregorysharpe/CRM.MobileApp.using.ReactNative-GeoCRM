@@ -38,7 +38,7 @@ const ResultItem = ({navigation, item, animation}) => {
 }
 
 export default function LocationSearchScreen({navigation}) {
-
+  
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const statusLocationSearchLists = useSelector(state => state.location.statusLocationSearchLists);

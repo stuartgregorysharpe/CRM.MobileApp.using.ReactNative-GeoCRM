@@ -80,6 +80,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     });
     setIdempotencyKey(uuid.v4());
     dispatch(postDispositionFields(postData, idempotencyKey));
+
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
 
