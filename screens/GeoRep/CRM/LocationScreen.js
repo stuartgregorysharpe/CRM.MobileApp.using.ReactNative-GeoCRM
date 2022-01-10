@@ -19,13 +19,14 @@ import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
 import { boxShadow } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationsMap, getLeadFields } from '../../../actions/location.action';
 
 import { 
   getLocationPinKey, 
   getLocationFilters,
   getLocationSearchList,
   getLocationInfo,
+  getLocationsMap,
+  getLeadFields
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 

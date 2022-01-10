@@ -279,7 +279,7 @@ export const postDispositionFields = (postData, idempotencyKey) => (dispatch, ge
   dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });
   console.log("idempotencyKey", idempotencyKey)
   axios
-    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, JSON.stringify(postData), {
+    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, postData, {
       headers: {
         Authorization: 'Bearer ' + getState().selection.token,
         'Indempotency-Key': idempotencyKey
