@@ -3,18 +3,18 @@ import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensio
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-
-import LocationInfoInput from './CRM/LocationInfoInput';
-import RefreshSlider from '../../components/RefreshSlider';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
-import { boxShadow } from '../../constants/Styles';
-import FilterButton from '../../components/FilterButton';
-import SvgIcon from '../../components/SvgIcon';
-import MarkerIcon from '../../components/Marker';
-import { breakPoint } from '../../constants/Breakpoint';
-import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
-import Fonts from '../../constants/Fonts';
-import { grayBackground } from '../../constants/Styles';
+import LocationInfoInput from '../LocationInfoInput';
+import RefreshSlider from '../../../../components/RefreshSlider';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
+import { boxShadow } from '../../../../constants/Styles';
+import FilterButton from '../../../../components/FilterButton';
+import SvgIcon from '../../../../components/SvgIcon';
+import MarkerIcon from '../../../../components/Marker';
+import { breakPoint } from '../../../../constants/Breakpoint';
+import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes';
+import Fonts from '../../../../constants/Fonts';
+import { grayBackground } from '../../../../constants/Styles';
+import Images from '../../../../constants/Images';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
@@ -24,11 +24,13 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
 );
 
 export default function LocationSpecificInfoScreen(props) {
+
   const dispatch = useDispatch();
-  const locationInfo = useSelector(state => state.location.locationInfo);
+  
+  //const locationInfo = useSelector(state => state.location.locationInfo);
+  const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
-
   const [statusSubmit, setStatusSubmit] = useState(true);
   const showLoopSlider = () => {
     setShowItem(1);
@@ -37,7 +39,7 @@ export default function LocationSpecificInfoScreen(props) {
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
-    console.log(" start LocationSpecificInfoScreen");
+    console.log(" start LocationSpecificInfoScreen" ,props);
   });
 
   useEffect(() => {
@@ -96,33 +98,27 @@ export default function LocationSpecificInfoScreen(props) {
                   ))}                  
                 </View>
                 <TouchableOpacity>
-                  <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
+                  <Image style={styles.refreshImage} source={Images.Re_Loop_Button} />
                 </TouchableOpacity>
               </View>
             </View>
-            <LocationInfoInput navigation={props.navigation} screenProps={props.screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} />
+            
+            {
+              locationInfo ? <LocationInfoInput 
+              navigation={props.navigation} 
+              screenProps={props.screenProps} 
+              statusSubmit={statusSubmit} 
+              showLoopSlider={showLoopSlider} 
+              infoInput={locationInfo} /> : <View></View>
+            }            
           </View>
           <View style={styles.cardContainer}>
             <View style={[styles.cardBox, boxShadow]}>
               <Text style={styles.boldText}>Stage</Text>
               {locationInfo.stages.map((item, key) => (
                 <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
-              ))}
-              {/* <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
-              <Rectangle text="Contact" backgroundColor="#15A1234F" />
-              <Rectangle text="DM" backgroundColor="#155AA14F" />
-              <Rectangle text="Presentation" backgroundColor="#fff" borderColor="#97ACC2" />
-              <Rectangle style={{ marginBottom: 0 }} text="Order" backgroundColor="#fff" borderColor="#97ACC2" /> */}
-            </View>
-            {/* {specificInfo.map((info, key) => (
-              <View key={key} style={[styles.card, boxShadow]}>
-                <View style={styles.cardTitleBox}>
-                  <SvgIcon style={styles.cardIcon} icon={info.icon} width="15px" height="15px" />
-                  <Text style={styles.cardTitle}>{info.title}</Text>
-                </View>
-                <Text style={styles.cardText}>{info.text}</Text>
-              </View>
-            ))} */}
+              ))}              
+            </View>            
           </View>
         </View>
         <View style={{height: 60}}></View>

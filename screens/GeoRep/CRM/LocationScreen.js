@@ -30,7 +30,8 @@ import {
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 
-const MarkerView = () => {
+const MarkerView = ( {isRequest} ) => {
+
   const dispatch = useDispatch();
   const statusPinKeys = useSelector(state => state.location.statusPinKeys);
   const pins = useSelector(state => state.location.locationPins);
@@ -48,7 +49,7 @@ const MarkerView = () => {
     
   }, [pins])
 
-  if (statusPinKeys == "request") {
+  if (statusPinKeys == "request" || isRequest ) {
     return (
       <SafeAreaView>
         <View style={{padding: 10, justifyContent: 'center'}}>
@@ -84,7 +85,6 @@ const SlidUpArrow = () => (
   </View>
 )
 
-
 export default function LocationScreen(props) {
 
   const navigation = props.navigation;
@@ -93,7 +93,10 @@ export default function LocationScreen(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
   const [showItem, setShowItem] = useState(0);
-
+  const [locationInfo, setLocationInfo] = useState();
+  const backIconStatus = useSelector(state => state.rep.backIconStatus);
+  const [isRequest, setIsRequest] = useState(false);
+  
   useEffect(() => {
 
     props.screenProps.setOptions({           
@@ -106,9 +109,10 @@ export default function LocationScreen(props) {
               navigation.goBack();              
             }            
           }}>            
+
           <View style={style.headerLeftContainerStyle}>            
               {
-                crmStatus &&  showItem == 3 &&
+                backIconStatus &&
                 <Image
                   resizeMethod='resize'  
                   style={{width:15,height:20, marginRight:5}}
@@ -133,7 +137,6 @@ export default function LocationScreen(props) {
         },
       });
     }
-
   });
 
   useEffect(() => {
@@ -181,7 +184,7 @@ export default function LocationScreen(props) {
         {crmStatus && (showItem == 1 || showItem == 2) && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
-          {showItem == 1 && <MarkerView />}
+          {showItem == 1 && <MarkerView isRequest={isRequest} />}
           {showItem == 2 && <FilterView navigation={props.navigation} />}
         </View>}
         
@@ -189,10 +192,9 @@ export default function LocationScreen(props) {
           style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 3 && <AddLead screenProps={props.screenProps} />}
-          {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps} />}
+          {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo}/>}
         </View>}
         
-
         <View style={styles.container}>                    
           <View style={styles.searchBox}>
             <TouchableOpacity
@@ -244,14 +246,23 @@ export default function LocationScreen(props) {
                   longitude: Number(locationMap.coordinates.longitude)
                 }}
                 onPress={() => {
-                  dispatch(getLocationInfo(Number(locationMap.location_id)));
-                  animation("locationInfo");
+                  //dispatch(getLocationInfo(Number(locationMap.location_id)));
+                  setIsRequest(true);
+                  getLocationInfo( Number(locationMap.location_id))
+                  .then((res) => {
+                    setLocationInfo(res);                                      
+                    animation("locationInfo");
+                    setIsRequest(false);
+                  })
+                  .catch((e) =>{
+                    setIsRequest(false);
+                  })                
                 }}
               >
                 <MarkerIcon style={styles.markerIcon} icon={locationMap.pin_image} width="34px" height="34px" />
               </Marker>
             ))}
-
+            
             <MapView.Circle
                 center = {{
                   latitude: currentLocation.latitude,

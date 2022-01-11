@@ -27,7 +27,8 @@ export default function Profile() {
           </Text>
         </View>
       </View>
-      <View style={styles.profileInfo}>
+      
+      <View style={[styles.profileInfo, {marginTop:12}]}>
         <View style={{ width: '48%' }}>
           <Text style={styles.label}>User Name:</Text>
           <Text style={styles.label}>Email Address:</Text>
@@ -103,13 +104,14 @@ const styles = StyleSheet.create({
   avatar: {
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign:'center',
     borderColor: PRIMARY_COLOR,
     borderWidth: 3,
     width: 70,
     height: 70,
-    borderRadius: 40,
-    marginBottom: 12
+    borderRadius: 35,    
   },
+
   avatarLabel: {
     color: PRIMARY_COLOR,
     fontFamily: 'Gilroy-Bold',

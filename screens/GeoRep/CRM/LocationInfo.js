@@ -36,6 +36,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
   const [locationInfo, setLocationInfo] = useState(locInfo);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);  
+  console.log("d features" , features);
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
  
@@ -61,8 +62,27 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
   
+  const getHeight = () =>{
+    var flag = false;
+    if(features.includes("access_crm") || features.includes("checkin")){
+      flag = true;
+    }
+    if(Platform.OS == 'ios') {
+      var addition = flag ? 0 : 120;
+      return Dimensions.get("window").height - 150 + addition;
+    }else{
+      if(DeviceInfo.isTablet()){
+        var addition = flag ? 0 : 80;
+        return Dimensions.get("window").height - 110 + addition; 
+      }else{  
+        var addition = flag ? 0 : 40;
+        return Dimensions.get("window").height - 70 + addition;
+      }
+    }
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {height:getHeight()}]}>
       {subSlideStatus && <TouchableOpacity
         activeOpacity={1} 
         style={grayBackground}
@@ -79,9 +99,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           return;
         }
         dispatch({type: SLIDE_STATUS, payload: false});      
-        dispatch({type: BACK_ICON_STATUS, payload: false});
-        
-
+        dispatch({type: BACK_ICON_STATUS, payload: false});        
       }}>
         <Divider />
       </TouchableOpacity>
@@ -129,29 +147,33 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
 
       {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && <View style={styles.nextButtonBar}>
         {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {
-          if (statusDispositionInfo) {
-            dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-            dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
-            return;
-          }
-          
-          navigation.navigate("LocationSpecificInfo");
+          // if (statusDispositionInfo) {
+          //   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+          //   dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
+          //   return;
+          // }
+          navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
         }}>
           <Text style={styles.nextButtonText}>Access CRM</Text>
           <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
         </TouchableOpacity>}
+
+
         {features && features.includes("checkin") && <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => {
-          if (statusDispositionInfo) {
-            dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-            dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
-            return;
-          }
-          navigation.navigate("LocationSpecificInfo");
-        }}>
+          // if (statusDispositionInfo) {
+          //   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+          //   dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
+          //   return;
+          // }
+          navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+          }}>
+
           <Text style={[styles.checkInButtonText]}>Check In</Text>
           <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
         </TouchableOpacity>}
       </View>}
+
+
       <TouchableOpacity style={styles.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
         <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>      
@@ -160,23 +182,10 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
 }
 
 const perWidth = setWidthBreakpoints(breakPoint);
-const getHeight = () =>{
-  if(Platform.OS == 'ios') {
-    return Dimensions.get("window").height - 150;
-  }else{
-    if(DeviceInfo.isTablet()){
-      return Dimensions.get("window").height - 110; 
-    }else{
-      return Dimensions.get("window").height - 90;
-    }
-  }
-}
 
 const styles = EStyleSheet.create(parse({
-  container: {  
-    height: getHeight(),
-    backgroundColor: BG_COLOR,
-    margin: -10
+  container: {      
+    backgroundColor: BG_COLOR,  
   },
   innerContainer: {
     backgroundColor: BG_COLOR,

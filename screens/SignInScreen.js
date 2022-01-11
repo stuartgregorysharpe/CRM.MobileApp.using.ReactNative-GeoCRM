@@ -30,6 +30,7 @@ export default function SignIn() {
   const [step, setStep] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
 
+  const emailRef = useRef();
   const passwordInput = useRef();
 
   useEffect(() => {
@@ -83,6 +84,7 @@ export default function SignIn() {
       setPasswordError(true);
       return;
     }
+    
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
     dispatch(Login(email, password));
   }
@@ -92,29 +94,39 @@ export default function SignIn() {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ flexGrow: 1 }} 
       enableOnAndroid={true}
+      ref={emailRef}
       enableAutomaticScroll={(Platform.OS === 'ios')}
       extraHeight={130} extraScrollHeight={130}
       behavior="padding" style={{flex:1}}>
-      <KeyboardAvoidingView style={{flex:1}}>      
+      {/* <KeyboardAvoidingView style={{flex:1}}>       */}
+
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
       <View style={styles.container}>
         <Image style={styles.logo} source={require("../assets/images/logo.png")} />
         <Text style={styles.title}>Welcome to</Text>
         <Text style={styles.title}>Geo Rep CRM</Text>
-        <View style={styles.textInputBox}>
+
+        <View style={styles.textInputBox} >
           <TextInput
             style={styles.textInput}
             label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Email</Text>}
             mode="outlined"
             outlineColor="#fff"
             activeOutlineColor="#fff"
-            value={email}
+            value={email}            
+            onFocus={() => { 
+              //window.scrollTo(0, 0)
+              //emailRef.current?.scrollTo({ x: 0, y: 0})              
+              //emailRef.current.scrollTo(0, 0);
+            }}
             onSubmitEditing={()=>{
               handleNext();
+              console.log("submit");
             }}
             returnKeyType="next"
             keyboardType="email-address"
             onChangeText={text => {
+              console.log("change");
               setEmail(text);
               setEmailError(false);
             }}
@@ -169,17 +181,18 @@ export default function SignIn() {
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}
       </View>
-      </KeyboardAvoidingView>
+
+      {/* </KeyboardAvoidingView> */}
       </KeyboardAwareScrollView>  
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: PRIMARY_COLOR,
-    height:Dimensions.get("screen").height,
-    justifyContent: 'center',
-    padding: 25
+    backgroundColor: PRIMARY_COLOR,    
+    justifyContent: 'center',  
+    padding: 25,
+    flex:1,
   },
 
   logo: {

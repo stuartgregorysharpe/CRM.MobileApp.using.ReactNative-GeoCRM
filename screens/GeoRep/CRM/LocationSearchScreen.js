@@ -37,7 +37,7 @@ const ResultItem = ({navigation, item, animation , onItemClicked }) => {
   )
 }
 
-export default function LocationSearchScreen(props) {
+export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   
   const navigation = props.navigation;
   const dispatch = useDispatch();
@@ -145,7 +145,7 @@ export default function LocationSearchScreen(props) {
     })
   }
 
-  if (isRequest) {
+  const LoadingView = () =>{
     return (
       <SafeAreaView>
         <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
@@ -157,17 +157,17 @@ export default function LocationSearchScreen(props) {
     )
   }
 
+  if (isRequest) {
+    return LoadingView()
+  }
+
+
+
   return (
     <Provider>
       {
         isRequest &&
-        <SafeAreaView>
-          <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
-            {Array.from(Array(6)).map((_, key) => (
-              <Skeleton key={key} />  
-            ))}
-          </View>
-        </SafeAreaView>
+        <LoadingView></LoadingView>
       }
       <SafeAreaView style={{flex:1}}>
           
@@ -188,15 +188,19 @@ export default function LocationSearchScreen(props) {
             <View style={styles.container}>
 
               <SearchBar isFilter={true} animation={() => animation("filter")} />
-
               <ScrollView>
                 <Text style={styles.title}>Current Location</Text>
-                {orderLists.map((locationSearchList, key) => (
+
+                { orderLists.map((locationSearchList, key) => (
                   <ResultItem key={key} navigation={navigation} item={locationSearchList}
                      animation={() => animation("locationInfo") } 
                      onItemClicked={(id) => {openLocationInfo(id)}}
                      />
                 ))}
+                {
+                  orderLists.length == 0 &&
+                  <LoadingView></LoadingView>
+                }
               </ScrollView>
             </View>
 
