@@ -276,8 +276,10 @@ export default function RepBottomTabNavigator({navigation}) {
         },
         tabBarShowLabel: true,
         headerTitleStyle:  {
-          color: "#fff",
-          fontFamily: Fonts.primaryRegular
+          ontFamily:Fonts.primaryRegular, 
+          color:"#FFF" , 
+          fontSize:20 , 
+          fontWeight:"400",
         },
         tabBarIconStyle: {
           color: "#fff",
@@ -475,7 +477,6 @@ export default function RepBottomTabNavigator({navigation}) {
               {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
           ),
-          
           headerTitle:(props) =>{
             return(<TouchableOpacity onPress={
               () =>{                
@@ -491,7 +492,7 @@ export default function RepBottomTabNavigator({navigation}) {
                   source={Images.backIcon}
                 />  
                 }                          
-              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >Content Library</Text>
             </View></TouchableOpacity>)
           },
           headerRight: () => (
