@@ -25,9 +25,13 @@ export const style = StyleSheet.create({
     color:"#FFF" , 
     fontSize:20 , 
     fontWeight:"400",
-    marginLeft:0,
-    
-    
+    marginLeft:0,        
+  },
+
+  headerLeftContainerStyle: {        
+    flexDirection:'row',    
+    justifyContent:'center',
+    alignItems:'center',
   },
 
 

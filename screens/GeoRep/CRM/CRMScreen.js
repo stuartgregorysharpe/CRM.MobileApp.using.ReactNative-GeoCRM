@@ -18,9 +18,11 @@ export default function CRMScreen({navigation}) {
       
       <Stack.Screen
         name="LocationSearch"
-        component={LocationSearchScreen}
-        options={{ header: () => null }}
-      />
+        // component={LocationSearchScreen}
+        options={{ header: () => null }}          
+      >
+        {props => <LocationSearchScreen {...props} screenProps={navigation} />}
+      </Stack.Screen>
             
       <Stack.Screen
         name="LocationSpecificInfo"

@@ -79,7 +79,9 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           return;
         }
         dispatch({type: SLIDE_STATUS, payload: false});      
-        dispatch({type: BACK_ICON_STATUS, payload: false})
+        dispatch({type: BACK_ICON_STATUS, payload: false});
+        
+
       }}>
         <Divider />
       </TouchableOpacity>

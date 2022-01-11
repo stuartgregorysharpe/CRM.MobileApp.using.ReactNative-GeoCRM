@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView} from 'react-native';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , Image} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -14,6 +14,8 @@ import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
+import Images from '../../../constants/Images';
+import { style } from '../../../constants/Styles';
 
 const ResultItem = ({navigation, item, animation , onItemClicked }) => {
 
@@ -35,8 +37,9 @@ const ResultItem = ({navigation, item, animation , onItemClicked }) => {
   )
 }
 
-export default function LocationSearchScreen({navigation}) {
+export default function LocationSearchScreen(props) {
   
+  const navigation = props.navigation;
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [isRequest, setIsRequest] = useState(true);
@@ -47,12 +50,12 @@ export default function LocationSearchScreen({navigation}) {
   const [locationInfo, setLocationInfo] = useState();
 
   const getDistance = (prelatlng, currentlatlng) => {
-
+    
     const prevLatInRad = toRad(Number(prelatlng.latitude));
     const prevLongInRad = toRad(Number(prelatlng.longitude));
     const latInRad = toRad(currentlatlng.latitude);
     const longInRad = toRad(currentlatlng.longitude);
-      
+
     return (
       // In mile
       3963 *
@@ -68,8 +71,32 @@ export default function LocationSearchScreen({navigation}) {
   }
 
   useEffect(() => {
-    dispatch({type: SLIDE_STATUS, payload: false});
-  
+    // custom header
+    props.screenProps.setOptions({                 
+      headerTitle:(props) =>{
+        return(<TouchableOpacity onPress={
+          () =>{
+            dispatch({type: SLIDE_STATUS, payload: false});
+            dispatch({type: BACK_ICON_STATUS, payload: false});                     
+            if(navigation.canGoBack()){              
+              navigation.goBack();              
+            }            
+          }}>            
+          <View style={style.headerLeftContainerStyle}>            
+              <Image
+                resizeMethod='resize'  
+                style={{width:15,height:20, marginRight:5}}
+                source={Images.backIcon}
+              />
+          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+        </View></TouchableOpacity>)
+      },
+    });    
+
+  });
+
+  useEffect(() => {
+    dispatch({type: SLIDE_STATUS, payload: false});  
   }, []);
 
   useEffect(() => {

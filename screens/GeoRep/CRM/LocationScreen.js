@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image } from 'react-native';
 import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -16,7 +16,7 @@ import SvgIcon from '../../../components/SvgIcon';
 import Divider from '../../../components/Divider';
 import GrayBackground from '../../../components/GrayBackground';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
-import { boxShadow } from '../../../constants/Styles';
+import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLeadFields, getLocationsMap } from '../../../actions/location.action';
@@ -28,6 +28,7 @@ import {
   getLocationInfo,
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
+import Images from '../../../constants/Images';
 
 const MarkerView = () => {
   const dispatch = useDispatch();
@@ -86,16 +87,38 @@ const SlidUpArrow = () => (
 
 export default function LocationScreen(props) {
 
+  const navigation = props.navigation;
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const locationMaps = useSelector(state => state.location.locationMaps);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
-
   const [showItem, setShowItem] = useState(0);
 
   useEffect(() => {
-    props.screenProps.setOptions({
-     
+
+    props.screenProps.setOptions({           
+      headerTitle:(props) =>{
+        return(<TouchableOpacity onPress={
+          () =>{
+            dispatch({type: SLIDE_STATUS, payload: false});
+            dispatch({type: BACK_ICON_STATUS, payload: false});                     
+            if(navigation.canGoBack()){              
+              navigation.goBack();              
+            }            
+          }}>            
+          <View style={style.headerLeftContainerStyle}>            
+              {
+                crmStatus &&  showItem == 3 &&
+                <Image
+                  resizeMethod='resize'  
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              }
+              
+          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+        </View></TouchableOpacity>)
+      },
       tabBarStyle: {
         position: 'absolute',
         height: 50,      
@@ -140,7 +163,7 @@ export default function LocationScreen(props) {
         return;
       case "addLead":
         setShowItem(3);
-        //dispatch({type: BACK_ICON_STATUS, payload: true});
+        dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       case "locationInfo":
         setShowItem(4);
@@ -160,7 +183,6 @@ export default function LocationScreen(props) {
         >
           {showItem == 1 && <MarkerView />}
           {showItem == 2 && <FilterView navigation={props.navigation} />}
-
         </View>}
         
         {crmStatus && (showItem == 3 || showItem == 4) && <View
@@ -170,8 +192,8 @@ export default function LocationScreen(props) {
           {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps} />}
         </View>}
         
-        <View style={styles.container}>          
-          
+
+        <View style={styles.container}>                    
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
@@ -245,7 +267,7 @@ export default function LocationScreen(props) {
             <TouchableOpacity
               style={styles.plusButton} 
               onPress={() => {
-                dispatch(getLeadFields());              
+                dispatch(getLeadFields());          
                 animation("addLead");
               }}>
               <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />

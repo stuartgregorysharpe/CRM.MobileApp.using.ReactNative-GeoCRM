@@ -134,7 +134,7 @@ export const Ticket = forwardRef((props, ref) => {
     function notifyMessage(msg) {
         if (Platform.OS === 'android') {
           ToastAndroid.show(msg, ToastAndroid.SHORT)
-        } else {
+        } else {            
             AlertIOS.alert(msg);
         }
     }
