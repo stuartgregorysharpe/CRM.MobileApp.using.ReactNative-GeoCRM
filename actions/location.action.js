@@ -11,14 +11,14 @@ import {
   CHANGE_LOCATION_MAP,
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
-  CHANGE_LOCATION_INFO,
   CHANGE_CURRENT_LOCATION,
   STATUS_STAGE_OUTCOME_UPDATE,
   STATUS_DISPOSITION_FIELDS_UPDATE,
   STATUS_LOCATION_LEADFIELDS,
   CHANGE_LOCATION_LEADFIELDS
 } from "./actionTypes";
-import { setToken } from '../constants/Storage';
+
+import { getBaseUrl, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
 
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
@@ -79,8 +79,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
           }
         })
         .then((res) => {
-
-          console.log("map res",res.data);
+          
           if (res.data == undefined) {
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
@@ -92,6 +91,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
             return;
           }
 
+          console.log("get location map data CHANGE_LOCATION_MAP");
           if (res.data.status == 'success') {
             dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
             dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations })
@@ -217,32 +217,33 @@ export const postLeadFields = (postData, idempotencyKey) => (dispatch, getState)
     })
 }
 
-export const getLocationInfo = (location_id) => (dispatch, getState) => {
 
-  dispatch({ type: STATUS_LOCATION_INFO, payload: 'request' });
-  axios
-    .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-info`, {
-      params: {
-        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-        location_id
-      },
-      headers: {
-        Authorization: 'Bearer ' + getState().selection.token,
-      }
-    })
-    .then((res) => {
-      if (res.data == undefined) {
+export const getLocationInfo = async(location_id) => {
 
-        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        return;
-      }
-      // dispatch({type: STATUS_LOCATION_INFO, payload: 'success'});
-      dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
-    })
-    .catch((err) => {
-      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-      console.log(err);
-    })
+  var base_url = await getBaseUrl();
+  var token = await getToken();  
+  var user_id = await getUserId();
+  return new Promise(function(resolve, reject) {                             
+      axios
+      .get(`${base_url}/locations/location-info`, {
+        params: {
+          user_id : user_id,
+          location_id: location_id
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((res) => {              
+        if (res.data == undefined) {            
+          resolve([]);
+        }        
+        resolve(res.data);        
+      })
+      .catch((err) => {        
+        reject(err);          
+      })
+  });    
 }
 
 export const postStageOutcomUpdate = (request) => (dispatch, getState) => {

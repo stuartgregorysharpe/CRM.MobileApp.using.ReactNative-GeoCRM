@@ -47,6 +47,18 @@ export const getBaseUrl = async () => {
   }catch(e) {
     console.log(e);
     return null;
+  }  
+}
+
+export const getUserId = async () => {  
+  try{
+    var token = await getToken();  
+    var data = token != null ? jwt_decode(token) : null;
+    var base_url =  data.user_scopes.geo_rep.user_id;
+    return base_url;
+  }catch(e) {
+    console.log(e);
+    return null;
   }
   
 }

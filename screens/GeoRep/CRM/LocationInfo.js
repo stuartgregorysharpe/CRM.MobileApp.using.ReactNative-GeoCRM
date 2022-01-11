@@ -29,17 +29,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
 
-export default function LocationInfo({navigation, screenProps}) {
+export default function LocationInfo({navigation, screenProps, locInfo}) {
 
   const dispatch = useDispatch();
-  const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);
-  const locationInfo = useSelector(state => state.location.locationInfo);
+  const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);  
+  const [locationInfo, setLocationInfo] = useState(locInfo);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);  
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
-  console.log("view location info", locationInfo);
-
+ 
   const [statusSubmit, setStatusSubmit] = useState(true);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
@@ -61,18 +60,7 @@ export default function LocationInfo({navigation, screenProps}) {
     setShowItem(1);
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
-
-  if (statusLocationInfo == "request" || !locationInfo) {
-    return (
-      <View style={[styles.container, {padding: 10, justifyContent: 'center', height: '100%'}]}>
-        {Array.from(Array(6)).map((_, key) => (
-          <Skeleton key={key} />  
-        ))}
-      </View>
-    )
-  }
-
-
+  
   return (
     <View style={styles.container}>
       {subSlideStatus && <TouchableOpacity
@@ -90,8 +78,7 @@ export default function LocationInfo({navigation, screenProps}) {
           dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
           return;
         }
-        dispatch({type: SLIDE_STATUS, payload: false});
-      
+        dispatch({type: SLIDE_STATUS, payload: false});      
         dispatch({type: BACK_ICON_STATUS, payload: false})
       }}>
         <Divider />
@@ -130,7 +117,7 @@ export default function LocationInfo({navigation, screenProps}) {
         </View>    
 
         {
-          locationInfo ? <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} /> : <View></View>
+          locationInfo ? <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> : <View></View>
         }                        
         <View style={{ height: 20 }}></View>  
 

@@ -16,10 +16,10 @@ import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
 
-export default function LocationInfoInput({navigation, screenProps, statusSubmit, showLoopSlider}) {
+export default function LocationInfoInput({navigation, screenProps, statusSubmit, showLoopSlider , infoInput }) {
 
-  const dispatch = useDispatch();
-  const locationInfo = useSelector(state => state.location.locationInfo);
+  const dispatch = useDispatch();  
+  const [locationInfo, setLocationInfo] = useState(infoInput);
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
   const locationAction = useSelector(state => state.rep.locationAction);
   const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
@@ -29,12 +29,10 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
   const [dateTimeKey, setDateTimeKey] = useState(null);
   const statusStageOutcomeUpdate = useSelector(state => state.location.statusStageOutcomeUpdate);
-
   const [stageModalVisible, setStageModalVisible] = useState(false);
-  const [outComeModalVisible, setOutComeModalVisible] = useState(false);
-
-  console.log("locationInfo",locationInfo);  
-  const [selectedOutcomeId, setSelectedOutComeId] = useState(locationInfo.outcomes.find(xx =>   locationInfo.current_outcome_id && xx.outcome_id === locationInfo.current_outcome_id ).outcome_id);
+  const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
+  var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
+  const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
   const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
@@ -258,7 +256,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
           <View style={{flexShrink: 1}}>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText} numberOfLines={5}>
-                {selectedOutcomeId ? locationInfo.outcomes.find(x => x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
+                {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
               </Text>
             </TouchableOpacity>
           </View>

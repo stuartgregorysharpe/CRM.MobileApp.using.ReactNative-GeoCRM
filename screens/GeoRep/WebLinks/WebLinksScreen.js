@@ -21,12 +21,12 @@ export default function WebLinksScreen(props) {
     loadList();
   }, []);
 
-  loadList = async() => {    
+  loadList = async() => {
     var base_url = await getBaseUrl();
     var token = await getToken();
     if(base_url != null && token != null){
       let params = {};      
-      getWebLinks(base_url, token,  params)
+      getWebLinks( token,  params)
       .then(res => {        
         setLists(res);
         setSearchLists(res);

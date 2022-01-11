@@ -31,6 +31,8 @@ export default function LocationSpecificInfoScreen(props) {
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
+
+    console.log(" start LocationSpecificInfoScreen");
   });
 
   return (

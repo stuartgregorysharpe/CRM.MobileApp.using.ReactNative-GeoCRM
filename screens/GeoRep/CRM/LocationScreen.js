@@ -19,14 +19,13 @@ import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
 import { boxShadow } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLeadFields, getLocationsMap } from '../../../actions/location.action';
 
 import { 
   getLocationPinKey, 
   getLocationFilters,
   getLocationSearchList,
   getLocationInfo,
-  getLocationsMap,
-  getLeadFields
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 
@@ -44,7 +43,8 @@ const MarkerView = () => {
         icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1]
       })
     })
-    setMarkerIcons(items)
+    setMarkerIcons(items);
+    
   }, [pins])
 
   if (statusPinKeys == "request") {
@@ -110,6 +110,7 @@ export default function LocationScreen(props) {
         },
       });
     }
+
   });
 
   useEffect(() => {
@@ -132,15 +133,14 @@ export default function LocationScreen(props) {
     dispatch({type: SLIDE_STATUS, payload: true});
     switch(name) {
       case "marker":
-        setShowItem(1);
-        
+        setShowItem(1);      
         return;
       case "filter":
         setShowItem(2);
         return;
       case "addLead":
         setShowItem(3);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        //dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       case "locationInfo":
         setShowItem(4);
@@ -154,14 +154,13 @@ export default function LocationScreen(props) {
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
-
         <GrayBackground />
-
         {crmStatus && (showItem == 1 || showItem == 2) && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 1 && <MarkerView />}
           {showItem == 2 && <FilterView navigation={props.navigation} />}
+
         </View>}
         
         {crmStatus && (showItem == 3 || showItem == 4) && <View
@@ -170,12 +169,9 @@ export default function LocationScreen(props) {
           {showItem == 3 && <AddLead screenProps={props.screenProps} />}
           {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps} />}
         </View>}
-
         
-        <View style={styles.container}>
+        <View style={styles.container}>          
           
-          {/* <SearchBar animation={() => animation("filter")} /> */}
-
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
@@ -246,25 +242,23 @@ export default function LocationScreen(props) {
               />
             </MapView>
 
-          <TouchableOpacity 
-            style={styles.plusButton} 
-            onPress={() => {
-              dispatch(getLocationsMap());
-              dispatch(getLeadFields());
-              animation("addLead");
-            }}
-          >
-            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.pinKeyButton}
-            onPress={() => {
-              dispatch(getLocationPinKey());
-              animation("marker");
-            }}
-          >
-            <SlidUpArrow />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.plusButton} 
+              onPress={() => {
+                dispatch(getLeadFields());              
+                animation("addLead");
+              }}>
+              <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.pinKeyButton}
+              onPress={() => {
+                dispatch(getLocationPinKey());
+                animation("marker");
+              }}>
+              <SlidUpArrow />
+            </TouchableOpacity>
         </View>
       </SafeAreaView>
     </Provider>

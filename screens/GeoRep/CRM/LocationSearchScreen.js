@@ -15,13 +15,11 @@ import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 
-const ResultItem = ({navigation, item, animation}) => {
+const ResultItem = ({navigation, item, animation , onItemClicked }) => {
 
-  const dispatch = useDispatch();
   return (
-    <TouchableOpacity style={styles.resultItem} onPress={() => {
-      animation();      
-      dispatch(getLocationInfo(Number(item.location_id)));
+    <TouchableOpacity style={styles.resultItem} onPress={() => {    
+      onItemClicked(item.location_id);
     }}>
       <View style={{ maxWidth: '48%' }}>
         <Text style={styles.subTitle}>{item.name}</Text>
@@ -41,18 +39,20 @@ export default function LocationSearchScreen({navigation}) {
   
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const statusLocationSearchLists = useSelector(state => state.location.statusLocationSearchLists);
+  const [isRequest, setIsRequest] = useState(true);
   const locationSearchLists = useSelector(state => state.location.locationSearchLists);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
+  const [locationInfo, setLocationInfo] = useState();
 
   const getDistance = (prelatlng, currentlatlng) => {
+
     const prevLatInRad = toRad(Number(prelatlng.latitude));
     const prevLongInRad = toRad(Number(prelatlng.longitude));
     const latInRad = toRad(currentlatlng.latitude);
     const longInRad = toRad(currentlatlng.longitude);
-  
+      
     return (
       // In mile
       3963 *
@@ -69,11 +69,11 @@ export default function LocationSearchScreen({navigation}) {
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});
+  
   }, []);
 
   useEffect(() => {
-    let items = [];
-    
+    let items = [];    
     locationSearchLists.map((list, key) => {
       let item = {
         name: list.name,
@@ -86,7 +86,8 @@ export default function LocationSearchScreen({navigation}) {
       items.push(item);
     });
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
-    setOrderLists(items);
+    setOrderLists(items);    
+    setIsRequest(false);
   }, [locationSearchLists]);
 
   const animation = (name) => {
@@ -97,15 +98,27 @@ export default function LocationSearchScreen({navigation}) {
         setShowItem(1);
         return;
       case "locationInfo":
-        setShowItem(2);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        setShowItem(2);        
         return;
       default:        
         return;
     }    
   }
 
-  if (statusLocationSearchLists == "request") {
+  const openLocationInfo = async(location_id) => {            
+    setIsRequest(true)
+    getLocationInfo( Number(location_id))
+    .then((res) => {
+      setLocationInfo(res);
+      setIsRequest(false)      
+      animation("locationInfo");
+    })
+    .catch((e) =>{
+      setIsRequest(false)      
+    })
+  }
+
+  if (isRequest) {
     return (
       <SafeAreaView>
         <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
@@ -119,6 +132,16 @@ export default function LocationSearchScreen({navigation}) {
 
   return (
     <Provider>
+      {
+        isRequest &&
+        <SafeAreaView>
+          <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
+            {Array.from(Array(6)).map((_, key) => (
+              <Skeleton key={key} />  
+            ))}
+          </View>
+        </SafeAreaView>
+      }
       <SafeAreaView style={{flex:1}}>
           
           <GrayBackground />
@@ -131,7 +154,7 @@ export default function LocationSearchScreen({navigation}) {
           {crmStatus && showItem == 2 &&
             <View
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
-              <LocationInfo navigation={navigation} /> 
+              <LocationInfo locInfo={locationInfo} navigation={navigation} /> 
             </View>
           } 
 
@@ -142,7 +165,10 @@ export default function LocationSearchScreen({navigation}) {
               <ScrollView>
                 <Text style={styles.title}>Current Location</Text>
                 {orderLists.map((locationSearchList, key) => (
-                  <ResultItem key={key} navigation={navigation} item={locationSearchList} animation={() => animation("locationInfo")} />
+                  <ResultItem key={key} navigation={navigation} item={locationSearchList}
+                     animation={() => animation("locationInfo") } 
+                     onItemClicked={(id) => {openLocationInfo(id)}}
+                     />
                 ))}
               </ScrollView>
             </View>

@@ -391,10 +391,8 @@ export default function RepBottomTabNavigator({navigation}) {
               return;
             }
             dispatch({type: SLIDE_STATUS, payload: false});
-            dispatch({type: BACK_ICON_STATUS, payload: false});
-            dispatch(getLocationsMap());
-            navigation.navigate('CRM', { screen: 'Root' });
-            
+            dispatch({type: BACK_ICON_STATUS, payload: false});            
+            navigation.navigate('CRM', { screen: 'Root' });            
           },
         })}
       />}
@@ -477,12 +475,12 @@ export default function RepBottomTabNavigator({navigation}) {
               {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
           ),
+          
           headerTitle:(props) =>{
             return(<TouchableOpacity onPress={
               () =>{                
                 dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
-                dispatch({type: BACK_ICON_STATUS, payload: false});
-                //navigation.navigate('Root', { screen: 'RepContentLibrary' });          
+                dispatch({type: BACK_ICON_STATUS, payload: false});                
               }}>
               <View style={styles.layoutBar}> 
                 {

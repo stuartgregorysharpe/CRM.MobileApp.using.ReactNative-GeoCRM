@@ -8,7 +8,6 @@ import {
   CHANGE_LOCATION_MAP,
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
-  CHANGE_LOCATION_INFO,
   STATUS_STAGE_OUTCOME_UPDATE,
   STATUS_DISPOSITION_FIELDS_UPDATE,
   STATUS_LOCATION_LEADFIELDS,
@@ -79,14 +78,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         locationSearchLists: action.payload
-      }
-    case CHANGE_LOCATION_INFO:
-      console.log("changed location info");
-      return {
-        ...state,
-        locationInfo: action.payload,
-        statusLocationInfo: "success"
-      }
+      }  
     case STATUS_STAGE_OUTCOME_UPDATE:
       return {
         ...state,
