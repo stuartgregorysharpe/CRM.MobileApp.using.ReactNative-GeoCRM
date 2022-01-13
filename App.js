@@ -7,6 +7,9 @@ import { Provider } from 'react-redux';
 
 import store from './store';
 import AppScreens from './navigation/AppScreens';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
 
 EStyleSheet.build({
   $textColor: '#0275d8'
@@ -22,4 +25,4 @@ export default function App() {
       </SafeAreaProvider>
     </Provider>
   );
-}
+}  

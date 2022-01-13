@@ -13,15 +13,16 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7C35C73DAF0FDC6C0CB51134 /* libPods-GeoCRM-GeoCRMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		9648F3902784C0E200D70181 /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3822784BE7900D70181 /* Gilroy-Bold.ttf */; };
-		9648F3912784C0E400D70181 /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3852784BE7900D70181 /* Gilroy-Heavy.ttf */; };
-		9648F3922784C0E600D70181 /* Gilroy-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3862784BE7900D70181 /* Gilroy-Light.ttf */; };
-		9648F3932784C0EA00D70181 /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3832784BE7900D70181 /* Gilroy-Medium.ttf */; };
-		9648F3942784C0ED00D70181 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3842784BE7900D70181 /* Gilroy-Regular.ttf */; };
-		9648F3982784C18D00D70181 /* Product Sans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3952784C18D00D70181 /* Product Sans-Bold.ttf */; };
-		9648F3992784C18D00D70181 /* Product Sans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3962784C18D00D70181 /* Product Sans-Italic.ttf */; };
-		9648F39A2784C18D00D70181 /* Product Sans-Bold-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F3972784C18D00D70181 /* Product Sans-Bold-Italic.ttf */; };
-		9648F39B2784C1D100D70181 /* Product Sans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9648F38C2784BEEA00D70181 /* Product Sans-Regular.ttf */; };
+		96696E09278E1B5D00221194 /* Product Sans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E00278E1B5D00221194 /* Product Sans-Bold.ttf */; };
+		96696E0A278E1B5D00221194 /* Product Sans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E01278E1B5D00221194 /* Product Sans-Regular.ttf */; };
+		96696E0B278E1B5D00221194 /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E02278E1B5D00221194 /* Gilroy-Medium.ttf */; };
+		96696E0C278E1B5D00221194 /* Product Sans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E03278E1B5D00221194 /* Product Sans-Italic.ttf */; };
+		96696E0D278E1B5D00221194 /* Product Sans-Bold-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E04278E1B5D00221194 /* Product Sans-Bold-Italic.ttf */; };
+		96696E0E278E1B5D00221194 /* Gilroy-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E05278E1B5D00221194 /* Gilroy-Bold.ttf */; };
+		96696E0F278E1B5D00221194 /* Gilroy-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E06278E1B5D00221194 /* Gilroy-Light.ttf */; };
+		96696E10278E1B5D00221194 /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E07278E1B5D00221194 /* Gilroy-Heavy.ttf */; };
+		96696E11278E1B5D00221194 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */; };
+		96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EFB4A6278F40940032ECB1 /* libRNFileOpener.a */; };
 		FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = GeoCRM;
+		};
+		96EFB4A5278F40940032ECB1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96EFB4A1278F40940032ECB1 /* RNFileOpener.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DB8F70EF1CD3047700E71D6D;
+			remoteInfo = RNFileOpener;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -51,15 +59,16 @@
 		6F0246DDE599D83C03C3AD20 /* Pods-GeoCRM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM.debug.xcconfig"; path = "Target Support Files/Pods-GeoCRM/Pods-GeoCRM.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GeoCRM/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9648F3542784B85300D70181 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
-		9648F3822784BE7900D70181 /* Gilroy-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Bold.ttf"; path = "../../assets/fonts/Gilroy-Bold.ttf"; sourceTree = "<group>"; };
-		9648F3832784BE7900D70181 /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Medium.ttf"; path = "../../assets/fonts/Gilroy-Medium.ttf"; sourceTree = "<group>"; };
-		9648F3842784BE7900D70181 /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Regular.ttf"; path = "../../assets/fonts/Gilroy-Regular.ttf"; sourceTree = "<group>"; };
-		9648F3852784BE7900D70181 /* Gilroy-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Heavy.ttf"; path = "../../assets/fonts/Gilroy-Heavy.ttf"; sourceTree = "<group>"; };
-		9648F3862784BE7900D70181 /* Gilroy-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Light.ttf"; path = "../../assets/fonts/Gilroy-Light.ttf"; sourceTree = "<group>"; };
-		9648F38C2784BEEA00D70181 /* Product Sans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Regular.ttf"; path = "../../assets/fonts/Product Sans-Regular.ttf"; sourceTree = "<group>"; };
-		9648F3952784C18D00D70181 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
-		9648F3962784C18D00D70181 /* Product Sans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Italic.ttf"; path = "../../assets/fonts/Product Sans-Italic.ttf"; sourceTree = "<group>"; };
-		9648F3972784C18D00D70181 /* Product Sans-Bold-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold-Italic.ttf"; path = "../../assets/fonts/Product Sans-Bold-Italic.ttf"; sourceTree = "<group>"; };
+		96696E00278E1B5D00221194 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
+		96696E01278E1B5D00221194 /* Product Sans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Regular.ttf"; path = "../../assets/fonts/Product Sans-Regular.ttf"; sourceTree = "<group>"; };
+		96696E02278E1B5D00221194 /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Medium.ttf"; path = "../../assets/fonts/Gilroy-Medium.ttf"; sourceTree = "<group>"; };
+		96696E03278E1B5D00221194 /* Product Sans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Italic.ttf"; path = "../../assets/fonts/Product Sans-Italic.ttf"; sourceTree = "<group>"; };
+		96696E04278E1B5D00221194 /* Product Sans-Bold-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold-Italic.ttf"; path = "../../assets/fonts/Product Sans-Bold-Italic.ttf"; sourceTree = "<group>"; };
+		96696E05278E1B5D00221194 /* Gilroy-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Bold.ttf"; path = "../../assets/fonts/Gilroy-Bold.ttf"; sourceTree = "<group>"; };
+		96696E06278E1B5D00221194 /* Gilroy-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Light.ttf"; path = "../../assets/fonts/Gilroy-Light.ttf"; sourceTree = "<group>"; };
+		96696E07278E1B5D00221194 /* Gilroy-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Heavy.ttf"; path = "../../assets/fonts/Gilroy-Heavy.ttf"; sourceTree = "<group>"; };
+		96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Regular.ttf"; path = "../../assets/fonts/Gilroy-Regular.ttf"; sourceTree = "<group>"; };
+		96EFB4A1278F40940032ECB1 /* RNFileOpener.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFileOpener.xcodeproj; path = "../node_modules/react-native-file-opener/ios/RNFileOpener.xcodeproj"; sourceTree = "<group>"; };
 		97B75C796F3A17C8220A95FC /* Pods-GeoCRM-GeoCRMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM-GeoCRMTests.debug.xcconfig"; path = "Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GeoCRM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -78,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */,
 				FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,6 +150,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				96EFB4A1278F40940032ECB1 /* RNFileOpener.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -172,17 +183,25 @@
 		9648F35B2784BB8600D70181 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				9648F3972784C18D00D70181 /* Product Sans-Bold-Italic.ttf */,
-				9648F3952784C18D00D70181 /* Product Sans-Bold.ttf */,
-				9648F3962784C18D00D70181 /* Product Sans-Italic.ttf */,
-				9648F38C2784BEEA00D70181 /* Product Sans-Regular.ttf */,
-				9648F3822784BE7900D70181 /* Gilroy-Bold.ttf */,
-				9648F3852784BE7900D70181 /* Gilroy-Heavy.ttf */,
-				9648F3862784BE7900D70181 /* Gilroy-Light.ttf */,
-				9648F3832784BE7900D70181 /* Gilroy-Medium.ttf */,
-				9648F3842784BE7900D70181 /* Gilroy-Regular.ttf */,
+				96696E05278E1B5D00221194 /* Gilroy-Bold.ttf */,
+				96696E07278E1B5D00221194 /* Gilroy-Heavy.ttf */,
+				96696E06278E1B5D00221194 /* Gilroy-Light.ttf */,
+				96696E02278E1B5D00221194 /* Gilroy-Medium.ttf */,
+				96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */,
+				96696E04278E1B5D00221194 /* Product Sans-Bold-Italic.ttf */,
+				96696E00278E1B5D00221194 /* Product Sans-Bold.ttf */,
+				96696E03278E1B5D00221194 /* Product Sans-Italic.ttf */,
+				96696E01278E1B5D00221194 /* Product Sans-Regular.ttf */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		96EFB4A2278F40940032ECB1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96EFB4A6278F40940032ECB1 /* libRNFileOpener.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,6 +278,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 96EFB4A2278F40940032ECB1 /* Products */;
+					ProjectRef = 96EFB4A1278F40940032ECB1 /* RNFileOpener.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* GeoCRM */,
@@ -266,6 +291,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		96EFB4A6278F40940032ECB1 /* libRNFileOpener.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFileOpener.a;
+			remoteRef = 96EFB4A5278F40940032ECB1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
@@ -279,17 +314,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9648F3932784C0EA00D70181 /* Gilroy-Medium.ttf in Resources */,
+				96696E11278E1B5D00221194 /* Gilroy-Regular.ttf in Resources */,
+				96696E0D278E1B5D00221194 /* Product Sans-Bold-Italic.ttf in Resources */,
+				96696E09278E1B5D00221194 /* Product Sans-Bold.ttf in Resources */,
+				96696E0A278E1B5D00221194 /* Product Sans-Regular.ttf in Resources */,
+				96696E0C278E1B5D00221194 /* Product Sans-Italic.ttf in Resources */,
+				96696E10278E1B5D00221194 /* Gilroy-Heavy.ttf in Resources */,
+				96696E0B278E1B5D00221194 /* Gilroy-Medium.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				9648F3992784C18D00D70181 /* Product Sans-Italic.ttf in Resources */,
-				9648F39B2784C1D100D70181 /* Product Sans-Regular.ttf in Resources */,
-				9648F3942784C0ED00D70181 /* Gilroy-Regular.ttf in Resources */,
+				96696E0F278E1B5D00221194 /* Gilroy-Light.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				9648F39A2784C18D00D70181 /* Product Sans-Bold-Italic.ttf in Resources */,
-				9648F3922784C0E600D70181 /* Gilroy-Light.ttf in Resources */,
-				9648F3982784C18D00D70181 /* Product Sans-Bold.ttf in Resources */,
-				9648F3902784C0E200D70181 /* Gilroy-Bold.ttf in Resources */,
-				9648F3912784C0E400D70181 /* Gilroy-Heavy.ttf in Resources */,
+				96696E0E278E1B5D00221194 /* Gilroy-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,7 +572,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -565,7 +600,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

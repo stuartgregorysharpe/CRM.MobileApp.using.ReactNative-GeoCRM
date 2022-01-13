@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { View, StyleSheet , Text ,TouchableOpacity} from 'react-native';
+import { View, StyleSheet , Text ,TouchableOpacity, Platform} from 'react-native';
 import { PRIMARY_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,11 +69,11 @@ export default function HeaderRightView() {
         justifyContent: 'center',        
         borderColor: '#fff',
         borderWidth: 2,
+        paddingTop:Platform.OS == 'ios' ? 2 :0,
         width: 32,
         height: 32,
         borderRadius: 20
     },
-
     
     headerAvatarText: {        
         fontSize: 17,

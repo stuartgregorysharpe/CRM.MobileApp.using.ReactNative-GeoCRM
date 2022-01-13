@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import WebView from 'react-native-webview';
 import React, { useEffect, useState, Fragment } from 'react';
-import {  View, StyleSheet, ScrollView } from 'react-native';
+import {  View, StyleSheet, ScrollView , Text} from 'react-native';
 import CustomWebViewHeader from "../../../components/Header/CustomWebViewHeader";
 import { style } from "../../../constants/Styles";
 
@@ -11,7 +11,8 @@ export default function WebViewScreen(props) {
     }, []);
 
     return(
-        <View style={styles.container}>
+        
+        <View style={styles.container}>    
             <CustomWebViewHeader 
                 showIcon={true} 
                 title={props.route.params.data.weblink_name} 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, StyleSheet, ScrollView, Text } from 'react-native';
+import { SafeAreaView, View, StyleSheet, ScrollView, Text , PermissionsAndroid, Platform} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Searchbar from '../../../components/SearchBar';
 import Card from '../../../components/Card';
@@ -9,6 +9,7 @@ import Fonts from '../../../constants/Fonts';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
 import { downloadPDF, getContentLibrary } from '../../../actions/contentLibrary.action';
 import RNFS, { DownloadFileOptions , DocumentDirectoryPath , downloadFile} from 'react-native-fs';
+//import FileOpener from 'react-native-file-opener3';
 //import FileOpener from 'react-native-file-opener';
 //const FileOpener = require('react-native-file-opener');
 
@@ -20,6 +21,7 @@ export default function ContentLibraryScreen(props) {
   const [libraryLists, setLibraryLists] = useState([]);
   const [searchLibraryLists , setSearchLibraryLists] = useState([]);  
   const FileOpener = require('react-native-file-opener');
+  //const FileOpener = require('react-native-file-opener3');
 
   useEffect(() => {
     if (props.screenProps) {
@@ -28,6 +30,7 @@ export default function ContentLibraryScreen(props) {
       });
     }
     loadList();
+
   } , []);  
 
   loadList = async() => {    
@@ -48,6 +51,25 @@ export default function ContentLibraryScreen(props) {
     }    
   }
 
+
+  // const requestExternalStoreageRead = async() =>{
+  //   try {
+  //       const granted = await PermissionsAndroid.request(
+  //                 PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+  //                 {
+  //                     'title': 'Cool App ...',
+  //                     'message': 'App needs access to external storage'
+  //                 }
+  //       );
+
+  //       return granted == PermissionsAndroid.RESULTS.GRANTED
+  //   } 
+  //   catch (err) {
+  //     //Handle this error
+  //     return false;
+  //   }
+  // }
+
   const showChildItem = (index) => {
     dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
     setChildList(searchLibraryLists[index]);
@@ -64,27 +86,51 @@ export default function ContentLibraryScreen(props) {
   }
 
   const getMineType = (title, ext) =>{
-    if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
-      return "image/" + ext;  
+    if(Platform.OS == 'android'){
+      if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
+        return "image/*"; // + ext;  
+      }
+      if(title.toLowerCase().includes('.mp4') || title.toLowerCase().includes('.mov') || title.toLowerCase().includes('.flv')){
+        return "video/" + ext;  
+      }
+      return "application/" + ext;
+    }else{
+      
+      // <string>com.microsoft.powerpoint.ppt</string>
+      // <string>public.item</string>
+      // <string>com.microsoft.word.doc</string>
+      // <string>com.adobe.pdf</string>
+      // <string>com.microsoft.excel.xls</string>
+      // <string>public.image</string>
+      // <string>public.content</string>
+      // <string>public.composite-content</string>
+      // <string>public.archive</string>
+      // <string>public.audio</string>
+      // <string>public.movie</string>
+      // <string>public.text</string>
+      // <string>public.data</string>
+      if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
+        return "public.image";  
+      }
+      if(title.toLowerCase().includes('.mp4') || title.toLowerCase().includes('.mov') || title.toLowerCase().includes('.flv')){
+        return "public.movie";
+      }
+      return  "public.data";
     }
-    if(title.toLowerCase().includes('.mp4') || title.toLowerCase().includes('.mov') || title.toLowerCase().includes('.flv')){
-      return "video/" + ext;  
-    }
-    return "application/" + ext;
+    
   }
 
   openFile = (path, type) => {
     console.log(type );
     FileOpener.open(
         path,
-        type 
+        type
     ).then((msg) => {
         console.log('success!!')
     },(e) => {
         console.log('error!!', e)
     });  
   }
-
 
   if (showLibraryChild) {
 
@@ -106,13 +152,17 @@ export default function ContentLibraryScreen(props) {
                     fileName = tmp[0];
                     ext = tmp[1];
                     const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
+                    //const SavePath = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.ExternalDirectoryPath;
+
                     RNFS.exists(path).then((res) =>{
                       if(res){
                         console.log("file exist", path);
                         openFile(path, getMineType(item.filename, ext));
                       }else{
+                        console.log("no file exist", item.file_path);
                         downloadPDF(item.file_path, fileName , ext)
                         .then((res) =>{
+                          console.log(res);
                           if(res && res.statusCode === 200 && res.bytesWritten > 0 ){
                             openFile(path,getMineType(item.filename, ext));  
                           }else{                     

@@ -97,24 +97,23 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     textAlign: 'center',
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     color: PRIMARY_COLOR,
     marginBottom: 12,
   },
   avatar: {
     justifyContent: 'center',
-    alignItems: 'center',
-    textAlign:'center',
+    alignItems: 'center',        
     borderColor: PRIMARY_COLOR,
     borderWidth: 3,
+    paddingTop:Platform.OS ==  'ios' ? 6 : 0,
     width: 70,
     height: 70,
     borderRadius: 35,    
   },
-
   avatarLabel: {
     color: PRIMARY_COLOR,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     fontSize: 40
   },
   profileInfo: {
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'right',
     color: TEXT_COLOR,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     marginBottom: 4
   },
   text: {

@@ -35,6 +35,7 @@ export default function FilterView({navigation}) {
       doubleArray.push(items);
     }
     setEmptyArray(doubleArray);
+    console.log("selected filter 1");
     setSelectFilters(doubleArray);
   }, [locationFilters]);
 
@@ -112,7 +113,10 @@ export default function FilterView({navigation}) {
           }}
           color="#DC143C" 
           uppercase={false} 
-          onPress={() => setSelectFilters(emptyArray)}
+          onPress={() => {
+            console.log("selected filter 2");
+            setSelectFilters(emptyArray)
+          }}
         >
           Clear Filters
         </Button>
@@ -163,6 +167,7 @@ export default function FilterView({navigation}) {
             <CheckBox
               value={selectFilters[selectFilterId][key]}
               onValueChange={value => {
+                console.log("selected filter 3");
                 setSelectFilters([
                   ...selectFilters.slice(0, selectFilterId),
                   [

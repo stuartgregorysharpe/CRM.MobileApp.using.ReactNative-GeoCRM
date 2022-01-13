@@ -37,6 +37,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your current location will be displayed on the map and user for directions, nearby search results and estimated travel times</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to Photo Library</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Gilroy-Bold.ttf</string>

@@ -12,7 +12,6 @@ import {
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
   CHANGE_CURRENT_LOCATION,
-  STATUS_STAGE_OUTCOME_UPDATE,
   STATUS_DISPOSITION_FIELDS_UPDATE,
   STATUS_LOCATION_LEADFIELDS,
   CHANGE_LOCATION_LEADFIELDS
@@ -38,6 +37,7 @@ export const getLocationPinKey = () => (dispatch, getState) => {
         return;
       }
       if (res.data.status == 'success') {
+        console.log("pin data",  res.data.items );
         dispatch({ type: STATUS_PIN_KEY, payload: 'success' });
         dispatch({ type: CHANGE_PIN_KEY, payload: res.data.items });
       }
@@ -57,6 +57,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
     timeout: 15000,
   })
     .then(location => {
+      console.log("loc" , location);
       dispatch({
         type: CHANGE_CURRENT_LOCATION, payload: {          
            latitude: location.latitude,
@@ -242,37 +243,47 @@ export const getLocationInfo = async(location_id) => {
   });    
 }
 
-export const postStageOutcomUpdate = (request) => (dispatch, getState) => {
-  let requestPayload = {
-    "location_id": request.location_id,
-    "stage_id": request.stage_id,
-    "outcome_id": request.outcome_id,
-    "campaign_id": 1
-  }
-  dispatch({ type: STATUS_STAGE_OUTCOME_UPDATE, payload: 'request' });
-  axios
-    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateStageOutcome`, requestPayload, {
-      headers: {
-        Authorization: 'Bearer ' + getState().selection.token,
-        'Indempotency-Key': request.indempotency_key
+
+
+export const postStageOutcomUpdate = async(request) => {
+{        
+    return new Promise(function(resolve, reject) {
+
+      var base_url = await getBaseUrl();
+      var token = await getToken();
+
+      let requestPayload = {
+        "location_id": request.location_id,
+        "stage_id": request.stage_id,
+        "outcome_id": request.outcome_id,
+        "campaign_id": 1
       }
-    })
-    .then((res) => {
-      console.log("postStageOutcomUpdate: ", JSON.stringify(res));
-      if (res.data == undefined) {
-        
-        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        return;
-      }
-      dispatch({type: STATUS_STAGE_OUTCOME_UPDATE, payload: 'success'});
-      // dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
-    })
-    .catch((err) => {
-      // dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-      dispatch({type: STATUS_STAGE_OUTCOME_UPDATE, payload: 'failure'});
-      console.log(err.response);
-    })
+      axios
+      .post(`${base_url}/location-info/updateStageOutcome`, requestPayload, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': request.indempotency_key
+        }
+      })
+      .then((res) => {
+        console.log("postStageOutcomUpdate: ", JSON.stringify(res));
+        if (res.data == undefined) {      
+          resolve(0);
+          return;
+        }
+        resolve(1);
+        // dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
+      })
+      .catch((err) => {
+        // dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+        resolve(0);
+        console.log(err.response);
+      })
+
+
+    });    
 }
+
 
 export const postDispositionFields = (postData, idempotencyKey) => (dispatch, getState) => {
   dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });

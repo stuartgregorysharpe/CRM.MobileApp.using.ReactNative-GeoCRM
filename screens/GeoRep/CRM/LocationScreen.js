@@ -287,6 +287,7 @@ export default function LocationScreen(props) {
             <TouchableOpacity 
               style={styles.pinKeyButton}
               onPress={() => {
+                console.log("pin key");
                 dispatch(getLocationPinKey());
                 animation("marker");
               }}>

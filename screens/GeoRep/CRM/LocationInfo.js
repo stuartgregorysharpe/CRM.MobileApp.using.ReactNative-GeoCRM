@@ -28,20 +28,19 @@ import { BACK_ICON_STATUS, SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
+import LocationInfoInputTablet from './LocationInfoInputTablet';
 
 export default function LocationInfo({navigation, screenProps, locInfo}) {
 
-  const dispatch = useDispatch();
-  const statusLocationInfo = useSelector(state => state.location.statusLocationInfo);  
+  const dispatch = useDispatch();  
   const [locationInfo, setLocationInfo] = useState(locInfo);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
-  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);  
-  console.log("d features" , features);
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);    
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
-  const [showItem, setShowItem] = useState(0);
- 
+  const [showItem, setShowItem] = useState(0); 
   const [statusSubmit, setStatusSubmit] = useState(true);
   const [keyboardStatus, setKeyboardStatus] = useState(false);
+
   useEffect(() => {
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -113,8 +112,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
-              <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='16px' height='16px' />
-              {/* <Text style={styles.subtitle}>{locationInfo ? locationInfo.location_name.custom_field_name : ''}</Text> */}
+              <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='16px' height='16px' />              
             </View>
             <Text style={styles.title}>{ locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
           </View>
@@ -137,7 +135,9 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
         </View>    
 
         {
-          locationInfo ? <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> : <View></View>
+          locationInfo && DeviceInfo.isTablet()?
+          <LocationInfoInputTablet navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> :
+          <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> 
         }                        
         <View style={{ height: 20 }}></View>  
 

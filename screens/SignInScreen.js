@@ -6,7 +6,6 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-
 import { baseURL } from '../constants';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { Login } from '../actions/auth.action';
@@ -90,13 +89,16 @@ export default function SignIn() {
   }
 
   return (
-    <KeyboardAwareScrollView 
+    <SafeAreaView style={{flex:1}}>
+      <KeyboardAwareScrollView 
+      keyboardShouldPersistTaps={'always'}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ flexGrow: 1 }} 
       enableOnAndroid={true}
       ref={emailRef}
       enableAutomaticScroll={(Platform.OS === 'ios')}
-      extraHeight={130} extraScrollHeight={130}
+      extraHeight={130} 
+      extraScrollHeight={130}
       behavior="padding" style={{flex:1}}>
       {/* <KeyboardAvoidingView style={{flex:1}}>       */}
 
@@ -183,7 +185,8 @@ export default function SignIn() {
       </View>
 
       {/* </KeyboardAvoidingView> */}
-      </KeyboardAwareScrollView>  
+    </KeyboardAwareScrollView>  
+    </SafeAreaView>
   )
 }
 

@@ -349,8 +349,7 @@ export default function RepBottomTabNavigator({navigation}) {
                   console.log("disposition");
                   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
                   return;
-                }
-                
+                }                
               }}>
             </TouchableOpacity>
           ),
@@ -464,7 +463,7 @@ export default function RepBottomTabNavigator({navigation}) {
                 dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
                 dispatch({type: BACK_ICON_STATUS, payload: false});                
               }}>
-              <View style={styles.layoutBar}> 
+              <View style={styles.layoutBar}>
                 {
                   backIconStatus && 
                   <Image
@@ -494,6 +493,7 @@ export default function RepBottomTabNavigator({navigation}) {
               return;
             }
             dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
+            dispatch({type: BACK_ICON_STATUS , payload: false});
             navigation.navigate("RepContentLibrary");
           },
         })}

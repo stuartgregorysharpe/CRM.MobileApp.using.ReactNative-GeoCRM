@@ -48,7 +48,7 @@ export function downloadPDF(url, fileName, ext){
 
     //Define options
     const options: RNFS.DownloadFileOptions = {
-      fromUrl: url,
+      fromUrl: encodeURI(url),
       toFile: path,
       headers: headers
     }

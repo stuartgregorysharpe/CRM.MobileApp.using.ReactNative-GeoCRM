@@ -7,15 +7,17 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import CustomPicker from '../../../components/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
+import { style } from '../../../constants/Styles';
+import Fonts from '../../../constants/Fonts';
 
-export default function LocationInfoInput({navigation, screenProps, statusSubmit, showLoopSlider , infoInput }) {
+export default function LocationInfoInputTablet({navigation, screenProps, statusSubmit, showLoopSlider , infoInput }) {
 
   const dispatch = useDispatch();  
   const [locationInfo, setLocationInfo] = useState(infoInput);
@@ -36,8 +38,8 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
   const [submitKey, setSubmitKey] = useState(false);
-  const [isLoading ,setIsLoading] = useState(false);
-  const showItem = 0
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("LO", locationInfo);
 
   useEffect(() => {
     setSubmitKey(false);
@@ -63,8 +65,8 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       return;
     }
     handleSubmit();
-  }, [statusSubmit])
-
+  }, [statusSubmit]);
+  
   useEffect(() =>{
     if(isLoading){
       let request = {
@@ -99,12 +101,14 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     });
     setIdempotencyKey(uuid.v4());
     dispatch(postDispositionFields(postData, idempotencyKey));
+
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
 
   const handleChangeText = (text, field, key) => {
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: true});
-    if (field.field_type == "date" || field.field_type == "datetime") {      
+    if (field.field_type == "date" || field.field_type == "datetime") {
+      //hide keybard 
       Keyboard.dismiss();
     }
 
@@ -201,12 +205,10 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     )
   }
 
-  
   const stagesModal = () => {
     return (
       <CustomPicker visible={stageModalVisible} onModalClose={() => setStageModalVisible(!stageModalVisible)} renderItems={
         locationInfo.stages.map((stage, key) => (
-
           <View style={styles.pickerItem} key={key}>
             <TouchableOpacity onPress={() => {
               setSelectedStageId(stage.stage_id);
@@ -217,23 +219,23 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
               <Text style={styles.pickerItemText}>{stage.stage_name}</Text>
               {stage.stage_id == selectedStageId && <SvgIcon icon="Check" width='23px' height='23px' />}
             </TouchableOpacity>
+
           </View>
         ))
       } />
     )
   }
 
+  const renderOutcomesItem = () => {
+
+  }
+
   const outComesModal = () => {
     return (
-      <CustomPicker 
-        visible={outComeModalVisible} 
-        //onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} 
-        renderItems= {
+      <CustomPicker visible={outComeModalVisible} onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} renderItems= {
         selectedOutcomes.map((outcome, key) => (
-
           <View style={styles.pickerItem} key={key}>
             <TouchableOpacity onPress={() => {
-              
               setIdempotencyKey(uuid.v4());
               setSelectedOutComeId(outcome.outcome_id);
               setOutComeModalVisible(!outComeModalVisible);
@@ -250,91 +252,130 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     )
   }
 
+
   return (
     <View style={styles.container}>
-      <View style={styles.refreshBox}>
-      <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
-      <Text style={styles.shadowBoxText}>Stage</Text>
-      <View>
-            <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
-              <Text style={styles.buttonText}>
-                {locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name}
-              </Text>
-            </View>
-          </View>
-          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-        </TouchableOpacity>
+
+      <View style={styles.stageContainer}>
+          <View style={styles.refreshBox}>                        
+                <Text style={styles.stageTitle}> Stage </Text>
+                {
+                  locationInfo.stages.map((stage, index) => {
+                    return (
+                      <TouchableOpacity style={stage.stage_id == selectedStageId ? styles.selectedStageBox : styles.stageBox } 
+                          onPress={() => {                            
+                            setSelectedStageId(stage.stage_id);
+                            setSelectedOutComeId(null);
+                            setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));                            
+                          }}>
+                        <Text style={styles.stageText}>{stage.stage_name}</Text>                        
+                      </TouchableOpacity>
+                    )
+                  })
+                }              
+          </View>                              
       </View>
 
+      <View style={styles.formContainer}>        
 
-      <View style={styles.refreshBox}>
-        <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
-          <Text style={styles.shadowBoxText}>Outcome</Text>
-          <View style={{flexShrink: 1}}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText} numberOfLines={5}>
-                {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={showLoopSlider}>
-          <Image style={styles.refreshImage} source={Images.loopButton} />
-        </TouchableOpacity>
+          <ScrollView behavior="padding" style={{flex:1}}>
+
+            <View style={[styles.refreshBox, {flexDirection:'row'}]}>                    
+                <View style={{flex:1}}>
+                  <Text style={styles.stageTitle}> Outcome </Text>                
+                  <View style={styles.outcomesBoxRow}>
+                  {
+                    locationInfo.outcomes.map((item, index) => {
+                      if(item.linked_stage_id == selectedStageId){
+                        return (                                                                    
+                          <TouchableOpacity style={item.outcome_id == selectedOutcomeId ? styles.selectedOutcomesColumn : styles.outcomesColumn }
+                          onPress={() =>{
+                            setIdempotencyKey(uuid.v4());
+                            setSelectedOutComeId(item.outcome_id);
+                            let request = {
+                              "location_id": locationInfo.location_id,
+                              "stage_id": selectedStageId,
+                              "outcome_id": item.outcome_id,
+                              "campaign_id": 1,
+                              "indempotency_key":idempotencyKey
+                            }                            
+                            dispatch(postStageOutcomUpdate(request));
+                          }}
+                          >
+                            <Text style={styles.stageText}>{item.outcome_name}</Text>                        
+                          </TouchableOpacity>                                              
+                        )
+                      }                      
+                    })
+                  }
+                  </View>
+                </View>  
+
+                <View style={{justifyContent:'center'}}>
+                  <TouchableOpacity onPress={showLoopSlider}>
+                    <Image style={styles.refreshImage} source={Images.loopButton} />
+                  </TouchableOpacity>
+                </View>                                      
+            </View> 
+
+
+            <Text style={styles.boldText}>Campaign: Quill Test</Text>
+            {
+              locationInfo.disposition_fields &&
+              <View style={styles.inputBox}>
+
+                  {locationInfo.disposition_fields.map((field, key) => (
+                    <TouchableOpacity
+                      key={key}
+                      style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
+                      activeOpacity={1}
+                      onPress={() => {                           
+                      }}
+                    >
+                      <View>
+                        <TextInput
+                          type={field.field_type}
+                          ref={(element) => { dispositionRef.current[key] = element }}
+                          // autoFocus={true}
+                          keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
+                          returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
+                          style={styles.textInput}
+                          label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                          mode="outlined"
+                          outlineColor="#133C8B"
+                          activeOutlineColor="#9D9FA2"
+                          value={dispositionValue[key]}
+                          disabled = {getDisableStatus(field.field_type, field.rule_editable)}
+                          onChangeText={text => handleChangeText(text, field, key)}
+                          //blurOnSubmit={false}
+                          onSubmitEditing={()=>{                          
+                          }}
+                          onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : handleEmpty.bind(null) }
+                          left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
+                          right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            }
+            
+          </ScrollView>
+          
       </View>
 
-      {
-        locationInfo.disposition_fields &&
-        <View style={styles.inputBox}>
-
-            {locationInfo.disposition_fields.map((field, key) => (
-              <TouchableOpacity
-                key={key}
-                style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
-                activeOpacity={1}
-                onPress={() => {     
-                  //if (field.rule_editable == 0) return;                  
-                }}
-              >
-                <View>
-                  <TextInput
-                    type={field.field_type}
-                    ref={(element) => { dispositionRef.current[key] = element }}
-                    // autoFocus={true}
-                    keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
-                    returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
-                    style={styles.textInput}
-                    label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
-                    mode="outlined"
-                    outlineColor="#133C8B"
-                    activeOutlineColor="#9D9FA2"
-                    value={dispositionValue[key]}
-                    disabled = {getDisableStatus(field.field_type, field.rule_editable)}
-                    onChangeText={text => handleChangeText(text, field, key)}
-                    //blurOnSubmit={false}
-                    onSubmitEditing={()=>{                      
-                    }}
-                    onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : handleEmpty.bind(null) }
-                    left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
-                    right={field.add_suffix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_suffix} />}
-                  />
-                </View>
-              </TouchableOpacity>
-            ))}
-        </View>
-      }
       
+
+  
       <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
         mode={datePickerMode}
         onConfirm={handleConfirm}
         onCancel={() => setDateTimePickerVisibility(false)}
       />
-      {stagesModal()}
+      
       {outComesModal()}
       {confirmModal()}
-      
       {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={statusStageOutcomeUpdate=='request'}/>}
 
     </View>
@@ -347,33 +388,89 @@ const styles = EStyleSheet.create(parse({
 
   container:{
     flex:1,
+    flexDirection:'row',
   },
-  shadowBox: {
-    padding: 8,
-    height: 45,
-    flexGrow: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#fff',
+  stageContainer:{
+    flex:2,
+  },
+  formContainer:{
+    flex:5,
+  },
+
+  stageTitle: {
+    fontSize: 15,  
+    color: TEXT_COLOR,    
+    fontFamily: Fonts.secondaryBold
+  },
+
+  stageBox: {   
+    padding:8,      
+    backgroundColor: GREEN_COLOR,
     shadowColor: '#00000014',
     shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,
-    shadowRadius: 0,
-    elevation: 1,
-    zIndex: 1,
-    borderRadius: 7,
+    shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,    
+    borderRadius: 4,
+    marginTop:10,
+    marginRight:10,
   },
-  shadowBoxText: {
-    fontSize: 13,
-    width: 90,
+
+  selectedStageBox: {    
+    padding:8,      
+    backgroundColor: BLUE_COLOR,
+    shadowColor: '#00000014',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,    
+    borderRadius: 4,
+    marginTop:10,
+    marginRight:10,
+  },
+
+  stageText: {
+    fontSize: 13,  
     color: TEXT_COLOR,
-    fontFamily: 'Gilroy-Medium'
+    fontFamily: Fonts.secondaryMedium
   },
-  refreshBox: {
-    display: perWidth('none', 'flex'),
-    flexDirection: 'row',
-    alignItems: 'center',
+
+  outcomesBoxRow: {
+    display: "flex",
+    flexDirection:'row',
+    flexWrap:"wrap",    
+    // width:'100%'
+  },
+  
+  outcomesColumn: {
+    display: "flex",
+    flexDirection:"column",    
+    width:'45%',
+    borderRadius:3,
+    borderWidth:1,
+    borderColor:"#eee",
+    padding:8,    
+    marginLeft:'2%',
+    marginRight:'2%',
+    marginTop:10,
+    //flex-basis: 100%;
+    //flex: 1
+  },
+  
+  selectedOutcomesColumn: {
+    display: "flex",
+    flexDirection:"column",    
+    width:'45%',
+    borderRadius:3,
+    borderWidth:1,
+    borderColor:"#eee",
+    backgroundColor:BLUE_COLOR,
+    padding:8,    
+    marginLeft:'2%',
+    marginRight:'2%',
+    marginTop:10,
+    //flex-basis: 100%;
+    //flex: 1
+  },
+
+  refreshBox: {      
+    flex:1,        
     marginBottom: 8,
   },
   refreshImage: {
@@ -418,7 +515,7 @@ const styles = EStyleSheet.create(parse({
     letterSpacing: 0.2,
   },
   boldText: {
-    display: perWidth('flex', 'none'),
+    
     fontSize: 18,
     fontFamily: 'Gilroy-Bold',
     color: TEXT_COLOR,

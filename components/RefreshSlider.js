@@ -28,7 +28,10 @@ export default function RefreshSlider() {
       }}
       color="#DC143C" 
       uppercase={false} 
-      onPress={() => setSelectFilters(emptyArray)}
+      onPress={() => {
+        console.log("selected filter 3");
+        setSelectFilters(emptyArray)
+      }}
       >
         Close
       </Button>
