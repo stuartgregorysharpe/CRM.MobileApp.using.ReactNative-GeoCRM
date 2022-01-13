@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7C35C73DAF0FDC6C0CB51134 /* libPods-GeoCRM-GeoCRMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		96594E5E27901B0F003E95CC /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96594E5D27901B0F003E95CC /* Test.swift */; };
 		96696E09278E1B5D00221194 /* Product Sans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E00278E1B5D00221194 /* Product Sans-Bold.ttf */; };
 		96696E0A278E1B5D00221194 /* Product Sans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E01278E1B5D00221194 /* Product Sans-Regular.ttf */; };
 		96696E0B278E1B5D00221194 /* Gilroy-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E02278E1B5D00221194 /* Gilroy-Medium.ttf */; };
@@ -59,6 +60,9 @@
 		6F0246DDE599D83C03C3AD20 /* Pods-GeoCRM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM.debug.xcconfig"; path = "Target Support Files/Pods-GeoCRM/Pods-GeoCRM.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GeoCRM/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9648F3542784B85300D70181 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
+		96594E5927901A15003E95CC /* libIQKeyboardManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libIQKeyboardManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		96594E5C27901B0F003E95CC /* GeoCRM-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GeoCRM-Bridging-Header.h"; sourceTree = "<group>"; };
+		96594E5D27901B0F003E95CC /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		96696E00278E1B5D00221194 /* Product Sans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Bold.ttf"; path = "../../assets/fonts/Product Sans-Bold.ttf"; sourceTree = "<group>"; };
 		96696E01278E1B5D00221194 /* Product Sans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Product Sans-Regular.ttf"; path = "../../assets/fonts/Product Sans-Regular.ttf"; sourceTree = "<group>"; };
 		96696E02278E1B5D00221194 /* Gilroy-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Medium.ttf"; path = "../../assets/fonts/Gilroy-Medium.ttf"; sourceTree = "<group>"; };
@@ -122,6 +126,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				96594E5D27901B0F003E95CC /* Test.swift */,
+				96594E5C27901B0F003E95CC /* GeoCRM-Bridging-Header.h */,
 			);
 			name = GeoCRM;
 			sourceTree = "<group>";
@@ -129,6 +135,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				96594E5927901A15003E95CC /* libIQKeyboardManager.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */,
 				1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */,
@@ -263,7 +270,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1310;
 					};
 				};
 			};
@@ -493,6 +500,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				96594E5E27901B0F003E95CC /* Test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,6 +519,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 97B75C796F3A17C8220A95FC /* Pods-GeoCRM-GeoCRMTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -538,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4CBCE01EB5A9644E5D43DD4D /* Pods-GeoCRM-GeoCRMTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = GeoCRMTests/Info.plist;
@@ -572,7 +582,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.1.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -580,6 +590,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.georep.geocrm;
 				PRODUCT_NAME = GeoCRM;
+				SWIFT_OBJC_BRIDGING_HEADER = "GeoCRM-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -600,7 +611,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.1.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -608,6 +619,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.georep.geocrm;
 				PRODUCT_NAME = GeoCRM;
+				SWIFT_OBJC_BRIDGING_HEADER = "GeoCRM-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

@@ -259,6 +259,6 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: BG_COLOR,
     elevation: 2,
     zIndex: 2,
-    padding: 10,
+    padding: 0,
   },
 }));

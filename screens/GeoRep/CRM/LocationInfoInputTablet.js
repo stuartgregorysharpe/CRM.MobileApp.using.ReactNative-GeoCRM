@@ -39,6 +39,8 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
   const [submitKey, setSubmitKey] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  //const [isBelowStage, setIsBelowStage] = useState(false);
+  var isBelowStage = false;
   console.log("LO", locationInfo);
 
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
         "stage_id": selectedStageId,
         "outcome_id": selectedOutcomeId,
         "campaign_id": 1,
-        "indempotency_key":idempotencyKey
+        "indempotency_key":uuid.v4()
       }       
       postStageOutcomUpdate(request)
       .then((res) => {
@@ -99,7 +101,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
         "value": dispositionValue[key]
       })
     });
-    setIdempotencyKey(uuid.v4());
+    //setIdempotencyKey(uuid.v4());
     dispatch(postDispositionFields(postData, idempotencyKey));
 
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
@@ -227,31 +229,27 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
   }
 
   const renderOutcomesItem = () => {
-
   }
 
   const outComesModal = () => {
     return (
-      <CustomPicker visible={outComeModalVisible} onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} renderItems= {
+      <CustomPicker 
+        visible={outComeModalVisible}         
+        renderItems= {
         selectedOutcomes.map((outcome, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setIdempotencyKey(uuid.v4());
-              setSelectedOutComeId(outcome.outcome_id);
-              setOutComeModalVisible(!outComeModalVisible);
-              setIsLoading(true);
-
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TouchableOpacity style={[styles.pickerItem]} key={key}
+          onPress={() => { 
+            setSelectedOutComeId(outcome.outcome_id);
+            setOutComeModalVisible(!outComeModalVisible);
+            setIsLoading(true);
+          }}>            
               <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
-              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-
-          </View>
+              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}           
+          </TouchableOpacity>
         ))
       } />
     )
   }
-
 
   return (
     <View style={styles.container}>
@@ -260,9 +258,12 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
           <View style={styles.refreshBox}>                        
                 <Text style={styles.stageTitle}> Stage </Text>
                 {
-                  locationInfo.stages.map((stage, index) => {
+                  locationInfo.stages.map((stage, index) => {                    
+                    if(stage.stage_id == selectedStageId){
+                      isBelowStage = true;
+                    }
                     return (
-                      <TouchableOpacity style={stage.stage_id == selectedStageId ? styles.selectedStageBox : styles.stageBox } 
+                      <TouchableOpacity style={ stage.stage_id == selectedStageId  ? styles.selectedStageBox : isBelowStage? styles.belowStageBox :styles.stageBox } 
                           onPress={() => {                            
                             setSelectedStageId(stage.stage_id);
                             setSelectedOutComeId(null);
@@ -290,16 +291,9 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
                         return (                                                                    
                           <TouchableOpacity style={item.outcome_id == selectedOutcomeId ? styles.selectedOutcomesColumn : styles.outcomesColumn }
                           onPress={() =>{
-                            setIdempotencyKey(uuid.v4());
+                            // updae outcomes                            
                             setSelectedOutComeId(item.outcome_id);
-                            let request = {
-                              "location_id": locationInfo.location_id,
-                              "stage_id": selectedStageId,
-                              "outcome_id": item.outcome_id,
-                              "campaign_id": 1,
-                              "indempotency_key":idempotencyKey
-                            }                            
-                            dispatch(postStageOutcomUpdate(request));
+                            setIsLoading(true);                            
                           }}
                           >
                             <Text style={styles.stageText}>{item.outcome_name}</Text>                        
@@ -376,7 +370,9 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
       
       {outComesModal()}
       {confirmModal()}
-      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={statusStageOutcomeUpdate=='request'}/>}
+
+      {/* visible={statusStageOutcomeUpdate=='request' */}
+      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={isLoading}/>}
 
     </View>
   )
@@ -398,9 +394,10 @@ const styles = EStyleSheet.create(parse({
   },
 
   stageTitle: {
-    fontSize: 15,  
-    color: TEXT_COLOR,    
-    fontFamily: Fonts.secondaryBold
+    fontSize: 18,
+    color: TEXT_COLOR,
+    fontFamily: Fonts.secondaryBold,
+    marginBottom: 8    
   },
 
   stageBox: {   
@@ -424,6 +421,18 @@ const styles = EStyleSheet.create(parse({
     marginTop:10,
     marginRight:10,
   },
+
+  belowStageBox: {    
+    padding:8,      
+    backgroundColor: "#FFF",
+    shadowColor: '#00000014',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,    
+    borderRadius: 4,
+    marginTop:10,
+    marginRight:10,
+  },
+
 
   stageText: {
     fontSize: 13,  

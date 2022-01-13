@@ -246,12 +246,11 @@ export const getLocationInfo = async(location_id) => {
 
 
 export const postStageOutcomUpdate = async(request) => {
-{        
+    
+    var base_url = await getBaseUrl();
+    var token = await getToken();
     return new Promise(function(resolve, reject) {
-
-      var base_url = await getBaseUrl();
-      var token = await getToken();
-
+      
       let requestPayload = {
         "location_id": request.location_id,
         "stage_id": request.stage_id,
@@ -279,9 +278,7 @@ export const postStageOutcomUpdate = async(request) => {
         resolve(0);
         console.log(err.response);
       })
-
-
-    });    
+    });
 }
 
 

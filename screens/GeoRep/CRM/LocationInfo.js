@@ -61,14 +61,28 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
   
+  const isCRM = () =>{
+    var flag = false;
+    if(features.includes("access_crm") || features.includes("checkin")){
+      flag = true;
+    }
+    return flag;
+  }
+
   const getHeight = () =>{
     var flag = false;
     if(features.includes("access_crm") || features.includes("checkin")){
       flag = true;
     }
     if(Platform.OS == 'ios') {
-      var addition = flag ? 0 : 120;
-      return Dimensions.get("window").height - 150 + addition;
+      if(DeviceInfo.isTablet()){
+        var addition = flag ? 0 : 50;
+        return Dimensions.get("window").height - 100 + addition;
+      }else{
+        var addition = flag ? 0 : 110;
+        return Dimensions.get("window").height - 130 + addition;
+      }
+      
     }else{
       if(DeviceInfo.isTablet()){
         var addition = flag ? 0 : 80;
@@ -81,17 +95,19 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
   }
 
   return (
-    <View style={[styles.container, {height:getHeight()}]}>
+    <View style={[styles.container, {flex:1}]}>
       {subSlideStatus && <TouchableOpacity
         activeOpacity={1} 
         style={grayBackground}
         onPress={() => dispatch({type: SUB_SLIDE_STATUS, payload: false})}
       ></TouchableOpacity>}
+
       {subSlideStatus && <View
         style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
       >
         <RefreshSlider />
       </View>}
+
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         if (statusDispositionInfo) {
           dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
@@ -107,8 +123,10 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       <KeyboardAwareScrollView 
         enableOnAndroid={true}
         enableAutomaticScroll={(Platform.OS === 'ios')}
-        extraHeight={130} extraScrollHeight={130}
+        extraHeight={130}        
+        //extraScrollHeight={130}        
         behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: (features && (features.includes("access_crm") || features.includes("checkin"))) ? 50 : 0}]}>
+
         <View style={styles.headerBox}>
           <View>
             <View style={styles.subtitleBox}>
@@ -121,6 +139,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
             <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
           </View>
         </View>
+
         <View style={styles.headerBox}>
           <View style={styles.addressText}>
             <View style={styles.subtitleBox}>
@@ -134,49 +153,45 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           </View>
         </View>    
 
+        <View style={{padding:10, marginBottom:50}}>
         {
           locationInfo && DeviceInfo.isTablet()?
           <LocationInfoInputTablet navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> :
           <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> 
-        }                        
-        <View style={{ height: 20 }}></View>  
+        }
+        </View>
+                                        
+      
 
       </KeyboardAwareScrollView>
 
-      <View style={{ height: 20 }}></View>
+      {/* <View style={{ height: 20 }}></View> */}
 
-      {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && <View style={styles.nextButtonBar}>
-        {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {
-          // if (statusDispositionInfo) {
-          //   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-          //   dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
-          //   return;
-          // }
-          navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
-        }}>
-          <Text style={styles.nextButtonText}>Access CRM</Text>
-          <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
-        </TouchableOpacity>}
-
-
-        {features && features.includes("checkin") && <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => {
-          // if (statusDispositionInfo) {
-          //   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-          //   dispatch({type: CHANGE_LOCATION_ACTION, payload: "LocationSpecificInfo"});
-          //   return;
-          // }
-          navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+      {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
+        <View style={styles.nextButtonBar}>        
+          {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {          
+            navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
           }}>
+            <Text style={styles.nextButtonText}>Access CRM</Text>
+            <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
+          </TouchableOpacity>
+          }
+          {features && features.includes("checkin") && <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => {          
+            navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+            }}>
 
-          <Text style={[styles.checkInButtonText]}>Check In</Text>
-          <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
-        </TouchableOpacity>}
-      </View>}
+            <Text style={[styles.checkInButtonText]}>Check In</Text>
+            <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
+          </TouchableOpacity>
+          }
+      </View>
+      }
+      
 
+      <TouchableOpacity style={[styles.plusButton]} onPress={() => setStatusSubmit(!statusSubmit)}>
+          <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
+      </TouchableOpacity>    
 
-      <TouchableOpacity style={styles.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
-        <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
-      </TouchableOpacity>      
     </View>
   )
 }
@@ -185,7 +200,7 @@ const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {      
-    backgroundColor: BG_COLOR,  
+    backgroundColor: BG_COLOR,          
   },
   innerContainer: {
     backgroundColor: BG_COLOR,
@@ -195,7 +210,9 @@ const styles = EStyleSheet.create(parse({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12
+    marginBottom: 12,
+    paddingLeft:10,
+    paddingRight:10
   },
 
   subtitleBox: {
@@ -234,20 +251,21 @@ const styles = EStyleSheet.create(parse({
     borderColor: PRIMARY_COLOR,
     borderRadius: 7
   },
-  nextButtonBar: {
-    position: 'absolute',
-    bottom: DeviceInfo.isTablet() ? 0 : 0,
-    left: -10,
-    right: -10,
+
+  nextButtonBar: {        
+    position:'absolute',
+    bottom:0,
+    backgroundColor:"#FFF",
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingLeft: 20,    
-    paddingRight: 20,    
-    paddingTop:10,
-    paddingBottom:DeviceInfo.isTablet() ? 0 : 10,    
+    paddingTop: DeviceInfo.isTablet() ? 20 : 15,
+    paddingLeft: DeviceInfo.isTablet() ? 20 : 15,    
+    paddingRight: DeviceInfo.isTablet() ? 20 : 15,   
+    width:Dimensions.get("screen").width,      
+    paddingBottom: DeviceInfo.isTablet() ? 20 : 5,    
     borderColor: 'rgba(0, 0, 0, 0.2)',
-    borderTopWidth: 0.5,
-    //zIndex: 1,
+    borderTopWidth: 0.5,    
+
   },
   nextButton: {
     width: '47%',
@@ -281,15 +299,15 @@ const styles = EStyleSheet.create(parse({
     position: 'absolute',
     bottom: 80,
     right: 20,
-    zIndex: 1,
+    zIndex: 10,
     elevation: 1,
   },
   transitionView: {
     position: 'absolute',
-    bottom: -20,
+    bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: BG_COLOR,
+    backgroundColor: BG_COLOR,    
     elevation: 2,
     zIndex: 2,
     padding: 10,

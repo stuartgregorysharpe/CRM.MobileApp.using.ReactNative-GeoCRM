@@ -72,10 +72,11 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
         "stage_id": selectedStageId,
         "outcome_id": selectedOutcomeId,
         "campaign_id": 1,
-        "indempotency_key":idempotencyKey
+        "indempotency_key":uuid.v4()
       }       
       postStageOutcomUpdate(request)
       .then((res) => {
+        console.log("succes");
         setIsLoading(false);
       })
       .catch((res) => {
@@ -97,7 +98,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
         "value": dispositionValue[key]
       })
     });
-    setIdempotencyKey(uuid.v4());
+    //setIdempotencyKey(uuid.v4());
     dispatch(postDispositionFields(postData, idempotencyKey));
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
@@ -226,25 +227,18 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   const outComesModal = () => {
     return (
       <CustomPicker 
-        visible={outComeModalVisible} 
-        //onModalClose={() => setOutComeModalVisible(!outComeModalVisible)} 
+        visible={outComeModalVisible}         
         renderItems= {
         selectedOutcomes.map((outcome, key) => (
-
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              
-              setIdempotencyKey(uuid.v4());
-              setSelectedOutComeId(outcome.outcome_id);
-              setOutComeModalVisible(!outComeModalVisible);
-              setIsLoading(true);
-
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TouchableOpacity style={[styles.pickerItem]} key={key}
+          onPress={() => { 
+            setSelectedOutComeId(outcome.outcome_id);
+            setOutComeModalVisible(!outComeModalVisible);
+            setIsLoading(true);
+          }}>            
               <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
-              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-
-          </View>
+              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}           
+          </TouchableOpacity>
         ))
       } />
     )
@@ -335,7 +329,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       {outComesModal()}
       {confirmModal()}
       
-      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={statusStageOutcomeUpdate=='request'}/>}
+      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={isLoading}/>}      
 
     </View>
   )

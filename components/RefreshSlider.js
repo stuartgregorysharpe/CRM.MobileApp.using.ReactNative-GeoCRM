@@ -9,33 +9,37 @@ import Divider from './Divider';
 import FilterButton from './FilterButton';
 import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
-import { SLIDE_STATUS } from '../actions/actionTypes';
+import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 
-export default function RefreshSlider() {
+
+export default function RefreshSlider({onClose}) {
   const dispatch = useDispatch();
   return (
     <ScrollView style={styles.refreshSliderContainer}>
     <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
       <Divider />
     </TouchableOpacity>
+
     <View style={styles.sliderHeader}>
       <Title style={{ fontFamily: Fonts.primaryBold }}>Re-loop</Title>
       <Button 
-      labelStyle={{
-        fontFamily: Fonts.primaryRegular, 
-        letterSpacing: 0.2
-      }}
-      color="#DC143C" 
-      uppercase={false} 
-      onPress={() => {
-        console.log("selected filter 3");
-        setSelectFilters(emptyArray)
-      }}
-      >
+        labelStyle={{
+          fontFamily: Fonts.primaryRegular, 
+          letterSpacing: 0.2
+        }}
+        color="#DC143C" 
+        uppercase={false} 
+        onPress={() => {        
+          //setSelectFilters(emptyArray)
+          console.log("called");
+          dispatch({type: SUB_SLIDE_STATUS, payload: false});
+        }}
+        >
         Close
       </Button>
     </View>
+
     <FilterButton 
       text="Later Today" 
       onPress={() => console.log("pressed")}

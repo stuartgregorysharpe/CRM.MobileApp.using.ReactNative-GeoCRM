@@ -14,7 +14,8 @@ import { breakPoint } from '../../../../constants/Breakpoint';
 import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes';
 import Fonts from '../../../../constants/Fonts';
 import { grayBackground } from '../../../../constants/Styles';
-import Images from '../../../../constants/Images';
+import DeviceInfo from 'react-native-device-info';
+import LocationInfoInputTablet from '../LocationInfoInputTablet';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
@@ -23,11 +24,10 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   </View>
 );
 
+
 export default function LocationSpecificInfoScreen(props) {
 
-  const dispatch = useDispatch();
-  
-  //const locationInfo = useSelector(state => state.location.locationInfo);
+  const dispatch = useDispatch();  
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
@@ -38,8 +38,7 @@ export default function LocationSpecificInfoScreen(props) {
   }
 
   useEffect(() => {
-    dispatch({type: SLIDE_STATUS, payload: false});
-    console.log(" start LocationSpecificInfoScreen" ,props);
+    dispatch({type: SLIDE_STATUS, payload: false});    
   });
 
   useEffect(() => {
@@ -54,10 +53,11 @@ export default function LocationSpecificInfoScreen(props) {
         onPress={() => {dispatch({type: SUB_SLIDE_STATUS, payload: false})}}
       ></TouchableOpacity>}
       {subSlideStatus && <View
-        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-      >
-        <RefreshSlider />
+          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+        >
+        <RefreshSlider  />
       </View>}
+
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -87,40 +87,36 @@ export default function LocationSpecificInfoScreen(props) {
             <FilterButton text="Contact: Jack Reacher" />
           </View>
         </View>
+
+
+
         <View style={styles.innerContainer}>
-          <View style={styles.locationInfoBox}>
-            <View style={[styles.cardBox, boxShadow]}>
-              <Text style={styles.boldText}>Outcome</Text>
-              <View style={{ flexDirection: 'row', position: 'relative' }}>
-                <View style={styles.outComeBox}>
-                  { locationInfo.outcomes && locationInfo.outcomes.map((item, key) => (
-                    <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
-                  ))}                  
-                </View>
-                <TouchableOpacity>
-                  <Image style={styles.refreshImage} source={Images.Re_Loop_Button} />
-                </TouchableOpacity>
-              </View>
+          
+                  
+            <View style={[styles.cardBox]}>
+              {/* <Text style={styles.boldText}>Outcome</Text> */}
+              
+              {
+              locationInfo && DeviceInfo.isTablet() ? <LocationInfoInputTablet
+                  navigation={props.navigation} 
+                  screenProps={props.screenProps} 
+                  statusSubmit={statusSubmit}
+                  showLoopSlider={showLoopSlider} 
+                  infoInput={locationInfo} /> : 
+                <LocationInfoInput
+                  navigation={props.navigation} 
+                  screenProps={props.screenProps} 
+                  statusSubmit={statusSubmit} 
+                  showLoopSlider={showLoopSlider} 
+                  infoInput={locationInfo} />
+              }     
+
             </View>
             
-            {
-              locationInfo ? <LocationInfoInput 
-              navigation={props.navigation} 
-              screenProps={props.screenProps} 
-              statusSubmit={statusSubmit} 
-              showLoopSlider={showLoopSlider} 
-              infoInput={locationInfo} /> : <View></View>
-            }            
-          </View>
-          <View style={styles.cardContainer}>
-            <View style={[styles.cardBox, boxShadow]}>
-              <Text style={styles.boldText}>Stage</Text>
-              {locationInfo.stages.map((item, key) => (
-                <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
-              ))}              
-            </View>            
-          </View>
+                   
+        
         </View>
+
         <View style={{height: 60}}></View>
       </ScrollView>
       <TouchableOpacity style={styles.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
@@ -175,7 +171,7 @@ const styles = EStyleSheet.create(parse({
   headerIcon: {
     marginRight: 8
   },
-  innerContainer: {
+  innerContainer: {    
     justifyContent: 'space-between',
     flexDirection: perWidth('row-reverse', 'column')
   },
@@ -190,11 +186,9 @@ const styles = EStyleSheet.create(parse({
     marginBottom: 10
   },
   cardBox: {
-    display: perWidth('flex', 'none'),
+    display: perWidth('flex', 'flex'),
     width: '100%',
-    padding: 12,
-    borderRadius: 10,
-    backgroundColor: '#fff',
+    padding: 12,    
     marginBottom: 8,
   },
   boldText: {

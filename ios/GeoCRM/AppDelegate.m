@@ -5,6 +5,8 @@
 #import <React/RCTRootView.h>
 #import "RNBootSplash.h"
 #import <GoogleMaps/GoogleMaps.h>
+#import <IQKeyboardManager/IQKeyboardManager.h>
+
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -49,7 +51,9 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-
+  
+  [[IQKeyboardManager sharedManager] setEnable:YES];
+  
   [GMSServices provideAPIKey:@"AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o"];
   
   NSArray *fontFamilies = [UIFont familyNames];

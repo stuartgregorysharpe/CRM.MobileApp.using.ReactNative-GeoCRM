@@ -83,7 +83,7 @@ export default function SignIn() {
       setPasswordError(true);
       return;
     }
-    
+
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
     dispatch(Login(email, password));
   }
@@ -91,19 +91,19 @@ export default function SignIn() {
   return (
     <SafeAreaView style={{flex:1}}>
       <KeyboardAwareScrollView 
-      keyboardShouldPersistTaps={'always'}
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ flexGrow: 1 }} 
-      enableOnAndroid={true}
-      ref={emailRef}
-      enableAutomaticScroll={(Platform.OS === 'ios')}
-      extraHeight={130} 
-      extraScrollHeight={130}
-      behavior="padding" style={{flex:1}}>
-      {/* <KeyboardAvoidingView style={{flex:1}}>       */}
-
+        keyboardShouldPersistTaps={'always'}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 , flex:1 }} 
+        enableOnAndroid={true}
+        ref={emailRef}
+        enableAutomaticScroll={(Platform.OS === 'ios')}
+        extraHeight={140} 
+        //extraScrollHeight={140}
+        behavior="padding" style={{flex:1}}>
+    
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
       <View style={styles.container}>
+        
         <Image style={styles.logo} source={require("../assets/images/logo.png")} />
         <Text style={styles.title}>Welcome to</Text>
         <Text style={styles.title}>Geo Rep CRM</Text>
@@ -116,10 +116,7 @@ export default function SignIn() {
             outlineColor="#fff"
             activeOutlineColor="#fff"
             value={email}            
-            onFocus={() => { 
-              //window.scrollTo(0, 0)
-              //emailRef.current?.scrollTo({ x: 0, y: 0})              
-              //emailRef.current.scrollTo(0, 0);
+            onFocus={() => {               
             }}
             onSubmitEditing={()=>{
               handleNext();
@@ -182,9 +179,7 @@ export default function SignIn() {
         {step && <TouchableOpacity onPress={() => {}}>
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}
-      </View>
-
-      {/* </KeyboardAvoidingView> */}
+      </View>      
     </KeyboardAwareScrollView>  
     </SafeAreaView>
   )
@@ -219,6 +214,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.secondaryMediumMedium,
     marginBottom: 8
   },
+
   eyeIcon: {
     position: 'absolute',
     top: 4,

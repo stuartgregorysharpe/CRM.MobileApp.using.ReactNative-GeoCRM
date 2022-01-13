@@ -25,11 +25,12 @@ target 'GeoCRM' do
   pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
-
+  pod 'IQKeyboardManager' 
 
   target 'GeoCRMTests' do
     inherit! :complete
     # Pods for testing
+    
   end
 
   # Enables Flipper.
