@@ -12,9 +12,8 @@ import {
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
   CHANGE_CURRENT_LOCATION,
-  STATUS_DISPOSITION_FIELDS_UPDATE,
-  STATUS_LOCATION_LEADFIELDS,
-  CHANGE_LOCATION_LEADFIELDS
+  STATUS_DISPOSITION_FIELDS_UPDATE
+  
 } from "./actionTypes";
 
 import { getBaseUrl, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
@@ -165,32 +164,34 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     })
 }
 
-export const getLeadFields = () => (dispatch, getState) => {
-  dispatch({ type: STATUS_LOCATION_LEADFIELDS, payload: 'request' });
-  axios
-    .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/leadfields`, {
-      params: {
-        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-      },
-      headers: {
-        Authorization: 'Bearer ' + getState().selection.token
-      }
-    })
-    .then((res) => {
-      if (res.data == undefined) {
-
-        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        return;
-      }
-      if (res.data.status == 'success') {
-        dispatch({ type: STATUS_LOCATION_LEADFIELDS, payload: 'success' });
-        dispatch({ type: CHANGE_LOCATION_LEADFIELDS, payload: res.data })
-      }
-    })
-    .catch((err) => {
-      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-      console.log(err);
-    })
+export const getLeadFields = async() => {
+  var base_url = await getBaseUrl();
+  var token = await getToken();
+  var user_id = await getUserId();
+  return new Promise(function(resolve, reject) {
+      axios
+      .get(`${base_url}/leadfields`, {
+        params: {
+          user_id : user_id          
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((res) => {              
+        if (res.data == undefined) {            
+          resolve([]);
+        }
+        if (res.data.status == 'success') {
+          resolve(res.data.custom_master_fields);
+        }else{
+          resolve([]);
+        }
+      })
+      .catch((err) => {        
+        reject(err);          
+      })
+  });
 }
 
 export const postLeadFields = (postData, idempotencyKey) => (dispatch, getState) => {
@@ -249,6 +250,7 @@ export const postStageOutcomUpdate = async(request) => {
     
     var base_url = await getBaseUrl();
     var token = await getToken();
+
     return new Promise(function(resolve, reject) {
       
       let requestPayload = {
@@ -275,7 +277,7 @@ export const postStageOutcomUpdate = async(request) => {
       })
       .catch((err) => {
         // dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        resolve(0);
+        reject(err);
         console.log(err.response);
       })
     });
@@ -300,4 +302,25 @@ export const postDispositionFields = (postData, idempotencyKey) => (dispatch, ge
       dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'failure'});
       console.log(err.response);
     })
+}
+
+
+
+export const reverseGeocoding = async(latitude, longitude) => {
+  
+  return new Promise(function(resolve, reject) {
+    
+    let data = {
+      result_type: "street_address",
+      latlng: [latitude, longitude],
+      key: "AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw"
+    }
+    axios
+      .post('https://maps.googleapis.com/maps/api/geocode/json', data)
+      .then((res) => {
+        console.log("geocodeing");
+        console.log(res.data)
+    })
+
+  });
 }

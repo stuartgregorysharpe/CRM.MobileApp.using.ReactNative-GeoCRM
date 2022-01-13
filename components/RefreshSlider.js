@@ -30,9 +30,7 @@ export default function RefreshSlider({onClose}) {
         }}
         color="#DC143C" 
         uppercase={false} 
-        onPress={() => {        
-          //setSelectFilters(emptyArray)
-          console.log("called");
+        onPress={() => {                  
           dispatch({type: SUB_SLIDE_STATUS, payload: false});
         }}
         >

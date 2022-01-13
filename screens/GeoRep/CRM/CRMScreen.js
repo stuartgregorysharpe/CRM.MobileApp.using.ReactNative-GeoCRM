@@ -30,7 +30,6 @@ export default function CRMScreen({navigation}) {
         options={{ header: () => null }}>
           {/* {props => <LocationSpecificInfoScreen {...props}  />} */}
       </Stack.Screen>
-
       
     </Stack.Navigator>
   );

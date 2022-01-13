@@ -65,25 +65,22 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     handleSubmit();
   }, [statusSubmit])
 
-  useEffect(() =>{
-    if(isLoading){
-      let request = {
-        "location_id": locationInfo.location_id,
-        "stage_id": selectedStageId,
-        "outcome_id": selectedOutcomeId,
-        "campaign_id": 1,
-        "indempotency_key":uuid.v4()
-      }       
-      postStageOutcomUpdate(request)
-      .then((res) => {
-        console.log("succes");
-        setIsLoading(false);
-      })
-      .catch((res) => {
-        setIsLoading(false);
-      })      
-    }
-  }, [isLoading]);
+  const updateOutcomes = () => {
+    let request = {
+      "location_id": locationInfo.location_id,
+      "stage_id": selectedStageId,
+      "outcome_id": selectedOutcomeId,
+      "campaign_id": 1,
+      "indempotency_key":uuid.v4()
+    }             
+    postStageOutcomUpdate(request)
+    .then((res) => {      
+      setIsLoading(false);
+    })
+    .catch((e) => {
+      setIsLoading(false);
+    })
+  }
 
   const handleSubmit = () => {
     let postData = {
@@ -247,9 +244,9 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   return (
     <View style={styles.container}>
       <View style={styles.refreshBox}>
-      <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
-      <Text style={styles.shadowBoxText}>Stage</Text>
-      <View>
+          <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
+          <Text style={styles.shadowBoxText}>Stage</Text>
+          <View>
             <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
               <Text style={styles.buttonText}>
                 {locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name}
@@ -264,12 +261,13 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       <View style={styles.refreshBox}>
         <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
-          <View style={{flexShrink: 1}}>
-            <TouchableOpacity style={styles.button}>
+          <View style={{flexShrink: 1}}>            
+            <View style={styles.button}>
               <Text style={styles.buttonText} numberOfLines={5}>
                 {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
               </Text>
-            </TouchableOpacity>
+            </View>
+
           </View>
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </TouchableOpacity>
@@ -325,11 +323,16 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
         onConfirm={handleConfirm}
         onCancel={() => setDateTimePickerVisibility(false)}
       />
+
       {stagesModal()}
       {outComesModal()}
       {confirmModal()}
       
-      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={isLoading}/>}      
+      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.'
+       onCompleted={() =>{         
+        updateOutcomes();
+       }}
+       visible={isLoading}/>}      
 
     </View>
   )

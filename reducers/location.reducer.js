@@ -9,8 +9,7 @@ import {
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
   STATUS_DISPOSITION_FIELDS_UPDATE,
-  STATUS_LOCATION_LEADFIELDS,
-  CHANGE_LOCATION_LEADFIELDS
+  
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -83,16 +82,8 @@ export default (state = initialState, action) => {
          ...state,
          statusLocationInfoUpdate: action.payload
       }
-    case STATUS_LOCATION_LEADFIELDS:
-      return {
-          ...state,
-          statusLocationLeadfields: action.payload
-      }
-    case CHANGE_LOCATION_LEADFIELDS:
-      return {
-          ...state,
-          locationLeadfields: action.payload
-      }
+
+  
     default:
       return state;
   }

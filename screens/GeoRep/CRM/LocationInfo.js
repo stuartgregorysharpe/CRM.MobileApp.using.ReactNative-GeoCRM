@@ -159,14 +159,9 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           <LocationInfoInputTablet navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> :
           <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> 
         }
-        </View>
-                                        
-      
-
+        </View>                                              
       </KeyboardAwareScrollView>
-
-      {/* <View style={{ height: 20 }}></View> */}
-
+      
       {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
         <View style={styles.nextButtonBar}>        
           {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {          
@@ -187,7 +182,6 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       </View>
       }
       
-
       <TouchableOpacity style={[styles.plusButton]} onPress={() => setStatusSubmit(!statusSubmit)}>
           <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>    

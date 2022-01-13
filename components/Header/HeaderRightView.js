@@ -1,11 +1,9 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { View, StyleSheet , Text ,TouchableOpacity, Platform} from 'react-native';
 import { PRIMARY_COLOR } from '../../constants/Colors';
-import Fonts from '../../constants/Fonts';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
-
 
 export default function HeaderRightView() {
     const dispatch = useDispatch();

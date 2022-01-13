@@ -97,7 +97,7 @@ export default function SignIn() {
         enableOnAndroid={true}
         ref={emailRef}
         enableAutomaticScroll={(Platform.OS === 'ios')}
-        extraHeight={140} 
+        extraHeight={140}
         //extraScrollHeight={140}
         behavior="padding" style={{flex:1}}>
     

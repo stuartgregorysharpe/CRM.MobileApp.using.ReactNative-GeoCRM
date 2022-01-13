@@ -69,24 +69,22 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
     handleSubmit();
   }, [statusSubmit]);
   
-  useEffect(() =>{
-    if(isLoading){
-      let request = {
-        "location_id": locationInfo.location_id,
-        "stage_id": selectedStageId,
-        "outcome_id": selectedOutcomeId,
-        "campaign_id": 1,
-        "indempotency_key":uuid.v4()
-      }       
-      postStageOutcomUpdate(request)
-      .then((res) => {
-        setIsLoading(false);
-      })
-      .catch((res) => {
-        setIsLoading(false);
-      })      
-    }
-  }, [isLoading]);
+  const updateOutcomes = () => {
+    let request = {
+      "location_id": locationInfo.location_id,
+      "stage_id": selectedStageId,
+      "outcome_id": selectedOutcomeId,
+      "campaign_id": 1,
+      "indempotency_key":uuid.v4()
+    }             
+    postStageOutcomUpdate(request)
+    .then((res) => {      
+      setIsLoading(false);
+    })
+    .catch((e) => {
+      setIsLoading(false);
+    })
+  }
 
   const handleSubmit = () => {
     let postData = {
@@ -290,8 +288,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
                       if(item.linked_stage_id == selectedStageId){
                         return (                                                                    
                           <TouchableOpacity style={item.outcome_id == selectedOutcomeId ? styles.selectedOutcomesColumn : styles.outcomesColumn }
-                          onPress={() =>{
-                            // updae outcomes                            
+                          onPress={() =>{                                              
                             setSelectedOutComeId(item.outcome_id);
                             setIsLoading(true);                            
                           }}
@@ -372,7 +369,11 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
       {confirmModal()}
 
       {/* visible={statusStageOutcomeUpdate=='request' */}
-      {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.' visible={isLoading}/>}
+      {<CustomLoading closeOnTouchOutside={false} 
+       onCompleted={() =>{         
+        updateOutcomes();
+       }}
+      message='Updating please wait.' visible={isLoading}/>}
 
     </View>
   )

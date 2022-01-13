@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import AddLead from '../../../components/AddLead';
+import AddLead from './AddLead';
 import LocationInfo from './LocationInfo';
 import FilterView from '../../../components/FilterView';
 import MarkerIcon from '../../../components/Marker';
@@ -19,7 +19,6 @@ import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLeadFields, getLocationsMap } from '../../../actions/location.action';
 
 import { 
   getLocationPinKey, 
@@ -45,8 +44,7 @@ const MarkerView = ( {isRequest} ) => {
         icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1]
       })
     })
-    setMarkerIcons(items);
-    
+    setMarkerIcons(items);    
   }, [pins])
 
   if (statusPinKeys == "request" || isRequest ) {
@@ -165,7 +163,7 @@ export default function LocationScreen(props) {
         setShowItem(2);
         return;
       case "addLead":
-        setShowItem(3);
+        setShowItem(3);        
         dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       case "locationInfo":
@@ -277,8 +275,7 @@ export default function LocationScreen(props) {
 
             <TouchableOpacity
               style={styles.plusButton} 
-              onPress={() => {
-                dispatch(getLeadFields());          
+              onPress={() => {                
                 animation("addLead");
               }}>
               <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />

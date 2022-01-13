@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { View, StyleSheet , Text , Image, Dimensions, TouchableOpacity, Platform} from 'react-native';
 import { PRIMARY_COLOR } from '../../constants/Colors';
-import Fonts from '../../constants/Fonts';
 import Images from '../../constants/Images';
 import { style } from '../../constants/Styles';
-import HeaderRightView from './HeaderRightView';
 
 export default function CustomWebViewHeader({title, showIcon, onBackPressed}) {   
 

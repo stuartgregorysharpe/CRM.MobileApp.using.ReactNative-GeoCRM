@@ -2,11 +2,12 @@ import React from 'react';
 import { View,Modal, TouchableWithoutFeedback, StyleSheet,ActivityIndicator,Text } from 'react-native';
 import { BG_COLOR, PRIMARY_COLOR } from '../constants/Colors';
 
-const CustomLoading = ({visible, onModalClose,closeOnTouchOutside=false,message="Please wait.." }) => {
+const CustomLoading = ({visible, onModalClose,closeOnTouchOutside=false,message="Please wait.." , onCompleted}) => {
     return (
         <Modal animationType="slide"
             transparent={true}
             visible={visible}
+            onShow={onCompleted()}
             onRequestClose={onModalClose}>
             <TouchableWithoutFeedback onPress={closeOnTouchOutside? onModalClose:null}>
                 <View style={styles.centeredView}>

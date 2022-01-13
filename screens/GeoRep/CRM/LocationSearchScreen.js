@@ -18,7 +18,6 @@ import Images from '../../../constants/Images';
 import { style } from '../../../constants/Styles';
 
 const ResultItem = ({navigation, item, animation , onItemClicked }) => {
-
   return (
     <TouchableOpacity style={styles.resultItem} onPress={() => {    
       onItemClicked(item.location_id);
@@ -75,11 +74,11 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     props.screenProps.setOptions({                 
       headerTitle:(props) =>{
         return(<TouchableOpacity onPress={
-          () =>{
-            dispatch({type: SLIDE_STATUS, payload: false});
-            dispatch({type: BACK_ICON_STATUS, payload: false});                     
+          () =>{            
             if(navigation.canGoBack()){              
-              navigation.goBack();              
+              dispatch({type: SLIDE_STATUS, payload: false});
+              dispatch({type: BACK_ICON_STATUS, payload: false});
+              navigation.goBack(); 
             }            
           }}>            
           <View style={style.headerLeftContainerStyle}>            
