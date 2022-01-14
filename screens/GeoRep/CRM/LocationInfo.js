@@ -14,14 +14,11 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-
 import { grayBackground } from '../../../constants/Styles';
 import RefreshSlider from '../../../components/RefreshSlider';
 import SvgIcon from '../../../components/SvgIcon';
 import LocationInfoInput from './LocationInfoInput';
-import FilterButton from '../../../components/FilterButton';
 import Divider from '../../../components/Divider';
-import Skeleton from '../../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';

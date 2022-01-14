@@ -250,7 +250,7 @@ export const postStageOutcomUpdate = async(request) => {
     
     var base_url = await getBaseUrl();
     var token = await getToken();
-
+    console.log("started ====");
     return new Promise(function(resolve, reject) {
       
       let requestPayload = {
@@ -267,7 +267,7 @@ export const postStageOutcomUpdate = async(request) => {
         }
       })
       .then((res) => {
-        console.log("postStageOutcomUpdate: ", JSON.stringify(res));
+        console.log("ended");
         if (res.data == undefined) {      
           resolve(0);
           return;

@@ -16,6 +16,7 @@ import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
+import CustomPicker from '../../../components/CustomPicker';
 
 export default function AddLead({screenProps}) {
 
@@ -25,7 +26,7 @@ export default function AddLead({screenProps}) {
   const dispositionRef = useRef([]);
   const [leadForms, setLeadForms] = useState([]);
   const [customMasterFields, setCustomMasterFields] = useState([]);
-      
+
   const handleSubmit = () => {        
     //dispatch(postLeadFields(postData, idempotencyKey));
   }
@@ -124,6 +125,23 @@ export default function AddLead({screenProps}) {
                       style={[styles.textInput,{borderColor:'#000', borderWidth:1, borderRadius:3}]}                       
                       outlineColor="#133C8B">
                     </TextInput>
+                    
+                    {/* <CustomPicker visible={locationConfirmModalVisible} 
+                       renderItems = {
+                      <View>
+                        <Text style={styles.confirmModalTitle}>Please note</Text>
+                        <Text style={styles.confirmModalDesc}>Returning to previous page will discard any changes made to this location.</Text>
+                        <View  style={styles.confirmModalButtonBar}>
+                          <TouchableOpacity style={styles.confirmModalButton} onPress={() => dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: false})}>
+                            <Text styles={styles.confirmModalCancelButton}>Cancel</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.confirmModalButton} onPress={discard}>
+                            <Text style={styles.confirmModalDiscardButton}>Discard</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    } /> */}
+                    
                   </TouchableOpacity>
                 );
               }else{

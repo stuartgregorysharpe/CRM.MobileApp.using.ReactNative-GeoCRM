@@ -37,6 +37,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
   const [submitKey, setSubmitKey] = useState(false);
   const [isLoading ,setIsLoading] = useState(false);
+  const onShow = false;
   const showItem = 0
 
   useEffect(() => {
@@ -65,6 +66,13 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     handleSubmit();
   }, [statusSubmit])
 
+  useEffect(() => {
+    if (isLoading) {
+      console.log("called kkk");
+      updateOutcomes();
+    }   
+  }, [isLoading])
+
   const updateOutcomes = () => {
     let request = {
       "location_id": locationInfo.location_id,
@@ -72,13 +80,17 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       "outcome_id": selectedOutcomeId,
       "campaign_id": 1,
       "indempotency_key":uuid.v4()
-    }             
+    }  
     postStageOutcomUpdate(request)
     .then((res) => {      
-      setIsLoading(false);
+      setTimeout(() =>{
+        setIsLoading(false);
+      }, 500);      
     })
     .catch((e) => {
-      setIsLoading(false);
+      setTimeout(() =>{
+        setIsLoading(false);
+      }, 500);
     })
   }
 
@@ -138,6 +150,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       }      
     }
   };
+
 
   const handleEmpty = () => {
 
@@ -267,7 +280,6 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
                 {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
               </Text>
             </View>
-
           </View>
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </TouchableOpacity>
@@ -329,9 +341,8 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       {confirmModal()}
       
       {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.'
-       onCompleted={() =>{         
-        updateOutcomes();
-       }}
+        onCompleted={() =>{                   
+        }}
        visible={isLoading}/>}      
 
     </View>

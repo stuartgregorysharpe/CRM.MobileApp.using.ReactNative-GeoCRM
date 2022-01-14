@@ -8,6 +8,7 @@ const CustomLoading = ({visible, onModalClose,closeOnTouchOutside=false,message=
             transparent={true}
             visible={visible}
             onShow={onCompleted()}
+            
             onRequestClose={onModalClose}>
             <TouchableWithoutFeedback onPress={closeOnTouchOutside? onModalClose:null}>
                 <View style={styles.centeredView}>
