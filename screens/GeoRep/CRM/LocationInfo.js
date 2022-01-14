@@ -179,10 +179,13 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       </View>
       }
       
-      <TouchableOpacity style={[styles.plusButton]} onPress={() => setStatusSubmit(!statusSubmit)}>
+      <TouchableOpacity style={[styles.plusButton]} onPress={() => {
+         if(!subSlideStatus){
+          setStatusSubmit(!statusSubmit)
+         }         
+      }}>
           <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>    
-
     </View>
   )
 }
@@ -290,8 +293,8 @@ const styles = EStyleSheet.create(parse({
     position: 'absolute',
     bottom: 80,
     right: 20,
-    zIndex: 10,
-    elevation: 1,
+    zIndex: 1,
+    elevation: 1,    
   },
   transitionView: {
     position: 'absolute',

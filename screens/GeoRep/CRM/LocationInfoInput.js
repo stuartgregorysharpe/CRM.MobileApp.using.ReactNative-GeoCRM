@@ -67,8 +67,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   }, [statusSubmit])
 
   useEffect(() => {
-    if (isLoading) {
-      console.log("called kkk");
+    if (isLoading) {      
       updateOutcomes();
     }   
   }, [isLoading])
@@ -256,6 +255,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.refreshBox}>
           <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
           <Text style={styles.shadowBoxText}>Stage</Text>
@@ -272,17 +272,19 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
 
 
       <View style={styles.refreshBox}>
+        
         <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
-          <View style={{flexShrink: 1}}>            
+          <View style={{flexShrink: 1 , marginLeft:10, marginRight:10 }}>            
             <View style={styles.button}>
               <Text style={styles.buttonText} numberOfLines={5}>
                 {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
               </Text>
             </View>
-          </View>
+          </View>          
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </TouchableOpacity>
+
         <TouchableOpacity onPress={showLoopSlider}>
           <Image style={styles.refreshImage} source={Images.loopButton} />
         </TouchableOpacity>
@@ -344,7 +346,6 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
         onCompleted={() =>{                   
         }}
        visible={isLoading}/>}      
-
     </View>
   )
 }
@@ -357,8 +358,8 @@ const styles = EStyleSheet.create(parse({
     flex:1,
   },
   shadowBox: {
+    flex:1,
     padding: 8,
-    height: 45,
     flexGrow: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -373,12 +374,12 @@ const styles = EStyleSheet.create(parse({
     borderRadius: 7,
   },
   shadowBoxText: {
-    fontSize: 13,
-    width: 90,
+    fontSize: 13,    
     color: TEXT_COLOR,
     fontFamily: 'Gilroy-Medium'
   },
   refreshBox: {
+    flex:1,
     display: perWidth('none', 'flex'),
     flexDirection: 'row',
     alignItems: 'center',
@@ -414,9 +415,9 @@ const styles = EStyleSheet.create(parse({
     paddingBottom: 5,
     paddingLeft: 5,
     paddingRight: 5,
-    minWidth: 60,
+    minWidth: 60,    
     textAlign: 'center',
-    borderRadius: 7
+    borderRadius: 7,
   },
   buttonText: {
     textAlign: 'center',
@@ -474,13 +475,7 @@ const styles = EStyleSheet.create(parse({
     shadowRadius: 4,
     elevation: 5
   },
-  plusButton: {
-    position: 'absolute',
-    bottom: 80,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,
-  },
+
   confirmModalTitle: {
     fontSize: 18,
     textAlign: 'center',

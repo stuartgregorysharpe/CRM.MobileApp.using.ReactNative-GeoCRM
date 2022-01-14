@@ -196,7 +196,8 @@ export default function FilterView({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: BG_COLOR
+    backgroundColor: BG_COLOR,
+    padding:10,
   },
   sliderHeader: {
     flexDirection: 'row',

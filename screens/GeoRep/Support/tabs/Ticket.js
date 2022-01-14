@@ -10,6 +10,7 @@ import { getSupportIssues, postSupportEmail } from '../../../../actions/support.
 import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
+import { notifyMessage } from '../../../../constants/Consts';
 
 export const Ticket = forwardRef((props, ref) => {
 
@@ -89,9 +90,10 @@ export const Ticket = forwardRef((props, ref) => {
               postSupportEmail(base_url, token, params)
               .then((res) =>{
                 if(res.status == 'success'){
-                    notifyMessage("Success");
+                    notifyMessage("Success","");
+                    
                 }else{
-                    notifyMessage("Failed");
+                    notifyMessage("Failed","");
                 }
               })
               .catch((e) =>{
@@ -131,13 +133,7 @@ export const Ticket = forwardRef((props, ref) => {
         setIssueImage(data);
     }
 
-    function notifyMessage(msg) {
-        if (Platform.OS === 'android') {
-          ToastAndroid.show(msg, ToastAndroid.SHORT)
-        } else {            
-            AlertIOS.alert(msg);
-        }
-    }
+    
 
     return (
       <View>

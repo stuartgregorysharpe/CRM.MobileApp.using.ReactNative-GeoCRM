@@ -194,26 +194,32 @@ export const getLeadFields = async() => {
   });
 }
 
-export const postLeadFields = (postData, idempotencyKey) => (dispatch, getState) => {
-  dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });
-  console.log("idempotencyKey", idempotencyKey)
-  axios
-    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/leadfields`, JSON.stringify(postData), {
+export const postLeadFields = async(postData , idempotencyKey) => {
+  var base_url = await getBaseUrl();
+  var token = await getToken();  
+  return new Promise(function(resolve, reject) {      
+    //JSON.stringify(postData)
+    axios
+    .post(`${base_url}/leadfields`, postData, {
       headers: {
-        Authorization: 'Bearer ' + getState().selection.token,
+        Authorization: 'Bearer ' + token,
         'Indempotency-Key': idempotencyKey
       }
     })
     .then((res) => {
-      console.log("postleadfields", res)
-      dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'success'});
+      if(res.data == undefined){
+        resolve(0);
+        return;
+      }
+      resolve(1);      
     })
     .catch((err) => {
-      console.log("error", err)
-      dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'failure'});
-      console.log(err.response);
+      reject(err);
     })
+
+  });
 }
+
 
 
 export const getLocationInfo = async(location_id) => {
@@ -304,23 +310,19 @@ export const postDispositionFields = (postData, idempotencyKey) => (dispatch, ge
     })
 }
 
-
-
-export const reverseGeocoding = async(latitude, longitude) => {
-  
-  return new Promise(function(resolve, reject) {
-    
-    let data = {
-      result_type: "street_address",
-      latlng: [latitude, longitude],
-      key: "AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw"
-    }
+export const getGeocoding = async(latitude, longitude) => {  
+  return new Promise(function(resolve, reject) {        
+    console.log("url", `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`);
     axios
-      .post('https://maps.googleapis.com/maps/api/geocode/json', data)
-      .then((res) => {
-        console.log("geocodeing");
-        console.log(res.data)
+    .get(`https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`, {      
+      headers: {}
     })
-
+    .then((res) => {
+      resolve(res.data); 
+    })
+    .catch((err) => {
+      reject(err);
+    })
+      
   });
 }

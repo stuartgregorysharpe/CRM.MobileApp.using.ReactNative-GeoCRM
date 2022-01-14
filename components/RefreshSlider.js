@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, TouchableOpacity, ScrollView, Dimensions , Text} from 'react-native';
 import { Title, Button } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -17,25 +17,21 @@ export default function RefreshSlider({onClose}) {
   const dispatch = useDispatch();
   return (
     <ScrollView style={styles.refreshSliderContainer}>
+
     <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
       <Divider />
     </TouchableOpacity>
 
     <View style={styles.sliderHeader}>
       <Title style={{ fontFamily: Fonts.primaryBold }}>Re-loop</Title>
-      <Button 
-        labelStyle={{
-          fontFamily: Fonts.primaryRegular, 
-          letterSpacing: 0.2
-        }}
-        color="#DC143C" 
-        uppercase={false} 
-        onPress={() => {                  
-          dispatch({type: SUB_SLIDE_STATUS, payload: false});
-        }}
-        >
-        Close
-      </Button>
+
+      <TouchableOpacity       
+        onPress={() => {
+          console.log("button close");
+            dispatch({type: SUB_SLIDE_STATUS, payload: false});
+        }}>
+        <Text style={{ color:"#DC143C" , paddingRight:20, paddingLeft:20, paddingTop:20, paddingBottom:10}}>Close</Text>
+      </TouchableOpacity>      
     </View>
 
     <FilterButton 
@@ -62,9 +58,10 @@ const styles = EStyleSheet.create(parse({
     elevation: 2,
     zIndex: 100,
     padding: 10,
+    overflow: "visible" 
   },
   refreshSliderContainer: {
-    backgroundColor: BG_COLOR
+    backgroundColor: BG_COLOR    
   },
   sliderHeader: {
     flexDirection: 'row',

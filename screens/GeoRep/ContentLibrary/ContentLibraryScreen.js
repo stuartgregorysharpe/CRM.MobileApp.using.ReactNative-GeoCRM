@@ -9,6 +9,9 @@ import Fonts from '../../../constants/Fonts';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
 import { downloadPDF, getContentLibrary } from '../../../actions/contentLibrary.action';
 import RNFS, { DownloadFileOptions , DocumentDirectoryPath , downloadFile} from 'react-native-fs';
+import DeviceInfo from 'react-native-device-info';
+import FileViewer from "react-native-file-viewer";
+
 //import FileOpener from 'react-native-file-opener3';
 //import FileOpener from 'react-native-file-opener';
 //const FileOpener = require('react-native-file-opener');
@@ -116,20 +119,31 @@ export default function ContentLibraryScreen(props) {
         return "public.movie";
       }
       return  "public.data";
-    }
-    
+    }    
   }
 
   openFile = (path, type) => {
     console.log(type );
-    FileOpener.open(
-        path,
-        type
-    ).then((msg) => {
-        console.log('success!!')
-    },(e) => {
-        console.log('error!!', e)
-    });  
+    if(Platform.OS == "android"){      
+      FileOpener.open(
+          path,
+          type
+      ).then((msg) => {
+          console.log('success!!')
+      },(e) => {
+          console.log('error!!', e)
+      });  
+    }else{
+      const paths = FileViewer.open(path) // absolute-path-to-my-local-file.
+      .then(() => {
+        console.log("success");
+        // success
+      })
+      .catch((error) => {
+        // error
+      });
+    }
+    
   }
 
   if (showLibraryChild) {

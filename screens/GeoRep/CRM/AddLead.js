@@ -2,21 +2,20 @@ import React, {useState, useEffect, useRef } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../components/Skeleton';
 import Divider from '../../../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
-import { breakPoint } from '../../../constants/Breakpoint';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLeadFields, postLeadFields } from '../../../actions/location.action';
+import { getGeocoding, getLeadFields, postLeadFields } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import CustomPicker from '../../../components/CustomPicker';
+import SvgIcon from '../../../components/SvgIcon';
+import { notifyMessage } from '../../../constants/Consts';
 
 export default function AddLead({screenProps}) {
 
@@ -26,20 +25,37 @@ export default function AddLead({screenProps}) {
   const dispositionRef = useRef([]);
   const [leadForms, setLeadForms] = useState([]);
   const [customMasterFields, setCustomMasterFields] = useState([]);
-
+  const [dropdownId, setDropdownId] = useState(0);
+  const [isDropdownModal, setIsDropdownModal] = useState([]);
+  const [dropdownItems, setDropdownItems] = useState([]);
+  
+  var index = 0;
   const handleSubmit = () => {        
-    //dispatch(postLeadFields(postData, idempotencyKey));
+    let params = {
+      coordinates:{latitude : currentLocation.latitude, longitude : currentLocation.longitude},
+      custom_master_fields:customMasterFields    
+    }
+    console.log(params);
+    postLeadFields(params, uuid.v4())
+    .then((res) => {
+      console.log("response", res);
+      notifyMessage("Success", "");
+    })
+    .catch((error) =>{      
+      console.log('error', error);
+      notifyMessage("Fail","");
+    })        
   }
 
-  useEffect(() => {
-    loadingForm();
+  useEffect(() => {    
+    setIsLoading(true);
   },[]);
-
+  
   useEffect(() =>{
     if(isLoading){
       getLeadFields()
       .then((res) => {
-        console.log("forms", res);
+        initPostData(res);
         setLeadForms(res);
         setIsLoading(false);
       })
@@ -49,13 +65,126 @@ export default function AddLead({screenProps}) {
     }
   }, [isLoading]);
 
-  const loadingForm = async() => {    
-    setIsLoading(true);    
+  const initPostData = (res) => {
+    var tmp = [];
+    res.forEach((element) => {
+      tmp.push({'custom_master_field_id':  element.custom_master_field_id, 'value' : '' , 'field_name': element.field_name });
+    })
+    setCustomMasterFields(tmp);
+  }
+ 
+  const reverseGeocoding = () => {
+    getGeocoding(currentLocation.latitude, currentLocation.longitude)
+    .then((res) => {
+      if(res.results != null && res.results.length > 0 && res.results[0].address_components.length > 0){        
+        var address_components = res.results[0].address_components;
+        console.log("address co m", address_components);
+        var tmp = [ ...customMasterFields ];
+        tmp.forEach((element) => {
+          address_components.forEach((item) =>{
+            if(item.types.includes("street_number") && element.field_name == "Street Address" || item.types.includes("route")  && element.field_name == "Street Address" ){
+              element.value = element.value + " " + item.long_name;
+            }
+            if( (item.types.includes("neighborhood") || item.types.includes("sublocality_level_1") ||  item.types.includes("sublocality") ) && element.field_name == "Suburb"  ){
+              element.value = item.long_name;
+            }
+            if( ( item.types.includes("administrative_area_level_2") || item.types.includes("locality") )  && element.field_name == "City"  ){
+              element.value = item.long_name;
+            }
+            if( item.types.includes("administrative_area_level_1")  && element.field_name == "State"  ){
+              element.value = item.long_name;
+            }
+            if( (item.types.includes("country") && item.types.includes("political") ) && element.field_name == "Country"  ){
+              element.value = item.long_name;
+            }
+            if( item.types.includes("postal_code") && element.field_name == "Pincode"  ){
+              element.value = item.long_name;
+            }
+          })          
+        })  
+        setCustomMasterFields(tmp);       
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    })
   }
 
+  const getTextValue = (customMasterFields, id) => {        
+    if(customMasterFields.length > 0){
+      var tmp = customMasterFields;
+      var res = "";
+      tmp.forEach((element) =>{
+        if(element.custom_master_field_id == id){
+          res = element.value;
+        }
+      });
+      return res;
+    }else{
+      return "";
+    }    
+  }
 
-  const reverseGeocoding = () => {
+  const getSelectedDropdownItem = () =>{
+    var tmp = customMasterFields;        
+    var res = "";
+    tmp.forEach((element) =>{
+      if(element.custom_master_field_id == dropdownId){
+        res = element.value;
+      }
+    });
+    if(res == ""){
+      return -1;
+    }
+    return res;
+  }  
+
+  const getSelectedDropdownItemText = (id , name) =>{
+    var tmp = customMasterFields;
+    var index = -1;    
+    console.log("id", id);
+    tmp.forEach((element) =>{
+      if(element.custom_master_field_id == id && element.value != '' ){ //&& element.value != ""
+        index = element.value;        
+      }
+    });    
+    console.log("index", index);
+    if(index == -1){
+      return name;
+    }
     
+    var showName = '';
+    leadForms.forEach((element) =>{
+      if(element.custom_master_field_id == id && element.preset_options != ""){
+        showName = element.preset_options[index];
+      }
+    });    
+    return showName;    
+  }
+
+  const dropdownModal = () => {
+    return (
+      <CustomPicker 
+        visible={isDropdownModal}         
+        renderItems= {
+        dropdownItems.map((item, key) => (
+          <TouchableOpacity style={[styles.pickerItem]} key={key}
+          onPress={() => { 
+            var tmp = customMasterFields;
+            tmp.forEach((element) => {
+              if(element.custom_master_field_id == dropdownId){
+                element.value = key;
+              }
+            });
+            setCustomMasterFields(tmp);            
+            setIsDropdownModal(false);
+          }}>            
+              <Text style={styles.pickerItemText}>{item}</Text>              
+              {key == getSelectedDropdownItem() && <SvgIcon icon="Check" width='23px' height='23px' />}           
+          </TouchableOpacity>
+        ))
+      } />
+    )
   }
 
   if (isLoading) {
@@ -86,7 +215,9 @@ export default function AddLead({screenProps}) {
             }}
             color="#DC143C" 
             uppercase={false} 
-            onPress={() => console.log('Pressed')}
+            onPress={() => {
+              initPostData(customMasterFields);  
+            }}
           >
             Clear
           </Button>          
@@ -112,69 +243,75 @@ export default function AddLead({screenProps}) {
           {
             leadForms.map((field, key) => {
               if(field.field_type == "dropdown"){
+                index++;
                 return (
                   <TouchableOpacity key={key}
                     onPress={() =>{
+                      setDropdownItems(field.preset_options);
+                      if(field.preset_options.length > 0){
+                        setDropdownId(field.custom_master_field_id);
+                        setIsDropdownModal(true);
+                      }                      
+                    }}>
 
-                    }}
-                  >
-                    <TextInput   
-                      disabled={true}
-                      // label={field.field_name}
-                      value={field.field_name}
-                      style={[styles.textInput,{borderColor:'#000', borderWidth:1, borderRadius:3}]}                       
+                    <Text                                        
+                      ref={(element) => { dispositionRef.current[key] = element }}                      
+                      style={[styles.textInput,{borderColor:PRIMARY_COLOR, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
                       outlineColor="#133C8B">
-                    </TextInput>
-                    
-                    {/* <CustomPicker visible={locationConfirmModalVisible} 
-                       renderItems = {
-                      <View>
-                        <Text style={styles.confirmModalTitle}>Please note</Text>
-                        <Text style={styles.confirmModalDesc}>Returning to previous page will discard any changes made to this location.</Text>
-                        <View  style={styles.confirmModalButtonBar}>
-                          <TouchableOpacity style={styles.confirmModalButton} onPress={() => dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: false})}>
-                            <Text styles={styles.confirmModalCancelButton}>Cancel</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={styles.confirmModalButton} onPress={discard}>
-                            <Text style={styles.confirmModalDiscardButton}>Discard</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    } /> */}
-                    
+                      {getSelectedDropdownItemText(field.custom_master_field_id , field.field_name)}
+                    </Text>
+                                                            
                   </TouchableOpacity>
                 );
               }else{
                 return (               
-                  <TouchableOpacity
-                    key={key}                
-                    activeOpacity={1}>
+                  <View key={key}>
+                    {
+                      key == 1 && 
+                      <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={reverseGeocoding}>                  
+                          <Text style={styles.linkBoxText}>Use Current Geo Location</Text>                  
+                      </TouchableOpacity>
+                    }
+                    <TouchableOpacity                      
+                      activeOpacity={1}>
+                      <View>
+                        <TextInput
+                          type={field.field_type}
+                          ref={(element) => { dispositionRef.current[key] = element }}                      
+                          keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
+                          returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
+                          style={styles.textInput}
+                          label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}                        
+                          value={getTextValue(customMasterFields, field.custom_master_field_id)}
+                          mode="outlined"
+                          outlineColor="#133C8B"
+                          activeOutlineColor="#9D9FA2"                                        
+                          onChangeText={text => {
 
-                    <View>
-                      <TextInput
-                        type={field.field_type}
-                        ref={(element) => { dispositionRef.current[key] = element }}
-                        // autoFocus={true}
-                        keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
-                        returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
-                        style={styles.textInput}
-                        label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
-                        mode="outlined"
-                        outlineColor="#133C8B"
-                        activeOutlineColor="#9D9FA2"                                        
-                        onChangeText={text => {}}
-                        blurOnSubmit={false}
-                        onSubmitEditing={()=>{ 
-                          if(key <= dispositionRef.current.length - 2){
-                            dispositionRef.current[key + 1].focus();
-                          }
-                        }}                    
-                      />
-                    </View>
-                  </TouchableOpacity>
+                            var tmp = [ ...customMasterFields ];
+                            tmp.forEach((element) => {
+                              if(element.custom_master_field_id === field.custom_master_field_id){
+                                console.log("enter", text);
+                                element.value = text;
+                              }
+                            });
+                            setCustomMasterFields(tmp);
+                            console.log("changed", tmp);
+                          }}
+                          blurOnSubmit={false}
+                          onSubmitEditing={()=>{ 
+                            if(key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null){
+                              if(leadForms[key + 1].field_type == "text" ){
+                                dispositionRef.current[key + 1].focus();
+                              }                              
+                            }
+                          }}                    
+                        />
+                      </View>
+                    </TouchableOpacity>                    
+                  </View>                  
                 );  
-              }
-              
+              }              
             })
           }
 
@@ -184,18 +321,18 @@ export default function AddLead({screenProps}) {
           </TouchableOpacity>
 
         </View>       
-        
 
-        
+        { dropdownModal() }        
+
       </ScrollView>
   )
 }
 
-const styles = EStyleSheet.create(parse({
+const styles = EStyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
     zIndex: 100,
-    elevation: 100
+    // elevation: 1
   },
   header: {
     flexDirection: 'row',
@@ -236,7 +373,31 @@ const styles = EStyleSheet.create(parse({
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: BG_COLOR,
-    fontFamily: Fonts.secondaryMedium,
+    //fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },
-}));
+  pickerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  pickerItemText: {
+    fontSize: 18,
+    color: 'black'
+  },
+
+  linkBox: {
+    position: 'relative',
+    marginBottom: 8
+  },
+  linkBoxText: {
+    color: PRIMARY_COLOR,
+    fontFamily: Fonts.secondaryMedium,
+    textDecorationLine: 'underline',
+    textDecorationColor: PRIMARY_COLOR,
+    textAlign: 'center'
+  },
+
+});

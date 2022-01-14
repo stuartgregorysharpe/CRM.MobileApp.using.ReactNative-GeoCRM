@@ -14,7 +14,6 @@ import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/l
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
-import { style } from '../../../constants/Styles';
 import Fonts from '../../../constants/Fonts';
 
 export default function LocationInfoInputTablet({navigation, screenProps, statusSubmit, showLoopSlider , infoInput }) {
@@ -28,8 +27,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
   const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
-  const [dateTimeKey, setDateTimeKey] = useState(null);
-  const statusStageOutcomeUpdate = useSelector(state => state.location.statusStageOutcomeUpdate);
+  const [dateTimeKey, setDateTimeKey] = useState(null);  
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
   var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
@@ -39,7 +37,6 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
   const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
   const [submitKey, setSubmitKey] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  //const [isBelowStage, setIsBelowStage] = useState(false);
   var isBelowStage = false;
   console.log("LO", locationInfo);
 
@@ -69,6 +66,12 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
     handleSubmit();
   }, [statusSubmit]);
   
+  useEffect(() => {
+    if (isLoading) {      
+      updateOutcomes();
+    }   
+  }, [isLoading])
+
   const updateOutcomes = () => {
     let request = {
       "location_id": locationInfo.location_id,
@@ -79,10 +82,14 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
     }             
     postStageOutcomUpdate(request)
     .then((res) => {      
-      setIsLoading(false);
+      setTimeout(() =>{
+        setIsLoading(false);
+      }, 500);  
     })
     .catch((e) => {
-      setIsLoading(false);
+      setTimeout(() =>{
+        setIsLoading(false);
+      }, 500);
     })
   }
 
@@ -370,8 +377,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
 
       {/* visible={statusStageOutcomeUpdate=='request' */}
       {<CustomLoading closeOnTouchOutside={false} 
-       onCompleted={() =>{         
-        updateOutcomes();
+       onCompleted={() =>{                 
        }}
       message='Updating please wait.' visible={isLoading}/>}
 
@@ -572,14 +578,7 @@ const styles = EStyleSheet.create(parse({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5
-  },
-  plusButton: {
-    position: 'absolute',
-    bottom: 80,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,
-  },
+  },  
   confirmModalTitle: {
     fontSize: 18,
     textAlign: 'center',

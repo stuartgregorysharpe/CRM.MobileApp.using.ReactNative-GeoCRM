@@ -33,6 +33,7 @@
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-extended-stylesheet-breakpoints": "^1.1.0",
     "react-native-file-opener": "^0.2.0",
+    "react-native-file-viewer": "^2.1.5",
     "react-native-fs": "^2.18.0",
     "react-native-get-location": "^2.2.1",
     "react-native-image-picker": "^4.7.0",

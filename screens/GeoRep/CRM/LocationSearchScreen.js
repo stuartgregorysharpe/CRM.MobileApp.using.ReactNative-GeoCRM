@@ -47,6 +47,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
+  const [searchKeyword, setSearchKeyword] = useState();
 
   const getDistance = (prelatlng, currentlatlng) => {
     
@@ -54,7 +55,6 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     const prevLongInRad = toRad(Number(prelatlng.longitude));
     const latInRad = toRad(currentlatlng.latitude);
     const longInRad = toRad(currentlatlng.longitude);
-
     return (
       // In mile
       3963 *
@@ -90,17 +90,22 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },
-    });    
+    }); 
 
-  });
+  },[]);
 
-  useEffect(() => {
-    dispatch({type: SLIDE_STATUS, payload: false});  
-  }, []);
+  // useEffect(() => {    
+  //   dispatch({type: SLIDE_STATUS, payload: false});  
+  // }, []);
 
-  useEffect(() => {
+  useEffect(() => {    
+    getSearchData("");
+    setIsRequest(false);
+  }, [locationSearchLists]);
+
+  const getSearchData = (searchKey) => {
     let items = [];    
-    locationSearchLists.map((list, key) => {
+    locationSearchLists.map((list, key) => {    
       let item = {
         name: list.name,
         address: list.address,
@@ -109,12 +114,19 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         location_id: list.location_id,
         status_text_color:list.status_text_color
       }
-      items.push(item);
+
+      if(searchKey === ''){
+        items.push(item);
+      }else{
+        if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
+          items.push(item);
+        }
+      }
+      
     });
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
     setOrderLists(items);    
-    setIsRequest(false);
-  }, [locationSearchLists]);
+  }
 
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
@@ -131,7 +143,9 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     }    
   }
 
+
   const openLocationInfo = async(location_id) => {            
+    
     setIsRequest(true)
     getLocationInfo( Number(location_id))
     .then((res) => {
@@ -160,8 +174,6 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     return LoadingView()
   }
 
-
-
   return (
     <Provider>
       {
@@ -184,24 +196,35 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
             </View>
           } 
 
-            <View style={styles.container}>
 
-              <SearchBar isFilter={true} animation={() => animation("filter")} />
-              <ScrollView>
-                <Text style={styles.title}>Current Location</Text>
+          <View style={styles.container}>
+            <SearchBar 
+              onSearch={(text) =>{
+                getSearchData(text);
+                setSearchKeyword(text);
+              }} 
+              initVal={searchKeyword}
+              isFilter={true} 
+              animation={() => {
+                console.log("filter icon clicked");
+                animation("filter");
+              }} />
+            
+            <ScrollView>
+              <Text style={styles.title}>Current Location</Text>
 
-                { orderLists.map((locationSearchList, key) => (
-                  <ResultItem key={key} navigation={navigation} item={locationSearchList}
-                     animation={() => animation("locationInfo") } 
-                     onItemClicked={(id) => {openLocationInfo(id)}}
-                     />
-                ))}
-                {
-                  orderLists.length == 0 &&
-                  <LoadingView></LoadingView>
-                }
-              </ScrollView>
-            </View>
+              { orderLists.map((locationSearchList, key) => (
+                <ResultItem key={key} navigation={navigation} item={locationSearchList}
+                    animation={() => animation("locationInfo") } 
+                    onItemClicked={(id) => {openLocationInfo(id)}}
+                    />
+              ))}
+              {
+                orderLists.length == 0 &&
+                <LoadingView></LoadingView>
+              }
+            </ScrollView>
+          </View>
 
 
       </SafeAreaView>
