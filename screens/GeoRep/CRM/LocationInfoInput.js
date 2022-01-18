@@ -9,7 +9,7 @@ import uuid from 'react-native-uuid';
 import SvgIcon from '../../../components/SvgIcon';
 import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import CustomPicker from '../../../components/CustomPicker';
+import CustomPicker from '../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
@@ -26,8 +26,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
   const [isDateTimePickerVisible, setDateTimePickerVisibility] = useState(false);
-  const [dateTimeKey, setDateTimeKey] = useState(null);
-  const statusStageOutcomeUpdate = useSelector(state => state.location.statusStageOutcomeUpdate);
+  const [dateTimeKey, setDateTimeKey] = useState(null);  
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
   var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  

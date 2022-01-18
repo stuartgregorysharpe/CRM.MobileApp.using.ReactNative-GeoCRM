@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native';
-import { BG_COLOR } from '../constants/Colors';
+import { BG_COLOR } from '../../constants/Colors';
 
 const CustomPicker = ({visible, onModalClose, renderItems }) => {
     return (
@@ -19,25 +19,8 @@ const CustomPicker = ({visible, onModalClose, renderItems }) => {
     )
 }
 
-const styles = StyleSheet.create({
-    pickerItemText: {
-        fontSize: 18,
-        color: 'black'
-    },
-    pickerItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingTop: 8,
-        paddingBottom: 8,
-    },
-    pickerContent: {
-        backgroundColor: BG_COLOR,
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingLeft: 20,
-        paddingRight: 20
-    },
+const styles = StyleSheet.create({        
+    
     centeredView: {
         flex: 1,
         justifyContent: "center",

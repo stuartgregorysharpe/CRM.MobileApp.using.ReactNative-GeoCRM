@@ -496,6 +496,17 @@ const File_Download = `
   </svg>
 `;
 
+const Right_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
+<g id="Group_4113" data-name="Group 4113" transform="translate(0.216 65.811) rotate(-90)">
+  <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.189 -0.216)" fill="#fff" stroke="#133c8b" stroke-width="4">
+    <circle cx="33" cy="33" r="33" stroke="none"/>
+    <circle cx="33" cy="33" r="31" fill="none"/>
+  </g>
+  <path id="chevron-back-sharp" d="M9.973,0,0,9.973l9.973,9.973" transform="translate(22.214 38.374) rotate(-90)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+</g>
+</svg>
+`;
+
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
         {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -542,5 +553,6 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "WhatsApp" && <SvgXml style={style} xml={WhatsApp} width={width} height={height} />}
         {icon == "Quiz" && <SvgXml style={style} xml={Quiz} width={width} height={height} />}
         {icon == "File_Download" && <SvgXml style={style} xml={File_Download} width={width} height={height} />}
+        {icon == "Right_Arrow" && <SvgXml style={style} xml={Right_Arrow} width={width} height={height} />}
     </Fragment>
 );

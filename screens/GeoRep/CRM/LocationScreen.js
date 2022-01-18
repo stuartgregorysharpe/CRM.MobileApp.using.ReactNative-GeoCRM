@@ -45,9 +45,11 @@ const MarkerView = ( {isRequest} ) => {
       })
     })
     setMarkerIcons(items);    
+    console.log(" marker icon");
   }, [pins])
 
   if (statusPinKeys == "request" || isRequest ) {
+    
     return (
       <SafeAreaView>
         <View style={{padding: 10, justifyContent: 'center'}}>
@@ -97,7 +99,6 @@ export default function LocationScreen(props) {
   const [isBack, setIsBack] = useState(false);
   
   useEffect(() => {
-
     props.screenProps.setOptions({           
       headerTitle:(props) =>{
         return(<TouchableOpacity         
@@ -121,8 +122,7 @@ export default function LocationScreen(props) {
               }              
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
-      },
-      
+      },      
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
@@ -136,8 +136,7 @@ export default function LocationScreen(props) {
           }}
         >
         </TouchableOpacity>
-      ),
-      
+      ),      
       tabBarStyle: {
         position: 'absolute',
         height: 50,      
@@ -152,8 +151,10 @@ export default function LocationScreen(props) {
           display: 'none',
         },
       });
-    }
+    }    
 
+
+    console.log(" marker icon cd");
   });
 
   useEffect(() => {
@@ -162,6 +163,11 @@ export default function LocationScreen(props) {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
     };
   }, [crmStatus]);
+
+  useEffect(() => {    
+    setIsBack(false);
+  }, [locationMaps]);
+
 
   const handleBackButtonClick = () => {
     if (crmStatus) {
@@ -188,6 +194,7 @@ export default function LocationScreen(props) {
         return;
       case "locationInfo":
         setShowItem(4);
+        setIsBack(true);
         //dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       default:
@@ -372,7 +379,7 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: BG_COLOR,
     elevation: 2,
     zIndex: 2,
-    padding: 10,
+    padding: 0,
   },
   searchBox: {
     position: perWidth('absolute', 'relative'),

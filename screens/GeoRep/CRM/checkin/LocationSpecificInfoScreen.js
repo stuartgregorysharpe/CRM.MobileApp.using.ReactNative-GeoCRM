@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import LocationInfoInput from '../LocationInfoInput';
-import RefreshSlider from '../../../../components/RefreshSlider';
+import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
 import { boxShadow, style } from '../../../../constants/Styles';
 import FilterButton from '../../../../components/FilterButton';
@@ -92,7 +92,7 @@ export default function LocationSpecificInfoScreen(props) {
       {subSlideStatus && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
-        <RefreshSlider  />
+        <RefreshSlider location_id={locationInfo.location_id}  />
       </View>}
 
       <ScrollView style={styles.container}>
@@ -153,7 +153,7 @@ export default function LocationSpecificInfoScreen(props) {
 
         <View style={{height: 60}}></View>
       </ScrollView>
-      <TouchableOpacity style={style.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
+      <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => setStatusSubmit(!statusSubmit)}>
         <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>
     </SafeAreaView>

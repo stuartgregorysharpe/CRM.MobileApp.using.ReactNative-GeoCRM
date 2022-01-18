@@ -253,7 +253,7 @@ const styles = EStyleSheet.create(parse({
   },
   subTitle: {
     fontSize: 14,
-    fontFamily: Fonts.secondaryBold,
+    fontFamily: Fonts.secondaryMedium,
     color: TEXT_COLOR,
     marginBottom: 4
   },

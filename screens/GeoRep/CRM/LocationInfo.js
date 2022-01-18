@@ -15,7 +15,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { grayBackground, style } from '../../../constants/Styles';
-import RefreshSlider from '../../../components/RefreshSlider';
+import RefreshSlider from '../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../components/SvgIcon';
 import LocationInfoInput from './LocationInfoInput';
 import Divider from '../../../components/Divider';
@@ -110,18 +110,17 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
           return;
         }
-        dispatch({type: SLIDE_STATUS, payload: false});      
-        //dispatch({type: BACK_ICON_STATUS, payload: false});        
+        dispatch({type: SLIDE_STATUS, payload: false});              
       }}>
         <Divider />
       </TouchableOpacity>
       
 
+
       <KeyboardAwareScrollView 
         enableOnAndroid={true}
         enableAutomaticScroll={(Platform.OS === 'ios')}
-        extraHeight={130}        
-        //extraScrollHeight={130}        
+        extraHeight={130}                
         behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: (features && (features.includes("access_crm") || features.includes("checkin"))) ? 50 : 0}]}>
 
         <View style={styles.headerBox}>

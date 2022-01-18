@@ -47,10 +47,60 @@ export const getLocationPinKey = () => (dispatch, getState) => {
     })
 }
 
-export const getLocationsMap = () => (dispatch, getState) => {
+
+export const getLocationsMap1 = () => (dispatch, getState) => {
 
   console.log("cal map");
   //-33.886261, 18.504433
+  dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });
+
+    axios
+    .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-map`, {
+      params: {
+        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,            
+        // current_latitude: location.latitude,
+        // current_longitude: location.longitude
+        current_latitude: -33.886261,
+        current_longitude: 18.504433,
+      },
+      headers: {
+        Authorization: 'Bearer ' + getState().selection.token
+      }
+    })
+    .then((res) => {
+      console.log("end");
+      if (res.data == undefined) {
+        
+        setToken(null);
+        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+        return;
+      }
+
+      if(res.data.error){
+        setToken(null);
+        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+        return;
+      }
+
+      console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations);
+      if (res.data.status == 'success') {
+        dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
+        dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations })
+      }
+    })
+    .catch((err) => {
+      console.log("map errorw", err);          
+      setToken(null);
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+      console.log(err);
+    });
+
+}
+
+
+export const getLocationsMap = () => (dispatch, getState) => {
+
+  console.log("cal map");  
   dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });
   GetLocation.getCurrentPosition({
     enableHighAccuracy: true,
@@ -61,9 +111,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
       dispatch({
         type: CHANGE_CURRENT_LOCATION, payload: {          
            latitude: location.latitude,
-           longitude: location.longitude,
-          // latitude: -33.886261,
-          //  longitude: 18.504433,
+           longitude: location.longitude,          
         }
       })
       axios
@@ -71,9 +119,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
           params: {
             user_id: getState().selection.payload.user_scopes.geo_rep.user_id,            
             current_latitude: location.latitude,
-            current_longitude: location.longitude
-            // latcurrent_latitudeitude: -33.886261,
-            // current_longitude: 18.504433,
+            current_longitude: location.longitude            
           },
           headers: {
             Authorization: 'Bearer ' + getState().selection.token
@@ -92,8 +138,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
           }
-
-          console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations);
+          console.log("get location map data CHANGE_LOCATION_MAP" );
           if (res.data.status == 'success') {
             dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
             dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations })
@@ -333,10 +378,16 @@ export const postReloop = async(postData , idempotencyKey) => {
     })
     .then((res) => {
       if(res.data == undefined){
-        resolve(0);
+        resolve("");
         return;
       }
-      resolve(1);      
+      console.log(res.data);
+      if(res.data.status == "success"){
+        resolve(res.data.message);
+      }else{
+        resolve("");
+      }
+    
     })
     .catch((err) => {
       //console.log(err);

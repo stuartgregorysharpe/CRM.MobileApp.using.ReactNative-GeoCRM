@@ -13,7 +13,7 @@ import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getGeocoding, getLeadFields, postLeadFields } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
-import CustomPicker from '../../../components/CustomPicker';
+import CustomPicker from '../../../components/modal/CustomPicker';
 import SvgIcon from '../../../components/SvgIcon';
 import { notifyMessage } from '../../../constants/Consts';
 
@@ -332,6 +332,7 @@ const styles = EStyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
     zIndex: 100,
+    padding:10,    
     // elevation: 1
   },
   header: {

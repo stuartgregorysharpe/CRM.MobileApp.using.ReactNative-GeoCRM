@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 
     itemTitle: {
         fontSize: 14,
-        fontFamily: Fonts.secondaryBold,
+        fontFamily: Fonts.secondaryMedium,
         color: PRIMARY_COLOR
     },
     itemText: {

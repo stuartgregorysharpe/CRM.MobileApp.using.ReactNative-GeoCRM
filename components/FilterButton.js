@@ -12,11 +12,11 @@ export default function FilterButton(props) {
         <Text style={styles.cardtitle}>{props.text}</Text>
         {props.subText && <Text style={styles.cardSubtitle}>{props.subText}</Text>}
       </View>
-      <SvgIcon icon="Drop_Down" width='23px' height='23px' />
+      <SvgIcon icon="Right_Arrow" width='23px' height='23px' />
     </TouchableOpacity>
   )
 }
-  
+
 const styles = StyleSheet.create({
   card: {
     marginBottom: 10,
