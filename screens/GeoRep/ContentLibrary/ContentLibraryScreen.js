@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, StyleSheet, ScrollView, Text , PermissionsAndroid, Platform} from 'react-native';
+import { SafeAreaView, View, StyleSheet, ScrollView, Text , PermissionsAndroid, Platform , TouchableOpacity ,Image} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Searchbar from '../../../components/SearchBar';
 import Card from '../../../components/Card';
@@ -11,6 +11,8 @@ import { downloadPDF, getContentLibrary } from '../../../actions/contentLibrary.
 import RNFS, { DownloadFileOptions , DocumentDirectoryPath , downloadFile} from 'react-native-fs';
 import DeviceInfo from 'react-native-device-info';
 import FileViewer from "react-native-file-viewer";
+import { style } from '../../../constants/Styles';
+import Images from '../../../constants/Images';
 
 //import FileOpener from 'react-native-file-opener3';
 //import FileOpener from 'react-native-file-opener';
@@ -18,22 +20,51 @@ import FileViewer from "react-native-file-viewer";
 
 export default function ContentLibraryScreen(props) {
 
-  const showLibraryChild = useSelector(state => state.rep.showLibraryChild);
+  //const showLibraryChild = useSelector(state => state.rep.showLibraryChild);
   const dispatch = useDispatch();
   const [childList, setChildList] = useState({});
   const [libraryLists, setLibraryLists] = useState([]);
   const [searchLibraryLists , setSearchLibraryLists] = useState([]);  
   const FileOpener = require('react-native-file-opener');
+  const [isBack, setIsBack] = useState( props.route.params && props.route.params.isBack ? props.route.params.isBack : false);  
+  const [title,setTitle] = useState("Content Library");
   //const FileOpener = require('react-native-file-opener3');
 
-  useEffect(() => {
-    if (props.screenProps) {
-      props.screenProps.setOptions({
-        title: "Content Library"
-      });
-    }
-    loadList();
+ // console.log("content library", screenProps);
 
+  useEffect(() => {    
+    //setIsBack(props.route.params.isBack);
+    props.navigation.setOptions({           
+      headerTitle:(props) =>{
+        return(<TouchableOpacity                   
+           onPress={
+          () =>{
+            setIsBack(false);         
+            setTitle("Content Library");
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              {
+                isBack &&
+                <Image
+                  resizeMethod='resize'  
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              }              
+          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} > {title} </Text>
+        </View></TouchableOpacity>)
+      },            
+      tabBarStyle: {
+        position: 'absolute',
+        height: 50,      
+        paddingBottom: Platform.OS == "android" ? 5 : 0,          
+        backgroundColor: "#fff",
+      },
+    });
+  }, [isBack])
+
+  useEffect(() => {             
+    loadList();
   } , []);  
 
   loadList = async() => {    
@@ -53,7 +84,6 @@ export default function ContentLibraryScreen(props) {
       });
     }    
   }
-
 
   // const requestExternalStoreageRead = async() =>{
   //   try {
@@ -76,7 +106,10 @@ export default function ContentLibraryScreen(props) {
   const showChildItem = (index) => {
     dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
     setChildList(searchLibraryLists[index]);
-    dispatch({type: BACK_ICON_STATUS, payload: true})
+    setIsBack(true);
+    setTitle(searchLibraryLists[index].folder_name);
+
+    //dispatch({type: BACK_ICON_STATUS, payload: true})
   }
   const getResourceIcon = (title) =>{
     if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
@@ -146,7 +179,7 @@ export default function ContentLibraryScreen(props) {
     
   }
 
-  if (showLibraryChild) {
+  if (isBack) {
 
     return (
       <SafeAreaView>
@@ -226,7 +259,6 @@ export default function ContentLibraryScreen(props) {
         
         <View style={styles.innerContainer}>
           {searchLibraryLists.map((item, index) => (
-
             <Card title={item.folder_name} number={item.file_count} key={index} onPress={showChildItem.bind(null, index)}/>            
             
           ))}

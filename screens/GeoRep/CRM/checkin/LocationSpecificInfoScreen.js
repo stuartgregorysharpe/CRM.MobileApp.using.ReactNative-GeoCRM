@@ -6,7 +6,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import LocationInfoInput from '../LocationInfoInput';
 import RefreshSlider from '../../../../components/RefreshSlider';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
-import { boxShadow } from '../../../../constants/Styles';
+import { boxShadow, style } from '../../../../constants/Styles';
 import FilterButton from '../../../../components/FilterButton';
 import SvgIcon from '../../../../components/SvgIcon';
 import MarkerIcon from '../../../../components/Marker';
@@ -16,6 +16,7 @@ import Fonts from '../../../../constants/Fonts';
 import { grayBackground } from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
 import LocationInfoInputTablet from '../LocationInfoInputTablet';
+import Images from '../../../../constants/Images';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
@@ -24,7 +25,6 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   </View>
 );
 
-
 export default function LocationSpecificInfoScreen(props) {
 
   const dispatch = useDispatch();  
@@ -32,10 +32,47 @@ export default function LocationSpecificInfoScreen(props) {
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
+
   const showLoopSlider = () => {
     setShowItem(1);
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
+
+  useEffect(() => {
+    // custom header
+    props.screenProps.setOptions({                 
+      headerTitle:() =>{
+        return(<TouchableOpacity onPress={
+          () =>{
+            console.log("location search info back" , props.navigation);
+            if(props.navigation.canGoBack()){              
+              dispatch({type: SLIDE_STATUS, payload: false});              
+              props.navigation.goBack(); 
+            }
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              <Image
+                resizeMethod='resize'  
+                style={{width:15,height:20, marginRight:5}}
+                source={Images.backIcon}
+              />
+          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+        </View></TouchableOpacity>)
+      },
+
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {
+            setShowItem(0);
+          }}
+        >
+        </TouchableOpacity>
+      ),
+      
+    });    
+  });
 
   useEffect(() => {
     dispatch({type: SLIDE_STATUS, payload: false});    
@@ -111,15 +148,12 @@ export default function LocationSpecificInfoScreen(props) {
                   infoInput={locationInfo} />
               }     
 
-            </View>
-            
-                   
-        
+            </View>                                       
         </View>
 
         <View style={{height: 60}}></View>
       </ScrollView>
-      <TouchableOpacity style={styles.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
+      <TouchableOpacity style={style.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
         <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>
     </SafeAreaView>
@@ -233,13 +267,7 @@ const styles = EStyleSheet.create(parse({
     fontSize: 12,
     fontFamily: Fonts.primaryRegular
   },
-  plusButton: {
-    position: 'absolute',
-    bottom: 80,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,
-  },
+
   rectangle: {
     flexDirection: 'row',
     justifyContent: 'space-between',

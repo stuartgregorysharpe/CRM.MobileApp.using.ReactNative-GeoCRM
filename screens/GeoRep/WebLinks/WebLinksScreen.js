@@ -69,7 +69,7 @@ export default function WebLinksScreen(props) {
 const styles = StyleSheet.create({
   container: {   
     minHeight: '100%',
-    backgroundColor: BG_COLOR,    
+    backgroundColor: BG_COLOR,        
   },
   innerContainer: {
     padding: 10

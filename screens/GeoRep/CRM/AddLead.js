@@ -201,7 +201,7 @@ export default function AddLead({screenProps}) {
       <ScrollView style={styles.container}>
         <TouchableOpacity style={{padding: 6 }} onPress={() => {
           dispatch({type: SLIDE_STATUS, payload: false})
-          dispatch({type: BACK_ICON_STATUS, payload: false})
+          //dispatch({type: BACK_ICON_STATUS, payload: false})
         }}>
           <Divider />
         </TouchableOpacity>

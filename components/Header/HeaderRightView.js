@@ -47,7 +47,7 @@ export default function HeaderRightView() {
     layoutBar: {
       
     },
-    headerRightView: {        
+    headerRightView: {              
         flexDirection: 'row',
         marginRight: 12,    
         marginBottom:20,

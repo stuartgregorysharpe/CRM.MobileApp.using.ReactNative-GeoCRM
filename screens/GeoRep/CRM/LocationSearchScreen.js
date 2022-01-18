@@ -16,6 +16,7 @@ import { getLocationFilters, getLocationInfo } from '../../../actions/location.a
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { style } from '../../../constants/Styles';
+import { getDistance } from '../../../constants/Consts';
 
 const ResultItem = ({navigation, item, animation , onItemClicked }) => {
   return (
@@ -48,40 +49,20 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState();
-
-  const getDistance = (prelatlng, currentlatlng) => {
-    
-    const prevLatInRad = toRad(Number(prelatlng.latitude));
-    const prevLongInRad = toRad(Number(prelatlng.longitude));
-    const latInRad = toRad(currentlatlng.latitude);
-    const longInRad = toRad(currentlatlng.longitude);
-    return (
-      // In mile
-      3963 *
-      Math.acos(
-        Math.sin(prevLatInRad) * Math.sin(latInRad) +
-          Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
-      )
-    );
-  }
-  
-  const toRad = (angle) => {
-    return (angle * Math.PI) / 180;
-  }
+  const [locationId , setLocationId] = useState(props.route.params && props.route.params.location_id ? props.route.params.location_id : 0);
 
   useEffect(() => {
     // custom header
     props.screenProps.setOptions({                 
       headerTitle:(props) =>{
         return(<TouchableOpacity onPress={
-          () =>{            
+          () =>{
             if(navigation.canGoBack()){              
-              dispatch({type: SLIDE_STATUS, payload: false});
-              dispatch({type: BACK_ICON_STATUS, payload: false});
+              dispatch({type: SLIDE_STATUS, payload: false});              
               navigation.goBack(); 
-            }            
+            }
           }}>            
-          <View style={style.headerLeftContainerStyle}>            
+          <View style={style.headerTitleContainerStyle}>            
               <Image
                 resizeMethod='resize'  
                 style={{width:15,height:20, marginRight:5}}
@@ -90,13 +71,27 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },
-    }); 
 
-  },[]);
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {
+            setShowItem(0);
+          }}
+        >
+        </TouchableOpacity>
+      ),
+      
+    });    
+  });
 
-  // useEffect(() => {    
-  //   dispatch({type: SLIDE_STATUS, payload: false});  
-  // }, []);
+  useEffect(() => {   
+    if(locationId != 0){      
+      console.log("locationinfo api called");
+      openLocationInfo(locationId)
+    }    
+  }, [locationId]);
 
   useEffect(() => {    
     getSearchData("");
@@ -121,8 +116,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
           items.push(item);
         }
-      }
-      
+      }      
     });
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
     setOrderLists(items);    
@@ -144,8 +138,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   }
 
 
-  const openLocationInfo = async(location_id) => {            
-    
+  const openLocationInfo = async(location_id) => {    
     setIsRequest(true)
     getLocationInfo( Number(location_id))
     .then((res) => {
@@ -180,9 +173,10 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         isRequest &&
         <LoadingView></LoadingView>
       }
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView style={{flex:1, }}>
           
-          <GrayBackground />
+          {/* <GrayBackground /> */}
+
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
           >
@@ -194,8 +188,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
               <LocationInfo locInfo={locationInfo} navigation={navigation} /> 
             </View>
-          } 
-
+          }
 
           <View style={styles.container}>
             <SearchBar 
@@ -234,11 +227,10 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
 
 const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(parse({
-  container: {
-    position: 'relative',
+  container: {    
     backgroundColor: BG_COLOR,
     height: '100%',
-    paddingBottom: 70
+    paddingBottom: 0
   },
   title: {
     color: PRIMARY_COLOR,
@@ -278,7 +270,7 @@ const styles = EStyleSheet.create(parse({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: BG_COLOR,
+    backgroundColor: BG_COLOR,    
     elevation: 2,
     zIndex: 2,
     padding: 0,

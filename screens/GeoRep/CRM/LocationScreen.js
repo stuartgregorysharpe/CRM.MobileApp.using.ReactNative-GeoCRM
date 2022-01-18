@@ -92,35 +92,52 @@ export default function LocationScreen(props) {
   const dispatch = useDispatch();
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
-  const backIconStatus = useSelector(state => state.rep.backIconStatus);
+  //const backIconStatus = useSelector(state => state.rep.backIconStatus);
   const [isRequest, setIsRequest] = useState(false);
+  const [isBack, setIsBack] = useState(false);
   
   useEffect(() => {
 
     props.screenProps.setOptions({           
       headerTitle:(props) =>{
-        return(<TouchableOpacity onPress={
+        return(<TouchableOpacity         
+            
+           onPress={
           () =>{
             dispatch({type: SLIDE_STATUS, payload: false});
-            dispatch({type: BACK_ICON_STATUS, payload: false});                     
+            setIsBack(false);            
             if(navigation.canGoBack()){              
               navigation.goBack();              
             }            
           }}>            
-
-          <View style={style.headerLeftContainerStyle}>            
+          <View style={style.headerTitleContainerStyle}>            
               {
-                backIconStatus &&
+                isBack &&
                 <Image
                   resizeMethod='resize'  
                   style={{width:15,height:20, marginRight:5}}
                   source={Images.backIcon}
                 />
-              }
-              
+              }              
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },
+      
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {
+            dispatch({type: SLIDE_STATUS, payload: false});
+            setIsBack(false);            
+            if(navigation.canGoBack()){              
+              navigation.goBack();              
+            }
+          }}
+        >
+        </TouchableOpacity>
+      ),
+      
       tabBarStyle: {
         position: 'absolute',
         height: 50,      
@@ -128,6 +145,7 @@ export default function LocationScreen(props) {
         backgroundColor: "#fff",
       },
     });
+
     if (crmStatus) {
       props.screenProps.setOptions({
         tabBarStyle: {
@@ -135,6 +153,7 @@ export default function LocationScreen(props) {
         },
       });
     }
+
   });
 
   useEffect(() => {
@@ -163,12 +182,13 @@ export default function LocationScreen(props) {
         setShowItem(2);
         return;
       case "addLead":
-        setShowItem(3);        
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        setShowItem(3);       
+        setIsBack(true); 
+        //dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       case "locationInfo":
         setShowItem(4);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        //dispatch({type: BACK_ICON_STATUS, payload: true});
         return;
       default:
         return;
@@ -198,8 +218,7 @@ export default function LocationScreen(props) {
             <TouchableOpacity
               activeOpacity={1}
               onPress={()=> {
-                dispatch({type: SLIDE_STATUS, payload: false});
-                dispatch({type: BACK_ICON_STATUS, payload: true});
+                dispatch({type: SLIDE_STATUS, payload: false});                
                 dispatch(getLocationSearchList());
                 props.navigation.navigate("LocationSearch");
               }}
@@ -303,8 +322,9 @@ const styles = EStyleSheet.create(parse({
     
     flex:1,
     justifyContent: 'space-between',
-    backgroundColor: BG_COLOR,    
-    paddingBottom: 60
+    backgroundColor: BG_COLOR,        
+    paddingBottom: 60,
+    
   },
   map: {
     flexGrow: 1,

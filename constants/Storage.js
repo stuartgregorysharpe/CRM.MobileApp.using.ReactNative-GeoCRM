@@ -60,5 +60,17 @@ export const getUserId = async () => {
     console.log(e);
     return null;
   }
-  
 }
+
+export const getOpenReplaceCheckin = async () => {  
+  try{
+    var token = await getToken();  
+    var data = token != null ? jwt_decode(token) : null;
+    var features =  data.user_scopes.geo_rep.features;    
+    return features.includes("open_replace_checkin") ;    
+  }catch(e) {
+    console.log(e);
+    return false;
+  }  
+}
+

@@ -14,7 +14,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import { grayBackground } from '../../../constants/Styles';
+import { grayBackground, style } from '../../../constants/Styles';
 import RefreshSlider from '../../../components/RefreshSlider';
 import SvgIcon from '../../../components/SvgIcon';
 import LocationInfoInput from './LocationInfoInput';
@@ -102,7 +102,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       {subSlideStatus && <View
         style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
       >
-        <RefreshSlider />
+        <RefreshSlider  location_id={locationInfo.location_id} />
       </View>}
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
@@ -111,7 +111,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           return;
         }
         dispatch({type: SLIDE_STATUS, payload: false});      
-        dispatch({type: BACK_ICON_STATUS, payload: false});        
+        //dispatch({type: BACK_ICON_STATUS, payload: false});        
       }}>
         <Divider />
       </TouchableOpacity>
@@ -179,7 +179,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       </View>
       }
       
-      <TouchableOpacity style={[styles.plusButton]} onPress={() => {
+      <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => {
          if(!subSlideStatus){
           setStatusSubmit(!statusSubmit)
          }         
@@ -289,13 +289,7 @@ const styles = EStyleSheet.create(parse({
   checkInButton: {
     backgroundColor: PRIMARY_COLOR,
   },
-  plusButton: {
-    position: 'absolute',
-    bottom: 80,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,    
-  },
+  
   transitionView: {
     position: 'absolute',
     bottom: 0,

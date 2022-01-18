@@ -17,3 +17,31 @@ export function notifyMessage(title, msg) {
         },
     ]);
 }
+
+export function getTwoDigit(value){
+    if(value <= 9){
+        return "0" + value;
+    }
+    return String(value);
+}
+
+export function getDistance (prelatlng, currentlatlng) {
+    
+    const prevLatInRad = toRad(Number(prelatlng.latitude));
+    const prevLongInRad = toRad(Number(prelatlng.longitude));
+    const latInRad = toRad(currentlatlng.latitude);
+    const longInRad = toRad(currentlatlng.longitude);
+    return (
+      // In mile      
+      3963 *
+      Math.acos(
+        Math.sin(prevLatInRad) * Math.sin(latInRad) +
+          Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
+      )
+    );
+}
+  
+const toRad = (angle) => {
+return (angle * Math.PI) / 180;
+}
+
