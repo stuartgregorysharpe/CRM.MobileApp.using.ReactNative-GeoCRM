@@ -7,6 +7,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
 import { SLIDE_STATUS } from '../actions/actionTypes';
+import { DISABLED_COLOR } from '../constants/Colors';
 
 export default function SearchBar({isFilter, animation, initVal, onSearch}) {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export default function SearchBar({isFilter, animation, initVal, onSearch}) {
         }}
         // onFocus={() => dispatch({type: SLIDE_STATUS, payload: false})}
       />
-      <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
+      <FontAwesomeIcon style={styles.searchIcon} size={16} color={DISABLED_COLOR} icon={ faSearch } />
       {
         isFilter && 
         <TouchableOpacity style={styles.filterImageButton} onPress={animation}>

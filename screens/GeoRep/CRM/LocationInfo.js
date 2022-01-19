@@ -26,6 +26,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
 import LocationInfoInputTablet from './LocationInfoInputTablet';
+import Fonts from '../../../constants/Fonts';
 
 export default function LocationInfo({navigation, screenProps, locInfo}) {
 
@@ -227,7 +228,7 @@ const styles = EStyleSheet.create(parse({
   title: {
     fontSize: 14,
     color: '#000',
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     lineHeight: 20
   },
   addressText: {

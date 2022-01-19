@@ -345,7 +345,8 @@ const styles = EStyleSheet.create({
     width: '100%',
     height: 230,
     marginBottom: 10
-  },    
+  },
+  
   addButton: {
     position: 'relative',
     width: '100%',

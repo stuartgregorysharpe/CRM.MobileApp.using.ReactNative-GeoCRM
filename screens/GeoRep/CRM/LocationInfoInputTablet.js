@@ -7,7 +7,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import CustomPicker from '../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
@@ -514,7 +514,7 @@ const styles = EStyleSheet.create(parse({
     width: '47%'
   },
   button: {
-    backgroundColor: 'rgba(21, 90, 161, 0.31)',
+    backgroundColor: GRAY_COLOR,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,

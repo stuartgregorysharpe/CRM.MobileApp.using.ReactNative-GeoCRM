@@ -38,8 +38,6 @@ export function CalendarItem({ navigation, item , current}) {
         }                    
     }
 
-    console.log("my item item",item);
-
    if(item != undefined && item.coordinates != undefined){
         return (
         <View style={styles.itemContainer}>        

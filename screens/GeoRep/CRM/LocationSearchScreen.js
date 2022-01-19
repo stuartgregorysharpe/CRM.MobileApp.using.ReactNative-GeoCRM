@@ -1,41 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , Image} from 'react-native';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , FlatList, Image} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import GrayBackground from '../../../components/GrayBackground';
 import LocationInfo from './LocationInfo';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Skeleton from '../../../components/Skeleton';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { style } from '../../../constants/Styles';
 import { getDistance } from '../../../constants/Consts';
-
-const ResultItem = ({navigation, item, animation , onItemClicked }) => {
-  return (
-    <TouchableOpacity style={styles.resultItem} onPress={() => {    
-      onItemClicked(item.location_id);
-    }}>
-      <View style={{ maxWidth: '48%' }}>
-        <Text style={styles.subTitle}>{item.name}</Text>
-        <Text style={styles.text}>{item.address}</Text>
-      </View>
-      <View style={{ maxWidth: '48%' }}>
-        <Text style={[styles.subTitle, styles.textRight]}>
-          {item.distance} mi
-        </Text>
-        <Text style={[styles.text, styles.textRight,{color:item.status_text_color}]}>{item.status}</Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
+import { LocationItem } from './partial/LocationItem';
+import { addCalendar } from '../../../actions/calendar.action';
 
 export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   
@@ -50,11 +32,11 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState();
   const [locationId , setLocationId] = useState(props.route.params && props.route.params.location_id ? props.route.params.location_id : 0);
+  const [isSelected, setIsSelected] = useState(false);
 
-  useEffect(() => {
-    // custom header
+  useEffect(() => {    
     props.screenProps.setOptions({                 
-      headerTitle:(props) =>{
+      headerTitle:() =>{
         return(<TouchableOpacity onPress={
           () =>{
             if(navigation.canGoBack()){              
@@ -71,7 +53,6 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },
-
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
@@ -87,8 +68,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   });
 
   useEffect(() => {   
-    if(locationId != 0){      
-      console.log("locationinfo api called");
+    if(locationId != 0){
       openLocationInfo(locationId)
     }    
   }, [locationId]);
@@ -109,7 +89,6 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         location_id: list.location_id,
         status_text_color:list.status_text_color
       }
-
       if(searchKey === ''){
         items.push(item);
       }else{
@@ -136,7 +115,6 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         return;
     }    
   }
-
 
   const openLocationInfo = async(location_id) => {    
     setIsRequest(true)
@@ -167,6 +145,20 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     return LoadingView()
   }
 
+  const renderLocation = (item, index) => {    
+    return (<LocationItem 
+      isSelected={isSelected}
+      item={item}
+      onItemClicked={() => {
+        if(isSelected){
+
+        }else{
+          openLocationInfo(item.location_id);
+        }        
+      }}>  
+      </LocationItem>)
+  }
+
   return (
     <Provider>
       {
@@ -175,7 +167,6 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
       }
       <SafeAreaView style={{flex:1, }}>
           
-          {/* <GrayBackground /> */}
 
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
@@ -197,26 +188,61 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
                 setSearchKeyword(text);
               }} 
               initVal={searchKeyword}
-              isFilter={true} 
+              isFilter={true}
               animation={() => {
                 console.log("filter icon clicked");
                 animation("filter");
               }} />
             
-            <ScrollView>
-              <Text style={styles.title}>Current Location</Text>
+            
+            <View style={{flex:1}}>
+              <View style={styles.buttonContainer}>                
+                <View style={styles.leftContainer}>
+                <TouchableOpacity onPress={()=> setIsSelected(!isSelected) }>
+                  <Text style={[styles.buttonTextStyle, {backgroundColor: isSelected ? DISABLED_COLOR:PRIMARY_COLOR}]}>{isSelected? 'Cancel' : 'Select' }</Text>
+                </TouchableOpacity>
+                </View>
+                
+                <View style={styles.rightContainer}>
+                { isSelected && 
+                  <TouchableOpacity onPress={() =>{
+                    var selectedItems = [];
+                    orderLists.forEach((item, index) => {
+                      if(item.checked != undefined && item.checked == true){
+                        selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
+                      }
+                    });
+                    console.log("selectedItems", selectedItems);
+                    addCalendar({schedules:selectedItems})
+                    .then((res) =>{
+                      console.log(res);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    })
+                    
+                  }}>
+                    <Text style={styles.buttonTextStyle}>Add to Schedule +</Text>
+                  </TouchableOpacity>
+                }
+                </View>                              
+              </View>
+                            
 
-              { orderLists.map((locationSearchList, key) => (
-                <ResultItem key={key} navigation={navigation} item={locationSearchList}
-                    animation={() => animation("locationInfo") } 
-                    onItemClicked={(id) => {openLocationInfo(id)}}
-                    />
-              ))}
+              <FlatList
+                data={orderLists}
+                renderItem={
+                    ({ item , index }) => renderLocation(item, index)
+                }
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={{ paddingHorizontal: 7, marginTop: 15 }}
+              />
+
               {
                 orderLists.length == 0 &&
                 <LoadingView></LoadingView>
               }
-            </ScrollView>
+            </View>
           </View>
 
 
@@ -232,39 +258,35 @@ const styles = EStyleSheet.create(parse({
     height: '100%',
     paddingBottom: 0
   },
-  title: {
-    color: PRIMARY_COLOR,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryBold,
-    paddingLeft: 14,
-    marginBottom: 10
+
+  buttonContainer:{    
+    padding:5,
+    flexDirection:'row',    
+    marginLeft:10,
+    marginRight:10
+  },
+  leftContainer:{
+    flex:1,
+    alignItems: 'flex-start',
+  },
+  rightContainer:{
+    flex:1,
+    alignItems: 'flex-end',
   },
 
-  resultItem: {
-    maxWidth: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 14,
-    paddingRight: 14,
-    borderTopWidth: 1,
-    borderColor: '#e7e7e7'
-  },
-  subTitle: {
-    fontSize: 14,
-    fontFamily: Fonts.secondaryMedium,
-    color: TEXT_COLOR,
-    marginBottom: 4
-  },
-  text: {
+  buttonTextStyle: {
+    color: "#FFF",
     fontSize: 12,
-    fontFamily: Fonts.secondaryMedium,
-    color: '#9D9FA2',
+    fontFamily: Fonts.secondaryBold,
+    backgroundColor:PRIMARY_COLOR,
+    paddingLeft:20,
+    paddingRight:20,
+    paddingTop:5,
+    paddingBottom:5,
+    borderRadius:15,
   },
-  textRight: {
-    textAlign: 'right'
-  },
+  
+  
   transitionView: {
     position: 'absolute',
     bottom: 0,
@@ -275,4 +297,6 @@ const styles = EStyleSheet.create(parse({
     zIndex: 2,
     padding: 0,
   },
+
+
 }));

@@ -59,4 +59,39 @@ export const updateCalendar = async(postData) => {
   });
 }
 
+export const addCalendar = async(postData) => {
+  var base_url = await getBaseUrl();
+  var token = await getToken();  
+  console.log("base url", `${base_url}/calendaradd`);
+  console.log("token", token);
+  console.log("----- post data -----");
+  console.log(postData);
+
+  return new Promise(function(resolve, reject) {        
+    axios
+    .post(`${base_url}/calendaradd`, postData, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Indempotency-Key': uuid.v4()
+      }
+    })
+    .then((res) => {
+      console.log(res);
+      if(res.data == undefined){
+        resolve("");
+        return;
+      }
+      console.log(res);
+      resolve(1);      
+    })
+    .catch((err) => {
+      console.log(err);
+      reject(err);
+    })
+
+  });
+}
+
+
+
 
