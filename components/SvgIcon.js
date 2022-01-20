@@ -508,6 +508,64 @@ const Right_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="
 `;
 
 const Item_Selected = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`;
+const Calendar_Optimize = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
+<defs>
+  <filter id="teal_circle" x="0" y="0" width="202.718" height="202.718" filterUnits="userSpaceOnUse">
+    <feOffset dy="3" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="6" result="blur"/>
+    <feFlood flood-opacity="0.239"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+  <linearGradient id="linear-gradient" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+    <stop offset="0"/>
+    <stop offset="0.14" stop-opacity="0.631"/>
+    <stop offset="1" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="linear-gradient-2" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+    <stop offset="0.23" stop-color="#fff" stop-opacity="0.012"/>
+    <stop offset="0.36" stop-color="#fff" stop-opacity="0.039"/>
+    <stop offset="0.47" stop-color="#fff" stop-opacity="0.102"/>
+    <stop offset="0.57" stop-color="#fff" stop-opacity="0.18"/>
+    <stop offset="0.67" stop-color="#fff" stop-opacity="0.278"/>
+    <stop offset="0.75" stop-color="#fff" stop-opacity="0.412"/>
+    <stop offset="0.83" stop-color="#fff" stop-opacity="0.561"/>
+    <stop offset="0.91" stop-color="#fff" stop-opacity="0.741"/>
+    <stop offset="0.98" stop-color="#fff" stop-opacity="0.929"/>
+    <stop offset="1" stop-color="#fff"/>
+  </linearGradient>
+</defs>
+<g id="Group_4807" data-name="Group 4807" transform="translate(-881.084 -2048)">
+  <g id="Group_4806" data-name="Group 4806">
+    <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark" transform="translate(899.084 2063)">
+      <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
+        <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="#133c8b"/>
+      </g>
+      <g id="Group_332" data-name="Group 332" transform="translate(0.001)" opacity="0.12">
+        <path id="gradient_border_2" data-name="gradient border 2" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
+        <path id="gradient_border_1" data-name="gradient border 1" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient-2)"/>
+      </g>
+    </g>
+  </g>
+  <g id="save_alt_black_24dp" transform="translate(938.9 2102.815)">
+    <path id="Path_4396" data-name="Path 4396" d="M0,0H87.087V87.087H0Z" fill="none"/>
+    <path id="Path_5349" data-name="Path 5349" d="M52.839,6l8.316,8.316L43.434,32.037,28.909,17.512,2,44.456l5.12,5.12L28.909,27.788,43.434,42.314,66.312,19.472l8.316,8.316V6Z" transform="translate(5.263 15.788)" fill="#fff"/>
+  </g>
+</g>
+</svg>
+`;
+
+const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="41" viewBox="0 0 41 41">
+<g id="ic_add_white" transform="translate(9.25 8.75)">
+  <g id="chevron_right_black_24dp" transform="translate(-9.25 -8.75)">
+    <path id="Path_4400" data-name="Path 4400" d="M0,0H41V41H0Z" fill="none"/>
+    <path id="Path_4401" data-name="Path 4401" d="M11,6,8.59,8.409l7.824,7.841L8.59,24.091,11,26.5l10.25-10.25Z" transform="translate(6.085 4.25)" fill="#fff"/>
+  </g>
+</g>
+</svg>
+`;
+
 
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
@@ -558,6 +616,8 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "File_Download" && <SvgXml style={style} xml={File_Download} width={width} height={height} />}
         {icon == "Right_Arrow" && <SvgXml style={style} xml={Right_Arrow} width={width} height={height} />}
         {icon == "Item_Selected" && <SvgXml style={style} xml={Item_Selected} width={width} height={height} />}
+        {icon == "Calendar_Optimize" && <SvgXml style={style} xml={Calendar_Optimize} width={width} height={height} />}         
+        {icon == "Arrow_Right" && <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />}         
         
     </Fragment>
 );

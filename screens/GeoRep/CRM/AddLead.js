@@ -15,9 +15,9 @@ import { getGeocoding, getLeadFields, postLeadFields } from '../../../actions/lo
 import Fonts from '../../../constants/Fonts';
 import CustomPicker from '../../../components/modal/CustomPicker';
 import SvgIcon from '../../../components/SvgIcon';
-import { notifyMessage } from '../../../constants/Consts';
+import AlertDialog from '../../../components/modal/AlertDialog';
 
-export default function AddLead({screenProps}) {
+export default function AddLead({screenProps , onClose}) {
 
   const dispatch = useDispatch();    
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -28,6 +28,8 @@ export default function AddLead({screenProps}) {
   const [dropdownId, setDropdownId] = useState(0);
   const [isDropdownModal, setIsDropdownModal] = useState([]);
   const [dropdownItems, setDropdownItems] = useState([]);
+  const [isSuccess, setIsSuccess] = useState(false);  
+  const [message, setMessage] = useState("");
   
   var index = 0;
   const handleSubmit = () => {        
@@ -38,12 +40,13 @@ export default function AddLead({screenProps}) {
     console.log(params);
     postLeadFields(params, uuid.v4())
     .then((res) => {
-      console.log("response", res);
-      notifyMessage("Success", "");
+      setMessage("Added lead successfully");
+      setIsSuccess(true);
     })
     .catch((error) =>{      
       console.log('error', error);
-      notifyMessage("Fail","");
+      setMessage("Failed");
+      setIsSuccess(true);
     })        
   }
 
@@ -199,9 +202,13 @@ export default function AddLead({screenProps}) {
 
   return (
       <ScrollView style={styles.container}>
+
+        <AlertDialog visible={isSuccess} message={message} onModalClose={() =>{           
+          onClose();
+          }}></AlertDialog>
+
         <TouchableOpacity style={{padding: 6 }} onPress={() => {
           dispatch({type: SLIDE_STATUS, payload: false})
-          //dispatch({type: BACK_ICON_STATUS, payload: false})
         }}>
           <Divider />
         </TouchableOpacity>

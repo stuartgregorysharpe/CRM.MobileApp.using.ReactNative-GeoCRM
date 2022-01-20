@@ -15,12 +15,13 @@ import uuid from 'react-native-uuid';
 import { getTwoDigit, notifyMessage } from '../../constants/Consts';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AlertDialog from './AlertDialog';
+import { addCalendar } from '../../actions/calendar.action';
 
-export default function RefreshSlider({location_id, onClose}) {
+export default function AddToCalendar({selectedItems, onClose}) {
   const dispatch = useDispatch();
 
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
-  const [dateTimeType, setDateTimeType] = useState("datetime");  
+  const [dateTimeType, setDateTimeType] = useState("date");  
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -28,68 +29,85 @@ export default function RefreshSlider({location_id, onClose}) {
     let datetime = "";
     let time = "";
     datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
-    time =  String(date.getHours()) + ":" + String(date.getMinutes());    
-    setIsDateTimePickerVisible(false);    
-    let postDate ={
-      location_id: location_id,
-      day_option: "another_date",
-      selected_date: datetime,
-      selected_time: time
-    };
-    postReloop(postDate ,  uuid.v4())
-    .then((res) => { 
+    //time =  String(date.getHours()) + ":" + String(date.getMinutes());    
+    setIsDateTimePickerVisible(false);        
+
+    if(selectedItems != undefined){
+      selectedItems.forEach((item, index) => {                            
+        item.schedule_order = (index + 1).toString();
+        item.schedule_date = datetime;                                          
+      });        
+      
+      let postDate ={
+        schedules:selectedItems
+      };
+      console.log(postDate);
+      callApi(postDate);
+
+    }
+
+  }
+
+  const callApi = (postDate) =>{
+    addCalendar(postDate)
+    .then((res) =>{
       setMessage(res);
-      setIsConfirmModal(true);      
-     })
-    .catch((error) => { 
-      setMessage("Failed");
       setIsConfirmModal(true)
-    });
+    })
+    .catch((error) => {
+      console.log(error);
+      setMessage(error.toString());
+      setIsConfirmModal(true)
+    })   
   }
 
   return (
+
     <ScrollView style={styles.refreshSliderContainer}>
 
       <AlertDialog visible={isConfirmModal} onModalClose={() => {
-        setIsConfirmModal(false);
-        dispatch({type: SUB_SLIDE_STATUS, payload: false});
-      } }  message={message}></AlertDialog>
-
+          setIsConfirmModal(false);
+          onClose();
+        } }  message={message}></AlertDialog>           
       <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
 
       <View style={styles.sliderHeader}>
-        <Title style={{ fontFamily: Fonts.primaryBold }}>Re-loop</Title>
+        <Title style={{ fontFamily: Fonts.primaryBold }}>Add to Calendar</Title>
         <TouchableOpacity       
           onPress={() => {
-            console.log("button close");
-              dispatch({type: SUB_SLIDE_STATUS, payload: false});
+            //console.log("button close");
+            //dispatch({type: SUB_SLIDE_STATUS, payload: false});
+            onClose();
           }}>
           <Text style={{ color:"#DC143C" , paddingRight:20, paddingLeft:20, paddingTop:20, paddingBottom:10}}>Close</Text>
         </TouchableOpacity>      
       </View>
 
       <FilterButton 
-        text="Later Today" 
+        text="Today" 
         onPress={() => {
-          let postDate ={
-            location_id: location_id,
-            day_option: "today",
-            selected_date: "",
-            selected_time: ""
-          };
-          postReloop(postDate ,  uuid.v4())
-          .then((res) => { 
-            console.log(res);
-            setMessage(res);
-            setIsConfirmModal(true);
-           })
-          .catch((error) => { 
-            setMessage("Failed");
-            setIsConfirmModal(true);
-          });
-        
+
+
+          console.log("selected items" , selectedItems);
+
+          if(selectedItems != undefined){
+            selectedItems.forEach((item, index) => {                            
+              item.schedule_order = (index + 1).toString();
+              item.schedule_date = "Today";                                          
+            });            
+
+            let postDate ={
+              schedules:selectedItems
+            };
+            console.log(postDate);
+            callApi(postDate);
+
+          }
+          
+          
+                       
         }}
       />
       <FilterButton 
@@ -112,7 +130,8 @@ const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({  
   refreshSliderContainer: {
-    backgroundColor: BG_COLOR
+    backgroundColor: BG_COLOR,
+    padding:10
   },
   sliderHeader: {
     flexDirection: 'row',

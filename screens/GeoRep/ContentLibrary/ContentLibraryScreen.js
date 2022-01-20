@@ -51,7 +51,7 @@ export default function ContentLibraryScreen(props) {
                   source={Images.backIcon}
                 />
               }              
-          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} > {title} </Text>
+          <Text style={style.headerTitle} > {title} </Text>
         </View></TouchableOpacity>)
       },            
       tabBarStyle: {

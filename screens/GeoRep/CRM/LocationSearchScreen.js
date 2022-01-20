@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , FlatList, Image} from 'react-native';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , FlatList, Image, Platform} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -10,14 +10,16 @@ import SearchBar from '../../../components/SearchBar';
 import Skeleton from '../../../components/Skeleton';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
-import { style } from '../../../constants/Styles';
+import { grayBackground, style } from '../../../constants/Styles';
 import { getDistance } from '../../../constants/Consts';
 import { LocationItem } from './partial/LocationItem';
-import { addCalendar } from '../../../actions/calendar.action';
+import AlertDialog from '../../../components/modal/AlertDialog';
+import AddToCalendar from '../../../components/modal/AddToCalendar';
+import SvgIcon from '../../../components/SvgIcon';
 
 export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   
@@ -31,16 +33,20 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState();
-  const [locationId , setLocationId] = useState(props.route.params && props.route.params.location_id ? props.route.params.location_id : 0);
-  const [isSelected, setIsSelected] = useState(false);
-
+  const [locationId , setLocationId] = useState(props.route.params && props.route.params.location_id ? props.route.params.location_id : 0);  
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isSelected, setIsSelected] = useState(false);    
+  const [isCreated, setIsCreated] = useState(false);
+  const [message, setMessage] = useState("");
+  
   useEffect(() => {    
+    console.log(" search list page header called");
     props.screenProps.setOptions({                 
       headerTitle:() =>{
         return(<TouchableOpacity onPress={
           () =>{
             if(navigation.canGoBack()){              
-              dispatch({type: SLIDE_STATUS, payload: false});              
+              dispatch({type: SLIDE_STATUS, payload: false});
               navigation.goBack(); 
             }
           }}>            
@@ -59,11 +65,12 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           activeOpacity={1}
           onPress={() => {
             setShowItem(0);
+            dispatch({type: SLIDE_STATUS, payload: false});
           }}
         >
         </TouchableOpacity>
       ),
-      
+
     });    
   });
 
@@ -76,6 +83,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   useEffect(() => {    
     getSearchData("");
     setIsRequest(false);
+    console.log("locationSearchLists", locationSearchLists.length);
   }, [locationSearchLists]);
 
   const getSearchData = (searchKey) => {
@@ -110,6 +118,9 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         return;
       case "locationInfo":
         setShowItem(2);        
+        return;
+      case "addtocalendar":
+        setShowItem(3);
         return;
       default:        
         return;
@@ -148,16 +159,24 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const renderLocation = (item, index) => {    
     return (<LocationItem 
       isSelected={isSelected}
-      item={item}
-      onItemClicked={() => {
+      item={item}    
+      onItemClicked={(isChecked) => {
         if(isSelected){
-
+          orderLists[index].checked = isChecked;
+          var selectedItems = [];
+          orderLists.forEach((item, index) => {
+            if(item.checked != undefined && item.checked == true){
+              selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
+            }
+          });                    
+          console.log("selectedItems", selectedItems);
+          setSelectedItems(selectedItems);          
         }else{
           openLocationInfo(item.location_id);
         }        
-      }}>  
+      }}>
       </LocationItem>)
-  }
+  }  
 
   return (
     <Provider>
@@ -166,18 +185,51 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
         <LoadingView></LoadingView>
       }
       <SafeAreaView style={{flex:1, }}>
+                
+          <AlertDialog visible={isCreated}  message={message} onModalClose={() => setIsCreated(false) }></AlertDialog>              
           
+          {crmStatus && (showItem == 3 || showItem == 1) && <TouchableOpacity
+            activeOpacity={1} 
+            style={grayBackground}
+            onPress={() => {
+              dispatch({type: SUB_SLIDE_STATUS, payload: false})
+              dispatch({type: SLIDE_STATUS, payload: false});
+              setShowItem(0);              
+            }}
+          ></TouchableOpacity>}
 
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
           >
-            <FilterView navigation={navigation} />
+            <FilterView navigation={navigation} onClose={() =>{
+              dispatch({type: SLIDE_STATUS, payload: false});
+              setShowItem(0);  
+            }} />
           </View>}
 
           {crmStatus && showItem == 2 &&
             <View
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
               <LocationInfo locInfo={locationInfo} navigation={navigation} /> 
+            </View>
+          }
+
+          { crmStatus && showItem == 3 &&
+            <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
+              <AddToCalendar selectedItems={selectedItems} 
+                onClose={() => {  
+                  dispatch({type: SLIDE_STATUS, payload: false }); 
+                  setShowItem(0);        
+                  setIsSelected(false); 
+                  getSearchData("");
+                  // var selectedItems = [];
+                  // orderLists.forEach((item, index) => {
+                  //   item.checked = false;
+                  //   //selectedItems.push(item);
+                  // });                  
+                  // setOrderLists(orderLists);
+
+                }}></AddToCalendar> 
             </View>
           }
 
@@ -193,50 +245,62 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
                 console.log("filter icon clicked");
                 animation("filter");
               }} />
-            
-            
+                        
             <View style={{flex:1}}>
-              <View style={styles.buttonContainer}>                
+              
+              <View style={styles.buttonContainer}>
+
                 <View style={styles.leftContainer}>
-                <TouchableOpacity onPress={()=> setIsSelected(!isSelected) }>
-                  <Text style={[styles.buttonTextStyle, {backgroundColor: isSelected ? DISABLED_COLOR:PRIMARY_COLOR}]}>{isSelected? 'Cancel' : 'Select' }</Text>
+                <TouchableOpacity style={[styles.buttonTextStyle, {backgroundColor: isSelected ? DISABLED_COLOR:PRIMARY_COLOR}]} 
+                  onPress={()=> setIsSelected(!isSelected) }>
+                  <Text style={[styles.buttonText]}>{isSelected? 'Cancel' : 'Select' }</Text>
                 </TouchableOpacity>
                 </View>
                 
                 <View style={styles.rightContainer}>
-                { isSelected && 
-                  <TouchableOpacity onPress={() =>{
+                { isSelected && selectedItems.length > 0 && 
+                  <TouchableOpacity 
+                  style={styles.buttonTextStyle}
+                  onPress={() =>{
+
                     var selectedItems = [];
                     orderLists.forEach((item, index) => {
                       if(item.checked != undefined && item.checked == true){
                         selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
                       }
-                    });
+                    });                    
                     console.log("selectedItems", selectedItems);
-                    addCalendar({schedules:selectedItems})
-                    .then((res) =>{
-                      console.log(res);
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    })
-                    
+                    setSelectedItems(selectedItems);
+                    if(selectedItems.length > 0){
+                      animation("addtocalendar");
+                    }
+
                   }}>
-                    <Text style={styles.buttonTextStyle}>Add to Schedule +</Text>
+                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                      <Text style={styles.buttonText}>Add to Calendar </Text>
+                      <SvgIcon icon="Arrow_Right" width='13px' height='13px' />
+                    </View>
+                    
                   </TouchableOpacity>
                 }
                 </View>                              
               </View>
                             
-
-              <FlatList
-                data={orderLists}
-                renderItem={
-                    ({ item , index }) => renderLocation(item, index)
-                }
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={{ paddingHorizontal: 7, marginTop: 15 }}
-              />
+              
+              <View style={{marginBottom:100}}>
+                <FlatList              
+                  removeClippedSubviews={false}
+                  maxToRenderPerBatch={10}
+                  initialNumToRender={10}
+                  windowSize={21}
+                  data={orderLists}
+                  renderItem={
+                      ({ item , index }) => renderLocation(item, index)
+                  }
+                  keyExtractor={(item, index) => index.toString()}
+                  contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
+                />
+              </View>
 
               {
                 orderLists.length == 0 &&
@@ -260,10 +324,12 @@ const styles = EStyleSheet.create(parse({
   },
 
   buttonContainer:{    
-    padding:5,
+    paddingTop:8,
+    paddingBottom:17,
     flexDirection:'row',    
     marginLeft:10,
-    marginRight:10
+    marginRight:10,
+    
   },
   leftContainer:{
     flex:1,
@@ -274,18 +340,19 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'flex-end',
   },
 
-  buttonTextStyle: {
+  buttonTextStyle: {     
+    paddingLeft:20,
+    paddingRight:20,
+    paddingTop:Platform.OS == "android" ? 5 : 8,
+    paddingBottom:Platform.OS == "android" ? 5 : 8,
+    borderRadius:15,
+    backgroundColor: PRIMARY_COLOR
+  },  
+  buttonText:{
     color: "#FFF",
     fontSize: 12,
     fontFamily: Fonts.secondaryBold,
-    backgroundColor:PRIMARY_COLOR,
-    paddingLeft:20,
-    paddingRight:20,
-    paddingTop:5,
-    paddingBottom:5,
-    borderRadius:15,
   },
-  
   
   transitionView: {
     position: 'absolute',

@@ -20,13 +20,14 @@ export const grayBackground = StyleSheet.create({
 
 export const style = StyleSheet.create({
 
-  header: {
+  headerTitle: {
     fontFamily:Fonts.primaryRegular, 
     color:"#FFF" , 
     fontSize:20 , 
     fontWeight:"400",
     marginLeft:0,        
   },
+  
 
   headerLeftStyle: {
     backgroundColor: PRIMARY_COLOR,
@@ -49,6 +50,10 @@ export const style = StyleSheet.create({
     elevation: 1,
   },
 
+  
+  innerPlusButton: {        
+  
+  },
 
   
 })

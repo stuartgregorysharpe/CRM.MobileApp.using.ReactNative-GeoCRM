@@ -14,17 +14,18 @@ import SvgIcon from './SvgIcon';
 
 import axios from 'axios';
 
-export default function FilterView({navigation}) {
+export default function FilterView({navigation , onClose}) {
   const dispatch = useDispatch();
   const statusLocationFilters = useSelector(state => state.location.statusLocationFilters);
   const locationFilters = useSelector(state => state.location.locationFilters);
 
   const [modaVisible, setModalVisible] = useState(false);
   const [selectFilterId, setSelectFilterId] = useState(0);
-  const [showFilter, setShowFilter] = useState([]);
+  const [options, setOptions] = useState([]);
   const [emptyArray, setEmptyArray] = useState([]);
   const [selectFilters, setSelectFilters] = useState([]);
-
+  const [fieldType, setFieldType] = useState("");
+  
   useEffect(() => {
     let doubleArray = [];
     for(let i = 0; i < locationFilters.length; i++) {
@@ -35,14 +36,15 @@ export default function FilterView({navigation}) {
       doubleArray.push(items);
     }
     setEmptyArray(doubleArray);
-    console.log("selected filter 1");
+    console.log("selected filter 1" , JSON.stringify(locationFilters));
     setSelectFilters(doubleArray);
   }, [locationFilters]);
 
   const selectFilter = (key) => {
     setSelectFilterId(selectFilterId);
     setModalVisible(true);
-    setShowFilter(locationFilters[key].options);
+    setOptions(locationFilters[key].options);    
+    setFieldType(locationFilters[key].filter_label);
   }
 
   if (statusLocationFilters == "request") {
@@ -111,84 +113,105 @@ export default function FilterView({navigation}) {
             fontFamily: Fonts.primaryRegular, 
             letterSpacing: 0.2
           }}
-          color="#DC143C" 
+          color="#DC143C"
           uppercase={false} 
-          onPress={() => {
-            console.log("selected filter 2");
+          onPress={() => {            
             setSelectFilters(emptyArray)
           }}
         >
           Clear Filters
         </Button>
       </View>
+      
       {locationFilters.map((locationFilter, key) => (
         <FilterButton text={locationFilter.filter_label} key={key} 
-        onPress={selectFilter.bind(null, key)}
+          onPress={selectFilter.bind(null, key)}
         />
       ))}
+
       <Button 
         mode="contained" 
         color={PRIMARY_COLOR} 
         uppercase={false} 
         labelStyle={{
           fontSize: 18, 
-          fontFamily: 'Gilroy-Bold', 
+          fontFamily: Fonts.secondaryBold, 
           letterSpacing: 0.2
         }} 
-        onPress={submit}>
+        onPress={() => {
+          submit();
+          onClose();
+        }}>
         Apply Filters
       </Button>
       <Portal>
 
-      <Modal 
-        
+
+
+      <Modal         
         visible={modaVisible} 
         transparent={true}
         onDismiss={() => setModalVisible(false)} 
         onRequestClose={() => setModalVisible(true)}
         contentContainerStyle={styles.pickerContent}>
           <View style={{flex:1}}>
-            
-          <TouchableOpacity style={styles.closeModal} onPress={() =>{        
-            setModalVisible(false)
-          }}>
-            {/* <SvgIcon icon="Close" width="30px" height="30px" /> */}
-            <Text style={{fontSize:18, fontFamily:Fonts.secondaryRegular}}>Close</Text>
-          </TouchableOpacity>
+              
+            <TouchableOpacity style={styles.closeModal} onPress={() =>{setModalVisible(false) }}>            
+              <Text style={{fontSize:18, fontFamily:Fonts.secondaryRegular}}>Close</Text>
+            </TouchableOpacity>
           
-            <ScrollView style={{flex:1}}>  
-        {showFilter.map((item, key) => (
-          
-          <View style={{}} key={key}>
-          {
-            item[Object.keys(item)[0]] != null &&
-          <View style={styles.pickerItem} key={key}>
-            <Text style={styles.pickerItemText}>{item[Object.keys(item)[0]]}</Text>
-            <CheckBox
-              value={selectFilters[selectFilterId][key]}
-              onValueChange={value => {
-                console.log("selected filter 3");
-                setSelectFilters([
-                  ...selectFilters.slice(0, selectFilterId),
-                  [
-                    ...selectFilters[selectFilterId].slice(0, key),
-                    value,
-                    ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
-                  ],
-                  ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
-                ])
-              }}
-            />
-            </View>
-                    }
+            <ScrollView style={{flex:1}}>
 
-          </View>  
-        ))}
-        </ScrollView>
-          </View>
-        
+                {options.map((item, key) => (                  
+                  <View key={key}>
+                  {
+                    (fieldType == "Stage" || fieldType == "Outcome") &&
+                    <View style={styles.pickerItem} key={key}>
+                      <Text style={styles.pickerItemText}>{item.name}</Text>
+                      <CheckBox
+                        value={selectFilters[selectFilterId][key]}
+                        onValueChange={value => {
+                          console.log("selected filter 3");
+                          setSelectFilters([
+                            ...selectFilters.slice(0, selectFilterId),
+                            [
+                              ...selectFilters[selectFilterId].slice(0, key),
+                              value,
+                              ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
+                            ],
+                            ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
+                          ])
+                        }}
+                      />
+                    </View>                    
+                  }
+                  {
+                    !(fieldType == "Stage" || fieldType == "Outcome") &&
+                    <View style={styles.pickerItem} key={key}>
+                      <Text style={styles.pickerItemText}>{item}</Text>
+                      <CheckBox
+                        value={selectFilters[selectFilterId][key]}
+                        onValueChange={value => {
+                          console.log("selected filter 3");
+                          setSelectFilters([
+                            ...selectFilters.slice(0, selectFilterId),
+                            [
+                              ...selectFilters[selectFilterId].slice(0, key),
+                              value,
+                              ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
+                            ],
+                            ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
+                          ])
+                        }}
+                      />
+                    </View>                    
+                  }
+                  </View>  
+                ))}
+            </ScrollView>
+
+          </View>        
       </Modal>
-
     </Portal>
     </ScrollView>
   )

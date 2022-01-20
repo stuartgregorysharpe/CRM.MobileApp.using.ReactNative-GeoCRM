@@ -7,7 +7,7 @@ import { PRIMARY_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { BG_COLOR } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import { getBaseUrl, getToken } from '../../../constants/Storage';
+import { getBaseUrl, getCalendarAdd, getCalendarOptimize, getToken } from '../../../constants/Storage';
 import { getCalendar, updateCalendar } from '../../../actions/calendar.action';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import { CalendarItem } from './partial/CalendarItem';
@@ -19,23 +19,34 @@ export default function CalendarScreen(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [tabIndex, setTabIndex] = useState(2);
   const [lists, setLists] = useState([]);
+  const [isOptimize, setIsOptimize] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
+
   useEffect(() => {
     if (props.screenProps) {
       props.screenProps.setOptions({
         title: "Calendar"
       });
     }
+
     loadList("today");
   }, []);
 
   const loadList = async(type) => {    
+
+    setIsOptimize( await getCalendarOptimize());
+    setIsAdd(await getCalendarAdd());    
+
     var base_url = await getBaseUrl();
     var token = await getToken();
     if(base_url != null && token != null){      
       getCalendar(base_url, token, type)
       .then(res => {        
-        setLists(res);      
-        console.log("response", res);  
+        setLists(res);         
+        
+
+        console.log("isOptimize", isOptimize);
+        
       })
       .catch(error=>{
         setLists([]);
@@ -141,14 +152,30 @@ export default function CalendarScreen(props) {
             </GestureHandlerRootView>            
           }          
         </View>                          
-
       </View>
-      <TouchableOpacity style={style.plusButton}>
-        <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-      </TouchableOpacity>
+        
+      <View style={styles.plusButtonContainer}>
+        {
+          isOptimize && 
+          <TouchableOpacity style={style.innerPlusButton} onPress={() =>{
+            props.navigation.navigate('CRM', {'screen': 'LocationSearch'});
+          }}>
+            <SvgIcon icon="Calendar_Optimize" width='70px' height='70px' />
+          </TouchableOpacity>
+        }        
+
+        {
+          isAdd &&
+          <TouchableOpacity style={style.innerPlusButton} onPress={() => {
+            props.navigation.navigate('CRM', {'screen': 'LocationSearch'});
+          }}>
+            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+          </TouchableOpacity>        
+        }        
+      </View>      
     </SafeAreaView>
   )
-} 
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -205,4 +232,15 @@ const styles = StyleSheet.create({
   },    
   rowItem: {    
   },
+
+  plusButtonContainer: {
+    position: 'absolute',
+    flexDirection:"row",
+    bottom: 20,
+    right: 20,
+    zIndex: 1,
+    elevation: 1,
+  },
+
+
 })

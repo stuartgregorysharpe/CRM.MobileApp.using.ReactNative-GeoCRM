@@ -74,3 +74,31 @@ export const getOpenReplaceCheckin = async () => {
   }  
 }
 
+export const getCalendarAdd = async () => {  
+  try{
+    var token = await getToken();  
+    var data = token != null ? jwt_decode(token) : null;
+    var features =  data.user_scopes.geo_rep.features;    
+    return features.includes("calendar_add") ;    
+  }catch(e) {
+    console.log(e);
+    return false;
+  }  
+}
+
+export const getCalendarOptimize = async () => {  
+  try{
+    var token = await getToken();  
+    var data = token != null ? jwt_decode(token) : null;
+    var features =  data.user_scopes.geo_rep.features;    
+    console.log("my features", features);
+    var res =  features.includes("calendar_optimize") ;        
+    return res;
+  
+  }catch(e) {
+    console.log(e);
+    return false;
+  }
+  
+}
+

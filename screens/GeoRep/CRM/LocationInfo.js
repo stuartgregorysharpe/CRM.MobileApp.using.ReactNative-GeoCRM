@@ -94,6 +94,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
 
   return (
     <View style={[styles.container, {flex:1}]}>
+      
       {subSlideStatus && <TouchableOpacity
         activeOpacity={1} 
         style={grayBackground}

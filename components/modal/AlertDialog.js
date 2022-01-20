@@ -8,6 +8,7 @@ import Divider from '../Divider';
 
 
 const AlertDialog = ({visible, onModalClose, message }) => {
+
     return (
         <Modal 
             // animationType="slide"
@@ -29,7 +30,12 @@ const AlertDialog = ({visible, onModalClose, message }) => {
             {/* </TouchableWithoutFeedback > */}
         </Modal>
     )
+
 }
+
+//export const CustomAlert: AlertDialog;
+// export default AlertDialog;
+
 
 
 const styles = StyleSheet.create({        

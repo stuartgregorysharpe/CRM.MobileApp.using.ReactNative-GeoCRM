@@ -263,13 +263,12 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
         headerTitleAlign:'left',
-
         headerStyle: {
           backgroundColor: PRIMARY_COLOR,
           height: getHeaderHeight()
         },
         tabBarShowLabel: true,
-        headerTitleStyle:  style.header,
+        headerTitleStyle:  style.headerTitle,
         tabBarIconStyle: {
           color: "#fff",
         },
@@ -429,25 +428,7 @@ export default function RepBottomTabNavigator({navigation}) {
               {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
-          ),
-          // headerTitle:(props) =>{
-          //   return(<TouchableOpacity onPress={
-          //     () =>{                
-          //       dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
-          //       //dispatch({type: BACK_ICON_STATUS, payload: false});                
-          //     }}>
-          //     <View style={styles.layoutBar}>
-          //       {
-          //         backIconStatus && 
-          //         <Image
-          //         resizeMethod='resize'  
-          //         style={{width:15,height:20, marginRight:5}}
-          //         source={Images.backIcon}
-          //       />  
-          //       }                          
-          //     <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >Content Library</Text>
-          //   </View></TouchableOpacity>)
-          // },
+          ),          
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),
@@ -459,15 +440,7 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
-            e.preventDefault();
-            // if (statusDispositionInfo) {
-            //   dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-            //   dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepContentLibrary"});
-            //   return;
-            // }
-            // dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
-            //dispatch({type: BACK_ICON_STATUS , payload: false});
-            console.log("top on ");
+            e.preventDefault();            
             navigation.navigate("RepContentLibrary" , {isBack: false});
           },
         })}

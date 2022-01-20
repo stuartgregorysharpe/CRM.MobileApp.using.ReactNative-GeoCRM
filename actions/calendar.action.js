@@ -69,20 +69,21 @@ export const addCalendar = async(postData) => {
 
   return new Promise(function(resolve, reject) {        
     axios
-    .post(`${base_url}/calendaradd`, postData, {
+    .post(`${base_url}/calenderadd`, postData, {
       headers: {
         Authorization: 'Bearer ' + token,
         'Indempotency-Key': uuid.v4()
       }
     })
     .then((res) => {
-      console.log(res);
+      console.log(res.data);
       if(res.data == undefined){
-        resolve("");
+        resolve("Failed");
         return;
       }
-      console.log(res);
-      resolve(1);      
+      if(res.data.status == "success"){
+        resolve("Added to Calendar successfully");
+      }      
     })
     .catch((err) => {
       console.log(err);

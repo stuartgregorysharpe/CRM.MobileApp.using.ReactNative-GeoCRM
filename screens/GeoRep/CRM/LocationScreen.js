@@ -93,23 +93,21 @@ export default function LocationScreen(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
   const [showItem, setShowItem] = useState(0);
-  const [locationInfo, setLocationInfo] = useState();
-  //const backIconStatus = useSelector(state => state.rep.backIconStatus);
+  const [locationInfo, setLocationInfo] = useState();  
   const [isRequest, setIsRequest] = useState(false);
   const [isBack, setIsBack] = useState(false);
   
   useEffect(() => {
     props.screenProps.setOptions({           
-      headerTitle:(props) =>{
-        return(<TouchableOpacity         
-            
+      headerTitle:() =>{
+        return(<TouchableOpacity                     
            onPress={
           () =>{
             dispatch({type: SLIDE_STATUS, payload: false});
             setIsBack(false);            
             if(navigation.canGoBack()){              
               navigation.goBack();              
-            }            
+            }
           }}>            
           <View style={style.headerTitleContainerStyle}>            
               {
@@ -119,10 +117,11 @@ export default function LocationScreen(props) {
                   style={{width:15,height:20, marginRight:5}}
                   source={Images.backIcon}
                 />
-              }              
-          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+              }
+            <Text style={style.headerTitle} >CRM</Text>
         </View></TouchableOpacity>)
-      },      
+      },
+
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
@@ -210,13 +209,19 @@ export default function LocationScreen(props) {
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 1 && <MarkerView isRequest={isRequest} />}
-          {showItem == 2 && <FilterView navigation={props.navigation} />}
+          {showItem == 2 && <FilterView navigation={props.navigation} onClose={() =>{
+            setShowItem(0);
+            dispatch({type: SLIDE_STATUS, payload: false});
+          }} />}
         </View>}
         
         {crmStatus && (showItem == 3 || showItem == 4) && <View
           style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
-          {showItem == 3 && <AddLead screenProps={props.screenProps} />}
+          {showItem == 3 && <AddLead screenProps={props.screenProps} onClose={() => {
+            setIsBack(false);
+            dispatch({type: SLIDE_STATUS, payload: false});
+            }} />}
           {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo}/>}
         </View>}
         

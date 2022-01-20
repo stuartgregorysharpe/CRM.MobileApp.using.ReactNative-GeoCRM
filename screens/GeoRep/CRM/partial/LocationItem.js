@@ -7,15 +7,21 @@ import Fonts from '../../../../constants/Fonts';
 
 export function LocationItem ({isSelected, item, selectedItems, onItemClicked }) {
 
-    const [isChecked, setIsChecked] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);    
+    useEffect(() => {   
+      //if(isSelected){
+        setIsChecked(false);
+      //}    
+    }, [isSelected]);
 
     return (
       <TouchableOpacity style={[styles.resultItem , {backgroundColor: isSelected && isChecked ? 'rgba(61, 143, 251, 0.4)' : BG_COLOR  }]} onPress={() => {
           if(isSelected){
-            setIsChecked(!isChecked);
+            setIsChecked(!isChecked);            
             item.checked = !isChecked;
+            onItemClicked(!isChecked);
           }else{
-            onItemClicked(item.location_id);
+            onItemClicked(!isChecked);
           }        
       }}>
         <View style={{ flex:1 }}>
@@ -50,6 +56,7 @@ const styles = StyleSheet.create({
         paddingRight: 14,
         borderTopWidth: 1,
         borderColor: '#e7e7e7',
+        
                 
     },
     subTitle: {

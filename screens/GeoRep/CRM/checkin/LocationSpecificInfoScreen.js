@@ -43,8 +43,7 @@ export default function LocationSpecificInfoScreen(props) {
     props.screenProps.setOptions({                 
       headerTitle:() =>{
         return(<TouchableOpacity onPress={
-          () =>{
-            console.log("location search info back" , props.navigation);
+          () =>{            
             if(props.navigation.canGoBack()){              
               dispatch({type: SLIDE_STATUS, payload: false});              
               props.navigation.goBack(); 
@@ -52,11 +51,11 @@ export default function LocationSpecificInfoScreen(props) {
           }}>            
           <View style={style.headerTitleContainerStyle}>            
               <Image
-                resizeMethod='resize'  
+                resizeMethod='resize'
                 style={{width:15,height:20, marginRight:5}}
                 source={Images.backIcon}
               />
-          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+          <Text style={style.headerTitle} >CRM</Text>
         </View></TouchableOpacity>)
       },
 
