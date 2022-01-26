@@ -25,6 +25,7 @@ import {
   getLocationFilters,
   getLocationSearchList,
   getLocationInfo,
+  getLocationsMap,
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -44,8 +45,7 @@ const MarkerView = ( {isRequest} ) => {
         icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1]
       })
     })
-    setMarkerIcons(items);    
-    console.log(" marker icon");
+    setMarkerIcons(items);     
   }, [pins])
 
   if (statusPinKeys == "request" || isRequest ) {
@@ -151,9 +151,6 @@ export default function LocationScreen(props) {
         },
       });
     }    
-
-
-    console.log(" marker icon cd");
   });
 
   useEffect(() => {
@@ -188,13 +185,11 @@ export default function LocationScreen(props) {
         return;
       case "addLead":
         setShowItem(3);       
-        setIsBack(true); 
-        //dispatch({type: BACK_ICON_STATUS, payload: true});
+        setIsBack(true);         
         return;
       case "locationInfo":
         setShowItem(4);
-        setIsBack(true);
-        //dispatch({type: BACK_ICON_STATUS, payload: true});
+        setIsBack(true);        
         return;
       default:
         return;
@@ -209,10 +204,12 @@ export default function LocationScreen(props) {
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
           {showItem == 1 && <MarkerView isRequest={isRequest} />}
-          {showItem == 2 && <FilterView navigation={props.navigation} onClose={() =>{
+          {showItem == 2 && 
+          <FilterView navigation={props.navigation} page={"map"} onClose={() =>{
             setShowItem(0);
             dispatch({type: SLIDE_STATUS, payload: false});
-          }} />}
+          }} />
+          }
         </View>}
         
         {crmStatus && (showItem == 3 || showItem == 4) && <View
@@ -220,6 +217,7 @@ export default function LocationScreen(props) {
         >
           {showItem == 3 && <AddLead screenProps={props.screenProps} onClose={() => {
             setIsBack(false);
+            dispatch(getLocationsMap());
             dispatch({type: SLIDE_STATUS, payload: false});
             }} />}
           {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo}/>}
@@ -242,13 +240,15 @@ export default function LocationScreen(props) {
                 />
               </View>
             </TouchableOpacity>
+
             <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
             <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-              dispatch(getLocationFilters());              
+              dispatch(getLocationFilters());         
               animation("filter");
             }}>
               <SvgIcon icon="Filter" width="30px" height="30px" />
             </TouchableOpacity>
+            
           </View>
 
           <MapView

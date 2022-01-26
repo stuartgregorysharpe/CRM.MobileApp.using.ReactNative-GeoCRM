@@ -1,10 +1,7 @@
 import React from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { BG_COLOR, PRIMARY_COLOR } from '../../constants/Colors';
+import {  PRIMARY_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import { style } from '../../constants/Styles';
-import Divider from '../Divider';
 
 
 const AlertDialog = ({visible, onModalClose, message }) => {
@@ -30,12 +27,11 @@ const AlertDialog = ({visible, onModalClose, message }) => {
             {/* </TouchableWithoutFeedback > */}
         </Modal>
     )
-
 }
+
 
 //export const CustomAlert: AlertDialog;
 // export default AlertDialog;
-
 
 
 const styles = StyleSheet.create({        

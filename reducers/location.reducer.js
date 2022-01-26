@@ -9,6 +9,7 @@ import {
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
   STATUS_DISPOSITION_FIELDS_UPDATE,
+  LOCATION_ID_CHANGED,
   
 } from "../actions/actionTypes";
 
@@ -27,11 +28,17 @@ const initialState = {
   locationLeadfields: {},
   statusStageOutcomeUpdate:'init',
   statusLocationInfoUpdate: 'init',
+  locationId:0,
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOCATION_ID_CHANGED:
+      return {
+        ...state,
+        locationId: action.payload
+      }
     case STATUS_PIN_KEY:
       return {
         ...state,

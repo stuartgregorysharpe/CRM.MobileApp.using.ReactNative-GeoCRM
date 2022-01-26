@@ -8,10 +8,10 @@ import LocationInfo from './LocationInfo';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Skeleton from '../../../components/Skeleton';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
+import {  LOCATION_ID_CHANGED, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationFilters, getLocationInfo, getLocationSearchList } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { grayBackground, style } from '../../../constants/Styles';
@@ -26,28 +26,31 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const navigation = props.navigation;
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const [isRequest, setIsRequest] = useState(true);
+  const [isRequest, setIsRequest] = useState(false);
   const locationSearchLists = useSelector(state => state.location.locationSearchLists);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState();
-  const [locationId , setLocationId] = useState(props.route.params && props.route.params.location_id ? props.route.params.location_id : 0);  
+  const locationId = useSelector(state => state.location.locationId);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSelected, setIsSelected] = useState(false);    
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState("");
-  
-  useEffect(() => {    
-    console.log(" search list page header called");
+  const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
+    
+  useEffect(() => {     
+    
+    setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
     props.screenProps.setOptions({                 
       headerTitle:() =>{
         return(<TouchableOpacity onPress={
           () =>{
             if(navigation.canGoBack()){              
               dispatch({type: SLIDE_STATUS, payload: false});
-              navigation.goBack(); 
+              navigation.goBack();
+              dispatch({type: LOCATION_ID_CHANGED, payload: 0})
             }
           }}>            
           <View style={style.headerTitleContainerStyle}>            
@@ -66,25 +69,34 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           onPress={() => {
             setShowItem(0);
             dispatch({type: SLIDE_STATUS, payload: false});
+            dispatch({type: LOCATION_ID_CHANGED, payload: 0})            
           }}
         >
         </TouchableOpacity>
       ),
-
     });    
   });
 
-  useEffect(() => {   
-    if(locationId != 0){
+  useEffect(() => {    
+    if(locationId != 0 && isRequest == false){      
       openLocationInfo(locationId)
-    }    
+    }
   }, [locationId]);
 
-  useEffect(() => {    
-    getSearchData("");
-    setIsRequest(false);
-    console.log("locationSearchLists", locationSearchLists.length);
+  useEffect(() => {
+    if(calendarType == "optimize" || calendarType == "add") {
+      setIsSelected(true)
+    }
+  },[calendarType]);
+
+  useEffect(() => {  
+    if(locationSearchLists.length !== 0){
+      getSearchData("");
+    }else{
+      dispatch(getLocationSearchList());
+    }
   }, [locationSearchLists]);
+
 
   const getSearchData = (searchKey) => {
     let items = [];    
@@ -122,7 +134,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
       case "addtocalendar":
         setShowItem(3);
         return;
-      default:        
+      default:
         return;
     }    
   }
@@ -132,8 +144,11 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     getLocationInfo( Number(location_id))
     .then((res) => {
       setLocationInfo(res);
-      setIsRequest(false)      
+      setIsRequest(false)
       animation("locationInfo");
+      if(locationSearchLists.length == 0){
+        dispatch(getLocationSearchList());
+      }
     })
     .catch((e) =>{
       setIsRequest(false)      
@@ -201,7 +216,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
           >
-            <FilterView navigation={navigation} onClose={() =>{
+            <FilterView navigation={navigation} page={"search"} onClose={() =>{
               dispatch({type: SLIDE_STATUS, payload: false});
               setShowItem(0);  
             }} />
@@ -221,14 +236,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
                   dispatch({type: SLIDE_STATUS, payload: false }); 
                   setShowItem(0);        
                   setIsSelected(false); 
-                  getSearchData("");
-                  // var selectedItems = [];
-                  // orderLists.forEach((item, index) => {
-                  //   item.checked = false;
-                  //   //selectedItems.push(item);
-                  // });                  
-                  // setOrderLists(orderLists);
-
+                  getSearchData("");                  
                 }}></AddToCalendar> 
             </View>
           }
@@ -242,7 +250,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
               initVal={searchKeyword}
               isFilter={true}
               animation={() => {
-                console.log("filter icon clicked");
+                
                 animation("filter");
               }} />
                         
@@ -287,28 +295,26 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
               </View>
                             
               
-              <View style={{marginBottom:100}}>
-                <FlatList              
-                  removeClippedSubviews={false}
-                  maxToRenderPerBatch={10}
-                  initialNumToRender={10}
-                  windowSize={21}
-                  data={orderLists}
-                  renderItem={
-                      ({ item , index }) => renderLocation(item, index)
-                  }
-                  keyExtractor={(item, index) => index.toString()}
-                  contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
-                />
-              </View>
-
               {
-                orderLists.length == 0 &&
-                <LoadingView></LoadingView>
-              }
+                orderLists.length !== 0 && 
+                <View style={{marginBottom:100}}>
+                  <FlatList              
+                    removeClippedSubviews={false}
+                    maxToRenderPerBatch={10}
+                    initialNumToRender={10}
+                    windowSize={21}
+                    data={orderLists}
+                    renderItem={
+                        ({ item , index }) => renderLocation(item, index)
+                    }
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
+                  />
+                </View>
+              }              
+              
             </View>
           </View>
-
 
       </SafeAreaView>
     </Provider>

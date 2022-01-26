@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect , createRef} from 'react';
-import { Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import { Text, View, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../components/SvgIcon';
@@ -13,16 +12,18 @@ import CustomPicker from '../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
-import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
+import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
+import AlertDialog from '../../../components/modal/AlertDialog';
 
-export default function LocationInfoInputTablet({navigation, screenProps, statusSubmit, showLoopSlider , infoInput }) {
+export const LocationInfoInputTablet = forwardRef((props , ref) => {
 
   const dispatch = useDispatch();  
-  const [locationInfo, setLocationInfo] = useState(infoInput);
+  const [locationInfo, setLocationInfo] = useState(props.infoInput);
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
   const locationAction = useSelector(state => state.rep.locationAction);
   const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
+  const dispositionFiledUpdated = useSelector(state => state.location.statusLocationInfoUpdate);
   const dispositionRef = useRef([]);
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
@@ -33,15 +34,22 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
   var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
   const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
-  const [selectedOutcomes, setSelectedOutcomes] = useState([]);
-  const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
-  const [submitKey, setSubmitKey] = useState(false);
+  const [selectedOutcomes, setSelectedOutcomes] = useState([]);    
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess , setIsSuccess] = useState(false);
   var isBelowStage = false;
-  console.log("LO", locationInfo);
 
-  useEffect(() => {
-    setSubmitKey(false);
+  useImperativeHandle(
+    ref,
+    () => ({
+      postDispositionData() {
+        handleSubmit();
+      }
+    }),
+    [],
+  );
+
+  useEffect(() => {    
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
     dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
     dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: null});
@@ -54,18 +62,16 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
       items.push(element.value)
     });
     setDispositionValue(items);
-
     setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
   }, [locationInfo])
-
-  useEffect(() => {
-    if (!submitKey) {
-      setSubmitKey(true);
-      return;
-    }
-    handleSubmit();
-  }, [statusSubmit]);
   
+  useEffect(() => {
+    if (dispositionFiledUpdated == 'success') {
+      setIsSuccess(true)
+      dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'init' });
+    }
+  }, [dispositionFiledUpdated])
+
   useEffect(() => {
     if (isLoading) {      
       updateOutcomes();
@@ -106,16 +112,13 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
         "value": dispositionValue[key]
       })
     });
-    //setIdempotencyKey(uuid.v4());
-    dispatch(postDispositionFields(postData, idempotencyKey));
-
+    dispatch(postDispositionFields(postData, uuid.v4()));
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
 
   const handleChangeText = (text, field, key) => {
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: true});
-    if (field.field_type == "date" || field.field_type == "datetime") {
-      //hide keybard 
+    if (field.field_type == "date" || field.field_type == "datetime") {      
       Keyboard.dismiss();
     }
 
@@ -233,8 +236,6 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
     )
   }
 
-  const renderOutcomesItem = () => {
-  }
 
   const outComesModal = () => {
     return (
@@ -258,6 +259,10 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
 
   return (
     <View style={styles.container}>
+
+      <AlertDialog visible={isSuccess} message={"Disposition fields updated successfully"} onModalClose={() =>{           
+          setIsSuccess(false)
+      }}></AlertDialog>
 
       <View style={styles.stageContainer}>
           <View style={styles.refreshBox}>                        
@@ -333,8 +338,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
                       <View>
                         <TextInput
                           type={field.field_type}
-                          ref={(element) => { dispositionRef.current[key] = element }}
-                          // autoFocus={true}
+                          ref={(element) => { dispositionRef.current[key] = element }}                          
                           keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
                           returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                           style={styles.textInput}
@@ -344,8 +348,7 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
                           activeOutlineColor="#9D9FA2"
                           value={dispositionValue[key]}
                           disabled = {getDisableStatus(field.field_type, field.rule_editable)}
-                          onChangeText={text => handleChangeText(text, field, key)}
-                          //blurOnSubmit={false}
+                          onChangeText={text => handleChangeText(text, field, key)}                          
                           onSubmitEditing={()=>{                          
                           }}
                           onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : handleEmpty.bind(null) }
@@ -383,11 +386,9 @@ export default function LocationInfoInputTablet({navigation, screenProps, status
 
     </View>
   )
-}
+});
 
-const perWidth = setWidthBreakpoints(breakPoint);
-
-const styles = EStyleSheet.create(parse({
+const styles = EStyleSheet.create({
 
   container:{
     flex:1,
@@ -607,4 +608,4 @@ const styles = EStyleSheet.create(parse({
     color: PRIMARY_COLOR,
     fontSize: 16
   },
-}));
+});

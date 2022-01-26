@@ -1,50 +1,244 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { View, TouchableOpacity, StyleSheet, ScrollView, Text } from 'react-native';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
-import { SLIDE_STATUS } from '../actions/actionTypes';
+import { FILTERS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import SvgIcon from './SvgIcon';
+import { clearFilterData, getFilterData, storeFilterData } from '../constants/Storage';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { getTwoDigit } from '../constants/Consts';
+import FilterOptionsModal from './modal/FilterOptionsModal'
+import StartEndDateSelectionModal from './modal/StartEndDateSelectionModal';
+import { getLocationSearchList, getLocationsMap } from '../actions/location.action';
 
-import axios from 'axios';
-
-export default function FilterView({navigation , onClose}) {
+export default function FilterView({navigation, page, onClose}) {
   const dispatch = useDispatch();
   const statusLocationFilters = useSelector(state => state.location.statusLocationFilters);
-  const locationFilters = useSelector(state => state.location.locationFilters);
-
+  const originalFilterData = useSelector(state => state.location.locationFilters);
   const [modaVisible, setModalVisible] = useState(false);
-  const [selectFilterId, setSelectFilterId] = useState(0);
-  const [options, setOptions] = useState([]);
-  const [emptyArray, setEmptyArray] = useState([]);
-  const [selectFilters, setSelectFilters] = useState([]);
-  const [fieldType, setFieldType] = useState("");
-  
-  useEffect(() => {
-    let doubleArray = [];
-    for(let i = 0; i < locationFilters.length; i++) {
-      let items = [];
-      for(let j = 0; j < locationFilters[i].options.length; j++) {
-        items.push(false);
-      }
-      doubleArray.push(items);
-    }
-    setEmptyArray(doubleArray);
-    console.log("selected filter 1" , JSON.stringify(locationFilters));
-    setSelectFilters(doubleArray);
-  }, [locationFilters]);
+  const [options, setOptions] = useState([]);  
+  const [fieldType, setFieldType] = useState("");  
+  const [filters, setFilters] = useState("");
+  const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
+  const [selectedType, setSelectedType] = useState("");
+  const [customId, setCustomId] = useState("");
+  const [dispositionId, setDispositionId] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [dateType, setDateType] = useState("");
+  const [key, setKey] = useState(0);
+  const [isStartEndDateSelection, setIsStartEndDateSelection] = useState(false);
+  const [locationFilters, setLocationFilters] = useState([]);
 
-  const selectFilter = (key) => {
-    setSelectFilterId(selectFilterId);
-    setModalVisible(true);
-    setOptions(locationFilters[key].options);    
-    setFieldType(locationFilters[key].filter_label);
+  useEffect(() => {
+    loadFilterDataFromStorage();    
+    setLocationFilters(originalFilterData);
+  }, [originalFilterData]);
+
+  useEffect(() => {    
+    if(endDate !== undefined && endDate !== ''){
+      saveFilter(0, true)
+    }    
+  }, [endDate]);  
+
+  const loadFilterDataFromStorage = async() =>{
+    var filterData = await getFilterData();
+    setFilters(filterData);
+    console.log("called load data", filterData)
+  }
+
+  const getStartDate = (key) =>{
+    if(filters.dispositions !== undefined){
+      if(locationFilters[key].disposition_field_id !== undefined){
+        var data = [...filters.dispositions];
+        var start_date = '';
+        data.forEach((element, index) => {
+          if(element.disposition_field_id === locationFilters[key].disposition_field_id ){
+            start_date = element.start_date;          
+          }
+        });
+        if(start_date != ""){
+          return start_date;
+        }
+      }
+    }    
+  }
+
+  const getEndDate = (key) => {
+    if(filters.dispositions !== undefined){
+      if(locationFilters[key].disposition_field_id !== undefined){
+        var data = [...filters.dispositions];
+        var end_date = '';
+        data.forEach((element, index) => {
+          if(element.disposition_field_id === locationFilters[key].disposition_field_id ){
+            end_date = element.end_date;          
+          }
+        });
+        if(end_date != ""){
+          return end_date;
+        }  
+      }
+    }    
+  }
+
+  const getSubTitle = (key) =>{    
+    if(filters.stage_id !== undefined && filters.outcome_id  !== undefined && filters.customs !== undefined){
+      if(locationFilters[key].filter_label === "Stage"){
+        var data = [...filters.stage_id];      
+        if(data.length != 0 ){
+          return data.length + " Selected";
+        }      
+      }else if(locationFilters[key].filter_label === "Outcome"){
+        var data = [...filters.outcome_id];
+        if(data.length != 0){
+          return data.length + " Selected"
+        }
+      }else if(locationFilters[key].disposition_field_id !== undefined){      
+      }else if(locationFilters[key].custom_field_id !== undefined){
+        var data = [...filters.customs]; 
+        if(data.length != 0){
+          return data.length + " Selected"
+        }
+      }
+    }    
+  }
+
+  const initializeSelectedType = (key) => {        
+    setOptions(locationFilters[key].options);                
+    setFieldType(locationFilters[key].field_type);  
+    if(locationFilters[key].filter_label === "Stage"){
+      setSelectedType("stage");
+    }else if(locationFilters[key].filter_label === "Outcome"){
+      setSelectedType("outcome");
+    }else if(locationFilters[key].disposition_field_id !== undefined){
+      console.log("disposition type");
+      setSelectedType("disposition");
+      setDispositionId(locationFilters[key].disposition_field_id);
+    }else if(locationFilters[key].custom_field_id !== undefined){
+      setSelectedType("custom");
+      setCustomId(locationFilters[key].custom_field_id);
+    }        
+  }
+
+  const selectFilter = (key) => {   
+    setKey(key);
+    if(filters.stage_id === undefined || filters.customs === undefined){
+      let value = {
+        stage_id : [],
+        outcome_id : [],
+        dispositions : [],
+        customs : []
+      };
+      setFilters(value)    
+    }  
+    setModalVisible(true);    
+  }
+
+  const saveFilter = async(value , isChecked) => {
+
+    if(selectedType == "stage"){
+      var data = [...filters.stage_id];
+      var index = data.indexOf(value);
+      if(index !== -1){        
+        if(!isChecked){          
+          data.splice(index, 1)
+        }
+      }else{        
+        if(isChecked){
+          data.push(value);
+        }                  
+      }
+      filters.stage_id = data;       
+    }else if(selectedType == "outcome"){
+      var data = [...filters.outcome_id];
+      var index = data.indexOf(value);
+      if(index !== -1){
+        if(!isChecked){
+          data.splice(index, 1)          
+        }
+      }else{
+        if(isChecked){
+          data.push(value);
+        }
+      }
+      filters.outcome_id = data;      
+    }else if(selectedType == "custom"){      
+      var data = [...filters.customs];
+      var flag = false;
+      var indexOfCustom = -1;
+      data.forEach((element, index) => {
+        if(element.custom_field_id === customId ){
+          flag = true;
+          indexOfCustom = index;
+          element.field_value = value; 
+        }
+      }); 
+      if(!isChecked && flag){ // remove
+        data.splice(indexOfCustom, 1)
+      }
+      if(isChecked && !flag){ // add
+       
+        if(fieldType == "date"){
+          data.push({custom_field_id: customId, field_type: fieldType , start_date: startDate, end_date:endDate });
+        }else{
+          data.push({custom_field_id: customId, field_type: fieldType , field_value: value });
+        }        
+      }
+      filters.customs = data;            
+    }else if(selectedType == "disposition"){      
+      var data = [...filters.dispositions];
+      var flag = false;
+      var indexOfDisposition = -1;
+      data.forEach((element , index) => {
+        if(element.disposition_field_id === dispositionId ){
+          flag = true;
+          indexOfDisposition = index;
+          element.field_value = value; 
+        }
+      });
+      if(!isChecked && flag){ // remove
+        data.splice(indexOfDisposition , 1)
+      }
+      if( isChecked && !flag){        
+        if(fieldType == "date"){
+          data.push({disposition_field_id: dispositionId, field_type: fieldType , start_date: startDate, end_date:endDate });
+        }else{
+          data.push({disposition_field_id: dispositionId, field_type: fieldType , field_value: value });
+        }        
+      }
+      filters.dispositions = data;      
+    }
+    
+    if(filters !== undefined){
+      setFilters(filters);
+      await storeFilterData(filters);    
+      dispatch({type: FILTERS, payload: filters})
+    }    
+    if(locationFilters[key] !== undefined && locationFilters[key].options !== undefined){
+      setOptions([]);
+      setOptions(locationFilters[key].options);
+    }    
+    
+  }
+  
+  const handleScheduleDate = (date) => {    
+    let datetime = "";
+    let time = "";
+    datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
+    time =  String(date.getHours()) + ":" + String(date.getMinutes());    
+    setIsDateTimePickerVisible(false);        
+    
+    if(dateType === "start"){
+      setStartDate(datetime);
+    }else{
+      setEndDate(datetime);
+      setIsStartEndDateSelection(false);    
+     
+    }
   }
 
   if (statusLocationFilters == "request") {
@@ -59,53 +253,23 @@ export default function FilterView({navigation , onClose}) {
     )
   }
   
-  const submit = () => {
-    console.log('ddd')
-    let data = {
-      "location_id": "1",
-      "campaign_id": "2",
-      "disposition_fields": [
-          {
-              "disposition_field_id": 4,
-              "value": "Test Comment"
-          },
-          {
-              "disposition_field_id": 5,
-              "value": "2021-12-10 15:33"
-          },
-          {
-              "disposition_field_id": 7,
-              "value": ""
-          }
-      ]
-    }
-    console.log(data)
-
-    let config = {
-      method: 'post',
-      url: 'https://www.dev.georep.com/local_api_phase_2/location-info/updateDispositionFields',
-      headers: { 
-        'Indempotency-Key': 'key1234567893424234', 
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDE0OTExMTMsImV4cCI6MTY0MjA5NTkxMywiZXhwZGF0ZSI6IjIwMjItMDEtMTMgMTE6NDU6MTMiLCJpc3MiOiJ1bml2ZXJzYWxfYXBpLmdlb3JlcC5jb20iLCJlbWFpbCI6ImNsaW50b25AY3lkY29yLmNvbSIsInVuaXZlcnNhbF91c2VyX2lkIjoiNiIsImV4dGVybmFsX2p3dCI6ImFkZmRmYXNhZGZhYXNkZmRzZmRmYWFhYWEiLCJkZWZhdWx0X3Byb2plY3QiOiJnZW9fcmVwIiwidXNlcl9zY29wZXMiOnsiZ2VvX3JlcCI6eyJiYXNlX3VybCI6Imh0dHBzOlwvXC9kZXYuZ2VvcmVwLmNvbVwvbG9jYWxfYXBpX3BoYXNlXzIiLCJwcm9qZWN0X2N1c3RvbV9uYW1lIjoiR2VvIENSTSIsImJ1c2luZXNzX3VuaXRfaWQiOiI0IiwiY2xpZW50X2lkIjoiODAiLCJ1c2VyX3R5cGUiOiJTdXBlciBBZG1pbiIsInVzZXJfaWQiOiIxMDEiLCJ1c2VyX2VtYWlsIjoiY2xpbnRvbkBjeWRjb3IuY29tIiwibW9kdWxlc19uYXZfb3JkZXIiOlsiY3JtX2xvY2F0aW9ucyIsImNhbGVuZGFyIiwiY29udGVudF9saWJyYXJ5Iiwid2ViX2xpbmtzIiwic3VwcG9ydCJdLCJmZWF0dXJlcyI6WyJkaXNwb3NpdGlvbl9maWVsZHMiLCJjaGVja2luIiwiYWNjZXNzX2NybSJdfX19.Tb6Vs6TVXuFsf8iBWVIxNDgtbYgzs9nfLjWsOUXSnpY', 
-      },
-      data : data
-    };
-
-    axios(config)
-      .then(function (response) {
-        console.log("3333")
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+  const submit = () => {    
   }
 
   return (
     <ScrollView style={styles.container}>
+
       <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
+
+      <DateTimePickerModal
+        isVisible={isDateTimePickerVisible}
+        mode={'date'}
+        onConfirm={handleScheduleDate}
+        onCancel={() => {setIsDateTimePickerVisible(false)}}
+      />
+
       <View style={styles.sliderHeader}>
         <Title style={{ fontFamily: Fonts.primaryBold }}>Filter your search</Title>
         <Button 
@@ -115,104 +279,97 @@ export default function FilterView({navigation , onClose}) {
           }}
           color="#DC143C"
           uppercase={false} 
-          onPress={() => {            
-            setSelectFilters(emptyArray)
+          onPress={ async() => {    
+            
+            let value = {
+              stage_id : [],
+              outcome_id : [],
+              dispositions : [],
+              customs : []
+            };
+            setFilters(value);
+            await clearFilterData();            
+            dispatch({type: FILTERS, payload: filters})
+            
           }}
         >
           Clear Filters
         </Button>
       </View>
-      
+
       {locationFilters.map((locationFilter, key) => (
         <FilterButton text={locationFilter.filter_label} key={key} 
-          onPress={selectFilter.bind(null, key)}
+          subText={getSubTitle(key)}
+          startDate={getStartDate(key)}
+          endDate={getEndDate(key)}
+          onPress={() => {            
+            if(locationFilter.field_type === "dropdown"){
+              initializeSelectedType(key)
+              selectFilter(key)
+            }else{
+              initializeSelectedType(key)
+              setIsStartEndDateSelection(true);
+            }            
+          }}
         />
       ))}
 
+
       <Button 
-        mode="contained" 
-        color={PRIMARY_COLOR} 
-        uppercase={false} 
+        mode="contained"  color={PRIMARY_COLOR}  uppercase={false} 
         labelStyle={{
           fontSize: 18, 
           fontFamily: Fonts.secondaryBold, 
           letterSpacing: 0.2
         }} 
         onPress={() => {
-          submit();
+          if(page == "map"){
+            dispatch(getLocationsMap());
+          }else if(page == "search"){
+            dispatch(getLocationSearchList());
+          }          
           onClose();
         }}>
         Apply Filters
       </Button>
+
+      <Portal> 
+        <FilterOptionsModal 
+          modaVisible={modaVisible}         
+          options={options} 
+          filters={filters}
+          selectedType={selectedType}
+          fieldType={fieldType}
+          onClose={() =>{
+            setModalVisible(false);          
+          }}
+          onValueChanged={( id, value) =>{
+            if(selectedType == "stage" || selectedType == "outcome"){
+              saveFilter(id , value);
+            }else{
+              console.log("val",value);
+              saveFilter(id , value);
+            }          
+          }} ></FilterOptionsModal>      
+      </Portal>
+
       <Portal>
+        <StartEndDateSelectionModal
+          visible={isStartEndDateSelection}
+          startDate = {startDate}
+          endDate = {endDate}
+          openDatePicker={(type) =>{
+            setIsDateTimePickerVisible(true);              
+            setDateType(type);
+          }}
+          onModalClose={() =>{
 
+            setIsStartEndDateSelection(false);
+          }}
+        >
+        </StartEndDateSelectionModal>
+      </Portal>
 
-
-      <Modal         
-        visible={modaVisible} 
-        transparent={true}
-        onDismiss={() => setModalVisible(false)} 
-        onRequestClose={() => setModalVisible(true)}
-        contentContainerStyle={styles.pickerContent}>
-          <View style={{flex:1}}>
-              
-            <TouchableOpacity style={styles.closeModal} onPress={() =>{setModalVisible(false) }}>            
-              <Text style={{fontSize:18, fontFamily:Fonts.secondaryRegular}}>Close</Text>
-            </TouchableOpacity>
-          
-            <ScrollView style={{flex:1}}>
-
-                {options.map((item, key) => (                  
-                  <View key={key}>
-                  {
-                    (fieldType == "Stage" || fieldType == "Outcome") &&
-                    <View style={styles.pickerItem} key={key}>
-                      <Text style={styles.pickerItemText}>{item.name}</Text>
-                      <CheckBox
-                        value={selectFilters[selectFilterId][key]}
-                        onValueChange={value => {
-                          console.log("selected filter 3");
-                          setSelectFilters([
-                            ...selectFilters.slice(0, selectFilterId),
-                            [
-                              ...selectFilters[selectFilterId].slice(0, key),
-                              value,
-                              ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
-                            ],
-                            ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
-                          ])
-                        }}
-                      />
-                    </View>                    
-                  }
-                  {
-                    !(fieldType == "Stage" || fieldType == "Outcome") &&
-                    <View style={styles.pickerItem} key={key}>
-                      <Text style={styles.pickerItemText}>{item}</Text>
-                      <CheckBox
-                        value={selectFilters[selectFilterId][key]}
-                        onValueChange={value => {
-                          console.log("selected filter 3");
-                          setSelectFilters([
-                            ...selectFilters.slice(0, selectFilterId),
-                            [
-                              ...selectFilters[selectFilterId].slice(0, key),
-                              value,
-                              ...selectFilters[selectFilterId].slice(key + 1, selectFilters[selectFilterId].length)
-                            ],
-                            ...selectFilters.slice(selectFilterId + 1, selectFilters.length)
-                          ])
-                        }}
-                      />
-                    </View>                    
-                  }
-                  </View>  
-                ))}
-            </ScrollView>
-
-          </View>        
-      </Modal>
-    </Portal>
     </ScrollView>
   )
 }
@@ -227,35 +384,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10
-  },
-  pickerContent: {
-    height:Dimensions.get("window").height * 0.7,  
-    margin:20,
-    backgroundColor: BG_COLOR,
-    paddingTop: 10,
-    paddingBottom:10,
-    paddingLeft: 20,
-    paddingRight: 0,
-    borderRadius:5,
-    elevation:1,
-
-  },
-  pickerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    paddingRight:20,
-    paddingBottom: 8
-  },
-  pickerItemText: {
-    fontSize: 18
-  },
-  closeModal:{
-    flexDirection:'row',    
-    justifyContent:'flex-end',        
-    paddingRight:15,
-    paddingTop:10,
-    marginBottom:10
-  }
+  },    
 })

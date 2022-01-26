@@ -7,9 +7,13 @@ import Fonts from '../../../../constants/Fonts';
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { getDistance } from '../../../../constants/Consts';
 import { getOpenReplaceCheckin } from '../../../../constants/Storage';
+import { useDispatch } from 'react-redux';
+import { LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
+
 
 export function CalendarItem({ navigation, item , current}) {
 
+    const dispatch = useDispatch();
     const getButtonColor = (checkin_state) =>{
         if(getOpenReplaceCheckin()){
             return PRIMARY_COLOR;
@@ -53,7 +57,8 @@ export function CalendarItem({ navigation, item , current}) {
             <Text style={[styles.itemTitle, {textAlign: 'center'}]}> {item.schedule_time}</Text>
             <TouchableOpacity style={[styles.itemButton, {backgroundColor:getButtonColor(item.checkin_state)}]} onPress={() =>{
                 if(getOpenReplaceCheckin()){                
-                    navigation.navigate('CRM', {'screen': 'LocationSearch',  params : {'location_id': item.location_id}});
+                    dispatch({type: LOCATION_ID_CHANGED, payload: item.location_id})
+                    navigation.navigate('CRM', {'screen': 'LocationSearch',  params : {'location_id': item.location_id}});  
                 }
             }}>
               <Text style={styles.itemButtonText}> {getButtonText(item.checkin_state)} </Text>

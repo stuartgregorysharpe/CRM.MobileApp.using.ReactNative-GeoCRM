@@ -12,10 +12,11 @@ import { Login } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS ,
   CHANGE_USER_INFO, 
   CHANGE_PROJECT_PAYLOAD,
-  CHANGE_ACCESS_TOKEN } from '../actions/actionTypes';
+  CHANGE_ACCESS_TOKEN, 
+  FILTERS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { getToken, getUserData } from '../constants/Storage';
+import { getFilterData, getToken, getUserData } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 
 export default function SignIn() {
@@ -43,9 +44,12 @@ export default function SignIn() {
 
   const initView = async () =>{    
     var token = await getToken();
-    if(token != null){      
+    var filters = await getFilterData();
+    if(token != null){
       var userData = await getUserData();
-      console.log("userData", userData);
+      console.log("login userData ", userData);
+      console.log("saved filter", filters);
+      dispatch({ type: FILTERS, payload: filters });
       dispatch({ type: CHANGE_USER_INFO, payload: userData });
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
       dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })

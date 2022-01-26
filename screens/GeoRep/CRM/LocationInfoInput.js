@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect , createRef} from 'react';
-import { Text, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native';
+import React, { useState, useRef, useEffect , useImperativeHandle, forwardRef} from 'react';
+import { Text, View, Image, TouchableOpacity, Keyboard } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -13,15 +13,17 @@ import CustomPicker from '../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
-import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION } from '../../../actions/actionTypes';
+import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../actions/actionTypes';
+import AlertDialog from '../../../components/modal/AlertDialog';
 
-export default function LocationInfoInput({navigation, screenProps, statusSubmit, showLoopSlider , infoInput }) {
+export const LocationInfoInput = forwardRef(( props, ref ) => {
 
   const dispatch = useDispatch();  
-  const [locationInfo, setLocationInfo] = useState(infoInput);
+  const [locationInfo, setLocationInfo] = useState(props.infoInput);
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
   const locationAction = useSelector(state => state.rep.locationAction);
   const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
+  const dispositionFiledUpdated = useSelector(state => state.location.statusLocationInfoUpdate);
   const dispositionRef = useRef([]);
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
@@ -32,15 +34,21 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
   const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
-  const [selectedOutcomes, setSelectedOutcomes] = useState([]);
-  const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
-  const [submitKey, setSubmitKey] = useState(false);
+  const [selectedOutcomes, setSelectedOutcomes] = useState([]);  
   const [isLoading ,setIsLoading] = useState(false);
-  const onShow = false;
-  const showItem = 0
+  const [isSuccess , setIsSuccess] = useState(false);
+    
+  useImperativeHandle(
+    ref,
+    () => ({
+      postDispositionData() {
+        handleSubmit();
+      }
+    }),
+    [],
+  );
 
-  useEffect(() => {
-    setSubmitKey(false);
+  useEffect(() => {    
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
     dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
     dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: null});
@@ -53,24 +61,22 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       items.push(element.value)
     });
     setDispositionValue(items);
-
     setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
   }, [locationInfo])
-
-  useEffect(() => {
-    if (!submitKey) {
-      setSubmitKey(true);
-      return;
+  
+  useEffect(() => {    
+    if (dispositionFiledUpdated === 'success') {
+      setIsSuccess(true)
+      dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'init' });
     }
-    handleSubmit();
-  }, [statusSubmit])
+  }, [dispositionFiledUpdated])
 
   useEffect(() => {
     if (isLoading) {      
       updateOutcomes();
     }   
   }, [isLoading])
-
+  
   const updateOutcomes = () => {
     let request = {
       "location_id": locationInfo.location_id,
@@ -93,20 +99,19 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   }
 
   const handleSubmit = () => {
+    console.log("handle submit");
     let postData = {
       "location_id": locationInfo.location_id,
       "campaign_id": 1,
       "disposition_fields": []
     }
-    locationInfo.disposition_fields.forEach((item, key) => {
-      console.log(item, key)
+    locationInfo.disposition_fields.forEach((item, key) => {    
       postData.disposition_fields.push({
         "disposition_field_id": item.disposition_field_id,
         "value": dispositionValue[key]
       })
     });
-    //setIdempotencyKey(uuid.v4());
-    dispatch(postDispositionFields(postData, idempotencyKey));
+    dispatch(postDispositionFields(postData, uuid.v4()));
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
 
@@ -149,9 +154,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
     }
   };
 
-
   const handleEmpty = () => {
-
   }
 
   getDisableStatus = (filedType, isEditable) =>{
@@ -165,7 +168,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
   } 
 
   const handleConfirm = (date) => {
-    setChangeValue(true);
+    
     let datetime = "";
     if (datePickerMode == "date") {
       datetime = String(date.getFullYear()) + "-" + String(date.getMonth() + 1) + "-" + String(date.getDate());
@@ -251,11 +254,14 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       } />
     )
   }
-
   
   return (
     <View style={styles.container}>
       
+      <AlertDialog visible={isSuccess} message={"Disposition fields updated successfully"} onModalClose={() =>{           
+          setIsSuccess(false)
+      }}></AlertDialog>
+
       <View style={styles.refreshBox}>
           <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
           <Text style={styles.shadowBoxText}>Stage</Text>
@@ -285,7 +291,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={showLoopSlider}>
+        <TouchableOpacity onPress={props.showLoopSlider}>
           <Image style={styles.refreshImage} source={Images.loopButton} />
         </TouchableOpacity>
       </View>
@@ -300,14 +306,15 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
                 style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
                 activeOpacity={1}
                 onPress={() => {     
-                  //if (field.rule_editable == 0) return;                  
+                  //if (field.rule_editable == 0) return;    
+                  console.log("pressed")  
+                  field.field_type == "date" || field.field_type == "datetime" ? handleFocus(field.field_type, key, field.rule_editable) : handleEmpty.bind(null)
                 }}
               >
                 <View>
                   <TextInput
                     type={field.field_type}
-                    ref={(element) => { dispositionRef.current[key] = element }}
-                    // autoFocus={true}
+                    ref={(element) => { dispositionRef.current[key] = element }}                    
                     keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
                     returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                     style={styles.textInput}
@@ -317,8 +324,7 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
                     activeOutlineColor="#9D9FA2"
                     value={dispositionValue[key]}
                     disabled = {getDisableStatus(field.field_type, field.rule_editable)}
-                    onChangeText={text => handleChangeText(text, field, key)}
-                    //blurOnSubmit={false}
+                    onChangeText={text => handleChangeText(text, field, key)}                    
                     onSubmitEditing={()=>{                      
                     }}
                     onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : handleEmpty.bind(null) }
@@ -343,12 +349,12 @@ export default function LocationInfoInput({navigation, screenProps, statusSubmit
       {confirmModal()}
       
       {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.'
-        onCompleted={() =>{                   
-        }}
+        onCompleted={() =>{}}
        visible={isLoading}/>}      
     </View>
   )
-}
+});
+
 
 const perWidth = setWidthBreakpoints(breakPoint);
 

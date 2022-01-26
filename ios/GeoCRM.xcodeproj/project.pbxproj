@@ -23,6 +23,7 @@
 		96696E0F278E1B5D00221194 /* Gilroy-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E06278E1B5D00221194 /* Gilroy-Light.ttf */; };
 		96696E10278E1B5D00221194 /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E07278E1B5D00221194 /* Gilroy-Heavy.ttf */; };
 		96696E11278E1B5D00221194 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */; };
+		967CBE30279AE73F005262DB /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 967CBE2E279AE73F005262DB /* BootSplash.storyboard */; };
 		96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EFB4A6278F40940032ECB1 /* libRNFileOpener.a */; };
 		FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */; };
 /* End PBXBuildFile section */
@@ -72,6 +73,7 @@
 		96696E06278E1B5D00221194 /* Gilroy-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Light.ttf"; path = "../../assets/fonts/Gilroy-Light.ttf"; sourceTree = "<group>"; };
 		96696E07278E1B5D00221194 /* Gilroy-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Heavy.ttf"; path = "../../assets/fonts/Gilroy-Heavy.ttf"; sourceTree = "<group>"; };
 		96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gilroy-Regular.ttf"; path = "../../assets/fonts/Gilroy-Regular.ttf"; sourceTree = "<group>"; };
+		967CBE2E279AE73F005262DB /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = GeoCRM/BootSplash.storyboard; sourceTree = "<group>"; };
 		96EFB4A1278F40940032ECB1 /* RNFileOpener.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFileOpener.xcodeproj; path = "../node_modules/react-native-file-opener/ios/RNFileOpener.xcodeproj"; sourceTree = "<group>"; };
 		97B75C796F3A17C8220A95FC /* Pods-GeoCRM-GeoCRMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GeoCRM-GeoCRMTests.debug.xcconfig"; path = "Target Support Files/Pods-GeoCRM-GeoCRMTests/Pods-GeoCRM-GeoCRMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GeoCRM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,6 +121,7 @@
 		13B07FAE1A68108700A75B9A /* GeoCRM */ = {
 			isa = PBXGroup;
 			children = (
+				967CBE2E279AE73F005262DB /* BootSplash.storyboard */,
 				9648F3542784B85300D70181 /* Product Sans-Bold.ttf */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -324,6 +327,7 @@
 				96696E11278E1B5D00221194 /* Gilroy-Regular.ttf in Resources */,
 				96696E0D278E1B5D00221194 /* Product Sans-Bold-Italic.ttf in Resources */,
 				96696E09278E1B5D00221194 /* Product Sans-Bold.ttf in Resources */,
+				967CBE30279AE73F005262DB /* BootSplash.storyboard in Resources */,
 				96696E0A278E1B5D00221194 /* Product Sans-Regular.ttf in Resources */,
 				96696E0C278E1B5D00221194 /* Product Sans-Italic.ttf in Resources */,
 				96696E10278E1B5D00221194 /* Gilroy-Heavy.ttf in Resources */,
@@ -582,7 +586,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -611,7 +615,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

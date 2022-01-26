@@ -98,7 +98,44 @@ export const getCalendarOptimize = async () => {
   }catch(e) {
     console.log(e);
     return false;
-  }
-  
+  }  
 }
 
+
+export const storeFilterData = async (value) => {
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem('@filter', jsonValue)
+  } catch (e) {      
+    console.log("error", e);
+  }
+}
+export const clearFilterData = async () => {
+  try {
+    let value = {
+      stage_id : [],
+      outcome_id : [],
+      dispositions : [],
+      customs : []
+    };
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem('@filter', jsonValue)
+  } catch (e) {      
+    console.log("error", e);
+  }
+}
+
+export const getFilterData = async () => {
+  try {
+    let initialParam = {
+      stage_id : [],
+      outcome_id : [],
+      dispositions : [],
+      customs : []
+    };
+    const jsonValue = await AsyncStorage.getItem('@filter')
+    return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialParam;
+  } catch(e) {
+    // error reading value
+  }
+}

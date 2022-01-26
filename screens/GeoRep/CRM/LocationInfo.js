@@ -1,14 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Text, 
-  View, 
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Keyboard,
-  Dimensions,
-  Platform
-} from 'react-native';
+import React, { useState, useEffect , useRef } from 'react';
+import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -17,11 +8,11 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { grayBackground, style } from '../../../constants/Styles';
 import RefreshSlider from '../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../components/SvgIcon';
-import LocationInfoInput from './LocationInfoInput';
+import {LocationInfoInput} from './LocationInfoInput';
 import Divider from '../../../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, CHANGE_LOCATION_ACTIONS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
@@ -35,11 +26,12 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);    
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
-  const [showItem, setShowItem] = useState(0); 
-  const [statusSubmit, setStatusSubmit] = useState(true);
-  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const [showItem, setShowItem] = useState(0);   
+  const [keyboardStatus, setKeyboardStatus] = useState(false);  
+  const locationInfoRef = useRef();
 
   useEffect(() => {
+    
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
@@ -58,54 +50,23 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
     setShowItem(1);
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
-  
-  const isCRM = () =>{
-    var flag = false;
-    if(features.includes("access_crm") || features.includes("checkin")){
-      flag = true;
-    }
-    return flag;
-  }
-
-  const getHeight = () =>{
-    var flag = false;
-    if(features.includes("access_crm") || features.includes("checkin")){
-      flag = true;
-    }
-    if(Platform.OS == 'ios') {
-      if(DeviceInfo.isTablet()){
-        var addition = flag ? 0 : 50;
-        return Dimensions.get("window").height - 100 + addition;
-      }else{
-        var addition = flag ? 0 : 110;
-        return Dimensions.get("window").height - 130 + addition;
-      }
-      
-    }else{
-      if(DeviceInfo.isTablet()){
-        var addition = flag ? 0 : 80;
-        return Dimensions.get("window").height - 110 + addition; 
-      }else{  
-        var addition = flag ? 0 : 40;
-        return Dimensions.get("window").height - 70 + addition;
-      }
-    }
-  }
 
   return (
     <View style={[styles.container, {flex:1}]}>
       
-      {subSlideStatus && <TouchableOpacity
-        activeOpacity={1} 
-        style={grayBackground}
-        onPress={() => dispatch({type: SUB_SLIDE_STATUS, payload: false})}
-      ></TouchableOpacity>}
+      { subSlideStatus && 
+        <TouchableOpacity
+          activeOpacity={1} 
+          style={grayBackground}
+          onPress={() => dispatch({type: SUB_SLIDE_STATUS, payload: false})}>            
+        </TouchableOpacity>
+      }
 
-      {subSlideStatus && <View
-        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-      >
-        <RefreshSlider  location_id={locationInfo.location_id} />
-      </View>}
+      { subSlideStatus && 
+        <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
+          <RefreshSlider  location_id={locationInfo.location_id} />
+        </View>
+      }
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         if (statusDispositionInfo) {
@@ -117,8 +78,6 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
         <Divider />
       </TouchableOpacity>
       
-
-
       <KeyboardAwareScrollView 
         enableOnAndroid={true}
         enableAutomaticScroll={(Platform.OS === 'ios')}
@@ -153,9 +112,10 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
 
         <View style={{padding:10, marginBottom:50}}>
         {
+          // navigation={navigation} screenProps={screenProps} showLoopSlider={showLoopSlider} infoInput={locationInfo} 
           locationInfo && DeviceInfo.isTablet()?
-          <LocationInfoInputTablet navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> :
-          <LocationInfoInput navigation={navigation} screenProps={screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} infoInput={locationInfo} /> 
+          <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
+          <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
         }
         </View>                                              
       </KeyboardAwareScrollView>
@@ -182,8 +142,8 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       
       <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => {
          if(!subSlideStatus){
-          setStatusSubmit(!statusSubmit)
-         }         
+            locationInfoRef.current.postDispositionData();
+         }
       }}>
           <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>    

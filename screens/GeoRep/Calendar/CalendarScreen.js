@@ -13,38 +13,48 @@ import { useSelector, useDispatch , connect} from 'react-redux';
 import { CalendarItem } from './partial/CalendarItem';
 import DraggableFlatList , {ScaleDecorator , useOnCellActiveAnimation}  from 'react-native-draggable-flatlist'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+var selectedIndex = 0;
 
 export default function CalendarScreen(props) {
 
+  const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [tabIndex, setTabIndex] = useState(2);
   const [lists, setLists] = useState([]);
   const [isOptimize, setIsOptimize] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
-
-  useEffect(() => {
+  
+  useEffect(() => {    
     if (props.screenProps) {
       props.screenProps.setOptions({
         title: "Calendar"
       });
-    }
-
-    loadList("today");
+    }    
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {                
+      if(selectedIndex === 1){
+        loadList("last_week");
+      }else if(selectedIndex === 2 || selectedIndex === 0){
+        loadList("today");
+      }else if(selectedIndex === 3){
+        loadList("week_ahead");
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+
   const loadList = async(type) => {    
-
     setIsOptimize( await getCalendarOptimize());
-    setIsAdd(await getCalendarAdd());    
-
+    setIsAdd(await getCalendarAdd());
     var base_url = await getBaseUrl();
     var token = await getToken();
     if(base_url != null && token != null){      
       getCalendar(base_url, token, type)
       .then(res => {        
-        setLists(res);         
-        
-
+        setLists(res);        
         console.log("isOptimize", isOptimize);
         
       })
@@ -90,23 +100,26 @@ export default function CalendarScreen(props) {
 
           <TouchableOpacity style={styles.tabItem} onPress={() => {
             setTabIndex(1);
+            selectedIndex = 1;
             loadList("last_week");
           }}>
-          <Text style={[styles.tabText, tabIndex == 1 ? styles.tabActiveText : {}]}>Last Week</Text>
+          <Text style={[styles.tabText, tabIndex === 1 ? styles.tabActiveText : {}]}>Last Week</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.tabItem} onPress={() => {
             setTabIndex(2);
+            selectedIndex = 2;
             loadList("today");
           }}>
-            <Text style={[styles.tabText, tabIndex == 2 ? styles.tabActiveText : {}]}>Today</Text>
+            <Text style={[styles.tabText, tabIndex === 2 ? styles.tabActiveText : {}]}>Today</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.tabItem} onPress={() => {
             setTabIndex(3);
+            selectedIndex = 3;
             loadList("week_ahead");            
             }}>
-          <Text style={[styles.tabText, tabIndex == 3 ? styles.tabActiveText : {}]}>Week Ahead</Text>
+          <Text style={[styles.tabText, tabIndex === 3 ? styles.tabActiveText : {}]}>Week Ahead</Text>
           </TouchableOpacity>
         </View>
 
@@ -158,7 +171,7 @@ export default function CalendarScreen(props) {
         {
           isOptimize && 
           <TouchableOpacity style={style.innerPlusButton} onPress={() =>{
-            props.navigation.navigate('CRM', {'screen': 'LocationSearch'});
+            props.navigation.navigate('CRM', {'screen': 'LocationSearch' , params : {'calendar_type': 'add'} });
           }}>
             <SvgIcon icon="Calendar_Optimize" width='70px' height='70px' />
           </TouchableOpacity>
@@ -167,7 +180,7 @@ export default function CalendarScreen(props) {
         {
           isAdd &&
           <TouchableOpacity style={style.innerPlusButton} onPress={() => {
-            props.navigation.navigate('CRM', {'screen': 'LocationSearch'});
+            props.navigation.navigate('CRM', {'screen': 'LocationSearch' , params : {'calendar_type': 'optimize'} });
           }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
           </TouchableOpacity>        

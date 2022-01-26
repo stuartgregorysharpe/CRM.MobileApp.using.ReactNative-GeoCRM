@@ -51,6 +51,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
   
   [[IQKeyboardManager sharedManager] setEnable:YES];
   
@@ -65,7 +66,7 @@ static void InitializeFlipper(UIApplication *application) {
       NSLog (@"%@: %@", fontFamily, fontNames);
   }
   
-  //[RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
+  
   
   return YES;
 }

@@ -335,6 +335,7 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();

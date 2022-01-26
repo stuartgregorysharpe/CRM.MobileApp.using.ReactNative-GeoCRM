@@ -30,7 +30,7 @@ export default function AddLead({screenProps , onClose}) {
   const [dropdownItems, setDropdownItems] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);  
   const [message, setMessage] = useState("");
-  
+    
   var index = 0;
   const handleSubmit = () => {        
     let params = {
@@ -58,7 +58,7 @@ export default function AddLead({screenProps , onClose}) {
     if(isLoading){
       getLeadFields()
       .then((res) => {
-        initPostData(res);
+        initPostData(res);        
         setLeadForms(res);
         setIsLoading(false);
       })
@@ -130,32 +130,29 @@ export default function AddLead({screenProps , onClose}) {
 
   const getSelectedDropdownItem = () =>{
     var tmp = customMasterFields;        
-    var res = "";
+    var res = "";    
     tmp.forEach((element) =>{
       if(element.custom_master_field_id == dropdownId){
-        res = element.value;
+        res = element.itemIndex;
       }
-    });
-    if(res == ""){
+    });    
+    if(res === ""){
       return -1;
     }
     return res;
-  }  
+  } 
 
-  const getSelectedDropdownItemText = (id , name) =>{
-    var tmp = customMasterFields;
-    var index = -1;    
-    console.log("id", id);
+  const getSelectedDropdownItemText = (id , originFieldName) =>{
+    var tmp = [...customMasterFields];
+    var index = -1;        
     tmp.forEach((element) =>{
-      if(element.custom_master_field_id == id && element.value != '' ){ //&& element.value != ""
-        index = element.value;        
+      if(element.custom_master_field_id === id && element.value !== '' ){ //&& element.value != ""
+        index = element.itemIndex;        
       }
-    });    
-    console.log("index", index);
-    if(index == -1){
-      return name;
-    }
-    
+    });        
+    if(index === -1){
+      return originFieldName;
+    }    
     var showName = '';
     leadForms.forEach((element) =>{
       if(element.custom_master_field_id == id && element.preset_options != ""){
@@ -170,20 +167,21 @@ export default function AddLead({screenProps , onClose}) {
       <CustomPicker 
         visible={isDropdownModal}         
         renderItems= {
-        dropdownItems.map((item, key) => (
-          <TouchableOpacity style={[styles.pickerItem]} key={key}
+        dropdownItems.map((item, index) => (
+          <TouchableOpacity style={[styles.pickerItem]} key={index}
           onPress={() => { 
-            var tmp = customMasterFields;
+            var tmp = [...customMasterFields];
             tmp.forEach((element) => {
               if(element.custom_master_field_id == dropdownId){
-                element.value = key;
+                element.value = item;
+                element.itemIndex = index;
               }
             });
             setCustomMasterFields(tmp);            
             setIsDropdownModal(false);
           }}>            
               <Text style={styles.pickerItemText}>{item}</Text>              
-              {key == getSelectedDropdownItem() && <SvgIcon icon="Check" width='23px' height='23px' />}           
+              {index === getSelectedDropdownItem() && <SvgIcon icon="Check" width='23px' height='23px' />}           
           </TouchableOpacity>
         ))
       } />
@@ -258,7 +256,7 @@ export default function AddLead({screenProps , onClose}) {
                       if(field.preset_options.length > 0){
                         setDropdownId(field.custom_master_field_id);
                         setIsDropdownModal(true);
-                      }                      
+                      }
                     }}>
 
                     <Text                                        

@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from 'react';
 import {  View, StyleSheet, ScrollView } from 'react-native';
 
 import Searchbar from '../../../components/SearchBar';
-import Card from '../../../components/Card';
+import Card from '../../../screens/GeoRep/ContentLibrary/partial/Card';
 import { BG_COLOR } from '../../../constants/Colors';
 import { getWebLinks } from '../../../actions/weblinks.action';
 import { getBaseUrl, getToken } from '../../../constants/Storage';

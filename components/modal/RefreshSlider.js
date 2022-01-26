@@ -29,7 +29,7 @@ export default function RefreshSlider({location_id, onClose}) {
     let time = "";
     datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
     time =  String(date.getHours()) + ":" + String(date.getMinutes());    
-    setIsDateTimePickerVisible(false);    
+    setIsDateTimePickerVisible(false);
     let postDate ={
       location_id: location_id,
       day_option: "another_date",
