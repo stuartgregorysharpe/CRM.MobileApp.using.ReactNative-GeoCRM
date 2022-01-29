@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity , Text } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import { BG_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
+import { BG_COLOR, DISABLED_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 
 export function LocationItem ({isSelected, item, selectedItems, onItemClicked }) {
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
       text: {
         fontSize: 12,
         fontFamily: Fonts.secondaryMedium,
-        color: '#9D9FA2',
+        color: DISABLED_COLOR,
     },
 
     textRight: {

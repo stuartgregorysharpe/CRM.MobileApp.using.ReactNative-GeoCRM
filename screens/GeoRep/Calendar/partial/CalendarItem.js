@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import { PRIMARY_COLOR } from '../../../../constants/Colors';
+import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { getDistance } from '../../../../constants/Consts';
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         lineHeight: 18,
         fontFamily: Fonts.secondaryMedium,
-        color: '#9D9FA2',
+        color: DISABLED_COLOR,
         maxHeight: 36
     },
     itemButton: {

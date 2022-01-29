@@ -9,7 +9,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../components/Skeleton';
 import Divider from '../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getGeocoding, getLeadFields, postLeadFields } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
@@ -30,11 +30,13 @@ export default function AddLead({screenProps , onClose}) {
   const [dropdownItems, setDropdownItems] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);  
   const [message, setMessage] = useState("");
-    
+  const [isCurrentLocation , setIsCurrentLocation] = useState("0");
+      
   var index = 0;
   const handleSubmit = () => {        
     let params = {
       coordinates:{latitude : currentLocation.latitude, longitude : currentLocation.longitude},
+      use_current_geo_location:isCurrentLocation,
       custom_master_fields:customMasterFields    
     }
     console.log(params);
@@ -49,7 +51,7 @@ export default function AddLead({screenProps , onClose}) {
       setIsSuccess(true);
     })        
   }
-
+  
   useEffect(() => {    
     setIsLoading(true);
   },[]);
@@ -106,6 +108,7 @@ export default function AddLead({screenProps , onClose}) {
           })          
         })  
         setCustomMasterFields(tmp);       
+        setIsCurrentLocation("1")
       }
     })
     .catch((e) => {
@@ -290,7 +293,7 @@ export default function AddLead({screenProps , onClose}) {
                           value={getTextValue(customMasterFields, field.custom_master_field_id)}
                           mode="outlined"
                           outlineColor="#133C8B"
-                          activeOutlineColor="#9D9FA2"                                        
+                          activeOutlineColor={DISABLED_COLOR}                                        
                           onChangeText={text => {
 
                             var tmp = [ ...customMasterFields ];
@@ -333,6 +336,7 @@ export default function AddLead({screenProps , onClose}) {
   )
 }
 
+
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
@@ -371,7 +375,7 @@ const styles = EStyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
-  addButtonIcon: {
+  addButtonIcon: { 
     position: 'absolute',
     right: 10
   },

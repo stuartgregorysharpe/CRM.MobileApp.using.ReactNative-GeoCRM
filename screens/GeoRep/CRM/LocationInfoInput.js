@@ -7,13 +7,13 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import CustomPicker from '../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
 import CustomLoading from '../../../components/CustomLoading';
 import Images from '../../../constants/Images';
-import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../actions/actionTypes';
+import {  LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../actions/actionTypes';
 import AlertDialog from '../../../components/modal/AlertDialog';
 
 export const LocationInfoInput = forwardRef(( props, ref ) => {
@@ -23,7 +23,6 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
   const locationAction = useSelector(state => state.rep.locationAction);
   const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
-  const dispositionFiledUpdated = useSelector(state => state.location.statusLocationInfoUpdate);
   const dispositionRef = useRef([]);
   const [dispositionValue, setDispositionValue] = useState([]);
   const [datePickerMode, setDatePickerMode] = useState("date");
@@ -37,6 +36,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);  
   const [isLoading ,setIsLoading] = useState(false);
   const [isSuccess , setIsSuccess] = useState(false);
+  const [message, setMessage] = useState("");
     
   useImperativeHandle(
     ref,
@@ -45,11 +45,10 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
         handleSubmit();
       }
     }),
-    [],
+    [dispositionValue],
   );
 
-  useEffect(() => {    
-    dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
+  useEffect(() => {        
     dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
     dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: null});
   }, []);
@@ -60,17 +59,10 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
     locationInfo.disposition_fields.forEach(element => {
       items.push(element.value)
     });
-    setDispositionValue(items);
+    setDispositionValue(items);    
     setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
   }, [locationInfo])
   
-  useEffect(() => {    
-    if (dispositionFiledUpdated === 'success') {
-      setIsSuccess(true)
-      dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'init' });
-    }
-  }, [dispositionFiledUpdated])
-
   useEffect(() => {
     if (isLoading) {      
       updateOutcomes();
@@ -99,24 +91,32 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   }
 
   const handleSubmit = () => {
-    console.log("handle submit");
+    
     let postData = {
       "location_id": locationInfo.location_id,
       "campaign_id": 1,
       "disposition_fields": []
     }
+
     locationInfo.disposition_fields.forEach((item, key) => {    
       postData.disposition_fields.push({
         "disposition_field_id": item.disposition_field_id,
-        "value": dispositionValue[key]
+        "value": dispositionValue[key] !== undefined ? dispositionValue[key] :  ''
       })
-    });
-    dispatch(postDispositionFields(postData, uuid.v4()));
-    dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
+    });    
+
+    postDispositionFields(postData, uuid.v4())
+    .then((res) =>{
+      setMessage(res);
+      setIsSuccess(true);      
+    })
+    .catch((error) => {
+      setMessage(error);
+      setIsSuccess(true);
+    })        
   }
 
-  const handleChangeText = (text, field, key) => {
-    dispatch({type: CHANGE_DISPOSITION_INFO, payload: true});
+  const handleChangeText = (text, field, key) => {    
     if (field.field_type == "date" || field.field_type == "datetime") {      
       Keyboard.dismiss();
     }
@@ -131,8 +131,8 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
         (text[text.length - 1].charCodeAt() > 90 && text[text.length - 1].charCodeAt() < 97) ||
         text[text.length - 1].charCodeAt() > 122
       )) || (field.field_type == "numeric" && (text[text.length - 1].charCodeAt() < 48 || text[text.length - 1].charCodeAt() > 57))
-    ) return;
-    setDispositionValue([...dispositionValue.slice(0, key), text, ...dispositionValue.slice(key + 1, dispositionValue.length)])
+    ) return;    
+    setDispositionValue([...dispositionValue.slice(0, key), text, ...dispositionValue.slice(key + 1, dispositionValue.length)])    
   }
 
   const handleFocus = (fieldType, key, isEditable) => {
@@ -145,8 +145,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
       }      
     }
     if (fieldType == "datetime") {
-      Keyboard.dismiss();
-      console.log("hide keybard");
+      Keyboard.dismiss();      
       if( isEditable == 1){
         setDatePickerMode("datetime");
         setDateTimePickerVisibility(true);
@@ -258,7 +257,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   return (
     <View style={styles.container}>
       
-      <AlertDialog visible={isSuccess} message={"Disposition fields updated successfully"} onModalClose={() =>{           
+      <AlertDialog visible={isSuccess} message={message} onModalClose={() =>{           
           setIsSuccess(false)
       }}></AlertDialog>
 
@@ -305,9 +304,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
                 key={key}
                 style={(Number(field.disposition_field_id) >= 5 && Number(field.disposition_field_id) <= 8) ? styles.textInputWidthTwo : styles.textInputWidthOne}
                 activeOpacity={1}
-                onPress={() => {     
-                  //if (field.rule_editable == 0) return;    
-                  console.log("pressed")  
+                onPress={() => {                       
                   field.field_type == "date" || field.field_type == "datetime" ? handleFocus(field.field_type, key, field.rule_editable) : handleEmpty.bind(null)
                 }}
               >
@@ -321,7 +318,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
                     label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                     mode="outlined"
                     outlineColor="#133C8B"
-                    activeOutlineColor="#9D9FA2"
+                    activeOutlineColor={DISABLED_COLOR}
                     value={dispositionValue[key]}
                     disabled = {getDisableStatus(field.field_type, field.rule_editable)}
                     onChangeText={text => handleChangeText(text, field, key)}                    

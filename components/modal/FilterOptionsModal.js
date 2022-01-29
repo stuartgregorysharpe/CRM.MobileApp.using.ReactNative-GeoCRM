@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, StyleSheet , Text, Dimensions , TouchableOpacity, ScrollView} from 'react-native';
 import {Modal} from 'react-native-paper';
-import { BG_COLOR } from '../../constants/Colors';
+import { BG_COLOR, TICK_BOX_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import CheckBox from '@react-native-community/checkbox';
 
@@ -89,6 +89,9 @@ const FilterOptionsModal = ({modaVisible, onClose, filters,  options, selectedTy
                     <View style={styles.pickerItem} key={key}>
                       <Text style={styles.pickerItemText}>{item.name}</Text>
                       <CheckBox
+                        tintColors = { TICK_BOX_COLOR }
+                        onCheckColor={TICK_BOX_COLOR}
+                        onTintColor={TICK_BOX_COLOR}
                         value={getCheckedStatus(item.id)}
                         onValueChange={value => {                        
                           onValueChanged(item.id , value);   
@@ -102,6 +105,9 @@ const FilterOptionsModal = ({modaVisible, onClose, filters,  options, selectedTy
                       <Text style={styles.pickerItemText}>{item}</Text>
                       <CheckBox                        
                         value={getCheckedStatus(item)}
+                        tintColors = { TICK_BOX_COLOR }
+                        onCheckColor={TICK_BOX_COLOR}
+                        onTintColor={TICK_BOX_COLOR}
                         onValueChange={value => {
                           onValueChanged(item , value);                                     
                         }}

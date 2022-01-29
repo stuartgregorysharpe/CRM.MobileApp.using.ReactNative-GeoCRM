@@ -45,8 +45,7 @@ export default function SearchBar({isFilter, animation, initVal, onSearch}) {
           <SvgIcon icon="Close" width="20px" height="20px" />
         </TouchableOpacity>
       }
-
-
+      
     </View>
   )
 }

@@ -82,7 +82,7 @@ export const getLocationsMap1 = () => (dispatch, getState) => {
         return;
       }
 
-      console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations);
+      console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations.length);
       if (res.data.status == 'success') {
         dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
         dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations })
@@ -144,14 +144,14 @@ export const getLocationsMap = () => (dispatch, getState) => {
           }
         })
         .catch((err) => {
-          console.log("map errorw", err);          
+          console.log("map api connection error", err);          
           setToken(null);
           dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
           console.log(err);
         })
     })
     .catch(error => {
-      console.log("map error", error);  
+      console.log("get location error", error);  
       const { code, message } = error;
       console.warn(code, message);
     });
@@ -341,24 +341,35 @@ export const postStageOutcomUpdate = async(request) => {
 }
 
 
-export const postDispositionFields = (postData, idempotencyKey) => (dispatch, getState) => {
-  dispatch({ type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'request' });  
-  axios
-    .post(`${getState().selection.payload.user_scopes.geo_rep.base_url}/location-info/updateDispositionFields`, postData, {
+
+
+export const postDispositionFields = async(postData, idempotencyKey) => {
+    
+  var base_url = await getBaseUrl();
+  var token = await getToken();  
+  return new Promise(function(resolve, reject) {
+    axios
+    .post(`${base_url}/location-info/updateDispositionFields`, postData, {
       headers: {
-        Authorization: 'Bearer ' + getState().selection.token,
+        Authorization: 'Bearer ' + token,
         'Indempotency-Key': idempotencyKey
       }
     })
     .then((res) => {
-      dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'success'});
+      if(res.data === undefined){
+        resolve("No data")
+      }      
+      resolve(res.data.message);      
     })
     .catch((err) => {
       console.log("error", err)
-      dispatch({type: STATUS_DISPOSITION_FIELDS_UPDATE, payload: 'failure'});
-      console.log(err.response);
+      resolve("Error")      
     })
+    
+  });
 }
+
+
 
 
 export const postReloop = async(postData , idempotencyKey) => {

@@ -5,7 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import LocationInfoInput from '../LocationInfoInput';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
 import { boxShadow, style } from '../../../../constants/Styles';
 import FilterButton from '../../../../components/FilterButton';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -262,7 +262,7 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'center',
   },
   cardText: {
-    color: '#9D9FA2',
+    color: DISABLED_COLOR,
     fontSize: 12,
     fontFamily: Fonts.primaryRegular
   },

@@ -12,8 +12,8 @@ import { Login } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS ,
   CHANGE_USER_INFO, 
   CHANGE_PROJECT_PAYLOAD,
-  CHANGE_ACCESS_TOKEN, 
-  FILTERS} from '../actions/actionTypes';
+  CHANGE_ACCESS_TOKEN,   
+  MAP_FILTERS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { getFilterData, getToken, getUserData } from '../constants/Storage';
@@ -49,7 +49,7 @@ export default function SignIn() {
       var userData = await getUserData();
       console.log("login userData ", userData);
       console.log("saved filter", filters);
-      dispatch({ type: FILTERS, payload: filters });
+      dispatch({ type: MAP_FILTERS, payload: filters });
       dispatch({ type: CHANGE_USER_INFO, payload: userData });
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
       dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })

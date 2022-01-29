@@ -1,4 +1,4 @@
-import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, FILTERS } from "../actions/actionTypes";
+import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, MAP_FILTERS, SEARCH_FILTERS } from "../actions/actionTypes";
 
 // payload: {
 //   "iss": "universal_api.georep.com", // Issuer
@@ -90,10 +90,15 @@ const initialState = {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state=initialState, action) => {
   switch(action.type) {
-    case FILTERS:
+    case MAP_FILTERS:
       return {
         ...state,
-        filters: action.payload
+        mapFilters: action.payload
+      }
+    case SEARCH_FILTERS:
+      return {
+        ...state,
+        searchFilters: action.payload
       }
     case CHANGE_PROJECT_PAYLOAD: 
       return {

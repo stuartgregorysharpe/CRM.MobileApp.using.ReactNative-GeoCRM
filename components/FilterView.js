@@ -6,7 +6,7 @@ import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
-import { FILTERS, SLIDE_STATUS } from '../actions/actionTypes';
+import { MAP_FILTERS, SEARCH_FILTERS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { clearFilterData, getFilterData, storeFilterData } from '../constants/Storage';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -18,7 +18,8 @@ import { getLocationSearchList, getLocationsMap } from '../actions/location.acti
 export default function FilterView({navigation, page, onClose}) {
   const dispatch = useDispatch();
   const statusLocationFilters = useSelector(state => state.location.statusLocationFilters);
-  const originalFilterData = useSelector(state => state.location.locationFilters);
+  const originaLocationlFilterData = useSelector(state => state.location.locationFilters);
+  const filterParmeterChanged = useSelector(state => state.selection.filters);
   const [modaVisible, setModalVisible] = useState(false);
   const [options, setOptions] = useState([]);  
   const [fieldType, setFieldType] = useState("");  
@@ -35,20 +36,28 @@ export default function FilterView({navigation, page, onClose}) {
   const [locationFilters, setLocationFilters] = useState([]);
 
   useEffect(() => {
-    loadFilterDataFromStorage();    
-    setLocationFilters(originalFilterData);
-  }, [originalFilterData]);
+    console.log("opened " , page);
+    loadFilterDataFromStorage();
+    setLocationFilters(originaLocationlFilterData);
+  }, [originaLocationlFilterData]);
 
   useEffect(() => {    
     if(endDate !== undefined && endDate !== ''){
       saveFilter(0, true)
     }    
-  }, [endDate]);  
+  }, [endDate]);
+
+  // useEffect(() => {    
+  //   console.log("filter value changed");
+  //   if(page == "search"){
+  //     dispatch(getLocationSearchList());
+  //   }
+  // }, [filterParmeterChanged]);  
 
   const loadFilterDataFromStorage = async() =>{
     var filterData = await getFilterData();
     setFilters(filterData);
-    console.log("called load data", filterData)
+    
   }
 
   const getStartDate = (key) =>{
@@ -104,7 +113,7 @@ export default function FilterView({navigation, page, onClose}) {
           return data.length + " Selected"
         }
       }
-    }    
+    }
   }
 
   const initializeSelectedType = (key) => {        
@@ -215,8 +224,7 @@ export default function FilterView({navigation, page, onClose}) {
     
     if(filters !== undefined){
       setFilters(filters);
-      await storeFilterData(filters);    
-      dispatch({type: FILTERS, payload: filters})
+      await storeFilterData(filters);        
     }    
     if(locationFilters[key] !== undefined && locationFilters[key].options !== undefined){
       setOptions([]);
@@ -286,10 +294,16 @@ export default function FilterView({navigation, page, onClose}) {
               outcome_id : [],
               dispositions : [],
               customs : []
-            };
+            };            
             setFilters(value);
             await clearFilterData();            
-            dispatch({type: FILTERS, payload: filters})
+            console.log("clear filter app" , value);
+                        
+            if(page == "map"){
+              dispatch({type: MAP_FILTERS, payload: value})
+            }else if(page == "search"){
+              dispatch({type: SEARCH_FILTERS, payload: value})
+            }
             
           }}
         >
@@ -323,11 +337,13 @@ export default function FilterView({navigation, page, onClose}) {
           letterSpacing: 0.2
         }} 
         onPress={() => {
+          console.log("apply filters", filters);
+          var cloneFilters = {...filters};
           if(page == "map"){
-            dispatch(getLocationsMap());
+            dispatch({type: MAP_FILTERS, payload: cloneFilters})
           }else if(page == "search"){
-            dispatch(getLocationSearchList());
-          }          
+            dispatch({type: SEARCH_FILTERS, payload: cloneFilters})
+          }
           onClose();
         }}>
         Apply Filters
@@ -354,16 +370,18 @@ export default function FilterView({navigation, page, onClose}) {
       </Portal>
 
       <Portal>
+        
         <StartEndDateSelectionModal
+
           visible={isStartEndDateSelection}
           startDate = {startDate}
-          endDate = {endDate}
+          endDate = {endDate}          
           openDatePicker={(type) =>{
             setIsDateTimePickerVisible(true);              
             setDateType(type);
           }}
-          onModalClose={() =>{
 
+          onModalClose={() =>{
             setIsStartEndDateSelection(false);
           }}
         >

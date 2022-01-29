@@ -20,6 +20,7 @@ import { LocationItem } from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
+var isCalled = false;
 
 export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   
@@ -29,6 +30,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [isRequest, setIsRequest] = useState(false);
   const locationSearchLists = useSelector(state => state.location.locationSearchLists);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const filterParmeterChanged = useSelector(state => state.selection.searchFilters);
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
@@ -40,8 +42,8 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [message, setMessage] = useState("");
   const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
     
-  useEffect(() => {     
-    
+  useEffect(() => {
+
     setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
     props.screenProps.setOptions({                 
       headerTitle:() =>{
@@ -55,7 +57,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           }}>            
           <View style={style.headerTitleContainerStyle}>            
               <Image
-                resizeMethod='resize'  
+                resizeMethod='resize'
                 style={{width:15,height:20, marginRight:5}}
                 source={Images.backIcon}
               />
@@ -89,10 +91,16 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     }
   },[calendarType]);
 
+  useEffect(() => {      
+    console.log("fitler parameter changed in search page");
+    dispatch(getLocationSearchList());  
+  }, [filterParmeterChanged]);  
+
   useEffect(() => {  
-    if(locationSearchLists.length !== 0){
+    if(locationSearchLists.length !== 0 ){
       getSearchData("");
-    }else{
+    }else if(!isCalled){
+      isCalled = true;
       dispatch(getLocationSearchList());
     }
   }, [locationSearchLists]);
@@ -207,11 +215,15 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
             activeOpacity={1} 
             style={grayBackground}
             onPress={() => {
+
+              console.log("out side touch");
               dispatch({type: SUB_SLIDE_STATUS, payload: false})
               dispatch({type: SLIDE_STATUS, payload: false});
               setShowItem(0);              
             }}
           ></TouchableOpacity>}
+
+
 
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
@@ -249,8 +261,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
               }} 
               initVal={searchKeyword}
               isFilter={true}
-              animation={() => {
-                
+              animation={() => {                
                 animation("filter");
               }} />
                         
@@ -259,8 +270,14 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
               <View style={styles.buttonContainer}>
 
                 <View style={styles.leftContainer}>
-                <TouchableOpacity style={[styles.buttonTextStyle, {backgroundColor: isSelected ? DISABLED_COLOR:PRIMARY_COLOR}]} 
-                  onPress={()=> setIsSelected(!isSelected) }>
+                <TouchableOpacity 
+                  disabled={orderLists.length === 0 ? true: false} 
+                  style={[styles.buttonTextStyle, {backgroundColor: isSelected || orderLists.length === 0 ? DISABLED_COLOR:PRIMARY_COLOR}]} 
+                  onPress={()=> {
+                    if(orderLists.length > 0 ){
+                      setIsSelected(!isSelected)
+                    }
+                  } }>
                   <Text style={[styles.buttonText]}>{isSelected? 'Cancel' : 'Select' }</Text>
                 </TouchableOpacity>
                 </View>
@@ -298,7 +315,7 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
               {
                 orderLists.length !== 0 && 
                 <View style={{marginBottom:100}}>
-                  <FlatList              
+                  <FlatList
                     removeClippedSubviews={false}
                     maxToRenderPerBatch={10}
                     initialNumToRender={10}
@@ -312,7 +329,14 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
                   />
                 </View>
               }              
-              
+
+              {
+                orderLists.length == 0 && 
+                <View style={{flex:1 , alignItems:'center'}}>
+                  <Text style={{color:DISABLED_COLOR}} >No Results Found</Text>
+                </View>
+              }              
+
             </View>
           </View>
 

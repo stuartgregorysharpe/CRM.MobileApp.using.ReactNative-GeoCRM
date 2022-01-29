@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import CustomPicker from '../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
@@ -46,7 +46,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
         handleSubmit();
       }
     }),
-    [],
+    [dispositionValue],
   );
 
   useEffect(() => {    
@@ -109,9 +109,9 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
       console.log(item, key)
       postData.disposition_fields.push({
         "disposition_field_id": item.disposition_field_id,
-        "value": dispositionValue[key]
+        "value": dispositionValue[key] !== undefined ? dispositionValue[key] :  ''
       })
-    });
+    });    
     dispatch(postDispositionFields(postData, uuid.v4()));
     dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
   }
@@ -345,7 +345,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           mode="outlined"
                           outlineColor="#133C8B"
-                          activeOutlineColor="#9D9FA2"
+                          activeOutlineColor={DISABLED_COLOR}
                           value={dispositionValue[key]}
                           disabled = {getDisableStatus(field.field_type, field.rule_editable)}
                           onChangeText={text => handleChangeText(text, field, key)}                          
