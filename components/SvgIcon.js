@@ -566,6 +566,16 @@ const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="
 </svg>
 `;
 
+const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="238" height="254.93" viewBox="0 0 238 254.93">
+<g id="Group_4817" data-name="Group 4817" transform="translate(-789.725 -193.833)">
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H202.235V202.235H0Z" transform="translate(0 0)" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M18.853,18.853H77.838V2H18.853A16.9,16.9,0,0,0,2,18.853V77.838H18.853ZM69.412,94.691,35.706,136.824H136.824l-25.279-33.706L94.438,125.953ZM128.4,56.772a12.64,12.64,0,1,0-12.64,12.64A12.623,12.623,0,0,0,128.4,56.772ZM153.676,2H94.691V18.853h58.985V77.838h16.853V18.853A16.9,16.9,0,0,0,153.676,2Zm0,151.677H94.691v16.853h58.985a16.9,16.9,0,0,0,16.853-16.853V94.691H153.676ZM18.853,94.691H2v58.985a16.9,16.9,0,0,0,16.853,16.853H77.838V153.677H18.853Z" transform="translate(14.853 14.853)" fill="#133c8b"/>
+  </g>
+  <text id="Checkout" transform="translate(908.725 436.764)" fill="#133c8b" font-size="49" font-family="ProductSans-Medium, Product Sans Medium" font-weight="500"><tspan x="-118" y="0">Add Image</tspan></text>
+</g>
+</svg>
+`;
 
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
@@ -618,6 +628,6 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Item_Selected" && <SvgXml style={style} xml={Item_Selected} width={width} height={height} />}
         {icon == "Calendar_Optimize" && <SvgXml style={style} xml={Calendar_Optimize} width={width} height={height} />}         
         {icon == "Arrow_Right" && <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />}         
-        
+        {icon == "Add_Image" && <SvgXml style={style} xml={Add_Image} width={width} height={height} />}
     </Fragment>
 );

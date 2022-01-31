@@ -265,7 +265,7 @@ export default function AddLead({screenProps , onClose}) {
                     <Text                                        
                       ref={(element) => { dispositionRef.current[key] = element }}                      
                       style={[styles.textInput,{borderColor:PRIMARY_COLOR, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
-                      outlineColor="#133C8B">
+                      outlineColor={PRIMARY_COLOR}>
                       {getSelectedDropdownItemText(field.custom_master_field_id , field.field_name)}
                     </Text>
                                                             
@@ -292,7 +292,7 @@ export default function AddLead({screenProps , onClose}) {
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}                        
                           value={getTextValue(customMasterFields, field.custom_master_field_id)}
                           mode="outlined"
-                          outlineColor="#133C8B"
+                          outlineColor={PRIMARY_COLOR}
                           activeOutlineColor={DISABLED_COLOR}                                        
                           onChangeText={text => {
 

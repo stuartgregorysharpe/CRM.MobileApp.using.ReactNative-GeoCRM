@@ -81,7 +81,7 @@ export default function AddLead({screenProps}) {
                 style={styles.textInput}
                 label="Customer Name"
                 mode="outlined"
-                outlineColor="#133C8B"
+                outlineColor={PRIMARY_COLOR}
                 activeOutlineColor={DISABLED_COLOR}
                 value={customerName}
                 onChangeText={text => setCustomerName(text)}
@@ -102,7 +102,7 @@ export default function AddLead({screenProps}) {
               style={styles.textInput}
               label="Address"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={address}
               onChangeText={text => setAddress(text)}
@@ -119,7 +119,7 @@ export default function AddLead({screenProps}) {
               style={styles.textInput}
               label="Primary Contact Person"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={contactPerson}
               onChangeText={text => setContactPerson(text)}
@@ -136,7 +136,7 @@ export default function AddLead({screenProps}) {
               style={styles.textInput}
               label="Primary Contact Email"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={contactEmail}
               onChangeText={text => setContactEmail(text)}
@@ -153,7 +153,7 @@ export default function AddLead({screenProps}) {
               style={styles.textInput}
               label="Primary Contact Mobile"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={contactMobile}
               onChangeText={text => setContactMobile(text)}
@@ -170,7 +170,7 @@ export default function AddLead({screenProps}) {
               style={styles.textInput}
               label="Location Type"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={locationType}
               onChangeText={text => setLocationType(text)}
@@ -187,7 +187,7 @@ export default function AddLead({screenProps}) {
               style={styles.textInput}
               label="Group"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={group}
               onChangeText={text => getGroup(text)}

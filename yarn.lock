@@ -1638,17 +1638,17 @@
     "@babel/runtime" "^7.7.2"
     "regenerator-runtime" "^0.13.3"
 
-"@mapbox/geo-viewport@^0.4.1":
-  "integrity" "sha512-5g6eM3EOSl7+0p0VY+vHWEYjUlNzof936VKHTi/NuJVABjbYe8D2NAVJ0qt5C9Np4glUlhKFepgAgQ0OEybrjQ=="
-  "resolved" "https://registry.npmjs.org/@mapbox/geo-viewport/-/geo-viewport-0.4.1.tgz"
-  "version" "0.4.1"
+"@mapbox/geo-viewport@github:mapbox/geo-viewport":
+  "integrity" "sha512-GMypdCJv7Y4291rpKtnkON6M87n1O6Zxlof7j+IRyQl3ixHQF4dG3jX726j3+leNOuno8kY2NHSjz4fkQGZ7RA=="
+  "resolved" "git+ssh://git@github.com/mapbox/geo-viewport.git"
+  "version" "0.5.0"
   dependencies:
-    "@mapbox/sphericalmercator" "~1.1.0"
+    "@mapbox/sphericalmercator" "^1.2.0"
 
-"@mapbox/sphericalmercator@~1.1.0":
-  "integrity" "sha512-pEsfZyG4OMThlfFQbCte4gegvHUjxXCjz0KZ4Xk8NdOYTQBLflj6U8PL05RPAiuRAMAQNUUKJuL6qYZ5Y4kAWA=="
-  "resolved" "https://registry.npmjs.org/@mapbox/sphericalmercator/-/sphericalmercator-1.1.0.tgz"
-  "version" "1.1.0"
+"@mapbox/sphericalmercator@^1.2.0":
+  "integrity" "sha512-ZTOuuwGuMOJN+HEmG/68bSEw15HHaMWmQ5gdTsWdWsjDe56K1kGvLOK6bOSC8gWgIvEO0w6un/2Gvv1q5hJSkQ=="
+  "resolved" "https://registry.npmjs.org/@mapbox/sphericalmercator/-/sphericalmercator-1.2.0.tgz"
+  "version" "1.2.0"
 
 "@nodelib/fs.scandir@2.1.5":
   "integrity" "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
@@ -7122,15 +7122,7 @@
     "prop-types" "^15.6.2"
     "react-native-iphone-x-helper" "^1.0.3"
 
-"react-native-map-clustering@^3.4.2":
-  "integrity" "sha512-7VN3ZmOG6gH2THY1VCkrklJmLVxoaY3SyQHuPlNG1CPmL/unPkyAyfDxFoZahf+UxRYIWSbLa9C3oI3Lcswi+Q=="
-  "resolved" "https://registry.npmjs.org/react-native-map-clustering/-/react-native-map-clustering-3.4.2.tgz"
-  "version" "3.4.2"
-  dependencies:
-    "@mapbox/geo-viewport" "^0.4.1"
-    "supercluster" "^7.1.0"
-
-"react-native-maps@*", "react-native-maps@^0.29.4":
+"react-native-maps@^0.29.4":
   "integrity" "sha512-Td2KE8+KODcHOxfB1GBNnzFo4/89rlLiC7yTvqQZh0tGVrEzIcgSleUZRrjtq/WvSWSR4rql4AS+0VsBgDkYrw=="
   "resolved" "https://registry.npmjs.org/react-native-maps/-/react-native-maps-0.29.4.tgz"
   "version" "0.29.4"
@@ -8115,7 +8107,7 @@
   "resolved" "https://registry.npmjs.org/sudo-prompt/-/sudo-prompt-9.2.1.tgz"
   "version" "9.2.1"
 
-"supercluster@^7.1.0":
+"supercluster@^7.1.4":
   "integrity" "sha512-GhKkRM1jMR6WUwGPw05fs66pOFWhf59lXq+Q3J3SxPvhNcmgOtLRV6aVQPMRsmXdpaeFJGivt+t7QXUPL3ff4g=="
   "resolved" "https://registry.npmjs.org/supercluster/-/supercluster-7.1.4.tgz"
   "version" "7.1.4"

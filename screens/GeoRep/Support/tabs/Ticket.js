@@ -151,7 +151,7 @@ export const Ticket = forwardRef((props, ref) => {
               style={styles.textInput}
               label="Email"
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
               value={email}
               onChangeText={text => setEmail(text)}
@@ -169,7 +169,7 @@ export const Ticket = forwardRef((props, ref) => {
               style={styles.textInput}
               label={issue == '' ? "Select Issue" : issue}
               mode="outlined"
-              outlineColor="#133C8B"
+              outlineColor={PRIMARY_COLOR}
               activeOutlineColor={DISABLED_COLOR}
             />
             <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
@@ -179,7 +179,7 @@ export const Ticket = forwardRef((props, ref) => {
         <TextInput
           style={styles.textArea}
           mode="outlined"
-          outlineColor="#133C8B"
+          outlineColor={PRIMARY_COLOR}
           activeOutlineColor={DISABLED_COLOR}
           placeholder="Issue details can be entered here..."
           multiline={true}

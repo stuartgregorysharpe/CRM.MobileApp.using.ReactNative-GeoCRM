@@ -18,6 +18,7 @@ import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
 import LocationInfoInputTablet from './LocationInfoInputTablet';
 import Fonts from '../../../constants/Fonts';
+import * as ImagePicker from 'react-native-image-picker';
 
 export default function LocationInfo({navigation, screenProps, locInfo}) {
 
@@ -39,7 +40,6 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
       setKeyboardStatus(false);
     });
-
     return () => {
       showSubscription.remove();
       hideSubscription.remove();
@@ -50,6 +50,30 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
     setShowItem(1);
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
+  const launchImageLibrary = (index) => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchImageLibrary (options, (response)  => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);        
+      } else {                                                  
+        if(response.assets != null && response.assets.length > 0){                            
+            convertBase64(response.assets[0].uri);
+        }                     
+      }
+    });    
+  }
+
 
   return (
     <View style={[styles.container, {flex:1}]}>
@@ -84,17 +108,21 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
         extraHeight={130}                
         behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: (features && (features.includes("access_crm") || features.includes("checkin"))) ? 50 : 0}]}>
 
-        <View style={styles.headerBox}>
+        <View style={styles.headerBox}>                    
           <View>
-            <View style={styles.subtitleBox}>
-              <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='16px' height='16px' />              
+            <View style={[styles.subtitleBox]}>
+              <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='14px' height='16px' />              
+              <Text style={{color:PRIMARY_COLOR, fontFamily:Fonts.secondaryMedium , marginLeft:5, fontSize:12}} >Customer Name</Text>
             </View>
-            <Text style={styles.title}>{ locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
           </View>
           <View style={styles.subtitleBox}>
             <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
             <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
           </View>
+        </View>
+        
+        <View style={[styles.headerBox, {marginTop:0}]}>
+          <Text style={styles.title}> { locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
         </View>
 
         <View style={styles.headerBox}>
@@ -105,8 +133,20 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
             </View>
             <Text style={styles.title}>{locationInfo ? locationInfo.address : ''}</Text>
           </View>
-          <View style={styles.walmartImageBox}>
-            <Image style={styles.walmartImage} source={Images.walmart} />
+
+          <View style={styles.walmartImageBox}>          
+            {
+              locationInfo.location_image !== "" &&
+              <Image style={styles.walmartImage}  source={ locationInfo.location_image !== "" ? {uri:locationInfo.location_image} : Images.walmart} />
+            }
+            {
+              locationInfo.location_image === "" &&
+              <TouchableOpacity onPress={() => {
+                  
+              }}>
+                <SvgIcon style={styles.fontIcon} icon="Add_Image" width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '30px': '80px'} />
+              </TouchableOpacity>              
+            }
           </View>
         </View>    
 
@@ -161,11 +201,11 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: BG_COLOR,
     padding: 10,
   },
-  headerBox: {
+  headerBox: {    
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: 10,
     paddingLeft:10,
     paddingRight:10
   },
@@ -173,7 +213,7 @@ const styles = EStyleSheet.create(parse({
   subtitleBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    // marginBottom: 4,
   },
   subtitle: {
     color: PRIMARY_COLOR,
@@ -193,10 +233,10 @@ const styles = EStyleSheet.create(parse({
     lineHeight: 20
   },
   addressText: {
-    maxWidth: 175,
+    flex:1
   },
-  walmartImageBox: {
-    flexGrow: 1,
+
+  walmartImageBox: {    
     alignItems: perWidth('flex-end', 'center')
   },
   walmartImage: {

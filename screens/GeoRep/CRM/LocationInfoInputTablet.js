@@ -344,7 +344,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
                           style={styles.textInput}
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           mode="outlined"
-                          outlineColor="#133C8B"
+                          outlineColor={PRIMARY_COLOR}
                           activeOutlineColor={DISABLED_COLOR}
                           value={dispositionValue[key]}
                           disabled = {getDisableStatus(field.field_type, field.rule_editable)}

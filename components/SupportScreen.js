@@ -38,7 +38,7 @@ const Ticket = () => {
             style={styles.textInput}
             label="Email"
             mode="outlined"
-            outlineColor="#133C8B"
+            outlineColor={PRIMARY_COLOR}
             activeOutlineColor={DISABLED_COLOR}
             value={email}
             onChangeText={text => setEmail(text)}
@@ -55,7 +55,7 @@ const Ticket = () => {
             style={styles.textInput}
             label={picker == '' ? "Select Issue" : picker}
             mode="outlined"
-            outlineColor="#133C8B"
+            outlineColor={PRIMARY_COLOR}
             activeOutlineColor={DISABLED_COLOR}
           />
           <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
@@ -64,7 +64,7 @@ const Ticket = () => {
       <TextInput
         style={styles.textArea}
         mode="outlined"
-        outlineColor="#133C8B"
+        outlineColor={PRIMARY_COLOR}
         activeOutlineColor={DISABLED_COLOR}
         placeholder="Issue details can be entered here..."
         multiline={true}

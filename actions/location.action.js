@@ -57,7 +57,7 @@ export const getLocationsMap1 = () => (dispatch, getState) => {
     axios
     .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-map`, {
       params: {
-        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,            
+        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
         // current_latitude: location.latitude,
         // current_longitude: location.longitude
         current_latitude: -33.886261,
@@ -96,8 +96,7 @@ export const getLocationsMap1 = () => (dispatch, getState) => {
     });
 }
 
-export const getLocationsMap = () => (dispatch, getState) => {
-    
+export const getLocationsMap = () => (dispatch, getState) => {    
   dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });  
   console.log("logss== ",getState().selection.filters);
   GetLocation.getCurrentPosition({

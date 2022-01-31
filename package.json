@@ -9,15 +9,16 @@
     "test": "jest",
     "lint": "eslint ."
   },
-  "dependencies": {
+  "dependencies": {    
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-native-fontawesome": "^0.2.7",
+    "@mapbox/geo-viewport": "github:mapbox/geo-viewport",
     "@react-native-async-storage/async-storage": "^1.15.14",
     "@react-native-community/checkbox": "^0.5.9",
-    "@react-native-community/datetimepicker": "^5.1.0",
+    "@react-native-community/datetimepicker": "^5.1.0",    
     "@react-native-picker/picker": "^2.2.1",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.6",
@@ -40,7 +41,6 @@
     "react-native-get-location": "^2.2.1",
     "react-native-image-picker": "^4.7.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
-    "react-native-map-clustering": "^3.4.2",
     "react-native-maps": "^0.29.4",
     "react-native-modal-datetime-picker": "^13.0.0",
     "react-native-paper": "^4.10.1",
@@ -55,6 +55,7 @@
     "redux": "^4.1.2",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.0",
+    "supercluster": "^7.1.4",
     "toggle-switch-react-native": "^3.3.0"
   },
   "devDependencies": {
