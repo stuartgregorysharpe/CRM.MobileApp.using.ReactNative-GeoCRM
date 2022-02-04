@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar , Dimensions , KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from 'react-native-paper';
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -47,8 +47,7 @@ export default function SignIn() {
     var filters = await getFilterData();
     if(token != null){
       var userData = await getUserData();
-      console.log("login userData ", userData);
-      console.log("saved filter", filters);
+      console.log("login userData ", userData);      
       dispatch({ type: MAP_FILTERS, payload: filters });
       dispatch({ type: CHANGE_USER_INFO, payload: userData });
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
@@ -62,6 +61,7 @@ export default function SignIn() {
       setEmailError(true);
       return;
     }
+    console.log("login url", `${baseURL}/authentication_api/Auth/check_aad_login`);
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
     axios
       .post(`${baseURL}/authentication_api/Auth/check_aad_login`, { email })

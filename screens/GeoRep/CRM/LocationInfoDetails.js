@@ -1,8 +1,8 @@
-import React, { useState, useEffect , useRef } from 'react';
-import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform } from 'react-native';
+
+
+import React, { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react';
+import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { grayBackground, style } from '../../../constants/Styles';
@@ -11,28 +11,64 @@ import SvgIcon from '../../../components/SvgIcon';
 import {LocationInfoInput} from './LocationInfoInput';
 import Divider from '../../../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
-import { breakPoint } from '../../../constants/Breakpoint';
-import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS, LOCATION_ID_CHANGED } from '../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import Images from '../../../constants/Images';
 import LocationInfoInputTablet from './LocationInfoInputTablet';
 import Fonts from '../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
+import { postLocationImage } from '../../../actions/location.action';
+import uuid from 'react-native-uuid';
+import AlertDialog from '../../../components/modal/AlertDialog';
+import UpdateCustomerInfo from './popup/UpdateCustomerInfo';
 
-export default function LocationInfo({navigation, screenProps, locInfo}) {
+
+export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const dispatch = useDispatch();  
-  const [locationInfo, setLocationInfo] = useState(locInfo);
+  const [locationInfo, setLocationInfo] = useState(props.locInfo);  
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);    
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
-  const [showItem, setShowItem] = useState(0);   
+  const [showItem, setShowItem] = useState("refresh");   
   const [keyboardStatus, setKeyboardStatus] = useState(false);  
   const locationInfoRef = useRef();
+  const [issueImage, setIssueImage] = useState('');
+  const [filePath, setFilePath] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [message, setMessage] = useState("");
+  const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height))
 
-  useEffect(() => {
-    
+  console.log("locationInfo",locationInfo)
+  useImperativeHandle(
+    ref,
+    () => ({
+      closePopup() {        
+        if(showItem !== "update_customer"){          
+          props.clostDetailsPopup();
+          dispatch({type: SLIDE_STATUS, payload: false});
+          dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+        }else{        
+          setShowItem("refresh");
+        }        
+      },
+      goBack(){
+        console.log("props", props);
+        if(showItem !== "update_customer"){   
+          props.goPreviousPage();
+        }else{          
+          setShowItem("refresh");
+        }        
+      }
+    }),
+    [showItem],
+  );
+
+
+
+  useEffect(() => { 
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
@@ -47,7 +83,7 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
   }, []);
 
   const showLoopSlider = () => {
-    setShowItem(1);
+    setShowItem("loop");
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
   const launchImageLibrary = (index) => {
@@ -67,17 +103,44 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);        
       } else {                                                  
-        if(response.assets != null && response.assets.length > 0){                            
+        if(response.assets != null && response.assets.length > 0){
+            console.log("path", response.assets[0].uri);
+            setFilePath(response.assets[0].uri);
             convertBase64(response.assets[0].uri);
-        }                     
+        }
       }
-    });    
+    });
   }
 
+  const convertBase64 = async (path) => {
+    var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
+    setIssueImage(data);
+    let postData = {
+      location_id: locationInfo.location_id,
+      location_image: data,
+    };
+    postLocationImage(postData, uuid.v4())
+    .then((res) => {
+        setMessage(res);
+        setIsSuccess(true);
+    })
+    .catch((e) =>{
+      setMessage(e);
+      setIsSuccess(true);
+    })
+  }
 
+  const openCustomerInfo = async() => {
+    setShowItem("update_customer")
+  }
+  
   return (
     <View style={[styles.container, {flex:1}]}>
-      
+
+      <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
+        setIsSuccess(false);
+      }} />
+    
       { subSlideStatus && 
         <TouchableOpacity
           activeOpacity={1} 
@@ -87,10 +150,16 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       }
 
       { subSlideStatus && 
-        <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
+        <View style={[styles.transitionView, showItem == "refresh" ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
           <RefreshSlider  location_id={locationInfo.location_id} />
         </View>
       }
+
+      {
+        showItem === "update_customer" &&
+        <UpdateCustomerInfo location_id={locationInfo.location_id} onClose={() => {setShowItem("refresh")}} />      
+      }
+      
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         if (statusDispositionInfo) {
@@ -121,38 +190,49 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
           </View>
         </View>
         
-        <View style={[styles.headerBox, {marginTop:0}]}>
-          <Text style={styles.title}> { locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
-        </View>
-
+        <TouchableOpacity onPress={() => { openCustomerInfo() }} >
+          <View style={[styles.headerBox, {marginTop:0}]}>
+            <Text style={styles.title}> { locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
+          </View>
+        </TouchableOpacity>
+        
+        
         <View style={styles.headerBox}>
           <View style={styles.addressText}>
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.fontIcon} icon="Location_Arrow" width='16px' height='16px' />
               <Text style={styles.subtitle}>Address</Text>
             </View>
-            <Text style={styles.title}>{locationInfo ? locationInfo.address : ''}</Text>
+            <TouchableOpacity onPress={() => { openCustomerInfo() }} >
+              <Text style={[styles.title, {marginTop:3}]}>{locationInfo ? locationInfo.address : ''}</Text>
+            </TouchableOpacity>            
           </View>
 
           <View style={styles.walmartImageBox}>          
             {
               locationInfo.location_image !== "" &&
-              <Image style={styles.walmartImage}  source={ locationInfo.location_image !== "" ? {uri:locationInfo.location_image} : Images.walmart} />
+              <Image style={styles.walmartImage}  source={{uri:locationInfo.location_image}} />
             }
             {
               locationInfo.location_image === "" &&
               <TouchableOpacity onPress={() => {
-                  
+                  launchImageLibrary();
               }}>
-                <SvgIcon style={styles.fontIcon} icon="Add_Image" width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '30px': '80px'} />
+                {
+                  filePath  !== '' && 
+                  <Image style={styles.walmartImage}  source={{uri:filePath}} />
+                }
+                {
+                  filePath === '' &&
+                  <SvgIcon style={styles.fontIcon} icon="Add_Image" width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '30px': '80px'} />
+                }                
               </TouchableOpacity>              
             }
           </View>
         </View>    
 
         <View style={{padding:10, marginBottom:50}}>
-        {
-          // navigation={navigation} screenProps={screenProps} showLoopSlider={showLoopSlider} infoInput={locationInfo} 
+        {        
           locationInfo && DeviceInfo.isTablet()?
           <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
           <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
@@ -163,14 +243,14 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
         <View style={styles.nextButtonBar}>        
           {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {          
-            navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+            props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
           }}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
             <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
           </TouchableOpacity>
           }
           {features && features.includes("checkin") && <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => {          
-            navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+            props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
             }}>
 
             <Text style={[styles.checkInButtonText]}>Check In</Text>
@@ -180,20 +260,25 @@ export default function LocationInfo({navigation, screenProps, locInfo}) {
       </View>
       }
       
-      <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => {
-         if(!subSlideStatus){
-            locationInfoRef.current.postDispositionData();
-         }
-      }}>
+      {
+        showItem !== "update_customer" &&
+        <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => {
+                if(!subSlideStatus){
+                    locationInfoRef.current.postDispositionData();
+                }
+              }}>
           <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
-      </TouchableOpacity>    
+        </TouchableOpacity> 
+      }
+      
     </View>
   )
-}
 
-const perWidth = setWidthBreakpoints(breakPoint);
+});
 
-const styles = EStyleSheet.create(parse({
+const styles = StyleSheet.create({
+
+  
   container: {      
     backgroundColor: BG_COLOR,          
   },
@@ -237,14 +322,14 @@ const styles = EStyleSheet.create(parse({
   },
 
   walmartImageBox: {    
-    alignItems: perWidth('flex-end', 'center')
+    alignItems: 'flex-end',    
   },
   walmartImage: {
-    width: perWidth(140, 90),
-    height: perWidth(140, 90),
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
-    borderRadius: 7
+    borderRadius: 7,
+    width:Dimensions.get("screen").width / 4.5,
+    height:Dimensions.get("screen").width / 4.5
   },
 
   nextButtonBar: {        
@@ -301,4 +386,6 @@ const styles = EStyleSheet.create(parse({
     zIndex: 2,
     padding: 10,
   },
-}));
+
+
+});

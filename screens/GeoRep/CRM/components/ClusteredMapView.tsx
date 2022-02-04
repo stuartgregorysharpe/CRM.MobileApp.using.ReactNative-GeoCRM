@@ -61,9 +61,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     const [isSpiderfier, updateSpiderfier] = useState(false)
     const [clusterChildren, updateClusterChildren] = useState(null)
     const mapRef = useRef()
-
-    const propsChildren = useMemo(() => React.Children.toArray(children), [children])
-
+    const propsChildren = useMemo(() => React.Children.toArray(children), [children])    
     useEffect(() => {
       const rawData = []
       const otherChildren = []
@@ -184,6 +182,12 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
             ref.current = map
           }
           restProps.mapRef(map)
+        }}
+        initialRegion={{
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          latitudeDelta: 0.015,
+          longitudeDelta: 0.0121
         }}
         moveOnMarkerPress={false}
         provider={PROVIDER_GOOGLE}

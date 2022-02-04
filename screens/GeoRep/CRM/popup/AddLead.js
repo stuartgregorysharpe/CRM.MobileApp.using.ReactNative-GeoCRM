@@ -7,15 +7,16 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
-import Skeleton from '../../../components/Skeleton';
-import Divider from '../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
-import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getGeocoding, getLeadFields, postLeadFields } from '../../../actions/location.action';
-import Fonts from '../../../constants/Fonts';
-import CustomPicker from '../../../components/modal/CustomPicker';
-import SvgIcon from '../../../components/SvgIcon';
-import AlertDialog from '../../../components/modal/AlertDialog';
+import Skeleton from '../../../../components/Skeleton';
+import Divider from '../../../../components/Divider';
+import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import {  SLIDE_STATUS } from '../../../../actions/actionTypes';
+import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
+import Fonts from '../../../../constants/Fonts';
+import CustomPicker from '../../../../components/modal/CustomPicker';
+import SvgIcon from '../../../../components/SvgIcon';
+import AlertDialog from '../../../../components/modal/AlertDialog';
+import { reverseGeocoding } from '../../../../actions/google.action';
 
 export default function AddLead({screenProps , onClose}) {
 
@@ -38,15 +39,13 @@ export default function AddLead({screenProps , onClose}) {
       coordinates:{latitude : currentLocation.latitude, longitude : currentLocation.longitude},
       use_current_geo_location:isCurrentLocation,
       custom_master_fields:customMasterFields    
-    }
-    console.log(params);
+    }    
     postLeadFields(params, uuid.v4())
     .then((res) => {
       setMessage("Added lead successfully");
       setIsSuccess(true);
     })
-    .catch((error) =>{      
-      console.log('error', error);
+    .catch((error) =>{     
       setMessage("Failed");
       setIsSuccess(true);
     })        
@@ -76,44 +75,6 @@ export default function AddLead({screenProps , onClose}) {
       tmp.push({'custom_master_field_id':  element.custom_master_field_id, 'value' : '' , 'field_name': element.field_name });
     })
     setCustomMasterFields(tmp);
-  }
- 
-  const reverseGeocoding = () => {
-    getGeocoding(currentLocation.latitude, currentLocation.longitude)
-    .then((res) => {
-      if(res.results != null && res.results.length > 0 && res.results[0].address_components.length > 0){        
-        var address_components = res.results[0].address_components;
-        console.log("address co m", address_components);
-        var tmp = [ ...customMasterFields ];
-        tmp.forEach((element) => {
-          address_components.forEach((item) =>{
-            if(item.types.includes("street_number") && element.field_name == "Street Address" || item.types.includes("route")  && element.field_name == "Street Address" ){
-              element.value = element.value + " " + item.long_name;
-            }
-            if( (item.types.includes("neighborhood") || item.types.includes("sublocality_level_1") ||  item.types.includes("sublocality") ) && element.field_name == "Suburb"  ){
-              element.value = item.long_name;
-            }
-            if( ( item.types.includes("administrative_area_level_2") || item.types.includes("locality") )  && element.field_name == "City"  ){
-              element.value = item.long_name;
-            }
-            if( item.types.includes("administrative_area_level_1")  && element.field_name == "State"  ){
-              element.value = item.long_name;
-            }
-            if( (item.types.includes("country") && item.types.includes("political") ) && element.field_name == "Country"  ){
-              element.value = item.long_name;
-            }
-            if( item.types.includes("postal_code") && element.field_name == "Pincode"  ){
-              element.value = item.long_name;
-            }
-          })          
-        })  
-        setCustomMasterFields(tmp);       
-        setIsCurrentLocation("1")
-      }
-    })
-    .catch((e) => {
-      console.log(e);
-    })
   }
 
   const getTextValue = (customMasterFields, id) => {        
@@ -276,7 +237,14 @@ export default function AddLead({screenProps , onClose}) {
                   <View key={key}>
                     {
                       key == 1 && 
-                      <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={reverseGeocoding}>                  
+                      <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={ async() =>{
+                        var masterFields = await reverseGeocoding( currentLocation, customMasterFields);                       
+                        if(masterFields.length > 0){
+                          setCustomMasterFields(masterFields);
+                          setIsCurrentLocation("1");
+                        }
+                        
+                      }}>                  
                           <Text style={styles.linkBoxText}>Use Current Geo Location</Text>                  
                       </TouchableOpacity>
                     }

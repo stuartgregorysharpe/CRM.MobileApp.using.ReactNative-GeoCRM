@@ -12,6 +12,9 @@ import { baseURL } from "../constants";
 import { getFilterData, setToken, storeUserData } from "../constants/Storage";
 
 export const Login = (email, password) => (dispatch) => {
+
+  console.log("base url", baseURL);
+  
   axios
     .post(`${baseURL}/authentication_api/Auth/login`, { email, password })
     .then( async (res) => {

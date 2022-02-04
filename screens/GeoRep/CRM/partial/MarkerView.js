@@ -9,6 +9,8 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { breakPoint } from '../../../../constants/Breakpoint';
 import { TEXT_COLOR } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
+import DeviceInfo from 'react-native-device-info';
+import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 
 export function MarkerView( {isRequest} ) {
 
@@ -28,8 +30,7 @@ export function MarkerView( {isRequest} ) {
       setMarkerIcons(items);     
     }, [pins])
   
-    if (statusPinKeys == "request" || isRequest ) {
-      
+    if (statusPinKeys == "request" || isRequest ) {      
       return (
         <SafeAreaView>
           <View style={{padding: 10, justifyContent: 'center'}}>
@@ -62,13 +63,13 @@ export function MarkerView( {isRequest} ) {
 const perWidth = setWidthBreakpoints(breakPoint);
 const styles = StyleSheet.create(parse({
     markerContent: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap'
-    },
-
+      padding:10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap'
+    },    
     markerBox: {
-        width: perWidth('30%', '45%'),
+        width: DeviceInfo.isTablet()?"35%":"45%",
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20

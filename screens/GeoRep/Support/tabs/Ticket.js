@@ -85,13 +85,12 @@ export const Ticket = forwardRef((props, ref) => {
                 "selected_issue": issue,
                 "issue_details": issueDetails,
                 "issue_image": issueImage
-              };  
+              };
               console.log(params);
               postSupportEmail(base_url, token, params)
               .then((res) =>{
                 if(res.status == 'success'){
-                    notifyMessage("Success","");
-                    
+                    notifyMessage("Success","");                    
                 }else{
                     notifyMessage("Failed","");
                 }
@@ -100,9 +99,9 @@ export const Ticket = forwardRef((props, ref) => {
 
               })
             }
-        }        
+        }
     }
-
+        
     const launchImageLibrary = (index) => {
         let options = {
           storageOptions: {
@@ -122,9 +121,9 @@ export const Ticket = forwardRef((props, ref) => {
           } else {                                                  
             if(response.assets != null && response.assets.length > 0){                            
                 convertBase64(response.assets[0].uri);
-            }                     
+            }
           }
-        });    
+        });  
     }
 
     const convertBase64 = async (path) => {

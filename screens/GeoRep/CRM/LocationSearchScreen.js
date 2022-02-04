@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useRef, useEffect } from 'react';
 import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , FlatList, Image, Platform} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import LocationInfo from './LocationInfo';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Skeleton from '../../../components/Skeleton';
@@ -20,9 +19,11 @@ import { LocationItem } from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
+import { LocationInfoDetails } from './LocationInfoDetails';
+
 var isCalled = false;
 
-export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
+export default function LocationSearchScreen(props) {
   
   const navigation = props.navigation;
   const dispatch = useDispatch();
@@ -41,19 +42,22 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState("");
   const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
-    
+  const locationRef = useRef();
+
   useEffect(() => {
 
     setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
     props.screenProps.setOptions({                 
       headerTitle:() =>{
         return(<TouchableOpacity onPress={
-          () =>{
-            if(navigation.canGoBack()){              
-              dispatch({type: SLIDE_STATUS, payload: false});
-              navigation.goBack();
-              dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+          () =>{            
+            if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){
+              console.log(locationRef);
+              locationRef.current.goBack();
+            }else{
+              goPreviousPage();
             }
+
           }}>            
           <View style={style.headerTitleContainerStyle}>            
               <Image
@@ -64,14 +68,21 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },
+
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
           activeOpacity={1}
-          onPress={() => {
-            setShowItem(0);
-            dispatch({type: SLIDE_STATUS, payload: false});
-            dispatch({type: LOCATION_ID_CHANGED, payload: 0})            
+          onPress={() => {            
+            
+            if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){
+              console.log(locationRef);
+              locationRef.current.closePopup();
+            }else{
+              setShowItem(0);
+              dispatch({type: SLIDE_STATUS, payload: false});
+              dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+            }
           }}
         >
         </TouchableOpacity>
@@ -105,6 +116,13 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
     }
   }, [locationSearchLists]);
 
+  const goPreviousPage = () =>{
+    if(navigation.canGoBack()){                            
+      navigation.goBack();
+      dispatch({type: SLIDE_STATUS, payload: false});
+      dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+    }
+  }
 
   const getSearchData = (searchKey) => {
     let items = [];    
@@ -215,15 +233,13 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
             activeOpacity={1} 
             style={grayBackground}
             onPress={() => {
-
-              console.log("out side touch");
+              
               dispatch({type: SUB_SLIDE_STATUS, payload: false})
               dispatch({type: SLIDE_STATUS, payload: false});
-              setShowItem(0);              
+              setShowItem(0);     
+
             }}
           ></TouchableOpacity>}
-
-
 
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
@@ -237,7 +253,13 @@ export default function LocationSpecificInfoScreenzLocationSearchScreen(props) {
           {crmStatus && showItem == 2 &&
             <View
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
-              <LocationInfo locInfo={locationInfo} navigation={navigation} /> 
+
+              <LocationInfoDetails ref={locationRef} 
+              goPreviousPage={goPreviousPage}
+              clostDetailsPopup={() =>{                
+                setShowItem(0);
+              }} locInfo={locationInfo} ></LocationInfoDetails>  
+            
             </View>
           }
 

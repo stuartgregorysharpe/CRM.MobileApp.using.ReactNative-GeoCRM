@@ -7,8 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import MapView , { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import AddLead from './AddLead';
-import LocationInfo from './LocationInfo';
+import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
 import SvgIcon from '../../../components/SvgIcon';
 import GrayBackground from '../../../components/GrayBackground';
@@ -21,16 +20,9 @@ import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
 import MarkerIcon from '../../../components/Marker';
-import { stat } from 'react-native-fs';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import {featureCollection, point, feature, lineString} from '@turf/helpers';
-import Supercluster from 'supercluster';
 import ClusteredMapView from './components/ClusteredMapView'
 import MapZoomPanel from './components/MapZoomPanel'
-
-
-MapboxGL.setAccessToken('pk.eyJ1IjoiZ2VvcmVwIiwiYSI6ImNrejJnbWZ0bjAwZWUybmxzMmprdnNzYjQifQ.gsPLiXXm63qLtjUzefsKmw');
-
+import { LocationInfoDetails } from './LocationInfoDetails';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -52,8 +44,7 @@ export default function LocationScreen(props) {
   const [isRequest, setIsRequest] = useState(false);
   const [isBack, setIsBack] = useState(false);
   const map = useRef(null)
-  const [isClustering, setIsClustering] = useState(true);
-
+  
   useEffect(() => {
     props.screenProps.setOptions({           
       headerTitle:() =>{
@@ -117,16 +108,13 @@ export default function LocationScreen(props) {
     };
   }, [crmStatus]);
 
-  useEffect(() => {    
-    
-    setIsBack(false);
-    
+  useEffect(() => {        
+    setIsBack(false);    
   }, [locationMaps]);
-  useEffect(() => {      
-    console.log("fitler parameter changed in map page");
+  
+  useEffect(() => {    
     dispatch(getLocationsMap());  
   }, [filterParmeterChanged]);  
-
 
   const handleBackButtonClick = () => {
     if (crmStatus) {
@@ -159,27 +147,11 @@ export default function LocationScreen(props) {
     }
   }
   
-  const onRegionChangeComplete = (region: Region) => {
-
-    if(Number(region.longitudeDelta) > 0 && Number(region.longitudeDelta) < 0.03){
-      if(isClustering){
-        //setIsClustering(false);
-      }                  
-    }else{
-      if(isClustering === false){
-        //setIsClustering(true);
-      }                
-    }
-
-  }
-
-
 
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
-        <GrayBackground />
-        
+        <GrayBackground />        
         {
           crmStatus && (showItem == 1 || showItem == 2) && 
           <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
@@ -201,16 +173,16 @@ export default function LocationScreen(props) {
             dispatch(getLocationsMap());
             dispatch({type: SLIDE_STATUS, payload: false});
             }} />}
-          {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo}/>}
+          {showItem == 4 && <LocationInfoDetails navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo}/>}
         </View>}
         
+
         <View style={styles.container}>
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
               onPress={()=> {
                 dispatch({type: SLIDE_STATUS, payload: false});                
-                //dispatch(getLocationSearchList());
                 props.navigation.navigate("LocationSearch");
               }}
             >
@@ -223,137 +195,86 @@ export default function LocationScreen(props) {
             </TouchableOpacity>
 
             <FontAwesomeIcon style={styles.searchIcon} size={16} color={DISABLED_COLOR} icon={ faSearch } />
-            <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-              dispatch(getLocationFilters());         
-              animation("filter");
-            }}>
+              <TouchableOpacity style={styles.filterImageButton} onPress={() => {
+                dispatch(getLocationFilters());         
+                animation("filter");
+              }}>
               <SvgIcon icon="Filter" width="30px" height="30px" />
             </TouchableOpacity>
           </View>
        
  
-          <View style={styles.mapContainer}>
-            <ClusteredMapView
-              clusterColor="red"
-              ref={map}
-              //mapType="hybrid"
-              clusteringEnabled={isClustering}
-              style={styles.mapView}
-              initialRegion={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-                latitudeDelta: 0.015,
-                longitudeDelta: 0.015,
-              }}
-              currentLocation={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-              }}
-              //onRegionChangeComplete={onRegionChangeComplete}
-              >
-              {locationMaps.map((item , key) => (
-                <Marker
-                  key={key}
-                  onPress={() =>{
-                    console.log(item.coordinates.latitude)
-                    console.log(item.coordinates.longitude)
-                    setIsRequest(true);
-                    getLocationInfo( Number(item.location_id))
-                    .then((res) => {
-                      setLocationInfo(res);                                      
-                      animation("locationInfo");
-                      setIsRequest(false);
-                    })
-                    .catch((e) =>{
-                      setIsRequest(false);
-                    })      
-                  }}
-                  coordinate={{
-                    latitude: Number(item.coordinates.latitude),
-                    longitude: Number(item.coordinates.longitude),
-                  }}                
-                >
-                  <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />
-                </Marker>
+            {
+              currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
+              <View style={styles.mapContainer}>
+                    <ClusteredMapView
+                      clusterColor="red"
+                      ref={map}
+                      //mapType="hybrid"
+                      clusteringEnabled={true}
+                      style={styles.mapView}
+                      initialRegion={{
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude,
+                        latitudeDelta: 0.015,
+                        longitudeDelta: 0.015,
+                      }}
+                      currentLocation={{
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude,
+                      }}
+                      
+                      >
+                      {locationMaps.map((item , key) => (
+                        <Marker
+                          key={key}
+                          onPress={() =>{
+                            console.log(item.coordinates.latitude)
+                            console.log(item.coordinates.longitude)
+                            setIsRequest(true);
+                            getLocationInfo( Number(item.location_id))
+                            .then((res) => {
+                              setLocationInfo(res);                                      
+                              animation("locationInfo");
+                              setIsRequest(false);
+                            })
+                            .catch((e) =>{
+                              setIsRequest(false);
+                            })      
+                          }}
+                          coordinate={{
+                            latitude: Number(item.coordinates.latitude),
+                            longitude: Number(item.coordinates.longitude),
+                          }}                
+                        >
+                          <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />
+                        </Marker>
 
-              ))}
-                
-                <MapView.Circle
-                  center = {{
-                    latitude: currentLocation.latitude,
-                    longitude: currentLocation.longitude
-                  }}
-                  radius = { 200 }
-                  strokeWidth = { 1 }
-                  strokeColor = {PRIMARY_COLOR}
-                  fillColor = { 'rgba(230,238,255,0.5)' }
-                />
-                
-            </ClusteredMapView> 
-            {/* <MapZoomPanel
-              onZoomIn={() => {
-                mapZoomIn()
-              }}
-              onZoomOut={() => {
-                mapZoomOut()
-              }}
-            /> */}
-          </View>
-
-                    
-          {/* <MapView
-            moveOnMarkerPress={false}
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            showsUserLocation = {true}
-            followUserLocation = {true}
-            showsMyLocationButton = {true}
-            zoomEnabled = {true}
-            region={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-              latitudeDelta: 0.015,
-              longitudeDelta: 0.0121
-            }}
-            onPress={(e) => console.log(e)}>
-
-            {locationMaps.map((locationMap, key) => (
-              <Marker
-                key={key}
-                coordinate={{
-                  latitude: Number(locationMap.coordinates.latitude),
-                  longitude: Number(locationMap.coordinates.longitude)
-                }}
-                onPress={() => {                  
-                  setIsRequest(true);
-                  getLocationInfo( Number(locationMap.location_id))
-                  .then((res) => {
-                    setLocationInfo(res);                                      
-                    animation("locationInfo");
-                    setIsRequest(false);
-                  })
-                  .catch((e) =>{
-                    setIsRequest(false);
-                  })                
-                }}
-              >
-                <MarkerIcon style={styles.markerIcon} icon={locationMap.pin_image} width="34px" height="34px" />
-              </Marker>
-            ))}
-            
-            <MapView.Circle
-                center = {{
-                  latitude: currentLocation.latitude,
-                  longitude: currentLocation.longitude
-                }}
-                radius = { 200 }
-                strokeWidth = { 1 }
-                strokeColor = {PRIMARY_COLOR}
-                fillColor = { 'rgba(230,238,255,0.5)' }
-              />
-              
-            </MapView> */}
-
+                      ))}
+                        
+                        <MapView.Circle
+                          center = {{
+                            latitude: currentLocation.latitude,
+                            longitude: currentLocation.longitude
+                          }}
+                          radius = { 200 }
+                          strokeWidth = { 1 }
+                          strokeColor = {PRIMARY_COLOR}
+                          fillColor = { 'rgba(230,238,255,0.5)' }
+                        />
+                        
+                    </ClusteredMapView> 
+                    {/* <MapZoomPanel
+                      onZoomIn={() => {
+                        mapZoomIn()
+                      }}
+                      onZoomOut={() => {
+                        mapZoomOut()
+                      }}
+                    /> */}
+              </View>
+            }
+                                        
             <TouchableOpacity
               style={styles.plusButton} 
               onPress={() => {                
@@ -370,6 +291,8 @@ export default function LocationScreen(props) {
               }}>
               <SlidUpArrow />
             </TouchableOpacity>
+
+
         </View>
       </SafeAreaView>
     </Provider>
