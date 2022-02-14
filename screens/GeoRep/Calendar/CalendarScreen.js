@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity , FlatList } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, TouchableOpacity , FlatList } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
@@ -13,10 +13,12 @@ import { useSelector, useDispatch , connect} from 'react-redux';
 import { CalendarItem } from './partial/CalendarItem';
 import DraggableFlatList , {ScaleDecorator , useOnCellActiveAnimation}  from 'react-native-draggable-flatlist'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { LOCATION_LOOP_LISTS } from '../../../actions/actionTypes';
 var selectedIndex = 0;
 
 export default function CalendarScreen(props) {
 
+  const dispatch = useDispatch();
   const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [tabIndex, setTabIndex] = useState(2);
@@ -24,7 +26,7 @@ export default function CalendarScreen(props) {
   const [isOptimize, setIsOptimize] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   
-  useEffect(() => {    
+  useEffect(() => {        
     if (props.screenProps) {
       props.screenProps.setOptions({
         title: "Calendar"
@@ -45,7 +47,6 @@ export default function CalendarScreen(props) {
     return unsubscribe;
   }, [navigation]);
 
-
   const loadList = async(type) => {    
     setIsOptimize( await getCalendarOptimize());
     setIsAdd(await getCalendarAdd());
@@ -54,9 +55,7 @@ export default function CalendarScreen(props) {
     if(base_url != null && token != null){      
       getCalendar(base_url, token, type)
       .then(res => {        
-        setLists(res);        
-        console.log("isOptimize", isOptimize);
-        
+        setLists(res);                    
       })
       .catch(error=>{
         setLists([]);
@@ -64,16 +63,21 @@ export default function CalendarScreen(props) {
     }    
   }
 
-  const updateLists =  async(data) => {    
+  const updateTodayLocationLists =  async(data) => {    
       updateCalendar({schedules:data})
       .then(res => {                          
       })
       .catch(error=>{        
       });        
   }
-
-  const renderCalendarItem = (item, index) => {    
-    return (<View style={{marginTop:10}}><CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} > </CalendarItem></View>)
+    
+  const renderCalendarItem = (item, index , tabIndex) => {    
+    console.log("tabIndex", tabIndex);
+      return (
+      <View style={{marginTop:10}}>
+        <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} onItemSelected={() => {}}>
+        </CalendarItem>
+      </View>)
   }
   
   const renderTodayItem = ({item, drag} )  => {    
@@ -84,10 +88,18 @@ export default function CalendarScreen(props) {
           onLongPress={drag}
           disabled={isActive}
           style={[
-            isActive ? style.rowItem : { marginTop:10},
+            isActive ? {} : { marginTop:10},
             { backgroundColor: isActive ? "#eee" : BG_COLOR },
           ]}>
-          <CalendarItem key={item.schedule_id} navigation={props.navigation} item={item} current={currentLocation} > </CalendarItem>
+
+          <CalendarItem 
+          onItemSelected={() => {            
+            console.log("loop list updated in calendar ");
+            
+            dispatch({type: LOCATION_LOOP_LISTS, payload: lists });            
+          }}
+          key={item.schedule_id} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} > </CalendarItem>
+
         </TouchableOpacity>
       </ScaleDecorator>
     );
@@ -137,7 +149,7 @@ export default function CalendarScreen(props) {
             <FlatList
               data={lists}
               renderItem={
-                  ({ item , index }) => renderCalendarItem(item, index)
+                  ({ item , index }) => renderCalendarItem(item, index, tabIndex)
               }
               keyExtractor={(item, index) => index.toString()}
               contentContainerStyle={{ paddingHorizontal: 7, marginTop: 15 }}
@@ -156,8 +168,8 @@ export default function CalendarScreen(props) {
                     newlists.push(item);
                     tmp.push({schedule_order:(index + 1).toString() , location_id: item.location_id, schedule_id: item.schedule_id, schedule_date: item.schedule_date, schedule_time: item.schedule_time });
                   });
-                  setLists(newlists);                  
-                  updateLists(tmp);
+                  setLists(newlists);             
+                  updateTodayLocationLists(tmp);
                 }}   
                 keyExtractor={(item) => item.schedule_id}
                 renderItem={renderTodayItem}                
@@ -238,14 +250,7 @@ const styles = StyleSheet.create({
   startButtonIcon: {
     position: 'absolute',
     right: 10
-  },
-
-  itemButtonActive: {
-    backgroundColor: PRIMARY_COLOR
   },    
-  rowItem: {    
-  },
-
   plusButtonContainer: {
     position: 'absolute',
     flexDirection:"row",

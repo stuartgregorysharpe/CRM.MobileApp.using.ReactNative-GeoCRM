@@ -238,6 +238,7 @@ export default function AddLead({screenProps , onClose}) {
                     {
                       key == 1 && 
                       <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={ async() =>{
+                        
                         var masterFields = await reverseGeocoding( currentLocation, customMasterFields);                       
                         if(masterFields.length > 0){
                           setCustomMasterFields(masterFields);

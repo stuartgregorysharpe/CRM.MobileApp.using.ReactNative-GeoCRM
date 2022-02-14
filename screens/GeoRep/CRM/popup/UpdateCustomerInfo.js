@@ -306,7 +306,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                           </View>
                         </TouchableOpacity>                    
                       </View>                  
-                    );  
+                    ); 
                   }              
                 })
               }
@@ -328,8 +328,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
 const styles = EStyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
+    height:'100%',
     zIndex: 100,
-    padding:10,    
+    padding:10, 
     // elevation: 1
   },
   header: {

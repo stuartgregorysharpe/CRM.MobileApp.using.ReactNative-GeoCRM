@@ -11,9 +11,15 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
         var tmp = [ ...customMasterFields ];
         tmp.forEach((element) => {
           address_components.forEach((item) =>{
+                        
+            
             if(item.types.includes("street_number") && element.field_name == "Street Address" || item.types.includes("route")  && element.field_name == "Street Address" ){
-              element.value = item.long_name;
-            }
+              if(item.types.includes("street_number")){
+                element.value = '';
+              }
+              element.value += element.value === '' ? item.long_name : " " + item.long_name ;
+            }  
+
             if( (item.types.includes("neighborhood") || item.types.includes("sublocality_level_1") ||  item.types.includes("sublocality") ) && element.field_name == "Suburb"  ){
               element.value = item.long_name;
             }
@@ -26,7 +32,7 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
             if( (item.types.includes("country") && item.types.includes("political") ) && element.field_name == "Country" ){
               element.value = item.long_name;
             }
-            if( item.types.includes("postal_code") && element.field_name == "Pincode"  ){
+            if( item.types.includes("postal_code") && ( element.field_name == "Pincode" || element.field_name == "Zip Code" )  ){
               element.value = item.long_name;
             }
           })          

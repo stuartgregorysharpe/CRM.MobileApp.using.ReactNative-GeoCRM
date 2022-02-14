@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
@@ -10,8 +10,7 @@ import { getOpenReplaceCheckin } from '../../../../constants/Storage';
 import { useDispatch } from 'react-redux';
 import { LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
 
-
-export function CalendarItem({ navigation, item , current}) {
+export function CalendarItem({ navigation, item , current , tabIndex , onItemSelected}) {
 
     const dispatch = useDispatch();
     const getButtonColor = (checkin_state) =>{
@@ -27,7 +26,7 @@ export function CalendarItem({ navigation, item , current}) {
             }
         }
     }
-
+    
     const getButtonText = (checkin_state) =>{
         if(getOpenReplaceCheckin()){
             return "Open";
@@ -56,9 +55,10 @@ export function CalendarItem({ navigation, item , current}) {
           <View style={styles.itemRight}>
             <Text style={[styles.itemTitle, {textAlign: 'center'}]}> {item.schedule_time}</Text>
             <TouchableOpacity style={[styles.itemButton, {backgroundColor:getButtonColor(item.checkin_state)}]} onPress={() =>{
-                if(getOpenReplaceCheckin()){                
-                    dispatch({type: LOCATION_ID_CHANGED, payload: item.location_id})
+                if(getOpenReplaceCheckin()){
+                    dispatch({type: LOCATION_ID_CHANGED, payload: {value:item.location_id , type:tabIndex } })                    
                     navigation.navigate('CRM', {'screen': 'LocationSearch',  params : {'location_id': item.location_id}});  
+                    onItemSelected();
                 }
             }}>
               <Text style={styles.itemButtonText}> {getButtonText(item.checkin_state)} </Text>

@@ -66,8 +66,12 @@ export const getOpenReplaceCheckin = async () => {
   try{
     var token = await getToken();  
     var data = token != null ? jwt_decode(token) : null;
-    var features =  data.user_scopes.geo_rep.features;    
-    return features.includes("open_replace_checkin") ;    
+    var features =  data.user_scopes.geo_rep.features;
+    if(features !== undefined){
+      return features.includes("open_replace_checkin") ;    
+    }else{
+      return false;
+    }
   }catch(e) {
     console.log(e);
     return false;
@@ -78,8 +82,12 @@ export const getCalendarAdd = async () => {
   try{
     var token = await getToken();  
     var data = token != null ? jwt_decode(token) : null;
-    var features =  data.user_scopes.geo_rep.features;    
-    return features.includes("calendar_add") ;    
+    var features =  data.user_scopes.geo_rep.features; 
+    if( features !== undefined){
+      return features.includes("calendar_add") ;    
+    }else{
+      return false;
+    }    
   }catch(e) {
     console.log(e);
     return false;
@@ -92,13 +100,16 @@ export const getCalendarOptimize = async () => {
     var data = token != null ? jwt_decode(token) : null;
     var features =  data.user_scopes.geo_rep.features;    
     console.log("my features", features);
-    var res =  features.includes("calendar_optimize") ;        
-    return res;
-  
+    if(features !== undefined){
+      var res =  features.includes("calendar_optimize") ;        
+      return res;
+    }else{
+      return false;
+    }      
   }catch(e) {
     console.log(e);
     return false;
-  }  
+  }
 }
 
 
@@ -137,5 +148,49 @@ export const getFilterData = async () => {
     return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialParam;
   } catch(e) {
     // error reading value
+  }
+}
+
+
+export const storeCurrentDate = async (value) => {
+  try {
+    await AsyncStorage.setItem('@current_date', String(value))
+  } catch (e) {
+    // saving error
+  }
+}
+
+export const getCurrentDate = async () => {
+  try {
+    const value = await AsyncStorage.getItem('@current_date')
+    if(value !== null) {
+        return value;        
+    }
+  } catch(e) {
+      return null;      
+  }
+}
+
+export const storeLocationLoop = async(value) => {
+  try {
+
+    var date = new Date().getDate();
+    var month = new Date().getMonth();
+    await storeCurrentDate(month.toString() + date.toString());
+
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem('@location_loop', jsonValue)
+  } catch (e) {      
+    console.log("error", e);
+  }
+}
+
+export const getLocationLoop = async() => {
+  try{
+    let initialVal = [];
+    const jsonValue = await AsyncStorage.getItem('@location_loop')
+    return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialVal;
+  }catch(e){
+
   }
 }

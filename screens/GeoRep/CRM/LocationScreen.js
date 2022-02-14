@@ -11,10 +11,10 @@ import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
 import SvgIcon from '../../../components/SvgIcon';
 import GrayBackground from '../../../components/GrayBackground';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationPinKey, getLocationFilters, getLocationSearchList, getLocationInfo, getLocationsMap } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -23,6 +23,8 @@ import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
 import MapZoomPanel from './components/MapZoomPanel'
 import { LocationInfoDetails } from './LocationInfoDetails';
+import { getDistance } from '../../../constants/Consts';
+import LoadingView from '../../../components/LoadingView/LoadingView';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -44,7 +46,9 @@ export default function LocationScreen(props) {
   const [isRequest, setIsRequest] = useState(false);
   const [isBack, setIsBack] = useState(false);
   const map = useRef(null)
-  
+  const [pageType, setPageType ] = useState({name:"search-lists"});
+  const [isLoading , setIsLoading] = useState(false);
+
   useEffect(() => {
     props.screenProps.setOptions({           
       headerTitle:() =>{
@@ -88,7 +92,7 @@ export default function LocationScreen(props) {
         position: 'absolute',
         height: 50,      
         paddingBottom: Platform.OS == "android" ? 5 : 0,          
-        backgroundColor: "#fff",
+        backgroundColor: Colors.whiteColor,
       },
     });
 
@@ -98,7 +102,8 @@ export default function LocationScreen(props) {
           display: 'none',
         },
       });
-    }    
+    }
+
   });
 
   useEffect(() => {
@@ -108,8 +113,27 @@ export default function LocationScreen(props) {
     };
   }, [crmStatus]);
 
-  useEffect(() => {        
+  useEffect(() => {      
+
     setIsBack(false);    
+    if(locationMaps.length > 0){
+      let items = [];    
+      locationMaps.map((list, key) => {        
+        let item = {
+          name: list.location_name.value !== "" ? list.location_name.value : "Location",
+          address: '',
+          distance: getDistance(list.coordinates, currentLocation).toFixed(2),
+          status: '',
+          location_id: list.location_id,
+          status_text_color:list.pin_image
+        }
+        items.push(item);        
+      });
+      items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
+      console.log("loopList updated in map page");
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+      //console.log("location map" , locationMaps);
+    }      
   }, [locationMaps]);
   
   useEffect(() => {    
@@ -151,6 +175,9 @@ export default function LocationScreen(props) {
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
+
+        <LoadingView visible={isRequest}></LoadingView>
+
         <GrayBackground />        
         {
           crmStatus && (showItem == 1 || showItem == 2) && 
@@ -173,11 +200,11 @@ export default function LocationScreen(props) {
             dispatch(getLocationsMap());
             dispatch({type: SLIDE_STATUS, payload: false});
             }} />}
-          {showItem == 4 && <LocationInfoDetails navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo}/>}
+          {showItem == 4 && <LocationInfoDetails navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
         </View>}
         
-
         <View style={styles.container}>
+
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
@@ -203,6 +230,10 @@ export default function LocationScreen(props) {
             </TouchableOpacity>
           </View>
        
+
+
+          
+
  
             {
               currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
@@ -218,7 +249,7 @@ export default function LocationScreen(props) {
                         longitude: currentLocation.longitude,
                         latitudeDelta: 0.015,
                         longitudeDelta: 0.015,
-                      }}
+                      }}                      
                       currentLocation={{
                         latitude: currentLocation.latitude,
                         longitude: currentLocation.longitude,
@@ -228,12 +259,10 @@ export default function LocationScreen(props) {
                       {locationMaps.map((item , key) => (
                         <Marker
                           key={key}
-                          onPress={() =>{
-                            console.log(item.coordinates.latitude)
-                            console.log(item.coordinates.longitude)
+                          onPress={() =>{                            
                             setIsRequest(true);
                             getLocationInfo( Number(item.location_id))
-                            .then((res) => {
+                            .then((res) => {                              
                               setLocationInfo(res);                                      
                               animation("locationInfo");
                               setIsRequest(false);
@@ -264,6 +293,7 @@ export default function LocationScreen(props) {
                         />
                         
                     </ClusteredMapView> 
+                    
                     {/* <MapZoomPanel
                       onZoomIn={() => {
                         mapZoomIn()
@@ -329,7 +359,7 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.whiteColor,
     borderRadius: 6,
     paddingLeft: 8,
     paddingRight: 8,
@@ -368,7 +398,7 @@ const styles = EStyleSheet.create(parse({
     paddingRight: 50,
     color: '#5d5d5d',
     fontSize: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.whiteColor,
     borderRadius: 7,
     fontFamily: Fonts.secondaryMedium,
     height: 45,
@@ -385,7 +415,7 @@ const styles = EStyleSheet.create(parse({
   },  
   mapContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.whiteColor,
     alignItems: 'center',
     justifyContent: 'center',
   },

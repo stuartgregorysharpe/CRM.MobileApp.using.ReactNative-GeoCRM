@@ -16,7 +16,7 @@ import { CHANGE_LOGIN_STATUS ,
   MAP_FILTERS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { getFilterData, getToken, getUserData } from '../constants/Storage';
+import { getCurrentDate, getFilterData, getToken, getUserData, storeCurrentDate, storeLocationLoop } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 
 export default function SignIn() {
@@ -29,20 +29,26 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
-
   const emailRef = useRef();
   const passwordInput = useRef();
 
-  useEffect(() => {
-    
-    initView();
-    
+  useEffect(() => {  
+    initView();    
     if (loginStatus == "failed") {
       setPasswordError(true);
     }
+
   }, [loginStatus])
 
   const initView = async () =>{    
+
+    var date = new Date().getDate();
+    var month = new Date().getMonth();
+    var current = await getCurrentDate();    
+    if(current !== month.toString() + date.toString()){
+      await storeLocationLoop([]);
+    }
+
     var token = await getToken();
     var filters = await getFilterData();
     if(token != null){

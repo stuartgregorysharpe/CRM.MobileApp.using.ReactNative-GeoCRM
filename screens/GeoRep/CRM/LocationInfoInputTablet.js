@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useState, useRef, useEffect, forwardRef,useImperativeHandle } from 'react';
 import { Text, View, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -37,6 +37,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);    
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess , setIsSuccess] = useState(false);
+  const [message, setMessage] = useState("");
   var isBelowStage = false;
 
   useImperativeHandle(
@@ -44,6 +45,12 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
     () => ({
       postDispositionData() {
         handleSubmit();
+      },
+      updateDispositionData(locInfo){        
+        var outcomes = locInfo.outcomes ? locInfo.outcomes.find(xx =>  xx.outcome_id != null && locInfo.current_outcome_id && xx.outcome_id == locInfo.current_outcome_id ) : false;  
+        setSelectedOutComeId(outcomes ? outcomes.outcome_id : 0);
+        setSelectedStageId(locInfo.stages ? locInfo.stages.find(x => x.stage_id == locInfo.current_stage_id).stage_id : 0)              
+        setLocationInfo(locInfo)
       }
     }),
     [dispositionValue],
@@ -100,20 +107,29 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
   }
 
   const handleSubmit = () => {
+
     let postData = {
-      "location_id": locationInfo.location_id,
-      "campaign_id": 1,
-      "disposition_fields": []
-    }
-    locationInfo.disposition_fields.forEach((item, key) => {
-      console.log(item, key)
-      postData.disposition_fields.push({
-        "disposition_field_id": item.disposition_field_id,
-        "value": dispositionValue[key] !== undefined ? dispositionValue[key] :  ''
+        "location_id": locationInfo.location_id,
+        "campaign_id": 1,
+        "disposition_fields": []
+      }
+  
+      locationInfo.disposition_fields.forEach((item, key) => {    
+        postData.disposition_fields.push({
+          "disposition_field_id": item.disposition_field_id,
+          "value": dispositionValue[key] !== undefined ? dispositionValue[key] :  ''
+        })
+      });    
+  
+      postDispositionFields(postData, uuid.v4())
+      .then((res) =>{
+        setMessage(res);
+        setIsSuccess(true);      
       })
-    });    
-    dispatch(postDispositionFields(postData, uuid.v4()));
-    dispatch({type: CHANGE_DISPOSITION_INFO, payload: false});
+      .catch((error) => {
+        setMessage(error);
+        setIsSuccess(true);
+      })            
   }
 
   const handleChangeText = (text, field, key) => {
@@ -315,14 +331,13 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
                 </View>  
 
                 <View style={{justifyContent:'center'}}>
-                  <TouchableOpacity onPress={showLoopSlider}>
+                  <TouchableOpacity onPress={props.showLoopSlider}>
                     <Image style={styles.refreshImage} source={Images.loopButton} />
                   </TouchableOpacity>
                 </View>                                      
             </View> 
 
-
-            <Text style={styles.boldText}>Campaign: Quill Test</Text>
+            {/* <Text style={styles.boldText}>Campaign: Quill Test</Text> */}
             {
               locationInfo.disposition_fields &&
               <View style={styles.inputBox}>
@@ -337,6 +352,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
                     >
                       <View>
                         <TextInput
+                          key={key}
                           type={field.field_type}
                           ref={(element) => { dispositionRef.current[key] = element }}                          
                           keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
@@ -373,8 +389,13 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
         mode={datePickerMode}
         onConfirm={handleConfirm}
         onCancel={() => setDateTimePickerVisibility(false)}
-      />
+      />       
       
+      {
+        locationInfo.outcomes &&
+        outComesModal()
+      }
+
       {outComesModal()}
       {confirmModal()}
 

@@ -10,6 +10,7 @@ import {
   CHANGE_LOCATION_SEARCH_LISTS,
   STATUS_DISPOSITION_FIELDS_UPDATE,
   LOCATION_ID_CHANGED,
+  LOCATION_LOOP_LISTS
   
 } from "../actions/actionTypes";
 
@@ -29,11 +30,17 @@ const initialState = {
   statusStageOutcomeUpdate:'init',
   statusLocationInfoUpdate: 'init',
   locationId:0,
+  loopLists:[]
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOCATION_LOOP_LISTS:
+      return {
+        ...state,
+        loopLists: action.payload
+      }
     case LOCATION_ID_CHANGED:
       return {
         ...state,

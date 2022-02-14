@@ -14,8 +14,7 @@ import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
 import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS, LOCATION_ID_CHANGED } from '../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
-import Images from '../../../constants/Images';
-import LocationInfoInputTablet from './LocationInfoInputTablet';
+import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
@@ -23,7 +22,7 @@ import { postLocationImage } from '../../../actions/location.action';
 import uuid from 'react-native-uuid';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import UpdateCustomerInfo from './popup/UpdateCustomerInfo';
-
+import { NextPrev } from './partial/NextPrev';
 
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
@@ -34,14 +33,12 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState("refresh");   
   const [keyboardStatus, setKeyboardStatus] = useState(false);  
-  const locationInfoRef = useRef();
-  const [issueImage, setIssueImage] = useState('');
+  const locationInfoRef = useRef();  
   const [filePath, setFilePath] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height))
-
-  console.log("locationInfo",locationInfo)
+  
   useImperativeHandle(
     ref,
     () => ({
@@ -49,13 +46,13 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         if(showItem !== "update_customer"){          
           props.clostDetailsPopup();
           dispatch({type: SLIDE_STATUS, payload: false});
-          dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+          dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
         }else{        
           setShowItem("refresh");
         }        
       },
       goBack(){
-        console.log("props", props);
+        
         if(showItem !== "update_customer"){   
           props.goPreviousPage();
         }else{          
@@ -66,8 +63,6 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     [showItem],
   );
 
-
-
   useEffect(() => { 
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -75,27 +70,27 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     });
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
       setKeyboardStatus(false);
-    });
+    });  
     return () => {
       showSubscription.remove();
       hideSubscription.remove();
-    };
+    };    
   }, []);
 
   const showLoopSlider = () => {
     setShowItem("loop");
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
+
   const launchImageLibrary = (index) => {
+
     let options = {
       storageOptions: {
         skipBackup: true,
         path: 'images',
       },
     };
-    ImagePicker.launchImageLibrary (options, (response)  => {
-      console.log('Response = ', response);
-
+    ImagePicker.launchImageLibrary (options, (response)  => {      
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -103,18 +98,16 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);        
       } else {                                                  
-        if(response.assets != null && response.assets.length > 0){
-            console.log("path", response.assets[0].uri);
+        if(response.assets != null && response.assets.length > 0){            
             setFilePath(response.assets[0].uri);
-            convertBase64(response.assets[0].uri);
+            updateLocationImage(response.assets[0].uri);
         }
       }
     });
   }
 
-  const convertBase64 = async (path) => {
+  const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
-    setIssueImage(data);
     let postData = {
       location_id: locationInfo.location_id,
       location_image: data,
@@ -158,8 +151,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       {
         showItem === "update_customer" &&
         <UpdateCustomerInfo location_id={locationInfo.location_id} onClose={() => {setShowItem("refresh")}} />      
-      }
-      
+      }      
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         if (statusDispositionInfo) {
@@ -224,12 +216,26 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 }
                 {
                   filePath === '' &&
-                  <SvgIcon style={styles.fontIcon} icon="Add_Image" width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '30px': '80px'} />
+                  <SvgIcon style={styles.fontIcon} icon="Add_Image" width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '130px': '80px'} />
                 }                
               </TouchableOpacity>              
             }
           </View>
-        </View>    
+        </View> 
+
+        {
+          !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
+          <NextPrev 
+            onUpdated={(res) =>{
+              setFilePath('');
+              setLocationInfo(res);
+              if(locationInfoRef.current !== undefined){
+                locationInfoRef.current.updateDispositionData(res);                
+              }                
+            }}
+            pageType={props.pageType} locationId={locationInfo.location_id} > </NextPrev>
+        }
+        
 
         <View style={{padding:10, marginBottom:50}}>
         {        
@@ -277,10 +283,9 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 });
 
 const styles = StyleSheet.create({
-
   
   container: {      
-    backgroundColor: BG_COLOR,          
+    backgroundColor: BG_COLOR,              
   },
   innerContainer: {
     backgroundColor: BG_COLOR,
@@ -297,19 +302,18 @@ const styles = StyleSheet.create({
 
   subtitleBox: {
     flexDirection: 'row',
-    alignItems: 'center',
-    // marginBottom: 4,
+    alignItems: 'center',    
   },
   subtitle: {
     color: PRIMARY_COLOR,
     fontSize: 12,
     textAlign: 'left',
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
   },
   dateText: {
     color: '#0AD10A',
     fontSize: 12,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
   },
   title: {
     fontSize: 14,
@@ -362,12 +366,12 @@ const styles = StyleSheet.create({
   nextButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold'
+    fontFamily: Fonts.secondaryBold
   },
   checkInButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Gilroy-Bold'
+    fontFamily: Fonts.secondaryBold
   },
   fontIcon: {
     marginRight: 4

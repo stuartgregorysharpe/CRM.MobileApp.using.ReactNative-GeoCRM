@@ -7,9 +7,9 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Skeleton from '../../../components/Skeleton';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  LOCATION_ID_CHANGED, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo, getLocationSearchList } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -20,6 +20,7 @@ import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
 import { LocationInfoDetails } from './LocationInfoDetails';
+import { storeLocationLoop } from '../../../constants/Storage';
 
 var isCalled = false;
 
@@ -35,14 +36,16 @@ export default function LocationSearchScreen(props) {
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
-  const [searchKeyword, setSearchKeyword] = useState();
-  const locationId = useSelector(state => state.location.locationId);
+  const [searchKeyword, setSearchKeyword] = useState();  
+  const locationId = useSelector(state => state.location.locationId.value);
+  const tabType =   useSelector(state => state.location.locationId.type);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSelected, setIsSelected] = useState(false);    
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState("");
   const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
   const locationRef = useRef();
+  const [pageType, setPageType ] = useState({name:"search-lists"});
 
   useEffect(() => {
 
@@ -78,10 +81,11 @@ export default function LocationSearchScreen(props) {
             if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){
               console.log(locationRef);
               locationRef.current.closePopup();
+              setPageType({name:'search-lists'});
             }else{
               setShowItem(0);
               dispatch({type: SLIDE_STATUS, payload: false});
-              dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+              dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}});              
             }
           }}
         >
@@ -90,11 +94,13 @@ export default function LocationSearchScreen(props) {
     });    
   });
 
-  useEffect(() => {    
-    if(locationId != 0 && isRequest == false){      
+  useEffect(() => {            
+    if(locationId !== 0 && isRequest == false && tabType !== undefined){  
+      console.log("open locaiton info from calendar page");
+      setPageType({"name":"camera", "type":tabType});      
       openLocationInfo(locationId)
     }
-  }, [locationId]);
+  }, [locationId, tabType]);
 
   useEffect(() => {
     if(calendarType == "optimize" || calendarType == "add") {
@@ -102,14 +108,15 @@ export default function LocationSearchScreen(props) {
     }
   },[calendarType]);
 
-  useEffect(() => {      
-    console.log("fitler parameter changed in search page");
+  useEffect(() => {          
     dispatch(getLocationSearchList());  
   }, [filterParmeterChanged]);  
 
   useEffect(() => {  
     if(locationSearchLists.length !== 0 ){
+      console.log("searhcalled");      
       getSearchData("");
+      
     }else if(!isCalled){
       isCalled = true;
       dispatch(getLocationSearchList());
@@ -120,11 +127,11 @@ export default function LocationSearchScreen(props) {
     if(navigation.canGoBack()){                            
       navigation.goBack();
       dispatch({type: SLIDE_STATUS, payload: false});
-      dispatch({type: LOCATION_ID_CHANGED, payload: 0})
+      dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
     }
   }
 
-  const getSearchData = (searchKey) => {
+  const getSearchData = async(searchKey) => { 
     let items = [];    
     locationSearchLists.map((list, key) => {    
       let item = {
@@ -145,6 +152,11 @@ export default function LocationSearchScreen(props) {
     });
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
     setOrderLists(items);    
+    if(locationId === 0 || locationId  === undefined){
+      console.log("loop list updated in location search");
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+    }
+
   }
 
   const animation = (name) => {
@@ -164,7 +176,7 @@ export default function LocationSearchScreen(props) {
         return;
     }    
   }
-
+  
   const openLocationInfo = async(location_id) => {    
     setIsRequest(true)
     getLocationInfo( Number(location_id))
@@ -236,7 +248,7 @@ export default function LocationSearchScreen(props) {
               
               dispatch({type: SUB_SLIDE_STATUS, payload: false})
               dispatch({type: SLIDE_STATUS, payload: false});
-              setShowItem(0);     
+              setShowItem(0); 
 
             }}
           ></TouchableOpacity>}
@@ -254,12 +266,14 @@ export default function LocationSearchScreen(props) {
             <View
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
 
-              <LocationInfoDetails ref={locationRef} 
-              goPreviousPage={goPreviousPage}
-              clostDetailsPopup={() =>{                
-                setShowItem(0);
-              }} locInfo={locationInfo} ></LocationInfoDetails>  
-            
+              <LocationInfoDetails
+                  ref={locationRef}
+                  goPreviousPage={goPreviousPage}
+                  pageType={pageType}
+                  clostDetailsPopup={() =>{                
+                    setShowItem(0);
+                  }} locInfo={locationInfo} ></LocationInfoDetails>
+
             </View>
           }
 
@@ -401,7 +415,7 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: PRIMARY_COLOR
   },  
   buttonText:{
-    color: "#FFF",
+    color: Colors.whiteColor,
     fontSize: 12,
     fontFamily: Fonts.secondaryBold,
   },

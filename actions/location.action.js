@@ -203,7 +203,7 @@ export const getLeadFields = async() => {
 export const getLocationInfoUpdate = async(location_id) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-  console.log("locationid", location_id);
+
   return new Promise(function(resolve, reject) {
       axios
       .get(`${base_url}/locations/location_info_update_fields`, {

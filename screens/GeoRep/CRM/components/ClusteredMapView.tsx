@@ -6,11 +6,12 @@
   Some parts of this code may have already been changed.
 */
 
-import React, { forwardRef, memo, useEffect, useMemo, useRef, useState } from 'react'
-import { Dimensions, LayoutAnimation, Platform } from 'react-native'
-import MapView, { MapViewProps, Polyline , PROVIDER_GOOGLE} from 'react-native-maps'
+import React, { forwardRef, memo, useEffect, useMemo, useRef, useState ,useImperativeHandle } from 'react'
+import { Dimensions, LayoutAnimation, Platform , View ,StyleSheet , TouchableOpacity} from 'react-native'
+import MapView, { MapViewProps, Polyline , Callout, PROVIDER_GOOGLE} from 'react-native-maps'
 import SuperCluster from 'supercluster'
-import { PRIMARY_COLOR } from '../../../../constants/Colors'
+import SvgIcon from '../../../../components/SvgIcon'
+import Colors, { PRIMARY_COLOR } from '../../../../constants/Colors'
 
 import { MapClusteringProps } from './ClusteredMapViewTypes'
 import ClusterMarker from './ClusteredMarker'
@@ -62,6 +63,8 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     const [clusterChildren, updateClusterChildren] = useState(null)
     const mapRef = useRef()
     const propsChildren = useMemo(() => React.Children.toArray(children), [children])    
+
+
     useEffect(() => {
       const rawData = []
       const otherChildren = []
@@ -87,7 +90,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         maxZoom,
         minZoom,
         minPoints,
-        extent,
+        extent, 
         nodeSize,
       })
 
@@ -173,77 +176,107 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       onClusterPress(cluster, children)
     }
 
-    return (
-      <MapView
-        {...restProps}
-        ref={(map) => {
-          mapRef.current = map
-          if (ref) {
-            ref.current = map
-          }
-          restProps.mapRef(map)
-        }}
-        initialRegion={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0121
-        }}
-        moveOnMarkerPress={false}
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation = {true}
-        followUserLocation = {true}
-        showsMyLocationButton = {true}
-        zoomEnabled={true}
-        onRegionChangeComplete={_onRegionChangeComplete}>
-        {markers.map((marker) =>
-          marker.properties.point_count === 0 ? (
-            propsChildren[marker.properties.index]
-          ) : !isSpiderfier ? (
-            renderCluster ? (
-              renderCluster({
-                onPress: _onClusterPress(marker),
-                clusterColor,
-                clusterTextColor,
-                clusterFontFamily,
-                ...marker,
-              })
-            ) : (
-              <ClusterMarker
-                key={`cluster-${marker.id}`}
-                {...marker}
-                onPress={_onClusterPress(marker)}
-                clusterColor={
-                  restProps.selectedClusterId === marker.id
-                    ? restProps.selectedClusterColor
-                    : clusterColor
-                }
-                clusterTextColor={clusterTextColor}
-                clusterFontFamily={clusterFontFamily}
-                tracksViewChanges={tracksViewChanges}
-              />
-            )
-          ) : null,
-        )}
-        {otherChildren}
-        {spiderMarkers.map((marker) => {
-          return propsChildren[marker.index]
-            ? React.cloneElement(propsChildren[marker.index], {
-                coordinate: { ...marker },
-              })
-            : null
-        })}
-        {spiderMarkers.map((marker, index) => (
-          <Polyline
-            key={index}
-            coordinates={[marker.centerPoint, marker, marker.centerPoint]}
-            strokeColor={spiderLineColor}
-            strokeWidth={1}
-          />
-        ))}
+    const goToCurrentLocation = () => {
     
+      mapRef.current.animateToRegion({
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.0121
+      });
 
-      </MapView>
+    }
+    return (
+        <View style={{ flex: 1, width: '100%', height: '100%'}}>
+
+          <MapView          
+          {...restProps}
+          ref={(map) => {
+            mapRef.current = map
+            if (ref) {
+              ref.current = map
+            }
+            restProps.mapRef(map)
+          }}
+          initialRegion={{
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.0121
+          }}
+          moveOnMarkerPress={false}
+          provider={PROVIDER_GOOGLE}
+          //showsUserLocation = {true}
+          followUserLocation = {true}
+          showsMyLocationButton = {Platform.OS === "android" ? false: false}           
+          zoomEnabled={true}
+          // mapPadding={{top:0,right:0, bottom:Platform.OS === 'android' ? 0 : Dimensions.get("screen").height * 0.58 , left:0}}
+          onRegionChangeComplete={_onRegionChangeComplete}>
+          {markers.map((marker) =>
+            marker.properties.point_count === 0 ? (
+              propsChildren[marker.properties.index]
+            ) : !isSpiderfier ? (
+              renderCluster ? (
+                renderCluster({
+                  onPress: _onClusterPress(marker),
+                  clusterColor,
+                  clusterTextColor,
+                  clusterFontFamily,
+                  ...marker,
+                })
+              ) : (
+                <ClusterMarker
+                  key={`cluster-${marker.id}`}
+                  {...marker}
+                  onPress={_onClusterPress(marker)}
+                  clusterColor={
+                    restProps.selectedClusterId === marker.id
+                      ? restProps.selectedClusterColor
+                      : clusterColor
+                  }
+                  clusterTextColor={clusterTextColor}
+                  clusterFontFamily={clusterFontFamily}
+                  tracksViewChanges={tracksViewChanges}
+                />
+              )
+            ) : null,
+          )}
+          {otherChildren}
+          {spiderMarkers.map((marker) => {
+            return propsChildren[marker.index]
+              ? React.cloneElement(propsChildren[marker.index], {
+                  coordinate: { ...marker },
+                })
+              : null
+          })}
+          {spiderMarkers.map((marker, index) => (
+            <Polyline
+              key={index}
+              coordinates={[marker.centerPoint, marker, marker.centerPoint]}
+              strokeColor={spiderLineColor}
+              strokeWidth={1}
+            />
+          ))}
+    
+          </MapView>
+          
+          {/* <TouchableOpacity style={styles.myLocation}>  */}
+            <View style={styles.myLocation}>                
+                <TouchableOpacity onPress={() => {
+                  console.log("current")
+                  goToCurrentLocation();
+                }}>
+                
+                  <SvgIcon icon="GPS_LOCATION" width='30px' height='30px' />
+                  
+                </TouchableOpacity>                
+            </View>
+          {/* </TouchableOpacity>  */}
+          
+        
+      </View>
+
+      
     )
   },
 )
@@ -277,4 +310,29 @@ ClusteredMapView.defaultProps = {
   mapRef: () => {},
 }
 
+const styles = StyleSheet.create({
+  bound:{
+    flex: 1,
+    alignSelf: "flex-end",
+    justifyContent: "space-between",
+    backgroundColor: "transparent",
+    borderWidth: 0.5,
+    ios: { padding: 5 },
+    borderRadius: 20
+  },
+  myLocation:{
+    position:'absolute', top:20, right:20, width:55,height:55 , backgroundColor:Colors.whiteColor , alignItems:'center', 
+    borderRadius:30,                        
+    shadowColor:'#000',
+    shadowOffset:{
+      width: 0, 
+      height: 3
+    },
+    shadowOpacity:0.27,
+    shadowRadius:4.65,
+    elevation:6,
+    zIndex:20000,
+    justifyContent:'center' 
+  }
+});
 export default memo(ClusteredMapView)

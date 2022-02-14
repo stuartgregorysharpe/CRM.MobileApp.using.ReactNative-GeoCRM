@@ -30,9 +30,9 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const [dateTimeKey, setDateTimeKey] = useState(null);  
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
-  var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
+  var outcomes = locationInfo.outcomes ? locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id ) : false;  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
-  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
+  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages ? locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id : 0);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);  
   const [isLoading ,setIsLoading] = useState(false);
   const [isSuccess , setIsSuccess] = useState(false);
@@ -43,6 +43,12 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
     () => ({
       postDispositionData() {
         handleSubmit();
+      },
+      updateDispositionData(locInfo){        
+        var outcomes = locInfo.outcomes ? locInfo.outcomes.find(xx =>  xx.outcome_id != null && locInfo.current_outcome_id && xx.outcome_id == locInfo.current_outcome_id ) : false;  
+        setSelectedOutComeId(outcomes ? outcomes.outcome_id : 0);
+        setSelectedStageId(locInfo.stages ? locInfo.stages.find(x => x.stage_id == locInfo.current_stage_id).stage_id : 0)              
+        setLocationInfo(locInfo)
       }
     }),
     [dispositionValue],
@@ -59,8 +65,11 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
     locationInfo.disposition_fields.forEach(element => {
       items.push(element.value)
     });
-    setDispositionValue(items);    
-    setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
+    setDispositionValue(items);
+    if(locationInfo.outcomes){
+      setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
+    }
+    
   }, [locationInfo])
   
   useEffect(() => {
@@ -114,6 +123,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
       setMessage(error);
       setIsSuccess(true);
     })        
+    
   }
 
   const handleChangeText = (text, field, key) => {    
@@ -216,13 +226,15 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const stagesModal = () => {
     return (
       <CustomPicker visible={stageModalVisible} onModalClose={() => setStageModalVisible(!stageModalVisible)} renderItems={
-        locationInfo.stages.map((stage, key) => (
-
+        
+        locationInfo.stages && locationInfo.stages.map((stage, key) => (
           <View style={styles.pickerItem} key={key}>
             <TouchableOpacity onPress={() => {
               setSelectedStageId(stage.stage_id);
               setSelectedOutComeId(null);
-              setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));
+              if(locationInfo.outcomes){
+                setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));
+              }              
               setStageModalVisible(!stageModalVisible);
             }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={styles.pickerItemText}>{stage.stage_name}</Text>
@@ -267,7 +279,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
           <View>
             <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
               <Text style={styles.buttonText}>
-                {locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name}
+                { locationInfo.stages ? locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name : ''}
               </Text>
             </View>
           </View>
@@ -282,9 +294,13 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
           <Text style={styles.shadowBoxText}>Outcome</Text>
           <View style={{flexShrink: 1 , marginLeft:10, marginRight:10 }}>            
             <View style={styles.button}>
-              <Text style={styles.buttonText} numberOfLines={5}>
-                {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
-              </Text>
+              {
+                locationInfo.outcomes && 
+                <Text style={styles.buttonText} numberOfLines={5}>
+                  {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
+                </Text>
+              }
+              
             </View>
           </View>          
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
@@ -341,8 +357,15 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
         onCancel={() => setDateTimePickerVisibility(false)}
       />
 
-      {stagesModal()}
-      {outComesModal()}
+      {
+        locationInfo.stages && 
+        stagesModal()
+      }
+      
+      {
+        locationInfo.outcomes &&
+        outComesModal()
+      }
       {confirmModal()}
       
       {<CustomLoading closeOnTouchOutside={false} message='Updating please wait.'
@@ -467,8 +490,7 @@ const styles = EStyleSheet.create(parse({
     width: '90%',
     backgroundColor: "white",
     borderRadius: 7,
-    padding: 20,
-    // alignItems: "center",
+    padding: 20,    
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

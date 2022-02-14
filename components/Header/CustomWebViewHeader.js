@@ -18,7 +18,7 @@ export default function CustomWebViewHeader({title, showIcon, onBackPressed}) {
                         source={Images.backIcon}
                     />
                     }
-                    <Text style={style.header} >{title}</Text>
+                    <Text style={style.headerTitle} >{title}</Text>
                 </View>        
             </TouchableOpacity>
             
