@@ -13,8 +13,7 @@ export function getContentLibrary(base_url, token, params)
             Authorization: 'Bearer ' + token
           }
         })
-        .then((res) => {          
-          console.log("res.data.folders)",res.data.folders);
+        .then((res) => {                    
           if (res.data == undefined) {            
             resolve([]);
           }
@@ -48,7 +47,7 @@ export function downloadPDF(url, fileName, ext){
 
     //Define options
     const options: RNFS.DownloadFileOptions = {
-      fromUrl: url,
+      fromUrl: encodeURI(url),
       toFile: path,
       headers: headers
     }

@@ -8,11 +8,10 @@ import {
   CHANGE_LOCATION_MAP,
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
-  CHANGE_LOCATION_INFO,
-  STATUS_STAGE_OUTCOME_UPDATE,
   STATUS_DISPOSITION_FIELDS_UPDATE,
-  STATUS_LOCATION_LEADFIELDS,
-  CHANGE_LOCATION_LEADFIELDS
+  LOCATION_ID_CHANGED,
+  LOCATION_LOOP_LISTS
+  
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -30,11 +29,23 @@ const initialState = {
   locationLeadfields: {},
   statusStageOutcomeUpdate:'init',
   statusLocationInfoUpdate: 'init',
+  locationId:0,
+  loopLists:[]
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOCATION_LOOP_LISTS:
+      return {
+        ...state,
+        loopLists: action.payload
+      }
+    case LOCATION_ID_CHANGED:
+      return {
+        ...state,
+        locationId: action.payload
+      }
     case STATUS_PIN_KEY:
       return {
         ...state,
@@ -79,34 +90,14 @@ export default (state = initialState, action) => {
       return {
         ...state,
         locationSearchLists: action.payload
-      }
-    case CHANGE_LOCATION_INFO:
-      console.log("changed location info");
-      return {
-        ...state,
-        locationInfo: action.payload,
-        statusLocationInfo: "success"
-      }
-    case STATUS_STAGE_OUTCOME_UPDATE:
-      return {
-        ...state,
-        statusStageOutcomeUpdate: action.payload
-      }
+      }      
    case STATUS_DISPOSITION_FIELDS_UPDATE:
       return {
          ...state,
          statusLocationInfoUpdate: action.payload
       }
-    case STATUS_LOCATION_LEADFIELDS:
-      return {
-          ...state,
-          statusLocationLeadfields: action.payload
-      }
-    case CHANGE_LOCATION_LEADFIELDS:
-      return {
-          ...state,
-          locationLeadfields: action.payload
-      }
+
+  
     default:
       return state;
   }

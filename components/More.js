@@ -405,6 +405,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: PRIMARY_COLOR,
     borderWidth: 2,
+    paddingTop:Platform.OS ==  'ios' ? 4 : 0,
     width: 56,
     height: 56,
     borderRadius: 30,

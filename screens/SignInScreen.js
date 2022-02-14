@@ -1,22 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar , Dimensions , KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView, Text, View, Image, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from 'react-native-paper';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-
 import { baseURL } from '../constants';
 import { PRIMARY_COLOR } from '../constants/Colors';
 import { Login } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS ,
   CHANGE_USER_INFO, 
   CHANGE_PROJECT_PAYLOAD,
-  CHANGE_ACCESS_TOKEN } from '../actions/actionTypes';
+  CHANGE_ACCESS_TOKEN,   
+  MAP_FILTERS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { getToken, getUserData } from '../constants/Storage';
+import { getCurrentDate, getFilterData, getToken, getUserData, storeCurrentDate, storeLocationLoop } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 
 export default function SignIn() {
@@ -29,23 +29,32 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
-
+  const emailRef = useRef();
   const passwordInput = useRef();
 
-  useEffect(() => {
-    
-    initView();
-    
+  useEffect(() => {  
+    initView();    
     if (loginStatus == "failed") {
       setPasswordError(true);
     }
+
   }, [loginStatus])
 
   const initView = async () =>{    
+
+    var date = new Date().getDate();
+    var month = new Date().getMonth();
+    var current = await getCurrentDate();    
+    if(current !== month.toString() + date.toString()){
+      await storeLocationLoop([]);
+    }
+
     var token = await getToken();
-    if(token != null){      
+    var filters = await getFilterData();
+    if(token != null){
       var userData = await getUserData();
-      console.log("userData", userData);
+      console.log("login userData ", userData);      
+      dispatch({ type: MAP_FILTERS, payload: filters });
       dispatch({ type: CHANGE_USER_INFO, payload: userData });
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
       dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })
@@ -58,6 +67,7 @@ export default function SignIn() {
       setEmailError(true);
       return;
     }
+    console.log("login url", `${baseURL}/authentication_api/Auth/check_aad_login`);
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
     axios
       .post(`${baseURL}/authentication_api/Auth/check_aad_login`, { email })
@@ -83,38 +93,49 @@ export default function SignIn() {
       setPasswordError(true);
       return;
     }
+
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
     dispatch(Login(email, password));
   }
 
   return (
-    <KeyboardAwareScrollView 
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ flexGrow: 1 }} 
-      enableOnAndroid={true}
-      enableAutomaticScroll={(Platform.OS === 'ios')}
-      extraHeight={130} extraScrollHeight={130}
-      behavior="padding" style={{flex:1}}>
-      <KeyboardAvoidingView style={{flex:1}}>      
+    <SafeAreaView style={{flex:1}}>
+      <KeyboardAwareScrollView 
+        keyboardShouldPersistTaps={'always'}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 , flex:1 }} 
+        enableOnAndroid={true}
+        ref={emailRef}
+        enableAutomaticScroll={(Platform.OS === 'ios')}
+        extraHeight={140}
+        //extraScrollHeight={140}
+        behavior="padding" style={{flex:1}}>
+    
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
       <View style={styles.container}>
+        
         <Image style={styles.logo} source={require("../assets/images/logo.png")} />
         <Text style={styles.title}>Welcome to</Text>
         <Text style={styles.title}>Geo Rep CRM</Text>
-        <View style={styles.textInputBox}>
+
+        <View style={styles.textInputBox} >
           <TextInput
             style={styles.textInput}
             label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Email</Text>}
             mode="outlined"
             outlineColor="#fff"
             activeOutlineColor="#fff"
-            value={email}
+            value={email}            
+            onFocus={() => {               
+            }}
             onSubmitEditing={()=>{
               handleNext();
+              console.log("submit");
             }}
             returnKeyType="next"
             keyboardType="email-address"
             onChangeText={text => {
+              console.log("change");
               setEmail(text);
               setEmailError(false);
             }}
@@ -168,18 +189,18 @@ export default function SignIn() {
         {step && <TouchableOpacity onPress={() => {}}>
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}
-      </View>
-      </KeyboardAvoidingView>
-      </KeyboardAwareScrollView>  
+      </View>      
+    </KeyboardAwareScrollView>  
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: PRIMARY_COLOR,
-    height:Dimensions.get("screen").height,
-    justifyContent: 'center',
-    padding: 25
+    backgroundColor: PRIMARY_COLOR,    
+    justifyContent: 'center',  
+    padding: 25,
+    flex:1,
   },
 
   logo: {
@@ -203,6 +224,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.secondaryMediumMedium,
     marginBottom: 8
   },
+
   eyeIcon: {
     position: 'absolute',
     top: 4,

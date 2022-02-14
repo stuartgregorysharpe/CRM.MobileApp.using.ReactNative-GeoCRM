@@ -4,8 +4,7 @@ import { Title, Modal, Portal, Button, Provider } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-
-import Card from '../../components/Card';
+import Card from '../../screens/GeoRep/ContentLibrary/partial/Card';
 import Divider from '../../components/Divider';
 import SvgIcon from '../../components/SvgIcon';
 import GrayBackground from '../../components/GrayBackground';

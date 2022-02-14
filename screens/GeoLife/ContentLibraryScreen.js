@@ -3,7 +3,7 @@ import { SafeAreaView, View, StyleSheet, ScrollView, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Searchbar from '../../components/SearchBar';
-import Card from '../../components/Card';
+import Card from '../../screens/GeoRep/ContentLibrary/partial/Card';
 import { BG_COLOR } from '../../constants/Colors';
 import { CHANGE_LIBRARY_CHILD_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';

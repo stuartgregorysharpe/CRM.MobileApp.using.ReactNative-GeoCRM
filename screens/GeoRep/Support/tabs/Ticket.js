@@ -4,12 +4,13 @@ import {View,StyleSheet, ScrollView, TouchableOpacity, Text, Platform, ToastAndr
 import Fonts from '../../../../constants/Fonts';
 import {  Modal, Portal, TextInput } from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
-import { BG_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
+import { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
 import { getBaseUrl, getToken, getUserData } from '../../../../constants/Storage';
 import { getSupportIssues, postSupportEmail } from '../../../../actions/support.action';
 import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
+import { notifyMessage } from '../../../../constants/Consts';
 
 export const Ticket = forwardRef((props, ref) => {
 
@@ -84,23 +85,23 @@ export const Ticket = forwardRef((props, ref) => {
                 "selected_issue": issue,
                 "issue_details": issueDetails,
                 "issue_image": issueImage
-              };  
+              };
               console.log(params);
               postSupportEmail(base_url, token, params)
               .then((res) =>{
                 if(res.status == 'success'){
-                    notifyMessage("Success");
+                    notifyMessage("Success","");                    
                 }else{
-                    notifyMessage("Failed");
+                    notifyMessage("Failed","");
                 }
               })
               .catch((e) =>{
 
               })
             }
-        }        
+        }
     }
-
+        
     const launchImageLibrary = (index) => {
         let options = {
           storageOptions: {
@@ -120,9 +121,9 @@ export const Ticket = forwardRef((props, ref) => {
           } else {                                                  
             if(response.assets != null && response.assets.length > 0){                            
                 convertBase64(response.assets[0].uri);
-            }                     
+            }
           }
-        });    
+        });  
     }
 
     const convertBase64 = async (path) => {
@@ -131,13 +132,7 @@ export const Ticket = forwardRef((props, ref) => {
         setIssueImage(data);
     }
 
-    function notifyMessage(msg) {
-        if (Platform.OS === 'android') {
-          ToastAndroid.show(msg, ToastAndroid.SHORT)
-        } else {
-            AlertIOS.alert(msg);
-        }
-    }
+    
 
     return (
       <View>
@@ -155,8 +150,8 @@ export const Ticket = forwardRef((props, ref) => {
               style={styles.textInput}
               label="Email"
               mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
+              outlineColor={PRIMARY_COLOR}
+              activeOutlineColor={DISABLED_COLOR}
               value={email}
               onChangeText={text => setEmail(text)}
             />
@@ -173,8 +168,8 @@ export const Ticket = forwardRef((props, ref) => {
               style={styles.textInput}
               label={issue == '' ? "Select Issue" : issue}
               mode="outlined"
-              outlineColor="#133C8B"
-              activeOutlineColor="#9D9FA2"
+              outlineColor={PRIMARY_COLOR}
+              activeOutlineColor={DISABLED_COLOR}
             />
             <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
           </View>
@@ -183,8 +178,8 @@ export const Ticket = forwardRef((props, ref) => {
         <TextInput
           style={styles.textArea}
           mode="outlined"
-          outlineColor="#133C8B"
-          activeOutlineColor="#9D9FA2"
+          outlineColor={PRIMARY_COLOR}
+          activeOutlineColor={DISABLED_COLOR}
           placeholder="Issue details can be entered here..."
           multiline={true}
           value={issueDetails}

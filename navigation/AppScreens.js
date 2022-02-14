@@ -64,6 +64,7 @@ export default function AppScreens() {
     outputRange: [0, Dimensions.get('window').width > Dimensions.get('window').height ? -Dimensions.get('window').width - 100 : -Dimensions.get('window').height - 100 ],
     extrapolate: 'clamp',
   });
+  
   if (loginStatus != "success") {
     return (
       <SignInScreen />
@@ -100,25 +101,35 @@ export default function AppScreens() {
 
       <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
 
-
       <Stack.Navigator 
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: PRIMARY_COLOR,
+
+        cardStyle = {{           
+          opacity: 1, 
+        }}
+        screenOptions={({ navigation }) => {
+          return {
+            detachPreviousScreen: !navigation.isFocused(),
           }
         }}
+
+        // screenOptions={{          
+        //   headerStyle: {
+        //     backgroundColor: PRIMARY_COLOR,
+        //   }
+        // }}
       >
-        <Stack.Screen 
-          name="Root" 
+        <Stack.Screen
+          name="Root"           
           component={BottomTabNavigator}
           options={{ headerShown: false }} 
         />
         
         <Stack.Screen
           name="WebViewScreen"
+          component={WebViewScreen}
           navigationOptions={{headerShown:false}}
           options={{ header: () => false}}> 
-            {props => <WebViewScreen {...props} />}
+            {/* {props => <WebViewScreen {...props} />} */}
         </Stack.Screen>
        
       </Stack.Navigator>

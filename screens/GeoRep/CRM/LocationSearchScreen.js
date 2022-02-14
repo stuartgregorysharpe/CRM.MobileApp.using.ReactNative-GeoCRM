@@ -1,80 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView} from 'react-native';
+import React, { useState,useRef, useEffect } from 'react';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , FlatList, Image, Platform} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import GrayBackground from '../../../components/GrayBackground';
-import LocationInfo from './LocationInfo';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Skeleton from '../../../components/Skeleton';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationFilters, getLocationInfo } from '../../../actions/location.action';
+import {  LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationFilters, getLocationInfo, getLocationSearchList } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
+import Images from '../../../constants/Images';
+import { grayBackground, style } from '../../../constants/Styles';
+import { getDistance } from '../../../constants/Consts';
+import { LocationItem } from './partial/LocationItem';
+import AlertDialog from '../../../components/modal/AlertDialog';
+import AddToCalendar from '../../../components/modal/AddToCalendar';
+import SvgIcon from '../../../components/SvgIcon';
+import { LocationInfoDetails } from './LocationInfoDetails';
+import { storeLocationLoop } from '../../../constants/Storage';
 
-const ResultItem = ({navigation, item, animation}) => {
+var isCalled = false;
 
-  const dispatch = useDispatch();
-  return (
-    <TouchableOpacity style={styles.resultItem} onPress={() => {
-      animation();      
-      dispatch(getLocationInfo(Number(item.location_id)));
-    }}>
-      <View style={{ maxWidth: '48%' }}>
-        <Text style={styles.subTitle}>{item.name}</Text>
-        <Text style={styles.text}>{item.address}</Text>
-      </View>
-      <View style={{ maxWidth: '48%' }}>
-        <Text style={[styles.subTitle, styles.textRight]}>
-          {item.distance} mi
-        </Text>
-        <Text style={[styles.text, styles.textRight,{color:item.status_text_color}]}>{item.status}</Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
-
-export default function LocationSearchScreen({navigation}) {
+export default function LocationSearchScreen(props) {
   
+  const navigation = props.navigation;
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const statusLocationSearchLists = useSelector(state => state.location.statusLocationSearchLists);
+  const [isRequest, setIsRequest] = useState(false);
   const locationSearchLists = useSelector(state => state.location.locationSearchLists);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const filterParmeterChanged = useSelector(state => state.selection.searchFilters);
   const [orderLists, setOrderLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
-
-  const getDistance = (prelatlng, currentlatlng) => {
-    const prevLatInRad = toRad(Number(prelatlng.latitude));
-    const prevLongInRad = toRad(Number(prelatlng.longitude));
-    const latInRad = toRad(currentlatlng.latitude);
-    const longInRad = toRad(currentlatlng.longitude);
-  
-    return (
-      // In mile
-      3963 *
-      Math.acos(
-        Math.sin(prevLatInRad) * Math.sin(latInRad) +
-          Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
-      )
-    );
-  }
-  
-  const toRad = (angle) => {
-    return (angle * Math.PI) / 180;
-  }
+  const [locationInfo, setLocationInfo] = useState();
+  const [searchKeyword, setSearchKeyword] = useState();  
+  const locationId = useSelector(state => state.location.locationId.value);
+  const tabType =   useSelector(state => state.location.locationId.type);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isSelected, setIsSelected] = useState(false);    
+  const [isCreated, setIsCreated] = useState(false);
+  const [message, setMessage] = useState("");
+  const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
+  const locationRef = useRef();
+  const [pageType, setPageType ] = useState({name:"search-lists"});
 
   useEffect(() => {
-    dispatch({type: SLIDE_STATUS, payload: false});
-  }, []);
+
+    setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
+    props.screenProps.setOptions({                 
+      headerTitle:() =>{
+        return(<TouchableOpacity onPress={
+          () =>{            
+            if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){
+              console.log(locationRef);
+              locationRef.current.goBack();
+            }else{
+              goPreviousPage();
+            }
+
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              <Image
+                resizeMethod='resize'
+                style={{width:15,height:20, marginRight:5}}
+                source={Images.backIcon}
+              />
+          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+        </View></TouchableOpacity>)
+      },
+
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {            
+            
+            if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){
+              console.log(locationRef);
+              locationRef.current.closePopup();
+              setPageType({name:'search-lists'});
+            }else{
+              setShowItem(0);
+              dispatch({type: SLIDE_STATUS, payload: false});
+              dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}});              
+            }
+          }}
+        >
+        </TouchableOpacity>
+      ),
+    });    
+  });
+
+  useEffect(() => {            
+    if(locationId !== 0 && isRequest == false && tabType !== undefined){  
+      console.log("open locaiton info from calendar page");
+      setPageType({"name":"camera", "type":tabType});      
+      openLocationInfo(locationId)
+    }
+  }, [locationId, tabType]);
 
   useEffect(() => {
-    let items = [];
-    
-    locationSearchLists.map((list, key) => {
+    if(calendarType == "optimize" || calendarType == "add") {
+      setIsSelected(true)
+    }
+  },[calendarType]);
+
+  useEffect(() => {          
+    dispatch(getLocationSearchList());  
+  }, [filterParmeterChanged]);  
+
+  useEffect(() => {  
+    if(locationSearchLists.length !== 0 ){
+      console.log("searhcalled");      
+      getSearchData("");
+      
+    }else if(!isCalled){
+      isCalled = true;
+      dispatch(getLocationSearchList());
+    }
+  }, [locationSearchLists]);
+
+  const goPreviousPage = () =>{
+    if(navigation.canGoBack()){                            
+      navigation.goBack();
+      dispatch({type: SLIDE_STATUS, payload: false});
+      dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
+    }
+  }
+
+  const getSearchData = async(searchKey) => { 
+    let items = [];    
+    locationSearchLists.map((list, key) => {    
       let item = {
         name: list.name,
         address: list.address,
@@ -83,11 +142,22 @@ export default function LocationSearchScreen({navigation}) {
         location_id: list.location_id,
         status_text_color:list.status_text_color
       }
-      items.push(item);
+      if(searchKey === ''){
+        items.push(item);
+      }else{
+        if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
+          items.push(item);
+        }
+      }      
     });
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
-    setOrderLists(items);
-  }, [locationSearchLists]);
+    setOrderLists(items);    
+    if(locationId === 0 || locationId  === undefined){
+      console.log("loop list updated in location search");
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+    }
+
+  }
 
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
@@ -97,15 +167,33 @@ export default function LocationSearchScreen({navigation}) {
         setShowItem(1);
         return;
       case "locationInfo":
-        setShowItem(2);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        setShowItem(2);        
         return;
-      default:        
+      case "addtocalendar":
+        setShowItem(3);
+        return;
+      default:
         return;
     }    
   }
+  
+  const openLocationInfo = async(location_id) => {    
+    setIsRequest(true)
+    getLocationInfo( Number(location_id))
+    .then((res) => {
+      setLocationInfo(res);
+      setIsRequest(false)
+      animation("locationInfo");
+      if(locationSearchLists.length == 0){
+        dispatch(getLocationSearchList());
+      }
+    })
+    .catch((e) =>{
+      setIsRequest(false)      
+    })
+  }
 
-  if (statusLocationSearchLists == "request") {
+  const LoadingView = () =>{
     return (
       <SafeAreaView>
         <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
@@ -117,36 +205,176 @@ export default function LocationSearchScreen({navigation}) {
     )
   }
 
+  if (isRequest) {
+    return LoadingView()
+  }
+
+  const renderLocation = (item, index) => {    
+    return (<LocationItem 
+      isSelected={isSelected}
+      item={item}    
+      onItemClicked={(isChecked) => {
+        if(isSelected){
+          orderLists[index].checked = isChecked;
+          var selectedItems = [];
+          orderLists.forEach((item, index) => {
+            if(item.checked != undefined && item.checked == true){
+              selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
+            }
+          });                    
+          console.log("selectedItems", selectedItems);
+          setSelectedItems(selectedItems);          
+        }else{
+          openLocationInfo(item.location_id);
+        }        
+      }}>
+      </LocationItem>)
+  }  
+
   return (
     <Provider>
-      <SafeAreaView style={{flex:1}}>
+      {
+        isRequest &&
+        <LoadingView></LoadingView>
+      }
+      <SafeAreaView style={{flex:1, }}>
+                
+          <AlertDialog visible={isCreated}  message={message} onModalClose={() => setIsCreated(false) }></AlertDialog>              
           
-          <GrayBackground />
+          {crmStatus && (showItem == 3 || showItem == 1) && <TouchableOpacity
+            activeOpacity={1} 
+            style={grayBackground}
+            onPress={() => {
+              
+              dispatch({type: SUB_SLIDE_STATUS, payload: false})
+              dispatch({type: SLIDE_STATUS, payload: false});
+              setShowItem(0); 
+
+            }}
+          ></TouchableOpacity>}
+
           {crmStatus && showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
           >
-            <FilterView navigation={navigation} />
+            <FilterView navigation={navigation} page={"search"} onClose={() =>{
+              dispatch({type: SLIDE_STATUS, payload: false});
+              setShowItem(0);  
+            }} />
           </View>}
 
           {crmStatus && showItem == 2 &&
             <View
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
-              <LocationInfo navigation={navigation} /> 
+
+              <LocationInfoDetails
+                  ref={locationRef}
+                  goPreviousPage={goPreviousPage}
+                  pageType={pageType}
+                  clostDetailsPopup={() =>{                
+                    setShowItem(0);
+                  }} locInfo={locationInfo} ></LocationInfoDetails>
+
             </View>
-          } 
+          }
 
-            <View style={styles.container}>
-
-              <SearchBar isFilter={true} animation={() => animation("filter")} />
-
-              <ScrollView>
-                <Text style={styles.title}>Current Location</Text>
-                {orderLists.map((locationSearchList, key) => (
-                  <ResultItem key={key} navigation={navigation} item={locationSearchList} animation={() => animation("locationInfo")} />
-                ))}
-              </ScrollView>
+          { crmStatus && showItem == 3 &&
+            <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
+              <AddToCalendar selectedItems={selectedItems} 
+                onClose={() => {  
+                  dispatch({type: SLIDE_STATUS, payload: false }); 
+                  setShowItem(0);        
+                  setIsSelected(false); 
+                  getSearchData("");                  
+                }}></AddToCalendar> 
             </View>
+          }
 
+          <View style={styles.container}>
+            <SearchBar 
+              onSearch={(text) =>{
+                getSearchData(text);
+                setSearchKeyword(text);
+              }} 
+              initVal={searchKeyword}
+              isFilter={true}
+              animation={() => {                
+                animation("filter");
+              }} />
+                        
+            <View style={{flex:1}}>
+              
+              <View style={styles.buttonContainer}>
+
+                <View style={styles.leftContainer}>
+                <TouchableOpacity 
+                  disabled={orderLists.length === 0 ? true: false} 
+                  style={[styles.buttonTextStyle, {backgroundColor: isSelected || orderLists.length === 0 ? DISABLED_COLOR:PRIMARY_COLOR}]} 
+                  onPress={()=> {
+                    if(orderLists.length > 0 ){
+                      setIsSelected(!isSelected)
+                    }
+                  } }>
+                  <Text style={[styles.buttonText]}>{isSelected? 'Cancel' : 'Select' }</Text>
+                </TouchableOpacity>
+                </View>
+                
+                <View style={styles.rightContainer}>
+                { isSelected && selectedItems.length > 0 && 
+                  <TouchableOpacity 
+                  style={styles.buttonTextStyle}
+                  onPress={() =>{
+
+                    var selectedItems = [];
+                    orderLists.forEach((item, index) => {
+                      if(item.checked != undefined && item.checked == true){
+                        selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
+                      }
+                    });                    
+                    console.log("selectedItems", selectedItems);
+                    setSelectedItems(selectedItems);
+                    if(selectedItems.length > 0){
+                      animation("addtocalendar");
+                    }
+
+                  }}>
+                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                      <Text style={styles.buttonText}>Add to Calendar </Text>
+                      <SvgIcon icon="Arrow_Right" width='13px' height='13px' />
+                    </View>
+                    
+                  </TouchableOpacity>
+                }
+                </View>                              
+              </View>
+                            
+              
+              {
+                orderLists.length !== 0 && 
+                <View style={{marginBottom:100}}>
+                  <FlatList
+                    removeClippedSubviews={false}
+                    maxToRenderPerBatch={10}
+                    initialNumToRender={10}
+                    windowSize={21}
+                    data={orderLists}
+                    renderItem={
+                        ({ item , index }) => renderLocation(item, index)
+                    }
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
+                  />
+                </View>
+              }              
+
+              {
+                orderLists.length == 0 && 
+                <View style={{flex:1 , alignItems:'center'}}>
+                  <Text style={{color:DISABLED_COLOR}} >No Results Found</Text>
+                </View>
+              }              
+
+            </View>
+          </View>
 
       </SafeAreaView>
     </Provider>
@@ -155,53 +383,53 @@ export default function LocationSearchScreen({navigation}) {
 
 const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(parse({
-  container: {
-    position: 'relative',
+  container: {    
     backgroundColor: BG_COLOR,
     height: '100%',
-    paddingBottom: 70
-  },
-  title: {
-    color: PRIMARY_COLOR,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryBold,
-    paddingLeft: 14,
-    marginBottom: 10
+    paddingBottom: 0
   },
 
-  resultItem: {
-    maxWidth: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 14,
-    paddingRight: 14,
-    borderTopWidth: 1,
-    borderColor: '#e7e7e7'
+  buttonContainer:{    
+    paddingTop:8,
+    paddingBottom:17,
+    flexDirection:'row',    
+    marginLeft:10,
+    marginRight:10,
+    
   },
-  subTitle: {
-    fontSize: 14,
-    fontFamily: Fonts.secondaryBold,
-    color: TEXT_COLOR,
-    marginBottom: 4
+  leftContainer:{
+    flex:1,
+    alignItems: 'flex-start',
   },
-  text: {
+  rightContainer:{
+    flex:1,
+    alignItems: 'flex-end',
+  },
+
+  buttonTextStyle: {     
+    paddingLeft:20,
+    paddingRight:20,
+    paddingTop:Platform.OS == "android" ? 5 : 8,
+    paddingBottom:Platform.OS == "android" ? 5 : 8,
+    borderRadius:15,
+    backgroundColor: PRIMARY_COLOR
+  },  
+  buttonText:{
+    color: Colors.whiteColor,
     fontSize: 12,
-    fontFamily: Fonts.secondaryMedium,
-    color: '#9D9FA2',
+    fontFamily: Fonts.secondaryBold,
   },
-  textRight: {
-    textAlign: 'right'
-  },
+  
   transitionView: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: BG_COLOR,
+    backgroundColor: BG_COLOR,    
     elevation: 2,
     zIndex: 2,
-    padding: 10,
+    padding: 0,
   },
+
+
 }));

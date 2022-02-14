@@ -21,10 +21,7 @@ const initialState = {
   showMoreScreen: 1,
   visibleMore: '',
   showLibraryChild: false,
-  currentLocation: {
-    latitude: 34.175031,
-    longitude: -118.349383
-  },
+  currentLocation: {},
   statusDispositionInfo: false,
   locationAction: null,
   bottomTabAction: null,

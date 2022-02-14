@@ -1,10 +1,12 @@
 
 import axios from "axios";
+import { getBaseUrl } from "../constants/Storage";
 
-export function getWebLinks(base_url, token, params)
-{    
-    return new Promise(function(resolve, reject) {    
-        
+
+export const getWebLinks = async(token, params) => {
+
+    var base_url = await getBaseUrl();    
+    return new Promise(function(resolve, reject) {                       
         console.log("axis", `${base_url}/weblinks`);
         console.log("token", token);
         axios

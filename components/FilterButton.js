@@ -3,20 +3,25 @@ import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
-import { TEXT_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 export default function FilterButton(props) {
   return (
     <TouchableOpacity style={[styles.card, boxShadow]} onPress={props.onPress}>
-      <View>
-        <Text style={styles.cardtitle}>{props.text}</Text>
-        {props.subText && <Text style={styles.cardSubtitle}>{props.subText}</Text>}
+      <View style={{flexDirection:'row' , alignItems:'center'}}>
+        <Text style={styles.cardtitle}>{props.text}</Text>       
+        {
+          props.startDate != undefined && props.endDate != undefined &&
+          <View style={{marginLeft:10}}><Text style={styles.cardSubtitle}>Start: {props.startDate}</Text><Text style={styles.cardSubtitle} >End: {props.endDate}</Text></View>
+        }        
+        {props.subText && props.subText != "" && <Text style={styles.cardSubtitle}> ({props.subText})</Text>}
       </View>
-      <SvgIcon icon="Drop_Down" width='23px' height='23px' />
+      <SvgIcon icon="Right_Arrow" width='23px' height='23px' />
     </TouchableOpacity>
   )
 }
-  
+
 const styles = StyleSheet.create({
   card: {
     marginBottom: 10,
@@ -31,9 +36,11 @@ const styles = StyleSheet.create({
   cardtitle: {
     color: TEXT_COLOR,
     fontSize: 14,
-    fontFamily: 'Gilroy-Medium',
+    fontFamily:Fonts.secondaryMedium,
   },
   cardSubtitle: {
-    fontSize: 12,
+    fontFamily:Fonts.secondaryMedium,
+    fontSize: 14,
+    color:PRIMARY_COLOR 
   },
 })

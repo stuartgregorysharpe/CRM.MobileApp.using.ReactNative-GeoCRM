@@ -1,32 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, StyleSheet, ScrollView, Text } from 'react-native';
+import { SafeAreaView, View, StyleSheet, ScrollView, Text , PermissionsAndroid, Platform , TouchableOpacity ,Image} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Searchbar from '../../../components/SearchBar';
-import Card from '../../../components/Card';
+import Card from './partial/Card';
 import { BG_COLOR } from '../../../constants/Colors';
-import { BACK_ICON_STATUS, CHANGE_LIBRARY_CHILD_STATUS } from '../../../actions/actionTypes';
+import { CHANGE_LIBRARY_CHILD_STATUS } from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
 import { downloadPDF, getContentLibrary } from '../../../actions/contentLibrary.action';
 import RNFS, { DownloadFileOptions , DocumentDirectoryPath , downloadFile} from 'react-native-fs';
-//import FileOpener from 'react-native-file-opener';
-//const FileOpener = require('react-native-file-opener');
+import FileViewer from "react-native-file-viewer";
+import { style } from '../../../constants/Styles';
+import Images from '../../../constants/Images';
 
 export default function ContentLibraryScreen(props) {
 
-  const showLibraryChild = useSelector(state => state.rep.showLibraryChild);
   const dispatch = useDispatch();
   const [childList, setChildList] = useState({});
   const [libraryLists, setLibraryLists] = useState([]);
   const [searchLibraryLists , setSearchLibraryLists] = useState([]);  
   const FileOpener = require('react-native-file-opener');
+  const [isBack, setIsBack] = useState( props.route.params && props.route.params.isBack ? props.route.params.isBack : false);  
+  const [title,setTitle] = useState("Content Library");
 
-  useEffect(() => {
-    if (props.screenProps) {
-      props.screenProps.setOptions({
-        title: "Content Library"
-      });
-    }
+  useEffect(() => {    
+    props.navigation.setOptions({           
+      headerTitle:(props) =>{
+        return(<TouchableOpacity                   
+           onPress={
+          () =>{
+            setIsBack(false);         
+            setTitle("Content Library");
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              {
+                isBack &&
+                <Image
+                  resizeMethod='resize'  
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              }              
+          <Text style={style.headerTitle} > {title} </Text>
+        </View></TouchableOpacity>)
+      },            
+      tabBarStyle: {
+        position: 'absolute',
+        height: 50,      
+        paddingBottom: Platform.OS == "android" ? 5 : 0,          
+        backgroundColor: "#fff",
+      },
+    });
+  }, [isBack])
+
+  useEffect(() => {             
     loadList();
   } , []);  
 
@@ -51,7 +78,10 @@ export default function ContentLibraryScreen(props) {
   const showChildItem = (index) => {
     dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
     setChildList(searchLibraryLists[index]);
-    dispatch({type: BACK_ICON_STATUS, payload: true})
+    setIsBack(true);
+    setTitle(searchLibraryLists[index].folder_name);
+
+    //dispatch({type: BACK_ICON_STATUS, payload: true})
   }
   const getResourceIcon = (title) =>{
     if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
@@ -64,29 +94,51 @@ export default function ContentLibraryScreen(props) {
   }
 
   const getMineType = (title, ext) =>{
-    if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
-      return "image/" + ext;  
-    }
-    if(title.toLowerCase().includes('.mp4') || title.toLowerCase().includes('.mov') || title.toLowerCase().includes('.flv')){
-      return "video/" + ext;  
-    }
-    return "application/" + ext;
+    if(Platform.OS == 'android'){
+      if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
+        return "image/*"; // + ext;  
+      }
+      if(title.toLowerCase().includes('.mp4') || title.toLowerCase().includes('.mov') || title.toLowerCase().includes('.flv')){
+        return "video/" + ext;  
+      }
+      return "application/" + ext;
+    }else{
+      
+      if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
+        return "public.image";  
+      }
+      if(title.toLowerCase().includes('.mp4') || title.toLowerCase().includes('.mov') || title.toLowerCase().includes('.flv')){
+        return "public.movie";
+      }
+      return  "public.data";
+    }    
   }
 
   openFile = (path, type) => {
     console.log(type );
-    FileOpener.open(
-        path,
-        type 
-    ).then((msg) => {
-        console.log('success!!')
-    },(e) => {
-        console.log('error!!', e)
-    });  
+    if(Platform.OS == "android"){      
+      FileOpener.open(
+          path,
+          type
+      ).then((msg) => {
+          console.log('success!!')
+      },(e) => {
+          console.log('error!!', e)
+      });  
+    }else{
+      const paths = FileViewer.open(path) // absolute-path-to-my-local-file.
+      .then(() => {
+      
+       
+      })
+      .catch((error) => {
+       
+      });
+    }
+    
   }
 
-
-  if (showLibraryChild) {
+  if (isBack) {
 
     return (
       <SafeAreaView>
@@ -106,13 +158,17 @@ export default function ContentLibraryScreen(props) {
                     fileName = tmp[0];
                     ext = tmp[1];
                     const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
+                    //const SavePath = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.ExternalDirectoryPath;
+
                     RNFS.exists(path).then((res) =>{
                       if(res){
                         console.log("file exist", path);
                         openFile(path, getMineType(item.filename, ext));
                       }else{
+                        console.log("no file exist", item.file_path);
                         downloadPDF(item.file_path, fileName , ext)
                         .then((res) =>{
+                          console.log(res);
                           if(res && res.statusCode === 200 && res.bytesWritten > 0 ){
                             openFile(path,getMineType(item.filename, ext));  
                           }else{                     
@@ -162,9 +218,7 @@ export default function ContentLibraryScreen(props) {
         
         <View style={styles.innerContainer}>
           {searchLibraryLists.map((item, index) => (
-
             <Card title={item.folder_name} number={item.file_count} key={index} onPress={showChildItem.bind(null, index)}/>            
-            
           ))}
         </View>
       </ScrollView>
