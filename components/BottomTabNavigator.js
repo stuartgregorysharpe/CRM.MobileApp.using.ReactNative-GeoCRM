@@ -47,7 +47,7 @@ import {
   LOCATION_CONFIRM_MODAL_VISIBLE,
   CHANGE_BOTTOM_TAB_ACTION
 } from '../actions/actionTypes';
-import { getLocationsMap } from '../actions/location.action';
+import { getLocationsMap, getLocationInfo } from '../actions/location.action';
 
 import {
   StyleSheet, 
@@ -325,27 +325,7 @@ export default function RepBottomTabNavigator({navigation}) {
               {!focused && <SvgIcon icon="Location_Arrow_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Location_Arrow" width='20px' height='20px' />}
             </Fragment>
-          ),
-          headerTitle:(props) =>{
-            return(<TouchableOpacity onPress={
-              () =>{
-                dispatch({type: SLIDE_STATUS, payload: false});
-                dispatch({type: BACK_ICON_STATUS, payload: false});                                    
-                navigation.popToTop();
-                console.log(props);
-              }}>
-              <View style={styles.layoutBar}> 
-                {
-                  backIconStatus && 
-                  <Image
-                  resizeMethod='resize'  
-                  style={{width:15,height:20, marginRight:5}}
-                  source={Images.backIcon}
-                />  
-                }                          
-              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
-            </View></TouchableOpacity>)
-          },                    
+          ),            
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),

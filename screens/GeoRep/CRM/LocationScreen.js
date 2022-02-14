@@ -21,8 +21,7 @@ import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
 import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
-import MapZoomPanel from './components/MapZoomPanel'
-import { LocationInfoDetails } from './LocationInfoDetails';
+import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getDistance } from '../../../constants/Consts';
 import LoadingView from '../../../components/LoadingView/LoadingView';
 

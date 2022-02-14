@@ -6,21 +6,17 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
-import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
-import { breakPoint } from '../../../constants/Breakpoint';
-import CustomPicker from '../../../components/modal/CustomPicker';
-import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
-import CustomLoading from '../../../components/CustomLoading';
-import Images from '../../../constants/Images';
-import {  LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../actions/actionTypes';
-import AlertDialog from '../../../components/modal/AlertDialog';
+import SvgIcon from '../../../../components/SvgIcon';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import { breakPoint } from '../../../../constants/Breakpoint';
+import CustomPicker from '../../../../components/modal/CustomPicker';
+import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
+import CustomLoading from '../../../../components/CustomLoading';
+import Images from '../../../../constants/Images';
+import {  LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../../actions/actionTypes';
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
-<<<<<<< HEAD
-export default function LocationInfoInput({  navigation, screenProps, statusSubmit, showLoopSlider}) {
-=======
 export const LocationInfoInput = forwardRef(( props, ref ) => {
->>>>>>> 065097d07426aff0c207a3ceb81c73c2ea1a6a46
 
   const dispatch = useDispatch();  
   const [locationInfo, setLocationInfo] = useState(props.infoInput);
@@ -34,15 +30,6 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const [dateTimeKey, setDateTimeKey] = useState(null);  
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
-<<<<<<< HEAD
-  console.log("TEST", locationInfo);
-  const [selectedOutcomeId, setSelectedOutComeId] = useState( locationInfo ? locationInfo.outcomes.find(xx => xx.outcome_id != null && xx.outcome_id == locationInfo.current_outcome_id).outcome_id : 0 );
-  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
-  const [selectedOutcomes, setSelectedOutcomes] = useState([]);
-  const [idempotencyKey, setIdempotencyKey] = useState(uuid.v4());
-  const [submitKey, setSubmitKey] = useState(false);
-  const showItem = 0
-=======
   var outcomes = locationInfo.outcomes ? locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id ) : false;  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
   const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages ? locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id : 0);
@@ -66,7 +53,6 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
     }),
     [dispositionValue],
   );
->>>>>>> 065097d07426aff0c207a3ceb81c73c2ea1a6a46
 
   useEffect(() => {        
     dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
@@ -306,15 +292,6 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
         
         <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
           <Text style={styles.shadowBoxText}>Outcome</Text>
-<<<<<<< HEAD
-          <View style={{flexShrink: 1}}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText} numberOfLines={5}>
-                {selectedOutcomeId ? locationInfo.outcomes.find(x =>  x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-=======
           <View style={{flexShrink: 1 , marginLeft:10, marginRight:10 }}>            
             <View style={styles.button}>
               {
@@ -326,7 +303,6 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
               
             </View>
           </View>          
->>>>>>> 065097d07426aff0c207a3ceb81c73c2ea1a6a46
           <SvgIcon icon="Drop_Down" width='23px' height='23px' />
         </TouchableOpacity>
 

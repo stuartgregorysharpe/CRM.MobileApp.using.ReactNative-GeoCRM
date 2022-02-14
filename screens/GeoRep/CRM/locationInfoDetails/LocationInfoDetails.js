@@ -5,24 +5,25 @@ import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , 
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import { grayBackground, style } from '../../../constants/Styles';
-import RefreshSlider from '../../../components/modal/RefreshSlider';
-import SvgIcon from '../../../components/SvgIcon';
+import { grayBackground, style } from '../../../../constants/Styles';
+import RefreshSlider from '../../../../components/modal/RefreshSlider';
+import SvgIcon from '../../../../components/SvgIcon';
 import {LocationInfoInput} from './LocationInfoInput';
-import Divider from '../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../../../constants/Colors';
-import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS, LOCATION_ID_CHANGED } from '../../../actions/actionTypes';
+import Divider from '../../../../components/Divider';
+import { PRIMARY_COLOR, BG_COLOR } from '../../../../constants/Colors';
+import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS, LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInputTablet} from './LocationInfoInputTablet';
-import Fonts from '../../../constants/Fonts';
-import * as ImagePicker from 'react-native-image-picker';
+import Fonts from '../../../../constants/Fonts';
+import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
-import { postLocationImage } from '../../../actions/location.action';
+import { postLocationImage } from '../../../../actions/location.action';
 import uuid from 'react-native-uuid';
-import AlertDialog from '../../../components/modal/AlertDialog';
-import UpdateCustomerInfo from './popup/UpdateCustomerInfo';
-import { NextPrev } from './partial/NextPrev';
+import AlertDialog from '../../../../components/modal/AlertDialog';
+import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
+import { NextPrev } from '../partial/NextPrev';
+import WazeNavigation from './WazeNavigation';
 
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
@@ -237,13 +238,17 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         }
         
 
-        <View style={{padding:10, marginBottom:50}}>
+        <View style={{padding:10}}>
         {        
           locationInfo && DeviceInfo.isTablet()?
           <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
           <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
         }
         </View>                                              
+
+        <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
+        <View style={{height:150}}></View>
+
       </KeyboardAwareScrollView>
       
       {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
@@ -291,7 +296,8 @@ const styles = StyleSheet.create({
     backgroundColor: BG_COLOR,
     padding: 10,
   },
-  headerBox: {    
+
+  headerBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -299,7 +305,7 @@ const styles = StyleSheet.create({
     paddingLeft:10,
     paddingRight:10
   },
-
+  
   subtitleBox: {
     flexDirection: 'row',
     alignItems: 'center',    

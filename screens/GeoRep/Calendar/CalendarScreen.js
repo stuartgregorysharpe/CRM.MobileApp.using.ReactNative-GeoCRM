@@ -7,7 +7,7 @@ import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { BG_COLOR } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import { getBaseUrl, getCalendarAdd, getCalendarOptimize, getToken } from '../../../constants/Storage';
+import { checkFeatureIncludeParam, getBaseUrl, getToken } from '../../../constants/Storage';
 import { getCalendar, updateCalendar } from '../../../actions/calendar.action';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import { CalendarItem } from './partial/CalendarItem';
@@ -48,8 +48,8 @@ export default function CalendarScreen(props) {
   }, [navigation]);
 
   const loadList = async(type) => {    
-    setIsOptimize( await getCalendarOptimize());
-    setIsAdd(await getCalendarAdd());
+    setIsOptimize( await checkFeatureIncludeParam("calendar_optimize"));
+    setIsAdd(await checkFeatureIncludeParam("calendar_add"));
     var base_url = await getBaseUrl();
     var token = await getToken();
     if(base_url != null && token != null){      

@@ -2,13 +2,13 @@ import * as React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
 import SvgIcon from './SvgIcon';
-import { boxShadow } from '../constants/Styles';
+import { boxShadow, style } from '../constants/Styles';
 import { PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 
 export default function FilterButton(props) {
   return (
-    <TouchableOpacity style={[styles.card, boxShadow]} onPress={props.onPress}>
+    <TouchableOpacity style={[style.card, boxShadow]} onPress={props.onPress}>
       <View style={{flexDirection:'row' , alignItems:'center'}}>
         <Text style={styles.cardtitle}>{props.text}</Text>       
         {
@@ -23,16 +23,7 @@ export default function FilterButton(props) {
 }
 
 const styles = StyleSheet.create({
-  card: {
-    marginBottom: 10,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 4,
-    padding: 8,
-    height: 44,
-  },
+  
   cardtitle: {
     color: TEXT_COLOR,
     fontSize: 14,

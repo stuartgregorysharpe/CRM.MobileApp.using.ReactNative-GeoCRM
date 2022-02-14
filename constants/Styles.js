@@ -51,9 +51,20 @@ export const style = StyleSheet.create({
   },
 
   
-  innerPlusButton: {        
-  
+  innerPlusButton: {          
   },
+
+  card: {    
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 4,
+    padding: 8,    
+  },
+
+
 
   
 })

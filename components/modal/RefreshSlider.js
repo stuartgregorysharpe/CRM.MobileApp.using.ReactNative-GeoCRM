@@ -92,6 +92,7 @@ export default function RefreshSlider({location_id, onClose}) {
         
         }}
       />
+      
       <FilterButton 
         text="Schedule Date" 
         onPress={() => setIsDateTimePickerVisible(true)}
