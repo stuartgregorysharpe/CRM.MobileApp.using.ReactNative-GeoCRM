@@ -7,6 +7,10 @@ import { Provider } from 'react-redux';
 
 import store from './store';
 import AppScreens from './navigation/AppScreens';
+import { enableScreens } from 'react-native-screens';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+enableScreens(true);
 
 EStyleSheet.build({
   $textColor: '#0275d8'
@@ -14,12 +18,18 @@ EStyleSheet.build({
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <SafeAreaProvider>
-        <NavigationContainer onReady={() => RNBootSplash.hide()}>
-          <AppScreens />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </Provider>
+    
+
+      <Provider store={store}>
+        <SafeAreaProvider>
+          <NavigationContainer onReady={() => RNBootSplash.hide()}>
+            <AppScreens />
+
+            {/* <GestureHandlerRootView></GestureHandlerRootView> */}
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </Provider>
+
+    
   );
-}
+}  

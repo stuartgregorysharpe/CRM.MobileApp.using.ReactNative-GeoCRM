@@ -46,50 +46,51 @@ const Round_Btn_Default_Dark = `
 `;
 
 const DISPOSITION_POST = `
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
-    <defs>
-      <filter id="teal_circle" x="0" y="0" width="202.718" height="202.718" filterUnits="userSpaceOnUse">
-        <feOffset dy="3" input="SourceAlpha"/>
-        <feGaussianBlur stdDeviation="6" result="blur"/>
-        <feFlood flood-opacity="0.239"/>
-        <feComposite operator="in" in2="blur"/>
-        <feComposite in="SourceGraphic"/>
-      </filter>
-      <linearGradient id="linear-gradient" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
-        <stop offset="0"/>
-        <stop offset="0.14" stop-opacity="0.631"/>
-        <stop offset="1" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="linear-gradient-2" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
-        <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-        <stop offset="0.23" stop-color="#fff" stop-opacity="0.012"/>
-        <stop offset="0.36" stop-color="#fff" stop-opacity="0.039"/>
-        <stop offset="0.47" stop-color="#fff" stop-opacity="0.102"/>
-        <stop offset="0.57" stop-color="#fff" stop-opacity="0.18"/>
-        <stop offset="0.67" stop-color="#fff" stop-opacity="0.278"/>
-        <stop offset="0.75" stop-color="#fff" stop-opacity="0.412"/>
-        <stop offset="0.83" stop-color="#fff" stop-opacity="0.561"/>
-        <stop offset="0.91" stop-color="#fff" stop-opacity="0.741"/>
-        <stop offset="0.98" stop-color="#fff" stop-opacity="0.929"/>
-        <stop offset="1" stop-color="#fff"/>
-      </linearGradient>
-    </defs>
-    <g id="Group_4804" data-name="Group 4804" transform="translate(-881.084 -2048)">
-      <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark" transform="translate(899.084 2063)">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="151.464" height="151.464" viewBox="0 0 151.464 151.464">
+  <defs>
+    <filter id="teal_circle" x="0" y="0" width="151.464" height="151.464" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feFlood flood-opacity="0.239"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0"/>
+      <stop offset="0.14" stop-opacity="0.631"/>
+      <stop offset="1" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.23" stop-color="#fff" stop-opacity="0.012"/>
+      <stop offset="0.36" stop-color="#fff" stop-opacity="0.039"/>
+      <stop offset="0.47" stop-color="#fff" stop-opacity="0.102"/>
+      <stop offset="0.57" stop-color="#fff" stop-opacity="0.18"/>
+      <stop offset="0.67" stop-color="#fff" stop-opacity="0.278"/>
+      <stop offset="0.75" stop-color="#fff" stop-opacity="0.412"/>
+      <stop offset="0.83" stop-color="#fff" stop-opacity="0.561"/>
+      <stop offset="0.91" stop-color="#fff" stop-opacity="0.741"/>
+      <stop offset="0.98" stop-color="#fff" stop-opacity="0.929"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+  </defs>
+  <g id="Group_4949" data-name="Group 4949" transform="translate(-881.084 -2048)">
+    <g id="Group_4806" data-name="Group 4806" transform="translate(899.084 2063)">
+      <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark">
         <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
-          <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="#133c8b"/>
+          <path id="teal_circle-2" data-name="teal circle" d="M57.732,0A57.732,57.732,0,1,1,0,57.732,57.732,57.732,0,0,1,57.732,0Z" transform="translate(18 15)" fill="#133c8b"/>
         </g>
         <g id="Group_332" data-name="Group 332" transform="translate(0.001)" opacity="0.12">
-          <path id="gradient_border_2" data-name="gradient border 2" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
-          <path id="gradient_border_1" data-name="gradient border 1" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient-2)"/>
+          <path id="gradient_border_2" data-name="gradient border 2" d="M3460.732,960.031a56.7,56.7,0,1,1-56.7,56.7,56.7,56.7,0,0,1,56.7-56.7m0-1.031a57.732,57.732,0,1,0,57.732,57.732A57.732,57.732,0,0,0,3460.732,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
+          <path id="gradient_border_1" data-name="gradient border 1" d="M3460.732,960.031a56.7,56.7,0,1,1-56.7,56.7,56.7,56.7,0,0,1,56.7-56.7m0-1.031a57.732,57.732,0,1,0,57.732,57.732A57.732,57.732,0,0,0,3460.732,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient-2)"/>
         </g>
       </g>
-      <g id="Save_Icon" data-name="Save Icon" transform="translate(952.38 2114.55)">
-        <path id="Path_4393" data-name="Path 4393" d="M95.093,41.53a1.921,1.921,0,0,0-1.773-1.215H82.284V19.739a1.942,1.942,0,0,0-.086-.565,1.921,1.921,0,0,0-1.895-1.6H67.441a1.915,1.915,0,0,0-1.856,1.442,1.915,1.915,0,0,0-.148.739V40.316H54.47a2.069,2.069,0,0,0-1.478,3.414L72.445,63.194l.041.047a1.906,1.906,0,0,0,1.357.562h.275l.1-.015.095-.024.086-.024.095-.033.083-.03.086-.041.086-.041.08-.047a.709.709,0,0,0,.08-.047c.033-.021.059-.044.089-.065a.418.418,0,0,0,.062-.047,1.516,1.516,0,0,0,.186-.177L94.706,43.75A1.918,1.918,0,0,0,95.093,41.53Z" transform="translate(-43.794 -17.53)" fill="#fff"/>
-        <path id="Path_4394" data-name="Path 4394" d="M90.659,198.324H50.092a2.542,2.542,0,0,1,0-5.083H90.659a2.542,2.542,0,1,1,0,5.083Z" transform="translate(-40.312 -141.28)" fill="#fff"/>
-        <path id="Path_4395" data-name="Path 4395" d="M80.766,203.992H25.481a2.421,2.421,0,0,1-2.421-2.421v-7.141a2.421,2.421,0,0,1,4.841,0v4.729H78.346v-4.729a2.421,2.421,0,0,1,4.841,0v7.141a2.421,2.421,0,0,1-2.421,2.421Z" transform="translate(-23.06 -140.414)" fill="#fff"/>
-      </g>
     </g>
+    <g id="save_alt_black_24dp" transform="translate(926.659 2090.575)">
+      <path id="Path_4396" data-name="Path 4396" d="M0,0H60.314V60.314H0Z" fill="none"/>
+      <path id="Path_4397" data-name="Path 4397" d="M43.209,25.618V43.209H8.026V25.618H3V43.209a5.041,5.041,0,0,0,5.026,5.026H43.209a5.041,5.041,0,0,0,5.026-5.026V25.618ZM28.131,27.3l6.509-6.484,3.543,3.543L25.618,36.927,13.052,24.361,16.6,20.818,23.1,27.3V3h5.026Z" transform="translate(4.539 4.539)" fill="#fff"/>
+    </g>
+  </g>
   </svg>
 `;
 
@@ -495,6 +496,105 @@ const File_Download = `
   </svg>
 `;
 
+const Right_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
+<g id="Group_4113" data-name="Group 4113" transform="translate(0.216 65.811) rotate(-90)">
+  <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.189 -0.216)" fill="#fff" stroke="#133c8b" stroke-width="4">
+    <circle cx="33" cy="33" r="33" stroke="none"/>
+    <circle cx="33" cy="33" r="31" fill="none"/>
+  </g>
+  <path id="chevron-back-sharp" d="M9.973,0,0,9.973l9.973,9.973" transform="translate(22.214 38.374) rotate(-90)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+</g>
+</svg>
+`;
+
+const Item_Selected = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`;
+const Calendar_Optimize = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
+<defs>
+  <filter id="teal_circle" x="0" y="0" width="202.718" height="202.718" filterUnits="userSpaceOnUse">
+    <feOffset dy="3" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="6" result="blur"/>
+    <feFlood flood-opacity="0.239"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+  <linearGradient id="linear-gradient" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+    <stop offset="0"/>
+    <stop offset="0.14" stop-opacity="0.631"/>
+    <stop offset="1" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="linear-gradient-2" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+    <stop offset="0.23" stop-color="#fff" stop-opacity="0.012"/>
+    <stop offset="0.36" stop-color="#fff" stop-opacity="0.039"/>
+    <stop offset="0.47" stop-color="#fff" stop-opacity="0.102"/>
+    <stop offset="0.57" stop-color="#fff" stop-opacity="0.18"/>
+    <stop offset="0.67" stop-color="#fff" stop-opacity="0.278"/>
+    <stop offset="0.75" stop-color="#fff" stop-opacity="0.412"/>
+    <stop offset="0.83" stop-color="#fff" stop-opacity="0.561"/>
+    <stop offset="0.91" stop-color="#fff" stop-opacity="0.741"/>
+    <stop offset="0.98" stop-color="#fff" stop-opacity="0.929"/>
+    <stop offset="1" stop-color="#fff"/>
+  </linearGradient>
+</defs>
+<g id="Group_4807" data-name="Group 4807" transform="translate(-881.084 -2048)">
+  <g id="Group_4806" data-name="Group 4806">
+    <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark" transform="translate(899.084 2063)">
+      <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
+        <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="#133c8b"/>
+      </g>
+      <g id="Group_332" data-name="Group 332" transform="translate(0.001)" opacity="0.12">
+        <path id="gradient_border_2" data-name="gradient border 2" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
+        <path id="gradient_border_1" data-name="gradient border 1" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient-2)"/>
+      </g>
+    </g>
+  </g>
+  <g id="save_alt_black_24dp" transform="translate(938.9 2102.815)">
+    <path id="Path_4396" data-name="Path 4396" d="M0,0H87.087V87.087H0Z" fill="none"/>
+    <path id="Path_5349" data-name="Path 5349" d="M52.839,6l8.316,8.316L43.434,32.037,28.909,17.512,2,44.456l5.12,5.12L28.909,27.788,43.434,42.314,66.312,19.472l8.316,8.316V6Z" transform="translate(5.263 15.788)" fill="#fff"/>
+  </g>
+</g>
+</svg>
+`;
+
+const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="41" viewBox="0 0 41 41">
+<g id="ic_add_white" transform="translate(9.25 8.75)">
+  <g id="chevron_right_black_24dp" transform="translate(-9.25 -8.75)">
+    <path id="Path_4400" data-name="Path 4400" d="M0,0H41V41H0Z" fill="none"/>
+    <path id="Path_4401" data-name="Path 4401" d="M11,6,8.59,8.409l7.824,7.841L8.59,24.091,11,26.5l10.25-10.25Z" transform="translate(6.085 4.25)" fill="#fff"/>
+  </g>
+</g>
+</svg>
+`;
+
+
+const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="238" height="254.93" viewBox="0 0 238 254.93">
+<g id="Group_4817" data-name="Group 4817" transform="translate(-789.725 -193.833)">
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H202.235V202.235H0Z" transform="translate(0 0)" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M18.853,18.853H77.838V2H18.853A16.9,16.9,0,0,0,2,18.853V77.838H18.853ZM69.412,94.691,35.706,136.824H136.824l-25.279-33.706L94.438,125.953ZM128.4,56.772a12.64,12.64,0,1,0-12.64,12.64A12.623,12.623,0,0,0,128.4,56.772ZM153.676,2H94.691V18.853h58.985V77.838h16.853V18.853A16.9,16.9,0,0,0,153.676,2Zm0,151.677H94.691v16.853h58.985a16.9,16.9,0,0,0,16.853-16.853V94.691H153.676ZM18.853,94.691H2v58.985a16.9,16.9,0,0,0,16.853,16.853H77.838V153.677H18.853Z" transform="translate(14.853 14.853)" fill="#133c8b"/>
+  </g>
+  <text id="Checkout" transform="translate(908.725 436.764)" fill="#133c8b" font-size="49" font-family="Product Sans" font-weight="500"><tspan x="-118" y="0">Add Image</tspan></text>
+</g>
+</svg>
+`;
+const Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
+<g id="Group_4283" data-name="Group 4283" transform="translate(22.737 37.649) rotate(180)">
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill="#133c8b"/>
+</g>
+</svg>
+`;
+const Arrow_Right_Button = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
+<g id="Group_4984" data-name="Group 4984" transform="translate(-6.437 -10.659)">
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill="#133c8b"/>
+</g>
+</svg>`;
+
+const GPS_LOCATION = `<svg id="gps_fixed_black_24dp" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+<path id="Path_5365" data-name="Path 5365" d="M0,0H24V24H0Z" fill="none"/>
+<path id="Path_5366" data-name="Path 5366" d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm8.94,3A8.994,8.994,0,0,0,13,3.06V1H11V3.06A8.994,8.994,0,0,0,3.06,11H1v2H3.06A8.994,8.994,0,0,0,11,20.94V23h2V20.94A8.994,8.994,0,0,0,20.94,13H23V11H20.94ZM12,19a7,7,0,1,1,7-7A6.995,6.995,0,0,1,12,19Z" fill="#666"/>
+</svg>
+`;
+
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
         {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -541,5 +641,13 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "WhatsApp" && <SvgXml style={style} xml={WhatsApp} width={width} height={height} />}
         {icon == "Quiz" && <SvgXml style={style} xml={Quiz} width={width} height={height} />}
         {icon == "File_Download" && <SvgXml style={style} xml={File_Download} width={width} height={height} />}
+        {icon == "Right_Arrow" && <SvgXml style={style} xml={Right_Arrow} width={width} height={height} />}
+        {icon == "Item_Selected" && <SvgXml style={style} xml={Item_Selected} width={width} height={height} />}
+        {icon == "Calendar_Optimize" && <SvgXml style={style} xml={Calendar_Optimize} width={width} height={height} />}         
+        {icon == "Arrow_Right" && <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />}         
+        {icon == "Add_Image" && <SvgXml style={style} xml={Add_Image} width={width} height={height} />}
+        {icon == "Arrow_Left_Btn" && <SvgXml style={style} xml={Arrow_Left} width={width} height={height} />}
+        {icon == "Arrow_Right_Btn" && <SvgXml style={style} xml={Arrow_Right_Button} width={width} height={height} />}
+        {icon == "GPS_LOCATION" && <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />}
     </Fragment>
 );

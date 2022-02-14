@@ -3,18 +3,20 @@ import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensio
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-
-import LocationInfoInput from './CRM/LocationInfoInput';
-import RefreshSlider from '../../components/RefreshSlider';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../constants/Colors';
-import { boxShadow } from '../../constants/Styles';
-import FilterButton from '../../components/FilterButton';
-import SvgIcon from '../../components/SvgIcon';
-import MarkerIcon from '../../components/Marker';
-import { breakPoint } from '../../constants/Breakpoint';
-import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
-import Fonts from '../../constants/Fonts';
-import { grayBackground } from '../../constants/Styles';
+import LocationInfoInput from '../LocationInfoInput';
+import RefreshSlider from '../../../../components/modal/RefreshSlider';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import { boxShadow, style } from '../../../../constants/Styles';
+import FilterButton from '../../../../components/FilterButton';
+import SvgIcon from '../../../../components/SvgIcon';
+import MarkerIcon from '../../../../components/Marker';
+import { breakPoint } from '../../../../constants/Breakpoint';
+import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes';
+import Fonts from '../../../../constants/Fonts';
+import { grayBackground } from '../../../../constants/Styles';
+import DeviceInfo from 'react-native-device-info';
+import LocationInfoInputTablet from '../LocationInfoInputTablet';
+import Images from '../../../../constants/Images';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
   <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
@@ -24,19 +26,55 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
 );
 
 export default function LocationSpecificInfoScreen(props) {
-  const dispatch = useDispatch();
-  const locationInfo = useSelector(state => state.location.locationInfo);
+
+  const dispatch = useDispatch();  
+  const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
-
   const [statusSubmit, setStatusSubmit] = useState(true);
+
   const showLoopSlider = () => {
     setShowItem(1);
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
 
   useEffect(() => {
-    dispatch({type: SLIDE_STATUS, payload: false});
+    // custom header
+    props.screenProps.setOptions({                 
+      headerTitle:() =>{
+        return(<TouchableOpacity onPress={
+          () =>{            
+            if(props.navigation.canGoBack()){              
+              dispatch({type: SLIDE_STATUS, payload: false});              
+              props.navigation.goBack(); 
+            }
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              <Image
+                resizeMethod='resize'
+                style={{width:15,height:20, marginRight:5}}
+                source={Images.backIcon}
+              />
+          <Text style={style.headerTitle} >CRM</Text>
+        </View></TouchableOpacity>)
+      },
+
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {
+            setShowItem(0);
+          }}
+        >
+        </TouchableOpacity>
+      ),
+      
+    });    
+  });
+
+  useEffect(() => {
+    dispatch({type: SLIDE_STATUS, payload: false});    
   });
 
   useEffect(() => {
@@ -51,10 +89,11 @@ export default function LocationSpecificInfoScreen(props) {
         onPress={() => {dispatch({type: SUB_SLIDE_STATUS, payload: false})}}
       ></TouchableOpacity>}
       {subSlideStatus && <View
-        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-      >
-        <RefreshSlider />
+          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
+        >
+        <RefreshSlider location_id={locationInfo.location_id}  />
       </View>}
+
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -84,53 +123,36 @@ export default function LocationSpecificInfoScreen(props) {
             <FilterButton text="Contact: Jack Reacher" />
           </View>
         </View>
+
+
+
         <View style={styles.innerContainer}>
-          <View style={styles.locationInfoBox}>
-            <View style={[styles.cardBox, boxShadow]}>
-              <Text style={styles.boldText}>Outcome</Text>
-              <View style={{ flexDirection: 'row', position: 'relative' }}>
-                <View style={styles.outComeBox}>
-                  {locationInfo.outcomes.map((item, key) => (
-                    <Rectangle key={key} style={{ width: '48%' }} text={item.outcome_name} icon="Red_X" backgroundColor="#155AA14F" />
-                  ))}
-                  {/* <Rectangle style={{ width: '48%' }} text="DNK Request" icon="Red_X" backgroundColor="#155AA14F" />
-                  <Rectangle style={{ width: '48%' }} text="Not Interested" icon="Grey_Triangle" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{ width: '48%' }} text="Priority Re-loop" icon="Orange_Star" backgroundColor="#fff" borderColor="#97ACC2" />
-                  <Rectangle style={{ width: '48%' }} text="Re-loop" icon="Green_Star" backgroundColor="#fff" borderColor="#97ACC2" /> */}
-                </View>
-                <TouchableOpacity>
-                  <Image style={styles.refreshImage} source={require("../../assets/images/Re_Loop_Button.png")} />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <LocationInfoInput navigation={props.navigation} screenProps={props.screenProps} statusSubmit={statusSubmit} showLoopSlider={showLoopSlider} />
-          </View>
-          <View style={styles.cardContainer}>
-            <View style={[styles.cardBox, boxShadow]}>
-              <Text style={styles.boldText}>Stage</Text>
-              {locationInfo.stages.map((item, key) => (
-                <Rectangle key={key} text={item.stage_name} backgroundColor="#15A1234F" />
-              ))}
-              {/* <Rectangle text="Opportunity" backgroundColor="#15A1234F" />
-              <Rectangle text="Contact" backgroundColor="#15A1234F" />
-              <Rectangle text="DM" backgroundColor="#155AA14F" />
-              <Rectangle text="Presentation" backgroundColor="#fff" borderColor="#97ACC2" />
-              <Rectangle style={{ marginBottom: 0 }} text="Order" backgroundColor="#fff" borderColor="#97ACC2" /> */}
-            </View>
-            {/* {specificInfo.map((info, key) => (
-              <View key={key} style={[styles.card, boxShadow]}>
-                <View style={styles.cardTitleBox}>
-                  <SvgIcon style={styles.cardIcon} icon={info.icon} width="15px" height="15px" />
-                  <Text style={styles.cardTitle}>{info.title}</Text>
-                </View>
-                <Text style={styles.cardText}>{info.text}</Text>
-              </View>
-            ))} */}
-          </View>
+          
+                  
+            <View style={[styles.cardBox]}>
+              {/* <Text style={styles.boldText}>Outcome</Text> */}
+              
+              {
+              locationInfo && DeviceInfo.isTablet() ? <LocationInfoInputTablet
+                  navigation={props.navigation} 
+                  screenProps={props.screenProps} 
+                  statusSubmit={statusSubmit}
+                  showLoopSlider={showLoopSlider} 
+                  infoInput={locationInfo} /> : 
+                <LocationInfoInput
+                  navigation={props.navigation} 
+                  screenProps={props.screenProps} 
+                  statusSubmit={statusSubmit} 
+                  showLoopSlider={showLoopSlider} 
+                  infoInput={locationInfo} />
+              }     
+
+            </View>                                       
         </View>
+
         <View style={{height: 60}}></View>
       </ScrollView>
-      <TouchableOpacity style={styles.plusButton} onPress={() => setStatusSubmit(!statusSubmit)}>
+      <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => setStatusSubmit(!statusSubmit)}>
         <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>
     </SafeAreaView>
@@ -182,7 +204,7 @@ const styles = EStyleSheet.create(parse({
   headerIcon: {
     marginRight: 8
   },
-  innerContainer: {
+  innerContainer: {    
     justifyContent: 'space-between',
     flexDirection: perWidth('row-reverse', 'column')
   },
@@ -197,11 +219,9 @@ const styles = EStyleSheet.create(parse({
     marginBottom: 10
   },
   cardBox: {
-    display: perWidth('flex', 'none'),
+    display: perWidth('flex', 'flex'),
     width: '100%',
-    padding: 12,
-    borderRadius: 10,
-    backgroundColor: '#fff',
+    padding: 12,    
     marginBottom: 8,
   },
   boldText: {
@@ -242,17 +262,11 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'center',
   },
   cardText: {
-    color: '#9D9FA2',
+    color: DISABLED_COLOR,
     fontSize: 12,
     fontFamily: Fonts.primaryRegular
   },
-  plusButton: {
-    position: 'absolute',
-    bottom: 80,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,
-  },
+
   rectangle: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,132 +1,203 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, TouchableOpacity , FlatList } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
-
 import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR } from '../../../constants/Colors';
-import { boxShadow } from '../../../constants/Styles';
+import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../constants/Colors';
+import { boxShadow, style } from '../../../constants/Styles';
 import { BG_COLOR } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import { getBaseUrl, getToken } from '../../../constants/Storage';
-import { getCalendar } from '../../../actions/calendar.action';
+import { getBaseUrl, getCalendarAdd, getCalendarOptimize, getToken } from '../../../constants/Storage';
+import { getCalendar, updateCalendar } from '../../../actions/calendar.action';
+import { useSelector, useDispatch , connect} from 'react-redux';
+import { CalendarItem } from './partial/CalendarItem';
+import DraggableFlatList , {ScaleDecorator , useOnCellActiveAnimation}  from 'react-native-draggable-flatlist'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { LOCATION_LOOP_LISTS } from '../../../actions/actionTypes';
+var selectedIndex = 0;
 
-const lists = [
-  {
-    title: "Spar Century City",
-    location: "Century City Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa",
-    time: "09:00 - 17:00",
-    distance: "1.8 km"
-  },
-  {
-    title: "Clicks Century City",
-    location: "Century City Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa",
-    time: "09:00 - 17:00",
-    distance: "2.7 km"
-  },
-  {
-    title: "PnP Canal Walk",
-    location: "Century Boulevard Shop 129 Canal Walk Shopping Centre, Cape Town Western Cape 7441, South Africa",
-    time: "09:00 - 17:00",
-    distance: "4.5 km"
-  },
-  {
-    title: "Woolworths Canal Walk",
-    location: "Century Boulevard Shop 129 Canal Walk Shopping Centre, Cape Town Western Cape 7441, South Africa",
-    time: "09:00 - 17:00",
-    distance: "5.1 km"
-  },
-  {
-    title: "Super Spar Parklands",
-    location: "Link Rd, Parklands, Cape Town, Cape Town Western Cape, 7441, South Africa",
-    time: "09:00 - 17:00",
-    distance: "11.7 km"
-  }
-]
+export default function CalendarScreen(props) {
 
-function CalendarItem({title, location, time, distance}) {
-  return (
-    <View style={styles.itemContainer}>
-      <View style={styles.itemLeft}>
-        <View style={styles.itemTitleBox}>
-          <SvgIcon style={{ marginRight: 4 }} icon="Location_Arrow" width='12px' height='12px' />
-          <Text style={styles.itemTitle}>{title}</Text>
-        </View>
-        <Text style={styles.itemText}>{location}</Text>
-      </View>
-      <View style={styles.itemRight}>
-        <Text style={[styles.itemTitle, {textAlign: 'center'}]}>{time}</Text>
-        <TouchableOpacity style={styles.itemButton}>
-          <Text style={styles.itemButtonText}>Check In</Text>
-          <FontAwesomeIcon style={styles.itemButtonIcon} size={16} color="#fff" icon={ faCheckCircle } />
-        </TouchableOpacity>
-        <Text style={[styles.itemText, {textAlign: 'center'}]}>{distance}</Text>
-      </View>
-    </View>
-  )
-}
-
-export default function CalendarScreen({screenProps}) {
-
+  const dispatch = useDispatch();
+  const navigation = props.navigation;
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const [tabIndex, setTabIndex] = useState(2);
-  //const [lists, setLists] = useState([]);
-
-  useEffect(() => {
-    if (screenProps) {
-      screenProps.setOptions({
+  const [lists, setLists] = useState([]);
+  const [isOptimize, setIsOptimize] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
+  
+  useEffect(() => {        
+    if (props.screenProps) {
+      props.screenProps.setOptions({
         title: "Calendar"
       });
-    }
-    loadList("today");
+    }    
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {                
+      if(selectedIndex === 1){
+        loadList("last_week");
+      }else if(selectedIndex === 2 || selectedIndex === 0){
+        loadList("today");
+      }else if(selectedIndex === 3){
+        loadList("week_ahead");
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const loadList = async(type) => {    
-    
+    setIsOptimize( await getCalendarOptimize());
+    setIsAdd(await getCalendarAdd());
     var base_url = await getBaseUrl();
     var token = await getToken();
-
     if(base_url != null && token != null){      
       getCalendar(base_url, token, type)
       .then(res => {        
-        setLists(res);        
+        setLists(res);                    
       })
       .catch(error=>{
         setLists([]);
       });
     }    
-  }    
+  }
+
+  const updateTodayLocationLists =  async(data) => {    
+      updateCalendar({schedules:data})
+      .then(res => {                          
+      })
+      .catch(error=>{        
+      });        
+  }
+    
+  const renderCalendarItem = (item, index , tabIndex) => {    
+    console.log("tabIndex", tabIndex);
+      return (
+      <View style={{marginTop:10}}>
+        <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} onItemSelected={() => {}}>
+        </CalendarItem>
+      </View>)
+  }
+  
+  const renderTodayItem = ({item, drag} )  => {    
+    const { isActive } = useOnCellActiveAnimation();
+    return (
+      <ScaleDecorator>
+        <TouchableOpacity          
+          onLongPress={drag}
+          disabled={isActive}
+          style={[
+            isActive ? {} : { marginTop:10},
+            { backgroundColor: isActive ? "#eee" : BG_COLOR },
+          ]}>
+
+          <CalendarItem 
+          onItemSelected={() => {            
+            console.log("loop list updated in calendar ");
+            
+            dispatch({type: LOCATION_LOOP_LISTS, payload: lists });            
+          }}
+          key={item.schedule_id} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} > </CalendarItem>
+
+        </TouchableOpacity>
+      </ScaleDecorator>
+    );
+  };
 
   return (
     <SafeAreaView>
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <View style={[styles.tabContainer, boxShadow]}>
-          <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(1)}>
-          <Text style={[styles.tabText, tabIndex == 1 ? styles.tabActiveText : {}]}>Last Week</Text>
+
+          <TouchableOpacity style={styles.tabItem} onPress={() => {
+            setTabIndex(1);
+            selectedIndex = 1;
+            loadList("last_week");
+          }}>
+          <Text style={[styles.tabText, tabIndex === 1 ? styles.tabActiveText : {}]}>Last Week</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(2)}>
-            <Text style={[styles.tabText, tabIndex == 2 ? styles.tabActiveText : {}]}>Today</Text>
+
+          <TouchableOpacity style={styles.tabItem} onPress={() => {
+            setTabIndex(2);
+            selectedIndex = 2;
+            loadList("today");
+          }}>
+            <Text style={[styles.tabText, tabIndex === 2 ? styles.tabActiveText : {}]}>Today</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(3)}>
-          <Text style={[styles.tabText, tabIndex == 3 ? styles.tabActiveText : {}]}>Week Ahead</Text>
+
+          <TouchableOpacity style={styles.tabItem} onPress={() => {
+            setTabIndex(3);
+            selectedIndex = 3;
+            loadList("week_ahead");            
+            }}>
+          <Text style={[styles.tabText, tabIndex === 3 ? styles.tabActiveText : {}]}>Week Ahead</Text>
           </TouchableOpacity>
         </View>
 
         {
-          false && <TouchableOpacity style={styles.startButton} onPress={() => console.log("pressed")}>
+          false && 
+          <TouchableOpacity style={styles.startButton} onPress={() => console.log("pressed")}>
             <Text style={[styles.startButtonText]}>Start My Day</Text>
             <FontAwesomeIcon style={styles.startButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
           </TouchableOpacity>
         }
 
+        <View style={{flex:1}}>
+          {
+            (tabIndex == 1 || tabIndex == 3) &&
+            <FlatList
+              data={lists}
+              renderItem={
+                  ({ item , index }) => renderCalendarItem(item, index, tabIndex)
+              }
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={{ paddingHorizontal: 7, marginTop: 15 }}
+            />
+          }
+          {
+            tabIndex == 2 &&   
+            <GestureHandlerRootView>
+              <DraggableFlatList
+                data={lists}
+                onDragEnd={({ data }) => {
+                  var tmp = [];
+                  var newlists = [];
+                  data.forEach((item , index) =>{
+                    item.schedule_order = (index + 1).toString();
+                    newlists.push(item);
+                    tmp.push({schedule_order:(index + 1).toString() , location_id: item.location_id, schedule_id: item.schedule_id, schedule_date: item.schedule_date, schedule_time: item.schedule_time });
+                  });
+                  setLists(newlists);             
+                  updateTodayLocationLists(tmp);
+                }}   
+                keyExtractor={(item) => item.schedule_id}
+                renderItem={renderTodayItem}                
+              />
+            </GestureHandlerRootView>            
+          }          
+        </View>                          
+      </View>
+        
+      <View style={styles.plusButtonContainer}>
+        {
+          isOptimize && 
+          <TouchableOpacity style={style.innerPlusButton} onPress={() =>{
+            props.navigation.navigate('CRM', {'screen': 'LocationSearch' , params : {'calendar_type': 'add'} });
+          }}>
+            <SvgIcon icon="Calendar_Optimize" width='70px' height='70px' />
+          </TouchableOpacity>
+        }        
 
-        {lists.map((item, index) => (
-          <CalendarItem title={item.title} location={item.location} time={item.time} distance={item.distance} key={index} />
-        ))}
-      </ScrollView>
-      <TouchableOpacity style={styles.plusButton}>
-        <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-      </TouchableOpacity>
+        {
+          isAdd &&
+          <TouchableOpacity style={style.innerPlusButton} onPress={() => {
+            props.navigation.navigate('CRM', {'screen': 'LocationSearch' , params : {'calendar_type': 'optimize'} });
+          }}>
+            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+          </TouchableOpacity>        
+        }        
+      </View>      
     </SafeAreaView>
   )
 }
@@ -149,7 +220,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: Fonts.secondaryMedium,
     fontSize: 15,
-    color: '#9D9FA2'
+    color: DISABLED_COLOR
   },
   tabActiveText: {
     color: PRIMARY_COLOR,
@@ -168,7 +239,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderRadius: 7,
-    backgroundColor: "#9D9FA2",
+    backgroundColor: DISABLED_COLOR,
     marginBottom: 16
   },
   startButtonText: {
@@ -179,67 +250,15 @@ const styles = StyleSheet.create({
   startButtonIcon: {
     position: 'absolute',
     right: 10
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 4,
-    borderColor: PRIMARY_COLOR,
-    borderWidth: 1,
-    marginBottom: 16
-  },
-  itemLeft: {
-    width: '60%',
-  },
-  itemRight: {
-    width: '35%',
-  },
-  itemTitleBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4
-  },
-  itemTitle: {
-    fontSize: 14,
-    fontFamily: Fonts.secondaryBold,
-    color: PRIMARY_COLOR
-  },
-  itemText: {
-    fontSize: 13,
-    lineHeight: 18,
-    fontFamily: Fonts.secondaryMedium,
-    color: '#9D9FA2',
-    maxHeight: 36
-  },
-  itemButton: {
-    position: 'relative',
-    justifyContent: 'center',
-    padding: 4,
-    backgroundColor: '#9D9FA2',
-    marginTop: 4,
-    marginBottom: 4,
-    borderRadius: 4
-  },
-  itemButtonActive: {
-    backgroundColor: PRIMARY_COLOR
-  },
-  itemButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.secondaryMedium,
-    textAlign: 'center',
-    color: '#fff'
-  },
-  itemButtonIcon: {
+  },    
+  plusButtonContainer: {
     position: 'absolute',
-    right: 8
-  },
-  plusButton: {
-    position: 'absolute',
+    flexDirection:"row",
     bottom: 20,
     right: 20,
     zIndex: 1,
     elevation: 1,
   },
+
+
 })

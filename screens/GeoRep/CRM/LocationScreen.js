@@ -1,80 +1,30 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import React, { Fragment, useState, useEffect ,useRef} from 'react';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform } from 'react-native';
 import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { useSelector, useDispatch } from 'react-redux';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView , { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import AddLead from '../../../components/AddLead';
-import LocationInfo from './LocationInfo';
+import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
-import MarkerIcon from '../../../components/Marker';
-import Skeleton from '../../../components/Skeleton';
 import SvgIcon from '../../../components/SvgIcon';
-import Divider from '../../../components/Divider';
 import GrayBackground from '../../../components/GrayBackground';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR } from '../../../constants/Colors';
-import { boxShadow } from '../../../constants/Styles';
+import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
+import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { BACK_ICON_STATUS, SLIDE_STATUS } from '../../../actions/actionTypes';
-
-import { 
-  getLocationPinKey, 
-  getLocationFilters,
-  getLocationSearchList,
-  getLocationInfo,
-  getLocationsMap,
-  getLeadFields
-} from '../../../actions/location.action';
+import {  LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationPinKey, getLocationFilters, getLocationSearchList, getLocationInfo, getLocationsMap } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
-
-const MarkerView = () => {
-  const dispatch = useDispatch();
-  const statusPinKeys = useSelector(state => state.location.statusPinKeys);
-  const pins = useSelector(state => state.location.locationPins);
-  const [markerIcons, setMarkerIcons] = useState([]);
-
-  useEffect(() => {
-    let items = [];
-    pins.map((pin, key) => {
-      items.push({
-        text: pin.label,
-        icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1]
-      })
-    })
-    setMarkerIcons(items)
-  }, [pins])
-
-  if (statusPinKeys == "request") {
-    return (
-      <SafeAreaView>
-        <View style={{padding: 10, justifyContent: 'center'}}>
-          {Array.from(Array(6)).map((_, key) => (
-            <Skeleton key={key} />  
-          ))}
-        </View>
-      </SafeAreaView>
-    )
-  }
-
-  return (
-    <Fragment>
-      <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
-        <Divider />
-      </TouchableOpacity>
-      <View style={styles.markerContent}>
-        {markerIcons.map((markerIcon, key) => (
-          <View style={styles.markerBox} key={key}>
-            <MarkerIcon style={styles.markerIcon} icon={markerIcon.icon} width="28px" height="28px" />
-            <Text style={styles.markerText}>{markerIcon.text}</Text>
-          </View>
-        ))}
-      </View>
-    </Fragment>
-  )
-};
+import Images from '../../../constants/Images';
+import { MarkerView } from './partial/MarkerView';
+import MarkerIcon from '../../../components/Marker';
+import ClusteredMapView from './components/ClusteredMapView'
+import MapZoomPanel from './components/MapZoomPanel'
+import { LocationInfoDetails } from './LocationInfoDetails';
+import { getDistance } from '../../../constants/Consts';
+import LoadingView from '../../../components/LoadingView/LoadingView';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -83,26 +33,69 @@ const SlidUpArrow = () => (
   </View>
 )
 
-
 export default function LocationScreen(props) {
 
+  const navigation = props.navigation;
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const locationMaps = useSelector(state => state.location.locationMaps);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const filterParmeterChanged = useSelector(state => state.selection.mapFilters);
   const dispatch = useDispatch();
-
   const [showItem, setShowItem] = useState(0);
+  const [locationInfo, setLocationInfo] = useState();  
+  const [isRequest, setIsRequest] = useState(false);
+  const [isBack, setIsBack] = useState(false);
+  const map = useRef(null)
+  const [pageType, setPageType ] = useState({name:"search-lists"});
+  const [isLoading , setIsLoading] = useState(false);
 
   useEffect(() => {
-    props.screenProps.setOptions({
-     
+    props.screenProps.setOptions({           
+      headerTitle:() =>{
+        return(<TouchableOpacity                     
+           onPress={
+          () =>{
+            dispatch({type: SLIDE_STATUS, payload: false});
+            setIsBack(false);            
+            if(navigation.canGoBack()){              
+              navigation.goBack();              
+            }
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              {
+                isBack &&
+                <Image
+                  resizeMethod='resize'  
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              }
+            <Text style={style.headerTitle} >CRM</Text>
+        </View></TouchableOpacity>)
+      },
+
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {
+            dispatch({type: SLIDE_STATUS, payload: false});
+            setIsBack(false);            
+            if(navigation.canGoBack()){              
+              navigation.goBack();              
+            }
+          }}
+        >
+        </TouchableOpacity>
+      ),      
       tabBarStyle: {
         position: 'absolute',
         height: 50,      
         paddingBottom: Platform.OS == "android" ? 5 : 0,          
-        backgroundColor: "#fff",
+        backgroundColor: Colors.whiteColor,
       },
     });
+
     if (crmStatus) {
       props.screenProps.setOptions({
         tabBarStyle: {
@@ -110,6 +103,7 @@ export default function LocationScreen(props) {
         },
       });
     }
+
   });
 
   useEffect(() => {
@@ -118,6 +112,33 @@ export default function LocationScreen(props) {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
     };
   }, [crmStatus]);
+
+  useEffect(() => {      
+
+    setIsBack(false);    
+    if(locationMaps.length > 0){
+      let items = [];    
+      locationMaps.map((list, key) => {        
+        let item = {
+          name: list.location_name.value !== "" ? list.location_name.value : "Location",
+          address: '',
+          distance: getDistance(list.coordinates, currentLocation).toFixed(2),
+          status: '',
+          location_id: list.location_id,
+          status_text_color:list.pin_image
+        }
+        items.push(item);        
+      });
+      items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
+      console.log("loopList updated in map page");
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+      //console.log("location map" , locationMaps);
+    }      
+  }, [locationMaps]);
+  
+  useEffect(() => {    
+    dispatch(getLocationsMap());  
+  }, [filterParmeterChanged]);  
 
   const handleBackButtonClick = () => {
     if (crmStatus) {
@@ -132,57 +153,63 @@ export default function LocationScreen(props) {
     dispatch({type: SLIDE_STATUS, payload: true});
     switch(name) {
       case "marker":
-        setShowItem(1);
-        
+        setShowItem(1);      
         return;
       case "filter":
         setShowItem(2);
         return;
       case "addLead":
-        setShowItem(3);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        setShowItem(3);      
+        setIsBack(true);
         return;
       case "locationInfo":
         setShowItem(4);
-        dispatch({type: BACK_ICON_STATUS, payload: true});
+        setIsBack(true);        
         return;
       default:
         return;
     }
   }
   
+
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
 
-        <GrayBackground />
+        <LoadingView visible={isRequest}></LoadingView>
 
-        {crmStatus && (showItem == 1 || showItem == 2) && <View
-          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-        >
-          {showItem == 1 && <MarkerView />}
-          {showItem == 2 && <FilterView navigation={props.navigation} />}
-        </View>}
+        <GrayBackground />        
+        {
+          crmStatus && (showItem == 1 || showItem == 2) && 
+          <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
+            {showItem == 1 && <MarkerView isRequest={isRequest} />}
+            {showItem == 2 && 
+            <FilterView navigation={props.navigation} page={"map"} onClose={() =>{
+              setShowItem(0);
+              dispatch({type: SLIDE_STATUS, payload: false});
+            }} />
+            }
+          </View>
+        }
         
         {crmStatus && (showItem == 3 || showItem == 4) && <View
           style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
         >
-          {showItem == 3 && <AddLead screenProps={props.screenProps} />}
-          {showItem == 4 && <LocationInfo navigation={props.navigation} screenProps={props.screenProps} />}
+          {showItem == 3 && <AddLead screenProps={props.screenProps} onClose={() => {
+            setIsBack(false);
+            dispatch(getLocationsMap());
+            dispatch({type: SLIDE_STATUS, payload: false});
+            }} />}
+          {showItem == 4 && <LocationInfoDetails navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
         </View>}
-
         
         <View style={styles.container}>
-          
-          {/* <SearchBar animation={() => animation("filter")} /> */}
 
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
               onPress={()=> {
-                dispatch({type: SLIDE_STATUS, payload: false});
-                dispatch({type: BACK_ICON_STATUS, payload: true});
-                dispatch(getLocationSearchList());
+                dispatch({type: SLIDE_STATUS, payload: false});                
                 props.navigation.navigate("LocationSearch");
               }}
             >
@@ -193,78 +220,109 @@ export default function LocationScreen(props) {
                 />
               </View>
             </TouchableOpacity>
-            <FontAwesomeIcon style={styles.searchIcon} size={16} color="#9D9FA2" icon={ faSearch } />
-            <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-              dispatch(getLocationFilters());              
-              animation("filter");
-            }}>
+
+            <FontAwesomeIcon style={styles.searchIcon} size={16} color={DISABLED_COLOR} icon={ faSearch } />
+              <TouchableOpacity style={styles.filterImageButton} onPress={() => {
+                dispatch(getLocationFilters());         
+                animation("filter");
+              }}>
               <SvgIcon icon="Filter" width="30px" height="30px" />
             </TouchableOpacity>
           </View>
+       
 
-          <MapView
-            moveOnMarkerPress={false}
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            showsUserLocation = {true}
-            followUserLocation = {true}
-            showsMyLocationButton = {true}
-            zoomEnabled = {true}
-            region={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-              latitudeDelta: 0.015,
-              longitudeDelta: 0.0121
-            }}
-            onPress={(e) => console.log(e)}>
 
-            {locationMaps.map((locationMap, key) => (
-              <Marker
-                key={key}
-                coordinate={{
-                  latitude: Number(locationMap.coordinates.latitude),
-                  longitude: Number(locationMap.coordinates.longitude)
-                }}
-                onPress={() => {
-                  dispatch(getLocationInfo(Number(locationMap.location_id)));
-                  animation("locationInfo");
-                }}
-              >
-                <MarkerIcon style={styles.markerIcon} icon={locationMap.pin_image} width="34px" height="34px" />
-              </Marker>
-            ))}
+          
 
-            <MapView.Circle
-                center = {{
-                  latitude: currentLocation.latitude,
-                  longitude: currentLocation.longitude
-                }}
-                radius = { 200 }
-                strokeWidth = { 1 }
-                strokeColor = {PRIMARY_COLOR}
-                fillColor = { 'rgba(230,238,255,0.5)' }
-              />
-            </MapView>
+ 
+            {
+              currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
+              <View style={styles.mapContainer}>
+                    <ClusteredMapView
+                      clusterColor="red"
+                      ref={map}
+                      //mapType="hybrid"
+                      clusteringEnabled={true}
+                      style={styles.mapView}
+                      initialRegion={{
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude,
+                        latitudeDelta: 0.015,
+                        longitudeDelta: 0.015,
+                      }}                      
+                      currentLocation={{
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude,
+                      }}
+                      
+                      >
+                      {locationMaps.map((item , key) => (
+                        <Marker
+                          key={key}
+                          onPress={() =>{                            
+                            setIsRequest(true);
+                            getLocationInfo( Number(item.location_id))
+                            .then((res) => {                              
+                              setLocationInfo(res);                                      
+                              animation("locationInfo");
+                              setIsRequest(false);
+                            })
+                            .catch((e) =>{
+                              setIsRequest(false);
+                            })      
+                          }}
+                          coordinate={{
+                            latitude: Number(item.coordinates.latitude),
+                            longitude: Number(item.coordinates.longitude),
+                          }}                
+                        >
+                          <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />
+                        </Marker>
 
-          <TouchableOpacity 
-            style={styles.plusButton} 
-            onPress={() => {
-              dispatch(getLocationsMap());
-              dispatch(getLeadFields());
-              animation("addLead");
-            }}
-          >
-            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.pinKeyButton}
-            onPress={() => {
-              dispatch(getLocationPinKey());
-              animation("marker");
-            }}
-          >
-            <SlidUpArrow />
-          </TouchableOpacity>
+                      ))}
+                        
+                        <MapView.Circle
+                          center = {{
+                            latitude: currentLocation.latitude,
+                            longitude: currentLocation.longitude
+                          }}
+                          radius = { 200 }
+                          strokeWidth = { 1 }
+                          strokeColor = {PRIMARY_COLOR}
+                          fillColor = { 'rgba(230,238,255,0.5)' }
+                        />
+                        
+                    </ClusteredMapView> 
+                    
+                    {/* <MapZoomPanel
+                      onZoomIn={() => {
+                        mapZoomIn()
+                      }}
+                      onZoomOut={() => {
+                        mapZoomOut()
+                      }}
+                    /> */}
+              </View>
+            }
+                                        
+            <TouchableOpacity
+              style={styles.plusButton} 
+              onPress={() => {                
+                animation("addLead");
+              }}>
+              <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.pinKeyButton}
+              onPress={() => {                
+                dispatch(getLocationPinKey());
+                animation("marker");
+              }}>
+              <SlidUpArrow />
+            </TouchableOpacity>
+
+
         </View>
       </SafeAreaView>
     </Provider>
@@ -274,12 +332,11 @@ export default function LocationScreen(props) {
 const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
-  container: {    
-    
+  container: {
     flex:1,
     justifyContent: 'space-between',
-    backgroundColor: BG_COLOR,    
-    paddingBottom: 60
+    backgroundColor: BG_COLOR,        
+    paddingBottom: Platform.OS == "android" ? 50 : 50,    
   },
   map: {
     flexGrow: 1,
@@ -302,7 +359,7 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.whiteColor,
     borderRadius: 6,
     paddingLeft: 8,
     paddingRight: 8,
@@ -327,7 +384,7 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: BG_COLOR,
     elevation: 2,
     zIndex: 2,
-    padding: 10,
+    padding: 0,
   },
   searchBox: {
     position: perWidth('absolute', 'relative'),
@@ -341,7 +398,7 @@ const styles = EStyleSheet.create(parse({
     paddingRight: 50,
     color: '#5d5d5d',
     fontSize: 12,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.whiteColor,
     borderRadius: 7,
     fontFamily: Fonts.secondaryMedium,
     height: 45,
@@ -355,37 +412,13 @@ const styles = EStyleSheet.create(parse({
     position: 'absolute',
     top: 18,
     right: 20,
-  },
-  markerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap'
-  },
-  markerBox: {
-    width: perWidth('30%', '45%'),
-    flexDirection: 'row',
+  },  
+  mapContainer: {
+    flex: 1,
+    backgroundColor: Colors.whiteColor,
     alignItems: 'center',
-    marginBottom: 20
+    justifyContent: 'center',
   },
-  markerIcon: {
-    marginRight: 10
-  },
-  markerText: {
-    fontSize: 12,
-    color: TEXT_COLOR,
-    fontFamily: Fonts.secondaryMedium
-  },
-  goToAddLead: {
-    position: 'absolute',
-    bottom: 5,
-    right: 10,
-    backgroundColor: '#fff',
-    borderColor: PRIMARY_COLOR,
-    borderRadius: 4,
-    borderWidth: 1,
-    padding: 2
-  },
-  goToAddLeadText: {
-    color: PRIMARY_COLOR
-  },
+  mapView: { flex: 1, width: '100%', height: '100%' },
+    
 }));

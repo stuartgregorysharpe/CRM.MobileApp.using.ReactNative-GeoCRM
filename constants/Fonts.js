@@ -12,7 +12,7 @@ var ios = {
 
   secondaryRegular: 'Gilroy-Regular',
   secondaryMedium: 'Gilroy-Medium',
-  secondaryBold: 'Gilroy-Medium',
+  secondaryBold: 'Gilroy-Bold',
 }
 
 var android = {
@@ -26,7 +26,7 @@ var android = {
   
   secondaryRegular: 'Gilroy-Regular',
   secondaryMedium: 'Gilroy-Medium',
-  secondaryBold: 'Gilroy-Medium',
+  secondaryBold: 'Gilroy-Bold',
 }
 
 export default  Platform.OS == 'ios' ? ios : android

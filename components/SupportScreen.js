@@ -9,6 +9,7 @@ import SvgIcon from '../../components/SvgIcon';
 import { boxShadow } from '../../constants/Styles';
 import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
+import { DISABLED_COLOR } from '../constants/Colors';
 
 const Ticket = () => {
   const emailRef = useRef();
@@ -37,8 +38,8 @@ const Ticket = () => {
             style={styles.textInput}
             label="Email"
             mode="outlined"
-            outlineColor="#133C8B"
-            activeOutlineColor="#9D9FA2"
+            outlineColor={PRIMARY_COLOR}
+            activeOutlineColor={DISABLED_COLOR}
             value={email}
             onChangeText={text => setEmail(text)}
           />
@@ -54,8 +55,8 @@ const Ticket = () => {
             style={styles.textInput}
             label={picker == '' ? "Select Issue" : picker}
             mode="outlined"
-            outlineColor="#133C8B"
-            activeOutlineColor="#9D9FA2"
+            outlineColor={PRIMARY_COLOR}
+            activeOutlineColor={DISABLED_COLOR}
           />
           <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
         </View>
@@ -63,8 +64,8 @@ const Ticket = () => {
       <TextInput
         style={styles.textArea}
         mode="outlined"
-        outlineColor="#133C8B"
-        activeOutlineColor="#9D9FA2"
+        outlineColor={PRIMARY_COLOR}
+        activeOutlineColor={DISABLED_COLOR}
         placeholder="Issue details can be entered here..."
         multiline={true}
         numberOfLines={4}
@@ -178,9 +179,9 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   tabText: {
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts,
     fontSize: 15,
-    color: '#9D9FA2'
+    color: DISABLED_COLOR
   },
   tabActiveText: {
     color: PRIMARY_COLOR,

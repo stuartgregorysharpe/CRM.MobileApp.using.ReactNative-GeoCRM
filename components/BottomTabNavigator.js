@@ -1,8 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
-import ToggleSwitch from 'toggle-switch-react-native';
 import { useDispatch, useSelector } from 'react-redux';
-
 import HomeScreen from '../screens/GeoRep/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
@@ -15,11 +13,9 @@ import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/SalesPipelineScreen';
-
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import CRMSalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
-
 import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
 import NewsScreen from '../screens/GeoLife/NewsScreen';
 import LocationsLifeScreen from '../screens/GeoLife/LocationsLifeScreen';
@@ -45,7 +41,6 @@ import {
   SLIDE_STATUS,
   SUB_SLIDE_STATUS,
   CHANGE_MORE_STATUS,
-  CHANGE_PROFILE_STATUS,
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
   BACK_ICON_STATUS,
@@ -63,10 +58,9 @@ import {
   Platform,
   Image
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderRightView from './Header/HeaderRightView';
 import Images from '../constants/Images';
-
+import { style } from '../constants/Styles';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -227,7 +221,7 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   useEffect(() => {
-    dispatch(getLocationsMap());
+    //dispatch(getLocationsMap());
   }, [])
 
   const getHeaderHeight = () => {
@@ -269,16 +263,12 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarActiveTintColor: "#fff",
         tabBarHideOnKeyboard: true,
         headerTitleAlign:'left',
-
         headerStyle: {
           backgroundColor: PRIMARY_COLOR,
           height: getHeaderHeight()
         },
         tabBarShowLabel: true,
-        headerTitleStyle:  {
-          color: "#fff",
-          fontFamily: Fonts.primaryRegular
-        },
+        headerTitleStyle:  style.headerTitle,
         tabBarIconStyle: {
           color: "#fff",
         },
@@ -327,7 +317,7 @@ export default function RepBottomTabNavigator({navigation}) {
 
       {selectProject == 'geo_rep' && bottomListOne.includes('crm_locations') && <BottomTab.Screen
         name="CRM"
-        component={CRMScreen}
+        component={CRMScreen}        
         options={{
           title: 'CRM',
           tabBarIcon: ({focused}) => (
@@ -355,23 +345,7 @@ export default function RepBottomTabNavigator({navigation}) {
                 }                          
               <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
             </View></TouchableOpacity>)
-          },
-          headerLeft: () => (
-            <TouchableOpacity 
-              style={[styles.header,{justifyContent:'center'}]} 
-              activeOpacity={1}
-              onPress={() => {
-                dispatch({type: SLIDE_STATUS, payload: false})
-                //dispatch({type: BACK_ICON_STATUS, payload: false})
-                if (statusDispositionInfo) {
-                  dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-                  return;
-                }
-                
-              }}>
-            </TouchableOpacity>
-          ),
-
+          },                    
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),
@@ -381,6 +355,7 @@ export default function RepBottomTabNavigator({navigation}) {
           },
           tabBarActiveTintColor: PRIMARY_COLOR,
         }}
+        
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
@@ -390,11 +365,9 @@ export default function RepBottomTabNavigator({navigation}) {
               dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "CRM"});
               return;
             }
-            dispatch({type: SLIDE_STATUS, payload: false});
-            dispatch({type: BACK_ICON_STATUS, payload: false});
-            dispatch(getLocationsMap());
-            navigation.navigate('CRM', { screen: 'Root' });
-            
+            console.log("page changed");
+            dispatch({type: SLIDE_STATUS, payload: false});            
+            navigation.navigate('CRM', { screen: 'Root' });            
           },
         })}
       />}
@@ -467,7 +440,7 @@ export default function RepBottomTabNavigator({navigation}) {
 
       {selectProject == 'geo_rep' && bottomListOne.includes('content_library') && <BottomTab.Screen
         name="RepContentLibrary"
-        component={RepContentLibraryScreen}
+        // component={RepContentLibraryScreen}        
         options={{
           title: 'Content Library',
           tabBarLabel: 'Content',
@@ -476,26 +449,7 @@ export default function RepBottomTabNavigator({navigation}) {
               {!focused && <SvgIcon icon="Ballot_Gray" width='20px' height='20px' />}
               {focused && <SvgIcon icon="Ballot" width='20px' height='20px' />}
             </Fragment>
-          ),
-          headerTitle:(props) =>{
-            return(<TouchableOpacity onPress={
-              () =>{                
-                dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
-                dispatch({type: BACK_ICON_STATUS, payload: false});
-                //navigation.navigate('Root', { screen: 'RepContentLibrary' });          
-              }}>
-              <View style={styles.layoutBar}> 
-                {
-                  backIconStatus && 
-                  <Image
-                  resizeMethod='resize'  
-                  style={{width:15,height:20, marginRight:5}}
-                  source={Images.backIcon}
-                />  
-                }                          
-              <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
-            </View></TouchableOpacity>)
-          },
+          ),          
           headerRight: () => (
             <HeaderRightView navigation={navigation} />
           ),
@@ -507,17 +461,14 @@ export default function RepBottomTabNavigator({navigation}) {
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
-            e.preventDefault();
-            if (statusDispositionInfo) {
-              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "RepContentLibrary"});
-              return;
-            }
-            dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
-            navigation.navigate("RepContentLibrary");
+            e.preventDefault();            
+            navigation.navigate("RepContentLibrary" , {isBack: false});
           },
         })}
-      />}
+      >
+          {props => <RepContentLibraryScreen {...props} screenProps={navigation} />}
+        </BottomTab.Screen>
+        }
       
       {selectProject == 'geo_rep' && bottomListOne.includes('web_links') && <BottomTab.Screen
         name="RepWebLinks"
@@ -1234,8 +1185,6 @@ export default function RepBottomTabNavigator({navigation}) {
   );
 }
 
-
-
 const styles = StyleSheet.create({
   header: {
     backgroundColor: PRIMARY_COLOR,
@@ -1244,7 +1193,6 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   layoutBar: {        
-
     flexDirection:'row',
     
     justifyContent:'center',

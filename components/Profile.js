@@ -27,7 +27,8 @@ export default function Profile() {
           </Text>
         </View>
       </View>
-      <View style={styles.profileInfo}>
+      
+      <View style={[styles.profileInfo, {marginTop:12}]}>
         <View style={{ width: '48%' }}>
           <Text style={styles.label}>User Name:</Text>
           <Text style={styles.label}>Email Address:</Text>
@@ -96,23 +97,23 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     textAlign: 'center',
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     color: PRIMARY_COLOR,
     marginBottom: 12,
   },
   avatar: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center',        
     borderColor: PRIMARY_COLOR,
     borderWidth: 3,
+    paddingTop:Platform.OS ==  'ios' ? 6 : 0,
     width: 70,
     height: 70,
-    borderRadius: 40,
-    marginBottom: 12
+    borderRadius: 35,    
   },
   avatarLabel: {
     color: PRIMARY_COLOR,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     fontSize: 40
   },
   profileInfo: {
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'right',
     color: TEXT_COLOR,
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     marginBottom: 4
   },
   text: {
