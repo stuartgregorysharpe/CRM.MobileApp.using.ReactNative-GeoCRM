@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react';
 import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,6 +22,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import { NextPrev } from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
+import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
@@ -39,7 +38,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height))
-  
+
   useImperativeHandle(
     ref,
     () => ({
@@ -52,12 +51,17 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           setShowItem("refresh");
         }        
       },
-      goBack(){
-        
+      goBack(){        
         if(showItem !== "update_customer"){   
           props.goPreviousPage();
         }else{          
           setShowItem("refresh");
+        }        
+      },
+      updateView(res){                  
+        setLocationInfo(res);
+        if(locationInfoRef.current !== undefined){          
+          locationInfoRef.current.updateDispositionData(res);
         }        
       }
     }),
@@ -77,7 +81,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       hideSubscription.remove();
     };    
   }, []);
-
+  
   const showLoopSlider = () => {
     setShowItem("loop");
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
@@ -170,62 +174,88 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         extraHeight={130}                
         behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: (features && (features.includes("access_crm") || features.includes("checkin"))) ? 50 : 0}]}>
 
+
+        {
+          locationInfo.address === "" &&
+          <LocationInfoPlaceHolder locationInfo={locationInfo} ></LocationInfoPlaceHolder>
+        }        
+
         <View style={styles.headerBox}>                    
-          <View>
-            <View style={[styles.subtitleBox]}>
-              <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='14px' height='16px' />              
-              <Text style={{color:PRIMARY_COLOR, fontFamily:Fonts.secondaryMedium , marginLeft:5, fontSize:12}} >Customer Name</Text>
+
+          {
+            locationInfo.location_name !== "" && 
+            <View>                        
+              <View style={[styles.subtitleBox]}>
+                <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='14px' height='16px' />              
+                <Text style={{color:PRIMARY_COLOR, fontFamily:Fonts.secondaryMedium , marginLeft:5, fontSize:12}} >Customer Name</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.subtitleBox}>
-            <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
-            <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
-          </View>
+          }                  
+          {
+            locationInfo.last_visit !== "" &&
+            <View style={styles.subtitleBox}>
+              <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
+              <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
+            </View>
+          }                  
         </View>
         
-        <TouchableOpacity onPress={() => { openCustomerInfo() }} >
-          <View style={[styles.headerBox, {marginTop:0}]}>
-            <Text style={styles.title}> { locationInfo &&  locationInfo.location_name ? locationInfo.location_name.value : ''}</Text>
-          </View>
-        </TouchableOpacity>
-        
+        {
+          locationInfo &&  locationInfo.location_name !== "" && 
+          <TouchableOpacity onPress={() => { openCustomerInfo() }} >
+            <View style={[styles.headerBox, {marginTop:0}]}>
+              <Text style={styles.title}> {  locationInfo.location_name.value }</Text>
+            </View>
+          </TouchableOpacity>
+        }     
         
         <View style={styles.headerBox}>
           <View style={styles.addressText}>
-            <View style={styles.subtitleBox}>
-              <SvgIcon style={styles.fontIcon} icon="Location_Arrow" width='16px' height='16px' />
-              <Text style={styles.subtitle}>Address</Text>
-            </View>
-            <TouchableOpacity onPress={() => { openCustomerInfo() }} >
-              <Text style={[styles.title, {marginTop:3}]}>{locationInfo ? locationInfo.address : ''}</Text>
-            </TouchableOpacity>            
+
+            {
+              locationInfo.address !== "" &&
+              <View style={styles.subtitleBox}>
+                <SvgIcon style={styles.fontIcon} icon="Location_Arrow" width='16px' height='16px' />
+                <Text style={styles.subtitle}>Address</Text>
+              </View>
+            }                      
+            {
+              locationInfo.address !==  "" &&
+              <TouchableOpacity onPress={() => { openCustomerInfo() }} >
+                <Text style={[styles.title, {marginTop:3}]}>{locationInfo ? locationInfo.address : ''}</Text>
+              </TouchableOpacity>            
+            }                
           </View>
 
-          <View style={styles.walmartImageBox}>          
-            {
-              locationInfo.location_image !== "" &&
-              <Image style={styles.walmartImage}  source={{uri:locationInfo.location_image}} />
-            }
-            {
-              locationInfo.location_image === "" &&
-              <TouchableOpacity onPress={() => {
-                  launchImageLibrary();
-              }}>
+          
+          {
+            locationInfo.address !==  "" &&
+            <View style={styles.walmartImageBox}>          
                 {
-                  filePath  !== '' && 
-                  <Image style={styles.walmartImage}  source={{uri:filePath}} />
+                  locationInfo.location_image !== "" &&
+                  <Image style={styles.walmartImage}  source={{uri:locationInfo.location_image}} />
                 }
                 {
-                  filePath === '' &&
-                  <SvgIcon style={styles.fontIcon} icon="Add_Image" width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '130px': '80px'} />
-                }                
-              </TouchableOpacity>              
-            }
-          </View>
-        </View> 
+                  locationInfo.location_image === "" &&
+                  <TouchableOpacity onPress={() => {
+                      launchImageLibrary();
+                  }}>
+                    {
+                      filePath  !== '' && 
+                      <Image style={styles.walmartImage}  source={{uri:filePath}} />
+                    }
+                    {
+                      filePath === '' &&
+                      <SvgIcon style={styles.fontIcon} icon={"Add_Image"} width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '130px': '80px'} />
+                    }                
+                  </TouchableOpacity>              
+                }
+            </View>
+          }          
+        </View>
 
         {
-          !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
+          locationInfo.location_id !== "" && locationInfo.address !== "" && !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
           <NextPrev 
             onUpdated={(res) =>{
               setFilePath('');
@@ -237,17 +267,16 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
             pageType={props.pageType} locationId={locationInfo.location_id} > </NextPrev>
         }
         
-
         <View style={{padding:10}}>
         {        
-          locationInfo && DeviceInfo.isTablet()?
+          locationInfo && locationInfo.address !== ""  && DeviceInfo.isTablet()?
           <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
           <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
         }
         </View>                                              
 
         <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
-        <View style={{height:150}}></View>
+        <View style={{height:50}}></View>
 
       </KeyboardAwareScrollView>
       
@@ -284,7 +313,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       
     </View>
   )
-
+  
 });
 
 const styles = StyleSheet.create({

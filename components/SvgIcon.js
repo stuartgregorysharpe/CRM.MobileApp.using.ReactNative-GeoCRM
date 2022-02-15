@@ -184,7 +184,17 @@ const Filter = `
     </g>
   </svg>
 `;
-
+const Filter_GRAY = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="97" height="98" viewBox="0 0 97 98">
+    <g id="Filter" transform="translate(-0.476 -0.227)">
+      <rect id="Rectangle_1646" data-name="Rectangle 1646" width="97" height="98" rx="7" transform="translate(0.476 0.227)" fill="#d1d1d1"/>
+      <g id="options" transform="translate(24.074 28.749)">
+        <path id="Path_570" data-name="Path 570" d="M14.64,4.5a10.145,10.145,0,0,1,9.82,7.6H54.572v5.07H24.461A10.141,10.141,0,1,1,14.64,4.5Zm0,15.21a5.07,5.07,0,1,0-5.07-5.07A5.07,5.07,0,0,0,14.64,19.71Z" transform="translate(-4.5 -4.5)" fill="#fff"/>
+        <path id="Path_571" data-name="Path 571" d="M44.432,38.27a10.145,10.145,0,0,1-9.82-7.6H4.5V25.6H34.612A10.141,10.141,0,1,1,44.432,38.27Zm0-5.07a5.07,5.07,0,1,0-5.07-5.07A5.07,5.07,0,0,0,44.432,33.2Z" transform="translate(-4.5 4.825)" fill="#fff"/>
+      </g>
+    </g>
+  </svg>
+`;
 const Insert_Invitation = `
   <svg id="insert_invitation_black_24dp" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
     <path id="Path_3979" data-name="Path 3979" d="M0,0H30V30H0Z" fill="none"/>
@@ -594,6 +604,46 @@ const GPS_LOCATION = `<svg id="gps_fixed_black_24dp" xmlns="http://www.w3.org/20
 <path id="Path_5366" data-name="Path 5366" d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm8.94,3A8.994,8.994,0,0,0,13,3.06V1H11V3.06A8.994,8.994,0,0,0,3.06,11H1v2H3.06A8.994,8.994,0,0,0,11,20.94V23h2V20.94A8.994,8.994,0,0,0,20.94,13H23V11H20.94ZM12,19a7,7,0,1,1,7-7A6.995,6.995,0,0,1,12,19Z" fill="#666"/>
 </svg>
 `;
+const Add_Image_Gray = `<svg xmlns="http://www.w3.org/2000/svg" width="202.235" height="202.235" viewBox="0 0 202.235 202.235">
+<g id="Group_4817" data-name="Group 4817" transform="translate(-808.525 -193.833)">
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H202.235V202.235H0Z" transform="translate(0 0)" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M18.853,18.853H77.838V2H18.853A16.9,16.9,0,0,0,2,18.853V77.838H18.853ZM69.412,94.691,35.706,136.824H136.824l-25.279-33.706L94.438,125.953ZM128.4,56.772a12.64,12.64,0,1,0-12.64,12.64A12.623,12.623,0,0,0,128.4,56.772ZM153.676,2H94.691V18.853h58.985V77.838h16.853V18.853A16.9,16.9,0,0,0,153.676,2Zm0,151.677H94.691v16.853h58.985a16.9,16.9,0,0,0,16.853-16.853V94.691H153.676ZM18.853,94.691H2v58.985a16.9,16.9,0,0,0,16.853,16.853H77.838V153.677H18.853Z" transform="translate(14.853 14.853)" fill="#c1c1c1"/>
+  </g>
+</g>
+</svg>
+`;
+const Roop_Gray = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="192" height="191" viewBox="0 0 192 191">
+<defs>
+  <filter id="Path_4379" x="0" y="0" width="192" height="191" filterUnits="userSpaceOnUse">
+    <feOffset dy="5" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="7.5" result="blur"/>
+    <feFlood flood-opacity="0.078"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+</defs>
+<g id="Re-Loop_Button" data-name="Re-Loop Button" transform="translate(-967.5 -1072)">
+  <g transform="matrix(1, 0, 0, 1, 967.5, 1072)" filter="url(#Path_4379)">
+    <g id="Path_4379-2" data-name="Path 4379" transform="translate(22.5 17.5)" fill="none">
+      <path d="M7,0H140a7,7,0,0,1,7,7V139a7,7,0,0,1-7,7H7a7,7,0,0,1-7-7V7A7,7,0,0,1,7,0Z" stroke="none"/>
+      <path d="M 7 5 C 5.897201538085938 5 5 5.897201538085938 5 7 L 5 139 C 5 140.1027984619141 5.897201538085938 141 7 141 L 140 141 C 141.1027984619141 141 142 140.1027984619141 142 139 L 142 7 C 142 5.897201538085938 141.1027984619141 5 140 5 L 7 5 M 7 0 L 140 0 C 143.8659973144531 0 147 3.134002685546875 147 7 L 147 139 C 147 142.8659973144531 143.8659973144531 146 140 146 L 7 146 C 3.134002685546875 146 0 142.8659973144531 0 139 L 0 7 C 0 3.134002685546875 3.134002685546875 0 7 0 Z" stroke="none" fill="#c1c1c1"/>
+    </g>
+  </g>
+  <g id="restart_alt_black_24dp" transform="translate(1010.397 1107.158)">
+    <g id="Group_4676" data-name="Group 4676">
+      <path id="Path_4377" data-name="Path 4377" d="M0,0H106.205V106.2H0Z" fill="none"/>
+    </g>
+    <g id="Group_4678" data-name="Group 4678" transform="translate(17.701 11.063)">
+      <g id="Group_4677" data-name="Group 4677">
+        <path id="Path_4378" data-name="Path 4378" d="M12.85,48.965A26.459,26.459,0,0,1,20.639,30.2l-6.284-6.284A35.4,35.4,0,0,0,34.976,84.057V75.118A26.582,26.582,0,0,1,12.85,48.965Zm61.953,0a35.392,35.392,0,0,0-35.4-35.4c-.266,0-.531.044-.8.044l4.823-4.823L37.189,2.5,21.7,17.988,37.189,33.476l6.24-6.24-4.779-4.779c.266,0,.531-.044.752-.044a26.537,26.537,0,0,1,4.425,52.7v8.939A35.35,35.35,0,0,0,74.8,48.965Z" transform="translate(-4 -2.5)" fill="#c1c1c1"/>
+      </g>
+    </g>
+  </g>
+</g>
+</svg>
+`;
+
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
@@ -610,6 +660,7 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Geo" && <SvgXml style={style} xml={Geo} width={width} height={height} />}
         {icon == "Location_Arrow_White" && <SvgXml style={style} xml={Location_Arrow_White} width={width} height={height} />}
         {icon == "Filter" && <SvgXml style={style} xml={Filter} width={width} height={height} />}
+        {icon == "Filter_GRAY" && <SvgXml style={style} xml={Filter_GRAY} width={width} height={height} />}        
         {icon == "Location_Arrow" && <SvgXml style={style} xml={Location_Arrow} width={width} height={height} />}
         {icon == "Location_Arrow_Gray" && <SvgXml style={style} xml={Location_Arrow_Gray} width={width} height={height} />}
         {icon == "Home_Black_Gray" && <SvgXml style={style} xml={Home_Black_Gray} width={width} height={height} />}
@@ -649,5 +700,9 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Arrow_Left_Btn" && <SvgXml style={style} xml={Arrow_Left} width={width} height={height} />}
         {icon == "Arrow_Right_Btn" && <SvgXml style={style} xml={Arrow_Right_Button} width={width} height={height} />}
         {icon == "GPS_LOCATION" && <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />}
+        {icon == "Add_Image_Gray" && <SvgXml style={style} xml={Add_Image_Gray} width={width} height={height} />}
+        {icon == "Roop_Gray" && <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />}
+        
+        
     </Fragment>
 );

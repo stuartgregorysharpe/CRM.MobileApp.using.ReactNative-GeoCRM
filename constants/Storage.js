@@ -60,6 +60,7 @@ export const getUserId = async () => {
   }
 }
 
+
 export const checkFeatureIncludeParam = async (param) => {  
   try{
     var token = await getToken();  

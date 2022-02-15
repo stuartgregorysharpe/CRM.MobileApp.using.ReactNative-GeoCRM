@@ -32,7 +32,8 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
   var outcomes = locationInfo.outcomes ? locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id ) : false;  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
-  const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages ? locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id : 0);
+  var stages = locationInfo.stages ? locationInfo.stages.find(xxx => xxx.stage_id == locationInfo.current_stage_id):false;  
+  const [selectedStageId, setSelectedStageId] = useState( stages ?  stages.stage_id : 0);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);  
   const [isLoading ,setIsLoading] = useState(false);
   const [isSuccess , setIsSuccess] = useState(false);
@@ -237,7 +238,8 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
               }              
               setStageModalVisible(!stageModalVisible);
             }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={styles.pickerItemText}>{stage.stage_name}</Text>
+
+              <Text style={styles.pickerItemText}>{stage.stage_name !== "" ? stage.stage_name : ' '}</Text>
               {stage.stage_id == selectedStageId && <SvgIcon icon="Check" width='23px' height='23px' />}
             </TouchableOpacity>
           </View>
@@ -273,43 +275,49 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
           setIsSuccess(false)
       }}></AlertDialog>
 
-      <View style={styles.refreshBox}>
-          <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
-          <Text style={styles.shadowBoxText}>Stage</Text>
-          <View>
-            <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
-              <Text style={styles.buttonText}>
-                { locationInfo.stages ? locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name : ''}
-              </Text>
-            </View>
-          </View>
-          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-        </TouchableOpacity>
-      </View>
-
-
-      <View style={styles.refreshBox}>
-        
-        <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
-          <Text style={styles.shadowBoxText}>Outcome</Text>
-          <View style={{flexShrink: 1 , marginLeft:10, marginRight:10 }}>            
-            <View style={styles.button}>
-              {
-                locationInfo.outcomes && 
-                <Text style={styles.buttonText} numberOfLines={5}>
-                  {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
+      {
+        locationInfo.address !== "" &&
+        <View style={styles.refreshBox}>
+            <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
+            <Text style={styles.shadowBoxText}>Stage</Text>
+            <View>
+              <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
+                <Text style={styles.buttonText}>
+                  { locationInfo.stages && locationInfo.stages.find(x => x.stage_id == selectedStageId) ? locationInfo.stages.find(x => x.stage_id == selectedStageId).stage_name : ''}
                 </Text>
-              }
-              
+              </View>
             </View>
-          </View>          
-          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
-        </TouchableOpacity>
+            <SvgIcon icon="Drop_Down" width='23px' height='23px' />
+          </TouchableOpacity>
+        </View>
+      }
+      
 
-        <TouchableOpacity onPress={props.showLoopSlider}>
-          <Image style={styles.refreshImage} source={Images.loopButton} />
-        </TouchableOpacity>
-      </View>
+
+      {
+        locationInfo.address !== "" &&
+        <View style={styles.refreshBox}>        
+          <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
+            <Text style={styles.shadowBoxText}>Outcome</Text>
+            <View style={{flexShrink: 1 , marginLeft:10, marginRight:10 }}>            
+              <View style={styles.button}>
+                {
+                  locationInfo.outcomes && 
+                  <Text style={styles.buttonText} numberOfLines={5}>
+                    {selectedOutcomeId ? locationInfo.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name:'Select Outcome'}
+                  </Text>
+                }
+                
+              </View>
+            </View>          
+            <SvgIcon icon="Drop_Down" width='23px' height='23px' />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={props.showLoopSlider}>
+            <Image style={styles.refreshImage} source={Images.loopButton} />
+          </TouchableOpacity>
+        </View>
+      }
 
       {
         locationInfo.disposition_fields &&

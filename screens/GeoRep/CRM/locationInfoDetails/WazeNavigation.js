@@ -28,13 +28,13 @@ export default function WazeNavigation({location}){
             {
                 visible &&
                     <View style={[style.card, {marginLeft:10, marginRight:10 , flexDirection:'column'}]}>
-                    
-                    <View style={{flexDirection:"row", padding:5}}>
-                        <Text style={{flex:1}} >Navigation</Text>
-                        <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-                        <SvgIcon icon="Drop_Down" width='23px' height='23px' />    
-                        </TouchableOpacity>                    
-                    </View>
+
+                    <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)} style={{flexDirection:"row", padding:5}}>
+                        <View style={{flexDirection:"row", padding:5, flex:1}}>
+                            <Text style={{flex:1}} >Navigation</Text>                        
+                            <SvgIcon icon="Drop_Down" width='23px' height='23px' />                            
+                        </View>
+                    </TouchableOpacity>                    
 
 
                     {
