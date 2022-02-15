@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensio
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import LocationInfoInput from '../LocationInfoInput';
+
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
 import { boxShadow, style } from '../../../../constants/Styles';
@@ -15,7 +15,8 @@ import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes'
 import Fonts from '../../../../constants/Fonts';
 import { grayBackground } from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
-import LocationInfoInputTablet from '../LocationInfoInputTablet';
+import LocationInfoInput from '../locationInfoDetails/LocationInfoInput';
+import LocationInfoInputTablet from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (

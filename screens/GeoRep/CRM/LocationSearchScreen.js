@@ -19,7 +19,7 @@ import { LocationItem } from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
-import { LocationInfoDetails } from './LocationInfoDetails';
+import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { storeLocationLoop } from '../../../constants/Storage';
 
 var isCalled = false;
@@ -72,6 +72,7 @@ export default function LocationSearchScreen(props) {
         </View></TouchableOpacity>)
       },
 
+
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
@@ -79,10 +80,12 @@ export default function LocationSearchScreen(props) {
           onPress={() => {            
             
             if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){
+              console.log("taop on 1");
               console.log(locationRef);
               locationRef.current.closePopup();
               setPageType({name:'search-lists'});
             }else{
+              console.log("taop on 2");
               setShowItem(0);
               dispatch({type: SLIDE_STATUS, payload: false});
               dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}});              
@@ -167,12 +170,7 @@ export default function LocationSearchScreen(props) {
         setShowItem(1);
         return;
       case "locationInfo":
-<<<<<<< HEAD
-        setShowItem(2);
-        //dispatch({type: BACK_ICON_STATUS, payload: true});
-=======
         setShowItem(2);        
->>>>>>> 065097d07426aff0c207a3ceb81c73c2ea1a6a46
         return;
       case "addtocalendar":
         setShowItem(3);

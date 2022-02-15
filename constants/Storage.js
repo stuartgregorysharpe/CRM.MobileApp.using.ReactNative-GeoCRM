@@ -9,7 +9,6 @@ export const storeUserData = async (value) => {
       console.log("error", e);
     }
 }
-
 export const getUserData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@user')
@@ -18,7 +17,6 @@ export const getUserData = async () => {
       // error reading value
     }
 }
-
 export const setToken = async (value) => {
     try {
       await AsyncStorage.setItem('@token', String(value))
@@ -62,46 +60,14 @@ export const getUserId = async () => {
   }
 }
 
-export const getOpenReplaceCheckin = async () => {  
+export const checkFeatureIncludeParam = async (param) => {  
   try{
     var token = await getToken();  
     var data = token != null ? jwt_decode(token) : null;
-    var features =  data.user_scopes.geo_rep.features;
+    var features =  data.user_scopes.geo_rep.features;        
+    console.log("featuers", features);
     if(features !== undefined){
-      return features.includes("open_replace_checkin") ;    
-    }else{
-      return false;
-    }
-  }catch(e) {
-    console.log(e);
-    return false;
-  }  
-}
-
-export const getCalendarAdd = async () => {  
-  try{
-    var token = await getToken();  
-    var data = token != null ? jwt_decode(token) : null;
-    var features =  data.user_scopes.geo_rep.features; 
-    if( features !== undefined){
-      return features.includes("calendar_add") ;    
-    }else{
-      return false;
-    }    
-  }catch(e) {
-    console.log(e);
-    return false;
-  }  
-}
-
-export const getCalendarOptimize = async () => {  
-  try{
-    var token = await getToken();  
-    var data = token != null ? jwt_decode(token) : null;
-    var features =  data.user_scopes.geo_rep.features;    
-    console.log("my features", features);
-    if(features !== undefined){
-      var res =  features.includes("calendar_optimize") ;        
+      var res =  features.includes(param) ;        
       return res;
     }else{
       return false;

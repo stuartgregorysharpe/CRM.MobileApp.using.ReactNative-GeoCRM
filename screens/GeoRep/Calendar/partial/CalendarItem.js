@@ -6,7 +6,7 @@ import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { getDistance } from '../../../../constants/Consts';
-import { getOpenReplaceCheckin } from '../../../../constants/Storage';
+import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { useDispatch } from 'react-redux';
 import { LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
 
@@ -14,7 +14,7 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
 
     const dispatch = useDispatch();
     const getButtonColor = (checkin_state) =>{
-        if(getOpenReplaceCheckin()){
+        if(checkFeatureIncludeParam("open_replace_checkin")){
             return PRIMARY_COLOR;
         }else{
             if(checkin_state ===  "checkin_required"){
@@ -28,7 +28,7 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
     }
     
     const getButtonText = (checkin_state) =>{
-        if(getOpenReplaceCheckin()){
+        if(checkFeatureIncludeParam("open_replace_checkin")){
             return "Open";
         }else{
             if(checkin_state ===  "checkin_required"){
@@ -55,7 +55,7 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
           <View style={styles.itemRight}>
             <Text style={[styles.itemTitle, {textAlign: 'center'}]}> {item.schedule_time}</Text>
             <TouchableOpacity style={[styles.itemButton, {backgroundColor:getButtonColor(item.checkin_state)}]} onPress={() =>{
-                if(getOpenReplaceCheckin()){
+                if(checkFeatureIncludeParam("open_replace_checkin")){
                     dispatch({type: LOCATION_ID_CHANGED, payload: {value:item.location_id , type:tabIndex } })                    
                     navigation.navigate('CRM', {'screen': 'LocationSearch',  params : {'location_id': item.location_id}});  
                     onItemSelected();

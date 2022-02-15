@@ -5,16 +5,15 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
-import SvgIcon from '../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
-import { breakPoint } from '../../../constants/Breakpoint';
-import CustomPicker from '../../../components/modal/CustomPicker';
-import { postStageOutcomUpdate, postDispositionFields } from '../../../actions/location.action';
-import CustomLoading from '../../../components/CustomLoading';
-import Images from '../../../constants/Images';
-import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../actions/actionTypes';
-import Fonts from '../../../constants/Fonts';
-import AlertDialog from '../../../components/modal/AlertDialog';
+import SvgIcon from '../../../../components/SvgIcon';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import CustomPicker from '../../../../components/modal/CustomPicker';
+import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
+import CustomLoading from '../../../../components/CustomLoading';
+import Images from '../../../../constants/Images';
+import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../../actions/actionTypes';
+import Fonts from '../../../../constants/Fonts';
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
 export const LocationInfoInputTablet = forwardRef((props , ref) => {
 
