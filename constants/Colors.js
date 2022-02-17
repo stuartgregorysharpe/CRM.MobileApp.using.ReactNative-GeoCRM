@@ -8,5 +8,6 @@ export const DISABLED_COLOR = "#9D9FA2";
 export const TICK_BOX_COLOR = "#002a55";
 
 export default {
-    whiteColor:"#fff"    
+    whiteColor:"#fff",
+    skeletonColor:'#d1d1d1'
 }

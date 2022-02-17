@@ -4,6 +4,7 @@ import { View, StyleSheet, TouchableOpacity , Text } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import { BG_COLOR, DISABLED_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
+import { style } from '../../../../constants/Styles';
 
 export function LocationItem ({isSelected, item, selectedItems, onItemClicked }) {
 
@@ -22,18 +23,64 @@ export function LocationItem ({isSelected, item, selectedItems, onItemClicked })
             onItemClicked(!isChecked);
           }else{
             onItemClicked(!isChecked);
-          }        
+          }                  
       }}>
-        <View style={{ flex:1 }}>
-          <Text style={styles.subTitle}>{item.name}</Text>
-          <Text style={styles.text}>{item.address}</Text>
-        </View>
 
         <View style={{ flex:1 }}>
-          <Text style={[styles.subTitle, styles.textRight]}>
-            {item.distance} mi
-          </Text>
-          <Text style={[styles.text, styles.textRight,{color:item.status_text_color}]}>{item.status}</Text>
+          {
+            item.name !== "" &&
+            <Text style={styles.subTitle}>{item.name}</Text>
+          }
+          {
+            item.name === "" &&  item.address === "" &&         
+            <View style={{flexDirection:'row'}}>
+              <View style={[style.grey_bar,{width:'50%'}]}></View>
+              <View style={[style.grey_bar,{width:'25%'}]}></View>
+            </View>
+            
+          }
+          {
+            item.address !== "" && 
+            <Text style={styles.text}>{item.address}</Text>
+          }
+          {
+            item.address === "" &&
+            <View style={{flexDirection:'row'}}>
+              <View style={[style.grey_bar,{width:'25%'}]}></View>
+              <View style={[style.grey_bar,{width:'30%'}]}></View>
+              <View style={[style.grey_bar,{width:'25%'}]}></View>
+            </View>          
+          }
+
+        </View>
+
+        <View style={{ flex:1 , alignItems:'flex-end' }}>
+
+          {
+            item.distance !== "" && 
+            <Text style={[styles.subTitle, styles.textRight]}>
+              {item.distance} mi
+            </Text>
+          }
+          {
+            item.distance === "" && 
+            <View style={[style.grey_bar,{width:'25%'}]}></View>
+          }
+
+          {
+            item.status !== "" && 
+            <Text style={[styles.text, styles.textRight,{color:item.status_text_color}]}>{item.status}</Text>
+          }
+                    
+          {
+            item.status === "" && 
+
+            <View style={{flexDirection:'row'}} >
+              <View style={[style.grey_bar,{width:'40%'}]}></View>
+              <View style={[style.grey_bar,{width:'40%'}]}></View>
+            </View>
+          }
+
         </View>
 
         {
@@ -55,9 +102,7 @@ const styles = StyleSheet.create({
         paddingLeft: 14,
         paddingRight: 14,
         borderTopWidth: 1,
-        borderColor: '#e7e7e7',
-        
-                
+        borderColor: '#e7e7e7',                        
     },
     subTitle: {
         fontSize: 14,

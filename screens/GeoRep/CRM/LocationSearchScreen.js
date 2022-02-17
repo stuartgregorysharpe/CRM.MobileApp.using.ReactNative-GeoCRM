@@ -1,12 +1,11 @@
 import React, { useState,useRef, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions , KeyboardAvoidingView , FlatList, Image, Platform} from 'react-native';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions ,  FlatList, Image, Platform} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
-import Skeleton from '../../../components/Skeleton';
 import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import {  LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
@@ -20,7 +19,8 @@ import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
-import { storeLocationLoop } from '../../../constants/Storage';
+import { SearchLists } from '../../../DAO';
+import LocationInformation from '../../../DAO/LocationInformation';
 
 var isCalled = false;
 
@@ -46,6 +46,7 @@ export default function LocationSearchScreen(props) {
   const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
   const locationRef = useRef();
   const [pageType, setPageType ] = useState({name:"search-lists"});
+  const [isLoading , setIsLoading] = useState(true);
 
   useEffect(() => {
 
@@ -72,7 +73,6 @@ export default function LocationSearchScreen(props) {
         </View></TouchableOpacity>)
       },
 
-
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
@@ -94,8 +94,17 @@ export default function LocationSearchScreen(props) {
         >
         </TouchableOpacity>
       ),
-    });    
+    }); 
   });
+
+  useEffect(() =>{
+    console.log("ses is loading");
+    SearchLists.load().then(result =>{
+      setOrderLists(result);
+      setIsLoading(true);    
+    });
+    
+  },[]);
 
   useEffect(() => {            
     if(locationId !== 0 && isRequest == false && tabType !== undefined){  
@@ -116,10 +125,8 @@ export default function LocationSearchScreen(props) {
   }, [filterParmeterChanged]);  
 
   useEffect(() => {  
-    if(locationSearchLists.length !== 0 ){
-      console.log("searhcalled");      
-      getSearchData("");
-      
+    if(locationSearchLists.length !== 0 ){         
+      getSearchData("");      
     }else if(!isCalled){
       isCalled = true;
       dispatch(getLocationSearchList());
@@ -153,8 +160,10 @@ export default function LocationSearchScreen(props) {
         }
       }      
     });
-    items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
-    setOrderLists(items);    
+    items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+    setOrderLists(items);
+    setIsLoading(false);
+    console.log("set is loadin false");
     if(locationId === 0 || locationId  === undefined){
       console.log("loop list updated in location search");
       dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
@@ -181,35 +190,24 @@ export default function LocationSearchScreen(props) {
   }
   
   const openLocationInfo = async(location_id) => {    
-    setIsRequest(true)
-    getLocationInfo( Number(location_id))
-    .then((res) => {
+    //setIsRequest(true)
+
+    LocationInformation.load().then(res =>{      
       setLocationInfo(res);
-      setIsRequest(false)
       animation("locationInfo");
+    });
+
+    getLocationInfo( Number(location_id))
+    .then((res) => {      
+      if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
+        locationRef.current.updateView(res);
+      }
       if(locationSearchLists.length == 0){
         dispatch(getLocationSearchList());
       }
     })
-    .catch((e) =>{
-      setIsRequest(false)      
+    .catch((e) =>{      
     })
-  }
-
-  const LoadingView = () =>{
-    return (
-      <SafeAreaView>
-        <View style={[styles.container, {padding: 10, justifyContent: 'center'}]}>
-          {Array.from(Array(6)).map((_, key) => (
-            <Skeleton key={key} />  
-          ))}
-        </View>
-      </SafeAreaView>
-    )
-  }
-
-  if (isRequest) {
-    return LoadingView()
   }
 
   const renderLocation = (item, index) => {    
@@ -224,7 +222,7 @@ export default function LocationSearchScreen(props) {
             if(item.checked != undefined && item.checked == true){
               selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
             }
-          });                    
+          });
           console.log("selectedItems", selectedItems);
           setSelectedItems(selectedItems);          
         }else{
@@ -236,10 +234,7 @@ export default function LocationSearchScreen(props) {
 
   return (
     <Provider>
-      {
-        isRequest &&
-        <LoadingView></LoadingView>
-      }
+      
       <SafeAreaView style={{flex:1, }}>
                 
           <AlertDialog visible={isCreated}  message={message} onModalClose={() => setIsCreated(false) }></AlertDialog>              
@@ -300,25 +295,25 @@ export default function LocationSearchScreen(props) {
               }} 
               initVal={searchKeyword}
               isFilter={true}
-              animation={() => {                
+              isLoading={isLoading}
+              animation={() => {
                 animation("filter");
               }} />
                         
             <View style={{flex:1}}>
-              
+                            
               <View style={styles.buttonContainer}>
-
                 <View style={styles.leftContainer}>
-                <TouchableOpacity 
-                  disabled={orderLists.length === 0 ? true: false} 
-                  style={[styles.buttonTextStyle, {backgroundColor: isSelected || orderLists.length === 0 ? DISABLED_COLOR:PRIMARY_COLOR}]} 
-                  onPress={()=> {
-                    if(orderLists.length > 0 ){
-                      setIsSelected(!isSelected)
-                    }
-                  } }>
-                  <Text style={[styles.buttonText]}>{isSelected? 'Cancel' : 'Select' }</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity 
+                    disabled={isLoading} 
+                    style={[styles.buttonTextStyle, {backgroundColor: isLoading ? Colors.skeletonColor : isSelected ? DISABLED_COLOR:PRIMARY_COLOR}]} 
+                    onPress={()=> {
+                      if(!isLoading){
+                        setIsSelected(!isSelected)
+                      }
+                    } }>
+                    <Text style={[styles.buttonText, {color:isLoading ? Colors.skeletonColor : Colors.whiteColor}]}>{isSelected? 'Cancel' : 'Select' }</Text>
+                  </TouchableOpacity>
                 </View>
                 
                 <View style={styles.rightContainer}>
@@ -368,14 +363,7 @@ export default function LocationSearchScreen(props) {
                   />
                 </View>
               }              
-
-              {
-                orderLists.length == 0 && 
-                <View style={{flex:1 , alignItems:'center'}}>
-                  <Text style={{color:DISABLED_COLOR}} >No Results Found</Text>
-                </View>
-              }              
-
+                
             </View>
           </View>
 

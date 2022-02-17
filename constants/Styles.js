@@ -61,11 +61,25 @@ export const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 4,
-    padding: 8,    
+    padding: 8,        
+    shadowColor:'#000',
+    shadowOffset:{
+      width: 0, 
+      height: 1
+    },
+    shadowOpacity:0.27,
+    shadowRadius:0.65,
+
   },
 
-
-
+  grey_bar: {    
+    height: 12,
+    borderRadius: 10,
+    backgroundColor: '#d1d1d1',
+    marginTop:3,
+    marginBottom:3,
+    marginRight:10,
+  }
   
 })
 

@@ -9,11 +9,11 @@ import { boxShadow } from '../constants/Styles';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import { DISABLED_COLOR } from '../constants/Colors';
 
-export default function SearchBar({isFilter, animation, initVal, onSearch}) {
+export default function SearchBar({isFilter, animation, initVal, onSearch , isLoading }) {
   const dispatch = useDispatch();
 
   const [text, setText] = useState(initVal);
-  console.log("search bar view" , text);
+  //console.log("search bar view" , text);
 
   return (
     <View style={styles.searchBox} keyboardShouldPersistTaps="handled">
@@ -31,7 +31,14 @@ export default function SearchBar({isFilter, animation, initVal, onSearch}) {
       {
         isFilter && 
         <TouchableOpacity style={styles.filterImageButton} onPress={animation}>
-          <SvgIcon icon="Filter" width="30px" height="30px" />
+          {
+            !isLoading &&
+            <SvgIcon icon="Filter" width="30px" height="30px" />
+          }
+          {
+            isLoading && 
+            <SvgIcon icon="Filter_GRAY" width="30px" height="30px" />
+          }
         </TouchableOpacity>
       }      
 

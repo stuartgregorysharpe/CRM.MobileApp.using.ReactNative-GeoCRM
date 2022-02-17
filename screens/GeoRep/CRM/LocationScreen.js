@@ -23,7 +23,7 @@ import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getDistance } from '../../../constants/Consts';
-import LoadingView from '../../../components/LoadingView/LoadingView';
+import LocationInformation from '../../../DAO/LocationInformation';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -47,6 +47,7 @@ export default function LocationScreen(props) {
   const map = useRef(null)
   const [pageType, setPageType ] = useState({name:"search-lists"});
   const [isLoading , setIsLoading] = useState(false);
+  const locationRef = useRef();
 
   useEffect(() => {
     props.screenProps.setOptions({           
@@ -174,9 +175,7 @@ export default function LocationScreen(props) {
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
-
-        <LoadingView visible={isRequest}></LoadingView>
-
+        
         <GrayBackground />        
         {
           crmStatus && (showItem == 1 || showItem == 2) && 
@@ -199,7 +198,7 @@ export default function LocationScreen(props) {
             dispatch(getLocationsMap());
             dispatch({type: SLIDE_STATUS, payload: false});
             }} />}
-          {showItem == 4 && <LocationInfoDetails navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
+          {showItem == 4 && <LocationInfoDetails ref={locationRef} navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
         </View>}
         
         <View style={styles.container}>
@@ -258,17 +257,25 @@ export default function LocationScreen(props) {
                       {locationMaps.map((item , key) => (
                         <Marker
                           key={key}
-                          onPress={() =>{                            
-                            setIsRequest(true);
-                            getLocationInfo( Number(item.location_id))
-                            .then((res) => {                              
-                              setLocationInfo(res);                                      
+                          onPress={() =>{        
+
+
+                            LocationInformation.load().then(res =>{      
+                              setLocationInfo(res);
                               animation("locationInfo");
-                              setIsRequest(false);
+                            });
+                                                   
+                            getLocationInfo( Number(item.location_id))
+                            .then((res) => {                
+                                if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
+                                  locationRef.current.updateView(res);
+                                }
                             })
                             .catch((e) =>{
                               setIsRequest(false);
-                            })      
+                            })
+                            
+                            
                           }}
                           coordinate={{
                             latitude: Number(item.coordinates.latitude),
