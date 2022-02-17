@@ -64,7 +64,7 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
               <Text style={styles.itemButtonText}> {getButtonText(item.checkin_state)} </Text>
               <FontAwesomeIcon style={styles.itemButtonIcon} size={16} color="#fff" icon={ faCheckCircle } />            
             </TouchableOpacity>
-            <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text>
+            {/* <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text> */}
           </View>
   
         </View>

@@ -72,42 +72,26 @@ export default function CalendarScreen(props) {
   }
 
   const updateListForWeek = (res) => {
-    let data = [];
-    console.log("week 1");
-    for (let i = 0; i < res.length; i++) {
-      if (data.length == 0) {
-        let record = [];
-        record.push(res[i]);
-        data.push({
-          'title': res[i].schedule_date,
-          'data': record
-        })
-
-      } else {
-        let scheduleExist = false;
-        for (let j = 0; j < data.length; j++) {
-          let recordExist = false;
-          if (data[j].title === res[i].schedule_date) {
-            for (let k = 0; k < data[j].data.length; k++) {
-              if (data[j].data[k].schedule_id === res[i].schedule_id) {
-                recordExist = true;
-              }
-            }
-            if (!recordExist) {
-              data[j].data.push(res[i]);
-            }
-            scheduleExist = true;
-          }
-        }
-        if (!scheduleExist) {
-          data.push({
-            title: res[i].schedule_date,
-            data: [res[i]]
-          })
-        }
+    let schedules = [];
+    schedules = res;
+    let schedule_dates = [];
+    schedules.forEach(item => {
+      let date = schedule_dates.find(a => a === item.schedule_date);
+      if (!date) {
+        schedule_dates.push(item.schedule_date);
       }
-    }
-    setLists(data);
+    });
+    
+    let sectionList = [];
+    schedule_dates.forEach(item => {
+      let data = schedules.filter(schedule => schedule.schedule_date === item);
+      sectionList.push({
+        title: item,
+        data: data
+      });
+    });
+
+    setLists(sectionList);
   }
 
   const updateTodayLocationLists = async (data) => {
