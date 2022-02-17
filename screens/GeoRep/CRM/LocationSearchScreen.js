@@ -1,5 +1,5 @@
 import React, { useState,useRef, useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions ,  FlatList, Image, Platform} from 'react-native';
+import { SafeAreaView, View, ScrollView, Text, TouchableOpacity, Dimensions ,  FlatList, Image, Platform , ActivityIndicator} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch , connect} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -141,7 +141,8 @@ export default function LocationSearchScreen(props) {
     }
   }
 
-  const getSearchData = async(searchKey) => { 
+  const getSearchData = async(searchKey) => {
+    
     let items = [];    
     locationSearchLists.map((list, key) => {    
       let item = {
@@ -160,6 +161,7 @@ export default function LocationSearchScreen(props) {
         }
       }      
     });
+
     items.sort((a, b) => a.distance > b.distance ? 1 : -1);
     setOrderLists(items);
     setIsLoading(false);
@@ -231,6 +233,29 @@ export default function LocationSearchScreen(props) {
       }}>
       </LocationItem>)
   }  
+
+
+  const loadMoreData = () =>{
+
+  }
+  renderFooter = () => {
+    return (
+    //Footer View with Load More button
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={loadMoreData}
+          //On Click of button calling loadMoreData function to load more data
+          style={styles.loadMoreBtn}>
+          <Text style={styles.btnText}>Loading</Text>
+          {true ? (
+            <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+          ) : null}
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
 
   return (
     <Provider>
@@ -360,6 +385,10 @@ export default function LocationSearchScreen(props) {
                     }
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
+                    onEndReached={loadMoreData}
+                    onEndReachedThreshold ={0.1}
+                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    ListFooterComponent={renderFooter.bind(this)}
                   />
                 </View>
               }              
@@ -421,6 +450,28 @@ const styles = EStyleSheet.create(parse({
     zIndex: 2,
     padding: 0,
   },
-
+  separator: {
+    height: 0.5,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  footer: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  loadMoreBtn: {
+    padding: 10,
+    backgroundColor: '#800000',
+    borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnText: {
+    color: 'white',
+    fontSize: 15,
+    textAlign: 'center',
+  },
 
 }));

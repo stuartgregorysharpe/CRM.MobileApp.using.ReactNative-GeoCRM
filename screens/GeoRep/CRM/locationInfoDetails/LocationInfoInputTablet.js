@@ -30,7 +30,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
   const [dateTimeKey, setDateTimeKey] = useState(null);  
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
-  var outcomes = locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
+  var outcomes = locationInfo !== undefined && locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id );  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
   const [selectedStageId, setSelectedStageId] = useState(locationInfo.stages.find(x => x.stage_id == locationInfo.current_stage_id).stage_id);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);    
@@ -311,7 +311,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
                   <Text style={styles.stageTitle}> Outcome </Text>                
                   <View style={styles.outcomesBoxRow}>
                   {
-                    locationInfo.outcomes.map((item, index) => {
+                    locationInfo !== undefined && locationInfo.outcomes.map((item, index) => {
                       if(item.linked_stage_id == selectedStageId){
                         return (                                                                    
                           <TouchableOpacity style={item.outcome_id == selectedOutcomeId ? styles.selectedOutcomesColumn : styles.outcomesColumn }
@@ -338,7 +338,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
 
             {/* <Text style={styles.boldText}>Campaign: Quill Test</Text> */}
             {
-              locationInfo.disposition_fields &&
+              locationInfo !== undefined && locationInfo.disposition_fields &&
               <View style={styles.inputBox}>
 
                   {locationInfo.disposition_fields.map((field, key) => (
@@ -391,7 +391,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
       />       
       
       {
-        locationInfo.outcomes &&
+        locationInfo !== undefined && locationInfo.outcomes &&
         outComesModal()
       }
 

@@ -27,7 +27,7 @@ import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const dispatch = useDispatch();  
-  const [locationInfo, setLocationInfo] = useState(props.locInfo);  
+  const [locationInfo, setLocationInfo] = useState(props.locInfo);    
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);    
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
@@ -37,7 +37,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [filePath, setFilePath] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
-  const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height))
+  const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height));
+  const [isLoading,setIsLoading] = useState(true);
 
   useImperativeHandle(
     ref,
@@ -62,6 +63,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         setLocationInfo(res);
         if(locationInfoRef.current !== undefined){          
           locationInfoRef.current.updateDispositionData(res);
+          setIsLoading(false);
         }        
       }
     }),
@@ -110,7 +112,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       }
     });
   }
-
+  
   const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
     let postData = {
@@ -174,16 +176,16 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         extraHeight={130}                
         behavior="padding" style={[styles.innerContainer, keyboardStatus ? {} : {marginBottom: (features && (features.includes("access_crm") || features.includes("checkin"))) ? 50 : 0}]}>
 
-
         {
-          locationInfo.address === "" &&
+          isLoading && (locationInfo === undefined || locationInfo.address !== undefined || locationInfo.address === "") &&        
           <LocationInfoPlaceHolder locationInfo={locationInfo} ></LocationInfoPlaceHolder>
-        }        
+        }             
+
 
         <View style={styles.headerBox}>                    
 
           {
-            locationInfo.location_name !== "" && 
+            locationInfo !== undefined && locationInfo.location_name !== "" && 
             <View>                        
               <View style={[styles.subtitleBox]}>
                 <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='14px' height='16px' />              
@@ -192,7 +194,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
             </View>
           }                  
           {
-            locationInfo.last_visit !== "" &&
+            locationInfo !== undefined && locationInfo.last_visit !== "" &&
             <View style={styles.subtitleBox}>
               <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
               <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
@@ -201,7 +203,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         </View>
         
         {
-          locationInfo &&  locationInfo.location_name !== "" && 
+          locationInfo !== undefined &&   locationInfo.location_name !== "" && 
           <TouchableOpacity onPress={() => { openCustomerInfo() }} >
             <View style={[styles.headerBox, {marginTop:0}]}>
               <Text style={styles.title}> {  locationInfo.location_name.value }</Text>
@@ -213,14 +215,14 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           <View style={styles.addressText}>
 
             {
-              locationInfo.address !== "" &&
+              locationInfo !== undefined && locationInfo.address !== "" &&
               <View style={styles.subtitleBox}>
                 <SvgIcon style={styles.fontIcon} icon="Location_Arrow" width='16px' height='16px' />
                 <Text style={styles.subtitle}>Address</Text>
               </View>
             }                      
             {
-              locationInfo.address !==  "" &&
+              locationInfo !== undefined && locationInfo.address !==  "" &&
               <TouchableOpacity onPress={() => { openCustomerInfo() }} >
                 <Text style={[styles.title, {marginTop:3}]}>{locationInfo ? locationInfo.address : ''}</Text>
               </TouchableOpacity>            
@@ -229,7 +231,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
           
           {
-            locationInfo.address !==  "" &&
+            locationInfo !== undefined && locationInfo.address !==  "" &&
             <View style={styles.walmartImageBox}>          
                 {
                   locationInfo.location_image !== "" &&
@@ -255,7 +257,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         </View>
 
         {
-          locationInfo.location_id !== "" && locationInfo.address !== "" && !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
+          locationInfo !== undefined && locationInfo.location_id !== "" && locationInfo.address !== "" && !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
           <NextPrev 
             onUpdated={(res) =>{
               setFilePath('');
@@ -269,13 +271,17 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         
         <View style={{padding:10}}>
         {        
-          locationInfo && locationInfo.address !== ""  && DeviceInfo.isTablet()?
+          locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
           <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
           <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
         }
         </View>                                              
 
-        <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
+        {
+          locationInfo !== undefined && 
+          <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
+        }
+        
         <View style={{height:50}}></View>
 
       </KeyboardAwareScrollView>

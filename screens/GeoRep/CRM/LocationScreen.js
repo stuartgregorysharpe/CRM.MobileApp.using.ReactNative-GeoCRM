@@ -14,7 +14,7 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  CHANGE_CURRENT_LOCATION, LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationPinKey, getLocationFilters, getLocationSearchList, getLocationInfo, getLocationsMap } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -24,6 +24,7 @@ import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getDistance } from '../../../constants/Consts';
 import LocationInformation from '../../../DAO/LocationInformation';
+import GetLocation from 'react-native-get-location';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -84,8 +85,7 @@ export default function LocationScreen(props) {
             if(navigation.canGoBack()){              
               navigation.goBack();              
             }
-          }}
-        >
+          }}>            
         </TouchableOpacity>
       ),      
       tabBarStyle: {
@@ -113,8 +113,30 @@ export default function LocationScreen(props) {
     };
   }, [crmStatus]);
 
-  useEffect(() => {      
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {                      
+      if(map.current !== null && map.current.props){      
+        console.log(map.current.props.onRegionChangeComplete);
+        map.current.props.onRegionChangeComplete();      
+      }
+      GetLocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,
+      })
+      .then(location => {    
+          console.log("change current location");
+          dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });             
+      })
+      .catch(error => {
+        console.log("get location error", error);  
+        const { code, message } = error;      
+      });
 
+    });
+    return unsubscribe;
+  }, [navigation]);
+  
+  useEffect(() => {            
     setIsBack(false);    
     if(locationMaps.length > 0){
       let items = [];    
@@ -131,8 +153,7 @@ export default function LocationScreen(props) {
       });
       items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
       console.log("loopList updated in map page");
-      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
-      //console.log("location map" , locationMaps);
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});      
     }      
   }, [locationMaps]);
   
@@ -227,19 +248,14 @@ export default function LocationScreen(props) {
               <SvgIcon icon="Filter" width="30px" height="30px" />
             </TouchableOpacity>
           </View>
-       
-
-
-          
-
- 
+                  
             {
               currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
               <View style={styles.mapContainer}>
                     <ClusteredMapView
                       clusterColor="red"
                       ref={map}
-                      //mapType="hybrid"
+                      //mapType="hybrid"                       
                       clusteringEnabled={true}
                       style={styles.mapView}
                       initialRegion={{
@@ -251,20 +267,13 @@ export default function LocationScreen(props) {
                       currentLocation={{
                         latitude: currentLocation.latitude,
                         longitude: currentLocation.longitude,
-                      }}
-                      
-                      >
+                      }}>
+
                       {locationMaps.map((item , key) => (
                         <Marker
                           key={key}
-                          onPress={() =>{        
-
-
-                            LocationInformation.load().then(res =>{      
-                              setLocationInfo(res);
-                              animation("locationInfo");
-                            });
-                                                   
+                          onPress={() =>{
+                            animation("locationInfo");               
                             getLocationInfo( Number(item.location_id))
                             .then((res) => {                
                                 if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
@@ -273,9 +282,7 @@ export default function LocationScreen(props) {
                             })
                             .catch((e) =>{
                               setIsRequest(false);
-                            })
-                            
-                            
+                            })                                                        
                           }}
                           coordinate={{
                             latitude: Number(item.coordinates.latitude),
