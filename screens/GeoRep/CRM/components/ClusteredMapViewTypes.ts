@@ -29,5 +29,5 @@ export interface MapClusteringProps {
   onClusterPress?: (cluster: Marker, markers?: Marker[]) => void
   getClusterEngine?: (ref: any) => void
   onMarkersChange?: (markers?: Marker[]) => void
-  renderCluster?: (cluster: any) => React.ReactNode
+  renderCluster?: (cluster: any) => React.ReactNode  
 }

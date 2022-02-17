@@ -22,8 +22,7 @@ export default function WazeNavigation({location}){
         setVisible( await checkFeatureIncludeParam("navigation"));
     }
 
-    return (
-        
+    return (        
         <View styles={styles.conainer}>
             {
                 visible &&
@@ -52,8 +51,7 @@ export default function WazeNavigation({location}){
                                     }else{
                                         Linking.openURL('http://itunes.apple.com/us/app/id323229106')  
                                     }                                
-                                }
-                                
+                                }                                
                             }}>
                                 <View style={{flex:1, marginLeft:10, flexWrap:'wrap',}}> 
                                     <View style={styles.wazeStyle}>

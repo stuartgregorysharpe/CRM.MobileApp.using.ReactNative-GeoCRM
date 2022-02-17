@@ -48,24 +48,24 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       tracksViewChanges,
       spiralEnabled,
       superClusterRef,
-      currentLocation,
+      currentLocation,      
       ...restProps
     },
     ref,
   ) => {
+
     const [markers, updateMarkers] = useState([])
     const [spiderMarkers, updateSpiderMarker] = useState([])
     const [otherChildren, updateChildren] = useState([])
     const [superCluster, setSuperCluster] = useState(null)
     const [currentRegion, updateRegion] = useState(restProps.region || restProps.initialRegion)
-
     const [isSpiderfier, updateSpiderfier] = useState(false)
     const [clusterChildren, updateClusterChildren] = useState(null)
     const mapRef = useRef()
     const propsChildren = useMemo(() => React.Children.toArray(children), [children])    
 
-
     useEffect(() => {
+
       const rawData = []
       const otherChildren = []
 
@@ -95,7 +95,6 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       })
 
       superCluster.load(rawData)
-
       const bBox = calculateBBox(currentRegion)
       const zoom = returnMapZoom(currentRegion, bBox, minZoom)
       const markers = superCluster.getClusters(bBox, zoom)
@@ -130,6 +129,11 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     }, [isSpiderfier, markers])
 
     const _onRegionChangeComplete = (region) => {
+      
+      if(region === undefined){
+        goToCurrentLocation();
+      }
+
       if (superCluster && region) {
         const bBox = calculateBBox(region)
         const zoom = returnMapZoom(region, bBox, minZoom)
@@ -154,7 +158,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         onRegionChangeComplete(region)
       }
     }
-
+    
     const _onClusterPress = (cluster) => () => {
       const children = superCluster.getLeaves(cluster.id, Infinity)
       updateClusterChildren(children)
@@ -196,7 +200,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
             if (ref) {
               ref.current = map
             }
-            restProps.mapRef(map)
+            restProps.mapRef(map)        
           }}
           initialRegion={{
             latitude: currentLocation.latitude,
@@ -206,11 +210,10 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           }}
           moveOnMarkerPress={false}
           provider={PROVIDER_GOOGLE}
-          //showsUserLocation = {true}
+          showsUserLocation = {true}
           followUserLocation = {true}
           showsMyLocationButton = {Platform.OS === "android" ? false: false}           
-          zoomEnabled={true}
-          // mapPadding={{top:0,right:0, bottom:Platform.OS === 'android' ? 0 : Dimensions.get("screen").height * 0.58 , left:0}}
+          zoomEnabled={true}        
           onRegionChangeComplete={_onRegionChangeComplete}>
           {markers.map((marker) =>
             marker.properties.point_count === 0 ? (
@@ -256,26 +259,18 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
               strokeColor={spiderLineColor}
               strokeWidth={1}
             />
-          ))}
-    
-          </MapView>
-          
-          {/* <TouchableOpacity style={styles.myLocation}>  */}
-            <View style={styles.myLocation}>                
-                <TouchableOpacity onPress={() => {
-                  console.log("current")
-                  goToCurrentLocation();
-                }}>
-                
-                  <SvgIcon icon="GPS_LOCATION" width='30px' height='30px' />
-                  
-                </TouchableOpacity>                
-            </View>
-          {/* </TouchableOpacity>  */}
-          
-        
-      </View>
+          ))}    
+          </MapView>                    
 
+          <View style={styles.myLocation}>                
+              <TouchableOpacity onPress={() => {
+                console.log("current")
+                goToCurrentLocation();
+              }}>              
+                <SvgIcon icon="GPS_LOCATION" width='30px' height='30px' />                
+              </TouchableOpacity>                
+          </View>          
+      </View>
       
     )
   },
@@ -307,7 +302,7 @@ ClusteredMapView.defaultProps = {
   onMarkersChange: () => {},
   superClusterRef: {},
   currentLocation: {},
-  mapRef: () => {},
+  mapRef: () => {},  
 }
 
 const styles = StyleSheet.create({

@@ -55,15 +55,15 @@ export const getLocationsMap = () => (dispatch, getState) => {
     timeout: 15000,
   })
     .then(location => {
-
       console.log("current location" , location);
-      dispatch({
-        type: CHANGE_CURRENT_LOCATION, payload: {          
-           latitude: location.latitude,
-           longitude: location.longitude,          
-        }
-      })
-      
+      if(location.latitude !== undefined){
+        dispatch({
+          type: CHANGE_CURRENT_LOCATION, payload: {          
+             latitude: location.latitude,
+             longitude: location.longitude,          
+          }
+        })
+      }                  
       axios
         .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-map`, {
           params: {
@@ -89,6 +89,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
           }
+
           console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations.length);
           if (res.data.status == 'success') {
             dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
@@ -110,6 +111,8 @@ export const getLocationsMap = () => (dispatch, getState) => {
 }
 
 export const getLocationFilters = () => (dispatch, getState) => {
+
+
   dispatch({ type: STATUS_LOCATION_FILTERS, payload: 'request' });
   axios
     .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-filters`, {
@@ -134,39 +137,60 @@ export const getLocationFilters = () => (dispatch, getState) => {
     .catch((err) => {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);
-    })
+  })
+
+  
 }
 
 
 export const getLocationSearchList = () => (dispatch, getState) => {
-  dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });  
-  console.log("filters parameter for search lists == ", getState().selection.filters);
-  axios
-    .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-search-list`, {
-      params: {
-        user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-        filters: getState().selection.filters
-      },
-      headers: {
-        Authorization: 'Bearer ' + getState().selection.token
-      }
-    })
-    .then((res) => {
-      if (res.data == undefined) {
 
+  // update current location
+  GetLocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 15000,
+  })
+  .then(location => {
+
+      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });
+      // call api 
+      dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });  
+      console.log("filters parameter for search lists == ", getState().selection.filters);
+      axios
+      .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-search-list`, {
+        params: {
+          user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
+          filters: getState().selection.filters
+        },
+        headers: {
+          Authorization: 'Bearer ' + getState().selection.token
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+
+          dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+          return;
+        }            
+        if (res.data.status == 'success') {
+          console.log("search results count", res.data.items.length);
+          dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'success' });
+          dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items })
+        }
+      })
+      .catch((err) => {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        return;
-      }            
-      if (res.data.status == 'success') {
-        console.log("search results count", res.data.items.length);
-        dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'success' });
-        dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items })
-      }
-    })
-    .catch((err) => {
-      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-      console.log(err);
-    })
+        console.log(err);
+      })
+      
+
+  })
+  .catch(error => {
+    console.log("get location error", error);  
+    const { code, message } = error;      
+  });
+    
+
 }
 
 export const getLeadFields = async() => {

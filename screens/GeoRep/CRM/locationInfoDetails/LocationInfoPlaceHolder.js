@@ -11,7 +11,7 @@ export default function LocationInfoPlaceHolder({locationInfo}){
         <View style={{paddingRight:0}}>
             <View style={styles.headerBox}>                                    
                 {
-                locationInfo.location_name === "" &&
+                (locationInfo === undefined || locationInfo.location_name === "") &&
                 <View style={{flexDirection:'row',flex:2}}>
                     <View style={[style.grey_bar, {width:12}]} ></View>
                     <View style={[style.grey_bar, {width:"30%"}]} ></View>
@@ -20,7 +20,7 @@ export default function LocationInfoPlaceHolder({locationInfo}){
                 }
                 
                 {
-                locationInfo.last_visit === "" &&
+                (locationInfo === undefined || locationInfo.last_visit === "" )&&
                 <View style={{flexDirection:'row' , flex:2}}>
                     <View style={[style.grey_bar, {width:12}]} ></View>
                     <View style={[style.grey_bar, {width:"15%"}]} ></View>
@@ -33,7 +33,7 @@ export default function LocationInfoPlaceHolder({locationInfo}){
             </View>
 
             {
-                locationInfo &&  locationInfo.location_name === "" && 
+                (locationInfo === undefined || locationInfo.location_name === "") && 
                 <View style={{flexDirection:'row'}}>
                     <View style={[style.grey_bar,{width:"20%", marginLeft:10}]}></View>
                     <View style={[style.grey_bar,{width:"20%", marginLeft:10}]}></View>
@@ -43,14 +43,14 @@ export default function LocationInfoPlaceHolder({locationInfo}){
             <View style={styles.headerBox}>
                 <View style={styles.addressText}>               
                 {
-                    locationInfo &&  locationInfo.address === "" && 
+                    (locationInfo === undefined || locationInfo.address === "") && 
                     <View style={{flexDirection:'row', marginTop:10}}>
                         <View style={[style.grey_bar,{width:12,}]}></View>
                         <View style={[style.grey_bar,{width:"25%"}]}></View>
                     </View>
                 }                                
                 {
-                    locationInfo.address ===  "" &&
+                    (locationInfo === undefined || locationInfo.address ===  "") &&
                 <View>
                     <View style={{flexDirection:'row' , marginTop:10}}>
                         <View style={[style.grey_bar, {width:"20%"}]} ></View>
@@ -77,7 +77,7 @@ export default function LocationInfoPlaceHolder({locationInfo}){
                 <View style={styles.walmartImageBox}>          
                
                 {
-                    locationInfo.location_image === "" &&                                      
+                    (locationInfo === undefined || locationInfo.location_image === "") &&  
                     <SvgIcon style={styles.fontIcon} icon={"Add_Image_Gray"} width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '130px': '80px'} />                                                        
                 }
                 </View>

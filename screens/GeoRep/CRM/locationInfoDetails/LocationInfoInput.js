@@ -30,9 +30,9 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   const [dateTimeKey, setDateTimeKey] = useState(null);  
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);    
-  var outcomes = locationInfo.outcomes ? locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id ) : false;  
+  var outcomes = locationInfo !== undefined && locationInfo.outcomes  ? locationInfo.outcomes.find(xx =>  xx.outcome_id != null && locationInfo.current_outcome_id && xx.outcome_id == locationInfo.current_outcome_id ) : false;  
   const [selectedOutcomeId, setSelectedOutComeId] = useState(outcomes ? outcomes.outcome_id : 0);
-  var stages = locationInfo.stages ? locationInfo.stages.find(xxx => xxx.stage_id == locationInfo.current_stage_id):false;  
+  var stages = locationInfo !== undefined && locationInfo.stages ? locationInfo.stages.find(xxx => xxx.stage_id == locationInfo.current_stage_id):false;  
   const [selectedStageId, setSelectedStageId] = useState( stages ?  stages.stage_id : 0);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);  
   const [isLoading ,setIsLoading] = useState(false);
@@ -61,16 +61,17 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
   }, []);
 
   useEffect(() => {
-    if(!locationInfo.disposition_fields) return;
-    let items = [];
-    locationInfo.disposition_fields.forEach(element => {
-      items.push(element.value)
-    });
-    setDispositionValue(items);
-    if(locationInfo.outcomes){
-      setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
-    }
-    
+    if(locationInfo !== undefined){
+      if(!locationInfo.disposition_fields) return;
+      let items = [];
+      locationInfo.disposition_fields.forEach(element => {
+        items.push(element.value)
+      });
+      setDispositionValue(items);
+      if(locationInfo.outcomes){
+        setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
+      }
+    }        
   }, [locationInfo])
   
   useEffect(() => {
@@ -276,7 +277,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
       }}></AlertDialog>
 
       {
-        locationInfo.address !== "" &&
+        locationInfo !== undefined && locationInfo.address !== "" &&
         <View style={styles.refreshBox}>
             <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
             <Text style={styles.shadowBoxText}>Stage</Text>
@@ -295,7 +296,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
 
 
       {
-        locationInfo.address !== "" &&
+        locationInfo !== undefined && locationInfo.address !== "" &&
         <View style={styles.refreshBox}>        
           <TouchableOpacity style={styles.shadowBox} onPress={() => {setOutComeModalVisible(!outComeModalVisible)}}>
             <Text style={styles.shadowBoxText}>Outcome</Text>
@@ -320,7 +321,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
       }
 
       {
-        locationInfo.disposition_fields &&
+        locationInfo !== undefined && locationInfo.disposition_fields &&
         <View style={styles.inputBox}>
 
             {locationInfo.disposition_fields.map((field, key) => (
@@ -366,12 +367,12 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
       />
 
       {
-        locationInfo.stages && 
+        locationInfo !== undefined && locationInfo.stages && 
         stagesModal()
       }
       
       {
-        locationInfo.outcomes &&
+        locationInfo !== undefined && locationInfo.outcomes &&
         outComesModal()
       }
       {confirmModal()}
