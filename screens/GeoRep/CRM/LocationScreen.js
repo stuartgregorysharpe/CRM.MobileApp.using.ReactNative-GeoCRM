@@ -14,8 +14,8 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  CHANGE_CURRENT_LOCATION, LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationPinKey, getLocationFilters, getLocationSearchList, getLocationInfo, getLocationsMap } from '../../../actions/location.action';
+import { LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationsMap, getLocationSearchListsByPage } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
@@ -23,8 +23,7 @@ import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getDistance } from '../../../constants/Consts';
-import LocationInformation from '../../../DAO/LocationInformation';
-import GetLocation from 'react-native-get-location';
+import { getFilterData } from '../../../constants/Storage';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -90,7 +89,7 @@ export default function LocationScreen(props) {
       ),      
       tabBarStyle: {
         position: 'absolute',
-        height: 50,      
+        height: 50,
         paddingBottom: Platform.OS == "android" ? 5 : 0,          
         backgroundColor: Colors.whiteColor,
       },
@@ -103,7 +102,6 @@ export default function LocationScreen(props) {
         },
       });
     }
-
   });
 
   useEffect(() => {
@@ -115,31 +113,19 @@ export default function LocationScreen(props) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {                      
+      console.log("on resume");
       if(map.current !== null && map.current.props){      
         console.log(map.current.props.onRegionChangeComplete);
         map.current.props.onRegionChangeComplete();      
       }
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 15000,
-      })
-      .then(location => {    
-          console.log("change current location");
-          dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });             
-      })
-      .catch(error => {
-        console.log("get location error", error);  
-        const { code, message } = error;      
-      });
-
     });
     return unsubscribe;
   }, [navigation]);
-  
+    
   useEffect(() => {            
     setIsBack(false);    
     if(locationMaps.length > 0){
-      let items = [];    
+      let items = [];
       locationMaps.map((list, key) => {        
         let item = {
           name: list.location_name.value !== "" ? list.location_name.value : "Location",
@@ -149,12 +135,13 @@ export default function LocationScreen(props) {
           location_id: list.location_id,
           status_text_color:list.pin_image
         }
-        items.push(item);        
+        items.push(item);
       });
       items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
       console.log("loopList updated in map page");
-      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});      
-    }      
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});
+    
+    }
   }, [locationMaps]);
   
   useEffect(() => {    
@@ -191,8 +178,7 @@ export default function LocationScreen(props) {
         return;
     }
   }
-  
-
+    
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
@@ -303,18 +289,8 @@ export default function LocationScreen(props) {
                           strokeWidth = { 1 }
                           strokeColor = {PRIMARY_COLOR}
                           fillColor = { 'rgba(230,238,255,0.5)' }
-                        />
-                        
-                    </ClusteredMapView> 
-                    
-                    {/* <MapZoomPanel
-                      onZoomIn={() => {
-                        mapZoomIn()
-                      }}
-                      onZoomOut={() => {
-                        mapZoomOut()
-                      }}
-                    /> */}
+                        />                        
+                    </ClusteredMapView>                                         
               </View>
             }
                                         

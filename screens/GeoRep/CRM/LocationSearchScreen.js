@@ -9,7 +9,7 @@ import SearchBar from '../../../components/SearchBar';
 import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import {  LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationFilters, getLocationInfo, getLocationSearchList } from '../../../actions/location.action';
+import { getLocationFilters, getLocationInfo, getLocationSearchList, getLocationSearchListsByPage } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { grayBackground, style } from '../../../constants/Styles';
@@ -19,10 +19,8 @@ import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
-import { SearchLists } from '../../../DAO';
-import LocationInformation from '../../../DAO/LocationInformation';
-
-var isCalled = false;
+import { getFilterData } from '../../../constants/Storage';
+import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 
 export default function LocationSearchScreen(props) {
   
@@ -34,6 +32,7 @@ export default function LocationSearchScreen(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(state => state.selection.searchFilters);
   const [orderLists, setOrderLists] = useState([]);
+  const [originLists, setOriginLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState();  
@@ -47,6 +46,9 @@ export default function LocationSearchScreen(props) {
   const locationRef = useRef();
   const [pageType, setPageType ] = useState({name:"search-lists"});
   const [isLoading , setIsLoading] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [myLocation, setMyLocation] = useState(currentLocation);
 
   useEffect(() => {
 
@@ -61,7 +63,6 @@ export default function LocationSearchScreen(props) {
             }else{
               goPreviousPage();
             }
-
           }}>            
           <View style={style.headerTitleContainerStyle}>            
               <Image
@@ -72,13 +73,12 @@ export default function LocationSearchScreen(props) {
           <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },
-
+      
       headerLeft: () => (
         <TouchableOpacity 
           style={style.headerLeftStyle} 
           activeOpacity={1}
-          onPress={() => {            
-            
+          onPress={() => {
             if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){
               console.log("taop on 1");
               console.log(locationRef);
@@ -97,18 +97,21 @@ export default function LocationSearchScreen(props) {
     }); 
   });
 
-  useEffect(() =>{
-    console.log("ses is loading");
-    SearchLists.load().then(result =>{
-      setOrderLists(result);
-      setIsLoading(true);    
-    });
-    
-  },[]);
+  useEffect(() => {
+    if(locationSearchLists.length === 0){      
+      dispatch(getLocationSearchList());
+    }else{      
+      getSearchData(locationSearchLists, "", "total");
+      loadMoreData();
+    }
+  },[locationSearchLists]);
+
+  useEffect(() => {
+    setMyLocation(currentLocation);
+  }, [currentLocation]);
 
   useEffect(() => {            
-    if(locationId !== 0 && isRequest == false && tabType !== undefined){  
-      console.log("open locaiton info from calendar page");
+    if(locationId !== 0 && isRequest == false && tabType !== undefined){        
       setPageType({"name":"camera", "type":tabType});      
       openLocationInfo(locationId)
     }
@@ -120,18 +123,33 @@ export default function LocationSearchScreen(props) {
     }
   },[calendarType]);
 
-  useEffect(() => {          
-    dispatch(getLocationSearchList());  
-  }, [filterParmeterChanged]);  
+  useEffect(() => {              
+    if(filterParmeterChanged !== undefined){
+      dispatch(getLocationSearchList());  
+    }    
+  }, [filterParmeterChanged]);
 
-  useEffect(() => {  
-    if(locationSearchLists.length !== 0 ){         
-      getSearchData("");      
-    }else if(!isCalled){
-      isCalled = true;
-      dispatch(getLocationSearchList());
-    }
-  }, [locationSearchLists]);
+  useEffect( () => {
+    if(isPageLoading){
+      loadData();
+    }  
+  },[isPageLoading]);
+
+  const loadData = async () => {
+    var filterData = await getFilterData();
+    console.log("is loadData");
+      getLocationSearchListsByPage(filterData, pageNumber)
+      .then((res) => {                  
+        getSearchData(res, "", "pagination");
+        if(pageNumber === 0){
+          setIsLoading(false);
+        }
+        setIsPageLoading(false);
+        setPageNumber(pageNumber + 1);
+      })
+      .catch((error) => {  
+      });
+  }
 
   const goPreviousPage = () =>{
     if(navigation.canGoBack()){                            
@@ -141,14 +159,14 @@ export default function LocationSearchScreen(props) {
     }
   }
 
-  const getSearchData = async(searchKey) => {
+  const getSearchData = ( lists,  searchKey , type) => {
+    let items = [];
     
-    let items = [];    
-    locationSearchLists.map((list, key) => {    
+    lists.map((list, key) => {
       let item = {
         name: list.name,
         address: list.address,
-        distance: getDistance(list.coordinates, currentLocation).toFixed(2),
+        distance: list.distance ? list.distance  : getDistance(list.coordinates, myLocation).toFixed(2),
         status: list.status,
         location_id: list.location_id,
         status_text_color:list.status_text_color
@@ -161,16 +179,22 @@ export default function LocationSearchScreen(props) {
         }
       }      
     });
-
-    items.sort((a, b) => a.distance > b.distance ? 1 : -1);
-    setOrderLists(items);
-    setIsLoading(false);
-    console.log("set is loadin false");
-    if(locationId === 0 || locationId  === undefined){
-      console.log("loop list updated in location search");
-      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+    
+    if(type === "pagination"){      
+      const tempLists = [ ...orderLists, ...items ];
+      //var filteredLists = tempLists.filter(item => item.address && item.address.length);
+      //filteredLists.sort((a, b) => a.distance > b.distance ? 1 : -1);
+      setOrderLists(tempLists);
+      setOriginLists(tempLists);      
+    }else if(type === "total") {
+      if(locationId === 0 || locationId  === undefined){        
+        items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+        dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+      }
+    }else if(type === "search"){
+      items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+      setOrderLists(items);
     }
-
   }
 
   const animation = (name) => {
@@ -191,21 +215,21 @@ export default function LocationSearchScreen(props) {
     }    
   }
   
-  const openLocationInfo = async(location_id) => {    
-    //setIsRequest(true)
+  const openLocationInfo = async(location_id) => {
+    
+    // LocationInformation.load().then(res =>{         
+    // });
 
-    LocationInformation.load().then(res =>{      
-      setLocationInfo(res);
-      animation("locationInfo");
-    });
+    setLocationInfo(undefined);
+    animation("locationInfo");    
 
     getLocationInfo( Number(location_id))
     .then((res) => {      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
         locationRef.current.updateView(res);
       }
-      if(locationSearchLists.length == 0){
-        dispatch(getLocationSearchList());
+      if(originLists.length == 0){
+        //dispatch(getLocationSearchList());
       }
     })
     .catch((e) =>{      
@@ -232,11 +256,14 @@ export default function LocationSearchScreen(props) {
         }        
       }}>
       </LocationItem>)
-  }  
+  } 
 
-
-  const loadMoreData = () =>{
-
+  const loadMoreData = async() =>{    
+    console.log("is load more called");
+    if(pageNumber === 0){
+      setIsLoading(true);
+    }
+    setIsPageLoading(true);    
   }
   renderFooter = () => {
     return (
@@ -248,7 +275,7 @@ export default function LocationSearchScreen(props) {
           //On Click of button calling loadMoreData function to load more data
           style={styles.loadMoreBtn}>
           <Text style={styles.btnText}>Loading</Text>
-          {true ? (
+          {isPageLoading ? (
             <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
           ) : null}
         </TouchableOpacity>
@@ -305,17 +332,17 @@ export default function LocationSearchScreen(props) {
               <AddToCalendar selectedItems={selectedItems} 
                 onClose={() => {  
                   dispatch({type: SLIDE_STATUS, payload: false }); 
-                  setShowItem(0);        
-                  setIsSelected(false); 
-                  getSearchData("");                  
+                  setShowItem(0);  
+                  setIsSelected(false);
+                  getSearchData(originLists, "", "search");
                 }}></AddToCalendar> 
             </View>
           }
 
-          <View style={styles.container}>
+          <View style={styles.container}>                        
             <SearchBar 
-              onSearch={(text) =>{
-                getSearchData(text);
+              onSearch={(text) =>{                
+                getSearchData(originLists, text, "search");         
                 setSearchKeyword(text);
               }} 
               initVal={searchKeyword}
@@ -325,6 +352,8 @@ export default function LocationSearchScreen(props) {
                 animation("filter");
               }} />
                         
+            
+            
             <View style={{flex:1}}>
                             
               <View style={styles.buttonContainer}>
@@ -372,6 +401,13 @@ export default function LocationSearchScreen(props) {
                             
               
               {
+                isLoading && 
+                <LocationSearchScreenPlaceholder></LocationSearchScreenPlaceholder>
+              }
+              
+
+
+              {
                 orderLists.length !== 0 && 
                 <View style={{marginBottom:100}}>
                   <FlatList
@@ -386,14 +422,14 @@ export default function LocationSearchScreen(props) {
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
                     onEndReached={loadMoreData}
-                    onEndReachedThreshold ={0.1}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    onEndReachedThreshold ={0.1}                    
                     ListFooterComponent={renderFooter.bind(this)}
                   />
                 </View>
               }              
                 
             </View>
+
           </View>
 
       </SafeAreaView>
@@ -462,7 +498,7 @@ const styles = EStyleSheet.create(parse({
   },
   loadMoreBtn: {
     padding: 10,
-    backgroundColor: '#800000',
+    backgroundColor: Colors.skeletonColor,
     borderRadius: 4,
     flexDirection: 'row',
     justifyContent: 'center',

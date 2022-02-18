@@ -11,7 +11,7 @@ import DeviceInfo from 'react-native-device-info';
 var currentPosition = -1;
 var isClickable = true;
 
-export function NextPrev({pageType ,locationId , onUpdated}){
+export function NextPrev({pageType ,locationId , onUpdated , onStart}){
 
     // pageType : 'camera' or 'search-lists'  ,  onUpdated: called after pressed "next" or "prev" button.
     const [isPrev, setIsPrev] = useState(false);
@@ -57,7 +57,6 @@ export function NextPrev({pageType ,locationId , onUpdated}){
         setCurrentLoopList(new_lists);
         currentPosition = new_lists.length - 1;
         await storeLocationLoop(new_lists);        
-        console.log("new list", new_lists);
         if(new_lists.length >= 2){
             setPrevLocationName(new_lists[new_lists.length - 2].name);
             setNextLocationName(loopLists[pos + 1].name)
@@ -65,7 +64,7 @@ export function NextPrev({pageType ,locationId , onUpdated}){
             setNextLocationName(loopLists[pos + 1].name)
         }
     }
-
+    
     getCameraNextPosition = (pos) =>{
         if(pos < loopLists.length - 1){
             return pos +1;
@@ -84,26 +83,26 @@ export function NextPrev({pageType ,locationId , onUpdated}){
         }
     }
 
-    const getPosition = async() => {
+    const getPosition = () => {
         var position = -1;
         loopLists.forEach((element, index) => {
             if(element.location_id === locationId){
                 position = index;
             }
-        });
-        
+        });        
         if(pageType.name === "camera"){                    
             currentPosition = position;
             // Prev and Next Location Name for Tablet
             setNextLocationName(loopLists[getCameraNextPosition(position)].name);
             setPrevLocationName(loopLists[getCameraPrevPosition(position)].name);            
         }else if(pageType.name === "search-lists"){
-            setLoopPosition(position);     // position in original location list
+            setLoopPosition(position); // position in original location list
             initLocationLoopData(position);
         }
     }
     
-    const openLocationInfo = async(location_id) => {        
+    const openLocationInfo = (location_id) => {
+
         isClickable = false;
         getLocationInfo( Number(location_id))
         .then((res) => {            
@@ -115,7 +114,7 @@ export function NextPrev({pageType ,locationId , onUpdated}){
         })
     }
 
-    const openNewLocationInfo = async(location_id) => {        
+    const openNewLocationInfo = (location_id) => {        
         isClickable = false;
         getLocationInfo( Number(location_id))
         .then( async(res) => {
@@ -141,6 +140,7 @@ export function NextPrev({pageType ,locationId , onUpdated}){
 
     const onPrev = () =>{
         if(isClickable){
+            onStart();
             if(pageType.name === "camera"){                                    
                 openLocationInfo(currentLoopLists[getCameraPrevPosition(currentPosition)].location_id);            
                 currentPosition = getCameraPrevPosition(currentPosition);
@@ -177,6 +177,7 @@ export function NextPrev({pageType ,locationId , onUpdated}){
 
     const onNext = () =>{
         if(isClickable){
+            onStart();
             if(pageType.name === "camera"){
                 openLocationInfo(currentLoopLists[getCameraNextPosition(currentPosition)].location_id);
                 currentPosition = getCameraNextPosition(currentPosition);

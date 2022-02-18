@@ -32,6 +32,7 @@ export default function SignIn() {
   const emailRef = useRef();
   const passwordInput = useRef();
 
+  //clinton@cydcor.com / Test2021#
   useEffect(() => {  
     initView();    
     if (loginStatus == "failed") {

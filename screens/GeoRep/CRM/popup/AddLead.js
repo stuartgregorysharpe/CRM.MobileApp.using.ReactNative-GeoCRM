@@ -10,13 +10,14 @@ import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
-import {  SLIDE_STATUS } from '../../../../actions/actionTypes';
+import {  CHANGE_CURRENT_LOCATION, SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import { reverseGeocoding } from '../../../../actions/google.action';
+import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
+import GetLocation from 'react-native-get-location';
 
 export default function AddLead({screenProps , onClose}) {
 
@@ -32,7 +33,8 @@ export default function AddLead({screenProps , onClose}) {
   const [isSuccess, setIsSuccess] = useState(false);  
   const [message, setMessage] = useState("");
   const [isCurrentLocation , setIsCurrentLocation] = useState("0");
-      
+  const [myLocation, setMyLocation] = useState(currentLocation);
+
   var index = 0;
   const handleSubmit = () => {        
     let params = {
@@ -53,8 +55,15 @@ export default function AddLead({screenProps , onClose}) {
   
   useEffect(() => {    
     setIsLoading(true);
+    dispatch(updateCurrentLocation());
   },[]);
   
+
+  useEffect(() => {
+    setMyLocation(currentLocation);
+  },[currentLocation]);
+  
+
   useEffect(() =>{
     if(isLoading){
       getLeadFields()
@@ -200,8 +209,8 @@ export default function AddLead({screenProps , onClose}) {
           showsMyLocationButton = {true}
           zoomEnabled = {true}
           region={{
-            latitude: currentLocation.latitude,
-            longitude: currentLocation.longitude,
+            latitude: myLocation.latitude,
+            longitude: myLocation.longitude,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121
           }}
@@ -239,13 +248,12 @@ export default function AddLead({screenProps , onClose}) {
                       key == 1 && 
                       <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={ async() =>{
                         
-                        var masterFields = await reverseGeocoding( currentLocation, customMasterFields);                       
+                        var masterFields = await reverseGeocoding( myLocation, customMasterFields);                       
                         if(masterFields.length > 0){
                           setCustomMasterFields(masterFields);
                           setIsCurrentLocation("1");
-                        }
-                        
-                      }}>                  
+                        }                        
+                      }}>
                           <Text style={styles.linkBoxText}>Use Current Geo Location</Text>                  
                       </TouchableOpacity>
                     }

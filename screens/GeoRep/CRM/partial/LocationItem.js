@@ -59,7 +59,7 @@ export function LocationItem ({isSelected, item, selectedItems, onItemClicked })
           {
             item.distance !== "" && 
             <Text style={[styles.subTitle, styles.textRight]}>
-              {item.distance} mi
+              {item.distance}
             </Text>
           }
           {
