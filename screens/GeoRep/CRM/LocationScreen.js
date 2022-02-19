@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect ,useRef} from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform } from 'react-native';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform , AppState} from 'react-native';
 import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -24,6 +24,9 @@ import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getDistance } from '../../../constants/Consts';
 import { getFilterData } from '../../../constants/Storage';
+import { updateCurrentLocation } from '../../../actions/google.action';
+import Geolocation from 'react-native-geolocation-service';
+
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -48,6 +51,10 @@ export default function LocationScreen(props) {
   const [pageType, setPageType ] = useState({name:"search-lists"});
   const [isLoading , setIsLoading] = useState(false);
   const locationRef = useRef();
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [myLocation, setMyLocation] = useState(currentLocation);
+  const watchId = useRef<Number | null>(null);
 
   useEffect(() => {
     props.screenProps.setOptions({           
@@ -104,6 +111,57 @@ export default function LocationScreen(props) {
     }
   });
 
+  useEffect(() => {    
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {        
+        //dispatch(updateCurrentLocation());
+      }
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);      
+    });
+
+    return () => {
+      subscription.remove();
+    };    
+  }, []);
+
+  useEffect(() => {
+      watchId.current = Geolocation.watchPosition(
+          (position) => {              
+              console.log("Tracking...");
+              setMyLocation({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              });
+          },
+          (error) => {
+              console.log(error);
+          },
+          {
+              distanceFilter: 2,
+          },
+      );
+
+      return () => {
+          if (watchId.current) {
+              Geolocation.clearWatch(watchId.current);   // <- Never called as watchPosition() returned 0.
+          }
+      }
+  }, []);
+
+
+
+
+  useEffect(() => {
+    if( currentLocation.latitude !== undefined){
+      setMyLocation(currentLocation);
+      console.log('set up my location' , currentLocation);
+    }         
+  },[currentLocation]);
+
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
@@ -137,7 +195,7 @@ export default function LocationScreen(props) {
         }
         items.push(item);
       });
-      items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
+      items.sort((a, b) => a.distance - b.distance);    
       console.log("loopList updated in map page");
       dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});
     
@@ -179,6 +237,8 @@ export default function LocationScreen(props) {
     }
   }
     
+
+ 
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
@@ -281,9 +341,10 @@ export default function LocationScreen(props) {
                       ))}
                         
                         <MapView.Circle
+                          key={(myLocation.longitude + myLocation.latitude).toString()}
                           center = {{
-                            latitude: currentLocation.latitude,
-                            longitude: currentLocation.longitude
+                            latitude: myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
+                            longitude: myLocation.longitude  !== undefined ? myLocation.longitude : currentLocation.longitude
                           }}
                           radius = { 200 }
                           strokeWidth = { 1 }

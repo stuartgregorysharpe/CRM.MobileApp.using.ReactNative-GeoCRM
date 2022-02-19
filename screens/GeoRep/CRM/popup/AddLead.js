@@ -10,14 +10,13 @@ import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
-import {  CHANGE_CURRENT_LOCATION, SLIDE_STATUS } from '../../../../actions/actionTypes';
+import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
-import GetLocation from 'react-native-get-location';
 
 export default function AddLead({screenProps , onClose}) {
 
@@ -35,7 +34,6 @@ export default function AddLead({screenProps , onClose}) {
   const [isCurrentLocation , setIsCurrentLocation] = useState("0");
   const [myLocation, setMyLocation] = useState(currentLocation);
 
-  var index = 0;
   const handleSubmit = () => {        
     let params = {
       coordinates:{latitude : currentLocation.latitude, longitude : currentLocation.longitude},
@@ -63,7 +61,6 @@ export default function AddLead({screenProps , onClose}) {
     setMyLocation(currentLocation);
   },[currentLocation]);
   
-
   useEffect(() =>{
     if(isLoading){
       getLeadFields()

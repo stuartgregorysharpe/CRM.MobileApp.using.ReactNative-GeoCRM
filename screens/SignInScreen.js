@@ -236,7 +236,6 @@ const styles = StyleSheet.create({
 
 
   submitButton: {
-
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,
@@ -254,14 +253,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
+
   submitButtonIcon: {
     position: 'absolute',
     right: 10
   },
+
   linkText: {
     textAlign: 'center',
     color: '#fff'
   },
+  
   errorText: {
     color: 'red',
     textAlign: 'center'

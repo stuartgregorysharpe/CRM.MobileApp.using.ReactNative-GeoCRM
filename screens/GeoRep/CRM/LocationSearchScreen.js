@@ -188,11 +188,11 @@ export default function LocationSearchScreen(props) {
       setOriginLists(tempLists);      
     }else if(type === "total") {
       if(locationId === 0 || locationId  === undefined){        
-        items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+        items.sort((a, b) => a.distance - b.distance);
         dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
       }
     }else if(type === "search"){
-      items.sort((a, b) => a.distance > b.distance ? 1 : -1);
+      items.sort((a, b) => a.distance - b.distance );
       setOrderLists(items);
     }
   }
@@ -217,11 +217,8 @@ export default function LocationSearchScreen(props) {
   
   const openLocationInfo = async(location_id) => {
     
-    // LocationInformation.load().then(res =>{         
-    // });
-
     setLocationInfo(undefined);
-    animation("locationInfo");    
+    animation("locationInfo");
 
     getLocationInfo( Number(location_id))
     .then((res) => {      
@@ -265,6 +262,7 @@ export default function LocationSearchScreen(props) {
     }
     setIsPageLoading(true);    
   }
+
   renderFooter = () => {
     return (
     //Footer View with Load More button
@@ -282,8 +280,7 @@ export default function LocationSearchScreen(props) {
       </View>
     );
   }
-
-
+  
   return (
     <Provider>
       

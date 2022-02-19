@@ -51,11 +51,13 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
 
 export const updateCurrentLocation = () => (dispatch, getState) => {
   // update current location
+  console.log("enter");
   GetLocation.getCurrentPosition({
     enableHighAccuracy: true,
     timeout: 15000,
   })
   .then(location => {
+    console.log("updated  current location");
       dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });            
   })
   .catch(error => {

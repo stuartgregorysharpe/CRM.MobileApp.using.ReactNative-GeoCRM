@@ -16,8 +16,6 @@ import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
-import GetLocation from 'react-native-get-location';
-import { CHANGE_CURRENT_LOCATION } from '../../../../actions/actionTypes';
 
 export default function UpdateCustomerInfo({ location_id, onClose}) {
 

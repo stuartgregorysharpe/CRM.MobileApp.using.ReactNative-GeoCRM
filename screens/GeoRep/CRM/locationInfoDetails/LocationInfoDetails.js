@@ -134,6 +134,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     })
   }
 
+
   const openCustomerInfo = async() => {
     setShowItem("update_customer")
   }
