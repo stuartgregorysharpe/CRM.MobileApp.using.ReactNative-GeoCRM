@@ -217,7 +217,9 @@ export const getLocationSearchList = () => (dispatch, getState) => {
       .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-search-list`, {
         params: {
           user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-          filters: getState().selection.filters
+          filters: getState().selection.filters,
+          current_latitude : location.latitude,
+          current_longitude : location.longitude
         },
         headers: {
           Authorization: 'Bearer ' + getState().selection.token
