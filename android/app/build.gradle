@@ -155,7 +155,7 @@ android {
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debu
+            signingConfig signingConfigs.debug
             if (nativeArchitectures) {
                 ndk {
                     abiFilters nativeArchitectures.split(',')
