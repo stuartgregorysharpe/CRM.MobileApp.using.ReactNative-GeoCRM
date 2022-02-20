@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect ,useRef} from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform } from 'react-native';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform , AppState} from 'react-native';
 import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -14,8 +14,8 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  CHANGE_CURRENT_LOCATION, LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationPinKey, getLocationFilters, getLocationSearchList, getLocationInfo, getLocationsMap } from '../../../actions/location.action';
+import { LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationsMap, getLocationSearchListsByPage } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
@@ -23,8 +23,10 @@ import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getDistance } from '../../../constants/Consts';
-import LocationInformation from '../../../DAO/LocationInformation';
-import GetLocation from 'react-native-get-location';
+import { getFilterData } from '../../../constants/Storage';
+import { updateCurrentLocation } from '../../../actions/google.action';
+import Geolocation from 'react-native-geolocation-service';
+
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -49,6 +51,10 @@ export default function LocationScreen(props) {
   const [pageType, setPageType ] = useState({name:"search-lists"});
   const [isLoading , setIsLoading] = useState(false);
   const locationRef = useRef();
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [myLocation, setMyLocation] = useState(currentLocation);
+  const watchId = useRef<Number | null>(null);
 
   useEffect(() => {
     props.screenProps.setOptions({           
@@ -90,7 +96,7 @@ export default function LocationScreen(props) {
       ),      
       tabBarStyle: {
         position: 'absolute',
-        height: 50,      
+        height: 50,
         paddingBottom: Platform.OS == "android" ? 5 : 0,          
         backgroundColor: Colors.whiteColor,
       },
@@ -103,8 +109,58 @@ export default function LocationScreen(props) {
         },
       });
     }
-
   });
+
+  useEffect(() => {    
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {        
+        //dispatch(updateCurrentLocation());
+      }
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);      
+    });
+
+    return () => {
+      subscription.remove();
+    };    
+  }, []);
+
+  useEffect(() => {
+      watchId.current = Geolocation.watchPosition(
+          (position) => {              
+              console.log("Tracking...");
+              setMyLocation({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              });
+          },
+          (error) => {
+              console.log(error);
+          },
+          {
+              distanceFilter: 2,
+          },
+      );
+
+      return () => {
+          if (watchId.current) {
+              Geolocation.clearWatch(watchId.current);   // <- Never called as watchPosition() returned 0.
+          }
+      }
+  }, []);
+
+
+
+
+  useEffect(() => {
+    if( currentLocation.latitude !== undefined){
+      setMyLocation(currentLocation);
+      console.log('set up my location' , currentLocation);
+    }         
+  },[currentLocation]);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -115,31 +171,19 @@ export default function LocationScreen(props) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {                      
+      console.log("on resume");
       if(map.current !== null && map.current.props){      
         console.log(map.current.props.onRegionChangeComplete);
         map.current.props.onRegionChangeComplete();      
       }
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 15000,
-      })
-      .then(location => {    
-          console.log("change current location");
-          dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });             
-      })
-      .catch(error => {
-        console.log("get location error", error);  
-        const { code, message } = error;      
-      });
-
     });
     return unsubscribe;
   }, [navigation]);
-  
+    
   useEffect(() => {            
     setIsBack(false);    
     if(locationMaps.length > 0){
-      let items = [];    
+      let items = [];
       locationMaps.map((list, key) => {        
         let item = {
           name: list.location_name.value !== "" ? list.location_name.value : "Location",
@@ -149,12 +193,13 @@ export default function LocationScreen(props) {
           location_id: list.location_id,
           status_text_color:list.pin_image
         }
-        items.push(item);        
+        items.push(item);
       });
-      items.sort((a, b) => a.distance > b.distance ? 1 : -1);    
+      items.sort((a, b) => a.distance - b.distance);    
       console.log("loopList updated in map page");
-      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});      
-    }      
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});
+    
+    }
   }, [locationMaps]);
   
   useEffect(() => {    
@@ -191,8 +236,9 @@ export default function LocationScreen(props) {
         return;
     }
   }
-  
+    
 
+ 
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
@@ -295,26 +341,17 @@ export default function LocationScreen(props) {
                       ))}
                         
                         <MapView.Circle
+                          key={(myLocation.longitude + myLocation.latitude).toString()}
                           center = {{
-                            latitude: currentLocation.latitude,
-                            longitude: currentLocation.longitude
+                            latitude: myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
+                            longitude: myLocation.longitude  !== undefined ? myLocation.longitude : currentLocation.longitude
                           }}
                           radius = { 200 }
                           strokeWidth = { 1 }
                           strokeColor = {PRIMARY_COLOR}
                           fillColor = { 'rgba(230,238,255,0.5)' }
-                        />
-                        
-                    </ClusteredMapView> 
-                    
-                    {/* <MapZoomPanel
-                      onZoomIn={() => {
-                        mapZoomIn()
-                      }}
-                      onZoomOut={() => {
-                        mapZoomOut()
-                      }}
-                    /> */}
+                        />                        
+                    </ClusteredMapView>                                         
               </View>
             }
                                         

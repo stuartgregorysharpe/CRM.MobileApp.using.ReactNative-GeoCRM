@@ -27,6 +27,9 @@ export function getTwoDigit(value){
 
 export function getDistance (prelatlng, currentlatlng) {
     
+    if(prelatlng.latitude === "" || prelatlng.longitude === ""){
+        return 0;
+    }
     const prevLatInRad = toRad(Number(prelatlng.latitude));
     const prevLongInRad = toRad(Number(prelatlng.longitude));
     const latInRad = toRad(currentlatlng.latitude);
@@ -42,6 +45,6 @@ export function getDistance (prelatlng, currentlatlng) {
 }
   
 const toRad = (angle) => {
-return (angle * Math.PI) / 180;
+    return (angle * Math.PI) / 180;
 }
 

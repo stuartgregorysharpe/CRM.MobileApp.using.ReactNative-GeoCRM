@@ -15,7 +15,7 @@ import Fonts from '../../../../constants/Fonts';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import { reverseGeocoding } from '../../../../actions/google.action';
+import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 
 export default function UpdateCustomerInfo({ location_id, onClose}) {
 
@@ -33,14 +33,15 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [message, setMessage] = useState("");
   const [isCurrentLocation , setIsCurrentLocation] = useState("0");
   const [customerNameUpdated, setCustomerNameUpdated] = useState("0");
-  const [addressUpdated, setAddressUpdated] = useState("0"); 
+  const [addressUpdated, setAddressUpdated] = useState("0");   
+  const [myLocation, setMyLocation] = useState(currentLocation);
   var location_name_updated = "0";
   var address_updated = "0";
 
   var index = 0;
   const handleSubmit = () => {
-    checkChangedStatus();
 
+    checkChangedStatus();
     let params = {
       location_id:location_id,
       coordinates:{latitude : currentLocation.latitude, longitude : currentLocation.longitude},
@@ -48,8 +49,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       location_name_updated: location_name_updated,
       address_updated: address_updated,
       custom_master_fields:customMasterFields    
-    }
-      
+    }      
+
     postLocationInfoUpdate(params, uuid.v4())
     .then((res) => {
       setMessage(res);
@@ -59,11 +60,17 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       console.log('error', error);
       setMessage("Failed");
       setIsSuccess(true);
-    }) 
+    })
+
   }
+
+  useEffect(() => {
+    setMyLocation(currentLocation);
+  },[currentLocation]);
   
   useEffect(() => {    
     setIsLoading(true);
+    dispatch(updateCurrentLocation());
   },[]);
   
   useEffect(() =>{
@@ -224,8 +231,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
               showsMyLocationButton = {true}
               zoomEnabled = {true}
               region={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
+                latitude: myLocation.latitude,
+                longitude: myLocation.longitude,
                 latitudeDelta: 0.015,
                 longitudeDelta: 0.0121
               }}
@@ -260,7 +267,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                         {
                           key == 1 && 
                           <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={ async() => {
-                            var masterFields = await reverseGeocoding( currentLocation, customMasterFields);                       
+                            var masterFields = await reverseGeocoding( myLocation, customMasterFields);                       
                             if(masterFields.length > 0){
                               setCustomMasterFields(masterFields);
                               setIsCurrentLocation("1");

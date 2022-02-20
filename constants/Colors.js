@@ -9,5 +9,6 @@ export const TICK_BOX_COLOR = "#002a55";
 
 export default {
     whiteColor:"#fff",
-    skeletonColor:'#d1d1d1'
+    skeletonColor:'#d1d1d1',
+    primaryColor:'#133C8B'
 }

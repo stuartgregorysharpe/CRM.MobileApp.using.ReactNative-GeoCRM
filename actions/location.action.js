@@ -32,7 +32,6 @@ export const getLocationPinKey = () => (dispatch, getState) => {
     .then((res) => {
       if (res.data == undefined) {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-
         return;
       }
       if (res.data.status == 'success') {
@@ -139,7 +138,66 @@ export const getLocationFilters = () => (dispatch, getState) => {
       console.log(err);
   })
 
-  
+}
+
+
+export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
+
+    var base_url = await getBaseUrl();
+    var token = await getToken();
+    var user_id = await getUserId();
+
+    return new Promise(function(resolve, reject) {
+
+        GetLocation.getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 15000,
+        })
+        .then(location => {
+
+          console.log("base_url ---- ",base_url);
+          console.log({
+            user_id : user_id,
+            filters : filters,
+            current_latitude : location.latitude,
+            current_longitude : location.longitude, 
+            page_nr : pageNumber
+          });;
+
+          axios
+          .get(`${base_url}/locations/location-search-list`, {
+            params: {
+              user_id : user_id,
+              filters : filters,
+              current_latitude : location.latitude,
+              current_longitude : location.longitude, 
+              page_nr : pageNumber
+            },
+            headers: {
+              Authorization: 'Bearer ' + token
+            }
+          })
+          .then((res) => {              
+            if (res.data == undefined) {            
+              resolve([]);
+            }                                
+            if (res.data.status == 'success') {
+              resolve(res.data.items);
+            }else{
+              resolve([]);
+            }
+          })
+          .catch((err) => {        
+            reject(err);          
+            console.log(err);
+          })
+
+        })
+        .catch(error => {
+          console.log("get location error", error);  
+          const { code, message } = error;      
+        });
+    });            
 }
 
 
@@ -150,8 +208,7 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     enableHighAccuracy: true,
     timeout: 15000,
   })
-  .then(location => {
-
+  .then(location => {    
       dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });
       // call api 
       dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });  
@@ -160,7 +217,9 @@ export const getLocationSearchList = () => (dispatch, getState) => {
       .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-search-list`, {
         params: {
           user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-          filters: getState().selection.filters
+          filters: getState().selection.filters,
+          current_latitude : location.latitude,
+          current_longitude : location.longitude
         },
         headers: {
           Authorization: 'Bearer ' + getState().selection.token
@@ -168,14 +227,14 @@ export const getLocationSearchList = () => (dispatch, getState) => {
       })
       .then((res) => {
         if (res.data == undefined) {
-
           dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
           return;
         }            
         if (res.data.status == 'success') {
           console.log("search results count", res.data.items.length);
           dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'success' });
-          dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items })
+          dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items });
+          
         }
       })
       .catch((err) => {
