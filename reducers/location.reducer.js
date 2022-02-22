@@ -10,7 +10,8 @@ import {
   CHANGE_LOCATION_SEARCH_LISTS,
   STATUS_DISPOSITION_FIELDS_UPDATE,
   LOCATION_ID_CHANGED,
-  LOCATION_LOOP_LISTS
+  LOCATION_LOOP_LISTS,
+  CHANGE_POLYGONS
   
 } from "../actions/actionTypes";
 
@@ -80,6 +81,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         locationMaps: action.payload
+      }
+    case CHANGE_POLYGONS:
+      return {
+        ...state,
+        polygons: action.payload
       }
     case CHANGE_LOCATION_FILTERS:
       return {

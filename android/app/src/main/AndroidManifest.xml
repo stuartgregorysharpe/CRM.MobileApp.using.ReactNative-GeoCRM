@@ -51,7 +51,7 @@
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="YOUR APP SCHEME" /> <!-- replace this with your custom scheme -->
+          <data android:scheme="myhttp" /> <!-- replace this with your custom scheme -->
         </intent-filter>
       </activity>
 

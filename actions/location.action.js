@@ -12,7 +12,8 @@ import {
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
   CHANGE_CURRENT_LOCATION,
-  STATUS_DISPOSITION_FIELDS_UPDATE
+  STATUS_DISPOSITION_FIELDS_UPDATE,
+  CHANGE_POLYGONS
   
 } from "./actionTypes";
 
@@ -90,9 +91,12 @@ export const getLocationsMap = () => (dispatch, getState) => {
           }
 
           console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations.length);
+          console.log("polygons", JSON.stringify(res.data.polygons));
+
           if (res.data.status == 'success') {
             dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
-            dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations })
+            dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations });
+            dispatch({ type: CHANGE_POLYGONS, payload: res.data.polygons });       
           }
         })
         .catch((err) => {
