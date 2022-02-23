@@ -22,6 +22,8 @@ import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getFilterData } from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 
+var isEndPageLoading = false;
+
 export default function LocationSearchScreen(props) {
   
   const navigation = props.navigation;
@@ -47,6 +49,7 @@ export default function LocationSearchScreen(props) {
   const [pageType, setPageType ] = useState({name:"search-lists"});
   const [isLoading , setIsLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
+  
   const [pageNumber, setPageNumber] = useState(0);
   const [myLocation, setMyLocation] = useState(currentLocation);
 
@@ -95,6 +98,7 @@ export default function LocationSearchScreen(props) {
 
   useEffect(() => {
     if(locationSearchLists.length === 0){      
+      console.log(" search lists called form filter");
       dispatch(getLocationSearchList());
     }else{      
       getSearchData(locationSearchLists, "", "total");
@@ -121,7 +125,14 @@ export default function LocationSearchScreen(props) {
 
   useEffect(() => {              
     if(filterParmeterChanged !== undefined){
-      dispatch(getLocationSearchList());  
+            
+      isEndPageLoading = false;
+      setPageNumber(0);
+      setOrderLists([]);
+      setOriginLists([]);
+      console.log("filter called from filter");
+      loadMoreData();
+      //dispatch(getLocationSearchList()); 
     }    
   }, [filterParmeterChanged]);
 
@@ -132,16 +143,22 @@ export default function LocationSearchScreen(props) {
   },[isPageLoading]);
 
   const loadData = async () => {
+
     var filterData = await getFilterData();    
     getLocationSearchListsByPage(filterData, pageNumber)
     .then((res) => { 
 
-      getSearchData(res, "", "pagination");
       if(pageNumber === 0){
         setIsLoading(false);
       }
       setIsPageLoading(false);
-      setPageNumber(pageNumber + 1);
+      getSearchData(res, "", "pagination");
+      if(res.length < 50){     
+        isEndPageLoading = true;
+      }else{        
+        setPageNumber(pageNumber + 1);
+      }
+
     })
     .catch((error) => {  
     });
@@ -246,22 +263,23 @@ export default function LocationSearchScreen(props) {
   } 
 
   const loadMoreData = async() =>{        
-    if(isPageLoading === false && searchKeyword === ""){
+    
+    if( isEndPageLoading === false && isPageLoading === false && searchKeyword === ""){
       console.log("called load more ------");
       if(pageNumber === 0){
         setIsLoading(true);
       }
-      setIsPageLoading(true);    
+      setIsPageLoading(true);
     }    
   }
 
   renderFooter = () => {
-    if(searchKeyword === ""){
+    if( !isEndPageLoading && isPageLoading && searchKeyword === ""){
       return (    
         <View style={styles.footer}>
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={loadMoreData}          
+            // onPress={loadMoreData}          
             style={styles.loadMoreBtn}>
             <Text style={styles.btnText}>Loading</Text>
             {isPageLoading ? (
@@ -411,7 +429,7 @@ export default function LocationSearchScreen(props) {
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
                     onEndReached={loadMoreData}
-                    onEndReachedThreshold ={1}  
+                    onEndReachedThreshold ={1}
                     ListFooterComponent={renderFooter.bind(this)}
                   />
                 </View>

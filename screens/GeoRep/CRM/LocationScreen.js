@@ -65,22 +65,6 @@ export default function LocationScreen(props) {
     }    
   },[]);
 
-  // useEffect(() => {    
-  //   const subscription = AppState.addEventListener("change", nextAppState => {
-  //     if (
-  //       appState.current.match(/inactive|background/) &&
-  //       nextAppState === "active"
-  //     ) {    
-  //       console.log("for ground") ;
-  //     }
-  //     appState.current = nextAppState;
-  //     setAppStateVisible(appState.current);      
-  //   });
-  //   return () => {
-  //     subscription.remove();
-  //   };    
-  // }, []);
-
   useEffect(() => {
       watchId.current = Geolocation.watchPosition(
           (position) => {                            
@@ -134,6 +118,7 @@ export default function LocationScreen(props) {
   },[polygons]); 
 
   useEffect(() => {
+    refreshHeader();
     if (crmStatus) {
       props.screenProps.setOptions({
         tabBarStyle: {
@@ -379,7 +364,7 @@ export default function LocationScreen(props) {
                               coordinates={item}
                               //holes={polygon.holes}
                               strokeColor={polygon.strokeColor}
-                              fillColor={polygon.fillColor+ "20"}
+                              fillColor={polygon.fillColor+ "05"}
                               strokeWidth={1}
                             />
                           ))                          

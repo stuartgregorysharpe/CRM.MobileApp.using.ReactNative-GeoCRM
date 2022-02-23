@@ -184,7 +184,7 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
           .then((res) => {              
             if (res.data == undefined) {            
               resolve([]);
-            }                                
+            }
             if (res.data.status == 'success') {
               resolve(res.data.items);
             }else{
@@ -192,7 +192,7 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
             }
           })
           .catch((err) => {        
-            reject(err);          
+            reject(err);        
             console.log(err);
           })
 
