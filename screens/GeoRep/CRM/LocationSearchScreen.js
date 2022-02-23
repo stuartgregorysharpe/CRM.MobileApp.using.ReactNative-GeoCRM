@@ -35,7 +35,7 @@ export default function LocationSearchScreen(props) {
   const [originLists, setOriginLists] = useState([]);
   const [showItem, setShowItem] = useState(0);
   const [locationInfo, setLocationInfo] = useState();
-  const [searchKeyword, setSearchKeyword] = useState();  
+  const [searchKeyword, setSearchKeyword] = useState("");  
   const locationId = useSelector(state => state.location.locationId.value);
   const tabType =   useSelector(state => state.location.locationId.type);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -134,7 +134,8 @@ export default function LocationSearchScreen(props) {
   const loadData = async () => {
     var filterData = await getFilterData();    
     getLocationSearchListsByPage(filterData, pageNumber)
-    .then((res) => {                  
+    .then((res) => { 
+
       getSearchData(res, "", "pagination");
       if(pageNumber === 0){
         setIsLoading(false);
@@ -244,27 +245,33 @@ export default function LocationSearchScreen(props) {
       </LocationItem>)
   } 
 
-  const loadMoreData = async() =>{    
-    if(pageNumber === 0){
-      setIsLoading(true);
-    }
-    setIsPageLoading(true);    
+  const loadMoreData = async() =>{        
+    if(isPageLoading === false && searchKeyword === ""){
+      console.log("called load more ------");
+      if(pageNumber === 0){
+        setIsLoading(true);
+      }
+      setIsPageLoading(true);    
+    }    
   }
 
   renderFooter = () => {
-    return (    
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={loadMoreData}          
-          style={styles.loadMoreBtn}>
-          <Text style={styles.btnText}>Loading</Text>
-          {isPageLoading ? (
-            <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
-          ) : null}
-        </TouchableOpacity>
-      </View>
-    );
+    if(searchKeyword === ""){
+      return (    
+        <View style={styles.footer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={loadMoreData}          
+            style={styles.loadMoreBtn}>
+            <Text style={styles.btnText}>Loading</Text>
+            {isPageLoading ? (
+              <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return (<View></View>);
   }
   
   return (
@@ -303,6 +310,9 @@ export default function LocationSearchScreen(props) {
                   ref={locationRef}
                   goPreviousPage={goPreviousPage}
                   pageType={pageType}
+                  refreshLocationInfo={(id) => {
+                    openLocationInfo(id);
+                  }}
                   clostDetailsPopup={() =>{                
                     setShowItem(0);
                   }} locInfo={locationInfo} ></LocationInfoDetails>
@@ -380,8 +390,7 @@ export default function LocationSearchScreen(props) {
                 }
                 </View>                              
               </View>
-                            
-              
+
               {
                 isLoading && 
                 <LocationSearchScreenPlaceholder></LocationSearchScreenPlaceholder>
@@ -402,7 +411,7 @@ export default function LocationSearchScreen(props) {
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
                     onEndReached={loadMoreData}
-                    onEndReachedThreshold ={0.1}                    
+                    onEndReachedThreshold ={1}  
                     ListFooterComponent={renderFooter.bind(this)}
                   />
                 </View>

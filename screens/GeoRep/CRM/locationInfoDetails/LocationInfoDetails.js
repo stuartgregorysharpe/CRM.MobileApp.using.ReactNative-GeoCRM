@@ -162,7 +162,12 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
       {
         showItem === "update_customer" &&
-        <UpdateCustomerInfo location_id={locationInfo.location_id} onClose={() => {setShowItem("refresh")}} />      
+        <UpdateCustomerInfo location_id={locationInfo.location_id} 
+          onClose={() => { 
+              console.log("propos ---", props);
+              props.refreshLocationInfo(locationInfo.location_id);
+              setShowItem("refresh");
+          }} />      
       }      
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {

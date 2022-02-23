@@ -54,7 +54,144 @@ export default function LocationScreen(props) {
   const watchId = useRef<Number | null>(null);
   const [polygonLists, setPolygons] = useState([]);
 
+  useEffect(() => {    
+    refreshHeader();
+    if (crmStatus) {
+      props.screenProps.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        },
+      });
+    }    
+  },[]);
+
+  // useEffect(() => {    
+  //   const subscription = AppState.addEventListener("change", nextAppState => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === "active"
+  //     ) {    
+  //       console.log("for ground") ;
+  //     }
+  //     appState.current = nextAppState;
+  //     setAppStateVisible(appState.current);      
+  //   });
+  //   return () => {
+  //     subscription.remove();
+  //   };    
+  // }, []);
+
   useEffect(() => {
+      watchId.current = Geolocation.watchPosition(
+          (position) => {                            
+              if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
+                setMyLocation({
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude
+                });
+              }   
+          },
+          (error) => {
+              console.log(error);
+          },
+          {
+              distanceFilter: 3,
+          },
+      );
+      return () => {
+          if (watchId.current) {
+              Geolocation.clearWatch(watchId.current);
+          }
+      }
+  }, []);
+
+  useEffect(() => {
+    if( currentLocation.latitude !== undefined){
+      setMyLocation(currentLocation);      
+    }         
+    console.log(" location screen changed");
+  },[currentLocation]);  
+
+  useEffect(() => {    
+    if(polygons !== undefined){
+      console.log("po", JSON.stringify(polygons));
+      var tmp = [];
+      polygons.forEach(element => {
+        element.path.forEach(coords => {
+          if(coords.length > 0 && coords[0].latitude !== undefined && coords[0].longitude !== undefined){
+            let item = {
+              path:element.path,
+              fillColor: element.fillColor,
+              strokeColor: element.strokeColor
+            }
+            tmp.push(item);
+          }
+        });      
+      });
+      console.log("tmp",JSON.stringify(tmp));
+      setPolygons(tmp);      
+    }    
+  },[polygons]); 
+
+  useEffect(() => {
+    if (crmStatus) {
+      props.screenProps.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        },
+      });
+    }
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    };
+  }, [crmStatus]);
+
+  useEffect(() => {
+    
+    const unsubscribe = navigation.addListener('focus', () => {      
+      console.log("focuseed")      
+      refreshHeader();
+      if (crmStatus) {
+        props.screenProps.setOptions({
+          tabBarStyle: {
+            display: 'none',
+          },
+        });
+      }
+      if(map.current !== null && map.current.props){              
+        map.current.props.onRegionChangeComplete();      
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+    
+  useEffect(() => {            
+    setIsBack(false);    
+    if(locationMaps.length > 0){
+      let items = [];
+      locationMaps.map((list, key) => {        
+        let item = {
+          name: list.location_name.value !== "" ? list.location_name.value : "Location",
+          address: '',
+          distance: getDistance(list.coordinates, currentLocation).toFixed(2),
+          status: '',
+          location_id: list.location_id,
+          status_text_color:list.pin_image
+        }
+        items.push(item);
+      });
+      items.sort((a, b) => a.distance - b.distance);      
+      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});
+    
+    }
+  }, [locationMaps]);
+  
+  useEffect(() => {    
+    dispatch(getLocationsMap());  
+  }, [filterParmeterChanged]);  
+
+  const refreshHeader = () =>{
     props.screenProps.setOptions({           
       headerTitle:() =>{
         return(<TouchableOpacity                     
@@ -101,123 +238,7 @@ export default function LocationScreen(props) {
       },
     });
 
-    if (crmStatus) {
-      props.screenProps.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
-  });
-
-  // useEffect(() => {    
-  //   const subscription = AppState.addEventListener("change", nextAppState => {
-  //     if (
-  //       appState.current.match(/inactive|background/) &&
-  //       nextAppState === "active"
-  //     ) {        
-  //     }
-  //     appState.current = nextAppState;
-  //     setAppStateVisible(appState.current);      
-  //   });
-  //   return () => {
-  //     subscription.remove();
-  //   };    
-  // }, []);
-
-  useEffect(() => {
-      watchId.current = Geolocation.watchPosition(
-          (position) => {                            
-              if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
-                setMyLocation({
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude
-                });
-              }              
-          },
-          (error) => {
-              console.log(error);
-          },
-          {
-              distanceFilter: 3,
-          },
-      );
-      return () => {
-          if (watchId.current) {
-              Geolocation.clearWatch(watchId.current);
-          }
-      }
-  }, []);
-
-  useEffect(() => {
-    if( currentLocation.latitude !== undefined){
-      setMyLocation(currentLocation);      
-    }         
-  },[currentLocation]);  
-
-  useEffect(() => {
-    
-    if(polygons !== undefined){
-      console.log("po", JSON.stringify(polygons));
-      var tmp = [];
-      polygons.forEach(element => {
-        element.path.forEach(coords => {
-          if(coords.length > 0 && coords[0].latitude !== undefined && coords[0].longitude !== undefined){
-            let item = {
-              path:element.path,
-              fillColor: element.fillColor,
-              strokeColor: element.strokeColor
-            }
-            tmp.push(item);
-          }
-        });      
-      });
-      console.log("tmp",JSON.stringify(tmp));
-      setPolygons(tmp);
-      
-    }    
-  },[polygons]); 
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
-    };
-  }, [crmStatus]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
-      if(map.current !== null && map.current.props){              
-        map.current.props.onRegionChangeComplete();      
-      }
-    });
-    return unsubscribe;
-  }, [navigation]);
-    
-  useEffect(() => {            
-    setIsBack(false);    
-    if(locationMaps.length > 0){
-      let items = [];
-      locationMaps.map((list, key) => {        
-        let item = {
-          name: list.location_name.value !== "" ? list.location_name.value : "Location",
-          address: '',
-          distance: getDistance(list.coordinates, currentLocation).toFixed(2),
-          status: '',
-          location_id: list.location_id,
-          status_text_color:list.pin_image
-        }
-        items.push(item);
-      });
-      items.sort((a, b) => a.distance - b.distance);      
-      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});
-    
-    }
-  }, [locationMaps]);
-  
-  useEffect(() => {    
-    dispatch(getLocationsMap());  
-  }, [filterParmeterChanged]);  
+  }
 
   const handleBackButtonClick = () => {
     if (crmStatus) {
@@ -250,8 +271,6 @@ export default function LocationScreen(props) {
     }
   }
     
-
- 
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
@@ -360,7 +379,7 @@ export default function LocationScreen(props) {
                               coordinates={item}
                               //holes={polygon.holes}
                               strokeColor={polygon.strokeColor}
-                              fillColor={polygon.fillColor+ "50"}
+                              fillColor={polygon.fillColor+ "20"}
                               strokeWidth={1}
                             />
                           ))                          
