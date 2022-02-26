@@ -35,6 +35,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to Camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your current location will be displayed on the map and user for directions, nearby search results and estimated travel times</string>
 	<key>NSPhotoLibraryUsageDescription</key>

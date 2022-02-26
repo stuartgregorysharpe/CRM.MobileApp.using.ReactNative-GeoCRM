@@ -14,16 +14,16 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { LOCATION_LOOP_LISTS, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationsMap, getLocationSearchListsByPage } from '../../../actions/location.action';
+import { SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationsMap, getLocationSearchListsByPage, getLocationMapByRegion } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
 import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
-import { getDistance } from '../../../constants/Consts';
 import Geolocation from 'react-native-geolocation-service';
+import { updateCurrentLocation } from '../../../actions/google.action';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -32,11 +32,12 @@ const SlidUpArrow = () => (
   </View>
 )
 
+let isMount = true;
+
 export default function LocationScreen(props) {
 
   const navigation = props.navigation;
-  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const locationMaps = useSelector(state => state.location.locationMaps);
+  const crmStatus = useSelector(state => state.rep.crmSlideStatus);  
   const polygons = useSelector(state => state.location.polygons);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(state => state.selection.mapFilters);
@@ -53,6 +54,10 @@ export default function LocationScreen(props) {
   const [myLocation, setMyLocation] = useState(currentLocation);
   const watchId = useRef<Number | null>(null);
   const [polygonLists, setPolygons] = useState([]);
+  const [locationMaps , setLocationMap] = useState([]);
+  const [isZoomOut , setIsZoomOut] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [boundBox, setBoundBox] = useState(undefined);
 
   useEffect(() => {    
     refreshHeader();
@@ -62,43 +67,50 @@ export default function LocationScreen(props) {
           display: 'none',
         },
       });
-    }    
+    } 
+    dispatch(updateCurrentLocation());
+    return () => {      
+      isMount = false;
+    };    
   },[]);
 
   useEffect(() => {
-      watchId.current = Geolocation.watchPosition(
-          (position) => {                            
-              if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
-                setMyLocation({
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude
-                });
-              }   
-          },
-          (error) => {
-              console.log(error);
-          },
-          {
-              distanceFilter: 3,
-          },
-      );
+      if( watchId.current === null || watchId.current === undefined){
+          watchId.current = Geolocation.watchPosition(
+            (position) => {                            
+                console.log("Tracking..")
+                if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
+                  setMyLocation({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                  });
+                }   
+            },
+            (error) => {
+                console.log(error);
+            },
+            {
+                distanceFilter: 10,
+            },
+        );
+      }      
       return () => {
           if (watchId.current) {
               Geolocation.clearWatch(watchId.current);
           }
       }
   }, []);
-
+    
   useEffect(() => {
-    if( currentLocation.latitude !== undefined){
-      setMyLocation(currentLocation);      
-    }         
-    console.log(" location screen changed");
-  },[currentLocation]);  
-
-  useEffect(() => {    
-    if(polygons !== undefined){
-      console.log("po", JSON.stringify(polygons));
+    if( currentLocation.latitude !== undefined && isMount ){
+      console.log("current location updated in map page " , currentLocation);
+      setMyLocation(currentLocation);
+    }
+  },[currentLocation]);
+  
+  useEffect(() => {
+    if(polygons !== undefined && isMount && polygonLists.length === 0){
+      //console.log("po is Mount", JSON.stringify(polygons.length));
       var tmp = [];
       polygons.forEach(element => {
         element.path.forEach(coords => {
@@ -110,12 +122,12 @@ export default function LocationScreen(props) {
             }
             tmp.push(item);
           }
-        });      
+        });
       });
-      console.log("tmp",JSON.stringify(tmp));
-      setPolygons(tmp);      
-    }    
-  },[polygons]); 
+      //console.log("tmp",JSON.stringify(tmp.length));
+      setPolygons(tmp);
+    }
+  },[polygons]);
 
   useEffect(() => {
     refreshHeader();
@@ -132,10 +144,10 @@ export default function LocationScreen(props) {
     };
   }, [crmStatus]);
 
-  useEffect(() => {
-    
+  useEffect(() => {    
     const unsubscribe = navigation.addListener('focus', () => {      
       console.log("focuseed")      
+      isMount = true;
       refreshHeader();
       if (crmStatus) {
         props.screenProps.setOptions({
@@ -151,29 +163,37 @@ export default function LocationScreen(props) {
     return unsubscribe;
   }, [navigation]);
     
-  useEffect(() => {            
-    setIsBack(false);    
-    if(locationMaps.length > 0){
-      let items = [];
-      locationMaps.map((list, key) => {        
-        let item = {
-          name: list.location_name.value !== "" ? list.location_name.value : "Location",
-          address: '',
-          distance: getDistance(list.coordinates, currentLocation).toFixed(2),
-          status: '',
-          location_id: list.location_id,
-          status_text_color:list.pin_image
-        }
-        items.push(item);
-      });
-      items.sort((a, b) => a.distance - b.distance);      
-      dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});
-    
-    }
-  }, [locationMaps]);
-  
-  useEffect(() => {    
-    dispatch(getLocationsMap());  
+  // useEffect(() => { 
+  //   if(isMount){
+  //     setIsBack(false);    
+  //     if(locationMaps.length > 0){
+  //       let items = [];
+  //       locationMaps.map((list, key) => {        
+  //         let item = {
+  //           name: list.location_name.value !== "" ? list.location_name.value : "Location",
+  //           address: '',
+  //           distance: getDistance(list.coordinates, currentLocation).toFixed(2),
+  //           status: '',
+  //           location_id: list.location_id,
+  //           status_text_color:list.pin_image
+  //         }
+  //         items.push(item);
+  //       });
+  //       items.sort((a, b) => a.distance - b.distance);      
+  //       dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]});      
+  //     }
+  //   }          
+  // }, [locationMaps]);
+
+  useEffect(() => {
+    if(myLocation !== undefined && boundBox !== undefined){
+      setIsLoading(true);
+      getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                            
+        setLocationMap([...res]);
+        setIsLoading(false);                              
+      }).catch((e) => {  
+      });  
+    }                  
   }, [filterParmeterChanged]);  
 
   const refreshHeader = () =>{
@@ -279,7 +299,7 @@ export default function LocationScreen(props) {
         >
           {showItem == 3 && <AddLead screenProps={props.screenProps} onClose={() => {
             setIsBack(false);
-            dispatch(getLocationsMap());
+            //dispatch(getLocationsMap());
             dispatch({type: SLIDE_STATUS, payload: false});
             }} />}
           {showItem == 4 && <LocationInfoDetails ref={locationRef} navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
@@ -291,6 +311,7 @@ export default function LocationScreen(props) {
             <TouchableOpacity
               activeOpacity={1}
               onPress={()=> {
+                isMount = false;
                 dispatch({type: SLIDE_STATUS, payload: false});                
                 props.navigation.navigate("LocationSearch");
               }}
@@ -305,7 +326,7 @@ export default function LocationScreen(props) {
 
             <FontAwesomeIcon style={styles.searchIcon} size={16} color={Colors.disabledColor} icon={ faSearch } />
               <TouchableOpacity style={styles.filterImageButton} onPress={() => {
-                dispatch(getLocationFilters());         
+                dispatch(getLocationFilters());
                 animation("filter");
               }}>
               <SvgIcon icon="Filter" width="30px" height="30px" />
@@ -318,9 +339,27 @@ export default function LocationScreen(props) {
                     <ClusteredMapView
                       clusterColor="red"
                       ref={map}
-                      //mapType="hybrid"                     
+                      //mapType="hybrid"
                       clusteringEnabled={true}
                       style={styles.mapView}
+                      
+                      onRegionChangeComplete={(region, markers , bBox , zoom) => {                                              
+                        console.log("on region changed");
+                        if(zoom >= 8){
+                          setBoundBox(bBox);
+                          setIsZoomOut(false);
+                          if(isLoading === false){
+                            setIsLoading(true);
+                            getLocationMapByRegion(myLocation, bBox).then((res) =>{                                                            
+                              setLocationMap([...res]);
+                              setIsLoading(false);                              
+                            }).catch((e) => {  
+                            });                
+                          }                                    
+                        }else{
+                          setIsZoomOut(true);
+                        }
+                      }}
                       initialRegion={{
                         latitude: currentLocation.latitude,
                         longitude: currentLocation.longitude,
@@ -337,7 +376,7 @@ export default function LocationScreen(props) {
                           key={key}
                           onPress={() =>{
                             animation("locationInfo");               
-                            getLocationInfo( Number(item.location_id))
+                            getLocationInfo( Number(item.location_id) , myLocation)
                             .then((res) => {                
                                 if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
                                   locationRef.current.updateView(res);
@@ -382,7 +421,18 @@ export default function LocationScreen(props) {
                         strokeColor = {Colors.primaryColor}
                         fillColor = { 'rgba(230,238,255,0.5)' }
                       />                        
-                    </ClusteredMapView>                                         
+                    </ClusteredMapView>          
+
+                    {
+                      (isLoading || isZoomOut ) &&
+                      <View style={styles.bubble}>
+                        <Text>
+                          {
+                            isLoading? 'Loading ....' : isZoomOut ? 'Zoomed out too far, zoom in to see results' : ''
+                          }
+                        </Text>
+                      </View>                     
+                    }                              
               </View>
             }
                                         
@@ -498,5 +548,10 @@ const styles = EStyleSheet.create(parse({
     flex: 1,  
   },
   mapView: { flex: 1, width: '100%', height: '100%' },
-    
+  bubble:{
+    position:'absolute', alignSelf:'center' , bottom:0 ,paddingLeft:10, paddingRight:10, paddingTop:7, paddingBottom:7,
+    borderTopLeftRadius:5,
+    borderTopRightRadius:5,
+    backgroundColor: 'rgba(255,255,255,0.9)'
+  }
 }));

@@ -66,7 +66,7 @@ export const checkFeatureIncludeParam = async (param) => {
     var token = await getToken();  
     var data = token != null ? jwt_decode(token) : null;
     var features =  data.user_scopes.geo_rep.features;        
-    console.log("featuers", features);
+    //console.log("featuers", features);
     if(features !== undefined){
       var res =  features.includes(param) ;        
       return res;

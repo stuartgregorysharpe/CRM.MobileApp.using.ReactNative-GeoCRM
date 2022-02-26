@@ -30,7 +30,6 @@ export default function LocationSearchScreen(props) {
   const dispatch = useDispatch();
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [isRequest, setIsRequest] = useState(false);
-  const locationSearchLists = useSelector(state => state.location.locationSearchLists);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(state => state.selection.searchFilters);
   const [orderLists, setOrderLists] = useState([]);
@@ -52,9 +51,9 @@ export default function LocationSearchScreen(props) {
   
   const [pageNumber, setPageNumber] = useState(0);
   const [myLocation, setMyLocation] = useState(currentLocation);
+  let isMount = true;
 
   useEffect(() => {
-
     setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
     props.screenProps.setOptions({                 
       headerTitle:() =>{
@@ -94,17 +93,13 @@ export default function LocationSearchScreen(props) {
         </TouchableOpacity>
       ),
     }); 
+
   });
 
-  useEffect(() => {
-    if(locationSearchLists.length === 0){      
-      console.log(" search lists called form filter");
-      dispatch(getLocationSearchList());
-    }else{      
-      getSearchData(locationSearchLists, "", "total");
-      loadMoreData();
-    }
-  },[locationSearchLists]);
+  useEffect(() => {    
+    isEndPageLoading = false;
+    loadMoreData();
+  },[]);
 
   useEffect(() => {
     setMyLocation(currentLocation);
@@ -132,7 +127,7 @@ export default function LocationSearchScreen(props) {
       setOriginLists([]);
       console.log("filter called from filter");
       loadMoreData();
-      //dispatch(getLocationSearchList()); 
+      
     }    
   }, [filterParmeterChanged]);
 
@@ -148,12 +143,13 @@ export default function LocationSearchScreen(props) {
     getLocationSearchListsByPage(filterData, pageNumber)
     .then((res) => { 
 
+      console.log("ok", res.length);
       if(pageNumber === 0){
         setIsLoading(false);
       }
       setIsPageLoading(false);
       getSearchData(res, "", "pagination");
-      if(res.length < 50){     
+      if(res.length < 30){     
         isEndPageLoading = true;
       }else{        
         setPageNumber(pageNumber + 1);
@@ -173,7 +169,7 @@ export default function LocationSearchScreen(props) {
   }
 
   const getSearchData = ( lists,  searchKey , type) => {
-    let items = [];    
+    let items = [];
     lists.map((list, key) => {
       let item = {
         name: list.name,
@@ -189,8 +185,9 @@ export default function LocationSearchScreen(props) {
         if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
           items.push(item);
         }
-      } 
+      }
     });
+
     if(type === "pagination"){      
       const tempLists = [ ...orderLists, ...items ];      
       setOrderLists(tempLists);
@@ -199,6 +196,7 @@ export default function LocationSearchScreen(props) {
       if(locationId === 0 || locationId  === undefined){        
         //items.sort((a, b) => a.distance - b.distance);
         dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
+        console.log("location looop updated");
       }
     }else if(type === "search"){
       //items.sort((a, b) => a.distance - b.distance );
@@ -224,12 +222,15 @@ export default function LocationSearchScreen(props) {
     }    
   }
   
+
   const openLocationInfo = async(location_id) => {
     
     setLocationInfo(undefined);
     animation("locationInfo");
-    getLocationInfo( Number(location_id))
+    console.log("calledm " , location_id);
+    getLocationInfo( Number(location_id) , myLocation)
     .then((res) => {      
+      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
         locationRef.current.updateView(res);
       }
@@ -237,7 +238,9 @@ export default function LocationSearchScreen(props) {
         //dispatch(getLocationSearchList());
       }
     })  
-    .catch((e) =>{      
+    .catch((e) =>{ 
+
+      console.log("location info api ", e);  
     })
   }
 
@@ -264,6 +267,10 @@ export default function LocationSearchScreen(props) {
 
   const loadMoreData = async() =>{        
     
+    console.log("isEndPageLoading", isEndPageLoading);
+    console.log("isPageLoading", isPageLoading);
+    console.log("searchKeyword", searchKeyword);
+
     if( isEndPageLoading === false && isPageLoading === false && searchKeyword === ""){
       console.log("called load more ------");
       if(pageNumber === 0){
@@ -328,6 +335,7 @@ export default function LocationSearchScreen(props) {
                   ref={locationRef}
                   goPreviousPage={goPreviousPage}
                   pageType={pageType}
+                  currentLocation={myLocation}
                   refreshLocationInfo={(id) => {
                     openLocationInfo(id);
                   }}

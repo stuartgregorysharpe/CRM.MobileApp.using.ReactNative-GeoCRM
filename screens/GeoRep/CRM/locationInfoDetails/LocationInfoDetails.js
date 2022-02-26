@@ -1,5 +1,5 @@
 import React, { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react';
-import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet} from 'react-native';
+import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet , Alert} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
@@ -60,19 +60,21 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           setShowItem("refresh");
         }        
       },
-      updateView(res){        
+      updateView(res){ 
+        if(locationInfoRef.current !== undefined){                    
+          locationInfoRef.current.updateDispositionData(res);        
+        }
+        setLocationInfo(res);
+        setIsLoading(false);               
         
-        setLocationInfo(res);        
-        setIsLoading(false);
-        if(locationInfoRef.current !== undefined){          
-          console.log("called inter");
-          locationInfoRef.current.updateDispositionData(res);
-          //setIsLoading(false);
-        }        
       }
     }),
     [showItem],
   );
+
+  useEffect(()=>{
+
+  },[locationInfo]);
 
   useEffect(() => { 
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
@@ -93,8 +95,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   }
 
-  const launchImageLibrary = (index) => {
-
+  const launchImageLibrary = () => {
     let options = {
       storageOptions: {
         skipBackup: true,
@@ -117,6 +118,58 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     });
   }
   
+  const launchCamera = () => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchCamera(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        alert(response.customButton);
+      } else {        
+        if(response.assets != null && response.assets.length > 0){            
+          setFilePath(response.assets[0].uri);
+          updateLocationImage(response.assets[0].uri);
+        }
+        
+      }
+    });
+
+  }
+
+  selectPicker = (title, description) => {
+    return Alert.alert(
+      title,
+      description,
+      [
+        // The "Yes" button
+        {
+          text: "Gallery",
+          onPress: () => {
+            launchImageLibrary();
+          },
+        },
+        // The "No" button        
+        {
+          text: "Camera",
+          onPress: () => {
+            launchCamera();
+          }
+        },
+      ]
+    );
+}
+
+  
   const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
     let postData = {
@@ -133,8 +186,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       setIsSuccess(true);
     })
   }
-
-
+  
   const openCustomerInfo = async() => {
     setShowItem("update_customer")
   }
@@ -252,7 +304,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                       {
                         locationInfo.location_image === "" &&
                         <TouchableOpacity onPress={() => {
-                            launchImageLibrary();
+                            selectPicker("Choose", "");
+                            
                         }}>
                           {
                             filePath  !== '' && 
@@ -270,20 +323,21 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
                 {
                 locationInfo !== undefined && locationInfo.location_id !== "" && locationInfo.address !== "" && !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
-                <NextPrev 
-                  onStart={() =>{
-                    setLocationInfo(undefined);
-                    setIsLoading(true);
-                  }}
-                  onUpdated={(res) =>{
-                    setIsLoading(false);
-                    setFilePath('');
-                    setLocationInfo(res);
-                    if(locationInfoRef.current !== undefined){
-                      locationInfoRef.current.updateDispositionData(res);                
-                    }        
-                  }}
-                  pageType={props.pageType} locationId={locationInfo.location_id} > </NextPrev>
+                  <NextPrev 
+                    onStart={() =>{
+                      setLocationInfo(undefined);
+                      setIsLoading(true);
+                    }}
+                    onUpdated={(res) =>{
+                      setIsLoading(false);
+                      setFilePath('');
+                      setLocationInfo(res);
+                      if(locationInfoRef.current !== undefined){
+                        locationInfoRef.current.updateDispositionData(res);                
+                      }        
+                    }}
+                    currentLocation={props.currentLocation}
+                    pageType={props.pageType} locationInfo={locationInfo} > </NextPrev>
                 }
 
                 <View style={{padding:10}}>
