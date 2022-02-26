@@ -75,8 +75,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     position: 'absolute',
     top: 24,
-    left: 20,
-    elevation: 1,
+    left: 20,    
     zIndex: 1
   },
 

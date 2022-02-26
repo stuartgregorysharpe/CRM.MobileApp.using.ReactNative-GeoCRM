@@ -15,7 +15,7 @@ import DraggableFlatList, { ScaleDecorator, useOnCellActiveAnimation } from 'rea
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LOCATION_LOOP_LISTS } from '../../../actions/actionTypes';
 import moment from 'moment';
-var selectedIndex = 0;
+var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
 
@@ -34,21 +34,35 @@ export default function CalendarScreen(props) {
         title: "Calendar"
       });
     }
+
+    if (selectedIndex === 1) {
+      if(lists.length === 0){
+        loadList("last_week");
+      }        
+    } else if (selectedIndex === 2 || selectedIndex === 0) {
+      if(todayList.length === 0){
+        selectedIndex = 2;
+        loadList("today");
+      }        
+    } else if (selectedIndex === 3) {
+      if(lists.length === 0){
+        loadList("week_ahead");
+      }        
+    }
+
   }, []);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      if (selectedIndex === 1) {
-        loadList("last_week");
-      } else if (selectedIndex === 2 || selectedIndex === 0) {
-        loadList("today");
-      } else if (selectedIndex === 3) {
-        loadList("week_ahead");
+    const unsubscribe = navigation.addListener('focus', () => {      
+      if (selectedIndex === 2 || selectedIndex === 0) {      
+          selectedIndex = 2;
+          loadList("today");        
       }
     });
     return unsubscribe;
   }, [navigation]);
 
+  
   const loadList = async (type) => {
     setIsOptimize(await checkFeatureIncludeParam("calendar_optimize"));
     setIsAdd(await checkFeatureIncludeParam("calendar_add"));
@@ -57,11 +71,13 @@ export default function CalendarScreen(props) {
     if (base_url != null && token != null) {
       getCalendar(base_url, token, type)
         .then(res => {
-          console.log(res);
-          if (selectedIndex == 2) {
+          console.log("calend list" , res.length); 
+          if (selectedIndex == 2 || selectedIndex == 0 ) {
             setTodayList(res);
+            console.log("updated today lists");
           } else {
             updateListForWeek(res);
+            console.log("updated list");
           }
         })
         .catch(error => {
@@ -102,8 +118,7 @@ export default function CalendarScreen(props) {
       });
   }
 
-  const renderCalendarItem = (item, index, tabIndex) => {
-    console.log("tabIndex", tabIndex);
+  const renderCalendarItem = (item, index, tabIndex) => {    
     return (
       <View style={{ marginTop: 10 }}>
         <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} onItemSelected={() => { }}>
@@ -126,8 +141,7 @@ export default function CalendarScreen(props) {
           <CalendarItem
             onItemSelected={() => {
               console.log("loop list updated in calendar ");
-
-              dispatch({ type: LOCATION_LOOP_LISTS, payload: lists });
+              dispatch({ type: LOCATION_LOOP_LISTS, payload: todayList });
             }}
             key={item.schedule_id} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} > </CalendarItem>
 

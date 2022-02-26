@@ -133,7 +133,7 @@ export default function SupportScreen({navigation, screenProps}) {
         });
       }
     }
-  });
+  },);
 
   return (
     <Provider>

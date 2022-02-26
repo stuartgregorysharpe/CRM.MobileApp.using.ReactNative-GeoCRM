@@ -220,10 +220,6 @@ export default function RepBottomTabNavigator({navigation}) {
     }
   }, [visibleMore]);
 
-  useEffect(() => {
-    //dispatch(getLocationsMap());
-  }, [])
-
   const getHeaderHeight = () => {
     if(Platform.OS == 'ios'){
       if(DeviceInfo.isTablet()){
@@ -339,7 +335,7 @@ export default function RepBottomTabNavigator({navigation}) {
         listeners={({navigation}) => ({
           tabPress: (e) => {
             e.preventDefault();
-            dispatch(getLocationsMap());
+            //dispatch(getLocationsMap());
             if (statusDispositionInfo) {
               dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
               dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "CRM"});

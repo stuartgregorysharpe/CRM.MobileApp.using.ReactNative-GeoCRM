@@ -76,7 +76,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         setSuperCluster(null)
         return
       }
-
+      
       propsChildren.forEach((child, index) => {
         if (isMarker(child)) {
           rawData.push(markerToGeoJSONFeature(child, index))
@@ -95,22 +95,24 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       })
 
       superCluster.load(rawData)
-      const bBox = calculateBBox(currentRegion)
-      const zoom = returnMapZoom(currentRegion, bBox, minZoom)
-      const markers = superCluster.getClusters(bBox, zoom)
+      const bBox = calculateBBox(currentRegion)      
 
+      const zoom = returnMapZoom(currentRegion, bBox, minZoom)
+      const markers = superCluster.getClusters(bBox, zoom)            
+      
+      
       updateMarkers(markers)
       updateChildren(otherChildren)
-      setSuperCluster(superCluster)
+      setSuperCluster(superCluster)      
 
-      superClusterRef.current = superCluster
+      superClusterRef.current = superCluster      
     }, [propsChildren, clusteringEnabled])
 
     useEffect(() => {
+      
       if (!spiralEnabled) {
         return
-      }
-
+      }      
       if (isSpiderfier && markers.length > 0) {
         const allSpiderMarkers = []
         let spiralChildren = []
@@ -120,8 +122,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           }
           const positions = generateSpiral(marker, spiralChildren, markers, i)
           allSpiderMarkers.push(...positions)
-        })
-
+        })        
         updateSpiderMarker(allSpiderMarkers)
       } else {
         updateSpiderMarker([])
@@ -132,11 +133,12 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       
       if(region === undefined){
         goToCurrentLocation();
+        return; 
       }
-
+            
       if (superCluster && region) {
-        const bBox = calculateBBox(region)
-        const zoom = returnMapZoom(region, bBox, minZoom)
+        const bBox = calculateBBox(region)        
+        const zoom = returnMapZoom(region, bBox, minZoom)      
         const markers = superCluster.getClusters(bBox, zoom)
         if (animationEnabled && Platform.OS === 'ios') {
           LayoutAnimation.configureNext(layoutAnimationConf)
@@ -152,7 +154,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         }
         updateMarkers(markers)
         onMarkersChange(markers)
-        onRegionChangeComplete(region, markers)
+        onRegionChangeComplete(region, markers , bBox, zoom)
         updateRegion(region)
       } else {
         onRegionChangeComplete(region)
@@ -263,8 +265,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           </MapView>                    
 
           <View style={styles.myLocation}>                
-              <TouchableOpacity onPress={() => {
-                console.log("current")
+              <TouchableOpacity onPress={() => {                
                 goToCurrentLocation();
               }}>              
                 <SvgIcon icon="GPS_LOCATION" width='30px' height='30px' />                
