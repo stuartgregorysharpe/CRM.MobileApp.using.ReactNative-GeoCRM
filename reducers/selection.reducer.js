@@ -1,4 +1,4 @@
-import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, MAP_FILTERS, SEARCH_FILTERS } from "../actions/actionTypes";
+import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, MAP_FILTERS, SEARCH_FILTERS, PIPELINE_SEARCH_FILTERS } from "../actions/actionTypes";
 
 // payload: {
 //   "iss": "universal_api.georep.com", // Issuer
@@ -114,6 +114,11 @@ export default (state=initialState, action) => {
       return {
         ...state,
         token: action.payload
+      }
+    case PIPELINE_SEARCH_FILTERS:
+      return {
+        ...state,
+        pipelineFilters: action.payload
       }
     default: 
       return state;
