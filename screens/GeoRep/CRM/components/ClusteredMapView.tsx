@@ -49,6 +49,8 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       spiralEnabled,
       superClusterRef,
       currentLocation,      
+      scrollEnabled,
+      onPress,
       ...restProps
     },
     ref,
@@ -160,6 +162,11 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         onRegionChangeComplete(region)
       }
     }
+
+    const _onPress = (e) => {
+        onPress(e)
+    }
+
     
     const _onClusterPress = (cluster) => () => {
       const children = superCluster.getLeaves(cluster.id, Infinity)
@@ -192,6 +199,18 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       });
 
     }
+
+
+    console.log("scrollEnabled", scrollEnabled);
+    const mapOptions = {
+      scrollEnabled: true,
+    };
+
+    if (scrollEnabled === false) {
+      mapOptions.scrollEnabled = false;
+      mapOptions.onPanDrag = e => onPress(e);
+    }
+
     return (
         <View style={{ flex: 1, width: '100%', height: '100%'}}>
 
@@ -216,7 +235,11 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           followUserLocation = {true}
           showsMyLocationButton = {Platform.OS === "android" ? false: false}           
           zoomEnabled={true}        
-          onRegionChangeComplete={_onRegionChangeComplete}>
+          onRegionChangeComplete={_onRegionChangeComplete}
+          onPress={_onPress}
+          //onDoublePress={_onDoublePress}
+          {...mapOptions}
+          >
           {markers.map((marker) =>
             marker.properties.point_count === 0 ? (
               propsChildren[marker.properties.index]
@@ -278,6 +301,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 )
 
 ClusteredMapView.defaultProps = {
+  scrollEnabled:true,
   clusteringEnabled: true,
   spiralEnabled: true,
   animationEnabled: true,
@@ -303,6 +327,7 @@ ClusteredMapView.defaultProps = {
   onMarkersChange: () => {},
   superClusterRef: {},
   currentLocation: {},
+  onPress: () => {},
   mapRef: () => {},  
 }
 

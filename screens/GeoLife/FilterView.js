@@ -10,6 +10,7 @@ import Skeleton from './Skeleton';
 import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import Colors from '../../constants/Colors';
 
 export default function FilterView({navigation}) {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ export default function FilterView({navigation}) {
             fontFamily: Fonts.primaryRegular, 
             letterSpacing: 0.2
           }}
-          color="#DC143C" 
+          color={Colors.selectedRedColor}
           uppercase={false} 
           onPress={() => setSelectFilters(emptyArray)}
         >

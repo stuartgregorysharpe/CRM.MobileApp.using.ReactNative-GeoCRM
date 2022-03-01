@@ -584,13 +584,11 @@ export const postReloop = async(postData , idempotencyKey) => {
       }else{
         resolve("");
       }
-    
+
     })
-    .catch((err) => {
-      //console.log(err);
+    .catch((err) => {      
       reject(err);
     })
-
   });
 }
 

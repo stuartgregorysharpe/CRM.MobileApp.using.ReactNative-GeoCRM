@@ -13,7 +13,7 @@ import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import { DISABLED_COLOR } from '../../constants/Colors';
+import Colors, { DISABLED_COLOR } from '../../constants/Colors';
 
 export default function AddLead({screenProps}) {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ export default function AddLead({screenProps}) {
               fontFamily: Fonts.primaryRegular, 
               letterSpacing: 0.2
             }}
-            color="#DC143C" 
+            color={Colors.selectedRedColor} 
             uppercase={false} 
             onPress={() => console.log('Pressed')}
           >

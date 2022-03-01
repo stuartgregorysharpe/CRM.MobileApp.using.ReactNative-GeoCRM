@@ -6,7 +6,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useDispatch } from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
@@ -16,6 +16,7 @@ import { getTwoDigit, notifyMessage } from '../../constants/Consts';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AlertDialog from './AlertDialog';
 import { addCalendar } from '../../actions/calendar.action';
+import Colors from '../../../constants/Colors';
 
 export default function AddToCalendar({selectedItems, onClose}) {
   const dispatch = useDispatch();

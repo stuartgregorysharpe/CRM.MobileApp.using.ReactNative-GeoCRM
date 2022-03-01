@@ -17,6 +17,5 @@ export default {
     greenColor:'#b7e2bb',
     blueColor:'#b7cce2',
     disabledColor:'#9D9FA2',
-    tickBoxColor:'#002a55',
-    selectedRedColor:'#dc143c'
+    tickBoxColor:'#002a55'
 }

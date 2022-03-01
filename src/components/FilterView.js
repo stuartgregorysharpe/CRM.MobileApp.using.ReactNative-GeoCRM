@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import Colors, { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { MAP_FILTERS, SEARCH_FILTERS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { clearFilterData, getFilterData, storeFilterData } from '../constants/Storage';
@@ -13,6 +13,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getTwoDigit } from '../constants/Consts';
 import FilterOptionsModal from './modal/FilterOptionsModal'
 import StartEndDateSelectionModal from './modal/StartEndDateSelectionModal';
+import Colors from '../../constants/Colors';
 
 export default function FilterView({navigation, page, onClose}) {
   const dispatch = useDispatch();
