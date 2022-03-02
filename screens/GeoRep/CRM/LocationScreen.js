@@ -4,7 +4,7 @@ import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { useSelector, useDispatch } from 'react-redux';
-import MapView , { Marker, Region, PROVIDER_GOOGLE ,Polygon } from 'react-native-maps';
+import MapView , { Marker, Region, PROVIDER_GOOGLE ,Polygon , Polyline } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import AddLead from './popup/AddLead';
@@ -27,6 +27,7 @@ import { updateCurrentLocation } from '../../../actions/google.action';
 import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { isInsidePoly } from '../../../constants/Consts';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
+import ClusteredMarker from './components/ClusteredMarker';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -37,7 +38,7 @@ const SlidUpArrow = () => (
 
 let isMount = true;
 let id = 0;
-
+let previousZoom = 0;
 
 export default function LocationScreen(props) {
 
@@ -71,6 +72,7 @@ export default function LocationScreen(props) {
   const [creatingHole, setCreatingHole] = useState(false);
   const [isDraw , setIsDraw] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
+  const [tracksViewChanges, setTracksViewChanges] = useState(false);
   
   useEffect(() => {    
     refreshHeader();
@@ -177,8 +179,10 @@ export default function LocationScreen(props) {
   
   
   useEffect(() => {
+    console.log("filterParmeterChanged", filterParmeterChanged)
     if(myLocation !== undefined && boundBox !== undefined){
       setIsLoading(true);
+      console.log("other route")
       getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                            
         setLocationMap([...res]);
         setIsLoading(false);                              
@@ -269,37 +273,116 @@ export default function LocationScreen(props) {
         return;
     }
   }
-
-  const createHole = () => {
-
-    if (!creatingHole) {
-      setCreatingHole(true);
-      setEditing({
-        ...editing,
-        holes: [] // [ editing !== null ? [...editing.holes]:currentLocation, []],
-      });      
-    } else {
-      const holes = [ editing !== null ? [...editing.holes] : [] ];
-      if (holes[holes.length - 1].length === 0) {
-        holes.pop();
-        setEditing({
-          ...editing,
-          holes,
-        });
-      }
-      setCreatingHole(false);
-    }
   
-  }
-
-
 
   const finish = () => {    
     setEditing(null);
     setCreatingHole(false);    
   }
 
-    
+  const onPressMap = (e) => {
+    if (!editing) {                          
+      setEditing({
+        id: id++,
+        coordinates: [e.nativeEvent.coordinate],
+        holes: [],
+      });                      
+    } else if (!creatingHole) {
+      if(editing !== null && editing !== undefined){
+        console.log("drawing - polygon", editing.coordinates.length);
+        setEditing({
+          ...editing,
+          coordinates: [...editing.coordinates, e.nativeEvent.coordinate],
+        });                            
+        if(editing.coordinates.length >= 2 && isFinish === false){                              
+          setIsFinish(true);
+        }
+      }                          
+    } else {                                                  
+        console.log("checking")                            
+        const holes = [...editing.holes];                            
+        holes[holes.length - 1] = [
+          ...holes[holes.length - 1],
+          e.nativeEvent.coordinate,
+        ];                                  
+        setEditing({
+            ...editing,
+            id: id++, // keep incrementing id to trigger display refresh
+            coordinates: [...editing.coordinates],
+            holes,                          
+        });                        
+                                
+    }
+  }
+
+  const regionChanged = ( region,  markers, bBox, zoom ) => {
+    if(zoom >= 10){
+      if(isZoomOut === true){
+        console.log("hide");
+        setIsZoomOut(false);
+      }
+    }else{
+      if(isZoomOut === false){
+        setIsZoomOut(true);
+      }                        
+    }
+    console.log("previous zoom", previousZoom);
+    console.log("zoom ", zoom);
+
+    if( markers !== undefined && markers.length < 10 ||  markers === undefined ){
+      if( (previousZoom < 10 && zoom >= 10 && !isDraw) || ( previousZoom >= zoom  && zoom >= 10 && !isDraw ) ){
+        setBoundBox(bBox);
+        if(isLoading === false){
+          setIsLoading(true);
+          console.log("call map api =======", bBox);
+          getLocationMapByRegion(myLocation, bBox).then((res) =>{                                                            
+            var lists = [...res];
+            setLocationMap(lists);                       
+            setIsLoading(false);
+            console.log("end map api ");                       
+          }).catch((e) => {  
+            console.log("error", e);                       
+          });                
+        }                                    
+      }
+    }                      
+    previousZoom = zoom;
+  }
+
+  
+  const onMarkerPressed = (item , key) => {
+    if(isCalendarSelection){
+      var selectedLocations = [...selectedLocationsForCalendar];
+      var flag = false;
+      for(var i = 0; i < selectedLocations.length ; i++){
+        if(selectedLocations[i].location_id === item.location_id){
+          flag = true;
+        }
+      }
+      if(flag){
+        selectedLocations = selectedLocations.filter(ele => ele.location_id !== item.location_id);
+      }else{
+        selectedLocations = [...selectedLocations , {schedule_order: (key + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' } ];                            
+      }               
+      console.log("item.location_id",item.location_id);
+      setTracksViewChanges(true);
+      dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedLocations});
+      
+    }else{
+      animation("locationInfo");               
+      getLocationInfo( Number(item.location_id) , myLocation)
+      .then((res) => {                
+          if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
+            locationRef.current.updateView(res);
+          }
+      })
+      .catch((e) =>{
+        setIsRequest(false);
+      })                                                                   
+    }     
+
+  }
+
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>
@@ -374,11 +457,17 @@ export default function LocationScreen(props) {
             <CrmCalendarSelection            
             isDraw={isDraw}
             onClickDraw={() => {              
+              console.log(isDraw);
               if(isDraw){
                 finish();
                 setIsFinish(false);
+              }else{
+                if(tracksViewChanges === true){
+                  setTracksViewChanges(false);
+                }
               }
-              setIsDraw(!isDraw);            
+              setIsDraw(!isDraw);
+
             }}
             onClickCancel={() => {
               props.navigation.navigate("LocationSearch");
@@ -401,64 +490,19 @@ export default function LocationScreen(props) {
                     ref={map}
                     //mapType="hybrid"
                     clusteringEnabled={true}
-                    style={styles.mapView}       
-                    scrollEnabled={!isDraw}             
+                    style={styles.mapView}                    
+                    editing={editing}
+                    scrollEnabled={!isDraw}          
                     onRegionChangeComplete={(region, markers , bBox , zoom) => {                                              
-                      console.log("on region changed");
-                      if(zoom >= 8 && !isDraw){
-                        setBoundBox(bBox);
-                        setIsZoomOut(false);
-                        if(isLoading === false){
-                          setIsLoading(true);
-                          getLocationMapByRegion(myLocation, bBox).then((res) =>{                                                            
-                            setLocationMap([...res]);
-                            setIsLoading(false);                              
-                          }).catch((e) => {  
-                          });                
-                        }                                    
-                      }else{
-                        if(isZoomOut === false){
-                          setIsZoomOut(true);
-                        }                        
+                      console.log(" ------------ on region changed ------");                      
+                      regionChanged(region,  markers, bBox, zoom);
+                      if(tracksViewChanges){
+                        setTracksViewChanges(false);
                       }
-                    }}
-
-                    onPress={(e) =>{                      
+                    }}                                      
+                    onPress={(e) =>{
                       if(isCalendarSelection && isDraw){
-                        if (!editing) {                          
-                          setEditing({
-                            id: id++,
-                            coordinates: [e.nativeEvent.coordinate],
-                            holes: [],
-                          });                      
-                        } else if (!creatingHole) {
-                          if(editing !== null && editing !== undefined){
-                            console.log("drawing", editing.coordinates.length);
-                            setEditing({
-                              ...editing,
-                              coordinates: [...editing.coordinates, e.nativeEvent.coordinate],
-                            });
-                            setIsDraw(true);
-                            if(editing.coordinates.length >= 2 && isFinish === false){                              
-                              setIsFinish(true);
-                            }
-                          }                          
-                        } else {                                                  
-                            console.log("checking")                            
-                            const holes = [...editing.holes];                            
-                            holes[holes.length - 1] = [
-                              ...holes[holes.length - 1],
-                              e.nativeEvent.coordinate,
-                            ];                                  
-                            setEditing({
-                                ...editing,
-                                id: id++, // keep incrementing id to trigger display refresh
-                                coordinates: [...editing.coordinates],
-                                holes,                          
-                            });                        
-                                                    
-                        }
-
+                        onPressMap(e);
                       }                                            
                     }}
                     initialRegion={{
@@ -474,69 +518,40 @@ export default function LocationScreen(props) {
 
                     {locationMaps.map((item , key) => (
                       <Marker
-                        key={key}
+                        key={"markers" + item.location_id}               
+                        tracksViewChanges={tracksViewChanges} 
                         onPress={() =>{
-
-                          if(isCalendarSelection){
-                            var selectedLocations = [...selectedLocationsForCalendar];
-                            var flag = false;
-                            for(var i = 0; i < selectedLocations.length ; i++){
-                              if(selectedLocations[i].location_id === item.location_id){
-                                flag = true;
-                              }
-                            }
-                            if(flag){
-                              selectedLocations = selectedLocations.filter(ele => ele.location_id !== item.location_id);
-                            }else{
-                              selectedLocations = [...selectedLocations , {schedule_order: (key + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' } ];                            
-                            }               
-                            
-                            dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedLocations});                            
-                          }else{
-                            animation("locationInfo");               
-                            getLocationInfo( Number(item.location_id) , myLocation)
-                            .then((res) => {                
-                                if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
-                                  locationRef.current.updateView(res);
-                                }
-                            })
-                            .catch((e) =>{
-                              setIsRequest(false);
-                            })                                                                   
-                          }                                           
+                          onMarkerPressed(item , key);                                                      
                         }}
                         coordinate={{
                           latitude: Number(item.coordinates.latitude),
                           longitude: Number(item.coordinates.longitude),
                         }}                
-                      >
-                        
+                      >                        
                         {
                           selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ?
                           <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />:
                           <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />                           
-                        }
-                        
+                        }                        
                       </Marker>
                     ))}
 
-                    { editing && (
-                      <Polygon    
-                        key={editing.id}
-                        coordinates={editing.coordinates}
-                        holes={editing.holes}                        
-                        strokeColor="#000"
-                        //4C92EC70
-                        fillColor="rgba(76,146,236,0.5)"                        
+                    {
+                      editing && editing.coordinates.length === 2 &&
+                      <Polyline    
+                        key={"polyline"}
+                        coordinates={editing.coordinates}                        
+                        strokeColor="#000"                        
                         strokeWidth={1}
-                      />
-                    )}
+                      />                      
+                    }
                     
                     {
                       polygonLists && polygonLists.length > 0  &&
                       polygonLists.map(polygon =>(                                            
                         polygon.path.map(item => (
-                          <Polygon                              
+                          <Polygon            
+                            key={"polygons" + item.location_id}                  
                             coordinates={item}
                             //holes={polygon.holes}
                             strokeColor={polygon.strokeColor}
@@ -621,7 +636,6 @@ export default function LocationScreen(props) {
 }
 
 const perWidth = setWidthBreakpoints(breakPoint);
-
 const styles = EStyleSheet.create(parse({
   container: {
     flex:1,

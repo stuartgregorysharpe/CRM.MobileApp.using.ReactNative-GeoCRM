@@ -138,13 +138,14 @@ export default function LocationSearchScreen(props) {
 
   useEffect( () => {
     if(isPageLoading){
-      loadData();
+      loadData(); 
     }  
   },[isPageLoading]);
 
   const loadData = async () => {
 
-    var filterData = await getFilterData();    
+    console.log("load data called");
+    var filterData = await getFilterData();        
     getLocationSearchListsByPage(filterData, pageNumber)
     .then((res) => { 
       console.log("ok", res.length);
@@ -161,6 +162,7 @@ export default function LocationSearchScreen(props) {
 
     })
     .catch((error) => {  
+      console.log("error", error);
     });
   }
   

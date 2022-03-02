@@ -7,8 +7,8 @@
 */
 
 import React, { forwardRef, memo, useEffect, useMemo, useRef, useState ,useImperativeHandle } from 'react'
-import { Dimensions, LayoutAnimation, Platform , View ,StyleSheet , TouchableOpacity} from 'react-native'
-import MapView, { MapViewProps, Polyline , Callout, PROVIDER_GOOGLE} from 'react-native-maps'
+import { Dimensions, LayoutAnimation, Platform , View ,StyleSheet , TouchableOpacity , Text} from 'react-native'
+import MapView, { MapViewProps, Polyline , Polygon, Callout, PROVIDER_GOOGLE} from 'react-native-maps'
 import SuperCluster from 'supercluster'
 import SvgIcon from '../../../../components/SvgIcon'
 import Colors, { PRIMARY_COLOR } from '../../../../constants/Colors'
@@ -22,6 +22,9 @@ import {
   markerToGeoJSONFeature,
   returnMapZoom,
 } from './helpers'
+
+let previousCount = 0;
+let currentZoom = 0;
 
 const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
   (
@@ -50,6 +53,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       superClusterRef,
       currentLocation,      
       scrollEnabled,
+      editing,
       onPress,
       ...restProps
     },
@@ -66,55 +70,70 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     const mapRef = useRef()
     const propsChildren = useMemo(() => React.Children.toArray(children), [children])    
 
+    
     useEffect(() => {
 
       const rawData = []
       const otherChildren = []
 
+      console.log("%%%%% refresh $$$$$$$$$");
       if (!clusteringEnabled) {
         updateSpiderMarker([])
         updateMarkers([])
         updateChildren(propsChildren)
         setSuperCluster(null)
         return
-      }
-      
-      propsChildren.forEach((child, index) => {
-        if (isMarker(child)) {
-          rawData.push(markerToGeoJSONFeature(child, index))
-        } else {
-          otherChildren.push(child)
-        }
-      })
+      }      
+        // if( scrollEnabled && previousCount === propsChildren.length){
+        //   return;
+        // } 
+                   
+        console.log("new data refresh ", propsChildren.length);
+        propsChildren.forEach((child, index) => {
+          if (isMarker(child)) {
+            rawData.push(markerToGeoJSONFeature(child, index))
+          } else {
+            otherChildren.push(child)
+          }
+        })
 
-      const superCluster = new SuperCluster({
-        radius,
-        maxZoom,
-        minZoom,
-        minPoints,
-        extent, 
-        nodeSize,
-      })
+        console.log("child count ", otherChildren.length);
+        previousCount = propsChildren.length;
+        
+        if(scrollEnabled){
+          const superCluster = new SuperCluster({
+            radius,
+            maxZoom,
+            minZoom,
+            minPoints,
+            extent, 
+            nodeSize,
+          })
+          superCluster.load(rawData)
+          const bBox = calculateBBox(currentRegion)     
+          var zoom = returnMapZoom(currentRegion, bBox, minZoom)
+          if(zoom < 14){
+            zoom = zoom - 2;
+          }
+          const markers = superCluster.getClusters(bBox, zoom)          
+          //console.log("markers", markers);
+          console.log("markers", markers.length);                      
+          updateChildren(otherChildren)
+          setSuperCluster(superCluster) 
+          updateMarkers(markers)  
+          superClusterRef.current = superCluster                
+        }else{
+          updateChildren(otherChildren)
+        }                                                  
 
-      superCluster.load(rawData)
-      const bBox = calculateBBox(currentRegion)      
-
-      const zoom = returnMapZoom(currentRegion, bBox, minZoom)
-      const markers = superCluster.getClusters(bBox, zoom)            
-      
-      
-      updateMarkers(markers)
-      updateChildren(otherChildren)
-      setSuperCluster(superCluster)      
-
-      superClusterRef.current = superCluster      
     }, [propsChildren, clusteringEnabled])
 
     useEffect(() => {
-      
+      console.log("spired marker change" , spiralEnabled);
       if (!spiralEnabled) {
         return
       }      
+      console.log("isSpiderfier", isSpiderfier);
       if (isSpiderfier && markers.length > 0) {
         const allSpiderMarkers = []
         let spiralChildren = []
@@ -125,10 +144,12 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           const positions = generateSpiral(marker, spiralChildren, markers, i)
           allSpiderMarkers.push(...positions)
         })        
+        
         updateSpiderMarker(allSpiderMarkers)
       } else {
         updateSpiderMarker([])
       }
+
     }, [isSpiderfier, markers])
 
     const _onRegionChangeComplete = (region) => {
@@ -139,9 +160,15 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       }
             
       if (superCluster && region) {
+        console.log("change region");
         const bBox = calculateBBox(region)        
-        const zoom = returnMapZoom(region, bBox, minZoom)      
+        var zoom = returnMapZoom(region, bBox, minZoom)   
+        currentZoom = zoom;
+        if(zoom < 14){
+          zoom = zoom - 2 ;
+        }
         const markers = superCluster.getClusters(bBox, zoom)
+        console.log("markers count", markers.length);
         if (animationEnabled && Platform.OS === 'ios') {
           LayoutAnimation.configureNext(layoutAnimationConf)
         }
@@ -155,14 +182,16 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           }
         }
         updateMarkers(markers)
-        onMarkersChange(markers)
-        onRegionChangeComplete(region, markers , bBox, zoom)
+        onMarkersChange(markers)        
+        onRegionChangeComplete(region, markers , bBox, zoom)              
         updateRegion(region)
+        console.log("end -change region");
       } else {
+        console.log("special region changed");
         onRegionChangeComplete(region)
       }
     }
-
+    
     const _onPress = (e) => {
         onPress(e)
     }
@@ -197,9 +226,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         latitudeDelta: 0.015,
         longitudeDelta: 0.0121
       });
-
     }
-
 
     console.log("scrollEnabled", scrollEnabled);
     const mapOptions = {
@@ -208,12 +235,37 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 
     if (scrollEnabled === false) {
       mapOptions.scrollEnabled = false;
-      mapOptions.onPanDrag = e => onPress(e);
+      var prev = undefined;
+      mapOptions.onPanDrag = e => {
+        console.log("----------" , e.nativeEvent.coordinate);
+        console.log("currentZoom", currentZoom)
+        var alt = 0.02;        
+        if(currentZoom > 16){
+          alt = 0.0000001;
+        }else if(currentZoom > 14){
+          alt = 0.00001;
+        }else if(currentZoom > 12){
+          alt = 0.0001;
+        }else if(currentZoom > 10){
+          alt = 0.0002;
+        }else if(currentZoom > 8){
+          alt = 0.002;
+        }else if(currentZoom > 6){
+          alt = 0.2;
+        }else if(currentZoom >= 0 ){
+          alt = 0.01;
+        }
+        console.log("alt", alt);
+        if(prev !== undefined && ( Math.abs(prev.latitude - e.nativeEvent.coordinate.latitude) > alt || Math.abs(prev.longitude - e.nativeEvent.coordinate.longitude) > alt ) ){
+          console.log("on drag"); 
+          onPress(e);
+        }         
+        prev = e.nativeEvent.coordinate;
+      };
     }
-
-    return (
+    
+      return (
         <View style={{ flex: 1, width: '100%', height: '100%'}}>
-
           <MapView          
           {...restProps}
           ref={(map) => {
@@ -240,9 +292,9 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           //onDoublePress={_onDoublePress}
           {...mapOptions}
           >
-          {markers.map((marker) =>
+          { markers.map((marker) =>
             marker.properties.point_count === 0 ? (
-              propsChildren[marker.properties.index]
+              propsChildren[marker.properties.index]              
             ) : !isSpiderfier ? (
               renderCluster ? (
                 renderCluster({
@@ -269,7 +321,20 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
               )
             ) : null,
           )}
+          
           {otherChildren}
+    
+          { editing && editing.coordinates.length > 0 && (
+            <Polygon
+              key={editing.id}
+              coordinates={editing.coordinates}
+              holes={editing.holes}                        
+              strokeColor="#000"                        
+              fillColor="rgba(76,146,236,0.5)"                        
+              strokeWidth={1}
+            />
+          )}
+
           {spiderMarkers.map((marker) => {
             return propsChildren[marker.index]
               ? React.cloneElement(propsChildren[marker.index], {
@@ -296,11 +361,14 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           </View>          
       </View>
       
-    )
+      )
+    
+   
   },
 )
 
 ClusteredMapView.defaultProps = {
+  editing:[],
   scrollEnabled:true,
   clusteringEnabled: true,
   spiralEnabled: true,
