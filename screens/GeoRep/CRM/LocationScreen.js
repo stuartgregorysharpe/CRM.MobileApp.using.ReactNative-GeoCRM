@@ -526,8 +526,8 @@ export default function LocationScreen(props) {
                         coordinate={{
                           latitude: Number(item.coordinates.latitude),
                           longitude: Number(item.coordinates.longitude),
-                        }}                
-                      >                        
+                        }}>                        
+                        
                         {
                           selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ?
                           <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />:
