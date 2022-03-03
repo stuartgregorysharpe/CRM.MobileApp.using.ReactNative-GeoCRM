@@ -187,7 +187,7 @@ export default function AddLead({screenProps , onClose}) {
               fontFamily: Fonts.primaryRegular, 
               letterSpacing: 0.2
             }}
-            color="#DC143C" 
+            color={Colors.selectedRedColor}
             uppercase={false} 
             onPress={() => {
               initPostData(customMasterFields);  

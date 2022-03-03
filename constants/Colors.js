@@ -9,6 +9,7 @@ export const TICK_BOX_COLOR = "#002a55";
 
 export default {
     whiteColor:'#fff',
+    blackColor:'#000',
     skeletonColor:'#d1d1d1',
     primaryColor:'#133C8B',
     bgColor:'#F9F9F9',
@@ -16,5 +17,6 @@ export default {
     greenColor:'#b7e2bb',
     blueColor:'#b7cce2',
     disabledColor:'#9D9FA2',
-    tickBoxColor:'#002a55'
+    tickBoxColor:'#002a55',
+    selectedRedColor:'#dc143c'
 }

@@ -245,6 +245,12 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
             if (res.data == undefined) {            
               resolve([]);
             }
+            
+            if(res.data.error){
+              setToken(null);
+              resolve([]);
+            }
+
             if (res.data.status == 'success') {
               resolve(res.data.items);
             }else{
@@ -557,8 +563,6 @@ export const postDispositionFields = async(postData, idempotencyKey) => {
 }
 
 
-
-
 export const postReloop = async(postData , idempotencyKey) => {
   var base_url = await getBaseUrl();
   var token = await getToken();  
@@ -584,13 +588,11 @@ export const postReloop = async(postData , idempotencyKey) => {
       }else{
         resolve("");
       }
-    
+
     })
-    .catch((err) => {
-      //console.log(err);
+    .catch((err) => {      
       reject(err);
     })
-
   });
 }
 

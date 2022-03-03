@@ -8,7 +8,7 @@ import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Colors from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  IS_CALENDAR_SELECTION, LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo, getLocationSearchList, getLocationSearchListsByPage } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -21,7 +21,6 @@ import SvgIcon from '../../../components/SvgIcon';
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getFilterData } from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
-
 var isEndPageLoading = false;
 
 export default function LocationSearchScreen(props) {
@@ -38,20 +37,18 @@ export default function LocationSearchScreen(props) {
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState("");  
   const locationId = useSelector(state => state.location.locationId.value);
-  const tabType =   useSelector(state => state.location.locationId.type);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [isSelected, setIsSelected] = useState(false);    
+  const tabType =   useSelector(state => state.location.locationId.type);  
+  const isSelected = useSelector( state => state.selection.isCalendarSelection);
+  const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);    
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState("");
   const [calendarType,setCalendarType] = useState( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
   const locationRef = useRef();
   const [pageType, setPageType ] = useState({name:"search-lists"});
   const [isLoading , setIsLoading] = useState(true);
-  const [isPageLoading, setIsPageLoading] = useState(false);
-  
+  const [isPageLoading, setIsPageLoading] = useState(false);  
   const [pageNumber, setPageNumber] = useState(0);
-  const [myLocation, setMyLocation] = useState(currentLocation);
-  let isMount = true;
+  const [myLocation, setMyLocation] = useState(currentLocation);  
 
   useEffect(() => {
     setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
@@ -95,11 +92,20 @@ export default function LocationSearchScreen(props) {
     }); 
 
   });
+  
+  useEffect(() => {  
+    console.log("orderLists.length"  , orderLists.length);
+    console.log("page number"  , pageNumber);
 
-  useEffect(() => {    
-    isEndPageLoading = false;
-    loadMoreData();
+    if(orderLists.length === 0){      
+      isEndPageLoading = false;
+      loadMoreData();
+    }else{
+
+    }    
   },[]);
+
+  
 
   useEffect(() => {
     setMyLocation(currentLocation);
@@ -114,35 +120,34 @@ export default function LocationSearchScreen(props) {
 
   useEffect(() => {
     if(calendarType == "optimize" || calendarType == "add") {
-      setIsSelected(true)
+      //setIsSelected(true)
+      dispatch({type: IS_CALENDAR_SELECTION, payload: true});
     }
   },[calendarType]);
 
   useEffect(() => {              
-    if(filterParmeterChanged !== undefined){
-            
+    if(filterParmeterChanged !== undefined){            
       isEndPageLoading = false;
       setPageNumber(0);
       setOrderLists([]);
       setOriginLists([]);
       console.log("filter called from filter");
-      loadMoreData();
-      
+      loadMoreData();      
     }    
   }, [filterParmeterChanged]);
 
   useEffect( () => {
     if(isPageLoading){
-      loadData();
+      loadData(); 
     }  
   },[isPageLoading]);
 
   const loadData = async () => {
 
-    var filterData = await getFilterData();    
+    console.log("load data called");
+    var filterData = await getFilterData();        
     getLocationSearchListsByPage(filterData, pageNumber)
     .then((res) => { 
-
       console.log("ok", res.length);
       if(pageNumber === 0){
         setIsLoading(false);
@@ -157,13 +162,14 @@ export default function LocationSearchScreen(props) {
 
     })
     .catch((error) => {  
+      console.log("error", error);
     });
   }
   
   const goPreviousPage = () =>{
-    if(navigation.canGoBack()){                            
+    if(navigation.canGoBack()){
       navigation.goBack();
-      dispatch({type: SLIDE_STATUS, payload: false});
+      dispatch({type: SLIDE_STATUS, payload: false});      
       dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
     }
   }
@@ -219,7 +225,7 @@ export default function LocationSearchScreen(props) {
         return;
       default:
         return;
-    }    
+    }
   }
   
 
@@ -227,37 +233,34 @@ export default function LocationSearchScreen(props) {
     
     setLocationInfo(undefined);
     animation("locationInfo");
-    console.log("calledm " , location_id);
+    console.log("calle m" , location_id);
     getLocationInfo( Number(location_id) , myLocation)
     .then((res) => {      
-      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
         locationRef.current.updateView(res);
-      }
-      if(originLists.length == 0){
-        //dispatch(getLocationSearchList());
-      }
+      }      
     })  
     .catch((e) =>{ 
-
       console.log("location info api ", e);  
     })
   }
 
   const renderLocation = (item, index) => {    
-    return (<LocationItem 
+    return (<LocationItem       
+      isChecked={selectedLocationsForCalendar.find(element => element.location_id === item.location_id ? true: false )}
       isSelected={isSelected}
       item={item}    
       onItemClicked={(isChecked) => {
         if(isSelected){
-          orderLists[index].checked = isChecked;
-          var selectedItems = [];
-          orderLists.forEach((item, index) => {
-            if(item.checked != undefined && item.checked == true){
-              selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
-            }
-          });          
-          setSelectedItems(selectedItems);          
+
+          orderLists[index].checked = isChecked; 
+          var selectedItems = [ ...selectedLocationsForCalendar ];
+          if(isChecked){
+            selectedItems = [...selectedItems , {schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' } ];
+          }else{
+            selectedItems = selectedItems.filter( element => element.location_id !== item.location_id );
+          }          
+          dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedItems})
         }else{
           openLocationInfo(item.location_id);
         }        
@@ -339,7 +342,7 @@ export default function LocationSearchScreen(props) {
                   refreshLocationInfo={(id) => {
                     openLocationInfo(id);
                   }}
-                  clostDetailsPopup={() =>{                
+                  clostDetailsPopup={() =>{
                     setShowItem(0);
                   }} locInfo={locationInfo} ></LocationInfoDetails>
 
@@ -348,17 +351,19 @@ export default function LocationSearchScreen(props) {
 
           { crmStatus && showItem == 3 &&
             <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
-              <AddToCalendar selectedItems={selectedItems} 
-                onClose={() => {  
+              <AddToCalendar selectedItems={selectedLocationsForCalendar} 
+                onClose={() => { 
                   dispatch({type: SLIDE_STATUS, payload: false }); 
-                  setShowItem(0);  
-                  setIsSelected(false);
+                  setShowItem(0); 
+                  dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+                  dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
                   getSearchData(originLists, "", "search");
-                }}></AddToCalendar> 
+                }}></AddToCalendar>
             </View>
           }
 
-          <View style={styles.container}>                        
+          <View style={styles.container}>
+
             <SearchBar 
               onSearch={(text) =>{                
                 getSearchData(originLists, text, "search");         
@@ -369,12 +374,9 @@ export default function LocationSearchScreen(props) {
               isLoading={isLoading}
               animation={() => {
                 animation("filter");
-              }} />
-                        
-            
-            
-            <View style={{flex:1}}>
-                            
+              }} />                
+
+            <View style={{flex:1}}>                            
               <View style={styles.buttonContainer}>
                 <View style={styles.leftContainer}>
                   <TouchableOpacity 
@@ -382,36 +384,48 @@ export default function LocationSearchScreen(props) {
                     style={[styles.buttonTextStyle, {backgroundColor: isLoading ? Colors.skeletonColor : isSelected ? Colors.disabledColor:Colors.primaryColor}]} 
                     onPress={()=> {
                       if(!isLoading){
-                        setIsSelected(!isSelected)
+                        if(isSelected){
+                          dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
+                        }
+                        dispatch({type: IS_CALENDAR_SELECTION, payload: !isSelected});
                       }
                     } }>
                     <Text style={[styles.buttonText, {color:isLoading ? Colors.skeletonColor : Colors.whiteColor}]}>{isSelected? 'Cancel' : 'Select' }</Text>
                   </TouchableOpacity>
                 </View>
-                
+                {
+                  isSelected &&
+                  <View style={{alignItems: 'flex-start',}}>
+                    <TouchableOpacity 
+                      disabled={isLoading} 
+                      style={[styles.buttonTextStyle, { 
+                          backgroundColor: Colors.bgColor , 
+                          borderColor: isLoading ? Colors.bgColor : Colors.skeletonColor, borderWidth:2 , marginLeft:10}]} 
+                      onPress={()=> {
+                        if(isSelected){
+                          dispatch({type: IS_CALENDAR_SELECTION, payload: true});
+                          goPreviousPage();
+                        }                
+                      }}>
+                      <Text style={[styles.buttonText, {color:isLoading ? Colors.bgColor : Colors.blackColor}]}>{'Map'}</Text>
+                    </TouchableOpacity>                  
+                  </View>                  
+                }
+
                 <View style={styles.rightContainer}>
-                { isSelected && selectedItems.length > 0 && 
+                { isLoading === false && isSelected && selectedLocationsForCalendar.length > 0 && 
+
                   <TouchableOpacity 
                   style={styles.buttonTextStyle}
-                  onPress={() =>{
-
-                    var selectedItems = [];
-                    orderLists.forEach((item, index) => {
-                      if(item.checked != undefined && item.checked == true){
-                        selectedItems.push({schedule_order: (index + 1).toString() , location_id: item.location_id , schedule_date:"Today" , schedule_time:'', schedule_end_time:'' });
-                      }
-                    });                                        
-                    setSelectedItems(selectedItems);
-                    if(selectedItems.length > 0){
+                  onPress={() => {                                        
+                    if(selectedLocationsForCalendar.length > 0){
                       animation("addtocalendar");
                     }
-
                   }}>
                     <View style={{flexDirection:'row', alignItems:'center'}}>
-                      <Text style={styles.buttonText}>Add to Calendar </Text>
+                      <Text style={styles.buttonText}>Add to Calendar</Text>
                       <SvgIcon icon="Arrow_Right" width='13px' height='13px' />
-                    </View>
-                    
+                    </View>                  
                   </TouchableOpacity>
                 }
                 </View>                              
@@ -466,12 +480,13 @@ const styles = EStyleSheet.create(parse({
     flexDirection:'row',    
     marginLeft:10,
     marginRight:10,
-    
+    alignItems:'center'    
   },
-  leftContainer:{
-    flex:1,
+  
+  leftContainer:{    
     alignItems: 'flex-start',
   },
+
   rightContainer:{
     flex:1,
     alignItems: 'flex-end',
