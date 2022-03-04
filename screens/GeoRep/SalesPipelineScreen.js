@@ -17,6 +17,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import FilterView from '../../components/FilterView';
 import SearchBar from '../../components/SearchBar';
+import AddSalesPipeline from './pipeline/AddSalesPipeline';
+import Skeleton from '../../components/Skeleton';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
@@ -33,6 +35,10 @@ export default function SalesPipelineScreen(props) {
   const [opportunities, setOpportunities] = useState([]);
   const [searchList, setSearchList] = useState([]);
   const [canShowArrow, setShowArrow] = useState(true);
+
+  const [canAddPipeline, setCanAddPipeline] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (props.screenProps) {
@@ -60,7 +66,9 @@ export default function SalesPipelineScreen(props) {
     var base_url = 'https://www.dev.georep.com/local_api_old';//await getBaseUrl();
     var token = await getToken();
 
+    setIsLoading(true);
     getPipelines(base_url, token, filters).then(res => {
+      setIsLoading(false);
       let stageItems = [];
 
       stageItems.push({ stage_id: '0', stage_name: 'All' });
@@ -70,7 +78,7 @@ export default function SalesPipelineScreen(props) {
       setOpportunities(res.opportunities);
       setSearchList(res.opportunities);
       setSelectedStage('0');
-    })
+    }).catch((e) => { setIsLoading(false) })
   }
 
   const onSearchList = (searchKey) => {
@@ -124,6 +132,9 @@ export default function SalesPipelineScreen(props) {
         dispatch(getPipelineFilters());
         setShowItem(1);
         return;
+      case "add_pipeline":
+        // dispatch()
+        setShowItem(2);
       default:
         return;
     }
@@ -185,9 +196,25 @@ export default function SalesPipelineScreen(props) {
     </View>
   }
 
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { padding: 10, justifyContent: 'center', height: '100%' }]}>
+        {Array.from(Array(6)).map((_, key) => (
+          <Skeleton key={key} />
+        ))}
+      </View>
+    )
+  }
+
   return (
     <Provider>
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+
+        {canAddPipeline && <AddSalesPipeline props={props} onClose={() => {
+          // setShowItem("refresh"),
+          setCanAddPipeline(false);
+        }} />
+        }
 
         {crmStatus && showItem == 1 && <TouchableOpacity
           activeOpacity={1}
@@ -247,15 +274,15 @@ export default function SalesPipelineScreen(props) {
             contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
             ItemSeparatorComponent={renderSeparator}
           />
+          <View style={styles.plusButtonContainer}>
+            <TouchableOpacity style={style.innerPlusButton} onPress={() => {
+              setCanAddPipeline(true);
+            }}>
+              <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-        </View>
-        <View style={styles.plusButtonContainer}>
-          <TouchableOpacity style={style.innerPlusButton} onPress={() => {
-            
-          }}>
-            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-          </TouchableOpacity>
-        </View>
       </SafeAreaView>
     </Provider>
   )
