@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, StyleSheet , Text, Dimensions , TouchableOpacity, ScrollView} from 'react-native';
 import {Modal} from 'react-native-paper';
-import { BG_COLOR, TICK_BOX_COLOR } from '../../constants/Colors';
+import { BG_COLOR, TICK_BOX_COLOR, whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import CheckBox from '@react-native-community/checkbox';
 
 const FilterOptionsModal = ({modaVisible, onClose, filters,  options, selectedType ,  fieldType,  onValueChanged }) => {
     
+
+    console.log("options", options);
+    console.log("selectedType", selectedType);
+
+
     const getCheckedStatus = (id) => {      
         if(selectedType === "stage"){
           if(filters.stage_id === undefined){
@@ -85,7 +90,7 @@ const FilterOptionsModal = ({modaVisible, onClose, filters,  options, selectedTy
                 {options.map((item, key) => (                  
                   <View key={key}>
                   {
-                    (selectedType == "stage" || selectedType == "outcome") &&
+                    (selectedType === "stage" || selectedType === "outcome" || selectedType === "form_type" ) &&
                     <View style={styles.pickerItem} key={key}>
                       <Text style={styles.pickerItemText}>{item.name}</Text>
                       <CheckBox
@@ -100,7 +105,7 @@ const FilterOptionsModal = ({modaVisible, onClose, filters,  options, selectedTy
                     </View>                  
                   }
                   {
-                    !(selectedType == "stage" || selectedType == "outcome") &&
+                    !(selectedType == "stage" || selectedType == "outcome" || selectedType == "form_type") &&
                     <View style={styles.pickerItem} key={key}>
                       <Text style={styles.pickerItemText}>{item}</Text>
                       <CheckBox                        
@@ -123,8 +128,8 @@ const FilterOptionsModal = ({modaVisible, onClose, filters,  options, selectedTy
     )
 }
 
-const styles = StyleSheet.create({        
-   
+
+const styles = StyleSheet.create({   
     pickerContent: {
         height:Dimensions.get("window").height * 0.7,  
         margin:20,
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingTop: 8,
         paddingRight:20,
-        paddingBottom: 8
+        paddingBottom: 8,        
     },
     pickerItemText: {
         fontSize: 18

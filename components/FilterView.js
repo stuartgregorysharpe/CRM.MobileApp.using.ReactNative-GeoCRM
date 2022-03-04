@@ -43,7 +43,7 @@ export default function FilterView({navigation, page, onClose}) {
   useEffect(() => {    
     if(endDate !== undefined && endDate !== ''){
       saveFilter(0, true)
-    }    
+    }
   }, [endDate]);
 
   // useEffect(() => {    
@@ -114,8 +114,8 @@ export default function FilterView({navigation, page, onClose}) {
       }
     }
   }
-
-  const initializeSelectedType = (key) => {        
+  
+  const initializeSelectedType = (key) => {     
     setOptions(locationFilters[key].options);                
     setFieldType(locationFilters[key].field_type);  
     if(locationFilters[key].filter_label === "Stage"){
@@ -155,7 +155,7 @@ export default function FilterView({navigation, page, onClose}) {
         if(!isChecked){          
           data.splice(index, 1)
         }
-      }else{        
+      }else{
         if(isChecked){
           data.push(value);
         }                  
@@ -327,7 +327,6 @@ export default function FilterView({navigation, page, onClose}) {
         />
       ))}
 
-
       <Button 
         mode="contained"  color={PRIMARY_COLOR}  uppercase={false} 
         labelStyle={{
@@ -371,7 +370,6 @@ export default function FilterView({navigation, page, onClose}) {
       <Portal>
         
         <StartEndDateSelectionModal
-
           visible={isStartEndDateSelection}
           startDate = {startDate}
           endDate = {endDate}          

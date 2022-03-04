@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import HomeScreen from '../screens/GeoRep/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
-import RepFormsScreen from '../screens/GeoRep/FormsScreen';
+import RepFormsScreen from '../screens/GeoRep/Forms/FormsScreen';
 import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';

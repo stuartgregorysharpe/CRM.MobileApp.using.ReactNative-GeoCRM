@@ -644,6 +644,20 @@ const Roop_Gray = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://w
 </svg>
 `;
 
+const Forms_Red_Compulsory = `<svg xmlns="http://www.w3.org/2000/svg" width="71.389" height="71.389" viewBox="0 0 71.389 71.389">
+<g id="Group_4469" data-name="Group 4469" transform="translate(0 0)">
+  <path id="Path_4091" data-name="Path 4091" d="M571.5,372.5h71.389v71.389H571.5Z" transform="translate(-571.5 -372.5)" fill="none"/>
+  <path id="Path_4200" data-name="Path 4200" d="M615.66,432.449H605.3c-1.041-3.45-3.769-5.949-6.99-5.949s-5.949,2.5-6.99,5.949h-10.36c-2.728,0-4.959,2.677-4.959,5.949v41.644c0,3.272,2.231,5.949,4.959,5.949h34.7c2.728,0,4.959-2.677,4.959-5.949V438.4C620.618,435.126,618.387,432.449,615.66,432.449ZM600.986,475.58h-5.354v-5.354h5.354Zm0-10.708h-5.354V448.809h5.354ZM598.309,438.4a2.975,2.975,0,1,1,2.975-2.974A2.983,2.983,0,0,1,598.309,438.4Z" transform="translate(-562.615 -423.66)" fill="#dc143c"/>
+</g>
+</svg>
+`;
+const Forms_Green_Done = `<svg xmlns="http://www.w3.org/2000/svg" width="71.389" height="71.389" viewBox="0 0 71.389 71.389">
+<g id="Group_4256" data-name="Group 4256" transform="translate(0 0)">
+  <path id="Path_4091" data-name="Path 4091" d="M571.5,372.5h71.389v71.389H571.5Z" transform="translate(-571.5 -372.5)" fill="none"/>
+  <path id="Path_4092" data-name="Path 4092" d="M615.66,379.449H605.3c-1.041-3.45-3.769-5.949-6.99-5.949s-5.949,2.5-6.99,5.949h-10.36c-2.728,0-4.959,2.677-4.959,5.949v41.644c0,3.272,2.231,5.949,4.959,5.949h34.7c2.728,0,4.959-2.677,4.959-5.949V385.4C620.618,382.126,618.387,379.449,615.66,379.449Zm-17.351,0a2.975,2.975,0,1,1-2.975,2.975A2.983,2.983,0,0,1,598.309,379.449Zm-3.965,36.974-7.933-7.933,2.8-2.8,5.137,5.116,13.067-13.067,2.8,2.817Z" transform="translate(-562.615 -370.525)" fill="#0ad10a"/>
+</g>
+</svg>
+`;
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
@@ -702,7 +716,8 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "GPS_LOCATION" && <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />}
         {icon == "Add_Image_Gray" && <SvgXml style={style} xml={Add_Image_Gray} width={width} height={height} />}
         {icon == "Roop_Gray" && <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />}
-        
-        
+        {icon == "Forms_Red_Compulsory" && <SvgXml style={style} xml={Forms_Red_Compulsory} width={width} height={height} />}
+        {icon == "Forms_Green_Done" && <SvgXml style={style} xml={Forms_Green_Done} width={width} height={height} />}
+                
     </Fragment>
 );
