@@ -9,7 +9,7 @@ import Divider from '../../components/Divider';
 import SvgIcon from '../../components/SvgIcon';
 import GrayBackground from '../../components/GrayBackground';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
-import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 const lists = [
@@ -48,7 +48,7 @@ function CreateTicket({closeSlider}) {
             fontFamily: Fonts.primaryRegular, 
             letterSpacing: 0.2
           }}
-          color="#DC143C" 
+          color={Colors.selectedRedColor}
           uppercase={false} 
           onPress={() => console.log('Pressed')}
         >

@@ -9,7 +9,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
@@ -56,11 +56,10 @@ export default function AddLead({screenProps , onClose}) {
     dispatch(updateCurrentLocation());
   },[]);
   
-
   useEffect(() => {
     setMyLocation(currentLocation);
   },[currentLocation]);
-  
+    
   useEffect(() =>{
     if(isLoading){
       getLeadFields()
@@ -188,7 +187,7 @@ export default function AddLead({screenProps , onClose}) {
               fontFamily: Fonts.primaryRegular, 
               letterSpacing: 0.2
             }}
-            color="#DC143C" 
+            color={Colors.selectedRedColor}
             uppercase={false} 
             onPress={() => {
               initPostData(customMasterFields);  
@@ -218,7 +217,7 @@ export default function AddLead({screenProps , onClose}) {
           {
             leadForms.map((field, key) => {
               if(field.field_type == "dropdown"){
-                index++;
+                //index++;
                 return (
                   <TouchableOpacity key={key}
                     onPress={() =>{
@@ -231,8 +230,8 @@ export default function AddLead({screenProps , onClose}) {
 
                     <Text                                        
                       ref={(element) => { dispositionRef.current[key] = element }}                      
-                      style={[styles.textInput,{borderColor:PRIMARY_COLOR, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
-                      outlineColor={PRIMARY_COLOR}>
+                      style={[styles.textInput,{borderColor:Colors.primaryColor, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
+                      outlineColor={Colors.primaryColor}>
                       {getSelectedDropdownItemText(field.custom_master_field_id , field.field_name)}
                     </Text>
                                                             
@@ -313,17 +312,18 @@ export default function AddLead({screenProps , onClose}) {
 
 const styles = EStyleSheet.create({
   container: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     zIndex: 100,
-    padding:10,    
-    // elevation: 1
+    padding:10,     
   },
+
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10
   },
+
   map: {
     width: '100%',
     height: 230,
@@ -340,9 +340,9 @@ const styles = EStyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
+    borderColor: Colors.primaryColor,
     borderRadius: 7,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: Colors.primaryColor
   },
   addButtonText: {
     color: '#fff',
@@ -357,8 +357,7 @@ const styles = EStyleSheet.create({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
-    //fontFamily: Fonts.secondaryMedium,
+    backgroundColor: Colors.bgColor,    
     marginBottom: 8
   },
   pickerItem: {
@@ -378,10 +377,10 @@ const styles = EStyleSheet.create({
     marginBottom: 8
   },
   linkBoxText: {
-    color: PRIMARY_COLOR,
+    color: Colors.primaryColor,
     fontFamily: Fonts.secondaryMedium,
     textDecorationLine: 'underline',
-    textDecorationColor: PRIMARY_COLOR,
+    textDecorationColor: Colors.primaryColor,
     textAlign: 'center'
   },
 

@@ -24,10 +24,9 @@ export function getCalendar(base_url, token, period)
             resolve([]);
           }
         })
-        .catch((err) => {                  
+        .catch((err) => {
           reject(err);          
         })        
-
     });    
 }
 
@@ -35,7 +34,7 @@ export const updateCalendar = async(postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();  
   console.log("post date");
-  console.log(postData);
+  console.log(postData); 
   return new Promise(function(resolve, reject) {        
     axios
     .post(`${base_url}/calenderupdate`, postData, {

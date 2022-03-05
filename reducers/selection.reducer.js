@@ -1,4 +1,5 @@
-import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, MAP_FILTERS, SEARCH_FILTERS, PIPELINE_SEARCH_FILTERS } from "../actions/actionTypes";
+import { act } from "react-test-renderer";
+import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, MAP_FILTERS, SEARCH_FILTERS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR } from "../actions/actionTypes";
 
 // payload: {
 //   "iss": "universal_api.georep.com", // Issuer
@@ -84,7 +85,9 @@ import { CHANGE_SELECT_PROJECT, CHANGE_PROJECT_PAYLOAD, CHANGE_ACCESS_TOKEN, MAP
 const initialState = {
   payload: {},
   selectProject: 'geo_rep',
-  token: ''
+  token: '',
+  isCalendarSelection: false,
+  selectedLocationsForCalendar: []
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -119,6 +122,16 @@ export default (state=initialState, action) => {
       return {
         ...state,
         pipelineFilters: action.payload
+      }
+    case IS_CALENDAR_SELECTION:
+      return {
+        ...state,
+        isCalendarSelection: action.payload
+      }
+    case SELECTED_LOCATIONS_FOR_CALENDAR:
+      return {
+        ...state,
+        selectedLocationsForCalendar: action.payload
       }
     default: 
       return state;

@@ -11,58 +11,107 @@ import DeviceInfo from 'react-native-device-info';
 var currentPosition = -1;
 var isClickable = true;
 
-export function NextPrev({pageType ,locationId , onUpdated , onStart}){
+export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , onStart}){
 
     // pageType : 'camera' or 'search-lists'  ,  onUpdated: called after pressed "next" or "prev" button.
     const [isPrev, setIsPrev] = useState(false);
-    const [isNext, setIsNext] = useState(false);
-    const loopLists = useSelector(state => state.location.loopLists);
-    const [currentLoopLists , setCurrentLoopList] = useState();    
+    const [isNext, setIsNext] = useState(false);    
+    const loopLists = useSelector(state => state.location.loopLists); // use for camera page
+    const [currentLoopLists , setCurrentLoopList] = useState([]);
     const [loopPosition, setLoopPosition] = useState(-1);
     const [nextLocationName, setNextLocationName] = useState("");
     const [prevLocationName, setPrevLocationName] = useState("");
 
-    useEffect(() =>{        
+    useEffect(() =>{       
+        console.log("page type", pageType.name); 
         if(pageType.name === "search-lists"){
-            // load from local storage 
-            checkIsPrev();       
-            setIsNext(true);                        
+            checkIsPrev();
+            checkIsNext();
         }else if(pageType.name === "camera"){
-            setCurrentLoopList([...loopLists]);            
-            setIsNext(true);
-            setIsPrev(true);
-        }
+            setIsNext(false);
+            setIsPrev(false);
+        }        
     },[])
 
     useEffect(() =>{
-        // get current position from the lists        
-        if(loopLists.length > 0){
-            var pos = getPosition();                    
+        if(pageType.name === "search-lists"){            
+            initLocationLoopData();
+        }else if(pageType.name === "camera"){
+            if(loopLists.length > 0){
+                setCurrentLoopList([...loopLists]);
+            }
+            if(loopLists.length > 1){
+                setIsPrev(true);
+                setIsNext(true);
+            }
+            if(loopLists.length > 0){
+                var pos = getPositionForCamera();                    
+            }            
         }                
     },[loopLists]);
 
     const checkIsPrev = async() =>{
-        var locationLoops = await getLocationLoop();        
-        if(locationLoops.length > 0 ){
+        var savedLocationLoop = await getLocationLoop();
+        if(savedLocationLoop.length > 0 ){
             setIsPrev(true);
         }
     }
-
-    const initLocationLoopData = async(pos) => {
-        var locationLoops = await getLocationLoop();
-        var new_lists = [...locationLoops];
-        if( locationLoops.length === 0 || ( locationLoops.length > 0 && locationLoops[locationLoops.length - 1].location_id !== loopLists[pos].location_id ) ){
-            new_lists = [...locationLoops , loopLists[pos] ];
-        }
-        setCurrentLoopList(new_lists);
-        currentPosition = new_lists.length - 1;
-        await storeLocationLoop(new_lists);        
-        if(new_lists.length >= 2){
-            setPrevLocationName(new_lists[new_lists.length - 2].name);
-            setNextLocationName(loopLists[pos + 1].name)
+    const checkIsNext = async() =>{
+        if(locationInfo !== undefined && locationInfo.next !== undefined && locationInfo.next.location_id !== undefined){
+            setIsNext(true);
         }else{
-            setNextLocationName(loopLists[pos + 1].name)
+            setIsNext(false);
         }
+    }
+
+    const initLocationLoopData = async() => {
+
+        var savedLocationLoops = await getLocationLoop();
+        var position = -1;
+        savedLocationLoops.forEach((element, index) => {
+            if(element.location_id === locationInfo.location_id){
+                position = index;
+            }
+        });
+
+        if(position != -1){ // exist in original lists
+            setCurrentLoopList([...savedLocationLoops]);
+            currentPosition = position;
+
+            if(currentPosition < savedLocationLoops.length - 1){
+                setNextLocationName(savedLocationLoops[position+1].name);
+            }
+            if(currentPosition > 0){
+                setPrevLocationName(savedLocationLoops[position-1].name);
+            }
+            setIsNext(true);
+            if(currentPosition === 0){
+                setIsPrev(false);
+            }else{
+                setIsPrev(true)                
+            }
+            
+        }else{
+
+            var new_lists = [...savedLocationLoops];
+            if( savedLocationLoops.length === 0 || ( savedLocationLoops.length > 0 && savedLocationLoops[savedLocationLoops.length - 1].location_id !== locationInfo.location_id ) ){
+                let currentLoc = {
+                    location_id: locationInfo.location_id,
+                    name: locationInfo.location_name.value,
+                    address: locationInfo.address
+                }
+                new_lists = [...savedLocationLoops , currentLoc ];
+            }                
+            setCurrentLoopList(new_lists);        
+            currentPosition = new_lists.length - 1;
+            await storeLocationLoop(new_lists);
+            if(new_lists.length >= 2){
+                setPrevLocationName(new_lists[new_lists.length - 2].name);
+                setNextLocationName(locationInfo.next.name);
+            }else{
+                setNextLocationName(locationInfo.next.name);
+            }
+        }                
     }
     
     getCameraNextPosition = (pos) =>{
@@ -83,55 +132,52 @@ export function NextPrev({pageType ,locationId , onUpdated , onStart}){
         }
     }
 
-    const getPosition = () => {
+
+    const getPositionForCamera = () => {
         var position = -1;
         loopLists.forEach((element, index) => {
-            if(element.location_id === locationId){
+            if(element.location_id === locationInfo.location_id){
                 position = index;
             }
-        });        
-        if(pageType.name === "camera"){                    
-            currentPosition = position;
-            // Prev and Next Location Name for Tablet
-            setNextLocationName(loopLists[getCameraNextPosition(position)].name);
-            setPrevLocationName(loopLists[getCameraPrevPosition(position)].name);            
-        }else if(pageType.name === "search-lists"){
-            setLoopPosition(position); // position in original location list
-            initLocationLoopData(position);
-        }
+        });
+
+        if(position != -1){
+            if(pageType.name === "camera"){                    
+                currentPosition = position;
+                // Prev and Next Location Name for Tablet                
+                setNextLocationName(loopLists[getCameraNextPosition(position)].name);
+                setPrevLocationName(loopLists[getCameraPrevPosition(position)].name);            
+            }            
+        }        
     }
     
-    const openLocationInfo = (location_id) => {
-
+    const openLocationInfo = (location_id , curLocation) => {        
         isClickable = false;
-        getLocationInfo( Number(location_id))
-        .then((res) => {            
+        getLocationInfo( Number(location_id) , curLocation)
+        .then((res) => {                     
             onUpdated(res);
             isClickable = true;
         })
         .catch((e) =>{
+            console.log(e);
             isClickable = true;
         })
     }
 
     const openNewLocationInfo = (location_id) => {        
         isClickable = false;
-        getLocationInfo( Number(location_id))
+        getLocationInfo( Number(location_id) , currentLocation)
         .then( async(res) => {
-            // add new loop item
+            // add new loop item            
             let item = {
                 name: res.location_name.value,
                 address: res.address,
-                distance: '',
-                status: '',
-                location_id: res.location_id,
-                status_text_color:''
-            }
-            setCurrentLoopList([...currentLoopLists, item]);            
-            currentPosition = currentPosition + 1;            
+                location_id: res.location_id                
+            }            
             await storeLocationLoop([...currentLoopLists, item]);
             onUpdated(res);
-            isClickable = true;
+            isClickable = true;            
+           
         })
         .catch((e) =>{
             isClickable = true;
@@ -141,28 +187,22 @@ export function NextPrev({pageType ,locationId , onUpdated , onStart}){
     const onPrev = () =>{
         if(isClickable){
             onStart();
-            if(pageType.name === "camera"){                                    
+            
+            if(pageType.name === "camera"){                                                    
                 openLocationInfo(currentLoopLists[getCameraPrevPosition(currentPosition)].location_id);            
-                currentPosition = getCameraPrevPosition(currentPosition);
-                console.log("prev " , loopLists[getCameraPrevPosition(currentPosition)].name);
-                console.log("next " , loopLists[getCameraNextPosition(currentPosition)].name);
+                currentPosition = getCameraPrevPosition(currentPosition);            
                 setNextLocationName(loopLists[getCameraNextPosition(currentPosition)].name);
                 setPrevLocationName(loopLists[getCameraPrevPosition(currentPosition)].name);
-            }else if(pageType.name === "search-lists"){            
-                console.log("currentPosition",currentPosition);
+            }else if(pageType.name === "search-lists"){                
                 if(currentPosition > 0){
                     openLocationInfo(currentLoopLists[currentPosition - 1].location_id);                
                     currentPosition =  currentPosition - 1 ;
-
                     if(currentPosition === 0){
                         setIsPrev(false);
                     }else{ 
-                        // Next & Prev button text
-                        console.log("prev",currentLoopLists[currentPosition - 1].name )
-    
+                        // Next & Prev button text                        
                         setPrevLocationName(currentLoopLists[currentPosition - 1].name);
-                        if(currentPosition < currentLoopLists.length - 1){                            
-                            console.log("next",currentLoopLists[currentPosition + 1].name )
+                        if(currentPosition < currentLoopLists.length - 1){                        
                             setNextLocationName(currentLoopLists[currentPosition + 1].name);                        
                         }
                     }
@@ -177,44 +217,25 @@ export function NextPrev({pageType ,locationId , onUpdated , onStart}){
 
     const onNext = () =>{
         if(isClickable){
-            onStart();
-            if(pageType.name === "camera"){
+            onStart();            
+            if(pageType.name === "camera"){                
                 openLocationInfo(currentLoopLists[getCameraNextPosition(currentPosition)].location_id);
                 currentPosition = getCameraNextPosition(currentPosition);
                 setNextLocationName(loopLists[getCameraNextPosition(currentPosition)].name);
                 setPrevLocationName(loopLists[getCameraPrevPosition(currentPosition)].name);            
-            }else if(pageType.name === "search-lists"){            
-                if(currentPosition === currentLoopLists.length - 1){
-                    if( loopPosition <= loopLists.length - 2){ // can go to next
-                        console.log("currentLoopLists",currentLoopLists);
-                        console.log("prev button name ", currentLoopLists[currentPosition].name);
-                        setPrevLocationName(currentLoopLists[currentPosition].name);                    
-                        if(loopPosition + 1 <= loopLists.length - 2){
-                            console.log("next button name ", loopLists[loopPosition + 2].name);
-                            setNextLocationName(loopLists[loopPosition + 2].name);
-                        }else{
-                            setIsNext(false)
-                        }
-                        openNewLocationInfo(loopLists[loopPosition + 1].location_id);
-                        setLoopPosition(loopPosition + 1);
-                        setIsPrev(true);                    
-                        // Show button                    
-                    }
+            }else if(pageType.name === "search-lists"){ 
+                if(currentPosition === currentLoopLists.length - 1){                    
+                    openNewLocationInfo(locationInfo.next.location_id);                    
                 }else if(currentPosition < currentLoopLists.length - 1){
-                    openLocationInfo(currentLoopLists[currentPosition + 1].location_id);                       
-                    currentPosition = currentPosition + 1;
-                    setIsPrev(true);
-                    if(currentPosition === currentLoopLists.length - 1){
-                        setPrevLocationName(currentLoopLists[currentPosition-1].name);
-                        setNextLocationName(loopLists[loopPosition + 1].name);
+
+                    if(currentPosition + 1 == currentLoopLists.length - 1){
+                        openLocationInfo(currentLoopLists[currentPosition + 1].location_id , currentLocation);
                     }else{
-                        setPrevLocationName(currentLoopLists[currentPosition-1].name);
-                        setNextLocationName(currentLoopLists[currentPosition+1].name);
-                    } 
+                        openLocationInfo(currentLoopLists[currentPosition + 1].location_id);                       
+                    }                                        
                 }
             }  
-        }
-          
+        }          
     }
     
     return <Fragment>

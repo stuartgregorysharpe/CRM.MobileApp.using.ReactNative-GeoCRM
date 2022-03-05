@@ -153,6 +153,26 @@ const Turquoise = `
     </g>
   </svg>
 `
+const Selected_Marker = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
+<defs>
+  <clipPath id="clip-path">
+    <rect id="Rectangle_2619" data-name="Rectangle 2619" width="100" height="100" fill="#133c8b"/>
+  </clipPath>
+</defs>
+<g id="Group_5027" data-name="Group 5027" transform="translate(-180 -1067)">
+  <g id="Group_5023" data-name="Group 5023" transform="translate(180 1067)">
+    <g id="Group_4587" data-name="Group 4587" clip-path="url(#clip-path)">
+      <path id="Path_4371" data-name="Path 4371" d="M83.211,41.452A33.452,33.452,0,1,0,24.272,63.088l-.01,0,.129.148c.076.088.154.175.231.262L49.789,92.171l25.173-28.75c.051-.06.1-.12.156-.18l.139-.157-.013,0a33.294,33.294,0,0,0,7.967-21.636" fill="#133c8b"/>
+    </g>
+  </g>
+  <g id="check_circle_black_24dp_5_" data-name="check_circle_black_24dp (5)" transform="translate(203.068 1081.068)">
+    <path id="Path_5370" data-name="Path 5370" d="M0,0H53.863V53.863H0Z" fill="none"/>
+    <path id="Path_5371" data-name="Path 5371" d="M24.443,2A22.443,22.443,0,1,0,46.886,24.443,22.451,22.451,0,0,0,24.443,2Zm0,40.4A17.954,17.954,0,1,1,42.4,24.443,17.978,17.978,0,0,1,24.443,42.4Zm10.3-27.874-14.79,14.79-5.813-5.79-3.164,3.164,8.977,8.977L37.909,17.71Z" transform="translate(2.489 2.489)" fill="#f9f9f9"/>
+  </g>
+</g>
+</svg>
+`;
+
 
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
@@ -175,5 +195,6 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "green_star_20211215.png" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
         {icon == "orange_star_20211215.png" && <SvgXml style={style} xml={Orange_Star} width={width} height={height} />}
         {icon == "blue_star_20211215.png" && <SvgXml style={style} xml={Turquoise} width={width} height={height} />}
+        {icon == "Selected_Marker" && <SvgXml style={style} xml={Selected_Marker} width={width} height={height} />}
     </Fragment>
 );

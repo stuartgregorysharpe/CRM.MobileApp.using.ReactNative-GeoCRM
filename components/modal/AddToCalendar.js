@@ -6,7 +6,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useDispatch } from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../constants/Colors';
+import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
@@ -81,7 +81,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
             //dispatch({type: SUB_SLIDE_STATUS, payload: false});
             onClose();
           }}>
-          <Text style={{ color:"#DC143C" , paddingRight:20, paddingLeft:20, paddingTop:20, paddingBottom:10}}>Close</Text>
+          <Text style={{ color:Colors.selectedRedColor , paddingRight:20, paddingLeft:20, paddingTop:20, paddingBottom:10}}>Close</Text>
         </TouchableOpacity>      
       </View>
 

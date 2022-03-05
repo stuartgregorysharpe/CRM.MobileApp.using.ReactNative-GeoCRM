@@ -48,3 +48,29 @@ const toRad = (angle) => {
     return (angle * Math.PI) / 180;
 }
 
+export function isInsidePoly  (lat, lon, multiPolycoords) {
+    // ray-casting algorithm based on
+    // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html/pnpoly.html
+    
+    var x = lat,
+      y = lon;
+    
+    var inside = false;
+    multiPolycoords.map(poly => {
+      vs = poly;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i].latitude,
+          yi = vs[i].longitude;
+        var xj = vs[j].latitude,
+          yj = vs[j].longitude;
+              
+        var intersect =
+          yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+      }
+    });    
+    return inside;
+}
+    
+
+    

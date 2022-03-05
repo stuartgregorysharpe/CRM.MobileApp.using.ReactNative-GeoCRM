@@ -6,19 +6,19 @@ import { BG_COLOR, DISABLED_COLOR, TEXT_COLOR } from '../../../../constants/Colo
 import Fonts from '../../../../constants/Fonts';
 import { style } from '../../../../constants/Styles';
 
-export function LocationItem ({isSelected, item, selectedItems, onItemClicked }) {
+export function LocationItem ({isSelected, item, isChecked, onItemClicked }) {
 
-    const [isChecked, setIsChecked] = useState(false);    
-    useEffect(() => {   
-      //if(isSelected){
-        setIsChecked(false);
-      //}    
-    }, [isSelected]);
+    //const [isChecked, setIsChecked] = useState(false);
+    // useEffect(() => {   
+    //   //if(isSelected){
+    //     setIsChecked(false);
+    //   //}    
+    // }, [isSelected]);
 
     return (
       <TouchableOpacity style={[styles.resultItem , {backgroundColor: isSelected && isChecked ? 'rgba(61, 143, 251, 0.4)' : BG_COLOR  }]} onPress={() => {
           if(isSelected){
-            setIsChecked(!isChecked);            
+            //setIsChecked(!isChecked);            
             item.checked = !isChecked;
             onItemClicked(!isChecked);
           }else{

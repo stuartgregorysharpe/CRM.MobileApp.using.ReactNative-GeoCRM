@@ -10,7 +10,7 @@ import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
 import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
-import { getGeocoding, getLeadFields, getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../../actions/location.action';
+import { getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';

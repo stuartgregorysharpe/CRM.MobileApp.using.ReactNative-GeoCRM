@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { MAP_FILTERS, PIPELINE_SEARCH_FILTERS, SEARCH_FILTERS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { clearFilterData, clearPipelineFilterData, getFilterData, getPipelineFilterData, storeFilterData, storePipelineFilterData } from '../constants/Storage';
@@ -366,9 +366,10 @@ export default function FilterView({ navigation, page, onClose }) {
             fontFamily: Fonts.primaryRegular,
             letterSpacing: 0.2
           }}
-          color="#DC143C"
-          uppercase={false}
-          onPress={async () => {
+          color={Colors.selectedRedColor}
+          uppercase={false} 
+          onPress={ async() => {    
+            
             let value = {
               stage_id: [],
               outcome_id: [],
