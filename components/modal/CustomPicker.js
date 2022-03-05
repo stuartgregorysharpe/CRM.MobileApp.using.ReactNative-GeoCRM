@@ -1,32 +1,35 @@
 import React from 'react';
-import { View, Modal, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Modal, TouchableWithoutFeedback, StyleSheet, ScrollView } from 'react-native';
 import { BG_COLOR } from '../../constants/Colors';
 
-const CustomPicker = ({visible, onModalClose, renderItems }) => {
+const CustomPicker = ({ visible, onModalClose, renderItems }) => {
     return (
         <Modal animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onModalClose}>
             <TouchableWithoutFeedback onPress={onModalClose}>
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        {renderItems}
+                <ScrollView contentContainerStyle={{flex:1}}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            {renderItems}
+                        </View>
                     </View>
-                </View>
+                </ScrollView>
+
             </TouchableWithoutFeedback >
         </Modal>
     )
 }
 
-const styles = StyleSheet.create({        
-    
+const styles = StyleSheet.create({
+
     centeredView: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         marginTop: 0,
-        backgroundColor: '#00000055'        
+        backgroundColor: '#00000055'
     },
     modalView: {
         margin: 20,

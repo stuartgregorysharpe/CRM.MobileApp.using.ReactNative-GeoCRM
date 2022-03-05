@@ -99,16 +99,17 @@ export default function LocationScreen(props) {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                   });
-                }   
+                } 
             },
             (error) => {
                 console.log(error);
             },
             {
-                distanceFilter: 10,
+                distanceFilter: 2,
             },
         );
-      }      
+      }
+
       return () => {
           if (watchId.current) {
               Geolocation.clearWatch(watchId.current);
@@ -171,7 +172,7 @@ export default function LocationScreen(props) {
         });
       }
       if(map.current !== null && map.current.props){              
-        map.current.props.onRegionChangeComplete();      
+        map.current.props.onRegionChangeComplete();     
       }
     });
     return unsubscribe;
@@ -467,7 +468,6 @@ export default function LocationScreen(props) {
                 }
               }
               setIsDraw(!isDraw);
-
             }}
             onClickCancel={() => {
               props.navigation.navigate("LocationSearch");
@@ -506,14 +506,14 @@ export default function LocationScreen(props) {
                       }                                            
                     }}
                     initialRegion={{
-                      latitude: currentLocation.latitude,
-                      longitude: currentLocation.longitude,
+                      latitude: myLocation.latitude !== null && myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
+                      longitude: myLocation.longitude !== null  &&  myLocation.longitude !== undefined ? myLocation.longitude:  currentLocation.longitude,
                       latitudeDelta: 0.015,
                       longitudeDelta: 0.015,
                     }}                      
                     currentLocation={{
-                      latitude: currentLocation.latitude,
-                      longitude: currentLocation.longitude,
+                      latitude: myLocation.latitude,
+                      longitude: myLocation.longitude,
                     }}>
 
                     {locationMaps.map((item , key) => (
@@ -526,8 +526,8 @@ export default function LocationScreen(props) {
                         coordinate={{
                           latitude: Number(item.coordinates.latitude),
                           longitude: Number(item.coordinates.longitude),
-                        }}                
-                      >                        
+                        }}>                        
+                        
                         {
                           selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ?
                           <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />:
