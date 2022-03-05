@@ -82,7 +82,7 @@ const lists = {
       navOrder: "recorded_sales"
     },
     {
-      icon: "Account_Circle",
+      icon: "Pipeline",
       name: "Pipeline",
       navigator: "RepSalesPipeline",
       navOrder: "sales_pipeline"

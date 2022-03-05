@@ -118,6 +118,11 @@ export default (state=initialState, action) => {
         ...state,
         token: action.payload
       }
+    case PIPELINE_SEARCH_FILTERS:
+      return {
+        ...state,
+        pipelineFilters: action.payload
+      }
     case IS_CALENDAR_SELECTION:
       return {
         ...state,

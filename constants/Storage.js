@@ -161,3 +161,45 @@ export const getLocationLoop = async() => {
 
   }
 }
+
+export const getPipelineFilterData = async () => {
+  try {
+    let initialParam = {
+      stage_id: [],
+      outcome_id: [],
+      dispositions: [],
+      customs: [],
+      opportunity_status_id: [],
+      opportunity_fields: [],
+      campaign_id: ''
+    };
+    const jsonValue = await AsyncStorage.getItem('@pipeline_filter')
+    return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialParam;
+  } catch (e) {
+    // error reading value
+  }
+}
+
+export const storePipelineFilterData = async (value) => {
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem('@pipeline_filter', jsonValue)
+  } catch (e) {      
+    console.log("error", e);
+  }
+}
+
+export const clearPipelineFilterData = async () => {
+  try {
+    let value = {
+      stage_id : [],
+      outcome_id : [],
+      dispositions : [],
+      customs : []
+    };
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem('@pipeline_filter', jsonValue)
+  } catch (e) {      
+    console.log("error", e);
+  }
+}
