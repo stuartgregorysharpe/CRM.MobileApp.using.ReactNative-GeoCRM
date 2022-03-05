@@ -49,9 +49,9 @@ export const style = StyleSheet.create({
     zIndex: 1,
     elevation: 1,
   },
-
   
   innerPlusButton: {          
+
   },
 
   card: {    
@@ -69,7 +69,7 @@ export const style = StyleSheet.create({
     },
     shadowOpacity:0.27,
     shadowRadius:0.65,
-
+    zIndex: 2
   },
 
   grey_bar: {    
@@ -79,7 +79,16 @@ export const style = StyleSheet.create({
     marginTop:3,
     marginBottom:3,
     marginRight:10,
-  }
+  },
+  numberBox: {
+    width: 24,
+    height: 24,
+    backgroundColor: PRIMARY_COLOR,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2,
+    marginRight: 4
+  },
   
 })
 

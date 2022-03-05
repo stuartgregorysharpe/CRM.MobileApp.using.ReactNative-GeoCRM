@@ -2,8 +2,8 @@ import * as React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from '../../../../components/SvgIcon';
-import { boxShadow } from '../../../../constants/Styles';
-import { PRIMARY_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
+import { boxShadow, style } from '../../../../constants/Styles';
+import Colors, { PRIMARY_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 
 export default function Card({icon, title, subtitle , image, number, onPress}) {
@@ -15,7 +15,7 @@ export default function Card({icon, title, subtitle , image, number, onPress}) {
         <Text style={styles.title}>{title}</Text>
         {subtitle && <Text style={styles.subTitile}>{subtitle}</Text>}
       </View>
-      {number && <View style={styles.numberBox}>
+      {number && <View style={style.numberBox}>
         <Text style={styles.number}>{number}</Text>
       </View>}
       <SvgIcon icon="Angle_Left" width='20px' height='20px' />
@@ -50,21 +50,13 @@ const styles = StyleSheet.create({
   },
   subTitile: {
     fontSize: 12,
-    fontFamily: 'Gilroy-Medium',
-    color: TEXT_COLOR,
+    fontFamily: Fonts.secondaryMedium,
+    color: Colors.textColor,
     marginTop: 4
   },
-  numberBox: {
-    width: 24,
-    height: 24,
-    backgroundColor: PRIMARY_COLOR,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 2,
-    marginRight: 4
-  },
+  
   number: {
-    fontFamily: 'Gilroy-Medium',
+    fontFamily: Fonts.secondaryMedium,
     fontSize: 14,
     color: '#fff'
   }

@@ -14,7 +14,7 @@ export default function GrayBackground() {
       {crmStatus && <TouchableOpacity
         activeOpacity={1} 
         style={grayBackground}
-        onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}
+        onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}  
       ></TouchableOpacity>}
     </Fragment>
   )

@@ -133,11 +133,11 @@ export default function FilterView({ navigation, page, onClose }) {
       }
     }
   }
-
-  const initializeSelectedType = (key) => {
-    setOptions(locationFilters[key].options);
-    setFieldType(locationFilters[key].field_type);
-    if (locationFilters[key].filter_label === "Stage") {
+  
+  const initializeSelectedType = (key) => {     
+    setOptions(locationFilters[key].options);                
+    setFieldType(locationFilters[key].field_type);  
+    if(locationFilters[key].filter_label === "Stage"){
       setSelectedType("stage");
     } else if (locationFilters[key].filter_label === "Outcome") {
       setSelectedType("outcome");
@@ -425,7 +425,7 @@ export default function FilterView({ navigation, page, onClose }) {
 
 
       <Button
-        mode="contained" color={PRIMARY_COLOR} uppercase={false}
+        mode="contained" color={Colors.primaryColor} uppercase={false}
         labelStyle={{
           fontSize: 18,
           fontFamily: Fonts.secondaryBold,
@@ -470,7 +470,6 @@ export default function FilterView({ navigation, page, onClose }) {
       <Portal>
 
         <StartEndDateSelectionModal
-
           visible={isStartEndDateSelection}
           startDate={startDate}
           endDate={endDate}

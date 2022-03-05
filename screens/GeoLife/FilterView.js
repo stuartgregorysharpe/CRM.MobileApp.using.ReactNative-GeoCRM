@@ -68,8 +68,8 @@ export default function FilterView({navigation}) {
           }}
           color={Colors.selectedRedColor}
           uppercase={false} 
-          onPress={() => setSelectFilters(emptyArray)}
-        >
+          onPress={() => setSelectFilters(emptyArray)}>
+            
           Clear Filters
         </Button>
       </View>

@@ -123,7 +123,7 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
             <View key={key}>
               {
                 (selectedType == "stage" || selectedType == "outcome"
-                  || selectedType == "pipeline" || selectedType == "opportunity_status") &&
+                  || selectedType == "pipeline" || selectedType == "opportunity_status" || selectedType == "form_type") &&
                 <View style={styles.pickerItem} key={key}>
                   <Text style={styles.pickerItemText}>{item.name}</Text>
                   <CheckBox
@@ -139,7 +139,7 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
               }
               {
                 !(selectedType == "stage" || selectedType == "outcome"
-                  || selectedType == "pipeline" || selectedType == "opportunity_status") &&
+                  || selectedType == "pipeline" || selectedType == "opportunity_status" || selectedType == "form_type") &&
                 <View style={styles.pickerItem} key={key}>
                   <Text style={styles.pickerItemText}>{item}</Text>
                   <CheckBox

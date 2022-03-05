@@ -61,6 +61,7 @@ export default function SignIn() {
       dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
     }
+        
   }
 
   const handleNext = () => {
