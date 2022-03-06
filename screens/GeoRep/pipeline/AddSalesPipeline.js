@@ -10,7 +10,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../components/Skeleton';
 import Divider from '../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, TEXT_COLOR, GRAY_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, TEXT_COLOR, GRAY_COLOR, whiteLabel } from '../../../constants/Colors';
 import { getGeocoding, getLeadFields, getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import CustomPicker from '../../../components/modal/CustomPicker';
@@ -521,7 +521,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
             </View>
           </TouchableOpacity>
-          {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60, maxHeight: 180, backgroundColor: 'white', width: '100%', left: 5, borderColor: PRIMARY_COLOR, borderWidth: 1, borderRadius: 5 }}>
+          {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60, maxHeight: 180, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
             <TouchableWithoutFeedback onPress={() => {
               console.log("clicked outside");
               setCanShowAutoComplete(!canShowAutoComplete);
@@ -622,9 +622,9 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             <View style={{ flexDirection: 'row', marginVertical: 10 }}>
               <Text style={{
                 flexShrink: 1,
-                color: PRIMARY_COLOR,
+                color: whiteLabel().mainText,
                 fontFamily: Fonts.secondaryBold,
-                borderBottomColor: PRIMARY_COLOR,
+                borderBottomColor: whiteLabel().mainText,
                 borderBottomWidth: 2,
                 paddingBottom: 2,
               }}>Dispositions</Text>
@@ -642,7 +642,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                     }
                   }}>
                     <Text
-                      ref={(element) => { dispositionRef.current[key] = element }} outlineColor={PRIMARY_COLOR}
+                      ref={(element) => { dispositionRef.current[key] = element }} outlineColor={whiteLabel().fieldBorder}
                       style={{ backgroundColor: BG_COLOR }}>
                       {getSelectedDispositionDropdownItemText(field.disposition_field_id, field.field_name)}
                     </Text>
@@ -701,9 +701,9 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             <View style={{ flexDirection: 'row', marginVertical: 10 }}>
               <Text style={{
                 flexShrink: 1,
-                color: PRIMARY_COLOR,
+                color: whiteLabel().mainText,
                 fontFamily: Fonts.secondaryBold,
-                borderBottomColor: PRIMARY_COLOR,
+                borderBottomColor: whiteLabel().mainText,
                 borderBottomWidth: 2,
                 paddingBottom: 2,
               }}>Opportunity Details</Text>
@@ -721,7 +721,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                     }
                   }}>
                     <Text
-                      ref={(element) => { dispositionRef.current[key] = element }} outlineColor={PRIMARY_COLOR}
+                      ref={(element) => { dispositionRef.current[key] = element }} outlineColor={whiteLabel().fieldBorder}
                       style={{ backgroundColor: BG_COLOR }}>
                       {getSelectedOpportunityDropdownItemText(field.opportunity_field_id, field.field_name)}
                     </Text>
@@ -790,7 +790,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
           </View>
           <TouchableOpacity style={styles.addButton} onPress={() => { }}>
             <Text style={[styles.addButtonText]}>Add</Text>
-            <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={faAngleDoubleRight} />
+            <FontAwesomeIcon style={styles.addButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={faAngleDoubleRight} />
           </TouchableOpacity>
         </View>
 
@@ -838,12 +838,11 @@ const styles = EStyleSheet.create(parse({
     paddingRight: 20,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
     borderRadius: 7,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: whiteLabel().actionFullButtonBackground
   },
   addButtonText: {
-    color: '#fff',
+    color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
@@ -876,10 +875,10 @@ const styles = EStyleSheet.create(parse({
     marginBottom: 8
   },
   linkBoxText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().activeTabText,
     fontFamily: Fonts.secondaryMedium,
     textDecorationLine: 'underline',
-    textDecorationColor: PRIMARY_COLOR,
+    textDecorationColor: whiteLabel().activeTabUnderline,
     textAlign: 'center'
   },
   refreshBox: {

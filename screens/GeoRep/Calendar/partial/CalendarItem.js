@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
+import Colors, { DISABLED_COLOR, PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { getDistance } from '../../../../constants/Consts';
@@ -15,14 +15,14 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
     const dispatch = useDispatch();
     const getButtonColor = (checkin_state) =>{
         if(checkFeatureIncludeParam("open_replace_checkin")){
-            return PRIMARY_COLOR;
+            return whiteLabel().actionFullButtonBackground;
         }else{
             if(checkin_state ===  "checkin_required"){
-                return PRIMARY_COLOR;
+                return whiteLabel().actionFullButtonBackground;
             }else if(checkin_state === "checkin_completed"){
                 return "#eee";
             }else if(checkin_state === "checkin_current"){
-                return "#f00";
+                return Colors.selectedRedColor;
             }
         }
     }
@@ -62,7 +62,7 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
                 }
             }}>
               <Text style={styles.itemButtonText}> {getButtonText(item.checkin_state)} </Text>
-              <FontAwesomeIcon style={styles.itemButtonIcon} size={16} color="#fff" icon={ faCheckCircle } />            
+              <FontAwesomeIcon style={styles.itemButtonIcon} size={16} color={whiteLabel().actionFullButtonIcon} icon={ faCheckCircle } />            
             </TouchableOpacity>
             {/* <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text> */}
           </View>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         borderRadius: 4,
-        borderColor: PRIMARY_COLOR,
+        borderColor: whiteLabel().fieldBorder,
         borderWidth: 1,        
     },
     itemLeft: {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     itemTitle: {
         fontSize: 14,
         fontFamily: Fonts.secondaryMedium,
-        color: PRIMARY_COLOR
+        color: whiteLabel().mainText
     },
     itemText: {
         fontSize: 13,

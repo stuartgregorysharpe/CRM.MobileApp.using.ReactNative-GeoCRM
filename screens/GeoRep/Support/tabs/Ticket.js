@@ -4,7 +4,7 @@ import {View,StyleSheet, ScrollView, TouchableOpacity, Text, Platform, ToastAndr
 import Fonts from '../../../../constants/Fonts';
 import {  Modal, Portal, TextInput } from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
-import { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR } from '../../../../constants/Colors';
+import { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { getBaseUrl, getToken, getUserData } from '../../../../constants/Storage';
 import { getSupportIssues, postSupportEmail } from '../../../../actions/support.action';
 import uuid from 'react-native-uuid';
@@ -150,7 +150,7 @@ export const Ticket = forwardRef((props, ref) => {
               style={styles.textInput}
               label="Email"
               mode="outlined"
-              outlineColor={PRIMARY_COLOR}
+              outlineColor={whiteLabel().fieldBorder}
               activeOutlineColor={DISABLED_COLOR}
               value={email}
               onChangeText={text => setEmail(text)}
@@ -168,7 +168,7 @@ export const Ticket = forwardRef((props, ref) => {
               style={styles.textInput}
               label={issue == '' ? "Select Issue" : issue}
               mode="outlined"
-              outlineColor={PRIMARY_COLOR}
+              outlineColor={whiteLabel().fieldBorder}
               activeOutlineColor={DISABLED_COLOR}
             />
             <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
@@ -178,7 +178,7 @@ export const Ticket = forwardRef((props, ref) => {
         <TextInput
           style={styles.textArea}
           mode="outlined"
-          outlineColor={PRIMARY_COLOR}
+          outlineColor={whiteLabel().fieldBorder}
           activeOutlineColor={DISABLED_COLOR}
           placeholder="Issue details can be entered here..."
           multiline={true}
@@ -237,7 +237,7 @@ export const Ticket = forwardRef((props, ref) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        borderColor: PRIMARY_COLOR,
+        borderColor: whiteLabel().actionOutlineButtonBorder,
         borderWidth: 1,
         width: 140,
         padding: 4,
@@ -250,7 +250,7 @@ export const Ticket = forwardRef((props, ref) => {
     downloadText: {
         fontSize: 13,
         fontFamily: Fonts.primaryMedium,
-        color: PRIMARY_COLOR
+        color: whiteLabel().actionOutlineButtonText
     },
 
     pickerIcon: {

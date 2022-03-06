@@ -4,7 +4,7 @@ import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-bre
 import { useDispatch, useSelector } from 'react-redux';
 import { getPipelineFilters, getPipelines } from '../../actions/pipeline.action';
 import SvgIcon from '../../components/SvgIcon';
-import Colors, { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../../constants/Colors';
+import Colors, { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { breakPoint } from '../../constants/Breakpoint';
 import { Provider } from 'react-native-paper';
@@ -181,7 +181,7 @@ export default function SalesPipelineScreen(props) {
         <Text style={[styles.listheadingText, { flex: 1.1 }]}>Stage</Text>
         <Text style={[styles.listheadingText, { textAlign: 'right', marginRight: 10 }]}>Value</Text>
       </View>
-      <View style={{ backgroundColor: PRIMARY_COLOR, height: 2, marginVertical: 10 }}></View>
+      <View style={{ backgroundColor: whiteLabel().mainText, height: 2, marginVertical: 10 }}></View>
     </View>
   }
 
@@ -311,14 +311,14 @@ const styles = EStyleSheet.create(parse({
     marginBottom: 8
   },
   tabActiveText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().activeTabText,
     fontFamily: Fonts.secondaryBold,
-    borderBottomColor: PRIMARY_COLOR,
+    borderBottomColor: whiteLabel().activeTabUnderline,
     borderBottomWidth: 2,
     paddingBottom: 2,
   },
   listheadingText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     // marginHorizontal: 10,
     fontSize: 15,
     fontFamily: Fonts.secondaryMedium,

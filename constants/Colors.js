@@ -7,20 +7,21 @@ export const GRAY_COLOR = 'rgba(21, 90, 161, 0.31)';
 export const DISABLED_COLOR = "#9D9FA2";
 export const TICK_BOX_COLOR = "#002a55";
 
-export const whiteLabel = () => {    
+/*export const whiteLabel = () => {    
       return {
         headerBackground: '#133C8B',
         headerText: '#FFFFFF',
         inactiveIcon: '#B8B8B8',
         activeIcon: '#133C8B',
-        actionFullButtonBackground: '133C8B',
+        actionFullButtonBackground: '#133C8B',
         actionFullButtonText: '#FFFFFF',
+        actionFullButtonIcon: '#FFFFFF',
         helpText: '#9D9FA2',
         mainText: '#133C8B',
         inputText: '#23282D',
         actionOutlineButtonText: '#133C8B',
         fieldBorder: '#133C8B',
-        itemSelectedBakground: '#3D8FFB',
+        itemSelectedBackground: '#3D8FFB',
         itemSelectedIconFill: '#3D8FFB',
         itemSelectedText: '#FFFFFF',
         subText: '#9D9FA2',
@@ -34,6 +35,40 @@ export const whiteLabel = () => {
         countBoxBackground: '#133C8B',
         countBoxText: '#FFFFFF'
       };    
+};*/
+
+
+export const whiteLabel = () => {    
+  return {
+    headerBackground: '#8BD41F',
+    headerText: '#FFFFFF',
+    inactiveIcon: '#B8B8B8',
+    activeIcon: '#8BD41F',
+    clickButtonBackground: '#8BD41F',
+    clickButtonFill: '#FFFFFF',
+    actionFullButtonBackground: '#000000',
+    actionFullButtonText: '#FFFFFF',
+    actionFullButtonIcon: '#8BD41F',
+    helpText: '#9D9FA2',
+    mainText: '#8BD41F',
+    inputText: '#23282D',
+    actionOutlineButtonText: '#8BD41F',
+    actionOutlineButtonBorder: '#000000',
+    fieldBorder: '#8BD41F',
+    itemSelectedBackground: '#8BD41F',
+    itemSelectedIconFill: '#8BD41F',
+    itemSelectedText: '#FFFFFF',
+    subText: '#9D9FA2',
+    inactiveTabText: '#9D9FA2',
+    activeTabText: '#8BD41F',
+    activeTabUnderline: '#000000',
+    startDayBackground: '#9D9FA2',
+    startDayText: '#FFFFFF',
+    endDayBackground: '#DC143C',
+    endDayText: '#FFFFFF',
+    countBoxBackground: '#8BD41F',
+    countBoxText: '#FFFFFF'
+  };    
 };
 
 export default {

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from '../../../../components/SvgIcon';
 import { boxShadow, style } from '../../../../constants/Styles';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 
 export default function Card({icon, title, subtitle , image, number, onPress}) {
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontFamily: Fonts.primaryBold,
-    color: '#000'
+    color: Colors.blackColor
   },
   subTitile: {
     fontSize: 12,
@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
   number: {
     fontFamily: Fonts.secondaryMedium,
     fontSize: 14,
-    color: '#fff'
+    color: whiteLabel().countBoxText
   }
 })

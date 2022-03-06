@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, StyleSheet , TouchableOpacity , Text ,Dimensions} from 'react-native';
 import {Modal , Title} from 'react-native-paper';
-import { BG_COLOR, GRAY_COLOR, PRIMARY_COLOR } from '../../constants/Colors';
+import Colors, { BG_COLOR, GRAY_COLOR, PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import { notifyMessage } from '../../constants/Consts';
 import Fonts from '../../constants/Fonts';
 import SvgIcon from '../SvgIcon';
@@ -22,7 +22,7 @@ const StartEndDateSelectionModal = ({visible, title, startDate, endDate,  openDa
                 <View style={{flexDirection:'row'}}>
                     <Title style={{ fontFamily: Fonts.primaryBold , fontSize:18 }}>Outcome Modified Date</Title>
                     <TouchableOpacity style={styles.closeModal} onPress={() =>{onModalClose() }}>            
-                        <Text style={{fontSize:18, fontFamily:Fonts.secondaryRegular}}>Close {}</Text>
+                        <Text style={{fontSize:15, fontFamily:Fonts.secondaryRegular, color:Colors.selectedRedColor}}>Close {}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     rowContainer:{
         flexDirection:'row',        
         borderWidth:1,
-        borderColor:PRIMARY_COLOR,
+        borderColor:whiteLabel().fieldBorder,
         padding:10,
         marginTop:5,
         borderRadius:3,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     hintStyle:{
         fontFamily:Fonts.secondaryMedium,
         fontSize:14,
-        color:"#dddd",
+        color:whiteLabel().helpText,
         flex:1,
     }
   

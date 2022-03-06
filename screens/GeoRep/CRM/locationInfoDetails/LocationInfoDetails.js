@@ -8,7 +8,7 @@ import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../../components/SvgIcon';
 import {LocationInfoInput} from './LocationInfoInput';
 import Divider from '../../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS, LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
@@ -253,17 +253,17 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                   <View>                        
                     <View style={[styles.subtitleBox]}>
                       <SvgIcon style={styles.fontIcon} icon="Person_Sharp" width='14px' height='16px' />              
-                      <Text style={{color:PRIMARY_COLOR, fontFamily:Fonts.secondaryMedium , marginLeft:5, fontSize:12}} >Customer Name</Text>
+                      <Text style={{color:whiteLabel().mainText, fontFamily:Fonts.secondaryMedium , marginLeft:5, fontSize:12}} >Customer Name</Text>
                     </View>
                   </View>
                 }                  
                 {
-                  locationInfo !== undefined && locationInfo.last_visit !== "" &&
+                  /*locationInfo !== undefined && locationInfo.last_visit !== "" &&
                   <View style={styles.subtitleBox}>
                     <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
                     <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
-                  </View>
-                }                  
+                  </View>*/
+                }              
                 </View>
 
                 {
@@ -304,7 +304,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                       {
                         locationInfo.location_image === "" &&
                         <TouchableOpacity onPress={() => {
-                            selectPicker("Choose", "");
+                            selectPicker("Upload or capture an image:", "");
                             
                         }}>
                           {
@@ -367,15 +367,15 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
             props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
           }}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
-            <FontAwesomeIcon size={22} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
+            <FontAwesomeIcon size={22} color={whiteLabel().actionOutlineButtonText} icon={ faAngleDoubleRight } />
           </TouchableOpacity>
           }
-          {features && features.includes("checkin") && <TouchableOpacity style={[styles.nextButton, styles.checkInButton]} onPress={() => {          
+          {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={() => {          
             props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
             }}>
 
             <Text style={[styles.checkInButtonText]}>Check In</Text>
-            <FontAwesomeIcon size={22} color="#fff" icon={ faAngleDoubleRight } />
+            <FontAwesomeIcon size={22} color={whiteLabel().actionFullButtonIcon} icon={ faAngleDoubleRight } />
           </TouchableOpacity>
           }
       </View>
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',    
   },
   subtitle: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     fontSize: 12,
     textAlign: 'left',
     fontFamily: Fonts.secondaryMedium,
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   },
   walmartImage: {
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
+    borderColor: whiteLabel().fieldBorder,
     borderRadius: 7,
     width:Dimensions.get("screen").width / 4.5,
     height:Dimensions.get("screen").width / 4.5
@@ -476,26 +476,35 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
+    borderColor: whiteLabel().actionOutlineButtonBorder,
     borderRadius: 7,
   },
   nextButtonText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().actionOutlineButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
+  checkInButton: {
+    width: '47%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderWidth: 1,
+    borderRadius: 7,
+    backgroundColor: whiteLabel().actionFullButtonBackground,
+  },
   checkInButtonText: {
-    color: '#fff',
+    color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
   fontIcon: {
     marginRight: 4
   },
-  checkInButton: {
-    backgroundColor: PRIMARY_COLOR,
-  },
-  
+
   transitionView: {
     position: 'absolute',
     bottom: 0,

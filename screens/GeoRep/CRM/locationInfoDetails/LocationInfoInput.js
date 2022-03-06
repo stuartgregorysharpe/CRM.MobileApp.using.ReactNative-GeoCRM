@@ -7,7 +7,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { breakPoint } from '../../../../constants/Breakpoint';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
@@ -315,7 +315,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={props.showLoopSlider}>
-            <Image style={styles.refreshImage} source={Images.loopButton} />
+            <SvgIcon icon="Re_loop" width='60px' height='60px' />
           </TouchableOpacity>
         </View>
       }
@@ -342,7 +342,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
                     style={styles.textInput}
                     label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                     mode="outlined"
-                    outlineColor={PRIMARY_COLOR}
+                    outlineColor={whiteLabel().fieldBorder}
                     activeOutlineColor={DISABLED_COLOR}
                     value={dispositionValue[key]}
                     disabled = {getDisableStatus(field.field_type, field.rule_editable)}
@@ -513,7 +513,7 @@ const styles = EStyleSheet.create(parse({
   confirmModalTitle: {
     fontSize: 18,
     textAlign: 'center',
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     marginBottom: 8
   },
   confirmModalDesc: {
@@ -535,7 +535,7 @@ const styles = EStyleSheet.create(parse({
     fontSize: 16
   },
   confirmModalDiscardButton: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     fontSize: 16
   },
 }));

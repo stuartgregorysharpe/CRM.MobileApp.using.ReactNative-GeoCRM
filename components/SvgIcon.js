@@ -1,5 +1,13 @@
 import React, { Fragment } from 'react';
 import { SvgXml } from 'react-native-svg';
+import { whiteLabel } from '../constants/Colors';
+
+const actionIconBackground = whiteLabel().clickButtonBackground;
+const actionIconFill = whiteLabel().clickButtonFill;
+const actionButtonIconFill = whiteLabel().actionFullButtonIcon;
+const navIconActive = whiteLabel().activeIcon;
+const navIconInActive = whiteLabel().inactiveIcon;
+const selectedIcon = whiteLabel().itemSelectedIconFill;
 
 const Round_Btn_Default_Dark = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
@@ -32,10 +40,10 @@ const Round_Btn_Default_Dark = `
     </defs>
     <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark" transform="translate(18.084 15.141)">
       <g transform="matrix(1, 0, 0, 1, -18.08, -15.14)" filter="url(#teal_circle)">
-        <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="#133c8b"/>
+        <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill=${actionIconBackground}/>
       </g>
       <g id="ic_add_white" transform="translate(62.916 62.859)">
-        <path id="ic_add_white-2" data-name="ic_add_white" d="M3465.679,1003.817h-17.862v17.863h-5.954v-17.863H3424v-5.954h17.862V980h5.954v17.863h17.862Z" transform="translate(-3424 -980)" fill="#fff"/>
+        <path id="ic_add_white-2" data-name="ic_add_white" d="M3465.679,1003.817h-17.862v17.863h-5.954v-17.863H3424v-5.954h17.862V980h5.954v17.863h17.862Z" transform="translate(-3424 -980)" fill=${actionIconFill}/>
       </g>
       <g id="Group_332" data-name="Group 332" transform="translate(0.001)" opacity="0.12">
         <path id="gradient_border_2" data-name="gradient border 2" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
@@ -78,7 +86,7 @@ const DISPOSITION_POST = `
     <g id="Group_4806" data-name="Group 4806" transform="translate(899.084 2063)">
       <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark">
         <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
-          <path id="teal_circle-2" data-name="teal circle" d="M57.732,0A57.732,57.732,0,1,1,0,57.732,57.732,57.732,0,0,1,57.732,0Z" transform="translate(18 15)" fill="#133c8b"/>
+          <path id="teal_circle-2" data-name="teal circle" d="M57.732,0A57.732,57.732,0,1,1,0,57.732,57.732,57.732,0,0,1,57.732,0Z" transform="translate(18 15)" fill=${actionIconBackground}/>
         </g>
         <g id="Group_332" data-name="Group 332" transform="translate(0.001)" opacity="0.12">
           <path id="gradient_border_2" data-name="gradient border 2" d="M3460.732,960.031a56.7,56.7,0,1,1-56.7,56.7,56.7,56.7,0,0,1,56.7-56.7m0-1.031a57.732,57.732,0,1,0,57.732,57.732A57.732,57.732,0,0,0,3460.732,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
@@ -88,7 +96,7 @@ const DISPOSITION_POST = `
     </g>
     <g id="save_alt_black_24dp" transform="translate(926.659 2090.575)">
       <path id="Path_4396" data-name="Path 4396" d="M0,0H60.314V60.314H0Z" fill="none"/>
-      <path id="Path_4397" data-name="Path 4397" d="M43.209,25.618V43.209H8.026V25.618H3V43.209a5.041,5.041,0,0,0,5.026,5.026H43.209a5.041,5.041,0,0,0,5.026-5.026V25.618ZM28.131,27.3l6.509-6.484,3.543,3.543L25.618,36.927,13.052,24.361,16.6,20.818,23.1,27.3V3h5.026Z" transform="translate(4.539 4.539)" fill="#fff"/>
+      <path id="Path_4397" data-name="Path 4397" d="M43.209,25.618V43.209H8.026V25.618H3V43.209a5.041,5.041,0,0,0,5.026,5.026H43.209a5.041,5.041,0,0,0,5.026-5.026V25.618ZM28.131,27.3l6.509-6.484,3.543,3.543L25.618,36.927,13.052,24.361,16.6,20.818,23.1,27.3V3h5.026Z" transform="translate(4.539 4.539)" fill=${actionIconFill}/>
     </g>
   </g>
   </svg>
@@ -97,18 +105,50 @@ const DISPOSITION_POST = `
 const Drop_Down = `
   <svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
     <g id="Drop_Down" data-name="Drop Down" transform="translate(0.08 0.479)">
-      <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.08 -0.479)" fill="#fff" stroke="#133c8b" stroke-width="4">
+      <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.08 -0.479)" fill=${actionIconFill} stroke=${actionIconBackground} stroke-width="4">
         <circle cx="33" cy="33" r="33" stroke="none"/>
         <circle cx="33" cy="33" r="31" fill="none"/>
       </g>
-      <path id="chevron-back-sharp" d="M9.981,0,0,9.981l9.981,9.981" transform="translate(22.233 38.407) rotate(-90)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+      <path id="chevron-back-sharp" d="M9.981,0,0,9.981l9.981,9.981" transform="translate(22.233 38.407) rotate(-90)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
     </g>
   </svg>
 `;
 
+const Re_loop = `
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 192 191">
+<defs>
+  <filter id="Path_4379" x="0" y="0" width="192" height="191" filterUnits="userSpaceOnUse">
+    <feOffset dy="5" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="7.5" result="blur"/>
+    <feFlood flood-opacity="0.078"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+</defs>
+<g id="Re-Loop_Button" data-name="Re-Loop Button" transform="translate(-967.5 -1072)">
+  <g transform="matrix(1, 0, 0, 1, 967.5, 1072)" filter="url(#Path_4379)">
+    <g id="Path_4379-2" data-name="Path 4379" transform="translate(22.5 17.5)" fill="none">
+      <path d="M7,0H140a7,7,0,0,1,7,7V139a7,7,0,0,1-7,7H7a7,7,0,0,1-7-7V7A7,7,0,0,1,7,0Z" stroke="none"/>
+      <path d="M 7 5 C 5.897201538085938 5 5 5.897201538085938 5 7 L 5 139 C 5 140.1027984619141 5.897201538085938 141 7 141 L 140 141 C 141.1027984619141 141 142 140.1027984619141 142 139 L 142 7 C 142 5.897201538085938 141.1027984619141 5 140 5 L 7 5 M 7 0 L 140 0 C 143.8659973144531 0 147 3.134002685546875 147 7 L 147 139 C 147 142.8659973144531 143.8659973144531 146 140 146 L 7 146 C 3.134002685546875 146 0 142.8659973144531 0 139 L 0 7 C 0 3.134002685546875 3.134002685546875 0 7 0 Z" stroke="none" fill=${actionIconBackground}/>
+    </g>
+  </g>
+  <g id="restart_alt_black_24dp" transform="translate(1010.397 1107.158)">
+    <g id="Group_4676" data-name="Group 4676">
+      <path id="Path_4377" data-name="Path 4377" d="M0,0H106.205V106.2H0Z" fill="none"/>
+    </g>
+    <g id="Group_4678" data-name="Group 4678" transform="translate(17.701 11.063)">
+      <g id="Group_4677" data-name="Group 4677">
+        <path id="Path_4378" data-name="Path 4378" d="M12.85,48.965A26.459,26.459,0,0,1,20.639,30.2l-6.284-6.284A35.4,35.4,0,0,0,34.976,84.057V75.118A26.582,26.582,0,0,1,12.85,48.965Zm61.953,0a35.392,35.392,0,0,0-35.4-35.4c-.266,0-.531.044-.8.044l4.823-4.823L37.189,2.5,21.7,17.988,37.189,33.476l6.24-6.24-4.779-4.779c.266,0,.531-.044.752-.044a26.537,26.537,0,0,1,4.425,52.7v8.939A35.35,35.35,0,0,0,74.8,48.965Z" transform="translate(-4 -2.5)" fill=${actionIconBackground}/>
+      </g>
+    </g>
+  </g>
+</g>
+</svg>
+`;
+
 const Person_Sharp = `
   <svg xmlns="http://www.w3.org/2000/svg" width="29.191" height="31.437" viewBox="0 0 29.191 31.437">
-    <path id="person-sharp" d="M17.971,17.968a7.859,7.859,0,1,0-7.859-7.859A7.859,7.859,0,0,0,17.971,17.968Zm0,2.245c-4.871,0-14.6,3.009-14.6,8.982v4.491H32.566V29.2C32.566,23.223,22.842,20.214,17.971,20.214Z" transform="translate(-3.375 -2.25)" fill="#133c8b"/>
+    <path id="person-sharp" d="M17.971,17.968a7.859,7.859,0,1,0-7.859-7.859A7.859,7.859,0,0,0,17.971,17.968Zm0,2.245c-4.871,0-14.6,3.009-14.6,8.982v4.491H32.566V29.2C32.566,23.223,22.842,20.214,17.971,20.214Z" transform="translate(-3.375 -2.25)" fill=${actionIconBackground}/>
   </svg>
 `;
 
@@ -144,10 +184,25 @@ const Exclamation_Triangle_Fill = `
 </svg>
 `;
 
-const File_Earmark_Text_Fill = `
+const Form = `
 <svg id="file-earmark-text-fill" xmlns="http://www.w3.org/2000/svg" width="44.442" height="51.849" viewBox="0 0 44.442 51.849">
   <g transform="translate(0.000000,52.000000) scale(0.100000,-0.100000)"
-    fill="#133c8b" stroke="none">
+    fill=${navIconActive} stroke="none">
+    <path d="M25 495 c-25 -24 -25 -25 -25 -233 0 -277 -17 -256 212 -260 165 -3
+      175 -2 201 18 l27 21 0 163 0 163 -79 76 -79 77 -116 0 c-111 0 -118 -1 -141
+      -25z m375 -157 c0 -12 -98 -10 -121 2 -16 9 -19 22 -19 78 l0 66 70 -69 c39
+      -38 70 -73 70 -77z m-32 -95 c-3 -16 -19 -18 -142 -21 -78 -1 -144 2 -149 7
+      -24 24 9 31 149 31 133 0 145 -1 142 -17z m0 -75 c3 -17 -9 -18 -142 -18 -86
+      0 -147 4 -151 10 -16 25 11 30 148 28 126 -3 142 -5 145 -20z m-110 -75 c-3
+      -15 -16 -18 -82 -21 -75 -3 -113 8 -100 29 3 5 46 9 95 9 81 0 90 -2 87 -17z"/>
+    </g>
+  </svg>
+`;
+
+const Form_inactive = `
+<svg id="file-earmark-text-fill" xmlns="http://www.w3.org/2000/svg" width="44.442" height="51.849" viewBox="0 0 44.442 51.849">
+  <g transform="translate(0.000000,52.000000) scale(0.100000,-0.100000)"
+    fill=${navIconInActive} stroke="none">
     <path d="M25 495 c-25 -24 -25 -25 -25 -233 0 -277 -17 -256 212 -260 165 -3
       175 -2 201 18 l27 21 0 163 0 163 -79 76 -79 77 -116 0 c-111 0 -118 -1 -141
       -25z m375 -157 c0 -12 -98 -10 -121 2 -16 9 -19 22 -19 78 l0 66 70 -69 c39
@@ -161,7 +216,13 @@ const File_Earmark_Text_Fill = `
 
 const Sale = `
   <svg xmlns="http://www.w3.org/2000/svg" width="55.072" height="55.072" viewBox="0 0 55.072 55.072">
-    <path id="sale" d="M48.188,27.536l6.884,6.884-8.6,3.442,1.721,10.326L37.862,46.467l-3.442,8.6-6.884-6.884-6.884,6.884-3.442-8.6L6.884,48.188,8.6,37.862,0,34.42l6.884-6.884L0,20.652,8.6,17.21,6.884,6.884,17.21,8.6,20.652,0l6.884,6.884L34.42,0l3.442,8.6L48.188,6.884,46.467,17.21l8.6,3.442ZM18.931,13.768a4.451,4.451,0,0,0-3.658,2.016,7.893,7.893,0,0,0-1.505,4.868,7.919,7.919,0,0,0,1.505,4.868,4.326,4.326,0,0,0,7.315,0,7.919,7.919,0,0,0,1.505-4.868,7.893,7.893,0,0,0-1.505-4.868,4.451,4.451,0,0,0-3.658-2.016Zm17.21,0H34.42a1.01,1.01,0,0,0-.4.081q-.188.081-.3.135a1.1,1.1,0,0,0-.3.3q-.188.242-.242.323t-.242.43q-.188.349-.242.457L17.479,39.583a.889.889,0,0,0,.161,1.183,1.766,1.766,0,0,0,1.291.538h1.721a1.808,1.808,0,0,0,.35-.028.856.856,0,0,0,.3-.135,1.632,1.632,0,0,0,.242-.188,1.831,1.831,0,0,0,.216-.3q.135-.214.188-.323t.216-.376q.162-.268.216-.376l15.22-24.094a.889.889,0,0,0-.161-1.183,1.766,1.766,0,0,0-1.291-.538Zm0,13.768a4.451,4.451,0,0,0-3.658,2.016,7.893,7.893,0,0,0-1.505,4.868,7.919,7.919,0,0,0,1.505,4.868,4.326,4.326,0,0,0,7.315,0A7.919,7.919,0,0,0,41.3,34.42,7.893,7.893,0,0,0,39.8,29.552,4.451,4.451,0,0,0,36.141,27.536Zm0,10.326q-.7,0-1.21-1.022a5.42,5.42,0,0,1-.511-2.448,5.246,5.246,0,0,1,.511-2.42q.511-.994,1.21-.994t1.21.994a5.246,5.246,0,0,1,.511,2.42,5.42,5.42,0,0,1-.511,2.448Q36.84,37.862,36.141,37.862ZM18.931,24.094q-.7,0-1.21-1.022a5.42,5.42,0,0,1-.511-2.448,5.246,5.246,0,0,1,.511-2.42q.511-.994,1.21-.994t1.21.994a5.246,5.246,0,0,1,.511,2.42,5.42,5.42,0,0,1-.511,2.448Q19.63,24.094,18.931,24.094Z" fill="#133c8b"/>
+    <path id="sale" d="M48.188,27.536l6.884,6.884-8.6,3.442,1.721,10.326L37.862,46.467l-3.442,8.6-6.884-6.884-6.884,6.884-3.442-8.6L6.884,48.188,8.6,37.862,0,34.42l6.884-6.884L0,20.652,8.6,17.21,6.884,6.884,17.21,8.6,20.652,0l6.884,6.884L34.42,0l3.442,8.6L48.188,6.884,46.467,17.21l8.6,3.442ZM18.931,13.768a4.451,4.451,0,0,0-3.658,2.016,7.893,7.893,0,0,0-1.505,4.868,7.919,7.919,0,0,0,1.505,4.868,4.326,4.326,0,0,0,7.315,0,7.919,7.919,0,0,0,1.505-4.868,7.893,7.893,0,0,0-1.505-4.868,4.451,4.451,0,0,0-3.658-2.016Zm17.21,0H34.42a1.01,1.01,0,0,0-.4.081q-.188.081-.3.135a1.1,1.1,0,0,0-.3.3q-.188.242-.242.323t-.242.43q-.188.349-.242.457L17.479,39.583a.889.889,0,0,0,.161,1.183,1.766,1.766,0,0,0,1.291.538h1.721a1.808,1.808,0,0,0,.35-.028.856.856,0,0,0,.3-.135,1.632,1.632,0,0,0,.242-.188,1.831,1.831,0,0,0,.216-.3q.135-.214.188-.323t.216-.376q.162-.268.216-.376l15.22-24.094a.889.889,0,0,0-.161-1.183,1.766,1.766,0,0,0-1.291-.538Zm0,13.768a4.451,4.451,0,0,0-3.658,2.016,7.893,7.893,0,0,0-1.505,4.868,7.919,7.919,0,0,0,1.505,4.868,4.326,4.326,0,0,0,7.315,0A7.919,7.919,0,0,0,41.3,34.42,7.893,7.893,0,0,0,39.8,29.552,4.451,4.451,0,0,0,36.141,27.536Zm0,10.326q-.7,0-1.21-1.022a5.42,5.42,0,0,1-.511-2.448,5.246,5.246,0,0,1,.511-2.42q.511-.994,1.21-.994t1.21.994a5.246,5.246,0,0,1,.511,2.42,5.42,5.42,0,0,1-.511,2.448Q36.84,37.862,36.141,37.862ZM18.931,24.094q-.7,0-1.21-1.022a5.42,5.42,0,0,1-.511-2.448,5.246,5.246,0,0,1,.511-2.42q.511-.994,1.21-.994t1.21.994a5.246,5.246,0,0,1,.511,2.42,5.42,5.42,0,0,1-.511,2.448Q19.63,24.094,18.931,24.094Z" fill=${navIconActive}/>
+  </svg>
+`;
+
+const Sale_inactive = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="55.072" height="55.072" viewBox="0 0 55.072 55.072">
+    <path id="sale" d="M48.188,27.536l6.884,6.884-8.6,3.442,1.721,10.326L37.862,46.467l-3.442,8.6-6.884-6.884-6.884,6.884-3.442-8.6L6.884,48.188,8.6,37.862,0,34.42l6.884-6.884L0,20.652,8.6,17.21,6.884,6.884,17.21,8.6,20.652,0l6.884,6.884L34.42,0l3.442,8.6L48.188,6.884,46.467,17.21l8.6,3.442ZM18.931,13.768a4.451,4.451,0,0,0-3.658,2.016,7.893,7.893,0,0,0-1.505,4.868,7.919,7.919,0,0,0,1.505,4.868,4.326,4.326,0,0,0,7.315,0,7.919,7.919,0,0,0,1.505-4.868,7.893,7.893,0,0,0-1.505-4.868,4.451,4.451,0,0,0-3.658-2.016Zm17.21,0H34.42a1.01,1.01,0,0,0-.4.081q-.188.081-.3.135a1.1,1.1,0,0,0-.3.3q-.188.242-.242.323t-.242.43q-.188.349-.242.457L17.479,39.583a.889.889,0,0,0,.161,1.183,1.766,1.766,0,0,0,1.291.538h1.721a1.808,1.808,0,0,0,.35-.028.856.856,0,0,0,.3-.135,1.632,1.632,0,0,0,.242-.188,1.831,1.831,0,0,0,.216-.3q.135-.214.188-.323t.216-.376q.162-.268.216-.376l15.22-24.094a.889.889,0,0,0-.161-1.183,1.766,1.766,0,0,0-1.291-.538Zm0,13.768a4.451,4.451,0,0,0-3.658,2.016,7.893,7.893,0,0,0-1.505,4.868,7.919,7.919,0,0,0,1.505,4.868,4.326,4.326,0,0,0,7.315,0A7.919,7.919,0,0,0,41.3,34.42,7.893,7.893,0,0,0,39.8,29.552,4.451,4.451,0,0,0,36.141,27.536Zm0,10.326q-.7,0-1.21-1.022a5.42,5.42,0,0,1-.511-2.448,5.246,5.246,0,0,1,.511-2.42q.511-.994,1.21-.994t1.21.994a5.246,5.246,0,0,1,.511,2.42,5.42,5.42,0,0,1-.511,2.448Q36.84,37.862,36.141,37.862ZM18.931,24.094q-.7,0-1.21-1.022a5.42,5.42,0,0,1-.511-2.448,5.246,5.246,0,0,1,.511-2.42q.511-.994,1.21-.994t1.21.994a5.246,5.246,0,0,1,.511,2.42,5.42,5.42,0,0,1-.511,2.448Q19.63,24.094,18.931,24.094Z" fill=${navIconActive}/>
   </svg>
 `;
 
@@ -176,10 +237,10 @@ const Geo = `
 const Filter = `
   <svg xmlns="http://www.w3.org/2000/svg" width="97" height="98" viewBox="0 0 97 98">
     <g id="Filter" transform="translate(-0.476 -0.227)">
-      <rect id="Rectangle_1646" data-name="Rectangle 1646" width="97" height="98" rx="7" transform="translate(0.476 0.227)" fill="#133c8b"/>
+      <rect id="Rectangle_1646" data-name="Rectangle 1646" width="97" height="98" rx="7" transform="translate(0.476 0.227)" fill=${actionIconBackground}/>
       <g id="options" transform="translate(24.074 28.749)">
-        <path id="Path_570" data-name="Path 570" d="M14.64,4.5a10.145,10.145,0,0,1,9.82,7.6H54.572v5.07H24.461A10.141,10.141,0,1,1,14.64,4.5Zm0,15.21a5.07,5.07,0,1,0-5.07-5.07A5.07,5.07,0,0,0,14.64,19.71Z" transform="translate(-4.5 -4.5)" fill="#fff"/>
-        <path id="Path_571" data-name="Path 571" d="M44.432,38.27a10.145,10.145,0,0,1-9.82-7.6H4.5V25.6H34.612A10.141,10.141,0,1,1,44.432,38.27Zm0-5.07a5.07,5.07,0,1,0-5.07-5.07A5.07,5.07,0,0,0,44.432,33.2Z" transform="translate(-4.5 4.825)" fill="#fff"/>
+        <path id="Path_570" data-name="Path 570" d="M14.64,4.5a10.145,10.145,0,0,1,9.82,7.6H54.572v5.07H24.461A10.141,10.141,0,1,1,14.64,4.5Zm0,15.21a5.07,5.07,0,1,0-5.07-5.07A5.07,5.07,0,0,0,14.64,19.71Z" transform="translate(-4.5 -4.5)" fill=${actionIconFill}/>
+        <path id="Path_571" data-name="Path 571" d="M44.432,38.27a10.145,10.145,0,0,1-9.82-7.6H4.5V25.6H34.612A10.141,10.141,0,1,1,44.432,38.27Zm0-5.07a5.07,5.07,0,1,0-5.07-5.07A5.07,5.07,0,0,0,44.432,33.2Z" transform="translate(-4.5 4.825)" fill=${actionIconFill}/>
       </g>
     </g>
   </svg>
@@ -198,7 +259,7 @@ const Filter_GRAY = `
 const Insert_Invitation = `
   <svg id="insert_invitation_black_24dp" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
     <path id="Path_3979" data-name="Path 3979" d="M0,0H30V30H0Z" fill="none"/>
-    <path id="Path_3980" data-name="Path 3980" d="M23,3.5H21.75V1h-2.5V3.5h-10V1H6.75V3.5H5.5A2.489,2.489,0,0,0,3.013,6L3,23.5A2.5,2.5,0,0,0,5.5,26H23a2.507,2.507,0,0,0,2.5-2.5V6A2.507,2.507,0,0,0,23,3.5Zm0,20H5.5V11H23Zm0-15H5.5V6H23Zm-2.5,6.25H14.25V21H20.5Z" transform="translate(0.75 0.25)" fill="#fff"/>
+    <path id="Path_3980" data-name="Path 3980" d="M23,3.5H21.75V1h-2.5V3.5h-10V1H6.75V3.5H5.5A2.489,2.489,0,0,0,3.013,6L3,23.5A2.5,2.5,0,0,0,5.5,26H23a2.507,2.507,0,0,0,2.5-2.5V6A2.507,2.507,0,0,0,23,3.5Zm0,20H5.5V11H23Zm0-15H5.5V6H23Zm-2.5,6.25H14.25V21H20.5Z" transform="translate(0.75 0.25)" fill="#000"/>
   </svg>
 `;
 
@@ -222,7 +283,7 @@ const Home_Black_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="home_black_24dp_1_" data-name="home_black_24dp (1)" transform="translate(-6.946 -6.947)">
       <path id="Path_3985" data-name="Path 3985" d="M0,0H69.466V69.466H0Z" transform="translate(6.946 6.946)" fill="none"/>
-      <path id="Path_3986" data-name="Path 3986" d="M29.786,62.046V41.206H43.679v20.84H61.046V34.259h10.42L36.733,3,2,34.259H12.42V62.046Z" transform="translate(4.947 7.42)" fill="#b8b8b8"/>
+      <path id="Path_3986" data-name="Path 3986" d="M29.786,62.046V41.206H43.679v20.84H61.046V34.259h10.42L36.733,3,2,34.259H12.42V62.046Z" transform="translate(4.947 7.42)" fill=${navIconInActive}/>
     </g>
   </svg>
 `;
@@ -231,7 +292,7 @@ const Home_Black = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="home_black_24dp_1_" data-name="home_black_24dp (1)" transform="translate(-6.946 -6.947)">
       <path id="Path_3985" data-name="Path 3985" d="M0,0H69.466V69.466H0Z" transform="translate(6.946 6.946)" fill="none"/>
-      <path id="Path_3986" data-name="Path 3986" d="M29.786,62.046V41.206H43.679v20.84H61.046V34.259h10.42L36.733,3,2,34.259H12.42V62.046Z" transform="translate(4.947 7.42)" fill="#133c8b"/>
+      <path id="Path_3986" data-name="Path 3986" d="M29.786,62.046V41.206H43.679v20.84H61.046V34.259h10.42L36.733,3,2,34.259H12.42V62.046Z" transform="translate(4.947 7.42)" fill=${navIconActive}/>
     </g>
   </svg>
 `;
@@ -240,9 +301,9 @@ const Android_More_Horizontal_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4802" data-name="Group 4802" transform="translate(1113 -2665)">
       <g id="Dots" transform="translate(-11 6)">
-        <circle id="Ellipse_3" data-name="Ellipse 3" cx="8.5" cy="8.5" r="8.5" transform="translate(-1101 2685)" fill="#b8b8b8"/>
-        <circle id="Ellipse_4" data-name="Ellipse 4" cx="8.5" cy="8.5" r="8.5" transform="translate(-1076 2685)" fill="#b8b8b8"/>
-        <circle id="Ellipse_5" data-name="Ellipse 5" cx="8.5" cy="8.5" r="8.5" transform="translate(-1051 2685)" fill="#b8b8b8"/>
+        <circle id="Ellipse_3" data-name="Ellipse 3" cx="8.5" cy="8.5" r="8.5" transform="translate(-1101 2685)" fill=${navIconInActive}/>
+        <circle id="Ellipse_4" data-name="Ellipse 4" cx="8.5" cy="8.5" r="8.5" transform="translate(-1076 2685)" fill=${navIconInActive}/>
+        <circle id="Ellipse_5" data-name="Ellipse 5" cx="8.5" cy="8.5" r="8.5" transform="translate(-1051 2685)" fill=${navIconInActive}/>
       </g>
       <path id="Path_4388" data-name="Path 4388" d="M0,0H69.466V69.466H0Z" transform="translate(-1113 2665)" fill="none"/>
     </g>
@@ -253,9 +314,9 @@ const Android_More_Horizontal = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4802" data-name="Group 4802" transform="translate(1113 -2665)">
       <g id="Dots" transform="translate(-11 6)">
-        <circle id="Ellipse_3" data-name="Ellipse 3" cx="8.5" cy="8.5" r="8.5" transform="translate(-1101 2685)" fill="#133c8b"/>
-        <circle id="Ellipse_4" data-name="Ellipse 4" cx="8.5" cy="8.5" r="8.5" transform="translate(-1076 2685)" fill="#133c8b"/>
-        <circle id="Ellipse_5" data-name="Ellipse 5" cx="8.5" cy="8.5" r="8.5" transform="translate(-1051 2685)" fill="#133c8b"/>
+        <circle id="Ellipse_3" data-name="Ellipse 3" cx="8.5" cy="8.5" r="8.5" transform="translate(-1101 2685)" fill=${navIconActive}/>
+        <circle id="Ellipse_4" data-name="Ellipse 4" cx="8.5" cy="8.5" r="8.5" transform="translate(-1076 2685)" fill=${navIconActive}/>
+        <circle id="Ellipse_5" data-name="Ellipse 5" cx="8.5" cy="8.5" r="8.5" transform="translate(-1051 2685)" fill=${navIconActive}/>
       </g>
       <path id="Path_4388" data-name="Path 4388" d="M0,0H69.466V69.466H0Z" transform="translate(-1113 2665)" fill="none"/>
     </g>
@@ -266,7 +327,7 @@ const Calendar_Event_Fill_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4800" data-name="Group 4800" transform="translate(1526 -2662)">
       <g id="calendar-event-fill" transform="translate(-1519.914 2668.086)">
-        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill="#b8b8b8"/>
+        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill=${navIconInActive}/>
       </g>
       <path id="Path_4386" data-name="Path 4386" d="M0,0H69.466V69.466H0Z" transform="translate(-1526 2662)" fill="none"/>
     </g>
@@ -277,7 +338,7 @@ const Calendar_Event_Fill = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4800" data-name="Group 4800" transform="translate(1526 -2662)">
       <g id="calendar-event-fill" transform="translate(-1519.914 2668.086)">
-        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill="#133c8b"/>
+        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill=${navIconActive}/>
       </g>
       <path id="Path_4386" data-name="Path 4386" d="M0,0H69.466V69.466H0Z" transform="translate(-1526 2662)" fill="none"/>
     </g>
@@ -288,7 +349,7 @@ const Pipeline_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4801" data-name="Group 4801" transform="translate(1299 -2661)">
       <g id="filter_list_black_24dp_1_" data-name="filter_list_black_24dp (1)" transform="translate(-1307.893 2652.214)">
-        <path id="Path_4220" data-name="Path 4220" d="M28.417,49.572H42.941V42.31H28.417ZM3,6v7.262H68.357V6ZM13.893,31.417H57.464V24.155H13.893Z" transform="translate(7.893 15.786)" fill="#9d9fa2"/>
+        <path id="Path_4220" data-name="Path 4220" d="M28.417,49.572H42.941V42.31H28.417ZM3,6v7.262H68.357V6ZM13.893,31.417H57.464V24.155H13.893Z" transform="translate(7.893 15.786)" fill=${navIconInActive}/>
       </g>
       <path id="Path_4387" data-name="Path 4387" d="M0,0H69.466V69.466H0Z" transform="translate(-1299 2661)" fill="none"/>
     </g>
@@ -299,7 +360,7 @@ const Pipeline = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4801" data-name="Group 4801" transform="translate(1299 -2661)">
       <g id="filter_list_black_24dp_1_" data-name="filter_list_black_24dp (1)" transform="translate(-1307.893 2652.214)">
-        <path id="Path_4220" data-name="Path 4220" d="M28.417,49.572H42.941V42.31H28.417ZM3,6v7.262H68.357V6ZM13.893,31.417H57.464V24.155H13.893Z" transform="translate(7.893 15.786)" fill="#133c8b"/>
+        <path id="Path_4220" data-name="Path 4220" d="M28.417,49.572H42.941V42.31H28.417ZM3,6v7.262H68.357V6ZM13.893,31.417H57.464V24.155H13.893Z" transform="translate(7.893 15.786)" fill=${navIconActive}/>
       </g>
       <path id="Path_4387" data-name="Path 4387" d="M0,0H69.466V69.466H0Z" transform="translate(-1299 2661)" fill="none"/>
     </g>
@@ -310,7 +371,7 @@ const Travel_Explore_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="71" height="71" viewBox="0 0 71 71">
     <g id="travel_explore_black_24dp" transform="translate(0 0.167)">
       <rect id="Rectangle_2834" data-name="Rectangle 2834" width="71" height="71" transform="translate(0 -0.167)" fill="none"/>
-      <path id="Path_4401" data-name="Path 4401" d="M52.772,45.729a14.13,14.13,0,0,0,2.054-7.044A13.207,13.207,0,1,0,41.62,51.892a14.13,14.13,0,0,0,7.044-2.054l9.391,9.391,4.109-4.109Zm-11.152.293a7.337,7.337,0,1,1,7.337-7.337A7.266,7.266,0,0,1,41.62,46.022Zm-10.272,8.8V60.7A29.348,29.348,0,1,1,60.109,25.478H54.034A23.478,23.478,0,0,0,40.152,9.6v1.2a5.887,5.887,0,0,1-5.87,5.87h-5.87v5.87a2.943,2.943,0,0,1-2.935,2.935h-5.87v5.87h5.87v8.8H22.544L8.486,26.095a23.824,23.824,0,0,0-.616,5.253A23.51,23.51,0,0,0,31.348,54.826Z" transform="translate(3.503 3.934)" fill="#b8b8b8"/>
+      <path id="Path_4401" data-name="Path 4401" d="M52.772,45.729a14.13,14.13,0,0,0,2.054-7.044A13.207,13.207,0,1,0,41.62,51.892a14.13,14.13,0,0,0,7.044-2.054l9.391,9.391,4.109-4.109Zm-11.152.293a7.337,7.337,0,1,1,7.337-7.337A7.266,7.266,0,0,1,41.62,46.022Zm-10.272,8.8V60.7A29.348,29.348,0,1,1,60.109,25.478H54.034A23.478,23.478,0,0,0,40.152,9.6v1.2a5.887,5.887,0,0,1-5.87,5.87h-5.87v5.87a2.943,2.943,0,0,1-2.935,2.935h-5.87v5.87h5.87v8.8H22.544L8.486,26.095a23.824,23.824,0,0,0-.616,5.253A23.51,23.51,0,0,0,31.348,54.826Z" transform="translate(3.503 3.934)" fill=${navIconInActive}/>
     </g>
   </svg>
 `;
@@ -319,7 +380,7 @@ const Travel_Explore = `
   <svg xmlns="http://www.w3.org/2000/svg" width="71" height="71" viewBox="0 0 71 71">
     <g id="travel_explore_black_24dp" transform="translate(0 0.167)">
       <rect id="Rectangle_2834" data-name="Rectangle 2834" width="71" height="71" transform="translate(0 -0.167)" fill="none"/>
-      <path id="Path_4401" data-name="Path 4401" d="M52.772,45.729a14.13,14.13,0,0,0,2.054-7.044A13.207,13.207,0,1,0,41.62,51.892a14.13,14.13,0,0,0,7.044-2.054l9.391,9.391,4.109-4.109Zm-11.152.293a7.337,7.337,0,1,1,7.337-7.337A7.266,7.266,0,0,1,41.62,46.022Zm-10.272,8.8V60.7A29.348,29.348,0,1,1,60.109,25.478H54.034A23.478,23.478,0,0,0,40.152,9.6v1.2a5.887,5.887,0,0,1-5.87,5.87h-5.87v5.87a2.943,2.943,0,0,1-2.935,2.935h-5.87v5.87h5.87v8.8H22.544L8.486,26.095a23.824,23.824,0,0,0-.616,5.253A23.51,23.51,0,0,0,31.348,54.826Z" transform="translate(3.503 3.934)" fill="#133c8b"/>
+      <path id="Path_4401" data-name="Path 4401" d="M52.772,45.729a14.13,14.13,0,0,0,2.054-7.044A13.207,13.207,0,1,0,41.62,51.892a14.13,14.13,0,0,0,7.044-2.054l9.391,9.391,4.109-4.109Zm-11.152.293a7.337,7.337,0,1,1,7.337-7.337A7.266,7.266,0,0,1,41.62,46.022Zm-10.272,8.8V60.7A29.348,29.348,0,1,1,60.109,25.478H54.034A23.478,23.478,0,0,0,40.152,9.6v1.2a5.887,5.887,0,0,1-5.87,5.87h-5.87v5.87a2.943,2.943,0,0,1-2.935,2.935h-5.87v5.87h5.87v8.8H22.544L8.486,26.095a23.824,23.824,0,0,0-.616,5.253A23.51,23.51,0,0,0,31.348,54.826Z" transform="translate(3.503 3.934)" fill=${navIconActive}/>
     </g>
   </svg>
 `;
@@ -327,14 +388,14 @@ const Travel_Explore = `
 const Ballot_Gray = `
   <svg id="ballot_black_24dp" xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.435" viewBox="0 0 70.435 70.435">
     <path id="Path_4394" data-name="Path 4394" d="M0,0H70.435V70.435H0Z" fill="none"/>
-    <path id="Path_4395" data-name="Path 4395" d="M32.348,16.207H47.022v5.87H32.348Zm0,20.544H47.022v5.87H32.348ZM49.957,3H8.87A5.887,5.887,0,0,0,3,8.87V49.957a5.887,5.887,0,0,0,5.87,5.87H49.957a5.887,5.887,0,0,0,5.87-5.87V8.87A5.887,5.887,0,0,0,49.957,3Zm0,46.957H8.87V8.87H49.957ZM26.478,11.8H11.8V26.478H26.478ZM23.544,23.544h-8.8v-8.8h8.8Zm2.935,8.8H11.8V47.022H26.478ZM23.544,44.087h-8.8v-8.8h8.8Z" transform="translate(5.804 5.804)" fill="#b8b8b8"/>
+    <path id="Path_4395" data-name="Path 4395" d="M32.348,16.207H47.022v5.87H32.348Zm0,20.544H47.022v5.87H32.348ZM49.957,3H8.87A5.887,5.887,0,0,0,3,8.87V49.957a5.887,5.887,0,0,0,5.87,5.87H49.957a5.887,5.887,0,0,0,5.87-5.87V8.87A5.887,5.887,0,0,0,49.957,3Zm0,46.957H8.87V8.87H49.957ZM26.478,11.8H11.8V26.478H26.478ZM23.544,23.544h-8.8v-8.8h8.8Zm2.935,8.8H11.8V47.022H26.478ZM23.544,44.087h-8.8v-8.8h8.8Z" transform="translate(5.804 5.804)" fill=${navIconInActive}/>
   </svg>
 `;
 
 const Ballot = `
   <svg id="ballot_black_24dp" xmlns="http://www.w3.org/2000/svg" width="80.202" height="80.202" viewBox="0 0 80.202 80.202">
     <path id="Path_4394" data-name="Path 4394" d="M0,0H80.2V80.2H0Z" fill="none"/>
-    <path id="Path_4395" data-name="Path 4395" d="M36.417,18.038H53.126v6.683H36.417Zm0,23.392H53.126v6.683H36.417ZM56.468,3H9.683A6.7,6.7,0,0,0,3,9.683V56.468a6.7,6.7,0,0,0,6.683,6.683H56.468a6.7,6.7,0,0,0,6.683-6.683V9.683A6.7,6.7,0,0,0,56.468,3Zm0,53.468H9.683V9.683H56.468ZM29.734,13.025H13.025V29.734H29.734ZM26.392,26.392H16.367V16.367H26.392Zm3.342,10.025H13.025V53.126H29.734ZM26.392,49.784H16.367V39.759H26.392Z" transform="translate(7.025 7.025)" fill="#133c8b"/>
+    <path id="Path_4395" data-name="Path 4395" d="M36.417,18.038H53.126v6.683H36.417Zm0,23.392H53.126v6.683H36.417ZM56.468,3H9.683A6.7,6.7,0,0,0,3,9.683V56.468a6.7,6.7,0,0,0,6.683,6.683H56.468a6.7,6.7,0,0,0,6.683-6.683V9.683A6.7,6.7,0,0,0,56.468,3Zm0,53.468H9.683V9.683H56.468ZM29.734,13.025H13.025V29.734H29.734ZM26.392,26.392H16.367V16.367H26.392Zm3.342,10.025H13.025V53.126H29.734ZM26.392,49.784H16.367V39.759H26.392Z" transform="translate(7.025 7.025)" fill=${navIconActive}/>
   </svg>
 `;
 
@@ -346,20 +407,20 @@ const Location_Arrow_White = `
 
 const Location_Arrow_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="33.527" height="33.522" viewBox="0 0 33.527 33.522">
-    <path id="location-arrow" d="M33.356,2.214,18.118,32.689a1.4,1.4,0,0,1-1.357.833,2.015,2.015,0,0,1-.358-.047,1.438,1.438,0,0,1-.846-.535,1.5,1.5,0,0,1-.32-.94V18.285H1.524a1.5,1.5,0,0,1-.94-.321,1.437,1.437,0,0,1-.535-.845,1.543,1.543,0,0,1,.095-1,1.435,1.435,0,0,1,.69-.714L31.308.167A1.43,1.43,0,0,1,32,0,1.416,1.416,0,0,1,33.07.453a1.417,1.417,0,0,1,.44.821A1.451,1.451,0,0,1,33.356,2.214Z" transform="translate(-0.005)" fill="#b8b8b8"/>
+    <path id="location-arrow" d="M33.356,2.214,18.118,32.689a1.4,1.4,0,0,1-1.357.833,2.015,2.015,0,0,1-.358-.047,1.438,1.438,0,0,1-.846-.535,1.5,1.5,0,0,1-.32-.94V18.285H1.524a1.5,1.5,0,0,1-.94-.321,1.437,1.437,0,0,1-.535-.845,1.543,1.543,0,0,1,.095-1,1.435,1.435,0,0,1,.69-.714L31.308.167A1.43,1.43,0,0,1,32,0,1.416,1.416,0,0,1,33.07.453a1.417,1.417,0,0,1,.44.821A1.451,1.451,0,0,1,33.356,2.214Z" transform="translate(-0.005)" fill=${navIconInActive}/>
   </svg>
 `;
 
 const Location_Arrow = `
   <svg xmlns="http://www.w3.org/2000/svg" width="33.527" height="33.522" viewBox="0 0 33.527 33.522">
-    <path id="location-arrow" d="M33.356,2.214,18.118,32.689a1.4,1.4,0,0,1-1.357.833,2.015,2.015,0,0,1-.358-.047,1.438,1.438,0,0,1-.846-.535,1.5,1.5,0,0,1-.32-.94V18.285H1.524a1.5,1.5,0,0,1-.94-.321,1.437,1.437,0,0,1-.535-.845,1.543,1.543,0,0,1,.095-1,1.435,1.435,0,0,1,.69-.714L31.308.167A1.43,1.43,0,0,1,32,0,1.416,1.416,0,0,1,33.07.453a1.417,1.417,0,0,1,.44.821A1.451,1.451,0,0,1,33.356,2.214Z" transform="translate(-0.005)" fill="#133c8b"/>
+    <path id="location-arrow" d="M33.356,2.214,18.118,32.689a1.4,1.4,0,0,1-1.357.833,2.015,2.015,0,0,1-.358-.047,1.438,1.438,0,0,1-.846-.535,1.5,1.5,0,0,1-.32-.94V18.285H1.524a1.5,1.5,0,0,1-.94-.321,1.437,1.437,0,0,1-.535-.845,1.543,1.543,0,0,1,.095-1,1.435,1.435,0,0,1,.69-.714L31.308.167A1.43,1.43,0,0,1,32,0,1.416,1.416,0,0,1,33.07.453a1.417,1.417,0,0,1,.44.821A1.451,1.451,0,0,1,33.356,2.214Z" transform="translate(-0.005)" fill=${navIconActive}/>
   </svg>
 `;
 
 const Check = `
   <svg id="done_black_24dp_7_" data-name="done_black_24dp (7)" xmlns="http://www.w3.org/2000/svg" width="68.645" height="68.645" viewBox="0 0 68.645 68.645">
     <path id="Path_5308" data-name="Path 5308" d="M0,0H68.645V68.645H0Z" fill="none"/>
-    <path id="Path_5309" data-name="Path 5309" d="M19.417,35.918,7.4,23.905l-4,4L19.417,43.927,53.739,9.6l-4-4Z" transform="translate(6.325 10.417)" fill="#133c8b"/>
+    <path id="Path_5309" data-name="Path 5309" d="M19.417,35.918,7.4,23.905l-4,4L19.417,43.927,53.739,9.6l-4-4Z" transform="translate(6.325 10.417)" fill=${selectedIcon}/>
   </svg>
 `;
 
@@ -381,7 +442,7 @@ const Close = `
 const Account_Circle = `
   <svg id="account_circle_black_24dp_2_" data-name="account_circle_black_24dp (2)" xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.436" viewBox="0 0 70.435 70.436">
     <path id="Path_4402" data-name="Path 4402" d="M0,0H70.435V70.436H0Z" fill="none"/>
-    <path id="Path_4403" data-name="Path 4403" d="M31.348,2A29.348,29.348,0,1,0,60.7,31.348,29.359,29.359,0,0,0,31.348,2ZM16.879,49.779c1.262-2.641,8.951-5.224,14.469-5.224s13.236,2.583,14.469,5.224a23.259,23.259,0,0,1-28.937,0Zm33.134-4.255c-4.2-5.107-14.381-6.838-18.665-6.838s-14.469,1.732-18.665,6.838a23.479,23.479,0,1,1,37.331,0ZM31.348,13.739A10.272,10.272,0,1,0,41.62,24.011,10.246,10.246,0,0,0,31.348,13.739Zm0,14.674a4.4,4.4,0,1,1,4.4-4.4A4.4,4.4,0,0,1,31.348,28.413Z" transform="translate(3.87 3.87)" fill="#133c8b"/>
+    <path id="Path_4403" data-name="Path 4403" d="M31.348,2A29.348,29.348,0,1,0,60.7,31.348,29.359,29.359,0,0,0,31.348,2ZM16.879,49.779c1.262-2.641,8.951-5.224,14.469-5.224s13.236,2.583,14.469,5.224a23.259,23.259,0,0,1-28.937,0Zm33.134-4.255c-4.2-5.107-14.381-6.838-18.665-6.838s-14.469,1.732-18.665,6.838a23.479,23.479,0,1,1,37.331,0ZM31.348,13.739A10.272,10.272,0,1,0,41.62,24.011,10.246,10.246,0,0,0,31.348,13.739Zm0,14.674a4.4,4.4,0,1,1,4.4-4.4A4.4,4.4,0,0,1,31.348,28.413Z" transform="translate(3.87 3.87)" fill=${navIconActive}/>
   </svg>
 `;
 
@@ -402,10 +463,10 @@ const Support_Agent_Gray = `
       </g>
       <g id="Group_4810" data-name="Group 4810" transform="translate(6.046 8.869)">
         <g id="Group_4809" data-name="Group 4809">
-          <path id="Path_4399" data-name="Path 4399" d="M57.761,30.059C57.761,13.947,45.259,3,31.348,3,17.584,3,4.935,13.712,4.935,30.235A5.775,5.775,0,0,0,2,35.283v5.87a5.887,5.887,0,0,0,5.87,5.87H10.8V29.12a20.544,20.544,0,1,1,41.087,0V49.957H28.413v5.87H51.892a5.887,5.887,0,0,0,5.87-5.87v-3.58A5.426,5.426,0,0,0,60.7,41.563v-6.75A5.4,5.4,0,0,0,57.761,30.059Z" transform="translate(-2 -3)" fill="#b8b8b8"/>
-          <ellipse id="Ellipse_129" data-name="Ellipse 129" cx="3.5" cy="3" rx="3.5" ry="3" transform="translate(16.955 26.33)" fill="#b8b8b8"/>
-          <ellipse id="Ellipse_130" data-name="Ellipse 130" cx="2.5" cy="3" rx="2.5" ry="3" transform="translate(35.955 26.33)" fill="#b8b8b8"/>
-          <path id="Path_4400" data-name="Path 4400" d="M41.207,20.762A17.729,17.729,0,0,0,23.745,6c-8.892,0-18.46,7.366-17.7,18.929A23.7,23.7,0,0,0,20.311,7.643,23.587,23.587,0,0,0,41.207,20.762Z" transform="translate(5.75 2.804)" fill="#b8b8b8"/>
+          <path id="Path_4399" data-name="Path 4399" d="M57.761,30.059C57.761,13.947,45.259,3,31.348,3,17.584,3,4.935,13.712,4.935,30.235A5.775,5.775,0,0,0,2,35.283v5.87a5.887,5.887,0,0,0,5.87,5.87H10.8V29.12a20.544,20.544,0,1,1,41.087,0V49.957H28.413v5.87H51.892a5.887,5.887,0,0,0,5.87-5.87v-3.58A5.426,5.426,0,0,0,60.7,41.563v-6.75A5.4,5.4,0,0,0,57.761,30.059Z" transform="translate(-2 -3)" fill=${navIconInActive}/>
+          <ellipse id="Ellipse_129" data-name="Ellipse 129" cx="3.5" cy="3" rx="3.5" ry="3" transform="translate(16.955 26.33)" fill=${navIconInActive}/>
+          <ellipse id="Ellipse_130" data-name="Ellipse 130" cx="2.5" cy="3" rx="2.5" ry="3" transform="translate(35.955 26.33)" fill=${navIconInActive}/>
+          <path id="Path_4400" data-name="Path 4400" d="M41.207,20.762A17.729,17.729,0,0,0,23.745,6c-8.892,0-18.46,7.366-17.7,18.929A23.7,23.7,0,0,0,20.311,7.643,23.587,23.587,0,0,0,41.207,20.762Z" transform="translate(5.75 2.804)" fill=${navIconInActive}/>
         </g>
       </g>
     </g>
@@ -420,10 +481,10 @@ const Support_Agent = `
       </g>
       <g id="Group_4810" data-name="Group 4810" transform="translate(6.046 8.869)">
         <g id="Group_4809" data-name="Group 4809">
-          <path id="Path_4399" data-name="Path 4399" d="M57.761,30.059C57.761,13.947,45.259,3,31.348,3,17.584,3,4.935,13.712,4.935,30.235A5.775,5.775,0,0,0,2,35.283v5.87a5.887,5.887,0,0,0,5.87,5.87H10.8V29.12a20.544,20.544,0,1,1,41.087,0V49.957H28.413v5.87H51.892a5.887,5.887,0,0,0,5.87-5.87v-3.58A5.426,5.426,0,0,0,60.7,41.563v-6.75A5.4,5.4,0,0,0,57.761,30.059Z" transform="translate(-2 -3)" fill="#133c8b"/>
-          <ellipse id="Ellipse_129" data-name="Ellipse 129" cx="3.5" cy="3" rx="3.5" ry="3" transform="translate(16.955 26.33)" fill="#133c8b"/>
-          <ellipse id="Ellipse_130" data-name="Ellipse 130" cx="2.5" cy="3" rx="2.5" ry="3" transform="translate(35.955 26.33)" fill="#133c8b"/>
-          <path id="Path_4400" data-name="Path 4400" d="M41.207,20.762A17.729,17.729,0,0,0,23.745,6c-8.892,0-18.46,7.366-17.7,18.929A23.7,23.7,0,0,0,20.311,7.643,23.587,23.587,0,0,0,41.207,20.762Z" transform="translate(5.75 2.804)" fill="#133c8b"/>
+          <path id="Path_4399" data-name="Path 4399" d="M57.761,30.059C57.761,13.947,45.259,3,31.348,3,17.584,3,4.935,13.712,4.935,30.235A5.775,5.775,0,0,0,2,35.283v5.87a5.887,5.887,0,0,0,5.87,5.87H10.8V29.12a20.544,20.544,0,1,1,41.087,0V49.957H28.413v5.87H51.892a5.887,5.887,0,0,0,5.87-5.87v-3.58A5.426,5.426,0,0,0,60.7,41.563v-6.75A5.4,5.4,0,0,0,57.761,30.059Z" transform="translate(-2 -3)" fill=${navIconActive}/>
+          <ellipse id="Ellipse_129" data-name="Ellipse 129" cx="3.5" cy="3" rx="3.5" ry="3" transform="translate(16.955 26.33)" fill=${navIconActive}/>
+          <ellipse id="Ellipse_130" data-name="Ellipse 130" cx="2.5" cy="3" rx="2.5" ry="3" transform="translate(35.955 26.33)" fill=${navIconActive}/>
+          <path id="Path_4400" data-name="Path 4400" d="M41.207,20.762A17.729,17.729,0,0,0,23.745,6c-8.892,0-18.46,7.366-17.7,18.929A23.7,23.7,0,0,0,20.311,7.643,23.587,23.587,0,0,0,41.207,20.762Z" transform="translate(5.75 2.804)" fill=${navIconActive}/>
         </g>
       </g>
     </g>
@@ -432,15 +493,19 @@ const Support_Agent = `
 
 const Angle_Left = `
   <svg xmlns="http://www.w3.org/2000/svg" width="32.311" height="61.743" viewBox="0 0 32.311 61.743">
-    <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill="#133c8b"/>
+    <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill=${actionButtonIconFill}/>
   </svg>
+`;
+
+const Logout = `
+<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill=${actionButtonIconFill}><g><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/></g></svg>
 `;
 
 const Description = `
   <svg xmlns="http://www.w3.org/2000/svg" width="76.132" height="76.133" viewBox="0 0 76.132 76.133">
     <g id="description_black_24dp_2_" data-name="description_black_24dp (2)" transform="translate(0 0)">
       <path id="Path_4109" data-name="Path 4109" d="M0,0H76.132V76.133H0Z" transform="translate(0 0)" fill="none"/>
-      <path id="Path_4110" data-name="Path 4110" d="M16.689,46.411H42.066v6.344H16.689Zm0-12.689H42.066v6.344H16.689ZM35.722,2H10.344A6.363,6.363,0,0,0,4,8.344V59.1a6.336,6.336,0,0,0,6.313,6.344h38.1A6.363,6.363,0,0,0,54.755,59.1V21.033ZM48.41,59.1H10.344V8.344H32.55V24.205H48.41Z" transform="translate(8.689 4.344)" fill="#133c8b"/>
+      <path id="Path_4110" data-name="Path 4110" d="M16.689,46.411H42.066v6.344H16.689Zm0-12.689H42.066v6.344H16.689ZM35.722,2H10.344A6.363,6.363,0,0,0,4,8.344V59.1a6.336,6.336,0,0,0,6.313,6.344h38.1A6.363,6.363,0,0,0,54.755,59.1V21.033ZM48.41,59.1H10.344V8.344H32.55V24.205H48.41Z" transform="translate(8.689 4.344)" fill=${actionIconBackground}/>
     </g>
   </svg>
 `;
@@ -449,7 +514,7 @@ const Wallpaper = `
   <svg xmlns="http://www.w3.org/2000/svg" width="76.132" height="76.133" viewBox="0 0 76.132 76.133">
     <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(0 0)">
       <path id="Path_4107" data-name="Path 4107" d="M0,0H76.132V76.133H0Z" transform="translate(0 0)" fill="none"/>
-      <path id="Path_4108" data-name="Path 4108" d="M8.344,8.344H30.55V2H8.344A6.363,6.363,0,0,0,2,8.344V30.55H8.344Zm19.033,28.55L14.689,52.755H52.755L43.238,40.066l-6.44,8.6ZM49.583,22.619a4.758,4.758,0,1,0-4.758,4.758A4.752,4.752,0,0,0,49.583,22.619ZM59.1,2H36.894V8.344H59.1V30.55h6.344V8.344A6.363,6.363,0,0,0,59.1,2Zm0,57.1H36.894v6.344H59.1A6.363,6.363,0,0,0,65.443,59.1V36.894H59.1ZM8.344,36.894H2V59.1a6.363,6.363,0,0,0,6.344,6.344H30.55V59.1H8.344Z" transform="translate(4.344 4.344)" fill="#133c8b"/>
+      <path id="Path_4108" data-name="Path 4108" d="M8.344,8.344H30.55V2H8.344A6.363,6.363,0,0,0,2,8.344V30.55H8.344Zm19.033,28.55L14.689,52.755H52.755L43.238,40.066l-6.44,8.6ZM49.583,22.619a4.758,4.758,0,1,0-4.758,4.758A4.752,4.752,0,0,0,49.583,22.619ZM59.1,2H36.894V8.344H59.1V30.55h6.344V8.344A6.363,6.363,0,0,0,59.1,2Zm0,57.1H36.894v6.344H59.1A6.363,6.363,0,0,0,65.443,59.1V36.894H59.1ZM8.344,36.894H2V59.1a6.363,6.363,0,0,0,6.344,6.344H30.55V59.1H8.344Z" transform="translate(4.344 4.344)" fill=${actionIconBackground}/>
     </g>
   </svg>
 `;
@@ -458,7 +523,7 @@ const Video_Library = `
   <svg xmlns="http://www.w3.org/2000/svg" width="73.289" height="73.289" viewBox="0 0 73.289 73.289">
     <g id="video_library_black_24dp" transform="translate(0 0)">
       <path id="Path_4111" data-name="Path 4111" d="M0,0H73.289V73.289H0Z" transform="translate(0 0)" fill="none"/>
-      <path id="Path_4112" data-name="Path 4112" d="M8.107,14.215H2V56.967a6.125,6.125,0,0,0,6.107,6.107H50.859V56.967H8.107ZM56.967,2H20.322a6.125,6.125,0,0,0-6.107,6.107V44.752a6.125,6.125,0,0,0,6.107,6.107H56.967a6.125,6.125,0,0,0,6.107-6.107V8.107A6.125,6.125,0,0,0,56.967,2Zm0,42.752H20.322V8.107H56.967ZM32.537,12.688V40.171L50.859,26.43Z" transform="translate(4.107 4.108)" fill="#133c8b"/>
+      <path id="Path_4112" data-name="Path 4112" d="M8.107,14.215H2V56.967a6.125,6.125,0,0,0,6.107,6.107H50.859V56.967H8.107ZM56.967,2H20.322a6.125,6.125,0,0,0-6.107,6.107V44.752a6.125,6.125,0,0,0,6.107,6.107H56.967a6.125,6.125,0,0,0,6.107-6.107V8.107A6.125,6.125,0,0,0,56.967,2Zm0,42.752H20.322V8.107H56.967ZM32.537,12.688V40.171L50.859,26.43Z" transform="translate(4.107 4.108)" fill=${actionIconBackground}/>
     </g>
   </svg>
 `;
@@ -500,24 +565,58 @@ const File_Download = `
         <rect id="Rectangle_2390" data-name="Rectangle 2390" width="57" height="57" transform="translate(-0.158 -0.158)" fill="none"/>
       </g>
       <g id="Group_4405" data-name="Group 4405" transform="translate(8.844 8.715)">
-        <path id="Path_4198" data-name="Path 4198" d="M37.715,30.49v7.225H8.816V30.49H4v7.225a4.831,4.831,0,0,0,4.816,4.816h28.9a4.831,4.831,0,0,0,4.816-4.816V30.49Zm-2.408-9.633-3.4-3.4-6.237,6.213V4H20.857V23.675L14.62,17.462l-3.4,3.4L23.266,32.9Z" transform="translate(-4 -4)" fill="#133c8b"/>
+        <path id="Path_4198" data-name="Path 4198" d="M37.715,30.49v7.225H8.816V30.49H4v7.225a4.831,4.831,0,0,0,4.816,4.816h28.9a4.831,4.831,0,0,0,4.816-4.816V30.49Zm-2.408-9.633-3.4-3.4-6.237,6.213V4H20.857V23.675L14.62,17.462l-3.4,3.4L23.266,32.9Z" transform="translate(-4 -4)" fill=${actionIconBackground}/>
       </g>
     </g>
   </svg>
 `;
 
+const Faq = `
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="404" height="632" viewBox="0 0 404 632">
+<defs>
+  <clipPath id="clip-path">
+    <rect id="Rectangle_2966" data-name="Rectangle 2966" width="404" height="632" transform="translate(0 0.421)" fill="#133c8b"/>
+  </clipPath>
+</defs>
+<g id="Group_4966" data-name="Group 4966" transform="translate(0 -0.421)">
+  <g id="Group_4965" data-name="Group 4965" clip-path="url(#clip-path)">
+    <path id="Path_5331" data-name="Path 5331" d="M109.855,7.5h44.492a6.356,6.356,0,1,1,0,12.712H109.855a6.356,6.356,0,0,1,0-12.712" transform="translate(225.42 16.335)" fill=${actionIconBackground}/>
+    <path id="Path_5332" data-name="Path 5332" d="M11.855,7.5H37.279a6.356,6.356,0,1,1,0,12.712H11.855a6.356,6.356,0,1,1,0-12.712" transform="translate(11.977 16.335)" fill=${actionIconBackground}/>
+    <path id="Path_5333" data-name="Path 5333" d="M11.678,52.5h7.945a3.178,3.178,0,0,1,0,6.356H11.678a3.178,3.178,0,1,1,0-6.356" transform="translate(18.513 114.345)" fill=${actionIconBackground}/>
+    <path id="Path_5334" data-name="Path 5334" d="M11.678,57.5H176.934a3.178,3.178,0,1,1,0,6.356H11.678a3.178,3.178,0,1,1,0-6.356" transform="translate(18.513 125.235)" fill=${actionIconBackground}/>
+    <path id="Path_5335" data-name="Path 5335" d="M24.678,62.5H189.931a3.178,3.178,0,0,1,0,6.356H24.678a3.178,3.178,0,0,1,0-6.356" transform="translate(46.827 136.125)" fill=${actionIconBackground}/>
+    <path id="Path_5336" data-name="Path 5336" d="M229.933,67.5H64.677a3.178,3.178,0,1,0,0,6.356H229.933a3.178,3.178,0,0,0,0-6.356" transform="translate(133.944 147.015)" fill=${actionIconBackground}/>
+    <path id="Path_5337" data-name="Path 5337" d="M209.933,72.5H44.677a3.178,3.178,0,1,0,0,6.356H209.933a3.178,3.178,0,1,0,0-6.356" transform="translate(90.385 157.905)" fill=${actionIconBackground}/>
+    <path id="Path_5338" data-name="Path 5338" d="M367.291,68.369H12.945A7.954,7.954,0,0,1,5,60.424V42.945A7.954,7.954,0,0,1,12.945,35H367.291a7.954,7.954,0,0,1,7.945,7.945V60.424a7.954,7.954,0,0,1-7.945,7.945M12.945,38.178a4.773,4.773,0,0,0-4.767,4.767V60.424a4.773,4.773,0,0,0,4.767,4.767H367.291a4.773,4.773,0,0,0,4.767-4.767V42.945a4.773,4.773,0,0,0-4.767-4.767Z" transform="translate(10.89 76.23)" fill=${actionIconBackground}/>
+    <path id="Path_5339" data-name="Path 5339" d="M367.291,153.285H12.945A7.954,7.954,0,0,1,5,145.34V57.945A7.954,7.954,0,0,1,12.945,50H367.291a7.954,7.954,0,0,1,7.945,7.945V145.34a7.954,7.954,0,0,1-7.945,7.945M12.945,53.178a4.773,4.773,0,0,0-4.767,4.767V145.34a4.773,4.773,0,0,0,4.767,4.767H367.291a4.773,4.773,0,0,0,4.767-4.767V57.945a4.773,4.773,0,0,0-4.767-4.767Z" transform="translate(10.89 108.9)" fill=${actionIconBackground}/>
+    <path id="Path_5340" data-name="Path 5340" d="M11.678,106.5h7.945a3.178,3.178,0,1,1,0,6.356H11.678a3.178,3.178,0,1,1,0-6.356" transform="translate(18.513 231.956)" fill=${actionIconBackground}/>
+    <path id="Path_5341" data-name="Path 5341" d="M11.678,111.5H176.934a3.178,3.178,0,1,1,0,6.356H11.678a3.178,3.178,0,1,1,0-6.356" transform="translate(18.513 242.846)" fill=${actionIconBackground}/>
+    <path id="Path_5342" data-name="Path 5342" d="M24.678,115.5H189.931a3.178,3.178,0,0,1,0,6.356H24.678a3.178,3.178,0,0,1,0-6.356" transform="translate(46.827 251.558)" fill=${actionIconBackground}/>
+    <path id="Path_5343" data-name="Path 5343" d="M367.291,122.369H12.945A7.954,7.954,0,0,1,5,114.424V96.945A7.954,7.954,0,0,1,12.945,89H367.291a7.954,7.954,0,0,1,7.945,7.945v17.479a7.954,7.954,0,0,1-7.945,7.945M12.945,92.178a4.773,4.773,0,0,0-4.767,4.767v17.479a4.773,4.773,0,0,0,4.767,4.767H367.291a4.773,4.773,0,0,0,4.767-4.767V96.945a4.773,4.773,0,0,0-4.767-4.767Z" transform="translate(10.89 193.841)" fill=${actionIconBackground}/>
+    <path id="Path_5344" data-name="Path 5344" d="M367.291,207.285H12.945A7.954,7.954,0,0,1,5,199.34V111.945A7.954,7.954,0,0,1,12.945,104H367.291a7.954,7.954,0,0,1,7.945,7.945V199.34a7.954,7.954,0,0,1-7.945,7.945M12.945,107.178a4.773,4.773,0,0,0-4.767,4.767V199.34a4.773,4.773,0,0,0,4.767,4.767H367.291a4.773,4.773,0,0,0,4.767-4.767V111.945a4.773,4.773,0,0,0-4.767-4.767Z" transform="translate(10.89 226.511)" fill=${actionIconBackground}/>
+    <path id="Path_5345" data-name="Path 5345" d="M392.482,632.421H11.123A11.135,11.135,0,0,1,0,621.3V11.123A11.135,11.135,0,0,1,11.123,0H392.482a11.135,11.135,0,0,1,11.123,11.123V621.3a11.135,11.135,0,0,1-11.123,11.123M11.123,9.534a1.592,1.592,0,0,0-1.589,1.589V621.3a1.594,1.594,0,0,0,1.589,1.589H392.482a1.594,1.594,0,0,0,1.589-1.589V11.123a1.592,1.592,0,0,0-1.589-1.589Z" fill=${actionIconBackground}/>
+    <rect id="Rectangle_2965" data-name="Rectangle 2965" width="387.715" height="9.534" transform="translate(7.945 84.217)" fill=${actionIconBackground}/>
+    <rect id="Rectangle_2967" data-name="Rectangle 2967" width="387.715" height="9.534" transform="translate(7.945 569.217)" fill=${actionIconBackground}/>
+    <path id="Path_5346" data-name="Path 5346" d="M189.933,132.856H24.677a3.178,3.178,0,1,1,0-6.356H189.933a3.178,3.178,0,1,1,0,6.356" transform="translate(46.825 275.516)" fill=${actionIconBackground}/>
+    <path id="Path_5347" data-name="Path 5347" d="M176.934,128.856H11.678a3.178,3.178,0,1,1,0-6.356H176.934a3.178,3.178,0,1,1,0,6.356" transform="translate(18.513 266.804)" fill=${actionIconBackground}/>
+  </g>
+</g>
+</svg>
+`;
+
 const Right_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="66" viewBox="0 0 66 66">
 <g id="Group_4113" data-name="Group 4113" transform="translate(0.216 65.811) rotate(-90)">
-  <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.189 -0.216)" fill="#fff" stroke="#133c8b" stroke-width="4">
+  <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.189 -0.216)" fill="#fff" stroke=${actionIconBackground} stroke-width="4">
     <circle cx="33" cy="33" r="33" stroke="none"/>
     <circle cx="33" cy="33" r="31" fill="none"/>
   </g>
-  <path id="chevron-back-sharp" d="M9.973,0,0,9.973l9.973,9.973" transform="translate(22.214 38.374) rotate(-90)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+  <path id="chevron-back-sharp" d="M9.973,0,0,9.973l9.973,9.973" transform="translate(22.214 38.374) rotate(-90)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
 </g>
 </svg>
 `;
 
 const Item_Selected = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`;
+
 const Calendar_Optimize = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
 <defs>
   <filter id="teal_circle" x="0" y="0" width="202.718" height="202.718" filterUnits="userSpaceOnUse">
@@ -570,7 +669,7 @@ const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="
 <g id="ic_add_white" transform="translate(9.25 8.75)">
   <g id="chevron_right_black_24dp" transform="translate(-9.25 -8.75)">
     <path id="Path_4400" data-name="Path 4400" d="M0,0H41V41H0Z" fill="none"/>
-    <path id="Path_4401" data-name="Path 4401" d="M11,6,8.59,8.409l7.824,7.841L8.59,24.091,11,26.5l10.25-10.25Z" transform="translate(6.085 4.25)" fill="#fff"/>
+    <path id="Path_4401" data-name="Path 4401" d="M11,6,8.59,8.409l7.824,7.841L8.59,24.091,11,26.5l10.25-10.25Z" transform="translate(6.085 4.25)" fill=${actionButtonIconFill}/>
   </g>
 </g>
 </svg>
@@ -580,22 +679,22 @@ const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="
 const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="238" height="254.93" viewBox="0 0 238 254.93">
 <g id="Group_4817" data-name="Group 4817" transform="translate(-789.725 -193.833)">
   <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
-    <path id="Path_4180" data-name="Path 4180" d="M0,0H202.235V202.235H0Z" transform="translate(0 0)" fill="rgba(0,0,0,0)"/>
-    <path id="Path_4181" data-name="Path 4181" d="M18.853,18.853H77.838V2H18.853A16.9,16.9,0,0,0,2,18.853V77.838H18.853ZM69.412,94.691,35.706,136.824H136.824l-25.279-33.706L94.438,125.953ZM128.4,56.772a12.64,12.64,0,1,0-12.64,12.64A12.623,12.623,0,0,0,128.4,56.772ZM153.676,2H94.691V18.853h58.985V77.838h16.853V18.853A16.9,16.9,0,0,0,153.676,2Zm0,151.677H94.691v16.853h58.985a16.9,16.9,0,0,0,16.853-16.853V94.691H153.676ZM18.853,94.691H2v58.985a16.9,16.9,0,0,0,16.853,16.853H77.838V153.677H18.853Z" transform="translate(14.853 14.853)" fill="#133c8b"/>
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H202.235V202.235H0Z" transform="translate(0 0)" fill=${actionIconFill}/>
+    <path id="Path_4181" data-name="Path 4181" d="M18.853,18.853H77.838V2H18.853A16.9,16.9,0,0,0,2,18.853V77.838H18.853ZM69.412,94.691,35.706,136.824H136.824l-25.279-33.706L94.438,125.953ZM128.4,56.772a12.64,12.64,0,1,0-12.64,12.64A12.623,12.623,0,0,0,128.4,56.772ZM153.676,2H94.691V18.853h58.985V77.838h16.853V18.853A16.9,16.9,0,0,0,153.676,2Zm0,151.677H94.691v16.853h58.985a16.9,16.9,0,0,0,16.853-16.853V94.691H153.676ZM18.853,94.691H2v58.985a16.9,16.9,0,0,0,16.853,16.853H77.838V153.677H18.853Z" transform="translate(14.853 14.853)" fill=${actionIconBackground}/>
   </g>
-  <text id="Checkout" transform="translate(908.725 436.764)" fill="#133c8b" font-size="49" font-family="Product Sans" font-weight="500"><tspan x="-118" y="0">Add Image</tspan></text>
+  <text id="Checkout" transform="translate(908.725 436.764)" fill=${actionIconBackground} font-size="49" font-family="Product Sans" font-weight="500"><tspan x="-118" y="0">Add Image</tspan></text>
 </g>
 </svg>
 `;
 const Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
 <g id="Group_4283" data-name="Group 4283" transform="translate(22.737 37.649) rotate(180)">
-  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill="#133c8b"/>
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionButtonIconFill}/>
 </g>
 </svg>
 `;
 const Arrow_Right_Button = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
 <g id="Group_4984" data-name="Group 4984" transform="translate(-6.437 -10.659)">
-  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill="#133c8b"/>
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionButtonIconFill}/>
 </g>
 </svg>`;
 
@@ -669,8 +768,10 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Camera" && <SvgXml style={style} xml={Camera} width={width} height={height} />}
         {icon == "ChatBoxes" && <SvgXml style={style} xml={ChatBoxes} width={width} height={height} />}
         {icon == "Exclamation_Triangle_Fill" && <SvgXml style={style} xml={Exclamation_Triangle_Fill} width={width} height={height} />}
-        {icon == "File_Earmark_Text_Fill" && <SvgXml style={style} xml={File_Earmark_Text_Fill} width={width} height={height} />}
+        {icon == "Form" && <SvgXml style={style} xml={Form} width={width} height={height} />}
+        {icon == "Form_inactive" && <SvgXml style={style} xml={Form_inactive} width={width} height={height} />}
         {icon == "Sale" && <SvgXml style={style} xml={Sale} width={width} height={height} />}
+        {icon == "Sale_inactive" && <SvgXml style={style} xml={Sale_inactive} width={width} height={height} />}
         {icon == "Geo" && <SvgXml style={style} xml={Geo} width={width} height={height} />}
         {icon == "Location_Arrow_White" && <SvgXml style={style} xml={Location_Arrow_White} width={width} height={height} />}
         {icon == "Filter" && <SvgXml style={style} xml={Filter} width={width} height={height} />}
@@ -718,6 +819,9 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Roop_Gray" && <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />}
         {icon == "Forms_Red_Compulsory" && <SvgXml style={style} xml={Forms_Red_Compulsory} width={width} height={height} />}
         {icon == "Forms_Green_Done" && <SvgXml style={style} xml={Forms_Green_Done} width={width} height={height} />}
+        {icon == "Re_loop" && <SvgXml style={style} xml={Re_loop} width={width} height={height} />}
+        {icon == "Logout" && <SvgXml style={style} xml={Logout} width={width} height={height} />}
+        {icon == "Faq" && <SvgXml style={style} xml={Faq} width={width} height={height} />}
                 
     </Fragment>
 );

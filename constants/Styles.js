@@ -1,6 +1,6 @@
 import { StyleSheet , Platform, Dimensions} from "react-native";
 import Fonts from "./Fonts";
-import { BG_COLOR, PRIMARY_COLOR } from "./Colors";
+import { BG_COLOR, PRIMARY_COLOR, whiteLabel } from "./Colors";
 
 export const boxShadow = StyleSheet.create({
   shadowColor: '#808080',
@@ -22,7 +22,7 @@ export const style = StyleSheet.create({
 
   headerTitle: {
     fontFamily:Fonts.primaryRegular, 
-    color:"#FFF" , 
+    color: whiteLabel().headerText , 
     fontSize:20 , 
     fontWeight:"400",
     marginLeft:0,        
@@ -30,7 +30,7 @@ export const style = StyleSheet.create({
   
 
   headerLeftStyle: {
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: whiteLabel().headerBackground,
     position: 'absolute',
     width: Dimensions.get('window').width,
     height: '100%'
@@ -83,7 +83,7 @@ export const style = StyleSheet.create({
   numberBox: {
     width: 24,
     height: 24,
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: whiteLabel().countBoxBackground,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 2,

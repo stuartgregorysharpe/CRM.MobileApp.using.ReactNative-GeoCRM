@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
-import { PRIMARY_COLOR } from '../../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 12,
     paddingRight: 12,
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: whiteLabel().headerBackground,
   },
   layoutBar: {
 
