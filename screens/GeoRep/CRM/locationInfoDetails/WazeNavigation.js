@@ -4,7 +4,7 @@
 import React , {useEffect , useState} from 'react';
 import {View, Text, TouchableOpacity ,StyleSheet ,Linking, Platform ,Image} from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import { PRIMARY_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { style } from '../../../../constants/Styles';
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         marginTop:10,
         flexDirection:'row',
         borderWidth:1,
-        borderColor:PRIMARY_COLOR,
+        borderColor:whiteLabel().fieldBorder,
         borderRadius:20,
         paddingLeft:20,
         paddingRight:20,

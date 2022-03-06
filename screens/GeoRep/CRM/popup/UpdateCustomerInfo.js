@@ -9,7 +9,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
 import CustomPicker from '../../../../components/modal/CustomPicker';
@@ -255,8 +255,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                         }}>
                         <Text                                        
                           ref={(element) => { dispositionRef.current[key] = element }}                      
-                          style={[styles.textInput,{borderColor:PRIMARY_COLOR, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
-                          outlineColor={PRIMARY_COLOR}>
+                          style={[styles.textInput,{borderColor:whiteLabel().fieldBorder, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
+                          outlineColor={whiteLabel().fieldBorder}>
                           {getSelectedDropdownItemText(field.custom_master_field_id , field.field_name)}
                         </Text>                                                                
                       </TouchableOpacity>
@@ -288,7 +288,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                               label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}                        
                               value={getTextValue(customMasterFields, field.custom_master_field_id)}
                               mode="outlined"
-                              outlineColor={PRIMARY_COLOR}
+                              outlineColor={whiteLabel().fieldBorder}
                               activeOutlineColor={DISABLED_COLOR}                                        
                               onChangeText={text => {
                                 console.log("on change text");
@@ -320,7 +320,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
 
               <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
                 <Text style={[styles.addButtonText]}>Update</Text>
-                <FontAwesomeIcon style={styles.addButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
+                <FontAwesomeIcon style={styles.addButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={ faAngleDoubleRight } />
               </TouchableOpacity>
             </View>
             
@@ -362,12 +362,11 @@ const styles = EStyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
     borderRadius: 7,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: whiteLabel().actionFullButtonBackground
   },
   addButtonText: {
-    color: '#fff',
+    color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
@@ -400,10 +399,10 @@ const styles = EStyleSheet.create({
     marginBottom: 8
   },
   linkBoxText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     fontFamily: Fonts.secondaryMedium,
     textDecorationLine: 'underline',
-    textDecorationColor: PRIMARY_COLOR,
+    textDecorationColor: whiteLabel().mainText,
     textAlign: 'center'
   },
   

@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View, StyleSheet, TouchableOpacity, FlatList, Secti
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
-import { DISABLED_COLOR, PRIMARY_COLOR } from '../../../constants/Colors';
+import { DISABLED_COLOR, PRIMARY_COLOR, whiteLabel } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { BG_COLOR } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
@@ -15,6 +15,7 @@ import DraggableFlatList, { ScaleDecorator, useOnCellActiveAnimation } from 'rea
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LOCATION_LOOP_LISTS } from '../../../actions/actionTypes';
 import moment from 'moment';
+import { white } from 'react-native-paper/lib/typescript/styles/colors';
 var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
@@ -271,9 +272,9 @@ const styles = StyleSheet.create({
     color: DISABLED_COLOR
   },
   tabActiveText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().activeTabText,
     fontFamily: Fonts.secondaryBold,
-    borderBottomColor: PRIMARY_COLOR,
+    borderBottomColor: whiteLabel().activeTabUnderline,
     borderBottomWidth: 2,
     paddingBottom: 2,
   },
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 14,
     fontFamily: Fonts.secondaryMedium,
-    color: PRIMARY_COLOR
+    color: whiteLabel().mainText
   },
 
 

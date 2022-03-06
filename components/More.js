@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from './SvgIcon';
-import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
+import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
 import { 
   CHANGE_MORE_STATUS, 
   SHOW_MORE_COMPONENT, 
@@ -12,11 +12,12 @@ import {
   CHANGE_LOGIN_STATUS
 } from '../actions/actionTypes';
 import { setToken } from '../constants/Storage';
+import { white } from 'react-native-paper/lib/typescript/styles/colors';
 
 const lists = {
   0: [
     {
-      icon: "Account_Circle",
+      icon: "Home_Black",
       name: "Home",
       navigator: "Home",
       navOrder: "home_geo"
@@ -40,7 +41,7 @@ const lists = {
       navOrder: "calendar"
     },
     {
-      icon: "Account_Circle",
+      icon: "Form",
       name: "Forms",
       navigator: "RepForms",
       navOrder: "forms"
@@ -52,19 +53,19 @@ const lists = {
       navOrder: "content_library"
     },
     {
-      icon: "Account_Circle",
+      icon: "Sale",
       name: "Sales",
       navigator: "ProductSales",
       navOrder: "product_sales"
     },
     {
-      icon: "Account_Circle",
+      icon: "ChatBoxes",
       name: "Notifications",
       navigator: "Notifications",
       navOrder: "notifications"
     },
     {
-      icon: "Account_Circle",
+      icon: "ChatBoxes",
       name: "Messages",
       navigator: "RepMessages",
       navOrder: "messages"
@@ -367,7 +368,7 @@ export default function Profile() {
             setToken(null);
           }}>
             <Text style={styles.selectName}>Logout</Text>
-            <Image style={{ width: 20, height: 20 }} source={require('../assets/images/sign_out.png')} />
+            <SvgIcon icon="Logout" width='20px' height='20px' />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -392,7 +393,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 12,
-    borderBottomColor: PRIMARY_COLOR,
+    borderBottomColor: whiteLabel().mainText,
     borderBottomWidth: 2
   },
   closeButton: {
@@ -403,7 +404,7 @@ const styles = StyleSheet.create({
   avatar: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: PRIMARY_COLOR,
+    borderColor: whiteLabel().mainText,
     borderWidth: 2,
     paddingTop:Platform.OS ==  'ios' ? 4 : 0,
     width: 56,
@@ -412,7 +413,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   avatarLabel: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     fontFamily: 'Gilroy-Bold',
     fontSize: 32
   },

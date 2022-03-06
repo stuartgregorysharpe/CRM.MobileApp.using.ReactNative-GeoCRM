@@ -3,7 +3,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {  Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { PRIMARY_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { getLocationInfo } from '../../../../actions/location.action';
 import { getLocationLoop, storeLocationLoop } from '../../../../constants/Storage';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -249,7 +249,7 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
                     }}>
                     <View style={[styles.prevStyle, {paddingLeft:10, paddingRight:10}]}>
                         <SvgIcon icon="Arrow_Left_Btn" width='7px' height='15px' />
-                        <Text style={{marginLeft:5,fontSize:12 , color:PRIMARY_COLOR , fontWeight:'700' }} >
+                        <Text style={{marginLeft:5,fontSize:12 , color: whiteLabel().actionOutlineButtonText, fontWeight:'700' }} >
                             { !DeviceInfo.isTablet() ? 'Previous' : prevLocationName }
                         </Text>
                     </View>            
@@ -263,7 +263,7 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
                         onNext();
                     }}>
                     <View style={[styles.prevStyle , { paddingLeft:20, paddingRight:10 }]}>
-                        <Text style={{marginRight:13, fontSize:12 , color:PRIMARY_COLOR , fontWeight:'700'}}>                            
+                        <Text style={{marginRight:13, fontSize:12 , color: whiteLabel().actionOutlineButtonText , fontWeight:'700'}}>                            
                             { !DeviceInfo.isTablet() ? 'Next' : nextLocationName }
                         </Text>
                         <SvgIcon icon="Arrow_Right_Btn" width='7px' height='15px' />
@@ -297,9 +297,9 @@ const styles = StyleSheet.create({
         alignItems:'center',        
         justifyContent:'center',
         // width:Dimensions.get('window').width/5,
-        borderWidth:2,
+        borderWidth:1.5,
         borderRadius:15,
-        borderColor:PRIMARY_COLOR,        
+        borderColor: whiteLabel().actionOutlineButtonBorder,        
         padding:3
     },
     

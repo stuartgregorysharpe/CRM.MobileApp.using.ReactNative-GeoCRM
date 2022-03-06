@@ -7,7 +7,7 @@ import SignInScreen from '../screens/SignInScreen';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import Profile from '../components/Profile';
 import More from '../components/More';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../constants/Colors';
 import { grayBackground } from '../constants/Styles';
 import { SLIDE_STATUS, CHANGE_PROFILE_STATUS, CHANGE_MORE_STATUS } from '../actions/actionTypes';
 import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
@@ -99,7 +99,7 @@ export default function AppScreens() {
         <More />
       </Animated.View>
 
-      <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
+      <StatusBar translucent backgroundColor={whiteLabel().headerBackground} />
 
       <Stack.Navigator 
 

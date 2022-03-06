@@ -3,7 +3,7 @@ import { SafeAreaView, View, StyleSheet, ScrollView, Text , PermissionsAndroid, 
 import { useSelector, useDispatch } from 'react-redux';
 import Searchbar from '../../../components/SearchBar';
 import Card from './partial/Card';
-import { BG_COLOR } from '../../../constants/Colors';
+import { BG_COLOR, whiteLabel } from '../../../constants/Colors';
 import { CHANGE_LIBRARY_CHILD_STATUS } from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
 import { getBaseUrl, getToken } from '../../../constants/Storage';

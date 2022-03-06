@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text} from 'react-native';
-import {  PRIMARY_COLOR } from '../../constants/Colors';
+import {  PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     button:{
         fontFamily:Fonts.secondaryBold,
         fontSize:18,
-        color:PRIMARY_COLOR,        
+        color:whiteLabel().mainText,        
         padding:10
     },
     divider:{

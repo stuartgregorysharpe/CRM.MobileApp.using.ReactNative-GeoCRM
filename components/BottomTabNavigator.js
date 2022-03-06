@@ -36,7 +36,7 @@ import Fonts from '../constants/Fonts';
 import MoreNavigator from './MoreNavigator';
 import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../constants/Colors';
 import { 
   SLIDE_STATUS,
   SUB_SLIDE_STATUS,
@@ -261,7 +261,7 @@ export default function RepBottomTabNavigator({navigation}) {
         tabBarHideOnKeyboard: true,
         headerTitleAlign:'left',
         headerStyle: {
-          backgroundColor: PRIMARY_COLOR,
+          backgroundColor: whiteLabel().headerBackground,
           height: getHeaderHeight()
         },
         tabBarShowLabel: true,
@@ -297,7 +297,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -330,7 +330,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: Fonts.secondaryMedium
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         
         listeners={({navigation}) => ({
@@ -367,7 +367,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -389,8 +389,8 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'Forms',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Form_inactive" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Form" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -400,7 +400,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -434,7 +434,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -465,7 +465,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -487,8 +487,8 @@ export default function RepBottomTabNavigator({navigation}) {
           title: 'Sales',
           tabBarIcon: ({focused}) => (
             <Fragment>
-              {!focused && <SvgIcon icon="Pipeline_Gray" width='20px' height='20px' />}
-              {focused && <SvgIcon icon="Pipeline" width='20px' height='20px' />}
+              {!focused && <SvgIcon icon="Sale_inactive" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Sale" width='20px' height='20px' />}
             </Fragment>
           ),
           headerRight: () => (
@@ -498,7 +498,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -531,7 +531,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -564,7 +564,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -598,7 +598,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -631,7 +631,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -664,7 +664,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -699,7 +699,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -721,7 +721,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -743,7 +743,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -765,7 +765,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -787,7 +787,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -809,7 +809,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -831,7 +831,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -853,7 +853,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -876,7 +876,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -905,7 +905,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -927,7 +927,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -949,7 +949,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -971,7 +971,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -993,7 +993,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -1015,7 +1015,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -1037,7 +1037,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -1061,7 +1061,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -1083,7 +1083,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -1106,7 +1106,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
       />}
 
@@ -1142,7 +1142,7 @@ export default function RepBottomTabNavigator({navigation}) {
             fontSize: 12,
             fontFamily: 'Gilroy-Medium'
           },
-          tabBarActiveTintColor: PRIMARY_COLOR,
+          tabBarActiveTintColor: whiteLabel().activeIcon,
         }}
         listeners={({navigation}) => ({
           tabPress: (e) => {
@@ -1164,7 +1164,7 @@ export default function RepBottomTabNavigator({navigation}) {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: whiteLabel().headerBackground,
     position: 'absolute',
     width: Dimensions.get('window').width,
     height: '100%'

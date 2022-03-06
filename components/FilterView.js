@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import Colors, { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, whiteLabel } from '../constants/Colors';
 import { MAP_FILTERS, PIPELINE_SEARCH_FILTERS, SEARCH_FILTERS, SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { clearFilterData, clearPipelineFilterData, getFilterData, getPipelineFilterData, storeFilterData, storePipelineFilterData } from '../constants/Storage';
@@ -425,11 +425,12 @@ export default function FilterView({ navigation, page, onClose }) {
 
 
       <Button
-        mode="contained" color={Colors.primaryColor} uppercase={false}
+        mode="contained" color={whiteLabel().actionFullButtonBackground} uppercase={false}
         labelStyle={{
           fontSize: 18,
           fontFamily: Fonts.secondaryBold,
-          letterSpacing: 0.2
+          letterSpacing: 0.2,
+          color: whiteLabel().actionFullButtonText
         }}
         onPress={() => {
           console.log("apply filters", filters);

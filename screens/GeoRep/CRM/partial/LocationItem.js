@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity , Text } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import { BG_COLOR, DISABLED_COLOR, TEXT_COLOR } from '../../../../constants/Colors';
+import { BG_COLOR, DISABLED_COLOR, TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { style } from '../../../../constants/Styles';
 
@@ -16,7 +16,7 @@ export function LocationItem ({isSelected, item, isChecked, onItemClicked }) {
     // }, [isSelected]);
 
     return (
-      <TouchableOpacity style={[styles.resultItem , {backgroundColor: isSelected && isChecked ? 'rgba(61, 143, 251, 0.4)' : BG_COLOR  }]} onPress={() => {
+      <TouchableOpacity style={[styles.resultItem , {backgroundColor: isSelected && isChecked ? whiteLabel().itemSelectedBackground : BG_COLOR  }]} onPress={() => {
           if(isSelected){
             //setIsChecked(!isChecked);            
             item.checked = !isChecked;

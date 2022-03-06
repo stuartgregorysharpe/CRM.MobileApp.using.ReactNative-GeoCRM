@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { baseURL } from '../constants';
-import { PRIMARY_COLOR } from '../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../constants/Colors';
 import { Login } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS ,
   CHANGE_USER_INFO, 
@@ -18,6 +18,7 @@ import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { getCurrentDate, getFilterData, getToken, getUserData, storeCurrentDate, storeLocationLoop } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
+import {displayName} from "../app.json";
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -113,17 +114,17 @@ export default function SignIn() {
         //extraScrollHeight={140}
         behavior="padding" style={{flex:1}}>
     
-      <StatusBar translucent backgroundColor={PRIMARY_COLOR} />
+      <StatusBar translucent backgroundColor={whiteLabel().headerBackground} />
       <View style={styles.container}>
         
-        <Image style={styles.logo} source={require("../assets/images/logo.png")} />
+        <Image style={styles.logo} source={require("../assets/images/signIn_logo.png")} />
         <Text style={styles.title}>Welcome to</Text>
-        <Text style={styles.title}>Geo Rep CRM</Text>
+        <Text style={styles.title}>{displayName}</Text>
 
         <View style={styles.textInputBox} >
           <TextInput
             style={styles.textInput}
-            label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Email</Text>}
+            label={<Text style={{ backgroundColor: whiteLabel().headerBackground }}>Email</Text>}
             mode="outlined"
             outlineColor="#fff"
             activeOutlineColor="#fff"
@@ -150,7 +151,7 @@ export default function SignIn() {
           <TextInput
             style={[styles.textInput, { flex:1}]}
             ref={passwordInput}
-            label={<Text style={{ backgroundColor: PRIMARY_COLOR }}>Password</Text>}
+            label={<Text style={{ backgroundColor: whiteLabel().headerBackground }}>Password</Text>}
             mode="outlined"
             outlineColor="#fff"
             activeOutlineColor="#fff"
@@ -186,7 +187,7 @@ export default function SignIn() {
           <Text style={[styles.submitButtonText]}>
             {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
           </Text>
-          <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={PRIMARY_COLOR} icon={ faAngleDoubleRight } />
+          <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
         {step && <TouchableOpacity onPress={() => {}}>
           <Text style={styles.linkText}>Forgot Password</Text>
@@ -199,7 +200,7 @@ export default function SignIn() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: PRIMARY_COLOR,    
+    backgroundColor: whiteLabel().headerBackground,    
     justifyContent: 'center',  
     padding: 25,
     flex:1,
@@ -207,7 +208,8 @@ const styles = StyleSheet.create({
 
   logo: {
     width: 250,
-    height: 62,
+    height: 200,
+    resizeMode: "contain",
     marginBottom: 8
   },
   title: {
@@ -245,12 +247,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 24,
     borderRadius: 7,
-    backgroundColor: '#fff',
+    backgroundColor: whiteLabel().actionFullButtonBackground,
     marginBottom:10
   },
   
   submitButtonText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
