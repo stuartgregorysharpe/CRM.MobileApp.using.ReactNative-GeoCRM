@@ -79,16 +79,16 @@ export const checkFeatureIncludeParam = async (param) => {
   }
 }
 
-
-export const storeFilterData = async (value) => {
+export const storeFilterData = async (type , value) => {
   try {
     const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem('@filter', jsonValue)
+    await AsyncStorage.setItem(type, jsonValue)
   } catch (e) {      
     console.log("error", e);
   }
 }
-export const clearFilterData = async () => {
+
+export const clearFilterData = async (type) => {
   try {
     let value = {
       stage_id : [],
@@ -96,14 +96,19 @@ export const clearFilterData = async () => {
       dispositions : [],
       customs : []
     };
+    if(type === '@form_filter'){
+      value = {
+        form_type : [],        
+      };
+    }
     const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem('@filter', jsonValue)
+    await AsyncStorage.setItem(type, jsonValue)
   } catch (e) {      
     console.log("error", e);
   }
 }
 
-export const getFilterData = async () => {
+export const getFilterData = async (type) => {
   try {
     let initialParam = {
       stage_id : [],
@@ -111,7 +116,12 @@ export const getFilterData = async () => {
       dispositions : [],
       customs : []
     };
-    const jsonValue = await AsyncStorage.getItem('@filter')
+    if(type === '@form_filter'){
+      initialParam = {
+        form_type : []
+      };
+    }
+    const jsonValue = await AsyncStorage.getItem(type)
     return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialParam;
   } catch(e) {
     // error reading value
@@ -203,3 +213,4 @@ export const clearPipelineFilterData = async () => {
     console.log("error", e);
   }
 }
+

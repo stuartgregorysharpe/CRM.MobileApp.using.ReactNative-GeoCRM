@@ -58,9 +58,9 @@ export default function FilterView({ navigation, page, onClose }) {
   // }, [filterParmeterChanged]);  
 
   const loadFilterDataFromStorage = async () => {
-    var filterData = page == 'pipeline' ? await getPipelineFilterData() : await getFilterData();
+    //var filterData = page == 'pipeline' ? await getPipelineFilterData() : await getFilterData();
+    var filterData = page == 'pipeline' ? await getFilterData("@pipeline_filter") : await getFilterData("@filter");
     setFilters(filterData);
-
   }
 
   const getStartDate = (key) => {
@@ -300,10 +300,10 @@ export default function FilterView({ navigation, page, onClose }) {
 
     if (filters !== undefined) {
       setFilters(filters);
-      if (page == 'pipeline') {
-        await storePipelineFilterData(filters);
+      if (page == 'pipeline') {        
+        await storeFilterData( "@pipeline_filter", filters);
       } else {
-        await storeFilterData(filters);
+        await storeFilterData( "@filter", filters);
       }
 
     }
@@ -385,9 +385,10 @@ export default function FilterView({ navigation, page, onClose }) {
 
             setFilters(value);
             if (page == 'pipeline') {
-              await clearPipelineFilterData();
+              //await clearPipelineFilterData();
+              await clearFilterData('@pipeline_filter');
             } else {
-              await clearFilterData();
+              await clearFilterData('@filter');
             }
 
             console.log("clear filter app", value);

@@ -90,6 +90,27 @@ export default function LocationScreen(props) {
   },[]);
 
   useEffect(() => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      console.log("AppState", appState.current);
+    });
+
+    return () => {
+      console.log("Background");
+      subscription.remove();
+    };
+  }, []);
+
+
+  useEffect(() => {
       if( watchId.current === null || watchId.current === undefined){
           watchId.current = Geolocation.watchPosition(
             (position) => {                            
@@ -111,7 +132,9 @@ export default function LocationScreen(props) {
       }
 
       return () => {
+        console.log("End page");
           if (watchId.current) {
+            console.log("End page --");
               Geolocation.clearWatch(watchId.current);
           }
       }
@@ -506,6 +529,8 @@ export default function LocationScreen(props) {
                       }                                            
                     }}
                     initialRegion={{
+                      // latitude: currentLocation.latitude,
+                      // longitude: currentLocation.longitude,
                       latitude: myLocation.latitude !== null && myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
                       longitude: myLocation.longitude !== null  &&  myLocation.longitude !== undefined ? myLocation.longitude:  currentLocation.longitude,
                       latitudeDelta: 0.015,

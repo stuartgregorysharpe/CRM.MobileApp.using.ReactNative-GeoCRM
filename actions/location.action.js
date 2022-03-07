@@ -56,7 +56,7 @@ export const getLocationMapByRegion = async( currentLocation, box ) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();
-  var filters = await getFilterData();
+  var filters = await getFilterData('@filter');
   var zoom_bounds = box.map(item => item).join(',');
   console.log({
     user_id : user_id,

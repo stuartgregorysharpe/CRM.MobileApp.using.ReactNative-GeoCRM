@@ -8,7 +8,7 @@ import FilterButton from '../../../../components/FilterButton';
 import { getFormFilters } from '../../../../actions/forms.action';
 import FilterOptionsModal from '../../../../components/modal/FilterOptionsModal';
 
-export const FormFilterView = ({close}) => {
+export const FormFilterView = ({close , apply}) => {
 
     const [items, setItems]  =  useState([]);    
     const [modaVisible, setModalVisible] = useState(false);
@@ -26,7 +26,6 @@ export const FormFilterView = ({close}) => {
           console.log(e)
         })
     }
-
     
     const saveFilter = (value, isChecked) => {        
         var data = [...filters.form_type];
@@ -40,7 +39,8 @@ export const FormFilterView = ({close}) => {
             data.push(value);
             }                  
         }
-        filters.stage_id = data;       
+        filters.form_type = data;
+        setFilters(filters);
         
     }
 
@@ -79,7 +79,7 @@ export const FormFilterView = ({close}) => {
                     />
                 ))
             }
-            
+                        
             <Button 
                 mode="contained"  color={Colors.primaryColor}  uppercase={false} 
                 labelStyle={{
@@ -87,8 +87,10 @@ export const FormFilterView = ({close}) => {
                     fontFamily: Fonts.secondaryBold, 
                     letterSpacing: 0.2
                 }}
-                onPress={() => {
-
+                onPress={ async () => {
+                    await storeFilterData( "@form_filter", filters);
+                    close();
+                    apply(filters);
                 }}>
                 Apply Filters
             </Button>
@@ -109,9 +111,7 @@ export const FormFilterView = ({close}) => {
                     }} >
                 </FilterOptionsModal>      
             </Portal>            
-
-        </ScrollView>
-        
+        </ScrollView>        
     );
 }
 

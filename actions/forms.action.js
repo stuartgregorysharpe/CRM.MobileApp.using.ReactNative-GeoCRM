@@ -2,21 +2,23 @@
 import axios from "axios";
 import { getBaseUrl, getToken } from "../constants/Storage";
 
-export const getFormLists = async(form_type_id, location_id) => {    
+export const getFormLists = async(form_type_id, location_id , filters ) => {
+
     var base_url = await getBaseUrl();
-    var token = await getToken();    
+    var token = await getToken();
+    var form_type_ids = filters.form_type.map(item => item).join(',');
+    console.log("form_type_ids" , form_type_ids)
     return new Promise(function(resolve, reject) {        
         console.log(`${base_url}/forms/forms-list`)        
         //https://www.dev.georep.com/local_api_old/forms/forms-list        
-
         axios
-        .get('https://www.dev.georep.com/local_api_old/forms/forms-list', {
+        .get(`https://www.dev.georep.com/local_api_old/forms/forms-list?form_type_id=${form_type_ids}`, {
           params: {form_type_id: form_type_id, location_id: location_id},
           headers: {
             Authorization: 'Bearer ' + token
           }
         })
-        .then((res) => {          
+        .then((res) => {
           if (res.data == undefined) {            
             resolve([]);
           }          

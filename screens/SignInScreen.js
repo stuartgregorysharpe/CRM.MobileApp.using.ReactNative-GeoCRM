@@ -51,7 +51,7 @@ export default function SignIn() {
     }
 
     var token = await getToken();
-    var filters = await getFilterData();
+    var filters = await getFilterData('@filter');
     if(token != null){
       var userData = await getUserData();
       console.log("login userData ", userData);      

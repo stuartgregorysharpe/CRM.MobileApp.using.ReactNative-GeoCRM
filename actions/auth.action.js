@@ -24,7 +24,7 @@ export const Login = (email, password) => (dispatch) => {
         setToken(res.data.success.access_token);
         storeUserData(res.data.success.user);
         
-        var filters = await getFilterData();
+        var filters = await getFilterData('@filter');
         dispatch({ type: MAP_FILTERS, payload: filters });
         dispatch({ type: CHANGE_USER_INFO, payload: res.data.success.user });
         dispatch({ type: CHANGE_ACCESS_TOKEN, payload: res.data.success.access_token });

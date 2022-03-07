@@ -9,6 +9,7 @@ import { Provider } from 'react-native-paper';
 import { useDispatch ,useSelector } from 'react-redux';
 import { SLIDE_STATUS } from '../../../actions/actionTypes';
 import GrayBackground from '../../../components/GrayBackground';
+import { getFilterData } from '../../../constants/Storage';
 
 export default function FormsScreen({screenProps}) {
 
@@ -34,7 +35,7 @@ export default function FormsScreen({screenProps}) {
   });
 
   useEffect(() => {
-    _callFormLists()
+    _callFormLists(null)
   },[]);
 
   
@@ -44,8 +45,11 @@ export default function FormsScreen({screenProps}) {
     setFormLists(tmp);
   }
 
-  const _callFormLists = () => {
-    getFormLists('', '').then((res) => {      
+  const _callFormLists = async(filters) => {
+    if(filters === null){
+      filters = await getFilterData('@form_filter');
+    }
+    getFormLists('', '' , filters).then((res) => {      
       setFormLists(res);
       setOriginalFormLists(res);
     }).catch((e) => {
@@ -71,7 +75,11 @@ export default function FormsScreen({screenProps}) {
         <GrayBackground></GrayBackground>
         {
           crmStatus && isFilter &&           
-            <FormFilterView close={() => {
+            <FormFilterView 
+              apply={(filters) => {
+                _callFormLists(filters);
+              }}
+              close={() => {
               setIsFilter(false);
               dispatch({type: SLIDE_STATUS, payload: false});
             }} ></FormFilterView>
