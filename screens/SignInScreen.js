@@ -187,7 +187,7 @@ export default function SignIn() {
           <Text style={[styles.submitButtonText]}>
             {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
           </Text>
-          <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={ faAngleDoubleRight } />
+          <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={whiteLabel().signInButtonIcon} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
         {step && <TouchableOpacity onPress={() => {}}>
           <Text style={styles.linkText}>Forgot Password</Text>
@@ -247,12 +247,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 24,
     borderRadius: 7,
-    backgroundColor: whiteLabel().actionFullButtonBackground,
+    backgroundColor: whiteLabel().signInButtonBackground,
     marginBottom:10
   },
   
   submitButtonText: {
-    color: whiteLabel().actionFullButtonText,
+    color: whiteLabel().signInButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },
