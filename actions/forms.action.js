@@ -41,6 +41,7 @@ export const getFormFilters = async() => {
     var token = await getToken();    
     return new Promise(function(resolve, reject) {        
                 
+        console.log('https://www.dev.georep.com/local_api_old/forms/forms-filters');
         axios
         .get('https://www.dev.georep.com/local_api_old/forms/forms-filters', {          
           headers: {

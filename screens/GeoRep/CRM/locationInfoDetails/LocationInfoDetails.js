@@ -371,6 +371,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           </TouchableOpacity>
           }
           {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={() => {          
+            //console.log(props.navigation)
             props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
             }}>
 

@@ -28,6 +28,7 @@ import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { isInsidePoly } from '../../../constants/Consts';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import ClusteredMarker from './components/ClusteredMarker';
+import { RuleTester } from 'eslint';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -89,17 +90,17 @@ export default function LocationScreen(props) {
     };    
   },[]);
 
-  useEffect(() => {
+  useEffect(() => {      
       if( watchId.current === null || watchId.current === undefined){
           watchId.current = Geolocation.watchPosition(
-            (position) => {                            
+            (position) => {                              
                 console.log("Tracking..")
                 if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
                   setMyLocation({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                   });
-                } 
+                }      
             },
             (error) => {
                 console.log(error);
@@ -108,12 +109,11 @@ export default function LocationScreen(props) {
                 distanceFilter: 2,
             },
         );
-      }
-
+      }      
       return () => {
           if (watchId.current) {
               Geolocation.clearWatch(watchId.current);
-          }
+          }          
       }
   }, []);
     
