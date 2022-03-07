@@ -13,6 +13,8 @@ export const whiteLabel = () => {
         headerText: '#FFFFFF',
         inactiveIcon: '#B8B8B8',
         activeIcon: '#133C8B',
+        signInButtonBackground: '#FFFFFF',
+        signInButtonText: '#133C8B',
         clickButtonBackground: '#133C8B',
         clickButtonFill: '#FFFFFF',
         actionFullButtonBackground: '#133C8B',
