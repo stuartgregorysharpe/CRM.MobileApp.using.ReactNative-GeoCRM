@@ -15,6 +15,7 @@ export const whiteLabel = () => {
         activeIcon: '#133C8B',
         signInButtonBackground: '#FFFFFF',
         signInButtonText: '#133C8B',
+        signInButtonIcon: '#133C8B',
         clickButtonBackground: '#133C8B',
         clickButtonFill: '#FFFFFF',
         actionFullButtonBackground: '#133C8B',
