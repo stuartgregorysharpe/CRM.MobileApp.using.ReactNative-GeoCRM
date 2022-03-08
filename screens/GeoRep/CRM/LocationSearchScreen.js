@@ -335,7 +335,8 @@ export default function LocationSearchScreen(props) {
               style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
 
               <LocationInfoDetails
-                  ref={locationRef}
+                  {...props}
+                  ref={locationRef}                  
                   goPreviousPage={goPreviousPage}
                   pageType={pageType}
                   currentLocation={myLocation}

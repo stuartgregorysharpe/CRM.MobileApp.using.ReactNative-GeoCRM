@@ -198,6 +198,7 @@ export default function SignIn() {
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: whiteLabel().headerBackground,    

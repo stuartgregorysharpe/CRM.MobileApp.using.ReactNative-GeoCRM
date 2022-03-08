@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef} from 'react';
 import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -15,8 +15,8 @@ import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes'
 import Fonts from '../../../../constants/Fonts';
 import { grayBackground } from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
-import LocationInfoInput from '../locationInfoDetails/LocationInfoInput';
-import LocationInfoInputTablet from '../locationInfoDetails/LocationInfoInputTablet';
+import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
+import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
 
 const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
@@ -33,6 +33,7 @@ export default function LocationSpecificInfoScreen(props) {
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
+  const locationInfoRef = useRef();  
 
   const showLoopSlider = () => {
     setShowItem(1);
@@ -82,6 +83,7 @@ export default function LocationSpecificInfoScreen(props) {
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
   }, []);
 
+
   return (
     <SafeAreaView>
       {subSlideStatus && <TouchableOpacity
@@ -126,14 +128,17 @@ export default function LocationSpecificInfoScreen(props) {
         </View>
 
 
+        <View style={styles.innerContainer}>                            
+            <View style={[styles.cardBox]}>           
 
-        <View style={styles.innerContainer}>
-          
-                  
-            <View style={[styles.cardBox]}>
-              {/* <Text style={styles.boldText}>Outcome</Text> */}
-              
-              {
+              {        
+                locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
+                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
+              }
+
+              {/* {
+                
               locationInfo && DeviceInfo.isTablet() ? <LocationInfoInputTablet
                   navigation={props.navigation} 
                   screenProps={props.screenProps} 
@@ -146,7 +151,7 @@ export default function LocationSpecificInfoScreen(props) {
                   statusSubmit={statusSubmit} 
                   showLoopSlider={showLoopSlider} 
                   infoInput={locationInfo} />
-              }     
+              }      */}
 
             </View>                                       
         </View>
