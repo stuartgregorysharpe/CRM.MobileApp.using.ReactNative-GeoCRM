@@ -3,9 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { useSelector, useDispatch } from 'react-redux';
 
 import SvgIcon from './SvgIcon';
-import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR } from '../constants/Colors';
+import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
 import { CHANGE_SELECT_PROJECT, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+import { color } from 'react-native-reanimated';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -98,13 +99,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     fontFamily: Fonts.secondaryBold,
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     marginBottom: 12,
   },
   avatar: {
     justifyContent: 'center',
     alignItems: 'center',        
-    borderColor: PRIMARY_COLOR,
+    borderColor: whiteLabel().mainText,
     borderWidth: 3,
     paddingTop:Platform.OS ==  'ios' ? 6 : 0,
     width: 70,
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 35,    
   },
   avatarLabel: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     fontFamily: Fonts.secondaryBold,
     fontSize: 40
   },
@@ -139,10 +140,10 @@ const styles = StyleSheet.create({
   projectTitle: {
     width: '100%',
     paddingLeft: 8,
-    color: PRIMARY_COLOR,
+    color: whiteLabel().mainText,
     fontFamily: Fonts.primaryRegular,
     fontSize: 22,
-    borderBottomColor: PRIMARY_COLOR,
+    borderBottomColor: whiteLabel().mainText,
     borderBottomWidth: 2
   },
   selectBox: {

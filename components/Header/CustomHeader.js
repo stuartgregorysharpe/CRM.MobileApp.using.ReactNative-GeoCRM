@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, StyleSheet , Text , Image} from 'react-native';
-import { PRIMARY_COLOR } from '../../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import Images from '../../constants/Images';
 import HeaderRightView from './HeaderRightView';
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     height:62,    
     paddingLeft:15,
     paddingRight:0,
-    backgroundColor:PRIMARY_COLOR,    
+    backgroundColor:whiteLabel().headerBackground,    
   },
   layoutBar: {        
     flexDirection:'row',

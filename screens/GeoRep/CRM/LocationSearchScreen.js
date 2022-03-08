@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
-import Colors from '../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import {  IS_CALENDAR_SELECTION, LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo, getLocationSearchList, getLocationSearchListsByPage } from '../../../actions/location.action';
@@ -381,7 +381,7 @@ export default function LocationSearchScreen(props) {
                 <View style={styles.leftContainer}>
                   <TouchableOpacity 
                     disabled={isLoading} 
-                    style={[styles.buttonTextStyle, {backgroundColor: isLoading ? Colors.skeletonColor : isSelected ? Colors.disabledColor:Colors.primaryColor}]} 
+                    style={[styles.buttonTextStyle, {backgroundColor: isLoading ? Colors.skeletonColor : isSelected ? Colors.disabledColor:whiteLabel().actionFullButtonBackground}]} 
                     onPress={()=> {
                       if(!isLoading){
                         if(isSelected){
@@ -498,11 +498,11 @@ const styles = EStyleSheet.create(parse({
     paddingTop:Platform.OS == "android" ? 5 : 8,
     paddingBottom:Platform.OS == "android" ? 5 : 8,
     borderRadius:15,
-    backgroundColor: Colors.primaryColor
+    backgroundColor: whiteLabel().actionFullButtonBackground
   },  
 
   buttonText:{
-    color: Colors.whiteColor,
+    color: whiteLabel().actionFullButtonText,
     fontSize: 12,
     fontFamily: Fonts.secondaryBold,
   },

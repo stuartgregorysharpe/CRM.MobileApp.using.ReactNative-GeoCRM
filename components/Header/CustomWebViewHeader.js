@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, StyleSheet , Text , Image, Dimensions, TouchableOpacity, Platform} from 'react-native';
-import { PRIMARY_COLOR } from '../../constants/Colors';
+import { PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import Images from '../../constants/Images';
 import { style } from '../../constants/Styles';
 
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingLeft:15,
     paddingRight:0,
     paddingTop:Platform.OS == 'android' ? 20:0,
-    backgroundColor:PRIMARY_COLOR,    
+    backgroundColor: whiteLabel().headerBackground,    
     alignItems:'center',
     alignContent:'center'
     

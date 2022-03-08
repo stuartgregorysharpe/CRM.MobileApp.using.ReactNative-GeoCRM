@@ -8,20 +8,26 @@ export const DISABLED_COLOR = "#9D9FA2";
 export const TICK_BOX_COLOR = "#002a55";
 
 export const whiteLabel = () => {    
-  
   return {
     headerBackground: '#133C8B',
     headerText: '#FFFFFF',
     inactiveIcon: '#B8B8B8',
     activeIcon: '#133C8B',
-    actionFullButtonBackground: '133C8B',
+    signInButtonBackground: '#FFFFFF',
+    signInButtonText: '#133C8B',
+    signInButtonIcon: '#133C8B',
+    clickButtonBackground: '#133C8B',
+    clickButtonFill: '#FFFFFF',
+    actionFullButtonBackground: '#133C8B',
     actionFullButtonText: '#FFFFFF',
+    actionFullButtonIcon: '#FFFFFF',
     helpText: '#9D9FA2',
     mainText: '#133C8B',
     inputText: '#23282D',
     actionOutlineButtonText: '#133C8B',
+    actionOutlineButtonBorder: '#133C8B',
     fieldBorder: '#133C8B',
-    itemSelectedBakground: '#3D8FFB',
+    itemSelectedBackground: '#3D8FFB',
     itemSelectedIconFill: '#3D8FFB',
     itemSelectedText: '#FFFFFF',
     subText: '#9D9FA2',
@@ -34,9 +40,9 @@ export const whiteLabel = () => {
     endDayText: '#FFFFFF',
     countBoxBackground: '#133C8B',
     countBoxText: '#FFFFFF'
-  };
-
+  };    
 };
+
 
 export default {
     whiteColor:'#fff',

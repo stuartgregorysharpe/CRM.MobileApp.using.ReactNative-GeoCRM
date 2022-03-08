@@ -5,7 +5,7 @@ import {  useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { boxShadow } from '../../../constants/Styles';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR } from '../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import { Ticket } from './tabs/Ticket';
 import { getSupportIssues, postSupportEmail } from '../../../actions/support.action';
@@ -91,7 +91,7 @@ export default function SupportScreen({navigation, screenProps}) {
             <TouchableOpacity style={styles.submitButton} 
                 onPress={() => { ticketRef.current.callPostSupport()} } >
               <Text style={[styles.submitButtonText]}>Submit</Text>
-              <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color="#fff" icon={ faAngleDoubleRight } />
+              <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={ faAngleDoubleRight } />
             </TouchableOpacity>
           }
           
@@ -124,9 +124,9 @@ const styles = StyleSheet.create({
     color: DISABLED_COLOR
   },
   tabActiveText: {
-    color: PRIMARY_COLOR,
+    color: whiteLabel().activeTabText,
     fontFamily: Fonts.secondaryBold,
-    borderBottomColor: PRIMARY_COLOR,
+    borderBottomColor: whiteLabel().activeTabUnderline,
     borderBottomWidth: 2,
     paddingBottom: 2,
   },
@@ -141,12 +141,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
     borderRadius: 7,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: whiteLabel().actionFullButtonBackground
   },
   submitButtonText: {
-    color: '#fff',
+    color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold
   },

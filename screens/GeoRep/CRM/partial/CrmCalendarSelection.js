@@ -1,7 +1,7 @@
 import React , {useState, useEffect } from "react";
 import {View, TouchableOpacity  ,  Text , StyleSheet} from 'react-native';
 import SvgIcon from "../../../../components/SvgIcon";
-import Colors from "../../../../constants/Colors";
+import Colors, {whiteLabel} from "../../../../constants/Colors";
 import Fonts from "../../../../constants/Fonts";
 
 export function CrmCalendarSelection({ isDraw, onClickList , onClickDraw, onClickCancel, onClickAddToCalendar}) {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         paddingTop:Platform.OS == "android" ? 5 : 8,
         paddingBottom:Platform.OS == "android" ? 5 : 8,
         borderRadius:15,
-        backgroundColor: Colors.primaryColor
+        backgroundColor: whiteLabel().actionFullButtonBackground
     },
     buttonText:{
         color: Colors.whiteColor,

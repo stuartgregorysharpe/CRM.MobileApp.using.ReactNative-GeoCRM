@@ -11,7 +11,7 @@ import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
 import SvgIcon from '../../../components/SvgIcon';
 import GrayBackground from '../../../components/GrayBackground';
-import Colors from '../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
 import { IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
@@ -32,7 +32,7 @@ import ClusteredMarker from './components/ClusteredMarker';
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
     <Text style={styles.slidUpArrowText}>Pin Key</Text>
-    <FontAwesomeIcon size={12} icon={faChevronUp} color={Colors.primaryColor} />
+    <FontAwesomeIcon size={12} icon={faChevronUp} color={whiteLabel().actionFullButtonIcon} />
   </View>
 )
 
@@ -460,16 +460,17 @@ export default function LocationScreen(props) {
                 <TextInput
                   style={[styles.searchInput, boxShadow]}
                   placeholder='Search.....'
+                  placeholderTextColor={whiteLabel().helpText}
                 />
               </View>
             </TouchableOpacity>
 
-            <FontAwesomeIcon style={styles.searchIcon} size={16} color={Colors.disabledColor} icon={ faSearch } />
+            <FontAwesomeIcon style={styles.searchIcon} size={16} color={whiteLabel().inactiveIcon} icon={ faSearch } />
               <TouchableOpacity style={styles.filterImageButton} onPress={() => {
                 dispatch(getLocationFilters());
                 animation("filter");
               }}>
-              <SvgIcon icon="Filter" width="30px" height="30px" />
+              <SvgIcon icon="Filter" style={styles.Filter} width="30px" height="30px" />
             </TouchableOpacity>
           </View>
 
@@ -506,7 +507,7 @@ export default function LocationScreen(props) {
             currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
             <View style={styles.mapContainer}>
                   <ClusteredMapView
-                    clusterColor="red"
+                    clusterColor={whiteLabel().mainText}
                     ref={map}
                     //mapType="hybrid"
                     clusteringEnabled={true}
@@ -685,7 +686,7 @@ const styles = EStyleSheet.create(parse({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.primaryColor,
+    borderColor: whiteLabel().actionFullButtonBackground,
     backgroundColor: Colors.whiteColor,
     borderRadius: 6,
     paddingLeft: 8,
@@ -694,7 +695,7 @@ const styles = EStyleSheet.create(parse({
     paddingBottom: 2
   },
   slidUpArrowText: {
-    color: Colors.primaryColor,
+    color: whiteLabel().mainText,
     fontSize: 12,
     fontFamily: Fonts.secondaryMedium,
     marginRight: 8,
@@ -739,7 +740,7 @@ const styles = EStyleSheet.create(parse({
     position: 'absolute',
     top: 18,
     right: 20,
-  },  
+  },
   mapContainer: {
     flex: 1,  
   },
@@ -755,6 +756,6 @@ const styles = EStyleSheet.create(parse({
     position:'absolute', alignSelf:'center' , bottom:20 ,paddingLeft:15, paddingRight:15, paddingTop:10, paddingBottom:10,
     borderRadius:7,
     backgroundColor: 'rgba(255,255,255,0.9)'
-  }
+  },
 
 }));
