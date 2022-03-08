@@ -7,6 +7,7 @@ import Divider from '../../../../components/Divider';
 import FilterButton from '../../../../components/FilterButton';
 import { getFormFilters } from '../../../../actions/forms.action';
 import FilterOptionsModal from '../../../../components/modal/FilterOptionsModal';
+import { clearFilterData, getFilterData, storeFilterData } from '../../../../constants/Storage';
 
 export const FormFilterView = ({close , apply}) => {
 
@@ -15,9 +16,11 @@ export const FormFilterView = ({close , apply}) => {
     const [options, setOptions] = useState([]);
     const [filters, setFilters] = useState({ form_type : [] })
 
-    useEffect(() => {
-        _callFormFilters()
+    useEffect(() => { 
+        _callFormFilters();
+        initFilter();
     },[]);
+
     const _callFormFilters = () =>{        
         getFormFilters().then((res) => {    
             console.log("res", JSON.stringify(res));
@@ -26,7 +29,12 @@ export const FormFilterView = ({close , apply}) => {
           console.log(e)
         })
     }
-    
+
+    const initFilter = async() => {
+        var savedFilters = await getFilterData("@form_filter");
+        setFilters(savedFilters);
+    }    
+
     const saveFilter = (value, isChecked) => {        
         var data = [...filters.form_type];
         var index = data.indexOf(value);
@@ -60,6 +68,7 @@ export const FormFilterView = ({close , apply}) => {
                     color={Colors.selectedRedColor}
                     uppercase={false} 
                     onPress={ async() => {                                         
+                        clearFilterData("@form_filter");
                         close()
                     }}
                 >
@@ -71,6 +80,7 @@ export const FormFilterView = ({close , apply}) => {
                 items.map((item , key) => (
                     <FilterButton key={key} text={item.filter_label} 
                         onPress={() => {       
+
                             setOptions(item.options);
                             if(item.options.length > 0){
                                 setModalVisible(true)
@@ -88,6 +98,7 @@ export const FormFilterView = ({close , apply}) => {
                     letterSpacing: 0.2
                 }}
                 onPress={ async () => {
+                    console.log("fave form filter", filters);
                     await storeFilterData( "@form_filter", filters);
                     close();
                     apply(filters);

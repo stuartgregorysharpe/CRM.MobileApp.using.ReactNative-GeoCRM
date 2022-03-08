@@ -8,7 +8,19 @@ import CheckBox from '@react-native-community/checkbox';
 const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedType, fieldType, onValueChanged }) => {
   
   const getCheckedStatus = (id) => {
-    if (selectedType === "stage") {
+
+    if(selectedType === "form_type"){
+      if (filters.form_type === undefined) {
+        return false;
+      }
+      var flag = false;
+      filters.form_type.forEach(element => {
+        if (element === id) {
+          flag = true;
+        }
+      });
+      return flag;
+    }else if (selectedType === "stage") {
       if (filters.stage_id === undefined) {
         return false;
       }

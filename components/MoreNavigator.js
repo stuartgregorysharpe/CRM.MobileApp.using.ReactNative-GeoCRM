@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import HomeScreen from '../screens/GeoRep/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
-import RepFormsScreen from '../screens/GeoRep/Forms/FormsScreen';
+import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
 import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
@@ -227,12 +227,16 @@ export default function RepMoreScreen({navigation}) {
       >
         {props => <CalendarScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
+      
+      
       {selectProject == 'geo_rep' && componentListOne.includes('forms') && <Stack.Screen
         name="RepForms"
         options={{ header: () => null }}
       >
         {props => <RepFormsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
+
+
       {selectProject == 'geo_rep' && componentListOne.includes('content_library') && <Stack.Screen
         name="RepContentLibrary"
         options={{ header: () => null }}

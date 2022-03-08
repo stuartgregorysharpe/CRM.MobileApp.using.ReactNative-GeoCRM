@@ -1,5 +1,5 @@
 import React, { useEffect , useState } from 'react';
-import { SafeAreaView, Text, View, Dimensions, StyleSheet ,FlatList } from 'react-native';
+import { SafeAreaView, Text, View, Dimensions, StyleSheet ,FlatList ,TouchableOpacity, Platform } from 'react-native';
 import { getFormFilters, getFormLists } from '../../../actions/forms.action';
 import SearchBar from '../../../components/SearchBar';
 import Colors from '../../../constants/Colors';
@@ -10,8 +10,12 @@ import { useDispatch ,useSelector } from 'react-redux';
 import { SLIDE_STATUS } from '../../../actions/actionTypes';
 import GrayBackground from '../../../components/GrayBackground';
 import { getFilterData } from '../../../constants/Storage';
+import { style } from '../../../constants/Styles';
+import DeviceInfo from 'react-native-device-info';
 
-export default function FormsScreen({screenProps}) {
+let isInfoWindow = false;
+
+export default function FormsScreen(props) {
 
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
@@ -22,15 +26,29 @@ export default function FormsScreen({screenProps}) {
   const [y, setY] = useState(0);
   const [bubbleText, setBubleText] = useState("");
   const [isFilter, setIsFilter] = useState(false);
-  const crmStatus = useSelector(state => state.rep.crmSlideStatus);  
+  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+  
 
   const dispatch = useDispatch()
 
   useEffect(() => {    
-    if (screenProps) {
-      screenProps.setOptions({
-        title: "Forms"
+
+    //console.log("forms prps", props)
+
+    if (props.screenProps) {
+      props.screenProps.setOptions({            
+        headerTitle:() =>{
+          return(<TouchableOpacity                     
+             onPress={
+            () =>{                
+              
+            }}>            
+            <View style={style.headerTitleContainerStyle}>                            
+              <Text style={style.headerTitle} >Forms</Text>
+          </View></TouchableOpacity>)
+        }
       });
+
     }    
   });
 
@@ -46,9 +64,12 @@ export default function FormsScreen({screenProps}) {
   }
 
   const _callFormLists = async(filters) => {
+
     if(filters === null){
       filters = await getFilterData('@form_filter');
+      console.log("store filters", filters)
     }
+
     getFormLists('', '' , filters).then((res) => {      
       setFormLists(res);
       setOriginalFormLists(res);
@@ -58,19 +79,32 @@ export default function FormsScreen({screenProps}) {
   }
 
   const _onTouchStart = (e , text) => {    
+    console.log("touch press");
+    isInfoWindow = true;
     setX(e.pageX);
     setY(e.pageY);
     setLocationX(e.locationX);
     setLocationY(e.locationY);
     setBubleText(text);
     setTimeout(() =>{
-      setIsInfo(true);
-    },100)    
+      setIsInfo(true);            
+    },100)
+
+  }
+
+  const getShift  = () =>{
+    if(Platform.OS === 'ios'){
+      return 65;
+    }
+    return 35;
   }
 
   return (
     <Provider>
-    <View style={styles.container}   onTouchStart={(e) => { setIsInfo(false) }} >   
+    <View style={styles.container}   onTouchStart={(e) => { console.log(" main touch press"); 
+        
+          setIsInfo(false);          
+        }} >   
 
         <GrayBackground></GrayBackground>
         {
@@ -104,7 +138,17 @@ export default function FormsScreen({screenProps}) {
                   onLayout={(event) => {
                     let {x, y, width, height} = event.nativeEvent.layout                     
                   }}>
-                  <FormListItem key={index} item={item} onTouchStart={(e , text) => _onTouchStart(e , text) }></FormListItem>
+                  <FormListItem key={index} item={item} 
+                    onItemPress={() => {
+                      console.log("item press");
+                      if(!isInfoWindow){
+                        props.navigation.navigate("FormQuestions", {'data' : item });
+                      }else{
+                        isInfoWindow = false;
+                      }
+                        
+                    }}
+                    onTouchStart={(e , text) => _onTouchStart(e , text) }></FormListItem>
                 </View>                
                 )
             }
@@ -114,7 +158,7 @@ export default function FormsScreen({screenProps}) {
         {
           isInfo &&
           <View style={{
-              top: y - locationY - 65,
+              top: y - locationY - getShift(),
               position:'absolute',                                
               borderRadius: 5,                
               width:Dimensions.get("window").width,                               

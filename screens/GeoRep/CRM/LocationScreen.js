@@ -89,33 +89,31 @@ export default function LocationScreen(props) {
     };    
   },[]);
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        console.log("App has come to the foreground!");
-      }
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener("change", nextAppState => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === "active"
+  //     ) {
+  //       console.log("App has come to the foreground!");
+  //     }
+  //     appState.current = nextAppState;
+  //     setAppStateVisible(appState.current);
+  //     console.log("AppState", appState.current);
+  //   });
 
-      appState.current = nextAppState;
-      setAppStateVisible(appState.current);
-      console.log("AppState", appState.current);
-    });
-
-    return () => {
-      console.log("Background");
-      subscription.remove();
-    };
-  }, []);
-
+  //   return () => {
+  //     console.log("Background");
+  //     subscription.remove();
+  //   };
+  // }, []);
 
   useEffect(() => {
       if( watchId.current === null || watchId.current === undefined){
           watchId.current = Geolocation.watchPosition(
             (position) => {                            
                 console.log("Tracking..")
-                if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
+                if(myLocation.latitude !== position.coords.latitude || myLocation.longitude !== position.coords.longitude){
                   setMyLocation({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
@@ -126,7 +124,7 @@ export default function LocationScreen(props) {
                 console.log(error);
             },
             {
-                distanceFilter: 2,
+                distanceFilter: 3,
             },
         );
       }
@@ -334,8 +332,7 @@ export default function LocationScreen(props) {
             id: id++, // keep incrementing id to trigger display refresh
             coordinates: [...editing.coordinates],
             holes,                          
-        });                        
-                                
+        });                                        
     }
   }
 

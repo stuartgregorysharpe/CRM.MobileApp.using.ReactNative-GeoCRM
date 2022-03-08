@@ -1,4 +1,5 @@
-import GetLocation from 'react-native-get-location';
+import Geolocation from 'react-native-geolocation-service';
+
 import axios from "axios";
 import {
   CHANGE_LOGIN_STATUS,
@@ -107,17 +108,15 @@ export const getLocationMapByRegion = async( currentLocation, box ) => {
 export const getLocationsMap = () => (dispatch, getState) => {    
   dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });  
   console.log("logss== ",getState().selection.filters);
-  GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 15000,
-  })
-    .then(location => {
-      console.log("current location" , location);
-      if(location.latitude !== undefined){
+
+  Geolocation.getCurrentPosition(
+    position => {
+      const {latitude, longitude} = position.coords;
+      if(latitude !== undefined){
         dispatch({
           type: CHANGE_CURRENT_LOCATION, payload: {          
-             latitude: location.latitude,
-             longitude: location.longitude,          
+             latitude: latitude,
+             longitude: longitude,          
           }
         })
       }
@@ -131,8 +130,8 @@ export const getLocationsMap = () => (dispatch, getState) => {
           cancelToken: cancelToken.token,
           params: {
             user_id: getState().selection.payload.user_scopes.geo_rep.user_id,            
-            current_latitude: location.latitude,
-            current_longitude: location.longitude,
+            current_latitude: latitude,
+            current_longitude: longitude,
             filters: getState().selection.filters
           },
           headers: {
@@ -165,12 +164,14 @@ export const getLocationsMap = () => (dispatch, getState) => {
           //dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
           console.log(err);
         })
-    })
-    .catch(error => {
-      console.log("get location error", error);  
-      const { code, message } = error;
-      console.warn(code, message);
-    });
+    },
+    error => {
+      console.log(error.code, error.message);
+    },
+    {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+  );
+
+ 
 }
 
 export const getLocationFilters = () => (dispatch, getState) => {
@@ -213,28 +214,16 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
 
     return new Promise(function(resolve, reject) {
 
-        GetLocation.getCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: 15000,
-        })
-        .then(location => {
-
-          console.log("base_url ---- ",base_url);
-          console.log({
-            user_id : user_id,
-            filters : filters,
-            current_latitude : location.latitude,
-            current_longitude : location.longitude, 
-            page_nr : pageNumber
-          });;
-
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
           axios
           .get(`${base_url}/locations/location-search-list`, {
             params: {
               user_id : user_id,
               filters : filters,
-              current_latitude : location.latitude,
-              current_longitude : location.longitude, 
+              current_latitude : latitude,
+              current_longitude : longitude, 
               page_nr : pageNumber
             },
             headers: {
@@ -262,11 +251,14 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
             console.log(err);
           })
 
-        })
-        .catch(error => {
-          console.log("get location error", error);  
-          const { code, message } = error;      
-        });
+        },
+        error => {
+          console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+
+        
     });            
 }
 
@@ -274,12 +266,11 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
 export const getLocationSearchList = () => (dispatch, getState) => {
 
   // update current location
-  GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 15000,
-  })
-  .then(location => {    
-      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });
+
+  Geolocation.getCurrentPosition(
+    position => {
+      const {latitude, longitude} = position.coords;
+      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: latitude,longitude: longitude } });
       // call api 
       dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });  
       console.log("filters parameter for search lists == ", getState().selection.filters);
@@ -294,8 +285,8 @@ export const getLocationSearchList = () => (dispatch, getState) => {
         params: {
           user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
           filters: getState().selection.filters,
-          current_latitude : location.latitude,
-          current_longitude : location.longitude
+          current_latitude : latitude,
+          current_longitude : longitude
         },
         headers: {
           Authorization: 'Bearer ' + getState().selection.token
@@ -317,13 +308,14 @@ export const getLocationSearchList = () => (dispatch, getState) => {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         console.log(err);
       })
-      
+    },
+    error => {
+      console.log(error.code, error.message);
+    },
+    {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+  );
 
-  })
-  .catch(error => {
-    console.log("get location error", error);  
-    const { code, message } = error;      
-  });
+  
     
 
 }
