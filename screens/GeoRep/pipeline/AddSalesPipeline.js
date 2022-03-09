@@ -10,7 +10,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../components/Skeleton';
 import Divider from '../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, TEXT_COLOR, GRAY_COLOR, whiteLabel } from '../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, TEXT_COLOR, GRAY_COLOR, whiteLabel } from '../../../constants/Colors';
 import { getGeocoding, getLeadFields, getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import CustomPicker from '../../../components/modal/CustomPicker';
@@ -33,7 +33,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
   const [dropdownId, setDropdownId] = useState(0);
   const [isDropdownModal, setIsDropdownModal] = useState([]);
   const [dropdownItems, setDropdownItems] = useState([]);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [canShowAlert, setCanShowAlert] = useState(false);
   const [message, setMessage] = useState("");
   const [isCurrentLocation, setIsCurrentLocation] = useState("0");
   const [myLocation, setMyLocation] = useState(currentLocation);
@@ -70,6 +70,12 @@ export default function AddSalesPipeline({ location_id, onClose }) {
   const [customersList, setCustomersList] = useState([]);
   const [canShowAutoComplete, setCanShowAutoComplete] = useState(false);
   const [canSearch, setCanSearch] = useState(false);
+  const [isCustomerMandatory, setIsCustomerMandatory] = useState(false);
+  const [isOpportunityNameCompulsory, setIsOpportunityNameCompulsory] = useState(false);
+  const [isStageCompulsory, setIsStageCompulsory] = useState(false);
+  const [isOutcomeCompulsory, setIsOutcomeCompulsory] = useState(false);
+  const [isOpportunityStatusCompulsory, setOpportunityStatusCompulsory] = useState(false);
+  const [addDone, SetAddDone] = useState(false);
 
   let requestParams = {}
 
@@ -101,7 +107,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
         if (selected_location_id != 0) requestParams['location_id'] = selected_location_id;
         requestParams['campaign_id'] = selectedPipelineId;
         getAddOpportunityFields(requestParams).then((res) => {
-          console.log(JSON.stringify(res));
+          // console.log(JSON.stringify(res));
           initPostData(res);
           setIsLoading(false);
         }).catch((e) => {
@@ -114,8 +120,39 @@ export default function AddSalesPipeline({ location_id, onClose }) {
   }, [isLoading]);
 
   const initPostData = (res) => {
+    console.log("initpost: ", JSON.stringify(res));
     var opportunity = [];
     var disposition = [];
+
+    let opportunityFieldList = [];
+    opportunityFieldList = [...res.opportunity_fields];
+
+    opportunityFieldList.forEach(element => {
+      opportunity.push({
+        'opportunity_field_id': element.opportunity_field_id,
+        'value': element.value,
+        'field_name': element.field_name,
+        'compulsory': element.rule_compulsory,
+        'canShowError': false
+      });
+    });
+
+    console.log("initpost:opp: ", JSON.stringify(opportunity));
+    setOpporunityFields([...opportunity]);
+
+    res.disposition_fields.forEach((element) => {
+      disposition.push({
+        'disposition_field_id': element.disposition_field_id,
+        'value': element.value,
+        'field_name': element.field_name,
+        'compulsory': element.rule_compulsory,
+        'canShowError': false
+      });
+    });
+
+    console.log("initpost:disp: ", JSON.stringify(disposition));
+    setDispositionFields([...disposition]);
+
     setAddOpportunityResponse(res);
     setOpportunity_fields(res.opportunity_fields);
     setDisposition_fields(res.disposition_fields);
@@ -125,30 +162,127 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     }
 
     if (res.current_stage_id) {
-      let outcomesList = addOpportunityResponse.outcomes.filter(outcome => outcome.linked_stage_id == res.current_stage_id)
-      console.log(outcomesList);
+      let outcomesList = res.outcomes.filter(outcome => outcome.linked_stage_id == res.current_stage_id)
+      // console.log(outcomesList);
       setSelectedOutcomes([...outcomesList]);
       setSelectedStageId(res.current_stage_id);
-
-
     }
 
     if (res.current_opportunity_status_id) {
       setSelectedOpportunityStatusId(res.current_opportunity_status_id)
     }
+    // console.log("gkkjkl:",res.opportunity_fields);
 
-    res.opportunity_fields.forEach((element) => {
-      opportunity.push({ 'opportunity_field_id': element.opportunity_field_id, 'value': element.value, 'field_name': element.field_name });
-    })
-
-    res.disposition_fields.forEach((element) => {
-      disposition.push({ 'disposition_field_id': element.disposition_field_id, 'value': element.value, 'field_name': element.field_name });
-    })
-    setOpporunityFields(opportunity);
-    setDispositionFields([...disposition]);
   }
 
   const handleSubmit = () => {
+    var canSubmit = true;
+
+    if (!selectedCustomerId || selectedCustomerId == '') {
+      setIsCustomerMandatory(true);
+      canSubmit = false;
+    }
+
+    if (!opportunityName || opportunityName === '') {
+      canSubmit = false;
+      setIsOpportunityNameCompulsory(true);
+
+    }
+
+    if (!selectedStageId || selectedStageId == '') {
+      setIsStageCompulsory(true);
+      canSubmit = false;
+    } else {
+      setIsStageCompulsory(false);
+    }
+
+    if (!selectedOutcomeId || selectedOutcomeId == '') {
+      setIsOutcomeCompulsory(true);
+      canSubmit = false;
+    }
+
+    let isExist = false;
+    let disposition = [...dispositionFields];
+    for (let i = 0; i < disposition.length; i++) {
+      if (disposition[i].compulsory === '1' && (!disposition[i].value || disposition[i].value == '')) {
+        disposition[i].canShowError = true;
+        isExist = true;
+      } else {
+        disposition[i].canShowError = false;
+      }
+    }
+
+    // if(isExist){
+    //   canSubmit=false;
+    // }else{
+    //   canSubmit=true;
+    // }
+
+    isExist = false;
+    let opportunity = [...opporunityFields];
+    for (let i = 0; i < opportunity.length; i++) {
+      if (opportunity[i].compulsory === '1' && (!opportunity[i].value || opportunity[i].value == '')) {
+        opportunity[i].canShowError = true;
+        isExist = true;
+      } else {
+        opportunity[i].canShowError = false;
+      }
+    }
+
+    // if(isExist){
+    //   canSubmit = false;
+    // }else{
+    //   canSubmit=true;
+    // }
+
+    setDispositionFields([...disposition]);
+    setOpporunityFields([...opportunity]);
+
+    if (!canSubmit) {
+      setCanShowAlert(true);
+      setMessage('Please complete the compulsory fields');
+      return;
+    }
+
+    let dispostions = [];
+    let opportunity_fields = [];
+
+    dispostions.forEach(item => {
+      dispostions.push({
+        dispostion_field_id: item.disposition_field_id,
+        value: item.value
+      });
+    });
+
+    opporunityFields.forEach(item => {
+      opportunity_fields.push({
+        opportunity_field_id: item.opportunity_field_id,
+        value: item.value
+      });
+    });
+
+    let params = {
+      "opportunity_id": null,
+      "location_id": selectedCustomerId,
+      "contact_id": selectedContact,
+      "opportunity_name": opportunityName,
+      "selected_campaign_id": selectedPipelineId,
+      "current_stage_id": selectedStageId,
+      "current_outcome_id": selectedOutcomeId,
+      "current_opportunity_status_id": selectedOpportunityStatus,
+      "dispostions": dispostions,
+      "opportunity_fields": opportunity_fields
+    }
+
+    console.log("request",JSON.stringify(params));
+    postAddOpportunityFields(params, uuid.v4()).then((res) => {
+      SetAddDone(true);
+      setMessage("Opportunity added sucessfully");
+      setCanShowAlert(true);
+    }).catch((error) => {
+      setMessage("Failed");
+      setCanShowAlert(true);
+    });
     // let params = {
     //   "opportunity_id": null,
     //   "location_id": selectedContact,
@@ -161,12 +295,12 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     // }    
     // postAddOpportunityFields(params, uuid.v4())
     // .then((res) => {
-      // setMessage("Added Opportunity successfully");
-      // setIsSuccess(true);
+    // setMessage("Added Opportunity successfully");
+    // setIsSuccess(true);
     // })
     // .catch((error) =>{     
-      // setMessage("Failed");
-      // setIsSuccess(true);
+    // setMessage("Failed");
+    // setIsSuccess(true);
     // })        
   }
 
@@ -176,10 +310,10 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     let params = {};
     params['campaign_id'] = selectedPipelineId;
     params['search_text'] = text;
-    console.log("Search: ", params);
+    // console.log("Search: ", params);
 
     getAddOpportunityContacts(params, token).then((resp) => {
-      console.log("Contacts: ", resp);
+      // console.log("Contacts: ", resp);
       setCustomersList([...resp]);
       if (resp && resp.length > 0) {
         setCanShowAutoComplete(true);
@@ -194,7 +328,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
 
   const getOpportunityTextValue = (opporunityFields, id) => {
-
+    // console.log("getOpportunityTextValue", opporunityFields);
     if (opporunityFields !== undefined && opporunityFields.length > 0) {
       var res = "";
       opporunityFields.forEach((element) => {
@@ -468,9 +602,12 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     <Animated.View>
       <ScrollView style={[styles.container]} >
 
-        <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
-          setIsSuccess(false);
+        <AlertDialog visible={canShowAlert} message={message} onModalClose={() => {
+          setCanShowAlert(false);
           setMessage('');
+          if(addDone){
+            onClose();
+          }
         }}></AlertDialog>
 
         <TouchableOpacity style={{ padding: 6 }} onPress={() => {
@@ -492,7 +629,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
           </TouchableOpacity> */}
 
           <TouchableOpacity onPress={() => {
-            console.log("Clicked input");
+            // console.log("Clicked input");
             setCanSearch(true)
           }}
             activeOpacity={1}>
@@ -503,14 +640,14 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                 label={<Text style={{ backgroundColor: BG_COLOR }}>{'Select Customer'}</Text>}
                 value={searchCustomer}//customersList.find(x => x.location_id == selectedCustomerId)?.name}//getTextValue(customMasterFields, field.custom_master_field_id)}
                 mode="outlined"
-                outlineColor={DISABLED_COLOR}
-                activeOutlineColor={DISABLED_COLOR}
+                outlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                activeOutlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : DISABLED_COLOR}
                 onKeyPress={(e) => {
-                  console.log(e.nativeEvent.key);
+                  // console.log(e.nativeEvent.key);
                   setCanSearch(true);
                 }}
                 onChangeText={text => {
-                  console.log("on change text");
+                  // console.log("on change text");
                   setSearchCustomer(text);
                 }}
                 blurOnSubmit={false}
@@ -523,7 +660,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
           </TouchableOpacity>
           {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60, maxHeight: 180, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
             <TouchableWithoutFeedback onPress={() => {
-              console.log("clicked outside");
+              // console.log("clicked outside");
               setCanShowAutoComplete(!canShowAutoComplete);
               setCanSearch(false);
             }
@@ -550,11 +687,11 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
           <TouchableOpacity style={[styles.textInput, styles.dropdownBox]} onPress={() => {
             if (contacts.length > 0) {
-              console.log("Contacts available", JSON.stringify(contacts));
+              // console.log("Contacts available", JSON.stringify(contacts));
               setContactModalVisible(!contactModalVisible);
             } else {
               setMessage('No contacts available. Please make sure a Customer has been selected first');
-              setIsSuccess(true);
+              setCanShowAlert(true);
             }
           }}>
             <Text style={{ backgroundColor: BG_COLOR }}>{selectedContact ? contacts.find(x => x.contact_id == selectedContact)?.contact_name : 'Select Contact'}</Text>
@@ -568,10 +705,10 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                 label={<Text style={{ backgroundColor: BG_COLOR }}>{'Opportunity Name'}</Text>}
                 value={opportunityName}//getTextValue(customMasterFields, field.custom_master_field_id)}
                 mode="outlined"
-                outlineColor={DISABLED_COLOR}
-                activeOutlineColor={DISABLED_COLOR}
+                outlineColor={isOpportunityNameCompulsory ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                activeOutlineColor={isOpportunityNameCompulsory ? whiteLabel().endDayBackground : DISABLED_COLOR}
                 onChangeText={text => {
-                  console.log("on change text");
+                  // console.log("on change text");
                   setOpportunityName(text);
                 }}
                 blurOnSubmit={false}
@@ -588,7 +725,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             <Text style={{ backgroundColor: BG_COLOR }}>{addOpportunityResponse && addOpportunityResponse.campaigns && addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId) ? addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId).campaign_name : 'Select Pipeline'}</Text>
             <SvgIcon icon="Drop_Down" width='23px' height='23px' />
           </TouchableOpacity>
-          <View style={styles.refreshBox}>
+          <View style={[styles.refreshBox, { borderColor: isStageCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isStageCompulsory ? 1 : 0 }]}>
             <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
               <Text style={[styles.shadowBoxText]}>Stage</Text>
               <View>
@@ -601,7 +738,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
-          <View style={styles.refreshBox}>
+          <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor }]}>
             <TouchableOpacity style={styles.shadowBox} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
               <Text style={styles.shadowBoxText}>Outcome</Text>
               <View>
@@ -630,10 +767,12 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               }}>Dispositions</Text>
             </View>
             {disposition_fields.map((field, key) => {
+              // console.log("RERUN: ", field);
+              let canShowError = dispositionFields.find(x => x.disposition_field_id === field.disposition_field_id)?.canShowError;
               if (field.field_type == "dropdown") {
                 index++;
                 return (
-                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox]} onPress={() => {
+                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR }]} onPress={() => {
                     setDropdownItems(field.preset_options);
                     setIsDisposition(true);
                     if (field.preset_options.length > 0) {
@@ -664,17 +803,17 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           value={getDispositionTextValue(dispositionFields, field.disposition_field_id)}
                           mode="outlined"
-                          outlineColor={DISABLED_COLOR}
-                          activeOutlineColor={DISABLED_COLOR}
+                          outlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                          activeOutlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
                           left={field.add_prefix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_prefix} />}
                           right={field.add_suffix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_suffix} />}
                           onChangeText={text => {
-                            console.log("on change text");
+                            // console.log("on change text");
                             var tmp = [...dispositionFields];
-                            console.log(JSON.stringify(tmp));
+                            // console.log(JSON.stringify(tmp));
                             tmp.forEach((element) => {
                               if (element.disposition_field_id === field.disposition_field_id) {
-                                console.log("enter", text);
+                                // console.log("enter", text);
                                 element.value = text;
                               }
                             });
@@ -709,10 +848,11 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               }}>Opportunity Details</Text>
             </View>
             {opportunity_fields.map((field, key) => {
+              let canShowError = opporunityFields.find(x => x.opportunity_field_id === field.opportunity_field_id)?.canShowError;
               if (field.field_type == "dropdown") {
                 index++;
                 return (
-                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox]} onPress={() => {
+                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR }]} onPress={() => {
                     setDropdownItems(field.preset_options);
                     setIsDisposition(false);
                     if (field.preset_options.length > 0) {
@@ -743,16 +883,16 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           value={getOpportunityTextValue(opporunityFields, field.opportunity_field_id)}
                           mode="outlined"
-                          outlineColor={DISABLED_COLOR}
-                          activeOutlineColor={DISABLED_COLOR}
+                          outlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                          activeOutlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
                           left={field.add_prefix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_prefix} />}
                           right={field.add_suffix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_suffix} />}
                           onChangeText={text => {
-                            console.log("on change text");
+                            // console.log("on change text");
                             var tmp = [...opporunityFields];
                             tmp.forEach((element) => {
                               if (element.opportunity_field_id === field.opportunity_field_id) {
-                                console.log("enter", text);
+                                // console.log("enter", text);
                                 element.value = text;
                               }
                             });
@@ -788,7 +928,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.addButton} onPress={() => { }}>
+          <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
             <Text style={[styles.addButtonText]}>Add</Text>
             <FontAwesomeIcon style={styles.addButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={faAngleDoubleRight} />
           </TouchableOpacity>

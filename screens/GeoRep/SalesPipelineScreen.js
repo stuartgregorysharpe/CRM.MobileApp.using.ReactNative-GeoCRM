@@ -144,7 +144,7 @@ export default function SalesPipelineScreen(props) {
     return (
       <TouchableOpacity>
         <View style={styles.itemContainer}>
-          <View style={styles.opportunityStyle}>
+          <View style={[styles.opportunityStyle,{alignItems:'baseline'}]}>
             <View style={[styles.dotIndicator, { backgroundColor: item.opportunity_status_color }]}></View>
             <View style={{ marginHorizontal: 5 }}>
               <Text style={styles.opportunityTitle}>{item.opportunity_name}</Text>
@@ -212,6 +212,7 @@ export default function SalesPipelineScreen(props) {
 
         {canAddPipeline && <AddSalesPipeline props={props} onClose={() => {
           // setShowItem("refresh"),
+          loadPipeLineData();
           setCanAddPipeline(false);
         }} />
         }
@@ -349,9 +350,9 @@ const styles = EStyleSheet.create(parse({
     marginLeft: -5
   },
   dotIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   opportunityTitle: {
     fontFamily: 'Gilroy-Bold',
