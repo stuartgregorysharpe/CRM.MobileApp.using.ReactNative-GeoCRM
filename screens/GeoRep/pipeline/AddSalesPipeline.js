@@ -178,15 +178,20 @@ export default function AddSalesPipeline({ location_id, onClose }) {
   const handleSubmit = () => {
     var canSubmit = true;
 
+    
     if (!selectedCustomerId || selectedCustomerId == '') {
       setIsCustomerMandatory(true);
       canSubmit = false;
+    }else{
+      setIsCustomerMandatory(false);
     }
 
     if (!opportunityName || opportunityName === '') {
       canSubmit = false;
       setIsOpportunityNameCompulsory(true);
 
+    }else{
+      setIsOpportunityNameCompulsory(false);
     }
 
     if (!selectedStageId || selectedStageId == '') {
@@ -199,14 +204,16 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     if (!selectedOutcomeId || selectedOutcomeId == '') {
       setIsOutcomeCompulsory(true);
       canSubmit = false;
+    }else{
+      setIsOutcomeCompulsory(false);
     }
 
-    let isExist = false;
+    let mandatoryDispositionExist = false;
     let disposition = [...dispositionFields];
     for (let i = 0; i < disposition.length; i++) {
       if (disposition[i].compulsory === '1' && (!disposition[i].value || disposition[i].value == '')) {
         disposition[i].canShowError = true;
-        isExist = true;
+        mandatoryDispositionExist = true;
       } else {
         disposition[i].canShowError = false;
       }
@@ -218,22 +225,22 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     //   canSubmit=true;
     // }
 
-    isExist = false;
+    let mandatoryOpportunityExist = false;
     let opportunity = [...opporunityFields];
     for (let i = 0; i < opportunity.length; i++) {
       if (opportunity[i].compulsory === '1' && (!opportunity[i].value || opportunity[i].value == '')) {
         opportunity[i].canShowError = true;
-        isExist = true;
+        mandatoryOpportunityExist = true;
       } else {
         opportunity[i].canShowError = false;
       }
     }
 
-    // if(isExist){
-    //   canSubmit = false;
-    // }else{
-    //   canSubmit=true;
-    // }
+  
+    if(mandatoryDispositionExist || mandatoryOpportunityExist){
+      console.log("kljdfksdjfkjdsk");
+      canSubmit = false;
+    }
 
     setDispositionFields([...disposition]);
     setOpporunityFields([...opportunity]);
@@ -274,7 +281,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
       "opportunity_fields": opportunity_fields
     }
 
-    console.log("request",JSON.stringify(params));
+    console.log("request", JSON.stringify(params));
     postAddOpportunityFields(params, uuid.v4()).then((res) => {
       SetAddDone(true);
       setMessage("Opportunity added sucessfully");
@@ -323,6 +330,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
       // setCustomerSearchModalVisible(!customerSearchModalVisible)
     }).catch(e => {
       console.log(e);
+      setCanShowAutoComplete(false);
     })
   }
 
@@ -556,6 +564,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               onPress={() => {
                 setSelectedOutComeId(outcome.outcome_id);
                 setOutComeModalVisible(!outComeModalVisible);
+                setIsOutcomeCompulsory(false);
                 // setIsLoading(true);
               }}>
               <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
@@ -605,7 +614,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
         <AlertDialog visible={canShowAlert} message={message} onModalClose={() => {
           setCanShowAlert(false);
           setMessage('');
-          if(addDone){
+          if (addDone) {
             onClose();
           }
         }}></AlertDialog>
@@ -637,7 +646,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
               <TextInput
                 style={styles.textInput}
-                label={<Text style={{ backgroundColor: BG_COLOR }}>{'Select Customer'}</Text>}
+                label={<Text style={{ backgroundColor: BG_COLOR }}>{'Search Customer'}</Text>}
                 value={searchCustomer}//customersList.find(x => x.location_id == selectedCustomerId)?.name}//getTextValue(customMasterFields, field.custom_master_field_id)}
                 mode="outlined"
                 outlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : DISABLED_COLOR}
@@ -649,6 +658,13 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                 onChangeText={text => {
                   // console.log("on change text");
                   setSearchCustomer(text);
+                  if (text !== '') {
+                    setCanShowAutoComplete(true);
+                  } else {
+                    setCustomersList([]);
+                    setCanShowAutoComplete(false);
+                  }
+
                 }}
                 blurOnSubmit={false}
                 onSubmitEditing={() => {
@@ -658,16 +674,16 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
             </View>
           </TouchableOpacity>
-          {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60, maxHeight: 180, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
+          {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60,minHeight:220, maxHeight: 220, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
             <TouchableWithoutFeedback onPress={() => {
               // console.log("clicked outside");
               setCanShowAutoComplete(!canShowAutoComplete);
               setCanSearch(false);
             }
             }>
-              <ScrollView >
+              <ScrollView>
                 <View>
-                  {customersList.map((item, index) => {
+                  {customersList.length > 0 ? customersList.map((item, index) => {
                     return <TouchableOpacity key={index}
                       onPress={() => {
                         setCanShowAutoComplete(false);
@@ -679,7 +695,9 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                       style={{ padding: 5 }}>
                       <Text key={index} style={styles.pickerItemText}>{item.name}</Text>
                     </TouchableOpacity>
-                  })}
+                  }) : <View>
+                    <Text style={{ margin: 15 }}>Searching...</Text>
+                  </View>}
                 </View>
               </ScrollView>
             </TouchableWithoutFeedback>
@@ -702,6 +720,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             <View>
               <TextInput
                 style={styles.textInput}
+                // multiline={true}
                 label={<Text style={{ backgroundColor: BG_COLOR }}>{'Opportunity Name'}</Text>}
                 value={opportunityName}//getTextValue(customMasterFields, field.custom_master_field_id)}
                 mode="outlined"
@@ -738,7 +757,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
-          <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor }]}>
+          <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor,borderWidth: isOutcomeCompulsory ? 1 : 0 }]}>
             <TouchableOpacity style={styles.shadowBox} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
               <Text style={styles.shadowBoxText}>Outcome</Text>
               <View>
@@ -800,6 +819,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                           keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
                           returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                           style={styles.textInput}
+                          // multiline={true}
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           value={getDispositionTextValue(dispositionFields, field.disposition_field_id)}
                           mode="outlined"
@@ -991,6 +1011,14 @@ const styles = EStyleSheet.create(parse({
     right: 10
   },
   textInput: {
+    height: 40,
+    fontSize: 14,
+    lineHeight: 30,
+    backgroundColor: BG_COLOR,
+    //fontFamily: Fonts.secondaryMedium,
+    marginBottom: 8
+  },
+  textInput_wrap_text: {
     height: 40,
     fontSize: 14,
     lineHeight: 30,

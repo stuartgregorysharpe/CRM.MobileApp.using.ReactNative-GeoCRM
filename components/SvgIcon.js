@@ -8,6 +8,7 @@ const actionButtonIconFill = whiteLabel().actionFullButtonIcon;
 const navIconActive = whiteLabel().activeIcon;
 const navIconInActive = whiteLabel().inactiveIcon;
 const selectedIcon = whiteLabel().itemSelectedIconFill;
+const actionFullButtonIconFill = whiteLabel().actionFullButtonBackground;
 
 const Round_Btn_Default_Dark = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
@@ -497,6 +498,12 @@ const Angle_Left = `
   </svg>
 `;
 
+const Angle_Left_form = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="32.311" height="61.743" viewBox="0 0 32.311 61.743">
+    <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill=${actionFullButtonIconFill}/>
+  </svg>
+`;
+
 const Logout = `
 <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill=${actionButtonIconFill}><g><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/></g></svg>
 `;
@@ -822,6 +829,7 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Re_loop" && <SvgXml style={style} xml={Re_loop} width={width} height={height} />}
         {icon == "Logout" && <SvgXml style={style} xml={Logout} width={width} height={height} />}
         {icon == "Faq" && <SvgXml style={style} xml={Faq} width={width} height={height} />}
+        {icon == "Angle_Left_form" && <SvgXml style={style} xml={Angle_Left_form} width={width} height={height} />}
                 
     </Fragment>
 );
