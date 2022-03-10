@@ -168,7 +168,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
     error => {
       console.log(error.code, error.message);
     },
-    {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    {enableHighAccuracy: true, timeout: 15000},
   );
 
  
@@ -247,7 +247,7 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
             }
           })
           .catch((err) => {        
-            reject(err);        
+            reject(err);
             console.log(err);
           })
 
@@ -255,7 +255,7 @@ export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
         error => {
           console.log(error.code, error.message);
         },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        {enableHighAccuracy: true, timeout: 15000},
       );
 
         
@@ -312,7 +312,7 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     error => {
       console.log(error.code, error.message);
     },
-    {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    {enableHighAccuracy: true, timeout: 15000},
   );
 
   

@@ -183,12 +183,14 @@ export default function SignIn() {
           {passwordError && <Text style={styles.errorText}>Please Input Password</Text>}
         </View>}
         
-                <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
+        <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
           <Text style={[styles.submitButtonText]}>
             {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
           </Text>
           <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={whiteLabel().signInButtonIcon} icon={ faAngleDoubleRight } />
         </TouchableOpacity>
+
+        
         {step && <TouchableOpacity onPress={() => {}}>
           <Text style={styles.linkText}>Forgot Password</Text>
         </TouchableOpacity>}

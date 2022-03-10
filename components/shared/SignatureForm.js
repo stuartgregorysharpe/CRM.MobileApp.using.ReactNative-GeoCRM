@@ -6,8 +6,9 @@ import { style } from '../../constants/Styles';
 import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Button } from './Button';
+import { color } from 'react-native-reanimated';
 
-export const YesNoForm = ({item , onTouchStart}) => {
+export const SignatureForm = ({item , onPress ,onTouchStart}) => {
     const [text,setText] = useState("");
     return (
         <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
@@ -25,10 +26,18 @@ export const YesNoForm = ({item , onTouchStart}) => {
                             />
                     </View>
                 </View>
-
+                
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>
-                    <Button title={'Yes'} onTaped={false} ></Button>
-                    <Button btnStyle={{marginLeft:15}} title={'No'} onTaped={false}></Button>
+                    <TouchableOpacity style={[style.buttonStyle]} onPress={() => {onPress()} }>
+                        <View style={[styles.inputStyle , item.value  !== null ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} > 
+                        
+                            <Text style={[styles.textStyle, item.value  !== null ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Signature'}</Text>
+                            {
+                                item.value !== null ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Signature_Btn_Right_Arrow" width='13px' height='13px' />
+                            }
+                            
+                        </View> 
+                    </TouchableOpacity>
                 </View>
 
             </View>
@@ -48,10 +57,24 @@ const styles = StyleSheet.create({
         fontSize:15,
         fontFamily: Fonts.secondaryMedium
     },  
-    inputStyle:{                
-        borderColor: Colors.primaryColor,
-        borderWidth: 1,
-        borderRadius:3,
-        padding:10,
+   
+    buttonStyle:{
+
+    },
+
+    inputStyle:{
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        borderWidth:1,
+        borderColor:whiteLabel().actionOutlineButtonBorder,
+        borderRadius:20,
+        paddingVertical:7,
+        paddingHorizontal:10
+    },
+    textStyle:{
+        marginHorizontal:10,
+        color:whiteLabel().actionOutlineButtonText,
+        fontFamily:Fonts.primaryRegular
     }
 })

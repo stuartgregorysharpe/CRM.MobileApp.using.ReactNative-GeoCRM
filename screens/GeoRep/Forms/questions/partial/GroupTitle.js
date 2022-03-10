@@ -2,6 +2,7 @@
 import React, { useEffect , useState } from 'react';
 import { SafeAreaView, Text, View, Dimensions, StyleSheet ,FlatList ,TouchableOpacity , Image } from 'react-native';
 import { whiteLabel } from '../../../../../constants/Colors';
+import Fonts from '../../../../../constants/Fonts';
 
 export const GroupTitle = ({title}) =>{
     return (
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
     },
     groupTitleStyle:{
         fontSize:16,
+        fontFamily: Fonts.primaryRegular,
         color:whiteLabel().mainText,
     },
     divider:{

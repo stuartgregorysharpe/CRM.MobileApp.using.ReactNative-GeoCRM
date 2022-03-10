@@ -12,9 +12,9 @@ export const Button = ({btnStyle, title ,onTaped }) => {
 
     return (
         <TouchableOpacity style={[style.buttonStyle , btnStyle]} onPress={() => setIsClicked(!isclicked) }> 
-            <View style={ isclicked?  [styles.inputStyle] : [styles.inputStyle , {backgroundColor : Colors.primaryColor} ] }>
-                <Text style={ !isclicked ? [style.textStyle, {color:Colors.whiteColor}] : [style.textStyle] }>{title}</Text>
-            </View>            
+            <View style={ isclicked?  [styles.inputStyle] : [styles.inputStyle , {backgroundColor : whiteLabel().actionFullButtonBackground } ] }>
+                <Text style={ !isclicked ? [style.textStyle, {color: whiteLabel().actionFullButtonText }] : [style.textStyle] }>{title}</Text>
+            </View> 
         </TouchableOpacity>
     );
 }
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     inputStyle:{                      
         alignItems:'center',                  
         width: Dimensions.get("window").width * 0.2,
-        borderColor: Colors.primaryColor,                
+        borderColor: whiteLabel().actionOutlineButtonText, 
         paddingVertical:5,
         borderRadius:15,
         borderWidth:2,        

@@ -7,7 +7,7 @@ var ios = {
   primaryRegularItalic: 'Product Sans Regular Italic',
   primaryMedium: 'Product Sans',
   primaryMediumItalic: 'Product Sans Medium Italic',
-  primaryBold: 'Product Sans Bold',
+  primaryBold: 'ProductSans-Bold',
   primaryBoldItalic: 'Product Sans Bold Italic',
 
   secondaryRegular: 'Gilroy-Regular',

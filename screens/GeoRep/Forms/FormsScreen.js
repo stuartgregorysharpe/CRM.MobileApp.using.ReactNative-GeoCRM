@@ -122,7 +122,7 @@ export default function FormsScreen(props) {
         <SearchBar isFilter={true} 
             animation={() => {
               setIsFilter(true);
-              dispatch({type: SLIDE_STATUS, payload: true});              
+              dispatch({type: SLIDE_STATUS, payload: true});
             }}
             onSearch={(text) => _onSearch(text)}></SearchBar>
 
@@ -166,7 +166,7 @@ export default function FormsScreen(props) {
             }} key={1}>
                 
               <View  style={{ backgroundColor: "#DDD", padding:10, marginLeft:30,marginRight:30,borderRadius:10, fontSize: 16, color: "#fff", }} key={1}><Text>{bubbleText}</Text></View>  
-              <View style={[styles.tip, {marginLeft:x - locationX + 3}]}></View>                                              
+              <View style={[style.tip, {marginLeft:x - locationX + 3}]}></View>                                              
           </View>
         }
 
@@ -183,14 +183,6 @@ const styles = StyleSheet.create({
     flex:1,
   },
 
-  tip:{
-    position:'absolute',
-    width:20,
-    height:20,
-    top:-10,
-    backgroundColor:'#DDD',    
-    transform: [{ rotate: '45deg'}]
-  },  
 
 
 });
