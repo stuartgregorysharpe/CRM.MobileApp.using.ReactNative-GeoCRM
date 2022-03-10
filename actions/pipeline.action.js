@@ -66,9 +66,9 @@ export const getPipelineFilters = (campaign_id = '') => (dispatch, getState) => 
 
 }
 
-export const getAddOpportunityFields = (params,token) => {
+export const getAddOpportunityFields = (params, token) => {
   return new Promise(function (resolve, reject) {
-    console.log("lnk", JSON.stringify(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`)+"  params: "+JSON.stringify(params));
+    console.log("lnk", JSON.stringify(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`) + "  params: " + JSON.stringify(params));
     axios
       .get(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`, {
         params: params,
@@ -95,13 +95,14 @@ export const getAddOpportunityFields = (params,token) => {
 
 }
 
-export const getAddOpportunityContacts = (params,token) => {
+export const getAddOpportunityContacts = (params, token) => {
   return new Promise(function (resolve, reject) {
-    console.log("lnk", JSON.stringify(`https://www.dev.georep.com/local_api_phase_2/locations/customer-search`) + "params: "+JSON.stringify(params));
+    console.log("lnk", JSON.stringify(`https://www.dev.georep.com/local_api_phase_2/locations/customer-search`) + "params: " + JSON.stringify(params));
     axios
       .get(`https://www.dev.georep.com/local_api_phase_2/locations/customer-search`, {
         params: {
-          filters: params
+          campaign_id: params.campaign_id ? params.campaign_id : '',
+          search_text: params.search_text
         },
         headers: {
           Authorization: 'Bearer ' + token,
@@ -125,27 +126,27 @@ export const getAddOpportunityContacts = (params,token) => {
 
 }
 
-export const postAddOpportunityFields = async(postData , idempotencyKey) => {
+export const postAddOpportunityFields = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();  
-  return new Promise(function(resolve, reject) {      
+  var token = await getToken();
+  return new Promise(function (resolve, reject) {
     //JSON.stringify(postData)
     axios
-    .post(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`, postData, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Indempotency-Key': idempotencyKey
-      }
-    })
-    .then((res) => {
-      if(res.data == undefined){
-        resolve(0);
-        return;
-      }
-      resolve(1);      
-    })
-    .catch((err) => {
-      reject(err);
-    })
+      .post(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': idempotencyKey
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve(0);
+          return;
+        }
+        resolve(1);
+      })
+      .catch((err) => {
+        reject(err);
+      })
   });
 }

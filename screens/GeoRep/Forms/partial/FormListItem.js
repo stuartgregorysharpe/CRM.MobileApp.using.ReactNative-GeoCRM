@@ -1,7 +1,7 @@
 import React, { useEffect , useState } from 'react';
 import { SafeAreaView, Text, View, StyleSheet ,TouchableOpacity, Dimensions } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { boxShadow, style } from '../../../../constants/Styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -21,7 +21,7 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
                             <Icon
                                 name={`info-outline`}
                                 size={25}
-                                color={Colors.primaryColor}                            
+                                color={whiteLabel().helpText}                            
                             />
                         </View>                        
                     </View>
@@ -38,7 +38,7 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
                 <View style={style.numberBox}>
                     <Text style={styles.number}>{item.question_count}</Text>
                 </View>
-                <SvgIcon icon="Angle_Left" width='20px' height='20px' />
+                <SvgIcon icon="Angle_Left_form" width='20px' height='20px'/>
             </TouchableOpacity> 
                                                                         
         </View>

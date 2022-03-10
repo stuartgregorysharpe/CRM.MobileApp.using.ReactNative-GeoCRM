@@ -192,10 +192,13 @@ export const storePipelineFilterData = async (value) => {
 export const clearPipelineFilterData = async () => {
   try {
     let value = {
-      stage_id : [],
-      outcome_id : [],
-      dispositions : [],
-      customs : []
+      stage_id: [],
+      outcome_id: [],
+      dispositions: [],
+      customs: [],
+      opportunity_status_id: [],
+      opportunity_fields: [],
+      campaign_id: ''
     };
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem('@pipeline_filter', jsonValue)
