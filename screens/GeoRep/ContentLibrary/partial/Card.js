@@ -18,7 +18,7 @@ export default function Card({icon, title, subtitle , image, number, onPress}) {
       {number && <View style={style.numberBox}>
         <Text style={styles.number}>{number}</Text>
       </View>}
-      <SvgIcon icon="Angle_Left" width='20px' height='20px' />
+      <SvgIcon icon="Angle_Left_form" width='20px' height='20px' />
     </TouchableOpacity>
   )
 }

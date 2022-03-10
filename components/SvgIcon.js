@@ -8,6 +8,7 @@ const actionButtonIconFill = whiteLabel().actionFullButtonIcon;
 const navIconActive = whiteLabel().activeIcon;
 const navIconInActive = whiteLabel().inactiveIcon;
 const selectedIcon = whiteLabel().itemSelectedIconFill;
+const actionFullButtonIconFill = whiteLabel().actionFullButtonBackground;
 
 const Round_Btn_Default_Dark = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
@@ -497,6 +498,12 @@ const Angle_Left = `
   </svg>
 `;
 
+const Angle_Left_form = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="32.311" height="61.743" viewBox="0 0 32.311 61.743">
+    <path id="angle-down" d="M61.743,4.607a1.675,1.675,0,0,1-.618,1.277L32.295,31.756a2.1,2.1,0,0,1-2.846,0L.618,5.885a1.629,1.629,0,0,1,0-2.554L3.711.555a2.1,2.1,0,0,1,2.846,0L30.871,22.374,55.185.555a2.1,2.1,0,0,1,2.846,0L61.124,3.33A1.675,1.675,0,0,1,61.743,4.607Z" transform="translate(0 61.743) rotate(-90)" fill=${actionFullButtonIconFill}/>
+  </svg>
+`;
+
 const Logout = `
 <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill=${actionButtonIconFill}><g><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/></g></svg>
 `;
@@ -759,7 +766,7 @@ const Forms_Green_Done = `<svg xmlns="http://www.w3.org/2000/svg" width="71.389"
 `;
 
 const Signature_Btn_Right_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="23.751" height="40.728" viewBox="0 0 23.751 40.728">
-<path id="angle-down" d="M40.728,3.387a1.29,1.29,0,0,1-.408.939L21.3,23.343a1.285,1.285,0,0,1-1.878,0L.408,4.326a1.285,1.285,0,0,1,0-1.878L2.448.408a1.285,1.285,0,0,1,1.878,0L20.364,16.446,36.4.408a1.285,1.285,0,0,1,1.878,0l2.04,2.04A1.29,1.29,0,0,1,40.728,3.387Z" transform="translate(0 40.728) rotate(-90)" fill="#133c8b"/>
+<path id="angle-down" d="M40.728,3.387a1.29,1.29,0,0,1-.408.939L21.3,23.343a1.285,1.285,0,0,1-1.878,0L.408,4.326a1.285,1.285,0,0,1,0-1.878L2.448.408a1.285,1.285,0,0,1,1.878,0L20.364,16.446,36.4.408a1.285,1.285,0,0,1,1.878,0l2.04,2.04A1.29,1.29,0,0,1,40.728,3.387Z" transform="translate(0 40.728) rotate(-90)" fill=${actionFullButtonIconFill}/>
 </svg>
 `;
 
@@ -774,7 +781,7 @@ const Question_Calendar = `
   <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
     <g id="Group_4800" data-name="Group 4800" transform="translate(1526 -2662)">
       <g id="calendar-event-fill" transform="translate(-1519.914 2668.086)">
-        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill="#133C8B"/>
+        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill=${actionFullButtonIconFill}/>
       </g>
       <path id="Path_4386" data-name="Path 4386" d="M0,0H69.466V69.466H0Z" transform="translate(-1526 2662)" fill="none"/>
     </g>
@@ -850,6 +857,7 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Signature_Btn_Right_Arrow" && <SvgXml style={style} xml={Signature_Btn_Right_Arrow} width={width} height={height} />}
         {icon == "Question_Btn_Done" && <SvgXml style={style} xml={Question_Btn_Done} width={width} height={height} />}
         {icon == "Question_Calendar" && <SvgXml style={style} xml={Question_Calendar} width={width} height={height} />}
-        
+        {icon == "Angle_Left_form" && <SvgXml style={style} xml={Angle_Left_form} width={width} height={height} />}
+                
     </Fragment>
 );

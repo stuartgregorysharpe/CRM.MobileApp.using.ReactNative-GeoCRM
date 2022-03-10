@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput,BackHandler,Image } from 'react-native';
 import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPipelineFilters, getPipelines } from '../../actions/pipeline.action';
@@ -9,7 +9,7 @@ import Fonts from '../../constants/Fonts';
 import { breakPoint } from '../../constants/Breakpoint';
 import { Provider } from 'react-native-paper';
 
-import { getBaseUrl, getToken } from '../../constants/Storage';
+import { clearPipelineFilterData, getBaseUrl, getToken } from '../../constants/Storage';
 import { boxShadow, grayBackground, style } from '../../constants/Styles';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +19,7 @@ import FilterView from '../../components/FilterView';
 import SearchBar from '../../components/SearchBar';
 import AddSalesPipeline from './pipeline/AddSalesPipeline';
 import Skeleton from '../../components/Skeleton';
+import Images from '../../constants/Images';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
@@ -40,12 +41,40 @@ export default function SalesPipelineScreen(props) {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isBack,setIsBack] = useState(false);
+
   useEffect(() => {
+    // refreshHeader();
     if (props.screenProps) {
       props.screenProps.setOptions({
-        title: "Pipeline"
+        title: "Pipeline",
+        headerTitle:()=>{
+          return(<TouchableOpacity                     
+            onPress={
+           () =>{
+             if(canAddPipeline){
+               setCanAddPipeline(false);
+             }
+           }}>            
+           <View style={style.headerTitleContainerStyle}>            
+               {
+                 canAddPipeline &&
+                 <Image
+                   resizeMethod='resize'
+                   style={{width:15,height:20, marginRight:5}}
+                   source={Images.backIcon}
+                 />
+               }
+             <Text style={style.headerTitle} >Pipeline</Text>
+         </View></TouchableOpacity>)
+        }
       });
     }
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    };
   });
 
   useEffect(() => {
@@ -61,6 +90,40 @@ export default function SalesPipelineScreen(props) {
     }
 
   }, [pipelineFilters])
+
+  const handleBackButtonClick = () => {
+    if (canAddPipeline) {
+      setCanAddPipeline(false);
+      return true;
+    }
+  }
+
+  const refreshHeader = () =>{
+    props.screenProps.setOptions({           
+      headerTitle:() =>{
+        return(<TouchableOpacity                     
+           onPress={
+          () =>{
+            if(canAddPipeline){
+              setCanAddPipeline(false);
+            }
+          }}>            
+          <View style={style.headerTitleContainerStyle}>            
+              {
+                canAddPipeline &&
+                <Image
+                  resizeMethod='resize'
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              }
+            <Text style={style.headerTitle} >Pipeline</Text>
+        </View></TouchableOpacity>)
+      },
+    });
+
+  }
+
 
   const loadPipeLineData = async (filters = '') => {
     var base_url = 'https://www.dev.georep.com/local_api_old';//await getBaseUrl();
@@ -144,7 +207,7 @@ export default function SalesPipelineScreen(props) {
     return (
       <TouchableOpacity>
         <View style={styles.itemContainer}>
-          <View style={styles.opportunityStyle}>
+          <View style={[styles.opportunityStyle, { alignItems: 'baseline' }]}>
             <View style={[styles.dotIndicator, { backgroundColor: item.opportunity_status_color }]}></View>
             <View style={{ marginHorizontal: 5 }}>
               <Text style={styles.opportunityTitle}>{item.opportunity_name}</Text>
@@ -212,6 +275,7 @@ export default function SalesPipelineScreen(props) {
 
         {canAddPipeline && <AddSalesPipeline props={props} onClose={() => {
           // setShowItem("refresh"),
+          loadPipeLineData();
           setCanAddPipeline(false);
         }} />
         }
@@ -349,9 +413,9 @@ const styles = EStyleSheet.create(parse({
     marginLeft: -5
   },
   dotIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   opportunityTitle: {
     fontFamily: 'Gilroy-Bold',
