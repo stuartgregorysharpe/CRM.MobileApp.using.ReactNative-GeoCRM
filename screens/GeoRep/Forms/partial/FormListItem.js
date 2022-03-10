@@ -8,6 +8,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
 
+    const openQuestions = () =>{
+       
+    }
     
     return (
         <View style={[styles.container]}>

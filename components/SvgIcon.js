@@ -765,6 +765,31 @@ const Forms_Green_Done = `<svg xmlns="http://www.w3.org/2000/svg" width="71.389"
 </svg>
 `;
 
+const Signature_Btn_Right_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="23.751" height="40.728" viewBox="0 0 23.751 40.728">
+<path id="angle-down" d="M40.728,3.387a1.29,1.29,0,0,1-.408.939L21.3,23.343a1.285,1.285,0,0,1-1.878,0L.408,4.326a1.285,1.285,0,0,1,0-1.878L2.448.408a1.285,1.285,0,0,1,1.878,0L20.364,16.446,36.4.408a1.285,1.285,0,0,1,1.878,0l2.04,2.04A1.29,1.29,0,0,1,40.728,3.387Z" transform="translate(0 40.728) rotate(-90)" fill=${actionFullButtonIconFill}/>
+</svg>
+`;
+
+const Question_Btn_Done = `<svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 45 45">
+<g id="task_alt_black_24dp" transform="translate(0.317 0.413)">
+  <rect id="Rectangle_2379" data-name="Rectangle 2379" width="45" height="45" transform="translate(-0.317 -0.413)" fill="none"/>
+  <path id="Path_4193" data-name="Path 4193" d="M39.339,7.937l-21.3,21.321-7.916-7.916,2.632-2.632,5.284,5.284,18.67-18.67Zm-4.126,9.41A14.926,14.926,0,1,1,20.67,5.734,14.788,14.788,0,0,1,28.66,8.068l2.688-2.688A18.483,18.483,0,0,0,20.67,2a18.719,18.719,0,1,0,17.55,12.341Z" transform="translate(1.734 1.734)" fill="#fff"/>
+</g>
+</svg>
+`;
+const Question_Calendar = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="69.466" height="69.466" viewBox="0 0 69.466 69.466">
+    <g id="Group_4800" data-name="Group 4800" transform="translate(1526 -2662)">
+      <g id="calendar-event-fill" transform="translate(-1519.914 2668.086)">
+        <path id="Path_3942" data-name="Path 3942" d="M14.342,1.793a1.793,1.793,0,1,0-3.586,0V3.586H7.171A7.171,7.171,0,0,0,0,10.757v3.586H57.37V10.757A7.171,7.171,0,0,0,50.2,3.586H46.613V1.793a1.793,1.793,0,1,0-3.586,0V3.586H14.342ZM0,17.928H57.37V50.2A7.171,7.171,0,0,1,50.2,57.37H7.171A7.171,7.171,0,0,1,0,50.2ZM44.82,25.1a1.793,1.793,0,0,0-1.793,1.793v3.586a1.793,1.793,0,0,0,1.793,1.793h3.586A1.793,1.793,0,0,0,50.2,30.478V26.892A1.793,1.793,0,0,0,48.406,25.1Z" transform="translate(0)" fill=${actionFullButtonIconFill}/>
+      </g>
+      <path id="Path_4386" data-name="Path 4386" d="M0,0H69.466V69.466H0Z" transform="translate(-1526 2662)" fill="none"/>
+    </g>
+  </svg>
+`;
+
+
+
 export default ({icon, width = "100%", height = "100%", style={}}) => (
     <Fragment>
         {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -829,6 +854,9 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Re_loop" && <SvgXml style={style} xml={Re_loop} width={width} height={height} />}
         {icon == "Logout" && <SvgXml style={style} xml={Logout} width={width} height={height} />}
         {icon == "Faq" && <SvgXml style={style} xml={Faq} width={width} height={height} />}
+        {icon == "Signature_Btn_Right_Arrow" && <SvgXml style={style} xml={Signature_Btn_Right_Arrow} width={width} height={height} />}
+        {icon == "Question_Btn_Done" && <SvgXml style={style} xml={Question_Btn_Done} width={width} height={height} />}
+        {icon == "Question_Calendar" && <SvgXml style={style} xml={Question_Calendar} width={width} height={height} />}
         {icon == "Angle_Left_form" && <SvgXml style={style} xml={Angle_Left_form} width={width} height={height} />}
                 
     </Fragment>

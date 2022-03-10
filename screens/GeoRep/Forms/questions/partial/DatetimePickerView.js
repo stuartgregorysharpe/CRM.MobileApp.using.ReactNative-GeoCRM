@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
-import Colors from '../../../../constants/Colors';
-import Fonts from '../../../../constants/Fonts';
-import Divider from '../../../../components/Divider';
-import FilterButton from '../../../../components/FilterButton';
-import { getFormFilters } from '../../../../actions/forms.action';
-import FilterOptionsModal from '../../../../components/modal/FilterOptionsModal';
-import { clearFilterData, getFilterData, storeFilterData } from '../../../../constants/Storage';
+import Colors from '../../../../../constants/Colors';
+import Fonts from '../../../../../constants/Fonts';
+import Divider from '../../../../../components/Divider';
+import { getFormFilters } from '../../../../../actions/forms.action';
+import { clearFilterData, getFilterData, storeFilterData } from '../../../../../constants/Storage';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-export const FormFilterView = ({close , apply}) => {
+export const DatetimePickerView = ({close , apply}) => {
 
     const [items, setItems]  =  useState([]);    
     const [modaVisible, setModalVisible] = useState(false);
@@ -35,31 +34,17 @@ export const FormFilterView = ({close , apply}) => {
         setFilters(savedFilters);
     }    
 
-    const saveFilter = (value, isChecked) => {        
-        var data = [...filters.form_type];
-        var index = data.indexOf(value);
-        if(index !== -1){        
-            if(!isChecked){          
-                data.splice(index, 1)
-            }
-        }else{        
-            if(isChecked){
-            data.push(value);
-            }                  
-        }
-        filters.form_type = data;
-        setFilters(filters);
-        
-    }
 
     return (        
         <ScrollView style={styles.container}>
+
             <TouchableOpacity style={{ padding: 6 }}>
                 <Divider />
             </TouchableOpacity>
 
             <View style={styles.sliderHeader}>
                 <Title style={{ fontFamily: Fonts.primaryBold }}>Filter your search</Title>
+
                 <Button 
                     labelStyle={{
                         fontFamily: Fonts.primaryRegular, 
@@ -67,29 +52,21 @@ export const FormFilterView = ({close , apply}) => {
                     }}
                     color={Colors.selectedRedColor}
                     uppercase={false} 
-                    onPress={ async() => {                                         
-                        clearFilterData("@form_filter");
+                    onPress={ async() => {                                                                 
                         close()
                     }}
                 >
                 Clear Filters
                 </Button>
             </View>
-            
-            {
-                items.map((item , key) => (
-                    <FilterButton key={key} text={item.filter_label} 
-                        onPress={() => {       
-
-                            setOptions(item.options);
-                            if(item.options.length > 0){
-                                setModalVisible(true)
-                            }                            
-                        }}
-                    />
-                ))
-            }
                         
+            <DateTimePickerModal
+              isVisible={true}
+              mode={'date'}
+              onConfirm={ () => { close() }}
+              onCancel={() => { close() }}
+            />
+                                    
             <Button 
                 mode="contained"  color={Colors.primaryColor}  uppercase={false} 
                 labelStyle={{
@@ -105,23 +82,7 @@ export const FormFilterView = ({close , apply}) => {
                 }}>
                 Apply Filters
             </Button>
-
-            <Portal> 
-                <FilterOptionsModal
-                    modaVisible={modaVisible}         
-                    options={options} 
-                    filters={filters}
-                    selectedType={"form_type"}
-                    fieldType={"form_type"}
-                    onClose={() =>{
-                        setModalVisible(false);          
-                    }}
-                    onValueChanged={( value, isChecked) =>{
-                        console.log(value, isChecked)
-                        saveFilter( value , isChecked);                        
-                    }} >
-                </FilterOptionsModal>      
-            </Portal>            
+                 
         </ScrollView>        
     );
 }

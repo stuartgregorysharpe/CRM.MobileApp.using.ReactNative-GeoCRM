@@ -90,6 +90,32 @@ export const style = StyleSheet.create({
     marginRight: 4
   },
   
+
+  tip:{
+    position:'absolute',
+    width:20,
+    height:20,
+    top:-10,
+    backgroundColor:'#DDD',    
+    transform: [{ rotate: '45deg'}]
+  },  
+
+  triangle: {
+    position:'absolute',
+    top:-15,
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 20,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderBottomColor: "#DDD",
+  },
+  
+
 })
 
 

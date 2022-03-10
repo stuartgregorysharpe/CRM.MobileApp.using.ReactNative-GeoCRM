@@ -143,9 +143,9 @@ export default function LocationSearchScreen(props) {
   },[isPageLoading]);
 
   const loadData = async () => {
-
+    
     console.log("load data called");
-    var filterData = await getFilterData();        
+    var filterData = await getFilterData('@filter');
     getLocationSearchListsByPage(filterData, pageNumber)
     .then((res) => { 
       console.log("ok", res.length);

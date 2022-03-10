@@ -1,5 +1,5 @@
 import React, { useState, useEffect ,useRef} from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform , AppState} from 'react-native';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform , AppState ,PermissionsAndroid} from 'react-native';
 import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -74,6 +74,7 @@ export default function LocationScreen(props) {
   const [isDraw , setIsDraw] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
+  const [isGuranted, setIsGuranted] = useState(false);
   
   useEffect(() => {    
     refreshHeader();
@@ -83,19 +84,63 @@ export default function LocationScreen(props) {
           display: 'none',
         },
       });
-    } 
-    dispatch(updateCurrentLocation());
+    }     
+    requestPermissions();
+    // if (Platform.OS === 'ios') {
+    //   Geolocation.requestAuthorization('always');
+    // }    
     return () => {      
       isMount = false;
     };    
   },[]);
+  
+  async function requestPermissions() {
+    if (Platform.OS === 'ios') {
+      const auth = await Geolocation.requestAuthorization('whenInUse');
+      if (auth === 'granted') {
+        dispatch(updateCurrentLocation());
+         setIsGuranted(true);
+      }
+    }
+    
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("gurranted -----")
+        dispatch(updateCurrentLocation());
+         setIsGuranted(true);
+      }
+    }
+  }
 
-  useEffect(() => {      
+
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener("change", nextAppState => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === "active"
+  //     ) {
+  //       console.log("App has come to the foreground!");
+  //     }
+  //     appState.current = nextAppState;
+  //     setAppStateVisible(appState.current);
+  //     console.log("AppState", appState.current);
+  //   });
+
+  //   return () => {
+  //     console.log("Background");
+  //     subscription.remove();
+  //   };
+  // }, []);
+
+  useEffect(() => {
       if( watchId.current === null || watchId.current === undefined){
           watchId.current = Geolocation.watchPosition(
             (position) => {                              
                 console.log("Tracking..")
-                if(myLocation.latitude !== position.coords.latitude && myLocation.longitude !== position.coords.longitude){
+                if(myLocation.latitude !== position.coords.latitude || myLocation.longitude !== position.coords.longitude){
                   setMyLocation({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
@@ -106,12 +151,14 @@ export default function LocationScreen(props) {
                 console.log(error);
             },
             {
-                distanceFilter: 2,
+                distanceFilter: 5,
             },
         );
       }      
       return () => {
+        console.log("End page");
           if (watchId.current) {
+            console.log("End page --");
               Geolocation.clearWatch(watchId.current);
           }          
       }
@@ -171,7 +218,8 @@ export default function LocationScreen(props) {
           },
         });
       }
-      if(map.current !== null && map.current.props){              
+      if(map.current !== null && map.current.props){     
+        console.log("focuseed on change region")
         map.current.props.onRegionChangeComplete();     
       }
     });
@@ -181,7 +229,7 @@ export default function LocationScreen(props) {
   
   useEffect(() => {
     console.log("filterParmeterChanged", filterParmeterChanged)
-    if(myLocation !== undefined && boundBox !== undefined){
+    if(myLocation !== undefined && boundBox !== undefined && isGuranted){
       setIsLoading(true);
       console.log("other route")
       getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                            
@@ -311,8 +359,7 @@ export default function LocationScreen(props) {
             id: id++, // keep incrementing id to trigger display refresh
             coordinates: [...editing.coordinates],
             holes,                          
-        });                        
-                                
+        });                                        
     }
   }
 
@@ -507,6 +554,8 @@ export default function LocationScreen(props) {
                       }                                            
                     }}
                     initialRegion={{
+                      // latitude: currentLocation.latitude,
+                      // longitude: currentLocation.longitude,
                       latitude: myLocation.latitude !== null && myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
                       longitude: myLocation.longitude !== null  &&  myLocation.longitude !== undefined ? myLocation.longitude:  currentLocation.longitude,
                       latitudeDelta: 0.015,

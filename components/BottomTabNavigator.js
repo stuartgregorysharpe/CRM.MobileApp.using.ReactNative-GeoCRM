@@ -61,6 +61,7 @@ import {
 import HeaderRightView from './Header/HeaderRightView';
 import Images from '../constants/Images';
 import { style } from '../constants/Styles';
+import FormsNavigator from '../screens/GeoRep/Forms/FormsNavigator';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -384,7 +385,7 @@ export default function RepBottomTabNavigator({navigation}) {
 
       {selectProject == 'geo_rep' && bottomListOne.includes('forms') && <BottomTab.Screen
         name="RepForms"
-        component={RepFormsScreen}
+        component={FormsNavigator}
         options={{
           title: 'Forms',
           tabBarIcon: ({focused}) => (

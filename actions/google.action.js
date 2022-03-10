@@ -1,5 +1,5 @@
 import { getGeocoding } from "./location.action";
-import GetLocation from 'react-native-get-location';
+import Geolocation from 'react-native-geolocation-service';
 
 import { CHANGE_CURRENT_LOCATION } from "./actionTypes";
 
@@ -53,18 +53,19 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
 export const updateCurrentLocation = () => (dispatch, getState) => {
   // update current location
   console.log("enter");
-  GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 15000,
-  })
-  .then(location => {
-    console.log("updated  current location");
-      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: location.latitude,longitude: location.longitude } });            
-  })
-  .catch(error => {
-    console.log("get location error", error);  
-    const { code, message } = error;      
-  });    
+
+  Geolocation.getCurrentPosition(
+    position => {
+      const {latitude, longitude} = position.coords;
+      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: latitude,longitude: longitude } });            
+      
+    },
+    error => {
+      console.log("locatin - error")
+      console.log(error.code, error.message);
+    },
+    {enableHighAccuracy: true, timeout: 15000},
+  );
 
 }
 

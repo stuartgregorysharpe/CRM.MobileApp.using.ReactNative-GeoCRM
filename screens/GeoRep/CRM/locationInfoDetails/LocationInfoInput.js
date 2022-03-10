@@ -347,7 +347,7 @@ export const LocationInfoInput = forwardRef(( props, ref ) => {
                     value={dispositionValue[key]}
                     disabled = {getDisableStatus(field.field_type, field.rule_editable)}
                     onChangeText={text => handleChangeText(text, field, key)}                    
-                    onSubmitEditing={()=>{                      
+                    onSubmitEditing={()=>{
                     }}
                     onPressIn={field.field_type == "date" || field.field_type == "datetime" ? handleFocus.bind(null, field.field_type, key, field.rule_editable) : handleEmpty.bind(null) }
                     left={field.add_prefix && <TextInput.Affix textStyle={{marginTop: 8}} text={field.add_prefix} />}
