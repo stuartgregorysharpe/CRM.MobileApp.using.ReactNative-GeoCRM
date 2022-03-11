@@ -39,7 +39,9 @@ export const whiteLabel = () => {
     endDayBackground: '#DC143C',
     endDayText: '#FFFFFF',
     countBoxBackground: '#133C8B',
-    countBoxText: '#FFFFFF'
+    countBoxText: '#FFFFFF',
+    feature_card_icon_background:'#F5F5F5',
+    feature_card_icon_fill:'#133C8B'
   };    
 };
 
