@@ -27,14 +27,9 @@ export default function FormsScreen(props) {
   const [bubbleText, setBubleText] = useState("");
   const [isFilter, setIsFilter] = useState(false);
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  
-
+    
   const dispatch = useDispatch()
-
   useEffect(() => {    
-
-    //console.log("forms prps", props)
-
     if (props.screenProps) {
       props.screenProps.setOptions({            
         headerTitle:() =>{

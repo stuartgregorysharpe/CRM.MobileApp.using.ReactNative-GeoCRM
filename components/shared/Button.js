@@ -6,14 +6,21 @@ import { style } from '../../constants/Styles';
 import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export const Button = ({btnStyle, title ,onTaped }) => {
-    const [text,setText] = useState("");
-    const [isclicked, setIsClicked] = useState(false);
+export const Button = ({btnStyle, title , onTaped , onClick }) => {
+    
+    const [isclicked, setIsClicked] = useState(onTaped);
+
+    useEffect(() =>{
+        setIsClicked(onTaped);
+    },[onTaped]);
 
     return (
-        <TouchableOpacity style={[style.buttonStyle , btnStyle]} onPress={() => setIsClicked(!isclicked) }> 
-            <View style={ isclicked?  [styles.inputStyle] : [styles.inputStyle , {backgroundColor : whiteLabel().actionFullButtonBackground } ] }>
-                <Text style={ !isclicked ? [style.textStyle, {color: whiteLabel().actionFullButtonText }] : [style.textStyle] }>{title}</Text>
+        <TouchableOpacity style={[style.buttonStyle , btnStyle]} onPress={() => { onClick()} }> 
+            <View style={ !isclicked?  [styles.inputStyle] : [styles.inputStyle , styles.selectedStyle ] }>
+                <Text style={ isclicked ? [style.textStyle, {color: whiteLabel().actionFullButtonText }] : [style.textStyle] }>{title}</Text>
+                {
+                    isclicked &&  <View style={{marginLeft:10}}><SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' /></View>
+                }
             </View> 
         </TouchableOpacity>
     );
@@ -29,17 +36,27 @@ const styles = StyleSheet.create({
         alignItems:'center',        
         alignContent:'center',
         paddingVertical:5,
+        
         color: Colors.blackColor,
         fontSize:15,
         fontFamily: Fonts.secondaryBold,        
     },  
-    inputStyle:{                      
+    inputStyle:{         
+        flexDirection:'row',
         alignItems:'center',                  
-        width: Dimensions.get("window").width * 0.2,
+        justifyContent:'center',        
         borderColor: whiteLabel().actionOutlineButtonText, 
         paddingVertical:5,
+        paddingRight:33,
+        paddingLeft:33,
         borderRadius:15,
         borderWidth:2,        
+    },
+
+    selectedStyle:{
+        paddingLeft:20,
+        paddingRight:20,
+        backgroundColor : whiteLabel().actionFullButtonBackground
     },
 
     textStyle:{
@@ -48,5 +65,6 @@ const styles = StyleSheet.create({
         fontFamily:Fonts.primaryMedium,
         color:Colors.blackColor
     }
+
  
 })

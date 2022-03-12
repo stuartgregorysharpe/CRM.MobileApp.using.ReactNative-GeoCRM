@@ -425,6 +425,13 @@ const Check = `
   </svg>
 `;
 
+const Yes_No_Button_Check = `
+  <svg id="done_black_24dp_7_" data-name="done_black_24dp (7)" xmlns="http://www.w3.org/2000/svg" width="68.645" height="68.645" viewBox="0 0 68.645 68.645">
+    <path id="Path_5308" data-name="Path 5308" d="M0,0H68.645V68.645H0Z" fill="none"/>
+    <path id="Path_5309" data-name="Path 5309" d="M19.417,35.918,7.4,23.905l-4,4L19.417,43.927,53.739,9.6l-4-4Z" transform="translate(6.325 10.417)" fill="#FFFFFF"/>
+  </svg>
+`;
+
 const Close = `
   <svg xmlns="http://www.w3.org/2000/svg" width="59" height="59" viewBox="0 0 59 59">
     <g id="Group_4932" data-name="Group 4932" transform="translate(-905 -158)">
@@ -825,6 +832,7 @@ export default ({icon, width = "100%", height = "100%", style={}}) => (
         {icon == "Insert_Invitation" && <SvgXml style={style} xml={Insert_Invitation} width={width} height={height} />}
         {icon == "Green_Star" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
         {icon == "Check" && <SvgXml style={style} xml={Check} width={width} height={height} />}
+        {icon == "Yes_No_Button_Check" && <SvgXml style={style} xml={Yes_No_Button_Check} width={width} height={height} />}        
         {icon == "Close" && <SvgXml style={style} xml={Close} width={width} height={height} />}
         {icon == "Account_Circle" && <SvgXml style={style} xml={Account_Circle} width={width} height={height} />}
         {icon == "Cloud_Off" && <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />}

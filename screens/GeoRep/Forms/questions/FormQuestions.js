@@ -1,26 +1,22 @@
 import React, { useEffect , useState , useRef } from 'react';
-import { SafeAreaView, Text, View, Dimensions, StyleSheet ,FlatList ,TouchableOpacity , Image , Alert} from 'react-native';
+import { Text, View, Dimensions, StyleSheet ,FlatList ,TouchableOpacity , Image , Alert} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Paragraph } from 'react-native-paper';
-import { cos } from 'react-native-reanimated';
 import { getFormQuestions } from '../../../../actions/forms.action';
 import { HeadingForm } from '../../../../components/shared/HeadingForm';
 import { ParagraphForm } from '../../../../components/shared/ParagraphForm';
 import { TextForm } from '../../../../components/shared/TextForm';
 import { YesNoForm } from '../../../../components/shared/YesNoForm';
-import { MultipleForm, SingleSelectForm } from '../../../../components/shared/SingleSelectForm';
+import { SingleSelectForm } from '../../../../components/shared/SingleSelectForm';
 import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Images from '../../../../constants/Images';
 import { style } from '../../../../constants/Styles';
 import { GroupTitle } from './partial/GroupTitle';
-import { Portal , Provider } from 'react-native-paper';
-import MultipleOptionsModal from '../../../../components/modal/MultipleOptionsModal'
+import {  Provider } from 'react-native-paper';
 import { MultipleSelectForm } from '../../../../components/shared/MultipleSelectForm';
 import { DateForm } from '../../../../components/shared/DateForm';
 import TakePhotoForm from '../../../../components/shared/TakePhotoForm';
 import { useSelector , useDispatch} from 'react-redux';
-import { DatetimePickerView } from './partial/DatetimePickerView';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { getTwoDigit } from '../../../../constants/Consts';
@@ -29,6 +25,7 @@ import Sign  from './partial/Sign';
 import GrayBackground from '../../../../components/GrayBackground';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
+import { SelectionView } from './partial/SelectionView';
 
 export const FormQuestions = (props) =>{
 
@@ -49,8 +46,7 @@ export const FormQuestions = (props) =>{
     const [y, setY] = useState(0);
     const [bubbleText, setBubleText] = useState("");
     const takePhotoFormRef = useRef();
-    
-
+    const [signature, setSignature] = useState('');
     const dispatch = useDispatch()
 
     useEffect(() => {    
@@ -99,10 +95,11 @@ export const FormQuestions = (props) =>{
           var tmp = newData.find(item => item.question_group_id === element.question_group_id);          
           var newTmp = [...tmp.questions, element];          
           tmp.questions = [...newTmp];
-        }        
+        }    
       });      
       setFormQuestions(newData);
     }
+
     const isInNewData = (data, value) =>{
       return data.find(item => item.question_group_id === value.question_group_id) ? true : false
     }
@@ -125,7 +122,7 @@ export const FormQuestions = (props) =>{
       return 35;
     }
 
-    const confirmDateTime = () =>{
+    const confirmDateTime = (date) =>{
       let datetime = "";      
       datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());      
       var tmp = [...formQuestions];                  
@@ -134,112 +131,66 @@ export const FormQuestions = (props) =>{
       setIsDateTimeView(false);
     }
     
-    const handleSignature = (signature) => {
-      //console.log("signature", signature.replace("data:image/png;base64,", ""));
-      console.log("signature");
+    const handleSignature = (signature) => {      
+      console.log("signature" , signature);
+      var tmp = [...formQuestions];                  
+      tmp[key].questions[index].value = signature ;
+      setFormQuestions(tmp);
+      console.log("otpm", JSON.stringify(tmp));
+      dispatch({type: SLIDE_STATUS, payload: false});    
+      setIsSign(false);
     }
 
-    selectPicker = (title, description) => {
-        return Alert.alert(
-          title,
-          description,
-          [
-            // The "Yes" button
-            {
-              text: "Gallery",
-              onPress: () => {
-                launchImageLibrary();
-              },
-            },
-            // The "No" button        
-            {
-              text: "Camera",
-              onPress: () => {
-                launchCamera();
-              }
-            },
-          ]
-        );
+    const onCloseSelectionView = (key, index) => {
+      var tmp = [...formQuestions];                        
+      tmp[key].questions[index].value = null; 
+      setFormQuestions(tmp);
+      setModalVisible(false);
+      dispatch({type: SLIDE_STATUS, payload: false});
     }
-
-  const launchImageLibrary = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchImageLibrary (options, (response)  => {      
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);        
-      } else {                                                  
-        if(response.assets != null && response.assets.length > 0){                     
-          takePhotoFormRef.current.updateImage(response.assets[0].uri);          
-        }
+    const onSaveSelectionView = () => {
+      setModalVisible(false);
+      dispatch({type: SLIDE_STATUS, payload: false});
+    }
+    const onValueChangedSelectionView = (value) => {
+      var tmp = [...formQuestions];
+      if(mode === "single"){
+        tmp[key].questions[index].value = value;
+      }else{
+        tmp[key].questions[index].value = tmp[key].questions[index].value === null ? value : tmp[key].questions[index].value + "," + value;
       }
-    });
-  }
-
-  const launchCamera = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchCamera(options, (response) => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {        
-        if(response.assets != null && response.assets.length > 0){         
-            //setSelectedPhotos([...selectedPhotos, response.assets[0].uri ]);             
-        }
-        
-      }
-    });
-
-  }
-
+      setFormQuestions(tmp);
+    }
 
     const renderQuestion = (item , key, index) =>{
       if(item.question_type === "text"){
         return (
-          <TextForm key={ "question" +  index} item={item} type="text" onTouchStart={(e, text) => {
+          <TextForm key={ "text_question" +  index} item={item} type="text" onTouchStart={(e, text) => {
             _onTouchStart( e, text);
           }}></TextForm>
         );
       }else if(item.question_type === "yes_no"){
         return (
-          <YesNoForm  key={ "question" +  index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></YesNoForm>
+          <YesNoForm  key={ "yes_no_question" +  index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></YesNoForm>
         );
       }else if(item.question_type === "heading"){
         return (
-          <HeadingForm key={ "question" + index} item={item}></HeadingForm>
+          <HeadingForm key={ "heading_question" + index} item={item}></HeadingForm>
         );
       }else if(item.question_type === "paragraph"){
         return (
-          <ParagraphForm key={ "question" +  index} item={item}></ParagraphForm>
+          <ParagraphForm key={ "paragraph_question" +  index} item={item}></ParagraphForm>
         );
       }else if(item.question_type === "multiple"){
         
         return (
-          <SingleSelectForm  key={ "question" +  index}           
+          <SingleSelectForm  key={ "multiple_question" +  index}           
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
           onPress={(item) => {        
             setMode("single");
             setOptions(item.options);
             setModalVisible(true);
+            dispatch({type: SLIDE_STATUS, payload: true});            
             setKey(key);
             setIndex(index);            
           }} item={item}></SingleSelectForm>
@@ -247,23 +198,24 @@ export const FormQuestions = (props) =>{
       }else if(item.question_type === "multi_select"){
         
         return (
-          <MultipleSelectForm  key={ "question" +  index} 
+          <MultipleSelectForm  key={ "multi_select_question" +  index} 
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
           onPress={(item) => {        
             setMode("multiple");
             setOptions(item.options);
             setModalVisible(true);
+            dispatch({type: SLIDE_STATUS, payload: true});
             setKey(key);
             setIndex(index);
           }} item={item}></MultipleSelectForm>
         );
       }else if(item.question_type === "numbers") {
         return (
-          <TextForm key={ "question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
+          <TextForm key={ "numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
         );
       }else if(item.question_type === "date"){
         return (
-          <DateForm key={ "question" + index} item={item}  
+          <DateForm key={ "date_question" + index} item={item}  
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
           onPress={() => {            
             setKey(key);
@@ -273,20 +225,23 @@ export const FormQuestions = (props) =>{
         );
       }else if(item.question_type === "signature"){
         return (
-          <SignatureForm key={ "question" + index} item={item}  
+          <SignatureForm key={ "signature_question" + index} item={item}  
           onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
           onPress={() => {            
             setKey(key);
             setIndex(index);
-            setIsSign(true);
+            setSignature( item.value );            
+            setIsSign(true);            
             dispatch({type: SLIDE_STATUS, payload: true});
           }} ></SignatureForm>
         );
+
       }else if(item.question_type === "take_photo"){
+
         return (
-          <TakePhotoForm           
-          key={ "question" + index} item={item}           
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
+          <TakePhotoForm
+            key={ "take_photo_question" + `${key}${index}`} item={item}           
+            onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
           ></TakePhotoForm>
         );
       }
@@ -309,13 +264,29 @@ export const FormQuestions = (props) =>{
                 onCancel={() => {  setIsDateTimeView(false) }}
               />
             }
-             
+
             {
                crmStatus && isSign &&
-              <Sign onOK={handleSignature} text={"text"}  onClose={() => {
-                 dispatch({type: SLIDE_STATUS, payload: false});                
-                 setIsSign(false);
+              <Sign signature={signature}  onOK={handleSignature}  
+              onClear= {() => {
+                  var tmp = [...formQuestions];                        
+                  tmp[key].questions[index].value = null;
+                  setFormQuestions(tmp);
+              }}
+              onClose={() => {
+                  var tmp = [...formQuestions];                        
+                  tmp[key].questions[index].value = null;
+                  setFormQuestions(tmp);
+                  dispatch({type: SLIDE_STATUS, payload: false});
+                  setIsSign(false);
               }}></Sign>
+            }
+            {              
+              crmStatus && modaVisible  &&
+              <SelectionView options={options}  mode={mode} 
+                onValueChanged = {(value) => {onValueChangedSelectionView(value); }}
+                onClose={() =>{onCloseSelectionView( key  , index )}} 
+                onSave={() => { onSaveSelectionView(); }} > </SelectionView>              
             }
             
             <View style={styles.titleContainerStyle}>
@@ -333,7 +304,7 @@ export const FormQuestions = (props) =>{
                 formQuestions && formQuestions.map((form , key) => {
                   return (
                     <View key={"form" + key}>
-                      <GroupTitle title={form.question_group}></GroupTitle>                      
+                      <GroupTitle title={form.question_group}></GroupTitle>                                                               
                       {
                         form.questions.map((item , index) => {
                           return renderQuestion(item , key, index);
@@ -359,13 +330,12 @@ export const FormQuestions = (props) =>{
                   <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
               </View>
             }
-
-
-            <Portal> 
+            
+            {/* <Portal> 
                 <MultipleOptionsModal
                     mode = {mode}
                     modaVisible={modaVisible}
-                    options={options}                
+                    options={options}
                     onClose={() =>{
                         var tmp = [...formQuestions];                        
                         tmp[key].questions[index].value = null; 
@@ -386,10 +356,7 @@ export const FormQuestions = (props) =>{
                       
                     }} >
                 </MultipleOptionsModal> 
-            </Portal>    
-
-            
-            
+            </Portal>     */}                        
         </View>
 
         </Provider>

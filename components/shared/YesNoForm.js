@@ -8,7 +8,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Button } from './Button';
 
 export const YesNoForm = ({item , onTouchStart}) => {
-    const [text,setText] = useState("");
+
+    const [isYes, setIsYes] = useState(false);
+    const [isNo, setIsNo] = useState(false);
+
     return (
         <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
@@ -27,9 +30,18 @@ export const YesNoForm = ({item , onTouchStart}) => {
                 </View>
 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>
-                    <Button title={'Yes'} onTaped={false} ></Button>
-                    <Button btnStyle={{marginLeft:15}} title={'No'} onTaped={false}></Button>
+                    <Button title={'Yes'} onTaped= {isYes} onClick={() => {
+                        setIsYes(true);
+                        setIsNo(false);
+                    }} ></Button>
+                    <Button btnStyle={{marginLeft:15}} title={'No'} onTaped={isNo} 
+                    onClick={() =>{
+                        setIsYes(false);
+                        setIsNo(true);
+                    }}
+                    ></Button>
                 </View>
+
 
             </View>
         </View>

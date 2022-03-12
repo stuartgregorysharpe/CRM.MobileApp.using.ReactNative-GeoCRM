@@ -22,19 +22,22 @@ export const TextForm = ({item , type , onTouchStart}) => {
                                 size={25}
                                 color={whiteLabel().mainText}                    
                             />
-                    </View>      
-                    
+                    </View>
                 </View>
                 
                 <View style={styles.inputContainer}>
 
-                    <Text style={{color:whiteLabel().helpText, fontSize:16}}> {item.add_prefix} </Text>
+                    {
+                        item.add_prefix !== '' &&
+                        <Text style={{color:whiteLabel().helpText, fontSize:16 , marginLeft:5}}> {item.add_prefix} </Text>
+                    }
+                    
                     <TextInput
                         style={styles.inputStyle}
                         placeholder= {type === 'numeric' ? 'Insert value...' : 'Answer here...' }
                         placeholderTextColor={whiteLabel().helpText}
                         keyboardType={type === "numeric" ? 'decimal-pad' : 'default'}
-                        autoCapitalize="words"
+                        autoCapitalize="sentences"
                         returnKeyType={type === "numeric" ? 'done' : 'default'}        
                         multiline
                         onChangeText={text => setText(text)}
@@ -45,7 +48,11 @@ export const TextForm = ({item , type , onTouchStart}) => {
                             }                        
                         }}
                     />
-                    <Text style={{color:whiteLabel().helpText, fontSize:16}}> {item.add_suffix} </Text>
+                    {
+                        item.add_suffix !== '' &&
+                        <Text style={{color:whiteLabel().helpText, fontSize:16 , marginRight:5}}> {item.add_suffix} </Text>
+                    }
+                    
                 </View>
                 
             </View>

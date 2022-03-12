@@ -7,13 +7,13 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 
-const Sign = ({ text, onOK , onClose }) => {
+
+const Sign = ({ signature, onOK , onClear, onClose }) => {
 
 
   const ref = useRef();
+
   const style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
-
-
   // Called after ref.current.readSignature() reads a non-empty base64 string
   const handleOK = (signature) => {
     console.log(signature);
@@ -23,8 +23,8 @@ const Sign = ({ text, onOK , onClose }) => {
   // Called after ref.current.readSignature() reads an empty string
   const handleEmpty = () => {
     console.log("Empty");
+    onClose();
   };
-
 
   // Called after end of stroke
   const handleEnd = () => {
@@ -39,11 +39,17 @@ const Sign = ({ text, onOK , onClose }) => {
 
   const handleClear = () => {
     ref.current.clearSignature();
+    onClear();
   }
 
   const handleConfirm = () => {
     console.log("end");
-    ref.current.readSignature();
+    var tmp = ref.current.readSignature();
+    // if(tmp === undefined){
+    //   console.log("undefined");
+    //   onClose();
+    // }
+    //onOK(ref.current.readSignature()); 
   }
 
   return (
@@ -51,7 +57,7 @@ const Sign = ({ text, onOK , onClose }) => {
 
         <Divider></Divider>
         
-        <View style={[styles.titleContainer, {marginTop:10}]}>
+        <View style={[styles.titleContainer, {marginTop:5}]}>
             <View style={{flex:1, alignItems:'center'}}>
                 <Text style={styles.titleStyle} >Please Sign Below:</Text>
             </View>
@@ -59,10 +65,9 @@ const Sign = ({ text, onOK , onClose }) => {
             <Button
                 style={{position:'absolute' , right:10}}
                 labelStyle={styles.clearStyle}
-                color={Colors.selectedRedColor}
+                // /color={Colors.selectedRedColor}
                 uppercase={false} 
-                onPress={ async() => { 
-                    console.log("clear");
+                onPress={ async() => {                     
                     handleClear();
                 }}>
             Clear
@@ -72,22 +77,23 @@ const Sign = ({ text, onOK , onClose }) => {
         <SignatureScreen
             ref={ref}
             webStyle={style}
+            dataURL={signature}
             //onEnd={handleEnd}
             onOK={handleOK}
-            // onEmpty={handleEmpty}
-            // onClear={handleClear}
+            onEmpty={handleEmpty}
+            onClear={handleClear}
             // onGetData={handleData}
             // autoClear={true}
-            // descriptionText={text}
+            //descriptionText={text}
         />
                     
-        <View style={{ paddingHorizontal:30 , marginVertical:10, width:Dimensions.get('window').width }}>
+        <View style={{ marginVertical:10, width:Dimensions.get('window').width * 0.94 }}>
             <SubmitButton onSubmit={ () => {
-                 handleConfirm(); 
-                 onClose(); 
+                
+                 handleConfirm();                  
+                 //onClose();
                 } } title="Submit"  ></SubmitButton>
         </View>
-
         
     </View>
     
@@ -121,9 +127,9 @@ const styles = StyleSheet.create({
     },
 
     clearStyle:{    
-        color: whiteLabel().selectedRedColor,
+        color: Colors.selectedRedColor,
         fontFamily: Fonts.primaryRegular, 
-        letterSpacing: 0.2  
+        letterSpacing: 0.2 
     },
 
     titleStyle:{

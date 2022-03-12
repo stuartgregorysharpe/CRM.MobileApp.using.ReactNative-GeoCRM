@@ -18,9 +18,7 @@ export default function FormsNavigator(props) {
       </Stack.Screen>
             
       <Stack.Screen
-        name="FormQuestions"
-        //initialParams={{location_id: ...props.route.params }}
-        // component={LocationSearchScreen}
+        name="FormQuestions"        
         options={{ header: () => null }}       
       >
         {props => <FormQuestions {...props} screenProps={screenProps} />}
