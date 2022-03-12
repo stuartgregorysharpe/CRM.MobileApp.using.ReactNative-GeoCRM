@@ -53,11 +53,13 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           setShowItem("refresh");
         }
       },
-      goBack(){        
-        if(showItem !== "update_customer"){   
-          props.goPreviousPage();
-        }else{          
+      goBack(){              
+        if(showItem === "update_customer") {
           setShowItem("refresh");
+        }else if(showItem === "refresh"){                    
+          props.animation("search-page");
+        }else{
+          props.goPreviousPage();
         }        
       },
       updateView(res){ 
@@ -65,8 +67,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           locationInfoRef.current.updateDispositionData(res);        
         }
         setLocationInfo(res);
-        setIsLoading(false);               
-        
+        setIsLoading(false);         
       }
     }),
     [showItem],
@@ -343,8 +344,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 <View style={{padding:10}}>
                 {        
                 locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
-                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
-                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
+                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
                 }
                 </View>                                              
 

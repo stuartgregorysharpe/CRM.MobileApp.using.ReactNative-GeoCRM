@@ -28,7 +28,7 @@ export const MultipleSelectForm = ({item , onPress ,onTouchStart }) => {
                             </View>
                         </View>
                         
-                        <MultipleButton   onPress={ () =>{ onPress(item); console.log("ddd")} } text={ item.value ? item.value : 'Select Option'} ></MultipleButton>
+                        <MultipleButton   onPress={ () =>{ onPress(item); }} text={ item.value && item.value.length > 0 ? item.value.join(', ') : 'Select Option'} ></MultipleButton>
                     </View>                    
                 </View>
                                 

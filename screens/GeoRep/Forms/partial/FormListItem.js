@@ -33,8 +33,9 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
 
                 {
                     item.compulsory === "1" &&
-                    <View style={{marginRight:3}}>
-                        <SvgIcon icon="Forms_Red_Compulsory" width='18px' height='18px'/>
+                    <View>
+                        {/* <SvgIcon icon="Forms_Red_Compulsory" width='18px' height='18px'/> */}
+                        <View style={[styles.redDotStyle , { marginRight:10}]}></View>
                     </View>
                 }
 
@@ -71,5 +72,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#fff'
     },
-   
+    redDotStyle:{
+        width:15,
+        height:15,
+        borderRadius:10,
+        backgroundColor: Colors.selectedRedColor
+    }
+       
 });

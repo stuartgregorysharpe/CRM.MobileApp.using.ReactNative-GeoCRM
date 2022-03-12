@@ -81,7 +81,7 @@ const Sign = ({ signature, onOK , onClear, onClose }) => {
             //onEnd={handleEnd}
             onOK={handleOK}
             onEmpty={handleEmpty}
-            onClear={handleClear}
+            //onClear={handleClear}
             // onGetData={handleData}
             // autoClear={true}
             //descriptionText={text}

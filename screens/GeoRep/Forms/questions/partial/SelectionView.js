@@ -1,38 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
-import Colors from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import Divider from '../../../../../components/Divider';
 import { clearFilterData, getFilterData, storeFilterData } from '../../../../../constants/Storage';
 import CheckBox from '@react-native-community/checkbox';
-import { style } from '../../../../../constants/Styles';
+import { boxShadow, style } from '../../../../../constants/Styles';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
+import { faSleigh } from '@fortawesome/free-solid-svg-icons';
+import SvgIcon from '../../../../../components/SvgIcon';
 
-export const SelectionView = ({options , mode,  value, onClose , onSave , onValueChanged}) => {
-
-    const [selectedVal, setSelectedVal] = useState(value);
-    useEffect(() => {         
+export const SelectionView = ({options , mode,  value, onClose , onSave , onValueChanged}) => {    
+    const [selectedVals, setSelectedVal] = useState(value !== null && value !== undefined ? value : [] );
+    useEffect(() => { 
 
     },[]);
+   
+    const getCheckedStatus = ( item,  values ) => {
+        console.log("selectedVals - ----", selectedVals);
+        
+        var tmp = null;
+        if(values !== null && values !== undefined){
+            tmp = values.find((element => element === item ));
+            if(tmp !== null && tmp !== undefined){
+                return true;
+            }
+        }
+        return false; 
+    }
+    
+    const onTapItem = (item) => {
+        console.log("clicked", item);
+        if(mode === "single"){
+            setSelectedVal([item]);
+            onValueChanged([item]);
+        }else {
+            var check = selectedVals.find( element => element === item);
+            if(check != null){
+                var tmp = selectedVals.filter( element => element !== item);                
+                setSelectedVal(tmp);
+                onValueChanged(tmp);
+            }else{
+                setSelectedVal([...selectedVals, item]);
+                onValueChanged([...selectedVals, item]);
+            }            
+            
+        }
+    }
 
    
-    const getCheckedStatus = ( item,  value ) => {
-        var flag = false;
-        if(item === value){
-        return true;
-        }
-        return flag;
-    }
-
-
-    const getCheckedStatusForMultiple = ( item,  value ) => {    
-        if(item === value){
-        return true;
-        }
-        return false;
-    }
-
     return (        
         <ScrollView style={styles.container}>
             <TouchableOpacity style={{ padding: 6 }}>
@@ -49,18 +66,31 @@ export const SelectionView = ({options , mode,  value, onClose , onSave , onValu
             { options && options.map((item, key) => (
                 <View key={key}>
                 
-                    <View style={[style.card , {paddingHorizontal:20}]} key={key}>
+                    <View style={[style.card , boxShadow, {paddingHorizontal:20}]} key={key}>
                         <Text style={styles.pickerItemText}>{item}</Text>
-                        <CheckBox
+
+                        <TouchableOpacity onPress={() => onTapItem(item) }>
+                            <View style={[styles.checkBoxStyle ,getCheckedStatus(item, selectedVals)? {} : {backgroundColor:'white'}]}>
+                                <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
+                            </View>
+                        </TouchableOpacity>
+                        
+                        {/* <CheckBox
                             tintColors={Colors.tickBoxColor}
                             onCheckColor={Colors.tickBoxColor}
                             onTintColor={Colors.tickBoxColor}
-                            value={ mode === "single" ? getCheckedStatus(item, selectedVal) :  getCheckedStatusForMultiple( item, value) }
-                            onValueChange={value => {                      
-                                setSelectedVal(item);        
-                                onValueChanged(item);
+                            value={  getCheckedStatus(item, selectedVals)}
+                            onValueChange={value => {
+                                if(mode === "single"){
+                                    setSelectedVal([item]);
+                                    onValueChanged(item);
+                                }else {
+                                    setSelectedVal([...selectedVals, item]);
+                                    onValueChanged([...selectedVals, item]);
+                                }                       
+                                
                             }}
-                        />
+                        /> */}
                     </View>                          
                 </View>
           ))}
@@ -85,6 +115,7 @@ const styles = StyleSheet.create({
         zIndex: 2000,
         padding: 10,
     },
+    
     sliderHeader: {                
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -105,6 +136,16 @@ const styles = StyleSheet.create({
         color: Colors.blackColor
     },
 
+    checkBoxStyle:{
+        width:25,
+        height:25,
+        borderRadius:15,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:whiteLabel().itemSelectedBackground,
+        borderWidth:1,
+        borderColor:whiteLabel().itemSelectedBackground
+    }
       
 
 });

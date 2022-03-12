@@ -30,9 +30,11 @@ import { SelectionView } from './partial/SelectionView';
 export const FormQuestions = (props) =>{
 
     const form = props.route.params.data;
-    const [formQuestions, setFormQuestions] = useState(null);
+    const [formQuestions, setFormQuestions] = useState([]);
+    const [originFormQuestions, setOriginFormQuestions] = useState([]);
     const [modaVisible, setModalVisible] = useState(false);
     const [options, setOptions] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [index, setIndex] = useState(-1);
     const [key, setKey] = useState(-1);
     const [mode, setMode] = useState("single");
@@ -45,7 +47,6 @@ export const FormQuestions = (props) =>{
     const [x,setX] = useState(0);
     const [y, setY] = useState(0);
     const [bubbleText, setBubleText] = useState("");
-    const takePhotoFormRef = useRef();
     const [signature, setSignature] = useState('');
     const dispatch = useDispatch()
 
@@ -98,12 +99,33 @@ export const FormQuestions = (props) =>{
         }    
       });      
       setFormQuestions(newData);
+      var tmp = [...newData];
+      //setOriginFormQuestions(tmp);
+    }
+
+    const clearAll = () =>{           
+      // console.log("formQuestions" , JSON.stringify(formQuestions))
+      var tmp = [...formQuestions];
+      tmp.forEach(element => {
+        element.questions.forEach(item => {
+          item.value = null;
+        });
+      });
+     
+      //var oringData = [...originFormQuestions];
+      //console.log(originFormQuestions);
+      setFormQuestions(tmp);
+      console.log("clreard", JSON.stringify(tmp));
+      //setFormQuestions(xxx);
+
+
+      //console.log("tmp", JSON.stringify(oringData))
+
     }
 
     const isInNewData = (data, value) =>{
       return data.find(item => item.question_group_id === value.question_group_id) ? true : false
     }
-
 
     const _onTouchStart = (e , text) => {            
       setX(e.pageX);
@@ -152,20 +174,25 @@ export const FormQuestions = (props) =>{
       setModalVisible(false);
       dispatch({type: SLIDE_STATUS, payload: false});
     }
-    const onValueChangedSelectionView = (value) => {
+    const onValueChangedSelectionView = ( key, index, value) => {
+      console.log("key", key);
+      console.log("index", index)
       var tmp = [...formQuestions];
-      if(mode === "single"){
-        tmp[key].questions[index].value = value;
-      }else{
-        tmp[key].questions[index].value = tmp[key].questions[index].value === null ? value : tmp[key].questions[index].value + "," + value;
-      }
+      console.log("tmp[key].questions[index]",tmp[key].questions[index])
+      tmp[key].questions[index].value = value;      
       setFormQuestions(tmp);
+      if(value.length === 3){
+        console.log("data", JSON.stringify(formQuestions));
+      }
+      
     }
 
     const renderQuestion = (item , key, index) =>{
       if(item.question_type === "text"){
         return (
-          <TextForm key={ "text_question" +  index} item={item} type="text" onTouchStart={(e, text) => {
+          <TextForm key={ "text_question" +  index}  
+            onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; console.log(text) }}
+            item={item} type="text" onTouchStart={(e, text) => {
             _onTouchStart( e, text);
           }}></TextForm>
         );
@@ -189,6 +216,7 @@ export const FormQuestions = (props) =>{
           onPress={(item) => {        
             setMode("single");
             setOptions(item.options);
+            setSelectedOptions(item.value);
             setModalVisible(true);
             dispatch({type: SLIDE_STATUS, payload: true});            
             setKey(key);
@@ -203,6 +231,7 @@ export const FormQuestions = (props) =>{
           onPress={(item) => {        
             setMode("multiple");
             setOptions(item.options);
+            setSelectedOptions(item.value);
             setModalVisible(true);
             dispatch({type: SLIDE_STATUS, payload: true});
             setKey(key);
@@ -283,8 +312,10 @@ export const FormQuestions = (props) =>{
             }
             {              
               crmStatus && modaVisible  &&
-              <SelectionView options={options}  mode={mode} 
-                onValueChanged = {(value) => {onValueChangedSelectionView(value); }}
+              <SelectionView 
+                options={options}  mode={mode} 
+                value={selectedOptions}
+                onValueChanged = {(value) => {onValueChangedSelectionView( key, index, value); }}
                 onClose={() =>{onCloseSelectionView( key  , index )}} 
                 onSave={() => { onSaveSelectionView(); }} > </SelectionView>              
             }
@@ -292,8 +323,8 @@ export const FormQuestions = (props) =>{
             <View style={styles.titleContainerStyle}>
               <View style={{flex:1}}>
                 <Text style={styles.formTitleStyle}>{form.form_name}</Text>
-              </View>
-              <TouchableOpacity style={{alignItems:'flex-end', padding:5}}>
+              </View>              
+              <TouchableOpacity style={{alignItems:'flex-end', padding:5}} onPress={ () => clearAll() }>
                 <Text style={styles.clearTextStyle}>Clear All Answers</Text>
               </TouchableOpacity>                         
             </View>
@@ -330,7 +361,7 @@ export const FormQuestions = (props) =>{
                   <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
               </View>
             }
-            
+
             {/* <Portal> 
                 <MultipleOptionsModal
                     mode = {mode}
