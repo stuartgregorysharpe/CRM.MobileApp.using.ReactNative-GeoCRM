@@ -1,7 +1,7 @@
 import axios from "axios";
 import { baseURL } from "../constants";
 import { getBaseUrl, getToken } from "../constants/Storage";
-import { CHANGE_LOCATION_FILTERS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
+import { CHANGE_LOCATION_FILTERS, CHANGE_LOGIN_STATUS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
 
 export function getPipelines(base_url, token, filters) {
   return new Promise(function (resolve, reject) {
