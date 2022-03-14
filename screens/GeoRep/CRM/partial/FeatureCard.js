@@ -9,7 +9,7 @@ export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction 
         <View style={{ backgroundColor: Colors.whiteColor, borderRadius: 5, elevation: 2, padding: 5, marginVertical: 3 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ backgroundColor: whiteLabel().feature_card_icon_background, padding: 5 }}>
-                    <SvgIcon icon={icon} width='10px' height='10px' />
+                    <SvgIcon icon={icon} width='15px' height='15px' />
 
                 </View>
                 <Text style={{
