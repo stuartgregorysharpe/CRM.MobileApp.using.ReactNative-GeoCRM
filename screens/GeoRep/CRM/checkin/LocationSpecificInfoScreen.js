@@ -5,7 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { boxShadow, style } from '../../../../constants/Styles';
 import FilterButton from '../../../../components/FilterButton';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -173,7 +173,7 @@ const styles = EStyleSheet.create(parse({
     padding: 10,
   },
   headerBox: {
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: whiteLabel().headerBackground,
     padding: 10,
     paddingBottom: 0,
     marginBottom: 8
@@ -192,7 +192,7 @@ const styles = EStyleSheet.create(parse({
   },
   subtitle: {
     fontSize: 12,
-    color: '#fff',
+    color: whiteLabel().headerText,
     textAlign: 'left',
     fontFamily: Fonts.secondaryMedium,
   },
@@ -202,7 +202,7 @@ const styles = EStyleSheet.create(parse({
   },
   title: {
     fontSize: 14,
-    color: '#fff',
+    color: whiteLabel().headerText,
     fontFamily: Fonts.secondaryBold,
     lineHeight: 22,
     maxWidth: 300
