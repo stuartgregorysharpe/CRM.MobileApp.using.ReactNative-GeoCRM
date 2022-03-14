@@ -55,10 +55,11 @@ export default function LocationSearchScreen(props) {
     props.screenProps.setOptions({                 
       headerTitle:() =>{
         return(<TouchableOpacity onPress={
-          () =>{            
+          () =>{                        
             if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){              
               locationRef.current.goBack();
             }else{
+              console.log("yyy")
               goPreviousPage();
             }
           }}>            
@@ -224,6 +225,7 @@ export default function LocationSearchScreen(props) {
         setShowItem(3);
         return;
       default:
+        setShowItem(0);
         return;
     }
   }
@@ -336,7 +338,8 @@ export default function LocationSearchScreen(props) {
 
               <LocationInfoDetails
                   {...props}
-                  ref={locationRef}                  
+                  ref={locationRef}              
+                  animation={animation}    
                   goPreviousPage={goPreviousPage}
                   pageType={pageType}
                   currentLocation={myLocation}

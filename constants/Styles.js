@@ -64,12 +64,13 @@ export const style = StyleSheet.create({
     padding: 8,        
     shadowColor:'#000',
     shadowOffset:{
-      width: 0, 
+      width: 1, 
       height: 1
     },
     shadowOpacity:0.27,
-    shadowRadius:0.65,
-    zIndex: 2
+    shadowRadius:0.65,    
+    zIndex: 2,
+    
   },
 
   grey_bar: {    

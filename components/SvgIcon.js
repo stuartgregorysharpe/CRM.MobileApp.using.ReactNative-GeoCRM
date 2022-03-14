@@ -425,6 +425,13 @@ const Check = `
   </svg>
 `;
 
+const Yes_No_Button_Check = `
+  <svg id="done_black_24dp_7_" data-name="done_black_24dp (7)" xmlns="http://www.w3.org/2000/svg" width="68.645" height="68.645" viewBox="0 0 68.645 68.645">
+    <path id="Path_5308" data-name="Path 5308" d="M0,0H68.645V68.645H0Z" fill="none"/>
+    <path id="Path_5309" data-name="Path 5309" d="M19.417,35.918,7.4,23.905l-4,4L19.417,43.927,53.739,9.6l-4-4Z" transform="translate(6.325 10.417)" fill="#FFFFFF"/>
+  </svg>
+`;
+
 const Close = `
   <svg xmlns="http://www.w3.org/2000/svg" width="59" height="59" viewBox="0 0 59 59">
     <g id="Group_4932" data-name="Group 4932" transform="translate(-905 -158)">
@@ -812,8 +819,6 @@ const Arrow_feature_Card = `<svg xmlns="http://www.w3.org/2000/svg" width="40" h
 </svg>
 `
 
-
-
 export default ({ icon, width = "100%", height = "100%", style = {} }) => (
   <Fragment>
     {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -886,5 +891,7 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Form_feature_card" && <SvgXml style={style} xml={Form_feature_card} width={width} height={height} />}
     {icon == "Sales_Pipeline_feature_Card" && <SvgXml style={style} xml={Sales_Pipeline_feature_Card} width={width} height={height} />}
     {icon == "Arrow_feature_Card" && <SvgXml style={style} xml={Arrow_feature_Card} width={width} height={height} />}
+    {icon == "Yes_No_Button_Check" && <SvgXml style={style} xml={Yes_No_Button_Check} width={width} height={height} />}
+    
   </Fragment>
 );

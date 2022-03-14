@@ -133,8 +133,8 @@ export default function LocationSpecificInfoScreen(props) {
 
               {        
                 locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
-                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} showLoopSlider={showLoopSlider} /> :
-                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo} showLoopSlider={showLoopSlider} />  
+                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} pageType={'locationSpecificInfo'} showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo}  pageType={'locationSpecificInfo'} showLoopSlider={showLoopSlider} />  
               }
 
               {/* {

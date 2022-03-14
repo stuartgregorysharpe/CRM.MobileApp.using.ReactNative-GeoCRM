@@ -43,7 +43,7 @@ import com.android.build.OutputFile
  *   devDisabledInStaging: true,
  *   // The configuration property can be in the following formats
  *   //         'devDisabledIn${productFlavor}${buildType}'
- *   //         'devDisabledIn${buildType}'
+ *   //         'devDisabledIn${buildType}'@react-native-community/cli-
  *
  *   // the root of your project, i.e. where "package.json" lives
  *   root: "../../",

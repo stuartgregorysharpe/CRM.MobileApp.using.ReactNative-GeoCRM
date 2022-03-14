@@ -6,12 +6,13 @@ import Fonts from '../../constants/Fonts';
 const PhotoCameraPickerDialog = ( { visible , message , onGallery, onCamera ,onModalClose } ) => {    
 
     return (
+        <TouchableWithoutFeedback onPress={onModalClose}>
         <Modal 
             // animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onModalClose}>            
-            {/* <TouchableWithoutFeedback onPress={onModalClose}> */}
+            <TouchableWithoutFeedback onPress={onModalClose}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.title} >{message}</Text>
@@ -32,8 +33,9 @@ const PhotoCameraPickerDialog = ( { visible , message , onGallery, onCamera ,onM
                         </View>
                     </View>
                 </View>
-            {/* </TouchableWithoutFeedback > */}
+            </TouchableWithoutFeedback >
         </Modal>
+        </TouchableWithoutFeedback>
     )
 }
 

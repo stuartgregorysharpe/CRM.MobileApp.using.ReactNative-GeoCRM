@@ -744,8 +744,10 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             <Text style={{ backgroundColor: BG_COLOR }}>{addOpportunityResponse && addOpportunityResponse.campaigns && addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId) ? addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId).campaign_name : 'Select Pipeline'}</Text>
             <SvgIcon icon="Drop_Down" width='23px' height='23px' />
           </TouchableOpacity>
+
+
           <View style={[styles.refreshBox, { borderColor: isStageCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isStageCompulsory ? 1 : 0 }]}>
-            <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox , {paddingRight:15}]} onPress={() => setStageModalVisible(!stageModalVisible)}>
               <Text style={[styles.shadowBoxText]}>Stage</Text>
               <View>
                 <View style={[styles.button, { flex: 1 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
@@ -758,7 +760,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             </TouchableOpacity>
           </View>
           <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor,borderWidth: isOutcomeCompulsory ? 1 : 0 }]}>
-            <TouchableOpacity style={styles.shadowBox} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox, {paddingRight:15}]} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
               <Text style={styles.shadowBoxText}>Outcome</Text>
               <View>
                 <View style={styles.button} onPress={() => {
@@ -774,6 +776,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
+
           {disposition_fields.length > 0 && <View>
             <View style={{ flexDirection: 'row', marginVertical: 10 }}>
               <Text style={{
@@ -933,18 +936,18 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                 );
               }
             })}
-
           </View>}
-          <View style={styles.refreshBox}>
-            <TouchableOpacity style={styles.shadowBox} onPress={() => setOpportunityStatusModalVisible(!opportunityStatusModalVisible)}>
-              <Text style={styles.shadowBoxText}> {selectedOpportunityStatus ? addOpportunityResponse.opportunity_statuses.find(x => x != null && x.opportunity_status_id != null && x.opportunity_status_id == selectedOpportunityStatus)?.opportunity_status_name : 'Opportunity status'}</Text>
-              {/* <View>
+
+          <View style={[styles.refreshBox]}>
+            <TouchableOpacity style={[styles.shadowBox , {paddingRight:15}] } onPress={() => setOpportunityStatusModalVisible(!opportunityStatusModalVisible)}>
+              <Text style={styles.shadowBoxText}>  Opportunity status </Text>
+              <View>
                 <View style={styles.button} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
                   <Text style={styles.buttonText}>
-                    {selectedOutcomeId ? addOpportunityResponse.outcomes.find(x => x != null && x.outcome_id != null && x.outcome_id == selectedOutcomeId)?.outcome_name : 'Select Outcome'}
+                    {selectedOpportunityStatus ? addOpportunityResponse.opportunity_statuses.find(x => x != null && x.opportunity_status_id != null && x.opportunity_status_id == selectedOpportunityStatus)?.opportunity_status_name : 'Select Status'}                    
                   </Text>
                 </View>
-              </View> */}
+              </View>
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>

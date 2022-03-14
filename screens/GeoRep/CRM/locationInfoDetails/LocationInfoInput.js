@@ -21,6 +21,8 @@ import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { useNavigation } from '@react-navigation/native';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
+
+
   const navigationMain = useNavigation();
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.infoInput);
@@ -396,28 +398,26 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           ))}
         </View>
       }
-
-      <FlatList
-        scrollEnabled={false}
-        columnWrapperStyle={{ justifyContent: 'space-between', padding: 1 }}
-        data={featureCards}
-        numColumns={2}
-        renderItem={
-          ({ item, index }) => <FeatureCard icon={item.icon} title={item.title} actionTitle={item.action} onAction={() => {
-
-            if (item.title === 'Forms') {
-              dispatch({ type: SLIDE_STATUS, payload: false });
-              navigationMain.navigate("RepForms", {
-                screen: 'Root', params: { locationId: locationInfo.location_id }
-              });
-            }
-          }} />
+   
+      <View style={styles.cardContainer}>
+        {
+          props.pageType ===  "locationSpecificInfo" && featureCards.map(( item, index) => {
+              return (
+                <View key={index} style={{marginLeft:5 , width:'48%'}}>
+                  <FeatureCard icon={item.icon} title={item.title} actionTitle={item.action} onAction={() => {
+                    if (item.title === 'Forms') {
+                      dispatch({ type: SLIDE_STATUS, payload: false });
+                      navigationMain.navigate("RepForms", {
+                        screen: 'Root', params: { locationId: locationInfo.location_id }
+                      });
+                    }
+                  }} />
+                </View>
+              );
+           })
         }
-        keyExtractor={(item, index) => index.toString()}
-      // contentContainerStyle={{ marginHorizontal: 2 }}
-      // ItemSeparatorComponent={renderSeparator} 
-      />
-
+      </View>
+      
 
       <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
@@ -599,5 +599,11 @@ const styles = EStyleSheet.create(parse({
   confirmModalDiscardButton: {
     color: whiteLabel().mainText,
     fontSize: 16
+  },
+  cardContainer: {    
+    flex: 1,
+    flexDirection: 'row',        
+    flexWrap: 'wrap',
+    alignItems: 'flex-start' // if you want to fill rows left to right
   },
 }));

@@ -6,7 +6,7 @@ import Fonts from '../../../../constants/Fonts';
 
 export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction }) {
     return (
-        <View style={{ backgroundColor: Colors.whiteColor, borderRadius: 5, elevation: 2, padding: 5, width: '49%', marginVertical: 3 }}>
+        <View style={{ backgroundColor: Colors.whiteColor, borderRadius: 5, elevation: 2, padding: 5, marginVertical: 3 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ backgroundColor: whiteLabel().feature_card_icon_background, padding: 5 }}>
                     <SvgIcon icon={icon} width='10px' height='10px' />

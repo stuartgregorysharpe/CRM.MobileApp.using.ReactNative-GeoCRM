@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, View, Dimensions, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { getFormFilters, getFormLists } from '../../../actions/forms.action';
 import SearchBar from '../../../components/SearchBar';
-import Colors from '../../../constants/Colors';
 import { FilterView, FormFilterView } from './partial/FormFilterView';
 import { FormListItem } from './partial/FormListItem';
 import { Provider } from 'react-native-paper';
@@ -11,7 +10,6 @@ import { SLIDE_STATUS } from '../../../actions/actionTypes';
 import GrayBackground from '../../../components/GrayBackground';
 import { getFilterData } from '../../../constants/Storage';
 import { style } from '../../../constants/Styles';
-import DeviceInfo from 'react-native-device-info';
 
 let isInfoWindow = false;
 
@@ -29,12 +27,9 @@ export default function FormsScreen(props) {
   const [isFilter, setIsFilter] = useState(false);
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const locationIdSpecific = props.route.params ? props.route.params.locationId : null;
-
+  
   const dispatch = useDispatch()
-
   useEffect(() => {
-
-    //console.log("forms prps", props)
 
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -167,15 +162,13 @@ export default function FormsScreen(props) {
             borderRadius: 20,
           }} key={1}>
 
-            <View style={{ backgroundColor: "#DDD", padding: 10, marginLeft: 30, marginRight: 30, borderRadius: 10, fontSize: 16, color: "#fff", }} key={1}><Text>{bubbleText}</Text></View>
+            <View style={styles.bubbleTextStyle} key={1}><Text>{bubbleText}</Text></View>
             <View style={[style.tip, { marginLeft: x - locationX + 3 }]}></View>
           </View>
-        }
-
+        }        
       </View>
     </Provider>
   );
-
 
 }
 
@@ -184,7 +177,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
+  bubbleTextStyle:{ 
+    backgroundColor: "#DDD", 
+    padding: 10, 
+    marginLeft: 30, 
+    marginRight: 30, 
+    borderRadius: 10, 
+    fontSize: 16, 
+    color: "#fff", 
+  }
 
 
 });

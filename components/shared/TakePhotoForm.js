@@ -11,78 +11,75 @@ import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 
-//{item , onPress ,onTouchStart}
-
-export default function TakePhotoForm (props , ref) {
+export default function TakePhotoForm (props) {
 
     const {item, onPress, onTouchStart } = props;
     const [isPicker , setIsPicker] = useState(false);
     const [photos, setPhotos] = useState([]);
             
-    const updateImageData = async (path) => {        
-
-        setPhotos([path]);
-        console.log(path);
+    const updateImageData = async (path) => {              
+      setIsPicker(false)
+      setPhotos([...photos, path ]); 
     }
     
-    selectPicker = (title, description) => {        
+    const showSelectionDialog = () => {        
         setIsPicker(true);
+        console.log("bbb", props.item)
     }
-
-  const launchImageLibrary = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchImageLibrary (options, (response)  => {      
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);        
-      } else {                                                  
-        if(response.assets != null && response.assets.length > 0){                     
-            
-            updateImageData(response.assets[0].uri);
-            setIsPicker(false);
-            //setFilePath(response.assets[0].uri);
-            //updateLocationImage(response.assets[0].uri);
+    
+    const launchImageLibrary = () => {
+      
+      let options = {
+        storageOptions: {
+          skipBackup: true,
+          path: 'images',
+        },
+      };
+      
+      ImagePicker.launchImageLibrary (options, (response)  => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);        
+        } else {                                                  
+          if(response.assets != null && response.assets.length > 0){                                   
+              
+              updateImageData(response.assets[0].uri);
+          }
         }
-      }
-    });
-  }
+      });
+
+
+    }
   
-  const launchCamera = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchCamera(options, (response) => {
-      console.log('Response = ', response);
+    const launchCamera = () => {
+      
+      let options = {
+        storageOptions: {
+          skipBackup: true,
+          path: 'images',
+        },
+      };
+      ImagePicker.launchCamera(options, (response) => {
+        console.log('Response = ', response);
 
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {        
-        if(response.assets != null && response.assets.length > 0){         
-            
-          //setFilePath(response.assets[0].uri);
-          //updateLocationImage(response.assets[0].uri);
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+          alert(response.customButton);
+        } else {        
+          if(response.assets != null && response.assets.length > 0){         
+            updateImageData(response.assets[0].uri);          
+          }
+
         }
-
-      }
-    });
-
-  }
+      });      
+    }
 
 
     return (
@@ -93,8 +90,7 @@ export default function TakePhotoForm (props , ref) {
                 <PhotoCameraPickerDialog visible={isPicker} message={"Choose Image"} 
                     onCamera={launchCamera}
                     onGallery={launchImageLibrary}
-                    onModalClose={() => {
-                        console.log("closed modal");
+                    onModalClose={() => {                        
                         setIsPicker(false);
                     }}
                 ></PhotoCameraPickerDialog>
@@ -114,25 +110,23 @@ export default function TakePhotoForm (props , ref) {
                     </View>
                 </View>
                 
-                <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}} >
-
-                
-                    <ScrollView horizontal={true}    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} >
-                                                
+                <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}} >                
+                    <ScrollView key={"scroll" + item.question_group_id} horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} >                                                
                         {
                             photos.map((item , index) =>{
                                 return (                                    
-                                    <TouchableOpacity key={"image" + index} style={[style.buttonStyle]} onPress={() => {  } }>
-                                        <View style={{width:80, height:80 , marginBottom : 10 , marginLeft:10}}>                                
-                                            <Image style={styles.imageConainer}  source={{uri:item}} /> 
-                                        </View>
-                                    </TouchableOpacity>
+                                    <View key={"image" + index} style={styles.imageStyle}>  
+                                        <Image style={styles.imageContainer}  source={{uri:item}} />
+                                        <TouchableOpacity  style={[styles.closeButtonStyle]} onPress={() => { var tmp = photos.filter(element => element !== item ); setPhotos(tmp); } }>
+                                          <SvgIcon icon="Close" width="20px" height="20px" />
+                                        </TouchableOpacity>
+                                    </View>                                    
                                 );
                             })
                         }
 
-                        <TouchableOpacity style={[style.buttonStyle]} onPress={() => {  selectPicker("", "") } }>
-                                <SvgIcon icon="Add_Image" width='80px' height='80px' />                                                    
+                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:10}]} onPress={() => { showSelectionDialog() } }>
+                          <SvgIcon icon="Add_Image" width='80px' height='80px' />                                                    
                         </TouchableOpacity>
 
                     </ScrollView>                    
@@ -156,19 +150,26 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.secondaryMedium
     },  
    
-    buttonStyle:{
-
+    imageStyle:{
+        width:80, 
+        height:80 , 
+        marginBottom : 10 , 
+        marginLeft:10
     },
 
- 
-
-    imageConainer: {
+    imageContainer: {
         borderWidth: 1,
         borderColor: whiteLabel().fieldBorder,
         borderRadius: 7,
         width:Dimensions.get("screen").width / 4.5,
         height:Dimensions.get("screen").width / 4.5
     },
+
+    closeButtonStyle:{
+      position:'absolute',
+      right:0,
+      top:3
+    }
 
     
     
