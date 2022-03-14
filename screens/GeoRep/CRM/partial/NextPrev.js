@@ -248,7 +248,7 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
                         onPrev();                        
                     }}>
                     <View style={[styles.prevStyle, {paddingLeft:10, paddingRight:10}]}>
-                        <SvgIcon icon="Arrow_Left_Btn" width='7px' height='15px' />
+                        <SvgIcon icon="Arrow_Left_Btn_alt" width='7px' height='15px' />
                         <Text style={{marginLeft:5,fontSize:12 , color: whiteLabel().actionOutlineButtonText, fontWeight:'700' }} >
                             { !DeviceInfo.isTablet() ? 'Previous' : prevLocationName }
                         </Text>
@@ -266,7 +266,7 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
                         <Text style={{marginRight:13, fontSize:12 , color: whiteLabel().actionOutlineButtonText , fontWeight:'700'}}>                            
                             { !DeviceInfo.isTablet() ? 'Next' : nextLocationName }
                         </Text>
-                        <SvgIcon icon="Arrow_Right_Btn" width='7px' height='15px' />
+                        <SvgIcon icon="Arrow_Right_Btn_alt" width='7px' height='15px' />
                     </View>            
                 </TouchableOpacity>
             }

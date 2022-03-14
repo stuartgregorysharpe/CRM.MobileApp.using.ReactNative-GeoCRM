@@ -33,7 +33,7 @@ import { RuleTester } from 'eslint';
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
     <Text style={styles.slidUpArrowText}>Pin Key</Text>
-    <FontAwesomeIcon size={12} icon={faChevronUp} color={whiteLabel().actionFullButtonIcon} />
+    <FontAwesomeIcon size={12} icon={faChevronUp} color={whiteLabel().mainText} />
   </View>
 )
 
