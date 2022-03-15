@@ -1,39 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
-import Colors from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import Divider from '../../../../../components/Divider';
 import { getFormFilters } from '../../../../../actions/forms.action';
 import { clearFilterData, getFilterData, storeFilterData } from '../../../../../constants/Storage';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DatePicker from 'react-native-modern-datepicker';
+import SvgIcon from '../../../../../components/SvgIcon';
+import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 
-export const DatetimePickerView = ({close , apply}) => {
+
+export const DatetimePickerView = ({close , value}) => {
 
     const [items, setItems]  =  useState([]);    
-    const [modaVisible, setModalVisible] = useState(false);
     const [options, setOptions] = useState([]);
-    const [filters, setFilters] = useState({ form_type : [] })
+    const [date, setSelectedDate] = useState('');
 
-    useEffect(() => { 
-        _callFormFilters();
-        initFilter();
+    useEffect(() => {         
+        
     },[]);
-
-    const _callFormFilters = () =>{        
-        getFormFilters().then((res) => {    
-            console.log("res", JSON.stringify(res));
-            setItems(res)
-        }).catch((e) => {
-          console.log(e)
-        })
-    }
-
-    const initFilter = async() => {
-        var savedFilters = await getFilterData("@form_filter");
-        setFilters(savedFilters);
-    }    
-
+    
 
     return (        
         <ScrollView style={styles.container}>
@@ -43,8 +31,7 @@ export const DatetimePickerView = ({close , apply}) => {
             </TouchableOpacity>
 
             <View style={styles.sliderHeader}>
-                <Title style={{ fontFamily: Fonts.primaryBold }}>Filter your search</Title>
-
+                <Title style={{ fontFamily: Fonts.primaryBold, fontSize:16 , color:Colors.blackColor }}>Please select the correct date:</Title>
                 <Button 
                     labelStyle={{
                         fontFamily: Fonts.primaryRegular, 
@@ -56,33 +43,40 @@ export const DatetimePickerView = ({close , apply}) => {
                         close()
                     }}
                 >
-                Clear Filters
+                Clear
                 </Button>
             </View>
-                        
-            <DateTimePickerModal
+
+            <DatePicker 
+                nextSvg = {<SvgIcon icon="Calendar_Previous" width='23px' height='23px' />}
+                prevSvg = {<SvgIcon icon="Calendar_Next" width='23px' height='23px' />}   
+                options={{                                        
+                    backgroundColor: Colors.bgColor,
+                    textHeaderColor: whiteLabel().mainText,
+                    textDefaultColor: Colors.blackColor,
+                    selectedTextColor: whiteLabel().selectedTextColor,
+                    mainColor: whiteLabel().itemSelectedBackground,
+                    textSecondaryColor: whiteLabel().mainText,
+                    //borderColor: 'rgba(122, 146, 165, 0.1)',
+                }}
+                selected={ value }
+                mode="calendar"
+                onSelectedChange={date => setSelectedDate(date)} /> 
+            
+            {/* <DateTimePickerModal
               isVisible={true}
               mode={'date'}
               onConfirm={ () => { close() }}
               onCancel={() => { close() }}
-            />
-                                    
-            <Button 
-                mode="contained"  color={Colors.primaryColor}  uppercase={false} 
-                labelStyle={{
-                    fontSize: 18, 
-                    fontFamily: Fonts.secondaryBold, 
-                    letterSpacing: 0.2
-                }}
-                onPress={ async () => {
-                    console.log("fave form filter", filters);
-                    await storeFilterData( "@form_filter", filters);
-                    close();
-                    apply(filters);
-                }}>
-                Apply Filters
-            </Button>
-                 
+            /> */}
+
+
+            <View style={{ marginVertical:10, width:Dimensions.get('window').width * 0.94 }}>
+                <SubmitButton onSubmit={ () => {                    
+                        close(date);
+                    } } title="Submit"  ></SubmitButton>
+            </View>
+
         </ScrollView>        
     );
 }

@@ -830,6 +830,15 @@ const Arrow_feature_Card = `<svg xmlns="http://www.w3.org/2000/svg" width="40" h
 </g>
 </svg>
 `
+const  Calendar_Previous = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" height="58.664" viewBox="0 0 24.319 58.664">
+<path id="chevron-back" d="M31.272,7.875,12.938,33.721,31.272,59.568" transform="translate(-10.438 -4.389)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+</svg>
+`;
+
+const Calendar_Next = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" height="58.664" viewBox="0 0 24.319 58.664">
+<path id="chevron-back" d="M18.334,0,0,25.846,18.334,51.693" transform="translate(21.819 55.178) rotate(180)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+</svg>
+`;
 
 export default ({ icon, width = "100%", height = "100%", style = {} }) => (
   <Fragment>
@@ -906,6 +915,8 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Sales_Pipeline_feature_Card" && <SvgXml style={style} xml={Sales_Pipeline_feature_Card} width={width} height={height} />}
     {icon == "Arrow_feature_Card" && <SvgXml style={style} xml={Arrow_feature_Card} width={width} height={height} />}
     {icon == "Yes_No_Button_Check" && <SvgXml style={style} xml={Yes_No_Button_Check} width={width} height={height} />}
-    
+    {icon == "Calendar_Previous" && <SvgXml style={style} xml={Calendar_Previous} width={width} height={height} />}
+    {icon == "Calendar_Next" && <SvgXml style={style} xml={Calendar_Next} width={width} height={height} />}
+
   </Fragment>
 );

@@ -76,7 +76,7 @@ export const getFormQuestions = async (form_id) => {
   var token = await getToken();
 
   return new Promise(function (resolve, reject) {
-    console.log(`https://dev.georep.com/local_api_old/forms/form-questions?form_id=xxx`)
+    console.log(`https://dev.georep.com/local_api_old/forms/form-questions?form_id=${form_id}`)
     axios
       .get(`https://dev.georep.com/local_api_old/forms/form-questions?form_id=${form_id}`, {
         params: {},

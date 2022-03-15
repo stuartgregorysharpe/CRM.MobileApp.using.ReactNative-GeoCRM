@@ -8,10 +8,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
-    const [text,setText] = useState(item.value ? item.value :  '');    
-
-    console.log("text form  ");
-
+    const [text,setText] = useState(item.value ? item.value :  ''); 
+    
     useEffect(() =>{
         console.log("text form render...")       
     },[]);
@@ -23,7 +21,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
 
     return (
-        <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card, item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, paddingHorizontal:5}}>
@@ -39,22 +37,44 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
                     </View>
                 </View>
                 
-                <View style={styles.inputContainer}>
+                <View style={[styles.inputContainer , item.rule_editable === "1" ? {} : {backgroundColor:'#EEE'}]}>
 
                     {
                         item.add_prefix !== '' &&
                         <Text style={{color:whiteLabel().helpText, fontSize:16 , marginLeft:5}}> {item.add_prefix} </Text>
                     }
-                    
+
                     <TextInput
-                        style={styles.inputStyle}
+                        style={[styles.inputStyle  ]}
+                        editable={item.rule_editable === "1" ? true : false}                        
                         placeholder= {type === 'numeric' ? 'Insert value...' : 'Answer here...' }
                         placeholderTextColor={whiteLabel().helpText}
                         keyboardType={type === "numeric" ? 'decimal-pad' : 'default'}
                         autoCapitalize="sentences"
                         returnKeyType={type === "numeric" ? 'done' : 'default'}        
                         multiline
-                        onChangeText={text => {setText(text) ; onTextChanged(text); }}
+                        onChangeText={text => {
+                            var flag = true;
+                            if(item.rule_characters.includes("<")){
+                                var tmp = item.rule_characters.split(",");
+                                if(tmp.length >= 2 && text.length >= tmp[1]){
+                                    flag = false;
+                                }
+                            }else if(item.rule_characters.includes(">")){
+                                var tmp = item.rule_characters.split(",");
+                                if(tmp.length >= 2 && text.length <= tmp[1]){
+                                    flag = false;
+                                }
+                            }else if( item.rule_characters.includes("=") ){
+                                var tmp = item.rule_characters.split(",");
+                                if(tmp.length >= 2 && text.length !== tmp[1]){
+                                    flag = false;
+                                }
+                            }
+                            
+                            setText(text); 
+                            onTextChanged(text); 
+                        }}
                         value={item.value}
                         onSubmitEditing={()=>{
                             if(type === "numeric"){
@@ -73,6 +93,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     container:{
@@ -101,5 +122,6 @@ const styles = StyleSheet.create({
         paddingLeft:5,
         paddingBottom:10,        
         color: whiteLabel().inputText
-    }
+    },
+    
 })

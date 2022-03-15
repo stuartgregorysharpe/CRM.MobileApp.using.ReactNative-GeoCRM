@@ -372,13 +372,14 @@ export default function LocationScreen(props) {
     }else{
       if(isZoomOut === false){
         setIsZoomOut(true);
-      }                        
+      }
     }
+    
     console.log("previous zoom", previousZoom);
     console.log("zoom ", zoom);
 
-    if( markers !== undefined && markers.length < 10 ||  markers === undefined ){
-      if( (previousZoom < 10 && zoom >= 10 && !isDraw) || ( previousZoom >= zoom  && zoom >= 10 && !isDraw ) ){
+    if( markers !== undefined && markers.length < 20 ||  markers === undefined ){
+      if( (previousZoom < 8 && zoom >= 8 && !isDraw) || ( previousZoom >= zoom  && zoom >= 8 && !isDraw ) ){
         setBoundBox(bBox);
         if(isLoading === false){
           setIsLoading(true);

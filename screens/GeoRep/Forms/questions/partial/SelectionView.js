@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions, Platform } from 'react-native';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import Divider from '../../../../../components/Divider';
-import { clearFilterData, getFilterData, storeFilterData } from '../../../../../constants/Storage';
-import CheckBox from '@react-native-community/checkbox';
 import { boxShadow, style } from '../../../../../constants/Styles';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import { faSleigh } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../../../components/SvgIcon';
 
 export const SelectionView = ({options , mode,  value, onClose , onSave , onValueChanged}) => {    
@@ -57,40 +54,23 @@ export const SelectionView = ({options , mode,  value, onClose , onSave , onValu
             </TouchableOpacity>
 
             <View style={styles.sliderHeader}>                
-                <Text style={{fontSize:16,fontFamily:Fonts.primaryBold}} >Select the correct answer from the list:</Text>
+                <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >Select the correct answer from the list:</Text>
                 <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
                     <Text style={{ fontSize: 13, fontFamily: Fonts.secondaryRegular ,  color:Colors.selectedRedColor}}>Clear</Text>
-                </TouchableOpacity>                
+                </TouchableOpacity>
             </View>
 
             { options && options.map((item, key) => (
                 <View key={key}>
                 
-                    <View style={[style.card , boxShadow, {paddingHorizontal:20}]} key={key}>
+                    <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={key}>
                         <Text style={styles.pickerItemText}>{item}</Text>
 
                         <TouchableOpacity onPress={() => onTapItem(item) }>
                             <View style={[styles.checkBoxStyle ,getCheckedStatus(item, selectedVals)? {} : {backgroundColor:'white'}]}>
                                 <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
                             </View>
-                        </TouchableOpacity>
-                        
-                        {/* <CheckBox
-                            tintColors={Colors.tickBoxColor}
-                            onCheckColor={Colors.tickBoxColor}
-                            onTintColor={Colors.tickBoxColor}
-                            value={  getCheckedStatus(item, selectedVals)}
-                            onValueChange={value => {
-                                if(mode === "single"){
-                                    setSelectedVal([item]);
-                                    onValueChanged(item);
-                                }else {
-                                    setSelectedVal([...selectedVals, item]);
-                                    onValueChanged([...selectedVals, item]);
-                                }                       
-                                
-                            }}
-                        /> */}
+                        </TouchableOpacity>                                                
                     </View>                          
                 </View>
           ))}
@@ -145,6 +125,9 @@ const styles = StyleSheet.create({
         backgroundColor:whiteLabel().itemSelectedBackground,
         borderWidth:1,
         borderColor:whiteLabel().itemSelectedBackground
+    },
+    closeModal: {            
+        paddingRight: 5  
     }
       
 

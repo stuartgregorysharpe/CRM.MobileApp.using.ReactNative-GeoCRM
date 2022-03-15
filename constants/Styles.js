@@ -1,6 +1,6 @@
 import { StyleSheet , Platform, Dimensions} from "react-native";
 import Fonts from "./Fonts";
-import { BG_COLOR, PRIMARY_COLOR, whiteLabel } from "./Colors";
+import Colors, { BG_COLOR, PRIMARY_COLOR, whiteLabel } from "./Colors";
 
 export const boxShadow = StyleSheet.create({
   shadowColor: '#808080',
@@ -54,6 +54,17 @@ export const style = StyleSheet.create({
 
   },
 
+  // card:{
+  //   flex:1, 
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   backgroundColor: '#fff',
+  //   paddingLeft: 12,
+  //   paddingRight: 12,
+  //   borderRadius: 7,
+  //   marginBottom: 10
+  // },
   card: {    
     marginBottom: 10,
     backgroundColor: '#fff',
@@ -63,12 +74,9 @@ export const style = StyleSheet.create({
     borderRadius: 4,
     padding: 8,        
     shadowColor:'#000',
-    shadowOffset:{
-      width: 1, 
-      height: 1
-    },
-    shadowOpacity:0.27,
-    shadowRadius:0.65,    
+    shadowOffset:{ width: 1,  height: 1 },
+    shadowOpacity: Platform.OS === 'android' ? 0.27 : 0.27,
+    shadowRadius:Platform.OS === 'android' ? 0.65 : 0.65,     
     zIndex: 2,
     
   },
@@ -115,6 +123,12 @@ export const style = StyleSheet.create({
     borderRightColor: "transparent",
     borderBottomColor: "#DDD",
   },
+
+  compulsoryStyle:{
+    borderWidth:1,
+    borderColor:Colors.selectedRedColor
+  }
+
   
 
 })

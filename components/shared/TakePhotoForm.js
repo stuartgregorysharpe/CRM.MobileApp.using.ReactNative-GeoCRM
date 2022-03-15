@@ -11,20 +11,24 @@ import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 
-export default function TakePhotoForm (props) {
+export default function TakePhotoForm ({item, onPress, onTouchStart}) {
 
-    const {item, onPress, onTouchStart } = props;
+    //const {  } = props;
     const [isPicker , setIsPicker] = useState(false);
-    const [photos, setPhotos] = useState([]);
-            
-    const updateImageData = async (path) => {              
-      setIsPicker(false)
-      setPhotos([...photos, path ]); 
+    //const [photos, setPhotos] = useState([]);
+
+    const updateImageData = async (path) => {
+      setIsPicker(false);
+      //onPress(path);  
+      if(item.value && item.value !== null){
+        onPress([...item.value, path ]);
+      }else{
+        onPress([ path ]);
+      }      
     }
     
     const showSelectionDialog = () => {        
-        setIsPicker(true);
-        console.log("bbb", props.item)
+        setIsPicker(true);      
     }
     
     const launchImageLibrary = () => {
@@ -44,8 +48,7 @@ export default function TakePhotoForm (props) {
         } else if (response.customButton) {
           console.log('User tapped custom button: ', response.customButton);        
         } else {                                                  
-          if(response.assets != null && response.assets.length > 0){                                   
-              
+          if(response.assets != null && response.assets.length > 0){              
               updateImageData(response.assets[0].uri);
           }
         }
@@ -83,7 +86,7 @@ export default function TakePhotoForm (props) {
 
 
     return (
-        <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card,  item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             
             <View style={styles.container}>
 
@@ -113,11 +116,15 @@ export default function TakePhotoForm (props) {
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}} >                
                     <ScrollView key={"scroll" + item.question_group_id} horizontal={true} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} >                                                
                         {
-                            photos.map((item , index) =>{
+                            item.value && item.value.length > 0 && item.value.map((subItem , index) =>{
                                 return (                                    
                                     <View key={"image" + index} style={styles.imageStyle}>  
-                                        <Image style={styles.imageContainer}  source={{uri:item}} />
-                                        <TouchableOpacity  style={[styles.closeButtonStyle]} onPress={() => { var tmp = photos.filter(element => element !== item ); setPhotos(tmp); } }>
+                                        <Image style={styles.imageContainer}  source={{uri:subItem}} />
+                                        <TouchableOpacity  style={[styles.closeButtonStyle]} 
+                                          onPress={() => { 
+                                            var tmp = item.value.filter(element => element !== subItem );                                             
+                                            onPress(tmp); 
+                                            } }>
                                           <SvgIcon icon="Close" width="20px" height="20px" />
                                         </TouchableOpacity>
                                     </View>                                    
@@ -125,8 +132,8 @@ export default function TakePhotoForm (props) {
                             })
                         }
 
-                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:10}]} onPress={() => { showSelectionDialog() } }>
-                          <SvgIcon icon="Add_Image" width='80px' height='80px' />                                                    
+                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:10 }]} onPress={() => { showSelectionDialog() } }>
+                          <SvgIcon icon="Add_Image" />   
                         </TouchableOpacity>
 
                     </ScrollView>                    
@@ -158,6 +165,7 @@ const styles = StyleSheet.create({
     },
 
     imageContainer: {
+        padding:5,
         borderWidth: 1,
         borderColor: whiteLabel().fieldBorder,
         borderRadius: 7,

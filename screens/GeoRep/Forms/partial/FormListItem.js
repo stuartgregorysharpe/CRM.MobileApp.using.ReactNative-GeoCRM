@@ -15,7 +15,7 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
     return (
         <View style={[styles.container]}>
              <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" ? {borderWidth:1, borderColor:'red'}:{} ]} onPress={onItemPress}>                
-                <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:10, paddingBottom:10 }}>
+                <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:3, paddingBottom:3 }}>
                     <View style={{flexDirection:'row'}}>
                         <Text style={styles.title}>{item.form_name}</Text>                        
                         <View 
