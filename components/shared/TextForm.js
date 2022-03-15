@@ -8,10 +8,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
-    const [text,setText] = useState(item.value ? item.value :  '');    
-
+    const [text,setText] = useState(item.value ? item.value :  ''); 
     console.log("text form  ");
-
     useEffect(() =>{
         console.log("text form render...")       
     },[]);

@@ -1,5 +1,5 @@
 import React, { useEffect , useState , useRef } from 'react';
-import { Text, View, Dimensions, StyleSheet ,FlatList ,TouchableOpacity , Image , Alert} from 'react-native';
+import { Text, View, Dimensions, StyleSheet , TouchableOpacity , Image , Alert} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getFormQuestions } from '../../../../actions/forms.action';
 import { HeadingForm } from '../../../../components/shared/HeadingForm';
@@ -26,12 +26,13 @@ import GrayBackground from '../../../../components/GrayBackground';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
 import { SelectionView } from './partial/SelectionView';
+import { DatetimePickerView } from './partial/DatetimePickerView';
+import { value } from 'react-native-extended-stylesheet';
 
 export const FormQuestions = (props) =>{
 
     const form = props.route.params.data;
     const [formQuestions, setFormQuestions] = useState([]);
-    const [originFormQuestions, setOriginFormQuestions] = useState([]);
     const [modaVisible, setModalVisible] = useState(false);
     const [options, setOptions] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -48,18 +49,27 @@ export const FormQuestions = (props) =>{
     const [y, setY] = useState(0);
     const [bubbleText, setBubleText] = useState("");
     const [signature, setSignature] = useState('');
+    const [selectedDate, setSelectedDate] = useState('');
     const dispatch = useDispatch()
 
-    useEffect(() => {    
+    useEffect(() => {
         if (props.screenProps) {
           props.screenProps.setOptions({            
             headerTitle:() =>{
               return(<TouchableOpacity                     
                  onPress={
                 () =>{
-                  if(props.navigation.canGoBack()){              
-                    props.navigation.goBack();              
-                  }
+                  if(crmStatus && isDateTimeView){
+                    closeDateTime();
+                  }else if(crmStatus && modaVisible){
+                    closeDateTime();
+                  }else if(crmStatus && isSign){
+                    closeSignView();
+                  }else{
+                    if( props.navigation.canGoBack()){
+                      props.navigation.goBack();              
+                    }
+                  }                  
                 }}> 
                 <View style={style.headerTitleContainerStyle}>                                
                     <Image
@@ -77,8 +87,7 @@ export const FormQuestions = (props) =>{
     useEffect(() => {
       _callFormQuestions()
     },[]);
-    
-    
+        
     const _callFormQuestions = () => {
       getFormQuestions(form.form_id).then((res) => {                
         groupByQuestions(res);
@@ -98,33 +107,21 @@ export const FormQuestions = (props) =>{
           tmp.questions = [...newTmp];
         }    
       });      
-      setFormQuestions(newData);
-      var tmp = [...newData];
-      //setOriginFormQuestions(tmp);
+      setFormQuestions(newData);            
+    }
+    
+    const isInNewData = (data, value) =>{
+      return data.find(item => item.question_group_id === value.question_group_id) ? true : false
     }
 
-    const clearAll = () =>{           
-      // console.log("formQuestions" , JSON.stringify(formQuestions))
+    const clearAll = () =>{             
       var tmp = [...formQuestions];
       tmp.forEach(element => {
         element.questions.forEach(item => {
           item.value = null;
         });
-      });
-     
-      //var oringData = [...originFormQuestions];
-      //console.log(originFormQuestions);
-      setFormQuestions(tmp);
-      console.log("clreard", JSON.stringify(tmp));
-      //setFormQuestions(xxx);
-
-
-      //console.log("tmp", JSON.stringify(oringData))
-
-    }
-
-    const isInNewData = (data, value) =>{
-      return data.find(item => item.question_group_id === value.question_group_id) ? true : false
+      });      
+      setFormQuestions(tmp);    
     }
 
     const _onTouchStart = (e , text) => {            
@@ -144,29 +141,28 @@ export const FormQuestions = (props) =>{
       return 35;
     }
 
-    const confirmDateTime = (date) =>{
-      let datetime = "";      
-      datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());      
+    const confirmDateTime = (datetime) =>{      
       var tmp = [...formQuestions];                  
       tmp[key].questions[index].value = datetime ;
-      setFormQuestions(tmp);
+      setFormQuestions(tmp);      
+    }
+    const closeDateTime = () =>{
       setIsDateTimeView(false);
+      dispatch({type: SLIDE_STATUS, payload: false});                
     }
     
-    const handleSignature = (signature) => {      
-      console.log("signature" , signature);
-      var tmp = [...formQuestions];                  
-      tmp[key].questions[index].value = signature ;
-      setFormQuestions(tmp);
-      console.log("otpm", JSON.stringify(tmp));
+    const handleSignature = (signature) => {
+      onValueChangedSelectionView(key, index, signature);      
       dispatch({type: SLIDE_STATUS, payload: false});    
+      setIsSign(false);
+    }    
+    const closeSignView = () => {
+      dispatch({type: SLIDE_STATUS, payload: false});
       setIsSign(false);
     }
 
     const onCloseSelectionView = (key, index) => {
-      var tmp = [...formQuestions];                        
-      tmp[key].questions[index].value = null; 
-      setFormQuestions(tmp);
+      onValueChangedSelectionView(key, index, null);
       setModalVisible(false);
       dispatch({type: SLIDE_STATUS, payload: false});
     }
@@ -174,31 +170,26 @@ export const FormQuestions = (props) =>{
       setModalVisible(false);
       dispatch({type: SLIDE_STATUS, payload: false});
     }
-    const onValueChangedSelectionView = ( key, index, value) => {
-      console.log("key", key);
-      console.log("index", index)
-      var tmp = [...formQuestions];
-      console.log("tmp[key].questions[index]",tmp[key].questions[index])
+    const onValueChangedSelectionView = ( key, index, value) => {      
+      var tmp = [...formQuestions];      
       tmp[key].questions[index].value = value;      
-      setFormQuestions(tmp);
-      if(value.length === 3){
-        console.log("data", JSON.stringify(formQuestions));
-      }
-      
+      setFormQuestions(tmp);            
     }
 
     const renderQuestion = (item , key, index) =>{
       if(item.question_type === "text"){
         return (
           <TextForm key={ "text_question" +  index}  
-            onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; console.log(text) }}
+            onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; }}
             item={item} type="text" onTouchStart={(e, text) => {
             _onTouchStart( e, text);
           }}></TextForm>
         );
       }else if(item.question_type === "yes_no"){
         return (
-          <YesNoForm  key={ "yes_no_question" +  index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></YesNoForm>
+          <YesNoForm
+          onPress={(value) => onValueChangedSelectionView(key, index, value) }
+          key={ "yes_no_question" +  index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); } }   ></YesNoForm>
         );
       }else if(item.question_type === "heading"){
         return (
@@ -240,16 +231,20 @@ export const FormQuestions = (props) =>{
         );
       }else if(item.question_type === "numbers") {
         return (
-          <TextForm key={ "numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
+          <TextForm 
+          onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; }}
+          key={ "numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
         );
       }else if(item.question_type === "date"){
         return (
           <DateForm key={ "date_question" + index} item={item}  
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
-          onPress={() => {            
+          onPress={() => {
             setKey(key);
             setIndex(index);
+            setSelectedDate(item.value);
             setIsDateTimeView(true);
+            dispatch({type: SLIDE_STATUS, payload: true});
           }} ></DateForm>
         );
       }else if(item.question_type === "signature"){
@@ -271,6 +266,7 @@ export const FormQuestions = (props) =>{
           <TakePhotoForm
             key={ "take_photo_question" + `${key}${index}`} item={item}           
             onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
+            onPress={(value) => onValueChangedSelectionView(key, index, value) }
           ></TakePhotoForm>
         );
       }
@@ -285,29 +281,24 @@ export const FormQuestions = (props) =>{
             <GrayBackground></GrayBackground>
 
             {
-              isDateTimeView &&
-              <DateTimePickerModal
-                isVisible={true}
-                mode={'date'}
-                onConfirm={ (date) => { confirmDateTime(date); }}
-                onCancel={() => {  setIsDateTimeView(false) }}
-              />
+              crmStatus && isDateTimeView &&
+              <DatetimePickerView 
+                value={selectedDate}
+                close={(date) => {
+                  confirmDateTime(date);
+                  closeDateTime();
+                }} ></DatetimePickerView>
             }
 
             {
                crmStatus && isSign &&
               <Sign signature={signature}  onOK={handleSignature}  
               onClear= {() => {
-                  var tmp = [...formQuestions];                        
-                  tmp[key].questions[index].value = null;
-                  setFormQuestions(tmp);
+                  onValueChangedSelectionView(key, index, null);
               }}
-              onClose={() => {
-                  var tmp = [...formQuestions];                        
-                  tmp[key].questions[index].value = null;
-                  setFormQuestions(tmp);
-                  dispatch({type: SLIDE_STATUS, payload: false});
-                  setIsSign(false);
+              onClose={() => {                  
+                  onValueChangedSelectionView(key, index, null);
+                  closeSignView();      
               }}></Sign>
             }
             {              
@@ -361,7 +352,7 @@ export const FormQuestions = (props) =>{
                   <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
               </View>
             }
-
+            
             {/* <Portal> 
                 <MultipleOptionsModal
                     mode = {mode}

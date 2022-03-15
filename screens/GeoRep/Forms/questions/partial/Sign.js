@@ -88,8 +88,7 @@ const Sign = ({ signature, onOK , onClear, onClose }) => {
         />
                     
         <View style={{ marginVertical:10, width:Dimensions.get('window').width * 0.94 }}>
-            <SubmitButton onSubmit={ () => {
-                
+            <SubmitButton onSubmit={ () => {                
                  handleConfirm();                  
                  //onClose();
                 } } title="Submit"  ></SubmitButton>

@@ -3,14 +3,13 @@ import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView, Text, Dimens
 import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { style } from '../../constants/Styles';
-import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Button } from './Button';
 
-export const YesNoForm = ({item , onTouchStart}) => {
+export const YesNoForm = ({item , onTouchStart , onPress }) => {
 
-    const [isYes, setIsYes] = useState(false);
-    const [isNo, setIsNo] = useState(false);
+    const [isYes, setIsYes] = useState(item.value !== null && item.value === "yes" ? true:false);
+    const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
 
     return (
         <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
@@ -30,14 +29,16 @@ export const YesNoForm = ({item , onTouchStart}) => {
                 </View>
 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>
-                    <Button title={'Yes'} onTaped= {isYes} onClick={() => {
+                    <Button title={'Yes'} onTaped= {item.value !== null && item.value === "yes" ? true:false} onClick={() => {
                         setIsYes(true);
                         setIsNo(false);
+                        onPress("yes");
                     }} ></Button>
-                    <Button btnStyle={{marginLeft:15}} title={'No'} onTaped={isNo} 
+                    <Button btnStyle={{marginLeft:15}} title={'No'} onTaped={item.value !== null && item.value === "no" ? true:false} 
                     onClick={() =>{
                         setIsYes(false);
                         setIsNo(true);
+                        onPress("no");
                     }}
                     ></Button>
                 </View>

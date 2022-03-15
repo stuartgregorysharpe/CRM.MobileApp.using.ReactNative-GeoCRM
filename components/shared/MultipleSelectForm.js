@@ -7,6 +7,7 @@ import MultipleButton from './MultipleButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const MultipleSelectForm = ({item , onPress ,onTouchStart }) => {
+    
     const [text,setText] = useState("");
     return (
         <View style={[style.card, {marginHorizontal:5 , marginTop:10, marginBottom:5 }]}>
