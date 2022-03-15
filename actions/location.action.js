@@ -15,7 +15,7 @@ import {
   CHANGE_CURRENT_LOCATION,
   STATUS_DISPOSITION_FIELDS_UPDATE,
   CHANGE_POLYGONS
-  
+
 } from "./actionTypes";
 
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
@@ -39,7 +39,7 @@ export const getLocationPinKey = () => (dispatch, getState) => {
         return;
       }
       if (res.data.status == 'success') {
-        console.log("pin data",  res.data.items );
+        console.log("pin data", res.data.items);
         dispatch({ type: STATUS_PIN_KEY, payload: 'success' });
         dispatch({ type: CHANGE_PIN_KEY, payload: res.data.items });
       }
@@ -52,7 +52,7 @@ export const getLocationPinKey = () => (dispatch, getState) => {
 
 
 
-export const getLocationMapByRegion = async( currentLocation, box ) => {
+export const getLocationMapByRegion = async (currentLocation, box) => {
 
   var base_url = await getBaseUrl();
   var token = await getToken();
@@ -60,76 +60,76 @@ export const getLocationMapByRegion = async( currentLocation, box ) => {
   var filters = await getFilterData('@filter');
   var zoom_bounds = box.map(item => item).join(',');
   console.log({
-    user_id : user_id,
-    filters : filters,
-    current_latitude : currentLocation.latitude,
-    current_longitude : currentLocation.longitude, 
-    zoom_bounds : zoom_bounds
+    user_id: user_id,
+    filters: filters,
+    current_latitude: currentLocation.latitude,
+    current_longitude: currentLocation.longitude,
+    zoom_bounds: zoom_bounds
   });
-  
 
- 
+
+
   console.log(zoom_bounds);
 
-  return new Promise(function(resolve, reject) {      
-        axios
-        .get(`${base_url}/locations/location-map`, {
-          params: {
-            user_id : user_id,
-            filters : filters,
-            current_latitude : currentLocation.latitude,
-            current_longitude : currentLocation.longitude, 
-            zoom_bounds : zoom_bounds
-          },
-          headers: {
-            Authorization: 'Bearer ' + token
-          }
-        })
-        .then((res) => {              
-          if (res.data == undefined) {            
-            resolve([]);
-          }
-          if (res.data.status == 'success') {
-            resolve(res.data.locations);
-          }else{
-            resolve([]);
-          }
-        })
-        .catch((err) => {        
-          reject(err);        
-          console.log(err);
-        })
+  return new Promise(function (resolve, reject) {
+    axios
+      .get(`${base_url}/locations/location-map`, {
+        params: {
+          user_id: user_id,
+          filters: filters,
+          current_latitude: currentLocation.latitude,
+          current_longitude: currentLocation.longitude,
+          zoom_bounds: zoom_bounds
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve([]);
+        }
+        if (res.data.status == 'success') {
+          resolve(res.data.locations);
+        } else {
+          resolve([]);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+        console.log(err);
+      })
 
-  });            
+  });
 }
 
 
 
-export const getLocationsMap = () => (dispatch, getState) => {    
-  dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });  
-  console.log("logss== ",getState().selection.filters);
+export const getLocationsMap = () => (dispatch, getState) => {
+  dispatch({ type: STATUS_LOCATION_MAP, payload: 'request' });
+  console.log("logss== ", getState().selection.filters);
 
   Geolocation.getCurrentPosition(
     position => {
-      const {latitude, longitude} = position.coords;
-      if(latitude !== undefined){
+      const { latitude, longitude } = position.coords;
+      if (latitude !== undefined) {
         dispatch({
-          type: CHANGE_CURRENT_LOCATION, payload: {          
-             latitude: latitude,
-             longitude: longitude,          
+          type: CHANGE_CURRENT_LOCATION, payload: {
+            latitude: latitude,
+            longitude: longitude,
           }
         })
       }
-      
+
       if (typeof cancelToken != typeof undefined) {
         cancelToken.cancel("Operation canceled due to new request.")
       }
-      cancelToken = axios.CancelToken.source()            
+      cancelToken = axios.CancelToken.source()
       axios
         .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-map`, {
           cancelToken: cancelToken.token,
           params: {
-            user_id: getState().selection.payload.user_scopes.geo_rep.user_id,            
+            user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
             current_latitude: latitude,
             current_longitude: longitude,
             filters: getState().selection.filters
@@ -139,28 +139,28 @@ export const getLocationsMap = () => (dispatch, getState) => {
           }
         })
         .then((res) => {
-          
-          if (res.data == undefined) {            
+
+          if (res.data == undefined) {
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
           }
 
-          if(res.data.error){            
+          if (res.data.error) {
             dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
             return;
           }
 
-          console.log("get location map data CHANGE_LOCATION_MAP" , res.data.locations.length);
+          console.log("get location map data CHANGE_LOCATION_MAP", res.data.locations.length);
           console.log("polygons", JSON.stringify(res.data.polygons.length));
 
           if (res.data.status == 'success') {
             dispatch({ type: STATUS_LOCATION_MAP, payload: 'success' });
             dispatch({ type: CHANGE_LOCATION_MAP, payload: res.data.locations });
-            dispatch({ type: CHANGE_POLYGONS, payload: res.data.polygons });       
+            dispatch({ type: CHANGE_POLYGONS, payload: res.data.polygons });
           }
         })
         .catch((err) => {
-          console.log("map api connection error", err);        
+          console.log("map api connection error", err);
           //dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
           console.log(err);
         })
@@ -168,10 +168,10 @@ export const getLocationsMap = () => (dispatch, getState) => {
     error => {
       console.log(error.code, error.message);
     },
-    {enableHighAccuracy: true, timeout: 15000},
+    { enableHighAccuracy: true, timeout: 15000 },
   );
 
- 
+
 }
 
 export const getLocationFilters = () => (dispatch, getState) => {
@@ -192,7 +192,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
         dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
         return;
       }
-      
+
       if (res.data.status == 'success') {
         dispatch({ type: STATUS_LOCATION_FILTERS, payload: 'success' });
         dispatch({ type: CHANGE_LOCATION_FILTERS, payload: res.data.items })
@@ -201,65 +201,65 @@ export const getLocationFilters = () => (dispatch, getState) => {
     .catch((err) => {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);
-  })
+    })
 
 }
 
 
-export const getLocationSearchListsByPage = async( filters, pageNumber ) => {
+export const getLocationSearchListsByPage = async (filters, pageNumber) => {
 
-    var base_url = await getBaseUrl();
-    var token = await getToken();
-    var user_id = await getUserId();
+  var base_url = await getBaseUrl();
+  var token = await getToken();
+  var user_id = await getUserId();
 
-    return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
 
-      Geolocation.getCurrentPosition(
-        position => {
-          const {latitude, longitude} = position.coords;
-          axios
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        axios
           .get(`${base_url}/locations/location-search-list`, {
             params: {
-              user_id : user_id,
-              filters : filters,
-              current_latitude : latitude,
-              current_longitude : longitude, 
-              page_nr : pageNumber
+              user_id: user_id,
+              filters: filters,
+              current_latitude: latitude,
+              current_longitude: longitude,
+              page_nr: pageNumber
             },
             headers: {
               Authorization: 'Bearer ' + token
             }
           })
-          .then((res) => {              
-            if (res.data == undefined) {            
+          .then((res) => {
+            if (res.data == undefined) {
               resolve([]);
             }
-            
-            if(res.data.error){
+
+            if (res.data.error) {
               setToken(null);
               resolve([]);
             }
 
             if (res.data.status == 'success') {
               resolve(res.data.items);
-            }else{
+            } else {
               resolve([]);
             }
           })
-          .catch((err) => {        
+          .catch((err) => {
             reject(err);
             console.log(err);
           })
 
-        },
-        error => {
-          console.log(error.code, error.message);
-        },
-        {enableHighAccuracy: true, timeout: 15000},
-      );
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000 },
+    );
 
-        
-    });            
+
+  });
 }
 
 
@@ -269,239 +269,239 @@ export const getLocationSearchList = () => (dispatch, getState) => {
 
   Geolocation.getCurrentPosition(
     position => {
-      const {latitude, longitude} = position.coords;
-      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: latitude,longitude: longitude } });
+      const { latitude, longitude } = position.coords;
+      dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: latitude, longitude: longitude } });
       // call api 
-      dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });  
+      dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });
       console.log("filters parameter for search lists == ", getState().selection.filters);
 
       if (typeof cancelToken != typeof undefined) {
         cancelToken.cancel("Operation canceled due to new request.")
       }
-      cancelToken = axios.CancelToken.source()      
+      cancelToken = axios.CancelToken.source()
       axios
-      .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-search-list`, {
-        cancelToken: cancelToken.token,
-        params: {
-          user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-          filters: getState().selection.filters,
-          current_latitude : latitude,
-          current_longitude : longitude
-        },
-        headers: {
-          Authorization: 'Bearer ' + getState().selection.token
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
+        .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/locations/location-search-list`, {
+          cancelToken: cancelToken.token,
+          params: {
+            user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
+            filters: getState().selection.filters,
+            current_latitude: latitude,
+            current_longitude: longitude
+          },
+          headers: {
+            Authorization: 'Bearer ' + getState().selection.token
+          }
+        })
+        .then((res) => {
+          if (res.data == undefined) {
+            dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
+            return;
+          }
+          if (res.data.status == 'success') {
+            console.log("search results count", res.data.items.length);
+            dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'success' });
+            dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items });
+
+          }
+        })
+        .catch((err) => {
           dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-          return;
-        }            
-        if (res.data.status == 'success') {
-          console.log("search results count", res.data.items.length);
-          dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'success' });
-          dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items });
-          
-        }
-      })
-      .catch((err) => {
-        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        console.log(err);
-      })
+          console.log(err);
+        })
     },
     error => {
       console.log(error.code, error.message);
     },
-    {enableHighAccuracy: true, timeout: 15000},
+    { enableHighAccuracy: true, timeout: 15000 },
   );
 
-  
-    
+
+
 
 }
 
-export const getLeadFields = async() => {
+export const getLeadFields = async () => {
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();
-  return new Promise(function(resolve, reject) {
-      axios
+  return new Promise(function (resolve, reject) {
+    axios
       .get(`${base_url}/leadfields`, {
         params: {
-          user_id : user_id          
+          user_id: user_id
         },
         headers: {
           Authorization: 'Bearer ' + token
         }
       })
-      .then((res) => {              
-        if (res.data == undefined) {            
+      .then((res) => {
+        if (res.data == undefined) {
           resolve([]);
         }
         if (res.data.status == 'success') {
           resolve(res.data.custom_master_fields);
-        }else{
+        } else {
           resolve([]);
         }
       })
-      .catch((err) => {        
-        reject(err);          
+      .catch((err) => {
+        reject(err);
       })
   });
 }
 
 
-export const getLocationInfoUpdate = async(location_id) => {
+export const getLocationInfoUpdate = async (location_id) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
 
-  return new Promise(function(resolve, reject) {
-      axios
+  return new Promise(function (resolve, reject) {
+    axios
       .get(`${base_url}/locations/location_info_update_fields`, {
         params: {
-          location_id : location_id          
+          location_id: location_id
         },
         headers: {
           Authorization: 'Bearer ' + token
         }
       })
-      .then((res) => {              
-        if (res.data == undefined) {            
+      .then((res) => {
+        if (res.data == undefined) {
           resolve([]);
         }
         console.log("message", res.data);
         resolve(res.data);
-        
+
       })
-      .catch((err) => {        
-        reject(err);          
+      .catch((err) => {
+        reject(err);
       })
   });
 }
 
- 
 
-export const postLeadFields = async(postData , idempotencyKey) => {
+
+export const postLeadFields = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();  
-  return new Promise(function(resolve, reject) {      
+  var token = await getToken();
+  return new Promise(function (resolve, reject) {
     //JSON.stringify(postData)
     axios
-    .post(`${base_url}/leadfields`, postData, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Indempotency-Key': idempotencyKey
-      }
-    })
-    .then((res) => {
-      if(res.data == undefined){
-        resolve(0);
-        return;
-      }
-      resolve(1);      
-    })
-    .catch((err) => {
-      reject(err);
-    })
+      .post(`${base_url}/leadfields`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': idempotencyKey
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve(0);
+          return;
+        }
+        resolve(1);
+      })
+      .catch((err) => {
+        reject(err);
+      })
   });
 }
 
 
-export const postLocationInfoUpdate = async(postData , idempotencyKey) => {
+export const postLocationInfoUpdate = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();  
+  var token = await getToken();
   console.log("url", `${base_url}/locations-info/location-info-update`);
   console.log("param", postData);
 
-  return new Promise(function(resolve, reject) {      
-  
+  return new Promise(function (resolve, reject) {
+
     axios
-    .post(`${base_url}/locations-info/location-info-update`, postData, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Indempotency-Key': idempotencyKey
-      }
-    })
-    .then((res) => {
-      if(res.data == undefined){
-        resolve("Failed");
-        return;
-      }
-      if(res.data.status == "success"){
-        resolve(res.data.message);
-      }else{
-        resolve("Failed");
-      }            
-    })
-    .catch((err) => {
-      reject(err);
-    })
+      .post(`${base_url}/locations-info/location-info-update`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': idempotencyKey
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve("Failed");
+          return;
+        }
+        if (res.data.status == "success") {
+          resolve(res.data.message);
+        } else {
+          resolve("Failed");
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      })
   });
 }
 
 
 
 
-export const getLocationInfo = async(location_id , currentLocation) => {
+export const getLocationInfo = async (location_id, currentLocation) => {
 
-  console.log("currentLocation",currentLocation);
+  console.log("currentLocation", currentLocation);
   var base_url = await getBaseUrl();
-  var token = await getToken();  
+  var token = await getToken();
   var user_id = await getUserId();
   var prev_locations = await getLocationLoop();
   var prev_ids = prev_locations.map(item => item.location_id).join(',');
 
 
   var params = {
-    user_id : user_id,
+    user_id: user_id,
     location_id: location_id
   }
-  if(currentLocation !== undefined){
+  if (currentLocation !== undefined) {
     params = {
-      user_id : user_id,
+      user_id: user_id,
       location_id: location_id,
       current_latitude: currentLocation.latitude,
       current_longitude: currentLocation.longitude,
-      prev_locations:prev_ids
+      prev_locations: prev_ids
     }
   }
   console.log("params", params);
   //prev_locations=1332,1331&current_latitude=-33.7009653&current_longitude=18.4420495
-  return new Promise(function(resolve, reject) {                             
-      axios
+  return new Promise(function (resolve, reject) {
+    axios
       .get(`${base_url}/locations/location-info`, {
         params: params,
         headers: {
           Authorization: 'Bearer ' + token
         }
       })
-      .then((res) => {              
-        if (res.data == undefined) {            
+      .then((res) => {
+        if (res.data == undefined) {
           resolve([]);
-        }        
-        resolve(res.data);        
+        }
+        resolve(res.data);
       })
-      .catch((err) => {        
-        reject(err);          
+      .catch((err) => {
+        reject(err);
       })
-  });    
+  });
 }
 
 
-export const postStageOutcomUpdate = async(request) => {
-    
-    var base_url = await getBaseUrl();
-    var token = await getToken();
-    console.log("started ====");
-    return new Promise(function(resolve, reject) {
-      
-      let requestPayload = {
-        "location_id": request.location_id,
-        "stage_id": request.stage_id,
-        "outcome_id": request.outcome_id,
-        "campaign_id": 1
-      }
-      axios
+export const postStageOutcomUpdate = async (request) => {
+
+  var base_url = await getBaseUrl();
+  var token = await getToken();
+  console.log("started ====");
+  return new Promise(function (resolve, reject) {
+
+    let requestPayload = {
+      "location_id": request.location_id,
+      "stage_id": request.stage_id,
+      "outcome_id": request.outcome_id,
+      "campaign_id": 1
+    }
+    axios
       .post(`${base_url}/location-info/updateStageOutcome`, requestPayload, {
         headers: {
           Authorization: 'Bearer ' + token,
@@ -510,7 +510,7 @@ export const postStageOutcomUpdate = async(request) => {
       })
       .then((res) => {
         console.log("ended");
-        if (res.data == undefined) {      
+        if (res.data == undefined) {
           resolve(0);
           return;
         }
@@ -522,117 +522,149 @@ export const postStageOutcomUpdate = async(request) => {
         reject(err);
         console.log(err.response);
       })
-    });
-}
-
-
-
-
-export const postDispositionFields = async(postData, idempotencyKey) => {
-    
-  var base_url = await getBaseUrl();
-  var token = await getToken();  
-  return new Promise(function(resolve, reject) {
-    axios
-    .post(`${base_url}/location-info/updateDispositionFields`, postData, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Indempotency-Key': idempotencyKey
-      }
-    })
-    .then((res) => {
-      if(res.data === undefined){
-        resolve("No data")
-      }      
-      resolve(res.data.message);      
-    })
-    .catch((err) => {
-      console.log("error", err)
-      resolve("Error")      
-    })
-    
   });
 }
 
 
-export const postReloop = async(postData , idempotencyKey) => {
+
+
+export const postDispositionFields = async (postData, idempotencyKey) => {
+
   var base_url = await getBaseUrl();
-  var token = await getToken();  
+  var token = await getToken();
+  return new Promise(function (resolve, reject) {
+    axios
+      .post(`${base_url}/location-info/updateDispositionFields`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': idempotencyKey
+        }
+      })
+      .then((res) => {
+        if (res.data === undefined) {
+          resolve("No data")
+        }
+        resolve(res.data.message);
+      })
+      .catch((err) => {
+        console.log("error", err)
+        resolve("Error")
+      })
+
+  });
+}
+
+
+export const postReloop = async (postData, idempotencyKey) => {
+  var base_url = await getBaseUrl();
+  var token = await getToken();
 
   console.log(postData);
 
-  return new Promise(function(resolve, reject) {          
+  return new Promise(function (resolve, reject) {
     axios
-    .post(`${base_url}/location-info/reloop`, postData, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Indempotency-Key': idempotencyKey
-      }
-    })
-    .then((res) => {
-      if(res.data == undefined){
-        resolve("");
-        return;
-      }
-      console.log(res.data);
-      if(res.data.status == "success"){
-        resolve(res.data.message);
-      }else{
-        resolve("");
-      }
+      .post(`${base_url}/location-info/reloop`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': idempotencyKey
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve("");
+          return;
+        }
+        console.log(res.data);
+        if (res.data.status == "success") {
+          resolve(res.data.message);
+        } else {
+          resolve("");
+        }
 
-    })
-    .catch((err) => {      
-      reject(err);
-    })
+      })
+      .catch((err) => {
+        reject(err);
+      })
   });
 }
 
-export const postLocationImage = async(postData , idempotencyKey) => {
+export const postLocationImage = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();  
+  var token = await getToken();
   //console.log(postData);
-  return new Promise(function(resolve, reject) {          
+  return new Promise(function (resolve, reject) {
     axios
-    .post(`${base_url}/locations/location-image`, postData, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Indempotency-Key': idempotencyKey
-      }
-    })
-    .then((res) => {
-      if(res.data == undefined){
-        resolve("");
-        return;
-      }
-      console.log(res.data);
-      if(res.data.status == "success"){
-        resolve(res.data.message);
-      }else{
-        resolve("");
-      }    
-    })
-    .catch((err) => {
-      //console.log(err);
-      reject(err);
-    })
+      .post(`${base_url}/locations/location-image`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': idempotencyKey
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve("");
+          return;
+        }
+        console.log(res.data);
+        if (res.data.status == "success") {
+          resolve(res.data.message);
+        } else {
+          resolve("");
+        }
+      })
+      .catch((err) => {
+        //console.log(err);
+        reject(err);
+      })
 
   });
 }
 
-export const getGeocoding = async(latitude, longitude) => {  
-  return new Promise(function(resolve, reject) {        
+export const getGeocoding = async (latitude, longitude) => {
+  return new Promise(function (resolve, reject) {
     console.log("url", `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`);
     axios
-    .get(`https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`, {      
-      headers: {}
-    })
-    .then((res) => {
-      resolve(res.data); 
-    })
-    .catch((err) => {
-      reject(err);
-    })
-      
+      .get(`https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`, {
+        headers: {}
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+
   });
+}
+
+export const getLocationFields = async (location_id) => {
+  var token = await getToken();
+  var baseUrl = await getBaseUrl();
+  return new Promise(function (resolve, reject) {
+    axios
+      .get(`https://www.dev.georep.com/local_api_old/locations/location-fields`, {
+        params: {
+          location_id: location_id,
+        },
+        headers: {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+      .then((res) => {
+        // console.log("getLocationFields:",res.data);
+        if (res.data == undefined) {
+          resolve([]);
+        }
+        if (res.data.status == "success") {
+          resolve(res.data);
+        } else {
+          resolve([]);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+        console.log(err);
+      })
+  });
+
 }
