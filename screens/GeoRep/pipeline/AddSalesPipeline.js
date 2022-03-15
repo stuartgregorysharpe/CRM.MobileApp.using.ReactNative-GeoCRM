@@ -24,7 +24,7 @@ import { useNavigation } from '@react-navigation/native';
 import { getToken } from '../../../constants/Storage';
 
 var selected_location_id = 0;
-export default function AddSalesPipeline({ location_id, onClose }) {
+export default function AddSalesPipeline({ location_id, onClose, pageType, opportunity_id }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -76,6 +76,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
   const [isOutcomeCompulsory, setIsOutcomeCompulsory] = useState(false);
   const [isOpportunityStatusCompulsory, setOpportunityStatusCompulsory] = useState(false);
   const [addDone, SetAddDone] = useState(false);
+  const [disableCustomerField,setDisableCustomerField] = useState(false);
 
   let requestParams = {}
 
@@ -106,6 +107,10 @@ export default function AddSalesPipeline({ location_id, onClose }) {
         var token = await getToken();
         if (selected_location_id != 0) requestParams['location_id'] = selected_location_id;
         requestParams['campaign_id'] = selectedPipelineId;
+        if (pageType === 'update' && opportunity_id && opportunity_id !== '') {
+          requestParams['opportunity_id'] = opportunity_id;
+        }
+
         getAddOpportunityFields(requestParams).then((res) => {
           // console.log(JSON.stringify(res));
           initPostData(res);
@@ -135,9 +140,12 @@ export default function AddSalesPipeline({ location_id, onClose }) {
         'compulsory': element.rule_compulsory,
         'canShowError': false
       });
-    });
 
-    console.log("initpost:opp: ", JSON.stringify(opportunity));
+      if(element.field_type == 'dropdown' && element.value!=='')
+      {
+        opportunity[opportunity.length-1].itemIndex = element.preset_field;
+      }
+    });
     setOpporunityFields([...opportunity]);
 
     res.disposition_fields.forEach((element) => {
@@ -150,7 +158,6 @@ export default function AddSalesPipeline({ location_id, onClose }) {
       });
     });
 
-    console.log("initpost:disp: ", JSON.stringify(disposition));
     setDispositionFields([...disposition]);
 
     setAddOpportunityResponse(res);
@@ -173,16 +180,28 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     }
     // console.log("gkkjkl:",res.opportunity_fields);
 
+
+
+    if (pageType === 'update') {
+      setOpportunityName(res.opportunity_name);
+      setContacts(res.contacts);
+      setSelectedContact(res.selected_contact_id);
+      setSelectedOutComeId(res.current_outcome_id);
+      setSearchCustomer(res.location_name);
+      setDisableCustomerField(true);
+      
+    }
+
   }
 
   const handleSubmit = () => {
     var canSubmit = true;
 
-    
+
     if (!selectedCustomerId || selectedCustomerId == '') {
       setIsCustomerMandatory(true);
       canSubmit = false;
-    }else{
+    } else {
       setIsCustomerMandatory(false);
     }
 
@@ -190,7 +209,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
       canSubmit = false;
       setIsOpportunityNameCompulsory(true);
 
-    }else{
+    } else {
       setIsOpportunityNameCompulsory(false);
     }
 
@@ -204,7 +223,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     if (!selectedOutcomeId || selectedOutcomeId == '') {
       setIsOutcomeCompulsory(true);
       canSubmit = false;
-    }else{
+    } else {
       setIsOutcomeCompulsory(false);
     }
 
@@ -236,9 +255,8 @@ export default function AddSalesPipeline({ location_id, onClose }) {
       }
     }
 
-  
-    if(mandatoryDispositionExist || mandatoryOpportunityExist){
-      console.log("kljdfksdjfkjdsk");
+
+    if (mandatoryDispositionExist || mandatoryOpportunityExist) {
       canSubmit = false;
     }
 
@@ -269,7 +287,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
     });
 
     let params = {
-      "opportunity_id": null,
+      "opportunity_id": pageType === 'update' && opportunity_id && opportunity_id !== '' ? opportunity_id : null,
       "location_id": selectedCustomerId,
       "contact_id": selectedContact,
       "opportunity_name": opportunityName,
@@ -389,20 +407,25 @@ export default function AddSalesPipeline({ location_id, onClose }) {
   }
 
   const getSelectedOpportunityDropdownItemText = (id, originFieldName) => {
+    
     var tmp = [...opporunityFields];
     var index = -1;
     tmp.forEach((element) => {
       if (element.opportunity_field_id === id && element.value !== '') { //&& element.value != ""
         index = element.itemIndex;
+        
       }
     });
-    if (!index || index === -1) {
+    if (index===undefined || index === -1) {
+    
       return originFieldName;
     }
     var showName = '';
     opportunity_fields.forEach((element) => {
+    
       if (element.opportunity_field_id == id && element.preset_options != "") {
         showName = element.preset_options[index];
+        
       }
     });
     return showName;
@@ -626,7 +649,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
         </TouchableOpacity>
 
         <View style={styles.header}>
-          <Title style={{ fontFamily: Fonts.primaryBold, fontWeight: 'bold', fontSize: 15 }}>Add Pipeline Opportunity</Title>
+          <Title style={{ fontFamily: Fonts.primaryBold, fontWeight: 'bold', fontSize: 15 }}>{pageType === 'add' ? `Add` : `Update`} Pipeline Opportunity</Title>
         </View>
 
         <View style={{ padding: 5 }}>
@@ -655,7 +678,11 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                   // console.log(e.nativeEvent.key);
                   setCanSearch(true);
                 }}
+                disabled={disableCustomerField}
                 onChangeText={text => {
+                  if(pageType==='update'){
+                    return;
+                  }
                   // console.log("on change text");
                   setSearchCustomer(text);
                   if (text !== '') {
@@ -674,7 +701,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
             </View>
           </TouchableOpacity>
-          {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60,minHeight:220, maxHeight: 220, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
+          {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60, minHeight: 220, maxHeight: 220, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
             <TouchableWithoutFeedback onPress={() => {
               // console.log("clicked outside");
               setCanShowAutoComplete(!canShowAutoComplete);
@@ -747,7 +774,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
 
 
           <View style={[styles.refreshBox, { borderColor: isStageCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isStageCompulsory ? 1 : 0 }]}>
-            <TouchableOpacity style={[styles.shadowBox , {paddingRight:15}]} onPress={() => setStageModalVisible(!stageModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
               <Text style={[styles.shadowBoxText]}>Stage</Text>
               <View>
                 <View style={[styles.button, { flex: 1 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
@@ -759,8 +786,8 @@ export default function AddSalesPipeline({ location_id, onClose }) {
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
-          <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor,borderWidth: isOutcomeCompulsory ? 1 : 0 }]}>
-            <TouchableOpacity style={[styles.shadowBox, {paddingRight:15}]} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
+          <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isOutcomeCompulsory ? 1 : 0 }]}>
+            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
               <Text style={styles.shadowBoxText}>Outcome</Text>
               <View>
                 <View style={styles.button} onPress={() => {
@@ -811,6 +838,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                   </TouchableOpacity>
                 );
               } else {
+                let inputLength =getDispositionTextValue(dispositionFields, field.disposition_field_id)?getDispositionTextValue(dispositionFields, field.disposition_field_id).length:0; 
                 return (
                   <View key={key}>
                     <TouchableOpacity
@@ -821,8 +849,8 @@ export default function AddSalesPipeline({ location_id, onClose }) {
                           ref={(element) => { dispositionRef.current[key] = element }}
                           keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
                           returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
-                          style={styles.textInput}
-                          // multiline={true}
+                          style={[inputLength<30 && styles.textInput]}
+                          multiline={inputLength>30?true:false}
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           value={getDispositionTextValue(dispositionFields, field.disposition_field_id)}
                           mode="outlined"
@@ -939,12 +967,12 @@ export default function AddSalesPipeline({ location_id, onClose }) {
           </View>}
 
           <View style={[styles.refreshBox]}>
-            <TouchableOpacity style={[styles.shadowBox , {paddingRight:15}] } onPress={() => setOpportunityStatusModalVisible(!opportunityStatusModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setOpportunityStatusModalVisible(!opportunityStatusModalVisible)}>
               <Text style={styles.shadowBoxText}>  Opportunity status </Text>
               <View>
                 <View style={styles.button} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
                   <Text style={styles.buttonText}>
-                    {selectedOpportunityStatus ? addOpportunityResponse.opportunity_statuses.find(x => x != null && x.opportunity_status_id != null && x.opportunity_status_id == selectedOpportunityStatus)?.opportunity_status_name : 'Select Status'}                    
+                    {selectedOpportunityStatus ? addOpportunityResponse.opportunity_statuses.find(x => x != null && x.opportunity_status_id != null && x.opportunity_status_id == selectedOpportunityStatus)?.opportunity_status_name : 'Select Status'}
                   </Text>
                 </View>
               </View>
@@ -952,7 +980,7 @@ export default function AddSalesPipeline({ location_id, onClose }) {
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
-            <Text style={[styles.addButtonText]}>Add</Text>
+            <Text style={[styles.addButtonText]}>{pageType === 'add' ? 'Add' : 'Update'}</Text>
             <FontAwesomeIcon style={styles.addButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={faAngleDoubleRight} />
           </TouchableOpacity>
         </View>
@@ -1022,12 +1050,12 @@ const styles = EStyleSheet.create(parse({
     marginBottom: 8
   },
   textInput_wrap_text: {
-    height: 40,
+    // minHeight: 40,
     fontSize: 14,
-    lineHeight: 30,
+    // lineHeight: 30,
     backgroundColor: BG_COLOR,
     //fontFamily: Fonts.secondaryMedium,
-    marginBottom: 8
+    // marginBottom: 8
   },
   pickerItem: {
     flexDirection: 'row',

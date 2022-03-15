@@ -1,11 +1,11 @@
-import React, { useEffect, useState ,useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { boxShadow, style } from '../../../../constants/Styles';
 import FilterButton from '../../../../components/FilterButton';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -15,12 +15,13 @@ import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes'
 import Fonts from '../../../../constants/Fonts';
 import { grayBackground } from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
-import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
-import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
+import { LocationInfoInput } from '../locationInfoDetails/LocationInfoInput';
+import { LocationInfoInputTablet } from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
+import CustomerContactsScreen from '../customer_contacts/CustomerContactsScreen';
 
-const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
-  <View style={[styles.rectangle, style, {backgroundColor, borderColor}, borderColor ? {borderWidth: 1} : {}]}>
+const Rectangle = ({ style, text, backgroundColor, borderColor, icon }) => (
+  <View style={[styles.rectangle, style, { backgroundColor, borderColor }, borderColor ? { borderWidth: 1 } : {}]}>
     <Text style={styles.text}>{text}</Text>
     {icon && <MarkerIcon icon={icon} width="20px" height="20px" />}
   </View>
@@ -28,42 +29,43 @@ const Rectangle = ({style, text, backgroundColor, borderColor, icon}) => (
 
 export default function LocationSpecificInfoScreen(props) {
 
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
-  const locationInfoRef = useRef();  
+  const locationInfoRef = useRef();
+  const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] = useState(false);
 
   const showLoopSlider = () => {
     setShowItem(1);
-    dispatch({type: SUB_SLIDE_STATUS, payload: true});
+    dispatch({ type: SUB_SLIDE_STATUS, payload: true });
   }
 
   useEffect(() => {
     // custom header
-    props.screenProps.setOptions({                 
-      headerTitle:() =>{
-        return(<TouchableOpacity onPress={
-          () =>{            
-            if(props.navigation.canGoBack()){              
-              dispatch({type: SLIDE_STATUS, payload: false});              
-              props.navigation.goBack(); 
+    props.screenProps.setOptions({
+      headerTitle: () => {
+        return (<TouchableOpacity onPress={
+          () => {
+            if (props.navigation.canGoBack()) {
+              dispatch({ type: SLIDE_STATUS, payload: false });
+              props.navigation.goBack();
             }
-          }}>            
-          <View style={style.headerTitleContainerStyle}>            
-              <Image
-                resizeMethod='resize'
-                style={{width:15,height:20, marginRight:5}}
-                source={Images.backIcon}
-              />
-          <Text style={style.headerTitle} >CRM</Text>
-        </View></TouchableOpacity>)
+          }}>
+          <View style={style.headerTitleContainerStyle}>
+            <Image
+              resizeMethod='resize'
+              style={{ width: 15, height: 20, marginRight: 5 }}
+              source={Images.backIcon}
+            />
+            <Text style={style.headerTitle} >CRM</Text>
+          </View></TouchableOpacity>)
       },
 
       headerLeft: () => (
-        <TouchableOpacity 
-          style={style.headerLeftStyle} 
+        <TouchableOpacity
+          style={style.headerLeftStyle}
           activeOpacity={1}
           onPress={() => {
             setShowItem(0);
@@ -71,30 +73,45 @@ export default function LocationSpecificInfoScreen(props) {
         >
         </TouchableOpacity>
       ),
-      
-    });    
+
+    });
   });
 
   useEffect(() => {
-    dispatch({type: SLIDE_STATUS, payload: false});    
+    dispatch({ type: SLIDE_STATUS, payload: false });
   });
 
   useEffect(() => {
-    dispatch({type: SUB_SLIDE_STATUS, payload: false});
+    dispatch({ type: SUB_SLIDE_STATUS, payload: false });
   }, []);
+
+  const onCloseCustomerContactsScreen = () => {
+    setCanShowCustomerContactsScreen(false);
+  }
+
+
+  if (canShowCustomerContactsScreen) {
+    return (
+      <SafeAreaView>
+        <ScrollView>
+          <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
 
 
   return (
     <SafeAreaView>
       {subSlideStatus && <TouchableOpacity
-        activeOpacity={1} 
+        activeOpacity={1}
         style={grayBackground}
-        onPress={() => {dispatch({type: SUB_SLIDE_STATUS, payload: false})}}
+        onPress={() => { dispatch({ type: SUB_SLIDE_STATUS, payload: false }) }}
       ></TouchableOpacity>}
       {subSlideStatus && <View
-          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-        >
-        <RefreshSlider location_id={locationInfo.location_id}  />
+        style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}
+      >
+        <RefreshSlider location_id={locationInfo.location_id} />
       </View>}
 
       <ScrollView style={styles.container}>
@@ -128,16 +145,31 @@ export default function LocationSpecificInfoScreen(props) {
         </View>
 
 
-        <View style={styles.innerContainer}>                            
-            <View style={[styles.cardBox]}>           
+        <View style={styles.innerContainer}>
+          <View style={[styles.cardBox]}>
 
-              {        
-                locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
-                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} pageType={'locationSpecificInfo'} showLoopSlider={showLoopSlider} /> :
-                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo}  pageType={'locationSpecificInfo'} showLoopSlider={showLoopSlider} />  
-              }
+            {
+              locationInfo !== undefined && locationInfo.address !== "" && DeviceInfo.isTablet() ?
+                <LocationInfoInputTablet
+                  ref={locationInfoRef}
+                  infoInput={locationInfo}
+                  pageType={'locationSpecificInfo'}
+                  showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput
+                  ref={locationInfoRef}
+                  infoInput={locationInfo}
+                  pageType={'locationSpecificInfo'}
+                  showLoopSlider={showLoopSlider}
+                  onFeatureCardClick={(type) => {
+                    console.log(type);
+                    if (type === 'customer_contacts') {
+                      setCanShowCustomerContactsScreen(true);
+                    }
 
-              {/* {
+                  }} />
+            }
+
+            {/* {
                 
               locationInfo && DeviceInfo.isTablet() ? <LocationInfoInputTablet
                   navigation={props.navigation} 
@@ -153,12 +185,12 @@ export default function LocationSpecificInfoScreen(props) {
                   infoInput={locationInfo} />
               }      */}
 
-            </View>                                       
+          </View>
         </View>
 
-        <View style={{height: 60}}></View>
+        <View style={{ height: 60 }}></View>
       </ScrollView>
-      <TouchableOpacity style={[style.plusButton, {marginBottom:80}]} onPress={() => setStatusSubmit(!statusSubmit)}>
+      <TouchableOpacity style={[style.plusButton, { marginBottom: 80 }]} onPress={() => setStatusSubmit(!statusSubmit)}>
         <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>
     </SafeAreaView>
@@ -173,7 +205,7 @@ const styles = EStyleSheet.create(parse({
     padding: 10,
   },
   headerBox: {
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: whiteLabel().headerBackground,
     padding: 10,
     paddingBottom: 0,
     marginBottom: 8
@@ -192,7 +224,7 @@ const styles = EStyleSheet.create(parse({
   },
   subtitle: {
     fontSize: 12,
-    color: '#fff',
+    color: whiteLabel().headerText,
     textAlign: 'left',
     fontFamily: Fonts.secondaryMedium,
   },
@@ -202,7 +234,7 @@ const styles = EStyleSheet.create(parse({
   },
   title: {
     fontSize: 14,
-    color: '#fff',
+    color: whiteLabel().headerText,
     fontFamily: Fonts.secondaryBold,
     lineHeight: 22,
     maxWidth: 300
@@ -210,7 +242,7 @@ const styles = EStyleSheet.create(parse({
   headerIcon: {
     marginRight: 8
   },
-  innerContainer: {    
+  innerContainer: {
     justifyContent: 'space-between',
     flexDirection: perWidth('row-reverse', 'column')
   },
@@ -227,7 +259,7 @@ const styles = EStyleSheet.create(parse({
   cardBox: {
     display: perWidth('flex', 'flex'),
     width: '100%',
-    padding: 12,    
+    padding: 12,
     marginBottom: 8,
   },
   boldText: {

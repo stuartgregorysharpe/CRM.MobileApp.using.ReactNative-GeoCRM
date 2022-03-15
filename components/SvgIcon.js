@@ -260,7 +260,7 @@ const Filter_GRAY = `
 const Insert_Invitation = `
   <svg id="insert_invitation_black_24dp" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
     <path id="Path_3979" data-name="Path 3979" d="M0,0H30V30H0Z" fill="none"/>
-    <path id="Path_3980" data-name="Path 3980" d="M23,3.5H21.75V1h-2.5V3.5h-10V1H6.75V3.5H5.5A2.489,2.489,0,0,0,3.013,6L3,23.5A2.5,2.5,0,0,0,5.5,26H23a2.507,2.507,0,0,0,2.5-2.5V6A2.507,2.507,0,0,0,23,3.5Zm0,20H5.5V11H23Zm0-15H5.5V6H23Zm-2.5,6.25H14.25V21H20.5Z" transform="translate(0.75 0.25)" fill="#000"/>
+    <path id="Path_3980" data-name="Path 3980" d="M23,3.5H21.75V1h-2.5V3.5h-10V1H6.75V3.5H5.5A2.489,2.489,0,0,0,3.013,6L3,23.5A2.5,2.5,0,0,0,5.5,26H23a2.507,2.507,0,0,0,2.5-2.5V6A2.507,2.507,0,0,0,23,3.5Zm0,20H5.5V11H23Zm0-15H5.5V6H23Zm-2.5,6.25H14.25V21H20.5Z" transform="translate(0.75 0.25)" fill="#FFF"/>
   </svg>
 `;
 
@@ -706,9 +706,21 @@ const Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height=
 </g>
 </svg>
 `;
+const Arrow_Left_alt = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
+<g id="Group_4283" data-name="Group 4283" transform="translate(22.737 37.649) rotate(180)">
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionFullButtonIconFill}/>
+</g>
+</svg>
+`;
 const Arrow_Right_Button = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
 <g id="Group_4984" data-name="Group 4984" transform="translate(-6.437 -10.659)">
   <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionButtonIconFill}/>
+</g>
+</svg>`;
+
+const Arrow_Right_Button_alt = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
+<g id="Group_4984" data-name="Group 4984" transform="translate(-6.437 -10.659)">
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionFullButtonIconFill}/>
 </g>
 </svg>`;
 
@@ -883,7 +895,9 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Arrow_Right" && <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />}
     {icon == "Add_Image" && <SvgXml style={style} xml={Add_Image} width={width} height={height} />}
     {icon == "Arrow_Left_Btn" && <SvgXml style={style} xml={Arrow_Left} width={width} height={height} />}
+    {icon == "Arrow_Left_Btn_alt" && <SvgXml style={style} xml={Arrow_Left_alt} width={width} height={height} />}
     {icon == "Arrow_Right_Btn" && <SvgXml style={style} xml={Arrow_Right_Button} width={width} height={height} />}
+    {icon == "Arrow_Right_Btn_alt" && <SvgXml style={style} xml={Arrow_Right_Button_alt} width={width} height={height} />}
     {icon == "GPS_LOCATION" && <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />}
     {icon == "Add_Image_Gray" && <SvgXml style={style} xml={Add_Image_Gray} width={width} height={height} />}
     {icon == "Roop_Gray" && <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />}

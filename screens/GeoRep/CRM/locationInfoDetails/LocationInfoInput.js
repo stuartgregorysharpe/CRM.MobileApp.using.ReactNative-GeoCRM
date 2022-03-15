@@ -398,26 +398,31 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           ))}
         </View>
       }
-   
+
       <View style={styles.cardContainer}>
         {
-          props.pageType ===  "locationSpecificInfo" && featureCards.map(( item, index) => {
-              return (
-                <View key={index} style={{marginLeft:5 , width:'48%'}}>
-                  <FeatureCard icon={item.icon} title={item.title} actionTitle={item.action} onAction={() => {
-                    if (item.title === 'Forms') {
-                      dispatch({ type: SLIDE_STATUS, payload: false });
-                      navigationMain.navigate("RepForms", {
-                        screen: 'Root', params: { locationId: locationInfo.location_id }
-                      });
-                    }
-                  }} />
-                </View>
-              );
-           })
+          props.pageType === "locationSpecificInfo" && featureCards.map((item, index) => {
+            console.log(parseFloat(index / 2));
+            return (
+              <View key={index} style={{ marginLeft: index % 2 ? 5 : 0, width: '49%' }}>
+                <FeatureCard icon={item.icon} title={item.title} actionTitle={item.action} onAction={() => {
+                  if (item.title === 'Forms') {
+                    dispatch({ type: SLIDE_STATUS, payload: false });
+                    navigationMain.navigate("RepForms", {
+                      screen: 'Root', params: { locationId: locationInfo.location_id }
+                    });
+                  }
+                  if (item.title === 'Customer & Contacts') {
+                    // console.log(props);
+                    props.onFeatureCardClick('customer_contacts');
+                  }
+                }} />
+              </View>
+            );
+          })
         }
       </View>
-      
+
 
       <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
@@ -600,9 +605,9 @@ const styles = EStyleSheet.create(parse({
     color: whiteLabel().mainText,
     fontSize: 16
   },
-  cardContainer: {    
+  cardContainer: {
     flex: 1,
-    flexDirection: 'row',        
+    flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start' // if you want to fill rows left to right
   },
