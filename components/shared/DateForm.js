@@ -11,7 +11,7 @@ import { color } from 'react-native-reanimated';
 export const DateForm = ({item , onPress ,onTouchStart}) => {
     const [text,setText] = useState("");
     return (
-        <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card,  item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, paddingHorizontal:5}}>

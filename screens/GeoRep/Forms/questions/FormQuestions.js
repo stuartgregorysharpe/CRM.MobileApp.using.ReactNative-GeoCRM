@@ -28,6 +28,8 @@ import RNFS from 'react-native-fs';
 import { SelectionView } from './partial/SelectionView';
 import { DatetimePickerView } from './partial/DatetimePickerView';
 import { value } from 'react-native-extended-stylesheet';
+import { SubmitButton } from '../../../../components/shared/SubmitButton';
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
 export const FormQuestions = (props) =>{
 
@@ -50,6 +52,8 @@ export const FormQuestions = (props) =>{
     const [bubbleText, setBubleText] = useState("");
     const [signature, setSignature] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
+    const [isAlert, setIsAlert] = useState(false);
+    const [message, setMessage] = useState("");
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -176,6 +180,21 @@ export const FormQuestions = (props) =>{
       setFormQuestions(tmp);            
     }
 
+    const _onSubmit = () =>{
+      var flag = true;
+      formQuestions.forEach(element => {
+        element.questions.forEach(item => {
+            if(item.rule_compulsory === "1" && (item.value === null || item.value === '' || item.value === undefined  )){
+              flag = false;              
+            }
+        });
+      });
+      if(!flag){
+        setMessage("Please complete the compulsory questions and then submit");
+        setIsAlert(true);
+      }      
+    }
+
     const renderQuestion = (item , key, index) =>{
       if(item.question_type === "text"){
         return (
@@ -255,6 +274,7 @@ export const FormQuestions = (props) =>{
             setKey(key);
             setIndex(index);
             setSignature( item.value );            
+            console.log("signature clicked");
             setIsSign(true);            
             dispatch({type: SLIDE_STATUS, payload: true});
           }} ></SignatureForm>
@@ -270,16 +290,14 @@ export const FormQuestions = (props) =>{
           ></TakePhotoForm>
         );
       }
-
-      return <View key={"question" + index} ><Text>{item.question_type}</Text></View>
+      return <View key={"question" + index} ></View>
     }
 
     return (
         <Provider>
         <View style={styles.container}  onTouchStart={(e) => { setIsInfo(false); }}>
-
             <GrayBackground></GrayBackground>
-
+            <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>
             {
               crmStatus && isDateTimeView &&
               <DatetimePickerView 
@@ -336,6 +354,12 @@ export const FormQuestions = (props) =>{
                   )
                 })
               }
+              <View style={{marginVertical:20}}>
+                {
+                  formQuestions && formQuestions.length > 0 &&
+                  <SubmitButton title="Submit" onSubmit={() => {_onSubmit()}}></SubmitButton>
+                }                
+              </View>
             </ScrollView>
 
             {

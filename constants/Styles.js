@@ -1,6 +1,6 @@
 import { StyleSheet , Platform, Dimensions} from "react-native";
 import Fonts from "./Fonts";
-import { BG_COLOR, PRIMARY_COLOR, whiteLabel } from "./Colors";
+import Colors, { BG_COLOR, PRIMARY_COLOR, whiteLabel } from "./Colors";
 
 export const boxShadow = StyleSheet.create({
   shadowColor: '#808080',
@@ -123,6 +123,12 @@ export const style = StyleSheet.create({
     borderRightColor: "transparent",
     borderBottomColor: "#DDD",
   },
+
+  compulsoryStyle:{
+    borderWidth:1,
+    borderColor:Colors.selectedRedColor
+  }
+
   
 
 })

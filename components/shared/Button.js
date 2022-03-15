@@ -35,8 +35,7 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center',        
         alignContent:'center',
-        paddingVertical:5,
-        
+        paddingVertical:5,        
         color: Colors.blackColor,
         fontSize:15,
         fontFamily: Fonts.secondaryBold,        
@@ -46,16 +45,16 @@ const styles = StyleSheet.create({
         alignItems:'center',                  
         justifyContent:'center',        
         borderColor: whiteLabel().actionOutlineButtonText, 
-        paddingVertical:5,
-        paddingRight:33,
-        paddingLeft:33,
-        borderRadius:15,
+        paddingVertical:4,
+        paddingRight:40,
+        paddingLeft:40,
+        borderRadius:20,
         borderWidth:2,        
     },
 
     selectedStyle:{
-        paddingLeft:20,
-        paddingRight:20,
+        paddingLeft:30,
+        paddingRight:30,
         backgroundColor : whiteLabel().actionFullButtonBackground
     },
 

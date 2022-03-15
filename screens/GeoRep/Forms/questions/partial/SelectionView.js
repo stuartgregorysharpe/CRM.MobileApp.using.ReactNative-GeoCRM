@@ -54,7 +54,7 @@ export const SelectionView = ({options , mode,  value, onClose , onSave , onValu
             </TouchableOpacity>
 
             <View style={styles.sliderHeader}>                
-                <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16 }} >Select the correct answer from the list:</Text>
+                <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >Select the correct answer from the list:</Text>
                 <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
                     <Text style={{ fontSize: 13, fontFamily: Fonts.secondaryRegular ,  color:Colors.selectedRedColor}}>Clear</Text>
                 </TouchableOpacity>
@@ -125,6 +125,9 @@ const styles = StyleSheet.create({
         backgroundColor:whiteLabel().itemSelectedBackground,
         borderWidth:1,
         borderColor:whiteLabel().itemSelectedBackground
+    },
+    closeModal: {            
+        paddingRight: 5  
     }
       
 

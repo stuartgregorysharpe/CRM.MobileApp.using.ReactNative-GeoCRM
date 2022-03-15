@@ -1,5 +1,5 @@
 import React, { useState, useEffect , useRef} from 'react';
-import { View, TouchableOpacity, StyleSheet,  Text, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet,  Text, Dimensions, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
 import SignatureScreen from "react-native-signature-canvas";
 import Divider from '../../../../../components/Divider';
@@ -10,13 +10,27 @@ import Fonts from '../../../../../constants/Fonts';
 
 const Sign = ({ signature, onOK , onClear, onClose }) => {
 
+  console.log("new signaure", signature);
+
+  const [data, setData] = useState(signature);
+  console.log("data", data);
+
+  useEffect(() => {
+    
+    setTimeout(() => {
+      setData(signature);
+      console.log("triggered", ref.current);
+      
+      
+    }, 2000);
+  },[]);
 
   const ref = useRef();
 
   const style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
   // Called after ref.current.readSignature() reads a non-empty base64 string
   const handleOK = (signature) => {
-    console.log(signature);
+    console.log("----",signature);
     onOK(signature); // Callback from Component props
   };
 
@@ -33,10 +47,10 @@ const Sign = ({ signature, onOK , onClear, onClose }) => {
 
   // Called after ref.current.getData()
   const handleData = (data) => {
-    console.log(data);
-    
+    console.log(data);    
   };
 
+  
   const handleClear = () => {
     ref.current.clearSignature();
     onClear();
@@ -76,11 +90,13 @@ const Sign = ({ signature, onOK , onClear, onClose }) => {
 
         <SignatureScreen
             ref={ref}
+            androidHardwareAccelerationDisabled={false}
             webStyle={style}
             dataURL={signature}
             //onEnd={handleEnd}
             onOK={handleOK}
             onEmpty={handleEmpty}
+            imageType='image/png'
             //onClear={handleClear}
             // onGetData={handleData}
             // autoClear={true}
@@ -112,9 +128,9 @@ const styles = StyleSheet.create({
         elevation: 2,
         zIndex: 2000,        
         paddingTop:10,
-        height:300,
+        height:Platform.OS === 'android' ? 360 : 380,
         alignItems: "center",
-        justifyContent: "center",      
+        justifyContent: "center",
         width:Dimensions.get("window").width,            
     },
 

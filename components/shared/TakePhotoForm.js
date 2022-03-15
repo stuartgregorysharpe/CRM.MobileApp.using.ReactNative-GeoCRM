@@ -86,7 +86,7 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
 
 
     return (
-        <View style={[style.card, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card,  item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             
             <View style={styles.container}>
 
@@ -132,7 +132,7 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
                             })
                         }
 
-                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:10, width:Dimensions.get("screen").width / 4.2 }]} onPress={() => { showSelectionDialog() } }>
+                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:10 }]} onPress={() => { showSelectionDialog() } }>
                           <SvgIcon icon="Add_Image" />   
                         </TouchableOpacity>
 
