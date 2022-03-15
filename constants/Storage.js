@@ -101,6 +101,13 @@ export const clearFilterData = async (type) => {
         form_type: [],
       };
     }
+    if (type === '@pipeline_filter') {
+      value = {
+        opportunity_status_id: [],
+        opportunity_fields: [],
+        campaign_id: ''
+      }
+    }
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem(type, jsonValue)
   } catch (e) {

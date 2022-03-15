@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput,BackHandler,Image } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, BackHandler, Image } from 'react-native';
 import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPipelineFilters, getPipelines } from '../../actions/pipeline.action';
@@ -41,32 +41,34 @@ export default function SalesPipelineScreen(props) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [isBack,setIsBack] = useState(false);
+  const [isBack, setIsBack] = useState(false);
+  const [pageType, setPageType] = useState('add');
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
 
   useEffect(() => {
     // refreshHeader();
     if (props.screenProps) {
       props.screenProps.setOptions({
         title: "Pipeline",
-        headerTitle:()=>{
-          return(<TouchableOpacity                     
+        headerTitle: () => {
+          return (<TouchableOpacity
             onPress={
-           () =>{
-             if(canAddPipeline){
-               setCanAddPipeline(false);
-             }
-           }}>            
-           <View style={style.headerTitleContainerStyle}>            
-               {
-                 canAddPipeline &&
-                 <Image
-                   resizeMethod='resize'
-                   style={{width:15,height:20, marginRight:5}}
-                   source={Images.backIcon}
-                 />
-               }
-             <Text style={style.headerTitle} >Pipeline</Text>
-         </View></TouchableOpacity>)
+              () => {
+                if (canAddPipeline) {
+                  setCanAddPipeline(false);
+                }
+              }}>
+            <View style={style.headerTitleContainerStyle}>
+              {
+                canAddPipeline &&
+                <Image
+                  resizeMethod='resize'
+                  style={{ width: 15, height: 20, marginRight: 5 }}
+                  source={Images.backIcon}
+                />
+              }
+              <Text style={style.headerTitle} >Pipeline</Text>
+            </View></TouchableOpacity>)
         }
       });
     }
@@ -98,27 +100,27 @@ export default function SalesPipelineScreen(props) {
     }
   }
 
-  const refreshHeader = () =>{
-    props.screenProps.setOptions({           
-      headerTitle:() =>{
-        return(<TouchableOpacity                     
-           onPress={
-          () =>{
-            if(canAddPipeline){
-              setCanAddPipeline(false);
-            }
-          }}>            
-          <View style={style.headerTitleContainerStyle}>            
-              {
-                canAddPipeline &&
-                <Image
-                  resizeMethod='resize'
-                  style={{width:15,height:20, marginRight:5}}
-                  source={Images.backIcon}
-                />
+  const refreshHeader = () => {
+    props.screenProps.setOptions({
+      headerTitle: () => {
+        return (<TouchableOpacity
+          onPress={
+            () => {
+              if (canAddPipeline) {
+                setCanAddPipeline(false);
               }
+            }}>
+          <View style={style.headerTitleContainerStyle}>
+            {
+              canAddPipeline &&
+              <Image
+                resizeMethod='resize'
+                style={{ width: 15, height: 20, marginRight: 5 }}
+                source={Images.backIcon}
+              />
+            }
             <Text style={style.headerTitle} >Pipeline</Text>
-        </View></TouchableOpacity>)
+          </View></TouchableOpacity>)
       },
     });
 
@@ -205,7 +207,11 @@ export default function SalesPipelineScreen(props) {
 
   const renderOpportunity = (item, index) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => {
+        setSelectedOpportunityId(item.opportinity_id);
+        setPageType('update');
+        setCanAddPipeline(true);
+      }}>
         <View style={styles.itemContainer}>
           <View style={[styles.opportunityStyle, { alignItems: 'baseline' }]}>
             <View style={[styles.dotIndicator, { backgroundColor: item.opportunity_status_color }]}></View>
@@ -273,11 +279,15 @@ export default function SalesPipelineScreen(props) {
     <Provider>
       <SafeAreaView style={{ flex: 1 }}>
 
-        {canAddPipeline && <AddSalesPipeline props={props} onClose={() => {
-          // setShowItem("refresh"),
-          loadPipeLineData();
-          setCanAddPipeline(false);
-        }} />
+        {canAddPipeline && <AddSalesPipeline
+          props={props}
+          onClose={() => {
+            // setShowItem("refresh"),
+            loadPipeLineData();
+            setCanAddPipeline(false);
+          }}
+          pageType={pageType}
+          opportunity_id={selectedOpportunityId} />
         }
 
         {crmStatus && showItem == 1 && <TouchableOpacity
@@ -317,7 +327,7 @@ export default function SalesPipelineScreen(props) {
 
               {stages.map((item, index) => {
                 // console.log(item.stage_name);
-                return <TouchableOpacity onPress={() => { onTabSelection(item) }}>
+                return <TouchableOpacity key={index} onPress={() => { onTabSelection(item) }}>
                   <Text key={index} style={[
                     styles.tabText, selectedStage === item.stage_id ? styles.tabActiveText : {}
                   ]}>{item.stage_name}</Text>
@@ -340,6 +350,7 @@ export default function SalesPipelineScreen(props) {
           />
           <View style={styles.plusButtonContainer}>
             <TouchableOpacity style={style.innerPlusButton} onPress={() => {
+              setPageType('add');
               setCanAddPipeline(true);
             }}>
               <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
