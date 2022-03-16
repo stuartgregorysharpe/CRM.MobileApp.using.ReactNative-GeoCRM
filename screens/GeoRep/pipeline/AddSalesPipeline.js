@@ -18,6 +18,7 @@ import { breakPoint } from '../../../constants/Breakpoint';
 import { getAddOpportunityContacts, getAddOpportunityFields, postAddOpportunityFields } from '../../../actions/pipeline.action';
 import { useNavigation } from '@react-navigation/native';
 import { getToken } from '../../../constants/Storage';
+import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 var selected_location_id = 0;
 export default function AddSalesPipeline({ location_id, onClose, pageType, opportunity_id }) {
@@ -650,7 +651,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
 
         <View style={{ padding: 5 }}>          
           <TouchableOpacity onPress={() => { setCanSearch(true) }} activeOpacity={1}>
-            <View>
+            <View style={{flex:1}}>
               <TextInput
                 style={styles.textInput}
                 label={<Text style={{ backgroundColor: Colors.bgColor }}>{'Search Customer'}</Text>}
@@ -676,6 +677,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
                 blurOnSubmit={false}
                 onSubmitEditing={() => {  }}
               />
+              <FontAwesomeIcon style={styles.searchIcon} size={16} color={whiteLabel().inactiveIcon} icon={ faSearch } />
             </View>
           </TouchableOpacity>
 
@@ -1102,7 +1104,11 @@ const styles = EStyleSheet.create(parse({
     paddingHorizontal: 13,
     flexDirection: 'row',
     justifyContent: 'space-between',
-  }
-
+  },
+  searchIcon: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+  },
 
 }));
