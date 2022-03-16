@@ -1,5 +1,5 @@
 import React, { useEffect , useState } from 'react';
-import { SafeAreaView, Text, View, StyleSheet ,TouchableOpacity, Dimensions } from 'react-native';
+import {  Text, View, StyleSheet ,TouchableOpacity, Dimensions } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
@@ -7,11 +7,7 @@ import { boxShadow, style } from '../../../../constants/Styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
-
-    const openQuestions = () =>{
-       
-    }
-    
+        
     return (
         <View style={[styles.container]}>
              <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" ? {borderWidth:1, borderColor:'red'}:{} ]} onPress={onItemPress}>                

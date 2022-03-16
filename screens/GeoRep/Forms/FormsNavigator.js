@@ -21,7 +21,7 @@ export default function FormsNavigator(props) {
       </Stack.Screen>
 
       <Stack.Screen
-        name="FormQuestions"        
+        name="FormQuestions"
         options={{ header: () => null }}       
       >
         {props => <FormQuestions {...props} screenProps={screenProps} />}

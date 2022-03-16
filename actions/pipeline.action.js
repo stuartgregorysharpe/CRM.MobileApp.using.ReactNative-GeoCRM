@@ -3,8 +3,12 @@ import { baseURL } from "../constants";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import { CHANGE_LOCATION_FILTERS, CHANGE_LOGIN_STATUS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
 
-export function getPipelines(base_url, token, filters) {
-  return new Promise(function (resolve, reject) {
+export const  getPipelines = async (filters) => {
+
+  var base_url = 'https://www.dev.georep.com/local_api_old';//await getBaseUrl();
+  var token = await getToken();
+
+  return new Promise(function (resolve, reject) {    
     console.log("lnk", JSON.stringify(`${base_url}/pipeline/pipeline-opportunities?filters=${filters}`));
     axios
       .get(`${base_url}/pipeline/pipeline-opportunities`, {

@@ -1,67 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, BackHandler, Image,Dimensions } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, FlatList, BackHandler, Image,Dimensions } from 'react-native';
 import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPipelineFilters, getPipelines } from '../../actions/pipeline.action';
-import SvgIcon from '../../components/SvgIcon';
-import Colors, { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../../constants/Colors';
-import Fonts from '../../constants/Fonts';
-import { breakPoint } from '../../constants/Breakpoint';
+import { getPipelineFilters, getPipelines } from '../../../actions/pipeline.action';
+import SvgIcon from '../../../components/SvgIcon';
+import Colors, { whiteLabel } from '../../../constants/Colors';
+import Fonts from '../../../constants/Fonts';
+import { breakPoint } from '../../../constants/Breakpoint';
 import { Provider } from 'react-native-paper';
-
-import { clearPipelineFilterData, getBaseUrl, getToken } from '../../constants/Storage';
-import { boxShadow, grayBackground, style } from '../../constants/Styles';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { boxShadow, grayBackground, style } from '../../../constants/Styles';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
-import FilterView from '../../components/FilterView';
-import SearchBar from '../../components/SearchBar';
-import AddSalesPipeline from './pipeline/AddSalesPipeline';
-import Skeleton from '../../components/Skeleton';
-import Images from '../../constants/Images';
+import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import FilterView from '../../../components/FilterView';
+import SearchBar from '../../../components/SearchBar';
+import AddSalesPipeline from './AddSalesPipeline';
+import Skeleton from '../../../components/Skeleton';
+import Images from '../../../constants/Images';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
-  const navigation = props.navigation;
-  const currentLocation = useSelector(state => state.rep.currentLocation);
+  const navigation = props.navigation;  
   const pipelineFilters = useSelector(state => state.selection.pipelineFilters);
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-
   const [stages, setStages] = useState([]);
   const [selectedStage, setSelectedStage] = useState('0');
   const [showItem, setShowItem] = useState(0);
-
   const [allOpportunities, setAllOpportunities] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
   const [searchList, setSearchList] = useState([]);
   const [canShowArrow, setShowArrow] = useState(true);
-
   const [canAddPipeline, setCanAddPipeline] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isBack, setIsBack] = useState(false);
   const [pageType, setPageType] = useState('add');
-  const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
-  
-  const locationInfo = props.route.params ? props.route.params.locationInfo : null;  
-  
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState('');  
+  const locationInfo = props.route.params ? props.route.params.locationInfo : null;
 
   useEffect(() => {
-    // refreshHeader();
-    if (props.screenProps) {
-      props.screenProps.setOptions({
-        title: "Pipeline",
+    var screenProps = props.screenProps;
+    if(screenProps === undefined){
+      screenProps = props.navigation;
+    }    
+    if (screenProps) {
+      screenProps.setOptions({        
         headerTitle: () => {
           return (<TouchableOpacity
             onPress={
               () => {
                 if (canAddPipeline) {
                   setCanAddPipeline(false);
-                }
-                if(locationInfo){
-                  props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationInfo}});
+                }else{
+                  if(locationInfo){
+                    props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationInfo}});
+                  }
                 }
               }}>
             <View style={style.headerTitleContainerStyle}>
@@ -129,19 +119,14 @@ export default function SalesPipelineScreen(props) {
           </View></TouchableOpacity>)
       },
     });
-
   }
 
 
-  const loadPipeLineData = async (filters = '') => {
-    var base_url = 'https://www.dev.georep.com/local_api_old';//await getBaseUrl();
-    var token = await getToken();
-
+  const loadPipeLineData = async (filters = '') => {    
     setIsLoading(true);
-    getPipelines(base_url, token, filters).then(res => {
+    getPipelines(filters).then(res => {
       setIsLoading(false);
       let stageItems = [];
-
       stageItems.push({ stage_id: '0', stage_name: 'All' });
       stageItems.push(...res.stages);
       setStages(stageItems);
@@ -164,7 +149,6 @@ export default function SalesPipelineScreen(props) {
         }
       }
     });
-
     setSearchList(list);
   }
 
@@ -203,8 +187,7 @@ export default function SalesPipelineScreen(props) {
         dispatch(getPipelineFilters());
         setShowItem(1);
         return;
-      case "add_pipeline":
-        // dispatch()
+      case "add_pipeline":      
         setShowItem(2);
       default:
         return;
@@ -228,7 +211,7 @@ export default function SalesPipelineScreen(props) {
           </View>
           <View style={[styles.stageItemBg, { backgroundColor: hexToRgbA(item.stage_color, 0.32) }]}>
             <Text style={{
-              color: TEXT_COLOR,
+              color: Colors.textColor,
               fontFamily: Fonts.secondaryRegular,
               fontSize: 12,
               textAlign: 'center', zIndex: 0
@@ -283,7 +266,7 @@ export default function SalesPipelineScreen(props) {
 
   return (
     <Provider>
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
 
         {canAddPipeline && <AddSalesPipeline
           props={props}
@@ -330,9 +313,7 @@ export default function SalesPipelineScreen(props) {
                 }
               }}>
 
-
               {stages.map((item, index) => {
-                // console.log(item.stage_name);
                 return <TouchableOpacity key={index} onPress={() => { onTabSelection(item) }}>
                   <Text key={index} style={[
                     styles.tabText, selectedStage === item.stage_id ? styles.tabActiveText : {}
@@ -363,8 +344,7 @@ export default function SalesPipelineScreen(props) {
             </TouchableOpacity>
           </View>
         </View>
-
-      </SafeAreaView>
+      </View>
     </Provider>
   )
 }
@@ -374,14 +354,16 @@ const styles = EStyleSheet.create(parse({
   container: {
     padding: 10,
     minHeight: '100%',
-    backgroundColor: BG_COLOR
+    backgroundColor: Colors.bgColor
   },
+
   tabText: {
     fontFamily: Fonts.secondaryMedium,
     fontSize: 15,
-    color: DISABLED_COLOR,
+    color: Colors.disabledColor,
     marginHorizontal: 10
   },
+
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -391,6 +373,7 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: '#fff',
     marginBottom: 8
   },
+
   tabActiveText: {
     color: whiteLabel().activeTabText,
     fontFamily: Fonts.secondaryBold,
@@ -398,13 +381,13 @@ const styles = EStyleSheet.create(parse({
     borderBottomWidth: 2,
     paddingBottom: 2,
   },
+
   listheadingText: {
-    color: whiteLabel().mainText,
-    // marginHorizontal: 10,
+    color: whiteLabel().mainText,    
     fontSize: 15,
-    fontFamily: Fonts.secondaryMedium,
-    // fontWeight: '600'
+    fontFamily: Fonts.secondaryMedium,    
   },
+
   plusButtonContainer: {
     position: 'absolute',
     flexDirection: "row",
@@ -413,32 +396,32 @@ const styles = EStyleSheet.create(parse({
     zIndex: 1,
     elevation: 1,
   },
-  itemTitle: {
-    fontSize: 14,
-    fontFamily: Fonts.secondaryMedium,
-    color: PRIMARY_COLOR
-  },
+
   itemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 10
   },
+
   opportunityStyle: {
     flex: 2.2,
     flexDirection: 'row',
     marginLeft: -5
   },
+
   dotIndicator: {
     width: 8,
     height: 8,
     borderRadius: 4,
   },
+
   opportunityTitle: {
     fontFamily: 'Gilroy-Bold',
     fontSize: 14,
     color: 'black'
   },
+
   stageItemBg: {
     flex: 1.0,
     alignItems: 'center',
@@ -446,40 +429,13 @@ const styles = EStyleSheet.create(parse({
     paddingVertical: 5,
     borderRadius: 5
   },
-  searchBox: {
-    position: perWidth('absolute', 'relative'),
-    // width: '100%',
-    padding: 10,
-    // zIndex: 1,
-    // elevation: 1
-  },
-  searchInput: {
-    paddingLeft: 36,
-    paddingRight: 50,
-    color: '#5d5d5d',
-    fontSize: 12,
-    backgroundColor: Colors.whiteColor,
-    borderRadius: 7,
-    fontFamily: Fonts.secondaryMedium,
-    height: 45,
-  },
-  searchIcon: {
-    position: 'absolute',
-    top: 24,
-    left: 20,
-  },
-  filterImageButton: {
-    position: 'absolute',
-    top: 18,
-    right: 20,
-  },
 
   transitionView: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     elevation: 2,
     zIndex: 2,
     padding: 0,
