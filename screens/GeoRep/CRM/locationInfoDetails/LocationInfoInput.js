@@ -416,6 +416,9 @@ export const LocationInfoInput = forwardRef((props, ref) => {
                     // console.log(props);
                     props.onFeatureCardClick('customer_contacts');
                   }
+                  if (item.title === 'Sales Pipeline') {
+                    navigationMain.navigate("RepSalesPipeline", { locationId: locationInfo.location_id });
+                  }
                 }} />
               </View>
             );
