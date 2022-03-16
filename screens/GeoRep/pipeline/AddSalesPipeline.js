@@ -141,7 +141,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
         'canShowError': false
       });
 
-      if(element.field_type == 'dropdown' && element.value!=='')
+      if(element.field_type == 'dropdown' && element.value!=='' && pageType==='update')
       {
         opportunity[opportunity.length-1].itemIndex = element.preset_field;
       }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, BackHandler, Image } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ScrollView, TouchableOpacity, FlatList, TextInput, BackHandler, Image,Dimensions } from 'react-native';
 import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPipelineFilters, getPipelines } from '../../actions/pipeline.action';
@@ -402,7 +402,7 @@ const styles = EStyleSheet.create(parse({
   plusButtonContainer: {
     position: 'absolute',
     flexDirection: "row",
-    bottom: 20,
+    bottom: Dimensions.get('window').height*0.02,
     right: 20,
     zIndex: 1,
     elevation: 1,
