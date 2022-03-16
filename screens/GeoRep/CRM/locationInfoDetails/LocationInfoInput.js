@@ -408,16 +408,13 @@ export const LocationInfoInput = forwardRef((props, ref) => {
                 <FeatureCard icon={item.icon} title={item.title} actionTitle={item.action} onAction={() => {
                   if (item.title === 'Forms') {
                     dispatch({ type: SLIDE_STATUS, payload: false });
-                    navigationMain.navigate("RepForms", {
-                      screen: 'Root', params: { locationId: locationInfo.location_id }
-                    });
+                    navigationMain.navigate("RepForms", { screen: 'Root', params: { locationInfo: locationInfo } });                    
                   }
-                  if (item.title === 'Customer & Contacts') {
-                    // console.log(props);
+                  if (item.title === 'Customer & Contacts') {                    
                     props.onFeatureCardClick('customer_contacts');
                   }
                   if (item.title === 'Sales Pipeline') {
-                    navigationMain.navigate("RepSalesPipeline", { locationId: locationInfo.location_id });
+                    navigationMain.navigate("RepSalesPipeline", { locationInfo: locationInfo });
                   }
                 }} />
               </View>

@@ -4,16 +4,14 @@ import { Modal, Paragraph, Provider, TextInput } from 'react-native-paper';
 import {  useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import { boxShadow } from '../../../constants/Styles';
+import { boxShadow, style } from '../../../constants/Styles';
 import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import { Ticket } from './tabs/Ticket';
-import { getSupportIssues, postSupportEmail } from '../../../actions/support.action';
-import { getBaseUrl, getToken } from '../../../constants/Storage';
 import Faq from './tabs/Faq';
 import { WHATS_APP_LINK } from '../../../constants/Consts';
 
-export default function SupportScreen({navigation, screenProps}) {
+export default function SupportScreen(props) {
 
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [tabIndex, setTabIndex] = useState(1); 
@@ -21,39 +19,27 @@ export default function SupportScreen({navigation, screenProps}) {
 
   
   useEffect(() => {
-    navigation.setOptions({
-      tabBarStyle: {
-        height: 60,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: "#fff",
-      },
-    });
-    if (crmStatus) {
-      navigation.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
-    if (screenProps) {
-      screenProps.setOptions({
-        title: "Support",
-        tabBarStyle: {
-          height: 60,
-          paddingTop: 10,
-          paddingBottom: 10,
-          backgroundColor: "#fff",
-        },
+    
+    if (props.screenProps) {
+      props.screenProps.setOptions({        
+        headerTitle: () => {
+          return (<TouchableOpacity
+            onPress={
+              () => {}}>
+            <View style={style.headerTitleContainerStyle}>                
+              <Text style={style.headerTitle} >Support</Text>
+            </View></TouchableOpacity>)
+        }
       });
       if (crmStatus) {
-        screenProps.setOptions({
+        props.navigation.setOptions({
           tabBarStyle: {
             display: 'none',
           },
         });
-      }
+      }    
     }
+
   });
  
   return (

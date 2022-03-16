@@ -44,6 +44,9 @@ export default function SalesPipelineScreen(props) {
   const [isBack, setIsBack] = useState(false);
   const [pageType, setPageType] = useState('add');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
+  
+  const locationInfo = props.route.params ? props.route.params.locationInfo : null;  
+  
 
   useEffect(() => {
     // refreshHeader();
@@ -57,10 +60,13 @@ export default function SalesPipelineScreen(props) {
                 if (canAddPipeline) {
                   setCanAddPipeline(false);
                 }
+                if(locationInfo){
+                  props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationInfo}});
+                }
               }}>
             <View style={style.headerTitleContainerStyle}>
               {
-                canAddPipeline &&
+                (canAddPipeline || locationInfo) &&
                 <Image
                   resizeMethod='resize'
                   style={{ width: 15, height: 20, marginRight: 5 }}

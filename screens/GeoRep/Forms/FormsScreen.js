@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Dimensions, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, FlatList,Image, TouchableOpacity, Platform } from 'react-native';
 import { getFormLists } from '../../../actions/forms.action';
 import SearchBar from '../../../components/SearchBar';
 import { FormFilterView } from './partial/FormFilterView';
@@ -10,6 +10,7 @@ import { SLIDE_STATUS } from '../../../actions/actionTypes';
 import GrayBackground from '../../../components/GrayBackground';
 import { getFilterData } from '../../../constants/Storage';
 import { style } from '../../../constants/Styles';
+import Images from '../../../constants/Images';
 
 let isInfoWindow = false;
 
@@ -25,7 +26,7 @@ export default function FormsScreen(props) {
   const [bubbleText, setBubleText] = useState("");
   const [isFilter, setIsFilter] = useState(false);
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const locationIdSpecific = props.route.params ? props.route.params.locationId : null;  
+  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;  
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -33,8 +34,20 @@ export default function FormsScreen(props) {
       props.screenProps.setOptions({
         headerTitle: () => {
           return (<TouchableOpacity
-            onPress={ () => { }}>
+            onPress={ () => { 
+              if(locationIdSpecific){
+                props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationIdSpecific}});
+              }              
+            }}>
             <View style={style.headerTitleContainerStyle}>
+              {
+                locationIdSpecific !== null &&
+                <Image
+                  resizeMethod='resize'
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              }
               <Text style={style.headerTitle} >Forms</Text>
             </View></TouchableOpacity>)
         }
