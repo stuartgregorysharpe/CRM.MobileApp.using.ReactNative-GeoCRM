@@ -83,8 +83,22 @@ export const FormQuestions = (props) =>{
                     />
                   <Text style={style.headerTitle} >Forms</Text>
               </View></TouchableOpacity>)
-            }
+            },
+            tabBarStyle: {
+              position: 'absolute',
+              height: 50,
+              paddingBottom: Platform.OS == "android" ? 5 : 0,          
+              backgroundColor: Colors.whiteColor,
+            },
           });
+          if (crmStatus) {
+            props.screenProps.setOptions({
+              tabBarStyle: {
+                display: 'none',
+              },
+            });
+          }
+          
         }         
     });
 

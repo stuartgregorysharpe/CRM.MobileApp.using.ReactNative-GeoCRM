@@ -5,9 +5,13 @@ import FormsScreen from './FormsScreen';
 import { FormQuestions } from './questions/FormQuestions';
 const Stack = createNativeStackNavigator();
 
-export default function FormsNavigator(props) {
+export default function FormsNavigator(props) { 
 
-  const screenProps = props.screenProps;
+  var screenProps = props.screenProps;
+  if(screenProps === undefined){
+    screenProps = props.navigation;
+  }
+
   return (
     <Stack.Navigator> 
       <Stack.Screen        
@@ -15,14 +19,14 @@ export default function FormsNavigator(props) {
         options={{ header: () => null , headerShown: false}}>      
           {props => <FormsScreen {...props} screenProps={screenProps} />}
       </Stack.Screen>
-            
+
       <Stack.Screen
         name="FormQuestions"        
         options={{ header: () => null }}       
       >
         {props => <FormQuestions {...props} screenProps={screenProps} />}
       </Stack.Screen>
-                        
+
     </Stack.Navigator>
   );
 }

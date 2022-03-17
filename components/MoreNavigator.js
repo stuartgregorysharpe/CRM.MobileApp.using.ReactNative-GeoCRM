@@ -100,7 +100,8 @@ export default function RepMoreScreen({navigation}) {
         navigation.navigate("Calendar");
         return;
       case 'RepForms':
-        navigation.navigate("RepForms");
+        navigation.navigate("RepForms", { screen: 'Root', params: { locationInfo: null } });
+        //navigation.navigate("RepForms");
         return;
       case 'RepContentLibrary':
         navigation.navigate("RepContentLibrary");
