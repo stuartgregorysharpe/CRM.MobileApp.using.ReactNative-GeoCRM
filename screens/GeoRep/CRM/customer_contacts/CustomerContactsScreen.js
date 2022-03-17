@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { getLocationFields } from '../../../../actions/location.action';
+import { getLocationContacts, getLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -18,14 +18,47 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const [customMasterFields, setCustomMasterFields] = useState([]);
     const [dropdownId, setDropdownId] = useState(0);
     const dispositionRef = useRef([]);
+    const [contacts, setContacts] = useState([]);
 
     useEffect(() => {
-        getLocationFields(locationId).then(res => {
-            console.log("getLocationFields:", res.custom_master_fields);
-            initPostData(res.custom_master_fields);
-            setLocationFields(res.custom_master_fields);
-        })
+        loadList()
     }, []);
+
+    const loadList = () => {
+        if (selectedIndex == 1) {
+            getLocationFields(locationId).then(res => {
+                console.log("getLocationFields:", res.custom_master_fields);
+                initPostData(res.custom_master_fields);
+                setLocationFields(res.custom_master_fields);
+            })
+        } else if (selectedIndex == 2) {
+            getLocationContacts(locationId).then(res => {
+                prepareContactsList(res.contacts);
+            })
+        }
+    }
+
+    const prepareContactsList = (res) => {
+        console.log("contacts:", res);
+        let data = [];
+        data = res;
+        let primaryContacts = data.filter(x => x.primary_contact === '1');
+        let additionalContacts = data.filter(x => x.primary_contact !== '1');
+
+        let requiredList = [];
+        requiredList.push({
+            title: 'Primary Contacts',
+            data: primaryContacts
+        });
+
+        requiredList.push({
+            title: 'Additional Contacts',
+            data: additionalContacts
+        })
+
+        console.log(requiredList);
+        setContacts(requiredList);
+    }
 
     const initPostData = (res) => {
         var tmp = [];
@@ -112,131 +145,174 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     const renderCustomerTab = () => {
         return (
-            <View style={{ padding: 5 }}>
-                {
-                    locationFields.map((field, key) => {
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <View style={{ padding: 5, flex: 1 }}>
+                    {
+                        locationFields.map((field, key) => {
+                            if (field.field_type == "dropdown") {
+                                console.log(field);
+                                //index++;
+                                return (
+                                    <TouchableOpacity key={key}
+                                        onPress={() => {
+                                            setDropdownItems(field.preset_options);
+                                            if (field.preset_options.length > 0) {
+                                                setDropdownId(field.custom_master_field_id);
+                                                setIsDropdownModal(true);
+                                            }
+                                        }}>
 
-                        if (field.field_type == "dropdown") {
-                            console.log(field);
-                            //index++;
-                            return (
-                                <TouchableOpacity key={key}
-                                    onPress={() => {
-                                        setDropdownItems(field.preset_options);
-                                        if (field.preset_options.length > 0) {
-                                            setDropdownId(field.custom_master_field_id);
-                                            setIsDropdownModal(true);
-                                        }
-                                    }}>
+                                        <Text
+                                            ref={(element) => { dispositionRef.current[key] = element }}
+                                            style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
+                                            outlineColor={whiteLabel().fieldBorder}>
+                                            {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name)}
+                                        </Text>
 
-                                    <Text
-                                        ref={(element) => { dispositionRef.current[key] = element }}
-                                        style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
-                                        outlineColor={whiteLabel().fieldBorder}>
-                                        {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name)}
-                                    </Text>
-
-                                </TouchableOpacity>
-                            );
-                        }
-                        else {
-                            return (
-                                <View key={key}>
-                                    <TouchableOpacity
-                                        activeOpacity={1}>
-                                        <View>
-                                            <TextInput
-                                                type={field.field_type}
-                                                ref={(element) => { dispositionRef.current[key] = element }}
-                                                keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
-                                                returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
-                                                style={styles.textInput}
-                                                label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
-                                                value={getTextValue(customMasterFields, field.custom_master_field_id)}
-                                                mode="outlined"
-                                                outlineColor={whiteLabel().fieldBorder}
-                                                activeOutlineColor={DISABLED_COLOR}
-                                                onChangeText={text => {
-
-                                                    var tmp = [...customMasterFields];
-                                                    tmp.forEach((element) => {
-                                                        if (element.custom_master_field_id === field.custom_master_field_id) {
-                                                            console.log("enter", text);
-                                                            element.value = text;
-                                                        }
-                                                    });
-                                                    setCustomMasterFields(tmp);
-                                                    console.log("changed", tmp);
-                                                }}
-                                                blurOnSubmit={false}
-                                                onSubmitEditing={() => {
-                                                    if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
-                                                        if (locationFields[key + 1].field_type == "text") {
-                                                            dispositionRef.current[key + 1].focus();
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        </View>
                                     </TouchableOpacity>
-                                </View>
-                            );
-                        }
-                    })
-                }
-            </View>
+                                );
+                            }
+                            else {
+                                return (
+                                    <View key={key}>
+                                        <TouchableOpacity
+                                            activeOpacity={1}>
+                                            <View>
+                                                <TextInput
+                                                    type={field.field_type}
+                                                    ref={(element) => { dispositionRef.current[key] = element }}
+                                                    keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
+                                                    returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
+                                                    style={styles.textInput}
+                                                    label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                                                    value={getTextValue(customMasterFields, field.custom_master_field_id)}
+                                                    mode="outlined"
+                                                    outlineColor={whiteLabel().fieldBorder}
+                                                    activeOutlineColor={DISABLED_COLOR}
+                                                    onChangeText={text => {
+
+                                                        var tmp = [...customMasterFields];
+                                                        tmp.forEach((element) => {
+                                                            if (element.custom_master_field_id === field.custom_master_field_id) {
+                                                                console.log("enter", text);
+                                                                element.value = text;
+                                                            }
+                                                        });
+                                                        setCustomMasterFields(tmp);
+                                                        console.log("changed", tmp);
+                                                    }}
+                                                    blurOnSubmit={false}
+                                                    onSubmitEditing={() => {
+                                                        if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
+                                                            if (locationFields[key + 1].field_type == "text") {
+                                                                dispositionRef.current[key + 1].focus();
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                );
+                            }
+                        })
+                    }
+
+                    <View style={{ height: 60 }}></View>
+                </View>
+            </ScrollView>
 
         )
 
     }
 
+    const renderContactItem = (item, index, tabIndex) => {
+        return (
+            <View style={{
+                marginTop: 5,
+                marginHorizontal:2,
+                marginBottom:5,
+                backgroundColor: Colors.whiteColor,
+                borderRadius: 5,
+                borderColor: item.primary_contact==='1'?whiteLabel().headerBackground:Colors.whiteColor,
+                elevation:2,
+                borderWidth: 1, padding: 10
+            }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{fontSize:15, fontFamily: Fonts.secondaryBold, color: Colors.textColor }}>{item.contact_name}</Text>
+                    <Text style={{
+                        fontFamily: Fonts.secondaryMedium,
+                        color: whiteLabel().headerBackground,
+                        fontSize: 15,textDecorationLine:'underline'
+                    }}>{Number(item.contact_cell).toLocaleString('en-ZA')}</Text>
+                </View>
+                <Text style={{ fontFamily: Fonts.secondaryRegular, color: whiteLabel().subtextColor }}>{item.contact_email}</Text>
+
+            </View>)
+    }
+
     const renderContactsTab = () => {
         return (
-            <View>
-
+            <View style={{ flex: 1,marginBottom:60 }}>
+                <SectionList
+                    keyExtractor={(item, index) => index.toString()}
+                    sections={contacts}
+                    renderItem={({ item, index }) => {
+                        return renderContactItem(item, index, tabIndex)
+                    }}
+                    renderSectionHeader={({ section }) => {
+                        console.log(section);
+                        return <View style={{ marginTop: 10 }}>
+                            <Text style={{ fontSize: 15, fontFamily: Fonts.secondaryMedium, color: whiteLabel().headerBackground }}>{section.title}</Text>
+                            <View style={{ height: 2, backgroundColor: whiteLabel().headerBackground, marginVertical: 5 }} />
+                        </View>
+                    }}
+                />
             </View>
         )
     }
 
     return (
-        <Animated.View>
-            <View style={styles.container}>
-                <TouchableOpacity style={{ padding: 6 }} onPress={() => {
-                    onClose();
+        // <Animated.View>
+        <View style={styles.container}>
+            <TouchableOpacity style={{ padding: 6 }} onPress={() => {
+                onClose();
+            }}>
+                <Divider />
+            </TouchableOpacity>
+            <View style={[styles.tabContainer]}>
+                <TouchableOpacity style={styles.tabItem} onPress={() => {
+                    setTabIndex(1);
+                    selectedIndex = 1;
+                    loadList();
                 }}>
-                    <Divider />
+                    <Text style={[styles.tabText, tabIndex === 1 ? styles.tabActiveText : {}]}>Customer</Text>
                 </TouchableOpacity>
-                <View style={[styles.tabContainer]}>
-                    <TouchableOpacity style={styles.tabItem} onPress={() => {
-                        setTabIndex(1);
-                        selectedIndex = 1;
-                        // loadList("Customer");
-                    }}>
-                        <Text style={[styles.tabText, tabIndex === 1 ? styles.tabActiveText : {}]}>Customer</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.tabItem} onPress={() => {
-                        setTabIndex(2);
-                        selectedIndex = 2;
-                        // loadList("today");
-                    }}>
-                        <Text style={[styles.tabText, tabIndex === 2 ? styles.tabActiveText : {}]}>Contacts</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flex: 1 }}>
-                    {tabIndex == 1 && renderCustomerTab()}
-                    {tabIndex == 2 && renderContactsTab()}
-                </View>
+                <TouchableOpacity style={styles.tabItem} onPress={() => {
+                    setTabIndex(2);
+                    selectedIndex = 2;
+                    loadList()
+                }}>
+                    <Text style={[styles.tabText, tabIndex === 2 ? styles.tabActiveText : {}]}>Contacts</Text>
+                </TouchableOpacity>
             </View>
-            {dropdownModal()}
+            <View style={{ flex: 1 }}>
+                {tabIndex == 1 && renderCustomerTab()}
+                {tabIndex == 2 && renderContactsTab()}
+            </View>
 
-        </Animated.View>
+            {dropdownModal()}
+        </View>
+        // </Animated.View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+        // flexGrow:1,
+        flex: 1,
         padding: 10,
-        minHeight: '100%',
+        zIndex: 100,
         backgroundColor: BG_COLOR
     },
     tabContainer: {

@@ -92,11 +92,9 @@ export default function LocationSpecificInfoScreen(props) {
 
   if (canShowCustomerContactsScreen) {
     return (
-      <SafeAreaView>
-        <ScrollView>
-          <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />
-        </ScrollView>
-      </SafeAreaView>
+      // <SafeAreaView style={{ flex: 1 }}>
+        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />
+      // </SafeAreaView>
     )
   }
 
@@ -113,6 +111,10 @@ export default function LocationSpecificInfoScreen(props) {
       >
         <RefreshSlider location_id={locationInfo.location_id} />
       </View>}
+
+      {/* {canShowCustomerContactsScreen &&
+        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />
+      } */}
 
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
