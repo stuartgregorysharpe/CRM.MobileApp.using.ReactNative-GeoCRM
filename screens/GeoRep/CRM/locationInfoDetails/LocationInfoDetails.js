@@ -216,8 +216,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       {
         showItem === "update_customer" &&
         <UpdateCustomerInfo location_id={locationInfo.location_id} 
-          onClose={() => { 
-              console.log("propos ---", props);
+          onClose={() => {               
               props.refreshLocationInfo(locationInfo.location_id);
               setShowItem("refresh");
           }} />      
@@ -359,10 +358,9 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           </View>
         }
        
-
       </KeyboardAwareScrollView>
       
-      {features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
+      { showItem !== "update_customer" && features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
         <View style={styles.nextButtonBar}>        
           {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {          
             props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });

@@ -78,9 +78,23 @@ export default function AddLead({ screenProps, onClose }) {
     var tmp = [];
     res.forEach((element) => {
       if(element.field_type === "dropdown_input"){
-        tmp.push({ 'custom_master_field_id': element.custom_master_field_id, 'value': '', 'field_name': element.field_name , 'core_field_name': element.core_field_name , 'field_type': element.field_type , 'dropdown_value' : '' });
+        tmp.push(
+          { 'custom_master_field_id': element.custom_master_field_id, 
+          'value': '', 
+          'field_name': element.field_name , 
+          'core_field_name': element.core_field_name , 
+          'field_type': element.field_type , 
+          'dropdown_value' : '' }
+          );
       }else{
-        tmp.push({ 'custom_master_field_id': element.custom_master_field_id, 'value': '', 'field_name': element.field_name , 'core_field_name': element.core_field_name , 'field_type': element.field_type });
+        tmp.push(
+          { 
+            'custom_master_field_id': element.custom_master_field_id, 
+            'value': '', 
+            'field_name': element.field_name , 
+            'core_field_name': element.core_field_name , 
+            'field_type': element.field_type 
+          });
       }      
     })
     setCustomMasterFields(tmp);
@@ -118,15 +132,15 @@ export default function AddLead({ screenProps, onClose }) {
   const getSelectedDropdownItemText = (id, originFieldName , fieldType ) => {
     var tmp = [...customMasterFields];
     var index = -1;
-    if(fieldType === "dropdown"){
-      tmp.forEach((element) => {
-        if (element.custom_master_field_id === id && element.value !== '') { //&& element.value != ""
-          index = element.itemIndex;
-        }
-      });
-    }else{      
+    if(fieldType === "dropdown_input"){
       tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.dropdown_value !== '') { //&& element.value != ""          
+          index = element.itemIndex;
+        }
+      });      
+    }else{      
+      tmp.forEach((element) => {
+        if (element.custom_master_field_id === id && element.value !== '') { //&& element.value != ""
           index = element.itemIndex;
         }
       });      
@@ -160,11 +174,10 @@ export default function AddLead({ screenProps, onClose }) {
                     if(element.field_type === "dropdown_input"){
                       element.dropdown_value = item;
                       element.value = '';     
-                    }                    
+                    }
                     var leadTmp = [...leadForms];
                     leadTmp[key].value = item;
-                    setLeadForms(leadTmp);
-                    // visible input form
+                    setLeadForms(leadTmp);                    
                   }
                 });
                 setCustomMasterFields(tmp);
@@ -176,6 +189,46 @@ export default function AddLead({ screenProps, onClose }) {
           ))
         } />
     )
+  }
+
+  const renderText = (field,key) => {
+    return (
+      <TouchableOpacity activeOpacity={1}>
+        <View>
+          <TextInput
+            type={field.field_type}
+            ref={(element) => { dispositionRef.current[key] = element }}
+            keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
+            returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
+            style={styles.textInput}
+            label={field.field_type === "dropdown_input" ? '' : <Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+            value={getTextValue(customMasterFields, field.custom_master_field_id)}
+            mode="outlined"
+            outlineColor={whiteLabel().fieldBorder}
+            activeOutlineColor={DISABLED_COLOR}
+            onChangeText={text => {
+              var tmp = [...customMasterFields];
+              tmp.forEach((element) => {
+                if (element.custom_master_field_id === field.custom_master_field_id) {
+                  console.log("enter", text);
+                  element.value = text;
+                }
+              });
+              setCustomMasterFields(tmp);
+              console.log("changed", tmp);
+            }}
+            blurOnSubmit={false}
+            onSubmitEditing={() => {
+              if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
+                if (leadForms[key + 1].field_type == "text") {
+                  dispositionRef.current[key + 1].focus();
+                }
+              }
+            }}
+          />
+        </View>
+      </TouchableOpacity>
+    );
   }
 
   if (isLoading) {
@@ -237,14 +290,12 @@ export default function AddLead({ screenProps, onClose }) {
       <View style={{ padding: 5 }}>
         {
           leadForms.map((field, key) => {
-            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input" ) {
-              //index++;
+            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input" ) {              
               return (
-                <View>
+                <View key={key}>
                   {
                     key == 1 &&
                     <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
-
                       var masterFields = await reverseGeocoding(myLocation, customMasterFields);
                       if (masterFields.length > 0) {
                         setCustomMasterFields(masterFields);
@@ -263,7 +314,6 @@ export default function AddLead({ screenProps, onClose }) {
                         setIsDropdownModal(true);
                       }
                     }}>
-
                     <Text
                       ref={(element) => { dispositionRef.current[key] = element }}
                       style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
@@ -271,41 +321,10 @@ export default function AddLead({ screenProps, onClose }) {
                       {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name , field.field_type  )}
                     </Text>
                   </TouchableOpacity>
-
                   {
                     field.field_type === "dropdown_input" && field.value !== "" && 
-                    <TextInput
-                        type={field.field_type}
-                        ref={(element) => { dispositionRef.current[key] = element }}
-                        keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
-                        returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
-                        style={styles.textInput}
-                        label={''}
-                        value={getTextValue(customMasterFields, field.custom_master_field_id)}
-                        mode="outlined"
-                        outlineColor={whiteLabel().fieldBorder}
-                        activeOutlineColor={DISABLED_COLOR}
-                        onChangeText={text => {
-                          var tmp = [...customMasterFields];
-                          tmp.forEach((element) => {
-                            if (element.custom_master_field_id === field.custom_master_field_id) {                              
-                              element.value = text;
-                            }
-                          });
-                          setCustomMasterFields(tmp);                          
-                        }}
-                        blurOnSubmit={false}
-                        onSubmitEditing={() => {
-                          if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
-                            if (leadForms[key + 1].field_type == "text") {
-                              dispositionRef.current[key + 1].focus();
-                            }
-                          }
-                        }}
-                    />
+                    renderText(field, key)
                   }
-
-
                 </View>
                 
               );
@@ -313,43 +332,9 @@ export default function AddLead({ screenProps, onClose }) {
               return (
                 <View key={key}>
                   
-                  <TouchableOpacity
-                    activeOpacity={1}>
-                    <View>
-                      <TextInput
-                        type={field.field_type}
-                        ref={(element) => { dispositionRef.current[key] = element }}
-                        keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
-                        returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
-                        style={styles.textInput}
-                        label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
-                        value={getTextValue(customMasterFields, field.custom_master_field_id)}
-                        mode="outlined"
-                        outlineColor={whiteLabel().fieldBorder}
-                        activeOutlineColor={DISABLED_COLOR}
-                        onChangeText={text => {
-
-                          var tmp = [...customMasterFields];
-                          tmp.forEach((element) => {
-                            if (element.custom_master_field_id === field.custom_master_field_id) {
-                              console.log("enter", text);
-                              element.value = text;
-                            }
-                          });
-                          setCustomMasterFields(tmp);
-                          console.log("changed", tmp);
-                        }}
-                        blurOnSubmit={false}
-                        onSubmitEditing={() => {
-                          if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
-                            if (leadForms[key + 1].field_type == "text") {
-                              dispositionRef.current[key + 1].focus();
-                            }
-                          }
-                        }}
-                      />
-                    </View>
-                  </TouchableOpacity>
+                  {
+                    renderText(field, key )
+                  }
                 </View>
               );
             }
