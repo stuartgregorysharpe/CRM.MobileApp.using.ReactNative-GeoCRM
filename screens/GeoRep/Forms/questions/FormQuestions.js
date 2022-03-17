@@ -1,5 +1,5 @@
 import React, { useEffect , useState , useRef } from 'react';
-import { Text, View, Dimensions, StyleSheet , TouchableOpacity , Image , Alert} from 'react-native';
+import { Text, View, Dimensions, StyleSheet , TouchableOpacity , Image , Alert, Platform} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getFormQuestions } from '../../../../actions/forms.action';
 import { HeadingForm } from '../../../../components/shared/HeadingForm';
@@ -307,8 +307,7 @@ export const FormQuestions = (props) =>{
       return <View key={"question" + index} ></View>
     }
 
-    return (
-        <Provider>
+    return (      
         <View style={styles.container}  onTouchStart={(e) => { setIsInfo(false); }}>
             <GrayBackground></GrayBackground>
             <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>
@@ -368,7 +367,7 @@ export const FormQuestions = (props) =>{
                   )
                 })
               }
-              <View style={{marginVertical:20}}>
+              <View style={{marginTop:10, marginBottom: 70}}>
                 {
                   formQuestions && formQuestions.length > 0 &&
                   <SubmitButton title="Submit" onSubmit={() => {_onSubmit()}}></SubmitButton>
@@ -389,49 +388,21 @@ export const FormQuestions = (props) =>{
                   <View  style={{ backgroundColor: "#DDD", padding:10, marginLeft:20,marginRight:10,borderRadius:10, fontSize: 16, color: "#fff", }} key={1}><Text>{bubbleText}</Text></View>  
                   <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
               </View>
-            }
-            
-            {/* <Portal> 
-                <MultipleOptionsModal
-                    mode = {mode}
-                    modaVisible={modaVisible}
-                    options={options}
-                    onClose={() =>{
-                        var tmp = [...formQuestions];                        
-                        tmp[key].questions[index].value = null; 
-                        setFormQuestions(tmp);
-                        setModalVisible(false);
-                    }}
-                    onSave={() => {
-                      setModalVisible(false);
-                    }}
-                    onValueChanged={( value ) =>{                      
-                      var tmp = [...formQuestions];
-                      if(mode === "single"){
-                        tmp[key].questions[index].value = value;
-                      }else{
-                        tmp[key].questions[index].value = tmp[key].questions[index].value === null ? value : tmp[key].questions[index].value + "," + value;
-                      }                      
-                      setFormQuestions(tmp);
-                      
-                    }} >
-                </MultipleOptionsModal> 
-            </Portal>     */}                        
+            }                                                
         </View>
-
-        </Provider>
+        
     );
 }
 
 const styles = StyleSheet.create({
     container:{
-      flex:1,      
+      flex:1,        
     },
 
     titleContainerStyle:{
       flexDirection:'row', padding:10 , alignItems:'center'
     },
-
+    
     formTitleStyle:{
       fontSize:16,
       color:Colors.blackColor,

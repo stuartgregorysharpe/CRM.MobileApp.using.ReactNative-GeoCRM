@@ -1,23 +1,38 @@
 import React, { useEffect, useState, Fragment } from 'react';
-import {  View, StyleSheet, ScrollView } from 'react-native';
+import {  View, StyleSheet, ScrollView ,TouchableOpacity , Text } from 'react-native';
 
 import Searchbar from '../../../components/SearchBar';
 import Card from '../../../screens/GeoRep/ContentLibrary/partial/Card';
-import { BG_COLOR } from '../../../constants/Colors';
+import Colors from '../../../constants/Colors';
 import { getWebLinks } from '../../../actions/weblinks.action';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
+import { style } from '../../../constants/Styles';
 
 export default function WebLinksScreen(props) {
 
   const [lists, setLists] = useState([]);
   const [searchLists, setSearchLists] = useState([]);
 
-  useEffect(() => {    
-    if (props.screenProps) {
-      props.screenProps.setOptions({
-        title: "Web Links"
-      });
+  useEffect(() => {
+    var screenProps = props.screenProps;    
+    if(screenProps === undefined){
+      screenProps = props.navigation;
     }
+    if (screenProps) {
+      screenProps.setOptions({        
+        headerTitle: () => {
+          return (<TouchableOpacity
+            onPress={
+              () => {}}>
+            <View style={style.headerTitleContainerStyle}>                
+              <Text style={style.headerTitle} >Web Links</Text>
+            </View></TouchableOpacity>)
+        }
+      });      
+    }
+  });
+
+  useEffect(() => {             
     loadList();
   }, []);
 
@@ -69,7 +84,7 @@ export default function WebLinksScreen(props) {
 const styles = StyleSheet.create({
   container: {   
     minHeight: '100%',
-    backgroundColor: BG_COLOR,        
+    backgroundColor: Colors.bgColor,        
   },
   innerContainer: {
     padding: 10

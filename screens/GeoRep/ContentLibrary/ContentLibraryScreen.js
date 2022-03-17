@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, StyleSheet, ScrollView, Text , PermissionsAndroid, Platform , TouchableOpacity ,Image} from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { SafeAreaView, View, StyleSheet, ScrollView, Text , Platform , TouchableOpacity ,Image} from 'react-native';
+import { useDispatch } from 'react-redux';
 import Searchbar from '../../../components/SearchBar';
 import Card from './partial/Card';
-import { BG_COLOR, whiteLabel } from '../../../constants/Colors';
+import Colors from '../../../constants/Colors';
 import { CHANGE_LIBRARY_CHILD_STATUS } from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
@@ -22,9 +22,31 @@ export default function ContentLibraryScreen(props) {
   const FileOpener = require('react-native-file-opener');
   const [isBack, setIsBack] = useState( props.route.params && props.route.params.isBack ? props.route.params.isBack : false);  
   const [title,setTitle] = useState("Content Library");
+  
+  useEffect(() => {
+    var screenProps = props.screenProps;    
+    if(screenProps === undefined){
+      screenProps = props.navigation;
+    }
+    if (screenProps) {
+      screenProps.setOptions({        
+        headerTitle: () => {
+          return (<TouchableOpacity
+            onPress={() => {}}>
+            <View style={style.headerTitleContainerStyle}>                
+              <Text style={style.headerTitle} >{title}</Text>
+            </View></TouchableOpacity>)
+        }
+      });      
+    }
+  });
 
-  useEffect(() => {    
-    props.navigation.setOptions({           
+  useEffect(() => {
+    var screenProps = props.screenProps;    
+    if(screenProps === undefined){
+      screenProps = props.navigation;
+    }
+    screenProps.setOptions({           
       headerTitle:(props) =>{
         return(<TouchableOpacity                   
            onPress={
@@ -79,9 +101,7 @@ export default function ContentLibraryScreen(props) {
     dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
     setChildList(searchLibraryLists[index]);
     setIsBack(true);
-    setTitle(searchLibraryLists[index].folder_name);
-
-    //dispatch({type: BACK_ICON_STATUS, payload: true})
+    setTitle(searchLibraryLists[index].folder_name);    
   }
   const getResourceIcon = (title) =>{
     if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
@@ -126,10 +146,9 @@ export default function ContentLibraryScreen(props) {
           console.log('error!!', e)
       });  
     }else{
-      const paths = FileViewer.open(path) // absolute-path-to-my-local-file.
+      const paths = FileViewer.open(path)
       .then(() => {
-      
-       
+            
       })
       .catch((error) => {
        
@@ -157,9 +176,7 @@ export default function ContentLibraryScreen(props) {
                   if(tmp.length == 2){                                      
                     fileName = tmp[0];
                     ext = tmp[1];
-                    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
-                    //const SavePath = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.ExternalDirectoryPath;
-
+                    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;                    
                     RNFS.exists(path).then((res) =>{
                       if(res){
                         console.log("file exist", path);
@@ -229,7 +246,7 @@ export default function ContentLibraryScreen(props) {
 const styles = StyleSheet.create({
   container: {
     minHeight: '100%',
-    backgroundColor: BG_COLOR
+    backgroundColor: Colors.bgColor
   },
   innerContainer: {
     padding: 10

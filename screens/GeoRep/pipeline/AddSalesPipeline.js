@@ -1,24 +1,20 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Dimensions, Animated, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Text, View, ScrollView, TouchableOpacity,  Animated, TouchableWithoutFeedback } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import { TextInput, Button, Title } from 'react-native-paper';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../components/Skeleton';
 import Divider from '../../../components/Divider';
-import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, TEXT_COLOR, GRAY_COLOR, whiteLabel } from '../../../constants/Colors';
-import { getGeocoding, getLeadFields, getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../actions/location.action';
+import Colors, {  whiteLabel } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import CustomPicker from '../../../components/modal/CustomPicker';
 import SvgIcon from '../../../components/SvgIcon';
 import AlertDialog from '../../../components/modal/AlertDialog';
-import { reverseGeocoding, updateCurrentLocation } from '../../../actions/google.action';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { boxShadow, style } from '../../../constants/Styles';
 import { getAddOpportunityContacts, getAddOpportunityFields, postAddOpportunityFields } from '../../../actions/pipeline.action';
 import { useNavigation } from '@react-navigation/native';
 import { getToken } from '../../../constants/Storage';
@@ -652,38 +648,22 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
           <Title style={{ fontFamily: Fonts.primaryBold, fontWeight: 'bold', fontSize: 15 }}>{pageType === 'add' ? `Add` : `Update`} Pipeline Opportunity</Title>
         </View>
 
-        <View style={{ padding: 5 }}>
-          {/* <TouchableOpacity style={[styles.textInput, styles.dropdownBox]} onPress={() => {
-            
-          }}>
-            <Text style={{ backgroundColor: BG_COLOR }}>{'Select Customer'}</Text>
-            <SvgIcon icon="Right_Arrow" width='23px' height='23px' />
-          </TouchableOpacity> */}
-
-          <TouchableOpacity onPress={() => {
-            // console.log("Clicked input");
-            setCanSearch(true)
-          }}
-            activeOpacity={1}>
+        <View style={{ padding: 5 }}>          
+          <TouchableOpacity onPress={() => { setCanSearch(true) }} activeOpacity={1}>
             <View>
-
               <TextInput
                 style={styles.textInput}
-                label={<Text style={{ backgroundColor: BG_COLOR }}>{'Search Customer'}</Text>}
+                label={<Text style={{ backgroundColor: Colors.bgColor }}>{'Search Customer'}</Text>}
                 value={searchCustomer}//customersList.find(x => x.location_id == selectedCustomerId)?.name}//getTextValue(customMasterFields, field.custom_master_field_id)}
                 mode="outlined"
-                outlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                activeOutlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                onKeyPress={(e) => {
-                  // console.log(e.nativeEvent.key);
-                  setCanSearch(true);
-                }}
+                outlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : Colors.disabledColor}
+                activeOutlineColor={isCustomerMandatory ? whiteLabel().endDayBackground : Colors.disabledColor}
+                onKeyPress={(e) => { setCanSearch(true); }}
                 disabled={disableCustomerField}
                 onChangeText={text => {
                   if(pageType==='update'){
                     return;
-                  }
-                  // console.log("on change text");
+                  }                  
                   setSearchCustomer(text);
                   if (text !== '') {
                     setCanShowAutoComplete(true);
@@ -694,20 +674,16 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
 
                 }}
                 blurOnSubmit={false}
-                onSubmitEditing={() => {
-                  // getLocationCustomers(searchCustomer);
-                }}
+                onSubmitEditing={() => {  }}
               />
-
             </View>
           </TouchableOpacity>
+
           {canShowAutoComplete && <View style={{ zIndex: 3, elevation: 3, position: 'absolute', top: 60, minHeight: 220, maxHeight: 220, backgroundColor: 'white', width: '100%', left: 5, borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 5 }}>
-            <TouchableWithoutFeedback onPress={() => {
-              // console.log("clicked outside");
+            <TouchableWithoutFeedback onPress={() => {              
               setCanShowAutoComplete(!canShowAutoComplete);
               setCanSearch(false);
-            }
-            }>
+            }}>
               <ScrollView>
                 <View>
                   {customersList.length > 0 ? customersList.map((item, index) => {
@@ -731,47 +707,41 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
           </View>}
 
           <TouchableOpacity style={[styles.textInput, styles.dropdownBox]} onPress={() => {
-            if (contacts.length > 0) {
-              // console.log("Contacts available", JSON.stringify(contacts));
-              setContactModalVisible(!contactModalVisible);
-            } else {
-              setMessage('No contacts available. Please make sure a Customer has been selected first');
-              setCanShowAlert(true);
-            }
-          }}>
-            <Text style={{ backgroundColor: BG_COLOR }}>{selectedContact ? contacts.find(x => x.contact_id == selectedContact)?.contact_name : 'Select Contact'}</Text>
+            if (contacts.length > 0) {              
+                setContactModalVisible(!contactModalVisible);
+              } else {
+                setMessage('No contacts available. Please make sure a Customer has been selected first');
+                setCanShowAlert(true);
+              }
+            }}>
+            <Text style={{ backgroundColor: Colors.bgColor }}>{selectedContact ? contacts.find(x => x.contact_id == selectedContact)?.contact_name : 'Select Contact'}</Text>
             <SvgIcon icon="Drop_Down" width='23px' height='23px' />
           </TouchableOpacity>
+
           <TouchableOpacity
             activeOpacity={1}>
             <View>
               <TextInput
                 style={styles.textInput}
                 // multiline={true}
-                label={<Text style={{ backgroundColor: BG_COLOR }}>{'Opportunity Name'}</Text>}
-                value={opportunityName}//getTextValue(customMasterFields, field.custom_master_field_id)}
+                label={<Text style={{ backgroundColor: Colors.bgColor }}>{'Opportunity Name'}</Text>}
+                value={opportunityName}
                 mode="outlined"
-                outlineColor={isOpportunityNameCompulsory ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                activeOutlineColor={isOpportunityNameCompulsory ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                onChangeText={text => {
-                  // console.log("on change text");
-                  setOpportunityName(text);
-                }}
+                outlineColor={isOpportunityNameCompulsory ? whiteLabel().endDayBackground : Colors.disabledColor}
+                activeOutlineColor={isOpportunityNameCompulsory ? whiteLabel().endDayBackground : Colors.disabledColor}
+                onChangeText={text => { setOpportunityName(text); }}
                 blurOnSubmit={false}
-                onSubmitEditing={() => {
-
-                }}
+                onSubmitEditing={() => { }}
               />
             </View>
           </TouchableOpacity>
+
           <TouchableOpacity style={[styles.textInput, styles.dropdownBox]} onPress={() => {
             setPipelinesModalVisible(!pipelinesModalVisible)
-
-          }}>
-            <Text style={{ backgroundColor: BG_COLOR }}>{addOpportunityResponse && addOpportunityResponse.campaigns && addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId) ? addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId).campaign_name : 'Select Pipeline'}</Text>
+            }}>
+            <Text style={{ backgroundColor: Colors.bgColor }}>{addOpportunityResponse && addOpportunityResponse.campaigns && addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId) ? addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId).campaign_name : 'Select Pipeline'}</Text>
             <SvgIcon icon="Drop_Down" width='23px' height='23px' />
           </TouchableOpacity>
-
 
           <View style={[styles.refreshBox, { borderColor: isStageCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isStageCompulsory ? 1 : 0 }]}>
             <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
@@ -786,6 +756,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
+
           <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isOutcomeCompulsory ? 1 : 0 }]}>
             <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
               <Text style={styles.shadowBoxText}>Outcome</Text>
@@ -816,12 +787,12 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
               }}>Dispositions</Text>
             </View>
             {disposition_fields.map((field, key) => {
-              // console.log("RERUN: ", field);
+
               let canShowError = dispositionFields.find(x => x.disposition_field_id === field.disposition_field_id)?.canShowError;
               if (field.field_type == "dropdown") {
                 index++;
                 return (
-                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR }]} onPress={() => {
+                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: canShowError ? whiteLabel().endDayBackground : Colors.disabledColor }]} onPress={() => {
                     setDropdownItems(field.preset_options);
                     setIsDisposition(true);
                     if (field.preset_options.length > 0) {
@@ -831,7 +802,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
                   }}>
                     <Text
                       ref={(element) => { dispositionRef.current[key] = element }} outlineColor={whiteLabel().fieldBorder}
-                      style={{ backgroundColor: BG_COLOR }}>
+                      style={{ backgroundColor: Colors.bgColor }}>
                       {getSelectedDispositionDropdownItemText(field.disposition_field_id, field.field_name)}
                     </Text>
                     <SvgIcon icon="Drop_Down" width='23px' height='23px' />
@@ -851,11 +822,11 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
                           returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                           style={[inputLength<30 && styles.textInput]}
                           multiline={inputLength>30?true:false}
-                          label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                          label={<Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
                           value={getDispositionTextValue(dispositionFields, field.disposition_field_id)}
                           mode="outlined"
-                          outlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                          activeOutlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                          outlineColor={canShowError ? whiteLabel().endDayBackground : Colors.disabledColor}
+                          activeOutlineColor={canShowError ? whiteLabel().endDayBackground : Colors.disabledColor}
                           left={field.add_prefix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_prefix} />}
                           right={field.add_suffix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_suffix} />}
                           onChangeText={text => {
@@ -903,7 +874,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
               if (field.field_type == "dropdown") {
                 index++;
                 return (
-                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR }]} onPress={() => {
+                  <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: canShowError ? whiteLabel().endDayBackground : Colors.disabledColor }]} onPress={() => {
                     setDropdownItems(field.preset_options);
                     setIsDisposition(false);
                     if (field.preset_options.length > 0) {
@@ -913,7 +884,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
                   }}>
                     <Text
                       ref={(element) => { dispositionRef.current[key] = element }} outlineColor={whiteLabel().fieldBorder}
-                      style={{ backgroundColor: BG_COLOR }}>
+                      style={{ backgroundColor: Colors.bgColor }}>
                       {getSelectedOpportunityDropdownItemText(field.opportunity_field_id, field.field_name)}
                     </Text>
                     <SvgIcon icon="Drop_Down" width='23px' height='23px' />
@@ -931,11 +902,11 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
                           keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
                           returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                           style={styles.textInput}
-                          label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                          label={<Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
                           value={getOpportunityTextValue(opporunityFields, field.opportunity_field_id)}
                           mode="outlined"
-                          outlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                          activeOutlineColor={canShowError ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                          outlineColor={canShowError ? whiteLabel().endDayBackground : Colors.disabledColor}
+                          activeOutlineColor={canShowError ? whiteLabel().endDayBackground : Colors.disabledColor}
                           left={field.add_prefix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_prefix} />}
                           right={field.add_suffix && <TextInput.Affix textStyle={{ marginTop: 8 }} text={field.add_suffix} />}
                           onChangeText={text => {
@@ -1001,11 +972,10 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
 const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(parse({
   container: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     height: '100%',
     zIndex: 100,
-    padding: 10,
-    // elevation: 1
+    padding: 10,    
   },
   header: {
     flexDirection: 'row',
@@ -1013,12 +983,7 @@ const styles = EStyleSheet.create(parse({
     alignItems: 'center',
     marginBottom: 10
   },
-  map: {
-    width: '100%',
-    height: 230,
-    marginBottom: 10
-  },
-
+  
   addButton: {
     position: 'relative',
     width: '100%',
@@ -1045,7 +1010,7 @@ const styles = EStyleSheet.create(parse({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     //fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },
@@ -1053,7 +1018,7 @@ const styles = EStyleSheet.create(parse({
     // minHeight: 40,
     fontSize: 14,
     // lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     //fontFamily: Fonts.secondaryMedium,
     // marginBottom: 8
   },
@@ -1105,11 +1070,11 @@ const styles = EStyleSheet.create(parse({
   },
   shadowBoxText: {
     fontSize: 13,
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: 'Gilroy-Medium'
   },
   button: {
-    backgroundColor: GRAY_COLOR,
+    backgroundColor: Colors.greyColor,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,
@@ -1125,12 +1090,12 @@ const styles = EStyleSheet.create(parse({
     fontFamily: 'Gilroy-Medium',
     letterSpacing: 0.2,
   }, cardtitle: {
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontSize: 14,
     fontFamily: Fonts.secondaryMedium,
   },
   dropdownBox: {
-    borderColor: DISABLED_COLOR,
+    borderColor: Colors.disabledColor,
     borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',

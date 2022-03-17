@@ -16,10 +16,8 @@ export default function SupportScreen(props) {
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [tabIndex, setTabIndex] = useState(1); 
   const ticketRef = useRef();
-
   
-  useEffect(() => {
-    
+  useEffect(() => {    
     if (props.screenProps) {
       props.screenProps.setOptions({        
         headerTitle: () => {
@@ -89,10 +87,10 @@ export default function SupportScreen(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    minHeight: '100%',
+  container: {    
     backgroundColor: 'BG_COLOR',
     padding: 10,
+    paddingBottom:50
   },
   
   tabContainer: {

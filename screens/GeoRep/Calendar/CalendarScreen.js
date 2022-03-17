@@ -30,12 +30,26 @@ export default function CalendarScreen(props) {
   const [isAdd, setIsAdd] = useState(false);
 
   useEffect(() => {
-    if (props.screenProps) {
-      props.screenProps.setOptions({
-        title: "Calendar"
-      });
+    var screenProps = props.screenProps;    
+    if(screenProps === undefined){
+      screenProps = props.navigation;
     }
+    if (screenProps) {
+      screenProps.setOptions({        
+        headerTitle: () => {
+          return (<TouchableOpacity
+            onPress={
+              () => {}}>
+            <View style={style.headerTitleContainerStyle}>                
+              <Text style={style.headerTitle} >Calendar</Text>
+            </View></TouchableOpacity>)
+        }
+      });      
+    }
+  });
 
+
+  useEffect(() => {   
     if (selectedIndex === 1) {
       if(lists.length === 0){
         loadList("last_week");

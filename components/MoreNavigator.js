@@ -13,7 +13,7 @@ import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
-import RepSalesPipelineScreen from '../screens/GeoRep/SalesPipelineScreen';
+import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import CRMSalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
@@ -216,12 +216,14 @@ export default function RepMoreScreen({navigation}) {
       >
         {props => <CRMScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
+      
       {selectProject == 'geo_rep' && componentListOne.includes('web_links') && <Stack.Screen
         name="RepWebLinks"
         options={{ header: () => null }}
       >
         {props => <RepWebLinksScreen {...props} screenProps={navigation} />}
       </Stack.Screen>}
+
       {selectProject == 'geo_rep' && componentListOne.includes('calendar') && <Stack.Screen
         name="Calendar"
         options={{ header: () => null }}
