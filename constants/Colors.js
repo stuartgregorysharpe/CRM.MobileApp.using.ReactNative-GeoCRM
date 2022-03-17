@@ -7,7 +7,7 @@ export const GRAY_COLOR = 'rgba(21, 90, 161, 0.31)';
 export const DISABLED_COLOR = "#9D9FA2";
 export const TICK_BOX_COLOR = "#002a55";
 
-export const whiteLabel = () => {    
+export const whiteLabel = () => {
   return {
     headerBackground: '#133C8B',
     headerText: '#FFFFFF',
@@ -40,26 +40,27 @@ export const whiteLabel = () => {
     endDayText: '#FFFFFF',
     countBoxBackground: '#133C8B',
     countBoxText: '#FFFFFF',
-    feature_card_icon_background:'#F5F5F5',
-    feature_card_icon_fill:'#133C8B',
-    
-  };    
+    feature_card_icon_background: '#F5F5F5',
+    feature_card_icon_fill: '#133C8B',
+    subtextColor: '#9B9B9B'
+  };
 };
 
 
 export default {
-    whiteColor:'#fff',
-    blackColor:'#000',
-    skeletonColor:'#d1d1d1',
-    primaryColor:'#133C8B',
-    bgColor:'#F9F9F9',
-    textColor:'#23282D',
-    greenColor:'#b7e2bb',
-    blueColor:'#b7cce2',
-	redColor: '#DC143C',
-    disabledColor:'#9D9FA2',
-    tickBoxColor:'#002a55',
-    selectedRedColor:'#dc143c',
-    greyColor:'rgba(21, 90, 161, 0.31)'
+  whiteColor: '#fff',
+  blackColor: '#000',
+  skeletonColor: '#d1d1d1',
+  primaryColor: '#133C8B',
+  bgColor: '#F9F9F9',
+  textColor: '#23282D',
+  greenColor: '#b7e2bb',
+  blueColor: '#b7cce2',
+  redColor: '#DC143C',
+  disabledColor: '#9D9FA2',
+  tickBoxColor: '#002a55',
+  selectedRedColor: '#dc143c',
+  greyColor: 'rgba(21, 90, 161, 0.31)',
+
 }
 
