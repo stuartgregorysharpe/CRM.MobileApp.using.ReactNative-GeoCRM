@@ -39,7 +39,7 @@ export default function AddLead({ screenProps, onClose }) {
       coordinates: { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
       use_current_geo_location: isCurrentLocation,
       custom_master_fields: customMasterFields
-    }
+    }    
     postLeadFields(params, uuid.v4())
       .then((res) => {
         setMessage("Added lead successfully");
@@ -63,7 +63,7 @@ export default function AddLead({ screenProps, onClose }) {
   useEffect(() => {
     if (isLoading) {
       getLeadFields()
-        .then((res) => {
+        .then((res) => {          
           initPostData(res);
           setLeadForms(res);
           setIsLoading(false);
@@ -77,7 +77,11 @@ export default function AddLead({ screenProps, onClose }) {
   const initPostData = (res) => {
     var tmp = [];
     res.forEach((element) => {
-      tmp.push({ 'custom_master_field_id': element.custom_master_field_id, 'value': '', 'field_name': element.field_name });
+      if(element.field_type === "dropdown_input"){
+        tmp.push({ 'custom_master_field_id': element.custom_master_field_id, 'value': '', 'field_name': element.field_name , 'core_field_name': element.core_field_name , 'field_type': element.field_type , 'dropdown_value' : '' });
+      }else{
+        tmp.push({ 'custom_master_field_id': element.custom_master_field_id, 'value': '', 'field_name': element.field_name , 'core_field_name': element.core_field_name , 'field_type': element.field_type });
+      }      
     })
     setCustomMasterFields(tmp);
   }
@@ -111,14 +115,23 @@ export default function AddLead({ screenProps, onClose }) {
     return res;
   }
 
-  const getSelectedDropdownItemText = (id, originFieldName) => {
+  const getSelectedDropdownItemText = (id, originFieldName , fieldType ) => {
     var tmp = [...customMasterFields];
     var index = -1;
-    tmp.forEach((element) => {
-      if (element.custom_master_field_id === id && element.value !== '') { //&& element.value != ""
-        index = element.itemIndex;
-      }
-    });
+    if(fieldType === "dropdown"){
+      tmp.forEach((element) => {
+        if (element.custom_master_field_id === id && element.value !== '') { //&& element.value != ""
+          index = element.itemIndex;
+        }
+      });
+    }else{      
+      tmp.forEach((element) => {
+        if (element.custom_master_field_id === id && element.dropdown_value !== '') { //&& element.value != ""          
+          index = element.itemIndex;
+        }
+      });      
+    }
+        
     if (index === -1) {
       return originFieldName;
     }
@@ -140,10 +153,18 @@ export default function AddLead({ screenProps, onClose }) {
             <TouchableOpacity style={[styles.pickerItem]} key={index}
               onPress={() => {
                 var tmp = [...customMasterFields];
-                tmp.forEach((element) => {
+                tmp.forEach((element , key) => {
                   if (element.custom_master_field_id == dropdownId) {
                     element.value = item;
                     element.itemIndex = index;
+                    if(element.field_type === "dropdown_input"){
+                      element.dropdown_value = item;
+                      element.value = '';     
+                    }                    
+                    var leadTmp = [...leadForms];
+                    leadTmp[key].value = item;
+                    setLeadForms(leadTmp);
+                    // visible input form
                   }
                 });
                 setCustomMasterFields(tmp);
@@ -216,30 +237,10 @@ export default function AddLead({ screenProps, onClose }) {
       <View style={{ padding: 5 }}>
         {
           leadForms.map((field, key) => {
-            if (field.field_type == "dropdown") {
+            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input" ) {
               //index++;
               return (
-                <TouchableOpacity key={key}
-                  onPress={() => {
-                    setDropdownItems(field.preset_options);
-                    if (field.preset_options.length > 0) {
-                      setDropdownId(field.custom_master_field_id);
-                      setIsDropdownModal(true);
-                    }
-                  }}>
-
-                  <Text
-                    ref={(element) => { dispositionRef.current[key] = element }}
-                    style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
-                    outlineColor={whiteLabel().fieldBorder}>
-                    {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name)}
-                  </Text>
-
-                </TouchableOpacity>
-              );
-            } else {
-              return (
-                <View key={key}>
+                <View>
                   {
                     key == 1 &&
                     <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
@@ -253,6 +254,65 @@ export default function AddLead({ screenProps, onClose }) {
                       <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
                     </TouchableOpacity>
                   }
+
+                  <TouchableOpacity key={key}
+                    onPress={() => {
+                      setDropdownItems(field.preset_options !== "" ? field.preset_options : []);
+                      if (field.preset_options.length > 0) {
+                        setDropdownId(field.custom_master_field_id);
+                        setIsDropdownModal(true);
+                      }
+                    }}>
+
+                    <Text
+                      ref={(element) => { dispositionRef.current[key] = element }}
+                      style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
+                      outlineColor={whiteLabel().fieldBorder}>
+                      {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name , field.field_type  )}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {
+                    field.field_type === "dropdown_input" && field.value !== "" && 
+                    <TextInput
+                        type={field.field_type}
+                        ref={(element) => { dispositionRef.current[key] = element }}
+                        keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
+                        returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
+                        style={styles.textInput}
+                        label={''}
+                        value={getTextValue(customMasterFields, field.custom_master_field_id)}
+                        mode="outlined"
+                        outlineColor={whiteLabel().fieldBorder}
+                        activeOutlineColor={DISABLED_COLOR}
+                        onChangeText={text => {
+                          var tmp = [...customMasterFields];
+                          tmp.forEach((element) => {
+                            if (element.custom_master_field_id === field.custom_master_field_id) {                              
+                              element.value = text;
+                            }
+                          });
+                          setCustomMasterFields(tmp);                          
+                        }}
+                        blurOnSubmit={false}
+                        onSubmitEditing={() => {
+                          if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
+                            if (leadForms[key + 1].field_type == "text") {
+                              dispositionRef.current[key + 1].focus();
+                            }
+                          }
+                        }}
+                    />
+                  }
+
+
+                </View>
+                
+              );
+            } else {
+              return (
+                <View key={key}>
+                  
                   <TouchableOpacity
                     activeOpacity={1}>
                     <View>

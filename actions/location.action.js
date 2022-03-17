@@ -315,15 +315,14 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     { enableHighAccuracy: true, timeout: 15000 },
   );
 
-
-
-
 }
 
 export const getLeadFields = async () => {
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();
+  console.log(`${base_url}/leadfields`);
+
   return new Promise(function (resolve, reject) {
     axios
       .get(`${base_url}/leadfields`, {
@@ -384,6 +383,7 @@ export const getLocationInfoUpdate = async (location_id) => {
 export const postLeadFields = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
+  
   return new Promise(function (resolve, reject) {
     //JSON.stringify(postData)
     axios

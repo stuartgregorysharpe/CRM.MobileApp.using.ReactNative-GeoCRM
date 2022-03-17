@@ -1,36 +1,55 @@
 import React from 'react';
-import { View, Text,TouchableOpacity } from 'react-native';
+import { View, Text,TouchableOpacity , StyleSheet } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 
 export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction }) {
     return (
-        <View style={{ backgroundColor: Colors.whiteColor, borderRadius: 5, elevation: 2, padding: 5, marginVertical: 3 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ backgroundColor: whiteLabel().feature_card_icon_background, padding: 5 }}>
-                    <SvgIcon icon={icon} width='15px' height='15px' />
-
-                </View>
-                <Text style={{
-                    fontFamily: 'Gilroy-Bold',
-                    fontSize: 12,
-                    marginHorizontal: 5,
-                    color: Colors.blackColor
-                }}>{title}</Text>
+        <TouchableOpacity onPress={onAction}>
+            <View style={styles.container}>                
+                <View style={styles.headerContainer}>
+                    <SvgIcon icon={icon} width='13px' height='13px' />
+                    <View style={{flex:1}}>
+                        <Text style={ styles.titleStyle }>{title}</Text>
+                    </View>                    
+                </View>                
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                    <View style={{flex:1}}>
+                        <Text style={{                        
+                            fontFamily: Fonts.primaryMedium,
+                            fontSize: 11,
+                            color: whiteLabel().helpText, alignContent: 'center', alignItems: 'baseline'
+                        }}> {actionTitle} </Text>
+                    </View>
+                    <SvgIcon icon={'Arrow_feature_Card'} width='13px' height='13px' />
+                </View>            
             </View>
-            <TouchableOpacity onPress={onAction}>
-                <View style={{ flexDirection: 'row', marginTop: 20 }}>
-                    <Text style={{
-                        fontFamily: 'Gilroy-Medium',
-                        fontSize: 11,
-                        color: whiteLabel().helpText, alignContent: 'center', alignItems: 'baseline'
-                    }}>{actionTitle} </Text>
-                    <SvgIcon icon={'Arrow_feature_Card'} width='15px' height='15px' />
-                </View>
-            </TouchableOpacity>
-
-        </View>
+        </TouchableOpacity>        
     )
-
 }
+
+const styles = StyleSheet.create({
+    container:{
+        marginTop:10,
+        backgroundColor: Colors.whiteColor, 
+        borderRadius: 5, elevation: 2, 
+        padding: 7 ,
+        shadowColor: '#808080',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: Platform.OS == 'ios' ? 0.1 : 0.8,
+        elevation: 1,        
+    },
+    headerContainer:{ 
+        flexDirection: 'row', alignItems: 'center' , 
+        justifyContent:'flex-start' , flex:1 , 
+        marginTop:5 
+    },
+    titleStyle:{ 
+        marginLeft:3, 
+        fontFamily: Fonts.primaryBold, 
+        fontSize: 12,
+        color:  Colors.blackColor 
+    }
+    
+})

@@ -423,7 +423,6 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         }
       </View>
 
-
       <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
         mode={datePickerMode}
