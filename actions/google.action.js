@@ -11,30 +11,32 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
         var address_components = res.results[0].address_components;
         console.log("address co m", address_components);
         var tmp = [ ...customMasterFields ];
+
+        console.log("customMasterFields",customMasterFields);
         tmp.forEach((element) => {
           address_components.forEach((item) =>{
                         
             
-            if(item.types.includes("street_number") && element.field_name == "Street Address" || item.types.includes("route")  && element.field_name == "Street Address" ){
+            if(item.types.includes("street_number") && element.core_field_name == "street_address" || item.types.includes("route")  && element.core_field_name == "street_address" ){
               if(item.types.includes("street_number")){
                 element.value = '';
               }
               element.value += element.value === '' ? item.long_name : " " + item.long_name ;
             }  
 
-            if( (item.types.includes("neighborhood") || item.types.includes("sublocality_level_1") ||  item.types.includes("sublocality") ) && element.field_name == "Suburb"  ){
+            if( (item.types.includes("neighborhood") || item.types.includes("sublocality_level_1") ||  item.types.includes("sublocality") ) && element.core_field_name == "suburb"  ){
               element.value = item.long_name;
             }
-            if( ( item.types.includes("administrative_area_level_2") || item.types.includes("locality") )  && element.field_name == "City"  ){
+            if( ( item.types.includes("administrative_area_level_2") || item.types.includes("locality") )  && element.core_field_name == "city"  ){
               element.value = item.long_name;
             }
-            if( item.types.includes("administrative_area_level_1")  && element.field_name == "State"  ){
+            if( item.types.includes("administrative_area_level_1")  && element.core_field_name == "state"  ){
               element.value = item.long_name;
             }
-            if( (item.types.includes("country") && item.types.includes("political") ) && element.field_name == "Country" ){
+            if( (item.types.includes("country") && item.types.includes("political") ) && element.core_field_name == "country" ){
               element.value = item.long_name;
             }
-            if( item.types.includes("postal_code") && ( element.field_name == "Pincode" || element.field_name == "Zip Code" )  ){
+            if( item.types.includes("postal_code") && ( element.core_field_name == "pincode" )  ){
               element.value = item.long_name;
             }
           })          

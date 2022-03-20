@@ -96,14 +96,14 @@ export const getAddOpportunityFields = (params, token) => {
         console.log(err);
       })
   });
-
 }
 
-export const getAddOpportunityContacts = (params, token) => {
-  return new Promise(function (resolve, reject) {
-    console.log("lnk", JSON.stringify(`https://www.dev.georep.com/local_api_phase_2/locations/customer-search`) + "params: " + JSON.stringify(params));
+export const getAddOpportunityContacts = async(params, token) => {
+
+  var base_url = await getBaseUrl();
+  return new Promise(function (resolve, reject) {    
     axios
-      .get(`https://www.dev.georep.com/local_api_phase_2/locations/customer-search`, {
+      .get(`${base_url}/locations/customer_search`, {
         params: {
           campaign_id: params.campaign_id ? params.campaign_id : '',
           search_text: params.search_text

@@ -12,7 +12,7 @@ import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
-import RepSalesPipelineScreen from '../screens/GeoRep/pipeline/SalesPipelineScreen';
+import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import CRMSalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
