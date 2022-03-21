@@ -17,7 +17,7 @@ import {
   CHANGE_POLYGONS
 
 } from "./actionTypes";
-
+import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
 
 let cancelToken
@@ -587,6 +587,41 @@ export const postReloop = async (postData, idempotencyKey) => {
       })
   });
 }
+
+//{base_url}/locations-info/location-feedback
+
+export const postLocationFeedback = async (postData) => {
+  var base_url = await getBaseUrl();
+  var token = await getToken();
+  
+  return new Promise(function (resolve, reject) {
+    axios
+      .post(`${base_url}/locations-info/location-feedback`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': uuid.v4()
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve("");
+          return;
+        }
+        console.log(res.data);
+        if (res.data.status == "success") {
+          resolve(res.data.message);
+        } else {
+          resolve("");
+        }
+      })
+      .catch((err) => {
+        //console.log(err);
+        reject(err);
+      })
+
+  });
+}
+
 
 export const postLocationImage = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();

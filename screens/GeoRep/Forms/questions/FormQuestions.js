@@ -241,8 +241,8 @@ export const FormQuestions = (props) =>{
             setMode("single");
             setOptions(item.options);
             setSelectedOptions(item.value);
-            setModalVisible(true);
-            dispatch({type: SLIDE_STATUS, payload: true});            
+            dispatch({type: SLIDE_STATUS, payload: true});
+            setModalVisible(true);            
             setKey(key);
             setIndex(index);            
           }} item={item}></SingleSelectForm>
@@ -256,8 +256,8 @@ export const FormQuestions = (props) =>{
             setMode("multiple");
             setOptions(item.options);
             setSelectedOptions(item.value);
-            setModalVisible(true);
             dispatch({type: SLIDE_STATUS, payload: true});
+            setModalVisible(true);            
             setKey(key);
             setIndex(index);
           }} item={item}></MultipleSelectForm>

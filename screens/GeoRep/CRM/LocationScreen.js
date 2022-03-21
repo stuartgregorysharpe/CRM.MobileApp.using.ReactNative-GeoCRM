@@ -27,8 +27,7 @@ import { updateCurrentLocation } from '../../../actions/google.action';
 import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { isInsidePoly } from '../../../constants/Consts';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
-import ClusteredMarker from './components/ClusteredMarker';
-import { RuleTester } from 'eslint';
+import { SelectionPicker } from '../../../components/modal/SelectionPicker';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -51,7 +50,7 @@ export default function LocationScreen(props) {
   const isCalendarSelection = useSelector(state => state.selection.isCalendarSelection);
   const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);  
   const dispatch = useDispatch();
-  const [showItem, setShowItem] = useState(0);
+  const [showItem, setShowItem] = useState("map_view");
   const [locationInfo, setLocationInfo] = useState();  
   const [isRequest, setIsRequest] = useState(false);
   const [isBack, setIsBack] = useState(false);
@@ -67,8 +66,6 @@ export default function LocationScreen(props) {
   const [isZoomOut , setIsZoomOut] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [boundBox, setBoundBox] = useState(undefined);
-  const [polygonCoordinate , setPolygonCoordinate] = useState([]);
-  const [polygonHoles, setPolygonHoles] = useState([]);
   const [editing , setEditing] = useState(null);
   const [creatingHole, setCreatingHole] = useState(false);
   const [isDraw , setIsDraw] = useState(false);
@@ -85,11 +82,8 @@ export default function LocationScreen(props) {
         },
       });
     }     
-    requestPermissions();
-    // if (Platform.OS === 'ios') {
-    //   Geolocation.requestAuthorization('always');
-    // }    
-    return () => {      
+    requestPermissions();    
+    return () => {
       isMount = false;
     };    
   },[]);
@@ -286,7 +280,6 @@ export default function LocationScreen(props) {
         backgroundColor: Colors.whiteColor,
       },
     });
-
   }
 
   const handleBackButtonClick = () => {
@@ -300,27 +293,29 @@ export default function LocationScreen(props) {
 
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
-    switch(name) {
-      case "marker":
-        setShowItem(1);      
-        return;
-      case "filter":
-        setShowItem(2);
-        return;
-      case "addLead":
-        setShowItem(3);      
-        setIsBack(true);
-        return;
-      case "locationInfo":
-        setShowItem(4);
-        setIsBack(true);        
-        return;
-      case "addtocalendar":
-        setShowItem(5);        
-        return;
-      default:
-        return;
-    }
+    setShowItem(name);
+
+    // switch(name) {
+    //   case "marker":
+    //     setShowItem("m"); 
+    //     return;
+    //   case "filter":
+    //     setShowItem(2);
+    //     return;
+    //   case "addLead":
+    //     setShowItem(3);      
+    //     setIsBack(true);
+    //     return;
+    //   case "locationInfo":
+    //     setShowItem(4);
+    //     setIsBack(true);        
+    //     return;
+    //   case "addtocalendar":
+    //     setShowItem(5);        
+    //     return;
+    //   default:
+    //     return;
+    // }
   }
   
 
@@ -434,43 +429,49 @@ export default function LocationScreen(props) {
 
   return (
     <Provider>
-      <SafeAreaView style={{flex:1}}>
-        
+      <SafeAreaView style={{flex:1}}>        
         <GrayBackground />        
         {
-          crmStatus && (showItem == 1 || showItem == 2) && 
-          <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
-            {showItem == 1 && <MarkerView isRequest={isRequest} />}
-            {showItem == 2 && 
-            <FilterView navigation={props.navigation} page={"map"} onClose={() =>{
-              setShowItem(0);
-              dispatch({type: SLIDE_STATUS, payload: false});
-            }} />
+          crmStatus && (showItem == "marker" || showItem == "filter") && 
+          <View style={[styles.transitionView, showItem === "map_view"  ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
+            
+            {showItem == "marker" && <MarkerView isRequest={isRequest} />}            
+            {
+              showItem == "filter" && 
+              <FilterView navigation={props.navigation} page={"map"} onClose={() =>{
+                setShowItem("map_view");
+                dispatch({type: SLIDE_STATUS, payload: false});
+              }} />
             }
           </View>
         }
+
+        {
+          crmStatus && showItem ===  "addLead" &&
+          <AddLead screenProps={props.screenProps} 
+                onClose={() => {
+                  setIsBack(false);            
+                  dispatch({type: SLIDE_STATUS, payload: false});
+          }} />
+        }
         
-        {crmStatus && (showItem == 3 || showItem == 4) && <View
-          style={[styles.transitionView, { top: 0 }, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
-        >
-          {showItem == 3 && <AddLead screenProps={props.screenProps} onClose={() => {
-            setIsBack(false);            
-            dispatch({type: SLIDE_STATUS, payload: false});
-            }} />}
-          {showItem == 4 && <LocationInfoDetails ref={locationRef} navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
-        </View>}
-        
-        { crmStatus && showItem == 5 &&
-            <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
-              
+        {
+          crmStatus && (showItem == "addLead" || showItem == "locationInfo") && 
+          <View style={[styles.transitionView, { top: 0 }, showItem == "map_view" ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} > 
+          {showItem == "locationInfo" && <LocationInfoDetails ref={locationRef} navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
+          </View>
+        }
+     
+                
+        { crmStatus && showItem == "addtocalendar" &&
+            <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >              
               <AddToCalendar selectedItems={selectedLocationsForCalendar} 
                 onClose={() => {
                   dispatch({type: SLIDE_STATUS, payload: false });
-                  setShowItem(0);
+                  setShowItem("map_view");
                   dispatch({type: IS_CALENDAR_SELECTION, payload: false});
                   dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});                  
                 }}></AddToCalendar>
-
             </View>
         }
 

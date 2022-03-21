@@ -2,20 +2,20 @@ import React, {useState, useEffect, useRef } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Dimensions ,Animated } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { TextInput, Button, Title } from 'react-native-paper';
+import { TextInput, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
-import { getLocationInfoUpdate, postLeadFields, postLocationInfoUpdate } from '../../../../actions/location.action';
+import Colors,{   whiteLabel } from '../../../../constants/Colors';
+import { getLocationInfoUpdate, postLocationInfoUpdate } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
-import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
 
 export default function UpdateCustomerInfo({ location_id, onClose}) {
 
@@ -28,7 +28,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [originCustomMasterFields , setOriginCustomMasterFields] = useState([]);
   const [dropdownId, setDropdownId] = useState(0);
   const [isDropdownModal, setIsDropdownModal] = useState([]);
-  const [dropdownItems, setDropdownItems] = useState([]);
+  const [selectedValue, setSelectedValue] = useState([]);
+  const [options, setDropdownItems] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);  
   const [message, setMessage] = useState("");
   const [isCurrentLocation , setIsCurrentLocation] = useState("0");
@@ -63,7 +64,6 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       setMessage("Failed");
       setIsSuccess(true);
     })
-
   }
 
   useEffect(() => {
@@ -123,14 +123,14 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const checkChangedStatus = () => {
     if(originCustomMasterFields !== customMasterFields){      
       
-      if(originCustomMasterFields.find(item => item.field_name === "Customer Name").value !== customMasterFields.find(item => item.field_name === "Customer Name").value){
+      if(originCustomMasterFields.find(item => item.core_field_name === "location_name").value !== customMasterFields.find(item => item.core_field_name === "location_name").value){
         setCustomerNameUpdated("1");
         location_name_updated = "1";
       }else{
         console.log("xxx");
       }
       originCustomMasterFields.forEach((element) =>{
-        if(element.field_name !== "Customer Name" && customMasterFields.find(item => item.field_name === element.field_name).value !== element.value ){
+        if(element.core_field_name !== "location_name" && customMasterFields.find(item => item.core_field_name === element.core_field_name).value !== element.value ){
           setAddressUpdated("1");
           address_updated = "1";
         }
@@ -141,9 +141,10 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const getTextValue = (customMasterFields, id) => {        
         
     if(customMasterFields !== undefined && customMasterFields.length > 0){      
-      var res = "";
+      
       customMasterFields.forEach((element) =>{
         if(element.custom_master_field_id == id){
+          
           res = element.value;
         }
       });
@@ -206,37 +207,37 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
 
   const dropdownModal = () => {
     return (
-      <CustomPicker 
-        visible={isDropdownModal}         
-        renderItems= {
-        dropdownItems.map((item, index) => (
-          <TouchableOpacity style={[styles.pickerItem]} key={index}
-          onPress={() => { 
-            var tmp = [...customMasterFields];
-            tmp.forEach((element) => {
-              if(element.custom_master_field_id == dropdownId){                              
-                if(element.field_type === "dropdown_input"){
-                  var originDropText = element.dropdown_value;
-                  element.dropdown_value = item;               
-                  element.itemIndex = index;   
-                  //element.value = ''; 
-                }else{
-                  element.itemIndex = index;
-                  element.value = item;
-                }
-                var leadTmp = [...leadForms];
-                leadTmp[index].value = item;
-                setLeadForms(leadTmp);                                        
-              }
-            });
-            setCustomMasterFields(tmp);            
-            setIsDropdownModal(false);
-          }}>            
-              <Text style={styles.pickerItemText}>{item}</Text>              
-              {index === getSelectedDropdownItem() && <SvgIcon icon="Check" width='23px' height='23px' />}           
-          </TouchableOpacity>
-        ))
-      } />
+      <SelectionPicker
+        mode={"single"}
+        title={"Select Suite, Unit, Apt"}
+        clearTitle={"Clear"}
+        value={selectedValue}
+        visible={isDropdownModal}
+        options={options}
+        onModalClose={() => setIsDropdownModal(false)}
+        onValueChanged={(item , index) => {
+          var tmp = [...customMasterFields];
+          tmp.forEach((element , key) => {
+            if (element.custom_master_field_id == dropdownId) {              
+              element.itemIndex = index;
+              var leadTmp = [...leadForms];
+              if(element.field_type === "dropdown_input"){
+                element.dropdown_value = item;
+                leadTmp[key].dropdown_value = item;                
+              }else{
+                element.value = item;
+                leadTmp[key].value = item;
+              }                            
+              setLeadForms(leadTmp);          
+              
+            }
+          });
+          setCustomMasterFields(tmp);          
+          setIsDropdownModal(false);
+          
+
+        }}
+        ></SelectionPicker>
     )
   }
 
@@ -250,11 +251,11 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
             keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
             returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
             style={styles.textInput}
-            label={field.field_type === "dropdown_input" ? '' : <Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+            label={field.field_type === "dropdown_input" ? '' : <Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
             value={getTextValue(customMasterFields, field.custom_master_field_id)}
             mode="outlined"
             outlineColor={whiteLabel().fieldBorder}
-            activeOutlineColor={DISABLED_COLOR}
+            activeOutlineColor={Colors.disabledColor}
             onChangeText={text => {
               var tmp = [...customMasterFields];
               tmp.forEach((element) => {
@@ -279,6 +280,21 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       </TouchableOpacity>
     );
   }
+
+  const renderUseCurrentLocation = (key) =>{
+    return (
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
+        var masterFields = await reverseGeocoding(myLocation, customMasterFields);
+        if (masterFields.length > 0) {
+          setCustomMasterFields(masterFields);
+          setIsCurrentLocation("1");
+        }
+      }}>
+        <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+      </TouchableOpacity>
+    );
+  }
+
 
   if (isLoading) {
     return (
@@ -332,45 +348,48 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                     return (
                       <View key={key}>
                         {
-                          key == 1 && 
-                          <TouchableOpacity style={[styles.linkBox,{marginTop:10}]} key={key + 100}  onPress={ async() => {
-                            var masterFields = await reverseGeocoding( myLocation, customMasterFields);                       
-                            if(masterFields.length > 0){
-                              setCustomMasterFields(masterFields);
-                              setIsCurrentLocation("1");
-                            }
-                          }}>
-                              <Text style={styles.linkBoxText}>Use Current Geo Location</Text>                  
-                          </TouchableOpacity>
+                          key == 1 && renderUseCurrentLocation(key)                         
                         }
 
                         <TouchableOpacity key={key}
+                          style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5, flexDirection:'row' , alignItems:'center' }]}
                           onPress={() =>{
                             setDropdownItems(field.preset_options);
                             if(field.preset_options.length > 0){
                               setDropdownId(field.custom_master_field_id);
                               setIsDropdownModal(true);
+                              if(field.field_type === "dropdown"){
+                                setSelectedValue([field.value])
+                              }else{                                
+                                setSelectedValue([field.dropdown_value])                          
+                              }                        
                             }
                           }}>
+                          {
+                            field.dropdown_value !== undefined &&
+                            <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name} </Text>
+                          }
                           <Text                                        
                             ref={(element) => { dispositionRef.current[key] = element }}                      
-                            style={[styles.textInput,{borderColor:whiteLabel().fieldBorder, borderWidth:1, borderRadius:4 , paddingLeft:10 , paddingTop:5}]}                       
+                            style={{flex:1}}
                             outlineColor={whiteLabel().fieldBorder}>
                             {getSelectedDropdownItemText(field.custom_master_field_id , field.field_name ,field.field_type )}
                           </Text>                                                                
+                          <View style={{marginRight:10}}><SvgIcon icon="Drop_Down" width='23px' height='23px' /></View>
                         </TouchableOpacity>
 
                         {
                           field.field_type === "dropdown_input" && field.value !== "" && 
                           renderText(field, key)
                         }                        
-                      </View>
-                      
+                      </View>                      
                     );
                   }else{
                     return (               
                       <View key={key}>
-                        
+                        {
+                          key == 1 && renderUseCurrentLocation(key)                         
+                        }
                         {
                           renderText(field, key )
                         }               
@@ -396,7 +415,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
 
 const styles = EStyleSheet.create({
   container: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     height:'100%',
     zIndex: 100,
     padding:10, 
@@ -440,7 +459,7 @@ const styles = EStyleSheet.create({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     //fontFamily: Fonts.secondaryMedium,
     marginBottom: 8
   },

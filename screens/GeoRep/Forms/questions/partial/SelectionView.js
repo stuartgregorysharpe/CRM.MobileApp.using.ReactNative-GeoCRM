@@ -67,7 +67,7 @@ export const SelectionView = ({options , mode,  value, onClose , onSave , onValu
                         <Text style={styles.pickerItemText}>{item}</Text>
 
                         <TouchableOpacity onPress={() => onTapItem(item) }>
-                            <View style={[styles.checkBoxStyle ,getCheckedStatus(item, selectedVals)? {} : {backgroundColor:'white'}]}>
+                            <View style={[styles.checkBoxStyle , getCheckedStatus(item, selectedVals)? {} : {backgroundColor:'white'}]}>
                                 <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
                             </View>
                         </TouchableOpacity>                                                

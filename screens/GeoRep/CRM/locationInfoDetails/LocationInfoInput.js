@@ -130,6 +130,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
     }
     postStageOutcomUpdate(request)
       .then((res) => {
+        props.onOutcome(true);
         setTimeout(() => {
           setIsLoading(false);
         }, 500);

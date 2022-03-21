@@ -16,13 +16,15 @@ import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
-import { postLocationImage } from '../../../../actions/location.action';
+import { postLocationFeedback, postLocationImage } from '../../../../actions/location.action';
 import uuid from 'react-native-uuid';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import { NextPrev } from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
+import { checkFeatureIncludeParam } from '../../../../constants/Storage';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
 
 
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
@@ -40,42 +42,45 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [message, setMessage] = useState("");
   const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height));
   const [isLoading,setIsLoading] = useState(true);
-
+  const [isFeedback, setIsFeedback] = useState(false);
+  const [feedbackOptions, setFeebacOptions] = useState([]);
+  const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(false);
+  
   useImperativeHandle(
     ref,
     () => ({
       closePopup() {        
         if(showItem !== "update_customer"){          
-          props.clostDetailsPopup();
-          dispatch({type: SLIDE_STATUS, payload: false});
-          dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
-        }else{        
+          checkFeedbackAndClose("top");          
+        }else{ 
           setShowItem("refresh");
         }
       },
       goBack(){              
         if(showItem === "update_customer") {
           setShowItem("refresh");
-        }else if(showItem === "refresh"){                    
-          props.animation("search-page");
+        }else if(showItem === "refresh"){          
+          checkFeedbackAndClose("back");
         }else{
           props.goPreviousPage();
         }        
       },
       updateView(res){ 
+        console.log("locaiton details" , res);
         if(locationInfoRef.current !== undefined){                    
           locationInfoRef.current.updateDispositionData(res);        
         }
         setLocationInfo(res);
-        setIsLoading(false);         
+        setIsLoading(false);
+        if(res.feedback.length > 0){
+          setFeebacOptions(res.feedback[0].feedback_loc_info_outcome[0].options);
+        }
+        
       }
     }),
     [showItem],
   );
 
-  useEffect(()=>{
-
-  },[locationInfo]);
 
   useEffect(() => { 
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
@@ -90,6 +95,24 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       hideSubscription.remove();
     };    
   }, []);
+
+
+  const checkFeedbackAndClose = async  (tapType) =>{
+    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");
+    if(check && !isFeedback){
+      setIsFeedback(true)
+    }else{
+      if(tapType === "back"){
+        props.animation("search-page");
+        dispatch({type: SLIDE_STATUS, payload: false});
+      }else{
+        props.clostDetailsPopup();
+        dispatch({type: SLIDE_STATUS, payload: false});
+        dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
+      }
+      
+    }
+  }
   
   const showLoopSlider = () => {
     setShowItem("loop");
@@ -144,9 +167,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         
       }
     });
-
   }
-
+  
   selectPicker = (title, description) => {
     return Alert.alert(
       title,
@@ -191,10 +213,47 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const openCustomerInfo = async() => {
     setShowItem("update_customer")
   }
+
+  
+  const showFeedbackDropDownModal = () => {  
+    return (
+      <SelectionPicker
+        title={"Feedback"}
+        clearTitle={"Close"}
+        mode={"single"}
+        value={[]}
+        visible={isFeedback}
+        options={feedbackOptions}
+        onModalClose={() => setIsFeedback(false)}
+        onValueChanged={(item , index) => {          
+          let postData = {
+            "location_id": locationInfo.location_id,
+            "feedback": [
+                {
+                    "feedback_loc_info_outcome" : item
+                }
+            ]
+          };
+          postLocationFeedback(postData).then((res) => {            
+            setMessage(res);
+            setIsSuccess(true);
+            setIsOutcomeUpdated(true)
+            console.log(res);
+          }).catch((error) => {
+            console.log(error);
+          })
+          setIsFeedback(false);          
+        }}
+        ></SelectionPicker>
+    )
+  }
   
   return (
     <View style={[styles.container, {flex:1}]}>
 
+      {
+        showFeedbackDropDownModal()
+      }
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
         setIsSuccess(false);
       }} />
@@ -343,8 +402,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 <View style={{padding:10}}>
                 {        
                 locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
-                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
-                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
+                <LocationInfoInputTablet onOutcome={(value) => setIsOutcomeUpdated(value) } ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput onOutcome={(value) => setIsOutcomeUpdated(value) } ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
                 }
                 </View>                                              
 
