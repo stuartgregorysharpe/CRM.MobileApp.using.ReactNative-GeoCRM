@@ -394,11 +394,11 @@ export const postLeadFields = async (postData, idempotencyKey) => {
         }
       })
       .then((res) => {
-        if (res.data == undefined) {
-          resolve(0);
-          return;
+        
+        if (res.data.status === "success") {
+          resolve(res.data.location_id);
         }
-        resolve(1);
+        resolve(0);
       })
       .catch((err) => {
         reject(err);

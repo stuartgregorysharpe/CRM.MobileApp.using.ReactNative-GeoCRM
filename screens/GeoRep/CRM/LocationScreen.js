@@ -291,31 +291,13 @@ export default function LocationScreen(props) {
     return true;
   }
 
+
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
     setShowItem(name);
-
-    // switch(name) {
-    //   case "marker":
-    //     setShowItem("m"); 
-    //     return;
-    //   case "filter":
-    //     setShowItem(2);
-    //     return;
-    //   case "addLead":
-    //     setShowItem(3);      
-    //     setIsBack(true);
-    //     return;
-    //   case "locationInfo":
-    //     setShowItem(4);
-    //     setIsBack(true);        
-    //     return;
-    //   case "addtocalendar":
-    //     setShowItem(5);        
-    //     return;
-    //   default:
-    //     return;
-    // }
+    if(name === "addLead" || name === "locationInfo"){
+      setIsBack(true);
+    }    
   }
   
 
@@ -413,8 +395,13 @@ export default function LocationScreen(props) {
       dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedLocations});
       
     }else{
-      animation("locationInfo");               
-      getLocationInfo( Number(item.location_id) , myLocation)
+      openLocaitonInfoDetails( Number(item.location_id) );
+    }
+  }
+
+  const openLocaitonInfoDetails = (location_id) => {
+    animation("locationInfo");           
+      getLocationInfo( Number(location_id) , myLocation)
       .then((res) => {                
           if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
             locationRef.current.updateView(res);
@@ -422,9 +409,7 @@ export default function LocationScreen(props) {
       })
       .catch((e) =>{
         setIsRequest(false);
-      })                                                                   
-    }     
-
+      })
   }
 
   return (
@@ -449,16 +434,18 @@ export default function LocationScreen(props) {
         {
           crmStatus && showItem ===  "addLead" &&
           <AddLead screenProps={props.screenProps} 
-                onClose={() => {
-                  setIsBack(false);            
+                onClose={(location_id) => {                  
+                  //setIsBack(false);            
                   dispatch({type: SLIDE_STATUS, payload: false});
+                  openLocaitonInfoDetails( Number(location_id) );
+
           }} />
         }
         
         {
-          crmStatus && (showItem == "addLead" || showItem == "locationInfo") && 
-          <View style={[styles.transitionView, { top: 0 }, showItem == "map_view" ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} > 
-          {showItem == "locationInfo" && <LocationInfoDetails ref={locationRef} navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />}
+          crmStatus &&  showItem == "locationInfo" && 
+          <View style={[styles.transitionView, { top: 0 }, showItem == "map_view" ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >             
+              <LocationInfoDetails ref={locationRef} navigation={props.navigation} screenProps={props.screenProps}  locInfo={locationInfo} pageType={pageType} />            
           </View>
         }
      

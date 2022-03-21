@@ -58,14 +58,15 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
     
     return (
         <Modal 
+            
             animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onModalClose}>
             <TouchableWithoutFeedback onPress={onModalClose}>
                 <ScrollView style={{height:100}} contentContainerStyle={{flex:1}}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
+                    <View style={style.centeredView}>
+                        <View style={style.modalView}>
 
                             <TouchableOpacity style={{ padding: 6 }}>
                                 <Divider></Divider>
@@ -119,30 +120,7 @@ const styles = StyleSheet.create({
 
 
 
-    centeredView: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "flex-end",
-        marginTop: 0,
-        backgroundColor: '#00000055'
-    },
-    modalView: {
-        
-        bottom:0,
-        width: '100%',
-        backgroundColor: Colors.bgColor,        
-        padding: 10,
-        paddingBottom:40,
-        // alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
-    },
+  
     pickerItem: {
         flexDirection: 'row',
         alignItems: 'center',

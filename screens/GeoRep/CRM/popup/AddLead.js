@@ -34,6 +34,7 @@ export default function AddLead({ screenProps, onClose }) {
   const [message, setMessage] = useState("");
   const [isCurrentLocation, setIsCurrentLocation] = useState("0");
   const [myLocation, setMyLocation] = useState(currentLocation);
+  const [locationId, setLocationId] = useState(0);
 
   const handleSubmit = () => {
     let params = {
@@ -43,7 +44,9 @@ export default function AddLead({ screenProps, onClose }) {
     }            
     postLeadFields(params, uuid.v4())
       .then((res) => {
-        setMessage("Added lead successfully");
+        console.log("re", res);
+        setLocationId(res);
+        setMessage("Added lead successfully");        
         setIsSuccess(true);
       })
       .catch((error) => {
@@ -186,7 +189,7 @@ export default function AddLead({ screenProps, onClose }) {
                 element.value = item;
                 leadTmp[key].value = item;
               }                            
-              setLeadForms(leadTmp);                    
+              setLeadForms(leadTmp);
             }
           });
           setCustomMasterFields(tmp);          
@@ -264,7 +267,7 @@ export default function AddLead({ screenProps, onClose }) {
     <ScrollView style={styles.container}>
                   
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
-        onClose();
+        onClose(locationId);
       }}></AlertDialog>
       
 

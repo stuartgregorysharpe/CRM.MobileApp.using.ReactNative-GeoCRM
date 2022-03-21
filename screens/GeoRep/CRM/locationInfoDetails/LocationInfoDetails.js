@@ -25,8 +25,9 @@ import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { RuleTester } from 'eslint';
 
-
+var outcomeVal = false;
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const dispatch = useDispatch();  
@@ -42,14 +43,16 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [message, setMessage] = useState("");
   const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height));
   const [isLoading,setIsLoading] = useState(true);
-  const [isFeedback, setIsFeedback] = useState(false);
-  const [feedbackOptions, setFeebacOptions] = useState([]);
-  const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(false);
-  
+  const [isFeedbackModal, setIsFeedback] = useState(false);
+  const [feedbackOptions, setFeebacOptions] = useState([]);  
+  const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(outcomeVal);
+  console.log("-------- ", locationInfo)
+    
   useImperativeHandle(
     ref,
     () => ({
       closePopup() {        
+        console.log("isOutcomeUpdated", isOutcomeUpdated)
         if(showItem !== "update_customer"){          
           checkFeedbackAndClose("top");          
         }else{ 
@@ -57,6 +60,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         }
       },
       goBack(){              
+        console.log("isOutcomeUpdated", isOutcomeUpdated)
         if(showItem === "update_customer") {
           setShowItem("refresh");
         }else if(showItem === "refresh"){          
@@ -81,8 +85,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     [showItem],
   );
 
-
-  useEffect(() => { 
+  useEffect(() => {
+    outcomeVal = false;
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
@@ -99,9 +103,10 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const checkFeedbackAndClose = async  (tapType) =>{
     let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");
-    if(check && !isFeedback){
+    if( check && !outcomeVal){
       setIsFeedback(true)
     }else{
+      console.log(tapType);
       if(tapType === "back"){
         props.animation("search-page");
         dispatch({type: SLIDE_STATUS, payload: false});
@@ -191,7 +196,6 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       ]
     );
 }
-
   
   const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
@@ -222,7 +226,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         clearTitle={"Close"}
         mode={"single"}
         value={[]}
-        visible={isFeedback}
+        visible={isFeedbackModal}
         options={feedbackOptions}
         onModalClose={() => setIsFeedback(false)}
         onValueChanged={(item , index) => {          
@@ -234,11 +238,13 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 }
             ]
           };
-          postLocationFeedback(postData).then((res) => {            
+          postLocationFeedback(postData).then((res) => {                        
+            console.log('out compete update3d');
+            setIsOutcomeUpdated(true);
+            outcomeVal = true;
             setMessage(res);
             setIsSuccess(true);
-            setIsOutcomeUpdated(true)
-            console.log(res);
+            console.log(res);            
           }).catch((error) => {
             console.log(error);
           })
@@ -402,8 +408,14 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 <View style={{padding:10}}>
                 {        
                 locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
-                <LocationInfoInputTablet onOutcome={(value) => setIsOutcomeUpdated(value) } ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
-                <LocationInfoInput onOutcome={(value) => setIsOutcomeUpdated(value) } ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
+                <LocationInfoInputTablet onOutcome={(value) => {
+                  setIsOutcomeUpdated(value);
+                  outcomeVal = value;
+                } } ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput onOutcome={(value) => {
+                  setIsOutcomeUpdated(value);
+                  outcomeVal = value;
+                } } ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
                 }
                 </View>                                              
 
