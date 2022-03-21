@@ -700,3 +700,33 @@ export const getLocationContacts = async (location_id) => {
   });
 
 }
+
+
+export const addEditLocationContact = async (request) => {
+  var token = await getToken();
+  var baseUrl = await getBaseUrl();
+  return new Promise(function (resolve, reject) {
+    axios
+      .post(`${baseUrl}/locations/add-edit-contacts`, request,{
+        headers: {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+      .then((res) => {
+        // console.log("getLocationFields:",res.data);
+        if (res.data == undefined) {
+          resolve([]);
+        }
+        if (res.data.status == "success") {
+          resolve(res.data);
+        } else {
+          resolve([]);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+        console.log(err.request._response);
+      })
+  });
+
+}

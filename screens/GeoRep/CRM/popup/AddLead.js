@@ -39,7 +39,7 @@ export default function AddLead({ screenProps, onClose }) {
       coordinates: { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
       use_current_geo_location: isCurrentLocation,
       custom_master_fields: customMasterFields
-    }    
+    }
     postLeadFields(params, uuid.v4())
       .then((res) => {
         setMessage("Added lead successfully");
@@ -63,7 +63,7 @@ export default function AddLead({ screenProps, onClose }) {
   useEffect(() => {
     if (isLoading) {
       getLeadFields()
-        .then((res) => {          
+        .then((res) => {
           initPostData(res);
           setLeadForms(res);
           setIsLoading(false);
@@ -77,25 +77,27 @@ export default function AddLead({ screenProps, onClose }) {
   const initPostData = (res) => {
     var tmp = [];
     res.forEach((element) => {
-      if(element.field_type === "dropdown_input"){
+      if (element.field_type === "dropdown_input") {
         tmp.push(
-          { 'custom_master_field_id': element.custom_master_field_id, 
-          'value': '', 
-          'field_name': element.field_name , 
-          'core_field_name': element.core_field_name , 
-          'field_type': element.field_type , 
-          'dropdown_value' : '' }
-          );
-      }else{
+          {
+            'custom_master_field_id': element.custom_master_field_id,
+            'value': '',
+            'field_name': element.field_name,
+            'core_field_name': element.core_field_name,
+            'field_type': element.field_type,
+            'dropdown_value': ''
+          }
+        );
+      } else {
         tmp.push(
-          { 
-            'custom_master_field_id': element.custom_master_field_id, 
-            'value': '', 
-            'field_name': element.field_name , 
-            'core_field_name': element.core_field_name , 
-            'field_type': element.field_type 
+          {
+            'custom_master_field_id': element.custom_master_field_id,
+            'value': '',
+            'field_name': element.field_name,
+            'core_field_name': element.core_field_name,
+            'field_type': element.field_type
           });
-      }      
+      }
     })
     setCustomMasterFields(tmp);
   }
@@ -129,23 +131,23 @@ export default function AddLead({ screenProps, onClose }) {
     return res;
   }
 
-  const getSelectedDropdownItemText = (id, originFieldName , fieldType ) => {
+  const getSelectedDropdownItemText = (id, originFieldName, fieldType) => {
     var tmp = [...customMasterFields];
     var index = -1;
-    if(fieldType === "dropdown_input"){
+    if (fieldType === "dropdown_input") {
       tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.dropdown_value !== '') { //&& element.value != ""          
           index = element.itemIndex;
         }
-      });      
-    }else{      
+      });
+    } else {
       tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.value !== '') { //&& element.value != ""
           index = element.itemIndex;
         }
-      });      
+      });
     }
-        
+
     if (index === -1) {
       return originFieldName;
     }
@@ -167,17 +169,17 @@ export default function AddLead({ screenProps, onClose }) {
             <TouchableOpacity style={[styles.pickerItem]} key={index}
               onPress={() => {
                 var tmp = [...customMasterFields];
-                tmp.forEach((element , key) => {
+                tmp.forEach((element, key) => {
                   if (element.custom_master_field_id == dropdownId) {
                     element.value = item;
                     element.itemIndex = index;
-                    if(element.field_type === "dropdown_input"){
+                    if (element.field_type === "dropdown_input") {
                       element.dropdown_value = item;
-                      element.value = '';     
+                      element.value = '';
                     }
                     var leadTmp = [...leadForms];
                     leadTmp[key].value = item;
-                    setLeadForms(leadTmp);                    
+                    setLeadForms(leadTmp);
                   }
                 });
                 setCustomMasterFields(tmp);
@@ -191,7 +193,7 @@ export default function AddLead({ screenProps, onClose }) {
     )
   }
 
-  const renderText = (field,key) => {
+  const renderText = (field, key) => {
     return (
       <TouchableOpacity activeOpacity={1}>
         <View>
@@ -290,7 +292,7 @@ export default function AddLead({ screenProps, onClose }) {
       <View style={{ padding: 5 }}>
         {
           leadForms.map((field, key) => {
-            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input" ) {              
+            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input") {
               return (
                 <View key={key}>
                   {
@@ -318,22 +320,22 @@ export default function AddLead({ screenProps, onClose }) {
                       ref={(element) => { dispositionRef.current[key] = element }}
                       style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
                       outlineColor={whiteLabel().fieldBorder}>
-                      {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name , field.field_type  )}
+                      {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name, field.field_type)}
                     </Text>
                   </TouchableOpacity>
                   {
-                    field.field_type === "dropdown_input" && field.value !== "" && 
+                    field.field_type === "dropdown_input" && field.value !== "" &&
                     renderText(field, key)
                   }
                 </View>
-                
+
               );
             } else {
               return (
                 <View key={key}>
-                  
+
                   {
-                    renderText(field, key )
+                    renderText(field, key)
                   }
                 </View>
               );
