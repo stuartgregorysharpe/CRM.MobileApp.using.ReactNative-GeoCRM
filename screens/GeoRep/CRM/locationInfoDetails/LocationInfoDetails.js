@@ -1,5 +1,5 @@
 import React, { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react';
-import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet , Alert} from 'react-native';
+import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet , Alert ,BackHandler} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
@@ -44,9 +44,10 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height));
   const [isLoading,setIsLoading] = useState(true);
   const [isFeedbackModal, setIsFeedback] = useState(false);
-  const [feedbackOptions, setFeebacOptions] = useState([]);  
+  const [feedbackOptions, setFeebacOptions] = useState([]);
+  
   const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(outcomeVal);
-  console.log("-------- ", locationInfo)
+  console.log("-------- ", outcomeVal)
     
   useImperativeHandle(
     ref,
@@ -94,31 +95,60 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
       setKeyboardStatus(false);
     });  
+
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    // return () => {
+    //   BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    // };
+  
     return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
       showSubscription.remove();
       hideSubscription.remove();
-    };    
+    };   
+    
+    
   }, []);
 
+  const handleBackButtonClick = async() => {    
+    //props.navigation.goBack();
+    checkFeedbackAndClose("back")
+    return true;
+  }
 
   const checkFeedbackAndClose = async  (tapType) =>{
-    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");
+    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
     if( check && !outcomeVal){
-      setIsFeedback(true)
+      setIsFeedback(true);      
     }else{
       console.log(tapType);
       if(tapType === "back"){
         props.animation("search-page");
         dispatch({type: SLIDE_STATUS, payload: false});
-      }else{
+      }else if(pageType === "top"){
         props.clostDetailsPopup();
         dispatch({type: SLIDE_STATUS, payload: false});
         dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
+      }else if("access_crm"){
+
       }
-      
     }
+  }  
+
+  const _canGoNextPrev = async () => {
+    console.log("___ canb propos")
+    
+    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+    if( check && !outcomeVal){
+      setIsFeedback(true);      
+      return false;
+    }else{
+      return true;
+    }
+
   }
-  
+
   const showLoopSlider = () => {
     setShowItem("loop");
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
@@ -389,6 +419,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 {
                 locationInfo !== undefined && locationInfo.location_id !== "" && locationInfo.address !== "" && !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
                   <NextPrev 
+                    {...props}                
+                    canGoNextPrev={_canGoNextPrev}
                     onStart={() =>{
                       setLocationInfo(undefined);
                       setIsLoading(true);
@@ -397,6 +429,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                       setIsLoading(false);
                       setFilePath('');
                       setLocationInfo(res);
+                      outcomeVal = false;
                       if(locationInfoRef.current !== undefined){
                         locationInfoRef.current.updateDispositionData(res);                
                       }        
@@ -420,10 +453,9 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 </View>                                              
 
                 {
-                locationInfo !== undefined && 
-                <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
+                  locationInfo !== undefined && 
+                  <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
                 }
-
                 <View style={{height:50}}></View>
 
           </View>
@@ -433,16 +465,19 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       
       { showItem !== "update_customer" && features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
         <View style={styles.nextButtonBar}>        
-          {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {          
-            props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+          {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={ async() => {  
+            if( await _canGoNextPrev() ){
+              props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+            }            
           }}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
             <FontAwesomeIcon size={22} color={whiteLabel().actionOutlineButtonText} icon={ faAngleDoubleRight } />
           </TouchableOpacity>
           }
-          {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={() => {          
-            //console.log(props.navigation)
-            props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+          {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={ async () => {          
+              if( await _canGoNextPrev() ){
+                props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+              }              
             }}>
 
             <Text style={[styles.checkInButtonText]}>Check In</Text>

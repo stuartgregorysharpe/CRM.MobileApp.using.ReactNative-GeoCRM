@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Modal,TouchableHighlight, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import { Button, Title,  Portal, TextInput } from 'react-native-paper';
-import Colors, { whiteLabel } from '../../../../../constants/Colors';
-import Fonts from '../../../../../constants/Fonts';
-import Divider from '../../../../../components/Divider';
-import { getFormFilters } from '../../../../../actions/forms.action';
-import { clearFilterData, getFilterData, storeFilterData } from '../../../../../constants/Storage';
+import Colors, { whiteLabel } from '../constants/Colors';
+import Fonts from '../constants/Fonts';
+import Divider from './Divider';
+import { getFormFilters } from '../actions/forms.action';
+import { clearFilterData, getFilterData, storeFilterData } from '../constants/Storage';
 import DatePicker from 'react-native-modern-datepicker';
-import SvgIcon from '../../../../../components/SvgIcon';
-import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import { style } from '../../../../../constants/Styles';
+import SvgIcon from './SvgIcon';
+import { SubmitButton } from './shared/SubmitButton';
+import { style } from '../constants/Styles';
 
 
 export const DatetimePickerView = ({ visible , onModalClose, close , value}) => {
@@ -17,7 +17,6 @@ export const DatetimePickerView = ({ visible , onModalClose, close , value}) => 
     const [items, setItems]  =  useState([]);    
     const [options, setOptions] = useState([]);
     const [date, setSelectedDate] = useState('');
-
     
     return (
         // <TouchableWithoutFeedback onPress={onModalClose}>
@@ -27,10 +26,10 @@ export const DatetimePickerView = ({ visible , onModalClose, close , value}) => 
             visible={visible}
             onRequestClose={onModalClose}>            
             <TouchableWithoutFeedback onPress={onModalClose}>
-                <View style={style.centeredView}>
+                <View style={[style.centeredView]}>
                     <TouchableWithoutFeedback onPress={() => {}}>
 
-                        <View style={style.modalView}>
+                        <View style={[style.modalView]}>
                                 <TouchableOpacity style={{ padding: 6 }}>
                                     <Divider />
                                 </TouchableOpacity>
@@ -44,10 +43,9 @@ export const DatetimePickerView = ({ visible , onModalClose, close , value}) => 
                                         }}
                                         color={Colors.selectedRedColor}
                                         uppercase={false} 
-                                        onPress={ async() => {                                                                 
-                                            close()
-                                        }}
-                                    >
+                                        onPress={ async() => {                                            
+                                            onModalClose();
+                                        }}>
                                     Clear
                                     </Button>
                                 </View>
@@ -66,8 +64,7 @@ export const DatetimePickerView = ({ visible , onModalClose, close , value}) => 
                                     }}
                                     selected={ value }
                                     mode="calendar"
-                                    onSelectedChange={date => {
-                                        console.log("DDDD", date)
+                                    onSelectedChange={date => {                                        
                                         setSelectedDate(date)
                                     }} /> 
 

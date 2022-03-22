@@ -23,7 +23,7 @@ import GrayBackground from '../../../../components/GrayBackground';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
 import { SelectionView } from './partial/SelectionView';
-import { DatetimePickerView } from './partial/DatetimePickerView';
+import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 
@@ -389,7 +389,7 @@ export const FormQuestions = (props) =>{
                   )
                 })
               }
-              <View style={{marginTop:10, marginBottom: 30}}>
+              <View style={{marginTop:10, marginBottom: 70}}>
                 {
                   formQuestions && formQuestions.length > 0 &&
                   <SubmitButton title="Submit" onSubmit={() => {_onSubmit()}}></SubmitButton>

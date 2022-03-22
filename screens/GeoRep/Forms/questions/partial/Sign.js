@@ -47,11 +47,10 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
   const handleData = (data) => {
     console.log(data);    
   };
-
   
   const handleClear = () => {
     ref.current.clearSignature();
-    onClear();
+    onClear();    
   }
 
   const handleConfirm = () => {
@@ -64,18 +63,18 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
     //onOK(ref.current.readSignature()); 
   }
 
-  return (
-    
+  
+  return (    
     <TouchableWithoutFeedback onPress={onClose}>
         <Modal 
             animationType="slide"
             transparent={true}
             visible={visible}
-            onRequestClose={onClose}>            
-            <TouchableWithoutFeedback onPress={onClose}>
-                <View style={style.centeredView}>
-
-                  <TouchableWithoutFeedback onPress={() => {}}>
+            onRequestClose={onClose}>                        
+                <View style={[style.centeredView]}> 
+                    <TouchableWithoutFeedback onPress={onClose}>
+                      <View style={styles.topContainer}></View>
+                    </TouchableWithoutFeedback>
                     <View style={[style.modalView, styles.container]} >
                         <Divider></Divider>
             
@@ -118,9 +117,9 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
                                 } } title="Submit"  ></SubmitButton>
                         </View>
                     </View>
-                  </TouchableWithoutFeedback>
+                  
                 </View>
-            </TouchableWithoutFeedback>
+            
           </Modal>
       </TouchableWithoutFeedback>    
   );
@@ -129,6 +128,14 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
 
 const styles = StyleSheet.create({
 
+    topContainer:{
+      width:Dimensions.get("screen").width,        
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height:Dimensions.get("screen").height,        
+    },
     container: {
         width:Dimensions.get("screen").width,        
         position: 'absolute',

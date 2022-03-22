@@ -411,7 +411,7 @@ export const postLocationInfoUpdate = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
   console.log("url", `${base_url}/locations-info/location-info-update`);
-  console.log("param", postData);
+  //console.log("param", postData);
 
   return new Promise(function (resolve, reject) {
 

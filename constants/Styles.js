@@ -132,7 +132,7 @@ export const style = StyleSheet.create({
       width: '100%',
       backgroundColor: Colors.bgColor,        
       padding: 10,
-      paddingBottom:40,      
+      paddingBottom:10,      
       shadowColor: "#000",
       shadowOffset: {
           width: 0,
@@ -140,11 +140,10 @@ export const style = StyleSheet.create({
       },
       shadowOpacity: 0.25,
       shadowRadius: 4,
-      elevation: 5
+      elevation: 5,
+      paddingBottom: Platform.OS === "ios" ? 30:10,
   },
 
-
-  
 
 })
 

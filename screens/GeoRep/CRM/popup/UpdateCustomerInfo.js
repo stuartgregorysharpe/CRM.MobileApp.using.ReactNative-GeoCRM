@@ -93,7 +93,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   }, [isLoading]);
 
   const initPostData = (res) => {
-    var tmp = [];
+    let tmp = [];
+    var origin = [];
     res.forEach((element) => {
       if(element.field_type === "dropdown_input"){
         tmp.push(
@@ -104,6 +105,14 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
           'field_type': element.field_type , 
           'dropdown_value' : element.dropdown_value }
           );
+        origin.push(
+            { 'custom_master_field_id': element.custom_master_field_id, 
+            'value': element.value, 
+            'field_name': element.field_name , 
+            'core_field_name': element.core_field_name , 
+            'field_type': element.field_type , 
+            'dropdown_value' : element.dropdown_value }
+            );
       }else{
         tmp.push(
           { 
@@ -113,14 +122,25 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
             'core_field_name': element.core_field_name , 
             'field_type': element.field_type 
           });
+        origin.push(
+            { 
+              'custom_master_field_id': element.custom_master_field_id, 
+              'value': element.value, 
+              'field_name': element.field_name , 
+              'core_field_name': element.core_field_name , 
+              'field_type': element.field_type 
+            });
       }      
     })
-    setCustomMasterFields(tmp);
-    setOriginCustomMasterFields(tmp);
+    const copy = [...tmp];
+    setCustomMasterFields(tmp);    
+    setOriginCustomMasterFields(origin);
   }
 
-
   const checkChangedStatus = () => {
+    console.log("originCustomMasterFields" ,originCustomMasterFields);
+    console.log("customMasterFields" ,originCustomMasterFields);
+    
     if(originCustomMasterFields !== customMasterFields){      
       
       if(originCustomMasterFields.find(item => item.core_field_name === "location_name").value !== customMasterFields.find(item => item.core_field_name === "location_name").value){
@@ -130,7 +150,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
         console.log("xxx");
       }
       originCustomMasterFields.forEach((element) =>{
+        console.log(" -------- tri --------" , element);
         if(element.core_field_name !== "location_name" && customMasterFields.find(item => item.core_field_name === element.core_field_name).value !== element.value ){
+          
           setAddressUpdated("1");
           address_updated = "1";
         }
