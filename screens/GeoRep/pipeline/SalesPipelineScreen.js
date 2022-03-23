@@ -16,6 +16,7 @@ import SearchBar from '../../../components/SearchBar';
 import AddSalesPipeline from './AddSalesPipeline';
 import Skeleton from '../../../components/Skeleton';
 import Images from '../../../constants/Images';
+import DeviceInfo from 'react-native-device-info';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
@@ -267,7 +268,6 @@ export default function SalesPipelineScreen(props) {
   return (
     <Provider>
       <View style={{ flex: 1 }}>
-
         {canAddPipeline && <AddSalesPipeline
           props={props}
           onClose={() => {
@@ -287,7 +287,7 @@ export default function SalesPipelineScreen(props) {
             dispatch({ type: SUB_SLIDE_STATUS, payload: false })
             dispatch({ type: SLIDE_STATUS, payload: false });
             setShowItem(0);
-
+            
           }}>
 
         </TouchableOpacity>
@@ -317,11 +317,10 @@ export default function SalesPipelineScreen(props) {
                 return <TouchableOpacity key={index} onPress={() => { onTabSelection(item) }}>
                   <Text key={index} style={[
                     styles.tabText, selectedStage === item.stage_id ? styles.tabActiveText : {}
-                  ]}>{item.stage_name}</Text>
+                  ]}>{item.stage_name}  </Text>
                 </TouchableOpacity>
               })}
-
-            </ScrollView>
+            </ScrollView>            
             {canShowArrow && <SvgIcon icon="Arrow_Right_Btn" width='20px' height='25px' />}
           </View>
           {renderSearchBox()}
@@ -335,7 +334,8 @@ export default function SalesPipelineScreen(props) {
             contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
             ItemSeparatorComponent={renderSeparator}
           />
-          <View style={styles.plusButtonContainer}>
+          
+          <View style={[styles.plusButtonContainer, {marginBottom: DeviceInfo.getSystemVersion() === "11" ? 50 : 10 }]}>
             <TouchableOpacity style={style.innerPlusButton} onPress={() => {
               setPageType('add');
               setCanAddPipeline(true);
@@ -352,8 +352,8 @@ export default function SalesPipelineScreen(props) {
 const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(parse({
   container: {
-    padding: 10,
-    minHeight: '100%',
+    padding: 10,    
+    flex:1,
     backgroundColor: Colors.bgColor
   },
 
@@ -391,7 +391,8 @@ const styles = EStyleSheet.create(parse({
   plusButtonContainer: {
     position: 'absolute',
     flexDirection: "row",
-    bottom: Dimensions.get('window').height*0.02,
+    bottom:20,
+    //bottom: Dimensions.get('window').height * 0,
     right: 20,
     zIndex: 1,
     elevation: 1,

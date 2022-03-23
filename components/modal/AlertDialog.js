@@ -8,7 +8,7 @@ const AlertDialog = ({visible, onModalClose, message }) => {
 
     return (
         <Modal 
-            // animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={visible}
             onRequestClose={onModalClose}>            
@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 0,
-        backgroundColor: '#00000055'        
+        backgroundColor: '#00000055',
+        zIndex:99999999999999,
     },
 
     modalView: {        

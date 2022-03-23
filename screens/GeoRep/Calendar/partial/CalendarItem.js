@@ -9,6 +9,7 @@ import { getDistance } from '../../../../constants/Consts';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { useDispatch } from 'react-redux';
 import { LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
+import { style } from '../../../../constants/Styles';
 
 export function CalendarItem({ navigation, item , current , tabIndex , onItemSelected}) {
 
@@ -43,7 +44,7 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
 
    if(item != undefined && item.coordinates != undefined){
         return (
-        <View style={styles.itemContainer}>        
+        <View style={[styles.itemContainer, style.card]}>        
           <View style={styles.itemLeft}>
             <View style={styles.itemTitleBox}>
               <SvgIcon style={{ marginRight: 4 }} icon="Location_Arrow" width='12px' height='12px' />            
@@ -69,13 +70,9 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
   
         </View>
       )
-   }   
-   
+   }     
    return (<View></View>)
-
 }
-
-
 
 
 const styles = StyleSheet.create({
@@ -84,9 +81,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        borderRadius: 4,
-        borderColor: whiteLabel().fieldBorder,
-        borderWidth: 1,        
+        borderRadius: 4,        
+        backgroundColor: Colors.whiteColor,
+        borderWidth: 1.5, 
+        borderColor: whiteLabel().fieldBorder,       
     },
     itemLeft: {
         width: '60%',
@@ -109,11 +107,11 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 13,
         lineHeight: 18,
-        fontFamily: Fonts.secondaryMedium,
+        fontFamily: Fonts.secondaryMedium, 
         color: DISABLED_COLOR,
         maxHeight: 36
     },
-    itemButton: {
+    itemButton: { 
         position: 'relative',
         justifyContent: 'center',
         padding: 4,        

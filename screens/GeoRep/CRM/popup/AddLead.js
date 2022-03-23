@@ -9,14 +9,14 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
-import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, {  whiteLabel } from '../../../../constants/Colors';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
-import CustomPicker from '../../../../components/modal/CustomPicker';
-import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import SvgIcon from '../../../../components/SvgIcon';
 
 export default function AddLead({ screenProps, onClose }) {
 
@@ -27,22 +27,26 @@ export default function AddLead({ screenProps, onClose }) {
   const [leadForms, setLeadForms] = useState([]);
   const [customMasterFields, setCustomMasterFields] = useState([]);
   const [dropdownId, setDropdownId] = useState(0);
-  const [isDropdownModal, setIsDropdownModal] = useState([]);
-  const [dropdownItems, setDropdownItems] = useState([]);
+  const [isDropdownModal, setIsDropdownModal] = useState(false);
+  const [selectedValue, setSelectedValue] = useState([]);
+  const [options, setDropdownItems] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [isCurrentLocation, setIsCurrentLocation] = useState("0");
   const [myLocation, setMyLocation] = useState(currentLocation);
+  const [locationId, setLocationId] = useState(0);
 
   const handleSubmit = () => {
     let params = {
       coordinates: { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
       use_current_geo_location: isCurrentLocation,
       custom_master_fields: customMasterFields
-    }    
+    }            
     postLeadFields(params, uuid.v4())
       .then((res) => {
-        setMessage("Added lead successfully");
+        console.log("re", res);
+        setLocationId(res);
+        setMessage("Added lead successfully");        
         setIsSuccess(true);
       })
       .catch((error) => {
@@ -63,7 +67,8 @@ export default function AddLead({ screenProps, onClose }) {
   useEffect(() => {
     if (isLoading) {
       getLeadFields()
-        .then((res) => {          
+        .then((res) => {        
+          console.log("xxx",res)  
           initPostData(res);
           setLeadForms(res);
           setIsLoading(false);
@@ -147,7 +152,7 @@ export default function AddLead({ screenProps, onClose }) {
     }
         
     if (index === -1) {
-      return originFieldName;
+      return "Select " + originFieldName;
     }
     var showName = '';
     leadForms.forEach((element) => {
@@ -157,37 +162,40 @@ export default function AddLead({ screenProps, onClose }) {
     });
     return showName;
   }
-
-  const dropdownModal = () => {
+  
+  const dropdownModal = () => {  
     return (
-      <CustomPicker
+      <SelectionPicker
+        title={"Select Suite, Unit, Apt"}
+        clearTitle={"Clear"}
+        mode={"single"}
+        value={selectedValue}
         visible={isDropdownModal}
-        renderItems={
-          dropdownItems.map((item, index) => (
-            <TouchableOpacity style={[styles.pickerItem]} key={index}
-              onPress={() => {
-                var tmp = [...customMasterFields];
-                tmp.forEach((element , key) => {
-                  if (element.custom_master_field_id == dropdownId) {
-                    element.value = item;
-                    element.itemIndex = index;
-                    if(element.field_type === "dropdown_input"){
-                      element.dropdown_value = item;
-                      element.value = '';     
-                    }
-                    var leadTmp = [...leadForms];
-                    leadTmp[key].value = item;
-                    setLeadForms(leadTmp);                    
-                  }
-                });
-                setCustomMasterFields(tmp);
-                setIsDropdownModal(false);
-              }}>
-              <Text style={styles.pickerItemText}>{item}</Text>
-              {index === getSelectedDropdownItem() && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          ))
-        } />
+        options={options}
+        onModalClose={() => setIsDropdownModal(false)}
+        onValueChanged={(item , index) => {
+          console.log("selected item", item);
+          var tmp = [...customMasterFields];
+          tmp.forEach((element , key) => {
+
+            if (element.custom_master_field_id == dropdownId) {
+
+              element.itemIndex = index;
+              var leadTmp = [...leadForms];
+              if(element.field_type === "dropdown_input"){
+                element.dropdown_value = item ;
+                leadTmp[key].dropdown_value = item;
+              }else{
+                element.value = item;
+                leadTmp[key].value = item;
+              }                            
+              setLeadForms(leadTmp);
+            }
+          });
+          setCustomMasterFields(tmp);          
+          setIsDropdownModal(false);
+        }}
+        ></SelectionPicker>
     )
   }
 
@@ -201,11 +209,11 @@ export default function AddLead({ screenProps, onClose }) {
             keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
             returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
             style={styles.textInput}
-            label={field.field_type === "dropdown_input" ? '' : <Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+            label={field.field_type === "dropdown_input" ? field.field_name + ' Number & Details' : <Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
             value={getTextValue(customMasterFields, field.custom_master_field_id)}
             mode="outlined"
             outlineColor={whiteLabel().fieldBorder}
-            activeOutlineColor={DISABLED_COLOR}
+            activeOutlineColor={Colors.disabledColor}
             onChangeText={text => {
               var tmp = [...customMasterFields];
               tmp.forEach((element) => {
@@ -231,6 +239,20 @@ export default function AddLead({ screenProps, onClose }) {
     );
   }
 
+  const renderUseCurrentLocation = (key) =>{
+    return (
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
+        var masterFields = await reverseGeocoding(myLocation, customMasterFields);
+        if (masterFields.length > 0) {
+          setCustomMasterFields(masterFields);
+          setIsCurrentLocation("1");
+        }
+      }}>
+        <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+      </TouchableOpacity>
+    );
+  }
+
   if (isLoading) {
     return (
       <View style={[styles.container, { padding: 10, justifyContent: 'center', height: '100%' }]}>
@@ -243,10 +265,11 @@ export default function AddLead({ screenProps, onClose }) {
 
   return (
     <ScrollView style={styles.container}>
-
+                  
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
-        onClose();
+        onClose(locationId);
       }}></AlertDialog>
+      
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         dispatch({ type: SLIDE_STATUS, payload: false })
@@ -294,35 +317,41 @@ export default function AddLead({ screenProps, onClose }) {
               return (
                 <View key={key}>
                   {
-                    key == 1 &&
-                    <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
-                      var masterFields = await reverseGeocoding(myLocation, customMasterFields);
-                      if (masterFields.length > 0) {
-                        setCustomMasterFields(masterFields);
-                        setIsCurrentLocation("1");
-                      }
-                    }}>
-                      <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
-                    </TouchableOpacity>
+                    key == 1 && renderUseCurrentLocation(key)
                   }
 
                   <TouchableOpacity key={key}
+                    style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5, flexDirection:'row' , alignItems:'center' }]}
                     onPress={() => {
                       setDropdownItems(field.preset_options !== "" ? field.preset_options : []);
                       if (field.preset_options.length > 0) {
                         setDropdownId(field.custom_master_field_id);
-                        setIsDropdownModal(true);
+                        setIsDropdownModal(true);                        
+                        if(field.field_type === "dropdown"){
+                          setSelectedValue([field.value])
+                        }else{                          
+                          setSelectedValue([field.dropdown_value])                          
+                        }
                       }
                     }}>
+  
+                    {
+                      field.dropdown_value !== undefined &&
+                      <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name} </Text>
+                    }                  
+
                     <Text
-                      ref={(element) => { dispositionRef.current[key] = element }}
-                      style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5 }]}
+                      mode="outlined"
+                      style={{flex:1}}
+                      ref={(element) => { dispositionRef.current[key] = element }}                      
                       outlineColor={whiteLabel().fieldBorder}>
                       {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name , field.field_type  )}
                     </Text>
+
+                    <View style={{marginRight:10}}><SvgIcon icon="Drop_Down" width='23px' height='23px' /></View>
                   </TouchableOpacity>
                   {
-                    field.field_type === "dropdown_input" && field.value !== "" && 
+                    field.field_type === "dropdown_input" && field.dropdown_value !== undefined && 
                     renderText(field, key)
                   }
                 </View>
@@ -331,7 +360,9 @@ export default function AddLead({ screenProps, onClose }) {
             } else {
               return (
                 <View key={key}>
-                  
+                  {
+                    key == 1 && renderUseCurrentLocation(key)
+                  }
                   {
                     renderText(field, key )
                   }
@@ -356,11 +387,25 @@ export default function AddLead({ screenProps, onClose }) {
 
 
 const styles = EStyleSheet.create({
+
   container: {
-    backgroundColor: Colors.bgColor,
-    zIndex: 100,
-    padding: 10,
+      width:Dimensions.get("screen").width,      
+      position: 'absolute',
+      top:0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: Colors.bgColor,
+      elevation: 2,
+      zIndex: 2000,            
+      padding:10
   },
+
+  // container: {
+  //   backgroundColor: Colors.bgColor,
+  //   zIndex: 100,
+  //   padding: 10,
+  // },
 
   header: {
     flexDirection: 'row',
@@ -399,23 +444,14 @@ const styles = EStyleSheet.create({
     right: 10
   },
   textInput: {
+    
     height: 40,
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: Colors.bgColor,
     marginBottom: 8
   },
-  pickerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  pickerItemText: {
-    fontSize: 18,
-    color: 'black'
-  },
+  
 
   linkBox: {
     position: 'relative',
@@ -428,5 +464,16 @@ const styles = EStyleSheet.create({
     textDecorationColor: whiteLabel().mainText,
     textAlign: 'center'
   },
+  checkBoxStyle:{
+    width:25,
+    height:25,
+    borderRadius:15,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:whiteLabel().itemSelectedBackground,
+    borderWidth:1,
+    borderColor:whiteLabel().itemSelectedBackground
+},
+
 
 });

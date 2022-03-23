@@ -1,5 +1,5 @@
 import React, { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react';
-import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet , Alert} from 'react-native';
+import { Text,  View, Image, TouchableOpacity, Keyboard, Dimensions, Platform , Animated ,StyleSheet , Alert ,BackHandler} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
@@ -16,15 +16,18 @@ import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
-import { postLocationImage } from '../../../../actions/location.action';
+import { postLocationFeedback, postLocationImage } from '../../../../actions/location.action';
 import uuid from 'react-native-uuid';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import { NextPrev } from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
+import { checkFeatureIncludeParam } from '../../../../constants/Storage';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { RuleTester } from 'eslint';
 
-
+var outcomeVal = false;
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const dispatch = useDispatch();  
@@ -40,44 +43,51 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [message, setMessage] = useState("");
   const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height));
   const [isLoading,setIsLoading] = useState(true);
-
+  const [isFeedbackModal, setIsFeedback] = useState(false);
+  const [feedbackOptions, setFeebacOptions] = useState([]);
+  
+  const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(outcomeVal);
+  console.log("-------- ", outcomeVal)
+    
   useImperativeHandle(
     ref,
     () => ({
       closePopup() {        
+        console.log("isOutcomeUpdated", isOutcomeUpdated)
         if(showItem !== "update_customer"){          
-          props.clostDetailsPopup();
-          dispatch({type: SLIDE_STATUS, payload: false});
-          dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
-        }else{        
+          checkFeedbackAndClose("top");          
+        }else{ 
           setShowItem("refresh");
         }
       },
       goBack(){              
+        console.log("isOutcomeUpdated", isOutcomeUpdated)
         if(showItem === "update_customer") {
           setShowItem("refresh");
-        }else if(showItem === "refresh"){                    
-          props.animation("search-page");
+        }else if(showItem === "refresh"){          
+          checkFeedbackAndClose("back");
         }else{
           props.goPreviousPage();
         }        
       },
       updateView(res){ 
+        console.log("locaiton details" , res);
         if(locationInfoRef.current !== undefined){                    
           locationInfoRef.current.updateDispositionData(res);        
         }
         setLocationInfo(res);
-        setIsLoading(false);         
+        setIsLoading(false);
+        if(res.feedback.length > 0){
+          setFeebacOptions(res.feedback[0].feedback_loc_info_outcome[0].options);
+        }
+        
       }
     }),
     [showItem],
   );
 
-  useEffect(()=>{
-
-  },[locationInfo]);
-
-  useEffect(() => { 
+  useEffect(() => {
+    outcomeVal = false;
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
@@ -85,12 +95,52 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
       setKeyboardStatus(false);
     });  
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);    
     return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
       showSubscription.remove();
       hideSubscription.remove();
-    };    
+    };           
   }, []);
-  
+
+  const handleBackButtonClick = async() => {    
+    checkFeedbackAndClose("back")
+    return true;
+  }
+
+  const checkFeedbackAndClose = async  (tapType) =>{
+    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+    if( check && !outcomeVal){
+      setIsFeedback(true);      
+    }else{
+      console.log(tapType);
+      if(tapType === "back"){
+        props.animation("search-page");
+        dispatch({type: SLIDE_STATUS, payload: false});
+      }else if(pageType === "top"){
+        props.clostDetailsPopup();
+        dispatch({type: SLIDE_STATUS, payload: false});
+        dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
+      }else if("access_crm"){
+
+      }
+    }
+  }  
+
+  const _canGoNextPrev = async () => {
+    console.log("___ canb propos")
+    
+    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+    if( check && !outcomeVal){
+      setIsFeedback(true);      
+      return false;
+    }else{
+      return true;
+    }
+
+  }
+
   const showLoopSlider = () => {
     setShowItem("loop");
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
@@ -144,9 +194,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         
       }
     });
-
   }
-
+  
   selectPicker = (title, description) => {
     return Alert.alert(
       title,
@@ -169,7 +218,6 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       ]
     );
 }
-
   
   const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
@@ -191,10 +239,49 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const openCustomerInfo = async() => {
     setShowItem("update_customer")
   }
+
+  
+  const showFeedbackDropDownModal = () => {  
+    return (
+      <SelectionPicker
+        title={"Feedback"}
+        clearTitle={"Close"}
+        mode={"single"}
+        value={[]}
+        visible={isFeedbackModal}
+        options={feedbackOptions}
+        onModalClose={() => setIsFeedback(false)}
+        onValueChanged={(item , index) => {          
+          let postData = {
+            "location_id": locationInfo.location_id,
+            "feedback": [
+                {
+                    "feedback_loc_info_outcome" : item
+                }
+            ]
+          };
+          postLocationFeedback(postData).then((res) => {                        
+            console.log('out compete update3d');
+            setIsOutcomeUpdated(true);
+            outcomeVal = true;
+            setMessage(res);
+            setIsSuccess(true);
+            console.log(res);            
+          }).catch((error) => {
+            console.log(error);
+          })
+          setIsFeedback(false);          
+        }}
+        ></SelectionPicker>
+    )
+  }
   
   return (
     <View style={[styles.container, {flex:1}]}>
 
+      {
+        showFeedbackDropDownModal()
+      }
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
         setIsSuccess(false);
       }} />
@@ -324,6 +411,8 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 {
                 locationInfo !== undefined && locationInfo.location_id !== "" && locationInfo.address !== "" && !(props.pageType.name === "camera" && props.pageType.type !== 2) && 
                   <NextPrev 
+                    {...props}                
+                    canGoNextPrev={_canGoNextPrev}
                     onStart={() =>{
                       setLocationInfo(undefined);
                       setIsLoading(true);
@@ -332,6 +421,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                       setIsLoading(false);
                       setFilePath('');
                       setLocationInfo(res);
+                      outcomeVal = false;
                       if(locationInfoRef.current !== undefined){
                         locationInfoRef.current.updateDispositionData(res);                
                       }        
@@ -343,16 +433,21 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                 <View style={{padding:10}}>
                 {        
                 locationInfo !== undefined && locationInfo.address !== ""  && DeviceInfo.isTablet()?
-                <LocationInfoInputTablet ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
-                <LocationInfoInput ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
+                <LocationInfoInputTablet onOutcome={(value) => {
+                  setIsOutcomeUpdated(value);
+                  outcomeVal = value;
+                } } ref={locationInfoRef}  infoInput={locationInfo} pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} /> :
+                <LocationInfoInput onOutcome={(value) => {
+                  setIsOutcomeUpdated(value);
+                  outcomeVal = value;
+                } } ref={locationInfoRef} infoInput={locationInfo}  pageType={'loatoinInfo'} showLoopSlider={showLoopSlider} />  
                 }
                 </View>                                              
 
                 {
-                locationInfo !== undefined && 
-                <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
+                  locationInfo !== undefined && 
+                  <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
                 }
-
                 <View style={{height:50}}></View>
 
           </View>
@@ -362,16 +457,19 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       
       { showItem !== "update_customer" && features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
         <View style={styles.nextButtonBar}>        
-          {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={() => {          
-            props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+          {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={ async() => {  
+            if( await _canGoNextPrev() ){
+              props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+            }            
           }}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
             <FontAwesomeIcon size={22} color={whiteLabel().actionOutlineButtonText} icon={ faAngleDoubleRight } />
           </TouchableOpacity>
           }
-          {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={() => {          
-            //console.log(props.navigation)
-            props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+          {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={ async () => {          
+              if( await _canGoNextPrev() ){
+                props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+              }              
             }}>
 
             <Text style={[styles.checkInButtonText]}>Check In</Text>

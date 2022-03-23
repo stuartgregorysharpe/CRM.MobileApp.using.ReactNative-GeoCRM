@@ -12,22 +12,18 @@ import Fonts from '../../../../constants/Fonts';
 import Images from '../../../../constants/Images';
 import { style } from '../../../../constants/Styles';
 import { GroupTitle } from './partial/GroupTitle';
-import {  Provider } from 'react-native-paper';
 import { MultipleSelectForm } from '../../../../components/shared/MultipleSelectForm';
 import { DateForm } from '../../../../components/shared/DateForm';
 import TakePhotoForm from '../../../../components/shared/TakePhotoForm';
 import { useSelector , useDispatch} from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { getTwoDigit } from '../../../../constants/Consts';
 import { SignatureForm } from '../../../../components/shared/SignatureForm';
 import Sign  from './partial/Sign';
 import GrayBackground from '../../../../components/GrayBackground';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
 import { SelectionView } from './partial/SelectionView';
-import { DatetimePickerView } from './partial/DatetimePickerView';
-import { value } from 'react-native-extended-stylesheet';
+import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 
@@ -56,56 +52,75 @@ export const FormQuestions = (props) =>{
     const [message, setMessage] = useState("");
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        if (props.screenProps) {
-          props.screenProps.setOptions({            
-            headerTitle:() =>{
-              return(<TouchableOpacity                     
-                 onPress={
-                () =>{
-                  if(crmStatus && isDateTimeView){
-                    closeDateTime();
-                  }else if(crmStatus && modaVisible){
-                    closeDateTime();
-                  }else if(crmStatus && isSign){
-                    closeSignView();
-                  }else{
-                    if( props.navigation.canGoBack()){
-                      props.navigation.goBack();              
-                    }
-                  }                  
-                }}> 
-                <View style={style.headerTitleContainerStyle}>                                
-                    <Image
-                      resizeMethod='resize'
-                      style={{width:15,height:20, marginRight:5}}
-                      source={Images.backIcon}
-                    />
-                  <Text style={style.headerTitle} >Forms</Text>
-              </View></TouchableOpacity>)
-            },
-            tabBarStyle: {
-              position: 'absolute',
-              height: 50,
-              paddingBottom: Platform.OS == "android" ? 5 : 0,          
-              backgroundColor: Colors.whiteColor,
-            },
-          });
-          if (crmStatus) {
-            props.screenProps.setOptions({
-              tabBarStyle: {
-                display: 'none',
-              },
-            });
-          }
-          
-        }         
-    });
 
     useEffect(() => {
+      refreshHeader();
+      if (crmStatus) {
+        console.log(" --------- props , " ,  props.screenProps);
+        props.screenProps.setOptions({
+          tabBarStyle: {
+            height: 0,
+            display: 'none',            
+          },
+        });
+      }
+      if(!crmStatus){
+        setIsDateTimeView(false);
+        //setIsSign(false);
+      }
+    }, [crmStatus]);
+
+    useEffect(() => {
+      console.log("call api");
+      refreshHeader()
+        
+      if (crmStatus) {
+        props.screenProps.setOptions({
+          tabBarStyle: {
+            display: 'none',
+            height: 0,
+          },
+        });
+      }
       _callFormQuestions()
     },[]);
         
+    const refreshHeader = () => {
+      props.screenProps.setOptions({            
+        headerTitle:() =>{
+          return(<TouchableOpacity                     
+             onPress={
+            () =>{
+              if(crmStatus && isDateTimeView){
+                closeDateTime();
+              }else if(crmStatus && modaVisible){
+                closeDateTime();
+              }else if(crmStatus && isSign){
+                closeSignView();
+              }else{
+                if( props.navigation.canGoBack()){
+                  props.navigation.goBack();              
+                }
+              }                  
+            }}> 
+            <View style={style.headerTitleContainerStyle}>                                
+                <Image
+                  resizeMethod='resize'
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}
+                />
+              <Text style={style.headerTitle} >Forms</Text>
+          </View></TouchableOpacity>)
+        },   
+        tabBarStyle: {
+          position: 'absolute',
+          height: 50,
+          paddingBottom: Platform.OS == "android" ? 5 : 0,          
+          backgroundColor: Colors.whiteColor,
+        },   
+      });
+
+    }
     const _callFormQuestions = () => {
       getFormQuestions(form.form_id).then((res) => {                
         groupByQuestions(res);
@@ -166,10 +181,11 @@ export const FormQuestions = (props) =>{
     }
     const closeDateTime = () =>{
       setIsDateTimeView(false);
-      dispatch({type: SLIDE_STATUS, payload: false});                
+      dispatch({type: SLIDE_STATUS, payload: false});       
     }
     
     const handleSignature = (signature) => {
+      console.log("handel signatuere ddd");
       onValueChangedSelectionView(key, index, signature);      
       dispatch({type: SLIDE_STATUS, payload: false});    
       setIsSign(false);
@@ -209,7 +225,7 @@ export const FormQuestions = (props) =>{
       }      
     }
 
-    const renderQuestion = (item , key, index) =>{
+    const renderQuestion = (item , key, index) =>{      
       if(item.question_type === "text"){
         return (
           <TextForm key={ "text_question" +  index}  
@@ -241,8 +257,8 @@ export const FormQuestions = (props) =>{
             setMode("single");
             setOptions(item.options);
             setSelectedOptions(item.value);
-            setModalVisible(true);
-            dispatch({type: SLIDE_STATUS, payload: true});            
+            dispatch({type: SLIDE_STATUS, payload: true});
+            setModalVisible(true);            
             setKey(key);
             setIndex(index);            
           }} item={item}></SingleSelectForm>
@@ -256,8 +272,8 @@ export const FormQuestions = (props) =>{
             setMode("multiple");
             setOptions(item.options);
             setSelectedOptions(item.value);
-            setModalVisible(true);
             dispatch({type: SLIDE_STATUS, payload: true});
+            setModalVisible(true);            
             setKey(key);
             setIndex(index);
           }} item={item}></MultipleSelectForm>
@@ -269,15 +285,17 @@ export const FormQuestions = (props) =>{
           key={ "numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
         );
       }else if(item.question_type === "date"){
+        //setIsDateTimeView(false);
         return (
           <DateForm key={ "date_question" + index} item={item}  
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
           onPress={() => {
+            dispatch({type: SLIDE_STATUS, payload: true});            
             setKey(key);
             setIndex(index);
             setSelectedDate(item.value);
             setIsDateTimeView(true);
-            dispatch({type: SLIDE_STATUS, payload: true});
+            
           }} ></DateForm>
         );
       }else if(item.question_type === "signature"){
@@ -309,29 +327,32 @@ export const FormQuestions = (props) =>{
 
     return (      
         <View style={styles.container}  onTouchStart={(e) => { setIsInfo(false); }}>
+          
             <GrayBackground></GrayBackground>
-            <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>
-            {
-              crmStatus && isDateTimeView &&
-              <DatetimePickerView 
-                value={selectedDate}
-                close={(date) => {
-                  confirmDateTime(date);
-                  closeDateTime();
-                }} ></DatetimePickerView>
-            }
-
-            {
-               crmStatus && isSign &&
-              <Sign signature={signature}  onOK={handleSignature}  
+            <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>          
+            <DatetimePickerView 
+              visible={isDateTimeView}
+              value={selectedDate}
+              onModalClose={() =>{                
+                closeDateTime();
+              }}
+              close={(date) => {
+                confirmDateTime(date);
+                closeDateTime();
+              }} ></DatetimePickerView>
+            
+            <Sign visible={isSign}  signature={signature}  
+              onOK={handleSignature}  
               onClear= {() => {
+                  console.log("------- on clear called ---------")
                   onValueChangedSelectionView(key, index, null);
               }}
               onClose={() => {                  
+                console.log("------- on closed ---------")
                   onValueChangedSelectionView(key, index, null);
-                  closeSignView();      
+                  closeSignView(); 
               }}></Sign>
-            }
+            
             {              
               crmStatus && modaVisible  &&
               <SelectionView 
