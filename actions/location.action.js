@@ -67,8 +67,6 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
     zoom_bounds: zoom_bounds
   });
 
-
-
   console.log(zoom_bounds);
 
   return new Promise(function (resolve, reject) {
@@ -90,7 +88,8 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
           resolve([]);
         }
         if (res.data.status == 'success') {
-          resolve(res.data.locations);
+          resolve(res.data);
+          console.log("polygon data", res.data.polygons);          
         } else {
           resolve([]);
         }
@@ -353,6 +352,8 @@ export const getLeadFields = async () => {
 export const getLocationInfoUpdate = async (location_id) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
+
+  console.log(`${base_url}/locations/location_info_update_fields`);
 
   return new Promise(function (resolve, reject) {
     axios

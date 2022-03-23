@@ -273,7 +273,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
             keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
             returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
             style={styles.textInput}
-            label={field.field_type === "dropdown_input" ? '' : <Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
+            label={field.field_type === "dropdown_input" ? field.field_name + ' Number & Details' : <Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
             value={getTextValue(customMasterFields, field.custom_master_field_id)}
             mode="outlined"
             outlineColor={whiteLabel().fieldBorder}

@@ -91,10 +91,8 @@ export default function LocationSpecificInfoScreen(props) {
 
 
   if (canShowCustomerContactsScreen) {
-    return (
-      // <SafeAreaView style={{ flex: 1 }}>
-        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />
-      // </SafeAreaView>
+    return (      
+        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />      
     )
   }
 
@@ -112,9 +110,6 @@ export default function LocationSpecificInfoScreen(props) {
         <RefreshSlider location_id={locationInfo.location_id} />
       </View>}
 
-      {/* {canShowCustomerContactsScreen &&
-        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />
-      } */}
 
       <ScrollView style={styles.container}>
         <View style={styles.headerBox}>
@@ -141,9 +136,11 @@ export default function LocationSpecificInfoScreen(props) {
               <Text style={styles.checkoutButtonText}>Check out</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.filterButton}>
+          
+          {/* <View style={styles.filterButton}>
             <FilterButton text="Contact: Jack Reacher" />
-          </View>
+          </View> */}
+                    
         </View>
 
 
@@ -170,23 +167,7 @@ export default function LocationSpecificInfoScreen(props) {
 
                   }} />
             }
-
-            {/* {
-                
-              locationInfo && DeviceInfo.isTablet() ? <LocationInfoInputTablet
-                  navigation={props.navigation} 
-                  screenProps={props.screenProps} 
-                  statusSubmit={statusSubmit}
-                  showLoopSlider={showLoopSlider} 
-                  infoInput={locationInfo} /> : 
-                <LocationInfoInput
-                  navigation={props.navigation} 
-                  screenProps={props.screenProps} 
-                  statusSubmit={statusSubmit} 
-                  showLoopSlider={showLoopSlider} 
-                  infoInput={locationInfo} />
-              }      */}
-
+           
           </View>
         </View>
 

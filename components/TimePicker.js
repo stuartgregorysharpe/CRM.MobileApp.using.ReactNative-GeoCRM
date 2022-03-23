@@ -75,26 +75,24 @@ export const TimePicker = ( props ) => {
 
                 <View style={{marginLeft:6}} >
                     <TouchableOpacity style={{width:23,height:23,  alignItems:'center', justifyContent:'center'}} onPress={() => {
-                        if(initMin < 60){
-                            onChanged( initHour , getTwoDigit(parseInt(initMin) + 1) ,  ap);
+                        if(parseInt(initMin) + 15 < 60){
+                            onChanged( initHour , getTwoDigit(parseInt(initMin) + 15) ,  ap);
                         }else{                            
-                            onChanged( getTwoDigit(parseInt(initHour) + 1) , getTwoDigit(0) ,  ap);
+                            onChanged( getTwoDigit(parseInt(initHour) + 1) , getTwoDigit( parseInt(initMin) + 15 - 60 ) ,  ap);
                         }                        
                     } }>
                         <SvgIcon icon="Time_Up" width='20px' height='20px'/>
                     </TouchableOpacity>
                     <TouchableOpacity style={{width:23,height:23,  alignItems:'center', justifyContent:'center'}} onPress={() => {
-                        if(parseInt(initMin) > 0 ){
-                            onChanged( initHour , getTwoDigit(parseInt(initMin) - 1) ,  ap);
+                        if(parseInt(initMin) - 15 >= 0 ){
+                            onChanged( initHour , getTwoDigit(parseInt(initMin) - 15) ,  ap);
                         }else{
-                            onChanged( getTwoDigit(parseInt(initHour) - 1) , getTwoDigit(59) ,  ap);
+                            onChanged( getTwoDigit(parseInt(initHour) - 1) , getTwoDigit( 60 + parseInt(initMin) - 15 ) ,  ap);
                         }        
                     } } >
                         <SvgIcon icon="Time_Down" width='20px' height='20px' />
-                    </TouchableOpacity>
-                    
-                </View>
-                
+                    </TouchableOpacity>                    
+                </View>                
             </View>
         </View>
     )

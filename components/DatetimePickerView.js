@@ -4,13 +4,10 @@ import { Button, Title,  Portal, TextInput } from 'react-native-paper';
 import Colors, { whiteLabel } from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 import Divider from './Divider';
-import { getFormFilters } from '../actions/forms.action';
-import { clearFilterData, getFilterData, storeFilterData } from '../constants/Storage';
 import DatePicker from 'react-native-modern-datepicker';
 import SvgIcon from './SvgIcon';
 import { SubmitButton } from './shared/SubmitButton';
 import { style } from '../constants/Styles';
-
 
 export const DatetimePickerView = ({ visible , onModalClose, close , value}) => {
 

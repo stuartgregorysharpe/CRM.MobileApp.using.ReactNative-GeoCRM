@@ -7,7 +7,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useSelector, useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { breakPoint } from '../../../../constants/Breakpoint';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
@@ -19,6 +19,7 @@ import Fonts from '../../../../constants/Fonts';
 import { FeatureCard } from '../partial/FeatureCard';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { useNavigation } from '@react-navigation/native';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
 
@@ -45,6 +46,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [featureCards, setFeatureCards] = useState([]);
+  const [options, setOptions] = useState([]);
 
 
   useImperativeHandle(
@@ -78,7 +80,14 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       });
       setDispositionValue(items);
       if (locationInfo.outcomes) {
-        setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId));
+        var selectedOutcomes = locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == selectedStageId);
+        setSelectedOutcomes(selectedOutcomes);
+        console.log("selectedOutcomes" ,selectedOutcomes)
+        var tmp = [];
+        selectedOutcomes.forEach((element , index) => {
+          tmp.push(element.outcome_name);
+        });
+        setOptions(tmp);
       }
     }
   }, [locationInfo])
@@ -265,32 +274,57 @@ export const LocationInfoInput = forwardRef((props, ref) => {
     )
   }
 
-
   const stagesModal = () => {
     return (
-      <CustomPicker visible={stageModalVisible} onModalClose={() => setStageModalVisible(!stageModalVisible)} renderItems={
-
-        locationInfo.stages && locationInfo.stages.map((stage, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setSelectedStageId(stage.stage_id);
-              setSelectedOutComeId(null);
-              if (locationInfo.outcomes) {
-                setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));
-              }
-              setStageModalVisible(!stageModalVisible);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-              <Text style={styles.pickerItemText}>{stage.stage_name !== "" ? stage.stage_name : ' '}</Text>
-              {stage.stage_id == selectedStageId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          </View>
-        ))
-      } />
-    )
+      <SelectionPicker
+        mode={"single"}
+        visible={stageModalVisible}
+        title={"Please select an option:"}        
+        options={options}
+        value={locationInfo.stages.find(element => element.stage_id === selectedStageId)? locationInfo.stages.find(element => element.stage_id === selectedStageId).stage_name : ""}
+        onModalClose={() => setStageModalVisible(false)}
+        onValueChanged={(item, index) => {
+          console.log(item, locationInfo.stages);
+          var stage_id = locationInfo.stages.find(element => element.stage_name === item).stage_id;          
+          setSelectedStageId(stage_id);          
+          setSelectedOutComeId(null);
+          if (locationInfo.outcomes) {            
+            var selectedOutcomes = locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage_id);
+            setSelectedOutcomes(selectedOutcomes);            
+            var tmp = [];
+            selectedOutcomes.forEach((element , index) => {
+              tmp.push(element.outcome_name);
+            });
+            setOptions(tmp);     
+          }
+          setStageModalVisible(false);
+        }}        
+        >        
+      </SelectionPicker>
+    );    
   }
 
   const outComesModal = () => {
+    // return (
+    //   <SelectionPicker
+    //     mode={"single"}
+    //     visible={outComeModalVisible}
+    //     title={"Please select an option:"}        
+    //     options={options}
+    //     value={selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId)? selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId).outcome_name : ""}
+    //     onModalClose={() => setOutComeModalVisible(false)}
+    //     onValueChanged={(item, index) => {
+    //       var outcome_id = selectedOutcomes.find(element => element.outcome_name === item).outcome_id;                    
+    //       setSelectedOutComeId(outcome_id);
+    //       setOutComeModalVisible(false);
+    //       setIsLoading(true);
+    //       console.log(item, index);
+    //       console.log(outcome_id);
+    //     }}        
+    //     >        
+    //   </SelectionPicker>
+    // );
+
     return (
       <CustomPicker
         visible={outComeModalVisible}
@@ -320,7 +354,15 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       {
         locationInfo !== undefined && locationInfo.address !== "" &&
         <View style={styles.refreshBox}>
-          <TouchableOpacity style={styles.shadowBox} onPress={() => setStageModalVisible(!stageModalVisible)}>
+          <TouchableOpacity style={styles.shadowBox} onPress={() => {
+            setStageModalVisible(!stageModalVisible);
+            var tmp = [];
+            locationInfo.stages.forEach(element => {
+                tmp.push(element.stage_name);
+            });
+            setOptions(tmp);
+            console.log("setStageModalVisible(!stageModalVisible)", locationInfo.stages);
+          }}>
             <Text style={styles.shadowBoxText}>Stage</Text>
             <View>
               <View style={styles.button} onPress={() => setStageModalVisible(!stageModalVisible)}>
@@ -381,7 +423,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
                   keyboardType={field.field_type === "numeric" ? 'number-pad' : 'default'}
                   returnKeyType={field.field_type === "numeric" ? 'done' : 'next'}
                   style={styles.textInput}
-                  label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
+                  label={<Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
                   mode="outlined"
                   outlineColor={whiteLabel().fieldBorder}
                   activeOutlineColor={DISABLED_COLOR}
@@ -477,7 +519,7 @@ const styles = EStyleSheet.create(parse({
   },
   shadowBoxText: {
     fontSize: 13,
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: 'Gilroy-Medium'
   },
   refreshBox: {
@@ -501,7 +543,7 @@ const styles = EStyleSheet.create(parse({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
@@ -512,7 +554,7 @@ const styles = EStyleSheet.create(parse({
     width: '47%'
   },
   button: {
-    backgroundColor: GRAY_COLOR,
+    backgroundColor: Colors.greyColor,
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,
@@ -532,7 +574,7 @@ const styles = EStyleSheet.create(parse({
     display: perWidth('flex', 'none'),
     fontSize: 18,
     fontFamily: 'Gilroy-Bold',
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     marginBottom: 8,
     paddingLeft: 10
   },
@@ -548,7 +590,7 @@ const styles = EStyleSheet.create(parse({
     paddingBottom: 8,
   },
   pickerContent: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 20,

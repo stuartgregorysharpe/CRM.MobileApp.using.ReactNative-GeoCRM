@@ -41,8 +41,7 @@ export const SelectionView = ({options , mode,  value, onClose , onSave , onValu
             }else{
                 setSelectedVal([...selectedVals, item]);
                 onValueChanged([...selectedVals, item]);
-            }            
-            
+            }        
         }
     }
 

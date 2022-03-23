@@ -60,6 +60,24 @@ export const getUserId = async () => {
   }
 }
 
+export const getMapMinZoomLevel = async () =>{
+  
+  try {
+    var token = await getToken();
+    var data = token != null ? jwt_decode(token) : null;
+    var map_min_zoom_level = data.user_scopes.geo_rep.map_min_zoom_level;
+    //console.log("featuers", features);
+    if (map_min_zoom_level !== undefined) {
+      return parseInt(map_min_zoom_level);      
+    } else {
+      return 8;
+    }
+  } catch (e) {    
+    return 8;
+  }
+
+}
+
 export const checkFeatureIncludeParam = async (param) => {
   try {
     var token = await getToken();

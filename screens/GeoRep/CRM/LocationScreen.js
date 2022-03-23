@@ -14,7 +14,7 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { CHANGE_POLYGONS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationsMap, getLocationSearchListsByPage, getLocationMapByRegion } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -28,6 +28,7 @@ import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { isInsidePoly } from '../../../constants/Consts';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import { SelectionPicker } from '../../../components/modal/SelectionPicker';
+import { getMapMinZoomLevel } from '../../../constants/Storage';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -226,9 +227,10 @@ export default function LocationScreen(props) {
     if(myLocation !== undefined && boundBox !== undefined && isGuranted){
       setIsLoading(true);
       console.log("other route")
-      getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                            
-        setLocationMap([...res]);
+      getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                                    
+        setLocationMap([...res.locations]);
         setIsLoading(false);                              
+        dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });
       }).catch((e) => {  
       });  
     }                  
@@ -300,10 +302,9 @@ export default function LocationScreen(props) {
     }    
   }
   
-
-  const finish = () => {    
+  const finish = () => {
     setEditing(null);
-    setCreatingHole(false);    
+    setCreatingHole(false);
   }
 
   const onPressMap = (e) => {
@@ -340,8 +341,12 @@ export default function LocationScreen(props) {
     }
   }
 
-  const regionChanged = ( region,  markers, bBox, zoom ) => {
-    if(zoom >= 10){
+  const regionChanged = async( region,  markers, bBox, zoom ) => {
+
+    var minZoomLevel = await getMapMinZoomLevel();
+    console.log("minZoomLevel", minZoomLevel);
+
+    if(zoom >= minZoomLevel){
       if(isZoomOut === true){
         console.log("hide");
         setIsZoomOut(false);
@@ -355,17 +360,20 @@ export default function LocationScreen(props) {
     console.log("previous zoom", previousZoom);
     console.log("zoom ", zoom);
 
+    
+
     if( markers !== undefined && markers.length < 20 ||  markers === undefined ){
-      if( (previousZoom < 8 && zoom >= 8 && !isDraw) || ( previousZoom >= zoom  && zoom >= 8 && !isDraw ) ){
+      if( (previousZoom < minZoomLevel && zoom >= minZoomLevel && !isDraw) || ( previousZoom >= zoom  && zoom >= minZoomLevel && !isDraw ) ){
         setBoundBox(bBox);
         if(isLoading === false){
           setIsLoading(true);
           console.log("call map api =======", bBox);
-          getLocationMapByRegion(myLocation, bBox).then((res) =>{                                                            
-            var lists = [...res];
+          getLocationMapByRegion(myLocation, bBox).then((res) =>{            
+            var lists = [...res.locations];
             setLocationMap(lists);                       
             setIsLoading(false);
-            console.log("end map api ");                       
+            dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });
+
           }).catch((e) => {  
             console.log("error", e);                       
           });                

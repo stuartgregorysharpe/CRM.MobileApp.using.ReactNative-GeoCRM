@@ -327,14 +327,13 @@ export const FormQuestions = (props) =>{
 
     return (      
         <View style={styles.container}  onTouchStart={(e) => { setIsInfo(false); }}>
+          
             <GrayBackground></GrayBackground>
-            <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>
-            
+            <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>          
             <DatetimePickerView 
               visible={isDateTimeView}
               value={selectedDate}
-              onModalClose={() =>{
-                console.log("XDASDFSf")
+              onModalClose={() =>{                
                 closeDateTime();
               }}
               close={(date) => {

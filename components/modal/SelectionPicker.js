@@ -16,10 +16,16 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
         if( mode === "single"){
             var tmp = null;
             if(values !== null && values !== undefined){
-                tmp = values.find((element => element === item ));
-                if(tmp !== null && tmp !== undefined){
-                    return true;
-                }
+                if(mode == "single"){
+                    if(values === item){
+                        return true;
+                    }
+                }else{
+                    tmp = values.find((element => element === item ));
+                    if(tmp !== null && tmp !== undefined){
+                        return true;
+                    }
+                }                
             }
         }
         return false; 
@@ -55,19 +61,17 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
             }            
         }
     }
-    
+
     return (
-        <Modal 
-            
+        <Modal             
             animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onModalClose}>
             <TouchableWithoutFeedback onPress={onModalClose}>
-                <ScrollView style={{height:100}} contentContainerStyle={{flex:1}}>
+                                
                     <View style={style.centeredView}>
-                        <View style={style.modalView}>
-
+                        <View style={style.modalView}>                            
                             <TouchableOpacity style={{ padding: 6 }}>
                                 <Divider></Divider>
                             </TouchableOpacity>
@@ -82,6 +86,7 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
                                     </Text>
                                 </TouchableOpacity>
                             </View>
+                            <ScrollView style={{maxHeight:400}}>
                             {
                                 options.map((item, index) => (
                                     <TouchableOpacity  key={index}
@@ -102,6 +107,7 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
                                     </TouchableOpacity>
                                   ))
                             }
+                            </ScrollView>
 
                             {
                                 buttonTitle &&
@@ -110,16 +116,13 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
                             
                         </View>
                     </View>
-                </ScrollView>
+                {/* </ScrollView> */}
             </TouchableWithoutFeedback >
         </Modal>
     )
 }
 
 const styles = StyleSheet.create({
-
-
-
   
     pickerItem: {
         flexDirection: 'row',

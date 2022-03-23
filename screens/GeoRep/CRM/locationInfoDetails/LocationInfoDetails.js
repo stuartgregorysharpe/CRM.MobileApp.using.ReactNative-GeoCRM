@@ -96,23 +96,15 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       setKeyboardStatus(false);
     });  
 
-
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    // return () => {
-    //   BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
-    // };
-  
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);    
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
       showSubscription.remove();
       hideSubscription.remove();
-    };   
-    
-    
+    };           
   }, []);
 
   const handleBackButtonClick = async() => {    
-    //props.navigation.goBack();
     checkFeedbackAndClose("back")
     return true;
   }
