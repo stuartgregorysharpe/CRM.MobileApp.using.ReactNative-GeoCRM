@@ -56,7 +56,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
         let payload = {
             "location_id": locationId,
             "contact_name": name,
-            "contact_surname":surname,
+            "contact_surname": surname,
             "contact_cell": mobile_number,
             "additional_number": additional_number,
             "contact_email": email,
@@ -113,7 +113,11 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                         color={Colors.selectedRedColor}
                         uppercase={false}
                         onPress={() => {
-
+                            setName('');
+                            setSurname('');
+                            setEmail('');
+                            setMobileNumber('');
+                            setAdditionalNumber('');
                         }}
                     >
                         Clear

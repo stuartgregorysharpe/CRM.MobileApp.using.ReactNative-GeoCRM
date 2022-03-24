@@ -1,7 +1,7 @@
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler, Pressable } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
@@ -15,8 +15,11 @@ import { boxShadow, grayBackground, style } from '../../../../constants/Styles';
 import AddContact from '../popup/AddOrUpdateContact';
 import uuid from 'react-native-uuid';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
 
 var selectedIndex = 1;
+var showingItem = 0;
 export default function CustomerContactsScreen({ onClose, locationId }) {
     const [tabIndex, setTabIndex] = useState(1);
     const [locationFields, setLocationFields] = useState([]);
@@ -30,10 +33,35 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const dispatch = useDispatch();
     const [pageType, setPageType] = useState('add');
     const [selectedContact, setSelectedContact] = useState(null);
+    const [selectedValue, setSelectedValue] = useState([]);
 
     useEffect(() => {
         loadList()
-    }, []);
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+        };
+    }, [showItem]);
+
+    const handleBackButtonClick = () => {
+        console.log("back clicked", showItem);
+        if (showingItem == 2) {
+            setShowItem(0);
+            showingItem = 0;
+            return true;
+        }
+        if (showingItem == 1) {
+            setShowItem(0);
+            showingItem = 0;
+            dispatch({ type: SLIDE_STATUS, payload: false });
+            return true;
+        }
+
+        onClose();
+        // setShowItem(0);
+        // dispatch({ type: SLIDE_STATUS, payload: false });
+        return true;
+    }
 
     const loadList = () => {
         if (selectedIndex == 1) {
@@ -54,6 +82,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
         switch (name) {
             case "addcontact":
                 setShowItem(1);
+                showingItem = 1;
                 return;
             default:
                 return;
@@ -212,35 +241,37 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     const dropdownModal = () => {
         return (
-            <CustomPicker
+            <SelectionPicker
+                title={"Select Suite, Unit, Apt"}
+                clearTitle={"Clear"}
+                mode={"single"}
+                value={selectedValue}
                 visible={isDropdownModal}
-                renderItems={
-                    dropdownItems.map((item, index) => (
-                        <TouchableOpacity style={[styles.pickerItem]} key={index}
-                            onPress={() => {
-                                var tmp = [...customMasterFields];
-                                tmp.forEach((element, key) => {
-                                    if (element.custom_master_field_id == dropdownId) {
-                                        element.value = item;
-                                        element.itemIndex = index;
-                                        if (element.field_type === "dropdown_input") {
-                                            element.dropdown_value = item;
-                                            element.value = '';
-                                        }
+                options={dropdownItems}
+                onModalClose={() => setIsDropdownModal(false)}
+                onValueChanged={(item, index) => {
+                    console.log("selected item", item);
+                    var tmp = [...customMasterFields];
+                    tmp.forEach((element, key) => {
 
-                                        var locationFieldsTmp = [...locationFields];
-                                        locationFieldsTmp[key].value = item;
-                                        setLocationFields(locationFieldsTmp);
-                                    }
-                                });
-                                setCustomMasterFields(tmp);
-                                setIsDropdownModal(false);
-                            }}>
-                            <Text style={styles.pickerItemText}>{item}</Text>
-                            {index === getSelectedDropdownItem() && <SvgIcon icon="Check" width='23px' height='23px' />}
-                        </TouchableOpacity>
-                    ))
-                } />
+                        if (element.custom_master_field_id == dropdownId) {
+
+                            element.itemIndex = index;
+                            var fieldTmp = [...locationFields];
+                            if (element.field_type === "dropdown_input") {
+                                element.dropdown_value = item;
+                                fieldTmp[key].dropdown_value = item;
+                            } else {
+                                element.value = item;
+                                fieldTmp[key].value = item;
+                            }
+                            setLocationFields(fieldTmp);
+                        }
+                    });
+                    setCustomMasterFields(tmp);
+                    setIsDropdownModal(false);
+                }}
+            ></SelectionPicker>
         )
     }
 
@@ -248,7 +279,8 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
         return (
             <TouchableOpacity activeOpacity={1} onPress={() => {
                 if (disableField(field)) {
-                    setShowItem(2)
+                    setShowItem(2);
+                    showingItem = 2;
                 }
             }}>
                 <View>
@@ -278,7 +310,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         blurOnSubmit={false}
                         onSubmitEditing={() => {
                             if (key <= dispositionRef.current.length - 2 && dispositionRef.current[key + 1] != null) {
-                                if (leadForms[key + 1].field_type == "text") {
+                                if (locationFields[key + 1].field_type == "text") {
                                     dispositionRef.current[key + 1].focus();
                                 }
                             }
@@ -300,10 +332,20 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                                     <View key={key}>
                                         <TouchableOpacity key={key} style={[styles.textInput, styles.dropdownBox, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, }]}
                                             onPress={() => {
+                                                if (disableField(field)) {
+                                                    setShowItem(2);
+                                                    showingItem = 2;
+                                                    return;
+                                                }
                                                 setDropdownItems(field.preset_options !== "" ? field.preset_options : []);
                                                 if (field.preset_options.length > 0) {
                                                     setDropdownId(field.custom_master_field_id);
                                                     setIsDropdownModal(true);
+                                                    if (field.field_type === "dropdown") {
+                                                        setSelectedValue([field.value])
+                                                    } else {
+                                                        setSelectedValue([field.dropdown_value])
+                                                    }
                                                 }
                                             }}>
                                             <Text
@@ -416,6 +458,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                     //   props.refreshLocationInfo(locationId);
                     loadList();
                     setShowItem(0);
+                    showingItem = 0;
                 }}
             />
         )
@@ -460,12 +503,23 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                 >
                     {showItem == 1 && <AddContact onClose={() => {
                         setShowItem(0);
+                        showingItem = 0;
                         dispatch({ type: SLIDE_STATUS, payload: false });
                     }} pageType={pageType} contactInfo={selectedContact}
                         locationId={locationId} />}
                 </View>}
             {
-                showItem == 1 && <View style={{ backgroundColor: grayBackground.backgroundColor, height: '100%', position: 'absolute', left: 0, bottom: 0, top: 0, right: 0 }}></View>
+                showItem == 1 &&
+                <View style={{
+                    backgroundColor: grayBackground.backgroundColor,
+                    height: '100%',
+                    position: 'absolute',
+                    left: 0,
+                    bottom: 0,
+                    top: 0,
+                    right: 0
+                }}>
+                </View>
             }
         </View>
         // </Animated.View>
