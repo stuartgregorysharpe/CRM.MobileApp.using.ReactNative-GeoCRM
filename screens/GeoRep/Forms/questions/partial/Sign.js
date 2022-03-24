@@ -1,33 +1,31 @@
 import React, { useState, useEffect , useRef} from 'react';
-import { View, TouchableOpacity, StyleSheet,  Text, Dimensions, Platform } from 'react-native';
+import { View, TouchableOpacity, StyleSheet,  Text, Dimensions, Platform ,TouchableWithoutFeedback , Modal } from 'react-native';
 import { Button } from 'react-native-paper';
 import SignatureScreen from "react-native-signature-canvas";
 import Divider from '../../../../../components/Divider';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
+import { style } from '../../../../../constants/Styles';
 
 
-const Sign = ({ signature, onOK , onClear, onClose }) => {
+const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
 
-  console.log("new signaure", signature);
+  //console.log("new signaure", signature);
 
   const [data, setData] = useState(signature);
   console.log("data", data);
 
-  useEffect(() => {
-    
+  useEffect(() => {    
     setTimeout(() => {
       setData(signature);
-      console.log("triggered", ref.current);
-      
-      
+      console.log("triggered", ref.current);            
     }, 2000);
   },[]);
 
   const ref = useRef();
 
-  const style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
+  const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
   // Called after ref.current.readSignature() reads a non-empty base64 string
   const handleOK = (signature) => {
     console.log("----",signature);
@@ -49,11 +47,10 @@ const Sign = ({ signature, onOK , onClear, onClose }) => {
   const handleData = (data) => {
     console.log(data);    
   };
-
   
   const handleClear = () => {
     ref.current.clearSignature();
-    onClear();
+    onClear();    
   }
 
   const handleConfirm = () => {
@@ -66,58 +63,79 @@ const Sign = ({ signature, onOK , onClear, onClose }) => {
     //onOK(ref.current.readSignature()); 
   }
 
-  return (
-    <View style={styles.container}>
-
-        <Divider></Divider>
-        
-        <View style={[styles.titleContainer, {marginTop:5}]}>
-            <View style={{flex:1, alignItems:'center'}}>
-                <Text style={styles.titleStyle} >Please Sign Below:</Text>
-            </View>
-                       
-            <Button
-                style={{position:'absolute' , right:10}}
-                labelStyle={styles.clearStyle}
-                // /color={Colors.selectedRedColor}
-                uppercase={false} 
-                onPress={ async() => {                     
-                    handleClear();
-                }}>
-            Clear
-            </Button>
-        </View>
-
-        <SignatureScreen
-            ref={ref}
-            androidHardwareAccelerationDisabled={false}
-            webStyle={style}
-            dataURL={signature}
-            //onEnd={handleEnd}
-            onOK={handleOK}
-            onEmpty={handleEmpty}
-            imageType='image/png'
-            //onClear={handleClear}
-            // onGetData={handleData}
-            // autoClear={true}
-            //descriptionText={text}
-        />
-                    
-        <View style={{ marginVertical:10, width:Dimensions.get('window').width * 0.94 }}>
-            <SubmitButton onSubmit={ () => {                
-                 handleConfirm();                  
-                 //onClose();
-                } } title="Submit"  ></SubmitButton>
-        </View>
-        
-    </View>
-    
+  
+  return (    
+    <TouchableWithoutFeedback onPress={onClose}>
+        <Modal 
+            animationType="slide"
+            transparent={true}
+            visible={visible}
+            onRequestClose={onClose}>                        
+                <View style={[style.centeredView]}> 
+                    <TouchableWithoutFeedback onPress={onClose}>
+                      <View style={styles.topContainer}></View>
+                    </TouchableWithoutFeedback>
+                    <View style={[style.modalView, styles.container]} >
+                        <Divider></Divider>
+            
+                        <View style={[styles.titleContainer, {marginTop:5}]}>
+                            <View style={{flex:1, alignItems:'center'}}>
+                                <Text style={styles.titleStyle} >Please Sign Below:</Text>
+                            </View>
+                                      
+                            <Button
+                                style={{position:'absolute' , right:10}}
+                                labelStyle={styles.clearStyle}
+                                // /color={Colors.selectedRedColor}
+                                uppercase={false} 
+                                onPress={ async() => {     
+                                    handleClear();
+                                }}>
+                            Clear
+                            </Button>
+                        </View>
+                                              
+                        <SignatureScreen
+                            ref={ref}
+                            //androidHardwareAccelerationDisabled={false}
+                            webStyle={map_style}
+                            dataURL={signature}
+                            //onEnd={handleEnd}
+                            onOK={handleOK}
+                            onEmpty={handleEmpty}
+                            //imageType='image/png'
+                            //onClear={handleClear}
+                            // onGetData={handleData}
+                            // autoClear={true}
+                            //descriptionText={text}
+                        />
+                                    
+                        <View style={{ marginVertical:10, width:Dimensions.get('window').width * 0.94 }}>
+                            <SubmitButton onSubmit={ () => {                
+                                handleConfirm();                  
+                                //onClose();
+                                } } title="Submit"  ></SubmitButton>
+                        </View>
+                    </View>
+                  
+                </View>
+            
+          </Modal>
+      </TouchableWithoutFeedback>    
   );
 };
 
 
 const styles = StyleSheet.create({
 
+    topContainer:{
+      width:Dimensions.get("screen").width,        
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height:Dimensions.get("screen").height,        
+    },
     container: {
         width:Dimensions.get("screen").width,        
         position: 'absolute',

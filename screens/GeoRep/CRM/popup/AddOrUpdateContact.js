@@ -12,6 +12,7 @@ import GrayBackground from '../../../../components/GrayBackground';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { addEditLocationContact } from '../../../../actions/location.action';
+import uuid from 'react-native-uuid';
 
 export default function AddContact({ onClose, pageType, contactInfo, locationId }) {
     const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
     const additionalNumberRef = useRef();
 
     const [name, setName] = useState(contactInfo ? contactInfo?.contact_name : '');
-    const [surname, setSurname] = useState(contactInfo ? contactInfo?.surname : '');
+    const [surname, setSurname] = useState(contactInfo ? contactInfo?.contact_surname : '');
     const [email, setEmail] = useState(contactInfo ? contactInfo?.contact_email : '');
     const [mobile_number, setMobileNumber] = useState(contactInfo ? contactInfo?.contact_cell : '');
     const [additional_number, setAdditionalNumber] = useState(contactInfo ? contactInfo?.additional_number : '');
@@ -54,7 +55,8 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
         //  /locations/add-edit-contacts
         let payload = {
             "location_id": locationId,
-            "contact_name": name + ' ' + surname,
+            "contact_name": name,
+            "contact_surname":surname,
             "contact_cell": mobile_number,
             "additional_number": additional_number,
             "contact_email": email,
@@ -65,22 +67,22 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
             payload['contact_id'] = contactInfo.contact_id;
         }
 
-        addEditLocationContact(payload).then(response=>{
+        addEditLocationContact(payload, uuid.v4()).then(response => {
             setIsSuccess(true);
             setShowErrorAlert(false);
-            if(pageType==='add'){
+            if (pageType === 'add') {
                 setMessage('Contact added successfully')
-            }else{
+            } else {
                 setMessage('Contact updated successfully');
             }
-        }).catch(e=>{
+        }).catch(e => {
 
             //added for temporary. will remove once api working properly
             setIsSuccess(true);
             setShowErrorAlert(false);
-            if(pageType==='add'){
+            if (pageType === 'add') {
                 setMessage('Contact added successfully')
-            }else{
+            } else {
                 setMessage('Contact updated successfully');
             }
         })

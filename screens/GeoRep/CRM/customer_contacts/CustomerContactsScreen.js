@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, Scrol
 import { TextInput } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
-import { getLocationContacts, getLocationFields } from '../../../../actions/location.action';
+import { getLocationContacts, getLocationFields, updateCustomerLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -13,6 +13,8 @@ import Colors, { BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../consta
 import Fonts from '../../../../constants/Fonts';
 import { boxShadow, grayBackground, style } from '../../../../constants/Styles';
 import AddContact from '../popup/AddOrUpdateContact';
+import uuid from 'react-native-uuid';
+import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 
 var selectedIndex = 1;
 export default function CustomerContactsScreen({ onClose, locationId }) {
@@ -58,8 +60,42 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
         }
     }
 
-    const handleSubmit = () => {
+    const disableField = (field) => {
+        if (field.core_field_name === 'location_name' || field.core_field_name === 'location_unit'
+            || field.core_field_name === 'street_address' || field.core_field_name === 'suburb'
+            || field.core_field_name === 'city' || field.core_field_name === 'state'
+            || field.core_field_name === 'country' || field.core_field_name === 'pincode') {
+            return true;
+        }
 
+        return false;
+    }
+
+    const handleSubmit = () => {
+        let fields = [];
+        for (let i = 0; i < locationFields.length; i++) {
+            if (!disableField(locationFields[i])) {
+                fields.push({
+                    'custom_master_field_id': locationFields[i].custom_master_field_id,
+                    'value': locationFields[i].value
+                })
+            }
+
+
+        }
+
+        let request = {
+            "location_id": locationId,
+            "fields": fields
+        }
+
+        updateCustomerLocationFields(request, uuid.v4()).then(response => {
+            console.log(response);
+
+            loadList();
+        }).catch(e => {
+            console.log(e);
+        })
     }
 
     const prepareContactsList = (res) => {
@@ -210,7 +246,11 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     const renderText = (field, key) => {
         return (
-            <TouchableOpacity activeOpacity={1}>
+            <TouchableOpacity activeOpacity={1} onPress={() => {
+                if (disableField(field)) {
+                    setShowItem(2)
+                }
+            }}>
                 <View>
                     <TextInput
                         type={field.field_type}
@@ -221,6 +261,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         label={field.field_type === "dropdown_input" ? 'Input number, details' : <Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                         value={getTextValue(customMasterFields, field.custom_master_field_id)}
                         mode="outlined"
+                        disabled={disableField(field)}
                         outlineColor={whiteLabel().fieldBorder}
                         activeOutlineColor={DISABLED_COLOR}
                         onChangeText={text => {
@@ -367,6 +408,19 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             </View>
         )
     }
+
+    if (showItem === 2) {
+        return (
+            <UpdateCustomerInfo location_id={locationId}
+                onClose={() => {
+                    //   props.refreshLocationInfo(locationId);
+                    loadList();
+                    setShowItem(0);
+                }}
+            />
+        )
+    }
+
 
     return (
         // <Animated.View>

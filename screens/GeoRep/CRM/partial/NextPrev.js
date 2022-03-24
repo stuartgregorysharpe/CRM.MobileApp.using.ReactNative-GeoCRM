@@ -4,16 +4,18 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {  Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
-import { getLocationInfo } from '../../../../actions/location.action';
-import { getLocationLoop, storeLocationLoop } from '../../../../constants/Storage';
+import { getLocationInfo, postLocationFeedback } from '../../../../actions/location.action';
+import { checkFeatureIncludeParam, getLocationLoop, storeLocationLoop } from '../../../../constants/Storage';
 import SvgIcon from '../../../../components/SvgIcon';
 import DeviceInfo from 'react-native-device-info';
 var currentPosition = -1;
 var isClickable = true;
 
-export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , onStart}){
+export function NextPrev(props){
 
     // pageType : 'camera' or 'search-lists'  ,  onUpdated: called after pressed "next" or "prev" button.
+    const {currentLocation, pageType ,locationInfo , onUpdated , onStart , canGoNextPrev } = props;
+    
     const [isPrev, setIsPrev] = useState(false);
     const [isNext, setIsNext] = useState(false);    
     const loopLists = useSelector(state => state.location.loopLists); // use for camera page
@@ -30,7 +32,7 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
         }else if(pageType.name === "camera"){
             setIsNext(false);
             setIsPrev(false);
-        }        
+        }
     },[])
 
     useEffect(() =>{
@@ -49,6 +51,17 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
             }            
         }                
     },[loopLists]);
+
+    // const _canGoNextPrev = async () => {
+    //     let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+    //     if( check && !outcomeVal){
+    //       feedback()
+    //     }else{
+    //       return true;
+    //     }    
+    // }
+
+      
 
     const checkIsPrev = async() =>{
         var savedLocationLoop = await getLocationLoop();
@@ -244,8 +257,11 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
             {
                 isPrev &&
                 <TouchableOpacity style={styles.leftContainer} 
-                    onPress={() => {               
-                        onPrev();                        
+                    onPress={ async () => {                                     
+                        if( await canGoNextPrev() === true ){
+                            onPrev();
+                        }
+                    
                     }}>
                     <View style={[styles.prevStyle, {paddingLeft:10, paddingRight:10}]}>
                         <SvgIcon icon="Arrow_Left_Btn_alt" width='7px' height='15px' />
@@ -259,8 +275,10 @@ export function NextPrev({currentLocation, pageType ,locationInfo , onUpdated , 
             {
                 isNext && 
                 <TouchableOpacity style={[styles.rightContainer ]}  
-                    onPress={() =>{                    
-                        onNext();
+                    onPress={ async () =>{                        
+                        if( await canGoNextPrev() === true ){
+                            onNext();
+                        }                        
                     }}>
                     <View style={[styles.prevStyle , { paddingLeft:20, paddingRight:10 }]}>
                         <Text style={{marginRight:13, fontSize:12 , color: whiteLabel().actionOutlineButtonText , fontWeight:'700'}}>                            

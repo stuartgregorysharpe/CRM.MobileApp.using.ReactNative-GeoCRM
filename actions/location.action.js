@@ -17,7 +17,7 @@ import {
   CHANGE_POLYGONS
 
 } from "./actionTypes";
-
+import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
 
 let cancelToken
@@ -67,8 +67,6 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
     zoom_bounds: zoom_bounds
   });
 
-
-
   console.log(zoom_bounds);
 
   return new Promise(function (resolve, reject) {
@@ -90,7 +88,8 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
           resolve([]);
         }
         if (res.data.status == 'success') {
-          resolve(res.data.locations);
+          resolve(res.data);
+          console.log("polygon data", res.data.polygons);          
         } else {
           resolve([]);
         }
@@ -354,6 +353,8 @@ export const getLocationInfoUpdate = async (location_id) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
 
+  console.log(`${base_url}/locations/location_info_update_fields`);
+
   return new Promise(function (resolve, reject) {
     axios
       .get(`${base_url}/locations/location_info_update_fields`, {
@@ -394,11 +395,11 @@ export const postLeadFields = async (postData, idempotencyKey) => {
         }
       })
       .then((res) => {
-        if (res.data == undefined) {
-          resolve(0);
-          return;
+        
+        if (res.data.status === "success") {
+          resolve(res.data.location_id);
         }
-        resolve(1);
+        resolve(0);
       })
       .catch((err) => {
         reject(err);
@@ -411,7 +412,7 @@ export const postLocationInfoUpdate = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
   console.log("url", `${base_url}/locations-info/location-info-update`);
-  console.log("param", postData);
+  //console.log("param", postData);
 
   return new Promise(function (resolve, reject) {
 
@@ -588,6 +589,41 @@ export const postReloop = async (postData, idempotencyKey) => {
   });
 }
 
+//{base_url}/locations-info/location-feedback
+
+export const postLocationFeedback = async (postData) => {
+  var base_url = await getBaseUrl();
+  var token = await getToken();
+  
+  return new Promise(function (resolve, reject) {
+    axios
+      .post(`${base_url}/locations-info/location-feedback`, postData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': uuid.v4()
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve("");
+          return;
+        }
+        console.log(res.data);
+        if (res.data.status == "success") {
+          resolve(res.data.message);
+        } else {
+          resolve("");
+        }
+      })
+      .catch((err) => {
+        //console.log(err);
+        reject(err);
+      })
+
+  });
+}
+
+
 export const postLocationImage = async (postData, idempotencyKey) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
@@ -702,7 +738,7 @@ export const getLocationContacts = async (location_id) => {
 }
 
 
-export const addEditLocationContact = async (request) => {
+export const addEditLocationContact = async (request,indempotencyKey) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
   return new Promise(function (resolve, reject) {
@@ -710,6 +746,37 @@ export const addEditLocationContact = async (request) => {
       .post(`${baseUrl}/locations/add-edit-contacts`, request,{
         headers: {
           Authorization: 'Bearer ' + token,
+          'Indempotency-Key': indempotencyKey
+        }
+      })
+      .then((res) => {
+        // console.log("getLocationFields:",res.data);
+        if (res.data == undefined) {
+          resolve([]);
+        }
+        if (res.data.status == "success") {
+          resolve(res.data);
+        } else {
+          resolve([]);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+        console.log(err.request._response);
+      })
+  });
+
+}
+
+export const updateCustomerLocationFields = async (request,indempotencyKey) => {
+  var token = await getToken();
+  var baseUrl = await getBaseUrl();
+  return new Promise(function (resolve, reject) {
+    axios
+      .post(`${baseUrl}/locations/location-fields`, request,{
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Indempotency-Key': indempotencyKey
         }
       })
       .then((res) => {

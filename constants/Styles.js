@@ -53,18 +53,7 @@ export const style = StyleSheet.create({
   innerPlusButton: {          
 
   },
-
-  // card:{
-  //   flex:1, 
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   backgroundColor: '#fff',
-  //   paddingLeft: 12,
-  //   paddingRight: 12,
-  //   borderRadius: 7,
-  //   marginBottom: 10
-  // },
+  
   card: {    
     marginBottom: 10,
     backgroundColor: '#fff',
@@ -127,9 +116,34 @@ export const style = StyleSheet.create({
   compulsoryStyle:{
     borderWidth:1,
     borderColor:Colors.selectedRedColor
-  }
+  },
 
-  
+  centeredView: {
+      flex: 1,
+      justifyContent: "flex-end",
+      alignItems: "flex-end",
+      marginTop: 0,
+      //backgroundColor:'red'
+      backgroundColor: '#00000055'
+  },
+  modalView: {
+      
+      bottom:0,
+      width: '100%',
+      backgroundColor: Colors.bgColor,        
+      padding: 10,
+      paddingBottom:10,      
+      shadowColor: "#000",
+      shadowOffset: {
+          width: 0,
+          height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      paddingBottom: Platform.OS === "ios" ? 30:10,
+  },
+
 
 })
 

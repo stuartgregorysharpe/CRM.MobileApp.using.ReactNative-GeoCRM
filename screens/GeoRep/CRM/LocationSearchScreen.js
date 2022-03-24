@@ -1,5 +1,5 @@
 import React, { useState,useRef, useEffect } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, Dimensions ,  FlatList, Image, Platform , ActivityIndicator} from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, Dimensions ,  FlatList, Image, Platform , ActivityIndicator , BackHandler} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -94,16 +94,12 @@ export default function LocationSearchScreen(props) {
 
   });
   
-  useEffect(() => {  
-    console.log("orderLists.length"  , orderLists.length);
-    console.log("page number"  , pageNumber);
-
+  useEffect(() => {      
     if(orderLists.length === 0){      
       isEndPageLoading = false;
       loadMoreData();
-    }else{
+    }
 
-    }    
   },[]);
 
   
@@ -141,7 +137,7 @@ export default function LocationSearchScreen(props) {
     if(isPageLoading){
       loadData(); 
     }  
-  },[isPageLoading]);
+  },[isPageLoading]);  
 
   const loadData = async () => {
     
