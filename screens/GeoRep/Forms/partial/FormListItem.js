@@ -7,24 +7,32 @@ import { boxShadow, style } from '../../../../constants/Styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
-        
+            
+    console.log(" -------- item -------- " , item)
     return (
         <View style={[styles.container]}>
              <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" ? {borderWidth:1, borderColor:'red'}:{} ]} onPress={onItemPress}>                
                 <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:3, paddingBottom:3 }}>
                     <View style={{flexDirection:'row'}}>
                         <Text style={styles.title}>{item.form_name}</Text>                        
-                        <View 
-                            onTouchStart={(e) => {console.log('touchMove',e.nativeEvent); onTouchStart(e.nativeEvent , item.info_text);  }}
-                        >
-                            <Icon
-                                name={`info-outline`}
-                                size={25}
-                                color={whiteLabel().helpText}                            
-                            />
-                        </View>                        
+                        {
+                            item.guide_info !== undefined && item.guide_info !== [] &&
+                            <TouchableOpacity onPress={() => onTouchStart("" ,  item.guide_info) }>
+                                <View 
+                                    onTouchStart={(e) => {
+                                        console.log('touchMove',e.nativeEvent); 
+                                        //onTouchStart(e.nativeEvent , item.guide_info);
+                                        }} >
+                                    <Icon
+                                        name={`info-outline`}
+                                        size={25}
+                                        color={whiteLabel().helpText}                            
+                                    />
+                                </View>
+                            </TouchableOpacity>                        
+                        }                        
                     </View>
-                    {item && <Text style={styles.subTitile}>{item.guide_text}</Text>}
+                    {item && <Text style={styles.subTitile}>{item.form_type}</Text>}
                 </View>
 
                 {

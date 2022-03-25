@@ -11,6 +11,8 @@ import GrayBackground from '../../../components/GrayBackground';
 import { getFilterData } from '../../../constants/Storage';
 import { style } from '../../../constants/Styles';
 import Images from '../../../constants/Images';
+import FilterOptionsModal from '../../../components/modal/FilterOptionsModal';
+import { GuideInfoView } from './partial/GuideInfoView';
 
 let isInfoWindow = false;
 
@@ -23,10 +25,13 @@ export default function FormsScreen(props) {
   const [locationY, setLocationY] = useState(0);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  const [bubbleText, setBubleText] = useState("");
+  const [bubbleText, setBubleText] = useState({});
   const [isFilter, setIsFilter] = useState(false);
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;  
+  const [modalVisible, setModalVisible ] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [filters, setFilters] = useState(null);
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -56,8 +61,33 @@ export default function FormsScreen(props) {
   });
 
   useEffect(() => {
-    _callFormLists(null)
+    _callFormLists(null);
+    initFilter();
   }, []);
+
+  const initFilter = async() => {
+    var savedFilters = await getFilterData("@form_filter");
+    setFilters(savedFilters);
+  }
+
+  const saveFilter = (value, isChecked) => {
+    var data = [...filters.form_type];
+    var index = data.indexOf(value);
+    if(index !== -1){
+        if(!isChecked){      
+          data.splice(index, 1)
+        }
+    }else{
+        if(isChecked){
+          data.push(value);
+        }
+    }
+    filters.form_type = data;
+    setFilters(filters);
+    setOptions([]); 
+    var tmp = [...options];
+    setOptions(tmp);
+  }
 
   const _onSearch = (text) => {
     var tmp = [...originalFormLists];
@@ -79,15 +109,19 @@ export default function FormsScreen(props) {
   }
 
   const _onTouchStart = (e, text) => {    
-    isInfoWindow = true;
-    setX(e.pageX);
-    setY(e.pageY);
-    setLocationX(e.locationX);
-    setLocationY(e.locationY);
+    // isInfoWindow = true;
+    // setX(e.pageX);
+    // setY(e.pageY);
+    // setLocationX(e.locationX);
+    // setLocationY(e.locationY);
+    console.log("------------- " , text)
     setBubleText(text);
-    setTimeout(() => {
-      setIsInfo(true);
-    }, 100)
+    // setTimeout(() => {
+    //   setIsInfo(true);
+    // }, 100)
+
+    setIsInfo(true);
+
   }
 
   const getShift = () => {
@@ -99,8 +133,11 @@ export default function FormsScreen(props) {
 
   return (
     <Provider>
-      <View style={styles.container} onTouchStart={(e) => { setIsInfo(false); }} >
-        <GrayBackground></GrayBackground>
+      <View style={styles.container} 
+        //onTouchStart={(e) => { setIsInfo(false); }} 
+        >
+
+        {/* <GrayBackground></GrayBackground>
         {
           crmStatus && isFilter &&
           <FormFilterView
@@ -111,12 +148,55 @@ export default function FormsScreen(props) {
               setIsFilter(false);
               dispatch({ type: SLIDE_STATUS, payload: false });
             }} ></FormFilterView>
-        }
+        } */}
+
+        <FormFilterView
+          visible={isFilter}
+          onModalHide={() => {
+            consolelog("modal hide")
+          } }
+          apply={() => {
+            console.log("DDfilters" ,filters);
+            _callFormLists(filters);
+          }}
+          onItemClicked={(options) => {                        
+              setOptions(options);              
+              setIsFilter(false)              
+              setTimeout(() => {
+                setModalVisible(true);  
+              },500);
+          }}
+          onModalClose={() => {
+            setIsFilter(false)
+          }}
+          close={() => {
+            setIsFilter(false);
+            //dispatch({ type: SLIDE_STATUS, payload: false });
+          }} ></FormFilterView>
+        
+        <FilterOptionsModal
+            clearTitle={"Close"}
+            modaVisible={modalVisible}         
+            options={options} 
+            filters={filters}
+            selectedType={"form_type"}
+            fieldType={"form_type"}
+            onClose={() =>{
+                setModalVisible(false);          
+                setTimeout(() => {
+                  setIsFilter(true)
+                },500);
+            }}
+            onValueChanged={( value, isChecked) =>{
+                console.log(value, isChecked)
+                saveFilter( value , isChecked);                    
+            }} >
+        </FilterOptionsModal>      
 
         <SearchBar isFilter={true}
           animation={() => {
-            setIsFilter(true);
-            dispatch({ type: SLIDE_STATUS, payload: true });
+            setIsFilter(true);            
+            //dispatch({ type: SLIDE_STATUS, payload: true });
           }}
           onSearch={(text) => _onSearch(text)}></SearchBar>
 
@@ -143,8 +223,15 @@ export default function FormsScreen(props) {
           }
           keyExtractor={(item, index) => index.toString()}
         />
+        
+        <GuideInfoView
+            visible={isInfo}
+            info={bubbleText}
+            onModalClose={() => setIsInfo(false)}
+          >
 
-        {
+        </GuideInfoView>
+        {/* {
           isInfo &&
           <View style={{
             top: y - locationY - getShift(),
@@ -157,9 +244,11 @@ export default function FormsScreen(props) {
             <View style={styles.bubbleTextStyle} key={1}><Text>{bubbleText}</Text></View>
             <View style={[style.tip, { marginLeft: x - locationX + 3 }]}></View>
           </View>
-        }        
+        }         */}
+
+
       </View>
-    </Provider>
+     </Provider>
   );
 
 }

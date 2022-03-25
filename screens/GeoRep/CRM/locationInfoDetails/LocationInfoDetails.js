@@ -446,7 +446,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
                 {
                   locationInfo !== undefined && 
-                  <WazeNavigation location={locationInfo.coordinates}></WazeNavigation>
+                  <WazeNavigation location={locationInfo.coordinates} address={locationInfo.address}></WazeNavigation>
                 }
                 <View style={{height:50}}></View>
 

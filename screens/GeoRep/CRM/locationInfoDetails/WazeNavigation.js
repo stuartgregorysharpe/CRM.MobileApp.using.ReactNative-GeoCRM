@@ -3,13 +3,14 @@
 
 import React , {useEffect , useState} from 'react';
 import {View, Text, TouchableOpacity ,StyleSheet ,Linking, Platform ,Image} from 'react-native';
+import { add } from 'react-native-reanimated';
 import SvgIcon from '../../../../components/SvgIcon';
 import { PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { style } from '../../../../constants/Styles';
 
-export default function WazeNavigation({location}){
+export default function WazeNavigation({location , address}){
 
     const [isExpanded , setIsExpanded] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -27,31 +28,40 @@ export default function WazeNavigation({location}){
             {
                 visible &&
                     <View style={[style.card, {marginLeft:10, marginRight:10 , flexDirection:'column'}]}>
-
                     <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)} style={{flexDirection:"row", padding:5}}>
                         <View style={{flexDirection:"row", padding:5, flex:1}}>
-                            <Text style={{flex:1}} >Navigation</Text>                        
-                            <SvgIcon icon="Drop_Down" width='23px' height='23px' />                            
+                            <Text style={{flex:1}} >Navigation</Text>
+                            <SvgIcon icon="Drop_Down" width='23px' height='23px' />
                         </View>
-                    </TouchableOpacity>                    
-
+                    </TouchableOpacity>
 
                     {
                         isExpanded && 
                         <View style={{flexDirection:'column', width:'100%' , marginTop:10}}>
                             <View style={{height:1, width:'100%', backgroundColor:"#eee"}}></View>                        
-                            <TouchableOpacity onPress={() =>{
+                            <TouchableOpacity onPress={ async() =>{
                                 console.log("loc", location);
+                                var wazeByAddress  = await checkFeatureIncludeParam("waze_by_address");                                
                                 try{
+                                    
                                     console.log('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=yes');
-                                    Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
+                                    console.log("ms" , address);
+                                    console.log("wazeByAddress", wazeByAddress);
+                                    console.log("url", encodeURI('https://waze.com/ul?ll=' +  address ));
+                                    
+
+                                    if(wazeByAddress){
+                                        Linking.openURL( encodeURI('https://waze.com/ul?ll=' +  address ) )
+                                    }else{
+                                        Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
+                                    }                                                                        
                                 }catch(e){
                                     if(Platform.OS === "android"){
                                         Linking.openURL('market://details?id=com.waze')                                    
                                     }else{
                                         Linking.openURL('http://itunes.apple.com/us/app/id323229106')  
                                     }                                
-                                }                                
+                                }
                             }}>
                                 <View style={{flex:1, marginLeft:10, flexWrap:'wrap',}}> 
                                     <View style={styles.wazeStyle}>

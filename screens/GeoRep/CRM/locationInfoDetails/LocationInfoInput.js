@@ -305,43 +305,43 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   }
 
   const outComesModal = () => {
-    // return (
-    //   <SelectionPicker
-    //     mode={"single"}
-    //     visible={outComeModalVisible}
-    //     title={"Please select an option:"}        
-    //     options={options}
-    //     value={selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId)? selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId).outcome_name : ""}
-    //     onModalClose={() => setOutComeModalVisible(false)}
-    //     onValueChanged={(item, index) => {
-    //       var outcome_id = selectedOutcomes.find(element => element.outcome_name === item).outcome_id;                    
-    //       setSelectedOutComeId(outcome_id);
-    //       setOutComeModalVisible(false);
-    //       setIsLoading(true);
-    //       console.log(item, index);
-    //       console.log(outcome_id);
-    //     }}        
-    //     >        
-    //   </SelectionPicker>
-    // );
-
     return (
-      <CustomPicker
+      <SelectionPicker
+        mode={"single"}
         visible={outComeModalVisible}
-        renderItems={
-          selectedOutcomes.map((outcome, key) => (
-            <TouchableOpacity style={[styles.pickerItem]} key={key}
-              onPress={() => {
-                setSelectedOutComeId(outcome.outcome_id);
-                setOutComeModalVisible(!outComeModalVisible);
-                setIsLoading(true);
-              }}>
-              <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
-              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          ))
-        } />
-    )
+        title={"Please select an option:"}        
+        options={options}
+        value={selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId)? selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId).outcome_name : ""}
+        onModalClose={() => setOutComeModalVisible(false)}
+        onValueChanged={(item, index) => {
+          var outcome_id = selectedOutcomes.find(element => element.outcome_name === item).outcome_id;                    
+          setSelectedOutComeId(outcome_id);
+          setOutComeModalVisible(false);
+          setIsLoading(true);
+          console.log(item, index);
+          console.log(outcome_id);
+        }}        
+        >        
+      </SelectionPicker>
+    );
+
+    // return (
+    //   <CustomPicker
+    //     visible={outComeModalVisible}
+    //     renderItems={
+    //       selectedOutcomes.map((outcome, key) => (
+    //         <TouchableOpacity style={[styles.pickerItem]} key={key}
+    //           onPress={() => {
+    //             setSelectedOutComeId(outcome.outcome_id);
+    //             setOutComeModalVisible(!outComeModalVisible);
+    //             setIsLoading(true);
+    //           }}>
+    //           <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
+    //           {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
+    //         </TouchableOpacity>
+    //       ))
+    //     } />
+    // )
   }
 
   return (

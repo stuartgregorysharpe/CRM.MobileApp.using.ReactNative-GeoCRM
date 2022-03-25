@@ -1,14 +1,14 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, StyleSheet, Text, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
-import { Modal } from 'react-native-paper';
-import { BG_COLOR, TICK_BOX_COLOR } from '../../constants/Colors';
+import { View, Modal, TouchableWithoutFeedback, StyleSheet, Text, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
+import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import CheckBox from '@react-native-community/checkbox';
+import { style } from '../../constants/Styles';
+import Divider from '../Divider';
+import SvgIcon from '../SvgIcon';
 
-const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedType, fieldType, onValueChanged }) => {
+const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedType, fieldType, onValueChanged , title, clearTitle }) => {
   
   const getCheckedStatus = (id) => {
-
     if(selectedType === "form_type"){
       if (filters.form_type === undefined) {
         return false;
@@ -117,60 +117,124 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
   }
 
   return (
+        <Modal             
+            animationType="slide"
+            transparent={true}
+            visible={modaVisible}
+            onRequestClose={onClose}>
 
-    <Modal
-      visible={modaVisible}
-      transparent={true}
-      onDismiss={() => onClose()}
-      onRequestClose={() => onClose()}
-      contentContainerStyle={styles.pickerContent}>
-      <View style={{ flex: 1 }}>
-        <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
-          <Text style={{ fontSize: 18, fontFamily: Fonts.secondaryRegular }}>Close</Text>
-        </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={onClose}>
+                                
+              <View style={style.centeredView}>
+                  <View style={style.modalView}>                            
+                      <TouchableOpacity style={{ padding: 6 }}>
+                          <Divider></Divider>
+                      </TouchableOpacity>
 
-        <ScrollView style={{ flex: 1 }}>
+                      <View style={styles.sliderHeader}>                
+                          <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >
+                              {title}
+                          </Text>
+                          <TouchableOpacity style={styles.closeModal} onPress={() => { onClose(); }}>
+                              <Text style={{ fontSize: 13, fontFamily: Fonts.secondaryRegular ,  color:Colors.selectedRedColor}}>
+                                  {clearTitle}
+                              </Text>
+                          </TouchableOpacity>
+                      </View>
+                      <ScrollView style={{maxHeight:400}}>
+                      {
+                          options.map((item, index) => (
+                              <TouchableOpacity  key={index}
+                                  onPress={() => {                                                                                  
+                                      var value = getCheckedStatus(item.id ? item.id : item);
+                                      onValueChanged(item.id ? item.id : item , !value);                                      
+                                  }}>
+                                <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={index}>                                        
+                                    <Text style={styles.pickerItemText}>{item.name ? item.name : item}</Text>
+                                    <TouchableOpacity onPress={() => {
+                                      var value = getCheckedStatus(item.id ? item.id : item);                                          
+                                      onValueChanged(item.id ? item.id : item , !value);
+                                      
+                                    } }>
+                                            <View style={[styles.checkBoxStyle , getCheckedStatus(item.id ? item.id : item)? {} : {backgroundColor:'white'}]}>
+                                            <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
+                                        </View>
+                                    </TouchableOpacity>                                                                        
+                                </View>
+                              </TouchableOpacity>
+                            ))
+                      }
+                      </ScrollView>
+                      {/* {
+                          buttonTitle &&
+                          <SubmitButton onSubmit={ () =>  onSave()} title={buttonTitle}></SubmitButton>
+                      } */}                      
+                  </View>
+              </View>                
+            </TouchableWithoutFeedback >
+        </Modal>
+        
+    // <Modal
+    //   animationType='slide'
+    //   visible={modaVisible}
+    //   transparent={true}      
+    //   onRequestClose={() => onClose()}>
 
-          {options.map((item, key) => (
-            <View key={key}>
-              {
-                (selectedType == "stage" || selectedType == "outcome"
-                  || selectedType == "pipeline" || selectedType == "opportunity_status" || selectedType == "form_type") &&
-                <View style={styles.pickerItem} key={key}>
-                  <Text style={styles.pickerItemText}>{item.name}</Text>
-                  <CheckBox
-                    tintColors={TICK_BOX_COLOR}
-                    onCheckColor={TICK_BOX_COLOR}
-                    onTintColor={TICK_BOX_COLOR}
-                    value={getCheckedStatus(item.id)}
-                    onValueChange={value => {
-                      onValueChanged(item.id, value);
-                    }}
-                  />
-                </View>
-              }
-              {
-                !(selectedType == "stage" || selectedType == "outcome"
-                  || selectedType == "pipeline" || selectedType == "opportunity_status" || selectedType == "form_type") &&
-                <View style={styles.pickerItem} key={key}>
-                  <Text style={styles.pickerItemText}>{item}</Text>
-                  <CheckBox
-                    value={getCheckedStatus(item)}
-                    tintColors={TICK_BOX_COLOR}
-                    onCheckColor={TICK_BOX_COLOR}
-                    onTintColor={TICK_BOX_COLOR}
-                    onValueChange={value => {
-                      onValueChanged(item, value);
-                    }}
-                  />
-                </View>
-              }
-            </View>
-          ))}
-        </ScrollView>
+    //   <TouchableWithoutFeedback onPress={onClose()}>
+    //     <View style={style.centeredView}>
+    //       <View style={style.modalView}>
 
-      </View>
-    </Modal>
+    //         <TouchableOpacity style={{ padding: 6 }}>
+    //             <Divider></Divider>
+    //         </TouchableOpacity>
+
+    //         <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
+    //           <Text style={{ fontSize: 18, fontFamily: Fonts.secondaryRegular }}>Close</Text>
+    //         </TouchableOpacity>
+
+    //         <ScrollView style={{ flex: 1 }}>
+
+    //           {options.map((item, key) => (
+    //             <View key={key}>
+    //               {
+    //                 (selectedType == "stage" || selectedType == "outcome"
+    //                   || selectedType == "pipeline" || selectedType == "opportunity_status" || selectedType == "form_type") &&
+    //                 <View style={styles.pickerItem} key={key}>
+    //                   <Text style={styles.pickerItemText}>{item.name}</Text>
+    //                   <CheckBox
+    //                     tintColors={TICK_BOX_COLOR}
+    //                     onCheckColor={TICK_BOX_COLOR}
+    //                     onTintColor={TICK_BOX_COLOR}
+    //                     value={getCheckedStatus(item.id)}
+    //                     onValueChange={value => {
+    //                       onValueChanged(item.id, value);
+    //                     }}
+    //                   />
+    //                 </View>
+    //               }
+    //               {
+    //                 !(selectedType == "stage" || selectedType == "outcome"
+    //                   || selectedType == "pipeline" || selectedType == "opportunity_status" || selectedType == "form_type") &&
+    //                 <View style={styles.pickerItem} key={key}>
+    //                   <Text style={styles.pickerItemText}>{item}</Text>
+    //                   <CheckBox
+    //                     value={getCheckedStatus(item)}
+    //                     tintColors={TICK_BOX_COLOR}
+    //                     onCheckColor={TICK_BOX_COLOR}
+    //                     onTintColor={TICK_BOX_COLOR}
+    //                     onValueChange={value => {
+    //                       onValueChanged(item, value);
+    //                     }}
+    //                   />
+    //                 </View>
+    //               }
+    //             </View>
+    //           ))}
+    //         </ScrollView>
+    //       </View>
+    //     </View>
+    //   </TouchableWithoutFeedback>
+    // </Modal>
   )
 }
 
@@ -179,7 +243,7 @@ const styles = StyleSheet.create({
   pickerContent: {
     height: Dimensions.get("window").height * 0.7,
     margin: 20,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 20,
@@ -204,7 +268,34 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingTop: 10,
     marginBottom: 10
-  }
+  },
+  pickerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  pickerItemText: {
+      fontSize: 18,
+      color: 'black'
+  },
+  checkBoxStyle:{
+      width:25,
+      height:25,
+      borderRadius:15,
+      alignItems:'center',
+      justifyContent:'center',
+      backgroundColor:whiteLabel().itemSelectedBackground,
+      borderWidth:1,
+      borderColor:whiteLabel().itemSelectedBackground
+  },
+  sliderHeader: {                
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 10
+  },   
 })
 
 export default FilterOptionsModal;
