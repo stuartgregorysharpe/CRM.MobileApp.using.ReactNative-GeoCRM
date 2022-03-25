@@ -82,25 +82,27 @@ export default function AddLead({ screenProps, onClose }) {
   const initPostData = (res) => {
     var tmp = [];
     res.forEach((element) => {
-      if(element.field_type === "dropdown_input"){
+      if (element.field_type === "dropdown_input") {
         tmp.push(
-          { 'custom_master_field_id': element.custom_master_field_id, 
-          'value': '', 
-          'field_name': element.field_name , 
-          'core_field_name': element.core_field_name , 
-          'field_type': element.field_type , 
-          'dropdown_value' : '' }
-          );
-      }else{
+          {
+            'custom_master_field_id': element.custom_master_field_id,
+            'value': '',
+            'field_name': element.field_name,
+            'core_field_name': element.core_field_name,
+            'field_type': element.field_type,
+            'dropdown_value': ''
+          }
+        );
+      } else {
         tmp.push(
-          { 
-            'custom_master_field_id': element.custom_master_field_id, 
-            'value': '', 
-            'field_name': element.field_name , 
-            'core_field_name': element.core_field_name , 
-            'field_type': element.field_type 
+          {
+            'custom_master_field_id': element.custom_master_field_id,
+            'value': '',
+            'field_name': element.field_name,
+            'core_field_name': element.core_field_name,
+            'field_type': element.field_type
           });
-      }      
+      }
     })
     setCustomMasterFields(tmp);
   }
@@ -134,23 +136,23 @@ export default function AddLead({ screenProps, onClose }) {
     return res;
   }
 
-  const getSelectedDropdownItemText = (id, originFieldName , fieldType ) => {
+  const getSelectedDropdownItemText = (id, originFieldName, fieldType) => {
     var tmp = [...customMasterFields];
     var index = -1;
-    if(fieldType === "dropdown_input"){
+    if (fieldType === "dropdown_input") {
       tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.dropdown_value !== '') { //&& element.value != ""          
           index = element.itemIndex;
         }
-      });      
-    }else{      
+      });
+    } else {
       tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.value !== '') { //&& element.value != ""
           index = element.itemIndex;
         }
-      });      
+      });
     }
-        
+
     if (index === -1) {
       return "Select " + originFieldName;
     }
@@ -199,7 +201,7 @@ export default function AddLead({ screenProps, onClose }) {
     )
   }
 
-  const renderText = (field,key) => {
+  const renderText = (field, key) => {
     return (
       <TouchableOpacity activeOpacity={1}>
         <View>
@@ -313,7 +315,7 @@ export default function AddLead({ screenProps, onClose }) {
       <View style={{ padding: 5 }}>
         {
           leadForms.map((field, key) => {
-            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input" ) {              
+            if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input") {
               return (
                 <View key={key}>
                   {
@@ -345,7 +347,7 @@ export default function AddLead({ screenProps, onClose }) {
                       style={{flex:1}}
                       ref={(element) => { dispositionRef.current[key] = element }}                      
                       outlineColor={whiteLabel().fieldBorder}>
-                      {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name , field.field_type  )}
+                      {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name, field.field_type)}
                     </Text>
 
                     <View style={{marginRight:10}}><SvgIcon icon="Drop_Down" width='23px' height='23px' /></View>
@@ -355,7 +357,7 @@ export default function AddLead({ screenProps, onClose }) {
                     renderText(field, key)
                   }
                 </View>
-                
+
               );
             } else {
               return (
@@ -364,7 +366,7 @@ export default function AddLead({ screenProps, onClose }) {
                     key == 1 && renderUseCurrentLocation(key)
                   }
                   {
-                    renderText(field, key )
+                    renderText(field, key)
                   }
                 </View>
               );
