@@ -47,8 +47,7 @@ export default function WazeNavigation({location , address}){
                                     console.log('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=yes');
                                     console.log("ms" , address);
                                     console.log("wazeByAddress", wazeByAddress);
-                                    console.log("url", encodeURI('https://waze.com/ul?ll=' +  address ));
-                                    
+                                    console.log("url", encodeURI('https://waze.com/ul?ll=' +  address ));                                    
 
                                     if(wazeByAddress){
                                         Linking.openURL( encodeURI('https://waze.com/ul?ll=' +  address ) )
