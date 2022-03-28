@@ -35,6 +35,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [isCurrentLocation , setIsCurrentLocation] = useState("0");
   const [customerNameUpdated, setCustomerNameUpdated] = useState("0");
   const [addressUpdated, setAddressUpdated] = useState("0");   
+  const [pickerTitle, setPickerTitle] = useState("");
   const [myLocation, setMyLocation] = useState(currentLocation);
   var location_name_updated = "0";
   var address_updated = "0";
@@ -231,7 +232,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     return (
       <SelectionPicker
         mode={"single"}
-        title={"Select Suite, Unit, Apt"}
+        title={pickerTitle}
         clearTitle={"Clear"}
         value={selectedValue}
         visible={isDropdownModal}
@@ -254,10 +255,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
               
             }
           });
-          setCustomMasterFields(tmp);          
+          setCustomMasterFields(tmp);
           setIsDropdownModal(false);
           
-
         }}
         ></SelectionPicker>
     )
@@ -381,10 +381,12 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                               setDropdownId(field.custom_master_field_id);
                               setIsDropdownModal(true);
                               if(field.field_type === "dropdown"){
-                                setSelectedValue([field.value])
+                                setSelectedValue(field.value);                                
+                                setPickerTitle('Select ' + field.field_name);
                               }else{                                
-                                setSelectedValue([field.dropdown_value])                          
-                              }                        
+                                setSelectedValue(field.dropdown_value);
+                                setPickerTitle("Select Suite, Unit, Apt");
+                              }
                             }
                           }}>
                           {

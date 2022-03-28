@@ -6,8 +6,6 @@ import { FormFilterView } from './partial/FormFilterView';
 import { FormListItem } from './partial/FormListItem';
 import { Provider } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { SLIDE_STATUS } from '../../../actions/actionTypes';
-import GrayBackground from '../../../components/GrayBackground';
 import { getFilterData } from '../../../constants/Storage';
 import { style } from '../../../constants/Styles';
 import Images from '../../../constants/Images';
@@ -32,6 +30,7 @@ export default function FormsScreen(props) {
   const [modalVisible, setModalVisible ] = useState(false);
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -193,7 +192,9 @@ export default function FormsScreen(props) {
             }} >
         </FilterOptionsModal>      
 
-        <SearchBar isFilter={true}
+        <SearchBar 
+          isFilter={true}
+          haveFilter={filters.form_type && filters.form_type.length > 0 ? true:false}
           animation={() => {
             setIsFilter(true);            
             //dispatch({ type: SLIDE_STATUS, payload: true });

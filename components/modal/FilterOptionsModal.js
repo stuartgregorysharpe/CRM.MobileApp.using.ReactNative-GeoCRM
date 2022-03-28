@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet, Text, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import { style } from '../../constants/Styles';
+import { boxShadow, style } from '../../constants/Styles';
 import Divider from '../Divider';
 import SvgIcon from '../SvgIcon';
 

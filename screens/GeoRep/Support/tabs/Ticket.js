@@ -198,6 +198,7 @@ export const Ticket = forwardRef((props, ref) => {
 
 
         <SelectionPicker
+          title="Please select an option"
           clearTitle={"Close"}
           mode={"single"}
           value={issue}

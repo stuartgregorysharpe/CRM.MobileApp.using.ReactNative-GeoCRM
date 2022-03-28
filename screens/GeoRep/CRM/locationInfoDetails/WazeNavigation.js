@@ -42,13 +42,7 @@ export default function WazeNavigation({location , address}){
                             <TouchableOpacity onPress={ async() =>{
                                 console.log("loc", location);
                                 var wazeByAddress  = await checkFeatureIncludeParam("waze_by_address");                                
-                                try{
-                                    
-                                    console.log('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=yes');
-                                    console.log("ms" , address);
-                                    console.log("wazeByAddress", wazeByAddress);
-                                    console.log("url", encodeURI('https://waze.com/ul?ll=' +  address ));                                    
-
+                                try{                                    
                                     if(wazeByAddress){
                                         Linking.openURL( encodeURI('https://waze.com/ul?ll=' +  address ) )
                                     }else{
@@ -59,7 +53,7 @@ export default function WazeNavigation({location , address}){
                                         Linking.openURL('market://details?id=com.waze')                                    
                                     }else{
                                         Linking.openURL('http://itunes.apple.com/us/app/id323229106')  
-                                    }                                
+                                    }
                                 }
                             }}>
                                 <View style={{flex:1, marginLeft:10, flexWrap:'wrap',}}> 
@@ -79,8 +73,7 @@ export default function WazeNavigation({location , address}){
                     }
                                     
                 </View>
-            }
-            
+            }                    
         </View>
     )
 }
