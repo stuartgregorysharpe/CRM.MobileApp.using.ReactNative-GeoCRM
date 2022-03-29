@@ -15,6 +15,8 @@ import FilterOptionsModal from './modal/FilterOptionsModal'
 import StartEndDateSelectionModal from './modal/StartEndDateSelectionModal';
 import { getLocationSearchList, getLocationsMap } from '../actions/location.action';
 import { getPipelineFilters } from '../actions/pipeline.action';
+import SelectionPicker from './modal/SelectionPicker';
+import { DatetimePickerView } from './DatetimePickerView';
 
 export default function FilterView({ navigation, page, onClose }) {
   const dispatch = useDispatch();
@@ -23,6 +25,8 @@ export default function FilterView({ navigation, page, onClose }) {
   const filterParmeterChanged = useSelector(state => state.selection.filters);
   const [modaVisible, setModalVisible] = useState(false);
   const [options, setOptions] = useState([]);
+  const [originOptions, setOriginOptions] = useState([]);
+  const [selectedValues, setSelectedValues] = useState([]);
   const [fieldType, setFieldType] = useState("");
   const [filters, setFilters] = useState("");
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
@@ -35,8 +39,8 @@ export default function FilterView({ navigation, page, onClose }) {
   const [key, setKey] = useState(0);
   const [isStartEndDateSelection, setIsStartEndDateSelection] = useState(false);
   const [locationFilters, setLocationFilters] = useState([]);
-
   const [opportunityId, setOpportunityId] = useState("");
+  const [modalMode, setModalMode] = useState("single");
 
   useEffect(() => {
     console.log("opened ", page);
@@ -49,16 +53,8 @@ export default function FilterView({ navigation, page, onClose }) {
       saveFilter(0, true)
     }
   }, [endDate]);
-
-  // useEffect(() => {    
-  //   console.log("filter value changed");
-  //   if(page == "search"){
-  //     dispatch(getLocationSearchList());
-  //   }
-  // }, [filterParmeterChanged]);  
-
+  
   const loadFilterDataFromStorage = async () => {
-    //var filterData = page == 'pipeline' ? await getPipelineFilterData() : await getFilterData();
     var filterData = page == 'pipeline' ? await getFilterData("@pipeline_filter") : await getFilterData("@filter");
     setFilters(filterData);
   }
@@ -98,68 +94,102 @@ export default function FilterView({ navigation, page, onClose }) {
   }
 
   const getSubTitle = (key) => {
+    
     if (filters.stage_id !== undefined && filters.outcome_id !== undefined && filters.customs !== undefined) {
-      if (locationFilters[key].filter_label === "Stage") {
-        var data = [...filters.stage_id];
-        if (data.length != 0) {
-          return data.length + " Selected";
-        }
+      
+      if (locationFilters[key].filter_label === "Pipeline") {
+        console.log("----" , filters);
+        if(filters.pipeline){
+          var data = [...filters.pipeline];
+          if (data.length != 0) {
+            return data.length + " Selected";
+          }
+        }        
+      }else if (locationFilters[key].filter_label === "Stage") {
+        if(filters.stage_id){
+          var data = [...filters.stage_id];
+          if (data.length != 0) {
+            return data.length + " Selected";
+          }
+        }        
       } else if (locationFilters[key].filter_label === "Outcome") {
-        var data = [...filters.outcome_id];
-        if (data.length != 0) {
-          return data.length + " Selected"
-        }
+        if(filters.outcome_id){
+          var data = [...filters.outcome_id];
+          if (data.length != 0) {
+            return data.length + " Selected"
+          }
+        }        
       } else if (locationFilters[key].filter_label === "Opportunity Status") {
-        var data = [...filters.opportunity_status_id];
-        if (data.length != 0) {
-          return data.length + " Selected"
-        }
+        if(filters.opportunity_status_id){
+          var data = [...filters.opportunity_status_id];
+          if (data.length != 0) {
+            return data.length + " Selected"
+          }
+        }        
       } else if (locationFilters[key].disposition_field_id !== undefined) {
-        var data = [...filters.dispositions];
-        if (data.length != 0) {
-          return data.length + " Selected";
-        }
+        if(filters.dispositions){
+          var data = [...filters.dispositions];
+          if (data.length != 0) {
+            return data.length + " Selected";
+          }
+        }        
       } else if (locationFilters[key].opportunity_field_id !== undefined) {
-        var data = [...filters.opportunity_fields];
-        if (data.length != 0) {
-          return data.length + " Selected";
-        }
+        if(filters.opportunity_fields){
+          var data = [...filters.opportunity_fields];
+          if (data.length != 0) {
+            return data.length + " Selected";
+          }
+        }        
       }
-      else if (locationFilters[key].custom_field_id !== undefined) {
-        var data = [...filters.customs];
-        if (data.length != 0) {
-          return data.length + " Selected"
+      else if (locationFilters[key].custom_field_id !== undefined) {                
+        if(filters.customs){
+          var data = [...filters.customs];
+          var flag = false;
+          data.forEach((element, index) => {
+            if(element.custom_field_id === locationFilters[key].custom_field_id){
+              flag = true;
+            }
+          })
+          if(flag){
+            return "1 Selected";
+          }          
+          // if (data.length != 0) {
+          //   return data.length + " Selected"
+          // }
         }
+        
       }
     }
   }
   
   const initializeSelectedType = (key) => {     
-    setOptions(locationFilters[key].options);                
+
+    setOriginOptions(locationFilters[key].options);    
+    setOptions(locationFilters[key].options);
     setFieldType(locationFilters[key].field_type);  
+
     if(locationFilters[key].filter_label === "Stage"){
-      setSelectedType("stage");
+      setSelectedType("stage");      
     } else if (locationFilters[key].filter_label === "Outcome") {
       setSelectedType("outcome");
-    } else if (locationFilters[key].filter_label === "Pipeline") {
-      console.log("pipeline type");
+    } else if (locationFilters[key].filter_label === "Pipeline") {      
       setSelectedType("pipeline");
     } else if (locationFilters[key].filter_label === "Opportunity Status") {
       setSelectedType("opportunity_status");
-    } else if (locationFilters[key].disposition_field_id !== undefined) {
-      console.log("disposition type");
+    } else if (locationFilters[key].disposition_field_id !== undefined) {      
       setSelectedType("disposition");
-      setDispositionId(locationFilters[key].disposition_field_id);
-    }
-    else if (locationFilters[key].opportunity_field_id !== undefined) {
-      console.log("opportunity type");
+      setDispositionId(locationFilters[key].disposition_field_id);     
+    }else if (locationFilters[key].opportunity_field_id !== undefined) {      
       setSelectedType("opportunity");
       setOpportunityId(locationFilters[key].opportunity_field_id);
     } else if (locationFilters[key].custom_field_id !== undefined) {
       setSelectedType("custom");
       setCustomId(locationFilters[key].custom_field_id);
+    }else{
+      setSelectedType(locationFilters[key].filter_label);
     }
   }
+
 
   const selectFilter = (key) => {
     setKey(key);
@@ -213,11 +243,12 @@ export default function FilterView({ navigation, page, onClose }) {
       setModalVisible(false);
       dispatch(getPipelineFilters(value));
       filters.pipeline = value;
-
     }
 
     else if (selectedType == "custom") {
+
       var data = [...filters.customs];
+      console.log("my custom data", data);
       var flag = false;
       var indexOfCustom = -1;
       data.forEach((element, index) => {
@@ -231,7 +262,6 @@ export default function FilterView({ navigation, page, onClose }) {
         data.splice(indexOfCustom, 1)
       }
       if (isChecked && !flag) { // add
-
         if (fieldType == "date") {
           data.push({ custom_field_id: customId, field_type: fieldType, start_date: startDate, end_date: endDate });
         } else {
@@ -259,7 +289,13 @@ export default function FilterView({ navigation, page, onClose }) {
         } else {
           data.push({ disposition_field_id: dispositionId, field_type: fieldType, field_value: value });
         }
+        console.log("data", data);
+      }else{
+        if (fieldType == "date") {
+          data.push({ disposition_field_id: dispositionId, field_type: fieldType, start_date: startDate, end_date: endDate });
+        }
       }
+      
       filters.dispositions = data;
     } else if (selectedType == "opportunity") {
       var data = [...filters.opportunity_fields];
@@ -305,30 +341,35 @@ export default function FilterView({ navigation, page, onClose }) {
       } else {
         await storeFilterData( "@filter", filters);
       }
-
     }
+
     if (locationFilters[key] !== undefined && locationFilters[key].options !== undefined) {
       setOptions([]);
+      setOriginOptions(locationFilters[key].options);
+      // var tmp = []; 
+      // locationFilters[key].options.forEach((item, index) => {
+      //   tmp.push(item.name);
+      // });
       setOptions(locationFilters[key].options);
     }
-
   }
 
   const handleScheduleDate = (date) => {
-    let datetime = "";
+    let datetime = date;
     let time = "";
-    datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
-    time = String(date.getHours()) + ":" + String(date.getMinutes());
+    // datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
+    // time = String(date.getHours()) + ":" + String(date.getMinutes());
     setIsDateTimePickerVisible(false);
-
     if (dateType === "start") {
       setStartDate(datetime);
     } else {
       setEndDate(datetime);
       setIsStartEndDateSelection(false);
-
+      console.log(selectedType)
+      saveFilter(0, true);
     }
   }
+  
 
   if (statusLocationFilters == "request") {
     return (
@@ -352,12 +393,15 @@ export default function FilterView({ navigation, page, onClose }) {
         <Divider />
       </TouchableOpacity>
 
-      <DateTimePickerModal
-        isVisible={isDateTimePickerVisible}
-        mode={'date'}
-        onConfirm={handleScheduleDate}
-        onCancel={() => { setIsDateTimePickerVisible(false) }}
-      />
+      <DatetimePickerView
+        visible={isDateTimePickerVisible}
+        value={''}
+        onModalClose={() => { setIsDateTimePickerVisible(true) }}
+        close={(value) => {
+          console.log("dd", value);
+          handleScheduleDate(value.replace("/", "-").replace("/","-"));
+        }}>
+      </DatetimePickerView>      
 
       <View style={styles.sliderHeader}>
         <Title style={{ fontFamily: Fonts.primaryBold }}>Filter your search</Title>
@@ -384,15 +428,12 @@ export default function FilterView({ navigation, page, onClose }) {
             }
 
             setFilters(value);
-            if (page == 'pipeline') {
-              //await clearPipelineFilterData();
+            if (page == 'pipeline') {              
               await clearFilterData('@pipeline_filter');
             } else {
               await clearFilterData('@filter');
             }
-
-            console.log("clear filter app", value);
-
+                        
             if (page == "map") {
               dispatch({ type: MAP_FILTERS, payload: value })
             } else if (page == "search") {
@@ -407,12 +448,14 @@ export default function FilterView({ navigation, page, onClose }) {
         </Button>
       </View>
 
+
       {locationFilters.map((locationFilter, key) => (
         <FilterButton text={locationFilter.filter_label} key={key}
           subText={getSubTitle(key)}
           startDate={getStartDate(key)}
           endDate={getEndDate(key)}
           onPress={() => {
+            console.log("locationFilter" ,locationFilter);
             if (locationFilter.field_type === "dropdown") {
               initializeSelectedType(key)
               selectFilter(key)
@@ -423,7 +466,6 @@ export default function FilterView({ navigation, page, onClose }) {
           }}
         />
       ))}
-
 
       <Button
         mode="contained" color={whiteLabel().actionFullButtonBackground} uppercase={false}
@@ -448,8 +490,9 @@ export default function FilterView({ navigation, page, onClose }) {
         Apply Filters
       </Button>
 
-      <Portal>
-        <FilterOptionsModal
+      <FilterOptionsModal
+          title = ""
+          clearTitle = "Close"          
           modaVisible={modaVisible}
           options={options}
           filters={filters}
@@ -463,11 +506,13 @@ export default function FilterView({ navigation, page, onClose }) {
               || selectedType == "pipeline" || selectedType == "opportunity_status") {
               saveFilter(id, value);
             } else {
-              console.log("val", value);
+              console.log("save filter", id);
+              console.log("save filter", value);
               saveFilter(id, value);
             }
-          }} ></FilterOptionsModal>
-      </Portal>
+          }} >
+      </FilterOptionsModal>      
+
 
       <Portal>
 

@@ -229,29 +229,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
       } />
     )
   }
-
-  const stagesModal = () => {
-    return (
-      <CustomPicker visible={stageModalVisible} onModalClose={() => setStageModalVisible(!stageModalVisible)} renderItems={
-        locationInfo.stages.map((stage, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setSelectedStageId(stage.stage_id);
-              setSelectedOutComeId(null);
-              setSelectedOutcomes(locationInfo.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));
-              setStageModalVisible(!stageModalVisible);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={styles.pickerItemText}>{stage.stage_name}</Text>
-              {stage.stage_id == selectedStageId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-
-          </View>
-        ))
-      } />
-    )
-  }
-
-
+ 
   const outComesModal = () => {
     return (
       <CustomPicker 

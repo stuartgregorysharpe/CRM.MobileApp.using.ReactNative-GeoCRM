@@ -26,6 +26,7 @@ import { SelectionView } from './partial/SelectionView';
 import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AlertDialog from '../../../../components/modal/AlertDialog';
+import { GuideInfoView } from '../partial/GuideInfoView';
 
 export const FormQuestions = (props) =>{
 
@@ -124,6 +125,7 @@ export const FormQuestions = (props) =>{
     const _callFormQuestions = () => {
       getFormQuestions(form.form_id).then((res) => {                
         groupByQuestions(res);
+        console.log(" raw data" , res)
       }).catch((e) => {
       })
     }
@@ -158,14 +160,15 @@ export const FormQuestions = (props) =>{
     }
 
     const _onTouchStart = (e , text) => {            
-      setX(e.pageX);
-      setY(e.pageY);
-      setLocationX(e.locationX);
-      setLocationY(e.locationY);
-      setBubleText(text);
-      setTimeout(() =>{
-        setIsInfo(true);            
-      },100)
+      // setX(e.pageX);
+      // setY(e.pageY);
+      // setLocationX(e.locationX);
+      // setLocationY(e.locationY);
+
+      setBubleText(text);      
+      setIsInfo(true);
+      // setTimeout(() =>{        
+      // },1000)
     }
     const getShift  = () =>{
       if(Platform.OS === 'ios'){
@@ -326,7 +329,9 @@ export const FormQuestions = (props) =>{
     }
 
     return (      
-        <View style={styles.container}  onTouchStart={(e) => { setIsInfo(false); }}>
+        <View style={styles.container}  
+        //onTouchStart={(e) => { setIsInfo(false); }}
+        >
           
             <GrayBackground></GrayBackground>
             <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>          
@@ -396,7 +401,16 @@ export const FormQuestions = (props) =>{
               </View>
             </ScrollView>
 
-            {
+              
+            <GuideInfoView
+                visible={isInfo}
+                info={bubbleText}
+                onModalClose={() => setIsInfo(false)}
+              >
+
+            </GuideInfoView>
+
+            {/* {
               isInfo &&
               <View style={{
                   top: y - locationY - getShift(),
@@ -409,7 +423,7 @@ export const FormQuestions = (props) =>{
                   <View  style={{ backgroundColor: "#DDD", padding:10, marginLeft:20,marginRight:10,borderRadius:10, fontSize: 16, color: "#fff", }} key={1}><Text>{bubbleText}</Text></View>  
                   <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
               </View>
-            }                                                
+            }                                                 */}
         </View>
         
     );

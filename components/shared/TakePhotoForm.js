@@ -104,7 +104,7 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
                     <View
-                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_text);  }} >
+                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} >
                             <Icon
                                 name={`info-outline`}
                                 size={25}

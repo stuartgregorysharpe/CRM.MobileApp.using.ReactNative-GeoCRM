@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, FlatList, BackHandler, Image,Dimensions } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, FlatList, BackHandler, Image,Dimensions ,Platform } from 'react-native';
 import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPipelineFilters, getPipelines } from '../../../actions/pipeline.action';
@@ -40,7 +40,8 @@ export default function SalesPipelineScreen(props) {
     var screenProps = props.screenProps;
     if(screenProps === undefined){
       screenProps = props.navigation;
-    }    
+    }
+
     if (screenProps) {
       screenProps.setOptions({        
         headerTitle: () => {
@@ -66,8 +67,21 @@ export default function SalesPipelineScreen(props) {
               }
               <Text style={style.headerTitle} >Pipeline</Text>
             </View></TouchableOpacity>)
-        }
+        },
+        tabBarStyle: {
+          position: 'absolute',
+          height: 50,
+          paddingBottom: Platform.OS == "android" ? 5 : 0,          
+          backgroundColor: Colors.whiteColor,
+        },
       });
+      if (crmStatus) {
+        screenProps.setOptions({
+          tabBarStyle: {
+            display: 'none',
+          },
+        });
+      }    
     }
 
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -296,7 +310,8 @@ export default function SalesPipelineScreen(props) {
         {crmStatus && showItem == 1 && <View
           style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}
         >
-          <FilterView navigation={navigation} page={"pipeline"} onClose={() => {
+          <FilterView navigation={navigation} page={"pipeline"} 
+          onClose={() => {
             dispatch({ type: SLIDE_STATUS, payload: false });
             setShowItem(0);
           }} />
@@ -335,14 +350,18 @@ export default function SalesPipelineScreen(props) {
             ItemSeparatorComponent={renderSeparator}
           />
           
-          <View style={[styles.plusButtonContainer, {marginBottom: DeviceInfo.getSystemVersion() === "11" ? 50 : 10 }]}>
-            <TouchableOpacity style={style.innerPlusButton} onPress={() => {
-              setPageType('add');
-              setCanAddPipeline(true);
-            }}>
-              <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-            </TouchableOpacity>
-          </View>
+          {
+            !canAddPipeline &&
+            <View style={[styles.plusButtonContainer, {marginBottom: DeviceInfo.getSystemVersion() === "11" ? 70 : 40 }]}>
+              <TouchableOpacity style={style.innerPlusButton} onPress={() => {
+                setPageType('add');
+                setCanAddPipeline(true);
+              }}>
+                <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+              </TouchableOpacity>
+            </View>
+          }
+          
         </View>
       </View>
     </Provider>

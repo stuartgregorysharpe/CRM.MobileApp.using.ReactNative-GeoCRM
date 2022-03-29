@@ -315,8 +315,7 @@ export default function LocationScreen(props) {
         holes: [],
       });                      
     } else if (!creatingHole) {
-      if(editing !== null && editing !== undefined){
-        console.log("drawing - polygon", editing.coordinates.length);
+      if(editing !== null && editing !== undefined){        
         setEditing({
           ...editing,
           coordinates: [...editing.coordinates, e.nativeEvent.coordinate],
@@ -324,9 +323,8 @@ export default function LocationScreen(props) {
         if(editing.coordinates.length >= 2 && isFinish === false){                              
           setIsFinish(true);
         }
-      }                          
-    } else {                                                  
-        console.log("checking")                            
+      }
+    } else {        
         const holes = [...editing.holes];                            
         holes[holes.length - 1] = [
           ...holes[holes.length - 1],

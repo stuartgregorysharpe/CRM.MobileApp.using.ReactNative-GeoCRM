@@ -11,7 +11,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
     const [text,setText] = useState(item.value ? item.value :  ''); 
     
     useEffect(() =>{
-        console.log("text form render...")       
+        console.log("text form render..." , item)       
     },[]);
 
     useEffect(() =>{
@@ -28,7 +28,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
                     <View
-                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_text);  }} >
+                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} >
                             <Icon
                                 name={`info-outline`}
                                 size={25}

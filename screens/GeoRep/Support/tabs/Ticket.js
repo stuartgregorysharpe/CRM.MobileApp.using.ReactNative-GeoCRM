@@ -11,6 +11,7 @@ import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import { notifyMessage } from '../../../../constants/Consts';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
 
 export const Ticket = forwardRef((props, ref) => {
 
@@ -194,17 +195,34 @@ export const Ticket = forwardRef((props, ref) => {
           <Text style={styles.downloadText}>Upload Image</Text>
           <SvgIcon icon="File_Download" width='18px' height='18px' />
         </TouchableOpacity>
-        <Portal>
-          <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
 
+
+        <SelectionPicker
+          title="Please select an option"
+          clearTitle={"Close"}
+          mode={"single"}
+          value={issue}
+          visible={modaVisible}
+          options={supportIssues}
+          onModalClose={() =>{setModalVisible(false)}}          
+          onValueChanged={(item, index) => {
+            setIssue(item);            
+            setModalVisible(false);
+          }}
+        >
+
+        </SelectionPicker>
+        {/* <Portal>
+          <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
             {supportIssues.map((item, index) => (
                 <TouchableOpacity key={index} style={styles.pickerItem} onPress={selectItem.bind(null, item)}>
                 <Text style={styles.pickerItemText}>{item}</Text>
                 </TouchableOpacity>
             ))}
-
           </Modal>
-        </Portal>
+        </Portal> */}
+
+
       </View>
     )
   })
