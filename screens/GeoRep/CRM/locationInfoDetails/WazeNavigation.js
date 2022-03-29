@@ -42,12 +42,12 @@ export default function WazeNavigation({location , address}){
                             <TouchableOpacity onPress={ async() =>{
                                 console.log("loc", location);
                                 var wazeByAddress  = await checkFeatureIncludeParam("waze_by_address");                                
-                                try{                                    
+                                try{
                                     if(wazeByAddress){
-                                        Linking.openURL( encodeURI('https://waze.com/ul?ll=' +  address ) )
+                                        Linking.openURL( encodeURI('https://waze.com/ul?q=' +  address ) )
                                     }else{
                                         Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
-                                    }                                                                        
+                                    }  
                                 }catch(e){
                                     if(Platform.OS === "android"){
                                         Linking.openURL('market://details?id=com.waze')                                    

@@ -141,12 +141,21 @@ export default function FilterView({ navigation, page, onClose }) {
           }
         }        
       }
-      else if (locationFilters[key].custom_field_id !== undefined) {
+      else if (locationFilters[key].custom_field_id !== undefined) {                
         if(filters.customs){
           var data = [...filters.customs];
-          if (data.length != 0) {
-            return data.length + " Selected"
-          }
+          var flag = false;
+          data.forEach((element, index) => {
+            if(element.custom_field_id === locationFilters[key].custom_field_id){
+              flag = true;
+            }
+          })
+          if(flag){
+            return "1 Selected";
+          }          
+          // if (data.length != 0) {
+          //   return data.length + " Selected"
+          // }
         }
         
       }
@@ -154,11 +163,8 @@ export default function FilterView({ navigation, page, onClose }) {
   }
   
   const initializeSelectedType = (key) => {     
-    setOriginOptions(locationFilters[key].options);
-    // var tmp = [];
-    // locationFilters[key].options.forEach((item, index) =>{
-    //   tmp.push(item.name);
-    // });
+
+    setOriginOptions(locationFilters[key].options);    
     setOptions(locationFilters[key].options);
     setFieldType(locationFilters[key].field_type);  
 
@@ -172,15 +178,15 @@ export default function FilterView({ navigation, page, onClose }) {
       setSelectedType("opportunity_status");
     } else if (locationFilters[key].disposition_field_id !== undefined) {      
       setSelectedType("disposition");
-      setDispositionId(locationFilters[key].disposition_field_id);
-      console.log(locationFilters[key].disposition_field_id , "disp")
-    }
-    else if (locationFilters[key].opportunity_field_id !== undefined) {      
+      setDispositionId(locationFilters[key].disposition_field_id);     
+    }else if (locationFilters[key].opportunity_field_id !== undefined) {      
       setSelectedType("opportunity");
       setOpportunityId(locationFilters[key].opportunity_field_id);
     } else if (locationFilters[key].custom_field_id !== undefined) {
       setSelectedType("custom");
       setCustomId(locationFilters[key].custom_field_id);
+    }else{
+      setSelectedType(locationFilters[key].filter_label);
     }
   }
 
@@ -237,11 +243,12 @@ export default function FilterView({ navigation, page, onClose }) {
       setModalVisible(false);
       dispatch(getPipelineFilters(value));
       filters.pipeline = value;
-
     }
 
     else if (selectedType == "custom") {
+
       var data = [...filters.customs];
+      console.log("my custom data", data);
       var flag = false;
       var indexOfCustom = -1;
       data.forEach((element, index) => {
@@ -394,14 +401,7 @@ export default function FilterView({ navigation, page, onClose }) {
           console.log("dd", value);
           handleScheduleDate(value.replace("/", "-").replace("/","-"));
         }}>
-      </DatetimePickerView>
-
-      {/* <DateTimePickerModal
-        isVisible={isDateTimePickerVisible}
-        mode={'date'}
-        onConfirm={handleScheduleDate}
-        onCancel={() => { setIsDateTimePickerVisible(false) }}
-      /> */}
+      </DatetimePickerView>      
 
       <View style={styles.sliderHeader}>
         <Title style={{ fontFamily: Fonts.primaryBold }}>Filter your search</Title>
@@ -455,6 +455,7 @@ export default function FilterView({ navigation, page, onClose }) {
           startDate={getStartDate(key)}
           endDate={getEndDate(key)}
           onPress={() => {
+            console.log("locationFilter" ,locationFilter);
             if (locationFilter.field_type === "dropdown") {
               initializeSelectedType(key)
               selectFilter(key)
@@ -505,7 +506,8 @@ export default function FilterView({ navigation, page, onClose }) {
               || selectedType == "pipeline" || selectedType == "opportunity_status") {
               saveFilter(id, value);
             } else {
-              console.log("val", value);
+              console.log("save filter", id);
+              console.log("save filter", value);
               saveFilter(id, value);
             }
           }} >

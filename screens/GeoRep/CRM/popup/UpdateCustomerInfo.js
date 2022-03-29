@@ -138,22 +138,17 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     setOriginCustomMasterFields(origin);
   }
 
-  const checkChangedStatus = () => {
-    console.log("originCustomMasterFields" ,originCustomMasterFields);
-    console.log("customMasterFields" ,originCustomMasterFields);
-    
+
+  const checkChangedStatus = () => {    
     if(originCustomMasterFields !== customMasterFields){      
-      
       if(originCustomMasterFields.find(item => item.core_field_name === "location_name").value !== customMasterFields.find(item => item.core_field_name === "location_name").value){
         setCustomerNameUpdated("1");
         location_name_updated = "1";
       }else{
-        console.log("xxx");
+        
       }
-      originCustomMasterFields.forEach((element) =>{
-        console.log(" -------- tri --------" , element);
-        if(element.core_field_name !== "location_name" && customMasterFields.find(item => item.core_field_name === element.core_field_name).value !== element.value ){
-          
+      originCustomMasterFields.forEach((element) =>{        
+        if(element.core_field_name !== "location_name" && customMasterFields.find(item => item.core_field_name === element.core_field_name).value !== element.value ){          
           setAddressUpdated("1");
           address_updated = "1";
         }
@@ -176,21 +171,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       return "";
     }
   }
-
-
-  const getSelectedDropdownItem = () =>{    
-    var res = "";    
-    customMasterFields.forEach((element) =>{
-      if(element.custom_master_field_id == dropdownId){
-        res = element.itemIndex;
-      }
-    });    
-    if(res === ""){
-      return -1;
-    }
-    return res;
-  }  
-
+  
   const getSelectedDropdownItemText = (id, originFieldName , fieldType ) => {
     
     var tmp = [...customMasterFields];
@@ -390,7 +371,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                             }
                           }}>
                           {
-                            field.dropdown_value !== undefined &&
+                            ((field.dropdown_value !== undefined &&  field.dropdown_value !== "") || (field.value !== undefined && field.value !== "" )) &&
                             <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name} </Text>
                           }
                           <Text                                        

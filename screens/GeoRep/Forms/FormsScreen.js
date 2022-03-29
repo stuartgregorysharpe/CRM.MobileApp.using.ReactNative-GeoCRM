@@ -194,7 +194,7 @@ export default function FormsScreen(props) {
 
         <SearchBar 
           isFilter={true}
-          haveFilter={filters.form_type && filters.form_type.length > 0 ? true:false}
+          haveFilter={ filters && filters.form_type && filters.form_type.length > 0 ? true:false}
           animation={() => {
             setIsFilter(true);            
             //dispatch({ type: SLIDE_STATUS, payload: true });
@@ -230,8 +230,8 @@ export default function FormsScreen(props) {
             info={bubbleText}
             onModalClose={() => setIsInfo(false)}
           >
-
         </GuideInfoView>
+        
         {/* {
           isInfo &&
           <View style={{

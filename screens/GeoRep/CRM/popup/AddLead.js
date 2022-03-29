@@ -343,8 +343,8 @@ export default function AddLead({ screenProps, onClose }) {
                     }}>
   
                     {
-                      (field.dropdown_value !== undefined || field.value !== undefined) &&
-                      <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name} </Text>
+                      ((field.dropdown_value !== undefined &&  field.dropdown_value !== "") || (field.value !== undefined && field.value !== "" )) &&
+                      <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name } </Text>
                     }                  
 
                     <Text
