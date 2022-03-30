@@ -20,10 +20,13 @@ import { useNavigation } from '@react-navigation/native';
 import { getToken } from '../../../constants/Storage';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import SelectionPicker from '../../../components/modal/SelectionPicker';
+import { expireToken } from '../../../constants/Consts';
+import { Notification } from '../../../components/modal/Notification';
 
 var selected_location_id = 0;
 export default function AddSalesPipeline({ location_id, onClose, pageType, opportunity_id }) {
 
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const dispositionRef = useRef([]);
   const [dropdownId, setDropdownId] = useState(0);
@@ -90,6 +93,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
           initPostData(res);
           setIsLoading(false);
         }).catch((e) => {
+          expireToken(dispatch, e);
           setIsLoading(false);
         })
       }
@@ -279,7 +283,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
         setCanShowAutoComplete(false);
       }      
     }).catch(e => {
-      console.log(e);
+      expireToken(dispatch,e);
       setCanShowAutoComplete(false);
     })
   }
@@ -509,6 +513,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     <Animated.View>
       <ScrollView style={[styles.container]} >
 
+        <Notification></Notification>
         <AlertDialog visible={canShowAlert} message={message} onModalClose={() => {
           setCanShowAlert(false);
           setMessage('');

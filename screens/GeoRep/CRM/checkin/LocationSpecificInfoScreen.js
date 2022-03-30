@@ -48,6 +48,7 @@ export default function LocationSpecificInfoScreen(props) {
       headerTitle: () => {
         return (<TouchableOpacity onPress={
           () => {
+            console.log("pressed");
             if(canShowCustomerContactsScreen){
               setCanShowCustomerContactsScreen(false)
             }else{
@@ -55,7 +56,7 @@ export default function LocationSpecificInfoScreen(props) {
                 dispatch({ type: SLIDE_STATUS, payload: false });
                 props.navigation.goBack();
               }            
-            }                        
+            } 
           }}>
           <View style={style.headerTitleContainerStyle}>
             <Image

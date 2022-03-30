@@ -1,5 +1,8 @@
 
 import {Alert} from 'react-native';
+import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
+import { showNotification } from '../actions/notification.action';
+import { setToken } from './Storage';
 
 export const WHATS_APP_LINK = "https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22";
 
@@ -72,5 +75,16 @@ export function isInsidePoly  (lat, lon, multiPolycoords) {
     return inside;
 }
     
+
+
+export function expireToken ( dispatch , e ) {
+  if(e === "expired"){                            
+    dispatch(showNotification({ type: 'success', message: "Access has expired, please login again", buttonText: 'Exit', 
+    buttonAction : () => {
+      dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"});
+      setToken(null);
+    } }));
+  }
+}
 
     

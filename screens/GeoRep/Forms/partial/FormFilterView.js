@@ -9,9 +9,11 @@ import { getFormFilters } from '../../../../actions/forms.action';
 import FilterOptionsModal from '../../../../components/modal/FilterOptionsModal';
 import { clearFilterData, getFilterData, storeFilterData } from '../../../../constants/Storage';
 import { style } from '../../../../constants/Styles';
+import { useDispatch } from 'react-redux';
 
 export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemClicked}) => {
 
+    const dispatch = useDispatch();
     const [items, setItems]  =  useState([]); 
     const [modaVisible, setModalVisible] = useState(false);
     const [options, setOptions] = useState([]);
@@ -27,7 +29,7 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
             console.log("res", JSON.stringify(res));
             setItems(res)
         }).catch((e) => {
-          console.log(e)
+          
         })
     }
 
@@ -36,8 +38,7 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
         setFilters(savedFilters);
     }
     
-    return (      
-        
+    return (              
         <Modal             
             animationType="fade"
             transparent={true}

@@ -11,6 +11,8 @@ import { style } from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import FilterOptionsModal from '../../../components/modal/FilterOptionsModal';
 import { GuideInfoView } from './partial/GuideInfoView';
+import { expireToken } from '../../../constants/Consts';
+import { Notification } from '../../../components/modal/Notification';
 
 let isInfoWindow = false;
 
@@ -103,7 +105,7 @@ export default function FormsScreen(props) {
       setFormLists(res);
       setOriginalFormLists(res);
     }).catch((e) => {
-      console.log(e)
+      expireToken(dispatch, e);
     })
   }
 
@@ -149,6 +151,7 @@ export default function FormsScreen(props) {
             }} ></FormFilterView>
         } */}
 
+        <Notification></Notification>
         <FormFilterView
           visible={isFilter}
           onModalHide={() => {

@@ -8,7 +8,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { baseURL } from '../constants';
 import { PRIMARY_COLOR, whiteLabel } from '../constants/Colors';
-import { Login } from '../actions/auth.action';
+import { Login, loginWithEmail } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS ,
   CHANGE_USER_INFO, 
   CHANGE_PROJECT_PAYLOAD,
@@ -19,11 +19,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { getCurrentDate, getFilterData, getToken, getUserData, storeCurrentDate, storeLocationLoop } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 import {displayName} from "../app.json";
+import { expireToken } from '../constants/Consts';
 
 export default function SignIn() {
-  const dispatch = useDispatch();
-  const loginStatus = useSelector(state => state.auth.loginStatus);
 
+  
+
+  const loginStatus = useSelector(state => state.auth.loginStatus);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -32,6 +34,7 @@ export default function SignIn() {
   const [isPassword, setIsPassword] = useState(true);
   const emailRef = useRef();
   const passwordInput = useRef();
+  const dispatch = useDispatch();
 
   //clinton@cydcor.com / Test2021#
   useEffect(() => {  
@@ -63,9 +66,11 @@ export default function SignIn() {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
     }
         
+    
   }
 
   const handleNext = () => {
+    
     if (email == '') {
       setEmailError(true);
       return;
@@ -96,9 +101,21 @@ export default function SignIn() {
       setPasswordError(true);
       return;
     }
-
+    
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
-    dispatch(Login(email, password));
+    //dispatch(Login(email, password));
+    loginWithEmail(email, password).then( async(res) => {
+        var filters = await getFilterData('@filter');
+        dispatch({ type: MAP_FILTERS, payload: filters });
+        dispatch({ type: CHANGE_USER_INFO, payload: res.data.success.user });
+        dispatch({ type: CHANGE_ACCESS_TOKEN, payload: res.data.success.access_token });
+        dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(res.data.success.access_token) })
+        dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
+
+    }).catch((e) =>{
+
+    })
+
   }
 
   return (

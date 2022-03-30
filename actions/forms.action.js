@@ -32,8 +32,13 @@ export const getFormLists = async (form_type_id, location_id, filters) => {
         }
       })
       .catch((err) => {
-        console.log("load list4", err);
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -61,20 +66,24 @@ export const getFormFilters = async () => {
         }
       })
       .catch((err) => {
-        console.log("load list4", err);
-        reject(err);
+        
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
+
       })
 
   });
 }
 
-
-
 export const getFormQuestions = async (form_id) => {
 
   var base_url = await getBaseUrl();
   var token = await getToken();
-
   return new Promise(function (resolve, reject) {
     console.log(`https://dev.georep.com/local_api_old/forms/form-questions?form_id=${form_id}`)
     axios
@@ -96,8 +105,13 @@ export const getFormQuestions = async (form_id) => {
         }
       })
       .catch((err) => {
-        console.log("load list4", err);
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }

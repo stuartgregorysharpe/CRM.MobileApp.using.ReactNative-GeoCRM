@@ -1,11 +1,8 @@
-
-
-
 import React , {useEffect , useState} from 'react';
 import {View, Text, TouchableOpacity ,StyleSheet ,Linking, Platform ,Image} from 'react-native';
-import { add } from 'react-native-reanimated';
+import { parseCoordinate } from '../../../../actions/google.action';
 import SvgIcon from '../../../../components/SvgIcon';
-import { PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
+import { whiteLabel } from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { style } from '../../../../constants/Styles';
@@ -43,8 +40,14 @@ export default function WazeNavigation({location , address}){
                                 console.log("loc", location);
                                 var wazeByAddress  = await checkFeatureIncludeParam("waze_by_address");                                
                                 try{
-                                    if(wazeByAddress){
-                                        Linking.openURL( encodeURI('https://waze.com/ul?q=' +  address ) )
+                                    if(wazeByAddress){                                        
+                                        var parseLocation = await parseCoordinate(address);                                        
+                                        if(parseLocation){
+                                            Linking.openURL(`https://waze.com/ul?q=${encodeURIComponent(address)}ll=` + parseLocation.latitude + ',' + parseLocation.longitude + '&navigate=yes');
+                                        }else{
+                                            Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
+                                        }
+                                        //Linking.openURL( encodeURI('https://waze.com/ul?q=' +  address ) )
                                     }else{
                                         Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
                                     }  

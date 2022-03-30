@@ -36,15 +36,12 @@ export function downloadPDF(url, fileName, ext){
   
   return new Promise(function(resolve, reject){       
     //ExternalDirectoryPath
-    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}` ;
-    console.log(path);
-
+    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}` ;    
     const headers = {
       'Accept': 'application/pdf',
       'Content-Type': 'application/pdf',
       'Authorization': `Bearer [token]`
     }
-
     //Define options
     const options: RNFS.DownloadFileOptions = {
       fromUrl: encodeURI(url),

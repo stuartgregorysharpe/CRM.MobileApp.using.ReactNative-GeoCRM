@@ -10,12 +10,12 @@ import Colors from '../../constants/Colors';
 import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
-import { getTwoDigit, notifyMessage } from '../../constants/Consts';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AlertDialog from './AlertDialog';
 import { addCalendar } from '../../actions/calendar.action';
 import { DateStartEndTimePickerView } from '../DateStartEndTimePickerView';
 import { DatetimePickerView } from '../DatetimePickerView';
+import { expireToken } from '../../constants/Consts';
+import { Notification } from './Notification';
 
 
 export default function AddToCalendar({selectedItems, onClose}) {
@@ -29,8 +29,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
 
   const handleScheduleDate = (date) => {    
     let datetime = date;
-    let time = "";
-    
+    let time = "";    
     //datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
     //time =  String(date.getHours()) + ":" + String(date.getMinutes());    
     //setIsDateTimePickerVisible(false);
@@ -58,17 +57,18 @@ export default function AddToCalendar({selectedItems, onClose}) {
     })
     .catch((error) => {
       console.log(error);
+      expireToken(dispatch, error);
       setMessage(error.toString());
-      setIsConfirmModal(true)
+      setIsConfirmModal(true);
+
     })   
   }
 
   return (
 
     <ScrollView style={styles.refreshSliderContainer}>
-        
-        
-         
+                
+      <Notification/> 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
         <Divider />
       </TouchableOpacity>
@@ -135,9 +135,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
           });            
           let postDate ={
             schedules:selectedItems
-          };
-          console.log("postDate, ", postDate);
-          
+          };                    
           callApi(postDate);
         }}
       >
@@ -162,7 +160,6 @@ export default function AddToCalendar({selectedItems, onClose}) {
         onConfirm={handleScheduleDate}
         onCancel={() => {setIsDateTimePickerVisible(false)}}
       /> */}
-
 
       <AlertDialog visible={isConfirmModal} onModalClose={() => {
           setIsConfirmModal(false);

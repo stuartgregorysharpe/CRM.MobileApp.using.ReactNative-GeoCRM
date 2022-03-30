@@ -25,7 +25,14 @@ export function getCalendar(base_url, token, period)
           }
         })
         .catch((err) => {
-          reject(err);          
+          const error = err.response;
+          if (error.status===401 && error.config && 
+            !error.config.__isRetryRequest) {
+              console.log("token expired -- ");
+              reject("expired");
+          }else{
+            reject(err);  
+          }
         })        
     });    
 }
@@ -51,8 +58,14 @@ export const updateCalendar = async(postData) => {
       resolve(1);      
     })
     .catch((err) => {
-      console.log(err);
-      reject(err);
+      const error = err.response;
+      if (error.status===401 && error.config && 
+        !error.config.__isRetryRequest) {
+          console.log("token expired -- ");
+          reject("expired");
+      }else{
+        reject(err);  
+      }
     })
 
   });
@@ -85,8 +98,13 @@ export const addCalendar = async(postData) => {
       }      
     })
     .catch((err) => {
-      console.log(err);
-      reject(err);
+      const error = err.response;
+      if (error.status===401 && error.config && 
+        !error.config.__isRetryRequest) {          
+          reject("expired");
+      }else{
+        reject(err);  
+      }
     })
 
   });
