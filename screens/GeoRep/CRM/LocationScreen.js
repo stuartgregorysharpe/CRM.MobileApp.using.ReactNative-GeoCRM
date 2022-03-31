@@ -232,7 +232,6 @@ export default function LocationScreen(props) {
         setIsLoading(false);        
         setLocationMap([...res.locations]);          
         dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });        
-        
       }).catch((e) => {
         expireToken(dispatch, e);
       });
@@ -374,7 +373,7 @@ export default function LocationScreen(props) {
             dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });            
           }).catch((e) => {  
             expireToken(dispatch, e);
-          });                
+          });
         }                                    
       }
     }                      

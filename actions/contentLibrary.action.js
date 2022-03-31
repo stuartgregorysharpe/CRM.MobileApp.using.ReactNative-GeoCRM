@@ -25,8 +25,13 @@ export function getContentLibrary(base_url, token, params)
           
         })
         .catch((err) => {        
-          console.log("load list4", err);
-          reject(err);          
+          const error = err.response;
+          if (error.status===401 && error.config && 
+            !error.config.__isRetryRequest) {          
+              reject("expired");
+          }else{
+            reject(err);  
+          }
         })        
 
     });    
