@@ -12,6 +12,7 @@ import {
 import { baseURL } from "../constants";
 import { getBaseUrl, getFilterData, getToken, setToken, storeUserData } from "../constants/Storage";
 
+
 export const checkEmail = async(email) => {    
   return new Promise(function(resolve, reject) {          
     axios

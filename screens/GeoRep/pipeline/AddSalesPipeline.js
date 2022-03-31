@@ -20,13 +20,14 @@ import { useNavigation } from '@react-navigation/native';
 import { getToken } from '../../../constants/Storage';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import SelectionPicker from '../../../components/modal/SelectionPicker';
-import { expireToken } from '../../../constants/Consts';
+import { expireToken, getPostParameter } from '../../../constants/Consts';
 import { Notification } from '../../../components/modal/Notification';
 
 var selected_location_id = 0;
 export default function AddSalesPipeline({ location_id, onClose, pageType, opportunity_id }) {
 
   const dispatch = useDispatch();
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
   const dispositionRef = useRef([]);
   const [dropdownId, setDropdownId] = useState(0);
@@ -245,6 +246,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
       });
     });
 
+    var userParam = getPostParameter(currentLocation);
     let params = {
       "opportunity_id": pageType === 'update' && opportunity_id && opportunity_id !== '' ? opportunity_id : null,
       "location_id": selectedCustomerId,
@@ -255,11 +257,11 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
       "current_outcome_id": selectedOutcomeId,
       "current_opportunity_status_id": selectedOpportunityStatus,
       "dispostions": dispostions,
-      "opportunity_fields": opportunity_fields
+      "opportunity_fields": opportunity_fields,
+      "user_local_data": userParam.user_local_data
     }
 
-    console.log("request", JSON.stringify(params));
-    postAddOpportunityFields(params, uuid.v4()).then((res) => {
+    postAddOpportunityFields(params).then((res) => {
       SetAddDone(true);
       setMessage("Opportunity added sucessfully");
       setCanShowAlert(true);

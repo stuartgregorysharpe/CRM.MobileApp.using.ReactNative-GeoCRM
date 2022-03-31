@@ -14,12 +14,14 @@ import Images from '../../../../constants/Images';
 import { CHANGE_DISPOSITION_INFO, LOCATION_CONFIRM_MODAL_VISIBLE, SLIDE_STATUS, CHANGE_LOCATION_ACTION, CHANGE_BOTTOM_TAB_ACTION, STATUS_DISPOSITION_FIELDS_UPDATE } from '../../../../actions/actionTypes';
 import Fonts from '../../../../constants/Fonts';
 import AlertDialog from '../../../../components/modal/AlertDialog';
+import { getPostParameter } from '../../../../constants/Consts';
 
 export const LocationInfoInputTablet = forwardRef((props , ref) => {
 
   const dispatch = useDispatch();  
   const [locationInfo, setLocationInfo] = useState(props.infoInput);
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationAction = useSelector(state => state.rep.locationAction);
   const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
   const dispositionFiledUpdated = useSelector(state => state.location.statusLocationInfoUpdate);
@@ -85,14 +87,16 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
   }, [isLoading])
 
   const updateOutcomes = () => {
-    let request = {
-      "location_id": locationInfo.location_id,
-      "stage_id": selectedStageId,
-      "outcome_id": selectedOutcomeId,
-      "campaign_id": 1,
-      "indempotency_key":uuid.v4()
-    }             
-    postStageOutcomUpdate(request)
+    
+    var userParam = getPostParameter(currentLocation);
+    let postData = {
+      location_id: locationInfo.location_id,
+      stage_id: selectedStageId,
+      outcome_id: selectedOutcomeId,
+      campaign_id: 1,
+      user_local_data: userParam.user_local_data
+    }
+    postStageOutcomUpdate(postData)
     .then((res) => {      
       setTimeout(() =>{
         setIsLoading(false);
@@ -107,10 +111,12 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
 
   const handleSubmit = () => {
 
+    var userParam = getPostParameter(currentLocation);
     let postData = {
-        "location_id": locationInfo.location_id,
-        "campaign_id": 1,
-        "disposition_fields": []
+        location_id: locationInfo.location_id,
+        campaign_id: 1,
+        disposition_fields: [],
+        user_local_data: userParam.user_local_data 
       }
   
       locationInfo.disposition_fields.forEach((item, key) => {    
@@ -120,7 +126,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
         })
       });    
   
-      postDispositionFields(postData, uuid.v4())
+      postDispositionFields(postData)
       .then((res) =>{
         setMessage(res);
         setIsSuccess(true);      

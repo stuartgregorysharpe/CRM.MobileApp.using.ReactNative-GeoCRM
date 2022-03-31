@@ -40,14 +40,13 @@ export default function WazeNavigation({location , address}){
                                 console.log("loc", location);
                                 var wazeByAddress  = await checkFeatureIncludeParam("waze_by_address");                                
                                 try{
-                                    if(wazeByAddress){                                        
-                                        var parseLocation = await parseCoordinate(address);                                        
-                                        if(parseLocation){
-                                            Linking.openURL(`https://waze.com/ul?q=${encodeURIComponent(address)}ll=` + parseLocation.latitude + ',' + parseLocation.longitude + '&navigate=yes');
+                                    if(wazeByAddress){                                                   
+                                        var parseLocation = await parseCoordinate(address);
+                                        if(parseLocation){                                            
+                                            Linking.openURL(`https://waze.com/ul?q=${encodeURIComponent(address)}&ll=` + parseLocation.latitude + ',' + parseLocation.longitude + '&navigate=yes');
                                         }else{
                                             Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
-                                        }
-                                        //Linking.openURL( encodeURI('https://waze.com/ul?q=' +  address ) )
+                                        }                                        
                                     }else{
                                         Linking.openURL('https://waze.com/ul?ll=' + location.latitude + ',' + location.longitude + '&navigate=no')
                                     }  

@@ -17,7 +17,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import SvgIcon from '../../../../components/SvgIcon';
-import { expireToken } from '../../../../constants/Consts';
+import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
 
 
@@ -41,14 +41,16 @@ export default function AddLead({ screenProps, onClose }) {
   const [pickerTitle, setPickerTitle] = useState("");
 
   const handleSubmit = () => {
+        
+    var userParam = getPostParameter(currentLocation);
     let params = {
       coordinates: { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
       use_current_geo_location: isCurrentLocation,
-      custom_master_fields: customMasterFields
-    }            
-    postLeadFields(params, uuid.v4())
-      .then((res) => {
-        console.log("re", res);
+      custom_master_fields: customMasterFields,
+      user_local_data : userParam.user_local_data
+    }
+    postLeadFields(params)
+      .then((res) => {        
         setLocationId(res);
         setMessage("Added lead successfully");        
         setIsSuccess(true);
@@ -72,8 +74,7 @@ export default function AddLead({ screenProps, onClose }) {
   useEffect(() => {
     if (isLoading) {
       getLeadFields()
-        .then((res) => {        
-          console.log("xxx",res)  
+        .then((res) => {          
           initPostData(res);
           setLeadForms(res);
           setIsLoading(false);

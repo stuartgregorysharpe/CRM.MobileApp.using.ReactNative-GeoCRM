@@ -17,7 +17,7 @@ import { CHANGE_LOGIN_STATUS, LOCATION_LOOP_LISTS } from '../../../actions/actio
 import moment from 'moment';
 import { white } from 'react-native-paper/lib/typescript/styles/colors';
 import { showNotification } from '../../../actions/notification.action';
-import { expireToken } from '../../../constants/Consts';
+import { expireToken, getPostParameter } from '../../../constants/Consts';
 import { Notification } from '../../../components/modal/Notification';
 var selectedIndex = 2;
 
@@ -132,7 +132,9 @@ export default function CalendarScreen(props) {
   }
 
   const updateTodayLocationLists = async (data) => {
-    updateCalendar({ schedules: data })
+    var userParam = getPostParameter(currentLocation);
+    var postData = { schedules: data , user_local_data: userParam.user_local_data};
+    updateCalendar(postData)
       .then(res => {
       })
       .catch(e => {

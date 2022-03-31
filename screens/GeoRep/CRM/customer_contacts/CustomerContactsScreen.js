@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler, Pressable } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { useDispatch } from 'react-redux';
+import { useDispatch ,useSelector } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLocationContacts, getLocationFields, updateCustomerLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
@@ -15,6 +15,7 @@ import AddContact from '../popup/AddOrUpdateContact';
 import uuid from 'react-native-uuid';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { getPostParameter } from '../../../../constants/Consts';
 var selectedIndex = 1;
 var showingItem = 0;
 
@@ -29,6 +30,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const [contacts, setContacts] = useState([]);
     const [showItem, setShowItem] = useState(0);
     const dispatch = useDispatch();
+    const currentLocation = useSelector(state => state.rep.currentLocation);
     const [pageType, setPageType] = useState('add');
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedValue, setSelectedValue] = useState([]);
@@ -110,12 +112,14 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
         }
 
+        var userParam  =  getPostParameter(currentLocation);
         let request = {
             "location_id": locationId,
-            "fields": fields
+            "fields": fields,
+            "user_local_data" : userParam.user_local_data
         }
 
-        updateCustomerLocationFields(request, uuid.v4()).then(response => {
+        updateCustomerLocationFields(request).then(response => {
             console.log(response);
 
             loadList();
