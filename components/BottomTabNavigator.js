@@ -47,7 +47,7 @@ import {
   LOCATION_CONFIRM_MODAL_VISIBLE,
   CHANGE_BOTTOM_TAB_ACTION
 } from '../actions/actionTypes';
-import { getLocationsMap, getLocationInfo } from '../actions/location.action';
+
 
 import {
   StyleSheet, 

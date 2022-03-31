@@ -17,6 +17,8 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import SvgIcon from '../../../../components/SvgIcon';
+import { expireToken } from '../../../../constants/Consts';
+import { Notification } from '../../../../components/modal/Notification';
 
 
 export default function AddLead({ screenProps, onClose }) {
@@ -51,7 +53,8 @@ export default function AddLead({ screenProps, onClose }) {
         setMessage("Added lead successfully");        
         setIsSuccess(true);
       })
-      .catch((error) => {
+      .catch((error) => {        
+        expireToken(dispatch, error);
         setMessage("Failed");
         setIsSuccess(true);
       })
@@ -77,6 +80,7 @@ export default function AddLead({ screenProps, onClose }) {
         })
         .catch((e) => {
           setIsLoading(false);
+          expireToken(dispatch, e);
         })
     }
   }, [isLoading]);
@@ -271,6 +275,7 @@ export default function AddLead({ screenProps, onClose }) {
   return (
     <ScrollView style={styles.container}>
                   
+      <Notification></Notification>
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
         onClose(locationId);
       }}></AlertDialog>

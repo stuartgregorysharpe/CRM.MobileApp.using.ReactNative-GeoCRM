@@ -17,6 +17,8 @@ import AddSalesPipeline from './AddSalesPipeline';
 import Skeleton from '../../../components/Skeleton';
 import Images from '../../../constants/Images';
 import DeviceInfo from 'react-native-device-info';
+import { expireToken } from '../../../constants/Consts';
+import { Notification } from '../../../components/modal/Notification';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
@@ -149,7 +151,9 @@ export default function SalesPipelineScreen(props) {
       setOpportunities(res.opportunities);
       setSearchList(res.opportunities);
       setSelectedStage('0');
-    }).catch((e) => { setIsLoading(false) })
+    }).catch((e) => { 
+      expireToken(dispatch, e);
+      setIsLoading(false) })
   }
 
   const onSearchList = (searchKey) => {
@@ -282,6 +286,9 @@ export default function SalesPipelineScreen(props) {
   return (
     <Provider>
       <View style={{ flex: 1 }}>
+
+        <Notification></Notification>
+        
         {canAddPipeline && <AddSalesPipeline
           props={props}
           onClose={() => {

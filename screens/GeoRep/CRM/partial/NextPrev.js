@@ -3,19 +3,19 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {  Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
-import { getLocationInfo, postLocationFeedback } from '../../../../actions/location.action';
-import { checkFeatureIncludeParam, getLocationLoop, storeLocationLoop } from '../../../../constants/Storage';
+import { whiteLabel } from '../../../../constants/Colors';
+import { getLocationInfo } from '../../../../actions/location.action';
+import { getLocationLoop, storeLocationLoop } from '../../../../constants/Storage';
 import SvgIcon from '../../../../components/SvgIcon';
 import DeviceInfo from 'react-native-device-info';
+import { expireToken } from '../../../../constants/Consts';
 var currentPosition = -1;
 var isClickable = true;
 
 export function NextPrev(props){
 
     // pageType : 'camera' or 'search-lists'  ,  onUpdated: called after pressed "next" or "prev" button.
-    const {currentLocation, pageType ,locationInfo , onUpdated , onStart , canGoNextPrev } = props;
-    
+    const {currentLocation, pageType ,locationInfo , onUpdated , onStart , canGoNextPrev } = props;    
     const [isPrev, setIsPrev] = useState(false);
     const [isNext, setIsNext] = useState(false);    
     const loopLists = useSelector(state => state.location.loopLists); // use for camera page
@@ -171,7 +171,7 @@ export function NextPrev(props){
             onUpdated(res);
             isClickable = true;
         })
-        .catch((e) =>{
+        .catch((e) =>{            
             console.log(e);
             isClickable = true;
         })

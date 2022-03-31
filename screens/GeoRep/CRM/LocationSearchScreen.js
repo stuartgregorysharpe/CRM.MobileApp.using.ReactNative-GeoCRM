@@ -9,11 +9,11 @@ import SearchBar from '../../../components/SearchBar';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
 import {  IS_CALENDAR_SELECTION, LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationFilters, getLocationInfo, getLocationSearchList, getLocationSearchListsByPage } from '../../../actions/location.action';
+import { getLocationFilters, getLocationInfo,  getLocationSearchListsByPage } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { grayBackground, style } from '../../../constants/Styles';
-import { getDistance } from '../../../constants/Consts';
+import { expireToken, getDistance } from '../../../constants/Consts';
 import { LocationItem } from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
@@ -21,6 +21,7 @@ import SvgIcon from '../../../components/SvgIcon';
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getFilterData } from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
+import { Notification } from '../../../components/modal/Notification';
 var isEndPageLoading = false;
 
 export default function LocationSearchScreen(props) {
@@ -160,6 +161,7 @@ export default function LocationSearchScreen(props) {
     })
     .catch((error) => {  
       console.log("error", error);
+      expireToken(dispatch, error);
     });
   }
   
@@ -239,6 +241,7 @@ export default function LocationSearchScreen(props) {
       }      
     })  
     .catch((e) =>{ 
+      expireToken(dispatch, e);
       console.log("location info api ", e);  
     })
   }
@@ -305,6 +308,7 @@ export default function LocationSearchScreen(props) {
       
       <SafeAreaView style={{flex:1, }}>
                 
+          <Notification/>
           <AlertDialog visible={isCreated}  message={message} onModalClose={() => setIsCreated(false) }></AlertDialog>              
           
           {crmStatus && (showItem == 3 || showItem == 1) && <TouchableOpacity

@@ -27,6 +27,8 @@ import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { GuideInfoView } from '../partial/GuideInfoView';
+import { expireToken } from '../../../../constants/Consts';
+import { Notification } from '../../../../components/modal/Notification';
 
 export const FormQuestions = (props) =>{
 
@@ -52,7 +54,6 @@ export const FormQuestions = (props) =>{
     const [isAlert, setIsAlert] = useState(false);
     const [message, setMessage] = useState("");
     const dispatch = useDispatch()
-
 
     useEffect(() => {
       refreshHeader();
@@ -127,6 +128,7 @@ export const FormQuestions = (props) =>{
         groupByQuestions(res);
         console.log(" raw data" , res)
       }).catch((e) => {
+        expireToken(dispatch, e);
       })
     }
 
@@ -334,6 +336,8 @@ export const FormQuestions = (props) =>{
         >
           
             <GrayBackground></GrayBackground>
+            <Notification></Notification>
+            
             <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>          
             <DatetimePickerView 
               visible={isDateTimeView}

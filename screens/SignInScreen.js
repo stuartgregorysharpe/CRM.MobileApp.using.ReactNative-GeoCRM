@@ -8,7 +8,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { baseURL } from '../constants';
 import { PRIMARY_COLOR, whiteLabel } from '../constants/Colors';
-import { Login } from '../actions/auth.action';
+import { checkEmail, Login, loginWithEmail } from '../actions/auth.action';
 import { CHANGE_LOGIN_STATUS ,
   CHANGE_USER_INFO, 
   CHANGE_PROJECT_PAYLOAD,
@@ -19,27 +19,26 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { getCurrentDate, getFilterData, getToken, getUserData, storeCurrentDate, storeLocationLoop } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 import {displayName} from "../app.json";
+import { clearNotification } from '../actions/notification.action';
 
-export default function SignIn() {
-  const dispatch = useDispatch();
+export default function SignIn() {  
+
   const loginStatus = useSelector(state => state.auth.loginStatus);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
   const [isPassword, setIsPassword] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [isLoading,setIsLoading] = useState(false);
   const emailRef = useRef();
   const passwordInput = useRef();
+  const dispatch = useDispatch();
 
   //clinton@cydcor.com / Test2021#
   useEffect(() => {  
-    initView();    
-    if (loginStatus == "failed") {
-      setPasswordError(true);
-    }
-
+    initView();        
   }, [loginStatus])
 
   const initView = async () =>{    
@@ -54,51 +53,56 @@ export default function SignIn() {
     var token = await getToken();
     var filters = await getFilterData('@filter');
     if(token != null){
-      var userData = await getUserData();
-      console.log("login userData ", userData);      
+      var userData = await getUserData();      
       dispatch({ type: MAP_FILTERS, payload: filters });
       dispatch({ type: CHANGE_USER_INFO, payload: userData });
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
       dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) })
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
     }
-        
+
+    dispatch(clearNotification());
   }
 
   const handleNext = () => {
-    if (email == '') {
+    
+    setIsLoading(true);
+    checkEmail(email).then((res) => {
+      console.log(res);
+      if (res.data.success.allow_aad_login == 0) {
+        setStep(true);
+        passwordInput.current.focus();
+        setIsLoading(false);
+      }
+    }).catch((e) =>{
+      console.log("errr",e)
       setEmailError(true);
-      return;
-    }
-    console.log("login url", `${baseURL}/authentication_api/Auth/check_aad_login`);
-    dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
-    axios
-      .post(`${baseURL}/authentication_api/Auth/check_aad_login`, { email })
-      .then((res) => {
-        if (res.data.success.allow_aad_login == 0) {
-          setStep(true);
-          passwordInput.current.focus()
-          dispatch({ type: CHANGE_LOGIN_STATUS, payload: "logout" });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setEmailError(true);
-      });
+      setIsLoading(false);
+    })
   }
 
   const handleSubmit = () => {
-    if (email == '') {
-      setEmailError(true);
-      return;
-    }
-    if (password == '') {
-      setPasswordError(true);
-      return;
-    }
-
+    
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
-    dispatch(Login(email, password));
+    setIsLoading(true);
+    loginWithEmail(email, password).then( async(res) => {      
+        setIsLoading(false);
+        if( res.success && res.success.message === "User authenticated successfully"){
+          var filters = await getFilterData('@filter');
+          dispatch({ type: MAP_FILTERS, payload: filters });
+          dispatch({ type: CHANGE_USER_INFO, payload: res.success.user });
+          dispatch({ type: CHANGE_ACCESS_TOKEN, payload: res.success.access_token });
+          dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(res.success.access_token) })
+          dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
+        }else if(res.status === "failed"){          
+          setErrorMsg(res.message);
+          setPasswordError(true);
+        }
+        
+    }).catch((e) =>{
+      setIsLoading(false);
+    })
+
   }
 
   return (
@@ -144,7 +148,7 @@ export default function SignIn() {
             }}
             theme={{ colors: { text: '#fff', placeholder: '#fff' } }}
           />
-          {emailError && <Text style={styles.errorText}>Please Input your email</Text>}
+          {emailError && <Text style={styles.linkText}>Please Input your email</Text>}
         </View>
         {step && <View style={styles.textInputBox}>
         <View style={{flexDirection: 'row'}}>
@@ -180,12 +184,12 @@ export default function SignIn() {
           </TouchableOpacity>   
           </View>
 
-          {passwordError && <Text style={styles.errorText}>Please Input Password</Text>}
+          {passwordError && <Text style={styles.linkText}>{errorMsg}</Text>}
         </View>}
         
         <TouchableOpacity style={styles.submitButton} onPress={step ? handleSubmit : handleNext}>
           <Text style={[styles.submitButtonText]}>
-            {loginStatus == "pending" ? "Loading..." : step ? `Sign In` : `Next` }
+            {isLoading ? "Loading..." : step ? `Sign In` : `Next` }
           </Text>
           <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={whiteLabel().signInButtonIcon} icon={ faAngleDoubleRight } />
         </TouchableOpacity>

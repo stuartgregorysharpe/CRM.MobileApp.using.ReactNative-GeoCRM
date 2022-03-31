@@ -1,6 +1,6 @@
-import { getGeocoding } from "./location.action";
-import Geolocation from 'react-native-geolocation-service';
 
+import Geolocation from 'react-native-geolocation-service';
+import axios from "axios";
 import { CHANGE_CURRENT_LOCATION } from "./actionTypes";
 
 export async function reverseGeocoding (currentLocation, customMasterFields) {
@@ -52,6 +52,74 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
     })
 }
 
+
+export async function parseCoordinate (address) {
+    
+  return await getCoordinate(address)
+  .then((res) => {
+    console.log("parse coo", res);
+    if(res.results != null && res.results.length > 0 && res.results[0].address_components.length > 0){        
+      var geometry = res.results[0].geometry;
+
+      console.log("geomoetry", geometry.location);
+
+      if(geometry.location && geometry.location.lat && geometry.location.lng){
+        var response = {
+          latitude: geometry.location.lat,
+          longitude: geometry.location.lng
+        }
+        console.log("response", response);
+        return response;
+      }
+      return null;
+    }
+  })
+  .catch((e) => {
+    console.log(e);
+    return [];
+  })
+}
+
+
+
+export const getGeocoding = async (latitude, longitude) => {
+  return new Promise(function (resolve, reject) {
+    console.log("url", `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`);
+    axios
+      .get(`https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`, {
+        headers: {}
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+  });
+}
+
+
+export const getCoordinate = async (address) => {
+  return new Promise(function (resolve, reject) {
+    // 
+    console.log("url", `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`);
+    axios
+      .get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`, {
+        headers: {}
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+
+  });
+}
+
+
+
+
 export const updateCurrentLocation = () => (dispatch, getState) => {
   // update current location
   console.log("enter");
@@ -68,7 +136,6 @@ export const updateCurrentLocation = () => (dispatch, getState) => {
     },
     {enableHighAccuracy: true, timeout: 15000},
   );
-
 }
 
 

@@ -12,6 +12,7 @@ import RNFS, { DownloadFileOptions , DocumentDirectoryPath , downloadFile} from 
 import FileViewer from "react-native-file-viewer";
 import { style } from '../../../constants/Styles';
 import Images from '../../../constants/Images';
+import { expireToken } from '../../../constants/Consts';
 
 export default function ContentLibraryScreen(props) {
 
@@ -51,7 +52,7 @@ export default function ContentLibraryScreen(props) {
         return(<TouchableOpacity                   
            onPress={
           () =>{
-            setIsBack(false);         
+            setIsBack(false); 
             setTitle("Content Library");
           }}>            
           <View style={style.headerTitleContainerStyle}>            
@@ -91,6 +92,7 @@ export default function ContentLibraryScreen(props) {
         
       })
       .catch(error=>{
+        expireToken(dispatch, error);
         setLibraryLists([]);
         setSearchLibraryLists([]);
       });

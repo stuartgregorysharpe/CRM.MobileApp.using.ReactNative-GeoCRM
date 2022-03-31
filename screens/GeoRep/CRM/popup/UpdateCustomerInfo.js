@@ -16,6 +16,8 @@ import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { expireToken } from '../../../../constants/Consts';
+import { Notification } from '../../../../components/modal/Notification';
 
 export default function UpdateCustomerInfo({ location_id, onClose}) {
 
@@ -62,8 +64,10 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     })
     .catch((error) =>{      
       console.log('error', error);
+      expireToken(dispatch, error)
       setMessage("Failed");
       setIsSuccess(true);
+      
     })
   }
 
@@ -89,6 +93,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       .catch((e) => {
         console.log("is loading erorr", e);
         setIsLoading(false);
+        expireToken(dispatch, e);
       })
     }
   }, [isLoading]);
@@ -313,6 +318,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       <Animated.View>
         <ScrollView style={styles.container}>
 
+
+            <Notification></Notification>
+            
             <AlertDialog visible={isSuccess} message={message} onModalClose={() =>{           
               onClose();
               }}></AlertDialog>

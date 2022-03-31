@@ -5,15 +5,19 @@ import LocationSpecificInfoScreen from './checkin/LocationSpecificInfoScreen';
 import LocationSearchScreen from './LocationSearchScreen';
 const Stack = createNativeStackNavigator();
 
+export default function CRMScreen(props) {
 
-export default function CRMScreen({navigation}) {
+  var screenProps = props.screenProps;
+  if(screenProps === undefined){
+    screenProps = props.navigation;
+  }
 
   return (
     <Stack.Navigator> 
       <Stack.Screen        
         name="Root"        
         options={{ header: () => null , headerShown: false}}>      
-          {props => <LocationScreen {...props} screenProps={navigation} />}
+          {props => <LocationScreen {...props} screenProps={screenProps} />}
       </Stack.Screen>
       
       <Stack.Screen
@@ -22,14 +26,14 @@ export default function CRMScreen({navigation}) {
         // component={LocationSearchScreen}
         options={{ header: () => null }}          
       >
-        {props => <LocationSearchScreen {...props} screenProps={navigation} />}
+        {props => <LocationSearchScreen {...props} screenProps={screenProps} />}
       </Stack.Screen>
             
       <Stack.Screen
         name="LocationSpecificInfo"
         // component={LocationSpecificInfoScreen}
         options={{ header: () => null }}>
-          {props => <LocationSpecificInfoScreen {...props} screenProps={navigation}  />}
+          {props => <LocationSpecificInfoScreen {...props} screenProps={screenProps}  />}
       </Stack.Screen>
       
     </Stack.Navigator>
