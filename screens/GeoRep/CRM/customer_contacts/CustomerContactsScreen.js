@@ -17,6 +17,7 @@ import uuid from 'react-native-uuid';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
 var selectedIndex = 1;
 var showingItem = 0;
@@ -34,6 +35,8 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const [pageType, setPageType] = useState('add');
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedValue, setSelectedValue] = useState([]);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         loadList()
@@ -121,8 +124,10 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
         console.log("Customer: ", JSON.stringify(request));
         updateCustomerLocationFields(request, uuid.v4()).then(response => {
             console.log(response);
-
-            loadList();
+            if (response?.status === 'success') {
+                setIsSuccess(true);
+                setMessage('Details updated successfully');
+            }
         }).catch(e => {
             console.log(e);
         })
@@ -478,6 +483,12 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             }}>
                 <Divider />
             </TouchableOpacity>
+
+            <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
+                setIsSuccess(false);
+                loadList();
+            }}>
+            </AlertDialog>
 
             <View style={[styles.tabContainer]}>
                 <TouchableOpacity style={styles.tabItem} onPress={() => {

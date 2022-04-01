@@ -30,18 +30,27 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
 
     const [isNameRequired, setNameRequired] = useState(false);
     const [isSurnameRequired, setSurnameRequired] = useState(false);
+    const [isEmailRequired, setEmailRequired] = useState(false);
+    const [isMobileRequired, setMobileRequired] = useState(false);
 
     const [isSuccess, setIsSuccess] = useState(false);
     const [message, setMessage] = useState("");
     const [canShowErrorAlert, setShowErrorAlert] = useState(false);
 
     const validFields = () => {
-        setNameRequired(!name || name === '');
-        setSurnameRequired(!surname || surname === '');
-        if (!name || name === '' || !surname || surname === '') {
-            setIsSuccess(true);
-            setShowErrorAlert(true);
-            setMessage('Please complete the compulsory fields');
+        let nameCheck = !name || name === '';
+        let surNameCheck = !surname || surname === '';
+        let emailCheck = !email || email === '';
+        let mobileCheck = !mobile_number || mobile_number === '';
+
+        setNameRequired(nameCheck);
+        setSurnameRequired(surNameCheck);
+        setEmailRequired(emailCheck);
+        setMobileRequired(mobileCheck);
+        if (nameCheck || surNameCheck || emailCheck || mobileCheck) {
+            // setIsSuccess(true);
+            // setShowErrorAlert(true);
+            // setMessage('Please complete the compulsory fields');
             return false;
         }
         setShowErrorAlert(false);
@@ -139,7 +148,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                 activeOpacity={1}
                                 onPress={() => nameRef.current.focus()}
                             >
-                                <View>
+                                <View style={styles.inputContainer}>
                                     <TextInput
                                         ref={nameRef}
                                         style={styles.textInput}
@@ -148,15 +157,25 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         outlineColor={isNameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
                                         activeOutlineColor={isNameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
                                         value={name}
-                                        onChangeText={text => setName(text)}
+                                        onChangeText={text => {
+                                            setName(text);
+                                            if (text !== '') {
+                                                setNameRequired(false);
+                                            } else {
+                                                setNameRequired(true);
+                                            }
+                                        }}
                                     />
+                                    {isNameRequired && <View style={{ position: 'absolute', right: 0 }}>
+                                        <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+                                    </View>}
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 onPress={() => surnameRef.current.focus()}
                             >
-                                <View>
+                                <View style={styles.inputContainer}>
                                     <TextInput
                                         ref={surnameRef}
                                         style={styles.textInput}
@@ -165,42 +184,74 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         outlineColor={isSurnameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
                                         activeOutlineColor={isSurnameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
                                         value={surname}
-                                        onChangeText={text => setSurname(text)}
+                                        onChangeText={text => {
+                                            setSurname(text)
+                                            if (text !== '') {
+                                                setSurnameRequired(false);
+                                            } else {
+                                                setSurnameRequired(true);
+                                            }
+                                        }}
                                     />
+                                    {isSurnameRequired && <View style={{ position: 'absolute', right: 0 }}>
+                                        <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+                                    </View>}
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 onPress={() => emailRef.current.focus()}
                             >
-                                <View>
+                                <View style={styles.inputContainer}>
                                     <TextInput
                                         ref={emailRef}
                                         style={styles.textInput}
                                         label="Email Address"
                                         mode="outlined"
-                                        outlineColor={PRIMARY_COLOR}
-                                        activeOutlineColor={DISABLED_COLOR}
+                                        outlineColor={isEmailRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
+                                        activeOutlineColor={isEmailRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
                                         value={email}
-                                        onChangeText={text => setEmail(text)}
+                                        onChangeText={text => {
+                                            setEmail(text)
+                                            if (text !== '') {
+                                                setEmailRequired(false);
+                                            } else {
+                                                setEmailRequired(true);
+                                            }
+                                        }}
                                     />
+                                    {isEmailRequired && <View style={{ position: 'absolute', right: 0 }}>
+                                        <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+                                    </View>}
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 onPress={() => mobileRef.current.focus()}
                             >
-                                <View>
+                                <View style={styles.inputContainer}>
                                     <TextInput
                                         ref={mobileRef}
                                         style={styles.textInput}
                                         label="Mobile Number"
-                                        mode="outlined"
-                                        outlineColor={PRIMARY_COLOR}
-                                        activeOutlineColor={DISABLED_COLOR}
+                                        mode={"outlined"}
+                                        outlineColor={isMobileRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
+                                        activeOutlineColor={isMobileRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
                                         value={mobile_number}
-                                        onChangeText={text => setMobileNumber(text)}
+                                        onChangeText={text => {
+                                            setMobileNumber(text)
+                                            if (text !== '') {
+                                                setMobileRequired(false);
+                                            } else {
+                                                setMobileRequired(true);
+                                            }
+                                        }}
                                     />
+
+                                    {isMobileRequired && <View style={{ position: 'absolute', right: 0 }}>
+                                        <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+                                    </View>}
+
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -274,9 +325,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 30,
         height: 40,
-        backgroundColor: BG_COLOR,
+        backgroundColor: Colors.whiteColor,
         fontFamily: Fonts.secondaryMedium,
         marginBottom: 8
     },
+    inputContainer: {
+        justifyContent: 'center',
+        backgroundColor:Colors.whiteColor
+    }
 
 })
