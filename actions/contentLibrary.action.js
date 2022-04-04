@@ -25,8 +25,13 @@ export function getContentLibrary(base_url, token, params)
           
         })
         .catch((err) => {        
-          console.log("load list4", err);
-          reject(err);          
+          const error = err.response;
+          if (error.status===401 && error.config && 
+            !error.config.__isRetryRequest) {          
+              reject("expired");
+          }else{
+            reject(err);  
+          }
         })        
 
     });    
@@ -36,15 +41,12 @@ export function downloadPDF(url, fileName, ext){
   
   return new Promise(function(resolve, reject){       
     //ExternalDirectoryPath
-    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}` ;
-    console.log(path);
-
+    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}` ;    
     const headers = {
       'Accept': 'application/pdf',
       'Content-Type': 'application/pdf',
       'Authorization': `Bearer [token]`
     }
-
     //Define options
     const options: RNFS.DownloadFileOptions = {
       fromUrl: encodeURI(url),

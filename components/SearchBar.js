@@ -7,9 +7,9 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
 import { SLIDE_STATUS } from '../actions/actionTypes';
-import { DISABLED_COLOR } from '../constants/Colors';
+import Colors, { DISABLED_COLOR, whiteLabel } from '../constants/Colors';
 
-export default function SearchBar({isFilter, animation, initVal, onSearch , isLoading }) {
+export default function SearchBar({isFilter, animation, initVal, onSearch , isLoading , haveFilter }) {
   const dispatch = useDispatch();
 
   const [text, setText] = useState(initVal);
@@ -19,6 +19,7 @@ export default function SearchBar({isFilter, animation, initVal, onSearch , isLo
     <View style={styles.searchBox} keyboardShouldPersistTaps="handled">
       <TextInput
         style={[styles.searchInput, boxShadow]}
+        placeholderTextColor={whiteLabel().helpText}
         placeholder='Search.....'
         value={text}
         onChangeText={text => {                    
@@ -27,7 +28,9 @@ export default function SearchBar({isFilter, animation, initVal, onSearch , isLo
         }}
         // onFocus={() => dispatch({type: SLIDE_STATUS, payload: false})}
       />
-      <FontAwesomeIcon style={styles.searchIcon} size={16} color={DISABLED_COLOR} icon={ faSearch } />
+      
+      <FontAwesomeIcon style={styles.searchIcon} size={16} color={whiteLabel().inactiveIcon} icon={ faSearch } />
+
       {
         isFilter && 
         <TouchableOpacity style={styles.filterImageButton} onPress={animation}>
@@ -39,6 +42,10 @@ export default function SearchBar({isFilter, animation, initVal, onSearch , isLo
             isLoading && 
             <SvgIcon icon="Filter_GRAY" width="30px" height="30px" />
           }
+          {
+            haveFilter  && <View style={{width:20, height:20, backgroundColor:Colors.redColor ,  borderRadius:10,  position:'absolute', left:-8, top:-8}}></View>
+          }
+          
         </TouchableOpacity>
       }      
 

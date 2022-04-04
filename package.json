@@ -35,6 +35,7 @@
     "react-native-draggable-flatlist": "^3.0.4",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-extended-stylesheet-breakpoints": "^1.1.0",
+    "react-native-fast-image": "^8.5.11",
     "react-native-file-opener": "^0.2.0",
     "react-native-file-viewer": "^2.1.5",
     "react-native-fs": "^2.19.0",

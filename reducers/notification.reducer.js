@@ -7,7 +7,6 @@ const initialState = {
   message: null,
   options: null,
   visible: false,
-
   autoHide : true,
   buttonText : false,
   buttonAction : false,

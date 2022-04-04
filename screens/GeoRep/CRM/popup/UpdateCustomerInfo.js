@@ -16,6 +16,8 @@ import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { expireToken } from '../../../../constants/Consts';
+import { Notification } from '../../../../components/modal/Notification';
 
 export default function UpdateCustomerInfo({ location_id, onClose}) {
 
@@ -35,6 +37,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [isCurrentLocation , setIsCurrentLocation] = useState("0");
   const [customerNameUpdated, setCustomerNameUpdated] = useState("0");
   const [addressUpdated, setAddressUpdated] = useState("0");   
+  const [pickerTitle, setPickerTitle] = useState("");
   const [myLocation, setMyLocation] = useState(currentLocation);
   var location_name_updated = "0";
   var address_updated = "0";
@@ -61,8 +64,10 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     })
     .catch((error) =>{      
       console.log('error', error);
+      expireToken(dispatch, error)
       setMessage("Failed");
       setIsSuccess(true);
+      
     })
   }
 
@@ -88,6 +93,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       .catch((e) => {
         console.log("is loading erorr", e);
         setIsLoading(false);
+        expireToken(dispatch, e);
       })
     }
   }, [isLoading]);
@@ -137,22 +143,17 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     setOriginCustomMasterFields(origin);
   }
 
-  const checkChangedStatus = () => {
-    console.log("originCustomMasterFields" ,originCustomMasterFields);
-    console.log("customMasterFields" ,originCustomMasterFields);
-    
+
+  const checkChangedStatus = () => {    
     if(originCustomMasterFields !== customMasterFields){      
-      
       if(originCustomMasterFields.find(item => item.core_field_name === "location_name").value !== customMasterFields.find(item => item.core_field_name === "location_name").value){
         setCustomerNameUpdated("1");
         location_name_updated = "1";
       }else{
-        console.log("xxx");
+        
       }
-      originCustomMasterFields.forEach((element) =>{
-        console.log(" -------- tri --------" , element);
-        if(element.core_field_name !== "location_name" && customMasterFields.find(item => item.core_field_name === element.core_field_name).value !== element.value ){
-          
+      originCustomMasterFields.forEach((element) =>{        
+        if(element.core_field_name !== "location_name" && customMasterFields.find(item => item.core_field_name === element.core_field_name).value !== element.value ){          
           setAddressUpdated("1");
           address_updated = "1";
         }
@@ -175,21 +176,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       return "";
     }
   }
-
-
-  const getSelectedDropdownItem = () =>{    
-    var res = "";    
-    customMasterFields.forEach((element) =>{
-      if(element.custom_master_field_id == dropdownId){
-        res = element.itemIndex;
-      }
-    });    
-    if(res === ""){
-      return -1;
-    }
-    return res;
-  }  
-
+  
   const getSelectedDropdownItemText = (id, originFieldName , fieldType ) => {
     
     var tmp = [...customMasterFields];
@@ -231,7 +218,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     return (
       <SelectionPicker
         mode={"single"}
-        title={"Select Suite, Unit, Apt"}
+        title={pickerTitle}
         clearTitle={"Clear"}
         value={selectedValue}
         visible={isDropdownModal}
@@ -254,10 +241,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
               
             }
           });
-          setCustomMasterFields(tmp);          
+          setCustomMasterFields(tmp);
           setIsDropdownModal(false);
           
-
         }}
         ></SelectionPicker>
     )
@@ -332,6 +318,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       <Animated.View>
         <ScrollView style={styles.container}>
 
+
+            <Notification></Notification>
+            
             <AlertDialog visible={isSuccess} message={message} onModalClose={() =>{           
               onClose();
               }}></AlertDialog>
@@ -381,14 +370,16 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
                               setDropdownId(field.custom_master_field_id);
                               setIsDropdownModal(true);
                               if(field.field_type === "dropdown"){
-                                setSelectedValue([field.value])
+                                setSelectedValue(field.value);                                
+                                setPickerTitle('Select ' + field.field_name);
                               }else{                                
-                                setSelectedValue([field.dropdown_value])                          
-                              }                        
+                                setSelectedValue(field.dropdown_value);
+                                setPickerTitle("Select Suite, Unit, Apt");
+                              }
                             }
                           }}>
                           {
-                            field.dropdown_value !== undefined &&
+                            ((field.dropdown_value !== undefined &&  field.dropdown_value !== "") || (field.value !== undefined && field.value !== "" )) &&
                             <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name} </Text>
                           }
                           <Text                                        

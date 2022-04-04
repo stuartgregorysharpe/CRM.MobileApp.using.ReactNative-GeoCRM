@@ -1,8 +1,7 @@
-
 import axios from "axios";
 
 export function getSupportIssues(base_url, token, params)
-{    
+{
     return new Promise(function(resolve, reject) {                
         axios
         .get(`${base_url}/supportissues`, {
@@ -22,16 +21,21 @@ export function getSupportIssues(base_url, token, params)
           }
         })
         .catch((err) => {                  
-          reject(err);          
+          const error = err.response;
+          if (error.status===401 && error.config && 
+            !error.config.__isRetryRequest) {          
+              reject("expired");
+          }else{
+            reject(err);  
+          }
         })
-    });    
+    });
 }
-
 
 export function postSupportEmail(base_url, token, params)
 {        
     return new Promise(function(resolve, reject) {
-        axios        
+        axios
         .post(`${base_url}/supportmail`, params, {
             headers: {
               Authorization: 'Bearer ' + token,
@@ -50,9 +54,14 @@ export function postSupportEmail(base_url, token, params)
           }
         })
         .catch((err) => {       
-            console.log(err);           
-          reject(err);          
-        })        
+          const error = err.response;
+          if (error.status===401 && error.config && 
+            !error.config.__isRetryRequest) {          
+              reject("expired");
+          }else{
+            reject(err);  
+          }
+        })
 
     });    
 }

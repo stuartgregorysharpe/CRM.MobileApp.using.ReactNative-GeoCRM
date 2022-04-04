@@ -14,7 +14,7 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
   //console.log("new signaure", signature);
 
   const [data, setData] = useState(signature);
-  console.log("data", data);
+ 
 
   useEffect(() => {    
     setTimeout(() => {

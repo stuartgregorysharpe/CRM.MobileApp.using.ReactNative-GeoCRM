@@ -19,64 +19,51 @@ import { getAddOpportunityContacts, getAddOpportunityFields, postAddOpportunityF
 import { useNavigation } from '@react-navigation/native';
 import { getToken } from '../../../constants/Storage';
 import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import SelectionPicker from '../../../components/modal/SelectionPicker';
+import { expireToken } from '../../../constants/Consts';
+import { Notification } from '../../../components/modal/Notification';
 
 var selected_location_id = 0;
 export default function AddSalesPipeline({ location_id, onClose, pageType, opportunity_id }) {
+
   const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
   const dispositionRef = useRef([]);
   const [dropdownId, setDropdownId] = useState(0);
   const [isDropdownModal, setIsDropdownModal] = useState([]);
   const [dropdownItems, setDropdownItems] = useState([]);
   const [canShowAlert, setCanShowAlert] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isCurrentLocation, setIsCurrentLocation] = useState("0");
-  const [myLocation, setMyLocation] = useState(currentLocation);
-
-  const [pipelinesModalVisible, setPipelinesModalVisible] = useState(false);
-  const [stageModalVisible, setStageModalVisible] = useState(false);
-  const [outComeModalVisible, setOutComeModalVisible] = useState(false);
-
+  const [message, setMessage] = useState("");  
+  const [showModal , setShowModal] = useState(false);  
   const [selectedStageId, setSelectedStageId] = useState(null);
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [selectedOutcomeId, setSelectedOutComeId] = useState(null);
   const [selectedPipelineId, setSelectedPipelineId] = useState(0);
-
   const [opporunityFields, setOpporunityFields] = useState([]);
   const [dispositionFields, setDispositionFields] = useState([]);
   const [isDisposition, setIsDisposition] = useState(false);
   const [opportunityName, setOpportunityName] = useState('');
-  // const [requestParams, setRequestParams] = useState({});
   const [addOpportunityResponse, setAddOpportunityResponse] = useState({});
-
   const [opportunity_fields, setOpportunity_fields] = useState([]);
   const [disposition_fields, setDisposition_fields] = useState([]);
-
   const [selectedOpportunityStatus, setSelectedOpportunityStatusId] = useState(null);
   const [opportunityStatusModalVisible, setOpportunityStatusModalVisible] = useState(false);
-
   const [contacts, setContacts] = useState([]);
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [contactModalVisible, setContactModalVisible] = useState(false);
-
+  const [selectedContact, setSelectedContact] = useState(null);  
   const [searchCustomer, setSearchCustomer] = useState('');
-  const [selectedCustomerId, setCustomerId] = useState('');
-  const [customerSearchModalVisible, setCustomerSearchModalVisible] = useState(false);
+  const [selectedCustomerId, setCustomerId] = useState('');  
   const [customersList, setCustomersList] = useState([]);
   const [canShowAutoComplete, setCanShowAutoComplete] = useState(false);
   const [canSearch, setCanSearch] = useState(false);
   const [isCustomerMandatory, setIsCustomerMandatory] = useState(false);
   const [isOpportunityNameCompulsory, setIsOpportunityNameCompulsory] = useState(false);
   const [isStageCompulsory, setIsStageCompulsory] = useState(false);
-  const [isOutcomeCompulsory, setIsOutcomeCompulsory] = useState(false);
-  const [isOpportunityStatusCompulsory, setOpportunityStatusCompulsory] = useState(false);
+  const [isOutcomeCompulsory, setIsOutcomeCompulsory] = useState(false);  
   const [addDone, SetAddDone] = useState(false);
   const [disableCustomerField,setDisableCustomerField] = useState(false);
-
+  const [options, setOptions] = useState([]);
+  const [modalType, setModalType] = useState("");
   let requestParams = {}
-
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -89,13 +76,8 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     return () => clearTimeout(timeoutId);
   }, [searchCustomer]);
 
-  // useEffect(() => {
-  //   setMyLocation(currentLocation);
-  // }, [currentLocation]);
-
   useEffect(() => {
     setIsLoading(true);
-    //   // dispatch(updateCurrentLocation());
   }, []);
 
   useEffect(() => {
@@ -107,17 +89,15 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
         if (pageType === 'update' && opportunity_id && opportunity_id !== '') {
           requestParams['opportunity_id'] = opportunity_id;
         }
-
-        getAddOpportunityFields(requestParams).then((res) => {
-          // console.log(JSON.stringify(res));
+        getAddOpportunityFields(requestParams).then((res) => {          
           initPostData(res);
           setIsLoading(false);
         }).catch((e) => {
+          expireToken(dispatch, e);
           setIsLoading(false);
         })
       }
       load();
-
     }
   }, [isLoading]);
 
@@ -156,7 +136,6 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     });
 
     setDispositionFields([...disposition]);
-
     setAddOpportunityResponse(res);
     setOpportunity_fields(res.opportunity_fields);
     setDisposition_fields(res.disposition_fields);
@@ -166,9 +145,9 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     }
 
     if (res.current_stage_id) {
-      let outcomesList = res.outcomes.filter(outcome => outcome.linked_stage_id == res.current_stage_id)
-      // console.log(outcomesList);
-      setSelectedOutcomes([...outcomesList]);
+      let outcomesList = res.outcomes.filter(outcome => outcome.linked_stage_id == res.current_stage_id);
+      initializeOptionValue(outcomesList , "outcomes");
+      setSelectedOutcomes([...outcomesList]);      
       setSelectedStageId(res.current_stage_id);
     }
 
@@ -176,25 +155,18 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
       setSelectedOpportunityStatusId(res.current_opportunity_status_id)
     }
     // console.log("gkkjkl:",res.opportunity_fields);
-
-
-
     if (pageType === 'update') {
       setOpportunityName(res.opportunity_name);
       setContacts(res.contacts);
       setSelectedContact(res.selected_contact_id);
       setSelectedOutComeId(res.current_outcome_id);
       setSearchCustomer(res.location_name);
-      setDisableCustomerField(true);
-      
+      setDisableCustomerField(true);      
     }
-
   }
-
+  
   const handleSubmit = () => {
     var canSubmit = true;
-
-
     if (!selectedCustomerId || selectedCustomerId == '') {
       setIsCustomerMandatory(true);
       canSubmit = false;
@@ -223,7 +195,6 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     } else {
       setIsOutcomeCompulsory(false);
     }
-
     let mandatoryDispositionExist = false;
     let disposition = [...dispositionFields];
     for (let i = 0; i < disposition.length; i++) {
@@ -234,13 +205,6 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
         disposition[i].canShowError = false;
       }
     }
-
-    // if(isExist){
-    //   canSubmit=false;
-    // }else{
-    //   canSubmit=true;
-    // }
-
     let mandatoryOpportunityExist = false;
     let opportunity = [...opporunityFields];
     for (let i = 0; i < opportunity.length; i++) {
@@ -251,8 +215,6 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
         opportunity[i].canShowError = false;
       }
     }
-
-
     if (mandatoryDispositionExist || mandatoryOpportunityExist) {
       canSubmit = false;
     }
@@ -304,26 +266,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     }).catch((error) => {
       setMessage("Failed");
       setCanShowAlert(true);
-    });
-    // let params = {
-    //   "opportunity_id": null,
-    //   "location_id": selectedContact,
-    //   "contact_id": "2",
-    //   "opportunity_name": "New Opportunity 1",
-    //   "selected_campaign_id": "1",
-    //   "current_stage_id": "2",
-    //   "current_outcome_id": "7",
-    //   "current_opportunity_status_id": "2",   
-    // }    
-    // postAddOpportunityFields(params, uuid.v4())
-    // .then((res) => {
-    // setMessage("Added Opportunity successfully");
-    // setIsSuccess(true);
-    // })
-    // .catch((error) =>{     
-    // setMessage("Failed");
-    // setIsSuccess(true);
-    // })        
+    });    
   }
 
 
@@ -331,27 +274,21 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     var token = await getToken();
     let params = {};
     params['campaign_id'] = selectedPipelineId;
-    params['search_text'] = text;
-    // console.log("Search: ", params);
-
-    getAddOpportunityContacts(params, token).then((resp) => {
-      // console.log("Contacts: ", resp);
+    params['search_text'] = text;    
+    getAddOpportunityContacts(params, token).then((resp) => {      
       setCustomersList([...resp]);
       if (resp && resp.length > 0) {
         setCanShowAutoComplete(true);
       } else {
         setCanShowAutoComplete(false);
-      }
-      // setCustomerSearchModalVisible(!customerSearchModalVisible)
+      }      
     }).catch(e => {
-      console.log(e);
+      expireToken(dispatch,e);
       setCanShowAutoComplete(false);
     })
   }
 
-
-  const getOpportunityTextValue = (opporunityFields, id) => {
-    // console.log("getOpportunityTextValue", opporunityFields);
+  const getOpportunityTextValue = (opporunityFields, id) => {    
     if (opporunityFields !== undefined && opporunityFields.length > 0) {
       var res = "";
       opporunityFields.forEach((element) => {
@@ -366,7 +303,6 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
   }
 
   const getDispositionTextValue = (dispositionFields, id) => {
-
     if (dispositionFields !== undefined && dispositionFields.length > 0) {
       var res = "";
       dispositionFields.forEach((element) => {
@@ -379,7 +315,6 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
       return "";
     }
   }
-
 
   const getSelectedDropdownItem = () => {
     var res = "";
@@ -486,134 +421,81 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
         } />
     )
   }
-
-  const contactsModal = () => {
+        
+  const customSingleModal = () => {    
     return (
-      <CustomPicker visible={contactModalVisible} onModalClose={() => setContactModalVisible(!contactModalVisible)} renderItems={
-
-        contacts.map((contact, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setSelectedContact(contact.contact_id);
-              setContactModalVisible(!contactModalVisible);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-              <Text style={styles.pickerItemText}>{contact.contact_name !== "" ? contact.contact_name : ' '}</Text>
-              {contact.contact_id == selectedContact && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          </View>
-        ))
-      } />
-    )
+      <SelectionPicker
+        mode={"single"}
+        visible={showModal}
+        title={"Please select an option:"}        
+        options={options}
+        value={ getSelectedValue()}
+        onModalClose={() => setShowModal(false)}
+        onValueChanged={(item, index) => {          
+          if(modalType === "stages"){
+            var stage_id = addOpportunityResponse.stages.find(element => element.stage_name === item).stage_id;
+            setSelectedStageId(stage_id);          
+            setSelectedOutComeId(null);
+            if (addOpportunityResponse.outcomes) {
+              var selectedOutcomes = addOpportunityResponse.outcomes.filter(outcome => outcome.linked_stage_id == stage_id);
+              setSelectedOutcomes(selectedOutcomes);              
+            }
+          }else if(modalType === "outcomes"){            
+            let outcomesList = addOpportunityResponse.outcomes.filter(outcome => outcome.linked_stage_id === selectedStageId);
+            var outcome_id = outcomesList.find(element => element.outcome_name === item).outcome_id;
+            setSelectedOutComeId(outcome_id);
+            setIsLoading(true);
+          }else if(modalType === "opportunity_statuses"){
+            var opportunity_status_id = addOpportunityResponse.opportunity_statuses.find(element => element.opportunity_status_name === item).opportunity_status_id;
+            
+            setSelectedOpportunityStatusId(opportunity_status_id);            
+          }else if(modalType === "campaigns"){
+            var campaign_id = addOpportunityResponse.campaigns.find(element => element.campaign_name === item).campaign_id;
+            setSelectedPipelineId(campaign_id);            
+            setIsLoading(true);
+          }else if(modalType === "contacts"){
+            var contact_id = contacts.find(element => element.contact_name === item).contact_id;
+            setSelectedContact(contact_id);            
+          }
+          setShowModal(false);                    
+        }}        
+        >        
+      </SelectionPicker>
+    );    
+  }
+    
+  const initializeOptionValue = (lists , type) => {    
+    setModalType(type);
+    var tmp = [];
+    lists.forEach((element , index) => {
+      if(type === "stages"){        
+        tmp.push(element.stage_name);
+      }else if(type === "outcomes"){
+        tmp.push(element.outcome_name);        
+      }else if(type === "opportunity_statuses"){
+        tmp.push(element.opportunity_status_name);
+      }else if(type === "campaigns"){
+        tmp.push(element.campaign_name);
+      }else if(type === "contacts"){
+        tmp.push(element.contact_name);
+      }
+    });
+    setOptions(tmp);
   }
 
-  const customerSearchModal = () => {
-    return (
-      <CustomPicker visible={customerSearchModalVisible} onModalClose={() => setCustomerSearchModalVisible(!customerSearchModalVisible)} renderItems={
-
-        customersList.map((customer, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setCustomerId(customer.location_id);
-              selected_location_id = 1234;
-              setCustomerSearchModalVisible(!customerSearchModalVisible);
-              setIsLoading(true);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-              <Text style={styles.pickerItemText}>{customer.name !== "" ? customer.name : ' '}</Text>
-              {customer.location_id == selectedCustomerId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          </View>
-        ))
-      } />
-    )
-  }
-
-  const pipelinesModal = () => {
-    return (
-      <CustomPicker visible={pipelinesModalVisible} onModalClose={() => setPipelinesModalVisible(!pipelinesModalVisible)} renderItems={
-
-        addOpportunityResponse && addOpportunityResponse.campaigns && addOpportunityResponse.campaigns.map((campaign, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setSelectedPipelineId(campaign.campaign_id);
-              setPipelinesModalVisible(!pipelinesModalVisible);
-              setIsLoading(true);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-              <Text style={styles.pickerItemText}>{campaign.campaign_name !== "" ? campaign.campaign_name : ' '}</Text>
-              {campaign.campaign_id == selectedPipelineId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          </View>
-        ))
-      } />
-    )
-  }
-
-  const stagesModal = () => {
-    return (
-      <CustomPicker visible={stageModalVisible} onModalClose={() => setStageModalVisible(!stageModalVisible)} renderItems={
-
-        addOpportunityResponse && addOpportunityResponse.stages && addOpportunityResponse.stages.map((stage, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setSelectedStageId(stage.stage_id);
-              setSelectedOutComeId(null);
-              if (addOpportunityResponse.outcomes) {
-                setSelectedOutcomes(addOpportunityResponse.outcomes.filter(outcome => outcome.linked_stage_id == stage.stage_id));
-              }
-              setStageModalVisible(!stageModalVisible);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-              <Text style={styles.pickerItemText}>{stage.stage_name !== "" ? stage.stage_name : ' '}</Text>
-              {stage.stage_id == selectedStageId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          </View>
-        ))
-      } />
-    )
-  }
-
-  const outComesModal = () => {
-    return (
-      <CustomPicker
-        visible={outComeModalVisible}
-        renderItems={
-          selectedOutcomes.map((outcome, key) => (
-            <TouchableOpacity style={[styles.pickerItem]} key={key}
-              onPress={() => {
-                setSelectedOutComeId(outcome.outcome_id);
-                setOutComeModalVisible(!outComeModalVisible);
-                setIsOutcomeCompulsory(false);
-                // setIsLoading(true);
-              }}>
-              <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
-              {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          ))
-        } />
-    )
-  }
-
-  const opportunityStatusModal = () => {
-    return (
-      <CustomPicker visible={opportunityStatusModalVisible} onModalClose={() => setOpportunityStatusModalVisible(!opportunityStatusModalVisible)} renderItems={
-
-        addOpportunityResponse && addOpportunityResponse.opportunity_statuses && addOpportunityResponse.opportunity_statuses.map((item, key) => (
-          <View style={styles.pickerItem} key={key}>
-            <TouchableOpacity onPress={() => {
-              setSelectedOpportunityStatusId(item.opportunity_status_id);
-
-              setOpportunityStatusModalVisible(!opportunityStatusModalVisible);
-            }} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-              <Text style={styles.pickerItemText}>{item.opportunity_status_name !== "" ? item.opportunity_status_name : ' '}</Text>
-              {item.opportunity_status_id == selectedOpportunityStatus && <SvgIcon icon="Check" width='23px' height='23px' />}
-            </TouchableOpacity>
-          </View>
-        ))
-      } />
-    )
+  const getSelectedValue = () => {
+    if(modalType === "stages"){
+      return addOpportunityResponse.stages.find(element => element.stage_id === selectedStageId)? addOpportunityResponse.stages.find(element => element.stage_id === selectedStageId).stage_name : ""
+    }else if(modalType === "outcomes"){
+      return selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId)? selectedOutcomes.find(element => element.outcome_id === selectedOutcomeId).outcome_name : ""
+    }else if(modalType === "opportunity_status_name"){    
+      return addOpportunityResponse.opportunity_statuses.find(element => element.opportunity_status_id === selectedOpportunityStatus)? addOpportunityResponse.opportunity_statuses.find(element => element.opportunity_status_id === selectedOpportunityStatus).opportunity_status_name : ""    
+    }else if(modalType === "campaigns"){
+      return  addOpportunityResponse.campaigns.find(element => element.campaign_id === selectedPipelineId)? addOpportunityResponse.campaigns.find(element => element.campaign_id === selectedPipelineId).campaign_name : "" 
+    }else if(modalType === "contacts"){
+      return contacts.find(element => element.contact_id === selectedContact)? contacts.find(element => element.contact_id === selectedContact).contact_name : ""
+    }
+    return ""
   }
 
   var index = 0;
@@ -631,6 +513,7 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
     <Animated.View>
       <ScrollView style={[styles.container]} >
 
+        <Notification></Notification>
         <AlertDialog visible={canShowAlert} message={message} onModalClose={() => {
           setCanShowAlert(false);
           setMessage('');
@@ -707,10 +590,11 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
               </ScrollView>
             </TouchableWithoutFeedback>
           </View>}
-
+                    
           <TouchableOpacity style={[styles.textInput, styles.dropdownBox]} onPress={() => {
-            if (contacts.length > 0) {              
-                setContactModalVisible(!contactModalVisible);
+            if (contacts.length > 0) {                
+                showModal(true);
+                initializeOptionValue(contacts, "contacts");
               } else {
                 setMessage('No contacts available. Please make sure a Customer has been selected first');
                 setCanShowAlert(true);
@@ -738,18 +622,34 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
             </View>
           </TouchableOpacity>
 
+          {/* Pipeline Modal */}
           <TouchableOpacity style={[styles.textInput, styles.dropdownBox]} onPress={() => {
-            setPipelinesModalVisible(!pipelinesModalVisible)
+              setShowModal(true);
+              if(addOpportunityResponse.campaigns){
+                initializeOptionValue(  addOpportunityResponse.campaigns , "campaigns");
+              }
+
             }}>
             <Text style={{ backgroundColor: Colors.bgColor }}>{addOpportunityResponse && addOpportunityResponse.campaigns && addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId) ? addOpportunityResponse.campaigns.find(x => x.campaign_id == selectedPipelineId).campaign_name : 'Select Pipeline'}</Text>
             <SvgIcon icon="Drop_Down" width='23px' height='23px' />
           </TouchableOpacity>
 
+          {/* Stage Modal */}
           <View style={[styles.refreshBox, { borderColor: isStageCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isStageCompulsory ? 1 : 0 }]}>
-            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => {
+              setShowModal(true);
+              if(addOpportunityResponse.stages){
+                initializeOptionValue( addOpportunityResponse.stages, "stages");
+              }              
+            }}>
               <Text style={[styles.shadowBoxText]}>Stage</Text>
               <View>
-                <View style={[styles.button, { flex: 1 }]} onPress={() => setStageModalVisible(!stageModalVisible)}>
+                <View style={[styles.button, { flex: 1 }]} onPress={() => {
+                  setShowModal(true);
+                  if(addOpportunityResponse.stages){
+                    initializeOptionValue( addOpportunityResponse.stages, "stages");
+                  }                  
+                }}>
                   <Text style={styles.buttonText}>
                     {addOpportunityResponse && addOpportunityResponse.stages && addOpportunityResponse.stages.find(x => x.stage_id == selectedStageId) ? addOpportunityResponse.stages.find(x => x.stage_id == selectedStageId).stage_name : 'Select Stage'}
                   </Text>
@@ -759,13 +659,25 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
             </TouchableOpacity>
           </View>
 
+          {/* Outcomes Modal */}
           <View style={[styles.refreshBox, { borderColor: isOutcomeCompulsory ? whiteLabel().endDayBackground : Colors.whiteColor, borderWidth: isOutcomeCompulsory ? 1 : 0 }]}>
-            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => {
+              setShowModal(true);
+              if(addOpportunityResponse.outcomes){
+                let outcomesList = addOpportunityResponse.outcomes.filter(outcome => outcome.linked_stage_id === selectedStageId);
+                initializeOptionValue(outcomesList , "outcomes");
+              }
+              
+            }}>
               <Text style={styles.shadowBoxText}>Outcome</Text>
               <View>
                 <View style={styles.button} onPress={() => {
                   if (selectedOutcomes.length > 0) {
-                    setOutComeModalVisible(!outComeModalVisible)
+                    setShowModal(true);             
+                    if(addOpportunityResponse.outcomes){
+                      let outcomesList = addOpportunityResponse.outcomes.filter(outcome => outcome.linked_stage_id === selectedStageId);
+                      initializeOptionValue(outcomesList , "outcomes");
+                    }                           
                   }
                 }}>
                   <Text style={styles.buttonText}>
@@ -940,11 +852,22 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
           </View>}
 
           <View style={[styles.refreshBox]}>
-            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => setOpportunityStatusModalVisible(!opportunityStatusModalVisible)}>
+            <TouchableOpacity style={[styles.shadowBox, { paddingRight: 15 }]} onPress={() => {
+              setShowModal(true);
+              if(addOpportunityResponse.opportunity_statuses){
+                initializeOptionValue(addOpportunityResponse.opportunity_statuses , "opportunity_statuses");
+              }              
+              setOpportunityStatusModalVisible(!opportunityStatusModalVisible)
+            }}>
               <Text style={styles.shadowBoxText}>  Opportunity status </Text>
               <View>
-                <View style={styles.button} onPress={() => setOutComeModalVisible(!outComeModalVisible)}>
-                  <Text style={styles.buttonText}>
+                <View style={styles.button} onPress={() => {
+                  setShowModal(true);
+                  if(addOpportunityResponse.opportunity_statuses){
+                    initializeOptionValue(addOpportunityResponse.opportunity_statuses , "opportunity_statuses");
+                  }
+                }}>
+                  <Text style={styles.buttonText}>         
                     {selectedOpportunityStatus ? addOpportunityResponse.opportunity_statuses.find(x => x != null && x.opportunity_status_id != null && x.opportunity_status_id == selectedOpportunityStatus)?.opportunity_status_name : 'Select Status'}
                   </Text>
                 </View>
@@ -952,19 +875,17 @@ export default function AddSalesPipeline({ location_id, onClose, pageType, oppor
               <SvgIcon icon="Drop_Down" width='23px' height='23px' />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
+          
+          <TouchableOpacity style={[styles.addButton, {marginBottom:80}]} onPress={handleSubmit}>
             <Text style={[styles.addButtonText]}>{pageType === 'add' ? 'Add' : 'Update'}</Text>
             <FontAwesomeIcon style={styles.addButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={faAngleDoubleRight} />
           </TouchableOpacity>
         </View>
 
-        {dropdownModal()}
-        {stagesModal()}
-        {outComesModal()}
-        {pipelinesModal()}
-        {opportunityStatusModal()}
-        {contactsModal()}
-        {customerSearchModal()}
+        {          
+          customSingleModal()
+        }
+
       </ScrollView>
 
     </Animated.View>

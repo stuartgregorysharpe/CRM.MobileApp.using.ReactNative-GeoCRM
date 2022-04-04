@@ -14,8 +14,8 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { CHANGE_POLYGONS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationsMap, getLocationSearchListsByPage, getLocationMapByRegion } from '../../../actions/location.action';
+import { CHANGE_LOGIN_STATUS, CHANGE_POLYGONS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationMapByRegion } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
@@ -25,10 +25,12 @@ import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import Geolocation from 'react-native-geolocation-service';
 import { updateCurrentLocation } from '../../../actions/google.action';
 import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
-import { isInsidePoly } from '../../../constants/Consts';
+import { expireToken, isInsidePoly } from '../../../constants/Consts';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import { SelectionPicker } from '../../../components/modal/SelectionPicker';
-import { getMapMinZoomLevel } from '../../../constants/Storage';
+import { getMapMinZoomLevel, setToken } from '../../../constants/Storage';
+import { showNotification } from '../../../actions/notification.action';
+import { Notification } from '../../../components/modal/Notification';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -220,19 +222,19 @@ export default function LocationScreen(props) {
     });
     return unsubscribe;
   }, [navigation]);
-  
-  
+    
   useEffect(() => {
     console.log("filterParmeterChanged", filterParmeterChanged)
     if(myLocation !== undefined && boundBox !== undefined && isGuranted){
       setIsLoading(true);
       console.log("other route")
       getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                                    
-        setLocationMap([...res.locations]);
-        setIsLoading(false);                              
-        dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });
-      }).catch((e) => {  
-      });  
+        setIsLoading(false);        
+        setLocationMap([...res.locations]);          
+        dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });        
+      }).catch((e) => {
+        expireToken(dispatch, e);
+      });
     }                  
   }, [filterParmeterChanged]);  
 
@@ -315,8 +317,7 @@ export default function LocationScreen(props) {
         holes: [],
       });                      
     } else if (!creatingHole) {
-      if(editing !== null && editing !== undefined){
-        console.log("drawing - polygon", editing.coordinates.length);
+      if(editing !== null && editing !== undefined){        
         setEditing({
           ...editing,
           coordinates: [...editing.coordinates, e.nativeEvent.coordinate],
@@ -324,9 +325,8 @@ export default function LocationScreen(props) {
         if(editing.coordinates.length >= 2 && isFinish === false){                              
           setIsFinish(true);
         }
-      }                          
-    } else {                                                  
-        console.log("checking")                            
+      }
+    } else {        
         const holes = [...editing.holes];                            
         holes[holes.length - 1] = [
           ...holes[holes.length - 1],
@@ -356,12 +356,10 @@ export default function LocationScreen(props) {
         setIsZoomOut(true);
       }
     }
-    
+
     console.log("previous zoom", previousZoom);
     console.log("zoom ", zoom);
-
     
-
     if( markers !== undefined && markers.length < 20 ||  markers === undefined ){
       if( (previousZoom < minZoomLevel && zoom >= minZoomLevel && !isDraw) || ( previousZoom >= zoom  && zoom >= minZoomLevel && !isDraw ) ){
         setBoundBox(bBox);
@@ -372,11 +370,10 @@ export default function LocationScreen(props) {
             var lists = [...res.locations];
             setLocationMap(lists);                       
             setIsLoading(false);
-            dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });
-
+            dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });            
           }).catch((e) => {  
-            console.log("error", e);                       
-          });                
+            expireToken(dispatch, e);
+          });
         }                                    
       }
     }                      
@@ -416,6 +413,7 @@ export default function LocationScreen(props) {
           }
       })
       .catch((e) =>{
+        expireToken(dispatch, e);
         setIsRequest(false);
       })
   }
@@ -423,6 +421,7 @@ export default function LocationScreen(props) {
   return (
     <Provider>
       <SafeAreaView style={{flex:1}}>        
+        <Notification/>
         <GrayBackground />        
         {
           crmStatus && (showItem == "marker" || showItem == "filter") && 

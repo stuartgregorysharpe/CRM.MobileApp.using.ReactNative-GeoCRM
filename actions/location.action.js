@@ -6,22 +6,18 @@ import {
   STATUS_PIN_KEY,
   STATUS_LOCATION_MAP,
   STATUS_LOCATION_FILTERS,
-  STATUS_LOCATION_SEARCH_LISTS,
-  STATUS_LOCATION_INFO,
+  STATUS_LOCATION_SEARCH_LISTS,  
   CHANGE_PIN_KEY,
   CHANGE_LOCATION_MAP,
   CHANGE_LOCATION_FILTERS,
   CHANGE_LOCATION_SEARCH_LISTS,
-  CHANGE_CURRENT_LOCATION,
-  STATUS_DISPOSITION_FIELDS_UPDATE,
+  CHANGE_CURRENT_LOCATION,  
   CHANGE_POLYGONS
-
 } from "./actionTypes";
 import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
 
 let cancelToken
-
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
   axios
@@ -44,13 +40,10 @@ export const getLocationPinKey = () => (dispatch, getState) => {
         dispatch({ type: CHANGE_PIN_KEY, payload: res.data.items });
       }
     })
-    .catch((err) => {
-      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-      console.log(err);
+    .catch((err) => {      
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });      
     })
 }
-
-
 
 export const getLocationMapByRegion = async (currentLocation, box) => {
 
@@ -59,15 +52,13 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
   var user_id = await getUserId();
   var filters = await getFilterData('@filter');
   var zoom_bounds = box.map(item => item).join(',');
-  console.log({
+  console.log("by region api",{
     user_id: user_id,
     filters: filters,
     current_latitude: currentLocation.latitude,
     current_longitude: currentLocation.longitude,
     zoom_bounds: zoom_bounds
   });
-
-  console.log(zoom_bounds);
 
   return new Promise(function (resolve, reject) {
     axios
@@ -84,6 +75,7 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .then((res) => {
+        console.log("api response" , res);
         if (res.data == undefined) {
           resolve([]);
         }
@@ -95,8 +87,13 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {            
+            reject("expired");
+        }else{
+          reject(err);  
+        }                        
       })
 
   });
@@ -246,8 +243,13 @@ export const getLocationSearchListsByPage = async (filters, pageNumber) => {
             }
           })
           .catch((err) => {
-            reject(err);
-            console.log(err);
+            const error = err.response;
+            if (error.status===401 && error.config && 
+              !error.config.__isRetryRequest) {          
+                reject("expired");
+            }else{
+              reject(err);  
+            }
           })
 
       },
@@ -343,7 +345,13 @@ export const getLeadFields = async () => {
         }
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -374,7 +382,13 @@ export const getLocationInfoUpdate = async (location_id) => {
 
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -402,7 +416,13 @@ export const postLeadFields = async (postData, idempotencyKey) => {
         resolve(0);
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -435,7 +455,13 @@ export const postLocationInfoUpdate = async (postData, idempotencyKey) => {
         }
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -483,7 +509,13 @@ export const getLocationInfo = async (location_id, currentLocation) => {
         resolve(res.data);
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -519,9 +551,13 @@ export const postStageOutcomUpdate = async (request) => {
         // dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
       })
       .catch((err) => {
-        // dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-        reject(err);
-        console.log(err.response);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -548,8 +584,13 @@ export const postDispositionFields = async (postData, idempotencyKey) => {
         resolve(res.data.message);
       })
       .catch((err) => {
-        console.log("error", err)
-        resolve("Error")
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
 
   });
@@ -584,7 +625,13 @@ export const postReloop = async (postData, idempotencyKey) => {
 
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -616,8 +663,13 @@ export const postLocationFeedback = async (postData) => {
         }
       })
       .catch((err) => {
-        //console.log(err);
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
 
   });
@@ -649,25 +701,13 @@ export const postLocationImage = async (postData, idempotencyKey) => {
         }
       })
       .catch((err) => {
-        //console.log(err);
-        reject(err);
-      })
-
-  });
-}
-
-export const getGeocoding = async (latitude, longitude) => {
-  return new Promise(function (resolve, reject) {
-    console.log("url", `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`);
-    axios
-      .get(`https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`, {
-        headers: {}
-      })
-      .then((res) => {
-        resolve(res.data);
-      })
-      .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
 
   });
@@ -698,8 +738,13 @@ export const getLocationFields = async (location_id) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 
@@ -730,8 +775,13 @@ export const getLocationContacts = async (location_id) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 
@@ -761,8 +811,13 @@ export const addEditLocationContact = async (request,indempotencyKey) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err.request._response);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 
@@ -791,8 +846,13 @@ export const updateCustomerLocationFields = async (request,indempotencyKey) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err.request._response);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);
+        }
       })
   });
 

@@ -30,8 +30,14 @@ export const  getPipelines = async (filters) => {
           resolve([]);
         }
       })
-      .catch((err) => {
-        reject(err);
+      .catch((err) => {        
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
 
   });
@@ -92,8 +98,13 @@ export const getAddOpportunityFields = (params, token) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 }
@@ -123,8 +134,13 @@ export const getAddOpportunityContacts = async(params, token) => {
         }
       })
       .catch((err) => {
-        reject(err);
-        console.log(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
       })
   });
 
@@ -150,7 +166,13 @@ export const postAddOpportunityFields = async (postData, idempotencyKey) => {
         resolve(1);
       })
       .catch((err) => {
-        reject(err);
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);
+        }
       })
   });
 }

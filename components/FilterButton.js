@@ -15,7 +15,7 @@ export default function FilterButton(props) {
           props.startDate != undefined && props.endDate != undefined &&
           <View style={{marginLeft:10}}><Text style={styles.cardSubtitle}>Start: {props.startDate}</Text><Text style={styles.cardSubtitle} >End: {props.endDate}</Text></View>
         }        
-        {props.subText && props.subText != "" && <Text style={styles.cardSubtitle}> ({props.subText})</Text>}
+        { props.endDate === undefined && props.subText && props.subText != "" && <Text style={styles.cardSubtitle}> ({props.subText})</Text>}
       </View>
       <SvgIcon icon="Right_Arrow" width='23px' height='23px' />
     </TouchableOpacity>

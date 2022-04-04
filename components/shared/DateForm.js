@@ -17,14 +17,17 @@ export const DateForm = ({item , onPress ,onTouchStart}) => {
                     <View style={{flex:1, paddingHorizontal:5}}>
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
+                    <TouchableOpacity onPress={() => onTouchStart('' , item.guide_info) }>
                     <View
-                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_text);  }} >
+                        //onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} 
+                        >
                             <Icon
                                 name={`info-outline`}
                                 size={25}
                                 color={whiteLabel().mainText}                    
                             />
                     </View>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>

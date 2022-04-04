@@ -20,7 +20,7 @@ export const MultipleSelectForm = ({item , onPress ,onTouchStart }) => {
                                 <Text style={styles.titleStyle}> {item.question_text} </Text>
                             </View>
                             <View
-                                onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_text);  }} >
+                                onTouchStart={(e) => {  console.log("tpa" , item.guide_info); onTouchStart(e.nativeEvent , item.guide_info);  }} >
                                     <Icon
                                         name={`info-outline`}
                                         size={25}

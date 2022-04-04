@@ -10,10 +10,14 @@ import { getSupportIssues, postSupportEmail } from '../../../../actions/support.
 import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
-import { notifyMessage } from '../../../../constants/Consts';
+import { expireToken, notifyMessage } from '../../../../constants/Consts';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { Notification } from '../../../../components/modal/Notification';
+import { useDispatch } from 'react-redux';
 
 export const Ticket = forwardRef((props, ref) => {
 
+    const dispatch = useDispatch()
     const emailRef = useRef();
     const [email, setEmail] = useState('');
     const [universalUserId, setUniversalUserId] = useState("");
@@ -63,7 +67,8 @@ export const Ticket = forwardRef((props, ref) => {
             .then(res => {        
                 setSupportIssues(res);                
             })
-            .catch(error=>{                
+            .catch(error=>{    
+              expireToken(dispatch, error);            
             });
         }   
     }
@@ -96,7 +101,7 @@ export const Ticket = forwardRef((props, ref) => {
                 }
               })
               .catch((e) =>{
-
+                expireToken(dispatch, e);
               })
             }
         }
@@ -136,6 +141,7 @@ export const Ticket = forwardRef((props, ref) => {
 
     return (
       <View>
+        <Notification></Notification>
         <Text style={styles.description}>
           Please fill in the above fields and upload any relevant screenshots that could help identify the problem your experiencing.
         </Text>
@@ -161,8 +167,8 @@ export const Ticket = forwardRef((props, ref) => {
         <TouchableOpacity
           style={{ width: '100%' }}
           activeOpacity={1}
-          onPress={() => setModalVisible(true)}
-        >
+          onPress={() => setModalVisible(true)}>
+            
           <View pointerEvents="none">
             <TextInput
               style={styles.textInput}
@@ -194,17 +200,34 @@ export const Ticket = forwardRef((props, ref) => {
           <Text style={styles.downloadText}>Upload Image</Text>
           <SvgIcon icon="File_Download" width='18px' height='18px' />
         </TouchableOpacity>
-        <Portal>
-          <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
 
+
+        <SelectionPicker
+          title="Please select an option"
+          clearTitle={"Close"}
+          mode={"single"}
+          value={issue}
+          visible={modaVisible}
+          options={supportIssues}
+          onModalClose={() =>{setModalVisible(false)}}          
+          onValueChanged={(item, index) => {
+            setIssue(item);            
+            setModalVisible(false);
+          }}
+        >
+
+        </SelectionPicker>
+        {/* <Portal>
+          <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
             {supportIssues.map((item, index) => (
                 <TouchableOpacity key={index} style={styles.pickerItem} onPress={selectItem.bind(null, item)}>
                 <Text style={styles.pickerItemText}>{item}</Text>
                 </TouchableOpacity>
             ))}
-
           </Modal>
-        </Portal>
+        </Portal> */}
+
+
       </View>
     )
   })

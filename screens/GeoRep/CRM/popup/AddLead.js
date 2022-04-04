@@ -17,6 +17,9 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import SvgIcon from '../../../../components/SvgIcon';
+import { expireToken } from '../../../../constants/Consts';
+import { Notification } from '../../../../components/modal/Notification';
+
 
 export default function AddLead({ screenProps, onClose }) {
 
@@ -35,6 +38,7 @@ export default function AddLead({ screenProps, onClose }) {
   const [isCurrentLocation, setIsCurrentLocation] = useState("0");
   const [myLocation, setMyLocation] = useState(currentLocation);
   const [locationId, setLocationId] = useState(0);
+  const [pickerTitle, setPickerTitle] = useState("");
 
   const handleSubmit = () => {
     let params = {
@@ -49,7 +53,8 @@ export default function AddLead({ screenProps, onClose }) {
         setMessage("Added lead successfully");        
         setIsSuccess(true);
       })
-      .catch((error) => {
+      .catch((error) => {        
+        expireToken(dispatch, error);
         setMessage("Failed");
         setIsSuccess(true);
       })
@@ -75,6 +80,7 @@ export default function AddLead({ screenProps, onClose }) {
         })
         .catch((e) => {
           setIsLoading(false);
+          expireToken(dispatch, e);
         })
     }
   }, [isLoading]);
@@ -168,7 +174,7 @@ export default function AddLead({ screenProps, onClose }) {
   const dropdownModal = () => {  
     return (
       <SelectionPicker
-        title={"Select Suite, Unit, Apt"}
+        title={pickerTitle}
         clearTitle={"Clear"}
         mode={"single"}
         value={selectedValue}
@@ -181,7 +187,6 @@ export default function AddLead({ screenProps, onClose }) {
           tmp.forEach((element , key) => {
 
             if (element.custom_master_field_id == dropdownId) {
-
               element.itemIndex = index;
               var leadTmp = [...leadForms];
               if(element.field_type === "dropdown_input"){
@@ -192,10 +197,12 @@ export default function AddLead({ screenProps, onClose }) {
                 leadTmp[key].value = item;
               }                            
               setLeadForms(leadTmp);
+
             }
           });
           setCustomMasterFields(tmp);          
           setIsDropdownModal(false);
+
         }}
         ></SelectionPicker>
     )
@@ -268,6 +275,7 @@ export default function AddLead({ screenProps, onClose }) {
   return (
     <ScrollView style={styles.container}>
                   
+      <Notification></Notification>
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
         onClose(locationId);
       }}></AlertDialog>
@@ -330,16 +338,18 @@ export default function AddLead({ screenProps, onClose }) {
                         setDropdownId(field.custom_master_field_id);
                         setIsDropdownModal(true);                        
                         if(field.field_type === "dropdown"){
-                          setSelectedValue([field.value])
+                          setSelectedValue(field.value);
+                          setPickerTitle('Select ' + field.field_name);
                         }else{                          
-                          setSelectedValue([field.dropdown_value])                          
+                          setSelectedValue(field.dropdown_value);
+                          setPickerTitle("Select Suite, Unit, Apt");
                         }
                       }
                     }}>
   
                     {
-                      field.dropdown_value !== undefined &&
-                      <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name} </Text>
+                      ((field.dropdown_value !== undefined &&  field.dropdown_value !== "") || (field.value !== undefined && field.value !== "" )) &&
+                      <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name } </Text>
                     }                  
 
                     <Text

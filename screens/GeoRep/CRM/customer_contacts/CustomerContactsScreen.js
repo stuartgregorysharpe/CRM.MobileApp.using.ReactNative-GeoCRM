@@ -7,20 +7,19 @@ import { useDispatch } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLocationContacts, getLocationFields, updateCustomerLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
-import CustomPicker from '../../../../components/modal/CustomPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, { BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
-import { boxShadow, grayBackground, style } from '../../../../constants/Styles';
+import { grayBackground, style } from '../../../../constants/Styles';
 import AddContact from '../popup/AddOrUpdateContact';
 import uuid from 'react-native-uuid';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 
 var selectedIndex = 1;
 var showingItem = 0;
+
 export default function CustomerContactsScreen({ onClose, locationId }) {
     const [tabIndex, setTabIndex] = useState(1);
     const [locationFields, setLocationFields] = useState([]);
@@ -59,7 +58,6 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             dispatch({ type: SLIDE_STATUS, payload: false });
             return true;
         }
-
         onClose();
         // setShowItem(0);
         // dispatch({ type: SLIDE_STATUS, payload: false });
@@ -205,20 +203,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             return "";
         }
     }
-
-    const getSelectedDropdownItem = () => {
-        var tmp = customMasterFields;
-        var res = "";
-        tmp.forEach((element) => {
-            if (element.custom_master_field_id == dropdownId) {
-                res = element.itemIndex;
-            }
-        });
-        if (res === "") {
-            return -1;
-        }
-        return res;
-    }
+    
     const getSelectedDropdownItemText = (id, originFieldName, fieldType) => {
         var tmp = [...customMasterFields];
         var index = -1;
@@ -472,8 +457,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             />
         )
     }
-
-
+    
     return (
         // <Animated.View>
         <View style={styles.container}>
@@ -530,8 +514,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // flexGrow:1,
+    container: {        
         flex: 1,
         padding: 10,
         zIndex: 100,
@@ -539,12 +522,9 @@ const styles = StyleSheet.create({
     },
     tabContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        // justifyContent: '',
+        alignItems: 'center',        
         paddingTop: 12,
-        paddingBottom: 12,
-        // borderRadius: 7,
-        // backgroundColor: '#fff',
+        paddingBottom: 12,        
         marginBottom: 8
     },
     tabText: {

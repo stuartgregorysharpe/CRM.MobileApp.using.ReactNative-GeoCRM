@@ -41,17 +41,22 @@ export default function LocationSpecificInfoScreen(props) {
     setShowItem(1);
     dispatch({ type: SUB_SLIDE_STATUS, payload: true });
   }
-
+  
   useEffect(() => {
     // custom header
     props.screenProps.setOptions({
       headerTitle: () => {
         return (<TouchableOpacity onPress={
           () => {
-            if (props.navigation.canGoBack()) {
-              dispatch({ type: SLIDE_STATUS, payload: false });
-              props.navigation.goBack();
-            }
+            console.log("pressed");
+            if(canShowCustomerContactsScreen){
+              setCanShowCustomerContactsScreen(false)
+            }else{
+              if (props.navigation.canGoBack()) {
+                dispatch({ type: SLIDE_STATUS, payload: false });
+                props.navigation.goBack();
+              }            
+            } 
           }}>
           <View style={style.headerTitleContainerStyle}>
             <Image
