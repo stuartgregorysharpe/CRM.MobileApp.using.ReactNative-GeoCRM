@@ -84,6 +84,7 @@ export default function RefreshSlider({location_id, onClose}) {
             selected_time: "",
             user_local_data: userParam.user_local_data
           };
+          
           postReloop(postDate)
           .then((res) => { 
             console.log(res);

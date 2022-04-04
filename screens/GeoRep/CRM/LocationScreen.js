@@ -411,11 +411,12 @@ export default function LocationScreen(props) {
   }
 
   const openLocaitonInfoDetails = (location_id) => {
-    animation("locationInfo");           
+      animation("locationInfo");           
       getLocationInfo( Number(location_id) , myLocation)
       .then((res) => {                
           if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
             locationRef.current.updateView(res);
+            setLocationInfo(res);
           }
       })
       .catch((e) =>{

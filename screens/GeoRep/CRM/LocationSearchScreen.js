@@ -8,7 +8,7 @@ import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import { breakPoint } from '../../../constants/Breakpoint';
-import {  IS_CALENDAR_SELECTION, LOCATION_ID_CHANGED, LOCATION_LOOP_LISTS, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import {  IS_CALENDAR_SELECTION, LOCATION_ID_CHANGED,  SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationFilters, getLocationInfo,  getLocationSearchListsByPage } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -22,7 +22,11 @@ import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getFilterData } from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 import { Notification } from '../../../components/modal/Notification';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+
 var isEndPageLoading = false;
+var searchKey = "";
+var changedKey = "";
 
 export default function LocationSearchScreen(props) {
   
@@ -100,7 +104,6 @@ export default function LocationSearchScreen(props) {
       isEndPageLoading = false;
       loadMoreData();
     }
-
   },[]);
 
   
@@ -136,26 +139,45 @@ export default function LocationSearchScreen(props) {
 
   useEffect( () => {
     if(isPageLoading){
-      loadData(); 
+      console.log("----------")
+      searchKey = searchKeyword;      
+      loadData(searchKey);
     }  
   },[isPageLoading]);  
 
-  const loadData = async () => {
-    
-    console.log("load data called");
+  useEffect(() =>{
+    console.log("search key board" ,searchKeyword)
+    changedKey = searchKeyword;
+  },[searchKeyword]);  
+
+  const loadData = async (searchKey) => {
+
+    console.log("search key", searchKey);
+    console.log("page number", pageNumber);
     var filterData = await getFilterData('@filter');
-    getLocationSearchListsByPage(filterData, pageNumber)
-    .then((res) => { 
-      console.log("ok", res.length);
+    getLocationSearchListsByPage(filterData, pageNumber , searchKey)
+    .then((res) => {
       if(pageNumber === 0){
         setIsLoading(false);
       }
-      setIsPageLoading(false);
-      getSearchData(res, "", "pagination");
-      if(res.length < 30){     
-        isEndPageLoading = true;
-      }else{        
-        setPageNumber(pageNumber + 1);
+      console.log("result length", res.length);
+      console.log("searchKey", searchKey);
+      console.log("current searchKey", changedKey);
+      if(searchKey !== changedKey){
+        console.log(searchKey, changedKey)
+        setPageNumber(0);
+        isEndPageLoading = false;
+        getSearchData(res, searchKey, "pagination");
+        searchKey = changedKey;
+        loadData(searchKey);
+      }else{
+        setIsPageLoading(false);      
+        getSearchData(res, searchKey, "pagination");
+        if(res.length < 50){     
+          isEndPageLoading = true;
+        }else{        
+          setPageNumber(pageNumber + 1);
+        }
       }
 
     })
@@ -174,39 +196,50 @@ export default function LocationSearchScreen(props) {
   }
 
   const getSearchData = ( lists,  searchKey , type) => {
-    let items = [];
-    lists.map((list, key) => {
-      let item = {
-        name: list.name,
-        address: list.address,
-        distance: list.distance ? list.distance  : getDistance(list.coordinates, myLocation).toFixed(2),
-        status: list.status,
-        location_id: list.location_id,
-        status_text_color:list.status_text_color
-      }
-      if(searchKey === ''){
-        items.push(item);
-      }else{
-        if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
-          items.push(item);
-        }
-      }
-    });
 
-    if(type === "pagination"){      
-      const tempLists = [ ...orderLists, ...items ];      
-      setOrderLists(tempLists);
-      setOriginLists(tempLists);
-    }else if(type === "total") {
-      if(locationId === 0 || locationId  === undefined){        
-        //items.sort((a, b) => a.distance - b.distance);
-        dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})
-        console.log("location looop updated");
+    if(pageNumber == 0){
+      setOrderLists(lists);
+      if(searchKey === ""){
+        setOriginLists(lists);
       }
-    }else if(type === "search"){
-      //items.sort((a, b) => a.distance - b.distance );
-      setOrderLists(items);
+    }else{
+      const tempLists = [ ...orderLists, ...lists ];
+      setOrderLists(tempLists);      
     }
+    
+
+    // let items = [];
+    // lists.map((list, key) => {
+    //   let item = {
+    //     name: list.name,
+    //     address: list.address,
+    //     distance: list.distance ? list.distance  : getDistance(list.coordinates, myLocation).toFixed(2),
+    //     status: list.status,
+    //     location_id: list.location_id,
+    //     status_text_color:list.status_text_color
+    //   }
+    //   if(searchKey === ''){
+    //     items.push(item);
+    //   }else{
+    //     if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
+    //       items.push(item);
+    //     }
+    //   }
+    // });
+
+    // if(type === "pagination"){      
+      
+    //   const tempLists = [ ...orderLists, ...items ];      
+    //   setOrderLists(tempLists);
+    //   setOriginLists(tempLists);
+
+    // }else if(type === "total") {
+    //   if(locationId === 0 || locationId  === undefined){                
+    //     dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})        
+    //   }
+    // }else if(type === "search"){      
+    //   setOrderLists(items);
+    // }
   }
 
   const animation = (name) => {
@@ -269,23 +302,21 @@ export default function LocationSearchScreen(props) {
       </LocationItem>)
   } 
 
-  const loadMoreData = async() =>{        
-    
-    console.log("isEndPageLoading", isEndPageLoading);
-    console.log("isPageLoading", isPageLoading);
-    console.log("searchKeyword", searchKeyword);
 
-    if( isEndPageLoading === false && isPageLoading === false && searchKeyword === ""){
-      console.log("called load more ------");
-      if(pageNumber === 0){
+  const loadMoreData = async() =>{
+    
+    console.log("isEnd Page Loading", isEndPageLoading);
+    console.log("isPageLoading", isPageLoading);
+    if( isEndPageLoading === false && isPageLoading === false){      
+      if(pageNumber == 0 && searchKeyword === "" ){
         setIsLoading(true);
-      }
+      }      
       setIsPageLoading(true);
     }    
   }
 
   renderFooter = () => {
-    if( !isEndPageLoading && isPageLoading && searchKeyword === ""){
+    if( !isEndPageLoading && isPageLoading ){
       return (    
         <View style={styles.footer}>
           <TouchableOpacity
@@ -367,11 +398,26 @@ export default function LocationSearchScreen(props) {
           }
 
           <View style={styles.container}>
-
             <SearchBar 
               onSearch={(text) =>{                
-                getSearchData(originLists, text, "search");         
-                setSearchKeyword(text);
+                //getSearchData(originLists, text, "search");
+                
+                if(text.length >= 3 ){
+                  setSearchKeyword(text);
+                }else{
+                  setSearchKeyword("");
+                }
+
+                if(text.length >= 3){
+                  setPageNumber(0);
+                  isEndPageLoading = false;
+                  loadMoreData();
+                }else if(text.length == 0){
+                  setPageNumber(1);
+                  isEndPageLoading = false;
+                  setOrderLists(originLists);                  
+                }
+
               }} 
               initVal={searchKeyword}
               isFilter={true}

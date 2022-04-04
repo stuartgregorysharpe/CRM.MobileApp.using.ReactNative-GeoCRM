@@ -23,6 +23,7 @@ export function NextPrev(props){
     const [loopPosition, setLoopPosition] = useState(-1);
     const [nextLocationName, setNextLocationName] = useState("");
     const [prevLocationName, setPrevLocationName] = useState("");
+    console.log("currentLocation --" , currentLocation);
 
     useEffect(() =>{       
         console.log("page type", pageType.name); 
@@ -181,7 +182,7 @@ export function NextPrev(props){
         isClickable = false;
         getLocationInfo( Number(location_id) , currentLocation)
         .then( async(res) => {
-            // add new loop item            
+            // add new loop item 
             let item = {
                 name: res.location_name.value,
                 address: res.address,

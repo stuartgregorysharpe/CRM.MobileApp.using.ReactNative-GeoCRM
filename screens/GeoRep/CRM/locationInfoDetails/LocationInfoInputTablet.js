@@ -96,8 +96,10 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
       campaign_id: 1,
       user_local_data: userParam.user_local_data
     }
+    
     postStageOutcomUpdate(postData)
     .then((res) => {      
+      props.onOutcome(true);
       setTimeout(() =>{
         setIsLoading(false);
       }, 500);  
