@@ -3,6 +3,8 @@ import {Alert} from 'react-native';
 import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 import { clearNotification, showNotification } from '../actions/notification.action';
 import { setToken } from './Storage';
+import * as RNLocalize from "react-native-localize";
+
 
 export const WHATS_APP_LINK = "https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22";
 
@@ -75,8 +77,6 @@ export function isInsidePoly  (lat, lon, multiPolycoords) {
     return inside;
 }
     
-
-
 export function expireToken ( dispatch , e ) {
   if(e === "expired"){    
     console.log("token EXPIRED !!!!!")                        
@@ -91,4 +91,11 @@ export function expireToken ( dispatch , e ) {
   }
 }
 
+export function getPostParameter (location) {
+  var time_zone = RNLocalize.getTimeZone();  
+  if(location.latitude && location.longitude){
+    return {user_local_data: {time_zone: time_zone, latitude: location.latitude, longitude: location.longitude}};
+  }
+  return {};
+}
     

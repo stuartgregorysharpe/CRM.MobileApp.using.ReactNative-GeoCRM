@@ -3,6 +3,7 @@ import Geolocation from 'react-native-geolocation-service';
 import axios from "axios";
 import { CHANGE_CURRENT_LOCATION } from "./actionTypes";
 
+
 export async function reverseGeocoding (currentLocation, customMasterFields) {
     
     return await getGeocoding(currentLocation.latitude, currentLocation.longitude)
@@ -118,8 +119,6 @@ export const getCoordinate = async (address) => {
 }
 
 
-
-
 export const updateCurrentLocation = () => (dispatch, getState) => {
   // update current location
   console.log("enter");
@@ -127,8 +126,7 @@ export const updateCurrentLocation = () => (dispatch, getState) => {
   Geolocation.getCurrentPosition(
     position => {
       const {latitude, longitude} = position.coords;
-      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: latitude,longitude: longitude } });            
-      
+      dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: latitude,longitude: longitude } });      
     },
     error => {
       console.log("locatin - error")

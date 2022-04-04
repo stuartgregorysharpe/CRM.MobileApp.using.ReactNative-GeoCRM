@@ -3,7 +3,7 @@ import { View, TouchableOpacity, ScrollView, Dimensions , Text} from 'react-nati
 import { Title } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import { useDispatch } from 'react-redux';
+import { useDispatch , useSelector} from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
 import Colors from '../../constants/Colors';
@@ -14,13 +14,14 @@ import AlertDialog from './AlertDialog';
 import { addCalendar } from '../../actions/calendar.action';
 import { DateStartEndTimePickerView } from '../DateStartEndTimePickerView';
 import { DatetimePickerView } from '../DatetimePickerView';
-import { expireToken } from '../../constants/Consts';
+import { expireToken, getPostParameter } from '../../constants/Consts';
 import { Notification } from './Notification';
 
 
 export default function AddToCalendar({selectedItems, onClose}) {
   const dispatch = useDispatch();
 
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [isStartEndTimePicker, setStartEndTimePicker] = useState(false);
   const [dateTimeType, setDateTimeType] = useState("date");  
@@ -33,24 +34,23 @@ export default function AddToCalendar({selectedItems, onClose}) {
     //datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
     //time =  String(date.getHours()) + ":" + String(date.getMinutes());    
     //setIsDateTimePickerVisible(false);
-
     if(selectedItems != undefined){
       selectedItems.forEach((item, index) => {                            
         item.schedule_order = (index + 1).toString();
         item.schedule_date = datetime;                                          
-      });        
-      
-      let postDate ={
-        schedules:selectedItems
-      };
-      console.log(postDate);
-      callApi(postDate);
+      });                    
+      callApi(selectedItems);
     }
   }
 
-  const callApi = (postDate) =>{
-    addCalendar(postDate)
-    .then((res) =>{    
+  const callApi = (schedules) =>{    
+    var userParam = getPostParameter(currentLocation);
+    let postData = {
+      schedules : schedules,
+      user_local_data: userParam.user_local_data
+    }
+    addCalendar(postData)
+    .then((res) =>{
       setStartEndTimePicker(false);      
       setMessage(res);
       setIsConfirmModal(true);
@@ -94,12 +94,8 @@ export default function AddToCalendar({selectedItems, onClose}) {
               selectedItems.forEach((item, index) => {                            
                 item.schedule_order = (index + 1).toString();
                 item.schedule_date = "Today";                                                          
-              });            
-              let postDate ={
-                schedules:selectedItems
-              };
-              console.log(postDate);
-              callApi(postDate);
+              });                          
+              callApi(selectedItems);
             }     
           }                                                
         }}
@@ -132,11 +128,8 @@ export default function AddToCalendar({selectedItems, onClose}) {
             }
             item.schedule_time = startTime;
             item.schedule_end_time = endTime;            
-          });            
-          let postDate ={
-            schedules:selectedItems
-          };                    
-          callApi(postDate);
+          });                             
+          callApi(selectedItems);
         }}
       >
       </DateStartEndTimePickerView>

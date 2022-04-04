@@ -10,14 +10,15 @@ import { getSupportIssues, postSupportEmail } from '../../../../actions/support.
 import uuid from 'react-native-uuid';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
-import { expireToken, notifyMessage } from '../../../../constants/Consts';
+import { expireToken, getPostParameter, notifyMessage } from '../../../../constants/Consts';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import { Notification } from '../../../../components/modal/Notification';
-import { useDispatch } from 'react-redux';
+import { useDispatch ,useSelector} from 'react-redux';
 
 export const Ticket = forwardRef((props, ref) => {
 
     const dispatch = useDispatch()
+    const currentLocation = useSelector(state => state.rep.currentLocation);
     const emailRef = useRef();
     const [email, setEmail] = useState('');
     const [universalUserId, setUniversalUserId] = useState("");
@@ -75,35 +76,33 @@ export const Ticket = forwardRef((props, ref) => {
 
     const postdata = async() =>{    
         if(issue != '' && issueDetails != ''){
-            var base_url = await getBaseUrl();
-            var token = await getToken();    
-            if(base_url != null && token != null){
-              let params = {
-                "indempotency_key":uuid.v4(),
-                "user_email": email,
-                "user_name": userName,
-                "user_cell": "+27 0811231234",
-                "app_version": "1.1.2",
-                "device_model": "Galaxy A32",
-                "universal_user_id": universalUserId,
-                "universal_client_id": universalClientId,
-                "selected_issue": issue,
-                "issue_details": issueDetails,
-                "issue_image": issueImage
-              };
-              console.log(params);
-              postSupportEmail(base_url, token, params)
-              .then((res) =>{
-                if(res.status == 'success'){
-                    notifyMessage("Success","");                    
-                }else{
-                    notifyMessage("Failed","");
-                }
-              })
-              .catch((e) =>{
-                expireToken(dispatch, e);
-              })
+          var userParam = getPostParameter(currentLocation);
+          let params = {
+            "indempotency_key":uuid.v4(),
+            "user_email": email,
+            "user_name": userName,
+            "user_cell": "+27 0811231234",
+            "app_version": "1.1.2",
+            "device_model": "Galaxy A32",
+            "universal_user_id": universalUserId,
+            "universal_client_id": universalClientId,
+            "selected_issue": issue,
+            "issue_details": issueDetails,
+            "issue_image": issueImage,
+            "user_local_data" : userParam.user_local_data
+          };
+                    
+          postSupportEmail(params)
+          .then((res) =>{
+            if(res.status == 'success'){
+                notifyMessage("Success","");                    
+            }else{
+                notifyMessage("Failed","");
             }
+          })
+          .catch((e) =>{
+            expireToken(dispatch, e);
+          })
         }
     }
         

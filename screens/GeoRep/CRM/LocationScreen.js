@@ -28,7 +28,7 @@ import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { expireToken, isInsidePoly } from '../../../constants/Consts';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import { SelectionPicker } from '../../../components/modal/SelectionPicker';
-import { getMapMinZoomLevel, setToken } from '../../../constants/Storage';
+import { getMapMinZoomLevel, getPolygonFillColorTransparency, setToken } from '../../../constants/Storage';
 import { showNotification } from '../../../actions/notification.action';
 import { Notification } from '../../../components/modal/Notification';
 
@@ -75,8 +75,10 @@ export default function LocationScreen(props) {
   const [isFinish, setIsFinish] = useState(false);
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
+  const [transCode, setTransCode] = useState("05");
   
-  useEffect(() => {    
+  useEffect(() => { 
+    initCode();
     refreshHeader();
     if (crmStatus) {
       props.screenProps.setOptions({
@@ -90,6 +92,10 @@ export default function LocationScreen(props) {
       isMount = false;
     };    
   },[]);
+  const initCode = async()  =>{
+    var code = await getPolygonFillColorTransparency();
+    setTransCode(code);
+  }
   
   async function requestPermissions() {
     if (Platform.OS === 'ios') {
@@ -601,7 +607,7 @@ export default function LocationScreen(props) {
                             coordinates={item}
                             //holes={polygon.holes}
                             strokeColor={polygon.strokeColor}
-                            fillColor={polygon.fillColor+ "05"}
+                            fillColor={polygon.fillColor + transCode }
                             strokeWidth={1}
                           />
                         ))                          

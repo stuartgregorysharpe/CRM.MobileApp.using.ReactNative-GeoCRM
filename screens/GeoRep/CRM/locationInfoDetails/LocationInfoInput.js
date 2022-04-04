@@ -20,6 +20,7 @@ import { FeatureCard } from '../partial/FeatureCard';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import { useNavigation } from '@react-navigation/native';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import { getPostParameter } from '../../../../constants/Consts';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
 
@@ -28,6 +29,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.infoInput);
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationAction = useSelector(state => state.rep.locationAction);
   const bottomTabAction = useSelector(state => state.rep.bottomTabAction);
   const dispositionRef = useRef([]);
@@ -130,14 +132,17 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   }
 
   const updateOutcomes = () => {
-    let request = {
-      "location_id": locationInfo.location_id,
-      "stage_id": selectedStageId,
-      "outcome_id": selectedOutcomeId,
-      "campaign_id": 1,
-      "indempotency_key": uuid.v4()
+    
+    var userParam = getPostParameter(currentLocation);
+    let postData = {
+      location_id: locationInfo.location_id,
+      stage_id: selectedStageId,
+      outcome_id: selectedOutcomeId,
+      campaign_id: 1,
+      user_local_data: userParam.user_local_data
     }
-    postStageOutcomUpdate(request)
+
+    postStageOutcomUpdate(postData)
       .then((res) => {
         props.onOutcome(true);
         setTimeout(() => {
@@ -153,10 +158,12 @@ export const LocationInfoInput = forwardRef((props, ref) => {
 
   const handleSubmit = () => {
 
+    var userParam = getPostParameter(currentLocation);
     let postData = {
-      "location_id": locationInfo.location_id,
-      "campaign_id": 1,
-      "disposition_fields": []
+      location_id: locationInfo.location_id,
+      campaign_id: 1,
+      disposition_fields: [],
+      user_local_data: userParam.user_local_data
     }
 
     locationInfo.disposition_fields.forEach((item, key) => {
@@ -166,7 +173,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       })
     });
 
-    postDispositionFields(postData, uuid.v4())
+    postDispositionFields(postData)
       .then((res) => {
         setMessage(res);
         setIsSuccess(true);

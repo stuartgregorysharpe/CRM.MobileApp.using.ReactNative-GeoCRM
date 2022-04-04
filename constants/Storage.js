@@ -60,6 +60,26 @@ export const getUserId = async () => {
   }
 }
 
+
+export const getPolygonFillColorTransparency = async () =>{
+  
+  try {
+    var token = await getToken();
+    var data = token != null ? jwt_decode(token) : null;
+    var code = data.user_scopes.geo_rep.polygon_fillColor_transparency;
+    console.log("xxxx", code);
+    if (code !== undefined) {      
+      return "" + parseFloat(code) * 100;
+    } else {
+      return "50"
+    }
+  } catch (e) {    
+    return "50"
+  }
+
+}
+
+
 export const getMapMinZoomLevel = async () =>{
   
   try {

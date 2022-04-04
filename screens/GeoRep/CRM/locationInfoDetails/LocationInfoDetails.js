@@ -8,7 +8,7 @@ import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../../components/SvgIcon';
 import {LocationInfoInput} from './LocationInfoInput';
 import Divider from '../../../../components/Divider';
-import { PRIMARY_COLOR, BG_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import { SLIDE_STATUS, LOCATION_CONFIRM_MODAL_VISIBLE, SUB_SLIDE_STATUS, LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import DeviceInfo from 'react-native-device-info';
@@ -17,7 +17,6 @@ import Fonts from '../../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
 import { postLocationFeedback, postLocationImage } from '../../../../actions/location.action';
-import uuid from 'react-native-uuid';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import { NextPrev } from '../partial/NextPrev';
@@ -25,7 +24,7 @@ import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import { RuleTester } from 'eslint';
+import { getPostParameter } from '../../../../constants/Consts';
 
 var outcomeVal = false;
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
@@ -221,11 +220,13 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   
   const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
+    var userParam = getPostParameter(props.currentLocation);
     let postData = {
       location_id: locationInfo.location_id,
       location_image: data,
+      user_local_data: userParam.user_local_data
     };
-    postLocationImage(postData, uuid.v4())
+    postLocationImage(postData)
     .then((res) => {
         setMessage(res);
         setIsSuccess(true);
@@ -252,21 +253,22 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         options={feedbackOptions}
         onModalClose={() => setIsFeedback(false)}
         onValueChanged={(item , index) => {          
+          var userParam = getPostParameter(props.currentLocation);
           let postData = {
-            "location_id": locationInfo.location_id,
-            "feedback": [
+            location_id: locationInfo.location_id,
+            feedback: [
                 {
                     "feedback_loc_info_outcome" : item
                 }
-            ]
+            ],
+            user_local_data : userParam.user_local_data
           };
-          postLocationFeedback(postData).then((res) => {                        
-            console.log('out compete update3d');
+
+          postLocationFeedback(postData).then((res) => {            
             setIsOutcomeUpdated(true);
             outcomeVal = true;
             setMessage(res);
-            setIsSuccess(true);
-            console.log(res);            
+            setIsSuccess(true);            
           }).catch((error) => {
             console.log(error);
           })
@@ -498,10 +500,10 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 const styles = StyleSheet.create({
   
   container: {      
-    backgroundColor: BG_COLOR,              
+    backgroundColor: Colors.bgColor, 
   },
   innerContainer: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 10,
   },
 
@@ -608,7 +610,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: BG_COLOR,    
+    backgroundColor: Colors.bgColor,    
     elevation: 2,
     zIndex: 2,
     padding: 10,

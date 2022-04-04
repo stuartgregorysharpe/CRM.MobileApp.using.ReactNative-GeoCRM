@@ -3,7 +3,7 @@ import { View, TouchableOpacity, ScrollView, Dimensions , Text} from 'react-nati
 import { Title, Button } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import { useDispatch } from 'react-redux';
+import { useDispatch , useSelector} from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
 import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR } from '../../constants/Colors';
@@ -12,13 +12,13 @@ import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 import { postReloop } from '../../actions/location.action';
 import uuid from 'react-native-uuid';
-import { getTwoDigit, notifyMessage } from '../../constants/Consts';
+import { getPostParameter, getTwoDigit, notifyMessage } from '../../constants/Consts';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AlertDialog from './AlertDialog';
 
 export default function RefreshSlider({location_id, onClose}) {
   const dispatch = useDispatch();
-
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [dateTimeType, setDateTimeType] = useState("datetime");  
   const [isConfirmModal, setIsConfirmModal] = useState(false);
@@ -30,13 +30,16 @@ export default function RefreshSlider({location_id, onClose}) {
     datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
     time =  String(date.getHours()) + ":" + String(date.getMinutes());    
     setIsDateTimePickerVisible(false);
+    var userParam = getPostParameter(currentLocation);
     let postDate ={
       location_id: location_id,
       day_option: "another_date",
       selected_date: datetime,
-      selected_time: time
+      selected_time: time,
+      user_local_data: userParam.user_local_data
     };
-    postReloop(postDate ,  uuid.v4())
+
+    postReloop(postDate)
     .then((res) => { 
       setMessage(res);
       setIsConfirmModal(true);      
@@ -73,13 +76,15 @@ export default function RefreshSlider({location_id, onClose}) {
       <FilterButton 
         text="Later Today" 
         onPress={() => {
+          var userParam = getPostParameter(currentLocation);
           let postDate ={
             location_id: location_id,
             day_option: "today",
             selected_date: "",
-            selected_time: ""
+            selected_time: "",
+            user_local_data: userParam.user_local_data
           };
-          postReloop(postDate ,  uuid.v4())
+          postReloop(postDate)
           .then((res) => { 
             console.log(res);
             setMessage(res);

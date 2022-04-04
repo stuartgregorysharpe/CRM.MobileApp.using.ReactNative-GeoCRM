@@ -16,7 +16,7 @@ import {
 } from "./actionTypes";
 import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
-
+import { getPostParameter } from '../constants/Consts';
 let cancelToken
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
@@ -393,23 +393,20 @@ export const getLocationInfoUpdate = async (location_id) => {
   });
 }
 
-
-
-export const postLeadFields = async (postData, idempotencyKey) => {
+export const postLeadFields = async (postData) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();
-  
-  return new Promise(function (resolve, reject) {
-    //JSON.stringify(postData)
+  var token = await getToken();      
+  console.log("URL###", `${base_url}/leadfields`);
+  console.log("Param " , postData)
+  return new Promise(function (resolve, reject) {    
     axios
       .post(`${base_url}/leadfields`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': idempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
-      .then((res) => {
-        
+      .then((res) => {        
         if (res.data.status === "success") {
           resolve(res.data.location_id);
         }
@@ -421,26 +418,24 @@ export const postLeadFields = async (postData, idempotencyKey) => {
           !error.config.__isRetryRequest) {          
             reject("expired");
         }else{
-          reject(err);  
+          reject(err);
         }
       })
   });
 }
 
 
-export const postLocationInfoUpdate = async (postData, idempotencyKey) => {
+export const postLocationInfoUpdate = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-  console.log("url", `${base_url}/locations-info/location-info-update`);
-  //console.log("param", postData);
-
+  console.log("url", `${base_url}/locations-info/location-info-update`);  
+  console.log("Param " , postData);
   return new Promise(function (resolve, reject) {
-
     axios
       .post(`${base_url}/locations-info/location-info-update`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': idempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
@@ -521,34 +516,27 @@ export const getLocationInfo = async (location_id, currentLocation) => {
 }
 
 
-export const postStageOutcomUpdate = async (request) => {
+export const postStageOutcomUpdate = async (postData) => {
 
   var base_url = await getBaseUrl();
   var token = await getToken();
-  console.log("started ====");
-  return new Promise(function (resolve, reject) {
-
-    let requestPayload = {
-      "location_id": request.location_id,
-      "stage_id": request.stage_id,
-      "outcome_id": request.outcome_id,
-      "campaign_id": 1
-    }
+  console.log("URL", `${base_url}/location-info/updateStageOutcome`);
+  console.log(postData);
+  return new Promise(function (resolve, reject) {    
     axios
-      .post(`${base_url}/location-info/updateStageOutcome`, requestPayload, {
+      .post(`${base_url}/location-info/updateStageOutcome`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': request.indempotency_key
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
-        console.log("ended");
+        console.log("Resonse" , res.data);
         if (res.data == undefined) {
           resolve(0);
           return;
         }
-        resolve(1);
-        // dispatch({type: CHANGE_LOCATION_INFO, payload: res.data})
+        resolve(1);        
       })
       .catch((err) => {
         const error = err.response;
@@ -565,16 +553,18 @@ export const postStageOutcomUpdate = async (request) => {
 
 
 
-export const postDispositionFields = async (postData, idempotencyKey) => {
+export const postDispositionFields = async (postData) => {
 
   var base_url = await getBaseUrl();
   var token = await getToken();
+  console.log("URL ", `${base_url}/location-info/updateDispositionFields`)
+  console.log("Param " , postData);
   return new Promise(function (resolve, reject) {
     axios
       .post(`${base_url}/location-info/updateDispositionFields`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': idempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
@@ -597,18 +587,17 @@ export const postDispositionFields = async (postData, idempotencyKey) => {
 }
 
 
-export const postReloop = async (postData, idempotencyKey) => {
+export const postReloop = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-
-  console.log(postData);
-
+  console.log("URL " , `${base_url}/location-info/reloop`)
+  console.log("Param " ,postData);
   return new Promise(function (resolve, reject) {
     axios
       .post(`${base_url}/location-info/reloop`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': idempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
@@ -636,12 +625,12 @@ export const postReloop = async (postData, idempotencyKey) => {
   });
 }
 
-//{base_url}/locations-info/location-feedback
 
 export const postLocationFeedback = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-  
+  console.log("URL " , `${base_url}/locations-info/location-feedback` ) 
+  console.log("Param " , postData)
   return new Promise(function (resolve, reject) {
     axios
       .post(`${base_url}/locations-info/location-feedback`, postData, {
@@ -675,17 +664,17 @@ export const postLocationFeedback = async (postData) => {
   });
 }
 
-
-export const postLocationImage = async (postData, idempotencyKey) => {
+export const postLocationImage = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-  //console.log(postData);
+  console.log("URL ", `${base_url}/locations/location-image`)
+  console.log("Param " , postData)
   return new Promise(function (resolve, reject) {
     axios
       .post(`${base_url}/locations/location-image`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': idempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
@@ -784,19 +773,20 @@ export const getLocationContacts = async (location_id) => {
         }
       })
   });
-
 }
 
 
-export const addEditLocationContact = async (request,indempotencyKey) => {
+export const addEditLocationContact = async (postData) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
+  console.log("URL ", `${baseUrl}/locations/add-edit-contacts`)
+  console.log("Param " , postData)
   return new Promise(function (resolve, reject) {
     axios
-      .post(`${baseUrl}/locations/add-edit-contacts`, request,{
+      .post(`${baseUrl}/locations/add-edit-contacts`, postData,{
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': indempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
@@ -820,18 +810,19 @@ export const addEditLocationContact = async (request,indempotencyKey) => {
         }
       })
   });
-
 }
 
-export const updateCustomerLocationFields = async (request,indempotencyKey) => {
+export const updateCustomerLocationFields = async (postData) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
+  console.log("URL ", `${baseUrl}/locations/location-fields`)
+  console.log("Param " , postData)
   return new Promise(function (resolve, reject) {
     axios
-      .post(`${baseUrl}/locations/location-fields`, request,{
+      .post(`${baseUrl}/locations/location-fields`, postData ,{
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': indempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {

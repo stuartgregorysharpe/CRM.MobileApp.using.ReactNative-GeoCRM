@@ -2,6 +2,7 @@ import axios from "axios";
 import { baseURL } from "../constants";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import { CHANGE_LOCATION_FILTERS, CHANGE_LOGIN_STATUS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
+import uuid from 'react-native-uuid';
 
 export const  getPipelines = async (filters) => {
 
@@ -143,19 +144,20 @@ export const getAddOpportunityContacts = async(params, token) => {
         }
       })
   });
-
 }
 
-export const postAddOpportunityFields = async (postData, idempotencyKey) => {
+
+export const postAddOpportunityFields = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-  return new Promise(function (resolve, reject) {
-    //JSON.stringify(postData)
+  console.log("URL ", `https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity` )
+  console.log("Param " , postData)
+  return new Promise(function (resolve, reject) {    
     axios
       .post(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': idempotencyKey
+          'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {

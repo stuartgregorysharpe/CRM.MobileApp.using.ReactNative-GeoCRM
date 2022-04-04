@@ -10,6 +10,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { addEditLocationContact } from '../../../../actions/location.action';
 import uuid from 'react-native-uuid';
+import { getPostParameter } from '../../../../constants/Consts';
 
 export default function AddContact({ onClose, pageType, contactInfo, locationId }) {
     const dispatch = useDispatch();
@@ -19,6 +20,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
     const mobileRef = useRef();
     const additionalNumberRef = useRef();
 
+    const currentLocation = useSelector(state => state.rep.currentLocation);
     const [name, setName] = useState(contactInfo ? contactInfo?.contact_name : '');
     const [surname, setSurname] = useState(contactInfo ? contactInfo?.contact_surname : '');
     const [email, setEmail] = useState(contactInfo ? contactInfo?.contact_email : '');
@@ -59,6 +61,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
             return;
         }
         //  /locations/add-edit-contacts
+        var userParam = getPostParameter(currentLocation);
         let payload = {
             "location_id": locationId,
             "contact_name": name,
@@ -66,6 +69,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
             "contact_cell": mobile_number,
             "additional_number": additional_number,
             "contact_email": email,
+            "user_local_data" : userParam.user_local_data
         }
         if (pageType === 'add') {
             payload['contact_id'] = "";

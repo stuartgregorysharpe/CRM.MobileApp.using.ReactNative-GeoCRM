@@ -37,11 +37,12 @@ export function getCalendar(base_url, token, period)
     });    
 }
 
+
 export const updateCalendar = async(postData) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();  
-  console.log("post date");
-  console.log(postData); 
+  var token = await getToken();
+  console.log("URL " , `${base_url}/calenderupdate`);
+  console.log("Param ", postData);
   return new Promise(function(resolve, reject) {        
     axios
     .post(`${base_url}/calenderupdate`, postData, {
@@ -67,18 +68,14 @@ export const updateCalendar = async(postData) => {
         reject(err);  
       }
     })
-
   });
 }
 
 export const addCalendar = async(postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();  
-  console.log("base url", `${base_url}/calendaradd`);
-  console.log("token", token);
-  console.log("----- post data -----");
-  console.log(postData);
-
+  console.log("URL ", `${base_url}/calendaradd`);  
+  console.log("Param " , postData);
   return new Promise(function(resolve, reject) {        
     axios
     .post(`${base_url}/calenderadd`, postData, {
@@ -88,7 +85,7 @@ export const addCalendar = async(postData) => {
       }
     })
     .then((res) => {
-      console.log(res.data);
+      console.log("Response " , res.data);
       if(res.data == undefined){
         resolve("Failed");
         return;

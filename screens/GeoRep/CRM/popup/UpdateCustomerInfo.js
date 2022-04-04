@@ -16,7 +16,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import { expireToken } from '../../../../constants/Consts';
+import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
 
 export default function UpdateCustomerInfo({ location_id, onClose}) {
@@ -46,18 +46,18 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const handleSubmit = () => {
 
     checkChangedStatus();
-    let params = {
+    var userParam = getPostParameter(currentLocation);
+    let postData = {
       location_id:location_id,
       coordinates:{latitude : currentLocation.latitude, longitude : currentLocation.longitude},
       use_current_geo_location:isCurrentLocation,
       location_name_updated: location_name_updated,
       address_updated: address_updated,
-      custom_master_fields:customMasterFields    
-    }      
-
-    console.log("para", params);
+      custom_master_fields:customMasterFields,
+      user_local_data: userParam.user_local_data
+    } 
     
-    postLocationInfoUpdate(params, uuid.v4())
+    postLocationInfoUpdate(postData)
     .then((res) => {
       setMessage(res);
       setIsSuccess(true);
