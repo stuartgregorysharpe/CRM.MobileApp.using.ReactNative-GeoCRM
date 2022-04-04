@@ -202,7 +202,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
 }
 
 
-export const getLocationSearchListsByPage = async (filters, pageNumber) => {
+export const getLocationSearchListsByPage = async (filters, pageNumber , searchKey) => {
 
   var base_url = await getBaseUrl();
   var token = await getToken();
@@ -220,7 +220,8 @@ export const getLocationSearchListsByPage = async (filters, pageNumber) => {
               filters: filters,
               current_latitude: latitude,
               current_longitude: longitude,
-              page_nr: pageNumber
+              page_nr: pageNumber,
+              search_text:searchKey
             },
             headers: {
               Authorization: 'Bearer ' + token
@@ -601,6 +602,7 @@ export const postReloop = async (postData) => {
         }
       })
       .then((res) => {
+        console.log("res", res)
         if (res.data == undefined) {
           resolve("");
           return;
@@ -614,7 +616,9 @@ export const postReloop = async (postData) => {
 
       })
       .catch((err) => {
+        
         const error = err.response;
+        console.log(error)
         if (error.status===401 && error.config && 
           !error.config.__isRetryRequest) {          
             reject("expired");

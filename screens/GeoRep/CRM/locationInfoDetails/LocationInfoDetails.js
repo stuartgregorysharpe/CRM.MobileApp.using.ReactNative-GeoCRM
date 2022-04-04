@@ -75,6 +75,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           locationInfoRef.current.updateDispositionData(res);        
         }
         setLocationInfo(res);
+        //console.log("location info----", res);
         setIsLoading(false);
         if(res.feedback.length > 0){
           setFeebacOptions(res.feedback[0].feedback_loc_info_outcome[0].options);
@@ -128,8 +129,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   }  
 
   const _canGoNextPrev = async () => {
-    console.log("___ canb propos")
-    
+    console.log("___ canb propos")    
     let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
     if( check && !outcomeVal){
       setIsFeedback(true);      
@@ -220,7 +220,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   
   const updateLocationImage = async (path) => {
     var data = await RNFS.readFile( path , 'base64').then(res => { return res });    
-    var userParam = getPostParameter(props.currentLocation);
+    var userParam = getPostParameter(locationInfo.coordinates);
     let postData = {
       location_id: locationInfo.location_id,
       location_image: data,
@@ -253,7 +253,9 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         options={feedbackOptions}
         onModalClose={() => setIsFeedback(false)}
         onValueChanged={(item , index) => {          
-          var userParam = getPostParameter(props.currentLocation);
+          
+          console.log("locaiotn",locationInfo.coordinates)
+          var userParam = getPostParameter(locationInfo.coordinates);
           let postData = {
             location_id: locationInfo.location_id,
             feedback: [

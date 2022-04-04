@@ -384,7 +384,6 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       }
 
 
-
       {
         locationInfo !== undefined && locationInfo.address !== "" &&
         <View style={styles.refreshBox}>
