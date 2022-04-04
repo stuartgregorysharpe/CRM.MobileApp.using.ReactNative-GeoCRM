@@ -1,7 +1,7 @@
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
@@ -15,6 +15,8 @@ import AddContact from '../popup/AddOrUpdateContact';
 import uuid from 'react-native-uuid';
 import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import AlertDialog from '../../../../components/modal/AlertDialog';
+
 var selectedIndex = 1;
 var showingItem = 0;
 
@@ -32,6 +34,8 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const [pageType, setPageType] = useState('add');
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedValue, setSelectedValue] = useState([]);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         loadList()
@@ -68,6 +72,8 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                 setLocationFields(res.custom_master_fields);
             })
         } else if (selectedIndex == 2) {
+            setContacts([]);
+            console.log("updating");
             getLocationContacts(locationId).then(res => {
                 prepareContactsList(res.contacts);
             })
@@ -99,15 +105,13 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     const handleSubmit = () => {
         let fields = [];
-        for (let i = 0; i < locationFields.length; i++) {
-            if (!disableField(locationFields[i])) {
+        for (let i = 0; i < customMasterFields.length; i++) {
+            if (!disableField(customMasterFields[i])) {
                 fields.push({
-                    'custom_master_field_id': locationFields[i].custom_master_field_id,
-                    'value': locationFields[i].value
+                    'custom_master_field_id': customMasterFields[i].custom_master_field_id,
+                    'value': customMasterFields[i].value
                 })
             }
-
-
         }
 
         let request = {
@@ -115,17 +119,20 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             "fields": fields
         }
 
+        console.log("Customer: ", JSON.stringify(request));
         updateCustomerLocationFields(request, uuid.v4()).then(response => {
             console.log(response);
-
-            loadList();
+            if (response?.status === 'success') {
+                setIsSuccess(true);
+                setMessage('Details updated successfully');
+            }
         }).catch(e => {
             console.log(e);
         })
     }
 
     const prepareContactsList = (res) => {
-        console.log("contacts:", res);
+        // console.log("contacts:", res);
         let data = [];
         data = res;
         let primaryContacts = data.filter(x => x.primary_contact === '1');
@@ -142,8 +149,8 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             data: additionalContacts
         })
 
-        console.log(requiredList);
-        setContacts(requiredList);
+        // console.log(requiredList);
+        setContacts([...requiredList]);
     }
 
     const initPostData = (res) => {
@@ -172,8 +179,11 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         'core_field_name': element.core_field_name,
                         'field_type': element.field_type
                     });
+
+                let presetOptions = [];
+                presetOptions = [...element.preset_options];
+                tmp[tmp.length - 1].itemIndex = presetOptions.findIndex(x => x === element.value);
             }
-            // tmp.push({ 'custom_master_field_id': element.custom_master_field_id, 'value': '', 'field_name': element.field_name });
         })
         console.log("temp list: ", tmp);
         setCustomMasterFields(tmp);
@@ -226,7 +236,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const dropdownModal = () => {
         return (
             <SelectionPicker
-                title={"Select Suite, Unit, Apt"}
+                title={"Please select an option"}
                 clearTitle={"Clear"}
                 mode={"single"}
                 value={selectedValue}
@@ -415,7 +425,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         return renderContactItem(item, index, tabIndex)
                     }}
                     renderSectionHeader={({ section }) => {
-                        console.log(section);
+                        // console.log(section);
                         return <View style={{ marginTop: 10 }}>
                             <Text style={{ fontSize: 15, fontFamily: Fonts.secondaryMedium, color: whiteLabel().headerBackground }}>{section.title}</Text>
                             <View style={{ height: 2, backgroundColor: whiteLabel().headerBackground, marginVertical: 5 }} />
@@ -458,6 +468,12 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                 <Divider />
             </TouchableOpacity>
 
+            <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
+                setIsSuccess(false);
+                loadList();
+            }}>
+            </AlertDialog>
+
             <View style={[styles.tabContainer]}>
                 <TouchableOpacity style={styles.tabItem} onPress={() => {
                     setTabIndex(1);
@@ -491,19 +507,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                     }} pageType={pageType} contactInfo={selectedContact}
                         locationId={locationId} />}
                 </View>}
-            {
-                showItem == 1 &&
-                <View style={{
-                    backgroundColor: grayBackground.backgroundColor,
-                    height: '100%',
-                    position: 'absolute',
-                    left: 0,
-                    bottom: 0,
-                    top: 0,
-                    right: 0
-                }}>
-                </View>
-            }
+
         </View>
         // </Animated.View>
     )
