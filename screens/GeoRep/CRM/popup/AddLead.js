@@ -39,6 +39,7 @@ export default function AddLead({ screenProps, onClose }) {
   const [myLocation, setMyLocation] = useState(currentLocation);
   const [locationId, setLocationId] = useState(0);
   const [pickerTitle, setPickerTitle] = useState("");
+  const [accuracyUnit, setAccuracyUnit] = useState("m");
 
   const handleSubmit = () => {
         
@@ -50,7 +51,7 @@ export default function AddLead({ screenProps, onClose }) {
       user_local_data : userParam.user_local_data
     }
     postLeadFields(params)
-      .then((res) => {        
+      .then((res) => {
         setLocationId(res);
         setMessage("Added lead successfully");        
         setIsSuccess(true);
@@ -61,7 +62,7 @@ export default function AddLead({ screenProps, onClose }) {
         setIsSuccess(true);
       })
   }
-
+  
   useEffect(() => {
     setIsLoading(true);
     dispatch(updateCurrentLocation());
@@ -75,8 +76,9 @@ export default function AddLead({ screenProps, onClose }) {
     if (isLoading) {
       getLeadFields()
         .then((res) => {          
-          initPostData(res);
-          setLeadForms(res);
+          initPostData(res.custom_master_fields);
+          setLeadForms(res.custom_master_fields);          
+          setAccuracyUnit(res.accuracy_distance_measure);          
           setIsLoading(false);
         })
         .catch((e) => {
@@ -251,14 +253,17 @@ export default function AddLead({ screenProps, onClose }) {
 
   const renderUseCurrentLocation = (key) =>{
     return (
-      <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'}]} key={key + 100} onPress={async () => {
         var masterFields = await reverseGeocoding(myLocation, customMasterFields);
         if (masterFields.length > 0) {
           setCustomMasterFields(masterFields);
           setIsCurrentLocation("1");
         }
       }}>
-        <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+        <Text style={[styles.linkBoxText, {flex:1}]}>Use Current Geo Location</Text>
+        <View style={{position:'absolute', right:0}}><Text style={{color:Colors.disabledColor, fontSize:11 }}>
+          Accuracy { accuracyUnit === "m" ? parseInt(currentLocation.accuracy) : parseInt(currentLocation.accuracy * 3.28084) } {accuracyUnit}</Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -315,8 +320,8 @@ export default function AddLead({ screenProps, onClose }) {
         region={{
           latitude: myLocation.latitude,
           longitude: myLocation.longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0121
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
         }}
       >
       </MapView>

@@ -205,41 +205,7 @@ export default function LocationSearchScreen(props) {
     }else{
       const tempLists = [ ...orderLists, ...lists ];
       setOrderLists(tempLists);      
-    }
-    
-
-    // let items = [];
-    // lists.map((list, key) => {
-    //   let item = {
-    //     name: list.name,
-    //     address: list.address,
-    //     distance: list.distance ? list.distance  : getDistance(list.coordinates, myLocation).toFixed(2),
-    //     status: list.status,
-    //     location_id: list.location_id,
-    //     status_text_color:list.status_text_color
-    //   }
-    //   if(searchKey === ''){
-    //     items.push(item);
-    //   }else{
-    //     if(list.name.toLowerCase().includes(searchKey.toLowerCase()) || list.address.toLowerCase().includes(searchKey.toLowerCase())){      
-    //       items.push(item);
-    //     }
-    //   }
-    // });
-
-    // if(type === "pagination"){      
-      
-    //   const tempLists = [ ...orderLists, ...items ];      
-    //   setOrderLists(tempLists);
-    //   setOriginLists(tempLists);
-
-    // }else if(type === "total") {
-    //   if(locationId === 0 || locationId  === undefined){                
-    //     dispatch({type: LOCATION_LOOP_LISTS, payload:[...items]})        
-    //   }
-    // }else if(type === "search"){      
-    //   setOrderLists(items);
-    // }
+    }        
   }
 
   const animation = (name) => {

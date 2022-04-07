@@ -54,8 +54,7 @@ export const Notification = ({}) => {
                 <View style={styles.divider}></View>
                 <TouchableHighlight 
                 underlayColor="#DDDDDD"
-                style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {
-                  console.log("ddd", notification);
+                style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {                  
                   if(notification.buttonAction) {notification.buttonAction();}
                 }}>
                     <Text style={styles.button} >Okay</Text>

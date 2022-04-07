@@ -436,6 +436,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         </View>
                     }}
                 />
+                
                 <View style={styles.plusButtonContainer}>
                     <TouchableOpacity style={style.innerPlusButton} onPress={() => {
                         setPageType('add');

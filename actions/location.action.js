@@ -16,8 +16,8 @@ import {
 } from "./actionTypes";
 import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
-import { getPostParameter } from '../constants/Consts';
 let cancelToken
+
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
   axios
@@ -74,8 +74,7 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
           Authorization: 'Bearer ' + token
         }
       })
-      .then((res) => {
-        console.log("api response" , res);
+      .then((res) => {        
         if (res.data == undefined) {
           resolve([]);
         }
@@ -107,12 +106,13 @@ export const getLocationsMap = () => (dispatch, getState) => {
 
   Geolocation.getCurrentPosition(
     position => {
-      const { latitude, longitude } = position.coords;
+      const { latitude, longitude , accuracy } = position.coords;
       if (latitude !== undefined) {
         dispatch({
           type: CHANGE_CURRENT_LOCATION, payload: {
             latitude: latitude,
             longitude: longitude,
+            accuracy: accuracy
           }
         })
       }
@@ -164,7 +164,7 @@ export const getLocationsMap = () => (dispatch, getState) => {
     error => {
       console.log(error.code, error.message);
     },
-    { enableHighAccuracy: true, timeout: 15000 },
+    {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
   );
 
 
@@ -213,6 +213,9 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
     Geolocation.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
+        console.log("URL " ,`${base_url}/locations/location-search-list`);
+        console.log("user_id",user_id);
+        console.log("searchKey",searchKey);
         axios
           .get(`${base_url}/locations/location-search-list`, {
             params: {
@@ -231,13 +234,13 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             if (res.data == undefined) {
               resolve([]);
             }
-
             if (res.data.error) {
               setToken(null);
               resolve([]);
             }
 
             if (res.data.status == 'success') {
+              console.log("RESponse " , res.data.items );
               resolve(res.data.items);
             } else {
               resolve([]);
@@ -257,7 +260,7 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
       error => {
         console.log(error.code, error.message);
       },
-      { enableHighAccuracy: true, timeout: 15000 },
+      {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
     );
 
 
@@ -271,8 +274,8 @@ export const getLocationSearchList = () => (dispatch, getState) => {
 
   Geolocation.getCurrentPosition(
     position => {
-      const { latitude, longitude } = position.coords;
-      dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: latitude, longitude: longitude } });
+      const { latitude, longitude , accuracy } = position.coords;
+      dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: latitude, longitude: longitude ,accuracy: accuracy } });
       // call api 
       dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'request' });
       console.log("filters parameter for search lists == ", getState().selection.filters);
@@ -303,7 +306,6 @@ export const getLocationSearchList = () => (dispatch, getState) => {
             console.log("search results count", res.data.items.length);
             dispatch({ type: STATUS_LOCATION_SEARCH_LISTS, payload: 'success' });
             dispatch({ type: CHANGE_LOCATION_SEARCH_LISTS, payload: res.data.items });
-
           }
         })
         .catch((err) => {
@@ -314,17 +316,17 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     error => {
       console.log(error.code, error.message);
     },
-    { enableHighAccuracy: true, timeout: 15000 },
-  );
-
+    {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
+  );    
 }
+
 
 export const getLeadFields = async () => {
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();
   console.log(`${base_url}/leadfields`);
-
+  
   return new Promise(function (resolve, reject) {
     axios
       .get(`${base_url}/leadfields`, {
@@ -340,7 +342,7 @@ export const getLeadFields = async () => {
           resolve([]);
         }
         if (res.data.status == 'success') {
-          resolve(res.data.custom_master_fields);
+          resolve(res.data);
         } else {
           resolve([]);
         }
@@ -357,16 +359,15 @@ export const getLeadFields = async () => {
   });
 }
 
-
 export const getLocationInfoUpdate = async (location_id) => {
+
   var base_url = await getBaseUrl();
   var token = await getToken();
 
-  console.log(`${base_url}/locations/location_info_update_fields`);
-
+  console.log(`${base_url}/locations/location_info_update_fields_v2`);
   return new Promise(function (resolve, reject) {
     axios
-      .get(`${base_url}/locations/location_info_update_fields`, {
+      .get(`${base_url}/locations/location_info_update_fields_v2`, {
         params: {
           location_id: location_id
         },

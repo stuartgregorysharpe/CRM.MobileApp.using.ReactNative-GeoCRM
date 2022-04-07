@@ -128,12 +128,10 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 
     }, [propsChildren, clusteringEnabled])
 
-    useEffect(() => {
-      console.log("spired marker change" , spiralEnabled);
+    useEffect(() => {      
       if (!spiralEnabled) {
         return
-      }      
-      console.log("isSpiderfier", isSpiderfier);
+      }            
       if (isSpiderfier && markers.length > 0) {
         const allSpiderMarkers = []
         let spiralChildren = []
@@ -227,8 +225,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         longitudeDelta: 0.0121
       });
     }
-
-    console.log("scrollEnabled", scrollEnabled);
+    
     const mapOptions = {
       scrollEnabled: true,
     };

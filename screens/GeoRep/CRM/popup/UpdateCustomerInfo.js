@@ -6,7 +6,6 @@ import { TextInput, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
 import Colors,{   whiteLabel } from '../../../../constants/Colors';
@@ -39,10 +38,11 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [addressUpdated, setAddressUpdated] = useState("0");   
   const [pickerTitle, setPickerTitle] = useState("");
   const [myLocation, setMyLocation] = useState(currentLocation);
+  const [accuracyUnit, setAccuracyUnit] = useState("m");
   var location_name_updated = "0";
   var address_updated = "0";
-
   var index = 0;
+  
   const handleSubmit = () => {
 
     checkChangedStatus();
@@ -86,8 +86,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       getLocationInfoUpdate(location_id)
       .then((res) => {
         console.log("is loading end" , res);      
-        initPostData(res);        
-        setLeadForms(res);
+        initPostData(res.custom_master_fields);  
+        setLeadForms(res.custom_master_fields);
+        setAccuracyUnit(res.accuracy_distance_measure);
         setIsLoading(false);
       })
       .catch((e) => {
@@ -291,7 +292,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
 
   const renderUseCurrentLocation = (key) =>{
     return (
-      <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'} ]} key={key + 100} onPress={async () => {
         var masterFields = await reverseGeocoding(myLocation, customMasterFields);
         if (masterFields.length > 0) {
           setCustomMasterFields(masterFields);
@@ -299,10 +300,12 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
         }
       }}>
         <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+        <View style={{position:'absolute', right:0}}><Text style={{color:Colors.disabledColor, fontSize:11 }}>          
+          Accuracy { accuracyUnit === "m" ? parseInt(currentLocation.accuracy) : parseInt(currentLocation.accuracy * 3.28084) } {accuracyUnit}</Text>
+        </View>
       </TouchableOpacity>
     );
   }
-
 
   if (isLoading) {
     return (
@@ -345,8 +348,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
               region={{
                 latitude: myLocation.latitude,
                 longitude: myLocation.longitude,
-                latitudeDelta: 0.015,
-                longitudeDelta: 0.0121
+                latitudeDelta: 0.001,
+                longitudeDelta: 0.001
               }}
             >
             </MapView>
