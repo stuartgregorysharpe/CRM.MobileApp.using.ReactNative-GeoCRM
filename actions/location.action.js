@@ -209,10 +209,9 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
   var user_id = await getUserId();
 
   return new Promise(function (resolve, reject) {
-
-    Geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
+    // Geolocation.getCurrentPosition(
+    //   position => {
+        //const { latitude, longitude } = position.coords;
         console.log("URL " ,`${base_url}/locations/location-search-list`);
         console.log("user_id",user_id);
         console.log("searchKey",searchKey);
@@ -221,8 +220,8 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             params: {
               user_id: user_id,
               filters: filters,
-              current_latitude: latitude,
-              current_longitude: longitude,
+              // current_latitude: latitude,
+              // current_longitude: longitude,
               page_nr: pageNumber,
               search_text:searchKey
             },
@@ -256,12 +255,12 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             }
           })
 
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
-    );
+    //   },
+    //   error => {
+    //     console.log(error.code, error.message);
+    //   },
+    //   {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
+    // );
 
 
   });

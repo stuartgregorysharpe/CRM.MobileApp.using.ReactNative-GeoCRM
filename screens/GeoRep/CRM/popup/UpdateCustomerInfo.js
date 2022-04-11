@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Dimensions ,Animated } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Dimensions ,Animated,Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { TextInput, Title } from 'react-native-paper';
@@ -37,7 +37,6 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [customerNameUpdated, setCustomerNameUpdated] = useState("0");
   const [addressUpdated, setAddressUpdated] = useState("0");   
   const [pickerTitle, setPickerTitle] = useState("");
-  const [myLocation, setMyLocation] = useState(currentLocation);
   const [accuracyUnit, setAccuracyUnit] = useState("m");
   var location_name_updated = "0";
   var address_updated = "0";
@@ -55,7 +54,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       address_updated: address_updated,
       custom_master_fields:customMasterFields,
       user_local_data: userParam.user_local_data
-    } 
+    }     
     
     postLocationInfoUpdate(postData)
     .then((res) => {
@@ -66,18 +65,22 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       console.log('error', error);
       expireToken(dispatch, error)
       setMessage("Failed");
-      setIsSuccess(true);
-      
+      setIsSuccess(true);      
     })
   }
-
+    
   useEffect(() => {
-    setMyLocation(currentLocation);
-  },[currentLocation]);
-  
+    const id = setInterval(() => {
+      if(Platform.OS === "android"){
+        dispatch(updateCurrentLocation());
+      }
+    }, 2500);
+    return () => clearInterval(id);  
+  }, []);
+
   useEffect(() => {    
     setIsLoading(true);
-    dispatch(updateCurrentLocation());
+    //dispatch(updateCurrentLocation());
   },[]);
   
   useEffect(() =>{
@@ -184,8 +187,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     var index = -1;
     var dropdownText = '';
     if(fieldType === "dropdown_input"){      
-      tmp.forEach((element) => {        
-
+      tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.dropdown_value !== '') { //&& element.value != ""                  
           index = -2;        
           dropdownText =   element.dropdown_value;
@@ -293,11 +295,17 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const renderUseCurrentLocation = (key) =>{
     return (
       <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'} ]} key={key + 100} onPress={async () => {
-        var masterFields = await reverseGeocoding(myLocation, customMasterFields);
-        if (masterFields.length > 0) {
-          setCustomMasterFields(masterFields);
-          setIsCurrentLocation("1");
+        console.log("clicied", currentLocation)
+        if(currentLocation && currentLocation.latitude !== undefined){
+          //initPostData(customMasterFields);
+          var masterFields = await reverseGeocoding(currentLocation, customMasterFields);
+          if (masterFields.length > 0) {
+            setCustomMasterFields([]);
+            setCustomMasterFields(masterFields);
+            setIsCurrentLocation("1");
+          }
         }
+        
       }}>
         <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
         <View style={{position:'absolute', right:0}}><Text style={{color:Colors.disabledColor, fontSize:11 }}>          
@@ -321,9 +329,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       <Animated.View>
         <ScrollView style={styles.container}>
 
-
-            <Notification></Notification>
-            
+            <Notification></Notification>            
             <AlertDialog visible={isSuccess} message={message} onModalClose={() =>{           
               onClose();
               }}></AlertDialog>
@@ -346,8 +352,8 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
               showsMyLocationButton = {true}
               zoomEnabled = {true}
               region={{
-                latitude: myLocation.latitude,
-                longitude: myLocation.longitude,
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
                 latitudeDelta: 0.001,
                 longitudeDelta: 0.001
               }}

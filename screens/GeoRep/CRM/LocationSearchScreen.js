@@ -56,47 +56,8 @@ export default function LocationSearchScreen(props) {
   const [myLocation, setMyLocation] = useState(currentLocation);  
 
   useEffect(() => {
-    setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '')
-    props.screenProps.setOptions({                 
-      headerTitle:() =>{
-        return(<TouchableOpacity onPress={
-          () =>{                        
-            if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){              
-              locationRef.current.goBack();
-            }else{
-              console.log("yyy")
-              goPreviousPage();
-            }
-          }}>            
-          <View style={style.headerTitleContainerStyle}>            
-              <Image
-                resizeMethod='resize'
-                style={{width:15,height:20, marginRight:5}}
-                source={Images.backIcon}
-              />
-          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
-        </View></TouchableOpacity>)
-      },
-      
-      headerLeft: () => (
-        <TouchableOpacity 
-          style={style.headerLeftStyle} 
-          activeOpacity={1}
-          onPress={() => {
-            if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){                            
-              locationRef.current.closePopup();
-              setPageType({name:'search-lists'});
-            }else{              
-              setShowItem(0);
-              dispatch({type: SLIDE_STATUS, payload: false});
-              dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}});              
-            }
-          }}
-        >
-        </TouchableOpacity>
-      ),
-    }); 
-
+    console.log("SEARCH PAGE REALOAD");
+    setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '');    
   });
   
   useEffect(() => {      
@@ -104,9 +65,26 @@ export default function LocationSearchScreen(props) {
       isEndPageLoading = false;
       loadMoreData();
     }
+    refreshHeader();
   },[]);
 
+  useEffect(() =>{
+    console.log("refresh called")
+    refreshHeader();
+    if(showItem === 0){
+      setTimeout(() =>{
+        refreshHeader();
+      }, 500);
+    }
+  },[showItem]);
   
+  useEffect(() => {    
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log("focuseed")
+      refreshHeader()
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     setMyLocation(currentLocation);
@@ -149,6 +127,47 @@ export default function LocationSearchScreen(props) {
     console.log("search key board" ,searchKeyword)
     changedKey = searchKeyword;
   },[searchKeyword]);  
+
+  const refreshHeader = () => {
+    props.screenProps.setOptions({                 
+      headerTitle:() =>{
+        return(<TouchableOpacity onPress={
+          () =>{                        
+            if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){              
+              locationRef.current.goBack();
+            }else{
+              console.log("yyy")
+              goPreviousPage();
+            }
+          }}> 
+          <View style={style.headerTitleContainerStyle}>            
+              <Image
+                resizeMethod='resize'
+                style={{width:15,height:20, marginRight:5}}
+                source={Images.backIcon}
+              />
+          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+        </View></TouchableOpacity>)
+      },      
+      headerLeft: () => (
+        <TouchableOpacity 
+          style={style.headerLeftStyle} 
+          activeOpacity={1}
+          onPress={() => {
+            if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){                            
+              locationRef.current.closePopup();
+              setPageType({name:'search-lists'});
+            }else{              
+              setShowItem(0);
+              dispatch({type: SLIDE_STATUS, payload: false});
+              dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}});              
+            }
+          }}
+        >
+        </TouchableOpacity>
+      ),
+    });
+  }
 
   const loadData = async (searchKey) => {
 
@@ -210,13 +229,17 @@ export default function LocationSearchScreen(props) {
 
   const animation = (name) => {
     dispatch({type: SLIDE_STATUS, payload: true});
+    console.log("name" , name);
     switch(name) {
+      case "search-page":
+        setShowItem(0);
+        return;
       case "filter":        
         dispatch(getLocationFilters());
         setShowItem(1);
         return;
       case "locationInfo":
-        setShowItem(2);        
+        setShowItem(2);
         return;
       case "addtocalendar":
         setShowItem(3);
@@ -237,7 +260,7 @@ export default function LocationSearchScreen(props) {
     .then((res) => {      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
         locationRef.current.updateView(res);
-      }      
+      }
     })  
     .catch((e) =>{ 
       expireToken(dispatch, e);

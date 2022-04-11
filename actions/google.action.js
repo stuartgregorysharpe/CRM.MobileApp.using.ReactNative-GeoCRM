@@ -117,7 +117,6 @@ export const getCoordinate = async (address) => {
       .catch((err) => {
         reject(err);
       })
-
   });
 }
 
@@ -125,7 +124,6 @@ export const getCoordinate = async (address) => {
 export const updateCurrentLocation = () => (dispatch, getState) => {
   // update current location
   console.log("enter");
-
   Geolocation.getCurrentPosition(
     position => {
       console.log("altitudeAccuracy" , position);
@@ -136,7 +134,16 @@ export const updateCurrentLocation = () => (dispatch, getState) => {
       console.log("locatin - error")
       console.log(error.code, error.message);
     },
-    {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    // {   
+    //   accuracy: {
+    //     android: 'high',
+    //     ios: 'best',
+    //   },
+    //   enableHighAccuracy: true, 
+    //   forceRequestLocation: true,
+    //   timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 
+    // },
   );
 }
 
