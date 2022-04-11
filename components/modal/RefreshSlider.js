@@ -11,10 +11,9 @@ import { breakPoint } from '../../constants/Breakpoint';
 import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 import { postReloop } from '../../actions/location.action';
-import uuid from 'react-native-uuid';
 import { getPostParameter, getTwoDigit, notifyMessage } from '../../constants/Consts';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AlertDialog from './AlertDialog';
+import { DatetimePickerView } from '../DatetimePickerView';
 
 export default function RefreshSlider({location_id, onClose}) {
   const dispatch = useDispatch();
@@ -24,11 +23,11 @@ export default function RefreshSlider({location_id, onClose}) {
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleScheduleDate = (date) => {    
-    let datetime = "";
-    let time = "";
-    datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
-    time =  String(date.getHours()) + ":" + String(date.getMinutes());    
+  const handleScheduleDate = (date , time) => {
+    let datetime = date;
+    // let time = "";
+    // datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
+    // time =  String(date.getHours()) + ":" + String(date.getMinutes());    
     setIsDateTimePickerVisible(false);
     var userParam = getPostParameter(currentLocation);
     let postDate ={
@@ -104,11 +103,28 @@ export default function RefreshSlider({location_id, onClose}) {
         onPress={() => setIsDateTimePickerVisible(true)}
       />
 
-      <DateTimePickerModal
+      {/* <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
         mode={dateTimeType}
         onConfirm={handleScheduleDate}
         onCancel={() => {setIsDateTimePickerVisible(false)}}
+      /> */}
+
+      
+      <DatetimePickerView
+        visible={isDateTimePickerVisible}
+        value={''}
+        mode={"datetime"}
+        onModalClose={() =>{
+          setIsDateTimePickerVisible(false);
+        }}
+        close={(date , time) => {
+          console.log("date" , date);
+          if(date.length > 0){
+            handleScheduleDate(date.replace("/","-").replace("/","-") , time);
+          }                
+          setIsDateTimePickerVisible(false);
+        }} 
       />
 
     </ScrollView>

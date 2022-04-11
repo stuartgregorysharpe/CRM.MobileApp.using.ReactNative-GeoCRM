@@ -69,7 +69,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const loadList = () => {
         if (selectedIndex == 1) {
             getLocationFields(locationId).then(res => {
-                console.log("getLocationFields:", res.custom_master_fields);
+                console.log("getLocationFields:", res.custom_master_fields.length);
                 initPostData(res.custom_master_fields);
                 setLocationFields(res.custom_master_fields);
             })
@@ -189,7 +189,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                 tmp[tmp.length - 1].itemIndex = presetOptions.findIndex(x => x === element.value);
             }
         })
-        console.log("temp list: ", tmp);
+        //console.log("temp list: ", tmp);
         setCustomMasterFields(tmp);
     }
 
@@ -436,6 +436,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         </View>
                     }}
                 />
+                
                 <View style={styles.plusButtonContainer}>
                     <TouchableOpacity style={style.innerPlusButton} onPress={() => {
                         setPageType('add');

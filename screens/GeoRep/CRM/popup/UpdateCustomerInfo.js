@@ -1,12 +1,11 @@
 import React, {useState, useEffect, useRef } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Dimensions ,Animated } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Dimensions ,Animated,Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { TextInput, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
 import Colors,{   whiteLabel } from '../../../../constants/Colors';
@@ -38,11 +37,11 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
   const [customerNameUpdated, setCustomerNameUpdated] = useState("0");
   const [addressUpdated, setAddressUpdated] = useState("0");   
   const [pickerTitle, setPickerTitle] = useState("");
-  const [myLocation, setMyLocation] = useState(currentLocation);
+  const [accuracyUnit, setAccuracyUnit] = useState("m");
   var location_name_updated = "0";
   var address_updated = "0";
-
   var index = 0;
+  
   const handleSubmit = () => {
 
     checkChangedStatus();
@@ -55,7 +54,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       address_updated: address_updated,
       custom_master_fields:customMasterFields,
       user_local_data: userParam.user_local_data
-    } 
+    }     
     
     postLocationInfoUpdate(postData)
     .then((res) => {
@@ -66,18 +65,22 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       console.log('error', error);
       expireToken(dispatch, error)
       setMessage("Failed");
-      setIsSuccess(true);
-      
+      setIsSuccess(true);      
     })
   }
-
+    
   useEffect(() => {
-    setMyLocation(currentLocation);
-  },[currentLocation]);
-  
+    const id = setInterval(() => {
+      if(Platform.OS === "android"){
+        dispatch(updateCurrentLocation());
+      }
+    }, 2500);
+    return () => clearInterval(id);  
+  }, []);
+
   useEffect(() => {    
     setIsLoading(true);
-    dispatch(updateCurrentLocation());
+    //dispatch(updateCurrentLocation());
   },[]);
   
   useEffect(() =>{
@@ -86,8 +89,9 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       getLocationInfoUpdate(location_id)
       .then((res) => {
         console.log("is loading end" , res);      
-        initPostData(res);        
-        setLeadForms(res);
+        initPostData(res.custom_master_fields);  
+        setLeadForms(res.custom_master_fields);
+        setAccuracyUnit(res.accuracy_distance_measure);
         setIsLoading(false);
       })
       .catch((e) => {
@@ -183,8 +187,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
     var index = -1;
     var dropdownText = '';
     if(fieldType === "dropdown_input"){      
-      tmp.forEach((element) => {        
-
+      tmp.forEach((element) => {
         if (element.custom_master_field_id === id && element.dropdown_value !== '') { //&& element.value != ""                  
           index = -2;        
           dropdownText =   element.dropdown_value;
@@ -291,18 +294,26 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
 
   const renderUseCurrentLocation = (key) =>{
     return (
-      <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
-        var masterFields = await reverseGeocoding(myLocation, customMasterFields);
-        if (masterFields.length > 0) {
-          setCustomMasterFields(masterFields);
-          setIsCurrentLocation("1");
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'} ]} key={key + 100} onPress={async () => {
+        console.log("clicied", currentLocation)
+        if(currentLocation && currentLocation.latitude !== undefined){
+          //initPostData(customMasterFields);
+          var masterFields = await reverseGeocoding(currentLocation, customMasterFields);
+          if (masterFields.length > 0) {
+            setCustomMasterFields([]);
+            setCustomMasterFields(masterFields);
+            setIsCurrentLocation("1");
+          }
         }
+        
       }}>
         <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+        <View style={{position:'absolute', right:0}}><Text style={{color:Colors.disabledColor, fontSize:11 }}>          
+          Accuracy { accuracyUnit === "m" ? parseInt(currentLocation.accuracy) : parseInt(currentLocation.accuracy * 3.28084) } {accuracyUnit}</Text>
+        </View>
       </TouchableOpacity>
     );
   }
-
 
   if (isLoading) {
     return (
@@ -318,9 +329,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       <Animated.View>
         <ScrollView style={styles.container}>
 
-
-            <Notification></Notification>
-            
+            <Notification></Notification>            
             <AlertDialog visible={isSuccess} message={message} onModalClose={() =>{           
               onClose();
               }}></AlertDialog>
@@ -343,10 +352,10 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
               showsMyLocationButton = {true}
               zoomEnabled = {true}
               region={{
-                latitude: myLocation.latitude,
-                longitude: myLocation.longitude,
-                latitudeDelta: 0.015,
-                longitudeDelta: 0.0121
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                latitudeDelta: 0.001,
+                longitudeDelta: 0.001
               }}
             >
             </MapView>

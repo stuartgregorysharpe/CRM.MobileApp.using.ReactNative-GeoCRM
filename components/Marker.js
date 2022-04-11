@@ -173,9 +173,8 @@ const Selected_Marker = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="ht
 </svg>
 `;
 
-
-export default ({icon, width = "100%", height = "100%", style={}}) => (
-    <Fragment>
+export default ({icon, width = "100%", height = "100%", style={} , xml }) => (
+    <Fragment>       
         {icon == "Purple_X.png" && <SvgXml style={style} xml={Purple_X} width={width} height={height} />}
         {icon == "Red_X.png" && <SvgXml style={style} xml={Red_X} width={width} height={height} />}
         {icon == "Red_Star.png" && <SvgXml style={style} xml={Red_Star} width={width} height={height} />}

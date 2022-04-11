@@ -23,7 +23,7 @@ export function NextPrev(props){
     const [loopPosition, setLoopPosition] = useState(-1);
     const [nextLocationName, setNextLocationName] = useState("");
     const [prevLocationName, setPrevLocationName] = useState("");
-    console.log("currentLocation --" , currentLocation);
+    //console.log("currentLocation --" , currentLocation);
 
     useEffect(() =>{       
         console.log("page type", pageType.name); 

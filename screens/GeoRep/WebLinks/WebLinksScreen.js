@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import {  View, StyleSheet, ScrollView ,TouchableOpacity , Text } from 'react-native';
-
 import Searchbar from '../../../components/SearchBar';
 import Card from '../../../screens/GeoRep/ContentLibrary/partial/Card';
 import Colors from '../../../constants/Colors';
@@ -55,7 +54,9 @@ export default function WebLinksScreen(props) {
   return (   
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
 
-        <Searchbar onSearch={(text) =>{
+        <Searchbar 
+        initVal=""
+        onSearch={(text) =>{
           var tmp = [];
           lists.forEach(element => {
             if(element.weblink_name.toLowerCase().includes(text.toLowerCase())){
@@ -67,8 +68,7 @@ export default function WebLinksScreen(props) {
 
         <View style={styles.innerContainer}>
           {searchLists.map((item, index) => (
-            <Fragment key={index}>
-              {/* {index < 2 && <Card icon={item.icon} title={item.weblink_name}  />} */}
+            <Fragment key={index}>              
               {<Card image={item.image} title={item.weblink_name}  onPress={()=>{
                 props.navigation.navigate("WebViewScreen", {'data' : item});
               }} />}

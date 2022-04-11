@@ -156,8 +156,14 @@ export const FormQuestions = (props) =>{
       tmp.forEach(element => {
         element.questions.forEach(item => {
           item.value = null;
+          if(item.yes_image){
+            item.yes_image = undefined;
+          }
+          if(item.no_image){
+            item.no_image = undefined;
+          }
         });
-      });      
+      });    
       setFormQuestions(tmp);    
     }
 
@@ -166,7 +172,6 @@ export const FormQuestions = (props) =>{
       // setY(e.pageY);
       // setLocationX(e.locationX);
       // setLocationY(e.locationY);
-
       setBubleText(text);      
       setIsInfo(true);
       // setTimeout(() =>{        
@@ -242,7 +247,19 @@ export const FormQuestions = (props) =>{
       }else if(item.question_type === "yes_no"){
         return (
           <YesNoForm
-          onPress={(value) => onValueChangedSelectionView(key, index, value) }
+          onTakeImage={(images , type) => { 
+              //onValueChangedSelectionView(key, index, images);              
+              var tmp = [...formQuestions];      
+              if(type === "yes"){
+                tmp[key].questions[index].yes_image = images; 
+              }else{
+                tmp[key].questions[index].no_image = images; 
+              }              
+              setFormQuestions(tmp);
+            }}
+          onPress={(value , type) => {            
+            onValueChangedSelectionView(key, index, value);            
+          }}
           key={ "yes_no_question" +  index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); } }   ></YesNoForm>
         );
       }else if(item.question_type === "heading"){

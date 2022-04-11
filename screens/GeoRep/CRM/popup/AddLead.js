@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { TextInput, Button, Title } from 'react-native-paper';
@@ -36,9 +36,10 @@ export default function AddLead({ screenProps, onClose }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [isCurrentLocation, setIsCurrentLocation] = useState("0");
-  const [myLocation, setMyLocation] = useState(currentLocation);
   const [locationId, setLocationId] = useState(0);
   const [pickerTitle, setPickerTitle] = useState("");
+  const [accuracyUnit, setAccuracyUnit] = useState("m");
+  const [test, setTest] = useState("");
 
   const handleSubmit = () => {
         
@@ -50,7 +51,7 @@ export default function AddLead({ screenProps, onClose }) {
       user_local_data : userParam.user_local_data
     }
     postLeadFields(params)
-      .then((res) => {        
+      .then((res) => {
         setLocationId(res);
         setMessage("Added lead successfully");        
         setIsSuccess(true);
@@ -61,22 +62,30 @@ export default function AddLead({ screenProps, onClose }) {
         setIsSuccess(true);
       })
   }
-
+  
   useEffect(() => {
     setIsLoading(true);
     dispatch(updateCurrentLocation());
   }, []);
 
   useEffect(() => {
-    setMyLocation(currentLocation);
-  }, [currentLocation]);
+    const id = setInterval(() => {
+      if(Platform.OS === "android"){
+        dispatch(updateCurrentLocation());
+      }      
+    }, 1500);
+    return () => clearInterval(id);  
+  }, []);
 
+  
+    
   useEffect(() => {
     if (isLoading) {
       getLeadFields()
         .then((res) => {          
-          initPostData(res);
-          setLeadForms(res);
+          initPostData(res.custom_master_fields);
+          setLeadForms(res.custom_master_fields);          
+          setAccuracyUnit(res.accuracy_distance_measure);          
           setIsLoading(false);
         })
         .catch((e) => {
@@ -198,10 +207,9 @@ export default function AddLead({ screenProps, onClose }) {
                 leadTmp[key].value = item;
               }                            
               setLeadForms(leadTmp);
-
             }
           });
-          setCustomMasterFields(tmp);          
+          setCustomMasterFields(tmp);
           setIsDropdownModal(false);
 
         }}
@@ -251,14 +259,20 @@ export default function AddLead({ screenProps, onClose }) {
 
   const renderUseCurrentLocation = (key) =>{
     return (
-      <TouchableOpacity style={[styles.linkBox, { marginTop: 10 }]} key={key + 100} onPress={async () => {
-        var masterFields = await reverseGeocoding(myLocation, customMasterFields);
-        if (masterFields.length > 0) {
-          setCustomMasterFields(masterFields);
-          setIsCurrentLocation("1");
-        }
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'}]} key={key + 100} onPress={async () => {
+        if(currentLocation){
+          initPostData(customMasterFields);
+          var masterFields = await reverseGeocoding(currentLocation, customMasterFields);
+          if (masterFields.length > 0) {
+            setCustomMasterFields(masterFields);
+            setIsCurrentLocation("1");
+          }
+        }        
       }}>
-        <Text style={styles.linkBoxText}>Use Current Geo Location</Text>
+        <Text style={[styles.linkBoxText, {flex:1}]}>Use Current Geo Location</Text>
+        <View style={{position:'absolute', right:0}}><Text style={{color:Colors.disabledColor, fontSize:11 }}>
+          Accuracy { accuracyUnit === "m" ? parseInt(currentLocation.accuracy) : parseInt(currentLocation.accuracy * 3.28084) } {accuracyUnit}</Text>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -289,7 +303,7 @@ export default function AddLead({ screenProps, onClose }) {
       </TouchableOpacity>
 
       <View style={styles.header}>
-        <Title style={{ fontFamily: Fonts.primaryBold }}>Add Lead</Title>
+        <Title style={{ fontFamily: Fonts.primaryBold }}>Add Lead</Title>        
         <Button
           labelStyle={{
             fontFamily: Fonts.primaryRegular,
@@ -305,6 +319,7 @@ export default function AddLead({ screenProps, onClose }) {
         </Button>
       </View>
 
+
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
@@ -313,15 +328,19 @@ export default function AddLead({ screenProps, onClose }) {
         showsMyLocationButton={true}
         zoomEnabled={true}
         region={{
-          latitude: myLocation.latitude,
-          longitude: myLocation.longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.0121
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
         }}
       >
       </MapView>
 
+
+      
       <View style={{ padding: 5 }}>
+        
+
         {
           leadForms.map((field, key) => {
             if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input") {
