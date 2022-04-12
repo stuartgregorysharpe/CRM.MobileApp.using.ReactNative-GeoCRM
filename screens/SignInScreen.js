@@ -16,10 +16,11 @@ import { CHANGE_LOGIN_STATUS ,
   MAP_FILTERS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { getCurrentDate, getFilterData, getToken, getUserData, storeCurrentDate, storeLocationLoop } from '../constants/Storage';
+import { getCurrentDate, getFilterData, getPinSvg, getToken, getUserData, storeCurrentDate, storeLocationLoop, storePinSvg } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 import {displayName} from "../app.json";
 import { clearNotification } from '../actions/notification.action';
+import { getDynamicPins, getPinSvgLists } from '../actions/pins.actions';
 
 export default function SignIn() {  
 
@@ -67,8 +68,7 @@ export default function SignIn() {
   const handleNext = () => {
     
     setIsLoading(true);
-    checkEmail(email).then((res) => {
-      console.log(res);
+    checkEmail(email).then((res) => {      
       if (res.data.success.allow_aad_login == 0) {
         setStep(true);
         passwordInput.current.focus();
@@ -85,18 +85,37 @@ export default function SignIn() {
     
     dispatch({ type: CHANGE_LOGIN_STATUS, payload: "pending" });
     setIsLoading(true);
-    loginWithEmail(email, password).then( async(res) => {      
-        setIsLoading(false);
+    loginWithEmail(email, password).then( async(res) => {        
         if( res.success && res.success.message === "User authenticated successfully"){
+          //var pinSvg = await getPinSvg();
           var filters = await getFilterData('@filter');
-          dispatch({ type: MAP_FILTERS, payload: filters });
-          dispatch({ type: CHANGE_USER_INFO, payload: res.success.user });
-          dispatch({ type: CHANGE_ACCESS_TOKEN, payload: res.success.access_token });
-          dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(res.success.access_token) })
-          dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });
+          //if(pinSvg === null){
+            //getPinSvgLists(res.success.access_token).then( async(pinItems) => {
+              
+              getDynamicPins(res.success.access_token).then( async (mapPins) =>{              
+                await storePinSvg( "@map_pin_key" , mapPins);
+                //await storePinSvg( "@pin_key" , pinItems);
+                dispatch({ type: MAP_FILTERS, payload: filters });
+                dispatch({ type: CHANGE_USER_INFO, payload: res.success.user });
+                dispatch({ type: CHANGE_ACCESS_TOKEN, payload: res.success.access_token });
+                dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(res.success.access_token) })
+                dispatch({ type: CHANGE_LOGIN_STATUS, payload: "success" });                            
+                setIsLoading(false);
+
+              }).catch((e) => {
+                console.log("E",e)
+              })
+                                          
+            // }).catch((e) => {
+            //   console.log("ERROR", e);
+            //   setIsLoading(false);
+            // })
+          //}
+
         }else if(res.status === "failed"){          
           setErrorMsg(res.message);
           setPasswordError(true);
+          setIsLoading(false);
         }
         
     }).catch((e) =>{

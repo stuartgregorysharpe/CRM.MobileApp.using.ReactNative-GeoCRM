@@ -404,12 +404,14 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                           }
                           {
                             filePath === '' &&
-                            <SvgIcon style={styles.fontIcon} icon={"Add_Image"} width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '130px': '80px'} />
-                          }                
+                            <View style={{paddingTop:3, paddingBottom:3, borderWidth:1.5, borderColor:Colors.primaryColor ,borderRadius:5}}>
+                                <SvgIcon style={styles.fontIcon} icon={"Add_Image"} width={DeviceInfo.isTablet() ? '150px': '90px'} height={DeviceInfo.isTablet() ? '130px': '80px'} />
+                            </View>                            
+                          }
                         </TouchableOpacity>              
                       }
                   </View>
-                }          
+                }
                 </View>
 
                 {
@@ -464,6 +466,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={ async() => {  
             if( await _canGoNextPrev() ){
               props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
+              
             }            
           }}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
@@ -604,7 +607,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.secondaryBold
   },
   fontIcon: {
-    marginRight: 4
+    marginRight: 4,    
+    
   },
 
   transitionView: {

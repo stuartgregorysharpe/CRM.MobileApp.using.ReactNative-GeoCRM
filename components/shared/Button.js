@@ -32,14 +32,15 @@ const styles = StyleSheet.create({
         paddingVertical:3
     },
     buttonStyle:{
-        flex:1,
+        flex:1,        
         alignItems:'center',        
         alignContent:'center',
         paddingVertical:5,        
         color: Colors.blackColor,
         fontSize:15,
-        fontFamily: Fonts.secondaryBold,        
+        fontFamily: Fonts.secondaryBold,
     },  
+    
     inputStyle:{         
         flexDirection:'row',
         alignItems:'center',                  

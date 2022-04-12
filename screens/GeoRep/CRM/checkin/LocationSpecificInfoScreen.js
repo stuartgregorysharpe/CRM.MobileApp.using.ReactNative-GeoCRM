@@ -3,13 +3,10 @@ import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensio
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { boxShadow, style } from '../../../../constants/Styles';
-import FilterButton from '../../../../components/FilterButton';
 import SvgIcon from '../../../../components/SvgIcon';
-import MarkerIcon from '../../../../components/Marker';
 import { breakPoint } from '../../../../constants/Breakpoint';
 import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../../actions/actionTypes';
 import Fonts from '../../../../constants/Fonts';
@@ -20,12 +17,6 @@ import { LocationInfoInputTablet } from '../locationInfoDetails/LocationInfoInpu
 import Images from '../../../../constants/Images';
 import CustomerContactsScreen from '../customer_contacts/CustomerContactsScreen';
 
-const Rectangle = ({ style, text, backgroundColor, borderColor, icon }) => (
-  <View style={[styles.rectangle, style, { backgroundColor, borderColor }, borderColor ? { borderWidth: 1 } : {}]}>
-    <Text style={styles.text}>{text}</Text>
-    {icon && <MarkerIcon icon={icon} width="20px" height="20px" />}
-  </View>
-);
 
 export default function LocationSpecificInfoScreen(props) {
 
@@ -49,7 +40,7 @@ export default function LocationSpecificInfoScreen(props) {
       headerTitle: () => {
         return (<TouchableOpacity onPress={
           () => {
-            console.log("pressed",JSON.stringify(props));
+            console.log("Specific info header Title Clicked");
             if(canShowCustomerContactsScreen){
               customerContactsRef.current.onBackHandler();
             }else{
@@ -288,6 +279,7 @@ const styles = EStyleSheet.create(parse({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  
   cardText: {
     color: DISABLED_COLOR,
     fontSize: 12,
@@ -304,19 +296,8 @@ const styles = EStyleSheet.create(parse({
     borderRadius: 7,
     marginBottom: 8,
   },
-  refreshImage: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 68,
-    height: 68
-  },
-  outComeBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    marginRight: 88,
-  },
+  
+  
   filterButton: {
     display: perWidth('none', 'flex')
   },

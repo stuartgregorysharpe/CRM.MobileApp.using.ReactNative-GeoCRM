@@ -11,7 +11,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
     const [text,setText] = useState(item.value ? item.value :  ''); 
     
     useEffect(() =>{
-        console.log("text form render..." , item)       
+        
     },[]);
 
     useEffect(() =>{

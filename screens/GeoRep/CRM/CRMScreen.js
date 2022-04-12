@@ -30,9 +30,8 @@ export default function CRMScreen(props) {
       </Stack.Screen>
             
       <Stack.Screen
-        name="LocationSpecificInfo"
-        // component={LocationSpecificInfoScreen}
-        options={{ header: () => null }}>
+        name="LocationSpecificInfo"        
+        options={{ header: () => null , headerShown: false}}>
           {props => <LocationSpecificInfoScreen {...props} screenProps={screenProps}  />}
       </Stack.Screen>
       

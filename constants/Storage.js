@@ -17,6 +17,25 @@ export const getUserData = async () => {
     // error reading value
   }
 }
+
+export const storePinSvg = async ( type,  value) => {
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem(type, jsonValue)
+  } catch (e) {
+    console.log("error", e);
+  }
+}
+export const getPinSvg = async (type) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(type)
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    // error reading value
+  }
+}
+
+
 export const setToken = async (value) => {
   try {
     await AsyncStorage.setItem('@token', String(value))

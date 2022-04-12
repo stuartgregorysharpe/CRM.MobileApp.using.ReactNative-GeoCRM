@@ -14,7 +14,7 @@ import GrayBackground from '../../../components/GrayBackground';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { breakPoint } from '../../../constants/Breakpoint';
-import { CHANGE_LOGIN_STATUS, CHANGE_POLYGONS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
+import { CHANGE_CURRENT_LOCATION, CHANGE_LOGIN_STATUS, CHANGE_POLYGONS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
 import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationMapByRegion } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -25,12 +25,11 @@ import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import Geolocation from 'react-native-geolocation-service';
 import { updateCurrentLocation } from '../../../actions/google.action';
 import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
-import { expireToken, isInsidePoly } from '../../../constants/Consts';
+import { expireToken, isInsidePoly } from '../../../constants/Consts';0
 import AddToCalendar from '../../../components/modal/AddToCalendar';
-import { SelectionPicker } from '../../../components/modal/SelectionPicker';
-import { getMapMinZoomLevel, getPolygonFillColorTransparency, setToken } from '../../../constants/Storage';
-import { showNotification } from '../../../actions/notification.action';
+import { getMapMinZoomLevel, getPinSvg, getPolygonFillColorTransparency, setToken, storePinSvg } from '../../../constants/Storage';
 import { Notification } from '../../../components/modal/Notification';
+import { SvgXml } from 'react-native-svg';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -42,6 +41,7 @@ const SlidUpArrow = () => (
 let isMount = true;
 let id = 0;
 let previousZoom = 0;
+let mapPinSvg = null;
 
 export default function LocationScreen(props) {
 
@@ -62,7 +62,6 @@ export default function LocationScreen(props) {
   const locationRef = useRef();
   const appState = useRef(AppState.currentState);
   const [setAppStateVisible] = useState(appState.current);
-  const [myLocation, setMyLocation] = useState(currentLocation);
   const watchId = useRef<Number | null>(null);
   const [polygonLists, setPolygons] = useState([]);
   const [locationMaps , setLocationMap] = useState([]);
@@ -76,6 +75,7 @@ export default function LocationScreen(props) {
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05");
+  
   
   useEffect(() => { 
     initCode();
@@ -92,6 +92,7 @@ export default function LocationScreen(props) {
       isMount = false;
     };    
   },[]);
+
   const initCode = async()  =>{
     var code = await getPolygonFillColorTransparency();
     setTransCode(code);
@@ -102,62 +103,58 @@ export default function LocationScreen(props) {
       const auth = await Geolocation.requestAuthorization('whenInUse');
       if (auth === 'granted') {
         dispatch(updateCurrentLocation());
-         setIsGuranted(true);
+        setIsGuranted(true);
       }
     }
-    
+
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,        
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("gurranted -----")
-        dispatch(updateCurrentLocation());
-         setIsGuranted(true);
+          console.log("gurranted -----")
+          dispatch(updateCurrentLocation());
+          setIsGuranted(true);
       }
     }
   }
 
-
-  // useEffect(() => {
-  //   const subscription = AppState.addEventListener("change", nextAppState => {
-  //     if (
-  //       appState.current.match(/inactive|background/) &&
-  //       nextAppState === "active"
-  //     ) {
-  //       console.log("App has come to the foreground!");
-  //     }
-  //     appState.current = nextAppState;
-  //     setAppStateVisible(appState.current);
-  //     console.log("AppState", appState.current);
-  //   });
-
-  //   return () => {
-  //     console.log("Background");
-  //     subscription.remove();
-  //   };
-  // }, []);
-
   useEffect(() => {
       if( watchId.current === null || watchId.current === undefined){
           watchId.current = Geolocation.watchPosition(
-            (position) => {                              
-                console.log("Tracking..")
-                if(myLocation.latitude !== position.coords.latitude || myLocation.longitude !== position.coords.longitude){
-                  setMyLocation({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                  });
-                }      
+            (position) => {         
+                console.log("Tracking..")   
+                dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: position.coords.latitude ,longitude: position.coords.longitude , accuracy: position.coords.accuracy } });
+                console.log("track position", position);                
             },
             (error) => {
+                console.log("tracking error");
                 console.log(error);
+                dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: currentLocation.latitude ,longitude: currentLocation.longitude , accuracy: currentLocation.accuracy , msg:'tracking error' } });
             },
             {
-                distanceFilter: 5,
+              distanceFilter: 0.5,
+              desiredAccuracy: {
+                  ios: "best",
+                  android: "highAccuracy"
+              },
+              headingOrientation: "portrait",
+              // Android ONLY
+              androidProvider: "auto",
+              interval: 2000, // Milliseconds
+              fastestInterval: 2000, // Milliseconds
+              maxWaitTime: 3000, // Milliseconds
+              // IOS ONLY
+              allowsBackgroundLocationUpdates: true,
+              headingFilter: 1, // Degrees
+              pausesLocationUpdatesAutomatically: false,
+              showsBackgroundLocationIndicator: false,                
             },
         );
-      }      
+      }
+
+      loadPinSvg();
       return () => {
         console.log("End page");
           if (watchId.current) {
@@ -166,14 +163,7 @@ export default function LocationScreen(props) {
           }          
       }
   }, []);
-    
-  useEffect(() => {
-    if( currentLocation.latitude !== undefined && isMount ){
-      console.log("current location updated in map page " , currentLocation);
-      setMyLocation(currentLocation);
-    }
-  },[currentLocation]);
-  
+      
   useEffect(() => {
     if(polygons !== undefined && isMount && polygonLists.length === 0){
       //console.log("po is Mount", JSON.stringify(polygons.length));
@@ -189,12 +179,12 @@ export default function LocationScreen(props) {
             tmp.push(item);
           }
         });
-      });      
+      });
       setPolygons(tmp);
     }
   },[polygons]);
 
-  useEffect(() => {
+  useEffect(() => {    
     refreshHeader();
     if (crmStatus) {
       props.screenProps.setOptions({
@@ -231,10 +221,10 @@ export default function LocationScreen(props) {
     
   useEffect(() => {
     console.log("filterParmeterChanged", filterParmeterChanged)
-    if(myLocation !== undefined && boundBox !== undefined && isGuranted){
-      setIsLoading(true);
-      console.log("other route")
-      getLocationMapByRegion(myLocation, boundBox).then((res) =>{                                                                    
+    if(currentLocation  && currentLocation.latitude !== undefined && boundBox !== undefined && isGuranted){
+      setIsLoading(true);      
+      getLocationMapByRegion(currentLocation, boundBox).then((res) =>{                                                                    
+        console.log(res.locations);
         setIsLoading(false);        
         setLocationMap([...res.locations]);          
         dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });        
@@ -243,6 +233,10 @@ export default function LocationScreen(props) {
       });
     }                  
   }, [filterParmeterChanged]);  
+
+  const loadPinSvg = async() =>{
+    mapPinSvg = await getPinSvg("@map_pin_key");        
+  }
 
   const refreshHeader = () =>{
     props.screenProps.setOptions({           
@@ -372,14 +366,17 @@ export default function LocationScreen(props) {
         if(isLoading === false){
           setIsLoading(true);
           console.log("call map api =======", bBox);
-          getLocationMapByRegion(myLocation, bBox).then((res) =>{            
-            var lists = [...res.locations];
-            setLocationMap(lists);                       
-            setIsLoading(false);
-            dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });            
-          }).catch((e) => {  
-            expireToken(dispatch, e);
-          });
+          if( currentLocation && currentLocation.latitude){
+            getLocationMapByRegion(currentLocation, bBox).then((res) =>{            
+              console.log(" RE" , res)
+              var lists = [...res.locations];
+              setLocationMap(lists);                       
+              setIsLoading(false);
+              dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });            
+            }).catch((e) => {  
+              expireToken(dispatch, e);
+            });
+          }          
         }                                    
       }
     }                      
@@ -412,17 +409,20 @@ export default function LocationScreen(props) {
 
   const openLocaitonInfoDetails = (location_id) => {
       animation("locationInfo");           
-      getLocationInfo( Number(location_id) , myLocation)
-      .then((res) => {                
-          if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
-            locationRef.current.updateView(res);
-            setLocationInfo(res);
-          }
-      })
-      .catch((e) =>{
-        expireToken(dispatch, e);
-        setIsRequest(false);
-      })
+      if(currentLocation && currentLocation.latitude !== undefined){
+        getLocationInfo( Number(location_id) , currentLocation)
+        .then((res) => {                
+            if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
+              locationRef.current.updateView(res);
+              setLocationInfo(res);
+            }
+        })
+        .catch((e) =>{
+          expireToken(dispatch, e);
+          setIsRequest(false);
+        })
+      }
+      
   }
 
   return (
@@ -556,17 +556,15 @@ export default function LocationScreen(props) {
                         onPressMap(e);
                       }                                            
                     }}
-                    initialRegion={{
-                      // latitude: currentLocation.latitude,
-                      // longitude: currentLocation.longitude,
-                      latitude: myLocation.latitude !== null && myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
-                      longitude: myLocation.longitude !== null  &&  myLocation.longitude !== undefined ? myLocation.longitude:  currentLocation.longitude,
+                    initialRegion={{                      
+                      latitude: currentLocation.latitude,
+                      longitude: currentLocation.longitude,
                       latitudeDelta: 0.015,
                       longitudeDelta: 0.015,
                     }}                      
                     currentLocation={{
-                      latitude: myLocation.latitude,
-                      longitude: myLocation.longitude,
+                      latitude: currentLocation.latitude,
+                      longitude: currentLocation.longitude,
                     }}>
 
                     {locationMaps.map((item , key) => (
@@ -582,10 +580,16 @@ export default function LocationScreen(props) {
                         }}>                        
                         
                         {
+                          mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
+                          <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code } width="34px" height="34px" />
+                        }
+                        
+                        {/* {
                           selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ?
                           <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />:
                           <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />                           
-                        }                        
+                        } */}
+                        {/* <MarkerIcon style={styles.markerIcon} xml={pinSvg[0].svg_code} icon={item.pin_image} width="34px" height="34px" /> */}
                       </Marker>
                     ))}
 
@@ -616,10 +620,10 @@ export default function LocationScreen(props) {
                     }
 
                     <MapView.Circle
-                      key={(myLocation.longitude + myLocation.latitude).toString()}
+                      key={(currentLocation.longitude + currentLocation.latitude).toString()}
                       center = {{
-                        latitude: myLocation.latitude !== undefined ? myLocation.latitude : currentLocation.latitude,
-                        longitude: myLocation.longitude  !== undefined ? myLocation.longitude : currentLocation.longitude
+                        latitude:  currentLocation.latitude,
+                        longitude: currentLocation.longitude
                       }}
                       radius = { 200 }
                       strokeWidth = { 1 }

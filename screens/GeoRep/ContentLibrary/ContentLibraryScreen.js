@@ -200,8 +200,7 @@ export default function ContentLibraryScreen(props) {
                       }
                     }).catch((error) =>{
                       console.log("error", error);
-                    });
-                                                                                
+                    });                                                                                  
                   }                  
                 }}
                  />              
@@ -215,7 +214,9 @@ export default function ContentLibraryScreen(props) {
     <SafeAreaView>
       <ScrollView style={styles.container}>
 
-        <Searchbar onSearch={(text) =>{
+        <Searchbar 
+          initVal=""
+          onSearch={(text) =>{
           var tmp = [];
           libraryLists.forEach(element => {
             if(element.folder_name.toLowerCase().includes(text.toLowerCase())){

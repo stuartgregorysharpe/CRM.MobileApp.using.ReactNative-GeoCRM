@@ -199,7 +199,7 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
                 tmp[tmp.length - 1].itemIndex = presetOptions.findIndex(x => x === element.value);
             }
         })
-        console.log("temp list: ", tmp);
+        //console.log("temp list: ", tmp);
         setCustomMasterFields(tmp);
     }
 
@@ -446,6 +446,7 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
                         </View>
                     }}
                 />
+                
                 <View style={styles.plusButtonContainer}>
                     <TouchableOpacity style={style.innerPlusButton} onPress={() => {
                         setPageType('add');

@@ -35,9 +35,7 @@ export const loginWithEmail = async(email , password ) => {
   return new Promise(function(resolve, reject) {        
     axios
     .post(`${baseURL}/authentication_api/Auth/login`, postData, {})
-    .then( async (res) => {
-      console.log("ddd", res.data);
-      
+    .then( async (res) => {            
       if(res.data.status === "failed"){
         console.log("login resonse" , res.data);
         resolve(res.data);        

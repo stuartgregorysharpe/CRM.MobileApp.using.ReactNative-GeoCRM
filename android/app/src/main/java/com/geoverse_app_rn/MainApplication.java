@@ -2,6 +2,8 @@ package com.geoverse_app_rn;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -31,7 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
-          //packages.add(new FileOpenerPackage());
+          //packages.add(new RNFusedLocationPackage());
           return packages;
         }
 
