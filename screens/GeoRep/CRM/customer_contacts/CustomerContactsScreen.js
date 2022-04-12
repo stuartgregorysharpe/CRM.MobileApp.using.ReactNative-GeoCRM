@@ -1,6 +1,6 @@
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useDispatch ,useSelector } from 'react-redux';
@@ -21,7 +21,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 var selectedIndex = 1;
 var showingItem = 0;
 
-export default function CustomerContactsScreen({ onClose, locationId }) {
+export const CustomerContactsScreen=forwardRef(( props, ref )=> {
     const [tabIndex, setTabIndex] = useState(1);
     const [locationFields, setLocationFields] = useState([]);
     const [isDropdownModal, setIsDropdownModal] = useState([]);
@@ -38,6 +38,16 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const [selectedValue, setSelectedValue] = useState([]);
     const [isSuccess, setIsSuccess] = useState(false);
     const [message, setMessage] = useState("");
+
+    useImperativeHandle(
+        ref,
+        () => ({
+          onBackHandler() {
+            handleBackButtonClick();
+          },
+        }),
+        [],
+      );
 
     useEffect(() => {
         loadList()
@@ -60,7 +70,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             dispatch({ type: SLIDE_STATUS, payload: false });
             return true;
         }
-        onClose();
+        props.onClose();
         // setShowItem(0);
         // dispatch({ type: SLIDE_STATUS, payload: false });
         return true;
@@ -68,7 +78,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     const loadList = () => {
         if (selectedIndex == 1) {
-            getLocationFields(locationId).then(res => {
+            getLocationFields(props.locationId).then(res => {
                 console.log("getLocationFields:", res.custom_master_fields);
                 initPostData(res.custom_master_fields);
                 setLocationFields(res.custom_master_fields);
@@ -76,7 +86,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
         } else if (selectedIndex == 2) {
             setContacts([]);
             console.log("updating");
-            getLocationContacts(locationId).then(res => {
+            getLocationContacts(props.locationId).then(res => {
                 prepareContactsList(res.contacts);
             })
         }
@@ -118,7 +128,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
         var userParam  =  getPostParameter(currentLocation);
         let request = {
-            "location_id": locationId,
+            "location_id": props.locationId,
             "fields": fields,
             "user_local_data" : userParam.user_local_data
         }
@@ -451,7 +461,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     if (showItem === 2) {
         return (
-            <UpdateCustomerInfo location_id={locationId}
+            <UpdateCustomerInfo location_id={props.locationId}
                 onClose={() => {
                     //   props.refreshLocationInfo(locationId);
                     loadList();
@@ -467,7 +477,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
         <View style={styles.container}>
 
             <TouchableOpacity style={{ padding: 6 }} onPress={() => {
-                onClose();
+                props.onClose();
             }}>
                 <Divider />
             </TouchableOpacity>
@@ -509,13 +519,13 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         showingItem = 0;
                         dispatch({ type: SLIDE_STATUS, payload: false });
                     }} pageType={pageType} contactInfo={selectedContact}
-                        locationId={locationId} />}
+                        locationId={props.locationId} />}
                 </View>}
 
         </View>
         // </Animated.View>
     )
-}
+});
 
 const styles = StyleSheet.create({
     container: {        
@@ -629,3 +639,5 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 })
+
+export default CustomerContactsScreen;
