@@ -30,6 +30,7 @@ import AddToCalendar from '../../../components/modal/AddToCalendar';
 import { getMapMinZoomLevel, getPinSvg, getPolygonFillColorTransparency, setToken, storePinSvg } from '../../../constants/Storage';
 import { Notification } from '../../../components/modal/Notification';
 import { SvgXml } from 'react-native-svg';
+import { useTransitionProgress } from 'react-native-screens';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -51,7 +52,8 @@ export default function LocationScreen(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(state => state.selection.mapFilters);
   const isCalendarSelection = useSelector(state => state.selection.isCalendarSelection);
-  const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);  
+  const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);
+
   const dispatch = useDispatch();
   const [showItem, setShowItem] = useState("map_view");
   const [locationInfo, setLocationInfo] = useState();  
@@ -75,8 +77,7 @@ export default function LocationScreen(props) {
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05");
-  
-  
+    
   useEffect(() => { 
     initCode();
     refreshHeader();
@@ -93,6 +94,18 @@ export default function LocationScreen(props) {
     };    
   },[]);
 
+  useEffect(() => {
+    console.log("updated current location");
+    console.log("isMount", isMount);
+    console.log("editing", editing);
+    console.log("is Draw", isDraw)
+  },[currentLocation , editing, isDraw ,polygonLists]);
+
+
+  useEffect(() => {
+    console.log("locationMaps");    
+  },[locationMaps ]);
+ 
   const initCode = async()  =>{
     var code = await getPolygonFillColorTransparency();
     setTransCode(code);
@@ -124,9 +137,11 @@ export default function LocationScreen(props) {
       if( watchId.current === null || watchId.current === undefined){
           watchId.current = Geolocation.watchPosition(
             (position) => {         
-                console.log("Tracking..")   
-                dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: position.coords.latitude ,longitude: position.coords.longitude , accuracy: position.coords.accuracy } });
-                console.log("track position", position);                
+                console.log("Tracking..")  
+                if(currentLocation.latitude !== position.coords.latitude){
+                  dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: position.coords.latitude ,longitude: position.coords.longitude , accuracy: position.coords.accuracy } });
+                  console.log("track position", position);                
+                }                
             },
             (error) => {
                 console.log("tracking error");
@@ -134,7 +149,7 @@ export default function LocationScreen(props) {
                 dispatch({type: CHANGE_CURRENT_LOCATION, payload: {latitude: currentLocation.latitude ,longitude: currentLocation.longitude , accuracy: currentLocation.accuracy , msg:'tracking error' } });
             },
             {
-              distanceFilter: 0.5,
+              distanceFilter: 5,
               desiredAccuracy: {
                   ios: "best",
                   android: "highAccuracy"
@@ -185,6 +200,7 @@ export default function LocationScreen(props) {
   },[polygons]);
 
   useEffect(() => {    
+    console.log("crm bottom updated")
     refreshHeader();
     if (crmStatus) {
       props.screenProps.setOptions({
@@ -198,8 +214,9 @@ export default function LocationScreen(props) {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
     };
   }, [crmStatus]);
-
+  
   useEffect(() => {    
+    console.log("crm navigation")
     const unsubscribe = navigation.addListener('focus', () => {
       console.log("focuseed")
       isMount = true;
@@ -232,8 +249,8 @@ export default function LocationScreen(props) {
         expireToken(dispatch, e);
       });
     }                  
-  }, [filterParmeterChanged]);  
-
+  }, [filterParmeterChanged]);
+  
   const loadPinSvg = async() =>{
     mapPinSvg = await getPinSvg("@map_pin_key");        
   }
@@ -507,18 +524,18 @@ export default function LocationScreen(props) {
           {
             isCalendarSelection &&
             <CrmCalendarSelection            
-            isDraw={isDraw}
-            onClickDraw={() => {              
-              console.log(isDraw);
-              if(isDraw){
-                finish();
-                setIsFinish(false);
-              }else{
-                if(tracksViewChanges === true){
-                  setTracksViewChanges(false);
+              isDraw={isDraw}
+              onClickDraw={() => {              
+                console.log(isDraw);
+                if(isDraw){
+                  finish();
+                  setIsFinish(false);
+                }else{
+                  if(tracksViewChanges === true){
+                    setTracksViewChanges(false);
+                  }
                 }
-              }
-              setIsDraw(!isDraw);
+                setIsDraw(!isDraw);
             }}
             onClickCancel={() => {
               props.navigation.navigate("LocationSearch");
@@ -561,7 +578,8 @@ export default function LocationScreen(props) {
                       longitude: currentLocation.longitude,
                       latitudeDelta: 0.015,
                       longitudeDelta: 0.015,
-                    }}                      
+                    }}
+
                     currentLocation={{
                       latitude: currentLocation.latitude,
                       longitude: currentLocation.longitude,
@@ -578,18 +596,10 @@ export default function LocationScreen(props) {
                           latitude: Number(item.coordinates.latitude),
                           longitude: Number(item.coordinates.longitude),
                         }}>                        
-                        
                         {
                           mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
                           <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code } width="34px" height="34px" />
-                        }
-                        
-                        {/* {
-                          selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ?
-                          <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />:
-                          <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />                           
-                        } */}
-                        {/* <MarkerIcon style={styles.markerIcon} xml={pinSvg[0].svg_code} icon={item.pin_image} width="34px" height="34px" /> */}
+                        }                        
                       </Marker>
                     ))}
 

@@ -74,7 +74,7 @@ export default function UpdateCustomerInfo({ location_id, onClose}) {
       if(Platform.OS === "android"){
         dispatch(updateCurrentLocation());
       }
-    }, 2500);
+    }, 5000);
     return () => clearInterval(id);  
   }, []);
 

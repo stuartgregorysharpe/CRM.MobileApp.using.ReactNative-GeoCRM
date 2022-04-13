@@ -18,6 +18,7 @@ import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
 let cancelToken
 
+
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
   axios
@@ -779,7 +780,6 @@ export const getLocationContacts = async (location_id) => {
   });
 }
 
-
 export const addEditLocationContact = async (postData) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
@@ -829,8 +829,7 @@ export const updateCustomerLocationFields = async (postData) => {
           'Indempotency-Key': uuid.v4()
         }
       })
-      .then((res) => {
-        // console.log("getLocationFields:",res.data);
+      .then((res) => {        
         if (res.data == undefined) {
           resolve([]);
         }

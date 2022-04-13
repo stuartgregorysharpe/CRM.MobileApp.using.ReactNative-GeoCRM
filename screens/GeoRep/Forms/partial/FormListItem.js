@@ -52,7 +52,6 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
     );
 }
 
-
 const styles = StyleSheet.create({
     container:{
         // flex:1,

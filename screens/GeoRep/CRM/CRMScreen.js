@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LocationScreen from './LocationScreen';
 import LocationSpecificInfoScreen from './checkin/LocationSpecificInfoScreen';
 import LocationSearchScreen from './LocationSearchScreen';
+import ActivityComments from './activity_comments/ActivityComments';
 const Stack = createNativeStackNavigator();
 
 export default function CRMScreen(props) {
@@ -14,8 +15,11 @@ export default function CRMScreen(props) {
 
   return (
     <Stack.Navigator> 
+
+      
+
       <Stack.Screen        
-        name="Root"        
+        name="Root"    
         options={{ header: () => null , headerShown: false}}>      
           {props => <LocationScreen {...props} screenProps={screenProps} />}
       </Stack.Screen>
@@ -24,7 +28,7 @@ export default function CRMScreen(props) {
         name="LocationSearch"
         //initialParams={{location_id: ...props.route.params }}
         // component={LocationSearchScreen}
-        options={{ header: () => null }}          
+        options={{ header: () => null }}
       >
         {props => <LocationSearchScreen {...props} screenProps={screenProps} />}
       </Stack.Screen>
@@ -34,6 +38,14 @@ export default function CRMScreen(props) {
         options={{ header: () => null , headerShown: false}}>
           {props => <LocationSpecificInfoScreen {...props} screenProps={screenProps}  />}
       </Stack.Screen>
+      
+      {/* <Stack.Screen
+        name="Root"        
+        options={{ header: () => null , headerShown: false}}>
+          {props => <ActivityComments {...props} screenProps={screenProps} location_id = {'1367'}  />}
+      </Stack.Screen> */}
+   
+      
       
     </Stack.Navigator>
   );

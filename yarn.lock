@@ -7188,6 +7188,11 @@
     "moment-jalaali" "^0.9.2"
     "prop-types" "^15.7.2"
 
+"react-native-pager-view@^5.4.15":
+  "integrity" "sha512-5NssD840wFCuOL4B1ZRiRADvt+Vx2Dgify4SmAUqHXCx03yiGPnRWmFjYXyQeK6gq/8VY+gPGE4bTy9ahzBbDw=="
+  "resolved" "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-5.4.15.tgz"
+  "version" "5.4.15"
+
 "react-native-paper@^4.10.1":
   "integrity" "sha512-FcwfYyIbhD7bqDy01d0kVL1+T+gjMA1OVMJw3rN7GbUCHRJWI2guEXptNF4QCYiuR80X3WowqxXl6CZPs1757Q=="
   "resolved" "https://registry.npmjs.org/react-native-paper/-/react-native-paper-4.10.1.tgz"

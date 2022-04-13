@@ -479,20 +479,20 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             }}>
             </AlertDialog>
 
-            <View style={[styles.tabContainer]}>
-                <TouchableOpacity style={styles.tabItem} onPress={() => {
+            <View style={[style.tabContainer]}>
+                <TouchableOpacity style={style.tabItem} onPress={() => {
                     setTabIndex(1);
                     selectedIndex = 1;
                     loadList();
                 }}>
-                    <Text style={[styles.tabText, tabIndex === 1 ? styles.tabActiveText : {}]}>Customer</Text>
+                    <Text style={[style.tabText, tabIndex === 1 ? style.tabActiveText : {}]}>Customer</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.tabItem} onPress={() => {
+                <TouchableOpacity style={style.tabItem} onPress={() => {
                     setTabIndex(2);
                     selectedIndex = 2;
                     loadList()
                 }}>
-                    <Text style={[styles.tabText, tabIndex === 2 ? styles.tabActiveText : {}]}>Contacts</Text>
+                    <Text style={[style.tabText, tabIndex === 2 ? style.tabActiveText : {}]}>Contacts</Text>
                 </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
@@ -501,18 +501,18 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             </View>
 
             {dropdownModal()}
-            {showItem == 1 &&
+            {
+                showItem == 1 &&
                 <View
-                    style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}
-                >
+                    style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}>
                     {showItem == 1 && <AddContact onClose={() => {
                         setShowItem(0);
                         showingItem = 0;
                         dispatch({ type: SLIDE_STATUS, payload: false });
                     }} pageType={pageType} contactInfo={selectedContact}
                         locationId={locationId} />}
-                </View>}
-
+                </View>
+            }
         </View>
         // </Animated.View>
     )
@@ -525,33 +525,7 @@ const styles = StyleSheet.create({
         zIndex: 100,
         backgroundColor: BG_COLOR
     },
-    tabContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',        
-        paddingTop: 12,
-        paddingBottom: 12,        
-        marginBottom: 8
-    },
-    tabText: {
-        fontFamily: Fonts.secondaryMedium,
-        fontSize: 15,
-        color: DISABLED_COLOR,
-        borderBottomColor: DISABLED_COLOR,
-        borderBottomWidth: 2,
-        paddingBottom: 2,
-        paddingHorizontal: 2
-    },
-    tabActiveText: {
-        color: whiteLabel().activeTabText,
-        fontFamily: Fonts.secondaryBold,
-        borderBottomColor: whiteLabel().activeTabUnderline,
-        borderBottomWidth: 2,
-        paddingBottom: 2,
-        paddingHorizontal: 2
-    },
-    tabItem: {
-        marginHorizontal: 10
-    },
+                
     textInput: {
         height: 40,
         fontSize: 14,

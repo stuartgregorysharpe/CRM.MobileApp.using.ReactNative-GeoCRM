@@ -817,6 +817,12 @@ const Form_feature_card = `<svg id="file-earmark-text-fill" xmlns="http://www.w3
 </svg>
 `;
 
+const Activity_Comments = `<svg id="chatboxes" xmlns="http://www.w3.org/2000/svg" width="47.711" height="47.711" viewBox="0 0 47.711 47.711">
+<path id="Path_3958" data-name="Path 3958" d="M31.6,33a3.209,3.209,0,0,0-2.006-.515H16.277c-3.98,0-7.4-2.993-7.4-6.791V14.133H8.673a5.211,5.211,0,0,0-5.3,5.218V34.134c0,2.868,2.455,4.657,5.471,4.657h1.869V44.3l6.091-5.161a2.432,2.432,0,0,1,1.514-.344h10.3c2.638,0,5.437-1.308,5.952-3.67L31.6,33Z" transform="translate(-3.375 3.415)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="Path_3959" data-name="Path 3959" d="M40.31,3.375H15.388C11.409,3.375,9,6.448,9,10.234v19.29a7.04,7.04,0,0,0,7.192,6.882h11.6a3.147,3.147,0,0,1,2.006.481l8.567,6.859v-7.34H40.31a7.06,7.06,0,0,0,7.226-6.87v-19.3A7.052,7.052,0,0,0,40.31,3.375Z" transform="translate(0.175 -3.375)" fill=${whiteLabel().feature_card_icon_fill}/>
+</svg>
+`;
+
 const Sales_Pipeline_feature_Card = `<svg id="filter_list_black_24dp_1_" data-name="filter_list_black_24dp (1)" xmlns="http://www.w3.org/2000/svg" width="54.239" height="54.239" viewBox="0 0 54.239 54.239">
 <path id="Path_4228" data-name="Path 4228" d="M0,0H54.239V54.239H0Z" fill="none"/>
 <path id="Path_4229" data-name="Path 4229" d="M18.82,33.12h9.04V28.6H18.82ZM3,6v4.52H43.679V6ZM9.78,21.82H36.9V17.3H9.78Z" transform="translate(3.78 7.56)" fill=${whiteLabel().feature_card_icon_fill}/>
@@ -923,6 +929,7 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Calendar_Next" && <SvgXml style={style} xml={Calendar_Next} width={width} height={height} />}
     {icon == "Time_Up" && <SvgXml style={style} xml={Time_Up} width={width} height={height} />}
     {icon == "Time_Down" && <SvgXml style={style} xml={Time_Down} width={width} height={height} />}
-        
+    {icon == "Activity_Comments" && <SvgXml style={style} xml={Activity_Comments} width={width} height={height} />}    
+    
   </Fragment>
 );

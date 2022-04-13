@@ -23,6 +23,17 @@ export function notifyMessage(title, msg) {
     ]);
 }
 
+export function notifyMsg ( dispatch , title  ) { 
+    dispatch(showNotification({ type: 'success', message: title , buttonText: 'Exit', 
+    buttonAction : () => {  
+      dispatch(clearNotification());
+
+    } }));
+  
+}
+
+
+
 export function getTwoDigit(value){
     if(value <= 9){
         return "0" + value;

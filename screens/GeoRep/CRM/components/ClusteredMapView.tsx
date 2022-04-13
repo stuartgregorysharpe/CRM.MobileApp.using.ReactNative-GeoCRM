@@ -69,14 +69,13 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     const [clusterChildren, updateClusterChildren] = useState(null)
     const mapRef = useRef()
     const propsChildren = useMemo(() => React.Children.toArray(children), [children])    
-
     
     useEffect(() => {
-
       const rawData = []
       const otherChildren = []
 
-      console.log("%%%%% refresh $$$$$$$$$");
+      console.log("%%%%% refresh $$$$$$$$$" ,propsChildren);
+      
       if (!clusteringEnabled) {
         updateSpiderMarker([])
         updateMarkers([])

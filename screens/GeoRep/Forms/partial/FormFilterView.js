@@ -106,18 +106,7 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
 }
 
 const styles = StyleSheet.create({
-
-    container: {
-        width:Dimensions.get("screen").width,        
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: Colors.bgColor,
-        elevation: 2,
-        zIndex: 2000,
-        padding: 10,
-    },
+    
     sliderHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',

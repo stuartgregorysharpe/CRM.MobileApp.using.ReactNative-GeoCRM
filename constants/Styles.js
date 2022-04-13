@@ -144,7 +144,41 @@ export const style = StyleSheet.create({
       paddingBottom: Platform.OS === "ios" ? 30:10,
   },
 
+  tabItem: {
+    marginHorizontal: 10,
+    flexDirection:'column',
+    alignItems:'center'
+  },
 
+  tabContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',        
+    paddingTop: 12,
+    paddingBottom: 12,        
+    //marginBottom: 8
+  },
+  tabText: {
+    fontFamily: Fonts.secondaryMedium,
+    fontSize: 16,
+    color: Colors.disabledColor,
+    borderBottomColor: Colors.disabledColor,
+    //borderBottomWidth: 2,
+    paddingBottom: 2,
+    paddingHorizontal: 10,
+    marginLeft:10,
+    marginRight:10
+  },
+  tabActiveText: {
+      fontSize:16,
+      color: whiteLabel().activeTabText,
+      fontFamily: Fonts.secondaryBold,
+      borderBottomColor: whiteLabel().activeTabUnderline,      
+      paddingBottom: 2,
+      paddingHorizontal: 10,
+      marginLeft:10,
+      marginRight:10
+  },
+  
 })
 
 
