@@ -1,9 +1,9 @@
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { useDispatch ,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLocationContacts, getLocationFields, updateCustomerLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
@@ -21,7 +21,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 var selectedIndex = 1;
 var showingItem = 0;
 
-export default function CustomerContactsScreen({ onClose, locationId }) {
+export const CustomerContactsScreen = forwardRef((props, ref) => {
     const [tabIndex, setTabIndex] = useState(1);
     const [locationFields, setLocationFields] = useState([]);
     const [isDropdownModal, setIsDropdownModal] = useState([]);
@@ -38,6 +38,16 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
     const [selectedValue, setSelectedValue] = useState([]);
     const [isSuccess, setIsSuccess] = useState(false);
     const [message, setMessage] = useState("");
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            onBackHandler() {
+                handleBackButtonClick();
+            },
+        }),
+        [],
+    );
 
     useEffect(() => {
         loadList()
@@ -60,7 +70,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             dispatch({ type: SLIDE_STATUS, payload: false });
             return true;
         }
-        onClose();
+        props.onClose();
         // setShowItem(0);
         // dispatch({ type: SLIDE_STATUS, payload: false });
         return true;
@@ -68,15 +78,15 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     const loadList = () => {
         if (selectedIndex == 1) {
-            getLocationFields(locationId).then(res => {
-                console.log("getLocationFields:", res.custom_master_fields.length);
+            getLocationFields(props.locationId).then(res => {
+                console.log("getLocationFields:", res.custom_master_fields);
                 initPostData(res.custom_master_fields);
                 setLocationFields(res.custom_master_fields);
             })
         } else if (selectedIndex == 2) {
             setContacts([]);
             console.log("updating");
-            getLocationContacts(locationId).then(res => {
+            getLocationContacts(props.locationId).then(res => {
                 prepareContactsList(res.contacts);
             })
         }
@@ -116,11 +126,11 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             }
         }
 
-        var userParam  =  getPostParameter(currentLocation);
+        var userParam = getPostParameter(currentLocation);
         let request = {
-            "location_id": locationId,
+            "location_id": props.locationId,
             "fields": fields,
-            "user_local_data" : userParam.user_local_data
+            "user_local_data": userParam.user_local_data
         }
 
         console.log("Customer: ", JSON.stringify(request));
@@ -207,7 +217,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
             return "";
         }
     }
-    
+
     const getSelectedDropdownItemText = (id, originFieldName, fieldType) => {
         var tmp = [...customMasterFields];
         var index = -1;
@@ -436,7 +446,7 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         </View>
                     }}
                 />
-                
+
                 <View style={styles.plusButtonContainer}>
                     <TouchableOpacity style={style.innerPlusButton} onPress={() => {
                         setPageType('add');
@@ -452,23 +462,27 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
 
     if (showItem === 2) {
         return (
-            <UpdateCustomerInfo location_id={locationId}
-                onClose={() => {
-                    //   props.refreshLocationInfo(locationId);
-                    loadList();
-                    setShowItem(0);
-                    showingItem = 0;
-                }}
-            />
+            <View style={{flex:1}}>
+                <UpdateCustomerInfo location_id={props.locationId}
+                    pageType={'customer_contacts'}
+                    onClose={() => {
+                        //   props.refreshLocationInfo(locationId);
+                        loadList();
+                        setShowItem(0);
+                        showingItem = 0;
+                    }}
+                />
+            </View>
+
         )
     }
-    
+
     return (
         // <Animated.View>
         <View style={styles.container}>
 
             <TouchableOpacity style={{ padding: 6 }} onPress={() => {
-                onClose();
+                props.onClose();
             }}>
                 <Divider />
             </TouchableOpacity>
@@ -510,16 +524,16 @@ export default function CustomerContactsScreen({ onClose, locationId }) {
                         showingItem = 0;
                         dispatch({ type: SLIDE_STATUS, payload: false });
                     }} pageType={pageType} contactInfo={selectedContact}
-                        locationId={locationId} />}
+                        locationId={props.locationId} />}
                 </View>}
 
         </View>
         // </Animated.View>
     )
-}
+});
 
 const styles = StyleSheet.create({
-    container: {        
+    container: {
         flex: 1,
         padding: 10,
         zIndex: 100,
@@ -527,17 +541,17 @@ const styles = StyleSheet.create({
     },
     tabContainer: {
         flexDirection: 'row',
-        alignItems: 'center',        
+        alignItems: 'center',
         paddingTop: 12,
-        paddingBottom: 12,        
+        paddingBottom: 12,
         marginBottom: 8
     },
     tabText: {
         fontFamily: Fonts.secondaryMedium,
         fontSize: 15,
         color: DISABLED_COLOR,
-        borderBottomColor: DISABLED_COLOR,
-        borderBottomWidth: 2,
+        // borderBottomColor: DISABLED_COLOR,
+        // borderBottomWidth: 2,
         paddingBottom: 2,
         paddingHorizontal: 2
     },
@@ -630,3 +644,5 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 })
+
+export default CustomerContactsScreen;

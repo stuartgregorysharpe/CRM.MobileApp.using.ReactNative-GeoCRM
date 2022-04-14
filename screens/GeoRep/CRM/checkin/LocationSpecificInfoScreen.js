@@ -26,6 +26,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
+  const customerContactsRef = useRef();
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] = useState(false);
 
   const showLoopSlider = () => {
@@ -41,7 +42,7 @@ export default function LocationSpecificInfoScreen(props) {
           () => {
             console.log("Specific info header Title Clicked");
             if(canShowCustomerContactsScreen){
-              setCanShowCustomerContactsScreen(false)
+              customerContactsRef.current.onBackHandler();
             }else{
               if (props.navigation.canGoBack()) {
                 dispatch({ type: SLIDE_STATUS, payload: false });
@@ -88,7 +89,7 @@ export default function LocationSpecificInfoScreen(props) {
 
   if (canShowCustomerContactsScreen) {
     return (      
-        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />      
+        <CustomerContactsScreen props={props} onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} ref={customerContactsRef} />      
     )
   }
 

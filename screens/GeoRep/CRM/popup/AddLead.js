@@ -9,7 +9,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
-import Colors, {  whiteLabel } from '../../../../constants/Colors';
+import Colors, { whiteLabel, PRIMARY_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
@@ -19,6 +19,7 @@ import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import SvgIcon from '../../../../components/SvgIcon';
 import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
+import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 
 
 export default function AddLead({ screenProps, onClose }) {
@@ -41,22 +42,64 @@ export default function AddLead({ screenProps, onClose }) {
   const [accuracyUnit, setAccuracyUnit] = useState("m");
   const [test, setTest] = useState("");
 
+  const nameRef = useRef();
+  const surnameRef = useRef();
+  const emailRef = useRef();
+  const mobileRef = useRef();
+
+  const [isNameRequired, setNameRequired] = useState(false);
+  const [isSurnameRequired, setSurnameRequired] = useState(false);
+  const [isEmailRequired, setEmailRequired] = useState(false);
+  const [isMobileRequired, setMobileRequired] = useState(false);
+
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile_number, setMobileNumber] = useState('');
+  const [isCustomerAndContacts, setIsCustomerAndContacts] = useState(false);
+
+  const validFields = () => {
+    let nameCheck = !name || name === '';
+    let surNameCheck = !surname || surname === '';
+    let emailCheck = !email || email === '';
+    let mobileCheck = !mobile_number || mobile_number === '';
+
+    setNameRequired(nameCheck);
+    setSurnameRequired(surNameCheck);
+    setEmailRequired(emailCheck);
+    setMobileRequired(mobileCheck);
+    if (nameCheck || surNameCheck || emailCheck || mobileCheck) {
+      return false;
+    }
+    return true;
+  }
+
   const handleSubmit = () => {
-        
+    if (isCustomerAndContacts && !validFields()) {
+      return;
+    }
     var userParam = getPostParameter(currentLocation);
     let params = {
       coordinates: { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
       use_current_geo_location: isCurrentLocation,
       custom_master_fields: customMasterFields,
-      user_local_data : userParam.user_local_data
+      user_local_data: userParam.user_local_data
+    }
+    if (isCustomerAndContacts) {
+      params['contact'] = {
+        "contact_name": name,
+        "contact_surname": surname,
+        "contact_cell": mobile_number,
+        "contact_email": email
+      }
     }
     postLeadFields(params)
       .then((res) => {
         setLocationId(res);
-        setMessage("Added lead successfully");        
+        setMessage("Added lead successfully");
         setIsSuccess(true);
       })
-      .catch((error) => {        
+      .catch((error) => {
         expireToken(dispatch, error);
         setMessage("Failed");
         setIsSuccess(true);
@@ -64,6 +107,11 @@ export default function AddLead({ screenProps, onClose }) {
   }
   
   useEffect(() => {
+    async function featureCheck() {
+      setIsCustomerAndContacts(await checkFeatureIncludeParam("customer_and_contacts"));
+    }
+    featureCheck();
+
     setIsLoading(true);
     dispatch(updateCurrentLocation());
   }, []);
@@ -180,8 +228,8 @@ export default function AddLead({ screenProps, onClose }) {
     });
     return showName;
   }
-  
-  const dropdownModal = () => {  
+
+  const dropdownModal = () => {
     return (
       <SelectionPicker
         title={pickerTitle}
@@ -191,21 +239,21 @@ export default function AddLead({ screenProps, onClose }) {
         visible={isDropdownModal}
         options={options}
         onModalClose={() => setIsDropdownModal(false)}
-        onValueChanged={(item , index) => {
+        onValueChanged={(item, index) => {
           console.log("selected item", item);
           var tmp = [...customMasterFields];
-          tmp.forEach((element , key) => {
+          tmp.forEach((element, key) => {
 
             if (element.custom_master_field_id == dropdownId) {
               element.itemIndex = index;
               var leadTmp = [...leadForms];
-              if(element.field_type === "dropdown_input"){
-                element.dropdown_value = item ;
+              if (element.field_type === "dropdown_input") {
+                element.dropdown_value = item;
                 leadTmp[key].dropdown_value = item;
-              }else{
+              } else {
                 element.value = item;
                 leadTmp[key].value = item;
-              }                            
+              }
               setLeadForms(leadTmp);
             }
           });
@@ -213,7 +261,7 @@ export default function AddLead({ screenProps, onClose }) {
           setIsDropdownModal(false);
 
         }}
-        ></SelectionPicker>
+      ></SelectionPicker>
     )
   }
 
@@ -257,7 +305,7 @@ export default function AddLead({ screenProps, onClose }) {
     );
   }
 
-  const renderUseCurrentLocation = (key) =>{
+  const renderUseCurrentLocation = (key) => {
     return (
       <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'}]} key={key + 100} onPress={async () => {
         if(currentLocation){
@@ -289,12 +337,12 @@ export default function AddLead({ screenProps, onClose }) {
 
   return (
     <ScrollView style={styles.container}>
-                  
+
       <Notification></Notification>
       <AlertDialog visible={isSuccess} message={message} onModalClose={() => {
         onClose(locationId);
       }}></AlertDialog>
-      
+
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
         dispatch({ type: SLIDE_STATUS, payload: false })
@@ -351,39 +399,39 @@ export default function AddLead({ screenProps, onClose }) {
                   }
 
                   <TouchableOpacity key={key}
-                    style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5, flexDirection:'row' , alignItems:'center' }]}
+                    style={[styles.textInput, { borderColor: whiteLabel().fieldBorder, borderWidth: 1, borderRadius: 4, paddingLeft: 10, paddingTop: 5, flexDirection: 'row', alignItems: 'center' }]}
                     onPress={() => {
                       setDropdownItems(field.preset_options !== "" ? field.preset_options : []);
                       if (field.preset_options.length > 0) {
                         setDropdownId(field.custom_master_field_id);
-                        setIsDropdownModal(true);                        
-                        if(field.field_type === "dropdown"){
+                        setIsDropdownModal(true);
+                        if (field.field_type === "dropdown") {
                           setSelectedValue(field.value);
                           setPickerTitle('Select ' + field.field_name);
-                        }else{                          
+                        } else {
                           setSelectedValue(field.dropdown_value);
                           setPickerTitle("Select Suite, Unit, Apt");
                         }
                       }
                     }}>
-  
+
                     {
-                      ((field.dropdown_value !== undefined &&  field.dropdown_value !== "") || (field.value !== undefined && field.value !== "" )) &&
-                      <Text style={{position:'absolute', top:-8, left:8 , fontSize:12, color:Colors.disabledColor, backgroundColor:Colors.bgColor}} > {'Select ' + field.field_name } </Text>
-                    }                  
+                      ((field.dropdown_value !== undefined && field.dropdown_value !== "") || (field.value !== undefined && field.value !== "")) &&
+                      <Text style={{ position: 'absolute', top: -8, left: 8, fontSize: 12, color: Colors.disabledColor, backgroundColor: Colors.bgColor }} > {'Select ' + field.field_name} </Text>
+                    }
 
                     <Text
                       mode="outlined"
-                      style={{flex:1}}
-                      ref={(element) => { dispositionRef.current[key] = element }}                      
+                      style={{ flex: 1 }}
+                      ref={(element) => { dispositionRef.current[key] = element }}
                       outlineColor={whiteLabel().fieldBorder}>
                       {getSelectedDropdownItemText(field.custom_master_field_id, field.field_name, field.field_type)}
                     </Text>
 
-                    <View style={{marginRight:10}}><SvgIcon icon="Drop_Down" width='23px' height='23px' /></View>
+                    <View style={{ marginRight: 10 }}><SvgIcon icon="Drop_Down" width='23px' height='23px' /></View>
                   </TouchableOpacity>
                   {
-                    field.field_type === "dropdown_input" && field.dropdown_value !== undefined && 
+                    field.field_type === "dropdown_input" && field.dropdown_value !== undefined &&
                     renderText(field, key)
                   }
                 </View>
@@ -404,6 +452,122 @@ export default function AddLead({ screenProps, onClose }) {
           })
         }
 
+        {isCustomerAndContacts && <View>
+          <View style={{ borderBottomColor: PRIMARY_COLOR, borderBottomWidth: 1, marginVertical: 10 }}>
+            <Text style={{ fontFamily: Fonts.secondaryBold, color: PRIMARY_COLOR }}>Primary Contact</Text>
+          </View>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => nameRef.current.focus()}
+          >
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={nameRef}
+                style={styles.textInput}
+                label="Name"
+                mode="outlined"
+                outlineColor={isNameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
+                activeOutlineColor={isNameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                value={name}
+                onChangeText={text => {
+                  setName(text);
+                  if (text !== '') {
+                    setNameRequired(false);
+                  } else {
+                    setNameRequired(true);
+                  }
+                }}
+              />
+              {isNameRequired && <View style={{ position: 'absolute', right: 0 }}>
+                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+              </View>}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => surnameRef.current.focus()}
+          >
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={surnameRef}
+                style={styles.textInput}
+                label="Surname"
+                mode="outlined"
+                outlineColor={isSurnameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
+                activeOutlineColor={isSurnameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                value={surname}
+                onChangeText={text => {
+                  setSurname(text)
+                  if (text !== '') {
+                    setSurnameRequired(false);
+                  } else {
+                    setSurnameRequired(true);
+                  }
+                }}
+              />
+              {isSurnameRequired && <View style={{ position: 'absolute', right: 0 }}>
+                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+              </View>}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => emailRef.current.focus()}
+          >
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={emailRef}
+                style={styles.textInput}
+                label="Email Address"
+                mode="outlined"
+                outlineColor={isEmailRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
+                activeOutlineColor={isEmailRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                value={email}
+                onChangeText={text => {
+                  setEmail(text)
+                  if (text !== '') {
+                    setEmailRequired(false);
+                  } else {
+                    setEmailRequired(true);
+                  }
+                }}
+              />
+              {isEmailRequired && <View style={{ position: 'absolute', right: 0 }}>
+                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+              </View>}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => mobileRef.current.focus()}
+          >
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={mobileRef}
+                style={styles.textInput}
+                label="Mobile Number"
+                mode={"outlined"}
+                outlineColor={isMobileRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
+                activeOutlineColor={isMobileRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                value={mobile_number}
+                onChangeText={text => {
+                  setMobileNumber(text)
+                  if (text !== '') {
+                    setMobileRequired(false);
+                  } else {
+                    setMobileRequired(true);
+                  }
+                }}
+              />
+
+              {isMobileRequired && <View style={{ position: 'absolute', right: 0 }}>
+                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
+              </View>}
+
+            </View>
+          </TouchableOpacity>
+        </View>}
+
         <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
           <Text style={[styles.addButtonText]}>Add</Text>
           <FontAwesomeIcon style={styles.addButtonIcon} size={25} color={whiteLabel().actionFullButtonIcon} icon={faAngleDoubleRight} />
@@ -421,16 +585,16 @@ export default function AddLead({ screenProps, onClose }) {
 const styles = EStyleSheet.create({
 
   container: {
-      width:Dimensions.get("screen").width,      
-      position: 'absolute',
-      top:0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: Colors.bgColor,
-      elevation: 2,
-      zIndex: 2000,            
-      padding:10
+    width: Dimensions.get("screen").width,
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.bgColor,
+    elevation: 2,
+    zIndex: 2000,
+    padding: 10
   },
 
   // container: {
@@ -476,14 +640,14 @@ const styles = EStyleSheet.create({
     right: 10
   },
   textInput: {
-    
+
     height: 40,
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: Colors.bgColor,
     marginBottom: 8
   },
-  
+
 
   linkBox: {
     position: 'relative',
@@ -496,16 +660,19 @@ const styles = EStyleSheet.create({
     textDecorationColor: whiteLabel().mainText,
     textAlign: 'center'
   },
-  checkBoxStyle:{
-    width:25,
-    height:25,
-    borderRadius:15,
-    alignItems:'center',
-    justifyContent:'center',
-    backgroundColor:whiteLabel().itemSelectedBackground,
-    borderWidth:1,
-    borderColor:whiteLabel().itemSelectedBackground
-},
-
+  checkBoxStyle: {
+    width: 25,
+    height: 25,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: whiteLabel().itemSelectedBackground,
+    borderWidth: 1,
+    borderColor: whiteLabel().itemSelectedBackground
+  },
+  inputContainer: {
+    justifyContent: 'center',
+    backgroundColor:Colors.whiteColor
+}
 
 });
