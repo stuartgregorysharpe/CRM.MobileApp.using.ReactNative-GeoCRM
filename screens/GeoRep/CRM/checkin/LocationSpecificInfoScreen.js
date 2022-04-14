@@ -34,7 +34,8 @@ export default function LocationSpecificInfoScreen(props) {
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] = useState(false);
   const [featureCards, setFeatureCards] = useState([]);
   const [isActivityComment, setIsActivityComment] =  useState(false);
-
+  
+  
   const showLoopSlider = () => {
     // setShowItem(1);
     // dispatch({ type: SUB_SLIDE_STATUS, payload: true });
@@ -158,16 +159,6 @@ export default function LocationSpecificInfoScreen(props) {
     )
   }
 
-  // if (isActivityComment){
-  //   return (
-  //     <ActivityComments
-  //       visible={isActivityComment}
-  //       onModalClosed={() => setIsActivityComment(false)}
-  //     >
-  //     </ActivityComments>
-  //   );
-  // };
-
   return (
     <SafeAreaView>
       
@@ -216,10 +207,13 @@ export default function LocationSpecificInfoScreen(props) {
             </TouchableOpacity>
           </View>
           
+
+
           {/* <View style={styles.filterButton}>
             <FilterButton text="Contact: Jack Reacher" />
-          </View> */}                    
+          </View> */}          
         </View>
+
 
 
         <View style={styles.innerContainer}>

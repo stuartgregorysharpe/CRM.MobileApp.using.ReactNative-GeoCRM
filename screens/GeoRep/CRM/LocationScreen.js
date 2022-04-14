@@ -391,6 +391,7 @@ export default function LocationScreen(props) {
               setIsLoading(false);
               dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });            
             }).catch((e) => {  
+              console.log("EEE",e);
               expireToken(dispatch, e);
             });
           }          

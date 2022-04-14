@@ -6,10 +6,11 @@ import { AppText } from '../../../../../components/common/AppText';
 import { HistoryListItem } from './partial/HistoryListItem';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
-import { notifyMsg } from '../../../../../constants/Consts';
+import { getPostParameter, notifyMsg } from '../../../../../constants/Consts';
 import { useDispatch } from 'react-redux';
 import { Notification } from '../../../../../components/modal/Notification';
 import Fonts from '../../../../../constants/Fonts';
+import { useSelector } from 'react-redux';
 
 export default function Activity(props) {
     
@@ -20,6 +21,8 @@ export default function Activity(props) {
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const currentLocation = useSelector(state => state.rep.currentLocation);
+
 
     useEffect(() => {
         loadHistory(page);
@@ -28,8 +31,9 @@ export default function Activity(props) {
     const loadHistory = (pageNumber) =>{
         if(!isLoading){
             setIsLoading(true);
-            let param = {page: pageNumber , location_id: location_id};
-            getApiRequest("https://dev.georep.com/local_api_old/locations/location-history" , param).then((res) => {
+            let param = {page: pageNumber , location_id: location_id};          
+            
+            getApiRequest("locations/location-history" , param).then((res) => {
                 setHistoryItems([...historyItems, ...res.history_items]);              
                 setPage(pageNumber + 1);
                 console.log("results", res.history_items.length);
@@ -41,12 +45,14 @@ export default function Activity(props) {
     }
 
     const submitComment = () => {
-        setIsLoading(true);
+        setIsLoading(true);        
+        var userParam = getPostParameter(currentLocation);
         let postData = {
             location_id: location_id,
-            comment: comment
+            comment: comment,
+            user_local_data: userParam.user_local_data
         };
-        postApiRequest("https://dev.georep.com/local_api_old/locations/location-add-comment", postData).then((res) => {            
+        postApiRequest("locations/location-add-comment", postData).then((res) => {            
             if(res.status === "success"){
                 setComment("");
                 notifyMsg(dispatch, "Success");

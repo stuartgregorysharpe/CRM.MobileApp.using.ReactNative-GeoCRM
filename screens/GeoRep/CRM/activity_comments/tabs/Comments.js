@@ -43,15 +43,14 @@ export default function Comments(props) {
                         size="medium" 
                         title="please check back at a later stage.">                    
                     </AppText>
-
                 </View>
             </View>
-                        
-            <View style={{ marginBottom:10, marginTop:10, width:Dimensions.get('window').width * 0.94 }}>
+                                    
+            {/* <View style={{ marginBottom:10, marginTop:10, width:Dimensions.get('window').width * 0.94 }}>
                 <SubmitButton 
                     onSubmit={() => { }}
                     title="Add comment"></SubmitButton>
-            </View>                            
+            </View>                             */}
             
         </View>
     );

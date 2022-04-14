@@ -114,8 +114,8 @@ export const getMapMinZoomLevel = async () =>{
   } catch (e) {    
     return 8;
   }
-
 }
+
 
 export const checkFeatureIncludeParam = async (param) => {
   try {

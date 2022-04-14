@@ -18,7 +18,7 @@ export function TopTab(props) {
                             onTabClicked(index);                            
                         }}>
                             <Text style={[style.tabText, tabIndex === index ? style.tabActiveText : {}]}> {item} </Text>
-                            <View style={{height:2, width:'100%', backgroundColor: tabIndex === index ? Colors.primaryColor : Colors.disabledColor }}></View>
+                            <View style={{height:2, width:'100%', backgroundColor: tabIndex === index ? Colors.primaryColor : Colors.bgColor }}></View>
                         </TouchableOpacity>
                     )
                 })

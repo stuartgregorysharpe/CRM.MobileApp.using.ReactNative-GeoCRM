@@ -174,6 +174,7 @@ export default function LocationSearchScreen(props) {
     console.log("search key", searchKey);
     console.log("page number", pageNumber);
     var filterData = await getFilterData('@filter');
+    
     getLocationSearchListsByPage(filterData, pageNumber , searchKey)
     .then((res) => {
       if(pageNumber === 0){
@@ -250,12 +251,10 @@ export default function LocationSearchScreen(props) {
     }
   }
   
-
-  const openLocationInfo = async(location_id) => {
-    
+  
+  const openLocationInfo = async(location_id) => {    
     setLocationInfo(undefined);
-    animation("locationInfo");
-    console.log("calle m" , location_id);
+    animation("locationInfo");    
     getLocationInfo( Number(location_id) , myLocation)
     .then((res) => {      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        

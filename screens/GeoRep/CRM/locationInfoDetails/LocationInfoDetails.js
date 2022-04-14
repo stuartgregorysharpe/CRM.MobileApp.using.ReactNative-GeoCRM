@@ -24,30 +24,40 @@ import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import { getPostParameter } from '../../../../constants/Consts';
-
+import { checkFeatureIncludeParamFromSession, getPostParameter } from '../../../../constants/Consts';
+import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
+import moment from 'moment-timezone';
 var outcomeVal = false;
+var isCheckinTypes = false;
+var isFeedbackLocInfoOutcome = false;
+var checkin_type_id = "";
+var reason_id = "";
+
 export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const dispatch = useDispatch();  
   const [locationInfo, setLocationInfo] = useState(props.locInfo);    
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const statusDispositionInfo = useSelector(state => state.rep.statusDispositionInfo);
-  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);    
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState("refresh");   
   const [keyboardStatus, setKeyboardStatus] = useState(false);  
   const locationInfoRef = useRef();  
   const [filePath, setFilePath] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
-  const [message, setMessage] = useState("");
-  const [bound, setBound] = useState(new Animated.Value(Dimensions.get("screen").height));
+  const [message, setMessage] = useState("");  
   const [isLoading,setIsLoading] = useState(true);
   const [isFeedbackModal, setIsFeedback] = useState(false);
-  const [feedbackOptions, setFeebacOptions] = useState([]);
-  
+  const [feedbackOptions, setFeedbackOptions] = useState([]);  
   const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(outcomeVal);
-  console.log("-------- ", outcomeVal)
-    
+  const [modalTitle, setModalTitle] = useState("Feedback");
+  const [modalType, setModalType] = useState("feedback");
+  const [feedback, setFeedback] = useState([]);
+  const [checkinTypes, setCheckInTypes] = useState([]);
+  const [checkinReason, setCheckInReason] = useState([]);
+
+
   useImperativeHandle(
     ref,
     () => ({
@@ -69,25 +79,25 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           props.goPreviousPage();
         }        
       },
-      updateView(res){ 
+      updateView(res){
         console.log("locaiton details" , res);
         if(locationInfoRef.current !== undefined){                    
           locationInfoRef.current.updateDispositionData(res);        
         }
         setLocationInfo(res);
-        //console.log("location info----", res);
         setIsLoading(false);
         if(res.feedback.length > 0){
-          setFeebacOptions(res.feedback[0].feedback_loc_info_outcome[0].options);
-        }
-        
+          setFeedback(res.feedback[0].feedback_loc_info_outcome[0].options);
+          setFeedbackOptions(res.feedback[0].feedback_loc_info_outcome[0].options);          
+        }        
       }
     }),
     [showItem],
   );
 
   useEffect(() => {
-    outcomeVal = false;
+    outcomeVal = false;    
+    initData();
     dispatch({type: SUB_SLIDE_STATUS, payload: false});
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
@@ -104,15 +114,22 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     };           
   }, []);
 
+  const initData = () => {
+    isCheckinTypes  = checkFeatureIncludeParamFromSession(features , "checkin_types");
+    isFeedbackLocInfoOutcome = checkFeatureIncludeParamFromSession(features , "feedback_loc_info_outcome");
+    
+  }
+
   const handleBackButtonClick = async() => {    
     checkFeedbackAndClose("back")
     return true;
   }
 
   const checkFeedbackAndClose = async  (tapType) =>{
-    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
-    if( check && !outcomeVal){
-      setIsFeedback(true);      
+
+    //let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+    if( isFeedbackLocInfoOutcome && !outcomeVal){
+      setIsFeedback(true);  
     }else{
       console.log(tapType);
       if(tapType === "back"){
@@ -128,16 +145,14 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     }
   }  
 
-  const _canGoNextPrev = async () => {
-    console.log("___ canb propos")    
-    let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
-    if( check && !outcomeVal){
-      setIsFeedback(true);      
+  const _canGoNextPrev = () => {    
+    //let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+    if( isFeedbackLocInfoOutcome && !outcomeVal){
+      setIsFeedback(true);
       return false;
     }else{
       return true;
     }
-
   }
 
   const showLoopSlider = () => {
@@ -189,12 +204,11 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         if(response.assets != null && response.assets.length > 0){            
           setFilePath(response.assets[0].uri);
           updateLocationImage(response.assets[0].uri);
-        }
-        
+        }        
       }
     });
   }
-  
+    
   selectPicker = (title, description) => {
     return Alert.alert(
       title,
@@ -240,46 +254,126 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const openCustomerInfo = async() => {
     setShowItem("update_customer")
   }
-
   
+  const _callLocationFeedback = (item) => {
+    console.log("locaiotn",locationInfo.coordinates)
+    var userParam = getPostParameter(locationInfo.coordinates);
+    let postData = {
+      location_id: locationInfo.location_id,
+      feedback: [
+          {
+              "feedback_loc_info_outcome" : item
+          }
+      ],
+      user_local_data : userParam.user_local_data
+    };
+    postApiRequest("locations-info/location-feedback", postData).then((res) => {            
+      setIsOutcomeUpdated(true);
+      outcomeVal = true;
+      setMessage(res.message);
+      setIsSuccess(true);   
+    }).catch((error) => {
+      console.log(error);
+    })  
+  }
+
   const showFeedbackDropDownModal = () => {  
     return (
       <SelectionPicker
-        title={"Feedback"}
+        title={modalTitle}
         clearTitle={"Close"}
         mode={"single"}
         value={[]}
         visible={isFeedbackModal}
         options={feedbackOptions}
-        onModalClose={() => setIsFeedback(false)}
-        onValueChanged={(item , index) => {          
-          
-          console.log("locaiotn",locationInfo.coordinates)
-          var userParam = getPostParameter(locationInfo.coordinates);
-          let postData = {
-            location_id: locationInfo.location_id,
-            feedback: [
-                {
-                    "feedback_loc_info_outcome" : item
-                }
-            ],
-            user_local_data : userParam.user_local_data
-          };
+        onModalClose={() => {
+          if(modalType === "checkin_reason"){            
+            var options = [];
+            checkinTypes.forEach((item, index) => {
+              options.push(item.checkin_type);
+            });   
+            setFeedbackOptions(options)
+          }else{
+            setFeedbackOptions(feedback);
+          }
+          setIsFeedback(false);
+        }}
 
-          postLocationFeedback(postData).then((res) => {            
-            setIsOutcomeUpdated(true);
-            outcomeVal = true;
-            setMessage(res);
-            setIsSuccess(true);            
-          }).catch((error) => {
-            console.log(error);
-          })
-          setIsFeedback(false);          
+        onValueChanged={(item , index) => {     
+          if(modalType === "feedback"){
+            _callLocationFeedback(item);
+            setIsFeedback(false);
+          }else if(modalType === "checkin_type"){
+
+            var checkinType = checkinTypes.find(element => element.checkin_type === item);
+
+            if(checkinType != undefined && checkinType.checkin_reasons.length > 0){
+              checkin_type_id = checkinType.checkin_type_id;
+              var options = [];
+              checkinType.checkin_reasons.forEach((item, index) =>{
+                options.push(item.reason);
+              });
+              setModalType("checkin_reason");
+              setModalTitle("Check In Reasons");
+              setFeedbackOptions(options);
+              setFeedback(true);
+              setCheckInReason(checkinType.checkin_reasons);
+            }else{
+              setIsFeedback(false);
+              _callCheckedIn();
+            }
+          }else if(modalType === "checkin_reason"){
+            reason_id = checkinReason.find(element => element.reason === item).reason_id;
+
+            _callCheckedIn();
+          }
         }}
         ></SelectionPicker>
     )
   }
-  
+
+  const _callCheckInTypes = async() => {
+    //var check = await checkFeatureIncludeParam("checkin_types");
+    
+      setIsFeedback(true);
+      setModalTitle("Check In Types");
+      setModalType("checkin_type");
+      setFeedbackOptions([]);
+      getApiRequest("https://dev.georep.com/local_api_old/locations/checkin-types" , {} ).then((res) => {
+        console.log("re", res);
+        if(res.status === "success"){
+            var options = [];
+            res.checkin_types.forEach((item, index) => {
+              options.push(item.checkin_type);
+            });             
+            setFeedbackOptions(options);
+            setCheckInTypes(res.checkin_types);
+        }
+      }).catch((e) => {
+
+      });    
+  }
+
+  const _callCheckedIn =  async() => {
+    var currentTime = moment().format("YYYY-MM-DD HH:mm:ss"); 
+    var userParam = getPostParameter(currentLocation);
+    let postData = {
+      location_id : locationInfo.location_id,
+      checkin_time : currentTime,
+      checkin_type_id : checkin_type_id,  //Selected checkin_type_id, if was requested
+      reason_id: reason_id,    //Selected reason_id, if was requested
+      user_local_data: userParam.user_local_data      
+    }
+    console.log("postdata" , postData);
+    postApiRequest("location-info/check-in", postData).then((res) => {
+      console.log("post data res", res);
+      setIsFeedback(false);
+      props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo , "page" : "checkin" });
+    }).catch((e) => {
+
+    });
+  }
+
   return (
     <View style={[styles.container, {flex:1}]}>
 
@@ -337,7 +431,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         {
           !isLoading && 
           <View>
-             <View style={styles.headerBox}>                    
+              <View style={styles.headerBox}>                    
 
                 {
                   locationInfo !== undefined && locationInfo.location_name !== "" && 
@@ -347,26 +441,19 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                       <Text style={{color:whiteLabel().mainText, fontFamily:Fonts.secondaryMedium , marginLeft:5, fontSize:12}} >Customer Name</Text>
                     </View>
                   </View>
-                }                  
-                {
-                  /*locationInfo !== undefined && locationInfo.last_visit !== "" &&
-                  <View style={styles.subtitleBox}>
-                    <SvgIcon style={styles.fontIcon} icon="Green_Star" width='22px' height='22px' />
-                    <Text style={styles.dateText}>Visited Recently: {locationInfo? locationInfo.last_visit: ''}</Text>
-                  </View>*/
-                }              
-                </View>
+                }                              
+              </View>
 
-                {
+              {
                 locationInfo !== undefined &&   locationInfo.location_name !== "" && 
                 <TouchableOpacity onPress={() => { openCustomerInfo() }} >
                   <View style={[styles.headerBox, {marginTop:0}]}>
                     <Text style={styles.title}> {  locationInfo.location_name.value }</Text>
                   </View>
                 </TouchableOpacity>
-                }     
+              }     
 
-                <View style={styles.headerBox}>
+              <View style={styles.headerBox}>
                 <View style={styles.addressText}>
 
                   {
@@ -461,12 +548,12 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
        
       </KeyboardAwareScrollView>
       
+
       { showItem !== "update_customer" && features && (features.includes("access_crm") || features.includes("checkin")) && !keyboardStatus && 
         <View style={styles.nextButtonBar}>        
           {features && features.includes("access_crm") && <TouchableOpacity style={[styles.nextButton, styles.accessButton]} onPress={ async() => {  
-            if( await _canGoNextPrev() ){
-              props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
-              
+            if( _canGoNextPrev() ){
+              props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo , "page": "access_crm" });  
             }            
           }}>
             <Text style={styles.nextButtonText}>Access CRM</Text>
@@ -474,11 +561,15 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
           </TouchableOpacity>
           }
           {features && features.includes("checkin") && <TouchableOpacity style={[styles.checkInButton]} onPress={ async () => {          
-              if( await _canGoNextPrev() ){
-                props.navigation.navigate("LocationSpecificInfo" , {"data": locationInfo });
-              }              
-            }}>
+              if( _canGoNextPrev() ){
 
+                if(isCheckinTypes){
+                  _callCheckInTypes();
+                }else{
+                  _callCheckedIn();
+                }                                
+              }
+            }}>
             <Text style={[styles.checkInButtonText]}>Check In</Text>
             <FontAwesomeIcon size={22} color={whiteLabel().actionFullButtonIcon} icon={ faAngleDoubleRight } />
           </TouchableOpacity>

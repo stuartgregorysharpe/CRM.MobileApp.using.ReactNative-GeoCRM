@@ -6323,7 +6323,7 @@
     "moment-timezone" "^0.5.21"
     "rimraf" "^2.6.2"
 
-"moment-timezone@^0.5.21":
+"moment-timezone@^0.5.21", "moment-timezone@^0.5.34":
   "integrity" "sha512-3zAEHh2hKUs3EXLESx/wsgw6IQdusOT8Bxm3D9UrHPQR7zlMmzwybC8zHEM1tQ4LJwP7fcxrWr8tuBg05fFCbg=="
   "resolved" "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.34.tgz"
   "version" "0.5.34"

@@ -76,9 +76,12 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .then((res) => {        
+        console.log("DDD", res);
+
         if (res.data == undefined) {
           resolve([]);
         }
+        
         if (res.data.status == 'success') {
           resolve(res.data);
           console.log("polygon data", res.data.polygons);          
@@ -87,6 +90,7 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .catch((err) => {
+        console.log("DDDe ", err);
         const error = err.response;
         if (error.status===401 && error.config && 
           !error.config.__isRetryRequest) {            
@@ -199,9 +203,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);
     })
-
 }
-
 
 export const getLocationSearchListsByPage = async (filters, pageNumber , searchKey) => {
 
@@ -210,9 +212,9 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
   var user_id = await getUserId();
 
   return new Promise(function (resolve, reject) {
-    // Geolocation.getCurrentPosition(
-    //   position => {
-        //const { latitude, longitude } = position.coords;
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
         console.log("URL " ,`${base_url}/locations/location-search-list`);
         console.log("user_id",user_id);
         console.log("searchKey",searchKey);
@@ -221,8 +223,8 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             params: {
               user_id: user_id,
               filters: filters,
-              // current_latitude: latitude,
-              // current_longitude: longitude,
+              current_latitude: latitude,
+              current_longitude: longitude,
               page_nr: pageNumber,
               search_text:searchKey
             },
@@ -256,12 +258,12 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             }
           })
 
-    //   },
-    //   error => {
-    //     console.log(error.code, error.message);
-    //   },
-    //   {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
-    // );
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
+    );
 
 
   });
@@ -627,45 +629,6 @@ export const postReloop = async (postData) => {
           reject(err);  
         }
       })
-  });
-}
-
-
-export const postLocationFeedback = async (postData) => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  console.log("URL " , `${base_url}/locations-info/location-feedback` ) 
-  console.log("Param " , postData)
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/locations-info/location-feedback`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4()
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          resolve("");
-          return;
-        }
-        console.log(res.data);
-        if (res.data.status == "success") {
-          resolve(res.data.message);
-        } else {
-          resolve("");
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-
   });
 }
 

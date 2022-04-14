@@ -33,12 +33,21 @@ export function notifyMsg ( dispatch , title  ) {
 }
 
 
-
 export function getTwoDigit(value){
     if(value <= 9){
         return "0" + value;
     }
     return String(value);
+}
+
+export function checkFeatureIncludeParamFromSession (features , param) {
+  if (features !== undefined) {
+    var res = features.includes(param);
+    return res;
+  } else {
+    return false;
+  }
+
 }
 
 export function getDistance (prelatlng, currentlatlng) {
