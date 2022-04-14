@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Animated, ScrollView, SectionList, Dimensions, Linking, BackHandler } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { useDispatch ,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLocationContacts, getLocationFields, updateCustomerLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
@@ -21,7 +21,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 var selectedIndex = 1;
 var showingItem = 0;
 
-export const CustomerContactsScreen=forwardRef(( props, ref )=> {
+export const CustomerContactsScreen = forwardRef((props, ref) => {
     const [tabIndex, setTabIndex] = useState(1);
     const [locationFields, setLocationFields] = useState([]);
     const [isDropdownModal, setIsDropdownModal] = useState([]);
@@ -42,12 +42,12 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
     useImperativeHandle(
         ref,
         () => ({
-          onBackHandler() {
-            handleBackButtonClick();
-          },
+            onBackHandler() {
+                handleBackButtonClick();
+            },
         }),
         [],
-      );
+    );
 
     useEffect(() => {
         loadList()
@@ -126,11 +126,11 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
             }
         }
 
-        var userParam  =  getPostParameter(currentLocation);
+        var userParam = getPostParameter(currentLocation);
         let request = {
             "location_id": props.locationId,
             "fields": fields,
-            "user_local_data" : userParam.user_local_data
+            "user_local_data": userParam.user_local_data
         }
 
         console.log("Customer: ", JSON.stringify(request));
@@ -217,7 +217,7 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
             return "";
         }
     }
-    
+
     const getSelectedDropdownItemText = (id, originFieldName, fieldType) => {
         var tmp = [...customMasterFields];
         var index = -1;
@@ -446,7 +446,7 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
                         </View>
                     }}
                 />
-                
+
                 <View style={styles.plusButtonContainer}>
                     <TouchableOpacity style={style.innerPlusButton} onPress={() => {
                         setPageType('add');
@@ -462,17 +462,21 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
 
     if (showItem === 2) {
         return (
-            <UpdateCustomerInfo location_id={props.locationId}
-                onClose={() => {
-                    //   props.refreshLocationInfo(locationId);
-                    loadList();
-                    setShowItem(0);
-                    showingItem = 0;
-                }}
-            />
+            <View style={{flex:1}}>
+                <UpdateCustomerInfo location_id={props.locationId}
+                    pageType={'customer_contacts'}
+                    onClose={() => {
+                        //   props.refreshLocationInfo(locationId);
+                        loadList();
+                        setShowItem(0);
+                        showingItem = 0;
+                    }}
+                />
+            </View>
+
         )
     }
-    
+
     return (
         // <Animated.View>
         <View style={styles.container}>
@@ -529,7 +533,7 @@ export const CustomerContactsScreen=forwardRef(( props, ref )=> {
 });
 
 const styles = StyleSheet.create({
-    container: {        
+    container: {
         flex: 1,
         padding: 10,
         zIndex: 100,
@@ -537,17 +541,17 @@ const styles = StyleSheet.create({
     },
     tabContainer: {
         flexDirection: 'row',
-        alignItems: 'center',        
+        alignItems: 'center',
         paddingTop: 12,
-        paddingBottom: 12,        
+        paddingBottom: 12,
         marginBottom: 8
     },
     tabText: {
         fontFamily: Fonts.secondaryMedium,
         fontSize: 15,
         color: DISABLED_COLOR,
-        borderBottomColor: DISABLED_COLOR,
-        borderBottomWidth: 2,
+        // borderBottomColor: DISABLED_COLOR,
+        // borderBottomWidth: 2,
         paddingBottom: 2,
         paddingHorizontal: 2
     },

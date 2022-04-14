@@ -71,7 +71,6 @@ export default function AddLead({ screenProps, onClose }) {
     if (nameCheck || surNameCheck || emailCheck || mobileCheck) {
       return false;
     }
-    setShowErrorAlert(false);
     return true;
   }
 
