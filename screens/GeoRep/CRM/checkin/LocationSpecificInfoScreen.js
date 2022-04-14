@@ -31,6 +31,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
+  const customerContactsRef = useRef();
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] = useState(false);
   const [featureCards, setFeatureCards] = useState([]);
   const [isActivityComment, setIsActivityComment] =  useState(false);
@@ -75,8 +76,12 @@ export default function LocationSpecificInfoScreen(props) {
           () => {
             console.log("Specific info header Title Clicked");
             if(canShowCustomerContactsScreen){
+<<<<<<< HEAD
               console.log("canShowCustomerContactsScreen",canShowCustomerContactsScreen);
               setCanShowCustomerContactsScreen(false)
+=======
+              customerContactsRef.current.onBackHandler();
+>>>>>>> 3f7359b53f61124f25c76a8c4d5da41f14e671f8
             }else{
               console.log("go back ", canShowCustomerContactsScreen);
               if (props.navigation.canGoBack()) {
@@ -154,8 +159,13 @@ export default function LocationSpecificInfoScreen(props) {
   }
 
   if (canShowCustomerContactsScreen) {
+<<<<<<< HEAD
     return (
         <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />      
+=======
+    return (      
+        <CustomerContactsScreen props={props} onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} ref={customerContactsRef} />      
+>>>>>>> 3f7359b53f61124f25c76a8c4d5da41f14e671f8
     )
   }
 
