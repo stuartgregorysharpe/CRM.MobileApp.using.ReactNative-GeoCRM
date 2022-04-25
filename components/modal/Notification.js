@@ -12,7 +12,7 @@ export const Notification = ({}) => {
   const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  useEffect(() => {    
     if (notification.visible) {      
       if(notification.autoHide === true)
       setTimeout(() => dispatch(clearNotification()), 2000);
@@ -48,20 +48,23 @@ export const Notification = ({}) => {
       visible={notification.visible}
       onBackdropPress={() => dispatch(clearNotification())}
       transparent={true}>
-        <View style={styles.centeredView}>
+        <View style={[styles.centeredView, {backgroundColor: Platform.OS === "android" ? '#00000025' : '#00000065'} ]}>
             <View style={styles.modalView}>
                 <Text style={styles.title} >{notification.message}</Text>
                 <View style={styles.divider}></View>
                 <TouchableHighlight 
                 underlayColor="#DDDDDD"
-                style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {                  
-                  if(notification.buttonAction) {notification.buttonAction();}
+                style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {                                    
+                  if(notification.buttonAction) {
+                    notification.buttonAction();
+                  }else{
+                    dispatch(clearNotification());
+                  }
                 }}>
-                    <Text style={styles.button} >Okay</Text>
+                    <Text style={styles.button} >{notification.buttonText}</Text>
                 </TouchableHighlight>
             </View>
         </View>
-
 
       {/* <View
         style={[
@@ -122,8 +125,8 @@ const styles = StyleSheet.create({
   alignLeft: {
     textAlign: 'left',
   },
-  alignRight: {
-    textAlign: 'right',
+  alignRight: {  
+    textAlign: 'right', 
   },
   alignCenter: {
     textAlign: 'center'
@@ -146,8 +149,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      marginTop: 0,
-      backgroundColor: '#00000055',
+      marginTop: 0,      
       zIndex:99999999999999,
   },
 

@@ -483,7 +483,7 @@ const styles = EStyleSheet.create(parse({
     width: '47%'
   },
   button: {
-    backgroundColor: Colors.greyColor,
+    backgroundColor: whiteLabel().itemSelectedBackground + "31",
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,

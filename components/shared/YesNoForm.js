@@ -15,9 +15,8 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const [isYes, setIsYes] = useState(item.value !== null && item.value === "yes" ? true:false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
     const [isPicker , setIsPicker] = useState(false);
-
-    console.log("yes, no", item)
-    console.log("item.include_image.length" ,item.include_image.length)
+    
+    //console.log("item.include_image.length" ,item.include_image.length)
     const showSelectionDialog = () => {        
         setIsPicker(true);      
     }

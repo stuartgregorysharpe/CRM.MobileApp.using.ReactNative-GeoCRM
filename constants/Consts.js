@@ -24,7 +24,7 @@ export function notifyMessage(title, msg) {
 }
 
 export function notifyMsg ( dispatch , title  ) { 
-    dispatch(showNotification({ type: 'success', message: title , buttonText: 'Exit', 
+    dispatch(showNotification({ type: 'success', message: title , buttonText: 'Ok', 
     buttonAction : () => {  
       dispatch(clearNotification());
 
@@ -100,7 +100,7 @@ export function isInsidePoly  (lat, lon, multiPolycoords) {
 export function expireToken ( dispatch , e ) {
   if(e === "expired"){    
     console.log("token EXPIRED !!!!!")                        
-    dispatch(showNotification({ type: 'success', message: "Access has expired, please login again", buttonText: 'Exit', 
+    dispatch(showNotification({ type: 'success', message: "Access has expired, please login again", buttonText: 'Ok', 
     buttonAction : () => {
       console.log("action button")
       setToken(null);

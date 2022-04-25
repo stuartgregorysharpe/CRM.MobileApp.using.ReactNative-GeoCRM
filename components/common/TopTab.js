@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback, TextInput, SectionList, Dimensions, Linking, BackHandler } from 'react-native';
-import Colors from '../../constants/Colors';
+import Colors, { whiteLabel } from '../../constants/Colors';
 import { style } from "../../constants/Styles";
 
 export function TopTab(props) {
 
-    const { headers , tabIndex,  onTabClicked}  = props;
-
-    console.log("tabIndex", tabIndex)
+    const { headers , tabIndex,  onTabClicked}  = props;    
     return (
         <View style={[style.tabContainer]}>
-
             {
                 headers.map((item, index) => {
                     return (
@@ -18,7 +15,7 @@ export function TopTab(props) {
                             onTabClicked(index);                            
                         }}>
                             <Text style={[style.tabText, tabIndex === index ? style.tabActiveText : {}]}> {item} </Text>
-                            <View style={{height:2, width:'100%', backgroundColor: tabIndex === index ? Colors.primaryColor : Colors.bgColor }}></View>
+                            <View style={{height:2, width:'100%', marginTop: 5, backgroundColor: tabIndex === index ? whiteLabel().activeTabUnderline : Colors.bgColor }}></View>
                         </TouchableOpacity>
                     )
                 })

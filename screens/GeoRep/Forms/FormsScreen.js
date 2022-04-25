@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, Dimensions, StyleSheet, FlatList,Image, TouchableOpacity, Platform } from 'react-native';
-import { getFormLists } from '../../../actions/forms.action';
 import SearchBar from '../../../components/SearchBar';
 import { FormFilterView } from './partial/FormFilterView';
 import { FormListItem } from './partial/FormListItem';
@@ -13,6 +12,7 @@ import FilterOptionsModal from '../../../components/modal/FilterOptionsModal';
 import { GuideInfoView } from './partial/GuideInfoView';
 import { expireToken } from '../../../constants/Consts';
 import { Notification } from '../../../components/modal/Notification';
+import { getApiRequest } from '../../../actions/api.action';
 
 let isInfoWindow = false;
 
@@ -33,8 +33,9 @@ export default function FormsScreen(props) {
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
 
-  const dispatch = useDispatch()
+  console.log("locationIdSpecific", locationIdSpecific)
 
+  const dispatch = useDispatch()
   useEffect(() => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -101,14 +102,21 @@ export default function FormsScreen(props) {
       filters = await getFilterData('@form_filter');
       console.log("store filters", filters)
     }
-    getFormLists('', locationIdSpecific ? locationIdSpecific : '', filters).then((res) => {
-      setFormLists(res);
-      setOriginalFormLists(res);
+    var form_type_id = filters.form_type.map(item => item).join(',');
+    let param = {
+      form_type_id: form_type_id,
+      location_id:  locationIdSpecific != null ? locationIdSpecific.location_id : ''
+    };
+    getApiRequest("forms/forms-list", param).then((res) => {      
+      setFormLists(res.forms);
+      setOriginalFormLists(res.forms);
     }).catch((e) => {
+      
       expireToken(dispatch, e);
-    })
-  }
+    });
 
+  }
+  
   const _onTouchStart = (e, text) => {    
     // isInfoWindow = true;
     // setX(e.pageX);
@@ -216,7 +224,7 @@ export default function FormsScreen(props) {
                 <FormListItem key={index} item={item}
                   onItemPress={() => {                    
                     if (!isInfoWindow) {
-                      props.navigation.navigate("FormQuestions", { 'data': item });
+                      props.navigation.navigate("FormQuestions", { 'data': item , 'location_id' : locationIdSpecific != null ? locationIdSpecific.location_id : '' });
                     } else {
                       isInfoWindow = false;
                     }

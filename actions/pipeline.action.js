@@ -4,53 +4,11 @@ import { getBaseUrl, getToken } from "../constants/Storage";
 import { CHANGE_LOCATION_FILTERS, CHANGE_LOGIN_STATUS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
 import uuid from 'react-native-uuid';
 
-export const  getPipelines = async (filters) => {
 
-  var base_url = 'https://www.dev.georep.com/local_api_old';//await getBaseUrl();
-  var token = await getToken();
-
-  return new Promise(function (resolve, reject) {    
-    console.log("lnk", JSON.stringify(`${base_url}/pipeline/pipeline-opportunities?filters=${filters}`));
-    axios
-      .get(`${base_url}/pipeline/pipeline-opportunities`, {
-        params: {
-          filters: filters
-        },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-      .then((res) => {
-
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == "Success") {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {        
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-
-  });
-}
-
-export const getPipelineFilters = (campaign_id = '') => (dispatch, getState) => {
-  //.get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/pipeline/pipeline-filters?campaign_id=`, {
-
-  console.log("RQ: ", `https://www.dev.georep.com/local_api_old/pipeline/pipeline-filters?campaign_id=${campaign_id}`);
+export const getPipelineFilters = (campaign_id = '') => (dispatch, getState) => {    
   dispatch({ type: STATUS_LOCATION_FILTERS, payload: 'request' });
   axios
-    .get(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-filters?campaign_id=${campaign_id}`, {
+    .get(`${getState().selection.payload.user_scopes.geo_rep.base_url}/pipeline/pipeline-filters?campaign_id=${campaign_id}`, {
       params: {
         // user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
       },
@@ -74,93 +32,23 @@ export const getPipelineFilters = (campaign_id = '') => (dispatch, getState) => 
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);
     })
-
 }
-
-export const getAddOpportunityFields = (params, token) => {
-  return new Promise(function (resolve, reject) {
-    console.log("lnk", JSON.stringify(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`) + "  params: " + JSON.stringify(params));
-    axios
-      .get(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`, {
-        params: params,
-        headers: {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-      .then((res) => {
-        console.log(res);
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == "Success") {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
-}
-
-export const getAddOpportunityContacts = async(params, token) => {
-
-  var base_url = await getBaseUrl();
-  return new Promise(function (resolve, reject) {    
-    axios
-      .get(`${base_url}/locations/customer_search`, {
-        params: {
-          campaign_id: params.campaign_id ? params.campaign_id : '',
-          search_text: params.search_text
-        },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == "success") {
-          resolve(res.data.items);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
-}
-
 
 export const postAddOpportunityFields = async (postData) => {
   var base_url = await getBaseUrl();
-  var token = await getToken();
-  console.log("URL ", `https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity` )
-  console.log("Param " , postData)
+  var token = await getToken();  
+  console.log("Paramer " , postData);
+console.log("url", `${base_url}/pipeline/pipeline-add-edit-opportunity`);
   return new Promise(function (resolve, reject) {    
     axios
-      .post(`https://www.dev.georep.com/local_api_old/pipeline/pipeline-add-edit-opportunity`, postData, {
+      .post(`${base_url}/pipeline/pipeline-add-edit-opportunity`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
           'Indempotency-Key': uuid.v4()
         }
       })
       .then((res) => {
+        console.log("res",res)
         if (res.data == undefined) {
           resolve(0);
           return;
@@ -168,6 +56,7 @@ export const postAddOpportunityFields = async (postData) => {
         resolve(1);
       })
       .catch((err) => {
+        console.log("e", JSON.stringify(err));
         const error = err.response;
         if (error.status===401 && error.config && 
           !error.config.__isRetryRequest) {          

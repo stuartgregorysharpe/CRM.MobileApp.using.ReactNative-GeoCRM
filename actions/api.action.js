@@ -26,7 +26,7 @@ export const getApiRequest = async ( route ,  param ) => {
           }
         })
         .then((res) => {         
-            
+          
           if (res.data == undefined) {
             resolve([]);
           }

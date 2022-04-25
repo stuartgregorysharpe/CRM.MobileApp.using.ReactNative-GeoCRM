@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, FlatList, BackHandler, Image,Dimensions ,Platform } from 'react-native';
+import React, { useEffect, useState ,useCallback} from 'react';
+import { Text, View, ScrollView, TouchableOpacity, FlatList, BackHandler, Image,Dimensions ,Platform ,PermissionsAndroid } from 'react-native';
 import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPipelineFilters, getPipelines } from '../../../actions/pipeline.action';
@@ -19,8 +19,12 @@ import Images from '../../../constants/Images';
 import DeviceInfo from 'react-native-device-info';
 import { expireToken } from '../../../constants/Consts';
 import { Notification } from '../../../components/modal/Notification';
+import { getApiRequest } from '../../../actions/api.action';
+import { updateCurrentLocation } from '../../../actions/google.action';
+import Geolocation from 'react-native-geolocation-service';
 
 export default function SalesPipelineScreen(props) {
+
   const dispatch = useDispatch();
   const navigation = props.navigation;  
   const pipelineFilters = useSelector(state => state.selection.pipelineFilters);
@@ -36,14 +40,14 @@ export default function SalesPipelineScreen(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [pageType, setPageType] = useState('add');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState('');  
-  const locationInfo = props.route.params ? props.route.params.locationInfo : null;
+  const [locationName, setLocationName] = useState("");
+  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;    
 
   useEffect(() => {
     var screenProps = props.screenProps;
     if(screenProps === undefined){
       screenProps = props.navigation;
     }
-
     if (screenProps) {
       screenProps.setOptions({        
         headerTitle: () => {
@@ -53,14 +57,14 @@ export default function SalesPipelineScreen(props) {
                 if (canAddPipeline) {
                   setCanAddPipeline(false);
                 }else{
-                  if(locationInfo){
-                    props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationInfo}});
+                  if(locationIdSpecific){
+                    props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationIdSpecific}});
                   }
                 }
               }}>
             <View style={style.headerTitleContainerStyle}>
               {
-                (canAddPipeline || locationInfo) &&
+                (canAddPipeline || locationIdSpecific) &&
                 <Image
                   resizeMethod='resize'
                   style={{ width: 15, height: 20, marginRight: 5 }}
@@ -92,12 +96,23 @@ export default function SalesPipelineScreen(props) {
     };
   });
 
+  useEffect(() =>{    
+    loadPipeLineData("");
+  },[locationIdSpecific]);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      loadPipeLineData();
+      console.log("PAGE OPEN 2")
+      //console.log("PAGE OPEN 2", props.route.params.locationInfo)
+      
     });
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() =>{
+    requestPermissions();  
+  },[]);
+  
 
   useEffect(() => {
     if (pipelineFilters !== undefined) {
@@ -105,6 +120,26 @@ export default function SalesPipelineScreen(props) {
     }
 
   }, [pipelineFilters])
+
+  async function requestPermissions() {
+    if (Platform.OS === 'ios') {
+      const auth = await Geolocation.requestAuthorization('whenInUse');
+      if (auth === 'granted') {
+        dispatch(updateCurrentLocation());        
+      }
+    }
+
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,        
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {          
+          dispatch(updateCurrentLocation());
+          
+      }
+    }
+  }
 
   const handleBackButtonClick = () => {
     if (canAddPipeline) {
@@ -138,23 +173,34 @@ export default function SalesPipelineScreen(props) {
     });
   }
 
+  const loadPipeLineData = useCallback(
+    (filters = '') => {
+      setIsLoading(true);
+      let params = {filters: filters };
+      if(locationIdSpecific != null){
+        params['location_id'] = locationIdSpecific.location_id;
+      }
+      console.log("ASDDA", params);
+      getApiRequest("pipeline/pipeline-opportunities", params).then((res) => {
+        setIsLoading(false);
+        console.log("data", res)
+        let stageItems = [];
+        stageItems.push({ stage_id: '0', stage_name: 'All' });
+        stageItems.push(...res.stages);
+        setStages(stageItems);
+        setAllOpportunities(res.opportunities);
+        setOpportunities(res.opportunities);
+        setSearchList(res.opportunities);
+        setSelectedStage('0');
+      }).catch((e) => {
+        console.log("Err", e)
+        expireToken(dispatch, e);
+        setIsLoading(false) 
+      })
+    },
+    [locationIdSpecific],
+  );
 
-  const loadPipeLineData = async (filters = '') => {    
-    setIsLoading(true);
-    getPipelines(filters).then(res => {
-      setIsLoading(false);
-      let stageItems = [];
-      stageItems.push({ stage_id: '0', stage_name: 'All' });
-      stageItems.push(...res.stages);
-      setStages(stageItems);
-      setAllOpportunities(res.opportunities);
-      setOpportunities(res.opportunities);
-      setSearchList(res.opportunities);
-      setSelectedStage('0');
-    }).catch((e) => { 
-      expireToken(dispatch, e);
-      setIsLoading(false) })
-  }
 
   const onSearchList = (searchKey) => {
     let list = [];
@@ -181,7 +227,6 @@ export default function SalesPipelineScreen(props) {
         data.push(opportunity);
       }
     });
-
     setOpportunities(data);
     setSearchList(data);
   }
@@ -215,8 +260,9 @@ export default function SalesPipelineScreen(props) {
 
   const renderOpportunity = (item, index) => {
     return (
-      <TouchableOpacity onPress={() => {
-        setSelectedOpportunityId(item.opportinity_id);
+      <TouchableOpacity onPress={() => {                
+        setSelectedOpportunityId(item.opportunity_id);
+        setLocationName(item.location_name);
         setPageType('update');
         setCanAddPipeline(true);
       }}>
@@ -284,19 +330,18 @@ export default function SalesPipelineScreen(props) {
   }
 
   return (
+
     <Provider>
       <View style={{ flex: 1 }}>
-
-        <Notification></Notification>
-        
+        <Notification></Notification>        
         {canAddPipeline && <AddSalesPipeline
           props={props}
-          onClose={() => {
-            // setShowItem("refresh"),
+          onClose={() => {            
             loadPipeLineData();
             setCanAddPipeline(false);
           }}
           pageType={pageType}
+          locationName={locationName}
           opportunity_id={selectedOpportunityId} />
         }
 
@@ -304,7 +349,6 @@ export default function SalesPipelineScreen(props) {
           activeOpacity={1}
           style={grayBackground}
           onPress={() => {
-
             dispatch({ type: SUB_SLIDE_STATUS, payload: false })
             dispatch({ type: SLIDE_STATUS, payload: false });
             setShowItem(0);
@@ -314,15 +358,16 @@ export default function SalesPipelineScreen(props) {
         </TouchableOpacity>
         }
 
-        {crmStatus && showItem == 1 && <View
-          style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}
-        >
-          <FilterView navigation={navigation} page={"pipeline"} 
-          onClose={() => {
-            dispatch({ type: SLIDE_STATUS, payload: false });
-            setShowItem(0);
-          }} />
-        </View>}
+        { crmStatus && showItem == 1 && 
+          <View
+            style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}>
+            <FilterView navigation={navigation} page={"pipeline"} 
+            onClose={() => {
+              dispatch({ type: SLIDE_STATUS, payload: false });
+              setShowItem(0);
+            }} />
+          </View>
+        }
 
         <View style={styles.container}>
           <View style={[styles.tabContainer, boxShadow, { alignItems: 'center' }]}>
@@ -360,9 +405,11 @@ export default function SalesPipelineScreen(props) {
           {
             !canAddPipeline &&
             <View style={[styles.plusButtonContainer, {marginBottom: DeviceInfo.getSystemVersion() === "11" ? 70 : 40 }]}>
-              <TouchableOpacity style={style.innerPlusButton} onPress={() => {
+              <TouchableOpacity style={style.innerPlusButton} onPress={() => {                
+                setLocationName("");
                 setPageType('add');
                 setCanAddPipeline(true);
+                
               }}>
                 <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
               </TouchableOpacity>

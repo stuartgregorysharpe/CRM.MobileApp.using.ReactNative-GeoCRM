@@ -11,7 +11,7 @@ export const HistoryListItem = ({ item, isStart, isEnd , onItemPress , index}) =
 
             <View style={{ alignItems:'center', justifyContent:'center' , marginRight:10}}>
                 <View style={styles.blueDotStyle}></View>
-                <View style={{width:1, backgroundColor:Colors.primaryColor, height:20, position:'absolute', height:70 , top:isStart?20:0 , bottom: isEnd ? -30: 0 }}></View>
+                <View style={{width:1, backgroundColor:whiteLabel().fieldBorder, height:20, position:'absolute', height:70 , top:isStart?20:0 , bottom: isEnd ? -30: 0 }}></View>
             </View>
 
             <TouchableOpacity style={{flexDirection:'column', flex:1}} onPress={onItemPress}>     
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         marginRight:5,
         fontSize:13,
         fontFamily: Fonts.secondaryRegular,
-        color: Colors.primaryColor
+        color: whiteLabel().mainText
     },
     subTitile: {
         fontSize: 12,
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     blueDotStyle: {
         width:10,
         height:10,
-        borderRadius:5,
-        backgroundColor:Colors.primaryColor
+        borderRadius:5,        
+        backgroundColor: whiteLabel().fieldBorder
     }
        
 });

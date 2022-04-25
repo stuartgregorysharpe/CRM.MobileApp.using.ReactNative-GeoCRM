@@ -5,7 +5,7 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import { AppText } from '../../../../../components/common/AppText';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
-import Colors from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 
 export default function Comments(props) {
 
@@ -35,11 +35,11 @@ export default function Comments(props) {
 
                 <SvgIcon style={styles.pickerIcon} icon="Faq" height='300' />
                 <View style={{ padding:20 , alignItems:'center'}}>
-                    <AppText color={Colors.primaryColor} style={{textAlign:'center'}} 
+                    <AppText color={whiteLabel().helpText} style={{textAlign:'center'}} 
                         size="medium" 
                         title="No forms currently available,">                    
                     </AppText>
-                    <AppText color={Colors.primaryColor} style={{textAlign:'center'}} 
+                    <AppText color={whiteLabel().helpText} style={{textAlign:'center'}} 
                         size="medium" 
                         title="please check back at a later stage.">                    
                     </AppText>

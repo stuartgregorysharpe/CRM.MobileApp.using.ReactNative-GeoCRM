@@ -10,6 +10,7 @@ import { color, timing } from 'react-native-reanimated';
 import * as ImagePicker from 'react-native-image-picker'; 
 import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
+import ImageResizer from 'react-native-image-resizer';
 
 export default function TakePhotoForm ({item, onPress, onTouchStart}) {
 
@@ -27,8 +28,43 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
       }      
     }
     
-    const showSelectionDialog = () => {        
+    const showSelectionDialog = () => {
         setIsPicker(true);      
+    }
+
+    const optimizeImage = (filePath , quality , index) =>{
+      var outputPath = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}` :  `${RNFS.ExternalDirectoryPath}`; 
+      console.log("compress quality ====", quality);
+      var width_height = 800;
+      if(item.optimize && item.optimize === "1"){
+        width_height = 500;
+      }      
+      ImageResizer.createResizedImage(filePath, width_height, width_height, "JPEG", quality, 0, outputPath)
+      .then(res => {              
+        console.log("resut", res);
+        if(item.optimize && item.optimize === "1" ){
+          if(res.size < 1024 * 200 || index >= 2){
+            console.log("POST image size", res);
+            updateImageData(res.uri);
+          }else{
+            var newQuality = 1024 * 200 * 100 / res.size ;
+            console.log("newQuality", newQuality);
+            optimizeImage(res.uri, newQuality, index + 1);
+          }
+        }else{
+          if(res.size < 1024 * 500 || index >= 2){
+            console.log("POST image size", res);
+            updateImageData(res.uri);
+          }else{
+            var newQuality = 1024 * 500 * 100 / res.size ;
+            console.log("newQuality", newQuality);
+            optimizeImage(res.uri, newQuality, index + 1);            
+          }
+        }
+      })
+      .catch(err => {    
+        console.log("error", err);
+      });              
     }
     
     const launchImageLibrary = () => {
@@ -48,13 +84,12 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
         } else if (response.customButton) {
           console.log('User tapped custom button: ', response.customButton);        
         } else {                                                  
-          if(response.assets != null && response.assets.length > 0){              
-              updateImageData(response.assets[0].uri);
+          if(response.assets != null && response.assets.length > 0){            
+            var fileName = "tmp";
+            optimizeImage(response.assets[0].uri , 100 , 0);
           }
         }
       });
-
-
     }
   
     const launchCamera = () => {
@@ -65,9 +100,10 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
           path: 'images',
         },
       };
-      ImagePicker.launchCamera(options, (response) => {
-        console.log('Response = ', response);
 
+      ImagePicker.launchCamera(options, (response) => {
+
+        console.log('Response = ', response);
         if (response.didCancel) {
           console.log('User cancelled image picker');
         } else if (response.error) {
@@ -76,8 +112,9 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
           console.log('User tapped custom button: ', response.customButton);
           alert(response.customButton);
         } else {        
-          if(response.assets != null && response.assets.length > 0){         
-            updateImageData(response.assets[0].uri);          
+          if(response.assets != null && response.assets.length > 0){
+            optimizeImage(response.assets[0].uri , 100 , 0);
+            //updateImageData(response.assets[0].uri);            
           }
 
         }

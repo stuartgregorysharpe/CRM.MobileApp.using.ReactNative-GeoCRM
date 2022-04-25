@@ -41,8 +41,7 @@ export const whiteLabel = () => {
     countBoxBackground: '#133C8B',
     countBoxText: '#FFFFFF',
     feature_card_icon_background: '#F5F5F5',
-    feature_card_icon_fill: '#133C8B',
-    subtextColor: '#9B9B9B'
+    feature_card_icon_fill: '#133C8B',    
   };
 };
 

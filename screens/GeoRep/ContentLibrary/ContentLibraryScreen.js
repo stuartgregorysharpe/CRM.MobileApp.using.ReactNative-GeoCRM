@@ -29,16 +29,9 @@ export default function ContentLibraryScreen(props) {
     if(screenProps === undefined){
       screenProps = props.navigation;
     }
+    console.log("screenPropsscreenProps",screenProps)
     if (screenProps) {
-      screenProps.setOptions({        
-        headerTitle: () => {
-          return (<TouchableOpacity
-            onPress={() => {}}>
-            <View style={style.headerTitleContainerStyle}>                
-              <Text style={style.headerTitle} >{title}</Text>
-            </View></TouchableOpacity>)
-        }
-      });      
+      renderHeader(screenProps);      
     }
   });
 
@@ -47,6 +40,22 @@ export default function ContentLibraryScreen(props) {
     if(screenProps === undefined){
       screenProps = props.navigation;
     }
+    renderHeader(screenProps);
+    
+    
+  }, [isBack]);
+
+
+
+
+  useEffect(() => {             
+    loadList();
+  } , []);  
+
+  const renderHeader = (screenProps) => {
+
+    console.log("is back", isBack);
+
     screenProps.setOptions({           
       headerTitle:(props) =>{
         return(<TouchableOpacity                   
@@ -61,24 +70,21 @@ export default function ContentLibraryScreen(props) {
                 <Image
                   resizeMethod='resize'  
                   style={{width:15,height:20, marginRight:5}}
-                  source={Images.backIcon}
+                  source={Images.backIcon} 
                 />
               }              
           <Text style={style.headerTitle} > {title} </Text>
         </View></TouchableOpacity>)
-      },            
-      tabBarStyle: {
-        position: 'absolute',
-        height: 50,      
-        paddingBottom: Platform.OS == "android" ? 5 : 0,          
-        backgroundColor: "#fff",
-      },
-    });
-  }, [isBack])
+      },                 
 
-  useEffect(() => {             
-    loadList();
-  } , []);  
+      // tabBarStyle: {
+      //   position: 'absolute',
+      //   height: 50,      
+      //   paddingBottom: Platform.OS == "android" ? 5 : 0,          
+      //   backgroundColor: "#fff",
+      //},
+    });    
+  }
 
   loadList = async() => {    
     var base_url = await getBaseUrl();
@@ -100,10 +106,13 @@ export default function ContentLibraryScreen(props) {
   }
 
   const showChildItem = (index) => {
+
+    console.log("clicked");
     dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: true})
     setChildList(searchLibraryLists[index]);
     setIsBack(true);
-    setTitle(searchLibraryLists[index].folder_name);    
+    setTitle(searchLibraryLists[index].folder_name);
+    
   }
   const getResourceIcon = (title) =>{
     if(title.toLowerCase().includes('.png') || title.toLowerCase().includes('.jpg') || title.toLowerCase().includes('.jpeg')){
@@ -155,12 +164,11 @@ export default function ContentLibraryScreen(props) {
       .catch((error) => {
        
       });
-    }
-    
+    }    
   }
 
-  if (isBack) {
 
+  if (isBack) {
     return (
       <SafeAreaView>
         <ScrollView style={styles.container}>
@@ -238,7 +246,7 @@ export default function ContentLibraryScreen(props) {
         
         <View style={styles.innerContainer}>
           {searchLibraryLists.map((item, index) => (
-            <Card title={item.folder_name} number={item.file_count} key={index} onPress={showChildItem.bind(null, index)}/>            
+            <Card title={item.folder_name} number={item.file_count} key={index} onPress={ showChildItem.bind(null, index)}/>            
           ))}
         </View>
       </ScrollView>

@@ -417,6 +417,7 @@ export default function RepBottomTabNavigator({navigation}) {
         })}
       />}
 
+        
       {selectProject == 'geo_rep' && bottomListOne.includes('content_library') && <BottomTab.Screen
         name="RepContentLibrary"
         // component={RepContentLibraryScreen}        
@@ -445,7 +446,8 @@ export default function RepBottomTabNavigator({navigation}) {
           },
         })}
       >
-          {props => <RepContentLibraryScreen {...props} screenProps={navigation} />}
+          {/* screenProps={navigation} */}
+          {props => <RepContentLibraryScreen {...props}  />}
         </BottomTab.Screen>
         }
       
@@ -677,6 +679,7 @@ export default function RepBottomTabNavigator({navigation}) {
               return;
             }
             navigation.navigate('RepSalesPipeline');
+            navigation.navigate("RepSalesPipeline", { locationInfo: null } );
           },
         })}
       />}

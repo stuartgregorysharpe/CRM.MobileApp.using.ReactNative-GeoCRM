@@ -5,11 +5,10 @@ import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Divider from '../../../../components/Divider';
 import FilterButton from '../../../../components/FilterButton';
-import { getFormFilters } from '../../../../actions/forms.action';
-import FilterOptionsModal from '../../../../components/modal/FilterOptionsModal';
 import { clearFilterData, getFilterData, storeFilterData } from '../../../../constants/Storage';
 import { style } from '../../../../constants/Styles';
 import { useDispatch } from 'react-redux';
+import { getApiRequest } from '../../../../actions/api.action';
 
 export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemClicked}) => {
 
@@ -25,12 +24,13 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
     },[]);
 
     const _callFormFilters = () =>{        
-        getFormFilters().then((res) => {    
-            console.log("res", JSON.stringify(res));
-            setItems(res)
+        //https://www.dev.georep.com/local_api_old/
+        getApiRequest("forms/forms-filters" , {}).then((res) => {
+            console.log(JSON.stringify(res));
+            setItems(res.items);
         }).catch((e) => {
-          
-        })
+            console.log(e);
+        });        
     }
 
     const initFilter = async() => {
@@ -72,8 +72,7 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
                                 {
                                     items.map((item , key) => (
                                         <FilterButton key={key} text={item.filter_label} 
-                                            onPress={() => {       
-                                                
+                                            onPress={() => {                                                       
                                                 onItemClicked(item.options);    
                                             }}
                                         />

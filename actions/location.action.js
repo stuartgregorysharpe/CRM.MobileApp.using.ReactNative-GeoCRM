@@ -477,12 +477,12 @@ export const getLocationInfo = async (location_id, currentLocation) => {
   var prev_locations = await getLocationLoop();
   var prev_ids = prev_locations.map(item => item.location_id).join(',');
 
-
+  console.log("prev_ids",prev_ids)
   var params = {
     user_id: user_id,
     location_id: location_id
   }
-  if (currentLocation !== undefined) {
+  if ( currentLocation != null && currentLocation !== undefined) {
     params = {
       user_id: user_id,
       location_id: location_id,

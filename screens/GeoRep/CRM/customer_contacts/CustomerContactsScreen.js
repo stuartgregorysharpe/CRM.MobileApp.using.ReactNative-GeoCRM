@@ -17,12 +17,14 @@ import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import { getPostParameter } from '../../../../constants/Consts';
 import AlertDialog from '../../../../components/modal/AlertDialog';
+import { TopTab } from '../../../../components/common/TopTab';
 
-var selectedIndex = 1;
+var selectedIndex = 0;
+
 var showingItem = 0;
 
 export const CustomerContactsScreen = forwardRef((props, ref) => {
-    const [tabIndex, setTabIndex] = useState(1);
+    const [tabIndex, setTabIndex] = useState(0);
     const [locationFields, setLocationFields] = useState([]);
     const [isDropdownModal, setIsDropdownModal] = useState([]);
     const [dropdownItems, setDropdownItems] = useState([]);
@@ -38,6 +40,7 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
     const [selectedValue, setSelectedValue] = useState([]);
     const [isSuccess, setIsSuccess] = useState(false);
     const [message, setMessage] = useState("");
+    const headers = ["Customer", "Contacts"];
 
     useImperativeHandle(
         ref,
@@ -70,20 +73,18 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
             dispatch({ type: SLIDE_STATUS, payload: false });
             return true;
         }
-        props.onClose();
-        // setShowItem(0);
-        // dispatch({ type: SLIDE_STATUS, payload: false });
+        props.onClose();        
         return true;
     }
 
     const loadList = () => {
-        if (selectedIndex == 1) {
+        if (selectedIndex == 0) {
             getLocationFields(props.locationId).then(res => {
                 console.log("getLocationFields:", res.custom_master_fields);
                 initPostData(res.custom_master_fields);
                 setLocationFields(res.custom_master_fields);
             })
-        } else if (selectedIndex == 2) {
+        } else if (selectedIndex == 1) {
             setContacts([]);
             console.log("updating");
             getLocationContacts(props.locationId).then(res => {
@@ -422,7 +423,7 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
                             }}>{phoneNumberReformat(item.contact_cell)}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={{ fontFamily: Fonts.secondaryRegular, color: whiteLabel().subtextColor }}>{item.contact_email}</Text>
+                    <Text style={{ fontFamily: Fonts.secondaryRegular, color: whiteLabel().subText }}>{item.contact_email}</Text>
 
                 </View>
             </TouchableOpacity>
@@ -492,26 +493,21 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
                 loadList();
             }}>
             </AlertDialog>
-
-            <View style={[style.tabContainer]}>
-                <TouchableOpacity style={style.tabItem} onPress={() => {
-                    setTabIndex(1);
-                    selectedIndex = 1;
-                    loadList();
-                }}>
-                    <Text style={[style.tabText, tabIndex === 1 ? style.tabActiveText : {}]}>Customer</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={style.tabItem} onPress={() => {
-                    setTabIndex(2);
-                    selectedIndex = 2;
+          
+            <TopTab 
+                tabIndex={tabIndex}
+                headers={headers} 
+                onTabClicked={(index) => {
+                    setTabIndex(index);
+                    selectedIndex = index;
                     loadList()
-                }}>
-                    <Text style={[style.tabText, tabIndex === 2 ? style.tabActiveText : {}]}>Contacts</Text>
-                </TouchableOpacity>
-            </View>
+                    //refPagerView.current.setPage(index);
+            }} ></TopTab>
+
+
             <View style={{ flex: 1 }}>
-                {tabIndex == 1 && renderCustomerTab()}
-                {tabIndex == 2 && renderContactsTab()}
+                {tabIndex == 0 && renderCustomerTab()}
+                {tabIndex == 1 && renderContactsTab()}
             </View>
 
             {dropdownModal()}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect ,useRef} from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler , Image, Platform , AppState ,PermissionsAndroid} from 'react-native';
+import { SafeAreaView, Text, TextInput, View, TouchableOpacity, TouchableWithoutFeedback, Dimensions, BackHandler , Image, Platform ,TouchableHighlight, AppState ,PermissionsAndroid} from 'react-native';
 import { Provider } from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
@@ -19,7 +19,6 @@ import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationMapB
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
-import MarkerIcon from '../../../components/Marker';
 import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import Geolocation from 'react-native-geolocation-service';
@@ -27,10 +26,11 @@ import { updateCurrentLocation } from '../../../actions/google.action';
 import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { expireToken, isInsidePoly } from '../../../constants/Consts';0
 import AddToCalendar from '../../../components/modal/AddToCalendar';
-import { getMapMinZoomLevel, getPinSvg, getPolygonFillColorTransparency, setToken, storePinSvg } from '../../../constants/Storage';
+import { getLocalData, getMapMinZoomLevel, getPinSvg, getPolygonFillColorTransparency, setToken, storePinSvg } from '../../../constants/Storage';
 import { Notification } from '../../../components/modal/Notification';
 import { SvgXml } from 'react-native-svg';
-import { useTransitionProgress } from 'react-native-screens';
+import { AppText } from '../../../components/common/AppText';
+import { clearNotification, showNotification } from '../../../actions/notification.action';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -43,6 +43,8 @@ let isMount = true;
 let id = 0;
 let previousZoom = 0;
 let mapPinSvg = null;
+let specificLocationId = 0;
+
 
 export default function LocationScreen(props) {
 
@@ -76,10 +78,11 @@ export default function LocationScreen(props) {
   const [isFinish, setIsFinish] = useState(false);
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
-  const [transCode, setTransCode] = useState("05");
+  const [transCode, setTransCode] = useState("05"); 
+  const [isCheckIn, setIsCheckIn] = useState(false);
     
   useEffect(() => { 
-    initCode();
+    initData();
     refreshHeader();
     if (crmStatus) {
       props.screenProps.setOptions({
@@ -106,9 +109,12 @@ export default function LocationScreen(props) {
     console.log("locationMaps");    
   },[locationMaps ]);
  
-  const initCode = async()  =>{
+  const initData = async()  =>{
     var code = await getPolygonFillColorTransparency();
     setTransCode(code);
+    var checkin = await getLocalData("@checkin");
+    setIsCheckIn(checkin);
+    specificLocationId = await getLocalData("@specific_location_id");
   }
   
   async function requestPermissions() {
@@ -230,8 +236,9 @@ export default function LocationScreen(props) {
       }
       if(map.current !== null && map.current.props){     
         console.log("focuseed on change region")
-        map.current.props.onRegionChangeComplete();     
+        map.current.props.onRegionChangeComplete();
       }
+      initData();
     });
     return unsubscribe;
   }, [navigation]);
@@ -422,6 +429,15 @@ export default function LocationScreen(props) {
       
     }else{
       openLocaitonInfoDetails( Number(item.location_id) );
+      // if(isCheckIn === "1"){        
+      //     dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location", buttonText: 'Continue', 
+      //       buttonAction : () => {               
+      //         props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
+      //         dispatch(clearNotification());                                
+      //     } }));            
+      // }else{        
+      // }
+      
     }
   }
 
@@ -598,9 +614,9 @@ export default function LocationScreen(props) {
                           longitude: Number(item.coordinates.longitude),
                         }}>                        
                         {
-                          mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
+                          mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
                           <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code } width="34px" height="34px" />
-                        }                        
+                        }          
                       </Marker>
                     ))}
 
@@ -652,6 +668,19 @@ export default function LocationScreen(props) {
                         }
                       </Text>
                     </View>                     
+                  }
+
+                  {
+                    isCheckIn === "1" &&
+                    <TouchableWithoutFeedback onPress={() => { 
+                      console.log("pdd" , specificLocationId);
+                      props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
+                    }} >
+                      <View style={[styles.checkinBubble]}>                      
+                        <AppText size="medium" color={whiteLabel().headerText} title="You are currently checked-in to a location."></AppText>
+                        <AppText size="medium" color={whiteLabel().headerText} title="Tap here to continue"></AppText>
+                      </View> 
+                    </TouchableWithoutFeedback>
                   }               
                                       
                   {
@@ -674,14 +703,12 @@ export default function LocationScreen(props) {
                         <Text> Finish </Text>                      
                       </View>                     
                     </TouchableOpacity>                      
-                  }
-                         
-
+                  }                         
             </View>
           }
-                                        
+ 
             <TouchableOpacity
-              style={styles.plusButton} 
+              style={[styles.plusButton , {bottom: isCheckIn === "1" ? 150 : 100}]}
               onPress={() => {                
                 animation("addLead");
               }}>
@@ -718,7 +745,7 @@ const styles = EStyleSheet.create(parse({
   plusButton: {
     position: 'absolute',
     right: 20,
-    bottom: 100,
+    bottom: 150,
   },
   pinKeyButton: {
     position: 'absolute',
@@ -795,6 +822,16 @@ const styles = EStyleSheet.create(parse({
     borderTopLeftRadius:5,
     borderTopRightRadius:5,
     backgroundColor: 'rgba(255,255,255,0.9)'
+  },
+
+  checkinBubble:{
+    width:"92%",
+    position:'absolute', alignSelf:'center' , bottom:0 ,paddingLeft:10, paddingRight:10, paddingTop:7, paddingBottom:7,    
+    borderRadius:5,
+    // backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor:whiteLabel().headerBackground, 
+    alignItems:'center', 
+    marginBottom:50
   },
 
   finishBtnStyle:{

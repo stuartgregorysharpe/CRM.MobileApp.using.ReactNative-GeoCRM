@@ -15,9 +15,7 @@ export default function CRMScreen(props) {
 
   return (
     <Stack.Navigator> 
-
       
-
       <Stack.Screen        
         name="Root"    
         options={{ header: () => null , headerShown: false}}>      

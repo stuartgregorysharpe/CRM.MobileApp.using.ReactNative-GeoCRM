@@ -6,10 +6,9 @@ import { TextInput, Button, Title } from 'react-native-paper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-import uuid from 'react-native-uuid';
 import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
-import Colors, { whiteLabel, PRIMARY_COLOR, DISABLED_COLOR } from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
@@ -20,7 +19,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
-
+import CustomInput from '../../../../components/common/CustomInput';
 
 export default function AddLead({ screenProps, onClose }) {
 
@@ -39,19 +38,16 @@ export default function AddLead({ screenProps, onClose }) {
   const [isCurrentLocation, setIsCurrentLocation] = useState("0");
   const [locationId, setLocationId] = useState(0);
   const [pickerTitle, setPickerTitle] = useState("");
-  const [accuracyUnit, setAccuracyUnit] = useState("m");
-  const [test, setTest] = useState("");
+  const [accuracyUnit, setAccuracyUnit] = useState("m"); 
 
   const nameRef = useRef();
   const surnameRef = useRef();
   const emailRef = useRef();
   const mobileRef = useRef();
-
   const [isNameRequired, setNameRequired] = useState(false);
   const [isSurnameRequired, setSurnameRequired] = useState(false);
   const [isEmailRequired, setEmailRequired] = useState(false);
   const [isMobileRequired, setMobileRequired] = useState(false);
-
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
@@ -325,6 +321,42 @@ export default function AddLead({ screenProps, onClose }) {
     );
   }
 
+  const changedName = (text) => {
+    setName(text);
+    if (text !== '') {
+      setNameRequired(false);
+    } else {
+      setNameRequired(true);
+    }
+  }
+
+  const changedSurname = (text) => {
+    setSurname(text)
+    if (text !== '') {
+      setSurnameRequired(false);
+    } else {
+      setSurnameRequired(true);
+    }
+  }
+
+  const changedEmail = (text) => {
+    setEmail(text)
+    if (text !== '') {
+      setEmailRequired(false);
+    } else {
+      setEmailRequired(true);
+    }
+  }
+
+  const changedMobileNumber = (text) => {
+    setMobileNumber(text)
+    if (text !== '') {
+      setMobileRequired(false);
+    } else {
+      setMobileRequired(true);
+    }
+  }
+
   if (isLoading) {
     return (
       <View style={[styles.container, { padding: 10, justifyContent: 'center', height: '100%' }]}>
@@ -367,7 +399,6 @@ export default function AddLead({ screenProps, onClose }) {
         </Button>
       </View>
 
-
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
@@ -388,7 +419,6 @@ export default function AddLead({ screenProps, onClose }) {
       
       <View style={{ padding: 5 }}>
         
-
         {
           leadForms.map((field, key) => {
             if (field.field_type === "dropdown" && field.preset_options !== "" || field.field_type == "dropdown_input") {
@@ -452,121 +482,42 @@ export default function AddLead({ screenProps, onClose }) {
           })
         }
 
-        {isCustomerAndContacts && <View>
-          <View style={{ borderBottomColor: PRIMARY_COLOR, borderBottomWidth: 1, marginVertical: 10 }}>
-            <Text style={{ fontFamily: Fonts.secondaryBold, color: PRIMARY_COLOR }}>Primary Contact</Text>
+        {
+          isCustomerAndContacts && 
+          <View>
+            <View style={{ borderBottomColor: whiteLabel().mainText, borderBottomWidth: 1, marginVertical: 10 }}>
+              <Text style={{ fontFamily: Fonts.secondaryBold, color: whiteLabel().mainText }}>Primary Contact</Text>
+            </View>
+                      
+            <View style={styles.inputContainer}>
+                <CustomInput label="Name" isError={isNameRequired} value={name} outlineColor={whiteLabel().fieldBorder} onChangeText={(text) => {changedName(text)}} ></CustomInput>
+                {isNameRequired && <View style={{ position: 'absolute', right: 0 }}>
+                  <Text style={styles.requiredTextStyle}>(required)</Text>
+                </View>}
+            </View>
+
+            <View style={styles.inputContainer}>
+                <CustomInput label="Surname" isError={isSurnameRequired} value={surname} outlineColor={whiteLabel().fieldBorder} onChangeText={(text) => {changedSurname(text)}} ></CustomInput>
+                {isNameRequired && <View style={{ position: 'absolute', right: 0 }}>
+                  <Text style={styles.requiredTextStyle}>(required)</Text>
+                </View>}
+            </View>
+
+            <View style={styles.inputContainer}>
+                <CustomInput label="Email Address" isError={isEmailRequired} value={email} outlineColor={whiteLabel().fieldBorder} onChangeText={(text) => {changedEmail(text)}} ></CustomInput>
+                {isEmailRequired && <View style={{ position: 'absolute', right: 0 }}>
+                  <Text style={styles.requiredTextStyle}>(required)</Text>
+                </View>}
+            </View>
+
+            <View style={styles.inputContainer}>
+                <CustomInput label="Mobile Number" isError={isMobileRequired} value={mobile_number} outlineColor={whiteLabel().fieldBorder} onChangeText={(text) => {changedMobileNumber(text)}} ></CustomInput>
+                {isMobileRequired && <View style={{ position: 'absolute', right: 0 }}>
+                  <Text style={styles.requiredTextStyle}>(required)</Text>
+                </View>}
+            </View>                  
           </View>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => nameRef.current.focus()}
-          >
-            <View style={styles.inputContainer}>
-              <TextInput
-                ref={nameRef}
-                style={styles.textInput}
-                label="Name"
-                mode="outlined"
-                outlineColor={isNameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                activeOutlineColor={isNameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                value={name}
-                onChangeText={text => {
-                  setName(text);
-                  if (text !== '') {
-                    setNameRequired(false);
-                  } else {
-                    setNameRequired(true);
-                  }
-                }}
-              />
-              {isNameRequired && <View style={{ position: 'absolute', right: 0 }}>
-                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
-              </View>}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => surnameRef.current.focus()}
-          >
-            <View style={styles.inputContainer}>
-              <TextInput
-                ref={surnameRef}
-                style={styles.textInput}
-                label="Surname"
-                mode="outlined"
-                outlineColor={isSurnameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                activeOutlineColor={isSurnameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                value={surname}
-                onChangeText={text => {
-                  setSurname(text)
-                  if (text !== '') {
-                    setSurnameRequired(false);
-                  } else {
-                    setSurnameRequired(true);
-                  }
-                }}
-              />
-              {isSurnameRequired && <View style={{ position: 'absolute', right: 0 }}>
-                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
-              </View>}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => emailRef.current.focus()}
-          >
-            <View style={styles.inputContainer}>
-              <TextInput
-                ref={emailRef}
-                style={styles.textInput}
-                label="Email Address"
-                mode="outlined"
-                outlineColor={isEmailRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                activeOutlineColor={isEmailRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                value={email}
-                onChangeText={text => {
-                  setEmail(text)
-                  if (text !== '') {
-                    setEmailRequired(false);
-                  } else {
-                    setEmailRequired(true);
-                  }
-                }}
-              />
-              {isEmailRequired && <View style={{ position: 'absolute', right: 0 }}>
-                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
-              </View>}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => mobileRef.current.focus()}
-          >
-            <View style={styles.inputContainer}>
-              <TextInput
-                ref={mobileRef}
-                style={styles.textInput}
-                label="Mobile Number"
-                mode={"outlined"}
-                outlineColor={isMobileRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                activeOutlineColor={isMobileRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
-                value={mobile_number}
-                onChangeText={text => {
-                  setMobileNumber(text)
-                  if (text !== '') {
-                    setMobileRequired(false);
-                  } else {
-                    setMobileRequired(true);
-                  }
-                }}
-              />
-
-              {isMobileRequired && <View style={{ position: 'absolute', right: 0 }}>
-                <Text style={{ color: whiteLabel().endDayBackground, marginHorizontal: 10 }}>(required)</Text>
-              </View>}
-
-            </View>
-          </TouchableOpacity>
-        </View>}
+        }
 
         <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
           <Text style={[styles.addButtonText]}>Add</Text>
@@ -596,12 +547,6 @@ const styles = EStyleSheet.create({
     zIndex: 2000,
     padding: 10
   },
-
-  // container: {
-  //   backgroundColor: Colors.bgColor,
-  //   zIndex: 100,
-  //   padding: 10,
-  // },
 
   header: {
     flexDirection: 'row',
@@ -639,8 +584,8 @@ const styles = EStyleSheet.create({
     position: 'absolute',
     right: 10
   },
+  
   textInput: {
-
     height: 40,
     fontSize: 14,
     lineHeight: 30,
@@ -653,6 +598,7 @@ const styles = EStyleSheet.create({
     position: 'relative',
     marginBottom: 8
   },
+
   linkBoxText: {
     color: whiteLabel().mainText,
     fontFamily: Fonts.secondaryMedium,
@@ -660,19 +606,13 @@ const styles = EStyleSheet.create({
     textDecorationColor: whiteLabel().mainText,
     textAlign: 'center'
   },
-  checkBoxStyle: {
-    width: 25,
-    height: 25,
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: whiteLabel().itemSelectedBackground,
-    borderWidth: 1,
-    borderColor: whiteLabel().itemSelectedBackground
-  },
+  
   inputContainer: {
-    justifyContent: 'center',
-    backgroundColor:Colors.whiteColor
-}
+    justifyContent: 'center',    
+  },
+  requiredTextStyle:{
+    color: whiteLabel().endDayBackground, 
+    marginHorizontal: 10
+  }
 
 });

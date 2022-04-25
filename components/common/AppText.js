@@ -16,8 +16,7 @@ export function AppText(props){
                         color: color != undefined ? color: Colors.textColor
                     }
                 ]
-            }
-        >
+            }>
                 {title}
         </Text>
     );

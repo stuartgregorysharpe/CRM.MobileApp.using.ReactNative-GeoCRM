@@ -51,7 +51,7 @@ export default function ActivityComments(props) {
                         }} ></TopTab>
                                                 
                         <PagerView 
-                            onPageSelected={(e) => { console.log("changed", e); changePage(e.nativeEvent); }}
+                            onPageSelected={(e) => { changePage(e.nativeEvent); }}
                             ref={refPagerView} style={styles.pagerView} initialPage={0}>
                             <View key="1">
                                 <Activity {...props} location_id={locationId} />

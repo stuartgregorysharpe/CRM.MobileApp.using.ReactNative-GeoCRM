@@ -1,7 +1,6 @@
 import React, { useEffect , useState , useRef } from 'react';
 import { Text, View, Dimensions, StyleSheet , TouchableOpacity , Image , Alert, Platform} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { getFormQuestions } from '../../../../actions/forms.action';
 import { HeadingForm } from '../../../../components/shared/HeadingForm';
 import { ParagraphForm } from '../../../../components/shared/ParagraphForm';
 import { TextForm } from '../../../../components/shared/TextForm';
@@ -27,12 +26,18 @@ import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { GuideInfoView } from '../partial/GuideInfoView';
-import { expireToken } from '../../../../constants/Consts';
+import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
+import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../actions/api.action';
+import { showNotification } from '../../../../actions/notification.action';
+import * as RNLocalize from "react-native-localize";
+
 
 export const FormQuestions = (props) =>{
 
     const form = props.route.params.data;
+    const location_id = props.route.params.location_id;
+    const currentLocation = useSelector(state => state.rep.currentLocation);
     const [formQuestions, setFormQuestions] = useState([]);
     const [modaVisible, setModalVisible] = useState(false);
     const [options, setOptions] = useState([]);
@@ -121,15 +126,18 @@ export const FormQuestions = (props) =>{
           backgroundColor: Colors.whiteColor,
         },   
       });
-
     }
+
     const _callFormQuestions = () => {
-      getFormQuestions(form.form_id).then((res) => {                
-        groupByQuestions(res);
-        console.log(" raw data" , res)
+      let param = {
+        form_id: form.form_id
+      }
+      getApiRequest("forms/forms-questions" , param ).then((res) => {        
+        groupByQuestions(res.questions);        
       }).catch((e) => {
+        console.log(e);
         expireToken(dispatch, e);
-      })
+      });      
     }
 
     const groupByQuestions = (data) => {
@@ -144,7 +152,8 @@ export const FormQuestions = (props) =>{
           tmp.questions = [...newTmp];
         }    
       });      
-      setFormQuestions(newData);            
+      setFormQuestions(newData);    
+      console.log("original form data", newData)        ;
     }
     
     const isInNewData = (data, value) =>{
@@ -214,13 +223,20 @@ export const FormQuestions = (props) =>{
       setModalVisible(false);
       dispatch({type: SLIDE_STATUS, payload: false});
     }
-    const onValueChangedSelectionView = ( key, index, value) => {      
-      var tmp = [...formQuestions];      
-      tmp[key].questions[index].value = value;      
-      setFormQuestions(tmp);            
+    const onValueChangedSelectionView = async ( key, index, value) => {      
+      var tmp = [...formQuestions];
+      tmp[key].questions[index].value = value; 
+      if(tmp[key].questions[index].question_type === "take_photo" || (tmp[key].questions[index].question_type === "yes_no" && (tmp[key].questions[index].yes_image || tmp[key].questions[index].no_image) )){
+        console.log("BASE ^$", value);
+        if(value.length > 0){
+          // var data = await RNFS.readFile( value[value.length-1] , 'base64').then(res => { return res });
+          // tmp[key].questions[index].base64 = data;           
+        }        
+      }      
+      setFormQuestions(tmp);
     }
-
-    const _onSubmit = () =>{
+  
+    const _onSubmit = async() =>{
       var flag = true;
       formQuestions.forEach(element => {
         element.questions.forEach(item => {
@@ -229,10 +245,85 @@ export const FormQuestions = (props) =>{
             }
         });
       });
+      
       if(!flag){
-        setMessage("Please complete the compulsory questions and then submit");
-        setIsAlert(true);
-      }      
+        dispatch(showNotification({type:'success', message: "Please complete the compulsory questions and then submit" , buttonText: "Okay" }));  
+        return;
+      } 
+      var form_answers= [];
+      var index  = 0;
+      formQuestions.forEach(element => {
+        element.questions.forEach(item => {
+            var value = item.value;
+            //if(value != null && value != undefined){
+              form_answers.push({key: `form_answers[${index}][form_question_id]` , value: item.form_question_id })
+              form_answers.push({key: `form_answers[${index}][answer]` , value: item.question_type === 'take_photo' ? '' : value })
+              index = index + 1;
+            //}                 
+        });
+      });
+
+      console.log("form questions" , JSON.stringify(formQuestions));      
+      console.log("Form", form);
+
+      var files = [];
+      formQuestions.map(async (element) => {
+        element.questions.map(async (item) => {          
+          if(item.question_type === "take_photo" || (item.question_type === "yes_no" && (item.yes_image || item.no_image) ) ){              
+            var paths = item.value;
+            if(item.yes_image != null  &&  item.yes_image != ""){
+              paths = item.yes_image;
+            }
+            if(item.no_image != null  &&  item.no_image != ""){
+              paths = item.no_image;
+            }            
+            console.log("IIIII", item);
+            console.log("PATH", paths);
+            if(paths != null && paths != '' && paths.length > 0){  
+              index = 0;
+              for (const path of paths) {                 
+                files.push( {key: `File[${item.form_question_id}][${index}]` , value: path } );   //, base64:item.base64
+                index = index + 1;
+              }                                                
+            }
+          }   
+        })          
+      })      
+
+      console.log("files", files.length);
+      var postData = new FormData();
+      postData.append("form_id", form.form_id);
+      postData.append("location_id", "1354");
+      postData.append("online_offline", "online");
+      form_answers.map((item) => {
+        if(item.key != undefined && item.value != undefined){
+          postData.append(item.key, item.value);
+        }        
+      })
+      files.map((item) => {
+        console.log("post data item", item);          
+        if(item.key != undefined && item.value != undefined){       
+          console.log("post data key", item.key);                    
+          var words = item.value.split('/');
+          var ext = words[words.length - 1].split(".");
+          console.log("ext", ext);
+          console.log("name", words[words.length - 1] );
+          postData.append(item.key, {uri:item.value, type:'image/' + ext[1], name:words[words.length - 1]} ); 
+        }           
+      })        
+
+      var time_zone = RNLocalize.getTimeZone();  
+      postData.append("user_local_data[time_zone]", time_zone );
+      postData.append("user_local_data[latitude]", currentLocation ? currentLocation.latitude : "0");
+      postData.append("user_local_data[longitude]", currentLocation ? currentLocation.longitude : "0");    
+
+      postApiRequestMultipart("forms/forms-submission", postData).then((res) => {
+        console.log("res", res);
+        dispatch(showNotification({type:'success' , message: res.message , buttonText:'Okay'}));
+      }).catch((e) => {
+        console.log("Err" , JSON.stringify(e))
+      })
+
     }
 
     const renderQuestion = (item , key, index) =>{      
@@ -247,14 +338,16 @@ export const FormQuestions = (props) =>{
       }else if(item.question_type === "yes_no"){
         return (
           <YesNoForm
-          onTakeImage={(images , type) => { 
+          onTakeImage={ async(images , type) => { 
               //onValueChangedSelectionView(key, index, images);              
               var tmp = [...formQuestions];      
               if(type === "yes"){
                 tmp[key].questions[index].yes_image = images; 
               }else{
                 tmp[key].questions[index].no_image = images; 
-              }              
+              } 
+              // var data = await RNFS.readFile( images[images.length-1] , 'base64').then(res => { return res });
+              // tmp[key].questions[index].base64 = data;              
               setFormQuestions(tmp);
             }}
           onPress={(value , type) => {            
@@ -340,7 +433,9 @@ export const FormQuestions = (props) =>{
           <TakePhotoForm
             key={ "take_photo_question" + `${key}${index}`} item={item}           
             onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
-            onPress={(value) => onValueChangedSelectionView(key, index, value) }
+            onPress={(value) => {
+              onValueChangedSelectionView(key, index, value);
+            } }
           ></TakePhotoForm>
         );
       }
@@ -428,7 +523,6 @@ export const FormQuestions = (props) =>{
                 info={bubbleText}
                 onModalClose={() => setIsInfo(false)}
               >
-
             </GuideInfoView>
 
             {/* {

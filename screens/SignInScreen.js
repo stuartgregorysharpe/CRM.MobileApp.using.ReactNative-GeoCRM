@@ -16,7 +16,7 @@ import { CHANGE_LOGIN_STATUS ,
   MAP_FILTERS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { getCurrentDate, getFilterData, getPinSvg, getToken, getUserData, storeCurrentDate, storeLocationLoop, storePinSvg } from '../constants/Storage';
+import {  getFilterData, getLocalData, getPinSvg, getToken, getUserData, storeLocationLoop, storePinSvg } from '../constants/Storage';
 import jwt_decode from "jwt-decode";
 import {displayName} from "../app.json";
 import { clearNotification } from '../actions/notification.action';
@@ -46,7 +46,7 @@ export default function SignIn() {
 
     var date = new Date().getDate();
     var month = new Date().getMonth();
-    var current = await getCurrentDate();    
+    var current = await getLocalData("@current_date");
     if(current !== month.toString() + date.toString()){
       await storeLocationLoop([]);
     }

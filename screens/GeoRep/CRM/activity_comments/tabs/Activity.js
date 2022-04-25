@@ -22,7 +22,7 @@ export default function Activity(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const currentLocation = useSelector(state => state.rep.currentLocation);
-
+    const [title, setTitle] = useState("");
 
     useEffect(() => {
         loadHistory(page);
@@ -36,8 +36,9 @@ export default function Activity(props) {
             getApiRequest("locations/location-history" , param).then((res) => {
                 setHistoryItems([...historyItems, ...res.history_items]);              
                 setPage(pageNumber + 1);
-                console.log("results", res.history_items.length);
+                console.log("results", res);
                 setIsLoading(false);
+                setTitle(res.location_name);
             }).catch((e) => {
                 setIsLoading(false);
             });
@@ -62,7 +63,7 @@ export default function Activity(props) {
             setIsLoading(false);
         });
     }
-
+    
     const renderSeparator = () => (
         <View
           style={{
@@ -89,7 +90,7 @@ export default function Activity(props) {
 
             <Notification/>            
             <View style={{marginTop:5, marginBottom:10}}>
-                <AppText size="medium" type="title" title="Activity for Checkers Century City"></AppText>       
+                <AppText size="medium" type="title" title={title}></AppText>       
             </View>
             
             <FlatList                
@@ -107,14 +108,13 @@ export default function Activity(props) {
             <View style={{alignItems:'center' , flexDirection:'column'}}>
                 <TouchableOpacity style={{marginBottom:10 , marginTop:10}} onPress={() => {loadMore()}}>
                     <AppText type="" color={whiteLabel().mainText} size="small" title="Load More ..." ></AppText>
-                </TouchableOpacity>
-                
+                </TouchableOpacity>                
                 
                 <TextInput
                     style={{borderWidth:1, borderRadius:5, 
                         color: whiteLabel().subText,
                         fontFamily:Fonts.secondaryRegular, 
-                        borderColor:Colors.primaryColor, width:'90%', padding:10 ,  marginBottom:10 }}  
+                        borderColor:whiteLabel().fieldBorder, width:'90%', padding:10 ,  marginBottom:10 }}  
                     outlineColor={Colors.primaryColor}
                     activeOutlineColor={Colors.disabledColor}
                     value={comment}

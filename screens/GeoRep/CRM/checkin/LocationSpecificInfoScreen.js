@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensions , BackHandler } from 'react-native';
+import { SafeAreaView, Text, View, ScrollView, TouchableOpacity, Image, Dimensions , BackHandler , ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { style } from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import { breakPoint } from '../../../../constants/Breakpoint';
@@ -17,16 +17,22 @@ import { LocationInfoInputTablet } from '../locationInfoDetails/LocationInfoInpu
 import Images from '../../../../constants/Images';
 import CustomerContactsScreen from '../customer_contacts/CustomerContactsScreen';
 import { FeatureCard } from '../partial/FeatureCard';
-import { checkFeatureIncludeParam } from '../../../../constants/Storage';
+import { checkFeatureIncludeParam, storeLocalValue } from '../../../../constants/Storage';
 import { useNavigation } from '@react-navigation/native';
 import ActivityComments from '../activity_comments/ActivityComments';
-import AlertDialog from '../../../../components/modal/AlertDialog';
+import Checkout from './partial/Checkout';
+import { getLocationInfo } from '../../../../actions/location.action';
+import { Notification } from '../../../../components/modal/Notification';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
 
 export default function LocationSpecificInfoScreen(props) {
   
   const dispatch = useDispatch();
   const navigationMain = useNavigation();
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [pageType, setPageType] = useState(props.route.params.page);  
+  const location_id = props.route.params.locationId;
   const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
@@ -35,8 +41,8 @@ export default function LocationSpecificInfoScreen(props) {
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] = useState(false);
   const [featureCards, setFeatureCards] = useState([]);
   const [isActivityComment, setIsActivityComment] =  useState(false);
-  
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const showLoopSlider = () => {
     // setShowItem(1);
     // dispatch({ type: SUB_SLIDE_STATUS, payload: true });
@@ -51,17 +57,53 @@ export default function LocationSpecificInfoScreen(props) {
     // dispatch({ type: SLIDE_STATUS, payload: false });
     loadFeatureCards(); 
     refreshHeader();
-
+    initData();
+    if(location_id !== undefined){
+      openLocationInfo(location_id);
+    }
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);    
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
     };
   }, []);
 
+  const initData = async() => {
+    if(pageType=== "checkin"){
+      await storeLocalValue("@checkin" , "1");
+      if(locationInfo !== undefined && locationInfo.location_id != undefined){
+        await storeLocalValue("@specific_location_id", locationInfo.location_id);
+      }    
+    }
+  }
+
+  const goBack = () =>{
+    if (props.navigation.canGoBack()) {     
+      props.navigation.goBack();
+    }
+  }
+
   const handleBackButtonClick = async() => {    
     console.log("back buttn press")
     return true;
   }
+  
+  const openLocationInfo = async(location_id) => {    
+    setIsLoading(true);
+    getLocationInfo( Number(location_id) , currentLocation)
+    .then((res) => {      
+      
+      if(locationInfoRef.current !== undefined){                    
+        locationInfoRef.current.updateDispositionData(res);        
+      }
+      setLocationIfo(res);
+      setIsLoading(false);
+    })  
+    .catch((e) =>{       
+      console.log("location info api ", e);
+      setIsLoading(false);
+    })
+  }
+
 
   
   const onCloseCustomerContactsScreen = () => {
@@ -75,13 +117,9 @@ export default function LocationSpecificInfoScreen(props) {
         return (<TouchableOpacity onPress={
           () => {
             console.log("Specific info header Title Clicked");
-            if(canShowCustomerContactsScreen){
-<<<<<<< HEAD
-              console.log("canShowCustomerContactsScreen",canShowCustomerContactsScreen);
-              setCanShowCustomerContactsScreen(false)
-=======
+            if(canShowCustomerContactsScreen){              
+              setCanShowCustomerContactsScreen(false);
               customerContactsRef.current.onBackHandler();
->>>>>>> 3f7359b53f61124f25c76a8c4d5da41f14e671f8
             }else{
               console.log("go back ", canShowCustomerContactsScreen);
               if (props.navigation.canGoBack()) {
@@ -159,31 +197,30 @@ export default function LocationSpecificInfoScreen(props) {
   }
 
   if (canShowCustomerContactsScreen) {
-<<<<<<< HEAD
-    return (
-        <CustomerContactsScreen onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} />      
-=======
     return (      
         <CustomerContactsScreen props={props} onClose={onCloseCustomerContactsScreen} locationId={locationInfo.location_id} ref={customerContactsRef} />      
->>>>>>> 3f7359b53f61124f25c76a8c4d5da41f14e671f8
     )
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:locationInfo? Colors.bgColor : {}}}>
       
-      <ActivityComments
-         locationId={locationInfo.location_id}
-         visible={isActivityComment}
-         onModalClosed={() => setIsActivityComment(false)}
-       >
-      </ActivityComments>
+      <Notification/>
 
-      {subSlideStatus && <TouchableOpacity
+      { 
+        locationInfo != undefined &&
+        <ActivityComments
+          locationId={locationInfo.location_id}
+          visible={isActivityComment}
+          onModalClosed={() => setIsActivityComment(false)}
+        >
+        </ActivityComments>
+      }
+      
+      { locationInfo && subSlideStatus && <TouchableOpacity
         activeOpacity={1}
         style={grayBackground}
-        onPress={() => { 
-          //dispatch({ type: SUB_SLIDE_STATUS, payload: false }) 
+        onPress={() => {           
         }}></TouchableOpacity>}
       {subSlideStatus && <View
         style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}
@@ -191,38 +228,57 @@ export default function LocationSpecificInfoScreen(props) {
         <RefreshSlider location_id={locationInfo.location_id} />
       </View>}
       
+      {
+        isLoading && <View style={{marginTop:100}}><ActivityIndicator/></View>
+      }
+
       <ScrollView style={styles.container}>
-        <View style={styles.headerBox}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <View style={styles.headerTitleBox}>
-              <View style={styles.subtitleBox}>
-                <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
-                <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name ? locationInfo.location_name.custom_field_name : ''}</Text>
-              </View>
-              <Text style={styles.title}>{locationInfo.location_name.value}</Text>
-            </View>
-            <View style={styles.subtitleBox}>
-              <SvgIcon style={styles.headerIcon} icon="Insert_Invitation" width='16px' height='16px' />
-              <Text style={styles.subtitle}>Last Interaction: {locationInfo.last_interaction}</Text>
-            </View>
-          </View>
-          <View style={styles.headerTitleBox}>
-            <View style={styles.subtitleBox}>
-              <SvgIcon style={styles.headerIcon} icon="Location_Arrow_White" width='14px' height='14px' />
-              <Text style={styles.subtitle}>Address:</Text>
-            </View>
-            <Text style={styles.title}>{locationInfo.address}</Text>
-            <TouchableOpacity style={styles.checkoutButton}>
-              <Text style={styles.checkoutButtonText}>Check out</Text>
-            </TouchableOpacity>
-          </View>
-          
+        
+        { locationInfo != undefined && 
+            <View style={styles.headerBox}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <View style={styles.headerTitleBox}>
+                    <View style={styles.subtitleBox}>
+                      <SvgIcon style={styles.headerIcon} icon="Person_Sharp_White" width='14px' height='14px' />
+                      <Text style={styles.subtitle}>{locationInfo.location_name.custom_field_name ? locationInfo.location_name.custom_field_name : ''}</Text>
+                    </View>
+                    <Text style={styles.title}>{locationInfo.location_name.value}</Text>
+                  </View>
+                  <View style={styles.subtitleBox}>
+                    <SvgIcon style={styles.headerIcon} icon="Insert_Invitation" width='16px' height='16px' />
+                    <Text style={styles.subtitle}>Last Interaction: {locationInfo.last_interaction}</Text>
+                  </View>
+                </View>
+                <View style={styles.headerTitleBox}>
+                  <View style={styles.subtitleBox}>
+                    <SvgIcon style={styles.headerIcon} icon="Location_Arrow_White" width='14px' height='14px' />
+                    <Text style={styles.subtitle}>Address:</Text>
+                  </View>
+                  <Text style={styles.title}>{locationInfo.address}</Text>
+                  <TouchableOpacity style={styles.checkoutButton}>
+                    <Text style={styles.checkoutButtonText}>Check out</Text>
+                  </TouchableOpacity>
+                </View>          
 
+                {
+                  pageType === "checkin" &&
+                  <Checkout goBack={(res) => {
+                    console.log("DD", res);
+                    dispatch(showNotification({ type: 'success', message: res.message, buttonText: 'Okay', 
+                        buttonAction : async() => {
+                            await storeLocalValue( "@checkin", "0");                            
+                            dispatch(clearNotification());                    
+                            goBack();
+                    } }));            
 
-          {/* <View style={styles.filterButton}>
-            <FilterButton text="Contact: Jack Reacher" />
-          </View> */}          
-        </View>
+                    
+                  } } location_id={locationInfo.location_id} ></Checkout>            
+                }
+                {/* <View style={styles.filterButton}>
+                  <FilterButton text="Contact: Jack Reacher" />
+                </View> */}          
+            </View>
+        }
 
 
 
@@ -274,6 +330,7 @@ export default function LocationSpecificInfoScreen(props) {
         <View style={{ height: 60 }}></View>
 
       </ScrollView>
+
       <TouchableOpacity style={[style.plusButton, { marginBottom: 80 }]} onPress={() => setStatusSubmit(!statusSubmit)}>
         <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
       </TouchableOpacity>
@@ -285,7 +342,7 @@ const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(parse({
   container: {
-    backgroundColor: BG_COLOR,
+    //backgroundColor: BG_COLOR,
     padding: 10,
   },
   headerBox: {
