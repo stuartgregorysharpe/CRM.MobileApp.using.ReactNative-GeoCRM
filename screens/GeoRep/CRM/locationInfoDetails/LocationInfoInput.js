@@ -24,8 +24,6 @@ import { getPostParameter } from '../../../../constants/Consts';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
 
-
-  const navigationMain = useNavigation();
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.infoInput);
   const locationConfirmModalVisible = useSelector(state => state.rep.locationConfirmModalVisible);
@@ -46,11 +44,9 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [message, setMessage] = useState("");
-  const [featureCards, setFeatureCards] = useState([]);
+  const [message, setMessage] = useState("");  
   const [options, setOptions] = useState([]);
-
-
+  
   useImperativeHandle(
     ref,
     () => ({
@@ -70,7 +66,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   useEffect(() => {
     dispatch({ type: CHANGE_LOCATION_ACTION, payload: null });
     dispatch({ type: CHANGE_BOTTOM_TAB_ACTION, payload: null });
-    loadFeatureCards();
+    
   }, []);
 
   useEffect(() => {
@@ -99,40 +95,9 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       updateOutcomes();
     }
   }, [isLoading])
+  
 
-  const loadFeatureCards = async () => {
-    const customer_and_contacts = await checkFeatureIncludeParam("customer_and_contacts");
-    const location_specific_forms = await checkFeatureIncludeParam("location_specific_forms");
-    const location_specific_pipeline = await checkFeatureIncludeParam("location_specific_pipeline");
-    let featureCards = [];
-    if (customer_and_contacts) {
-      featureCards.push({
-        title: `Customer & Contacts`,
-        icon: 'Person_Sharp_feature_card',
-        action: 'View all information'
-      });
-    }
-
-    if (location_specific_forms) {
-      featureCards.push({
-        title: `Forms`,
-        icon: 'Form_feature_card',
-        action: 'Specific to this location'
-      });
-    }
-    if (location_specific_pipeline) {
-      featureCards.push({
-        title: `Sales Pipeline`,
-        icon: 'Sales_Pipeline_feature_Card',
-        action: 'View location pipeline'
-      });
-    }
-
-    setFeatureCards([...featureCards]);
-  }
-
-  const updateOutcomes = () => {
-    
+  const updateOutcomes = () => {    
     var userParam = getPostParameter(currentLocation);
     let postData = {
       location_id: locationInfo.location_id,
@@ -330,25 +295,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         }}        
         >        
       </SelectionPicker>
-    );
-
-    // return (
-    //   <CustomPicker
-    //     visible={outComeModalVisible}
-    //     renderItems={
-    //       selectedOutcomes.map((outcome, key) => (
-    //         <TouchableOpacity style={[styles.pickerItem]} key={key}
-    //           onPress={() => {
-    //             setSelectedOutComeId(outcome.outcome_id);
-    //             setOutComeModalVisible(!outComeModalVisible);
-    //             setIsLoading(true);
-    //           }}>
-    //           <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
-    //           {outcome.outcome_id == selectedOutcomeId && <SvgIcon icon="Check" width='23px' height='23px' />}
-    //         </TouchableOpacity>
-    //       ))
-    //     } />
-    // )
+    );    
   }
 
   return (
@@ -447,31 +394,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           ))}
         </View>
       }
-
-      <View style={styles.cardContainer}>
-        {
-          props.pageType === "locationSpecificInfo" && featureCards.map((item, index) => {
-            console.log(parseFloat(index / 2));
-            return (
-              <View key={index} style={{ marginLeft: index % 2 ? 5 : 0, width: '49%' }}>
-                <FeatureCard icon={item.icon} title={item.title} actionTitle={item.action} onAction={() => {
-                  if (item.title === 'Forms') {
-                    dispatch({ type: SLIDE_STATUS, payload: false });
-                    navigationMain.navigate("RepForms", { screen: 'Root', params: { locationInfo: locationInfo } });                    
-                  }
-                  if (item.title === 'Customer & Contacts') {                    
-                    props.onFeatureCardClick('customer_contacts');
-                  }
-                  if (item.title === 'Sales Pipeline') {
-                    navigationMain.navigate("RepSalesPipeline", { locationInfo: locationInfo });
-                  }
-                }} />
-              </View>
-            );
-          })
-        }
-      </View>
-
+      
       <DateTimePickerModal
         isVisible={isDateTimePickerVisible}
         mode={datePickerMode}
@@ -560,7 +483,7 @@ const styles = EStyleSheet.create(parse({
     width: '47%'
   },
   button: {
-    backgroundColor: Colors.greyColor,
+    backgroundColor: whiteLabel().itemSelectedBackground + "31",
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,
@@ -653,10 +576,5 @@ const styles = EStyleSheet.create(parse({
     color: whiteLabel().mainText,
     fontSize: 16
   },
-  cardContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start' // if you want to fill rows left to right
-  },
+  
 }));

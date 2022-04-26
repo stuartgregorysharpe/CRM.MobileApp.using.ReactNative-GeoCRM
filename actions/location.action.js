@@ -18,6 +18,7 @@ import uuid from 'react-native-uuid';
 import { getBaseUrl, getFilterData, getLocationLoop, getToken, getUserData, getUserId, setToken } from '../constants/Storage';
 let cancelToken
 
+
 export const getLocationPinKey = () => (dispatch, getState) => {
   dispatch({ type: STATUS_PIN_KEY, payload: 'request' });
   axios
@@ -75,9 +76,12 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .then((res) => {        
+        console.log("DDD", res);
+
         if (res.data == undefined) {
           resolve([]);
         }
+        
         if (res.data.status == 'success') {
           resolve(res.data);
           console.log("polygon data", res.data.polygons);          
@@ -86,6 +90,7 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .catch((err) => {
+        console.log("DDDe ", err);
         const error = err.response;
         if (error.status===401 && error.config && 
           !error.config.__isRetryRequest) {            
@@ -198,9 +203,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
       console.log(err);
     })
-
 }
-
 
 export const getLocationSearchListsByPage = async (filters, pageNumber , searchKey) => {
 
@@ -209,9 +212,9 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
   var user_id = await getUserId();
 
   return new Promise(function (resolve, reject) {
-    // Geolocation.getCurrentPosition(
-    //   position => {
-        //const { latitude, longitude } = position.coords;
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
         console.log("URL " ,`${base_url}/locations/location-search-list`);
         console.log("user_id",user_id);
         console.log("searchKey",searchKey);
@@ -220,8 +223,8 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             params: {
               user_id: user_id,
               filters: filters,
-              // current_latitude: latitude,
-              // current_longitude: longitude,
+              current_latitude: latitude,
+              current_longitude: longitude,
               page_nr: pageNumber,
               search_text:searchKey
             },
@@ -255,12 +258,52 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
             }
           })
 
-    //   },
-    //   error => {
-    //     console.log(error.code, error.message);
-    //   },
-    //   {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
-    // );
+      },
+      error => {
+        
+        axios
+          .get(`${base_url}/locations/location-search-list`, {
+            params: {
+              user_id: user_id,
+              filters: filters,
+              current_latitude: -30.559989,
+              current_longitude: 22.937508,
+              page_nr: pageNumber,
+              search_text:searchKey
+            },
+            headers: {
+              Authorization: 'Bearer ' + token
+            }
+          })
+          .then((res) => {
+            if (res.data == undefined) {
+              resolve([]);
+            }
+            if (res.data.error) {
+              setToken(null);
+              resolve([]);
+            }
+
+            if (res.data.status == 'success') {
+              console.log("RESponse " , res.data.items );
+              resolve(res.data.items);
+            } else {
+              resolve([]);
+            }
+          })
+          .catch((err) => {
+            const error = err.response;
+            if (error.status===401 && error.config && 
+              !error.config.__isRetryRequest) {          
+                reject("expired");
+            }else{
+              reject(err);  
+            }
+          })
+
+      },
+      {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
+    );
 
 
   });
@@ -474,12 +517,12 @@ export const getLocationInfo = async (location_id, currentLocation) => {
   var prev_locations = await getLocationLoop();
   var prev_ids = prev_locations.map(item => item.location_id).join(',');
 
-
+  console.log("prev_ids",prev_ids)
   var params = {
     user_id: user_id,
     location_id: location_id
   }
-  if (currentLocation !== undefined) {
+  if ( currentLocation != null && currentLocation !== undefined) {
     params = {
       user_id: user_id,
       location_id: location_id,
@@ -629,45 +672,6 @@ export const postReloop = async (postData) => {
   });
 }
 
-
-export const postLocationFeedback = async (postData) => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  console.log("URL " , `${base_url}/locations-info/location-feedback` ) 
-  console.log("Param " , postData)
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/locations-info/location-feedback`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4()
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          resolve("");
-          return;
-        }
-        console.log(res.data);
-        if (res.data.status == "success") {
-          resolve(res.data.message);
-        } else {
-          resolve("");
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-
-  });
-}
-
 export const postLocationImage = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
@@ -779,7 +783,6 @@ export const getLocationContacts = async (location_id) => {
   });
 }
 
-
 export const addEditLocationContact = async (postData) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
@@ -829,8 +832,7 @@ export const updateCustomerLocationFields = async (postData) => {
           'Indempotency-Key': uuid.v4()
         }
       })
-      .then((res) => {
-        // console.log("getLocationFields:",res.data);
+      .then((res) => {        
         if (res.data == undefined) {
           resolve([]);
         }

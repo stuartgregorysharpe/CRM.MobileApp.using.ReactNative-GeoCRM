@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions , Modal, TouchableWithoutFeedback } from 'react-native';
-import { Title , Button , Portal } from 'react-native-paper';
+import { Title } from 'react-native-paper';
 import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Divider from '../../../../components/Divider';
-import FilterButton from '../../../../components/FilterButton';
-import { getFormFilters } from '../../../../actions/forms.action';
-import FilterOptionsModal from '../../../../components/modal/FilterOptionsModal';
-import { clearFilterData, getFilterData, storeFilterData } from '../../../../constants/Storage';
 import { style } from '../../../../constants/Styles';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import FastImage from 'react-native-fast-image';

@@ -7,7 +7,7 @@ import { DISABLED_COLOR, PRIMARY_COLOR, whiteLabel } from '../../../constants/Co
 import { boxShadow, style } from '../../../constants/Styles';
 import { BG_COLOR } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import { checkFeatureIncludeParam, getBaseUrl, getToken, setToken } from '../../../constants/Storage';
+import { checkFeatureIncludeParam, getBaseUrl, getLocalData, getToken, setToken } from '../../../constants/Storage';
 import { getCalendar, updateCalendar } from '../../../actions/calendar.action';
 import { useSelector, useDispatch, connect } from 'react-redux';
 import { CalendarItem } from './partial/CalendarItem';
@@ -15,10 +15,9 @@ import DraggableFlatList, { ScaleDecorator, useOnCellActiveAnimation } from 'rea
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { CHANGE_LOGIN_STATUS, LOCATION_LOOP_LISTS } from '../../../actions/actionTypes';
 import moment from 'moment';
-import { white } from 'react-native-paper/lib/typescript/styles/colors';
-import { showNotification } from '../../../actions/notification.action';
 import { expireToken, getPostParameter } from '../../../constants/Consts';
 import { Notification } from '../../../components/modal/Notification';
+import { clearNotification, showNotification } from '../../../actions/notification.action';
 var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
@@ -142,10 +141,23 @@ export default function CalendarScreen(props) {
       });
   }
 
+  
   const renderCalendarItem = (item, index, tabIndex) => {    
     return (
       <View style={{ marginTop: 10 }}>
-        <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} onItemSelected={() => { }}>
+        <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} 
+        onCheckIn={() => {
+
+          // dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location", buttonText: 'Continue', 
+          //   buttonAction : async() => {                    
+          //     var specificLocationId = await getLocalData("@specific_location_id");
+          //     props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
+          //     dispatch(clearNotification());
+
+          //   } }));                        
+
+        }}
+        onItemSelected={() => { }}>
         </CalendarItem>
       </View>)
   }

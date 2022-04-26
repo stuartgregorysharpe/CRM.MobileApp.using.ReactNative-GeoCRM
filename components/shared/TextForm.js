@@ -15,7 +15,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
     },[]);
 
     useEffect(() =>{
-        console.log("item trigger")
+        //console.log("item trigger")
         setText(item.value === null ? '' : item.value)        
     },[item]);
 

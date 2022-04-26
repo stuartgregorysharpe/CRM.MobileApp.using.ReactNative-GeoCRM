@@ -128,7 +128,7 @@ export default function RepMoreScreen({navigation}) {
         navigation.navigate("RecordedSales");
         return;
       case 'RepSalesPipeline':
-        navigation.navigate("RepSalesPipeline");
+        navigation.navigate("RepSalesPipeline", { locationInfo: null });          
         return;
       case 'Support':
         navigation.navigate("Support");
@@ -280,7 +280,7 @@ export default function RepMoreScreen({navigation}) {
         name="RepSalesPipeline"
         options={{ header: () => null }}
       >
-        {props => <RepSalesPipelineScreen {...props} screenProps={navigation} />}
+        {props => <RepSalesPipelineScreen {...props} screenProps={navigation}  />}
       </Stack.Screen>}
 
       {/* crm More Screen */}

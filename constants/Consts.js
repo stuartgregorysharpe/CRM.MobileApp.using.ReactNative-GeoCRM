@@ -23,11 +23,31 @@ export function notifyMessage(title, msg) {
     ]);
 }
 
+export function notifyMsg ( dispatch , title  ) { 
+    dispatch(showNotification({ type: 'success', message: title , buttonText: 'Ok', 
+    buttonAction : () => {  
+      dispatch(clearNotification());
+
+    } }));
+  
+}
+
+
 export function getTwoDigit(value){
     if(value <= 9){
         return "0" + value;
     }
     return String(value);
+}
+
+export function checkFeatureIncludeParamFromSession (features , param) {
+  if (features !== undefined) {
+    var res = features.includes(param);
+    return res;
+  } else {
+    return false;
+  }
+
 }
 
 export function getDistance (prelatlng, currentlatlng) {
@@ -80,7 +100,7 @@ export function isInsidePoly  (lat, lon, multiPolycoords) {
 export function expireToken ( dispatch , e ) {
   if(e === "expired"){    
     console.log("token EXPIRED !!!!!")                        
-    dispatch(showNotification({ type: 'success', message: "Access has expired, please login again", buttonText: 'Exit', 
+    dispatch(showNotification({ type: 'success', message: "Access has expired, please login again", buttonText: 'Ok', 
     buttonAction : () => {
       console.log("action button")
       setToken(null);

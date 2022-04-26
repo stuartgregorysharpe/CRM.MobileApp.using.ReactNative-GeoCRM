@@ -9,6 +9,7 @@ const navIconActive = whiteLabel().activeIcon;
 const navIconInActive = whiteLabel().inactiveIcon;
 const selectedIcon = whiteLabel().itemSelectedIconFill;
 const actionFullButtonIconFill = whiteLabel().actionFullButtonBackground;
+const actionOutlineButtonText = whiteLabel().actionOutlineButtonText;
 
 const Round_Btn_Default_Dark = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
@@ -708,7 +709,7 @@ const Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height=
 `;
 const Arrow_Left_alt = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
 <g id="Group_4283" data-name="Group 4283" transform="translate(22.737 37.649) rotate(180)">
-  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionFullButtonIconFill}/>
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionOutlineButtonText}/>
 </g>
 </svg>
 `;
@@ -720,7 +721,7 @@ const Arrow_Right_Button = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3"
 
 const Arrow_Right_Button_alt = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
 <g id="Group_4984" data-name="Group 4984" transform="translate(-6.437 -10.659)">
-  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionFullButtonIconFill}/>
+  <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionOutlineButtonText}/>
 </g>
 </svg>`;
 
@@ -814,6 +815,12 @@ const Person_Sharp_feature_card = `<svg xmlns="http://www.w3.org/2000/svg" width
 
 const Form_feature_card = `<svg id="file-earmark-text-fill" xmlns="http://www.w3.org/2000/svg" width="44.442" height="51.849" viewBox="0 0 44.442 51.849">
 <path id="Path_3960" data-name="Path 3960" d="M4.5,9.657A7.407,7.407,0,0,1,11.907,2.25h19.6a3.7,3.7,0,0,1,2.619,1.085L47.857,17.064a3.7,3.7,0,0,1,1.085,2.619V46.692A7.407,7.407,0,0,1,41.535,54.1H11.907A7.407,7.407,0,0,1,4.5,46.692Zm25.925,7.407V5.954L45.239,20.768H34.128A3.7,3.7,0,0,1,30.425,17.064ZM13.759,28.175a1.852,1.852,0,1,0,0,3.7H39.683a1.852,1.852,0,1,0,0-3.7Zm-1.852,9.259a1.852,1.852,0,0,1,1.852-1.852H39.683a1.852,1.852,0,1,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,37.433Zm0,7.407a1.852,1.852,0,0,1,1.852-1.852H28.573a1.852,1.852,0,0,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,44.84Z" transform="translate(-4.5 -2.25)" fill=${whiteLabel().feature_card_icon_fill} fill-rule="evenodd"/>
+</svg>
+`;
+
+const Activity_Comments = `<svg id="chatboxes" xmlns="http://www.w3.org/2000/svg" width="47.711" height="47.711" viewBox="0 0 47.711 47.711">
+<path id="Path_3958" data-name="Path 3958" d="M31.6,33a3.209,3.209,0,0,0-2.006-.515H16.277c-3.98,0-7.4-2.993-7.4-6.791V14.133H8.673a5.211,5.211,0,0,0-5.3,5.218V34.134c0,2.868,2.455,4.657,5.471,4.657h1.869V44.3l6.091-5.161a2.432,2.432,0,0,1,1.514-.344h10.3c2.638,0,5.437-1.308,5.952-3.67L31.6,33Z" transform="translate(-3.375 3.415)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="Path_3959" data-name="Path 3959" d="M40.31,3.375H15.388C11.409,3.375,9,6.448,9,10.234v19.29a7.04,7.04,0,0,0,7.192,6.882h11.6a3.147,3.147,0,0,1,2.006.481l8.567,6.859v-7.34H40.31a7.06,7.06,0,0,0,7.226-6.87v-19.3A7.052,7.052,0,0,0,40.31,3.375Z" transform="translate(0.175 -3.375)" fill=${whiteLabel().feature_card_icon_fill}/>
 </svg>
 `;
 
@@ -923,6 +930,7 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Calendar_Next" && <SvgXml style={style} xml={Calendar_Next} width={width} height={height} />}
     {icon == "Time_Up" && <SvgXml style={style} xml={Time_Up} width={width} height={height} />}
     {icon == "Time_Down" && <SvgXml style={style} xml={Time_Down} width={width} height={height} />}
-        
+    {icon == "Activity_Comments" && <SvgXml style={style} xml={Activity_Comments} width={width} height={height} />}    
+    
   </Fragment>
 );

@@ -10,7 +10,7 @@ import SvgIcon from '../SvgIcon';
 const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, options, value, onModalClose, onValueChanged }) => {
 
     const [selectedVals, setSelectedVal] = useState(value !== null && value !== undefined ? value : [] );
-
+    //console.log("options-options" ,options)
     const getCheckedStatus = ( item,  values ) => {
         //console.log("selectedVals - ----", selectedVals);
         if( mode === "single"){
@@ -88,7 +88,7 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
                             </View>
                             <ScrollView style={{maxHeight:400}}>
                             {
-                                options.map((item, index) => (
+                                options != null && options != undefined && options.map((item, index) => (
                                     <TouchableOpacity  key={index}
                                         onPress={() => {                                                                                  
                                             onTapItem(item , index);

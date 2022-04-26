@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
 import CustomLoading from '../../../../components/CustomLoading';
@@ -510,7 +510,7 @@ const styles = EStyleSheet.create({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
@@ -521,7 +521,7 @@ const styles = EStyleSheet.create({
     width: '47%'
   },
   button: {
-    backgroundColor: GRAY_COLOR,
+    backgroundColor: whiteLabel().itemSelectedBackground + "31",
     paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,

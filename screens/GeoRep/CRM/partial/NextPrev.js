@@ -1,6 +1,6 @@
 
 
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect,forwardRef ,useImperativeHandle} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {  Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { whiteLabel } from '../../../../constants/Colors';
@@ -12,7 +12,8 @@ import { expireToken } from '../../../../constants/Consts';
 var currentPosition = -1;
 var isClickable = true;
 
-export function NextPrev(props){
+//export function NextPrev(props){
+export const NextPrev = forwardRef(( props, ref ) => {
 
     // pageType : 'camera' or 'search-lists'  ,  onUpdated: called after pressed "next" or "prev" button.
     const {currentLocation, pageType ,locationInfo , onUpdated , onStart , canGoNextPrev } = props;    
@@ -23,7 +24,22 @@ export function NextPrev(props){
     const [loopPosition, setLoopPosition] = useState(-1);
     const [nextLocationName, setNextLocationName] = useState("");
     const [prevLocationName, setPrevLocationName] = useState("");
-    //console.log("currentLocation --" , currentLocation);
+    //console.log("currentLoopLists --" , currentLoopLists);
+
+    useImperativeHandle(
+        ref,
+        () => ({
+          onClickPrev() {        
+              console.log("Called on prev");
+            onPrev();
+          },
+          onClickNext(){
+              console.log("called on next");
+            onNext();
+          }
+        }),
+        [currentLoopLists],
+      );
 
     useEffect(() =>{       
         console.log("page type", pageType.name); 
@@ -36,7 +52,10 @@ export function NextPrev(props){
         }
     },[])
 
+
+
     useEffect(() =>{
+        console.log("updatede lopp list")
         if(pageType.name === "search-lists"){            
             initLocationLoopData();
         }else if(pageType.name === "camera"){
@@ -89,14 +108,17 @@ export function NextPrev(props){
         });
 
         if(position != -1){ // exist in original lists
+
+            console.log("new_lists1",savedLocationLoops)
+
             setCurrentLoopList([...savedLocationLoops]);
             currentPosition = position;
 
             if(currentPosition < savedLocationLoops.length - 1){
-                setNextLocationName(savedLocationLoops[position+1].name);
+                setNextLocationName(savedLocationLoops[position+1].name ? savedLocationLoops[position+1].name : '');
             }
             if(currentPosition > 0){
-                setPrevLocationName(savedLocationLoops[position-1].name);
+                setPrevLocationName(savedLocationLoops[position-1].name ? savedLocationLoops[position-1].name: '');
             }
             setIsNext(true);
             if(currentPosition === 0){
@@ -116,6 +138,7 @@ export function NextPrev(props){
                 }
                 new_lists = [...savedLocationLoops , currentLoc ];
             }                
+            console.log("new_lists2",new_lists)
             setCurrentLoopList(new_lists);        
             currentPosition = new_lists.length - 1;
             await storeLocationLoop(new_lists);
@@ -167,6 +190,7 @@ export function NextPrev(props){
     
     const openLocationInfo = (location_id , curLocation) => {        
         isClickable = false;
+        console.log("new loc id", location_id)
         getLocationInfo( Number(location_id) , curLocation)
         .then((res) => {                     
             onUpdated(res);
@@ -180,6 +204,7 @@ export function NextPrev(props){
 
     const openNewLocationInfo = (location_id) => {        
         isClickable = false;
+        console.log("new loc idd", location_id)
         getLocationInfo( Number(location_id) , currentLocation)
         .then( async(res) => {
             // add new loop item 
@@ -197,17 +222,20 @@ export function NextPrev(props){
             isClickable = true;
         })
     }
-
+    
     const onPrev = () =>{
         if(isClickable){
-            onStart();
-            
+
+            console.log("on prev")
+            onStart();            
             if(pageType.name === "camera"){                                                    
                 openLocationInfo(currentLoopLists[getCameraPrevPosition(currentPosition)].location_id);            
                 currentPosition = getCameraPrevPosition(currentPosition);            
                 setNextLocationName(loopLists[getCameraNextPosition(currentPosition)].name);
                 setPrevLocationName(loopLists[getCameraPrevPosition(currentPosition)].name);
             }else if(pageType.name === "search-lists"){                
+                console.log("page tpye", pageType.name);
+                console.log("page tpye", currentPosition);
                 if(currentPosition > 0){
                     openLocationInfo(currentLoopLists[currentPosition - 1].location_id);                
                     currentPosition =  currentPosition - 1 ;
@@ -230,14 +258,23 @@ export function NextPrev(props){
     }
 
     const onNext = () =>{
+                
         if(isClickable){
+        
             onStart();            
+        
+            console.log("on next")
             if(pageType.name === "camera"){                
                 openLocationInfo(currentLoopLists[getCameraNextPosition(currentPosition)].location_id);
                 currentPosition = getCameraNextPosition(currentPosition);
                 setNextLocationName(loopLists[getCameraNextPosition(currentPosition)].name);
                 setPrevLocationName(loopLists[getCameraPrevPosition(currentPosition)].name);            
             }else if(pageType.name === "search-lists"){ 
+                console.log("ddd", currentPosition);
+                console.log("currentLoopLists",currentLoopLists);
+
+                console.log("ddd", currentLoopLists.length - 1 );
+                console.log("locationInfo",locationInfo)
                 if(currentPosition === currentLoopLists.length - 1){                    
                     openNewLocationInfo(locationInfo.next.location_id);                    
                 }else if(currentPosition < currentLoopLists.length - 1){
@@ -245,8 +282,10 @@ export function NextPrev(props){
                     if(currentPosition + 1 == currentLoopLists.length - 1){
                         openLocationInfo(currentLoopLists[currentPosition + 1].location_id , currentLocation);
                     }else{
-                        openLocationInfo(currentLoopLists[currentPosition + 1].location_id);                       
+                        openLocationInfo(currentLoopLists[currentPosition + 1].location_id);
                     }                                        
+                }else{
+
                 }
             }  
         }          
@@ -259,7 +298,7 @@ export function NextPrev(props){
                 isPrev &&
                 <TouchableOpacity style={styles.leftContainer} 
                     onPress={ async () => {                                     
-                        if( await canGoNextPrev() === true ){
+                        if( canGoNextPrev("prev") === true ){
                             onPrev();
                         }
                     
@@ -277,9 +316,9 @@ export function NextPrev(props){
                 isNext && 
                 <TouchableOpacity style={[styles.rightContainer ]}  
                     onPress={ async () =>{                        
-                        if( await canGoNextPrev() === true ){
+                       if(  canGoNextPrev("next") === true ){
                             onNext();
-                        }                        
+                       }                        
                     }}>
                     <View style={[styles.prevStyle , { paddingLeft:20, paddingRight:10 }]}>
                         <Text style={{marginRight:13, fontSize:12 , color: whiteLabel().actionOutlineButtonText , fontWeight:'700'}}>                            
@@ -289,11 +328,11 @@ export function NextPrev(props){
                     </View>            
                 </TouchableOpacity>
             }
-                        
+                                    
         </View>
     </Fragment>
 
-}
+});
 
 const styles = StyleSheet.create({
     container:{

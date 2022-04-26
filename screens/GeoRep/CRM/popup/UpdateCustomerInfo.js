@@ -68,15 +68,15 @@ export default function UpdateCustomerInfo({ location_id, onClose, pageType }) {
         setIsSuccess(true);
       })
   }
-
-  // useEffect(() => {
-  //   const id = setInterval(() => {
-  //     if(Platform.OS === "android"){
-  //       dispatch(updateCurrentLocation());
-  //     }
-  //   }, 2500);
-  //   return () => clearInterval(id);  
-  // }, []);
+    
+  useEffect(() => {
+    const id = setInterval(() => {
+      if(Platform.OS === "android"){
+        dispatch(updateCurrentLocation());
+      }
+    }, 5000);
+    return () => clearInterval(id);  
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);

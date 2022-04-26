@@ -114,8 +114,8 @@ export const getMapMinZoomLevel = async () =>{
   } catch (e) {    
     return 8;
   }
-
 }
+
 
 export const checkFeatureIncludeParam = async (param) => {
   try {
@@ -199,17 +199,16 @@ export const getFilterData = async (type) => {
 }
 
 
-export const storeCurrentDate = async (value) => {
+export const storeLocalValue = async ( type, value) => {
   try {
-    await AsyncStorage.setItem('@current_date', String(value))
+    await AsyncStorage.setItem(type, String(value))
   } catch (e) {
     // saving error
   }
 }
-
-export const getCurrentDate = async () => {
+export const getLocalData = async (type) => {
   try {
-    const value = await AsyncStorage.getItem('@current_date')
+    const value = await AsyncStorage.getItem(type)
     if (value !== null) {
       return value;
     }
@@ -222,9 +221,8 @@ export const storeLocationLoop = async (value) => {
   try {
 
     var date = new Date().getDate();
-    var month = new Date().getMonth();
-    await storeCurrentDate(month.toString() + date.toString());
-
+    var month = new Date().getMonth();    
+    await storeLocalValue( "@current_date", month.toString() + date.toString());
     const jsonValue = JSON.stringify(value)
     await AsyncStorage.setItem('@location_loop', jsonValue)
   } catch (e) {

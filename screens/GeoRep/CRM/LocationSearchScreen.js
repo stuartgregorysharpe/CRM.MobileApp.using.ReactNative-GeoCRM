@@ -19,14 +19,16 @@ import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
-import { getFilterData } from '../../../constants/Storage';
+import { getFilterData, getLocalData } from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 import { Notification } from '../../../components/modal/Notification';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import { clearNotification, showNotification } from '../../../actions/notification.action';
 
 var isEndPageLoading = false;
 var searchKey = "";
 var changedKey = "";
+var isCheckIn = "";
 
 export default function LocationSearchScreen(props) {
   
@@ -60,7 +62,8 @@ export default function LocationSearchScreen(props) {
     setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '');    
   });
   
-  useEffect(() => {      
+  useEffect(() => {
+    initData();
     if(orderLists.length === 0){      
       isEndPageLoading = false;
       loadMoreData();
@@ -128,6 +131,10 @@ export default function LocationSearchScreen(props) {
     changedKey = searchKeyword;
   },[searchKeyword]);  
 
+  const initData = async() => {
+    isCheckIn = await getLocalData("@checkin");
+  }
+
   const refreshHeader = () => {
     props.screenProps.setOptions({                 
       headerTitle:() =>{
@@ -174,6 +181,7 @@ export default function LocationSearchScreen(props) {
     console.log("search key", searchKey);
     console.log("page number", pageNumber);
     var filterData = await getFilterData('@filter');
+    
     getLocationSearchListsByPage(filterData, pageNumber , searchKey)
     .then((res) => {
       if(pageNumber === 0){
@@ -250,12 +258,10 @@ export default function LocationSearchScreen(props) {
     }
   }
   
-
-  const openLocationInfo = async(location_id) => {
-    
+  
+  const openLocationInfo = async(location_id) => {    
     setLocationInfo(undefined);
-    animation("locationInfo");
-    console.log("calle m" , location_id);
+    animation("locationInfo");    
     getLocationInfo( Number(location_id) , myLocation)
     .then((res) => {      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
@@ -273,9 +279,8 @@ export default function LocationSearchScreen(props) {
       isChecked={selectedLocationsForCalendar.find(element => element.location_id === item.location_id ? true: false )}
       isSelected={isSelected}
       item={item}    
-      onItemClicked={(isChecked) => {
+      onItemClicked={ (isChecked) => {
         if(isSelected){
-
           orderLists[index].checked = isChecked; 
           var selectedItems = [ ...selectedLocationsForCalendar ];
           if(isChecked){
@@ -286,11 +291,21 @@ export default function LocationSearchScreen(props) {
           dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedItems})
         }else{
           openLocationInfo(item.location_id);
+
+          // if(isCheckIn === "1"){            
+          //   dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location", buttonText: 'Continue', 
+          //   buttonAction : async() => {                                      
+          //     var specificLocationId = await getLocalData("@specific_location_id");
+          //     props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
+          //     dispatch(clearNotification());                                
+          //   } }));                        
+          // }else{
+            
+          // }          
         }        
       }}>
       </LocationItem>)
   } 
-
 
   const loadMoreData = async() =>{
     
