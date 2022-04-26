@@ -3,8 +3,6 @@ import axios from "axios";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import jwt_decode from "jwt-decode";
 
-
-
 export const getDynamicPins = async(token) => {
 
   var data = token != null ? jwt_decode(token) : null;

@@ -260,7 +260,47 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
 
       },
       error => {
-        console.log(error.code, error.message);
+        
+        axios
+          .get(`${base_url}/locations/location-search-list`, {
+            params: {
+              user_id: user_id,
+              filters: filters,
+              current_latitude: -30.559989,
+              current_longitude: 22.937508,
+              page_nr: pageNumber,
+              search_text:searchKey
+            },
+            headers: {
+              Authorization: 'Bearer ' + token
+            }
+          })
+          .then((res) => {
+            if (res.data == undefined) {
+              resolve([]);
+            }
+            if (res.data.error) {
+              setToken(null);
+              resolve([]);
+            }
+
+            if (res.data.status == 'success') {
+              console.log("RESponse " , res.data.items );
+              resolve(res.data.items);
+            } else {
+              resolve([]);
+            }
+          })
+          .catch((err) => {
+            const error = err.response;
+            if (error.status===401 && error.config && 
+              !error.config.__isRetryRequest) {          
+                reject("expired");
+            }else{
+              reject(err);  
+            }
+          })
+
       },
       {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
     );

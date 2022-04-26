@@ -186,7 +186,7 @@ export default function ContentLibraryScreen(props) {
                   if(tmp.length == 2){                                      
                     fileName = tmp[0];
                     ext = tmp[1];
-                    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;                    
+                    const path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
                     RNFS.exists(path).then((res) =>{
                       if(res){
                         console.log("file exist", path);

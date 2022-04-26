@@ -6,6 +6,7 @@ import { ParagraphForm } from '../../../../components/shared/ParagraphForm';
 import { TextForm } from '../../../../components/shared/TextForm';
 import { YesNoForm } from '../../../../components/shared/YesNoForm';
 import { SingleSelectForm } from '../../../../components/shared/SingleSelectForm';
+import { UploadFileForm } from '../../../../components/shared/UploadFileForm';
 import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Images from '../../../../constants/Images';
@@ -19,8 +20,6 @@ import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { SignatureForm } from '../../../../components/shared/SignatureForm';
 import Sign  from './partial/Sign';
 import GrayBackground from '../../../../components/GrayBackground';
-import * as ImagePicker from 'react-native-image-picker'; 
-import RNFS from 'react-native-fs';
 import { SelectionView } from './partial/SelectionView';
 import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
@@ -31,7 +30,6 @@ import { Notification } from '../../../../components/modal/Notification';
 import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../actions/api.action';
 import { showNotification } from '../../../../actions/notification.action';
 import * as RNLocalize from "react-native-localize";
-
 
 export const FormQuestions = (props) =>{
 
@@ -72,8 +70,7 @@ export const FormQuestions = (props) =>{
         });
       }
       if(!crmStatus){
-        setIsDateTimeView(false);
-        //setIsSign(false);
+        setIsDateTimeView(false);        
       }
     }, [crmStatus]);
 
@@ -152,8 +149,7 @@ export const FormQuestions = (props) =>{
           tmp.questions = [...newTmp];
         }    
       });      
-      setFormQuestions(newData);    
-      console.log("original form data", newData)        ;
+      setFormQuestions(newData);      
     }
     
     const isInNewData = (data, value) =>{
@@ -186,13 +182,7 @@ export const FormQuestions = (props) =>{
       // setTimeout(() =>{        
       // },1000)
     }
-    const getShift  = () =>{
-      if(Platform.OS === 'ios'){
-        return 65;
-      }
-      return 35;
-    }
-
+    
     const confirmDateTime = (datetime) =>{      
       var tmp = [...formQuestions];                  
       tmp[key].questions[index].value = datetime ;
@@ -225,14 +215,7 @@ export const FormQuestions = (props) =>{
     }
     const onValueChangedSelectionView = async ( key, index, value) => {      
       var tmp = [...formQuestions];
-      tmp[key].questions[index].value = value; 
-      if(tmp[key].questions[index].question_type === "take_photo" || (tmp[key].questions[index].question_type === "yes_no" && (tmp[key].questions[index].yes_image || tmp[key].questions[index].no_image) )){
-        console.log("BASE ^$", value);
-        if(value.length > 0){
-          // var data = await RNFS.readFile( value[value.length-1] , 'base64').then(res => { return res });
-          // tmp[key].questions[index].base64 = data;           
-        }        
-      }      
+      tmp[key].questions[index].value = value;            
       setFormQuestions(tmp);
     }
   
@@ -262,10 +245,7 @@ export const FormQuestions = (props) =>{
             //}                 
         });
       });
-
-      console.log("form questions" , JSON.stringify(formQuestions));      
-      console.log("Form", form);
-
+      
       var files = [];
       formQuestions.map(async (element) => {
         element.questions.map(async (item) => {          
@@ -277,8 +257,6 @@ export const FormQuestions = (props) =>{
             if(item.no_image != null  &&  item.no_image != ""){
               paths = item.no_image;
             }            
-            console.log("IIIII", item);
-            console.log("PATH", paths);
             if(paths != null && paths != '' && paths.length > 0){  
               index = 0;
               for (const path of paths) {                 
@@ -289,11 +267,10 @@ export const FormQuestions = (props) =>{
           }   
         })          
       })      
-
-      console.log("files", files.length);
+      
       var postData = new FormData();
       postData.append("form_id", form.form_id);
-      postData.append("location_id", "1354");
+      postData.append("location_id", location_id);
       postData.append("online_offline", "online");
       form_answers.map((item) => {
         if(item.key != undefined && item.value != undefined){
@@ -338,16 +315,13 @@ export const FormQuestions = (props) =>{
       }else if(item.question_type === "yes_no"){
         return (
           <YesNoForm
-          onTakeImage={ async(images , type) => { 
-              //onValueChangedSelectionView(key, index, images);              
+          onTakeImage={ async(images , type) => {               
               var tmp = [...formQuestions];      
               if(type === "yes"){
                 tmp[key].questions[index].yes_image = images; 
               }else{
                 tmp[key].questions[index].no_image = images; 
-              } 
-              // var data = await RNFS.readFile( images[images.length-1] , 'base64').then(res => { return res });
-              // tmp[key].questions[index].base64 = data;              
+              }               
               setFormQuestions(tmp);
             }}
           onPress={(value , type) => {            
@@ -399,8 +373,7 @@ export const FormQuestions = (props) =>{
           onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; }}
           key={ "numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
         );
-      }else if(item.question_type === "date"){
-        //setIsDateTimeView(false);
+      }else if(item.question_type === "date"){        
         return (
           <DateForm key={ "date_question" + index} item={item}  
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
@@ -429,6 +402,7 @@ export const FormQuestions = (props) =>{
 
       }else if(item.question_type === "take_photo"){
 
+
         return (
           <TakePhotoForm
             key={ "take_photo_question" + `${key}${index}`} item={item}           
@@ -437,6 +411,13 @@ export const FormQuestions = (props) =>{
               onValueChangedSelectionView(key, index, value);
             } }
           ></TakePhotoForm>
+        );
+      }else if(item.question_type === "upload_file"){
+        return (
+          <UploadFileForm key={"upload_form" + index} item={item}  
+          onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
+          onPress={() => {                        
+          }}></UploadFileForm>
         );
       }
       return <View key={"question" + index} ></View>
