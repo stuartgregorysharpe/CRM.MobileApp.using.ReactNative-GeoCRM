@@ -18,6 +18,7 @@ export default function SupportScreen(props) {
   const ticketRef = useRef();
   
   useEffect(() => {    
+    console.log("----------PROPS SUPPORT SCREEN CALLING------------");
     if (props.screenProps) {
       props.screenProps.setOptions({        
         headerTitle: () => {
