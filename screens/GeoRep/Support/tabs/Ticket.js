@@ -4,7 +4,7 @@ import {View,StyleSheet, ScrollView, TouchableOpacity, Text, Platform, ToastAndr
 import Fonts from '../../../../constants/Fonts';
 import {  Modal, Portal, TextInput } from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
-import { BG_COLOR, DISABLED_COLOR, PRIMARY_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { BG_COLOR,  whiteLabel } from '../../../../constants/Colors';
 import { getBaseUrl, getToken, getUserData } from '../../../../constants/Storage';
 import { getSupportIssues, postSupportEmail } from '../../../../actions/support.action';
 import uuid from 'react-native-uuid';
@@ -156,7 +156,7 @@ export const Ticket = forwardRef((props, ref) => {
               label="Email"
               mode="outlined"
               outlineColor={whiteLabel().fieldBorder}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={email}
               onChangeText={text => setEmail(text)}
             />
@@ -174,7 +174,7 @@ export const Ticket = forwardRef((props, ref) => {
               label={issue == '' ? "Select Issue" : issue}
               mode="outlined"
               outlineColor={whiteLabel().fieldBorder}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
             />
             <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
           </View>
@@ -184,7 +184,7 @@ export const Ticket = forwardRef((props, ref) => {
           style={styles.textArea}
           mode="outlined"
           outlineColor={whiteLabel().fieldBorder}
-          activeOutlineColor={DISABLED_COLOR}
+          activeOutlineColor={Colors.disabledColor}
           placeholder="Issue details can be entered here..."
           multiline={true}
           value={issueDetails}

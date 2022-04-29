@@ -506,11 +506,8 @@ export const postLocationInfoUpdate = async (postData) => {
 }
 
 
-
-
 export const getLocationInfo = async (location_id, currentLocation) => {
-
-  console.log("currentLocation", currentLocation);
+  
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();

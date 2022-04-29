@@ -42,6 +42,7 @@ export default function LocationSearchScreenPlaceholder({}){
 const styles = StyleSheet.create({
     resultItem: {
         maxWidth: '100%',
+        
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingTop: 8,

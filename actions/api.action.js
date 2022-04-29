@@ -122,7 +122,7 @@ export const postApiRequestMultipart = async (route, postData) => {
         resolve(0);
       })
       .catch((err) => { 
-        console.log("Err", err);
+        console.log("Err", JSON.parse(err));
         const error = err.response;
         if (error.status===401 && error.config && 
           !error.config.__isRetryRequest) {          

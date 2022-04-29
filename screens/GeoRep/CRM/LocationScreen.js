@@ -31,6 +31,8 @@ import { Notification } from '../../../components/modal/Notification';
 import { SvgXml } from 'react-native-svg';
 import { AppText } from '../../../components/common/AppText';
 import { clearNotification, showNotification } from '../../../actions/notification.action';
+import { compose } from 'redux';
+import CheckInStatusView from './partial/CheckInStatusView';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -55,7 +57,6 @@ export default function LocationScreen(props) {
   const filterParmeterChanged = useSelector(state => state.selection.mapFilters);
   const isCalendarSelection = useSelector(state => state.selection.isCalendarSelection);
   const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);
-
   const dispatch = useDispatch();
   const [showItem, setShowItem] = useState("map_view");
   const [locationInfo, setLocationInfo] = useState();  
@@ -80,8 +81,10 @@ export default function LocationScreen(props) {
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05"); 
   const [isCheckIn, setIsCheckIn] = useState(false);
+  console.log("MAp page");
     
   useEffect(() => { 
+    console.log("MAp page init");
     initData();
     refreshHeader();
     if (crmStatus) {
@@ -428,16 +431,7 @@ export default function LocationScreen(props) {
       dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedLocations});
       
     }else{
-      openLocaitonInfoDetails( Number(item.location_id) );
-      // if(isCheckIn === "1"){        
-      //     dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location", buttonText: 'Continue', 
-      //       buttonAction : () => {               
-      //         props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
-      //         dispatch(clearNotification());                                
-      //     } }));            
-      // }else{        
-      // }
-      
+      openLocaitonInfoDetails( Number(item.location_id) );            
     }
   }
 
@@ -672,15 +666,9 @@ export default function LocationScreen(props) {
 
                   {
                     isCheckIn === "1" &&
-                    <TouchableWithoutFeedback onPress={() => { 
-                      console.log("pdd" , specificLocationId);
+                    <CheckInStatusView page="map" specificLocationId={specificLocationId} onGo={() => {
                       props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
-                    }} >
-                      <View style={[styles.checkinBubble]}>                      
-                        <AppText size="medium" color={whiteLabel().headerText} title="You are currently checked-in to a location."></AppText>
-                        <AppText size="medium" color={whiteLabel().headerText} title="Tap here to continue"></AppText>
-                      </View> 
-                    </TouchableWithoutFeedback>
+                    }} ></CheckInStatusView>                     
                   }               
                                       
                   {
@@ -735,7 +723,7 @@ const styles = EStyleSheet.create(parse({
   container: {
     flex:1,
     justifyContent: 'space-between',
-    backgroundColor: Colors.bgColor,        
+    backgroundColor: Colors.bgColor,            
     paddingBottom: Platform.OS == "android" ? 50 : 50,    
   },
   map: {
@@ -824,15 +812,7 @@ const styles = EStyleSheet.create(parse({
     backgroundColor: 'rgba(255,255,255,0.9)'
   },
 
-  checkinBubble:{
-    width:"92%",
-    position:'absolute', alignSelf:'center' , bottom:0 ,paddingLeft:10, paddingRight:10, paddingTop:7, paddingBottom:7,    
-    borderRadius:5,
-    // backgroundColor: 'rgba(255,255,255,0.9)',
-    backgroundColor:whiteLabel().headerBackground, 
-    alignItems:'center', 
-    marginBottom:50
-  },
+  
 
   finishBtnStyle:{
     position:'absolute', alignSelf:'center' , bottom:20 ,paddingLeft:15, paddingRight:15, paddingTop:10, paddingBottom:10,

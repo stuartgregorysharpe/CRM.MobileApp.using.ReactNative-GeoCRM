@@ -26,9 +26,10 @@ export const SingleSelectForm = ({item , onPress ,onTouchStart}) => {
                                         color={whiteLabel().mainText}                    
                                     />
                             </View>
-                        </View>
+                        </View>                        
                         
                         <MultipleButton   onPress={ () =>{ onPress(item); } } text={ item.value ? item.value : 'Select Option'} ></MultipleButton>
+
                     </View>                    
                 </View>
                                 

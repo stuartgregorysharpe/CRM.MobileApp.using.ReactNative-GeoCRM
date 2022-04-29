@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions, Platform } from 'react-native';
-import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
+import { View, TouchableOpacity, StyleSheet, ScrollView,TouchableWithoutFeedback, Text, Dimensions, Platform , Modal} from 'react-native';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import Divider from '../../../../../components/Divider';
@@ -8,15 +7,34 @@ import { boxShadow, style } from '../../../../../constants/Styles';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
 
-export const SelectionView = ({options , mode,  value, onClose , onSave , onValueChanged}) => {    
-    const [selectedVals, setSelectedVal] = useState(value !== null && value !== undefined ? value : [] );
+export const SelectionView = ({ visible, options , mode,  selectedVals, onClose , onSave , onValueChanged}) => {    
+    const [localSelectedVals, setSelectedVal] = useState(selectedVals !== null && selectedVals !== undefined ? selectedVals : [] );
+    
+    console.log("dddd", selectedVals);
     useEffect(() => { 
+        console.log('enter', selectedVals)
+        if(selectedVals === null){
+            setSelectedVal([]);
+        }else{
+            setSelectedVal(selectedVals);
+        }  
+    },[selectedVals]);
 
-    },[]);
+    useEffect(() => {
+        if(visible){
+            if(selectedVals === null){
+                setSelectedVal([]);
+            }
+            console.log("always")     
+        }
+          ;
+    },[visible]);
+
    
     const getCheckedStatus = ( item,  values ) => {
         console.log("selectedVals - ----", selectedVals);
-        
+        console.log("localSelectedVals - ----", localSelectedVals);
+             
         var tmp = null;
         if(values !== null && values !== undefined){
             tmp = values.find((element => element === item ));
@@ -31,53 +49,91 @@ export const SelectionView = ({options , mode,  value, onClose , onSave , onValu
         console.log("clicked", item);
         if(mode === "single"){
             setSelectedVal([item]);
-            onValueChanged([item]);
+           // onValueChanged([item]);
         }else {
-            var check = selectedVals.find( element => element === item);
-            if(check != null){
-                var tmp = selectedVals.filter( element => element !== item);                
-                setSelectedVal(tmp);
-                onValueChanged(tmp);
+            console.log("selectedVals",selectedVals)
+            if(localSelectedVals != null && localSelectedVals !== undefined){
+                var check = localSelectedVals.find( element => element === item);
+                if(check != null){
+                    var tmp = localSelectedVals.filter( element => element !== item);                
+                    setSelectedVal(tmp);
+                //    onValueChanged(tmp);
+                }else{
+                    setSelectedVal([...localSelectedVals, item]);
+                   // onValueChanged([...selectedVals, item]);
+                }
             }else{
-                setSelectedVal([...selectedVals, item]);
-                onValueChanged([...selectedVals, item]);
-            }        
+                setSelectedVal([item]);
+                //onValueChanged([item]);
+            }
+              
         }
     }
 
    
     return (        
-        <ScrollView style={styles.container}>
-            <TouchableOpacity style={{ padding: 6 }}>
-                <Divider />
-            </TouchableOpacity>
+        <Modal             
+            animationType="slide"
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => {
+                //setSelectedVal([]);
+                onClose();
+            }}>
+            
 
-            <View style={styles.sliderHeader}>                
-                <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >Select the correct answer from the list:</Text>
-                <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
-                    <Text style={{ fontSize: 13, fontFamily: Fonts.secondaryRegular ,  color:Colors.selectedRedColor}}>Clear</Text>
-                </TouchableOpacity>
-            </View>
+                <View style={style.centeredView}>
+                    
+                    <TouchableWithoutFeedback 
+                        onPress={()=>{
+                           // setSelectedVal([]);
+                            
+                            onClose();
+                        }}>
+                      <View style={styles.topContainer}></View>
+                    </TouchableWithoutFeedback>
 
-            { options && options.map((item, key) => (
-                <View key={key}>
-                
-                    <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={key}>
-                        <Text style={styles.pickerItemText}>{item}</Text>
+                    <View style={style.modalView}>       
+                                                
+                        <TouchableOpacity style={{ padding: 6 }}>
+                            <Divider />
+                        </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => onTapItem(item) }>
-                            <View style={[styles.checkBoxStyle , getCheckedStatus(item, selectedVals)? {} : {backgroundColor:'white'}]}>
-                                <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
+                        <View style={styles.sliderHeader}>                
+                            <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >Select the correct answer from the list:</Text>
+                            <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
+                                <Text style={{ fontSize: 13, fontFamily: Fonts.secondaryRegular ,  color:Colors.selectedRedColor}}>Clear</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        { options && options.map((item, key) => (
+                            <View key={key}>
+                            
+                                <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={key}>
+                                    <Text style={styles.pickerItemText}>{item}</Text>
+
+                                    <TouchableOpacity onPress={() => onTapItem(item) }>
+                                        <View style={[styles.checkBoxStyle , getCheckedStatus(item, localSelectedVals)? {} : {backgroundColor:'white'}]}>
+                                            <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
+                                        </View>
+                                    </TouchableOpacity>                                                
+                                </View>                          
                             </View>
-                        </TouchableOpacity>                                                
-                    </View>                          
-                </View>
-          ))}
-                                  
-                                  
-            <SubmitButton onSubmit={ () =>  onSave()} title="Save"></SubmitButton>
+                        ))}
 
-        </ScrollView>        
+                        <SubmitButton onSubmit={ () => {                                
+                                onValueChanged(localSelectedVals);                                
+                                onSave()
+                        }} title="Save"></SubmitButton>
+                                            
+                    </View>
+                    
+                </View>
+
+                
+
+            
+        </Modal>
     );
 }
 
@@ -127,7 +183,14 @@ const styles = StyleSheet.create({
     },
     closeModal: {            
         paddingRight: 5  
-    }
-      
+    },
+    topContainer:{
+        width:Dimensions.get("screen").width,        
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height:Dimensions.get("screen").height,        
+    },
 
 });

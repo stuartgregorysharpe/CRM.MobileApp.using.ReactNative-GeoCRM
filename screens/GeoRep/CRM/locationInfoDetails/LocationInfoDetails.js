@@ -22,13 +22,14 @@ import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import { NextPrev } from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
-import { checkFeatureIncludeParam, getLocalData } from '../../../../constants/Storage';
+import { getLocalData } from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import { checkFeatureIncludeParamFromSession, getPostParameter } from '../../../../constants/Consts';
+import { checkFeatureIncludeParamFromSession, getPostParameter, selectPicker } from '../../../../constants/Consts';
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import moment from 'moment-timezone';
 import { Notification } from '../../../../components/modal/Notification';
 import { clearNotification, showNotification } from '../../../../actions/notification.action';
+
 var outcomeVal = false;
 var isCheckinTypes = false;
 var isFeedbackLocInfoOutcome = false;
@@ -60,7 +61,6 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
   const [checkinTypes, setCheckInTypes] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const nextPrevRef = useRef();  
-
 
   useImperativeHandle(
     ref,
@@ -103,8 +103,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   useEffect(() => {
     outcomeVal = false;    
-    initData();
-    dispatch({type: SUB_SLIDE_STATUS, payload: false});
+    initData();  
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardStatus(true);
     });
@@ -122,8 +121,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const initData = () => {
     isCheckinTypes  = checkFeatureIncludeParamFromSession(features , "checkin_types");
-    isFeedbackLocInfoOutcome = checkFeatureIncludeParamFromSession(features , "feedback_loc_info_outcome");
-    
+    isFeedbackLocInfoOutcome = checkFeatureIncludeParamFromSession(features , "feedback_loc_info_outcome");    
   }
 
   const handleBackButtonClick = async() => {    
@@ -152,8 +150,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     }
   }  
 
-  const _canGoNextPrev = () => {    
-    //let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");    
+  const _canGoNextPrev = () => {        
     if( isFeedbackLocInfoOutcome && !outcomeVal){
       setIsFeedback(true);
       return false;
@@ -216,28 +213,28 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
     });
   }
     
-  selectPicker = (title, description) => {
-    return Alert.alert(
-      title,
-      description,
-      [
-        // The "Yes" button
-        {
-          text: "Gallery",
-          onPress: () => {
-            launchImageLibrary();
-          },
-        },
-        // The "No" button        
-        {
-          text: "Camera",
-          onPress: () => {
-            launchCamera();
-          }
-        },
-      ]
-    );
-}
+  // selectPicker = (title, description) => {
+  //   return Alert.alert(
+  //     title,
+  //     description,
+  //     [
+  //       // The "Yes" button
+  //       {
+  //         text: "Gallery",
+  //         onPress: () => {
+  //           launchImageLibrary();
+  //         },
+  //       },
+  //       // The "No" button        
+  //       {
+  //         text: "Camera",
+  //         onPress: () => {
+  //           launchCamera();
+  //         }
+  //       },
+  //     ]
+  //   );
+  // }
   
   const updateLocationImage = async (path) => {
     
@@ -375,9 +372,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
       setIsFeedback(true);
       setModalTitle("Check In Types");
       setModalType("checkin_type");
-      setFeedbackOptions([]);
-      //locations/checkin-types
-      //flashcrm.georep.com/appservices/
+      setFeedbackOptions([]);      
       getApiRequest("locations/checkin-types" , {} ).then((res) => {
         console.log("re", res);
         if(res.status === "success"){
@@ -419,7 +414,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
 
   const onClickCheckIn = async() => {
     var isCheckin = await getLocalData("@checkin");
-    if( isCheckin === "1" ){      
+    if( isCheckin === "1" ){
       dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location" , buttonText: 'Continue', 
       buttonAction : async() => {          
         var specificLocationId = await getLocalData("@specific_location_id");
@@ -482,6 +477,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
         <Divider />
       </TouchableOpacity>
       
+
       <KeyboardAwareScrollView 
         enableOnAndroid={true}
         enableAutomaticScroll={(Platform.OS === 'ios')}
@@ -546,8 +542,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
                       {
                         locationInfo.location_image === "" &&
                         <TouchableOpacity onPress={() => {
-                            selectPicker("Upload or capture an image:", "");
-                            
+                            selectPicker("Upload or capture an image:", "", launchImageLibrary, launchCamera);
                         }}>
                           {
                             filePath  !== '' && 
@@ -652,8 +647,7 @@ export const LocationInfoDetails = forwardRef(( props, ref ) => {
               }}>
           <SvgIcon icon="DISPOSITION_POST" width='70px' height='70px' />
         </TouchableOpacity> 
-      }
-      
+      }      
     </View>
   )
   

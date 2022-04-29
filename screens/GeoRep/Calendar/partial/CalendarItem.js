@@ -12,7 +12,7 @@ import { LOCATION_ID_CHANGED } from '../../../../actions/actionTypes';
 import { style } from '../../../../constants/Styles';
 let isCheckIn = "0";
 
-export function CalendarItem({ navigation, item , current , tabIndex , onItemSelected ,onCheckIn }) {
+export function CalendarItem({ navigation, item , current , tabIndex , onItemSelected  }) {
     
     useEffect(() =>{
         initData();
@@ -66,14 +66,9 @@ export function CalendarItem({ navigation, item , current , tabIndex , onItemSel
             <Text style={[styles.itemTitle, {textAlign: 'center'}]}> {item.schedule_time}</Text>
             <TouchableOpacity style={[styles.itemButton, {backgroundColor:getButtonColor(item.checkin_state)}]} onPress={() =>{
                 if(checkFeatureIncludeParam("open_replace_checkin")){
-
-                    if(isCheckIn === "1"){
-                        onCheckIn();
-                    }else{
-                        dispatch({type: LOCATION_ID_CHANGED, payload: {value:item.location_id , type:tabIndex } })                    
-                        navigation.navigate('CRM', {'screen': 'LocationSearch',  params : {'location_id': item.location_id}});  
-                        onItemSelected();
-                    }
+                    dispatch({type: LOCATION_ID_CHANGED, payload: {value:item.location_id , type:tabIndex } })                    
+                    navigation.navigate('CRM', {'screen': 'LocationSearch',  params : {'location_id': item.location_id}});  
+                    onItemSelected();                    
                 }
             }}>
               <Text style={styles.itemButtonText}> {getButtonText(item.checkin_state)} </Text>

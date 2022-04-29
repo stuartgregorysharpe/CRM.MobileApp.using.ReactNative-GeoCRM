@@ -54,7 +54,8 @@ export default function LocationSpecificInfoScreen(props) {
 
   useEffect(() => {
     // dispatch({ type: SUB_SLIDE_STATUS, payload: false });
-    // dispatch({ type: SLIDE_STATUS, payload: false });
+    //dispatch({ type: SLIDE_STATUS, payload: false });
+  
     loadFeatureCards(); 
     refreshHeader();
     initData();
@@ -67,12 +68,20 @@ export default function LocationSpecificInfoScreen(props) {
     };
   }, []);
 
+  const hideBottomBar = () => {
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'none',
+      },
+    });
+  }
+
   const initData = async() => {
     if(pageType=== "checkin"){
       await storeLocalValue("@checkin" , "1");
       if(locationInfo !== undefined && locationInfo.location_id != undefined){
         await storeLocalValue("@specific_location_id", locationInfo.location_id);
-      }    
+      }
     }
   }
 
@@ -122,8 +131,11 @@ export default function LocationSpecificInfoScreen(props) {
               customerContactsRef.current.onBackHandler();
             }else{
               console.log("go back ", canShowCustomerContactsScreen);
-              if (props.navigation.canGoBack()) {
-                //dispatch({ type: SLIDE_STATUS, payload: false });
+              if (props.navigation.canGoBack()) {       
+                if(pageType === "checkin" || pageType === "access_crm"){
+                  console.log("called hidebototm");
+                  hideBottomBar();
+                }
                 props.navigation.goBack();
               }
             }
@@ -149,6 +161,12 @@ export default function LocationSpecificInfoScreen(props) {
         >
         </TouchableOpacity>
       ),
+      tabBarStyle: {
+        position: 'absolute',
+        height: 50,
+        paddingBottom: Platform.OS == "android" ? 5 : 0,          
+        backgroundColor: Colors.whiteColor,
+      }
     });
   }
 
@@ -262,12 +280,11 @@ export default function LocationSpecificInfoScreen(props) {
 
                 {
                   pageType === "checkin" &&
-                  <Checkout goBack={(res) => {
-                    console.log("DD", res);
+                  <Checkout goBack={ async(res) => {
+                    await storeLocalValue( "@checkin", "0");
                     dispatch(showNotification({ type: 'success', message: res.message, buttonText: 'Okay', 
-                        buttonAction : async() => {
-                            await storeLocalValue( "@checkin", "0");                            
-                            dispatch(clearNotification());                    
+                        buttonAction : async() => {                            
+                            dispatch(clearNotification());                
                             goBack();
                     } }));            
 

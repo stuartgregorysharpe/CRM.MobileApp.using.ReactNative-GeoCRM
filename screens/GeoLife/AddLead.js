@@ -13,7 +13,7 @@ import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
 import { breakPoint } from '../constants/Breakpoint';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import Colors, { DISABLED_COLOR } from '../../constants/Colors';
+import Colors from '../../constants/Colors';
 
 export default function AddLead({screenProps}) {
   const dispatch = useDispatch();
@@ -82,7 +82,7 @@ export default function AddLead({screenProps}) {
                 label="Customer Name"
                 mode="outlined"
                 outlineColor={PRIMARY_COLOR}
-                activeOutlineColor={DISABLED_COLOR}
+                activeOutlineColor={Colors.disabledColor}
                 value={customerName}
                 onChangeText={text => setCustomerName(text)}
               />
@@ -103,7 +103,7 @@ export default function AddLead({screenProps}) {
               label="Address"
               mode="outlined"
               outlineColor={PRIMARY_COLOR}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={address}
               onChangeText={text => setAddress(text)}
             />
@@ -120,7 +120,7 @@ export default function AddLead({screenProps}) {
               label="Primary Contact Person"
               mode="outlined"
               outlineColor={PRIMARY_COLOR}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={contactPerson}
               onChangeText={text => setContactPerson(text)}
             />
@@ -137,7 +137,7 @@ export default function AddLead({screenProps}) {
               label="Primary Contact Email"
               mode="outlined"
               outlineColor={PRIMARY_COLOR}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={contactEmail}
               onChangeText={text => setContactEmail(text)}
             />
@@ -154,7 +154,7 @@ export default function AddLead({screenProps}) {
               label="Primary Contact Mobile"
               mode="outlined"
               outlineColor={PRIMARY_COLOR}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={contactMobile}
               onChangeText={text => setContactMobile(text)}
             />
@@ -171,7 +171,7 @@ export default function AddLead({screenProps}) {
               label="Location Type"
               mode="outlined"
               outlineColor={PRIMARY_COLOR}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={locationType}
               onChangeText={text => setLocationType(text)}
             />
@@ -188,7 +188,7 @@ export default function AddLead({screenProps}) {
               label="Group"
               mode="outlined"
               outlineColor={PRIMARY_COLOR}
-              activeOutlineColor={DISABLED_COLOR}
+              activeOutlineColor={Colors.disabledColor}
               value={group}
               onChangeText={text => getGroup(text)}
             />

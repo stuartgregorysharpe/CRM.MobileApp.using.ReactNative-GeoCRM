@@ -1,8 +1,7 @@
 import React, { useState,useRef, useEffect } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, Dimensions ,  FlatList, Image, Platform , ActivityIndicator , BackHandler} from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, Dimensions , StyleSheet, FlatList, Image, Platform , ActivityIndicator , BackHandler} from 'react-native';
 import { Provider } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
@@ -22,25 +21,26 @@ import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
 import { getFilterData, getLocalData } from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 import { Notification } from '../../../components/modal/Notification';
-import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
-import { clearNotification, showNotification } from '../../../actions/notification.action';
+import AddLead from './popup/AddLead';
+import CheckInStatusView from './partial/CheckInStatusView';
 
 var isEndPageLoading = false;
 var searchKey = "";
 var changedKey = "";
-var isCheckIn = "";
+var savedShowItem = 0;
+var specificLocationId  = 0;
 
-export default function LocationSearchScreen(props) {
-  
+export default function LocationSearchScreen(props) {  
   const navigation = props.navigation;
   const dispatch = useDispatch();
-  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
-  const [isRequest, setIsRequest] = useState(false);
+  //const crmStatus = useSelector(state => state.rep.crmSlideStatus);  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(state => state.selection.searchFilters);
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
   const [orderLists, setOrderLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
-  const [showItem, setShowItem] = useState(0);
+  const [showItem, setShowItem] = useState(savedShowItem);  
+  console.log("DDD", savedShowItem)
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState("");  
   const locationId = useSelector(state => state.location.locationId.value);
@@ -56,10 +56,11 @@ export default function LocationSearchScreen(props) {
   const [isPageLoading, setIsPageLoading] = useState(false);  
   const [pageNumber, setPageNumber] = useState(0);
   const [myLocation, setMyLocation] = useState(currentLocation);  
+  const [isCheckin, setIsCheckin] = useState(false);
 
   useEffect(() => {
     console.log("SEARCH PAGE REALOAD");
-    setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '');    
+    ///setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '');    
   });
   
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function LocationSearchScreen(props) {
       loadMoreData();
     }
     refreshHeader();
+    console.log("shw item", showItem)
   },[]);
 
   useEffect(() =>{
@@ -83,8 +85,14 @@ export default function LocationSearchScreen(props) {
   
   useEffect(() => {    
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log("focuseed")
-      refreshHeader()
+      console.log("focuseed");      
+      if(savedShowItem == 2){
+        console.log("showItem cc", savedShowItem);
+        refreshHeader();
+        hideBottomBar();        
+      }      
+      initData();
+
     });
     return unsubscribe;
   }, [navigation]);
@@ -94,15 +102,14 @@ export default function LocationSearchScreen(props) {
   }, [currentLocation]);
 
   useEffect(() => {            
-    if(locationId !== 0 && isRequest == false && tabType !== undefined){        
+    if(locationId !== 0 && tabType !== undefined){        
       setPageType({"name":"camera", "type":tabType});      
       openLocationInfo(locationId)
     }
   }, [locationId, tabType]);
 
   useEffect(() => {
-    if(calendarType == "optimize" || calendarType == "add") {
-      //setIsSelected(true)
+    if(calendarType == "optimize" || calendarType == "add") {      
       dispatch({type: IS_CALENDAR_SELECTION, payload: true});
     }
   },[calendarType]);
@@ -129,10 +136,12 @@ export default function LocationSearchScreen(props) {
   useEffect(() =>{
     console.log("search key board" ,searchKeyword)
     changedKey = searchKeyword;
-  },[searchKeyword]);  
+  },[searchKeyword]);
 
   const initData = async() => {
-    isCheckIn = await getLocalData("@checkin");
+    var ischeckIn = await getLocalData("@checkin");
+    setIsCheckin(ischeckIn);
+    specificLocationId = await getLocalData("@specific_location_id");
   }
 
   const refreshHeader = () => {
@@ -147,13 +156,16 @@ export default function LocationSearchScreen(props) {
               goPreviousPage();
             }
           }}> 
+          
           <View style={style.headerTitleContainerStyle}>            
-              <Image
-                resizeMethod='resize'
-                style={{width:15,height:20, marginRight:5}}
-                source={Images.backIcon}
-              />
-          <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
+              {
+                (!features.includes("disable_crm_map_view") || savedShowItem != 0) && 
+                <Image
+                  resizeMethod='resize'
+                  style={{width:15,height:20, marginRight:5}}
+                  source={Images.backIcon}/>
+              }              
+            <Text style={{color:"#FFF", fontFamily:Fonts.primaryRegular, fontSize:19, fontWeight:"400"}} >CRM</Text>
         </View></TouchableOpacity>)
       },      
       headerLeft: () => (
@@ -164,16 +176,42 @@ export default function LocationSearchScreen(props) {
             if(locationRef !== undefined &&  locationRef.current !== undefined && locationRef.current !== null){                            
               locationRef.current.closePopup();
               setPageType({name:'search-lists'});
-            }else{              
+            } else {
               setShowItem(0);
+              console.log("set show Item 0");
               dispatch({type: SLIDE_STATUS, payload: false});
               dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}});              
             }
           }}
         >
         </TouchableOpacity>
-      ),
+      ),      
     });
+    
+    if(showItem != 0){
+      hideBottomBar();      
+    }else{
+      showBottomBar();     
+    }
+  }
+  const hideBottomBar = () => {  
+    console.log("hide bottom bar" , props.screenProps);
+
+    props.screenProps.setOptions({
+      tabBarStyle: {
+        display: 'none',
+      },
+    });    
+  }
+  const showBottomBar = () =>{
+    props.screenProps.setOptions({ 
+      tabBarStyle: {
+        position: 'absolute',
+        height: 50,
+        paddingBottom: Platform.OS == "android" ? 5 : 0,          
+        backgroundColor: Colors.whiteColor,
+      }
+    });   
   }
 
   const loadData = async (searchKey) => {
@@ -219,6 +257,9 @@ export default function LocationSearchScreen(props) {
       navigation.goBack();
       dispatch({type: SLIDE_STATUS, payload: false});      
       dispatch({type: LOCATION_ID_CHANGED, payload: {value:0, type:0}})
+    }else{
+      animation("search-page");
+      showBottomBar();
     }
   }
 
@@ -236,33 +277,42 @@ export default function LocationSearchScreen(props) {
   }
 
   const animation = (name) => {
-    dispatch({type: SLIDE_STATUS, payload: true});
+    console.log("animation",name);
+    //dispatch({type: SLIDE_STATUS, payload: true});
     console.log("name" , name);
     switch(name) {
       case "search-page":
         setShowItem(0);
+        savedShowItem = 0;
         return;
       case "filter":        
         dispatch(getLocationFilters());
         setShowItem(1);
+        savedShowItem = 1;
         return;
       case "locationInfo":
         setShowItem(2);
+        savedShowItem = 2;
         return;
       case "addtocalendar":
         setShowItem(3);
+        savedShowItem = 3;
+        return;
+      case "addLead":
+        setShowItem(4);
+        savedShowItem = 4;
         return;
       default:
         setShowItem(0);
+        savedShowItem = 0; 
         return;
     }
   }
-  
-  
-  const openLocationInfo = async(location_id) => {    
-    setLocationInfo(undefined);
+    
+  const openLocationInfo = async(location_id) => {
+
     animation("locationInfo");    
-    getLocationInfo( Number(location_id) , myLocation)
+    getLocationInfo( Number(location_id) , currentLocation)
     .then((res) => {      
       if( locationRef !== undefined && locationRef.current !== undefined && locationRef.current !== null){        
         locationRef.current.updateView(res);
@@ -289,19 +339,9 @@ export default function LocationSearchScreen(props) {
             selectedItems = selectedItems.filter( element => element.location_id !== item.location_id );
           }          
           dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedItems})
-        }else{
-          openLocationInfo(item.location_id);
-
-          // if(isCheckIn === "1"){            
-          //   dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location", buttonText: 'Continue', 
-          //   buttonAction : async() => {                                      
-          //     var specificLocationId = await getLocalData("@specific_location_id");
-          //     props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
-          //     dispatch(clearNotification());                                
-          //   } }));                        
-          // }else{
-            
-          // }          
+        }else{          
+          hideBottomBar();
+          openLocationInfo(item.location_id);          
         }        
       }}>
       </LocationItem>)
@@ -339,14 +379,13 @@ export default function LocationSearchScreen(props) {
   }
   
   return (
-    <Provider>
-      
-      <SafeAreaView style={{flex:1, }}>
-                
+    <Provider>      
+
+      <SafeAreaView style={{ flex: 1 }}>                
           <Notification/>
           <AlertDialog visible={isCreated}  message={message} onModalClose={() => setIsCreated(false) }></AlertDialog>              
           
-          {crmStatus && (showItem == 3 || showItem == 1) && <TouchableOpacity
+          {(showItem == 3 || showItem == 1) && <TouchableOpacity
             activeOpacity={1} 
             style={grayBackground}
             onPress={() => {
@@ -354,25 +393,26 @@ export default function LocationSearchScreen(props) {
               dispatch({type: SUB_SLIDE_STATUS, payload: false})
               dispatch({type: SLIDE_STATUS, payload: false});
               setShowItem(0); 
-
+              
             }}
           ></TouchableOpacity>}
 
-          {crmStatus && showItem == 1 && <View
+          {showItem == 1 && <View
             style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}
           >
             <FilterView navigation={navigation} page={"search"} onClose={() =>{
               dispatch({type: SLIDE_STATUS, payload: false});
-              setShowItem(0);  
+              setShowItem(0);
+              
             }} />
           </View>}
 
-          {crmStatus && showItem == 2 &&
+          { showItem == 2 &&
             <View
-              style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>
-
+              style={[styles.transitionView, {top: 0}, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]}>              
               <LocationInfoDetails
-                  {...props}
+                  //{...props}
+                  navigation={navigation}
                   ref={locationRef}              
                   animation={animation}    
                   goPreviousPage={goPreviousPage}
@@ -382,30 +422,40 @@ export default function LocationSearchScreen(props) {
                     openLocationInfo(id);
                   }}
                   clostDetailsPopup={() =>{
-                    setShowItem(0);
+                    setShowItem(0);                    
                   }} locInfo={locationInfo} ></LocationInfoDetails>
-
             </View>
           }
 
-          { crmStatus && showItem == 3 &&
+          { showItem == 3 &&
             <View style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] } ]} >
               <AddToCalendar selectedItems={selectedLocationsForCalendar} 
                 onClose={() => { 
+
                   dispatch({type: SLIDE_STATUS, payload: false }); 
-                  setShowItem(0); 
+                  setShowItem(0);                  
                   dispatch({type: IS_CALENDAR_SELECTION, payload: false});
                   dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
                   getSearchData(originLists, "", "search");
+
                 }}></AddToCalendar>
             </View>
           }
 
+
+          {
+            showItem ===  4 &&
+            <AddLead screenProps={props.screenProps} 
+                  onClose={(location_id) => {                    
+                    animation("search-page");
+                    showBottomBar();                    
+            }} />
+          }
+
           <View style={styles.container}>
             <SearchBar 
-              onSearch={(text) =>{                
-                //getSearchData(originLists, text, "search");
-                
+              onSearch={(text) =>{
+
                 if(text.length >= 3 ){
                   setSearchKeyword(text);
                 }else{
@@ -430,7 +480,7 @@ export default function LocationSearchScreen(props) {
                 animation("filter");
               }} />                
 
-            <View style={{flex:1}}>                            
+            <View>  
               <View style={styles.buttonContainer}>
                 <View style={styles.leftContainer}>
                   <TouchableOpacity 
@@ -448,7 +498,7 @@ export default function LocationSearchScreen(props) {
                   </TouchableOpacity>
                 </View>
                 {
-                  isSelected &&
+                  isSelected && !features.includes("disable_crm_map_view") &&
                   <View style={{alignItems: 'flex-start',}}>
                     <TouchableOpacity 
                       disabled={isLoading} 
@@ -491,8 +541,7 @@ export default function LocationSearchScreen(props) {
               }
               
               {
-                orderLists.length !== 0 && 
-                <View style={{marginBottom:100}}>
+                orderLists.length !== 0 &&                 
                   <FlatList
                     removeClippedSubviews={false}
                     maxToRenderPerBatch={10}
@@ -507,10 +556,26 @@ export default function LocationSearchScreen(props) {
                     onEndReached={loadMoreData}
                     onEndReachedThreshold ={1}
                     ListFooterComponent={renderFooter.bind(this)}
-                  />
-                </View>
-              }              
-                
+                  />                
+              }
+                                            
+              {
+                orderLists.length !== 0 && features.includes("disable_crm_map_view") &&
+                <TouchableOpacity
+                  style={[style.plusButton , {bottom: isCheckin === "1" ? 200 : 150}]}
+                  onPress={() => {  
+                    animation("addLead");
+                  }}>
+                  <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+                </TouchableOpacity>
+              }
+              {
+                orderLists.length !== 0 && features.includes("disable_crm_map_view") &&  isCheckin === "1" &&
+                <CheckInStatusView page="search-list" specificLocationId={specificLocationId} onGo={() => {
+                  props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
+                }} ></CheckInStatusView>
+              }
+              
             </View>
 
           </View>
@@ -520,12 +585,13 @@ export default function LocationSearchScreen(props) {
   )
 }
 
-const perWidth = setWidthBreakpoints(breakPoint);
-const styles = EStyleSheet.create(parse({
+const styles = StyleSheet.create({
   container: {    
-    backgroundColor: Colors.bgColor,
-    height: '100%',
-    paddingBottom: 0
+    backgroundColor: Colors.bgColor,        
+    flex:1,
+    //flexDirection:'column',
+    marginBottom:50,    
+    paddingBottom: 0,    
   },
 
   buttonContainer:{    
@@ -599,4 +665,4 @@ const styles = EStyleSheet.create(parse({
     textAlign: 'center',
   },
 
-}));
+});

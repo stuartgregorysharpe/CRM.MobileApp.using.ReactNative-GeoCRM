@@ -23,13 +23,36 @@ export function notifyMessage(title, msg) {
     ]);
 }
 
+export function selectPicker (title, description ,launchImageLibrary ,launchCamera) {
+  return Alert.alert(
+    title,
+    description,
+    [
+      // The "Yes" button
+      {
+        text: "Gallery",
+        onPress: () => {
+          launchImageLibrary();
+        },
+      },
+      // The "No" button        
+      {
+        text: "Camera",
+        onPress: () => {
+          launchCamera();
+        }
+      },
+    ]
+  );
+}
+
+
 export function notifyMsg ( dispatch , title  ) { 
     dispatch(showNotification({ type: 'success', message: title , buttonText: 'Ok', 
     buttonAction : () => {  
       dispatch(clearNotification());
 
-    } }));
-  
+    } })); 
 }
 
 
