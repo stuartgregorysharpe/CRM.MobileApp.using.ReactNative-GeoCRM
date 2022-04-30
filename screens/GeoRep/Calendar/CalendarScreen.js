@@ -3,7 +3,7 @@ import { SafeAreaView, Text, View, StyleSheet, TouchableOpacity, FlatList, Secti
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
-import { DISABLED_COLOR, PRIMARY_COLOR, whiteLabel } from '../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../constants/Colors';
 import { boxShadow, style } from '../../../constants/Styles';
 import { BG_COLOR } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: Fonts.secondaryMedium,
     fontSize: 15,
-    color: DISABLED_COLOR
+    color: Colors.disabledColor
   },
   tabActiveText: {
     color: whiteLabel().activeTabText,
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderRadius: 7,
-    backgroundColor: DISABLED_COLOR,
+    backgroundColor: Colors.disabledColor,
     marginBottom: 16
   },
   startButtonText: {

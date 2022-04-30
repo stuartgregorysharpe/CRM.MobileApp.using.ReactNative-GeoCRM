@@ -7,7 +7,7 @@ import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-bre
 import { useSelector, useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { TEXT_COLOR, BG_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import { breakPoint } from '../../../../constants/Breakpoint';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
@@ -379,7 +379,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
                   label={<Text style={{ backgroundColor: Colors.bgColor }}>{field.field_name}</Text>}
                   mode="outlined"
                   outlineColor={whiteLabel().fieldBorder}
-                  activeOutlineColor={DISABLED_COLOR}
+                  activeOutlineColor={Colors.disabledColor}
                   value={dispositionValue[key]}
                   disabled={getDisableStatus(field.field_type, field.rule_editable)}
                   onChangeText={text => handleChangeText(text, field, key)}

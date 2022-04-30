@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { style } from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import { breakPoint } from '../../../../constants/Breakpoint';
@@ -459,7 +459,7 @@ const styles = EStyleSheet.create(parse({
   },
   
   cardText: {
-    color: DISABLED_COLOR,
+    color: Colors.disabledColor,
     fontSize: 12,
     fontFamily: Fonts.primaryRegular
   },
