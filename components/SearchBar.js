@@ -7,7 +7,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from './SvgIcon';
 import { boxShadow } from '../constants/Styles';
 import { SLIDE_STATUS } from '../actions/actionTypes';
-import Colors, { DISABLED_COLOR, whiteLabel } from '../constants/Colors';
+import Colors, { whiteLabel } from '../constants/Colors';
 
 export default function SearchBar({isFilter, animation, initVal, onSearch , isLoading , haveFilter }) {
   const dispatch = useDispatch();

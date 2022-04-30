@@ -7,8 +7,14 @@ import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const UploadFileForm = (props) => {
-    const {item , onPress ,onTouchStart} = props;
-
+    const {item , onPress ,onTouchStart , onClose} = props;
+    console.log("UploadFileForm",item);
+    const haveImage = () => {
+        if(item.value === null || item.value === undefined || item.value.length === 0){
+            return false;
+        }
+        return true;
+    }
     return (
         <View style={[style.card,  item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
@@ -31,10 +37,10 @@ export const UploadFileForm = (props) => {
                 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>
                     <TouchableOpacity style={[style.buttonStyle]} onPress={() => {onPress()} }>
-                        <View style={[styles.inputStyle , item.value  !== null ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} >                        
-                            <Text style={[styles.textStyle, item.value  !== null ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Upload File'}</Text>
+                        <View style={[styles.inputStyle , haveImage() ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} >                        
+                            <Text style={[styles.textStyle, haveImage() ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Upload File'}</Text>
                             {
-                                item.value !== null ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Signature_Btn_Right_Arrow" width='13px' height='13px' />
+                                haveImage() ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="File_Download" width='20px' height='20px' />
                             }                            
                         </View> 
                     </TouchableOpacity>

@@ -849,7 +849,27 @@ const Calendar_Next = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" he
 
 const Time_Up = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/></svg>`;
 const Time_Down = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/></svg>`;
-
+const File = `<svg id="description_black_24dp_2_" data-name="description_black_24dp (2)" xmlns="http://www.w3.org/2000/svg" width="76.154" height="76.155" viewBox="0 0 76.154 76.155">
+<path id="Path_4109" data-name="Path 4109" d="M0,0H76.154V76.155H0Z" fill="none"/>
+<path id="Path_4110" data-name="Path 4110" d="M16.692,46.424H42.077V52.77H16.692Zm0-12.692H42.077v6.346H16.692ZM35.731,2H10.346A6.365,6.365,0,0,0,4,8.346v50.77a6.338,6.338,0,0,0,6.314,6.346H48.423a6.365,6.365,0,0,0,6.346-6.346V21.039ZM48.423,59.116H10.346V8.346H32.558V24.212H48.423Z" transform="translate(8.692 4.346)" fill=${actionIconBackground}/>
+</svg>
+`;
+const File_Upload = `<svg xmlns="http://www.w3.org/2000/svg" width="129" height="129" viewBox="0 0 129 129">
+<g id="file_upload_black_24dp" transform="translate(-0.256 -0.311)">
+  <g id="Group_4459" data-name="Group 4459" transform="translate(0 0)">
+    <rect id="Rectangle_2420" data-name="Rectangle 2420" width="129" height="129" transform="translate(0.256 0.311)" fill="none"/>
+  </g>
+  <g id="Group_4460" data-name="Group 4460" transform="translate(21.891 21.891)">
+    <path id="Path_4199" data-name="Path 4199" d="M78.9,62.848V78.9H14.7V62.848H4V78.9A10.731,10.731,0,0,0,14.7,89.6H78.9A10.731,10.731,0,0,0,89.6,78.9V62.848Zm-58.848-32.1,7.543,7.543,13.856-13.8V68.2h10.7V24.49L66,38.292l7.543-7.543L46.8,4Z" transform="translate(-4 -4)" fill=${actionIconBackground}/>
+  </g>
+</g>
+</svg>
+`;
+const Check_Circle = `<svg id="check_circle_black_24dp_2_" data-name="check_circle_black_24dp (2)" xmlns="http://www.w3.org/2000/svg" width="78.352" height="78.352" viewBox="0 0 78.352 78.352">
+<path id="Path_4183" data-name="Path 4183" d="M0,0H78.352V78.352H0Z" fill="none"/>
+<path id="Path_4184" data-name="Path 4184" d="M34.646,2A32.646,32.646,0,1,0,67.293,34.646,32.658,32.658,0,0,0,34.646,2Zm0,58.764A26.117,26.117,0,1,1,60.764,34.646,26.152,26.152,0,0,1,34.646,60.764ZM49.631,20.217,28.117,41.731l-8.455-8.423-4.6,4.6L28.117,50.97,54.234,24.853Z" transform="translate(4.529 4.529)" fill=${actionIconBackground}/>
+</svg>
+`;
 
 export default ({ icon, width = "100%", height = "100%", style = {} }) => (
   <Fragment>
@@ -931,6 +951,9 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Time_Up" && <SvgXml style={style} xml={Time_Up} width={width} height={height} />}
     {icon == "Time_Down" && <SvgXml style={style} xml={Time_Down} width={width} height={height} />}
     {icon == "Activity_Comments" && <SvgXml style={style} xml={Activity_Comments} width={width} height={height} />}    
+    {icon == "File" && <SvgXml style={style} xml={File} width={width} height={height} />}    
+    {icon == "File_Upload" && <SvgXml style={style} xml={File_Upload} width={width} height={height} />}
+    {icon == "Check_Circle" && <SvgXml style={style} xml={Check_Circle} width={width} height={height} />}
     
   </Fragment>
 );

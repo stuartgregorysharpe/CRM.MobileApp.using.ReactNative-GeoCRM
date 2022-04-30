@@ -1,4 +1,4 @@
-import React, { useEffect , useState , useRef } from 'react';
+import React, { useEffect , useState , useRef ,useCallback } from 'react';
 import { Text, View, Dimensions, StyleSheet , TouchableOpacity , Image , Alert, Platform} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { HeadingForm } from '../../../../components/shared/HeadingForm';
@@ -16,20 +16,18 @@ import { MultipleSelectForm } from '../../../../components/shared/MultipleSelect
 import { DateForm } from '../../../../components/shared/DateForm';
 import TakePhotoForm from '../../../../components/shared/TakePhotoForm';
 import { useSelector , useDispatch} from 'react-redux';
-import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { SignatureForm } from '../../../../components/shared/SignatureForm';
 import Sign  from './partial/Sign';
-import GrayBackground from '../../../../components/GrayBackground';
 import { SelectionView } from './partial/SelectionView';
 import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
-import AlertDialog from '../../../../components/modal/AlertDialog';
 import { GuideInfoView } from '../partial/GuideInfoView';
 import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
 import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../actions/api.action';
-import { showNotification } from '../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import * as RNLocalize from "react-native-localize";
+import UploadFileView from './partial/UploadFileView';
 
 export const FormQuestions = (props) =>{
 
@@ -42,64 +40,42 @@ export const FormQuestions = (props) =>{
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [index, setIndex] = useState(-1);
     const [key, setKey] = useState(-1);
-    const [mode, setMode] = useState("single");
-    const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+    const [mode, setMode] = useState("single"); 
     const [isDateTimeView , setIsDateTimeView] = useState(false);
     const [isSign, setIsSign] = useState(false);
     const [isInfo, setIsInfo] = useState(false);
-    const [locationX, setLocationX] = useState(0);
-    const [locationY, setLocationY] = useState(0);
-    const [x,setX] = useState(0);
-    const [y, setY] = useState(0);
     const [bubbleText, setBubleText] = useState("");
     const [signature, setSignature] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
-    const [isAlert, setIsAlert] = useState(false);
-    const [message, setMessage] = useState("");
+    const [isUploadFileView, setIsUploadFileView] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+
     const dispatch = useDispatch()
 
-    useEffect(() => {
-      refreshHeader();
-      if (crmStatus) {
-        console.log(" --------- props , " ,  props.screenProps);
-        props.screenProps.setOptions({
-          tabBarStyle: {
-            height: 0,
-            display: 'none',            
-          },
-        });
-      }
-      if(!crmStatus){
-        setIsDateTimeView(false);        
-      }
-    }, [crmStatus]);
-
-    useEffect(() => {
-      console.log("call api");
-      refreshHeader()
-        
-      if (crmStatus) {
-        props.screenProps.setOptions({
-          tabBarStyle: {
-            display: 'none',
-            height: 0,
-          },
-        });
-      }
+    useEffect(() => {      
+      refreshHeader()             
       _callFormQuestions()
     },[]);
-        
+
+    const showSelectionView = useCallback(
+      () => {
+        setModalVisible(true);    
+      },
+      [options, selectedOptions],
+    );
+  
+                
     const refreshHeader = () => {
       props.screenProps.setOptions({            
         headerTitle:() =>{
           return(<TouchableOpacity                     
              onPress={
             () =>{
-              if(crmStatus && isDateTimeView){
+              if(isDateTimeView){
                 closeDateTime();
-              }else if(crmStatus && modaVisible){
+              }else if(modaVisible){
                 closeDateTime();
-              }else if(crmStatus && isSign){
+              }else if(isSign){
                 closeSignView();
               }else{
                 if( props.navigation.canGoBack()){
@@ -130,6 +106,7 @@ export const FormQuestions = (props) =>{
         form_id: form.form_id
       }
       getApiRequest("forms/forms-questions" , param ).then((res) => {        
+        console.log("origin question",res.questions)
         groupByQuestions(res.questions);        
       }).catch((e) => {
         console.log(e);
@@ -168,19 +145,13 @@ export const FormQuestions = (props) =>{
             item.no_image = undefined;
           }
         });
-      });    
+      });
       setFormQuestions(tmp);    
     }
 
-    const _onTouchStart = (e , text) => {            
-      // setX(e.pageX);
-      // setY(e.pageY);
-      // setLocationX(e.locationX);
-      // setLocationY(e.locationY);
+    const _onTouchStart = (e , text) => {      
       setBubleText(text);      
-      setIsInfo(true);
-      // setTimeout(() =>{        
-      // },1000)
+      setIsInfo(true);      
     }
     
     const confirmDateTime = (datetime) =>{      
@@ -189,29 +160,23 @@ export const FormQuestions = (props) =>{
       setFormQuestions(tmp);      
     }
     const closeDateTime = () =>{
-      setIsDateTimeView(false);
-      dispatch({type: SLIDE_STATUS, payload: false});       
+      setIsDateTimeView(false);      
     }
     
-    const handleSignature = (signature) => {
-      console.log("handel signatuere ddd");
-      onValueChangedSelectionView(key, index, signature);      
-      dispatch({type: SLIDE_STATUS, payload: false});    
+    const handleSignature = (signature) => {      
+      onValueChangedSelectionView(key, index, signature);            
       setIsSign(false);
     }    
-    const closeSignView = () => {
-      dispatch({type: SLIDE_STATUS, payload: false});
+    const closeSignView = () => {      
       setIsSign(false);
     }
 
     const onCloseSelectionView = (key, index) => {
-      onValueChangedSelectionView(key, index, null);
-      setModalVisible(false);
-      dispatch({type: SLIDE_STATUS, payload: false});
+      //onValueChangedSelectionView(key, index, null);
+      setModalVisible(false);      
     }
     const onSaveSelectionView = () => {
-      setModalVisible(false);
-      dispatch({type: SLIDE_STATUS, payload: false});
+      setModalVisible(false);      
     }
     const onValueChangedSelectionView = async ( key, index, value) => {      
       var tmp = [...formQuestions];
@@ -237,11 +202,20 @@ export const FormQuestions = (props) =>{
       var index  = 0;
       formQuestions.forEach(element => {
         element.questions.forEach(item => {
-            var value = item.value;
-            //if(value != null && value != undefined){
-              form_answers.push({key: `form_answers[${index}][form_question_id]` , value: item.form_question_id })
-              form_answers.push({key: `form_answers[${index}][answer]` , value: item.question_type === 'take_photo' ? '' : value })
-              index = index + 1;
+            var value = item.value;            
+            form_answers.push({key: `form_answers[${index}][form_question_id]` , value: item.form_question_id })
+            if(item.question_type === 'multiple' || item.question_type === 'multi_select') {
+              if( item.value && item.value.length > 0){
+                var j = 0;
+                item.value.forEach(subElement =>{
+                  form_answers.push({key: `form_answers[${index}][answer][${j}]` , value: item.question_type === 'take_photo' ? '' : subElement });
+                  j = j+1;
+                });
+              }                
+            }else{
+              form_answers.push({key: `form_answers[${index}][answer]` , value: item.question_type === 'take_photo' || item.question_type === 'upload_file' ? '' : value })
+            }            
+            index = index + 1;
             //}                 
         });
       });
@@ -249,7 +223,7 @@ export const FormQuestions = (props) =>{
       var files = [];
       formQuestions.map(async (element) => {
         element.questions.map(async (item) => {          
-          if(item.question_type === "take_photo" || (item.question_type === "yes_no" && (item.yes_image || item.no_image) ) ){              
+          if(item.question_type === "upload_file" || item.question_type === "take_photo" || (item.question_type === "yes_no" && (item.yes_image || item.no_image) ) ){              
             var paths = item.value;
             if(item.yes_image != null  &&  item.yes_image != ""){
               paths = item.yes_image;
@@ -260,7 +234,14 @@ export const FormQuestions = (props) =>{
             if(paths != null && paths != '' && paths.length > 0){  
               index = 0;
               for (const path of paths) {                 
-                files.push( {key: `File[${item.form_question_id}][${index}]` , value: path } );   //, base64:item.base64
+                if(item.question_type === "upload_file"){
+                  console.log("upload file", path );
+                  files.push( {key: `File[${item.form_question_id}][${index}]` , value: path , type: 'upload_file' } );
+                }else{
+                  console.log("no upload file", path );
+                  files.push( {key: `File[${item.form_question_id}][${index}]` , value: path , type: 'image'} );   //, base64:item.base64  
+                }
+                
                 index = index + 1;
               }                                                
             }
@@ -279,28 +260,33 @@ export const FormQuestions = (props) =>{
       })
       files.map((item) => {
         console.log("post data item", item);          
-        if(item.key != undefined && item.value != undefined){       
-          console.log("post data key", item.key);                    
-          var words = item.value.split('/');
-          var ext = words[words.length - 1].split(".");
-          console.log("ext", ext);
-          console.log("name", words[words.length - 1] );
-          postData.append(item.key, {uri:item.value, type:'image/' + ext[1], name:words[words.length - 1]} ); 
-        }           
+        if(item.key != undefined && item.value != undefined){                           
+          if(item.type === "upload_file"){
+            postData.append(item.key, {uri:item.value.uri, type:item.value.type, name:item.value.name } ); 
+          }else{
+            console.log("post data key", item.key);
+            var words = item.value.split('/');
+            var ext = words[words.length - 1].split(".");
+            postData.append(item.key, {uri:item.value, type:'image/' + ext[1], name:words[words.length - 1]} ); 
+          }
+          
+        }
       })        
 
       var time_zone = RNLocalize.getTimeZone();  
       postData.append("user_local_data[time_zone]", time_zone );
-      postData.append("user_local_data[latitude]", currentLocation ? currentLocation.latitude : "0");
-      postData.append("user_local_data[longitude]", currentLocation ? currentLocation.longitude : "0");    
+      postData.append("user_local_data[latitude]", currentLocation && currentLocation.latitude != null ? currentLocation.latitude : "0");
+      postData.append("user_local_data[longitude]", currentLocation && currentLocation.longitude != null ? currentLocation.longitude : "0");    
 
       postApiRequestMultipart("forms/forms-submission", postData).then((res) => {
         console.log("res", res);
-        dispatch(showNotification({type:'success' , message: res.message , buttonText:'Okay'}));
+        dispatch(showNotification({type:'success' , message: res.message , buttonText:'Okay' , buttonAction : () => {
+          clearAll();
+          dispatch(clearNotification());
+        } }));
       }).catch((e) => {
         console.log("Err" , JSON.stringify(e))
       })
-
     }
 
     const renderQuestion = (item , key, index) =>{      
@@ -343,13 +329,14 @@ export const FormQuestions = (props) =>{
           <SingleSelectForm  key={ "multiple_question" +  index}           
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
           onPress={(item) => {        
+            console.log("cliccked item", item.options);
+            console.log("selected val", item.value);
             setMode("single");
             setOptions(item.options);
-            setSelectedOptions(item.value);
-            dispatch({type: SLIDE_STATUS, payload: true});
-            setModalVisible(true);            
+            setSelectedOptions(item.value);                        
             setKey(key);
             setIndex(index);            
+            showSelectionView();
           }} item={item}></SingleSelectForm>
         );
       }else if(item.question_type === "multi_select"){
@@ -357,14 +344,15 @@ export const FormQuestions = (props) =>{
         return (
           <MultipleSelectForm  key={ "multi_select_question" +  index} 
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
-          onPress={(item) => {        
+          onPress={(item) => {
+            console.log(" mt cliccked item", item.options);
+            console.log(" mtselected val", item.value);
             setMode("multiple");
             setOptions(item.options);
-            setSelectedOptions(item.value);
-            dispatch({type: SLIDE_STATUS, payload: true});
-            setModalVisible(true);            
+            setSelectedOptions(item.value);                  
             setKey(key);
             setIndex(index);
+            showSelectionView();
           }} item={item}></MultipleSelectForm>
         );
       }else if(item.question_type === "numbers") {
@@ -377,8 +365,7 @@ export const FormQuestions = (props) =>{
         return (
           <DateForm key={ "date_question" + index} item={item}  
           onTouchStart={(e, text) => { _onTouchStart(e, text); } }
-          onPress={() => {
-            dispatch({type: SLIDE_STATUS, payload: true});            
+          onPress={() => {            
             setKey(key);
             setIndex(index);
             setSelectedDate(item.value);
@@ -396,13 +383,10 @@ export const FormQuestions = (props) =>{
             setSignature( item.value );            
             console.log("signature clicked");
             setIsSign(true);            
-            dispatch({type: SLIDE_STATUS, payload: true});
           }} ></SignatureForm>
         );
 
       }else if(item.question_type === "take_photo"){
-
-
         return (
           <TakePhotoForm
             key={ "take_photo_question" + `${key}${index}`} item={item}           
@@ -415,8 +399,12 @@ export const FormQuestions = (props) =>{
       }else if(item.question_type === "upload_file"){
         return (
           <UploadFileForm key={"upload_form" + index} item={item}  
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
-          onPress={() => {                        
+          onTouchStart={(e, text) => { _onTouchStart(e, text); } }           
+          onPress={() => {        
+            setKey(key);
+            setIndex(index);      
+            setIsUploadFileView(true);
+            setSelectedItem(item);
           }}></UploadFileForm>
         );
       }
@@ -424,18 +412,12 @@ export const FormQuestions = (props) =>{
     }
 
     return (      
-        <View style={styles.container}  
-        //onTouchStart={(e) => { setIsInfo(false); }}
-        >
-          
-            <GrayBackground></GrayBackground>
-            <Notification></Notification>
-            
-            <AlertDialog visible={isAlert} message={message}  onModalClose={() => setIsAlert(false)} ></AlertDialog>          
+        <View style={styles.container}>                      
+            <Notification></Notification>             
             <DatetimePickerView 
               visible={isDateTimeView}
               value={selectedDate}
-              onModalClose={() =>{                
+              onModalClose={() =>{
                 closeDateTime();
               }}
               close={(date) => {
@@ -454,17 +436,38 @@ export const FormQuestions = (props) =>{
                   onValueChangedSelectionView(key, index, null);
                   closeSignView(); 
               }}></Sign>
-            
-            {              
-              crmStatus && modaVisible  &&
-              <SelectionView 
-                options={options}  mode={mode} 
-                value={selectedOptions}
-                onValueChanged = {(value) => {onValueChangedSelectionView( key, index, value); }}
-                onClose={() =>{onCloseSelectionView( key  , index )}} 
-                onSave={() => { onSaveSelectionView(); }} > </SelectionView>              
-            }
-            
+                      
+            <SelectionView 
+              visible={modaVisible}
+              options={options} 
+              mode={mode} 
+              selectedVals={selectedOptions}
+              onValueChanged = {(value) => {
+                console.log("onValueChanged", value)
+                onValueChangedSelectionView( key, index, value); 
+              }}
+              onClose={() =>{ onCloseSelectionView( key  , index )}} 
+              onSave={() => { 
+                // setOptions([]);
+                // setSelectedOptions([]);
+                onSaveSelectionView();
+              }} > </SelectionView>
+
+            <UploadFileView
+              visible={isUploadFileView}
+              item = {selectedItem}
+              onClose={() => { setIsUploadFileView(false)}}            
+              onValueChanged = {(value) => {
+                console.log("val",value);
+                console.log("key",key);
+                console.log("index",index);
+
+                onValueChangedSelectionView( key, index, value); 
+              }}
+              >
+            </UploadFileView>
+
+                        
             <View style={styles.titleContainerStyle}>
               <View style={{flex:1}}>
                 <Text style={styles.formTitleStyle}>{form.form_name}</Text>
@@ -497,7 +500,6 @@ export const FormQuestions = (props) =>{
                 }                
               </View>
             </ScrollView>
-
               
             <GuideInfoView
                 visible={isInfo}
@@ -506,20 +508,6 @@ export const FormQuestions = (props) =>{
               >
             </GuideInfoView>
 
-            {/* {
-              isInfo &&
-              <View style={{
-                  top: y - locationY - getShift(),
-                  position:'absolute',                                
-                  borderRadius: 5,         
-                  width:Dimensions.get("screen").width,  
-                  borderRadius: 20,                
-                }} key={1}>
-                    
-                  <View  style={{ backgroundColor: "#DDD", padding:10, marginLeft:20,marginRight:10,borderRadius:10, fontSize: 16, color: "#fff", }} key={1}><Text>{bubbleText}</Text></View>  
-                  <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
-              </View>
-            }                                                 */}
         </View>
         
     );

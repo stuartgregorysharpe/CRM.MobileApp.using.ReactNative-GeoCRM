@@ -9,7 +9,7 @@ import SvgIcon from '../../components/SvgIcon';
 import { boxShadow } from '../../constants/Styles';
 import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import { DISABLED_COLOR } from '../constants/Colors';
+import Colors from '../constants/Colors';
 
 const Ticket = () => {
   const emailRef = useRef();
@@ -39,7 +39,7 @@ const Ticket = () => {
             label="Email"
             mode="outlined"
             outlineColor={PRIMARY_COLOR}
-            activeOutlineColor={DISABLED_COLOR}
+            activeOutlineColor={Colors.disabledColor}
             value={email}
             onChangeText={text => setEmail(text)}
           />
@@ -56,7 +56,7 @@ const Ticket = () => {
             label={picker == '' ? "Select Issue" : picker}
             mode="outlined"
             outlineColor={PRIMARY_COLOR}
-            activeOutlineColor={DISABLED_COLOR}
+            activeOutlineColor={Colors.disabledColor}
           />
           <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
         </View>
@@ -65,7 +65,7 @@ const Ticket = () => {
         style={styles.textArea}
         mode="outlined"
         outlineColor={PRIMARY_COLOR}
-        activeOutlineColor={DISABLED_COLOR}
+        activeOutlineColor={Colors.disabledColor}
         placeholder="Issue details can be entered here..."
         multiline={true}
         numberOfLines={4}
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: Fonts,
     fontSize: 15,
-    color: DISABLED_COLOR
+    color: Colors.disabledColor
   },
   tabActiveText: {
     color: PRIMARY_COLOR,

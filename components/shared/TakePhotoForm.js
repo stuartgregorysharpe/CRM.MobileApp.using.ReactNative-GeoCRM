@@ -113,8 +113,7 @@ export default function TakePhotoForm ({item, onPress, onTouchStart}) {
           alert(response.customButton);
         } else {        
           if(response.assets != null && response.assets.length > 0){
-            optimizeImage(response.assets[0].uri , 100 , 0);
-            //updateImageData(response.assets[0].uri);            
+            optimizeImage(response.assets[0].uri , 100 , 0);            
           }
 
         }

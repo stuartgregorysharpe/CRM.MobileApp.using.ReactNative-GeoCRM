@@ -145,19 +145,8 @@ export default function CalendarScreen(props) {
   const renderCalendarItem = (item, index, tabIndex) => {    
     return (
       <View style={{ marginTop: 10 }}>
-        <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex} 
-        onCheckIn={() => {
-
-          // dispatch(showNotification({ type: 'success', message: "You are currently checked-in to a location", buttonText: 'Continue', 
-          //   buttonAction : async() => {                    
-          //     var specificLocationId = await getLocalData("@specific_location_id");
-          //     props.navigation.navigate("LocationSpecificInfo" , { "locationId": specificLocationId, "page" : "checkin"  }); 
-          //     dispatch(clearNotification());
-
-          //   } }));                        
-
-        }}
-        onItemSelected={() => { }}>
+        <CalendarItem key={index} navigation={props.navigation} item={item} current={currentLocation} tabIndex={tabIndex}         
+          onItemSelected={() => { }}>
         </CalendarItem>
       </View>)
   }
