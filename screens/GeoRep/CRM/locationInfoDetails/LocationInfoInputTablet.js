@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { useSelector,useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, GRAY_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, TEXT_COLOR, BG_COLOR, BLUE_COLOR, GREEN_COLOR, whiteLabel } from '../../../../constants/Colors';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import { postStageOutcomUpdate, postDispositionFields } from '../../../../actions/location.action';
 import CustomLoading from '../../../../components/CustomLoading';
@@ -346,7 +346,7 @@ export const LocationInfoInputTablet = forwardRef((props , ref) => {
                           label={<Text style={{ backgroundColor: BG_COLOR }}>{field.field_name}</Text>}
                           mode="outlined"
                           outlineColor={whiteLabel().fieldBorder}
-                          activeOutlineColor={DISABLED_COLOR}
+                          activeOutlineColor={Colors.disabledColor}
                           value={dispositionValue[key]}
                           disabled = {getDisableStatus(field.field_type, field.rule_editable)}
                           onChangeText={text => handleChangeText(text, field, key)}                          

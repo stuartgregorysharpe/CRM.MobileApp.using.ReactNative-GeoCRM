@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity , Text } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import { BG_COLOR, DISABLED_COLOR, TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { BG_COLOR, TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { style } from '../../../../constants/Styles';
 
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
       text: {
         fontSize: 12,
         fontFamily: Fonts.secondaryMedium,
-        color: DISABLED_COLOR,
+        color: Colors.disabledColor,
     },
 
     textRight: {

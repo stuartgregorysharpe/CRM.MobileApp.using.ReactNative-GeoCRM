@@ -5,7 +5,7 @@ import {  useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import { boxShadow, style } from '../../../constants/Styles';
-import { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import { Ticket } from './tabs/Ticket';
 import Faq from './tabs/Faq';
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontFamily: Fonts.secondaryMedium,
     fontSize: 15,
-    color: DISABLED_COLOR
+    color: Colors.disabledColor
   },
   tabActiveText: {
     color: whiteLabel().activeTabText,

@@ -3,7 +3,7 @@ import { Platform, View, SafeAreaView, TouchableOpacity, Text, StyleSheet, Scrol
 import { useSelector, useDispatch } from 'react-redux';
 import Divider from '../../../../components/Divider';
 import Fonts from '../../../../constants/Fonts';
-import Colors, { PRIMARY_COLOR, BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR, BG_COLOR, whiteLabel } from '../../../../constants/Colors';
 import { Button, Provider, TextInput, Title } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
@@ -156,7 +156,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         label="Name"
                                         mode="outlined"
                                         outlineColor={isNameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                                        activeOutlineColor={isNameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                                        activeOutlineColor={isNameRequired ? whiteLabel().endDayBackground : Colors.disabledColor}
                                         value={name}
                                         onChangeText={text => {
                                             setName(text);
@@ -183,7 +183,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         label="Surname"
                                         mode="outlined"
                                         outlineColor={isSurnameRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                                        activeOutlineColor={isSurnameRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                                        activeOutlineColor={isSurnameRequired ? whiteLabel().endDayBackground : Colors.disabledColor}
                                         value={surname}
                                         onChangeText={text => {
                                             setSurname(text)
@@ -210,7 +210,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         label="Email Address"
                                         mode="outlined"
                                         outlineColor={isEmailRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                                        activeOutlineColor={isEmailRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                                        activeOutlineColor={isEmailRequired ? whiteLabel().endDayBackground : Colors.disabledColor}
                                         value={email}
                                         onChangeText={text => {
                                             setEmail(text)
@@ -237,7 +237,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         label="Mobile Number"
                                         mode={"outlined"}
                                         outlineColor={isMobileRequired ? whiteLabel().endDayBackground : PRIMARY_COLOR}
-                                        activeOutlineColor={isMobileRequired ? whiteLabel().endDayBackground : DISABLED_COLOR}
+                                        activeOutlineColor={isMobileRequired ? whiteLabel().endDayBackground : Colors.disabledColor}
                                         value={mobile_number}
                                         onChangeText={text => {
                                             setMobileNumber(text)
@@ -266,7 +266,7 @@ export default function AddContact({ onClose, pageType, contactInfo, locationId 
                                         label="Additional Number"
                                         mode="outlined"
                                         outlineColor={PRIMARY_COLOR}
-                                        activeOutlineColor={DISABLED_COLOR}
+                                        activeOutlineColor={Colors.disabledColor}
                                         value={additional_number}
                                         onChangeText={text => setAdditionalNumber(text)}
                                     />

@@ -8,7 +8,7 @@ import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { getLocationContacts, getLocationFields, updateCustomerLocationFields } from '../../../../actions/location.action';
 import Divider from '../../../../components/Divider';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { BG_COLOR, DISABLED_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { BG_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { grayBackground, style } from '../../../../constants/Styles';
 import AddContact from '../popup/AddOrUpdateContact';
@@ -304,7 +304,7 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
                         mode="outlined"
                         disabled={disableField(field)}
                         outlineColor={whiteLabel().fieldBorder}
-                        activeOutlineColor={DISABLED_COLOR}
+                        activeOutlineColor={Colors.disabledColor}
                         onChangeText={text => {
                             var tmp = [...customMasterFields];
                             tmp.forEach((element) => {
