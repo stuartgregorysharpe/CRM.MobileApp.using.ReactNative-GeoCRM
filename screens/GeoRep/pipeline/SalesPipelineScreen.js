@@ -1,32 +1,48 @@
-import React, { useEffect, useState ,useCallback} from 'react';
-import { Text, View, ScrollView, TouchableOpacity, FlatList, BackHandler, Image,Dimensions ,Platform ,PermissionsAndroid } from 'react-native';
-import { parse, setWidthBreakpoints } from 'react-native-extended-stylesheet-breakpoints';
-import { useDispatch, useSelector } from 'react-redux';
-import { getPipelineFilters, getPipelines } from '../../../actions/pipeline.action';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  BackHandler,
+  Image,
+  Dimensions,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
+import {
+  parse,
+  setWidthBreakpoints,
+} from 'react-native-extended-stylesheet-breakpoints';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  getPipelineFilters,
+  getPipelines,
+} from '../../../actions/pipeline.action';
 import SvgIcon from '../../../components/SvgIcon';
-import Colors, { whiteLabel } from '../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import { breakPoint } from '../../../constants/Breakpoint';
-import { Provider } from 'react-native-paper';
-import { boxShadow, grayBackground, style } from '../../../constants/Styles';
+import {breakPoint} from '../../../constants/Breakpoint';
+import {Provider} from 'react-native-paper';
+import {boxShadow, grayBackground, style} from '../../../constants/Styles';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { SLIDE_STATUS, SUB_SLIDE_STATUS } from '../../../actions/actionTypes';
+import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../../actions/actionTypes';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import AddSalesPipeline from './AddSalesPipeline';
 import Skeleton from '../../../components/Skeleton';
 import Images from '../../../constants/Images';
 import DeviceInfo from 'react-native-device-info';
-import { expireToken } from '../../../constants/Consts';
-import { Notification } from '../../../components/modal/Notification';
-import { getApiRequest } from '../../../actions/api.action';
-import { updateCurrentLocation } from '../../../actions/google.action';
+import {expireToken} from '../../../constants/Helper';
+import {Notification} from '../../../components/modal/Notification';
+import {getApiRequest} from '../../../actions/api.action';
+import {updateCurrentLocation} from '../../../actions/google.action';
 import Geolocation from 'react-native-geolocation-service';
 
 export default function SalesPipelineScreen(props) {
-
   const dispatch = useDispatch();
-  const navigation = props.navigation;  
+  const navigation = props.navigation;
   const pipelineFilters = useSelector(state => state.selection.pipelineFilters);
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [stages, setStages] = useState([]);
@@ -39,45 +55,51 @@ export default function SalesPipelineScreen(props) {
   const [canAddPipeline, setCanAddPipeline] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [pageType, setPageType] = useState('add');
-  const [selectedOpportunityId, setSelectedOpportunityId] = useState('');  
-  const [locationName, setLocationName] = useState("");
-  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;    
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const locationIdSpecific = props.route.params
+    ? props.route.params.locationInfo
+    : null;
 
   useEffect(() => {
     var screenProps = props.screenProps;
-    if(screenProps === undefined){
+    if (screenProps === undefined) {
       screenProps = props.navigation;
     }
     if (screenProps) {
-      screenProps.setOptions({        
+      screenProps.setOptions({
         headerTitle: () => {
-          return (<TouchableOpacity
-            onPress={
-              () => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
                 if (canAddPipeline) {
                   setCanAddPipeline(false);
-                }else{
-                  if(locationIdSpecific){
-                    props.navigation.navigate('CRM', {'screen': 'LocationSpecificInfo',  params : {'data': locationIdSpecific}});
+                } else {
+                  if (locationIdSpecific) {
+                    props.navigation.navigate('CRM', {
+                      screen: 'LocationSpecificInfo',
+                      params: {data: locationIdSpecific},
+                    });
                   }
                 }
               }}>
-            <View style={style.headerTitleContainerStyle}>
-              {
-                (canAddPipeline || locationIdSpecific) &&
-                <Image
-                  resizeMethod='resize'
-                  style={{ width: 15, height: 20, marginRight: 5 }}
-                  source={Images.backIcon}
-                />
-              }
-              <Text style={style.headerTitle} >Pipeline</Text>
-            </View></TouchableOpacity>)
+              <View style={style.headerTitleContainerStyle}>
+                {(canAddPipeline || locationIdSpecific) && (
+                  <Image
+                    resizeMethod="resize"
+                    style={{width: 15, height: 20, marginRight: 5}}
+                    source={Images.backIcon}
+                  />
+                )}
+                <Text style={style.headerTitle}>Pipeline</Text>
+              </View>
+            </TouchableOpacity>
+          );
         },
         tabBarStyle: {
           position: 'absolute',
           height: 50,
-          paddingBottom: Platform.OS == "android" ? 5 : 0,          
+          paddingBottom: Platform.OS == 'android' ? 5 : 0,
           backgroundColor: Colors.whiteColor,
         },
       });
@@ -87,56 +109,55 @@ export default function SalesPipelineScreen(props) {
             display: 'none',
           },
         });
-      }    
+      }
     }
 
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
     };
   });
 
-  useEffect(() =>{    
-    loadPipeLineData("");
-  },[locationIdSpecific]);
+  useEffect(() => {
+    loadPipeLineData('');
+  }, [locationIdSpecific]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log("PAGE OPEN 2")
+      console.log('PAGE OPEN 2');
       //console.log("PAGE OPEN 2", props.route.params.locationInfo)
-      
     });
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() =>{
-    requestPermissions();  
-  },[]);
-  
+  useEffect(() => {
+    requestPermissions();
+  }, []);
 
   useEffect(() => {
     if (pipelineFilters !== undefined) {
       loadPipeLineData(pipelineFilters);
     }
-
-  }, [pipelineFilters])
+  }, [pipelineFilters]);
 
   async function requestPermissions() {
     if (Platform.OS === 'ios') {
       const auth = await Geolocation.requestAuthorization('whenInUse');
       if (auth === 'granted') {
-        dispatch(updateCurrentLocation());        
+        dispatch(updateCurrentLocation());
       }
     }
 
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,        
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {          
-          dispatch(updateCurrentLocation());
-          
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        dispatch(updateCurrentLocation());
       }
     }
   }
@@ -146,78 +167,84 @@ export default function SalesPipelineScreen(props) {
       setCanAddPipeline(false);
       return true;
     }
-  }
+  };
 
   const refreshHeader = () => {
     props.screenProps.setOptions({
       headerTitle: () => {
-        return (<TouchableOpacity
-          onPress={
-            () => {
+        return (
+          <TouchableOpacity
+            onPress={() => {
               if (canAddPipeline) {
                 setCanAddPipeline(false);
               }
             }}>
-          <View style={style.headerTitleContainerStyle}>
-            {
-              canAddPipeline &&
-              <Image
-                resizeMethod='resize'
-                style={{ width: 15, height: 20, marginRight: 5 }}
-                source={Images.backIcon}
-              />
-            }
-            <Text style={style.headerTitle} >Pipeline</Text>
-          </View></TouchableOpacity>)
+            <View style={style.headerTitleContainerStyle}>
+              {canAddPipeline && (
+                <Image
+                  resizeMethod="resize"
+                  style={{width: 15, height: 20, marginRight: 5}}
+                  source={Images.backIcon}
+                />
+              )}
+              <Text style={style.headerTitle}>Pipeline</Text>
+            </View>
+          </TouchableOpacity>
+        );
       },
     });
-  }
+  };
 
   const loadPipeLineData = useCallback(
     (filters = '') => {
       setIsLoading(true);
-      let params = {filters: filters };
-      if(locationIdSpecific != null){
+      let params = {filters: filters};
+      if (locationIdSpecific != null) {
         params['location_id'] = locationIdSpecific.location_id;
       }
-      console.log("ASDDA", params);
-      getApiRequest("pipeline/pipeline-opportunities", params).then((res) => {
-        setIsLoading(false);
-        console.log("data", res)
-        let stageItems = [];
-        stageItems.push({ stage_id: '0', stage_name: 'All' });
-        stageItems.push(...res.stages);
-        setStages(stageItems);
-        setAllOpportunities(res.opportunities);
-        setOpportunities(res.opportunities);
-        setSearchList(res.opportunities);
-        setSelectedStage('0');
-      }).catch((e) => {
-        console.log("Err", e)
-        expireToken(dispatch, e);
-        setIsLoading(false) 
-      })
+      console.log('ASDDA', params);
+      getApiRequest('pipeline/pipeline-opportunities', params)
+        .then(res => {
+          setIsLoading(false);
+          console.log('data', res);
+          let stageItems = [];
+          stageItems.push({stage_id: '0', stage_name: 'All'});
+          stageItems.push(...res.stages);
+          setStages(stageItems);
+          setAllOpportunities(res.opportunities);
+          setOpportunities(res.opportunities);
+          setSearchList(res.opportunities);
+          setSelectedStage('0');
+        })
+        .catch(e => {
+          console.log('Err', e);
+          expireToken(dispatch, e);
+          setIsLoading(false);
+        });
     },
     [locationIdSpecific],
   );
 
-
-  const onSearchList = (searchKey) => {
+  const onSearchList = searchKey => {
     let list = [];
     opportunities.map((item, index) => {
       if (searchKey === '') {
         list.push(item);
       } else {
-        if (item.opportunity_name.toLowerCase().includes(searchKey.toLowerCase())
-          || item.location_name.toLowerCase().includes(searchKey.toLowerCase())) {
+        if (
+          item.opportunity_name
+            .toLowerCase()
+            .includes(searchKey.toLowerCase()) ||
+          item.location_name.toLowerCase().includes(searchKey.toLowerCase())
+        ) {
           list.push(item);
         }
       }
     });
     setSearchList(list);
-  }
+  };
 
-  const onTabSelection = (item) => {
+  const onTabSelection = item => {
     setSelectedStage(item.stage_id);
     let data = [];
     allOpportunities.map((opportunity, index) => {
@@ -229,7 +256,7 @@ export default function SalesPipelineScreen(props) {
     });
     setOpportunities(data);
     setSearchList(data);
-  }
+  };
 
   const hexToRgbA = (hex, opacity) => {
     var c;
@@ -239,54 +266,83 @@ export default function SalesPipelineScreen(props) {
         c = [c[0], c[0], c[1], c[1], c[2], c[2]];
       }
       c = '0x' + c.join('');
-      return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + `,${opacity})`;
+      return (
+        'rgba(' +
+        [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') +
+        `,${opacity})`
+      );
     }
     return hex;
-  }
+  };
 
-  const animation = (name) => {
-    dispatch({ type: SLIDE_STATUS, payload: true });
+  const animation = name => {
+    dispatch({type: SLIDE_STATUS, payload: true});
     switch (name) {
-      case "filter":
+      case 'filter':
         dispatch(getPipelineFilters());
         setShowItem(1);
         return;
-      case "add_pipeline":      
+      case 'add_pipeline':
         setShowItem(2);
       default:
         return;
     }
-  }
+  };
 
   const renderOpportunity = (item, index) => {
     return (
-      <TouchableOpacity onPress={() => {                
-        setSelectedOpportunityId(item.opportunity_id);
-        setLocationName(item.location_name);
-        setPageType('update');
-        setCanAddPipeline(true);
-      }}>
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedOpportunityId(item.opportunity_id);
+          setLocationName(item.location_name);
+          setPageType('update');
+          setCanAddPipeline(true);
+        }}>
         <View style={styles.itemContainer}>
-          <View style={[styles.opportunityStyle, { alignItems: 'baseline' }]}>
-            <View style={[styles.dotIndicator, { backgroundColor: item.opportunity_status_color }]}></View>
-            <View style={{ marginHorizontal: 5 }}>
-              <Text style={styles.opportunityTitle}>{item.opportunity_name}</Text>
-              <Text style={{ fontFamily: Fonts.secondaryMedium, fontSize: 12 }}>{item.location_name}</Text>
+          <View style={[styles.opportunityStyle, {alignItems: 'baseline'}]}>
+            <View
+              style={[
+                styles.dotIndicator,
+                {backgroundColor: item.opportunity_status_color},
+              ]}></View>
+            <View style={{marginHorizontal: 5}}>
+              <Text style={styles.opportunityTitle}>
+                {item.opportunity_name}
+              </Text>
+              <Text style={{fontFamily: Fonts.secondaryMedium, fontSize: 12}}>
+                {item.location_name}
+              </Text>
             </View>
           </View>
-          <View style={[styles.stageItemBg, { backgroundColor: hexToRgbA(item.stage_color, 0.32) }]}>
-            <Text style={{
-              color: Colors.textColor,
-              fontFamily: Fonts.secondaryRegular,
-              fontSize: 12,
-              textAlign: 'center', zIndex: 0
-            }}>{item.stage_name}</Text>
+          <View
+            style={[
+              styles.stageItemBg,
+              {backgroundColor: hexToRgbA(item.stage_color, 0.32)},
+            ]}>
+            <Text
+              style={{
+                color: Colors.textColor,
+                fontFamily: Fonts.secondaryRegular,
+                fontSize: 12,
+                textAlign: 'center',
+                zIndex: 0,
+              }}>
+              {item.stage_name}
+            </Text>
           </View>
-          <Text style={{ flex: 0.9, textAlign: 'right', fontFamily: Fonts.secondaryMedium, fontSize: 13 }}>{item.value}</Text>
+          <Text
+            style={{
+              flex: 0.9,
+              textAlign: 'right',
+              fontFamily: Fonts.secondaryMedium,
+              fontSize: 13,
+            }}>
+            {item.value}
+          </Text>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   const renderSeparator = () => (
     <View
@@ -298,221 +354,279 @@ export default function SalesPipelineScreen(props) {
   );
 
   const renderListHeading = () => {
-    return <View style={{ paddingHorizontal: 0 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={[styles.listheadingText, { flex: 2.2 }]}>Opportunity</Text>
-        <Text style={[styles.listheadingText, { flex: 1.1 }]}>Stage</Text>
-        <Text style={[styles.listheadingText, { textAlign: 'right', marginRight: 10 }]}>Value</Text>
+    return (
+      <View style={{paddingHorizontal: 0}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={[styles.listheadingText, {flex: 2.2}]}>Opportunity</Text>
+          <Text style={[styles.listheadingText, {flex: 1.1}]}>Stage</Text>
+          <Text
+            style={[
+              styles.listheadingText,
+              {textAlign: 'right', marginRight: 10},
+            ]}>
+            Value
+          </Text>
+        </View>
+        <View
+          style={{
+            backgroundColor: whiteLabel().mainText,
+            height: 2,
+            marginVertical: 10,
+          }}></View>
       </View>
-      <View style={{ backgroundColor: whiteLabel().mainText, height: 2, marginVertical: 10 }}></View>
-    </View>
-  }
+    );
+  };
 
   const renderSearchBox = () => {
-    return <View style={{ marginHorizontal: -10, marginTop: -10 }}>
-      <SearchBar
-        isFilter={true}
-        animation={() => animation("filter")}
-        onSearch={(text) => {
-          onSearchList(text);
-        }} />
-    </View>
-  }
+    return (
+      <View style={{marginHorizontal: -10, marginTop: -10}}>
+        <SearchBar
+          isFilter={true}
+          animation={() => animation('filter')}
+          onSearch={text => {
+            onSearchList(text);
+          }}
+        />
+      </View>
+    );
+  };
 
   if (isLoading) {
     return (
-      <View style={[styles.container, { padding: 10, justifyContent: 'center', height: '100%' }]}>
+      <View
+        style={[
+          styles.container,
+          {padding: 10, justifyContent: 'center', height: '100%'},
+        ]}>
         {Array.from(Array(6)).map((_, key) => (
           <Skeleton key={key} />
         ))}
       </View>
-    )
+    );
   }
 
   return (
-
     <Provider>
-      <View style={{ flex: 1 }}>
-        <Notification></Notification>        
-        {canAddPipeline && <AddSalesPipeline
-          props={props}
-          onClose={() => {            
-            loadPipeLineData();
-            setCanAddPipeline(false);
-          }}
-          pageType={pageType}
-          locationName={locationName}
-          opportunity_id={selectedOpportunityId} />
-        }
-
-        {crmStatus && showItem == 1 && <TouchableOpacity
-          activeOpacity={1}
-          style={grayBackground}
-          onPress={() => {
-            dispatch({ type: SUB_SLIDE_STATUS, payload: false })
-            dispatch({ type: SLIDE_STATUS, payload: false });
-            setShowItem(0);
-            
-          }}>
-
-        </TouchableOpacity>
-        }
-
-        { crmStatus && showItem == 1 && 
-          <View
-            style={[styles.transitionView, showItem == 0 ? { transform: [{ translateY: Dimensions.get('window').height + 100 }] } : { transform: [{ translateY: 0 }] }]}>
-            <FilterView navigation={navigation} page={"pipeline"} 
+      <View style={{flex: 1}}>
+        <Notification></Notification>
+        {canAddPipeline && (
+          <AddSalesPipeline
+            props={props}
             onClose={() => {
-              dispatch({ type: SLIDE_STATUS, payload: false });
+              loadPipeLineData();
+              setCanAddPipeline(false);
+            }}
+            pageType={pageType}
+            locationName={locationName}
+            opportunity_id={selectedOpportunityId}
+          />
+        )}
+
+        {crmStatus && showItem == 1 && (
+          <TouchableOpacity
+            activeOpacity={1}
+            style={grayBackground}
+            onPress={() => {
+              dispatch({type: SUB_SLIDE_STATUS, payload: false});
+              dispatch({type: SLIDE_STATUS, payload: false});
               setShowItem(0);
-            }} />
+            }}></TouchableOpacity>
+        )}
+
+        {crmStatus && showItem == 1 && (
+          <View
+            style={[
+              styles.transitionView,
+              showItem == 0
+                ? {
+                    transform: [
+                      {translateY: Dimensions.get('window').height + 100},
+                    ],
+                  }
+                : {transform: [{translateY: 0}]},
+            ]}>
+            <FilterView
+              navigation={navigation}
+              page={'pipeline'}
+              onClose={() => {
+                dispatch({type: SLIDE_STATUS, payload: false});
+                setShowItem(0);
+              }}
+            />
           </View>
-        }
+        )}
 
         <View style={styles.container}>
-          <View style={[styles.tabContainer, boxShadow, { alignItems: 'center' }]}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginRight: 10, alignItems: 'center' }}
-              onMomentumScrollEnd={(e) => {
+          <View
+            style={[styles.tabContainer, boxShadow, {alignItems: 'center'}]}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{marginRight: 10, alignItems: 'center'}}
+              onMomentumScrollEnd={e => {
                 if (e.nativeEvent.contentOffset.x == 0) {
                   setShowArrow(true);
                 } else {
                   setShowArrow(false);
                 }
               }}>
-
               {stages.map((item, index) => {
-                return <TouchableOpacity key={index} onPress={() => { onTabSelection(item) }}>
-                  <Text key={index} style={[
-                    styles.tabText, selectedStage === item.stage_id ? styles.tabActiveText : {}
-                  ]}>{item.stage_name}  </Text>
-                </TouchableOpacity>
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      onTabSelection(item);
+                    }}>
+                    <Text
+                      key={index}
+                      style={[
+                        styles.tabText,
+                        selectedStage === item.stage_id
+                          ? styles.tabActiveText
+                          : {},
+                      ]}>
+                      {item.stage_name}{' '}
+                    </Text>
+                  </TouchableOpacity>
+                );
               })}
-            </ScrollView>            
-            {canShowArrow && <SvgIcon icon="Arrow_Right_Btn" width='20px' height='25px' />}
+            </ScrollView>
+            {canShowArrow && (
+              <SvgIcon icon="Arrow_Right_Btn" width="20px" height="25px" />
+            )}
           </View>
           {renderSearchBox()}
           {renderListHeading()}
           <FlatList
             data={searchList}
-            renderItem={
-              ({ item, index }) => renderOpportunity(item, index)
-            }
+            renderItem={({item, index}) => renderOpportunity(item, index)}
             keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{ paddingHorizontal: 7, marginTop: 0 }}
+            contentContainerStyle={{paddingHorizontal: 7, marginTop: 0}}
             ItemSeparatorComponent={renderSeparator}
           />
-          
-          {
-            !canAddPipeline &&
-            <View style={[styles.plusButtonContainer, {marginBottom: DeviceInfo.getSystemVersion() === "11" ? 70 : 40 }]}>
-              <TouchableOpacity style={style.innerPlusButton} onPress={() => {                
-                setLocationName("");
-                setPageType('add');
-                setCanAddPipeline(true);
-                
-              }}>
-                <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+
+          {!canAddPipeline && (
+            <View
+              style={[
+                styles.plusButtonContainer,
+                {
+                  marginBottom:
+                    DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
+                },
+              ]}>
+              <TouchableOpacity
+                style={style.innerPlusButton}
+                onPress={() => {
+                  setLocationName('');
+                  setPageType('add');
+                  setCanAddPipeline(true);
+                }}>
+                <SvgIcon
+                  icon="Round_Btn_Default_Dark"
+                  width="70px"
+                  height="70px"
+                />
               </TouchableOpacity>
             </View>
-          }
-          
+          )}
         </View>
       </View>
     </Provider>
-  )
+  );
 }
 
 const perWidth = setWidthBreakpoints(breakPoint);
-const styles = EStyleSheet.create(parse({
-  container: {
-    padding: 10,    
-    flex:1,
-    backgroundColor: Colors.bgColor
-  },
+const styles = EStyleSheet.create(
+  parse({
+    container: {
+      padding: 10,
+      flex: 1,
+      backgroundColor: Colors.bgColor,
+    },
 
-  tabText: {
-    fontFamily: Fonts.secondaryMedium,
-    fontSize: 15,
-    color: Colors.disabledColor,
-    marginHorizontal: 10
-  },
+    tabText: {
+      fontFamily: Fonts.secondaryMedium,
+      fontSize: 15,
+      color: Colors.disabledColor,
+      marginHorizontal: 10,
+    },
 
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 12,
-    paddingBottom: 12,
-    borderRadius: 7,
-    backgroundColor: '#fff',
-    marginBottom: 8
-  },
+    tabContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingTop: 12,
+      paddingBottom: 12,
+      borderRadius: 7,
+      backgroundColor: '#fff',
+      marginBottom: 8,
+    },
 
-  tabActiveText: {
-    color: whiteLabel().activeTabText,
-    fontFamily: Fonts.secondaryBold,
-    borderBottomColor: whiteLabel().activeTabUnderline,
-    borderBottomWidth: 2,
-    paddingBottom: 2,
-  },
+    tabActiveText: {
+      color: whiteLabel().activeTabText,
+      fontFamily: Fonts.secondaryBold,
+      borderBottomColor: whiteLabel().activeTabUnderline,
+      borderBottomWidth: 2,
+      paddingBottom: 2,
+    },
 
-  listheadingText: {
-    color: whiteLabel().mainText,    
-    fontSize: 15,
-    fontFamily: Fonts.secondaryMedium,    
-  },
+    listheadingText: {
+      color: whiteLabel().mainText,
+      fontSize: 15,
+      fontFamily: Fonts.secondaryMedium,
+    },
 
-  plusButtonContainer: {
-    position: 'absolute',
-    flexDirection: "row",
-    bottom:20,
-    //bottom: Dimensions.get('window').height * 0,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,
-  },
+    plusButtonContainer: {
+      position: 'absolute',
+      flexDirection: 'row',
+      bottom: 20,
+      //bottom: Dimensions.get('window').height * 0,
+      right: 20,
+      zIndex: 1,
+      elevation: 1,
+    },
 
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10
-  },
+    itemContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginVertical: 10,
+    },
 
-  opportunityStyle: {
-    flex: 2.2,
-    flexDirection: 'row',
-    marginLeft: -5
-  },
+    opportunityStyle: {
+      flex: 2.2,
+      flexDirection: 'row',
+      marginLeft: -5,
+    },
 
-  dotIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
+    dotIndicator: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+    },
 
-  opportunityTitle: {
-    fontFamily: 'Gilroy-Bold',
-    fontSize: 14,
-    color: 'black'
-  },
+    opportunityTitle: {
+      fontFamily: 'Gilroy-Bold',
+      fontSize: 14,
+      color: 'black',
+    },
 
-  stageItemBg: {
-    flex: 1.0,
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 5
-  },
+    stageItemBg: {
+      flex: 1.0,
+      alignItems: 'center',
+      paddingHorizontal: 8,
+      paddingVertical: 5,
+      borderRadius: 5,
+    },
 
-  transitionView: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: Colors.bgColor,
-    elevation: 2,
-    zIndex: 2,
-    padding: 0,
-  },
-
-}));
+    transitionView: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: Colors.bgColor,
+      elevation: 2,
+      zIndex: 2,
+      padding: 0,
+    },
+  }),
+);

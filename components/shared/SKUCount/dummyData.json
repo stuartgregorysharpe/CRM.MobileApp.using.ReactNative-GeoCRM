@@ -1,0 +1,82 @@
+{
+    "form_question_id": "21",
+    "question_group": "Question Group 3",
+    "question_group_id": "3",
+    "question_type": "sku_count",
+    "question_text": "Count Danone and Competitor SKUs on Cold Shelf",
+    "guide_info": {
+        "title": "Question Guide 21",
+        "image": "",
+        "text": "Question Guide 21 Text"
+    },
+    "rule_compulsory": "1",
+    "categories": [
+        "Custard",
+        "Smooth",
+        "Fruit",
+        "Multigrain",
+        "Drinking",
+        "Indulgence",
+        "Maas",
+        "Kids",
+        "Alt Milk",
+        "Cold Shelf"
+    ],
+    "brand": "Danone",
+    "competitors": {
+        "Custard" : [ 
+            "Competitor 1",
+                "Competitor 2",
+                "Other"
+            ],
+            "Smooth" : [
+                "Competitor 1",
+                "Competitor 2",
+                "Other"
+            ],
+            "Fruit" : [
+                "Competitor 1",
+                    "Competitor 2",
+                    "Other"
+            ]
+    
+        },
+    "market_targets": {
+        "Custard": "30",
+        "Smooth": "31",
+        "Fruit": "42",
+        "Multigrain": "31",
+        "Drinking": "42",
+        "Indulgence": "38",
+        "Maas": "30",
+        "Kids": "35",
+        "Alt Milk": "33",
+        "Cold Shelf": "50"
+    },
+    "completed_data": {
+        "category_value": {
+            "Custard": "35",
+            "Smooth": "32",
+            "Fruit": "30",
+            "Multigrain": "38",
+            "Drinking": "30",
+            "Indulgence": "42",
+            "Maas": "35",
+            "Kids": "29",
+            "Alt Milk": "42",
+            "Cold Shelf": "42"
+        },
+        "fsi_values": {
+            "Custard": "117",
+            "Smooth": "103",
+            "Fruit": "71",
+            "Multigrain": "123",
+            "Drinking": "71",
+            "Indulgence": "111",
+            "Maas": "117",
+            "Kids": "83",
+            "Alt Milk": "127",
+            "Cold Shelf": "84"
+        }
+    }
+}

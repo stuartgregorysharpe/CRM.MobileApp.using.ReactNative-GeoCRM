@@ -1,16 +1,31 @@
-import React, { useEffect, useRef } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SafeAreaView, StatusBar, Animated, Easing, Dimensions, TouchableOpacity, StyleSheet } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import React, {useEffect, useRef} from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  SafeAreaView,
+  StatusBar,
+  Animated,
+  Easing,
+  Dimensions,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 
 import SignInScreen from '../screens/SignInScreen';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import Profile from '../components/Profile';
 import More from '../components/More';
-import { PRIMARY_COLOR, whiteLabel } from '../constants/Colors';
-import { grayBackground } from '../constants/Styles';
-import { SLIDE_STATUS, CHANGE_PROFILE_STATUS, CHANGE_MORE_STATUS } from '../actions/actionTypes';
+import {PRIMARY_COLOR, whiteLabel} from '../constants/Colors';
+import {grayBackground} from '../constants/Styles';
+import {
+  SLIDE_STATUS,
+  CHANGE_PROFILE_STATUS,
+  CHANGE_MORE_STATUS,
+} from '../actions/actionTypes';
 import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
+import Config from '../constants/Config';
+import Constants from '../constants/Constants';
+import UITestScreen from '../screens/GeoRep/UITestScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +52,7 @@ export default function AppScreens() {
   const moreAnimatedValue = useRef(new Animated.Value(1)).current;
   const profileAnimatedValue = useRef(new Animated.Value(1)).current;
 
-  const moreStartAnimation = (toValue) => {
+  const moreStartAnimation = toValue => {
     Animated.timing(moreAnimatedValue, {
       toValue,
       duration: 300,
@@ -45,7 +60,7 @@ export default function AppScreens() {
       useNativeDriver: false,
     }).start();
   };
-  const profileStartAnimation = (toValue) => {
+  const profileStartAnimation = toValue => {
     Animated.timing(profileAnimatedValue, {
       toValue,
       duration: 300,
@@ -56,83 +71,85 @@ export default function AppScreens() {
 
   const moreTranslateX = moreAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width + 100 : Dimensions.get('window').height + 100 ],
+    outputRange: [
+      0,
+      Dimensions.get('window').width > Dimensions.get('window').height
+        ? Dimensions.get('window').width + 100
+        : Dimensions.get('window').height + 100,
+    ],
     extrapolate: 'clamp',
   });
   const profileTranslateX = profileAnimatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, Dimensions.get('window').width > Dimensions.get('window').height ? -Dimensions.get('window').width - 100 : -Dimensions.get('window').height - 100 ],
+    outputRange: [
+      0,
+      Dimensions.get('window').width > Dimensions.get('window').height
+        ? -Dimensions.get('window').width - 100
+        : -Dimensions.get('window').height - 100,
+    ],
     extrapolate: 'clamp',
   });
-  
-  if (loginStatus != "success") {
-    return (
-      <SignInScreen />
-    )
+  if (Config.DEBUG_MODE == Constants.debugMode.DEBUG_UI_SCREEN) {
+    return <UITestScreen />;
   }
-
+  if (loginStatus != 'success') {
+    return <SignInScreen />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-
-      {(showProfile == 0 || showMoreScreen == 0) && <TouchableOpacity
-        activeOpacity={1} 
-        style={grayBackground}
-        onPress={() => {
-          dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
-          dispatch({type: CHANGE_MORE_STATUS, payload: 1});
-        }}
-      >
-      </TouchableOpacity>}
+      {(showProfile == 0 || showMoreScreen == 0) && (
+        <TouchableOpacity
+          activeOpacity={1}
+          style={grayBackground}
+          onPress={() => {
+            dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
+            dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+          }}></TouchableOpacity>
+      )}
 
       <Animated.View
         ref={profileRef}
-        style={[styles.transitionView, { transform: [{ translateX: profileTranslateX }], left: 0 }]}
-      >
+        style={[
+          styles.transitionView,
+          {transform: [{translateX: profileTranslateX}], left: 0},
+        ]}>
         <Profile />
       </Animated.View>
-      
+
       <Animated.View
         ref={moreRef}
-        style={[styles.transitionView, { transform: [{ translateX: moreTranslateX }], right: 0 }]}
-      >
+        style={[
+          styles.transitionView,
+          {transform: [{translateX: moreTranslateX}], right: 0},
+        ]}>
         <More />
       </Animated.View>
 
       <StatusBar translucent backgroundColor={whiteLabel().headerBackground} />
 
-      <Stack.Navigator 
-
-        cardStyle = {{           
-          opacity: 1, 
+      <Stack.Navigator
+        cardStyle={{
+          opacity: 1,
         }}
-        screenOptions={({ navigation }) => {
+        screenOptions={({navigation}) => {
           return {
             detachPreviousScreen: !navigation.isFocused(),
-          }
-        }}
-
-        // screenOptions={{          
-        //   headerStyle: {
-        //     backgroundColor: PRIMARY_COLOR,
-        //   }
-        // }}
-      >
+          };
+        }}>
         <Stack.Screen
-          name="Root"           
+          name="Root"
           component={BottomTabNavigator}
-          options={{ headerShown: false }} 
+          options={{headerShown: false}}
         />
-        
+
         <Stack.Screen
           name="WebViewScreen"
           component={WebViewScreen}
-          navigationOptions={{headerShown:false}}
-          options={{ header: () => false}}> 
-            {/* {props => <WebViewScreen {...props} />} */}
+          navigationOptions={{headerShown: false}}
+          options={{header: () => false}}>
+          {/* {props => <WebViewScreen {...props} />} */}
         </Stack.Screen>
-                
-       
       </Stack.Navigator>
     </SafeAreaView>
   );
@@ -150,5 +167,5 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: 2,
     elevation: 2,
-  }
-})
+  },
+});
