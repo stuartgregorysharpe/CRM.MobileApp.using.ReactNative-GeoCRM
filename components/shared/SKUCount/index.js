@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import BaseForm from '../BaseForm';
-import {SubmitButton} from '../SubmitButton';
 import SKUCountCompletedView from './SKUCompletedView';
 import dummyData from './dummyData.json';
 import QuestionButton from '../QuestionButton';
