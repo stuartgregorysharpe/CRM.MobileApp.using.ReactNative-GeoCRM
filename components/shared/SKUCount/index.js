@@ -22,11 +22,7 @@ export const SKUCount = props => {
   return (
     <BaseForm item={item} style={[styles.container, props.style]}>
       {renderContent(isCompleted)}
-      <SKUCountFormModal
-        closableWithOutsideTouch
-        modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
-        ref={skuCountFormModalRef}
-      />
+      <SKUCountFormModal ref={skuCountFormModalRef} />
     </BaseForm>
   );
 };

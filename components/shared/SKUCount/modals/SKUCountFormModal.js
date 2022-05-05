@@ -14,12 +14,15 @@ const SKUCountFormModal = React.forwardRef((props, ref) => {
     }
   };
   return (
-    <CModal ref={ref} title={'SKU Count'} {...props}>
+    <CModal
+      ref={ref}
+      title={'SKU Count'}
+      closableWithOutsideTouch
+      modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+      {...props}>
       <SKUCountForm
         {...props}
         style={{marginTop: 14}}
-        closableWithOutsideTouch
-        modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
         onButtonAction={onButtonAction}
       />
     </CModal>
