@@ -6,6 +6,7 @@ import {style} from '../../../constants/Styles';
 import CardView from '../../common/CardView';
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
+import {SubmitButton} from '../SubmitButton';
 import CounterItemList from './components/CounterItemList';
 import dummyData from './dummyData.json';
 const SKUCountForm = props => {
@@ -21,7 +22,11 @@ const SKUCountForm = props => {
       category: category,
     };
   });
-
+  const onButtonAction = actionType => {
+    if (props.onButtonAction) {
+      props.onButtonAction({type: actionType});
+    }
+  };
   useEffect(() => {
     setCountItems(constructCountItems());
   }, [selectedCategory, item]);
@@ -87,6 +92,13 @@ const SKUCountForm = props => {
           onItemAction={onCounterItemAction}
         />
       </CardView>
+      <SubmitButton
+        title={'Submit'}
+        style={{marginVertical: 16}}
+        onSubmit={() => {
+          onButtonAction(Constants.actionType.ACTION_TYPE_FORM_SUBMIT);
+        }}
+      />
     </View>
   );
 };

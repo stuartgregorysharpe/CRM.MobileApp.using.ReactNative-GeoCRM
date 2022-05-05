@@ -1,8 +1,8 @@
-export const PRIMARY_COLOR = "#133C8B";
-export const BG_COLOR = "#F9F9F9";
-export const TEXT_COLOR = "#23282D";
-export const GREEN_COLOR = "#b7e2bb";
-export const BLUE_COLOR = "#b7cce2";
+export const PRIMARY_COLOR = '#133C8B';
+export const BG_COLOR = '#F9F9F9';
+export const TEXT_COLOR = '#23282D';
+export const GREEN_COLOR = '#b7e2bb';
+export const BLUE_COLOR = '#b7cce2';
 export const GRAY_COLOR = 'rgba(21, 90, 161, 0.31)';
 
 export const whiteLabel = () => {
@@ -39,10 +39,9 @@ export const whiteLabel = () => {
     countBoxBackground: '#133C8B',
     countBoxText: '#FFFFFF',
     feature_card_icon_background: '#F5F5F5',
-    feature_card_icon_fill: '#133C8B',    
+    feature_card_icon_fill: '#133C8B',
   };
 };
-
 
 export default {
   whiteColor: '#fff',
@@ -58,6 +57,5 @@ export default {
   tickBoxColor: '#002a55',
   selectedRedColor: '#dc143c',
   greyColor: 'rgba(21, 90, 161, 0.31)',
-
-}
-
+  grey2: '#D8D8D8',
+};

@@ -14,7 +14,7 @@ export default function UITestScreen({screenProps}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <SKUCountForm />
+        <SKUCount />
       </View>
     </SafeAreaView>
   );
