@@ -17,4 +17,8 @@ export default {
   tabType: {
     TAB_TYPE_BOTTOM_BAR: 'TAB_TYPE_BOTTOM_BAR',
   },
+  actionType: {
+    ACTION_TYPE_COUNT_PLUS: 'ACTION_TYPE_COUNT_PLUS',
+    ACTION_TYPE_COUNT_MINUS: 'ACTION_TYPE_COUNT_MINUS',
+  },
 };
