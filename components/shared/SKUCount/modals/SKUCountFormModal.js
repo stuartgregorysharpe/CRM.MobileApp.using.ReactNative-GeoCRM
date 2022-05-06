@@ -17,7 +17,6 @@ const SKUCountFormModal = React.forwardRef((props, ref) => {
     <CModal
       ref={ref}
       title={'SKU Count'}
-      closableWithOutsideTouch
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       {...props}>
       <SKUCountForm

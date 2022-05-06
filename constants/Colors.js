@@ -51,8 +51,11 @@ export default {
   bgColor: '#F9F9F9',
   textColor: '#23282D',
   greenColor: '#b7e2bb',
+  green2Color: '#0ED20E',
+
   blueColor: '#b7cce2',
   redColor: '#DC143C',
+  red2Color: '#D2150E',
   disabledColor: '#9D9FA2',
   tickBoxColor: '#002a55',
   selectedRedColor: '#dc143c',

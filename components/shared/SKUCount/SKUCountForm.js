@@ -8,14 +8,14 @@ import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
 import {SubmitButton} from '../SubmitButton';
 import CounterItemList from './components/CounterItemList';
-import dummyData from './dummyData.json';
+
 const SKUCountForm = props => {
   const {item} = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
   const [isSegmentNotInStore, setIsSegmentNotInStore] = useState(false);
   const [countItems, setCountItems] = useState([]);
-  const data = dummyData;
+  const data = item;
   const categories = data.categories.map(category => {
     return {
       title: category,
