@@ -67,6 +67,7 @@ const SKUCountCompletedView = props => {
                   color: tableItem.isHighlightFsi
                     ? Colors.green2Color
                     : Colors.red2Color,
+                  textDecorationLine: 'underline',
                 },
               ]}>
               {tableItem.fsi}
