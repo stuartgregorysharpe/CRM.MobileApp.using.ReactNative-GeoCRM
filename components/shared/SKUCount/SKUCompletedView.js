@@ -43,9 +43,9 @@ const SKUCountCompletedView = props => {
   };
 
   const renderTableContent = () => {
-    return tableData.map(tableItem => {
+    return tableData.map((tableItem, index) => {
       return (
-        <View style={styles.tableRow}>
+        <View style={styles.tableRow} key={index + 'key'}>
           <View style={styles.tableItem}>
             <Text style={styles.categoryTitle}>{tableItem.category}</Text>
           </View>

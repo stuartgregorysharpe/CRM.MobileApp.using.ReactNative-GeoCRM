@@ -38,7 +38,7 @@ const CModal = React.forwardRef((props, ref) => {
   };
   const onClear = () => {
     if (props.onClear) {
-      props.onClear;
+      props.onClear();
     }
     setIsVisible(false);
   };

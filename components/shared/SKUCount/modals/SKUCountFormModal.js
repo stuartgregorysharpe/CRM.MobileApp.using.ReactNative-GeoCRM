@@ -18,6 +18,11 @@ const SKUCountFormModal = React.forwardRef((props, ref) => {
       ref={ref}
       title={'SKU Count'}
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+      onClear={() => {
+        onButtonAction({
+          type: Constants.actionType.ACTION_FORM_CLEAR,
+        });
+      }}
       {...props}>
       <SKUCountForm
         {...props}

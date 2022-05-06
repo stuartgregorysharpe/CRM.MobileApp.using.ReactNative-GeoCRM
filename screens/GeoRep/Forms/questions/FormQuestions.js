@@ -26,6 +26,7 @@ import {DateForm} from '../../../../components/shared/DateForm';
 import TakePhotoForm from '../../../../components/shared/TakePhotoForm';
 import {useSelector, useDispatch} from 'react-redux';
 import {SignatureForm} from '../../../../components/shared/SignatureForm';
+import SKUCountForm from '../../../../components/shared/SKUCount';
 import Sign from './partial/Sign';
 import {SelectionView} from './partial/SelectionView';
 import {DatetimePickerView} from '../../../../components/DatetimePickerView';
@@ -44,6 +45,7 @@ import {
 } from '../../../../actions/notification.action';
 import * as RNLocalize from 'react-native-localize';
 import UploadFileView from './partial/UploadFileView';
+import {Constants} from '../../../../constants';
 
 export const FormQuestions = props => {
   const form = props.route.params.data;
@@ -528,6 +530,20 @@ export const FormQuestions = props => {
             setIsUploadFileView(true);
             setSelectedItem(item);
           }}></UploadFileForm>
+      );
+    } else if (
+      item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT
+    ) {
+      return (
+        <SKUCountForm
+          key={'sku_count_form' + index}
+          item={item}
+          onFormAction={({type, item}) => {
+            console.log('type', type);
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+            }
+          }}
+        />
       );
     }
     return <View key={'question' + index}></View>;

@@ -52,7 +52,7 @@ const SKUCountForm = props => {
     const _countItems = [...countItems];
     const itemIndex = _countItems.findIndex(x => x.name == item.name);
     if (itemIndex >= 0) {
-      if (type == Constants.actionType.ACTION_TYPE_COUNT_MINUS) {
+      if (type == Constants.actionType.ACTION_COUNT_MINUS) {
         _countItems[itemIndex].count -= 1;
         if (_countItems[itemIndex].count < 0) {
           _countItems[itemIndex].count = 0;
@@ -96,7 +96,7 @@ const SKUCountForm = props => {
         title={'Submit'}
         style={{marginVertical: 16}}
         onSubmit={() => {
-          onButtonAction(Constants.actionType.ACTION_TYPE_FORM_SUBMIT);
+          onButtonAction(Constants.actionType.ACTION_FORM_SUBMIT);
         }}
       />
     </View>

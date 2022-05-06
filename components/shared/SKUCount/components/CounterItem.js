@@ -11,8 +11,8 @@ const CounterItem = props => {
     if (props.onItemAction) {
       props.onItemAction({
         type: isPlus
-          ? Constants.actionType.ACTION_TYPE_COUNT_PLUS
-          : Constants.actionType.ACTION_TYPE_COUNT_MINUS,
+          ? Constants.actionType.ACTION_COUNT_PLUS
+          : Constants.actionType.ACTION_COUNT_MINUS,
         item,
       });
     }

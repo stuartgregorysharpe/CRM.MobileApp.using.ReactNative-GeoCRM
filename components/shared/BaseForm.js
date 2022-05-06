@@ -9,14 +9,8 @@ const BaseForm = props => {
   const {item} = props;
   if (!item) return null;
   onItemAction = type => {
-    if (type == Constants.actionType.ACTION_INFO) {
-      if (props.onTouchStart && item && item.guide_info) {
-        props.onTouchStart('', item.guide_info);
-      }
-    } else {
-      if (props.onItemAction) {
-        props.onItemAction({type, item});
-      }
+    if (props.onItemAction) {
+      props.onItemAction({type, item});
     }
   };
 
