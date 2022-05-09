@@ -538,9 +538,10 @@ export const FormQuestions = props => {
         <SKUCountForm
           key={'sku_count_form' + index}
           item={item}
-          onFormAction={({type, item}) => {
-            console.log('type', type);
+          onFormAction={({type, value}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              console.log('value', value);
+              onValueChangedSelectionView(key, index, value);
             }
           }}
         />

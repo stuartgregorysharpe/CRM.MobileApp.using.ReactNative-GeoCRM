@@ -25,6 +25,9 @@ const CModal = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);
+      if (props.onShowModal) {
+        props.onShowModal(true);
+      }
     },
     hideModal: () => {
       setIsVisible(false);

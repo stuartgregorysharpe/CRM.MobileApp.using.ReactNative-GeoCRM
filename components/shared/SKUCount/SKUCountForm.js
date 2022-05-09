@@ -8,13 +8,19 @@ import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
 import {SubmitButton} from '../SubmitButton';
 import CounterItemList from './components/CounterItemList';
+import {constructFormData, getValueFromFormData} from './helper';
 
 const SKUCountForm = props => {
   const {item} = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
-  const [isSegmentNotInStore, setIsSegmentNotInStore] = useState(false);
-  const [countItems, setCountItems] = useState([]);
+  const [formData, setFormData] = useState({});
+  let countItems = [];
+  let isSegmentNotInStore = false;
+  if (formData[selectedCategory]) {
+    countItems = formData[selectedCategory].competitors;
+    isSegmentNotInStore = formData[selectedCategory].noSegment;
+  }
   const data = item;
   const categories = data.categories.map(category => {
     return {
@@ -22,46 +28,50 @@ const SKUCountForm = props => {
       category: category,
     };
   });
-  const onButtonAction = actionType => {
+  const onSubmit = () => {
+    const submitValueData = getValueFromFormData(formData, item);
     if (props.onButtonAction) {
-      props.onButtonAction({type: actionType});
-    }
-  };
-  useEffect(() => {
-    setCountItems(constructCountItems());
-  }, [selectedCategory, item]);
-
-  const constructCountItems = () => {
-    const items = [];
-    items.push({
-      name: data.brand,
-      count: 0,
-    });
-    if (data.competitors && data.competitors[selectedCategory]) {
-      const competitors = data.competitors[selectedCategory];
-      competitors.forEach(item => {
-        items.push({
-          name: item,
-          count: 0,
-        });
+      props.onButtonAction({
+        type: Constants.actionType.ACTION_FORM_SUBMIT,
+        value: submitValueData,
       });
     }
-    return items;
   };
-  const onCounterItemAction = ({type, item}) => {
-    const _countItems = [...countItems];
-    const itemIndex = _countItems.findIndex(x => x.name == item.name);
-    if (itemIndex >= 0) {
-      if (type == Constants.actionType.ACTION_COUNT_MINUS) {
-        _countItems[itemIndex].count -= 1;
-        if (_countItems[itemIndex].count < 0) {
-          _countItems[itemIndex].count = 0;
-        }
-      } else {
-        _countItems[itemIndex].count += 1;
-      }
-      setCountItems(_countItems);
+  useEffect(() => {}, [selectedCategory, item]);
+  useEffect(() => {
+    console.log('item value', item.value);
+    const formData = constructFormData(item);
+    setFormData(formData);
+    if (categories.length > 0) {
+      setSelectedTabIndex(0);
+      setSelectedCategory(categories[0].category);
     }
+  }, [item]);
+
+  const onCounterItemAction = ({type, item}) => {
+    const _formData = {...formData};
+    const _countItems = _formData[selectedCategory].competitors;
+    const itemIndex = _countItems.findIndex(x => x.name == item.name);
+    if (itemIndex < 0) {
+      return false;
+    }
+    if (type == Constants.actionType.ACTION_COUNT_MINUS) {
+      _countItems[itemIndex].count -= 1;
+      if (_countItems[itemIndex].count < 0) {
+        _countItems[itemIndex].count = 0;
+      }
+    } else {
+      _countItems[itemIndex].count += 1;
+    }
+    setFormData(_formData);
+  };
+
+  const setIsSegmentNotInStore = (_category, _value) => {
+    const _formData = {...formData};
+    if (_formData[_category]) {
+      _formData[_category].noSegment = _value;
+    }
+    setFormData(_formData);
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -82,7 +92,7 @@ const SKUCountForm = props => {
         <CCheckBox
           value={isSegmentNotInStore}
           onValueChange={value => {
-            setIsSegmentNotInStore(!isSegmentNotInStore);
+            setIsSegmentNotInStore(selectedCategory, !isSegmentNotInStore);
           }}
         />
       </CardView>
@@ -96,7 +106,7 @@ const SKUCountForm = props => {
         title={'Submit'}
         style={{marginVertical: 16}}
         onSubmit={() => {
-          onButtonAction(Constants.actionType.ACTION_FORM_SUBMIT);
+          onSubmit();
         }}
       />
     </View>
