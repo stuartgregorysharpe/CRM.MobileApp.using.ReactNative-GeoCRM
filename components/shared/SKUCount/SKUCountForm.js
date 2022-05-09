@@ -39,7 +39,6 @@ const SKUCountForm = props => {
   };
   useEffect(() => {}, [selectedCategory, item]);
   useEffect(() => {
-    console.log('item value', item.value);
     const formData = constructFormData(item);
     setFormData(formData);
     if (categories.length > 0) {

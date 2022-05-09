@@ -10,7 +10,7 @@ const SKUCountCompletedView = props => {
     const categories = item.categories;
     const completed_data = item.completed_data;
     const market_targets = item.market_targets;
-
+    if (!completed_data) return [];
     return categories.map(category => {
       const brand = completed_data['category_value'][category] + '%';
       const market = market_targets[category] + '%';

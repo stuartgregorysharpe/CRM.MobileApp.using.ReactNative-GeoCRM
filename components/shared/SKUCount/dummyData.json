@@ -53,7 +53,32 @@
         "Alt Milk": "33",
         "Cold Shelf": "50"
     },
-    "completed_data": [],
+    "completed_data": {
+        "category_value": {
+            "Custard": "35",
+            "Smooth": "32",
+            "Fruit": "30",
+            "Multigrain": "38",
+            "Drinking": "30",
+            "Indulgence": "42",
+            "Maas": "35",
+            "Kids": "29",
+            "Alt Milk": "42",
+            "Cold Shelf": "42"
+        },
+        "fsi_values": {
+            "Custard": "117",
+            "Smooth": "103",
+            "Fruit": "71",
+            "Multigrain": "123",
+            "Drinking": "71",
+            "Indulgence": "111",
+            "Maas": "117",
+            "Kids": "83",
+            "Alt Milk": "127",
+            "Cold Shelf": "84"
+        }
+    },
     "value": {
     "form_answers" : [
         {

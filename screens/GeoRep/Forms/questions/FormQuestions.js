@@ -538,10 +538,12 @@ export const FormQuestions = props => {
         <SKUCountForm
           key={'sku_count_form' + index}
           item={item}
-          onFormAction={({type, value}) => {
+          onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
-              console.log('value', value);
               onValueChangedSelectionView(key, index, value);
+            }
+            if (type == Constants.actionType.ACTION_INFO) {
+              _onTouchStart(null, item.guide_info);
             }
           }}
         />

@@ -13,7 +13,6 @@ export function constructFormData(data) {
       value.form_answers[0].answer[category];
 
     if (isInitialAnswerExist) {
-      console.log('item answer', value.form_answers[0].answer);
       competitorAnswerData = value.form_answers[0].answer[category];
     }
     formData[category] = constructCategoryFormData(
