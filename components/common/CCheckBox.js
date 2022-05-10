@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: whiteLabel().itemSelectedIconFill,
+    backgroundColor: whiteLabel().activeIcon,
     borderWidth: 1,
-    borderColor: whiteLabel().itemSelectedIconFill,
+    borderColor: whiteLabel().activeIcon,
   },
 });
 export default CCheckBox;

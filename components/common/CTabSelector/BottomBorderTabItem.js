@@ -8,6 +8,7 @@ import {
   Image,
 } from 'react-native';
 import {Images, Colors, Fonts, Values} from '../../../constants';
+import {whiteLabel} from '../../../constants/Colors';
 
 const BottomBorderTabItem: () => Node = props => {
   const onSelectTab = (item, index) => {
@@ -32,7 +33,9 @@ const BottomBorderTabItem: () => Node = props => {
         <View
           style={[
             styles.bottomBar,
-            props.isPicked && {backgroundColor: Colors.primaryColor},
+            props.isPicked && {
+              backgroundColor: whiteLabel().activeTabUnderline,
+            },
           ]}
         />
       </View>
@@ -54,12 +57,12 @@ const styles = StyleSheet.create({
   },
   selectedTabItemText: {
     fontSize: Values.fontSize.xSmall,
-    color: Colors.primaryColor,
+    color: whiteLabel().activeTabText,
     fontFamily: Fonts.primaryBold,
   },
   tabItemText: {
     fontSize: Values.fontSize.xSmall,
-    color: Colors.disabledColor,
+    color: whiteLabel().inactiveTabText,
     fontFamily: Fonts.primaryMedium,
   },
 });
