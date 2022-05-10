@@ -40,6 +40,12 @@ export const whiteLabel = () => {
     countBoxText: '#FFFFFF',
     feature_card_icon_background: '#F5F5F5',
     feature_card_icon_fill: '#133C8B',    
+    graphs:{
+      primary: "#133C8B", // Dark Green
+      color_1: "#4594DB", // Light Gree, 
+      color_2: "#DC143C", // Red, 
+      color_3: "#CFD8E8", // Grey
+    }
   };
 };
 
@@ -58,6 +64,9 @@ export default {
   tickBoxColor: '#002a55',
   selectedRedColor: '#dc143c',
   greyColor: 'rgba(21, 90, 161, 0.31)',
+  lightGreyColor:'#eee',
+  lightBlueColor:'#4594DB',
+  primaryOpacity20: 'rgba(19, 60, 139, 0.2)',
 
 }
 

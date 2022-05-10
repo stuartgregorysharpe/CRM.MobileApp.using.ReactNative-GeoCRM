@@ -215,8 +215,7 @@ export const FormQuestions = (props) =>{
             }else{
               form_answers.push({key: `form_answers[${index}][answer]` , value: item.question_type === 'take_photo' || item.question_type === 'upload_file' ? '' : value })
             }            
-            index = index + 1;
-            //}                 
+            index = index + 1;            
         });
       });
       
@@ -268,8 +267,7 @@ export const FormQuestions = (props) =>{
             var words = item.value.split('/');
             var ext = words[words.length - 1].split(".");
             postData.append(item.key, {uri:item.value, type:'image/' + ext[1], name:words[words.length - 1]} ); 
-          }
-          
+          }          
         }
       })        
 
@@ -462,7 +460,7 @@ export const FormQuestions = (props) =>{
                 console.log("key",key);
                 console.log("index",index);
 
-                onValueChangedSelectionView( key, index, value); 
+                onValueChangedSelectionView( key, index, value);
               }}
               >
             </UploadFileView>

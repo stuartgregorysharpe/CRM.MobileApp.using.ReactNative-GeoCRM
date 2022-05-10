@@ -1,0 +1,147 @@
+
+
+import { View, Text , Animated, Dimensions , Easing} from 'react-native'
+import React , { useRef , useState , useEffect ,useCallback} from 'react'
+import Colors from '../../../../constants/Colors'
+import { AppText } from '../../../../components/common/AppText';
+
+
+export default function ProgressBar({ steps, colors, height}) {
+
+    const animatedValue1 =  useRef(new Animated.Value(0)).current;
+    const animatedValue2 =  useRef(new Animated.Value(-100)).current;
+    const reactive1 =  useRef(new Animated.Value(0)).current;
+    const reactive2 = useRef(new Animated.Value(-100)).current;
+
+    const viewAnimation = useRef(null);
+    const [width, setWidth] = useState(0);
+    
+    
+    useEffect(() => {        
+        console.log("getTotal",getTotal())
+    }, []);
+    
+    useEffect(() => {
+        reactive2.setValue(  0 );        
+    },[steps, width]);
+
+    const getTotal = () =>{
+        var sum = 0;
+        steps.forEach(element => {
+            sum = sum + element;
+        });
+        return sum;
+    }
+
+
+    const additionalWidth = (index) => {    
+        var itemWidth = width * steps[index] / getTotal();
+        if(steps.length === 4){
+            if( itemWidth < 20){
+                return 35 - itemWidth;
+            }else if(itemWidth > 100){
+                return -10;
+            }else{
+                return 9;
+            }
+        }else{
+            if(itemWidth < 10){
+                return 35 - itemWidth;
+            }else if(itemWidth > 100){
+                return -10;
+            }else{
+                return 8;
+            }                     
+        }
+    }
+
+    return (
+        <View style={{flexDirection:'column'}}>
+            <View         
+                onLayout={e =>{
+                    const newWidth = e.nativeEvent.layout.width;
+                    console.log("newWidth", newWidth);
+                    console.log("DEvice width", Dimensions.get("window").width)
+                    setWidth(newWidth);
+                }} 
+
+                style={{
+                    height:height,          
+                    flexDirection:'row',                                     
+                    //backgroundColor:Colors.disabledColor,                    
+                    borderRadius:height,                    
+                    //overflow:'hidden',
+                    // marginBottom:8
+                }}>
+                               
+                <Animated.View                    
+                    style={{                        
+                        justifyContent:'center',                    
+                        height,
+                        width: (width * steps[0] / getTotal()) + additionalWidth(0),
+                        borderRadius:height,
+                        backgroundColor: colors[0],
+                        zIndex: 5,
+                        alignItems:'center'
+                    }}>         
+                    <AppText color={Colors.whiteColor} title={steps[0]}></AppText>
+                </Animated.View>
+
+                <Animated.View                    
+                    style={{                        
+                        justifyContent:'center',                    
+                        height,
+                        width: width * steps[1] / getTotal() + additionalWidth(1),
+                        borderTopRightRadius:height,
+                        borderBottomRightRadius:height,
+                        backgroundColor: colors[1],          
+                        marginLeft:-12,
+                        zIndex: 4,
+                        alignItems:'center'
+                    }}>         
+                    <AppText color={Colors.whiteColor} title={steps[1]}></AppText>                                                                                     
+                </Animated.View>
+
+                <Animated.View                    
+                    style={{                        
+                        justifyContent:'center',                    
+                        height,
+                        width: width * steps[2] / getTotal() + additionalWidth(2),
+                        borderTopRightRadius:height,
+                        borderBottomRightRadius:height,
+                        backgroundColor: colors[2],     
+                        marginLeft:-12,               
+                        zIndex: 3,
+                        alignItems:'center'
+                    }}>               
+                    <AppText color={Colors.whiteColor} title={steps[2]}></AppText>                                                                           
+                </Animated.View>
+
+                {
+                    steps.length >= 4 && 
+                    <Animated.View                    
+                        style={{                        
+                            justifyContent:'center',                    
+                            height,
+                            width: width * steps[3] / getTotal()  + additionalWidth(3),
+                            borderTopRightRadius:height,
+                            borderBottomRightRadius:height,
+                            backgroundColor: colors[3],                 
+                            marginLeft:-12,
+                            zIndex: 2,
+                            alignItems:'center'
+                        }}>         
+                        <AppText color={Colors.whiteColor} title={steps[3]}></AppText>                                                                                     
+                    </Animated.View>
+                }
+                
+
+               
+
+            </View>
+            
+          
+        </View>
+    )
+
+}

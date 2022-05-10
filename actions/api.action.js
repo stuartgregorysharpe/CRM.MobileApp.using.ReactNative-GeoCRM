@@ -10,6 +10,7 @@ export const getApiRequest = async ( route ,  param ) => {
     var baseUrl = await getBaseUrl();
     
     var url = `${baseUrl}/${route}`;
+    console.log("call url" , url)
     if( route.includes("local_api_old") ){
         url = route;
     }
@@ -33,7 +34,7 @@ export const getApiRequest = async ( route ,  param ) => {
           if (res.data.status == "success") {
             resolve(res.data);
           } else {
-            resolve([]);
+            resolve(res.data);
           }
         })
         .catch((err) => {

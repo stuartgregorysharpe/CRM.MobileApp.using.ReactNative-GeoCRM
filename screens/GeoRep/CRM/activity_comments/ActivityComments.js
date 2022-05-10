@@ -21,7 +21,7 @@ export default function ActivityComments(props) {
     const changePage = (nativeEvent) => {    
         setTabIndex(nativeEvent.position);
     }
-
+    
     return (
         <Modal                      
             animationType="fade"        

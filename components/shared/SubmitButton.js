@@ -8,11 +8,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
-export const SubmitButton = ({  title, onSubmit }) => {
+export const SubmitButton = ({  title, bgStyle, textStyle, onSubmit }) => {
     
     return (
-        <TouchableOpacity style={styles.submitButton} onPress={() => { onSubmit() }}>
-          <Text style={[styles.submitButtonText]}>
+        <TouchableOpacity style={[styles.submitButton, bgStyle]} onPress={() => { onSubmit() }}>
+          <Text style={[styles.submitButtonText , textStyle]}>
             {title}
           </Text>
           <FontAwesomeIcon style={styles.submitButtonIcon} size={25} color={ whiteLabel().actionFullButtonText } icon={ faAngleDoubleRight } />
