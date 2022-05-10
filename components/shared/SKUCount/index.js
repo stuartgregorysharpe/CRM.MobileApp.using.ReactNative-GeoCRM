@@ -8,7 +8,8 @@ const SKUCount = props => {
   const {item} = props;
   if (!item) return null;
   const skuCountFormModalRef = useRef();
-  const isCompleted = item.completed_data != false;
+  const isCompleted =
+    item.completed_data != false && item.completed_data != null;
   const onOpenSKUCountModal = () => {
     skuCountFormModalRef.current.showModal();
   };

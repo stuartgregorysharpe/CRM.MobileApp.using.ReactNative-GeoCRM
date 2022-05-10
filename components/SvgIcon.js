@@ -889,6 +889,12 @@ width="25.16" height="45.32" viewBox="0 0 25.16 45.32">
   stroke-linejoin="round" stroke-width="5" />
 </svg>
 `;
+const Slider_Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="28.357" height="57.75" viewBox="0 0 28.357 57.75">
+  <path id="chevron-back-sharp" d="M21.728,0,0,25l21.728,25" transform="translate(25.607 53.87) rotate(180)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="5.5"/>
+</svg>`;
+const Slider_Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28.357 57.75">
+  <path id="chevron-back-sharp" d="M21.728,0,0,25l21.728,25" transform="translate(2.75 3.88)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="5.5"/>
+</svg>`;
 export default ({icon, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
     {icon == 'Round_Btn_Default_Dark' && (
@@ -1311,6 +1317,22 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
     )}
     {icon == 'Chevron_Back' && (
       <SvgXml style={style} xml={Chevron_Back} width={width} height={height} />
+    )}
+    {icon == 'Slider_Arrow_Right' && (
+      <SvgXml
+        style={style}
+        xml={Slider_Arrow_Right}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Slider_Arrow_Left' && (
+      <SvgXml
+        style={style}
+        xml={Slider_Arrow_Left}
+        width={width}
+        height={height}
+      />
     )}
   </Fragment>
 );

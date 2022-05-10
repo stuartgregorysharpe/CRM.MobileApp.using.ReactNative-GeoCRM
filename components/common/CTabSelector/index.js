@@ -61,7 +61,7 @@ export class CTabSelector extends Component {
         onPress={() => {
           this.onPressNextButton(true);
         }}>
-        <SvgIcon icon="Signature_Btn_Right_Arrow" width="16px" height="16px" />
+        <SvgIcon icon="Slider_Arrow_Right" width="16px" height="16px" />
       </TouchableOpacity>
     );
   };
@@ -72,7 +72,7 @@ export class CTabSelector extends Component {
         onPress={() => {
           this.onPressNextButton(false);
         }}>
-        <SvgIcon icon="Chevron_Back" width="16px" height="16px" />
+        <SvgIcon icon="Slider_Arrow_Left" width="16px" height="16px" />
       </TouchableOpacity>
     );
   };
