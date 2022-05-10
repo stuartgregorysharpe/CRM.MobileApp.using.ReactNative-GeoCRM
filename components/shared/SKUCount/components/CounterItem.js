@@ -7,12 +7,11 @@ const CounterItem = props => {
   const {item} = props;
   if (!item) return null;
   const {name, count} = item;
-  const onCount = isPlus => {
+  const onCount = nextCount => {
     if (props.onItemAction) {
       props.onItemAction({
-        type: isPlus
-          ? Constants.actionType.ACTION_COUNT_PLUS
-          : Constants.actionType.ACTION_COUNT_MINUS,
+        type: Constants.actionType.ACTION_COUNT,
+        nextCount: nextCount,
         item,
       });
     }

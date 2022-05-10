@@ -44,19 +44,35 @@ export class CTabSelector extends Component {
       />
     );
   };
-  onPressNextButton = () => {
+  onPressNextButton = isNext => {
     const {selectedIndex, items} = this.props;
-    if (selectedIndex < items.length) {
-      const nextSelectedIndex = selectedIndex + 1;
-      this.onSelectTab(items[nextSelectedIndex], nextSelectedIndex);
+    let nextSelectedIndex = selectedIndex;
+    if (isNext && selectedIndex < items.length) {
+      nextSelectedIndex = selectedIndex + 1;
+    } else if (!isNext && selectedIndex > 0) {
+      nextSelectedIndex = selectedIndex - 1;
     }
+    this.onSelectTab(items[nextSelectedIndex], nextSelectedIndex);
   };
   renderNextButton = () => {
     return (
       <TouchableOpacity
         style={styles.nextButtonContainer}
-        onPress={this.onPressNextButton}>
+        onPress={() => {
+          this.onPressNextButton(true);
+        }}>
         <SvgIcon icon="Signature_Btn_Right_Arrow" width="16px" height="16px" />
+      </TouchableOpacity>
+    );
+  };
+  renderPrevButton = () => {
+    return (
+      <TouchableOpacity
+        style={styles.nextButtonContainer}
+        onPress={() => {
+          this.onPressNextButton(false);
+        }}>
+        <SvgIcon icon="Chevron_Back" width="16px" height="16px" />
       </TouchableOpacity>
     );
   };
@@ -88,10 +104,14 @@ export class CTabSelector extends Component {
     );
   };
   render() {
+    const {selectedIndex, items} = this.props;
+    const isShowNextButton = selectedIndex < items.length - 1;
+    const isShowPrevButton = selectedIndex > 0;
     return (
       <View style={[styles.tabContainer, this.props.containerStyle]}>
-        <View style={{flex: 1}}>{this.renderTabs(this.props.items)}</View>
-        {this.renderNextButton()}
+        {isShowPrevButton && this.renderPrevButton()}
+        <View style={{flex: 1}}>{this.renderTabs(items)}</View>
+        {isShowNextButton && this.renderNextButton()}
       </View>
     );
   }

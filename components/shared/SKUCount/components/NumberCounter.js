@@ -1,12 +1,36 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import {Colors, Fonts, Values} from '../../../../constants';
 
 const NumberCounter = props => {
   const {count} = props;
   const onCount = isPlus => {
     if (props.onCount) {
-      props.onCount(isPlus);
+      if (isPlus) {
+        props.onCount(count + 1);
+      } else {
+        const nextCount = count - 1;
+        if (nextCount < 0) {
+          props.onCount(0);
+        } else {
+          props.onCount(nextCount);
+        }
+      }
+    }
+  };
+  const onChangeCount = count => {
+    if (props.onCount) {
+      if (count && Number(count) >= 0) {
+        props.onCount(Number(count));
+      } else {
+        props.onCount(0);
+      }
     }
   };
   return (
@@ -18,7 +42,14 @@ const NumberCounter = props => {
       </TouchableOpacity>
 
       <View style={styles.boxContainer}>
-        <Text style={styles.text}>{count}</Text>
+        <TextInput
+          style={styles.textInput}
+          value={count + ''}
+          onChangeText={text => {
+            onChangeCount(text);
+          }}
+          keyboardType={'number-pad'}
+        />
       </View>
       <TouchableOpacity
         style={styles.buttonStyle}
@@ -34,10 +65,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  text: {
-    fontFamily: Fonts.primaryMedium,
+  textInput: {
     fontSize: Values.fontSize.xSmall,
     color: Colors.primaryColor,
+    lineHeight: 12,
+    padding: 0,
+    textAlign: 'center',
+    marginHorizontal: 8,
+    marginVertical: 0,
+    minHeight: 24,
   },
   buttonText: {
     fontFamily: Fonts.primaryMedium,
@@ -45,19 +81,15 @@ const styles = StyleSheet.create({
     color: Colors.primaryColor,
   },
   buttonStyle: {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
   },
   boxContainer: {
-    width: 24,
-    height: 20,
     borderRadius: 2,
     borderWidth: 1,
     borderColor: Colors.primaryColor,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

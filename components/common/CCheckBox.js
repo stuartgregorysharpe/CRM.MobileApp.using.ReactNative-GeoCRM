@@ -1,16 +1,30 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {Colors} from '../../constants';
+import {whiteLabel} from '../../constants/Colors';
+import SvgIcon from '../SvgIcon';
 const CCheckBox = props => {
+  const {value} = props;
   return (
-    <CheckBox
-      tintColors={Colors.tickBoxColor}
-      onCheckColor={Colors.tickBoxColor}
-      onTintColor={Colors.tickBoxColor}
-      {...props}
-    />
+    <TouchableOpacity onPress={() => props.onValueChange(!value)}>
+      <View
+        style={[styles.checkBoxStyle, value ? {} : {backgroundColor: 'white'}]}>
+        <SvgIcon icon="Yes_No_Button_Check" width="15px" height="15px" />
+      </View>
+    </TouchableOpacity>
   );
 };
-
+const styles = StyleSheet.create({
+  checkBoxStyle: {
+    width: 18,
+    height: 18,
+    borderRadius: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: whiteLabel().itemSelectedIconFill,
+    borderWidth: 1,
+    borderColor: whiteLabel().itemSelectedIconFill,
+  },
+});
 export default CCheckBox;

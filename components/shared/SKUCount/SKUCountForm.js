@@ -1,8 +1,8 @@
-import CheckBox from '@react-native-community/checkbox';
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
-import {style} from '../../../constants/Styles';
 import CardView from '../../common/CardView';
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
@@ -11,6 +11,7 @@ import CounterItemList from './components/CounterItemList';
 import {constructFormData, getValueFromFormData} from './helper';
 
 const SKUCountForm = props => {
+  const dispatch = useDispatch();
   const {item} = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
@@ -28,7 +29,34 @@ const SKUCountForm = props => {
       category: category,
     };
   });
+  const validateForm = () => {
+    const invalidCategories = [];
+    for (category in formData) {
+      const categoryFormData = formData[category];
+      const hasSegment = categoryFormData.competitors.find(x => x.count > 0);
+      if (!categoryFormData.noSegment && !hasSegment) {
+        invalidCategories.push(category);
+      }
+    }
+    if (invalidCategories.length > 0) {
+      const errorMessage = `Please make an input/selection for categories: ${invalidCategories.join(
+        ', ',
+      )}`;
+      dispatch(
+        showNotification({
+          type: 'error',
+          message: errorMessage,
+          buttonText: 'Okay',
+        }),
+      );
+      return false;
+    }
+    return true;
+  };
   const onSubmit = () => {
+    if (!validateForm()) {
+      return;
+    }
     const submitValueData = getValueFromFormData(formData, item);
     if (props.onButtonAction) {
       props.onButtonAction({
@@ -47,21 +75,14 @@ const SKUCountForm = props => {
     }
   }, [item]);
 
-  const onCounterItemAction = ({type, item}) => {
+  const onCounterItemAction = ({type, item, nextCount}) => {
     const _formData = {...formData};
     const _countItems = _formData[selectedCategory].competitors;
     const itemIndex = _countItems.findIndex(x => x.name == item.name);
     if (itemIndex < 0) {
       return false;
     }
-    if (type == Constants.actionType.ACTION_COUNT_MINUS) {
-      _countItems[itemIndex].count -= 1;
-      if (_countItems[itemIndex].count < 0) {
-        _countItems[itemIndex].count = 0;
-      }
-    } else {
-      _countItems[itemIndex].count += 1;
-    }
+    _countItems[itemIndex].count = nextCount;
     setFormData(_formData);
   };
 
@@ -95,12 +116,15 @@ const SKUCountForm = props => {
           }}
         />
       </CardView>
-      <CardView style={styles.boxContainer}>
-        <CounterItemList
-          items={countItems}
-          onItemAction={onCounterItemAction}
-        />
-      </CardView>
+      {!isSegmentNotInStore && (
+        <CardView style={styles.boxContainer}>
+          <CounterItemList
+            items={countItems}
+            onItemAction={onCounterItemAction}
+          />
+        </CardView>
+      )}
+
       <SubmitButton
         title={'Submit'}
         style={{marginVertical: 16}}

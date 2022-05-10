@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {Colors, Fonts, Values} from '../../../constants';
 
@@ -31,9 +31,9 @@ const SKUCountCompletedView = props => {
   const renderTableHeader = () => {
     return (
       <View style={styles.tableHeader}>
-        {tableHeaderData.map(header => {
+        {tableHeaderData.map((header, index) => {
           return (
-            <View style={styles.tableItem}>
+            <View key={'hd' + index} style={styles.tableItem}>
               <Text style={styles.headerTitle}>{header}</Text>
             </View>
           );
