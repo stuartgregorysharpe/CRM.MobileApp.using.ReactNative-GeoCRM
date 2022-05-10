@@ -851,3 +851,42 @@ export const updateCustomerLocationFields = async (postData) => {
   });
 
 }
+
+export const getAddLeadFormsList = async (params) => {
+
+  var base_url = await getBaseUrl();
+  var token = await getToken();
+
+  console.log(`${base_url}/forms/forms-list`);
+  return new Promise(function (resolve, reject) {
+    axios
+      .get(`${base_url}/forms/forms-list`, {
+        params: {
+          add_lead: 1,
+          location_type:params.location_type,
+          group:params.group,
+          group_split:params.group_split
+        },
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((res) => {
+        if (res.data == undefined) {
+          resolve([]);
+        }
+        console.log("message", res.data);
+        resolve(res.data);
+
+      })
+      .catch((err) => {
+        const error = err.response;
+        if (error.status===401 && error.config && 
+          !error.config.__isRetryRequest) {          
+            reject("expired");
+        }else{
+          reject(err);  
+        }
+      })
+  });
+}

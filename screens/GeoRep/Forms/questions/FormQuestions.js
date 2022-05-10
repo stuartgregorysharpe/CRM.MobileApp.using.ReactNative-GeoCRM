@@ -1,5 +1,5 @@
-import React, { useEffect , useState , useRef ,useCallback } from 'react';
-import { Text, View, Dimensions, StyleSheet , TouchableOpacity , Image , Alert, Platform} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, View, Dimensions, StyleSheet, TouchableOpacity, Image, Alert, Platform, BackHandler } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { HeadingForm } from '../../../../components/shared/HeadingForm';
 import { ParagraphForm } from '../../../../components/shared/ParagraphForm';
@@ -15,522 +15,520 @@ import { GroupTitle } from './partial/GroupTitle';
 import { MultipleSelectForm } from '../../../../components/shared/MultipleSelectForm';
 import { DateForm } from '../../../../components/shared/DateForm';
 import TakePhotoForm from '../../../../components/shared/TakePhotoForm';
-import { useSelector , useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { SLIDE_STATUS } from '../../../../actions/actionTypes';
 import { SignatureForm } from '../../../../components/shared/SignatureForm';
-import Sign  from './partial/Sign';
+import Sign from './partial/Sign';
+import GrayBackground from '../../../../components/GrayBackground';
+import * as ImagePicker from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
 import { SelectionView } from './partial/SelectionView';
 import { DatetimePickerView } from '../../../../components/DatetimePickerView';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import { GuideInfoView } from '../partial/GuideInfoView';
 import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
-import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../actions/api.action';
-import { clearNotification, showNotification } from '../../../../actions/notification.action';
-import * as RNLocalize from "react-native-localize";
-import UploadFileView from './partial/UploadFileView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const FormQuestions = (props) =>{
+export const FormQuestions = (props) => {
 
-    const form = props.route.params.data;
-    const location_id = props.route.params.location_id;
-    const currentLocation = useSelector(state => state.rep.currentLocation);
-    const [formQuestions, setFormQuestions] = useState([]);
-    const [modaVisible, setModalVisible] = useState(false);
-    const [options, setOptions] = useState([]);
-    const [selectedOptions, setSelectedOptions] = useState([]);
-    const [index, setIndex] = useState(-1);
-    const [key, setKey] = useState(-1);
-    const [mode, setMode] = useState("single"); 
-    const [isDateTimeView , setIsDateTimeView] = useState(false);
-    const [isSign, setIsSign] = useState(false);
-    const [isInfo, setIsInfo] = useState(false);
-    const [bubbleText, setBubleText] = useState("");
-    const [signature, setSignature] = useState('');
-    const [selectedDate, setSelectedDate] = useState('');
-    const [isUploadFileView, setIsUploadFileView] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+  const form = props.route.params.data;
+  const [formQuestions, setFormQuestions] = useState([]);
+  const [modaVisible, setModalVisible] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [index, setIndex] = useState(-1);
+  const [key, setKey] = useState(-1);
+  const [mode, setMode] = useState("single");
+  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+  const [isDateTimeView, setIsDateTimeView] = useState(false);
+  const [isSign, setIsSign] = useState(false);
+  const [isInfo, setIsInfo] = useState(false);
+  const [locationX, setLocationX] = useState(0);
+  const [locationY, setLocationY] = useState(0);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
+  const [bubbleText, setBubleText] = useState("");
+  const [signature, setSignature] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [isAlert, setIsAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const dispatch = useDispatch()
+  const pageType = props.route.params.pageType ? props.route.params.pageType : null;
 
-    const dispatch = useDispatch()
+  useEffect(() => {    
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      console.log("focuseed FORMS")
+      refreshHeader();
+      setTimeout(() => {
+        refreshHeader()  
+      }, 500);
+      
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
-    useEffect(() => {      
-      refreshHeader()             
-      _callFormQuestions()
-    },[]);
-
-    const showSelectionView = useCallback(
-      () => {
-        setModalVisible(true);    
-      },
-      [options, selectedOptions],
-    );
-  
-                
-    const refreshHeader = () => {
-      props.screenProps.setOptions({            
-        headerTitle:() =>{
-          return(<TouchableOpacity                     
-             onPress={
-            () =>{
-              if(isDateTimeView){
-                closeDateTime();
-              }else if(modaVisible){
-                closeDateTime();
-              }else if(isSign){
-                closeSignView();
-              }else{
-                if( props.navigation.canGoBack()){
-                  props.navigation.goBack();              
-                }
-              }                  
-            }}> 
-            <View style={style.headerTitleContainerStyle}>                                
-                <Image
-                  resizeMethod='resize'
-                  style={{width:15,height:20, marginRight:5}}
-                  source={Images.backIcon}
-                />
-              <Text style={style.headerTitle} >Forms</Text>
-          </View></TouchableOpacity>)
-        },   
+  useEffect(() => {
+    refreshHeader();
+    if (crmStatus) {
+      console.log(" --------- props , ", props.screenProps);
+      props.screenProps.setOptions({
         tabBarStyle: {
-          position: 'absolute',
-          height: 50,
-          paddingBottom: Platform.OS == "android" ? 5 : 0,          
-          backgroundColor: Colors.whiteColor,
-        },   
+          height: 0,
+          display: 'none',
+        },
       });
     }
+    if (!crmStatus) {
+      setIsDateTimeView(false);
+      //setIsSign(false);
+    }
 
-    const _callFormQuestions = () => {
-      let param = {
-        form_id: form.form_id
+    // BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    // return () => {
+    //   BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+    // };
+  }, [crmStatus]);
+
+  const handleBackButtonClick = () => {
+    if (crmStatus && isDateTimeView) {
+      console.log("DATE");
+      closeDateTime();
+    } else if (crmStatus && modaVisible) {
+      console.log("DATETIME");
+      closeDateTime();
+    } else if (crmStatus && isSign) {
+      console.log("SIGN");
+      closeSignView();
+    } else if (pageType==='CRM') {
+      console.log("PROPS: ", JSON.stringify(props));
+      props.navigation.navigate('CRM', { 'screen': 'Root', params: { 'data': pageType } });
+    } else {
+      if (props.navigation.canGoBack()) {
+        props.navigation.goBack();
       }
-      getApiRequest("forms/forms-questions" , param ).then((res) => {        
-        console.log("origin question",res.questions)
-        groupByQuestions(res.questions);        
-      }).catch((e) => {
-        console.log(e);
-        expireToken(dispatch, e);
-      });      
     }
+  }
 
-    const groupByQuestions = (data) => {
-      var newData = [];      
-      data.forEach(element => {        
-        if( !isInNewData(newData, element) ){
-          var ques = [element];
-          newData.push( { question_group_id: element.question_group_id , question_group: element.question_group, questions: ques } );
-        }else{
-          var tmp = newData.find(item => item.question_group_id === element.question_group_id);          
-          var newTmp = [...tmp.questions, element];          
-          tmp.questions = [...newTmp];
-        }    
-      });      
-      setFormQuestions(newData);      
-    }
-    
-    const isInNewData = (data, value) =>{
-      return data.find(item => item.question_group_id === value.question_group_id) ? true : false
-    }
+  useEffect(() => {
+    console.log("call api");
+    refreshHeader()
 
-    const clearAll = () =>{             
-      var tmp = [...formQuestions];
-      tmp.forEach(element => {
-        element.questions.forEach(item => {
-          item.value = null;
-          if(item.yes_image){
-            item.yes_image = undefined;
-          }
-          if(item.no_image){
-            item.no_image = undefined;
-          }
-        });
+    if (crmStatus) {
+      props.screenProps.setOptions({
+        tabBarStyle: {
+          display: 'none',
+          height: 0,
+        },
       });
-      setFormQuestions(tmp);    
     }
+    _callFormQuestions()
+  }, []);
 
-    const _onTouchStart = (e , text) => {      
-      setBubleText(text);      
-      setIsInfo(true);      
-    }
-    
-    const confirmDateTime = (datetime) =>{      
-      var tmp = [...formQuestions];                  
-      tmp[key].questions[index].value = datetime ;
-      setFormQuestions(tmp);      
-    }
-    const closeDateTime = () =>{
-      setIsDateTimeView(false);      
-    }
-    
-    const handleSignature = (signature) => {      
-      onValueChangedSelectionView(key, index, signature);            
-      setIsSign(false);
-    }    
-    const closeSignView = () => {      
-      setIsSign(false);
-    }
-
-    const onCloseSelectionView = (key, index) => {
-      //onValueChangedSelectionView(key, index, null);
-      setModalVisible(false);      
-    }
-    const onSaveSelectionView = () => {
-      setModalVisible(false);      
-    }
-    const onValueChangedSelectionView = async ( key, index, value) => {      
-      var tmp = [...formQuestions];
-      tmp[key].questions[index].value = value;            
-      setFormQuestions(tmp);
-    }
-  
-    const _onSubmit = async() =>{
-      var flag = true;
-      formQuestions.forEach(element => {
-        element.questions.forEach(item => {
-            if(item.rule_compulsory === "1" && (item.value === null || item.value === '' || item.value === undefined  )){
-              flag = false;              
-            }
-        });
-      });
-      
-      if(!flag){
-        dispatch(showNotification({type:'success', message: "Please complete the compulsory questions and then submit" , buttonText: "Okay" }));  
-        return;
-      } 
-      var form_answers= [];
-      var index  = 0;
-      formQuestions.forEach(element => {
-        element.questions.forEach(item => {
-            var value = item.value;            
-            form_answers.push({key: `form_answers[${index}][form_question_id]` , value: item.form_question_id })
-            if(item.question_type === 'multiple' || item.question_type === 'multi_select') {
-              if( item.value && item.value.length > 0){
-                var j = 0;
-                item.value.forEach(subElement =>{
-                  form_answers.push({key: `form_answers[${index}][answer][${j}]` , value: item.question_type === 'take_photo' ? '' : subElement });
-                  j = j+1;
-                });
-              }                
-            }else{
-              form_answers.push({key: `form_answers[${index}][answer]` , value: item.question_type === 'take_photo' || item.question_type === 'upload_file' ? '' : value })
-            }            
-            index = index + 1;            
-        });
-      });
-      
-      var files = [];
-      formQuestions.map(async (element) => {
-        element.questions.map(async (item) => {          
-          if(item.question_type === "upload_file" || item.question_type === "take_photo" || (item.question_type === "yes_no" && (item.yes_image || item.no_image) ) ){              
-            var paths = item.value;
-            if(item.yes_image != null  &&  item.yes_image != ""){
-              paths = item.yes_image;
-            }
-            if(item.no_image != null  &&  item.no_image != ""){
-              paths = item.no_image;
-            }            
-            if(paths != null && paths != '' && paths.length > 0){  
-              index = 0;
-              for (const path of paths) {                 
-                if(item.question_type === "upload_file"){
-                  console.log("upload file", path );
-                  files.push( {key: `File[${item.form_question_id}][${index}]` , value: path , type: 'upload_file' } );
-                }else{
-                  console.log("no upload file", path );
-                  files.push( {key: `File[${item.form_question_id}][${index}]` , value: path , type: 'image'} );   //, base64:item.base64  
+  const refreshHeader = () => {
+    props.screenProps.setOptions({
+      headerTitle: () => {
+        return (<TouchableOpacity
+          onPress={
+            () => {
+              if (crmStatus && isDateTimeView) {
+                console.log("DATE");
+                closeDateTime();
+              } else if (crmStatus && modaVisible) {
+                console.log("DATETIME");
+                closeDateTime();
+              } else if (crmStatus && isSign) {
+                console.log("SIGN");
+                closeSignView();
+              } else if (pageType == 'CRM') {
+                console.log("PROPS: ", JSON.stringify(props));
+                // return;
+                // props.navigation.goBack(); 
+                props.navigation.navigate('CRM', { 'screen': 'Root', params: { 'data': pageType } });
+              } else {
+                if (props.navigation.canGoBack()) {
+                  props.navigation.goBack();
                 }
-                
-                index = index + 1;
-              }                                                
-            }
-          }   
-        })          
-      })      
-      
-      var postData = new FormData();
-      postData.append("form_id", form.form_id);
-      postData.append("location_id", location_id);
-      postData.append("online_offline", "online");
-      form_answers.map((item) => {
-        if(item.key != undefined && item.value != undefined){
-          postData.append(item.key, item.value);
-        }        
-      })
-      files.map((item) => {
-        console.log("post data item", item);          
-        if(item.key != undefined && item.value != undefined){                           
-          if(item.type === "upload_file"){
-            postData.append(item.key, {uri:item.value.uri, type:item.value.type, name:item.value.name } ); 
-          }else{
-            console.log("post data key", item.key);
-            var words = item.value.split('/');
-            var ext = words[words.length - 1].split(".");
-            postData.append(item.key, {uri:item.value, type:'image/' + ext[1], name:words[words.length - 1]} ); 
-          }          
+              }
+            }}>
+          <View style={style.headerTitleContainerStyle}>
+            <Image
+              resizeMethod='resize'
+              style={{ width: 15, height: 20, marginRight: 5 }}
+              source={Images.backIcon}
+            />
+            <Text style={style.headerTitle} >Forms</Text>
+          </View></TouchableOpacity>)
+      },
+      tabBarStyle: {
+        position: 'absolute',
+        height: 50,
+        paddingBottom: Platform.OS == "android" ? 5 : 0,
+        backgroundColor: Colors.whiteColor,
+      },
+    });
+
+  }
+  const _callFormQuestions = () => {
+    getFormQuestions(form.form_id).then((res) => {
+      groupByQuestions(res);
+      console.log(" raw data", res)
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    })
+  }
+
+  const groupByQuestions = (data) => {
+    var newData = [];
+    data.forEach(element => {
+      if (!isInNewData(newData, element)) {
+        var ques = [element];
+        newData.push({ question_group_id: element.question_group_id, question_group: element.question_group, questions: ques });
+      } else {
+        var tmp = newData.find(item => item.question_group_id === element.question_group_id);
+        var newTmp = [...tmp.questions, element];
+        tmp.questions = [...newTmp];
+      }
+    });
+    setFormQuestions(newData);
+  }
+
+  const isInNewData = (data, value) => {
+    return data.find(item => item.question_group_id === value.question_group_id) ? true : false
+  }
+
+  const clearAll = () => {
+    var tmp = [...formQuestions];
+    tmp.forEach(element => {
+      element.questions.forEach(item => {
+        item.value = null;
+        if (item.yes_image) {
+          item.yes_image = undefined;
         }
-      })        
+        if (item.no_image) {
+          item.no_image = undefined;
+        }
+      });
+    });
+    setFormQuestions(tmp);
+  }
 
-      var time_zone = RNLocalize.getTimeZone();  
-      postData.append("user_local_data[time_zone]", time_zone );
-      postData.append("user_local_data[latitude]", currentLocation && currentLocation.latitude != null ? currentLocation.latitude : "0");
-      postData.append("user_local_data[longitude]", currentLocation && currentLocation.longitude != null ? currentLocation.longitude : "0");    
-
-      postApiRequestMultipart("forms/forms-submission", postData).then((res) => {
-        console.log("res", res);
-        dispatch(showNotification({type:'success' , message: res.message , buttonText:'Okay' , buttonAction : () => {
-          clearAll();
-          dispatch(clearNotification());
-        } }));
-      }).catch((e) => {
-        console.log("Err" , JSON.stringify(e))
-      })
+  const _onTouchStart = (e, text) => {
+    // setX(e.pageX);
+    // setY(e.pageY);
+    // setLocationX(e.locationX);
+    // setLocationY(e.locationY);
+    setBubleText(text);
+    setIsInfo(true);
+    // setTimeout(() =>{        
+    // },1000)
+  }
+  const getShift = () => {
+    if (Platform.OS === 'ios') {
+      return 65;
     }
+    return 35;
+  }
 
-    const renderQuestion = (item , key, index) =>{      
-      if(item.question_type === "text"){
-        return (
-          <TextForm key={ "text_question" +  index}  
-            onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; }}
-            item={item} type="text" onTouchStart={(e, text) => {
-            _onTouchStart( e, text);
+  const confirmDateTime = (datetime) => {
+    var tmp = [...formQuestions];
+    tmp[key].questions[index].value = datetime;
+    setFormQuestions(tmp);
+  }
+  const closeDateTime = () => {
+    setIsDateTimeView(false);
+    dispatch({ type: SLIDE_STATUS, payload: false });
+  }
+
+  const handleSignature = (signature) => {
+    console.log("handel signatuere ddd");
+    onValueChangedSelectionView(key, index, signature);
+    dispatch({ type: SLIDE_STATUS, payload: false });
+    setIsSign(false);
+  }
+  const closeSignView = () => {
+    dispatch({ type: SLIDE_STATUS, payload: false });
+    setIsSign(false);
+  }
+
+  const onCloseSelectionView = (key, index) => {
+    onValueChangedSelectionView(key, index, null);
+    setModalVisible(false);
+    dispatch({ type: SLIDE_STATUS, payload: false });
+  }
+  const onSaveSelectionView = () => {
+    setModalVisible(false);
+    dispatch({ type: SLIDE_STATUS, payload: false });
+  }
+  const onValueChangedSelectionView = (key, index, value) => {
+    var tmp = [...formQuestions];
+    tmp[key].questions[index].value = value;
+    setFormQuestions(tmp);
+  }
+
+  const _onSubmit = async() => {
+    var flag = true;
+    formQuestions.forEach(element => {
+      element.questions.forEach(item => {
+        if (item.rule_compulsory === "1" && (item.value === null || item.value === '' || item.value === undefined)) {
+          flag = false;
+        }
+      });
+    });
+    // if (!flag) {
+    //   setMessage("Please complete the compulsory questions and then submit");
+    //   setIsAlert(true);
+    // }
+
+    if(pageType == 'CRM'){
+      let completedForms = await AsyncStorage.getItem('submitted_forms');
+      let data =[];
+      if(completedForms){
+        data = JSON.parse(completedForms);
+      }
+      data.push(form.form_id);
+      AsyncStorage.setItem('submitted_forms',JSON.stringify(data));
+    }
+    handleBackButtonClick();
+  }
+
+  const renderQuestion = (item, key, index) => {
+    if (item.question_type === "text") {
+      return (
+        <TextForm key={"text_question" + index}
+          onTextChanged={(text) => { onValueChangedSelectionView(key, index, text); }}
+          item={item} type="text" onTouchStart={(e, text) => {
+            _onTouchStart(e, text);
           }}></TextForm>
-        );
-      }else if(item.question_type === "yes_no"){
-        return (
-          <YesNoForm
-          onTakeImage={ async(images , type) => {               
-              var tmp = [...formQuestions];      
-              if(type === "yes"){
-                tmp[key].questions[index].yes_image = images; 
-              }else{
-                tmp[key].questions[index].no_image = images; 
-              }               
-              setFormQuestions(tmp);
-            }}
-          onPress={(value , type) => {            
-            onValueChangedSelectionView(key, index, value);            
+      );
+    } else if (item.question_type === "yes_no") {
+      return (
+        <YesNoForm
+          onTakeImage={(images, type) => {
+            //onValueChangedSelectionView(key, index, images);              
+            var tmp = [...formQuestions];
+            if (type === "yes") {
+              tmp[key].questions[index].yes_image = images;
+            } else {
+              tmp[key].questions[index].no_image = images;
+            }
+            setFormQuestions(tmp);
           }}
-          key={ "yes_no_question" +  index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); } }   ></YesNoForm>
-        );
-      }else if(item.question_type === "heading"){
-        return (
-          <HeadingForm key={ "heading_question" + index} item={item}></HeadingForm>
-        );
-      }else if(item.question_type === "paragraph"){
-        return (
-          <ParagraphForm key={ "paragraph_question" +  index} item={item}></ParagraphForm>
-        );
-      }else if(item.question_type === "multiple"){
-        
-        return (
-          <SingleSelectForm  key={ "multiple_question" +  index}           
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } }
-          onPress={(item) => {        
-            console.log("cliccked item", item.options);
-            console.log("selected val", item.value);
+          onPress={(value, type) => {
+            onValueChangedSelectionView(key, index, value);
+          }}
+          key={"yes_no_question" + index} item={item} onTouchStart={(e, text) => { _onTouchStart(e, text); }}   ></YesNoForm>
+      );
+    } else if (item.question_type === "heading") {
+      return (
+        <HeadingForm key={"heading_question" + index} item={item}></HeadingForm>
+      );
+    } else if (item.question_type === "paragraph") {
+      return (
+        <ParagraphForm key={"paragraph_question" + index} item={item}></ParagraphForm>
+      );
+    } else if (item.question_type === "multiple") {
+
+      return (
+        <SingleSelectForm key={"multiple_question" + index}
+          onTouchStart={(e, text) => { _onTouchStart(e, text); }}
+          onPress={(item) => {
             setMode("single");
             setOptions(item.options);
-            setSelectedOptions(item.value);                        
+            setSelectedOptions(item.value);
+            dispatch({ type: SLIDE_STATUS, payload: true });
+            setModalVisible(true);
             setKey(key);
-            setIndex(index);            
-            showSelectionView();
+            setIndex(index);
           }} item={item}></SingleSelectForm>
-        );
-      }else if(item.question_type === "multi_select"){
-        
-        return (
-          <MultipleSelectForm  key={ "multi_select_question" +  index} 
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } }
+      );
+    } else if (item.question_type === "multi_select") {
+
+      return (
+        <MultipleSelectForm key={"multi_select_question" + index}
+          onTouchStart={(e, text) => { _onTouchStart(e, text); }}
           onPress={(item) => {
-            console.log(" mt cliccked item", item.options);
-            console.log(" mtselected val", item.value);
             setMode("multiple");
             setOptions(item.options);
-            setSelectedOptions(item.value);                  
+            setSelectedOptions(item.value);
+            dispatch({ type: SLIDE_STATUS, payload: true });
+            setModalVisible(true);
             setKey(key);
             setIndex(index);
             showSelectionView();
           }} item={item}></MultipleSelectForm>
-        );
-      }else if(item.question_type === "numbers") {
-        return (
-          <TextForm 
-          onTextChanged= { (text) => { onValueChangedSelectionView(key, index, text) ; }}
-          key={ "numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); } } ></TextForm>
-        );
-      }else if(item.question_type === "date"){        
-        return (
-          <DateForm key={ "date_question" + index} item={item}  
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } }
-          onPress={() => {            
+      );
+    } else if (item.question_type === "numbers") {
+      return (
+        <TextForm
+          onTextChanged={(text) => { onValueChangedSelectionView(key, index, text); }}
+          key={"numbers_question" + index} item={item} type="numeric" onTouchStart={(e, text) => { _onTouchStart(e, text); }} ></TextForm>
+      );
+    } else if (item.question_type === "date") {
+      //setIsDateTimeView(false);
+      return (
+        <DateForm key={"date_question" + index} item={item}
+          onTouchStart={(e, text) => { _onTouchStart(e, text); }}
+          onPress={() => {
+            dispatch({ type: SLIDE_STATUS, payload: true });
             setKey(key);
             setIndex(index);
             setSelectedDate(item.value);
             setIsDateTimeView(true);
-            
+
           }} ></DateForm>
-        );
-      }else if(item.question_type === "signature"){
-        return (
-          <SignatureForm key={ "signature_question" + index} item={item}  
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
-          onPress={() => {            
+      );
+    } else if (item.question_type === "signature") {
+      return (
+        <SignatureForm key={"signature_question" + index} item={item}
+          onTouchStart={(e, text) => { _onTouchStart(e, text); }}
+          onPress={() => {
             setKey(key);
             setIndex(index);
-            setSignature( item.value );            
+            setSignature(item.value);
             console.log("signature clicked");
-            setIsSign(true);            
+            setIsSign(true);
+            dispatch({ type: SLIDE_STATUS, payload: true });
           }} ></SignatureForm>
-        );
+      );
 
-      }else if(item.question_type === "take_photo"){
-        return (
-          <TakePhotoForm
-            key={ "take_photo_question" + `${key}${index}`} item={item}           
-            onTouchStart={(e, text) => { _onTouchStart(e, text); } } 
-            onPress={(value) => {
-              onValueChangedSelectionView(key, index, value);
-            } }
-          ></TakePhotoForm>
-        );
-      }else if(item.question_type === "upload_file"){
-        return (
-          <UploadFileForm key={"upload_form" + index} item={item}  
-          onTouchStart={(e, text) => { _onTouchStart(e, text); } }           
-          onPress={() => {        
-            setKey(key);
-            setIndex(index);      
-            setIsUploadFileView(true);
-            setSelectedItem(item);
-          }}></UploadFileForm>
-        );
-      }
-      return <View key={"question" + index} ></View>
+    } else if (item.question_type === "take_photo") {
+
+      return (
+        <TakePhotoForm
+          key={"take_photo_question" + `${key}${index}`} item={item}
+          onTouchStart={(e, text) => { _onTouchStart(e, text); }}
+          onPress={(value) => onValueChangedSelectionView(key, index, value)}
+        ></TakePhotoForm>
+      );
     }
+    return <View key={"question" + index} ></View>
+  }
 
-    return (      
-        <View style={styles.container}>                      
-            <Notification></Notification>             
-            <DatetimePickerView 
-              visible={isDateTimeView}
-              value={selectedDate}
-              onModalClose={() =>{
-                closeDateTime();
-              }}
-              close={(date) => {
-                confirmDateTime(date);
-                closeDateTime();
-              }} ></DatetimePickerView>
-            
-            <Sign visible={isSign}  signature={signature}  
-              onOK={handleSignature}  
-              onClear= {() => {
-                  console.log("------- on clear called ---------")
-                  onValueChangedSelectionView(key, index, null);
-              }}
-              onClose={() => {                  
-                console.log("------- on closed ---------")
-                  onValueChangedSelectionView(key, index, null);
-                  closeSignView(); 
-              }}></Sign>
-                      
-            <SelectionView 
-              visible={modaVisible}
-              options={options} 
-              mode={mode} 
-              selectedVals={selectedOptions}
-              onValueChanged = {(value) => {
-                console.log("onValueChanged", value)
-                onValueChangedSelectionView( key, index, value); 
-              }}
-              onClose={() =>{ onCloseSelectionView( key  , index )}} 
-              onSave={() => { 
-                // setOptions([]);
-                // setSelectedOptions([]);
-                onSaveSelectionView();
-              }} > </SelectionView>
+  return (
+    <View style={styles.container}
+    //onTouchStart={(e) => { setIsInfo(false); }}
+    >
 
-            <UploadFileView
-              visible={isUploadFileView}
-              item = {selectedItem}
-              onClose={() => { setIsUploadFileView(false)}}            
-              onValueChanged = {(value) => {
-                console.log("val",value);
-                console.log("key",key);
-                console.log("index",index);
+      <GrayBackground></GrayBackground>
+      <Notification></Notification>
 
-                onValueChangedSelectionView( key, index, value);
-              }}
-              >
-            </UploadFileView>
+      <AlertDialog visible={isAlert} message={message} onModalClose={() => setIsAlert(false)} ></AlertDialog>
+      <DatetimePickerView
+        visible={isDateTimeView}
+        value={selectedDate}
+        onModalClose={() => {
+          closeDateTime();
+        }}
+        close={(date) => {
+          confirmDateTime(date);
+          closeDateTime();
+        }} ></DatetimePickerView>
 
-                        
-            <View style={styles.titleContainerStyle}>
-              <View style={{flex:1}}>
-                <Text style={styles.formTitleStyle}>{form.form_name}</Text>
-              </View>              
-              <TouchableOpacity style={{alignItems:'flex-end', padding:5}} onPress={ () => clearAll() }>
-                <Text style={styles.clearTextStyle}>Clear All Answers</Text>
-              </TouchableOpacity>                         
-            </View>
+      <Sign visible={isSign} signature={signature}
+        onOK={handleSignature}
+        onClear={() => {
+          console.log("------- on clear called ---------")
+          onValueChangedSelectionView(key, index, null);
+        }}
+        onClose={() => {
+          console.log("------- on closed ---------")
+          onValueChangedSelectionView(key, index, null);
+          closeSignView();
+        }}></Sign>
 
-                                                
-            <ScrollView style={{padding:5}}>
-              {
-                formQuestions && formQuestions.map((form , key) => {
-                  return (
-                    <View key={"form" + key}>
-                      <GroupTitle title={form.question_group}></GroupTitle>                                                               
-                      {
-                        form.questions.map((item , index) => {
-                          return renderQuestion(item , key, index);
-                        })
-                      }
-                    </View>
-                  )
-                })
-              }
-              <View style={{marginTop:10, marginBottom: 70}}>
-                {
-                  formQuestions && formQuestions.length > 0 &&
-                  <SubmitButton title="Submit" onSubmit={() => {_onSubmit()}}></SubmitButton>
-                }                
-              </View>
-            </ScrollView>
-              
-            <GuideInfoView
-                visible={isInfo}
-                info={bubbleText}
-                onModalClose={() => setIsInfo(false)}
-              >
-            </GuideInfoView>
+      {
+        crmStatus && modaVisible &&
+        <SelectionView
+          options={options} mode={mode}
+          value={selectedOptions}
+          onValueChanged={(value) => { onValueChangedSelectionView(key, index, value); }}
+          onClose={() => { onCloseSelectionView(key, index) }}
+          onSave={() => { onSaveSelectionView(); }} > </SelectionView>
+      }
 
+      <View style={styles.titleContainerStyle}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.formTitleStyle}>{form.form_name}</Text>
         </View>
-        
-    );
+        <TouchableOpacity style={{ alignItems: 'flex-end', padding: 5 }} onPress={() => clearAll()}>
+          <Text style={styles.clearTextStyle}>Clear All Answers</Text>
+        </TouchableOpacity>
+      </View>
+
+
+      <ScrollView style={{ padding: 5 }}>
+        {
+          formQuestions && formQuestions.map((form, key) => {
+            return (
+              <View key={"form" + key}>
+                <GroupTitle title={form.question_group}></GroupTitle>
+                {
+                  form.questions.map((item, index) => {
+                    return renderQuestion(item, key, index);
+                  })
+                }
+              </View>
+            )
+          })
+        }
+        <View style={{ marginTop: 10, marginBottom: 70 }}>
+          {
+            formQuestions && formQuestions.length > 0 &&
+            <SubmitButton title="Submit" onSubmit={() => { _onSubmit() }}></SubmitButton>
+          }
+        </View>
+      </ScrollView>
+
+
+      <GuideInfoView
+        visible={isInfo}
+        info={bubbleText}
+        onModalClose={() => setIsInfo(false)}
+      >
+
+      </GuideInfoView>
+
+      {/* {
+              isInfo &&
+              <View style={{
+                  top: y - locationY - getShift(),
+                  position:'absolute',                                
+                  borderRadius: 5,         
+                  width:Dimensions.get("screen").width,  
+                  borderRadius: 20,                
+                }} key={1}>
+                    
+                  <View  style={{ backgroundColor: "#DDD", padding:10, marginLeft:20,marginRight:10,borderRadius:10, fontSize: 16, color: "#fff", }} key={1}><Text>{bubbleText}</Text></View>  
+                  <View style={[style.triangle, {marginLeft:x - locationX + 3 }]}></View>                                              
+              </View>
+            }                                                 */}
+    </View>
+
+  );
 }
 
 const styles = StyleSheet.create({
-    container:{
-      flex:1,        
-    },
+  container: {
+    flex: 1,
+    zIndex: 1000
+  },
 
-    titleContainerStyle:{
-      flexDirection:'row', padding:10 , alignItems:'center'
-    },
-    
-    formTitleStyle:{
-      fontSize:16,
-      color:Colors.blackColor,
-      fontFamily: Fonts.primaryBold
-    },
+  titleContainerStyle: {
+    flexDirection: 'row', padding: 10, alignItems: 'center'
+  },
 
-    clearTextStyle:{
-      fontSize:14,
-      fontFamily:Fonts.primaryRegular,
-      color:Colors.selectedRedColor
-    }
+  formTitleStyle: {
+    fontSize: 16,
+    color: Colors.blackColor,
+    fontFamily: Fonts.primaryBold
+  },
+
+  clearTextStyle: {
+    fontSize: 14,
+    fontFamily: Fonts.primaryRegular,
+    color: Colors.selectedRedColor
+  }
 
 })
 

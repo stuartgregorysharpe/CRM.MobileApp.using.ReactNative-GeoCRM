@@ -10,7 +10,7 @@ import Skeleton from '../../../../components/Skeleton';
 import Divider from '../../../../components/Divider';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
 import { SLIDE_STATUS } from '../../../../actions/actionTypes';
-import { getLeadFields, postLeadFields } from '../../../../actions/location.action';
+import { getAddLeadFormsList, getLeadFields, postLeadFields } from '../../../../actions/location.action';
 import Fonts from '../../../../constants/Fonts';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { reverseGeocoding, updateCurrentLocation } from '../../../../actions/google.action';
@@ -53,6 +53,10 @@ export default function AddLead({ screenProps, onClose }) {
   const [email, setEmail] = useState('');
   const [mobile_number, setMobileNumber] = useState('');
   const [isCustomerAndContacts, setIsCustomerAndContacts] = useState(false);
+  const [isAddLeadFormsEnabled, setIsAddLeadFormsEnabled] = useState(false);
+  const [canShowAddLeadForms, setCanShowaddLeadForms] = useState(false);
+  const [formLists, setFormsList] = useState([]);
+  const [compulsaryFormExist, setCompulsoryFormExist] = useState(false);
 
   const validFields = () => {
     let nameCheck = !name || name === '';
@@ -70,7 +74,27 @@ export default function AddLead({ screenProps, onClose }) {
     return true;
   }
 
-  const handleSubmit = () => {
+  const isCompulsoryFormExist = async() => {
+    let completedForms = await AsyncStorage.getItem('submitted_forms');
+    let submittedFormsList = [];
+    let isCompulsoryExist = false;
+    if (completedForms) {
+      submittedFormsList = JSON.parse(completedForms);
+      formLists.forEach(element => {
+        if (element.compulsory === '1') {
+          let found = submittedFormsList.find(x => x === element.form_id);
+          if (!found) {
+            isCompulsoryExist = true;
+          }
+        }
+      });
+    }
+
+    setCompulsoryFormExist(isCompulsoryExist)
+    return isCompulsoryExist;
+  }
+
+  const handleSubmit = async () => {
     if (isCustomerAndContacts && !validFields()) {
       return;
     }
@@ -89,8 +113,15 @@ export default function AddLead({ screenProps, onClose }) {
         "contact_email": email
       }
     }
+    
+    
+    if(await isCompulsoryFormExist()){
+      return;
+    }
+
     postLeadFields(params)
       .then((res) => {
+        AsyncStorage.removeItem('submitted_forms');
         setLocationId(res);
         setMessage("Added lead successfully");
         setIsSuccess(true);
@@ -101,10 +132,11 @@ export default function AddLead({ screenProps, onClose }) {
         setIsSuccess(true);
       })
   }
-  
+
   useEffect(() => {
     async function featureCheck() {
       setIsCustomerAndContacts(await checkFeatureIncludeParam("customer_and_contacts"));
+      setIsAddLeadFormsEnabled(await checkFeatureIncludeParam("add_lead_forms"));
     }
     featureCheck();
 
@@ -114,22 +146,22 @@ export default function AddLead({ screenProps, onClose }) {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if(Platform.OS === "android"){
+      if (Platform.OS === "android") {
         dispatch(updateCurrentLocation());
-      }      
+      }
     }, 1500);
-    return () => clearInterval(id);  
+    return () => clearInterval(id);
   }, []);
 
-  
-    
+
+
   useEffect(() => {
     if (isLoading) {
       getLeadFields()
-        .then((res) => {          
+        .then((res) => {
           initPostData(res.custom_master_fields);
-          setLeadForms(res.custom_master_fields);          
-          setAccuracyUnit(res.accuracy_distance_measure);          
+          setLeadForms(res.custom_master_fields);
+          setAccuracyUnit(res.accuracy_distance_measure);
           setIsLoading(false);
         })
         .catch((e) => {
@@ -165,6 +197,42 @@ export default function AddLead({ screenProps, onClose }) {
       }
     })
     setCustomMasterFields(tmp);
+  }
+
+  const getFormsList = () => {
+    let data = [...customMasterFields];
+    let params = {
+      location_type: null,
+      group: null,
+      group_split: null
+    }
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].core_field_name === 'location_type') {
+        params['location_type'] = data[i].value;
+      }
+      if (data[i].core_field_name === 'group') {
+        params['group'] = data[i].value;
+      }
+      if (data[i].core_field_name === 'group_split') {
+        params['group_split'] = data[i].value;
+      }
+    }
+    console.log("params", params);
+    getAddLeadFormsList(params).then(response => {
+      console.log(JSON.stringify(response));
+      if (response?.forms) {
+        var isCompulsoryExist = false;
+        response.forms.forEach(element => {
+          if (element.compulsory === "1") {
+            isCompulsoryExist = true;
+          }
+        });
+        setCompulsoryFormExist(isCompulsoryExist);
+        setFormsList(response.forms);
+      }
+    }).catch(e => {
+      console.log("GET FORMS ERROR: ", e?.request);
+    })
   }
 
   const getTextValue = (customMasterFields, id) => {
@@ -251,6 +319,10 @@ export default function AddLead({ screenProps, onClose }) {
                 leadTmp[key].value = item;
               }
               setLeadForms(leadTmp);
+              if (element.core_field_name === 'location_type' || element.core_field_name === 'group'
+                || element.core_field_name === 'group_split') {
+                getFormsList();
+              }
             }
           });
           setCustomMasterFields(tmp);
@@ -303,19 +375,19 @@ export default function AddLead({ screenProps, onClose }) {
 
   const renderUseCurrentLocation = (key) => {
     return (
-      <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom:17 , justifyContent:'center'}]} key={key + 100} onPress={async () => {
-        if(currentLocation){
+      <TouchableOpacity style={[styles.linkBox, { marginTop: 7, marginBottom: 17, justifyContent: 'center' }]} key={key + 100} onPress={async () => {
+        if (currentLocation) {
           initPostData(customMasterFields);
           var masterFields = await reverseGeocoding(currentLocation, customMasterFields);
           if (masterFields.length > 0) {
             setCustomMasterFields(masterFields);
             setIsCurrentLocation("1");
           }
-        }        
+        }
       }}>
-        <Text style={[styles.linkBoxText, {flex:1}]}>Use Current Geo Location</Text>
-        <View style={{position:'absolute', right:0}}><Text style={{color:Colors.disabledColor, fontSize:11 }}>
-          Accuracy { accuracyUnit === "m" ? parseInt(currentLocation.accuracy) : parseInt(currentLocation.accuracy * 3.28084) } {accuracyUnit}</Text>
+        <Text style={[styles.linkBoxText, { flex: 1 }]}>Use Current Geo Location</Text>
+        <View style={{ position: 'absolute', right: 0 }}><Text style={{ color: Colors.disabledColor, fontSize: 11 }}>
+          Accuracy {accuracyUnit === "m" ? parseInt(currentLocation.accuracy) : parseInt(currentLocation.accuracy * 3.28084)} {accuracyUnit}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -377,13 +449,14 @@ export default function AddLead({ screenProps, onClose }) {
 
 
       <TouchableOpacity style={{ padding: 6 }} onPress={() => {
-        dispatch({ type: SLIDE_STATUS, payload: false })
+        // dispatch({ type: SLIDE_STATUS, payload: false })
+        onClose();
       }}>
         <Divider />
       </TouchableOpacity>
 
       <View style={styles.header}>
-        <Title style={{ fontFamily: Fonts.primaryBold }}>Add Lead</Title>        
+        <Title style={{ fontFamily: Fonts.primaryBold }}>Add Lead</Title>
         <Button
           labelStyle={{
             fontFamily: Fonts.primaryRegular,
@@ -416,7 +489,7 @@ export default function AddLead({ screenProps, onClose }) {
       </MapView>
 
 
-      
+
       <View style={{ padding: 5 }}>
         
         {
@@ -527,6 +600,13 @@ export default function AddLead({ screenProps, onClose }) {
       </View>
 
       {dropdownModal()}
+      <AddLeadForms
+        onClose={() => {
+          setCanShowaddLeadForms(!canShowAddLeadForms)
+        }}
+        visible={canShowAddLeadForms}
+        formLists={formLists}
+        screenProps={screenProps} />
 
     </ScrollView>
   )
@@ -544,7 +624,7 @@ const styles = EStyleSheet.create({
     right: 0,
     backgroundColor: Colors.bgColor,
     elevation: 2,
-    zIndex: 2000,
+    zIndex: 1,
     padding: 10
   },
 
@@ -614,5 +694,5 @@ const styles = EStyleSheet.create({
     color: whiteLabel().endDayBackground, 
     marginHorizontal: 10
   }
-
+  
 });
