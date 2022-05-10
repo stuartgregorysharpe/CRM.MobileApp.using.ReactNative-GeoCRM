@@ -10,16 +10,19 @@ import {Colors, Fonts, Values} from '../../../../constants';
 
 const NumberCounter = props => {
   const {count} = props;
+  const step = props.step || 1;
+  const fixed = props.fixed || 0;
   const onCount = isPlus => {
     if (props.onCount) {
       if (isPlus) {
-        props.onCount(count + 1);
+        const nextCount = Number(count) + step;
+        props.onCount(nextCount.toFixed(fixed));
       } else {
-        const nextCount = count - 1;
+        const nextCount = Number(count) - step;
         if (nextCount < 0) {
           props.onCount(0);
         } else {
-          props.onCount(nextCount);
+          props.onCount(nextCount.toFixed(fixed));
         }
       }
     }
@@ -27,7 +30,8 @@ const NumberCounter = props => {
   const onChangeCount = count => {
     if (props.onCount) {
       if (count && Number(count) >= 0) {
-        props.onCount(Number(count));
+        const nextCount = Number(count);
+        props.onCount(nextCount.toFixed(fixed));
       } else {
         props.onCount(0);
       }
@@ -46,7 +50,15 @@ const NumberCounter = props => {
           style={styles.textInput}
           value={count + ''}
           onChangeText={text => {
-            onChangeCount(text);
+            if (props.onCount) {
+              props.onCount(text);
+            }
+          }}
+          onBlur={() => {
+            onChangeCount(count);
+          }}
+          onEndEditing={() => {
+            onChangeCount(count);
           }}
           keyboardType={'number-pad'}
         />

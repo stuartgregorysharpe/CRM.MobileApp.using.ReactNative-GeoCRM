@@ -12,10 +12,16 @@ import {constructFormData, getValueFromFormData} from './helper';
 
 const SKUCountForm = props => {
   const dispatch = useDispatch();
-  const {item} = props;
+  const {item, questionType} = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
   const [formData, setFormData] = useState({});
+  let countStep = 1;
+  let countNumberFixed = 0;
+  if (questionType == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE) {
+    countStep = 0.1;
+    countNumberFixed = 1;
+  }
   let countItems = [];
   let isSegmentNotInStore = false;
   if (formData[selectedCategory]) {
@@ -120,6 +126,8 @@ const SKUCountForm = props => {
         <CardView style={styles.boxContainer}>
           <CounterItemList
             items={countItems}
+            step={countStep}
+            fixed={countNumberFixed}
             onItemAction={onCounterItemAction}
           />
         </CardView>

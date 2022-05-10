@@ -4,7 +4,7 @@ import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import NumberCounter from './NumberCounter';
 
 const CounterItem = props => {
-  const {item} = props;
+  const {item, step, fixed} = props;
   if (!item) return null;
   const {name, count} = item;
   const onCount = nextCount => {
@@ -24,7 +24,12 @@ const CounterItem = props => {
         props.style,
       ]}>
       <Text style={styles.text}>{name}</Text>
-      <NumberCounter count={count} onCount={onCount} />
+      <NumberCounter
+        count={count}
+        step={step}
+        fixed={fixed}
+        onCount={onCount}
+      />
     </View>
   );
 };

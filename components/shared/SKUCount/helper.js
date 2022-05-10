@@ -1,3 +1,5 @@
+import {Constants} from '../../../constants';
+
 export function constructFormData(data) {
   const categories = data.categories;
   const value = data.value;
@@ -80,4 +82,13 @@ export function getValueFromFormData(formData, item) {
       },
     ],
   };
+}
+
+export function getQuestionTitle(questionType) {
+  if (questionType == Constants.questionType.FORM_TYPE_SKU_COUNT) {
+    return 'SKU Count';
+  } else if (questionType == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE) {
+    return 'SKU Self Share';
+  }
+  return 'SKU Count';
 }

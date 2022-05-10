@@ -537,6 +537,25 @@ export const FormQuestions = props => {
       return (
         <SKUCountForm
           key={'sku_count_form' + index}
+          questionType={item.question_type}
+          item={item}
+          onFormAction={({type, value, item}) => {
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              onValueChangedSelectionView(key, index, value);
+            }
+            if (type == Constants.actionType.ACTION_INFO) {
+              _onTouchStart(null, item.guide_info);
+            }
+          }}
+        />
+      );
+    } else if (
+      item.question_type === Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE
+    ) {
+      return (
+        <SKUCountForm
+          key={'sku_self_share_form' + index}
+          questionType={item.question_type}
           item={item}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {

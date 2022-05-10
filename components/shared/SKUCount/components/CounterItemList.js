@@ -3,7 +3,7 @@ import {View, StyleSheet, FlatList} from 'react-native';
 import CounterItem from './CounterItem';
 
 const CounterItemList = props => {
-  const {items} = props;
+  const {items, step, fixed} = props;
 
   const renderItem = (item, index) => {
     const isLast = index == items.length - 1;
@@ -13,6 +13,8 @@ const CounterItemList = props => {
         key={index + 'counter'}
         style={{marginRight: 8}}
         onItemAction={props.onItemAction}
+        step={step}
+        fixed={fixed}
         isLast={isLast}
       />
     );

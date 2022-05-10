@@ -17,6 +17,7 @@ export default function UITestScreen({screenProps}) {
       <View style={{flex: 1}}>
         <SKUCount
           key={'sku_count_form'}
+          questionType={Constants.questionType.FORM_TYPE_SKU_COUNT}
           item={dummyData}
           onFormAction={({type, value}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {

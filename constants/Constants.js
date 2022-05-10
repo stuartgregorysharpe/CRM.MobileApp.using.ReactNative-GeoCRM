@@ -1,7 +1,9 @@
 export default {
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
+    FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
   },
+
   actionType: {
     ACTION_INFO: 'ACTION_INFO',
     ACTION_NEXT: 'ACTION_NEXT',

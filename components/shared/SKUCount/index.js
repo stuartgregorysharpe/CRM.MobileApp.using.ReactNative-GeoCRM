@@ -4,8 +4,10 @@ import BaseForm from '../BaseForm';
 import SKUCountCompletedView from './SKUCompletedView';
 import QuestionButton from '../QuestionButton';
 import SKUCountFormModal from './modals/SKUCountFormModal';
+import {Constants} from '../../../constants';
+import {getQuestionTitle} from './helper';
 const SKUCount = props => {
-  const {item} = props;
+  const {item, questionType} = props;
   if (!item) return null;
   const skuCountFormModalRef = useRef();
   const isCompleted =
@@ -18,7 +20,12 @@ const SKUCount = props => {
     if (formCompleted) {
       return <SKUCountCompletedView item={item} />;
     }
-    return <QuestionButton title={'SKU Count'} onPress={onOpenSKUCountModal} />;
+    return (
+      <QuestionButton
+        title={getQuestionTitle(questionType)}
+        onPress={onOpenSKUCountModal}
+      />
+    );
   };
 
   return (
@@ -29,6 +36,7 @@ const SKUCount = props => {
       {renderContent(isCompleted)}
       <SKUCountFormModal
         item={item}
+        questionType={questionType}
         ref={skuCountFormModalRef}
         onButtonAction={props.onFormAction}
       />
