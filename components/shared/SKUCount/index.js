@@ -1,10 +1,9 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useRef} from 'react';
+import {StyleSheet} from 'react-native';
 import BaseForm from '../BaseForm';
 import SKUCountCompletedView from './SKUCompletedView';
 import QuestionButton from '../QuestionButton';
 import SKUCountFormModal from './modals/SKUCountFormModal';
-import {Constants} from '../../../constants';
 import {getQuestionTitle} from './helper';
 const SKUCount = props => {
   const {item, questionType} = props;

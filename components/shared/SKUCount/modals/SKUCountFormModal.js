@@ -1,5 +1,4 @@
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 import {Constants} from '../../../../constants';
 import CModal from '../../../common/CModal';
 import {getQuestionTitle} from '../helper';
