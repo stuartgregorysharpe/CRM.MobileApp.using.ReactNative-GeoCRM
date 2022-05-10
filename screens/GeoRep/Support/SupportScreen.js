@@ -46,7 +46,7 @@ export default function SupportScreen(props) {
         <ScrollView style={styles.container} contentContainerStyle={{ height: '100%', justifyContent: 'space-between' }}>
           <View style={[styles.tabContainer, boxShadow]}>
             <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(1)}>
-            <Text style={[styles.tabText, tabIndex == 1 ? styles.tabActiveText : {}]}>Ticket</Text>
+              <Text style={[styles.tabText, tabIndex == 1 ? styles.tabActiveText : {}]}>Ticket</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.tabItem} onPress={() => setTabIndex(2)}>
               <Text style={[styles.tabText, tabIndex == 2 ? styles.tabActiveText : {}]}>FAQ</Text>
@@ -65,6 +65,8 @@ export default function SupportScreen(props) {
             <Text style={[styles.tabText, tabIndex == 3 ? styles.tabActiveText : {}]}>WhatsApp</Text>
             </TouchableOpacity>
           </View>
+
+          
           <View style={{ flexGrow: 1 }}>
             {tabIndex == 1 && <Ticket ref={ticketRef} /> }
             {tabIndex == 2 && <Faq /> }

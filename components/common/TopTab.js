@@ -5,17 +5,17 @@ import { style } from "../../constants/Styles";
 
 export function TopTab(props) {
 
-    const { headers , tabIndex,  onTabClicked}  = props;    
+    const { headers , tabIndex, textStyle,  onTabClicked}  = props;    
     return (
         <View style={[style.tabContainer]}>
             {
                 headers.map((item, index) => {
                     return (
-                        <TouchableOpacity style={style.tabItem} onPress={() => {                            
+                        <TouchableOpacity key={index} style={style.tabItem} onPress={() => {                            
                             onTabClicked(index);                            
                         }}>
-                            <Text style={[style.tabText, tabIndex === index ? style.tabActiveText : {}]}> {item} </Text>
-                            <View style={{height:2, width:'100%', marginTop: 5, backgroundColor: tabIndex === index ? whiteLabel().activeTabUnderline : Colors.bgColor }}></View>
+                            <Text style={[style.tabText, tabIndex === index ? style.tabActiveText : {} , textStyle ]}> {item} </Text>
+                            <View style={{height:2, width:'100%', marginTop: 0, backgroundColor: tabIndex === index ? whiteLabel().activeTabUnderline : Colors.whiteColor }}></View>
                         </TouchableOpacity>
                     )
                 })
