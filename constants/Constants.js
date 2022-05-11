@@ -2,6 +2,7 @@ export default {
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
+    FORM_TYPE_SKU_SELECT: 'sku_select',
   },
 
   actionType: {

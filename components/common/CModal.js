@@ -47,7 +47,7 @@ const CModal = React.forwardRef((props, ref) => {
   };
   return (
     <View style={[props.style]}>
-      <Modal transparent visible={isVisible}>
+      <Modal transparent visible={isVisible} onRequestClose={onClose}>
         <View
           style={[
             isCenterModal && styles.dim,
