@@ -20,6 +20,7 @@ import { expireToken, getPostParameter } from '../../../../constants/Consts';
 import { Notification } from '../../../../components/modal/Notification';
 import { checkFeatureIncludeParam } from '../../../../constants/Storage';
 import CustomInput from '../../../../components/common/CustomInput';
+import AddLeadForms from './AddLeadForms';
 
 export default function AddLead({ screenProps, onClose }) {
 
@@ -600,6 +601,7 @@ export default function AddLead({ screenProps, onClose }) {
       </View>
 
       {dropdownModal()}
+      
       <AddLeadForms
         onClose={() => {
           setCanShowaddLeadForms(!canShowAddLeadForms)

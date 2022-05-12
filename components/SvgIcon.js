@@ -990,6 +990,36 @@ const Add_Stock = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://w
 </svg>
 `;
 
+const Chevron_Back = `<svg xmlns="http://www.w3.org/2000/svg" 
+width="25.16" height="45.32" viewBox="0 0 25.16 45.32">
+  <path id="chevron-back" d="M32.062,7.875,12.938,27,32.062,46.124" 
+  transform="translate(-10.438 -4.34)" fill="none" 
+  stroke=${actionIconBackground} stroke-linecap="round" 
+  stroke-linejoin="round" stroke-width="5" />
+</svg>
+`;
+const Slider_Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="28.357" height="57.75" viewBox="0 0 28.357 57.75">
+  <path id="chevron-back-sharp" d="M21.728,0,0,25l21.728,25" transform="translate(25.607 53.87) rotate(180)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="5.5"/>
+</svg>`;
+const Slider_Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28.357 57.75">
+  <path id="chevron-back-sharp" d="M21.728,0,0,25l21.728,25" transform="translate(2.75 3.88)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="5.5"/>
+</svg>`;
+
+const Scan_Icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 98">
+  <g id="Group_5347" data-name="Group 5347" transform="translate(-979 -18.114)">
+    <rect id="Rectangle_2047" data-name="Rectangle 2047" width="98" height="98" rx="7" transform="translate(979 18.114)" fill=${actionIconBackground}/>
+    <g id="upc-scan" transform="translate(1002.79 41.413)">
+      <path id="Path_3975" data-name="Path 3975" d="M4.994,3.329A1.665,1.665,0,0,0,3.329,4.994v9.988a1.665,1.665,0,0,1-3.329,0V4.994A4.994,4.994,0,0,1,4.994,0h9.988a1.665,1.665,0,0,1,0,3.329ZM36.621,1.665A1.665,1.665,0,0,1,38.286,0h9.988a4.994,4.994,0,0,1,4.994,4.994v9.988a1.665,1.665,0,1,1-3.329,0V4.994a1.665,1.665,0,0,0-1.665-1.665H38.286A1.665,1.665,0,0,1,36.621,1.665ZM1.665,36.621a1.665,1.665,0,0,1,1.665,1.665v9.988a1.665,1.665,0,0,0,1.665,1.665h9.988a1.665,1.665,0,1,1,0,3.329H4.994A4.994,4.994,0,0,1,0,48.273V38.286a1.665,1.665,0,0,1,1.665-1.665Zm49.938,0a1.665,1.665,0,0,1,1.665,1.665v9.988a4.994,4.994,0,0,1-4.994,4.994H38.286a1.665,1.665,0,1,1,0-3.329h9.988a1.665,1.665,0,0,0,1.665-1.665V38.286A1.665,1.665,0,0,1,51.6,36.621Z" fill=${actionIconFill} fill-rule="evenodd"/>
+      <path id="Path_3976" data-name="Path 3976" d="M6.75,10.665a1.665,1.665,0,1,1,3.329,0v23.3a1.665,1.665,0,0,1-3.329,0Zm6.658,0a1.665,1.665,0,1,1,3.329,0v23.3a1.665,1.665,0,0,1-3.329,0Zm6.658,0a1.665,1.665,0,1,1,3.329,0v23.3a1.665,1.665,0,0,1-3.329,0Zm6.658,0A1.665,1.665,0,0,1,28.39,9h3.329a1.665,1.665,0,0,1,1.665,1.665v23.3a1.665,1.665,0,0,1-1.665,1.665H28.39a1.665,1.665,0,0,1-1.665-1.665Zm9.988,0a1.665,1.665,0,1,1,3.329,0v23.3a1.665,1.665,0,0,1-3.329,0Z" transform="translate(3.238 4.317)" fill=${actionIconFill}/>
+    </g>
+  </g>
+</svg>`;
+
+const Action_Item = `<svg id="exclamation-triangle-fill" xmlns="http://www.w3.org/2000/svg" width="47.452" height="41.517" viewBox="0 0 47.452 41.517">
+<path id="Path_3957" data-name="Path 3957" d="M26.633,3.93a3.35,3.35,0,0,0-5.812,0L.489,38.524a3.46,3.46,0,0,0,2.906,5.24H44.056a3.46,3.46,0,0,0,2.906-5.24ZM23.722,14.112a2.683,2.683,0,0,0-2.669,2.951l1.037,10.4a1.637,1.637,0,0,0,3.262,0l1.037-10.4a2.683,2.683,0,0,0-2.667-2.951ZM23.728,31.9a2.965,2.965,0,1,0,2.965,2.965A2.965,2.965,0,0,0,23.728,31.9Z" transform="translate(-0.001 -2.247)" fill=${actionIconBackground} fill-rule="evenodd"/>
+</svg>
+`;
+
 export default ({ icon, width = "100%", height = "100%", style = {} }) => (
   <Fragment>
     {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -1083,6 +1113,29 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
     {icon == "Stock" && <SvgXml style={style} xml={Stock} width={width} height={height} />}
     {icon == "Stock_Gray" && <SvgXml style={style} xml={Stock_Gray} width={width} height={height} />}
     {icon == "Add_Stock" && <SvgXml style={style} xml={Add_Stock} width={width} height={height} />}
-        
+    {icon == 'Chevron_Back' && (
+      <SvgXml style={style} xml={Chevron_Back} width={width} height={height} />
+    )}
+    {icon == 'Slider_Arrow_Right' && (
+      <SvgXml
+        style={style}
+        xml={Slider_Arrow_Right}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Slider_Arrow_Left' && (
+      <SvgXml
+        style={style}
+        xml={Slider_Arrow_Left}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Scan_Icon' && (
+      <SvgXml style={style} xml={Scan_Icon} width={width} height={height} />
+    )}
+    {icon == "Action_Item" && <SvgXml style={style} xml={Action_Item} width={width} height={height} />}
+
   </Fragment>
 );

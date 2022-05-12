@@ -21,7 +21,7 @@ import Images from '../../../constants/Images';
 import { MarkerView } from './partial/MarkerView';
 import ClusteredMapView from './components/ClusteredMapView'
 import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation, { clearWatch } from 'react-native-geolocation-service';
 import { updateCurrentLocation } from '../../../actions/google.action';
 import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
 import { expireToken, isInsidePoly } from '../../../constants/Consts'; 0
@@ -41,12 +41,12 @@ const SlidUpArrow = () => (
   </View>
 )
 
-let isMount = true;
+
 let id = 0;
 let previousZoom = 0;
 let mapPinSvg = null;
 let showingItem = "map_view";
-
+let isMount = true;
 export default function LocationScreen(props) {
 
   const navigation = props.navigation;
@@ -80,8 +80,8 @@ export default function LocationScreen(props) {
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05");
 
-
   useEffect(() => {
+    
     initCode();
     refreshHeader();
     if (crmStatus || showItem === "addLead") {
@@ -93,6 +93,7 @@ export default function LocationScreen(props) {
     }
     requestPermissions();
     return () => {
+      console.log("ASDFDD");
       isMount = false;
     };
   }, []);
@@ -104,8 +105,7 @@ export default function LocationScreen(props) {
   const initCode = async () => {
     var code = await getPolygonFillColorTransparency();
     setTransCode(code);
-    var checkin = await getLocalData("@checkin");
-    setIsCheckIn(checkin);
+    var checkin = await getLocalData("@checkin");    
     specificLocationId = await getLocalData("@specific_location_id");
   }
 
@@ -132,20 +132,24 @@ export default function LocationScreen(props) {
   }
 
   useEffect(() => {
+    let isSubscribed = true;
     if (watchId.current === null || watchId.current === undefined) {
       watchId.current = Geolocation.watchPosition(
         (position) => {
-          // console.log("Tracking..")   
-          dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy } });
-          // console.log("track position", position);                
+          console.log("Tracking..") ;
+          if(isSubscribed){
+            dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy } });
+          }                    
         },
         (error) => {
           console.log("tracking error");
           console.log(error);
-          dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: currentLocation.latitude, longitude: currentLocation.longitude, accuracy: currentLocation.accuracy, msg: 'tracking error' } });
+          if(isSubscribed){
+            dispatch({ type: CHANGE_CURRENT_LOCATION, payload: { latitude: currentLocation.latitude, longitude: currentLocation.longitude, accuracy: currentLocation.accuracy, msg: 'tracking error' } });
+          }          
         },
         {
-          distanceFilter: 0.5,
+          distanceFilter: 10.5,
           desiredAccuracy: {
             ios: "best",
             android: "highAccuracy"
@@ -167,11 +171,8 @@ export default function LocationScreen(props) {
 
     loadPinSvg();
     return () => {
-      console.log("End page");
-      if (watchId.current) {
-        console.log("End page --");
-        Geolocation.clearWatch(watchId.current);
-      }
+      clearWatch();
+      isSubscribed = false;
     }
   }, []);
 
@@ -246,20 +247,33 @@ export default function LocationScreen(props) {
   }, [navigation]);
 
   useEffect(() => {
+    let isMount = true;
     console.log("filterParmeterChanged", filterParmeterChanged)
-    if (currentLocation && currentLocation.latitude !== undefined && boundBox !== undefined && isGuranted) {
+    if ( isMount && currentLocation && currentLocation.latitude !== undefined && boundBox !== undefined && isGuranted) {
       setIsLoading(true);
       getLocationMapByRegion(currentLocation, boundBox).then((res) => {
-        console.log(res.locations);
-        setIsLoading(false);
-        setLocationMap([...res.locations]);
-        dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });
+        if(isMount){
+          setIsLoading(false);
+          setLocationMap([...res.locations]);
+          dispatch({ type: CHANGE_POLYGONS, payload: res.polygons });
+        }        
       }).catch((e) => {
         expireToken(dispatch, e);
       });
     }
+    return () => {
+      isMount = false;
+    };    
   }, [filterParmeterChanged]);
 
+  const clearWatch = () =>{
+    console.log("XXAADD", watchId);
+    if (watchId.current) {
+      console.log("End  TRacking page --");
+      Geolocation.clearWatch(watchId.current);
+    }
+    Geolocation.clearWatch(watchId.current);
+  }
   const loadPinSvg = async () => {
     mapPinSvg = await getPinSvg("@map_pin_key");
   }
@@ -509,9 +523,6 @@ export default function LocationScreen(props) {
               showingItem = "map_view";
               setShowItem("map_view");
               setIsBack(false);
-              // dispatch({type: SLIDE_STATUS, payload: false});
-
-
             }} />
         }
 
@@ -539,10 +550,10 @@ export default function LocationScreen(props) {
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
-              onPress={() => {
-                isMount = false;
+              onPress={() => {                
                 dispatch({ type: SLIDE_STATUS, payload: false });
                 props.navigation.navigate("LocationSearch");
+                clearWatch();
               }}
             >
               <View pointerEvents='none'>
@@ -581,9 +592,11 @@ export default function LocationScreen(props) {
               }}
               onClickCancel={() => {
                 props.navigation.navigate("LocationSearch");
+                clearWatch();
               }}
               onClickList={() => {
                 props.navigation.navigate("LocationSearch");
+                clearWatch();
               }}
               onClickAddToCalendar={() => {
                 animation("addtocalendar")
@@ -593,7 +606,7 @@ export default function LocationScreen(props) {
           }
 
           {
-            currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
+            isMount && currentLocation.latitude !== undefined && currentLocation.longitude !== undefined &&
             <View style={styles.mapContainer}>
               <ClusteredMapView
                 clusterColor={whiteLabel().mainText}
@@ -639,7 +652,7 @@ export default function LocationScreen(props) {
                     }}>
 
                     {
-                      mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
+                      mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
                       <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
                     }
 
