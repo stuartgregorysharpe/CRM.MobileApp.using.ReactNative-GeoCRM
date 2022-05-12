@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
 import SKUSelect from '../../components/shared/SKUSelect';
 import dummyData from '../../components/shared/SKUSelect/dummyData.json';
+import SKUSelectForm from '../../components/shared/SKUSelect/SKUSelectForm';
 import {Constants} from '../../constants';
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
