@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
-import { SvgXml } from 'react-native-svg';
-import { whiteLabel } from '../constants/Colors';
+import React, {Fragment} from 'react';
+import {SvgXml} from 'react-native-svg';
+import {whiteLabel} from '../constants/Colors';
 
 const actionIconBackground = whiteLabel().clickButtonBackground;
 const actionIconFill = whiteLabel().clickButtonFill;
@@ -690,7 +690,6 @@ const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="
 </svg>
 `;
 
-
 const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="238" height="254.93" viewBox="0 0 238 254.93">
 <g id="Group_4817" data-name="Group 4817" transform="translate(-789.725 -193.833)">
   <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
@@ -809,35 +808,47 @@ const Question_Calendar = `
 `;
 
 const Person_Sharp_feature_card = `<svg xmlns="http://www.w3.org/2000/svg" width="34.189" height="36.819" viewBox="0 0 34.189 36.819">
-<path id="person-sharp" d="M20.47,20.659a9.2,9.2,0,1,0-9.2-9.2A9.2,9.2,0,0,0,20.47,20.659Zm0,2.63c-5.705,0-17.095,3.524-17.095,10.52v5.26H37.564v-5.26C37.564,26.813,26.175,23.289,20.47,23.289Z" transform="translate(-3.375 -2.25)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="person-sharp" d="M20.47,20.659a9.2,9.2,0,1,0-9.2-9.2A9.2,9.2,0,0,0,20.47,20.659Zm0,2.63c-5.705,0-17.095,3.524-17.095,10.52v5.26H37.564v-5.26C37.564,26.813,26.175,23.289,20.47,23.289Z" transform="translate(-3.375 -2.25)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
 </svg>
 `;
 
 const Form_feature_card = `<svg id="file-earmark-text-fill" xmlns="http://www.w3.org/2000/svg" width="44.442" height="51.849" viewBox="0 0 44.442 51.849">
-<path id="Path_3960" data-name="Path 3960" d="M4.5,9.657A7.407,7.407,0,0,1,11.907,2.25h19.6a3.7,3.7,0,0,1,2.619,1.085L47.857,17.064a3.7,3.7,0,0,1,1.085,2.619V46.692A7.407,7.407,0,0,1,41.535,54.1H11.907A7.407,7.407,0,0,1,4.5,46.692Zm25.925,7.407V5.954L45.239,20.768H34.128A3.7,3.7,0,0,1,30.425,17.064ZM13.759,28.175a1.852,1.852,0,1,0,0,3.7H39.683a1.852,1.852,0,1,0,0-3.7Zm-1.852,9.259a1.852,1.852,0,0,1,1.852-1.852H39.683a1.852,1.852,0,1,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,37.433Zm0,7.407a1.852,1.852,0,0,1,1.852-1.852H28.573a1.852,1.852,0,0,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,44.84Z" transform="translate(-4.5 -2.25)" fill=${whiteLabel().feature_card_icon_fill} fill-rule="evenodd"/>
+<path id="Path_3960" data-name="Path 3960" d="M4.5,9.657A7.407,7.407,0,0,1,11.907,2.25h19.6a3.7,3.7,0,0,1,2.619,1.085L47.857,17.064a3.7,3.7,0,0,1,1.085,2.619V46.692A7.407,7.407,0,0,1,41.535,54.1H11.907A7.407,7.407,0,0,1,4.5,46.692Zm25.925,7.407V5.954L45.239,20.768H34.128A3.7,3.7,0,0,1,30.425,17.064ZM13.759,28.175a1.852,1.852,0,1,0,0,3.7H39.683a1.852,1.852,0,1,0,0-3.7Zm-1.852,9.259a1.852,1.852,0,0,1,1.852-1.852H39.683a1.852,1.852,0,1,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,37.433Zm0,7.407a1.852,1.852,0,0,1,1.852-1.852H28.573a1.852,1.852,0,0,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,44.84Z" transform="translate(-4.5 -2.25)" fill=${
+  whiteLabel().feature_card_icon_fill
+} fill-rule="evenodd"/>
 </svg>
 `;
 
 const Activity_Comments = `<svg id="chatboxes" xmlns="http://www.w3.org/2000/svg" width="47.711" height="47.711" viewBox="0 0 47.711 47.711">
-<path id="Path_3958" data-name="Path 3958" d="M31.6,33a3.209,3.209,0,0,0-2.006-.515H16.277c-3.98,0-7.4-2.993-7.4-6.791V14.133H8.673a5.211,5.211,0,0,0-5.3,5.218V34.134c0,2.868,2.455,4.657,5.471,4.657h1.869V44.3l6.091-5.161a2.432,2.432,0,0,1,1.514-.344h10.3c2.638,0,5.437-1.308,5.952-3.67L31.6,33Z" transform="translate(-3.375 3.415)" fill=${whiteLabel().feature_card_icon_fill}/>
-<path id="Path_3959" data-name="Path 3959" d="M40.31,3.375H15.388C11.409,3.375,9,6.448,9,10.234v19.29a7.04,7.04,0,0,0,7.192,6.882h11.6a3.147,3.147,0,0,1,2.006.481l8.567,6.859v-7.34H40.31a7.06,7.06,0,0,0,7.226-6.87v-19.3A7.052,7.052,0,0,0,40.31,3.375Z" transform="translate(0.175 -3.375)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="Path_3958" data-name="Path 3958" d="M31.6,33a3.209,3.209,0,0,0-2.006-.515H16.277c-3.98,0-7.4-2.993-7.4-6.791V14.133H8.673a5.211,5.211,0,0,0-5.3,5.218V34.134c0,2.868,2.455,4.657,5.471,4.657h1.869V44.3l6.091-5.161a2.432,2.432,0,0,1,1.514-.344h10.3c2.638,0,5.437-1.308,5.952-3.67L31.6,33Z" transform="translate(-3.375 3.415)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
+<path id="Path_3959" data-name="Path 3959" d="M40.31,3.375H15.388C11.409,3.375,9,6.448,9,10.234v19.29a7.04,7.04,0,0,0,7.192,6.882h11.6a3.147,3.147,0,0,1,2.006.481l8.567,6.859v-7.34H40.31a7.06,7.06,0,0,0,7.226-6.87v-19.3A7.052,7.052,0,0,0,40.31,3.375Z" transform="translate(0.175 -3.375)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
 </svg>
 `;
 
 const Sales_Pipeline_feature_Card = `<svg id="filter_list_black_24dp_1_" data-name="filter_list_black_24dp (1)" xmlns="http://www.w3.org/2000/svg" width="54.239" height="54.239" viewBox="0 0 54.239 54.239">
 <path id="Path_4228" data-name="Path 4228" d="M0,0H54.239V54.239H0Z" fill="none"/>
-<path id="Path_4229" data-name="Path 4229" d="M18.82,33.12h9.04V28.6H18.82ZM3,6v4.52H43.679V6ZM9.78,21.82H36.9V17.3H9.78Z" transform="translate(3.78 7.56)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="Path_4229" data-name="Path 4229" d="M18.82,33.12h9.04V28.6H18.82ZM3,6v4.52H43.679V6ZM9.78,21.82H36.9V17.3H9.78Z" transform="translate(3.78 7.56)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
 </svg>
 `;
 
 const Arrow_feature_Card = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="39" viewBox="0 0 40 39">
 <g id="Group_5046" data-name="Group 5046" transform="translate(-320 -168.999)">
-  <path id="View_all_location_information_-_" data-name="View all location information -&gt;" d="M26.752-3.584V-8.7H1.792v-2.432h24.96v-5.12L33.088-9.92Z" transform="translate(322.207 198.255)" fill=${whiteLabel().helpText}/>
+  <path id="View_all_location_information_-_" data-name="View all location information -&gt;" d="M26.752-3.584V-8.7H1.792v-2.432h24.96v-5.12L33.088-9.92Z" transform="translate(322.207 198.255)" fill=${
+    whiteLabel().helpText
+  }/>
   <rect id="Rectangle_3013" data-name="Rectangle 3013" width="40" height="39" transform="translate(320 168.999)" fill="none"/>
 </g>
 </svg>
-`
-const  Calendar_Previous = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" height="58.664" viewBox="0 0 24.319 58.664">
+`;
+const Calendar_Previous = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" height="58.664" viewBox="0 0 24.319 58.664">
 <path id="chevron-back" d="M31.272,7.875,12.938,33.721,31.272,59.568" transform="translate(-10.438 -4.389)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
 </svg>
 `;
@@ -870,90 +881,458 @@ const Check_Circle = `<svg id="check_circle_black_24dp_2_" data-name="check_circ
 <path id="Path_4184" data-name="Path 4184" d="M34.646,2A32.646,32.646,0,1,0,67.293,34.646,32.658,32.658,0,0,0,34.646,2Zm0,58.764A26.117,26.117,0,1,1,60.764,34.646,26.152,26.152,0,0,1,34.646,60.764ZM49.631,20.217,28.117,41.731l-8.455-8.423-4.6,4.6L28.117,50.97,54.234,24.853Z" transform="translate(4.529 4.529)" fill=${actionIconBackground}/>
 </svg>
 `;
-
-export default ({ icon, width = "100%", height = "100%", style = {} }) => (
+const Chevron_Back = `<svg xmlns="http://www.w3.org/2000/svg" 
+width="25.16" height="45.32" viewBox="0 0 25.16 45.32">
+  <path id="chevron-back" d="M32.062,7.875,12.938,27,32.062,46.124" 
+  transform="translate(-10.438 -4.34)" fill="none" 
+  stroke=${actionIconBackground} stroke-linecap="round" 
+  stroke-linejoin="round" stroke-width="5" />
+</svg>
+`;
+const Slider_Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="28.357" height="57.75" viewBox="0 0 28.357 57.75">
+  <path id="chevron-back-sharp" d="M21.728,0,0,25l21.728,25" transform="translate(25.607 53.87) rotate(180)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="5.5"/>
+</svg>`;
+const Slider_Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28.357 57.75">
+  <path id="chevron-back-sharp" d="M21.728,0,0,25l21.728,25" transform="translate(2.75 3.88)" fill="none" stroke=${actionIconBackground} stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="5.5"/>
+</svg>`;
+export default ({icon, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
-    {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
-    {icon == "DISPOSITION_POST" && <SvgXml style={style} xml={DISPOSITION_POST} width={width} height={height} />}
-    {icon == "Drop_Down" && <SvgXml style={style} xml={Drop_Down} width={width} height={height} />}
-    {icon == "Person_Sharp" && <SvgXml style={style} xml={Person_Sharp} width={width} height={height} />}
-    {icon == "Person_Sharp_White" && <SvgXml style={style} xml={Person_Sharp_White} width={width} height={height} />}
-    {icon == "Camera" && <SvgXml style={style} xml={Camera} width={width} height={height} />}
-    {icon == "ChatBoxes" && <SvgXml style={style} xml={ChatBoxes} width={width} height={height} />}
-    {icon == "Exclamation_Triangle_Fill" && <SvgXml style={style} xml={Exclamation_Triangle_Fill} width={width} height={height} />}
-    {icon == "Form" && <SvgXml style={style} xml={Form} width={width} height={height} />}
-    {icon == "Form_inactive" && <SvgXml style={style} xml={Form_inactive} width={width} height={height} />}
-    {icon == "Sale" && <SvgXml style={style} xml={Sale} width={width} height={height} />}
-    {icon == "Sale_inactive" && <SvgXml style={style} xml={Sale_inactive} width={width} height={height} />}
-    {icon == "Geo" && <SvgXml style={style} xml={Geo} width={width} height={height} />}
-    {icon == "Location_Arrow_White" && <SvgXml style={style} xml={Location_Arrow_White} width={width} height={height} />}
-    {icon == "Filter" && <SvgXml style={style} xml={Filter} width={width} height={height} />}
-    {icon == "Filter_GRAY" && <SvgXml style={style} xml={Filter_GRAY} width={width} height={height} />}
-    {icon == "Location_Arrow" && <SvgXml style={style} xml={Location_Arrow} width={width} height={height} />}
-    {icon == "Location_Arrow_Gray" && <SvgXml style={style} xml={Location_Arrow_Gray} width={width} height={height} />}
-    {icon == "Home_Black_Gray" && <SvgXml style={style} xml={Home_Black_Gray} width={width} height={height} />}
-    {icon == "Home_Black" && <SvgXml style={style} xml={Home_Black} width={width} height={height} />}
-    {icon == "Android_More_Horizontal" && <SvgXml style={style} xml={Android_More_Horizontal} width={width} height={height} />}
-    {icon == "Android_More_Horizontal_Gray" && <SvgXml style={style} xml={Android_More_Horizontal_Gray} width={width} height={height} />}
-    {icon == "Calendar_Event_Fill_Gray" && <SvgXml style={style} xml={Calendar_Event_Fill_Gray} width={width} height={height} />}
-    {icon == "Calendar_Event_Fill" && <SvgXml style={style} xml={Calendar_Event_Fill} width={width} height={height} />}
-    {icon == "Pipeline_Gray" && <SvgXml style={style} xml={Pipeline_Gray} width={width} height={height} />}
-    {icon == "Pipeline" && <SvgXml style={style} xml={Pipeline} width={width} height={height} />}
-    {icon == "Travel_Explore_Gray" && <SvgXml style={style} xml={Travel_Explore_Gray} width={width} height={height} />}
-    {icon == "Travel_Explore" && <SvgXml style={style} xml={Travel_Explore} width={width} height={height} />}
-    {icon == "Ballot_Gray" && <SvgXml style={style} xml={Ballot_Gray} width={width} height={height} />}
-    {icon == "Ballot" && <SvgXml style={style} xml={Ballot} width={width} height={height} />}
-    {icon == "Insert_Invitation" && <SvgXml style={style} xml={Insert_Invitation} width={width} height={height} />}
-    {icon == "Green_Star" && <SvgXml style={style} xml={Green_Star} width={width} height={height} />}
-    {icon == "Check" && <SvgXml style={style} xml={Check} width={width} height={height} />}
-    {icon == "Close" && <SvgXml style={style} xml={Close} width={width} height={height} />}
-    {icon == "Account_Circle" && <SvgXml style={style} xml={Account_Circle} width={width} height={height} />}
-    {icon == "Cloud_Off" && <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />}
-    {icon == "Support_Agent" && <SvgXml style={style} xml={Support_Agent} width={width} height={height} />}
-    {icon == "Support_Agent_Gray" && <SvgXml style={style} xml={Support_Agent_Gray} width={width} height={height} />}
-    {icon == "Angle_Left" && <SvgXml style={style} xml={Angle_Left} width={width} height={height} />}
-    {icon == "Description" && <SvgXml style={style} xml={Description} width={width} height={height} />}
-    {icon == "Wallpaper" && <SvgXml style={style} xml={Wallpaper} width={width} height={height} />}
-    {icon == "Video_Library" && <SvgXml style={style} xml={Video_Library} width={width} height={height} />}
-    {icon == "Path" && <SvgXml style={style} xml={Path} width={width} height={height} />}
-    {icon == "Contact_Mail" && <SvgXml style={style} xml={Contact_Mail} width={width} height={height} />}
-    {icon == "WhatsApp" && <SvgXml style={style} xml={WhatsApp} width={width} height={height} />}
-    {icon == "Quiz" && <SvgXml style={style} xml={Quiz} width={width} height={height} />}
-    {icon == "File_Download" && <SvgXml style={style} xml={File_Download} width={width} height={height} />}
-    {icon == "Right_Arrow" && <SvgXml style={style} xml={Right_Arrow} width={width} height={height} />}
-    {icon == "Item_Selected" && <SvgXml style={style} xml={Item_Selected} width={width} height={height} />}
-    {icon == "Calendar_Optimize" && <SvgXml style={style} xml={Calendar_Optimize} width={width} height={height} />}
-    {icon == "Arrow_Right" && <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />}
-    {icon == "Add_Image" && <SvgXml style={style} xml={Add_Image} width={width} height={height} />}
-    {icon == "Arrow_Left_Btn" && <SvgXml style={style} xml={Arrow_Left} width={width} height={height} />}
-    {icon == "Arrow_Left_Btn_alt" && <SvgXml style={style} xml={Arrow_Left_alt} width={width} height={height} />}
-    {icon == "Arrow_Right_Btn" && <SvgXml style={style} xml={Arrow_Right_Button} width={width} height={height} />}
-    {icon == "Arrow_Right_Btn_alt" && <SvgXml style={style} xml={Arrow_Right_Button_alt} width={width} height={height} />}
-    {icon == "GPS_LOCATION" && <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />}
-    {icon == "Add_Image_Gray" && <SvgXml style={style} xml={Add_Image_Gray} width={width} height={height} />}
-    {icon == "Roop_Gray" && <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />}
-    {icon == "Forms_Red_Compulsory" && <SvgXml style={style} xml={Forms_Red_Compulsory} width={width} height={height} />}
-    {icon == "Forms_Green_Done" && <SvgXml style={style} xml={Forms_Green_Done} width={width} height={height} />}
-    {icon == "Re_loop" && <SvgXml style={style} xml={Re_loop} width={width} height={height} />}
-    {icon == "Logout" && <SvgXml style={style} xml={Logout} width={width} height={height} />}
-    {icon == "Faq" && <SvgXml style={style} xml={Faq} width={width} height={height} />}
-    {icon == "Signature_Btn_Right_Arrow" && <SvgXml style={style} xml={Signature_Btn_Right_Arrow} width={width} height={height} />}
-    {icon == "Question_Btn_Done" && <SvgXml style={style} xml={Question_Btn_Done} width={width} height={height} />}
-    {icon == "Question_Calendar" && <SvgXml style={style} xml={Question_Calendar} width={width} height={height} />}
-    {icon == "Angle_Left_form" && <SvgXml style={style} xml={Angle_Left_form} width={width} height={height} />}
-    {icon == "Person_Sharp_feature_card" && <SvgXml style={style} xml={Person_Sharp_feature_card} width={width} height={height} />}
-    {icon == "Form_feature_card" && <SvgXml style={style} xml={Form_feature_card} width={width} height={height} />}
-    {icon == "Sales_Pipeline_feature_Card" && <SvgXml style={style} xml={Sales_Pipeline_feature_Card} width={width} height={height} />}
-    {icon == "Arrow_feature_Card" && <SvgXml style={style} xml={Arrow_feature_Card} width={width} height={height} />}
-    {icon == "Yes_No_Button_Check" && <SvgXml style={style} xml={Yes_No_Button_Check} width={width} height={height} />}
-    {icon == "Calendar_Previous" && <SvgXml style={style} xml={Calendar_Previous} width={width} height={height} />}
-    {icon == "Calendar_Next" && <SvgXml style={style} xml={Calendar_Next} width={width} height={height} />}
-    {icon == "Time_Up" && <SvgXml style={style} xml={Time_Up} width={width} height={height} />}
-    {icon == "Time_Down" && <SvgXml style={style} xml={Time_Down} width={width} height={height} />}
-    {icon == "Activity_Comments" && <SvgXml style={style} xml={Activity_Comments} width={width} height={height} />}    
-    {icon == "File" && <SvgXml style={style} xml={File} width={width} height={height} />}    
-    {icon == "File_Upload" && <SvgXml style={style} xml={File_Upload} width={width} height={height} />}
-    {icon == "Check_Circle" && <SvgXml style={style} xml={Check_Circle} width={width} height={height} />}
-    
+    {icon == 'Round_Btn_Default_Dark' && (
+      <SvgXml
+        style={style}
+        xml={Round_Btn_Default_Dark}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'DISPOSITION_POST' && (
+      <SvgXml
+        style={style}
+        xml={DISPOSITION_POST}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Drop_Down' && (
+      <SvgXml style={style} xml={Drop_Down} width={width} height={height} />
+    )}
+    {icon == 'Person_Sharp' && (
+      <SvgXml style={style} xml={Person_Sharp} width={width} height={height} />
+    )}
+    {icon == 'Person_Sharp_White' && (
+      <SvgXml
+        style={style}
+        xml={Person_Sharp_White}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Camera' && (
+      <SvgXml style={style} xml={Camera} width={width} height={height} />
+    )}
+    {icon == 'ChatBoxes' && (
+      <SvgXml style={style} xml={ChatBoxes} width={width} height={height} />
+    )}
+    {icon == 'Exclamation_Triangle_Fill' && (
+      <SvgXml
+        style={style}
+        xml={Exclamation_Triangle_Fill}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Form' && (
+      <SvgXml style={style} xml={Form} width={width} height={height} />
+    )}
+    {icon == 'Form_inactive' && (
+      <SvgXml style={style} xml={Form_inactive} width={width} height={height} />
+    )}
+    {icon == 'Sale' && (
+      <SvgXml style={style} xml={Sale} width={width} height={height} />
+    )}
+    {icon == 'Sale_inactive' && (
+      <SvgXml style={style} xml={Sale_inactive} width={width} height={height} />
+    )}
+    {icon == 'Geo' && (
+      <SvgXml style={style} xml={Geo} width={width} height={height} />
+    )}
+    {icon == 'Location_Arrow_White' && (
+      <SvgXml
+        style={style}
+        xml={Location_Arrow_White}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Filter' && (
+      <SvgXml style={style} xml={Filter} width={width} height={height} />
+    )}
+    {icon == 'Filter_GRAY' && (
+      <SvgXml style={style} xml={Filter_GRAY} width={width} height={height} />
+    )}
+    {icon == 'Location_Arrow' && (
+      <SvgXml
+        style={style}
+        xml={Location_Arrow}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Location_Arrow_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Location_Arrow_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Home_Black_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Home_Black_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Home_Black' && (
+      <SvgXml style={style} xml={Home_Black} width={width} height={height} />
+    )}
+    {icon == 'Android_More_Horizontal' && (
+      <SvgXml
+        style={style}
+        xml={Android_More_Horizontal}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Android_More_Horizontal_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Android_More_Horizontal_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Calendar_Event_Fill_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Calendar_Event_Fill_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Calendar_Event_Fill' && (
+      <SvgXml
+        style={style}
+        xml={Calendar_Event_Fill}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Pipeline_Gray' && (
+      <SvgXml style={style} xml={Pipeline_Gray} width={width} height={height} />
+    )}
+    {icon == 'Pipeline' && (
+      <SvgXml style={style} xml={Pipeline} width={width} height={height} />
+    )}
+    {icon == 'Travel_Explore_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Travel_Explore_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Travel_Explore' && (
+      <SvgXml
+        style={style}
+        xml={Travel_Explore}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Ballot_Gray' && (
+      <SvgXml style={style} xml={Ballot_Gray} width={width} height={height} />
+    )}
+    {icon == 'Ballot' && (
+      <SvgXml style={style} xml={Ballot} width={width} height={height} />
+    )}
+    {icon == 'Insert_Invitation' && (
+      <SvgXml
+        style={style}
+        xml={Insert_Invitation}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Green_Star' && (
+      <SvgXml style={style} xml={Green_Star} width={width} height={height} />
+    )}
+    {icon == 'Check' && (
+      <SvgXml style={style} xml={Check} width={width} height={height} />
+    )}
+    {icon == 'Close' && (
+      <SvgXml style={style} xml={Close} width={width} height={height} />
+    )}
+    {icon == 'Account_Circle' && (
+      <SvgXml
+        style={style}
+        xml={Account_Circle}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Cloud_Off' && (
+      <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />
+    )}
+    {icon == 'Support_Agent' && (
+      <SvgXml style={style} xml={Support_Agent} width={width} height={height} />
+    )}
+    {icon == 'Support_Agent_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Support_Agent_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Angle_Left' && (
+      <SvgXml style={style} xml={Angle_Left} width={width} height={height} />
+    )}
+    {icon == 'Description' && (
+      <SvgXml style={style} xml={Description} width={width} height={height} />
+    )}
+    {icon == 'Wallpaper' && (
+      <SvgXml style={style} xml={Wallpaper} width={width} height={height} />
+    )}
+    {icon == 'Video_Library' && (
+      <SvgXml style={style} xml={Video_Library} width={width} height={height} />
+    )}
+    {icon == 'Path' && (
+      <SvgXml style={style} xml={Path} width={width} height={height} />
+    )}
+    {icon == 'Contact_Mail' && (
+      <SvgXml style={style} xml={Contact_Mail} width={width} height={height} />
+    )}
+    {icon == 'WhatsApp' && (
+      <SvgXml style={style} xml={WhatsApp} width={width} height={height} />
+    )}
+    {icon == 'Quiz' && (
+      <SvgXml style={style} xml={Quiz} width={width} height={height} />
+    )}
+    {icon == 'File_Download' && (
+      <SvgXml style={style} xml={File_Download} width={width} height={height} />
+    )}
+    {icon == 'Right_Arrow' && (
+      <SvgXml style={style} xml={Right_Arrow} width={width} height={height} />
+    )}
+    {icon == 'Item_Selected' && (
+      <SvgXml style={style} xml={Item_Selected} width={width} height={height} />
+    )}
+    {icon == 'Calendar_Optimize' && (
+      <SvgXml
+        style={style}
+        xml={Calendar_Optimize}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Arrow_Right' && (
+      <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />
+    )}
+    {icon == 'Add_Image' && (
+      <SvgXml style={style} xml={Add_Image} width={width} height={height} />
+    )}
+    {icon == 'Arrow_Left_Btn' && (
+      <SvgXml style={style} xml={Arrow_Left} width={width} height={height} />
+    )}
+    {icon == 'Arrow_Left_Btn_alt' && (
+      <SvgXml
+        style={style}
+        xml={Arrow_Left_alt}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Arrow_Right_Btn' && (
+      <SvgXml
+        style={style}
+        xml={Arrow_Right_Button}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Arrow_Right_Btn_alt' && (
+      <SvgXml
+        style={style}
+        xml={Arrow_Right_Button_alt}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'GPS_LOCATION' && (
+      <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />
+    )}
+    {icon == 'Add_Image_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Add_Image_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Roop_Gray' && (
+      <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />
+    )}
+    {icon == 'Forms_Red_Compulsory' && (
+      <SvgXml
+        style={style}
+        xml={Forms_Red_Compulsory}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Forms_Green_Done' && (
+      <SvgXml
+        style={style}
+        xml={Forms_Green_Done}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Re_loop' && (
+      <SvgXml style={style} xml={Re_loop} width={width} height={height} />
+    )}
+    {icon == 'Logout' && (
+      <SvgXml style={style} xml={Logout} width={width} height={height} />
+    )}
+    {icon == 'Faq' && (
+      <SvgXml style={style} xml={Faq} width={width} height={height} />
+    )}
+    {icon == 'Signature_Btn_Right_Arrow' && (
+      <SvgXml
+        style={style}
+        xml={Signature_Btn_Right_Arrow}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Question_Btn_Done' && (
+      <SvgXml
+        style={style}
+        xml={Question_Btn_Done}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Question_Calendar' && (
+      <SvgXml
+        style={style}
+        xml={Question_Calendar}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Angle_Left_form' && (
+      <SvgXml
+        style={style}
+        xml={Angle_Left_form}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Person_Sharp_feature_card' && (
+      <SvgXml
+        style={style}
+        xml={Person_Sharp_feature_card}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Form_feature_card' && (
+      <SvgXml
+        style={style}
+        xml={Form_feature_card}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Sales_Pipeline_feature_Card' && (
+      <SvgXml
+        style={style}
+        xml={Sales_Pipeline_feature_Card}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Arrow_feature_Card' && (
+      <SvgXml
+        style={style}
+        xml={Arrow_feature_Card}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Yes_No_Button_Check' && (
+      <SvgXml
+        style={style}
+        xml={Yes_No_Button_Check}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Calendar_Previous' && (
+      <SvgXml
+        style={style}
+        xml={Calendar_Previous}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Calendar_Next' && (
+      <SvgXml style={style} xml={Calendar_Next} width={width} height={height} />
+    )}
+    {icon == 'Time_Up' && (
+      <SvgXml style={style} xml={Time_Up} width={width} height={height} />
+    )}
+    {icon == 'Time_Down' && (
+      <SvgXml style={style} xml={Time_Down} width={width} height={height} />
+    )}
+    {icon == 'Activity_Comments' && (
+      <SvgXml
+        style={style}
+        xml={Activity_Comments}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'File' && (
+      <SvgXml style={style} xml={File} width={width} height={height} />
+    )}
+    {icon == 'File_Upload' && (
+      <SvgXml style={style} xml={File_Upload} width={width} height={height} />
+    )}
+    {icon == 'Check_Circle' && (
+      <SvgXml style={style} xml={Check_Circle} width={width} height={height} />
+    )}
+    {icon == 'Chevron_Back' && (
+      <SvgXml style={style} xml={Chevron_Back} width={width} height={height} />
+    )}
+    {icon == 'Slider_Arrow_Right' && (
+      <SvgXml
+        style={style}
+        xml={Slider_Arrow_Right}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Slider_Arrow_Left' && (
+      <SvgXml
+        style={style}
+        xml={Slider_Arrow_Left}
+        width={width}
+        height={height}
+      />
+    )}
   </Fragment>
 );
