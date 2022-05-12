@@ -1,45 +1,95 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { SafeAreaView, Text, TextInput, View, TouchableOpacity, Dimensions, BackHandler, Image, Platform, AppState, PermissionsAndroid } from 'react-native';
-import { Provider } from 'react-native-paper';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Dimensions,
+  BackHandler,
+  Image,
+  Platform,
+  TouchableHighlight,
+  AppState,
+  PermissionsAndroid,
+} from 'react-native';
+import {Provider} from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { setWidthBreakpoints, parse } from 'react-native-extended-stylesheet-breakpoints';
-import { useSelector, useDispatch } from 'react-redux';
-import MapView, { Marker, Region, PROVIDER_GOOGLE, Polygon, Polyline } from 'react-native-maps';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faSearch, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import {
+  setWidthBreakpoints,
+  parse,
+} from 'react-native-extended-stylesheet-breakpoints';
+import {useSelector, useDispatch} from 'react-redux';
+import MapView, {
+  Marker,
+  Region,
+  PROVIDER_GOOGLE,
+  Polygon,
+  Polyline,
+} from 'react-native-maps';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faSearch, faChevronUp} from '@fortawesome/free-solid-svg-icons';
 import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
 import SvgIcon from '../../../components/SvgIcon';
 import GrayBackground from '../../../components/GrayBackground';
-import Colors, { whiteLabel } from '../../../constants/Colors';
-import { boxShadow, style } from '../../../constants/Styles';
-import { breakPoint } from '../../../constants/Breakpoint';
-import { CHANGE_CURRENT_LOCATION, CHANGE_LOGIN_STATUS, CHANGE_POLYGONS, IS_CALENDAR_SELECTION, SELECTED_LOCATIONS_FOR_CALENDAR, SLIDE_STATUS } from '../../../actions/actionTypes';
-import { getLocationPinKey, getLocationFilters, getLocationInfo, getLocationMapByRegion } from '../../../actions/location.action';
+import Colors, {whiteLabel} from '../../../constants/Colors';
+import {boxShadow, style} from '../../../constants/Styles';
+import {breakPoint} from '../../../constants/Breakpoint';
+import {
+  CHANGE_CURRENT_LOCATION,
+  CHANGE_LOGIN_STATUS,
+  CHANGE_POLYGONS,
+  IS_CALENDAR_SELECTION,
+  SELECTED_LOCATIONS_FOR_CALENDAR,
+  SLIDE_STATUS,
+} from '../../../actions/actionTypes';
+import {
+  getLocationPinKey,
+  getLocationFilters,
+  getLocationInfo,
+  getLocationMapByRegion,
+} from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
-import { MarkerView } from './partial/MarkerView';
-import ClusteredMapView from './components/ClusteredMapView'
-import { LocationInfoDetails } from './locationInfoDetails/LocationInfoDetails';
-import Geolocation, { clearWatch } from 'react-native-geolocation-service';
-import { updateCurrentLocation } from '../../../actions/google.action';
-import { CrmCalendarSelection } from './partial/CrmCalendarSelection';
-import { expireToken, isInsidePoly } from '../../../constants/Consts'; 0
+import {MarkerView} from './partial/MarkerView';
+import ClusteredMapView from './components/ClusteredMapView';
+import {LocationInfoDetails} from './locationInfoDetails/LocationInfoDetails';
+import Geolocation from 'react-native-geolocation-service';
+import {updateCurrentLocation} from '../../../actions/google.action';
+import {CrmCalendarSelection} from './partial/CrmCalendarSelection';
+import {expireToken, isInsidePoly} from '../../../constants/Helper';
+0;
 import AddToCalendar from '../../../components/modal/AddToCalendar';
-import { getLocalData, getMapMinZoomLevel, getPinSvg, getPolygonFillColorTransparency, setToken, storePinSvg } from '../../../constants/Storage';
-import { Notification } from '../../../components/modal/Notification';
-import { SvgXml } from 'react-native-svg';
-import { AppText } from '../../../components/common/AppText';
-import { clearNotification, showNotification } from '../../../actions/notification.action';
-import { compose } from 'redux';
+import {
+  getLocalData,
+  getMapMinZoomLevel,
+  getPinSvg,
+  getPolygonFillColorTransparency,
+  setToken,
+  storePinSvg,
+} from '../../../constants/Storage';
+import {Notification} from '../../../components/modal/Notification';
+import {SvgXml} from 'react-native-svg';
+import {AppText} from '../../../components/common/AppText';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../actions/notification.action';
+import {compose} from 'redux';
 import CheckInStatusView from './partial/CheckInStatusView';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
     <Text style={styles.slidUpArrowText}>Pin Key</Text>
-    <FontAwesomeIcon size={12} icon={faChevronUp} color={whiteLabel().mainText} />
+    <FontAwesomeIcon
+      size={12}
+      icon={faChevronUp}
+      color={whiteLabel().mainText}
+    />
   </View>
-)
+);
 
 
 let id = 0;
@@ -47,8 +97,9 @@ let previousZoom = 0;
 let mapPinSvg = null;
 let showingItem = "map_view";
 let isMount = true;
-export default function LocationScreen(props) {
 
+
+export default function LocationScreen(props) {
   const navigation = props.navigation;
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const polygons = useSelector(state => state.location.polygons);
@@ -182,12 +233,16 @@ export default function LocationScreen(props) {
       var tmp = [];
       polygons.forEach(element => {
         element.path.forEach(coords => {
-          if (coords.length > 0 && coords[0].latitude !== undefined && coords[0].longitude !== undefined) {
+          if (
+            coords.length > 0 &&
+            coords[0].latitude !== undefined &&
+            coords[0].longitude !== undefined
+          ) {
             let item = {
               path: element.path,
               fillColor: element.fillColor,
-              strokeColor: element.strokeColor
-            }
+              strokeColor: element.strokeColor,
+            };
             tmp.push(item);
           }
         });
@@ -197,6 +252,7 @@ export default function LocationScreen(props) {
   }, [polygons]);
 
   useEffect(() => {
+    console.log('crm bottom updated');
     refreshHeader();
     if (crmStatus) {
       props.screenProps.setOptions({
@@ -207,26 +263,17 @@ export default function LocationScreen(props) {
     }
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick);
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
     };
   }, [crmStatus]);
 
   useEffect(() => {
-    console.log("refresh called")
-    refreshHeader();
-    if (showItem === 'addLead') {
-      setTimeout(() => {
-        refreshHeader();
-      }, 500);
-    }
-  }, [showItem]);
-
-  useEffect(() => {
+    console.log('crm navigation');
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log("focuseed location screen")
-      if(showItem==='addLead'){
-        setIsBack(true);
-      }
+      console.log('focuseed');
       isMount = true;
       refreshHeader();
       if (crmStatus) {
@@ -337,7 +384,7 @@ export default function LocationScreen(props) {
         backgroundColor: Colors.whiteColor,
       },
     });
-  }
+  };
 
   const handleBackButtonClick = () => {
     console.log("CRM STATUS LOCATION: ", showingItem);
@@ -355,8 +402,7 @@ export default function LocationScreen(props) {
     }
     props.navigation.goBack();
     return true;
-  }
-
+  };
 
   const animation = (name) => {
     if (name !== "addLead") {
@@ -373,7 +419,7 @@ export default function LocationScreen(props) {
   const finish = () => {
     setEditing(null);
     setCreatingHole(false);
-  }
+  };
 
   const onPressMap = (e) => {
     if (!editing) {
@@ -407,10 +453,10 @@ export default function LocationScreen(props) {
     }
   }
 
-  const regionChanged = async (region, markers, bBox, zoom) => {
 
+  const regionChanged = async (region, markers, bBox, zoom) => {
     var minZoomLevel = await getMapMinZoomLevel();
-    console.log("minZoomLevel", minZoomLevel);
+    console.log('minZoomLevel', minZoomLevel);
 
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
@@ -447,8 +493,7 @@ export default function LocationScreen(props) {
       }
     }
     previousZoom = zoom;
-  }
-
+  };
 
   const onMarkerPressed = (item, key) => {
     if (isCalendarSelection) {
@@ -559,7 +604,7 @@ export default function LocationScreen(props) {
               <View pointerEvents='none'>
                 <TextInput
                   style={[styles.searchInput, boxShadow]}
-                  placeholder='Search.....'
+                  placeholder="Search....."
                   placeholderTextColor={whiteLabel().helpText}
                 />
               </View>
@@ -761,7 +806,7 @@ export default function LocationScreen(props) {
         </View>
       </SafeAreaView>
     </Provider>
-  )
+  );
 }
 
 const perWidth = setWidthBreakpoints(breakPoint);

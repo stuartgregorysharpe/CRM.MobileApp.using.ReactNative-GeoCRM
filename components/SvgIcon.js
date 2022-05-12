@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
-import { SvgXml } from 'react-native-svg';
-import { whiteLabel } from '../constants/Colors';
+import React, {Fragment} from 'react';
+import {SvgXml} from 'react-native-svg';
+import {whiteLabel} from '../constants/Colors';
 
 const actionIconBackground = whiteLabel().clickButtonBackground;
 const actionIconFill = whiteLabel().clickButtonFill;
@@ -690,7 +690,6 @@ const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="
 </svg>
 `;
 
-
 const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="238" height="254.93" viewBox="0 0 238 254.93">
 <g id="Group_4817" data-name="Group 4817" transform="translate(-789.725 -193.833)">
   <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
@@ -809,35 +808,47 @@ const Question_Calendar = `
 `;
 
 const Person_Sharp_feature_card = `<svg xmlns="http://www.w3.org/2000/svg" width="34.189" height="36.819" viewBox="0 0 34.189 36.819">
-<path id="person-sharp" d="M20.47,20.659a9.2,9.2,0,1,0-9.2-9.2A9.2,9.2,0,0,0,20.47,20.659Zm0,2.63c-5.705,0-17.095,3.524-17.095,10.52v5.26H37.564v-5.26C37.564,26.813,26.175,23.289,20.47,23.289Z" transform="translate(-3.375 -2.25)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="person-sharp" d="M20.47,20.659a9.2,9.2,0,1,0-9.2-9.2A9.2,9.2,0,0,0,20.47,20.659Zm0,2.63c-5.705,0-17.095,3.524-17.095,10.52v5.26H37.564v-5.26C37.564,26.813,26.175,23.289,20.47,23.289Z" transform="translate(-3.375 -2.25)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
 </svg>
 `;
 
 const Form_feature_card = `<svg id="file-earmark-text-fill" xmlns="http://www.w3.org/2000/svg" width="44.442" height="51.849" viewBox="0 0 44.442 51.849">
-<path id="Path_3960" data-name="Path 3960" d="M4.5,9.657A7.407,7.407,0,0,1,11.907,2.25h19.6a3.7,3.7,0,0,1,2.619,1.085L47.857,17.064a3.7,3.7,0,0,1,1.085,2.619V46.692A7.407,7.407,0,0,1,41.535,54.1H11.907A7.407,7.407,0,0,1,4.5,46.692Zm25.925,7.407V5.954L45.239,20.768H34.128A3.7,3.7,0,0,1,30.425,17.064ZM13.759,28.175a1.852,1.852,0,1,0,0,3.7H39.683a1.852,1.852,0,1,0,0-3.7Zm-1.852,9.259a1.852,1.852,0,0,1,1.852-1.852H39.683a1.852,1.852,0,1,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,37.433Zm0,7.407a1.852,1.852,0,0,1,1.852-1.852H28.573a1.852,1.852,0,0,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,44.84Z" transform="translate(-4.5 -2.25)" fill=${whiteLabel().feature_card_icon_fill} fill-rule="evenodd"/>
+<path id="Path_3960" data-name="Path 3960" d="M4.5,9.657A7.407,7.407,0,0,1,11.907,2.25h19.6a3.7,3.7,0,0,1,2.619,1.085L47.857,17.064a3.7,3.7,0,0,1,1.085,2.619V46.692A7.407,7.407,0,0,1,41.535,54.1H11.907A7.407,7.407,0,0,1,4.5,46.692Zm25.925,7.407V5.954L45.239,20.768H34.128A3.7,3.7,0,0,1,30.425,17.064ZM13.759,28.175a1.852,1.852,0,1,0,0,3.7H39.683a1.852,1.852,0,1,0,0-3.7Zm-1.852,9.259a1.852,1.852,0,0,1,1.852-1.852H39.683a1.852,1.852,0,1,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,37.433Zm0,7.407a1.852,1.852,0,0,1,1.852-1.852H28.573a1.852,1.852,0,0,1,0,3.7H13.759A1.852,1.852,0,0,1,11.907,44.84Z" transform="translate(-4.5 -2.25)" fill=${
+  whiteLabel().feature_card_icon_fill
+} fill-rule="evenodd"/>
 </svg>
 `;
 
 const Activity_Comments = `<svg id="chatboxes" xmlns="http://www.w3.org/2000/svg" width="47.711" height="47.711" viewBox="0 0 47.711 47.711">
-<path id="Path_3958" data-name="Path 3958" d="M31.6,33a3.209,3.209,0,0,0-2.006-.515H16.277c-3.98,0-7.4-2.993-7.4-6.791V14.133H8.673a5.211,5.211,0,0,0-5.3,5.218V34.134c0,2.868,2.455,4.657,5.471,4.657h1.869V44.3l6.091-5.161a2.432,2.432,0,0,1,1.514-.344h10.3c2.638,0,5.437-1.308,5.952-3.67L31.6,33Z" transform="translate(-3.375 3.415)" fill=${whiteLabel().feature_card_icon_fill}/>
-<path id="Path_3959" data-name="Path 3959" d="M40.31,3.375H15.388C11.409,3.375,9,6.448,9,10.234v19.29a7.04,7.04,0,0,0,7.192,6.882h11.6a3.147,3.147,0,0,1,2.006.481l8.567,6.859v-7.34H40.31a7.06,7.06,0,0,0,7.226-6.87v-19.3A7.052,7.052,0,0,0,40.31,3.375Z" transform="translate(0.175 -3.375)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="Path_3958" data-name="Path 3958" d="M31.6,33a3.209,3.209,0,0,0-2.006-.515H16.277c-3.98,0-7.4-2.993-7.4-6.791V14.133H8.673a5.211,5.211,0,0,0-5.3,5.218V34.134c0,2.868,2.455,4.657,5.471,4.657h1.869V44.3l6.091-5.161a2.432,2.432,0,0,1,1.514-.344h10.3c2.638,0,5.437-1.308,5.952-3.67L31.6,33Z" transform="translate(-3.375 3.415)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
+<path id="Path_3959" data-name="Path 3959" d="M40.31,3.375H15.388C11.409,3.375,9,6.448,9,10.234v19.29a7.04,7.04,0,0,0,7.192,6.882h11.6a3.147,3.147,0,0,1,2.006.481l8.567,6.859v-7.34H40.31a7.06,7.06,0,0,0,7.226-6.87v-19.3A7.052,7.052,0,0,0,40.31,3.375Z" transform="translate(0.175 -3.375)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
 </svg>
 `;
 
 const Sales_Pipeline_feature_Card = `<svg id="filter_list_black_24dp_1_" data-name="filter_list_black_24dp (1)" xmlns="http://www.w3.org/2000/svg" width="54.239" height="54.239" viewBox="0 0 54.239 54.239">
 <path id="Path_4228" data-name="Path 4228" d="M0,0H54.239V54.239H0Z" fill="none"/>
-<path id="Path_4229" data-name="Path 4229" d="M18.82,33.12h9.04V28.6H18.82ZM3,6v4.52H43.679V6ZM9.78,21.82H36.9V17.3H9.78Z" transform="translate(3.78 7.56)" fill=${whiteLabel().feature_card_icon_fill}/>
+<path id="Path_4229" data-name="Path 4229" d="M18.82,33.12h9.04V28.6H18.82ZM3,6v4.52H43.679V6ZM9.78,21.82H36.9V17.3H9.78Z" transform="translate(3.78 7.56)" fill=${
+  whiteLabel().feature_card_icon_fill
+}/>
 </svg>
 `;
 
 const Arrow_feature_Card = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="39" viewBox="0 0 40 39">
 <g id="Group_5046" data-name="Group 5046" transform="translate(-320 -168.999)">
-  <path id="View_all_location_information_-_" data-name="View all location information -&gt;" d="M26.752-3.584V-8.7H1.792v-2.432h24.96v-5.12L33.088-9.92Z" transform="translate(322.207 198.255)" fill=${whiteLabel().helpText}/>
+  <path id="View_all_location_information_-_" data-name="View all location information -&gt;" d="M26.752-3.584V-8.7H1.792v-2.432h24.96v-5.12L33.088-9.92Z" transform="translate(322.207 198.255)" fill=${
+    whiteLabel().helpText
+  }/>
   <rect id="Rectangle_3013" data-name="Rectangle 3013" width="40" height="39" transform="translate(320 168.999)" fill="none"/>
 </g>
 </svg>
-`
-const  Calendar_Previous = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" height="58.664" viewBox="0 0 24.319 58.664">
+`;
+const Calendar_Previous = `<svg xmlns="http://www.w3.org/2000/svg" width="24.319" height="58.664" viewBox="0 0 24.319 58.664">
 <path id="chevron-back" d="M31.272,7.875,12.938,33.721,31.272,59.568" transform="translate(-10.438 -4.389)" fill="none" stroke="#133c8b" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
 </svg>
 `;
