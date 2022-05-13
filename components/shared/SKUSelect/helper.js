@@ -34,3 +34,17 @@ export function getValueFromFormData(formData, item) {
 export function getQuestionTitle(questionType) {
   return 'Select SKU';
 }
+
+export function filterProducts(products, keyword) {
+  if (!keyword) return products;
+  const _products = {...products};
+  for (sectionName in _products) {
+    _products[sectionName] = _products[sectionName].filter(
+      product =>
+        product.label.includes(keyword) ||
+        product.barcode.includes(keyword) ||
+        product.product_code.includes(keyword),
+    );
+  }
+  return _products;
+}

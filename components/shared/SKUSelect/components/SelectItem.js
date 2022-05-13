@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
+
 import {Colors, Constants, Fonts} from '../../../../constants';
 
 import CCheckBox from '../../../common/CCheckBox';
@@ -17,10 +18,15 @@ const SelectItem = props => {
     }
   };
   return (
-    <View style={[styles.container, props.style]}>
-      <Text style={styles.title}>{label}</Text>
-      <CCheckBox value={isChecked} onValueChange={onValueChange} />
-    </View>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        onValueChange(!isChecked);
+      }}>
+      <View style={[styles.container, props.style]}>
+        <Text style={styles.title}>{label}</Text>
+        <CCheckBox value={isChecked} onValueChange={onValueChange} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

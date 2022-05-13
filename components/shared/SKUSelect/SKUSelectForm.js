@@ -1,10 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
 
 import {SubmitButton} from '../SubmitButton';
-import {constructFormData, getValueFromFormData} from './helper';
+import {
+  constructFormData,
+  filterProducts,
+  getValueFromFormData,
+} from './helper';
 import SearchBar from '../../SearchBar';
 import SectionList from './components/SectionList';
 import CardView from '../../common/CardView';
@@ -12,8 +16,9 @@ const SKUSelectForm = props => {
   const dispatch = useDispatch();
   const {item} = props;
   const [formData, setFormData] = useState({});
+  const [keyword, setKeyword] = useState('');
+  const products = useMemo(() => filterProducts(item.products, keyword));
   const data = item;
-  const {products} = data;
   useEffect(() => {
     const formData = constructFormData(item);
     setFormData(formData);
@@ -68,10 +73,14 @@ const SKUSelectForm = props => {
       setFormData(_formData);
     }
   };
+  const onSearch = keyword => {
+    setKeyword(keyword);
+  };
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar
         isFilter
+        onSearch={onSearch}
         suffixButtonIcon="Scan_Icon"
         onSuffixButtonPress={onCapture}
       />
