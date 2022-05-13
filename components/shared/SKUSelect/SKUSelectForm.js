@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {useDispatch} from 'react-redux';
+import {useKeyboard} from '@react-native-community/hooks';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
 
 import {SubmitButton} from '../SubmitButton';
@@ -17,8 +18,10 @@ const SKUSelectForm = props => {
   const {item} = props;
   const [formData, setFormData] = useState({});
   const [keyword, setKeyword] = useState('');
+  const keyboard = useKeyboard();
   const products = useMemo(() => filterProducts(item.products, keyword));
   const data = item;
+
   useEffect(() => {
     const formData = constructFormData(item);
     setFormData(formData);
@@ -87,7 +90,9 @@ const SKUSelectForm = props => {
       <CardView style={{marginHorizontal: 10}}>
         <ScrollView
           style={{
-            maxHeight: Values.deviceHeight * 0.6,
+            maxHeight: keyboard.keyboardShown
+              ? Values.deviceHeight * 0.2
+              : Values.deviceHeight * 0.6,
             alignSelf: 'stretch',
           }}>
           <SectionList
