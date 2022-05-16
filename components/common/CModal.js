@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.primaryBold,
     fontSize: Values.fontSize.medium,
     color: Colors.blackColor,
+    flex: 1,
   },
   titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     alignSelf: 'stretch',
     justifyContent: 'space-between',
     paddingHorizontal: 8,
