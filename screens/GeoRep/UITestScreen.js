@@ -17,7 +17,7 @@ export default function UITestScreen({screenProps}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <SKUScanContainer />
+        <SKUSelect item={dummyData} />
       </View>
     </SafeAreaView>
   );

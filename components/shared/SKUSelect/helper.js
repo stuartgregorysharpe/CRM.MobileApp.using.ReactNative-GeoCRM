@@ -16,6 +16,43 @@ export function constructFormData(data) {
   formData['selectedProductIds'] = selectedProductIds;
   return formData;
 }
+function getProductForBarcode(products, barcode) {
+  for (sectionName in products) {
+    const foundProduct = products[sectionName].find(
+      product => product.barcode == barcode,
+    );
+    if (foundProduct) return foundProduct;
+  }
+  return null;
+}
+
+export function getProductForId(products, productId) {
+  for (sectionName in products) {
+    const foundProduct = products[sectionName].find(
+      product => product.product_id == productId,
+    );
+    if (foundProduct) return foundProduct;
+  }
+  return null;
+}
+export function captureProductBarcode(formData, item, barcode) {
+  console.log('captured', barcode);
+  const capturedProduct = getProductForBarcode(item.products, barcode);
+  if (!capturedProduct) {
+    return formData;
+  }
+  const _formData = {...formData};
+  let _selectedProductIds = _formData.selectedProductIds;
+
+  const foundId = _selectedProductIds.find(
+    x => x == capturedProduct.product_id,
+  );
+  if (!foundId) {
+    _selectedProductIds.push(capturedProduct.product_id);
+  }
+  _formData.selectedProductIds = _selectedProductIds;
+  return _formData;
+}
 
 export function getValueFromFormData(formData, item) {
   const answerData = {

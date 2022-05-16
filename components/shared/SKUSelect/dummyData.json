@@ -18,13 +18,13 @@
             {
                 "product_id" : "1",
                 "label" : "Ultra Mel Custard Cinnamon 10X1Lt",
-                "barcode" : "213223332313",
+                "barcode" : "0113213332315",
                 "product_code" : "PC424AB3343"
             },
             {
                 "product_id" : "2",
                 "label" : "Ultra Mel Custard Vanilla 10X500Ml",
-                "barcode" : "213223332314",
+                "barcode" : "0213223331725",
                 "product_code" : "PC424AB3344"
             },
             {
@@ -75,7 +75,7 @@
                 "product_id" : "11",
                 "label" : "Ultra Mel Custard Vanilla 10X1Lt",
                 "barcode" : "213223332326",
-                "product_code" : "PC424AB3326",
+                "product_code" : "PC424AB3326"
             },
             {
                 "product_id" : "12",

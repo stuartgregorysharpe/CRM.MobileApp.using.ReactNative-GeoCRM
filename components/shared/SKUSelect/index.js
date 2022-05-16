@@ -6,6 +6,7 @@ import SKUSelectFormModal from './modals/SKUSelectFormModal';
 import {getQuestionTitle} from './helper';
 const SKUSelect = props => {
   const {item, questionType} = props;
+
   if (!item) return null;
   const skuSelectFormModalRef = useRef();
   const onOpenSKUCountModal = () => {

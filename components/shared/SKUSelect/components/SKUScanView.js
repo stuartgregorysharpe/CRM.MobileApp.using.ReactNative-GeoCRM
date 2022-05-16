@@ -1,14 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
 import LastScanResultView from './LastScanResultView';
-import {Colors} from '../../../../constants';
+import {Colors, Constants} from '../../../../constants';
 
 const SKUScanView = props => {
+  const totalItemCount = props.totalItemCount || 0;
+  const lastScanedQrCode = props.lastScanedQrCode;
   const onSuccess = e => {
     const {data} = e;
-    console.log('data', data);
+    onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
+  };
+  const onButtonAction = data => {
+    if (props.onButtonAction) {
+      props.onButtonAction(data);
+    }
   };
   const renderCustomerMarker = () => {
     return (
@@ -79,14 +85,17 @@ const SKUScanView = props => {
     <View style={[styles.container, props.style]}>
       <QRCodeScanner
         onRead={onSuccess}
-        flashMode={RNCamera.Constants.FlashMode.torch}
+        reactivate={true}
         customMarker={renderCustomerMarker()}
         showMarker
         bottomContent={
           <LastScanResultView
-            totalItemCount={4}
-            LastScanResultView={null}
+            totalItemCount={totalItemCount}
+            lastScanedQrCode={lastScanedQrCode}
             style={{marginBottom: 32}}
+            onSubmit={() =>
+              onButtonAction({type: Constants.actionType.ACTION_DONE})
+            }
           />
         }
       />

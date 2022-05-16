@@ -1,11 +1,12 @@
-import React, {useState, useEffect, useMemo} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
+import {View, StyleSheet, ScrollView, Keyboard} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {useKeyboard} from '@react-native-community/hooks';
+
 import {Colors, Constants, Fonts, Values} from '../../../constants';
 
 import {SubmitButton} from '../SubmitButton';
 import {
+  captureProductBarcode,
   constructFormData,
   filterProducts,
   getValueFromFormData,
@@ -13,15 +14,36 @@ import {
 import SearchBar from '../../SearchBar';
 import SectionList from './components/SectionList';
 import CardView from '../../common/CardView';
+import SKUCaptureModal from './modals/SKUCaptureModal';
 const SKUSelectForm = props => {
   const dispatch = useDispatch();
   const {item} = props;
   const [formData, setFormData] = useState({});
   const [keyword, setKeyword] = useState('');
-  const keyboard = useKeyboard();
+  const skuCaptureModalRef = useRef(null);
   const products = useMemo(() => filterProducts(item.products, keyword));
   const data = item;
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   useEffect(() => {
     const formData = constructFormData(item);
     setFormData(formData);
@@ -35,7 +57,19 @@ const SKUSelectForm = props => {
       });
     }
   };
-  const onCapture = () => {};
+  const onCapture = () => {
+    if (skuCaptureModalRef) {
+      skuCaptureModalRef.current.showModal();
+    }
+  };
+  const onCaptureAction = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CAPTURE) {
+      const _formData = captureProductBarcode(formData, item, value);
+      if (_formData) {
+        setFormData(_formData);
+      }
+    }
+  };
   let {selectedProductIds} = formData;
   const onItemAction = ({type, item, sectionName}) => {
     if (type == Constants.actionType.ACTION_CHECK) {
@@ -90,7 +124,7 @@ const SKUSelectForm = props => {
       <CardView style={{marginHorizontal: 10}}>
         <ScrollView
           style={{
-            maxHeight: keyboard.keyboardShown
+            maxHeight: isKeyboardVisible
               ? Values.deviceHeight * 0.2
               : Values.deviceHeight * 0.6,
             alignSelf: 'stretch',
@@ -109,6 +143,12 @@ const SKUSelectForm = props => {
         onSubmit={() => {
           onSubmit();
         }}
+      />
+      <SKUCaptureModal
+        ref={skuCaptureModalRef}
+        item={item}
+        formData={formData}
+        onButtonAction={onCaptureAction}
       />
     </View>
   );
