@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import NumberCounter from './NumberCounter';

@@ -1,24 +1,19 @@
 import React, {useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import BaseForm from '../BaseForm';
-import SKUCountCompletedView from './SKUCompletedView';
 import QuestionButton from '../QuestionButton';
-import SKUCountFormModal from './modals/SKUCountFormModal';
+import SKUSelectFormModal from './modals/SKUSelectFormModal';
 import {getQuestionTitle} from './helper';
-const SKUCount = props => {
+const SKUSelect = props => {
   const {item, questionType} = props;
+
   if (!item) return null;
-  const skuCountFormModalRef = useRef();
-  const isCompleted =
-    item.completed_data != false && item.completed_data != null;
+  const skuSelectFormModalRef = useRef();
   const onOpenSKUCountModal = () => {
-    skuCountFormModalRef.current.showModal();
+    skuSelectFormModalRef.current.showModal();
   };
 
-  const renderContent = formCompleted => {
-    if (formCompleted) {
-      return <SKUCountCompletedView item={item} />;
-    }
+  const renderContent = () => {
     return (
       <QuestionButton
         title={getQuestionTitle(questionType)}
@@ -32,11 +27,11 @@ const SKUCount = props => {
       item={item}
       style={[styles.container, props.style]}
       onItemAction={props.onFormAction}>
-      {renderContent(isCompleted)}
-      <SKUCountFormModal
+      {renderContent()}
+      <SKUSelectFormModal
         item={item}
         questionType={questionType}
-        ref={skuCountFormModalRef}
+        ref={skuSelectFormModalRef}
         onButtonAction={props.onFormAction}
       />
     </BaseForm>
@@ -48,4 +43,4 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
 });
-export default SKUCount;
+export default SKUSelect;

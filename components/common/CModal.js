@@ -22,6 +22,7 @@ const CModal = React.forwardRef((props, ref) => {
   const _modalType = modalType || Constants.modalType.MODAL_TYPE_CENTER;
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
+  const isFullModal = _modalType == Constants.modalType.MODAL_TYPE_FULL;
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);
@@ -47,11 +48,12 @@ const CModal = React.forwardRef((props, ref) => {
   };
   return (
     <View style={[props.style]}>
-      <Modal transparent visible={isVisible}>
+      <Modal transparent visible={isVisible} onRequestClose={onClose}>
         <View
           style={[
             isCenterModal && styles.dim,
             isBottomModal && styles.bottomModalDim,
+            isFullModal && styles.fullModalDim,
           ]}>
           {closableWithOutsideTouch && (
             <TouchableOpacity
@@ -71,9 +73,11 @@ const CModal = React.forwardRef((props, ref) => {
             style={[
               isCenterModal && styles.modalContainer,
               isBottomModal && styles.bottomModalContainer,
+              isFullModal && styles.fullModalContainer,
             ]}>
             <View style={styles.bodyContainer}>
-              <View style={styles.modalHandler} />
+              {!isFullModal && <View style={styles.modalHandler} />}
+
               {!hideClose && (
                 <TouchableOpacity
                   style={styles.closeIconContainer}
@@ -133,6 +137,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  fullModalDim: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: Colors.bgColor,
+  },
   bottomModalContainer: {
     position: 'absolute',
     width: '100%',
@@ -142,14 +152,19 @@ const styles = StyleSheet.create({
     zIndex: 500,
     backgroundColor: Colors.bgColor,
   },
+  fullModalContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
   title: {
     fontFamily: Fonts.primaryBold,
     fontSize: Values.fontSize.medium,
     color: Colors.blackColor,
+    flex: 1,
   },
   titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     alignSelf: 'stretch',
     justifyContent: 'space-between',
     paddingHorizontal: 8,

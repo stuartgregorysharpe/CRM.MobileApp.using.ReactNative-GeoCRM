@@ -147,7 +147,7 @@ const SKUCountForm = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
   },
   text: {
     fontFamily: Fonts.primaryMedium,

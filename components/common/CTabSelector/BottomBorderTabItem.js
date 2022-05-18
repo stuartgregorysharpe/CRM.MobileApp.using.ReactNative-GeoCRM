@@ -1,13 +1,7 @@
 import React from 'react';
 import type {Node} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Image,
-} from 'react-native';
-import {Images, Colors, Fonts, Values} from '../../../constants';
+import {StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
+import {Fonts, Values} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 
 const BottomBorderTabItem: () => Node = props => {
