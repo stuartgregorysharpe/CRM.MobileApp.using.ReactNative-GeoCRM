@@ -194,7 +194,7 @@ export const FormQuestions = props => {
     onValueChangedSelectionView(key, index, signature);
     setIsSign(false);
   };
-  
+
   const closeSignView = () => {
     setIsSign(false);
   };
@@ -257,6 +257,22 @@ export const FormQuestions = props => {
               });
               j = j + 1;
             });
+          }
+        } else if (
+          item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT ||
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
+          item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
+        ) {
+          if (value && value.form_answers_array) {
+            form_answers.push(
+              value.form_answers_array.map(itemValue => {
+                return {
+                  ...itemValue,
+                  key: `form_answers[${index}]` + itemValue.key,
+                };
+              }),
+            );
           }
         } else {
           form_answers.push({
@@ -560,6 +576,7 @@ export const FormQuestions = props => {
           key={'sku_self_share_form' + index}
           questionType={item.question_type}
           item={item}
+          formIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
               onValueChangedSelectionView(key, index, value);
@@ -578,6 +595,7 @@ export const FormQuestions = props => {
           key={'sku_select_form' + index}
           questionType={item.question_type}
           item={item}
+          formIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
               onValueChangedSelectionView(key, index, value);
