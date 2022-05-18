@@ -1,11 +1,7 @@
 import React, {useEffect} from 'react';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
-import SKUSelect from '../../components/shared/SKUSelect';
-import LastScanResultView from '../../components/shared/SKUSelect/components/LastScanResultView';
-import SKUScanContainer from '../../components/shared/SKUSelect/components/SKUScanView';
-import dummyData from '../../components/shared/SKUSelect/dummyData.json';
-import SKUSelectForm from '../../components/shared/SKUSelect/SKUSelectForm';
-import {Constants} from '../../constants';
+import ActionItemsContainer from './CRM/action_items/ActionItemsContainer';
+
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
     if (screenProps) {
@@ -17,7 +13,7 @@ export default function UITestScreen({screenProps}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <SKUSelect item={dummyData} />
+        <ActionItemsContainer locationId={'1358'} />
       </View>
     </SafeAreaView>
   );
