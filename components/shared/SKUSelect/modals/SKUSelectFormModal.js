@@ -1,11 +1,10 @@
 import React from 'react';
 import {Constants} from '../../../../constants';
 import CModal from '../../../common/CModal';
-import {getQuestionTitle} from '../helper';
-import SKUCountForm from '../SKUCountForm';
+import SKUSelectForm from '../SKUSelectForm';
 
-const SKUCountFormModal = React.forwardRef((props, ref) => {
-  const {questionType} = props;
+const SKUSelectFormModal = React.forwardRef((props, ref) => {
+  const {questionType, item} = props;
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -14,21 +13,20 @@ const SKUCountFormModal = React.forwardRef((props, ref) => {
       ref.current.hideModal();
     }
   };
-  const {item} = props;
   const title = item.question_text;
   return (
     <CModal
       ref={ref}
       title={title}
-      closableWithOutsideTouch
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+      closableWithOutsideTouch
       onClear={() => {
         onButtonAction({
           type: Constants.actionType.ACTION_FORM_CLEAR,
         });
       }}
       {...props}>
-      <SKUCountForm
+      <SKUSelectForm
         {...props}
         questionType={questionType}
         style={{marginTop: 14}}
@@ -37,4 +35,4 @@ const SKUCountFormModal = React.forwardRef((props, ref) => {
     </CModal>
   );
 });
-export default SKUCountFormModal;
+export default SKUSelectFormModal;

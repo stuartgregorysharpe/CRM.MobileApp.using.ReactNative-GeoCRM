@@ -1,8 +1,10 @@
 import React, {useEffect} from 'react';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
-import SKUCount from '../../components/shared/SKUCount';
-import SKUCountForm from '../../components/shared/SKUCount/SKUCountForm';
-import dummyData from '../../components/shared/SKUCount/dummyData.json';
+import SKUSelect from '../../components/shared/SKUSelect';
+import LastScanResultView from '../../components/shared/SKUSelect/components/LastScanResultView';
+import SKUScanContainer from '../../components/shared/SKUSelect/components/SKUScanView';
+import dummyData from '../../components/shared/SKUSelect/dummyData.json';
+import SKUSelectForm from '../../components/shared/SKUSelect/SKUSelectForm';
 import {Constants} from '../../constants';
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
@@ -15,15 +17,7 @@ export default function UITestScreen({screenProps}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <SKUCount
-          key={'sku_count_form'}
-          questionType={Constants.questionType.FORM_TYPE_SKU_COUNT}
-          item={dummyData}
-          onFormAction={({type, value}) => {
-            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
-            }
-          }}
-        />
+        <SKUSelect item={dummyData} />
       </View>
     </SafeAreaView>
   );

@@ -1,16 +1,6 @@
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  Image,
-  View,
-  TouchableWithoutFeedback,
-  Text,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
-import {Colors, Fonts, Values} from '../../../constants';
+import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import BottomBorderTabItem from './BottomBorderTabItem';
-import {boxShadow, style} from '../../../constants/Styles';
 import SvgIcon from '../../SvgIcon';
 export class CTabSelector extends Component {
   constructor(props) {
@@ -26,7 +16,6 @@ export class CTabSelector extends Component {
   };
   renderTabItem = (item, index, totalCount) => {
     let {selectedIndex} = this.props;
-    let titleText = item.title;
     const isPicked = index === selectedIndex;
     const isLast = index === totalCount - 1;
     if (this.props.renderTabItem) {

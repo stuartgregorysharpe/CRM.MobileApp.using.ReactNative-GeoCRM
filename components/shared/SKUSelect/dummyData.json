@@ -1,0 +1,95 @@
+{
+    "form_question_id": "25",
+    "question_group": "Question Group 3",
+    "question_group_id": "3",
+    "question_type": "sku_select",
+    "question_text": "Select Products",
+    "guide_info": {
+        "title": "Question Guide 21",
+        "image": "",
+        "text": "Question Guide 21 Text"
+    },
+    "product_group" : [
+        "Hero",
+        "NPD"
+    ],
+    "products" : {
+        "Hero" : [
+            {
+                "product_id" : "1",
+                "label" : "Ultra Mel Custard Cinnamon 10X1Lt",
+                "barcode" : "0113213332315",
+                "product_code" : "PC424AB3343"
+            },
+            {
+                "product_id" : "2",
+                "label" : "Ultra Mel Custard Vanilla 10X500Ml",
+                "barcode" : "0213223331725",
+                "product_code" : "PC424AB3344"
+            },
+            {
+                "product_id" : "3",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332315",
+                "product_code" : "PC424AB3345"
+            },
+            {
+                "product_id" : "4",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332316",
+                "product_code" : "PC424AB3346"
+            },
+            {
+                "product_id" : "5",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332317",
+                "product_code" : "PC424AB3347"
+            },
+            {
+                "product_id" : "7",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332318",
+                "product_code" : "PC424AB3348"
+            }
+        ],
+        "NPD" : [
+            {
+                "product_id" : "8",
+                "label" : "Ultra Mel Custard Cinnamon 10X1Lt",
+                "barcode" : "213223332323",
+                "product_code" : "PC424AB3323"
+            },
+            {
+                "product_id" : "9",
+                "label" : "Ultra Mel Custard Vanilla 10X500Ml",
+                "barcode" : "213223332324",
+                "product_code" : "PC424AB3324"
+            },
+            {
+                "product_id" : "10",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332325",
+                "product_code" : "PC424AB3325"
+            },
+            {
+                "product_id" : "11",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332326",
+                "product_code" : "PC424AB3326"
+            },
+            {
+                "product_id" : "12",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332327",
+                "product_code" : "PC424AB3327"
+            },
+            {
+                "product_id" : "13",
+                "label" : "Ultra Mel Custard Vanilla 10X1Lt",
+                "barcode" : "213223332328",
+                "product_code" : "PC424AB3328"
+            }
+
+        ]
+    }
+}
