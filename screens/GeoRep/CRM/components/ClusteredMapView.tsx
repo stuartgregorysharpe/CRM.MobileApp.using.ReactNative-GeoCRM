@@ -74,6 +74,8 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       const rawData = []
       const otherChildren = []
 
+      let isMount = true;
+
       console.log("%%%%% refresh $$$$$$$$$" ,propsChildren);
       
       if (!clusteringEnabled) {
@@ -99,7 +101,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         console.log("child count ", otherChildren.length);
         previousCount = propsChildren.length;
         
-        if(scrollEnabled){
+        if(scrollEnabled && isMount){
           const superCluster = new SuperCluster({
             radius,
             maxZoom,
@@ -125,6 +127,10 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           updateChildren(otherChildren)
         }                                                  
 
+        return () => {
+          isMount = false;
+        };
+        
     }, [propsChildren, clusteringEnabled])
 
     useEffect(() => {      

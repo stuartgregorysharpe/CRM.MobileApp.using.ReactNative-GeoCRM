@@ -18,7 +18,8 @@ export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction 
                     <View style={{flex:1}}>
                         <Text style={{                        
                             fontFamily: Fonts.primaryMedium,
-                            fontSize: 11,
+                            fontSize: 9.8,
+                            letterSpacing:0,
                             color: whiteLabel().helpText, alignContent: 'center', alignItems: 'baseline'
                         }}> {actionTitle} </Text>
                     </View>

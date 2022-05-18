@@ -12,7 +12,7 @@ import {
   CHANGE_LOGIN_STATUS
 } from '../actions/actionTypes';
 import { setToken } from '../constants/Storage';
-import { white } from 'react-native-paper/lib/typescript/styles/colors';
+
 
 const lists = {
   0: [
@@ -87,6 +87,12 @@ const lists = {
       name: "Pipeline",
       navigator: "RepSalesPipeline",
       navOrder: "sales_pipeline"
+    },
+    {
+      icon: "Stock",
+      name: "Stock",
+      navigator: "Stock",
+      navOrder: "stock_module"
     },
     // {
     //   icon: "Support_Agent",
@@ -231,6 +237,7 @@ export default function Profile() {
   const [ componentListTwo, setComponentListTwo ] = useState([]);
   const [ componentListThree, setComponentListThree ] = useState([]);
 
+  
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
       setComponentListOne([

@@ -54,6 +54,21 @@ export const style = StyleSheet.create({
 
   },
   
+  scrollTabCard: {
+      
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingTop: 12,
+      paddingBottom: 10,
+      borderRadius: 7,
+      backgroundColor: '#fff',
+      marginBottom: 8,
+      shadowColor: '#808080',
+      shadowOffset: { width: 0, height: 5 },
+      shadowOpacity: Platform.OS == 'ios' ? 0.1 : 0.8,
+      elevation: 1,
+  },
+
   card: {    
     marginBottom: 10,
     backgroundColor: '#fff',
@@ -154,7 +169,7 @@ export const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',        
     paddingTop: 12,
-    paddingBottom: 12,        
+    paddingBottom: 12,  
     //marginBottom: 8
   },
   tabText: {
@@ -164,9 +179,9 @@ export const style = StyleSheet.create({
     borderBottomColor: Colors.disabledColor,
     //borderBottomWidth: 2,
     paddingBottom: 2,
-    paddingHorizontal: 10,
-    marginLeft:10,
-    marginRight:10
+    paddingHorizontal: 5,
+    marginLeft:5,
+    marginRight:5
   },
   tabActiveText: {
       fontSize:16,
@@ -174,9 +189,9 @@ export const style = StyleSheet.create({
       fontFamily: Fonts.secondaryBold,
       borderBottomColor: whiteLabel().activeTabUnderline,      
       paddingBottom: 2,
-      paddingHorizontal: 10,
-      marginLeft:10,
-      marginRight:10
+      paddingHorizontal: 5,
+      marginLeft:5,
+      marginRight:5
   },
   
 })

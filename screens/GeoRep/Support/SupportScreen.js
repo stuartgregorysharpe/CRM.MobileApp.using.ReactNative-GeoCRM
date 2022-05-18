@@ -19,6 +19,7 @@ import {Ticket} from './tabs/Ticket';
 import Faq from './tabs/Faq';
 import {WHATS_APP_LINK} from '../../../constants/Helper';
 
+
 export default function SupportScreen(props) {
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [tabIndex, setTabIndex] = useState(1);
