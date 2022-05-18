@@ -30,14 +30,13 @@ export default function ActionItems(props) {
                         onPress={onModalClosed}>
                       <View style={styles.topContainer}></View>
                     </TouchableWithoutFeedback>
-                    
+
                     <View style={[style.modalView,  styles.modalContainer , {height: Dimensions.get("screen").height -  screenMargin }]}>
                         
                         <TouchableOpacity onPress={() =>{onModalClosed()}}>
                             <Divider></Divider>                        
                         </TouchableOpacity>
                         
-
                         <View style={{marginTop:10, marginHorizontal:10}}>
                             <ScrollTab tabs={tabs} onTabSelection={(item) => { setTabIndex(item.id)}} ></ScrollTab> 
                         </View>

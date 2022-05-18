@@ -88,7 +88,7 @@ export default function Actions(props) {
             });
             setStockLists(tmp);
         }else{  
-            console.log("ddd");
+            
             setStockLists([...originStockLists]);
         }        
     }

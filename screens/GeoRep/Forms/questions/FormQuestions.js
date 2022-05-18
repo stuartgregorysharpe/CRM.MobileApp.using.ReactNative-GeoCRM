@@ -1,12 +1,10 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   Text,
-  View,
-  Dimensions,
+  View,  
   StyleSheet,
   TouchableOpacity,
-  Image,
-  Alert,
+  Image,  
   Platform,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -48,8 +46,12 @@ import UploadFileView from './partial/UploadFileView';
 import {Constants} from '../../../../constants';
 
 export const FormQuestions = props => {
+
   const form = props.route.params.data;
+  console.log("changed form", form);
   const location_id = props.route.params.location_id;
+  const pageType = props.route.params.pageType;
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [formQuestions, setFormQuestions] = useState([]);
   const [modaVisible, setModalVisible] = useState(false);
@@ -72,7 +74,9 @@ export const FormQuestions = props => {
   useEffect(() => {
     refreshHeader();
     _callFormQuestions();
-  }, []);
+  }, [form]);
+
+
 
   const showSelectionView = useCallback(() => {
     setModalVisible(true);
@@ -84,6 +88,7 @@ export const FormQuestions = props => {
         return (
           <TouchableOpacity
             onPress={() => {
+
               if (isDateTimeView) {
                 closeDateTime();
               } else if (modaVisible) {
@@ -91,9 +96,15 @@ export const FormQuestions = props => {
               } else if (isSign) {
                 closeSignView();
               } else {
-                if (props.navigation.canGoBack()) {
-                  props.navigation.goBack();
+                if(pageType === "CRM"){
+                  props.navigation.navigate('CRM', { screen: 'Root' });
+                }else{
+                  if (props.navigation.canGoBack()) {
+                    console.log("press back can go back")
+                    props.navigation.goBack();
+                  }
                 }
+                
               }
             }}>
             <View style={style.headerTitleContainerStyle}>
@@ -117,12 +128,12 @@ export const FormQuestions = props => {
   };
 
   const _callFormQuestions = () => {
+    console.log("form id", form.form_id);
     let param = {
       form_id: form.form_id,
     };
     getApiRequest('forms/forms-questions', param)
-      .then(res => {
-        console.log('origin question', res.questions);
+      .then(res => {        
         groupByQuestions(res.questions);
       })
       .catch(e => {
@@ -215,10 +226,9 @@ export const FormQuestions = props => {
     var flag = true;
     formQuestions.forEach(element => {
       element.questions.forEach(item => {
-        if (
-          item.rule_compulsory === '1' &&
-          (item.value === null || item.value === '' || item.value === undefined)
-        ) {
+        console.log("item.questionType",item.questionType)
+        if ( item.rule_compulsory === '1' 
+            && (item.value === null || item.value === '' || item.value === undefined) ) {
           flag = false;
         }
       });
@@ -234,6 +244,7 @@ export const FormQuestions = props => {
       );
       return;
     }
+
     var form_answers = [];
     var index = 0;
     formQuestions.forEach(element => {
@@ -243,10 +254,8 @@ export const FormQuestions = props => {
           key: `form_answers[${index}][form_question_id]`,
           value: item.form_question_id,
         });
-        if (
-          item.question_type === 'multiple' ||
-          item.question_type === 'multi_select'
-        ) {
+
+        if ( item.question_type === 'multiple' || item.question_type === 'multi_select' ) {
           if (item.value && item.value.length > 0) {
             var j = 0;
             item.value.forEach(subElement => {
@@ -260,11 +269,7 @@ export const FormQuestions = props => {
         } else {
           form_answers.push({
             key: `form_answers[${index}][answer]`,
-            value:
-              item.question_type === 'take_photo' ||
-              item.question_type === 'upload_file'
-                ? ''
-                : value,
+            value: item.question_type === 'take_photo' || item.question_type === 'upload_file' ? '' : value,
           });
         }
         index = index + 1;
@@ -290,15 +295,14 @@ export const FormQuestions = props => {
           if (paths != null && paths != '' && paths.length > 0) {
             index = 0;
             for (const path of paths) {
-              if (item.question_type === 'upload_file') {
-                console.log('upload file', path);
+              if (item.question_type === 'upload_file') {                
                 files.push({
                   key: `File[${item.form_question_id}][${index}]`,
                   value: path,
                   type: 'upload_file',
                 });
               } else {
-                console.log('no upload file', path);
+                
                 files.push({
                   key: `File[${item.form_question_id}][${index}]`,
                   value: path,
@@ -323,7 +327,7 @@ export const FormQuestions = props => {
       }
     });
     files.map(item => {
-      console.log('post data item', item);
+      
       if (item.key != undefined && item.value != undefined) {
         if (item.type === 'upload_file') {
           postData.append(item.key, {
@@ -332,7 +336,7 @@ export const FormQuestions = props => {
             name: item.value.name,
           });
         } else {
-          console.log('post data key', item.key);
+          
           var words = item.value.split('/');
           var ext = words[words.length - 1].split('.');
           postData.append(item.key, {
@@ -361,21 +365,27 @@ export const FormQuestions = props => {
 
     postApiRequestMultipart('forms/forms-submission', postData)
       .then(res => {
-        console.log('res', res);
+        
         dispatch(
           showNotification({
             type: 'success',
             message: res.message,
             buttonText: 'Okay',
             buttonAction: () => {
+              
               clearAll();
               dispatch(clearNotification());
+              console.log("page type xxx", pageType)
+              if(pageType === "CRM"){
+                props.navigation.navigate('CRM', { screen: 'Root' });
+              }              
+
             },
           }),
         );
       })
       .catch(e => {
-        console.log('Err', JSON.stringify(e));
+        
       });
   };
 
@@ -432,8 +442,7 @@ export const FormQuestions = props => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
-            console.log('cliccked item', item.options);
-            console.log('selected val', item.value);
+            
             setMode('single');
             setOptions(item.options);
             setSelectedOptions(item.value);
@@ -451,8 +460,7 @@ export const FormQuestions = props => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
-            console.log(' mt cliccked item', item.options);
-            console.log(' mtselected val', item.value);
+            
             setMode('multiple');
             setOptions(item.options);
             setSelectedOptions(item.value);
@@ -502,7 +510,7 @@ export const FormQuestions = props => {
             setKey(key);
             setIndex(index);
             setSignature(item.value);
-            console.log('signature clicked');
+            
             setIsSign(true);
           }}></SignatureForm>
       );
@@ -592,11 +600,11 @@ export const FormQuestions = props => {
         signature={signature}
         onOK={handleSignature}
         onClear={() => {
-          console.log('------- on clear called ---------');
+          
           onValueChangedSelectionView(key, index, null);
         }}
         onClose={() => {
-          console.log('------- on closed ---------');
+          
           onValueChangedSelectionView(key, index, null);
           closeSignView();
         }}></Sign>
@@ -607,7 +615,7 @@ export const FormQuestions = props => {
         mode={mode}
         selectedVals={selectedOptions}
         onValueChanged={value => {
-          console.log('onValueChanged', value);
+          
           onValueChangedSelectionView(key, index, value);
         }}
         onClose={() => {

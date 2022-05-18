@@ -305,11 +305,7 @@ export const NextPrev = forwardRef((props, ref) => {
           loopLists[getCameraPrevPosition(currentPosition)].name,
         );
       } else if (pageType.name === 'search-lists') {
-        console.log('ddd', currentPosition);
-        console.log('currentLoopLists', currentLoopLists);
-
-        console.log('ddd', currentLoopLists.length - 1);
-        console.log('locationInfo', locationInfo);
+                        
         if (currentPosition === currentLoopLists.length - 1) {
           openNewLocationInfo(locationInfo.next.location_id);
         } else if (currentPosition < currentLoopLists.length - 1) {
