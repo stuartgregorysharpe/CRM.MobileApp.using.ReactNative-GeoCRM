@@ -1,17 +1,6 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
-
-import { 
-  CHANGE_LOGIN_STATUS, 
-  CHANGE_USER_INFO, 
-  CHANGE_PROJECT_PAYLOAD,
-  CHANGE_ACCESS_TOKEN,
-  FILTERS,
-  MAP_FILTERS
-} from "./actionTypes";
 import { baseURL } from "../constants";
 import { getBaseUrl, getFilterData, getToken, setToken, storeUserData } from "../constants/Storage";
-
 
 export const checkEmail = async(email) => {    
   return new Promise(function(resolve, reject) {          

@@ -5,8 +5,6 @@ import Fonts from '../../constants/Fonts';
 import { style } from '../../constants/Styles';
 import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Button } from './Button';
-import { color } from 'react-native-reanimated';
 
 export const DateForm = ({item , onPress ,onTouchStart}) => {
     const [text,setText] = useState("");
@@ -36,8 +34,7 @@ export const DateForm = ({item , onPress ,onTouchStart}) => {
                             <Text style={[styles.textStyle, item.value  !== null ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Select Date'}</Text>
                             {
                                 item.value !== null ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Question_Calendar" width='20px' height='20px' />
-                            }
-                            
+                            }                            
                         </View> 
                     </TouchableOpacity>
                 </View>

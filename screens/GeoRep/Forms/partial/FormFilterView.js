@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions , Modal, TouchableWithoutFeedback } from 'react-native';
 import { Title , Button , Portal } from 'react-native-paper';
-import Colors from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Divider from '../../../../components/Divider';
 import FilterButton from '../../../../components/FilterButton';
@@ -19,8 +19,7 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
     const [filters, setFilters] = useState({ form_type : [] })
 
     useEffect(() => {
-        _callFormFilters();
-        //initFilter();
+        _callFormFilters();        
     },[]);
 
     const _callFormFilters = () =>{        
@@ -32,12 +31,7 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
             console.log(e);
         });        
     }
-
-    const initFilter = async() => {
-        var savedFilters = await getFilterData("@form_filter");
-        setFilters(savedFilters);
-    }
-    
+   
     return (              
         <Modal             
             animationType="fade"
@@ -80,15 +74,13 @@ export const FormFilterView = ({ visible,  onModalClose, close , apply , onItemC
                                 }
                                             
                                 <Button 
-                                    mode="contained"  color={Colors.primaryColor}  uppercase={false} 
+                                    mode="contained"  color={whiteLabel().actionFullButtonBackground}  uppercase={false} 
                                     labelStyle={{
                                         fontSize: 18, 
                                         fontFamily: Fonts.secondaryBold, 
                                         letterSpacing: 0.2
                                     }}
-                                    onPress={ async () => {
-                                        // console.log("fave form filter", filters);
-                                        // await storeFilterData( "@form_filter", filters);
+                                    onPress={ async () => {                                        
                                         close();
                                         apply();
                                     }}>

@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { Fragment, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import HomeScreen from '../screens/GeoRep/HomeScreen';
+import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsScreen';
@@ -43,7 +43,6 @@ import {
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
   CHANGE_LIBRARY_CHILD_STATUS,
-  BACK_ICON_STATUS,
   LOCATION_CONFIRM_MODAL_VISIBLE,
   CHANGE_BOTTOM_TAB_ACTION
 } from '../actions/actionTypes';
@@ -62,6 +61,7 @@ import HeaderRightView from './Header/HeaderRightView';
 import Images from '../constants/Images';
 import { style } from '../constants/Styles';
 import FormsNavigator from '../screens/GeoRep/Forms/FormsNavigator';
+import Stock from '../screens/GeoRep/Stock/Stock';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -683,6 +683,41 @@ export default function RepBottomTabNavigator({navigation}) {
           },
         })}
       />}
+
+      {selectProject == 'geo_rep' && bottomListOne.includes('stock_module') && <BottomTab.Screen
+        name="Stock"
+        component={Stock}
+        options={{
+          title: 'Stock',
+          tabBarIcon: ({focused}) => (
+            <Fragment>
+              {!focused && <SvgIcon icon="Stock_Gray" width='20px' height='20px' />}
+              {focused && <SvgIcon icon="Stock" width='20px' height='20px' />}
+            </Fragment>
+          ),
+          headerRight: () => (
+            <HeaderRightView navigation={navigation} />
+          ),
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontFamily: 'Gilroy-Medium'
+          },
+          tabBarActiveTintColor: whiteLabel().activeIcon,
+        }}
+        listeners={({navigation}) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: "Stock"});
+              return;
+            }
+            navigation.navigate('Stock');
+            navigation.navigate("Stock", { locationInfo: null } );
+          },
+        })}
+      />}
+
 
       {/* Life Bottom Navigator */}
 

@@ -57,8 +57,7 @@ var specificLocationId = 0;
 
 export default function LocationSearchScreen(props) {
   const navigation = props.navigation;
-  const dispatch = useDispatch();
-  //const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+  const dispatch = useDispatch();  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(
     state => state.selection.searchFilters,
@@ -68,8 +67,7 @@ export default function LocationSearchScreen(props) {
   );
   const [orderLists, setOrderLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
-  const [showItem, setShowItem] = useState(savedShowItem);
-  console.log('DDD', savedShowItem);
+  const [showItem, setShowItem] = useState(savedShowItem);    
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState('');
   const locationId = useSelector(state => state.location.locationId.value);
@@ -276,9 +274,10 @@ export default function LocationSearchScreen(props) {
 
     getLocationSearchListsByPage(filterData, pageNumber, searchKey)
       .then(res => {
-        if (pageNumber === 0) {
+        //if (pageNumber === 0) {
           setIsLoading(false);
-        }
+        //}
+        
         console.log('result length', res.length);
         console.log('searchKey', searchKey);
         console.log('current searchKey', changedKey);

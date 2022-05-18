@@ -185,6 +185,7 @@ export const FormQuestions = props => {
     tmp[key].questions[index].value = datetime;
     setFormQuestions(tmp);
   };
+
   const closeDateTime = () => {
     setIsDateTimeView(false);
   };
@@ -193,6 +194,7 @@ export const FormQuestions = props => {
     onValueChangedSelectionView(key, index, signature);
     setIsSign(false);
   };
+  
   const closeSignView = () => {
     setIsSign(false);
   };

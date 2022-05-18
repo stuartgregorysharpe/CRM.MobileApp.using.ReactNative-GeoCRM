@@ -10,10 +10,9 @@ import {
 } from 'react-native';
 import Colors, {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import SvgIcon from '../SvgIcon';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+
 
 export const SubmitButton = ({title, onSubmit, style}) => {
   return (

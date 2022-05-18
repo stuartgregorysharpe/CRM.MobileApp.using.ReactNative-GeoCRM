@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
-import HomeScreen from '../screens/GeoRep/HomeScreen';
+import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
@@ -33,6 +33,7 @@ import LifeMessagesScreen from '../screens/GeoLife/MessagesScreen';
 import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
+import Stock from '../screens/GeoRep/Stock/Stock';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,10 +41,9 @@ export default function RepMoreScreen({navigation}) {
   const payload = useSelector(state => state.selection.payload);
   const visibleMore = useSelector(state => state.rep.visibleMore);
   const selectProject = useSelector(state => state.selection.selectProject);
-
   const [ componentListOne, setComponentListOne ] = useState([]);
   const [ componentListTwo, setComponentListTwo ] = useState([]);
-  const [ componentListThree, setComponentListThree ] = useState([]);
+  const [ componentListThree, setComponentListThree ] = useState([]);  
 
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
@@ -142,8 +142,7 @@ export default function RepMoreScreen({navigation}) {
         return;
       case 'CRMSalesPipeline':
         navigation.navigate("CRMSalesPipeline");
-        return;
-      
+        return;      
       case 'HomeLife':  
         navigation.navigate("HomeLife");
         return;
@@ -195,6 +194,11 @@ export default function RepMoreScreen({navigation}) {
       case 'WellBeing':
         navigation.navigate("WellBeing");
         return;
+      case 'Stock':
+        console.log("stock navigate")
+        navigation.navigate("Stock");
+        return;
+        
       default:
         return;
     }
@@ -282,6 +286,14 @@ export default function RepMoreScreen({navigation}) {
       >
         {props => <RepSalesPipelineScreen {...props} screenProps={navigation}  />}
       </Stack.Screen>}
+
+      {selectProject == 'geo_rep' && componentListOne.includes('stock_module') && <Stack.Screen
+        name="Stock"
+        options={{ header: () => null }}
+      >
+        {props => <Stock {...props} screenProps={navigation}  />}
+      </Stack.Screen>}
+
 
       {/* crm More Screen */}
 
