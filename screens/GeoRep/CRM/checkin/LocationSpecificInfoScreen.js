@@ -23,6 +23,8 @@ import { Notification } from '../../../../components/modal/Notification';
 import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItems from '../action_items/ActionItems';
+import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryModal';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LocationSpecificInfoScreen(props) {
   
@@ -41,6 +43,8 @@ export default function LocationSpecificInfoScreen(props) {
   const [isActivityComment, setIsActivityComment] =  useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isActionItems, setIsActionItems] = useState(false);
+  const [isCustomerSales, setIsCustomerSales ] = useState(false);
+  const navigationMain = useNavigation();
 
   const showLoopSlider = () => {
     
@@ -126,6 +130,9 @@ export default function LocationSpecificInfoScreen(props) {
     if(item.link === "actions_items"){
       setIsActionItems(true);
     }
+    if(item.link === "customer_sales"){
+      setIsCustomerSales(true);
+    }
 
   }
 
@@ -210,9 +217,16 @@ export default function LocationSpecificInfoScreen(props) {
         >
         </ActionItems>
       }
-      
 
-      
+      {
+        locationInfo != undefined && 
+        <CustomerSalesHistoryModal
+          locationId={locationInfo.location_id}
+          visible={isCustomerSales}
+          onModalClosed={() => setIsCustomerSales(false)}
+        >
+        </CustomerSalesHistoryModal>
+      }              
 
       { locationInfo && subSlideStatus && <TouchableOpacity
         activeOpacity={1}

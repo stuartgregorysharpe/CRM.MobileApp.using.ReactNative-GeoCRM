@@ -34,7 +34,7 @@ export const GuideInfoView = ({ visible, info, onModalClose }) => {
                                 {    
                                     info && info.image !== "" &&                                 
                                      <View style={{alignItems:'center'}}>                                         
-                                        <FastImage style={styles.imageContainer}  source={{uri:info.image}} />                            
+                                        <FastImage style={styles.imageContainer}  source={{uri:info.image}} />
                                      </View>
                                 }
                                 {

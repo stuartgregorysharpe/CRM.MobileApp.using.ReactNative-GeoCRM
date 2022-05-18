@@ -107,7 +107,7 @@ export const postApiRequestMultipart = async (route, postData) => {
     console.log("url", url);
     console.log("myforms", JSON.stringify(postData));      
     axios
-      .post(url, postData, {
+      .post(url, postData, { 
         headers: {
           Accept: 'application/json',
           'Content-Type': 'multipart/form-data',

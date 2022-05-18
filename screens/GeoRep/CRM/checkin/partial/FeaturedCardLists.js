@@ -23,7 +23,8 @@ export default function FeaturedCardLists(props) {
         const location_specific_pipeline = features.includes("location_specific_pipeline") ? true: false; 
         const history_and_comments = features.includes("history_and_comments") ? true: false; 
         const actions_items = features.includes("actions_items") ? true: false;
-    
+        const customer_sales_history_feature  = features.includes("customer_sales_history") ? true : false;
+            
         let featureCards = [];
         if (customer_and_contacts) {
           featureCards.push({
@@ -69,6 +70,14 @@ export default function FeaturedCardLists(props) {
             });
         }
 
+        if( customer_sales_history_feature ){
+          featureCards.push({
+            title: `Customer Sales`,
+            icon: 'Customer_Sales',
+            action: 'View customer sales history',
+            link : 'customer_sales'
+          });
+        }
         
 
         setFeatureCards([...featureCards]);

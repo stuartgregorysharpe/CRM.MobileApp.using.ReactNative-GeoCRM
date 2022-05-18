@@ -824,7 +824,7 @@ const styles = EStyleSheet.create(parse({
   plusButton: {
     position: 'absolute',
     right: 20,
-    bottom: 150,
+    bottom: 110,
   },
   pinKeyButton: {
     position: 'absolute',

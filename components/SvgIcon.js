@@ -1031,6 +1031,29 @@ const Action_Item = `<svg id="exclamation-triangle-fill" xmlns="http://www.w3.or
 </svg>
 `;
 
+const Customer_Sales = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+<g id="paid_black_24dp" transform="translate(0.104 0.104)">
+  <g id="Group_5351" data-name="Group 5351">
+    <rect id="Rectangle_3241" data-name="Rectangle 3241" width="50" height="50" transform="translate(-0.104 -0.104)" fill="none"/>
+  </g>
+  <g id="Group_5352" data-name="Group 5352" transform="translate(4.149 4.149)">
+    <path id="Path_5444" data-name="Path 5444" d="M22.747,2A20.747,20.747,0,1,0,43.494,22.747,20.755,20.755,0,0,0,22.747,2Zm0,37.345a16.6,16.6,0,1,1,16.6-16.6A16.62,16.62,0,0,1,22.747,39.345ZM24.594,20.88c-3.693-1.224-5.477-1.992-5.477-3.942,0-2.116,2.3-2.884,3.755-2.884a4.009,4.009,0,0,1,3.942,2.78l3.278-1.39a7.107,7.107,0,0,0-5.519-4.627V8.224H20.942v2.614a6.4,6.4,0,0,0-5.436,6.141c0,4.71,4.668,6.037,6.95,6.867,3.278,1.162,4.73,2.22,4.73,4.212,0,2.344-2.178,3.34-4.108,3.34-3.776,0-4.855-3.88-4.979-4.336l-3.444,1.39a8.375,8.375,0,0,0,6.266,6.141V37.27h3.631V34.7c1.079-.187,6.266-1.224,6.266-6.681C30.838,25.133,29.573,22.6,24.594,20.88Z" transform="translate(-2 -2)" fill="${actionIconBackground}"/>
+  </g>
+</g>
+</svg>
+`;
+
+const Drop_Up = `<svg xmlns="http://www.w3.org/2000/svg" width="65" height="66" viewBox="0 0 65 66">
+<g id="Group_5325" data-name="Group 5325" transform="translate(65 66.188) rotate(180)">
+  <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(0 0.188)" fill="none" stroke="${navIconInActive}" stroke-width="4">
+    <ellipse cx="32.5" cy="33" rx="32.5" ry="33" stroke="none"/>
+    <ellipse cx="32.5" cy="33" rx="30.5" ry="31" fill="none"/>
+  </g>
+  <path id="chevron-back-sharp" d="M9.981,0,0,9.981l9.981,9.981" transform="translate(22.313 38.287) rotate(-90)" fill="none" stroke="${navIconInActive}" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+</g>
+</svg>
+`;
+
 export default ({ icon, width = "100%", height = "100%", style = {} }) => (
   <Fragment>
     {icon == "Round_Btn_Default_Dark" && <SvgXml style={style} xml={Round_Btn_Default_Dark} width={width} height={height} />}
@@ -1147,6 +1170,8 @@ export default ({ icon, width = "100%", height = "100%", style = {} }) => (
       <SvgXml style={style} xml={Scan_Icon} width={width} height={height} />
     )}
     {icon == "Action_Item" && <SvgXml style={style} xml={Action_Item} width={width} height={height} />}
+    {icon == "Customer_Sales" && <SvgXml style={style} xml={Customer_Sales} width={width} height={height} />}
+    {icon == "Drop_Up" && <SvgXml style={style} xml={Drop_Up} width={width} height={height} />}
 
   </Fragment>
 );

@@ -274,9 +274,10 @@ export default function LocationSearchScreen(props) {
 
     getLocationSearchListsByPage(filterData, pageNumber, searchKey)
       .then(res => {
-        if (pageNumber === 0) {
+        //if (pageNumber === 0) {
           setIsLoading(false);
-        }
+        //}
+        
         console.log('result length', res.length);
         console.log('searchKey', searchKey);
         console.log('current searchKey', changedKey);

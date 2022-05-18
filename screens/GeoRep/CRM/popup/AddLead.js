@@ -18,6 +18,7 @@ import Divider from '../../../../components/Divider';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {SLIDE_STATUS} from '../../../../actions/actionTypes';
 import {
+  getAddLeadFormsList,
   getLeadFields,
   postLeadFields,
 } from '../../../../actions/location.action';
@@ -34,6 +35,7 @@ import {Notification} from '../../../../components/modal/Notification';
 import {checkFeatureIncludeParam} from '../../../../constants/Storage';
 import CustomInput from '../../../../components/common/CustomInput';
 import AddLeadForms from './AddLeadForms';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddLead({screenProps, onClose}) {
   const dispatch = useDispatch();
@@ -137,6 +139,7 @@ export default function AddLead({screenProps, onClose}) {
 
     postLeadFields(params)
       .then(res => {
+        AsyncStorage.removeItem('submitted_forms');
         setLocationId(res);
         setMessage('Added lead successfully');
         setIsSuccess(true);
@@ -153,6 +156,8 @@ export default function AddLead({screenProps, onClose}) {
       setIsCustomerAndContacts(
         await checkFeatureIncludeParam('customer_and_contacts'),
       );
+      setIsAddLeadFormsEnabled(await checkFeatureIncludeParam("add_lead_forms"));
+      console.log( "val", await checkFeatureIncludeParam("add_lead_forms"))
     }
     featureCheck();
 
@@ -165,14 +170,15 @@ export default function AddLead({screenProps, onClose}) {
       if (Platform.OS === 'android') {
         dispatch(updateCurrentLocation());
       }
-    }, 1500);
+    }, 5000);
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (isLoading) {
       getLeadFields()
         .then(res => {
+          console.log("get lead data", res)
           initPostData(res.custom_master_fields);
           setLeadForms(res.custom_master_fields);
           setAccuracyUnit(res.accuracy_distance_measure);
@@ -227,8 +233,7 @@ export default function AddLead({screenProps, onClose}) {
       if (data[i].core_field_name === 'group_split') {
         params['group_split'] = data[i].value;
       }
-    }
-    console.log("params", params);
+    }    
     getAddLeadFormsList(params).then(response => {
       console.log(JSON.stringify(response));
       if (response?.forms) {
@@ -239,6 +244,7 @@ export default function AddLead({screenProps, onClose}) {
           }
         });
         setCompulsoryFormExist(isCompulsoryExist);
+        console.log("ASDFF",response.forms)
         setFormsList(response.forms);
       }
     }).catch(e => {
@@ -255,6 +261,7 @@ export default function AddLead({screenProps, onClose}) {
           res = element.value;
         }
       });
+
       return res;
     } else {
       return '';
@@ -300,6 +307,7 @@ export default function AddLead({screenProps, onClose}) {
     if (index === -1) {
       return 'Select ' + originFieldName;
     }
+
     var showName = '';
     leadForms.forEach(element => {
       if (
@@ -337,6 +345,7 @@ export default function AddLead({screenProps, onClose}) {
                 leadTmp[key].value = item;
               }
               setLeadForms(leadTmp);
+              console.log("Ele", element)
               if (element.core_field_name === 'location_type' || element.core_field_name === 'group'
                 || element.core_field_name === 'group_split') {
                 getFormsList();
@@ -483,6 +492,34 @@ export default function AddLead({screenProps, onClose}) {
     }
   };
 
+  
+  const renderAddLeadFormField = () => {
+    return (
+      <View style={{ marginBottom: 10 }}>
+        <View style={{ borderBottomColor: whiteLabel().fieldBorder, borderBottomWidth: 1, marginVertical: 10 }}>
+          <Text style={{ fontFamily: Fonts.secondaryBold, color: whiteLabel().mainText }}>Other</Text>
+        </View>
+        <TouchableOpacity style={{
+          height: 40,
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderWidth: 1,
+          borderColor: compulsaryFormExist ? Colors.selectedRedColor : whiteLabel().fieldBorder,
+          borderRadius: 5, flexDirection: 'row',
+          backgroundColor: Colors.whiteColor,
+          paddingHorizontal: 10,
+        }}
+          onPress={() => {
+            isCompulsoryFormExist();
+            setCanShowaddLeadForms(!canShowAddLeadForms);
+          }}>
+          <Text style={{ fontSize: 14, fontFamily: Fonts.secondaryBold, color: whiteLabel().fieldBorder }}>Complete Forms</Text>
+          <SvgIcon icon="Drop_Down" width='23px' height='23px' />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   if (isLoading) {
     return (
       <View
@@ -539,8 +576,8 @@ export default function AddLead({screenProps, onClose}) {
         showsMyLocationButton={true}
         zoomEnabled={true}
         region={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
+          latitude:  currentLocation && currentLocation.latitude != undefined? currentLocation.latitude : 0,
+          longitude: currentLocation && currentLocation.longitude != undefined? currentLocation.longitude : 0,
           latitudeDelta: 0.001,
           longitudeDelta: 0.001,
         }}></MapView>
@@ -718,6 +755,8 @@ export default function AddLead({screenProps, onClose}) {
           </View>
         )}
 
+        {isAddLeadFormsEnabled && renderAddLeadFormField()}
+
         <TouchableOpacity style={styles.addButton} onPress={handleSubmit}>
           <Text style={[styles.addButtonText]}>Add</Text>
           <FontAwesomeIcon
@@ -730,6 +769,15 @@ export default function AddLead({screenProps, onClose}) {
       </View>
 
       {dropdownModal()}
+
+      <AddLeadForms
+        onClose={() => {
+          setCanShowaddLeadForms(!canShowAddLeadForms)
+        }}
+        visible={canShowAddLeadForms}
+        formLists={formLists}
+        screenProps={screenProps} />
+        
     </ScrollView>
   );
 }
@@ -745,7 +793,7 @@ const styles = EStyleSheet.create({
     backgroundColor: Colors.bgColor,
     elevation: 2,
     zIndex: 2000,
-    padding: 10,
+    padding: 10,    
   },
 
   header: {
@@ -774,6 +822,7 @@ const styles = EStyleSheet.create({
     borderColor: whiteLabel().fieldBorder,
     borderRadius: 7,
     backgroundColor: whiteLabel().actionFullButtonBackground,
+    marginBottom:60
   },
   addButtonText: {
     color: whiteLabel().actionFullButtonText,

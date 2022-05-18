@@ -13,12 +13,12 @@ export default function AddLeadForms(props) {
     const navigationMain = useNavigation();
     const [isInfo, setIsInfo] = useState(false);
     const [bubbleText, setBubleText] = useState({});
-    // console.log("FORMS: ", props.screenProps);
-
+    
     const _onTouchStart = (e, text) => {
         setBubleText(text);
         setIsInfo(true);
     }
+    
     return (
         <Modal
             transparent={true}
