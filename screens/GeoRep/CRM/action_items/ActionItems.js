@@ -7,7 +7,7 @@ import {
   Modal,
   Dimensions,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {style} from '../../../../constants/Styles';
 import Divider from '../../../../components/Divider';
 import ActionItemsContainer from './ActionItemsContainer';
