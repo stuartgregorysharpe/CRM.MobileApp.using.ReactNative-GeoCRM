@@ -73,14 +73,14 @@ export function getValueFromFormData(formData, item) {
       answerData[category] = categoryAnswerData;
     }
   }
-
+  
   return {
     form_answers: [
       {
         form_question_id: item.form_question_id,
         answer: answerData,
       },
-    ],
+    ]    
   };
 }
 
