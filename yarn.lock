@@ -7079,6 +7079,11 @@
   dependencies:
     "prop-types" "^15.6.2"
 
+"react-native-circular-progress-indicator@^4.1.0":
+  "integrity" "sha512-xTMlic71wEZ4XBLLRdpFSik0waslKTNOIa19SE0LqKvmq0DpQKbHHivrlqE/XHJUTADki9tJ+OObq3VGji0IsA=="
+  "resolved" "https://registry.npmjs.org/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.1.0.tgz"
+  "version" "4.1.0"
+
 "react-native-codegen@^0.0.8":
   "integrity" "sha512-k/944+0XD+8l7zDaiKfYabyEKmAmyZgS1mj+4LcSRPyHnrjgCHKrh/Y6jM6kucQ6xU1+1uyMmF/dSkikxK8i+Q=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.0.8.tgz"
@@ -7359,7 +7364,7 @@
     "whatwg-fetch" "^3.0.0"
     "ws" "^6.1.4"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@^0.67.0", "react-native@> 0.57", "react-native@>= 0.51", "react-native@>= 0.62", "react-native@>=0.42.0", "react-native@>=0.47", "react-native@>=0.47.1", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@>=0.64.0", "react-native@>=0.65.0", "react-native@>=v0.40.0", "react-native@0.67.1", "react-native@0.67.2":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@^0.67.0", "react-native@> 0.57", "react-native@>= 0.51", "react-native@>= 0.62", "react-native@>=0.42.0", "react-native@>=0.47", "react-native@>=0.47.1", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@>=0.64.0", "react-native@>=0.65.0", "react-native@>=v0.40.0", "react-native@0.67.1", "react-native@0.67.2":
   "integrity" "sha512-grEtpOLLvtSg8Bivg0ffVRCjTkresqMt7Jdog/geF6VAYhb4RnLaaUCWvyrfyB9buf135FKnqg5BIuve/XQNXA=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.2.tgz"
   "version" "0.67.2"

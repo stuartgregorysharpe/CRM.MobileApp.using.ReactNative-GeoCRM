@@ -54,10 +54,17 @@ export function captureProductBarcode(formData, item, barcode) {
   return _formData;
 }
 
-export function getValueFromFormData(formData, item) {
+export function getValueFromFormData(formData, item, formIndex) {
   const answerData = {
     selected_product_ids: formData.selectedProductIds,
   };
+  const answerDataArray = [];
+  formData.selectedProductIds.forEach((productId, index) => {
+    answerDataArray.push({
+      key: `[answer][selected_product_ids][${index}]`,
+      value: productId,
+    });
+  });
   return {
     form_answers: [
       {
@@ -65,6 +72,7 @@ export function getValueFromFormData(formData, item) {
         answer: answerData,
       },
     ],
+    form_answers_array: answerDataArray,
   };
 }
 
