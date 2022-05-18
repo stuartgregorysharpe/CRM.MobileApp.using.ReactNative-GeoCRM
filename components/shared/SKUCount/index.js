@@ -6,7 +6,7 @@ import QuestionButton from '../QuestionButton';
 import SKUCountFormModal from './modals/SKUCountFormModal';
 import {getQuestionTitle} from './helper';
 const SKUCount = props => {
-  const {item, questionType} = props;
+  const {item, questionType, formIndex} = props;
   if (!item) return null;
   const skuCountFormModalRef = useRef();
   const isCompleted =
@@ -36,6 +36,7 @@ const SKUCount = props => {
       <SKUCountFormModal
         item={item}
         questionType={questionType}
+        formIndex={formIndex}
         ref={skuCountFormModalRef}
         onButtonAction={props.onFormAction}
       />

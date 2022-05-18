@@ -57,17 +57,26 @@ const constructCategoryFormData = (
   };
 };
 
-export function getValueFromFormData(formData, item) {
+export function getValueFromFormData(formData, item, formIndex) {
   const answerData = {};
+  const answerDataArray = [];
   for (let category in formData) {
     const categoryFormData = formData[category];
     const categoryAnswerData = {};
     if (categoryFormData.noSegment) {
       answerData[category] = {no_segment: '1'};
+      answerDataArray.push({
+        key: `[answer][${category}][no_segment]`,
+        value: '1',
+      });
     } else {
       categoryFormData.competitors.forEach(item => {
         if (item.count > 0) {
           categoryAnswerData[item.name] = item.count + '';
+          answerDataArray.push({
+            key: `[answer][${category}][${item.name}]`,
+            value: item.count + '',
+          });
         }
       });
       answerData[category] = categoryAnswerData;
@@ -81,6 +90,7 @@ export function getValueFromFormData(formData, item) {
         answer: answerData,
       },
     ],
+    form_answers_array: answerDataArray,
   };
 }
 

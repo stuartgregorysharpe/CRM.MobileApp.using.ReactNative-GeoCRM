@@ -17,7 +17,7 @@ import CardView from '../../common/CardView';
 import SKUCaptureModal from './modals/SKUCaptureModal';
 const SKUSelectForm = props => {
   const dispatch = useDispatch();
-  const {item} = props;
+  const {item, formIndex} = props;
   const [formData, setFormData] = useState({});
   const [keyword, setKeyword] = useState('');
   const skuCaptureModalRef = useRef(null);
@@ -49,7 +49,7 @@ const SKUSelectForm = props => {
     setFormData(formData);
   }, [item]);
   const onSubmit = () => {
-    const submitValueData = getValueFromFormData(formData, item);
+    const submitValueData = getValueFromFormData(formData, item, formIndex);
     if (props.onButtonAction) {
       props.onButtonAction({
         type: Constants.actionType.ACTION_FORM_SUBMIT,

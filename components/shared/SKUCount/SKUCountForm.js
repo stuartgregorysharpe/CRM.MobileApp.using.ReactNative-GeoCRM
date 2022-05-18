@@ -12,7 +12,7 @@ import {constructFormData, getValueFromFormData} from './helper';
 
 const SKUCountForm = props => {
   const dispatch = useDispatch();
-  const {item, questionType} = props;
+  const {item, questionType, formIndex} = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
   const [formData, setFormData] = useState({});
@@ -63,7 +63,7 @@ const SKUCountForm = props => {
     if (!validateForm()) {
       return;
     }
-    const submitValueData = getValueFromFormData(formData, item);
+    const submitValueData = getValueFromFormData(formData, item, formIndex);
     if (props.onButtonAction) {
       props.onButtonAction({
         type: Constants.actionType.ACTION_FORM_SUBMIT,
