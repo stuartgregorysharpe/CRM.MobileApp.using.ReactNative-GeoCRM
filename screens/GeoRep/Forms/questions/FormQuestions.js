@@ -281,8 +281,7 @@ export const FormQuestions = props => {
                 });                
             });
           }
-        } else {
-          if( item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT )
+        } else {          
           form_answers.push({
             key: `form_answers[${index}][answer]`,
             value: item.question_type === 'take_photo' || item.question_type === 'upload_file' ? '' : value,
