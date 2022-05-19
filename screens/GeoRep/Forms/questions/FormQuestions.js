@@ -273,15 +273,13 @@ export const FormQuestions = props => {
             Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
           item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
         ) {
-          if (value && value.form_answers_array) {
-            form_answers.push(
-              value.form_answers_array.map(itemValue => {
-                return {
+          if (value && value.form_answers_array) {            
+            value.form_answers_array.forEach((itemValue) => {                
+                form_answers.push({
                   ...itemValue,
                   key: `form_answers[${index}]` + itemValue.key,
-                };
-              }),
-            );
+                });                
+            });
           }
         } else {
           if( item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT )
