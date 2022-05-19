@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import {style} from '../../../../../constants/Styles';
 import Divider from '../../../../../components/Divider';
-import ActionItemsContainer from '../ActionItemsContainer';
+import ActionItemsContainer from '../containers/ActionItemsContainer';
 
 export default function ActionItems(props) {
   const {visible, onModalClosed} = props;

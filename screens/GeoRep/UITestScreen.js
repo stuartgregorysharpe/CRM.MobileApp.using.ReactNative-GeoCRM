@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
-import ActionItemsContainer from './CRM/action_items/ActionItemsContainer';
+import ActionItemsContainer from './CRM/action_items/containers/ActionItemsContainer';
 
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
