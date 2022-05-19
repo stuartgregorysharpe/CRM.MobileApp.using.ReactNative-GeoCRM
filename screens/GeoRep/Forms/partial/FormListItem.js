@@ -14,13 +14,12 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
                 <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:3, paddingBottom:3 }}>
                     <View style={{flexDirection:'row'}}>
                         <Text style={styles.title}>{item.form_name}</Text>                        
-                        {
+                        {                            
                             item.guide_info !== undefined && item.guide_info !== [] &&
-                            <TouchableOpacity onPress={() => onTouchStart("" ,  item.guide_info) }>
+                            <TouchableOpacity onPress={() => onTouchStart("" ,  "") }>
+                                {/* JSON.stringify(item.guide_info) */}
                                 <View 
-                                    onTouchStart={(e) => {
-                                        console.log('touchMove',e.nativeEvent); 
-                                        //onTouchStart(e.nativeEvent , item.guide_info);
+                                    onTouchStart={(e) => {                                        
                                         }} >
                                     <Icon
                                         name={`info-outline`}

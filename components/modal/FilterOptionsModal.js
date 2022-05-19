@@ -131,7 +131,7 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
                           <Divider></Divider>
                       </TouchableOpacity>
 
-                      <View style={styles.sliderHeader}>                
+                      <View style={styles.sliderHeader}>             
                           <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >
                               {title}
                           </Text>

@@ -34,7 +34,7 @@ export default function StockLists() {
             });
             setStockLists(tmp);
         }else{  
-            console.log("ddd");
+            
             setStockLists([...originStockLists]);
         }        
     }

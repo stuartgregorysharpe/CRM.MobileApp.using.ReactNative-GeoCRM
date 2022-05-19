@@ -10,20 +10,16 @@ const Actions = props => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const {locationId, tabIndex} = props;
 
-  console.log('tab index', tabIndex);
-
   useEffect(() => {
     var postData = {};
     if (locationId != undefined) {
       postData = {location_id: locationId};
     }
-    console.log('postData', postData);
     getApiRequest(
       'https://dev.georep.com/local_api_old/actionitems/action-items-list',
       postData,
     )
       .then(res => {
-        console.log('re', res);
         setOriginStockLists(res.action_items);
         if (tabIndex != undefined) {
           onApplyStatusFilter(res.action_items);
@@ -31,9 +27,7 @@ const Actions = props => {
           setStockLists(res.action_items);
         }
       })
-      .catch(e => {
-        console.log('E', e);
-      });
+      .catch(e => {});
   }, [locationId]);
 
   useEffect(() => {
@@ -84,7 +78,6 @@ const Actions = props => {
       });
       setStockLists(tmp);
     } else {
-      console.log('ddd');
       setStockLists([...originStockLists]);
     }
   };

@@ -28,7 +28,7 @@ export default function CustomerSalesHistoryModal(props) {
             onModalClosed={onModalClosed}>
 
                 <View style={[style.centeredView]}>
-
+                    
                     <TouchableWithoutFeedback 
                         onPress={onModalClosed}>
                       <View style={styles.topContainer}></View>
