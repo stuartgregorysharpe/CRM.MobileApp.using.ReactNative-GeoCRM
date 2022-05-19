@@ -1531,6 +1531,7 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
     {icon == 'Scan_Icon' && (
       <SvgXml style={style} xml={Scan_Icon} width={width} height={height} />
     )}
+
     {icon == 'Action_Item' && (
       <SvgXml style={style} xml={Action_Item} width={width} height={height} />
     )}

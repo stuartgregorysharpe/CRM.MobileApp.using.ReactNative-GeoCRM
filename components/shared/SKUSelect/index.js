@@ -5,7 +5,7 @@ import QuestionButton from '../QuestionButton';
 import SKUSelectFormModal from './modals/SKUSelectFormModal';
 import {getQuestionTitle} from './helper';
 const SKUSelect = props => {
-  const {item, questionType} = props;
+  const {item, questionType, formIndex} = props;
 
   if (!item) return null;
   const skuSelectFormModalRef = useRef();
@@ -30,6 +30,7 @@ const SKUSelect = props => {
       {renderContent()}
       <SKUSelectFormModal
         item={item}
+        formIndex={formIndex}
         questionType={questionType}
         ref={skuSelectFormModalRef}
         onButtonAction={props.onFormAction}
