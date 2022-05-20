@@ -104,8 +104,7 @@ export const FormQuestions = props => {
                     console.log("press back can go back")
                     props.navigation.goBack();
                   }
-                }
-                
+                }                
               }
             }}>
             <View style={style.headerTitleContainerStyle}>
@@ -134,7 +133,8 @@ export const FormQuestions = props => {
       form_id: form.form_id,
     };
     getApiRequest('forms/forms-questions', param)
-      .then(res => {        
+      .then(res => {     
+        console.log("XXX",JSON.stringify(res.questions))   
         groupByQuestions(res.questions);
       })
       .catch(e => {

@@ -1,13 +1,10 @@
 
-import { View, Text , FlatList ,TouchableOpacity } from 'react-native'
+import { View, FlatList } from 'react-native'
 import React, {useEffect, useState} from 'react'
-import { Searchbar } from 'react-native-paper'
 import { AppText } from '../../../../components/common/AppText';
 import { getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import Colors, { whiteLabel } from '../../../../constants/Colors';  
-import SvgIcon from '../../../../components/SvgIcon';
-
 
 export default function Actions(props) {
 
@@ -16,27 +13,24 @@ export default function Actions(props) {
     const [searchKeyword, setSearchKeyword] = useState("");
     const {locationId , tabIndex} = props;
 
-    console.log("tab index", tabIndex)
-        
-    //actionsitems/action-items-list
     useEffect(() =>{
+        let isSubscribed = true;
         var postData = {};
         if(locationId != undefined){
             postData = {location_id: locationId};
         }
         getApiRequest("https://dev.georep.com/local_api_old/actionitems/action-items-list", postData).then((res) => {
-            console.log("re", res)
-            setOriginStockLists(res.action_items);
-            if(tabIndex != undefined){
-                onApplyStatusFilter(res.action_items);
-            }else{
-                setStockLists(res.action_items);
-            }            
-            
-        }).catch((e) => {
-            console.log("E",e);
+            if(isSubscribed){
+                setOriginStockLists(res.action_items);
+                if(tabIndex != undefined){
+                    onApplyStatusFilter(res.action_items);
+                }else{
+                    setStockLists(res.action_items);
+                }            
+            }                        
+        }).catch((e) => {            
         });
-
+        return () => (isSubscribed = false)
     },[]);
 
     useEffect(() => {
@@ -54,11 +48,8 @@ export default function Actions(props) {
             });
             
         }else if(tabIndex == 1){
-            lists.map((item, index) => {
-                console.log("status", item.status)
-                console.log("category", item.category)
-                if(item.status !==  "completed" && item.category === "task"){
-                    console.log("pushed");
+            lists.map((item, index) => {                
+                if(item.status !==  "completed" && item.category === "task"){                    
                     tmp.push(item);
                 }
             });            

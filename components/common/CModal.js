@@ -48,7 +48,9 @@ const CModal = React.forwardRef((props, ref) => {
   };
   return (
     <View style={[props.style]}>
-      <Modal transparent visible={isVisible} onRequestClose={onClose}>
+      <Modal 
+      animationType="fade"
+      transparent visible={isVisible} onRequestClose={onClose}>
         <View
           style={[
             isCenterModal && styles.dim,
@@ -167,7 +169,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'space-between',
-    paddingHorizontal: 8,
+    paddingHorizontal: 15,
   },
   titleIcon: {
     width: 16,

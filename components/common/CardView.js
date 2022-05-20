@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
     backgroundColor: 'white',
-  },
+  },    
 });
 
 export default CardView;

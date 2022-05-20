@@ -1,12 +1,10 @@
 
 import { View, Text, TouchableOpacity } from 'react-native'
 import React , { useEffect , useState} from 'react'
-import { TopTab } from '../../../components/common/TopTab'
 import TopThreeTab from '../../../components/common/TopThreeTab'
 import StockLists from './partial/StockLists';
 import Movements from './partial/Movements';
 import Returns from './partial/Returns';
-import Colors from '../../../constants/Colors';
 import { style } from '../../../constants/Styles';
 
 export default function Stock(props) {

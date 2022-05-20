@@ -8,10 +8,11 @@ import {getQuestionTitle} from './helper';
 const SKUCount = props => {
   const {item, questionType, formIndex} = props;
   if (!item) return null;
-  const skuCountFormModalRef = useRef();
+  const skuCountFormModalRef = useRef(null);
   const isCompleted =
     item.completed_data != false && item.completed_data != null;
   const onOpenSKUCountModal = () => {
+    console.log("onOpenSKUCountModal",skuCountFormModalRef)
     skuCountFormModalRef.current.showModal();
   };
 

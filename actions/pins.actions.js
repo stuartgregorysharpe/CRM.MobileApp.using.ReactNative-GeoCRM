@@ -19,8 +19,7 @@ export const getDynamicPins = async(token) => {
       .then((res) => {          
         if (res.data == undefined) {            
           resolve([]);
-        }
-        console.log("dyanmic pins", res.data);
+        }        
         if(res.data.status == "success"){
           resolve(res.data.items);
         }else{

@@ -59,6 +59,7 @@ export default function RepMoreScreen({navigation}) {
         payload.user_scopes.geo_rep.modules_nav_order[12],
       ]);
     }
+    
     if (payload.user_scopes.geo_life) {
       setComponentListTwo([
         payload.user_scopes.geo_life.modules_nav_order[4],
@@ -85,10 +86,17 @@ export default function RepMoreScreen({navigation}) {
   }, [payload]);
 
   useEffect(() => {
-    ChangeScreen(visibleMore);
+    if(navigation !== undefined && navigation != '' && navigation != {}){      
+      setTimeout(() =>{
+        ChangeScreen(visibleMore);
+      }, 10)
+    }
+    
   }, [visibleMore]);
 
   const ChangeScreen = (key) => {
+    
+    console.log("change scree", navigation);
     switch(key) {
       case 'Home':
         navigation.navigate("Home");

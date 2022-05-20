@@ -14,10 +14,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 
-export const SubmitButton = ({title, onSubmit, style}) => {
+export const SubmitButton = ({title, onSubmit, style ,bgStyle}) => {
   return (
     <TouchableOpacity
-      style={[styles.submitButton, style]}
+      style={[styles.submitButton, style , bgStyle]}
       onPress={() => {
         if (onSubmit) {
           onSubmit();

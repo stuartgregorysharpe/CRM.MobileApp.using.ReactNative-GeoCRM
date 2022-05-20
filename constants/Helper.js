@@ -4,10 +4,75 @@ import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 import { clearNotification, showNotification } from '../actions/notification.action';
 import { setToken } from './Storage';
 import * as RNLocalize from "react-native-localize";
+import { Constants } from '.';
+import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
+import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
+import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
+import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
+import FormsNavigator from '../screens/GeoRep/Forms/FormsNavigator';
+import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
+import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
+import CrmContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
+import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
+import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
+import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
+import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
+import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import Stock from '../screens/GeoRep/Stock/Stock';
+import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
+import AccessScreen from '../screens/GeoLife/AccessScreen';
+import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
+import ProductSales from '../screens/GeoRep/Sales/ProductSales';
 
 
 export const WHATS_APP_LINK = "https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22";
 
+export function getPageNameByLinker( selectedProject , linker) {
+  switch(linker){
+    case 'home_geo':
+      return { linker: linker, name: 'Home', router:HomeScreen , activeIcon:'Home_Black', inActiveIcon: 'Home_Black_Gray' }; 
+    case 'crm_locations':
+      return { linker: linker, name: 'CRM', router:CRMScreen , activeIcon:'Location_Arrow', inActiveIcon: 'Location_Arrow_Gray'}; 
+    case 'web_links':
+      return { linker: linker, name: 'Web Links', router:RepWebLinksScreen , activeIcon:'Travel_Explore', inActiveIcon: 'Travel_Explore_Gray'}; 
+    case 'calendar':
+      return { linker: linker, name: 'Calendar', router:CalendarScreen , activeIcon:'Calendar_Event_Fill', inActiveIcon: 'Calendar_Event_Fill_Gray'};
+    case 'forms':
+      return { linker: linker, name: 'Forms', router:FormsNavigator , activeIcon:'Form', inActiveIcon: 'Form_inactive'};
+    case 'content_library':
+      if(selectedProject === Constants.projectType.GEO_REP){
+        return { linker: linker, name: 'Content Library', router:RepContentLibraryScreen , activeIcon:'Ballot', inActiveIcon: 'Ballot_Gray'};
+      }else if(selectedProject === Constants.projectType.GEO_LIFE){
+        return { linker: linker, name: 'ContentLibrary', router:LifeContentLibraryScreen , activeIcon:'Ballot', inActiveIcon: 'Ballot_Gray'};
+      }else if(selectedProject === Constants.projectType.GEO_CRM){
+        return { linker: linker, name: 'ContentLibrary', router:CrmContentLibraryScreen , activeIcon:'Ballot', inActiveIcon: 'Ballot_Gray'};
+      }
+    case 'product_sales':
+      return { linker: linker, name: 'Sales', router:ProductSales , activeIcon:'Shoping_Card', inActiveIcon: 'Shoping_Card_Gray'};
+    case 'notifications':
+      return { linker: linker, name: 'Notifications', router: NotificationsScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'}; 
+    case 'messages':
+      return { linker: linker, name: 'RepMessages', router: RepMessagesScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'}; 
+    case 'offline_sync':
+      return { linker: linker, name: 'OfflineSync', router: OfflineSyncScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'};
+    case 'recorded_sales':
+      return { linker: linker, name: 'RecordedSales', router: RecordedSalesScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'};
+    case 'sales_pipeline':
+      return { linker: linker, name: 'RepSalesPipeline', router: RepSalesPipelineScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'};
+    case 'stock_module':
+      return { linker: linker, name: 'Stock', router:Stock , activeIcon:'Stock', inActiveIcon: 'Stock_Gray'};
+    case 'home_life':
+      return { linker: linker, name: 'Home', router:HomeLifeScreen , activeIcon:'Home_Black', inActiveIcon: 'Home_Black_Gray'};
+    case 'access':
+      return { linker: linker, name: 'Access', router:AccessScreen , activeIcon:'Access', inActiveIcon: 'Access_Gray'};
+    case 'business_directory':
+      return { linker: linker, name: 'Business', router:BusinessDirectoryScreen , activeIcon:'Business_Directory', inActiveIcon: 'Business_Directory_Gray'};
+    case 'help':
+      return { linker: linker, name: 'Help', router:BusinessDirectoryScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'};
+    case 'news':
+      return { linker: linker, name: 'News', router:BusinessDirectoryScreen , activeIcon:'Pipeline', inActiveIcon: 'Pipeline_Gray'};
+  }
+}
 
 export function notifyMessage(title, msg) {
     Alert.alert(title, msg, [

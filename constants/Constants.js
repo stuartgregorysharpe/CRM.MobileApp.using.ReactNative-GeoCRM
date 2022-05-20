@@ -1,4 +1,16 @@
 export default {
+
+  projectType:{
+    GEO_REP: 'geo_rep',
+    GEO_LIFE: 'geo_life',
+    GEO_CRM: 'geo_crm'
+  },
+  
+  homeStartEndType:{
+    START_MY_DAY : 'start_my_day',
+    END_MY_DAY : 'end_my_day'
+  },
+
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',

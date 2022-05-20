@@ -8,20 +8,14 @@ import React, {
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   Keyboard,
-  FlatList,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse,
-} from 'react-native-extended-stylesheet-breakpoints';
+import { setWidthBreakpoints, parse  } from 'react-native-extended-stylesheet-breakpoints';
 import {useSelector, useDispatch} from 'react-redux';
-import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {breakPoint} from '../../../../constants/Breakpoint';
@@ -31,19 +25,13 @@ import {
   postDispositionFields,
 } from '../../../../actions/location.action';
 import CustomLoading from '../../../../components/CustomLoading';
-import Images from '../../../../constants/Images';
 import {
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SLIDE_STATUS,
   CHANGE_LOCATION_ACTION,
   CHANGE_BOTTOM_TAB_ACTION,
-  STATUS_DISPOSITION_FIELDS_UPDATE,
 } from '../../../../actions/actionTypes';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import Fonts from '../../../../constants/Fonts';
-import {FeatureCard} from '../partial/FeatureCard';
-import {checkFeatureIncludeParam} from '../../../../constants/Storage';
-import {useNavigation} from '@react-navigation/native';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {getPostParameter} from '../../../../constants/Helper';
 

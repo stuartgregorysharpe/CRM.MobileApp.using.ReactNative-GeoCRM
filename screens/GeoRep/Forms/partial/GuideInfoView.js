@@ -25,14 +25,14 @@ export const GuideInfoView = ({ visible, info, onModalClose }) => {
                             </TouchableOpacity>
                                                                                         
                                 {
-                                    info && info.title && info.title !== "" &&  
+                                    info && info.title && info.title !== "" &&  info.title &&
                                     <View style={styles.sliderHeader}> 
                                         <Title style={{ fontFamily: Fonts.primaryBold }}>{ info.title}</Title>
                                     </View>
                                 }
                                                               
                                 {    
-                                    info && info.image !== "" &&                                 
+                                    info && info.image !== "" && info.image &&                                
                                      <View style={{alignItems:'center'}}>                                         
                                         <FastImage style={styles.imageContainer}  source={{uri:info.image}} />
                                      </View>

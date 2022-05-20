@@ -10,6 +10,7 @@ const BottomBorderTabItem: () => Node = props => {
       props.onSelectTab(item, index);
     }
   };
+  const title = props.item && props.item.title ? props.item.title: ''
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -21,7 +22,7 @@ const BottomBorderTabItem: () => Node = props => {
             style={
               props.isPicked ? styles.selectedTabItemText : styles.tabItemText
             }>
-            {props.item.title}
+            {title}
           </Text>
         </View>
         <View
