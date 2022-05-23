@@ -178,7 +178,7 @@ export default function AddLead({screenProps, onClose}) {
     if (isLoading) {
       getLeadFields()
         .then(res => {
-          console.log("get lead data", res)
+          
           initPostData(res.custom_master_fields);
           setLeadForms(res.custom_master_fields);
           setAccuracyUnit(res.accuracy_distance_measure);

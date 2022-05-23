@@ -82,7 +82,7 @@ export function getValueFromFormData(formData, item, formIndex) {
       answerData[category] = categoryAnswerData;
     }
   }
-
+  
   return {
     form_answers: [
       {

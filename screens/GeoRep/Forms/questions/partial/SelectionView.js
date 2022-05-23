@@ -9,8 +9,7 @@ import SvgIcon from '../../../../../components/SvgIcon';
 
 export const SelectionView = ({ visible, options , mode,  selectedVals, onClose , onSave , onValueChanged}) => {    
     const [localSelectedVals, setSelectedVal] = useState(selectedVals !== null && selectedVals !== undefined ? selectedVals : [] );
-    
-    console.log("dddd", selectedVals);
+            
     useEffect(() => { 
         console.log('enter', selectedVals)
         if(selectedVals === null){
