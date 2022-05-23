@@ -1,11 +1,13 @@
 import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
+import {Constants} from '../../../constants';
 import SelectInputView from './components/SelectInputView';
 import SingleSelectModal from './modals/SingleSelectModal';
 
 const CSingleSelectInput = props => {
   const {items} = props;
   const selectModalRef = useRef(null);
+
   const {placeholder, description, checkedValue} = props;
 
   const getTextFormCheckedValue = () => {
@@ -20,6 +22,13 @@ const CSingleSelectInput = props => {
   const onOpenPicker = () => {
     selectModalRef.current.showModal();
   };
+  const onButtonAction = ({type, item}) => {
+    if (type == Constants.actionType.ACTION_CHECK) {
+      if (props.onSelectItem) {
+        props.onSelectItem(item);
+      }
+    }
+  };
   return (
     <View style={[styles.container, props.containerStyle]}>
       <SelectInputView
@@ -33,6 +42,7 @@ const CSingleSelectInput = props => {
         items={items}
         modalTitle={placeholder}
         checkedValue={checkedValue}
+        onButtonAction={onButtonAction}
         ref={selectModalRef}
       />
     </View>

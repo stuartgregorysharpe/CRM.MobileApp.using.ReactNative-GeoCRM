@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {SubmitButton} from '../../../shared/SubmitButton';
 import SingleSelectList from '../components/SingleSelectList';
 
@@ -12,12 +12,14 @@ const SingleSelectContainer = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <SingleSelectList
-        items={props.items}
-        checkedValue={checkedValue}
-        onItemAction={onButtonAction}
-        style={{marginHorizontal: 12}}
-      />
+      <ScrollView style={{maxHeight: 400, alignSelf: 'stretch'}}>
+        <SingleSelectList
+          items={props.items}
+          checkedValue={checkedValue}
+          onItemAction={onButtonAction}
+          style={{marginHorizontal: 12}}
+        />
+      </ScrollView>
       {buttonTitle && (
         <SubmitButton
           onSubmit={() => {

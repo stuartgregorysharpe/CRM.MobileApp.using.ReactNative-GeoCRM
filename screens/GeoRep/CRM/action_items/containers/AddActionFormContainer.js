@@ -19,7 +19,13 @@ const AddActionFormContainer = props => {
   }, []);
   return (
     <View style={[styles.container, props.style]}>
-      <ActionForm users={users} formData={formData} />
+      <ActionForm
+        users={users}
+        formData={formData}
+        updateFormData={formData => {
+          setFormData(formData);
+        }}
+      />
     </View>
   );
 };

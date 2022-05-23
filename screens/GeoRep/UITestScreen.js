@@ -20,14 +20,6 @@ export default function UITestScreen({screenProps}) {
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
         <AddActionFormContainer />
-        <CSingleSelectInput
-          placeholder="Select UIxxx"
-          checkedValue={null}
-          items={[
-            {label: 'Selected UIxxxddd', value: 1},
-            {label: 'Selected UI', value: 2},
-          ]}
-        />
       </View>
     </SafeAreaView>
   );
