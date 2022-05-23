@@ -34,10 +34,11 @@ const SelectInputView = props => {
           {placeholder}
         </Text>
       )}
-
-      <View style={{marginRight: 10}}>
-        <SvgIcon icon={iconName} width="23px" height="23px" />
-      </View>
+      {!props.hideSuffixIcon && (
+        <View style={{marginRight: 10}}>
+          <SvgIcon icon={iconName} width="23px" height="23px" />
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

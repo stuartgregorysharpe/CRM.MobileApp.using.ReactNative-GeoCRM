@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
+import {SubmitButton} from '../../../../../components/shared/SubmitButton';
+import {Constants} from '../../../../../constants';
 import addActionDummyData from '../add_action_items_dummyData.json';
 import ActionForm from '../forms/ActionForm';
-import {getUserFieldFromFormData} from '../helper';
+import {getAddActionItemPostValue} from '../helper';
 const AddActionFormContainer = props => {
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({});
@@ -17,6 +19,15 @@ const AddActionFormContainer = props => {
   useEffect(() => {
     load();
   }, []);
+  const onSubmit = () => {
+    const submitValueData = getAddActionItemPostValue(formData);
+    if (props.onButtonAction) {
+      props.onButtonAction({
+        type: Constants.actionType.ACTION_FORM_SUBMIT,
+        value: submitValueData,
+      });
+    }
+  };
   return (
     <View style={[styles.container, props.style]}>
       <ActionForm
@@ -25,6 +36,13 @@ const AddActionFormContainer = props => {
         updateFormData={formData => {
           setFormData(formData);
         }}
+      />
+      <SubmitButton
+        onSubmit={() => {
+          onSubmit();
+        }}
+        title={'Add Action Item'}
+        style={{marginTop: 16, marginHorizontal: 10, marginBottom: 16}}
       />
     </View>
   );

@@ -40,6 +40,7 @@ const CDateTimePickerInput = props => {
         description={description || placeholder}
         placeholder={placeholder}
         text={text}
+        hideSuffixIcon
         onPress={onOpenPicker}
       />
       <DatetimePickerView

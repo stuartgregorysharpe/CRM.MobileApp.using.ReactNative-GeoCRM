@@ -60,6 +60,7 @@ const ActionForm = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    paddingHorizontal: 10,
   },
 });
 
