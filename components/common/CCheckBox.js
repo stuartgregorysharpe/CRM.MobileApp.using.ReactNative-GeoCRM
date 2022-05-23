@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
-import {Colors} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
 import SvgIcon from '../SvgIcon';
 const CCheckBox = props => {
@@ -9,7 +7,11 @@ const CCheckBox = props => {
   return (
     <TouchableOpacity onPress={() => props.onValueChange(!value)}>
       <View
-        style={[styles.checkBoxStyle, value ? {} : {backgroundColor: 'white'}]}>
+        style={[
+          styles.checkBoxStyle,
+          props.style,
+          value ? {} : {backgroundColor: 'white'},
+        ]}>
         <SvgIcon icon="Yes_No_Button_Check" width="15px" height="15px" />
       </View>
     </TouchableOpacity>
