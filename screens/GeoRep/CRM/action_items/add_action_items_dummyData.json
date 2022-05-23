@@ -1,0 +1,87 @@
+{
+    "action_item_type": "action",
+    "title": "Action Item",
+    "due_date": "",
+    "created_by": "",
+    "user_field": {
+        "selected_user_id": "",
+        "users": [
+            {
+                "user_id": "100",
+                "user_name": "Cydcor ResTest"
+            },
+            {
+                "user_id": "101",
+                "user_name": "ClintonTest"
+            },
+            {
+                "user_id": "102",
+                "user_name": "APITest"
+            },
+            {
+                "user_id": "103",
+                "user_name": "GrantTest"
+            },
+            {
+                "user_id": "107",
+                "user_name": "CarlTest"
+            },
+            {
+                "user_id": "109",
+                "user_name": "RachelBoudreau"
+            },
+            {
+                "user_id": "112",
+                "user_name": "VinodTest"
+            },
+            {
+                "user_id": "123",
+                "user_name": "ClintonTest"
+            }
+        ]
+    },
+    "status": {
+        "selected_status": "To Do",
+        "statuses": [
+            "To Do",
+            "Delayed",
+            "Completed"
+        ]
+    },
+    "dynamic_fields": [
+        {
+            "field_type": "text",
+            "field_label": "Description",
+            "value": "Action item",
+            "editable": "0"
+        },
+        {
+            "field_type": "text",
+            "field_label": "Comments",
+            "value": "",
+            "editable": "1"
+        },
+        {
+            "field_type": "take_photo",
+            "field_label": "Take Photo",
+            "value": "",
+            "editable": "1"
+        }
+    ],
+    "buttons": {
+        "submit": {
+            "button_label": "Update",
+            "active": "1"
+        },
+        "form_link": {
+            "button_label": "",
+            "form_id": "",
+            "active": "0"
+        },
+        "checkin_link": {
+            "button_label": "",
+            "location_id": "",
+            "active": "0"
+        }
+    }
+}
