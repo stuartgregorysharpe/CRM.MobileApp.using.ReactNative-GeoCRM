@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import CTextInput from '../../../../../components/common/CTextInput';
+import CDateTimePickerInput from '../../../../../components/common/SelectInput/CDateTimePickerInput';
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 
 const ActionForm = props => {
@@ -41,6 +42,14 @@ const ActionForm = props => {
         items={userList}
         onSelectItem={item => {
           updateFormData('selected_user_id', item.value);
+        }}
+        containerStyle={{marginTop: 10}}
+      />
+      <CDateTimePickerInput
+        placeholder="Select Due Date"
+        value={formData.due_date}
+        onSelectDate={date => {
+          updateFormData('due_date', date);
         }}
         containerStyle={{marginTop: 10}}
       />

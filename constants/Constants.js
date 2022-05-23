@@ -1,4 +1,9 @@
 export default {
+  dateFormat: {
+    DATE_FORMAT_DATE_PICKER: 'YYYY/MM/DD',
+    DATE_FORMAT_SHORT: 'MM/DD/YYYY',
+    DATE_FORMAT_API: 'YYYY-MM-DD',
+  },
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
