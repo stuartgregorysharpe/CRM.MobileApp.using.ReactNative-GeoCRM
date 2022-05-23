@@ -3,6 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import Actions from '../../../Home/Actions/Actions';
 import CTabSelector from '../../../../../components/common/CTabSelector';
 import CardView from '../../../../../components/common/CardView';
+import {style} from '../../../../../constants/Styles';
 const ActionItemsContainer = props => {
   const {locationId} = props;
   const [tabIndex, setTabIndex] = useState(0);
@@ -16,15 +17,14 @@ const ActionItemsContainer = props => {
   return (
     <View style={[styles.container, props.style]}>
       <View style={{marginTop: 10, marginHorizontal: 10}}>
-        <CardView>
-          <CTabSelector
-            items={tabs}
-            selectedIndex={tabIndex}
-            onSelectTab={(item, index) => {
-              setTabIndex(index);
-            }}
-          />
-        </CardView>
+        <CTabSelector
+          items={tabs}
+          selectedIndex={tabIndex}
+          onSelectTab={(item, index) => {
+            setTabIndex(index);
+          }}
+          containerStyle={style.card}
+        />
       </View>
       <Actions locationId={locationId} tabIndex={tabIndex}></Actions>
     </View>
