@@ -22,7 +22,11 @@ const ActionItemsContainer = props => {
     {title: 'Completed', id: 3},
   ];
   useEffect(() => {
-    if (updateActionItemModalRef && updateActionItemModalRef.current) {
+    if (
+      updateActionItemModalRef &&
+      updateActionItemModalRef.current &&
+      selectedActionItem
+    ) {
       updateActionItemModalRef.current.showModal();
     }
   }, [selectedActionItem]);
