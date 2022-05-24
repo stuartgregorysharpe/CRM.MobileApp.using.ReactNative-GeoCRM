@@ -2,18 +2,19 @@ import React, {useState, useEffect, useReducer, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
+import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
 import {notifyMsg} from '../../../../../constants/Helper';
 import ActionForm from '../forms/ActionForm';
-import {getAddActionItemPostValue} from '../helper';
+import {
+  constructAddActionFormStructure,
+  getAddActionItemPostValue,
+} from '../helper';
 const AddActionFormContainer = props => {
   const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({
-    description: '',
-    selected_user_id: null,
-    due_date: null,
-  });
+  const [formData, setFormData] = useState({});
+  const [formStructure, setFormStructure] = useState([]);
   const dispatch = useDispatch();
   const {locationId} = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -25,12 +26,10 @@ const AddActionFormContainer = props => {
       action_item_type: 'action',
     })
       .then(data => {
-        const formBaseData = data;
-        if (formBaseData && formBaseData.user_field) {
-          const {users, selected_user_id} = formBaseData.user_field;
-          setUsers(users);
-          setFormData({...formData, selected_user_id: selected_user_id});
-        }
+        const {formData, formStructure} = constructAddActionFormStructure(data);
+        setFormData(formData);
+        console.log('formData', formData);
+        setFormStructure(formStructure);
         setIsLoading(false);
       })
       .catch(e => {
@@ -68,10 +67,10 @@ const AddActionFormContainer = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <ActionForm
-        users={users}
+      <DynamicForm
         ref={actionFormRef}
         formData={formData}
+        formStructureData={formStructure}
         updateFormData={formData => {
           setFormData(formData);
         }}
