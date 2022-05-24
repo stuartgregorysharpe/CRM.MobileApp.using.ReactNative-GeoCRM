@@ -4,12 +4,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
+import {notifyMsg} from '../../../../../constants/Helper';
 import ActionForm from '../forms/ActionForm';
 import {getAddActionItemPostValue} from '../helper';
-import dummyData from '../add_action_items_dummyData.json';
 const AddActionFormContainer = props => {
   const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    description: '',
+    selected_user_id: null,
+    due_date: null,
+  });
   const dispatch = useDispatch();
   const {locationId} = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -32,13 +36,6 @@ const AddActionFormContainer = props => {
       .catch(e => {
         setIsLoading(false);
       });
-    //remove for production
-    const formBaseData = dummyData;
-    if (formBaseData && formBaseData.user_field) {
-      const {users, selected_user_id} = formBaseData.user_field;
-      setUsers(users);
-      setFormData({...formData, selected_user_id: selected_user_id});
-    }
   };
   useEffect(() => {
     load();
@@ -57,16 +54,17 @@ const AddActionFormContainer = props => {
           notifyMsg(dispatch, 'Success');
         }
         setIsLoading(false);
+        if (props.onButtonAction) {
+          props.onButtonAction({
+            type: Constants.actionType.ACTION_FORM_SUBMIT,
+            value: submitValueData,
+          });
+        }
       })
       .catch(e => {
+        console.log('error', e);
         setIsLoading(false);
       });
-    if (props.onButtonAction) {
-      props.onButtonAction({
-        type: Constants.actionType.ACTION_FORM_SUBMIT,
-        value: submitValueData,
-      });
-    }
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -82,6 +80,7 @@ const AddActionFormContainer = props => {
         onSubmit={() => {
           onSubmit();
         }}
+        isLoading={isLoading}
         title={'Add Action Item'}
         style={{marginTop: 16, marginHorizontal: 10, marginBottom: 16}}
       />

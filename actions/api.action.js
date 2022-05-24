@@ -8,9 +8,12 @@ export const getApiRequest = async (route, param) => {
   var baseUrl = await getBaseUrl();
 
   var url = `${baseUrl}/${route}`;
+  console.log('call url', url);
   if (route.includes('local_api_old')) {
     url = route;
   }
+
+  console.log('url', url);
   return new Promise(function (resolve, reject) {
     axios
       .get(url, {
@@ -54,6 +57,9 @@ export const postApiRequest = async (route, postData) => {
     url = route;
   }
 
+  console.log('URL###', url);
+  console.log('Param ', postData);
+
   return new Promise(function (resolve, reject) {
     axios
       .post(url, postData, {
@@ -93,6 +99,8 @@ export const postApiRequestMultipart = async (route, postData) => {
   }
 
   return new Promise(function (resolve, reject) {
+    console.log('url', url);
+    console.log('myforms', JSON.stringify(postData));
     axios
       .post(url, postData, {
         headers: {
@@ -103,12 +111,14 @@ export const postApiRequestMultipart = async (route, postData) => {
         },
       })
       .then(res => {
+        console.log('res', res.data);
         if (res.data.status && res.data.status === 'success') {
           resolve(res.data);
         }
         resolve(0);
       })
       .catch(err => {
+        console.log('Err', JSON.parse(err));
         const error = err.response;
         if (
           error.status === 401 &&

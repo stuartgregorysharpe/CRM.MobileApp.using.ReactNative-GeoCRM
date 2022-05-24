@@ -20,6 +20,7 @@ export default {
     ACTION_SELECT_ALL: 'ACTION_SELECT_ALL',
     ACTION_DONE: 'ACTION_DONE',
     ACTION_CAPTURE: 'ACTION_CAPTURE',
+    ACTION_ADD: 'ACTION_ADD',
   },
   debugMode: {
     NO_DEBUG: 0,

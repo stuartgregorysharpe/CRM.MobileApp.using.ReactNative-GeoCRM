@@ -41,7 +41,7 @@ export default function ActionItems(props) {
             }}>
             <Divider></Divider>
           </TouchableOpacity>
-          <ActionItemsContainer {...props} />
+          <ActionItemsContainer {...props} hasAdd />
         </View>
       </View>
     </Modal>

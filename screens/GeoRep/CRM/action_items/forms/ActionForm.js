@@ -35,6 +35,7 @@ const ActionForm = React.forwardRef((props, ref) => {
       const _formData = {...formData};
       _formData[fieldName] = value;
       props.updateFormData(_formData);
+
       if (fieldName) {
         checkFormFieldValid([fieldName], _formData);
       }
@@ -54,6 +55,8 @@ const ActionForm = React.forwardRef((props, ref) => {
         }
       }
     });
+    console.log(_errors);
+    console.log(formData);
     setErrors(_errors);
     return valid;
   };
