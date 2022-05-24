@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import AddActionItemModal from './CRM/action_items/modals/AddActionItemModal';
-import ActionItemsModal from './CRM/action_items/modals/ActionItemsModal';
+
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
     if (screenProps) {
@@ -26,7 +26,7 @@ export default function UITestScreen({screenProps}) {
           }}>
           <Text>{'Add Action '}</Text>
         </TouchableOpacity>
-        <ActionItemsModal ref={addActionItemModalRef} locationId={'1354'} />
+        <AddActionItemModal ref={addActionItemModalRef} locationId={'135'} />
       </View>
     </SafeAreaView>
   );

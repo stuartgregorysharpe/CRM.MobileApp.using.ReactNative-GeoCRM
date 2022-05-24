@@ -10,8 +10,8 @@ import CTextInput from '../../../../../components/common/CTextInput';
 import CDateTimePickerInput from '../../../../../components/common/SelectInput/CDateTimePickerInput';
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 
-const ActionForm = React.forwardRef((props, ref) => {
-  const {users, formData} = props;
+const UpdateActionForm = React.forwardRef((props, ref) => {
+  const {statues, formData} = props;
   const descriptionRef = useRef(null);
   const [errors, setErrors] = useState({
     description: false,
@@ -66,12 +66,11 @@ const ActionForm = React.forwardRef((props, ref) => {
     ]);
     return valid;
   };
-  const userList = useMemo(() => {
-    return users.map(user => {
+  const statusList = useMemo(() => {
+    return statuses.map(status => {
       return {
-        ...user,
-        label: user.user_name,
-        value: user.user_id,
+        label: status,
+        value: status,
       };
     });
   });
@@ -81,6 +80,15 @@ const ActionForm = React.forwardRef((props, ref) => {
         ref={descriptionRef}
         label="Details"
         isRequired
+        value={formData.description}
+        hasError={errors.description}
+        onChangeText={text => {
+          updateFormData('description', text);
+        }}
+      />
+      <CTextInput
+        ref={descriptionRef}
+        label="Add Comment"
         value={formData.description}
         hasError={errors.description}
         onChangeText={text => {
@@ -106,6 +114,16 @@ const ActionForm = React.forwardRef((props, ref) => {
         }}
         containerStyle={{marginTop: 10}}
       />
+      <CSingleSelectInput
+        placeholder="Select User"
+        checkedValue={formData.selected_status}
+        items={statusList}
+        hasError={errors.selected_status}
+        onSelectItem={item => {
+          updateFormData('selected_status', item.value);
+        }}
+        containerStyle={{marginTop: 10}}
+      />
     </View>
   );
 });
@@ -117,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ActionForm;
+export default UpdateActionForm;
