@@ -26,7 +26,7 @@ export default function UITestScreen({screenProps}) {
           }}>
           <Text>{'Add Action '}</Text>
         </TouchableOpacity>
-        <AddActionItemModal ref={addActionItemModalRef} />
+        <AddActionItemModal ref={addActionItemModalRef} locationId={'1354'} />
       </View>
     </SafeAreaView>
   );

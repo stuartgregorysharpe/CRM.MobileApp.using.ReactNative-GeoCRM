@@ -8,7 +8,7 @@ const CSingleSelectInput = props => {
   const {items} = props;
   const selectModalRef = useRef(null);
 
-  const {placeholder, description, checkedValue} = props;
+  const {placeholder, description, checkedValue, hasError} = props;
 
   const getTextFormCheckedValue = () => {
     if (items) {
@@ -35,6 +35,7 @@ const CSingleSelectInput = props => {
         showDescription={showDescription}
         description={description || placeholder}
         placeholder={placeholder}
+        hasError={hasError}
         text={text}
         onPress={onOpenPicker}
       />

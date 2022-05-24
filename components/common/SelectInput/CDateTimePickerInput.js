@@ -9,7 +9,7 @@ const CDateTimePickerInput = props => {
   const [isShowDateTimePickerModal, setIsShowDateTimePickerModal] =
     useState(false);
 
-  const {placeholder, description, value} = props;
+  const {placeholder, description, value, hasError} = props;
 
   const formatDateTime = () => {
     if (value) {
@@ -40,6 +40,7 @@ const CDateTimePickerInput = props => {
         description={description || placeholder}
         placeholder={placeholder}
         text={text}
+        hasError={hasError}
         hideSuffixIcon
         onPress={onOpenPicker}
       />
