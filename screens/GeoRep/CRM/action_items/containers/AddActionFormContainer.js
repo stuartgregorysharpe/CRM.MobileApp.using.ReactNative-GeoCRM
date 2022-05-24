@@ -6,13 +6,11 @@ import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
 import {notifyMsg} from '../../../../../constants/Helper';
-import ActionForm from '../forms/ActionForm';
 import {
   constructAddActionFormStructure,
   getAddActionItemPostValue,
 } from '../helper';
 const AddActionFormContainer = props => {
-  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
   const dispatch = useDispatch();
@@ -28,7 +26,6 @@ const AddActionFormContainer = props => {
       .then(data => {
         const {formData, formStructure} = constructAddActionFormStructure(data);
         setFormData(formData);
-        console.log('formData', formData);
         setFormStructure(formStructure);
         setIsLoading(false);
       })
@@ -61,7 +58,6 @@ const AddActionFormContainer = props => {
         }
       })
       .catch(e => {
-        console.log('error', e);
         setIsLoading(false);
       });
   };
