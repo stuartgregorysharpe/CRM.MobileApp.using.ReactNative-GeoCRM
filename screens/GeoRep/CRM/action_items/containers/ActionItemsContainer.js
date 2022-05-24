@@ -7,18 +7,28 @@ import {style} from '../../../../../constants/Styles';
 import BubbleMenu from '../../../../../components/common/BubbleMenu';
 import {Constants} from '../../../../../constants';
 import AddActionItemModal from '../modals/AddActionItemModal';
+import UpdateActionItemModal from '../modals/UpdateActionItemModal';
 
 const ActionItemsContainer = props => {
   const {locationId, hasAdd} = props;
   const [tabIndex, setTabIndex] = useState(0);
   const addActionItemModalRef = useRef(null);
+  const updateActionItemModalRef = useRef(null);
+  const [selectedActionItem, setSelectedActionItem] = useState(null);
   const tabs = [
     {title: 'All', id: 0},
     {title: 'Tasks', id: 1},
     {title: 'Action Items', id: 2},
     {title: 'Completed', id: 3},
   ];
-
+  useEffect(() => {
+    if (updateActionItemModalRef && updateActionItemModalRef.current) {
+      updateActionItemModalRef.current.showModal();
+    }
+  }, [selectedActionItem]);
+  const onPressActionItem = item => {
+    setSelectedActionItem(item);
+  };
   return (
     <View style={[styles.container, props.style]}>
       <View style={{marginTop: 10, marginHorizontal: 10}}>
@@ -31,7 +41,10 @@ const ActionItemsContainer = props => {
           containerStyle={style.card}
         />
       </View>
-      <Actions locationId={locationId} tabIndex={tabIndex}></Actions>
+      <Actions
+        locationId={locationId}
+        tabIndex={tabIndex}
+        onPressActionItem={onPressActionItem}></Actions>
       {hasAdd && (
         <BubbleMenu
           items={[{text: '+', type: Constants.actionType.ACTION_ADD}]}
@@ -42,6 +55,13 @@ const ActionItemsContainer = props => {
         />
       )}
       <AddActionItemModal ref={addActionItemModalRef} locationId={locationId} />
+      <UpdateActionItemModal
+        ref={updateActionItemModalRef}
+        locationId={locationId}
+        actionItemId={
+          selectedActionItem ? selectedActionItem.action_item_id : null
+        }
+      />
     </View>
   );
 };

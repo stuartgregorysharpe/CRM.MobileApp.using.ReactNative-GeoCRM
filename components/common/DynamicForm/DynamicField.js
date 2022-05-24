@@ -76,7 +76,7 @@ const DynamicField = props => {
   if (field_type == 'date') {
     return renderDatePicker();
   }
-  return renderField();
+  return null;
 };
 
 export default DynamicField;

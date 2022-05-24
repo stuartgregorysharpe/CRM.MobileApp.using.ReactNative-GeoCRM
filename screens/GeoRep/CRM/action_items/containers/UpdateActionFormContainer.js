@@ -2,35 +2,35 @@ import React, {useState, useEffect, useReducer, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
+import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
 import {notifyMsg} from '../../../../../constants/Helper';
-import ActionForm from '../forms/ActionForm';
-import {getAddActionItemPostValue} from '../helper';
+import {
+  constructUpdateActionFormStructure,
+  getUpdateActionItemPostValue,
+} from '../helper';
 const UpdateActionFormContainer = props => {
-  const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({
-    description: '',
-    selected_user_id: null,
-    due_date: null,
-  });
+  const [formData, setFormData] = useState({});
+  const [formStructure, setFormStructure] = useState([]);
   const dispatch = useDispatch();
-  const {locationId} = props;
+  const {locationId, actionItemId} = props;
   const [isLoading, setIsLoading] = useState(false);
   const actionFormRef = useRef(null);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const load = () => {
     setIsLoading(true);
     getApiRequest('actionsitems/action-item-details', {
-      action_item_type: 'action',
+      action_item_id: actionItemId,
     })
       .then(data => {
-        const formBaseData = data;
-        if (formBaseData && formBaseData.user_field) {
-          const {users, selected_user_id} = formBaseData.user_field;
-          setUsers(users);
-          setFormData({...formData, selected_user_id: selected_user_id});
+        if (props.updateModalInfo) {
+          props.updateModalInfo({createdBy: data.created_by});
         }
+        const {formData, formStructure} =
+          constructUpdateActionFormStructure(data);
+        setFormData(formData);
+        setFormStructure(formStructure);
         setIsLoading(false);
       })
       .catch(e => {
@@ -43,10 +43,11 @@ const UpdateActionFormContainer = props => {
   const onSubmit = () => {
     if (!actionFormRef.current.validateForm()) return;
     setIsLoading(true);
-    const submitValueData = getAddActionItemPostValue(
+    const submitValueData = getUpdateActionItemPostValue(
       formData,
       locationId,
       currentLocation,
+      {action_item_id: actionItemId},
     );
     postApiRequest('actionsitems/action-item-details', submitValueData)
       .then(res => {
@@ -62,16 +63,15 @@ const UpdateActionFormContainer = props => {
         }
       })
       .catch(e => {
-        console.log('error', e);
         setIsLoading(false);
       });
   };
   return (
     <View style={[styles.container, props.style]}>
-      <ActionForm
-        users={users}
+      <DynamicForm
         ref={actionFormRef}
         formData={formData}
+        formStructureData={formStructure}
         updateFormData={formData => {
           setFormData(formData);
         }}
@@ -81,7 +81,7 @@ const UpdateActionFormContainer = props => {
           onSubmit();
         }}
         isLoading={isLoading}
-        title={'Add Action Item'}
+        title={'Submit'}
         style={{marginTop: 16, marginHorizontal: 10, marginBottom: 16}}
       />
     </View>

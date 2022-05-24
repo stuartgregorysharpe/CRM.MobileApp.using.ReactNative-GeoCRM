@@ -84,7 +84,13 @@ const Actions = props => {
 
   const renderItems = (item, index) => {
     return (
-      <View style={{marginHorizontal: 15}}>
+      <TouchableOpacity
+        onPress={() => {
+          if (props.onPressActionItem) {
+            props.onPressActionItem(item);
+          }
+        }}
+        style={{marginHorizontal: 15}}>
         <View
           style={{
             flexDirection: 'row',
@@ -121,7 +127,7 @@ const Actions = props => {
           </View>
         </View>
         <View style={{height: 1, backgroundColor: Colors.greyColor}}></View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
