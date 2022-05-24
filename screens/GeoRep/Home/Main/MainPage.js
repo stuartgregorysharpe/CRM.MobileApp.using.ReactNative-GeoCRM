@@ -17,7 +17,7 @@ import OdometerReadingModal from './modal/OdometerReadingModal';
 
 export default function MainPage(props) {
 
-    const [isStart, setIsStart] = useState(true);
+    const [isStart, setIsStart] = useState(true);    
     const [pages, setPages] = useState(["",""]);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [activityCard, setActivityCard] = useState(null);
@@ -25,6 +25,7 @@ export default function MainPage(props) {
     const pageWidth = Dimensions.get("screen").width - 20;
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const odometerReadingModalRef = useRef(null);
+    const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
 
     useEffect(() => {
         let isSubscribed = true;        
@@ -33,7 +34,8 @@ export default function MainPage(props) {
           current_longitude: currentLocation.longitude != undefined ? currentLocation.longitude : 1
         };            
         getApiRequest("https://dev.georep.com/local_api_old/home/main-dashboard", param).then((res) => {      
-            if(isSubscribed){              
+            if(isSubscribed){
+              console.log("res",res)
               setVisitCard(res.visits_card);
               setActivityCard(res.activity_card);
               setIsStart(res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
@@ -64,11 +66,10 @@ export default function MainPage(props) {
     }
 
     const onCaptureAction = ({type, value}) => {
-      if (type == Constants.actionType.ACTION_CAPTURE) {                
-      }
+      setIsStart(!isStart);      
+      // odometerReadingModalRef.current.hideModal();
     };
-
-
+    
     const renderCards = (item, index) => {            
         if(index == 0){
           return (
@@ -103,8 +104,12 @@ export default function MainPage(props) {
                 <SubmitButton bgStyle={{backgroundColor:isStart? Colors.disabledColor : Colors.redColor , borderRadius:3}}
                   title={isStart? "Start My Day" : 'End My Day'}
                   onSubmit={() => {
-                      setIsStart(!isStart);
-                      odometerReadingModalRef.current.showModal();
+                      if(features.includes("odometer_reading")){
+                        odometerReadingModalRef.current.showModal();
+                      }else{
+                        setIsStart(!isStart);
+                      }                      
+                      
                   }}
                 ></SubmitButton>
             </View>
@@ -136,7 +141,9 @@ export default function MainPage(props) {
 
             <OdometerReadingModal
               ref={odometerReadingModalRef}       
-              title={"Odometer Reading"}       
+              title={"Odometer Reading"}  
+              isStart={isStart}
+              currentLocation={currentLocation}     
               onButtonAction={onCaptureAction}
             />
 

@@ -107,7 +107,8 @@ export function selectPicker (title, description ,launchImageLibrary ,launchCame
           launchCamera();
         }
       },
-    ]
+    ],
+    { cancelable: true}
   );
 }
 

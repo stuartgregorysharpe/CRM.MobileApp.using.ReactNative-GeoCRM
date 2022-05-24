@@ -19,7 +19,6 @@ import {AppText} from '../../../../../components/common/AppText';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
-import {selectPicker} from '../../../../../constants/Helper';
 import {ScrollView} from 'react-native-gesture-handler';
 import DocumentPicker from 'react-native-document-picker';
 
