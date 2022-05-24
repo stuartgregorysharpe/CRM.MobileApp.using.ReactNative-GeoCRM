@@ -7,7 +7,7 @@
       "is_required": true
   },
   {
-      "field_type": "text",
+      "field_type": "dropdown",
       "field_label": "Select User",
       "field_name": "selected_user_id",
       "items": [
