@@ -1,3 +1,4 @@
+import {Constants} from '../../../../constants';
 import {getPostParameter} from '../../../../constants/Helper';
 
 export function getAddActionItemPostValue(
@@ -80,7 +81,7 @@ export function getUpdateActionItemPostValue(
   return postData;
 }
 
-export function constructUpdateActionFormStructure(formBaseData) {
+export function constructUpdateActionFormStructure(formBaseData, userType) {
   if (!formBaseData) return [];
   const descriptionField = formBaseData.dynamic_fields[0];
   descriptionField.is_required = true;
@@ -137,14 +138,15 @@ export function constructUpdateActionFormStructure(formBaseData) {
     initial_value: null,
     is_required: true,
   };
-  const formStructure = [
-    descriptionField,
-    commentField,
-    selectUserField,
-    dueDateField,
-    selectStatusField,
-    takePhotoField,
-  ];
+  const formStructure = [descriptionField, commentField];
+  if (
+    userType == Constants.userType.USER_TYPE_ADMIN ||
+    userType == Constants.userType.USER_TYPE_SUPER_ADMIN
+  ) {
+    formStructure.push(selectUserField);
+  }
+
+  formStructure.push(dueDateField, selectStatusField, takePhotoField);
   const formData = {};
   formStructure.forEach(item => {
     formData[item.field_name] = item.initial_value;

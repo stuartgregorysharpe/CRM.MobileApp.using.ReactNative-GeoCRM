@@ -1,59 +1,57 @@
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from "jwt-decode";
-export const storeUserData = async (value) => {
+import jwt_decode from 'jwt-decode';
+export const storeUserData = async value => {
   try {
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem('@user', jsonValue)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@user', jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
+};
 export const getUserData = async () => {
   try {
-    const jsonValue = await AsyncStorage.getItem('@user')
+    const jsonValue = await AsyncStorage.getItem('@user');
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
   }
-}
+};
 
-export const storePinSvg = async ( type,  value) => {
+export const storePinSvg = async (type, value) => {
   try {
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem(type, jsonValue)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(type, jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
-export const getPinSvg = async (type) => {
+};
+export const getPinSvg = async type => {
   try {
-    const jsonValue = await AsyncStorage.getItem(type)
+    const jsonValue = await AsyncStorage.getItem(type);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
   }
-}
+};
 
-
-export const setToken = async (value) => {
+export const setToken = async value => {
   try {
-    await AsyncStorage.setItem('@token', String(value))
+    await AsyncStorage.setItem('@token', String(value));
   } catch (e) {
     // saving error
   }
-}
+};
 
 export const getToken = async () => {
   try {
-    const value = await AsyncStorage.getItem('@token')
+    const value = await AsyncStorage.getItem('@token');
     if (value !== null) {
       return value;
     }
   } catch (e) {
     return null;
   }
-}
+};
 
 export const getBaseUrl = async () => {
   try {
@@ -65,7 +63,7 @@ export const getBaseUrl = async () => {
     console.log(e);
     return null;
   }
-}
+};
 
 export const getUserId = async () => {
   try {
@@ -77,47 +75,52 @@ export const getUserId = async () => {
     console.log(e);
     return null;
   }
-}
+};
+export const getUserType = async () => {
+  try {
+    const token = await getToken();
+    const data = token != null ? jwt_decode(token) : null;
+    const user_type = data.user_scopes.geo_rep.user_type;
+    return user_type;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
 
-
-export const getPolygonFillColorTransparency = async () =>{
-  
+export const getPolygonFillColorTransparency = async () => {
   try {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     var code = data.user_scopes.geo_rep.polygon_fillColor_transparency;
-    console.log("xxxx", code);
-    if (code !== undefined) {      
-      return "" + parseFloat(code) * 100;
+    console.log('xxxx', code);
+    if (code !== undefined) {
+      return '' + parseFloat(code) * 100;
     } else {
-      return "50"
+      return '50';
     }
-  } catch (e) {    
-    return "50"
+  } catch (e) {
+    return '50';
   }
+};
 
-}
-
-
-export const getMapMinZoomLevel = async () =>{
-  
+export const getMapMinZoomLevel = async () => {
   try {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     var map_min_zoom_level = data.user_scopes.geo_rep.map_min_zoom_level;
     //console.log("featuers", features);
     if (map_min_zoom_level !== undefined) {
-      return parseInt(map_min_zoom_level);      
+      return parseInt(map_min_zoom_level);
     } else {
       return 8;
     }
-  } catch (e) {    
+  } catch (e) {
     return 8;
   }
-}
+};
 
-
-export const checkFeatureIncludeParam = async (param) => {
+export const checkFeatureIncludeParam = async param => {
   try {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
@@ -133,24 +136,24 @@ export const checkFeatureIncludeParam = async (param) => {
     console.log(e);
     return false;
   }
-}
+};
 
 export const storeFilterData = async (type, value) => {
   try {
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem(type, jsonValue)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(type, jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
+};
 
-export const clearFilterData = async (type) => {
+export const clearFilterData = async type => {
   try {
     let value = {
       stage_id: [],
       outcome_id: [],
       dispositions: [],
-      customs: []
+      customs: [],
     };
     if (type === '@form_filter') {
       value = {
@@ -161,84 +164,84 @@ export const clearFilterData = async (type) => {
       value = {
         opportunity_status_id: [],
         opportunity_fields: [],
-        campaign_id: ''
-      }
+        campaign_id: '',
+      };
     }
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem(type, jsonValue)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(type, jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
+};
 
-export const getFilterData = async (type) => {
+export const getFilterData = async type => {
   try {
     let initialParam = {
       stage_id: [],
       outcome_id: [],
       dispositions: [],
-      customs: []
+      customs: [],
     };
     if (type === '@form_filter') {
       initialParam = {
-        form_type: []
+        form_type: [],
       };
     }
     if (type === '@pipeline_filter') {
       initialParam = {
         opportunity_status_id: [],
         opportunity_fields: [],
-        campaign_id: ''
-      }
+        campaign_id: '',
+      };
     }
-    const jsonValue = await AsyncStorage.getItem(type)
-    return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialParam;
+    const jsonValue = await AsyncStorage.getItem(type);
+    return jsonValue != null && jsonValue !== ''
+      ? JSON.parse(jsonValue)
+      : initialParam;
   } catch (e) {
     // error reading value
   }
-}
+};
 
-
-export const storeLocalValue = async ( type, value) => {
+export const storeLocalValue = async (type, value) => {
   try {
-    await AsyncStorage.setItem(type, String(value))
+    await AsyncStorage.setItem(type, String(value));
   } catch (e) {
     // saving error
   }
-}
-export const getLocalData = async (type) => {
+};
+export const getLocalData = async type => {
   try {
-    const value = await AsyncStorage.getItem(type)
+    const value = await AsyncStorage.getItem(type);
     if (value !== null) {
       return value;
     }
   } catch (e) {
     return null;
   }
-}
+};
 
-export const storeLocationLoop = async (value) => {
+export const storeLocationLoop = async value => {
   try {
-
     var date = new Date().getDate();
-    var month = new Date().getMonth();    
-    await storeLocalValue( "@current_date", month.toString() + date.toString());
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem('@location_loop', jsonValue)
+    var month = new Date().getMonth();
+    await storeLocalValue('@current_date', month.toString() + date.toString());
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@location_loop', jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
+};
 
 export const getLocationLoop = async () => {
   try {
     let initialVal = [];
-    const jsonValue = await AsyncStorage.getItem('@location_loop')
-    return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialVal;
-  } catch (e) {
-
-  }
-}
+    const jsonValue = await AsyncStorage.getItem('@location_loop');
+    return jsonValue != null && jsonValue !== ''
+      ? JSON.parse(jsonValue)
+      : initialVal;
+  } catch (e) {}
+};
 
 export const getPipelineFilterData = async () => {
   try {
@@ -249,23 +252,25 @@ export const getPipelineFilterData = async () => {
       customs: [],
       opportunity_status_id: [],
       opportunity_fields: [],
-      campaign_id: ''
+      campaign_id: '',
     };
-    const jsonValue = await AsyncStorage.getItem('@pipeline_filter')
-    return jsonValue != null && jsonValue !== '' ? JSON.parse(jsonValue) : initialParam;
+    const jsonValue = await AsyncStorage.getItem('@pipeline_filter');
+    return jsonValue != null && jsonValue !== ''
+      ? JSON.parse(jsonValue)
+      : initialParam;
   } catch (e) {
     // error reading value
   }
-}
+};
 
-export const storePipelineFilterData = async (value) => {
+export const storePipelineFilterData = async value => {
   try {
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem('@pipeline_filter', jsonValue)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@pipeline_filter', jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
+};
 
 export const clearPipelineFilterData = async () => {
   try {
@@ -276,12 +281,11 @@ export const clearPipelineFilterData = async () => {
       customs: [],
       opportunity_status_id: [],
       opportunity_fields: [],
-      campaign_id: ''
+      campaign_id: '',
     };
-    const jsonValue = JSON.stringify(value)
-    await AsyncStorage.setItem('@pipeline_filter', jsonValue)
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@pipeline_filter', jsonValue);
   } catch (e) {
-    console.log("error", e);
+    console.log('error', e);
   }
-}
-
+};

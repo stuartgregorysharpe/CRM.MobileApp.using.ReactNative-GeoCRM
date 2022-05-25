@@ -38,4 +38,8 @@ export default {
     MODAL_TYPE_BOTTOM: 'MODAL_TYPE_BOTTOM',
     MODAL_TYPE_FULL: 'MODAL_TYPE_FULL',
   },
+  userType: {
+    USER_TYPE_SUPER_ADMIN: 'Super Admin',
+    USER_TYPE_ADMIN: 'Admin',
+  },
 };

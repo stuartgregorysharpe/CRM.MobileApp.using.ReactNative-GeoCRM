@@ -1,4 +1,5 @@
 import React from 'react';
+import TakePhotoView from '../../shared/TakePhotoView';
 import CTextInput from '../CTextInput';
 import CDateTimePickerInput from '../SelectInput/CDateTimePickerInput';
 import CSingleSelectInput from '../SelectInput/CSingleSelectInput';
@@ -66,6 +67,19 @@ const DynamicField = props => {
       />
     );
   };
+  const renderTakePhotoView = () => {
+    return (
+      <TakePhotoView
+        isOptimize={true}
+        onUpdatePhotos={photos => {
+          updateFormData(field_name, photos);
+        }}
+        disabled={disabled}
+        photos={value}
+        style={{marginVertical: 24}}
+      />
+    );
+  };
   if (!field_type) return null;
   if (field_type == 'text') {
     return renderText();
@@ -75,6 +89,9 @@ const DynamicField = props => {
   }
   if (field_type == 'date') {
     return renderDatePicker();
+  }
+  if (field_type == 'take_photo') {
+    return renderTakePhotoView();
   }
   return null;
 };

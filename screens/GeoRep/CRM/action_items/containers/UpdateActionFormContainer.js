@@ -6,6 +6,7 @@ import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
 import {notifyMsg} from '../../../../../constants/Helper';
+import {getUserType} from '../../../../../constants/Storage';
 import {
   constructUpdateActionFormStructure,
   getUpdateActionItemPostValue,
@@ -27,11 +28,15 @@ const UpdateActionFormContainer = props => {
         if (props.updateModalInfo) {
           props.updateModalInfo({createdBy: data.created_by});
         }
-        const {formData, formStructure} =
-          constructUpdateActionFormStructure(data);
-        setFormData(formData);
-        setFormStructure(formStructure);
-        setIsLoading(false);
+        getUserType().then(userType => {
+          const {formData, formStructure} = constructUpdateActionFormStructure(
+            data,
+            userType,
+          );
+          setFormData(formData);
+          setFormStructure(formStructure);
+          setIsLoading(false);
+        });
       })
       .catch(e => {
         setIsLoading(false);

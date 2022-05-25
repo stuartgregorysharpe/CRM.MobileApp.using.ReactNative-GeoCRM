@@ -25,7 +25,7 @@ const TakePhotoView = props => {
   };
   const updateImageData = path => {
     setIsPicker(false);
-    if (photos && iphotos !== null) {
+    if (photos && photos !== null) {
       onUpdatePhotos([...photos, path]);
     } else {
       onUpdatePhotos([path]);
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginBottom: 10,
-    marginLeft: 10,
+    marginRight: 10,
   },
 
   imageContainer: {

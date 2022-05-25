@@ -31,7 +31,11 @@ const ActionItemsContainer = props => {
     }
   }, [selectedActionItem]);
   const onPressActionItem = item => {
-    setSelectedActionItem(item);
+    if (item == selectedActionItem) {
+      updateActionItemModalRef.current.showModal();
+    } else {
+      setSelectedActionItem(item);
+    }
   };
   return (
     <View style={[styles.container, props.style]}>
