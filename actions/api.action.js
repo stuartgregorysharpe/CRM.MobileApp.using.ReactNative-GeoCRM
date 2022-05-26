@@ -56,25 +56,29 @@ export const postApiRequest = async (route, postData) => {
   if (route.includes('local_api_old')) {
     url = route;
   }
-
-  console.log('URL###', url);
-  console.log('Param ', postData);
-
+  console.log('postApiRequest -- url', url);
+  console.log('postApiRequest -- data', postData);
   return new Promise(function (resolve, reject) {
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+      'Indempotency-Key': uuid.v4(),
+    };
     axios
       .post(url, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
-        },
+        headers: headers,
       })
       .then(res => {
-        if (res.data.status === 'success') {
+        console.log('postApiRequest -- response', res);
+        if (res.data && res.data.status === 'success') {
           resolve(res.data);
+        } else {
+          resolve(res);
         }
-        resolve(0);
       })
       .catch(err => {
+        console.log('postApiRequest -- error', err);
         const error = err.response;
         if (
           error.status === 401 &&
@@ -118,7 +122,7 @@ export const postApiRequestMultipart = async (route, postData) => {
         resolve(0);
       })
       .catch(err => {
-        console.log('Err', JSON.parse(err));
+        console.log('Err', err);
         const error = err.response;
         if (
           error.status === 401 &&

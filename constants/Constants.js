@@ -42,4 +42,15 @@ export default {
     USER_TYPE_SUPER_ADMIN: 'Super Admin',
     USER_TYPE_ADMIN: 'Admin',
   },
+  buttonType: {
+    BUTTON_TYPE_SUMBIT: 'submit',
+    BUTTON_TYPE_FORM_LINK: 'form_link',
+    BUTTON_TYPE_CHECKIN_LINK: 'checkin_link',
+  },
+  actionItemType: {
+    ACTION_ITEM_TYPE_ACTION: 'Action',
+    ACTION_ITEM_TYPE_TASK: 'Task',
+    ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'Red Flag: Churn',
+    ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'Red Flag: Decline',
+  },
 };

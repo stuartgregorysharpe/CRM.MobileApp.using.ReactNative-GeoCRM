@@ -1,11 +1,20 @@
 import React, {useState, useEffect, useReducer, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
+import {
+  getApiRequest,
+  postApiRequest,
+  postApiRequestMultipart,
+} from '../../../../../actions/api.action';
+import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
-import {notifyMsg} from '../../../../../constants/Helper';
+import {
+  getFileFormat,
+  notifyMsg,
+  objectToFormData,
+} from '../../../../../constants/Helper';
 import {getUserType} from '../../../../../constants/Storage';
 import {
   constructUpdateActionFormStructure,
@@ -14,8 +23,9 @@ import {
 const UpdateActionFormContainer = props => {
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
+  const [buttons, setButtons] = useState([]);
   const dispatch = useDispatch();
-  const {locationId, actionItemId} = props;
+  const {locationId, actionItemId, actionItemType} = props;
   const [isLoading, setIsLoading] = useState(false);
   const actionFormRef = useRef(null);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -32,9 +42,11 @@ const UpdateActionFormContainer = props => {
           const {formData, formStructure} = constructUpdateActionFormStructure(
             data,
             userType,
+            actionItemType,
           );
           setFormData(formData);
           setFormStructure(formStructure);
+          setButtons(data.buttons);
           setIsLoading(false);
         });
       })
@@ -54,7 +66,18 @@ const UpdateActionFormContainer = props => {
       currentLocation,
       {action_item_id: actionItemId},
     );
-    postApiRequest('actionsitems/action-item-details', submitValueData)
+    const action_image = submitValueData.action_image;
+
+    const submitFormData = objectToFormData(submitValueData, '', [
+      'action_image',
+    ]);
+    if (action_image && submitFormData) {
+      action_image.forEach((path, index) => {
+        const file = getFileFormat(path);
+        submitFormData.append(`action_image[${index}]`, file);
+      });
+    }
+    postApiRequestMultipart('actionsitems/action-item-details', submitFormData)
       .then(res => {
         if (res.status === 'success') {
           notifyMsg(dispatch, 'Success');
@@ -77,17 +100,22 @@ const UpdateActionFormContainer = props => {
         ref={actionFormRef}
         formData={formData}
         formStructureData={formStructure}
-        updateFormData={formData => {
-          setFormData(formData);
+        updateFormData={_formData => {
+          setFormData(_formData);
         }}
       />
-      <SubmitButton
-        onSubmit={() => {
-          onSubmit();
+      <DynamicButtons
+        buttons={buttons}
+        onButtonAction={({type, item}) => {
+          if (type == Constants.buttonType.BUTTON_TYPE_SUMBIT) {
+            onSubmit();
+          } else {
+            props.onButtonAction({
+              type: type,
+            });
+          }
         }}
-        isLoading={isLoading}
-        title={'Submit'}
-        style={{marginTop: 16, marginHorizontal: 10, marginBottom: 16}}
+        style={{marginHorizontal: 10, marginBottom: 16, marginTop: 18}}
       />
     </View>
   );

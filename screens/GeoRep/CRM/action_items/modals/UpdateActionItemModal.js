@@ -16,13 +16,35 @@ const UpdateActionItemModal = React.forwardRef((props, ref) => {
       ref.current.hideModal();
     }
   };
+  const {actionItemType} = props;
+  const getModalTitle = actionItemType => {
+    if (
+      actionItemType == Constants.actionItemType.ACTION_ITEM_TYPE_ACTION ||
+      actionItemType == Constants.actionItemType.ACTION_ITEM_TYPE_TASK
+    ) {
+      return 'Update Action Item';
+    } else if (
+      actionItemType == Constants.actionItemType.ACTION_ITEM_TYPE_RED_FLAG_CHURN
+    ) {
+      return 'Red Flag: Churn';
+    } else if (
+      actionItemType ==
+      Constants.actionItemType.ACTION_ITEM_TYPE_RED_FLAG_DECLINE
+    ) {
+      return 'Red Flag: Decline';
+    }
+    return 'Update Action Item';
+  };
+
+  const title = getModalTitle(actionItemType);
+
   const updateModalInfo = ({createdBy}) => {
     setCreateByText('created by ' + createdBy);
   };
   return (
     <CModal
       ref={ref}
-      title={'Update Action Item'}
+      title={title}
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       closableWithOutsideTouch
       onShowModal={() => {

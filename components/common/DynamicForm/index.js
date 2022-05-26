@@ -54,7 +54,6 @@ const DynamicForm = React.forwardRef((props, ref) => {
         }
       }
     });
-    console.log(_errors);
     setErrors(_errors);
     return valid;
   };
@@ -65,6 +64,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
         requiredFields.push(fieldStructure.field_name);
       }
     });
+    console.log('requiredFields', requiredFields);
     const valid = checkFormFieldValid(requiredFields, null, 'require');
     return valid;
   };

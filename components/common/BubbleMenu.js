@@ -15,9 +15,9 @@ const BubbleItem: () => Node = props => {
           props.onPressItem(item);
         }
       }}>
-      {item.icon && <SvgIcon icon={item.icon} width="20px" height="20px" />}
+      {item.icon && <SvgIcon icon={item.icon} width="70px" height="70px" />}
       {item.text && (
-        <Text style={{fontSize: 16, color: Colors.whiteColor}}>
+        <Text style={{fontSize: 20, color: Colors.whiteColor}}>
           {item.text}
         </Text>
       )}
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.primaryRegular,
   },
   bubbleContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginBottom: 12,
     alignItems: 'center',
     justifyContent: 'center',

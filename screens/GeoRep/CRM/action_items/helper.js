@@ -45,6 +45,7 @@ export function constructAddActionFormStructure(formBaseData) {
     editable: '1',
     is_required: true,
   };
+
   const dueDateField = {
     field_type: 'date',
     field_label: 'Select Due Date',
@@ -78,13 +79,22 @@ export function getUpdateActionItemPostValue(
   if (locationId) {
     postData.location_id = locationId;
   }
+  if (postData.action_image) {
+    const actionImages = postData.action_image.filter(x => {
+      const isAlreadyUploaded = x.includes('http');
+      return !isAlreadyUploaded;
+    });
+    postData.action_image = actionImages;
+  }
   return postData;
 }
 
-export function constructUpdateActionFormStructure(formBaseData, userType) {
+export function constructNormalUpdateActionFormStructure(
+  formBaseData,
+  userType,
+) {
   if (!formBaseData) return [];
   const descriptionField = formBaseData.dynamic_fields[0];
-  descriptionField.is_required = true;
   descriptionField.field_name = 'description';
   descriptionField.initial_value = descriptionField.value;
 
@@ -93,7 +103,6 @@ export function constructUpdateActionFormStructure(formBaseData, userType) {
   commentField.initial_value = commentField.value;
 
   const takePhotoField = formBaseData.dynamic_fields[2];
-  takePhotoField.is_required = true;
   takePhotoField.field_name = 'action_image';
   takePhotoField.initial_value = takePhotoField.value;
   const {users, selected_user_id} = formBaseData.user_field;
@@ -112,7 +121,6 @@ export function constructUpdateActionFormStructure(formBaseData, userType) {
     items: userList,
     initial_value: selected_user_id,
     editable: '1',
-    is_required: true,
   };
   const {statuses, selected_status} = formBaseData.status;
   const statusList = statuses.map(status => {
@@ -128,15 +136,14 @@ export function constructUpdateActionFormStructure(formBaseData, userType) {
     items: statusList,
     initial_value: selected_status,
     editable: '1',
-    is_required: true,
   };
+  const due_date = formBaseData.due_date;
   const dueDateField = {
     field_type: 'date',
     field_label: 'Select Due Date',
     field_name: 'due_date',
     editable: '1',
-    initial_value: null,
-    is_required: true,
+    initial_value: due_date,
   };
   const formStructure = [descriptionField, commentField];
   if (
@@ -152,4 +159,51 @@ export function constructUpdateActionFormStructure(formBaseData, userType) {
     formData[item.field_name] = item.initial_value;
   });
   return {formStructure, formData};
+}
+
+const generateFieldName = fieldLabel => {
+  if (!fieldLabel) return 'field';
+  let fieldName = fieldLabel.replaceAll(' ', '_');
+  fieldName = fieldLabel.toLowerCase();
+  return fieldName;
+};
+export function constructRedflagActionFormStructure(formBaseData, userType) {
+  if (!formBaseData) return [];
+  const dynamicFields = formBaseData.dynamic_fields.map(field => {
+    return {
+      ...field,
+      initial_value: field.value,
+      field_name: generateFieldName(field.field_label),
+    };
+  });
+  const due_date = formBaseData.due_date;
+  const dueDateField = {
+    field_type: 'date',
+    field_label: 'Select Due Date',
+    field_name: 'due_date',
+    editable: '1',
+    initial_value: due_date,
+  };
+  const formStructure = [...dynamicFields, dueDateField];
+
+  const formData = {};
+  formStructure.forEach(item => {
+    formData[item.field_name] = item.initial_value;
+  });
+  return {formStructure, formData};
+}
+
+export function constructUpdateActionFormStructure(
+  formBaseData,
+  userType,
+  actionItemType,
+) {
+  if (
+    actionItemType ==
+      Constants.actionItemType.ACTION_ITEM_TYPE_RED_FLAG_CHURN ||
+    actionItemType == Constants.actionItemType.ACTION_ITEM_TYPE_RED_FLAG_DECLINE
+  ) {
+    return constructRedflagActionFormStructure(formBaseData, userType);
+  }
+  return constructNormalUpdateActionFormStructure(formBaseData, userType);
 }

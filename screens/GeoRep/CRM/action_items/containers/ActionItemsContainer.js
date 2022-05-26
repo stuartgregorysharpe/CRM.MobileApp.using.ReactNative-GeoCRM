@@ -21,21 +21,14 @@ const ActionItemsContainer = props => {
     {title: 'Action Items', id: 2},
     {title: 'Completed', id: 3},
   ];
-  useEffect(() => {
-    if (
-      updateActionItemModalRef &&
-      updateActionItemModalRef.current &&
-      selectedActionItem
-    ) {
-      updateActionItemModalRef.current.showModal();
-    }
-  }, [selectedActionItem]);
+
   const onPressActionItem = item => {
-    if (item == selectedActionItem) {
-      updateActionItemModalRef.current.showModal();
-    } else {
-      setSelectedActionItem(item);
-    }
+    //if (item == selectedActionItem) {
+    setSelectedActionItem(item);
+    updateActionItemModalRef.current.showModal();
+    //} else {
+
+    //}
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -46,7 +39,7 @@ const ActionItemsContainer = props => {
           onSelectTab={(item, index) => {
             setTabIndex(index);
           }}
-          containerStyle={style.card}
+          containerStyle={[style.card]}
         />
       </View>
       <Actions
@@ -55,11 +48,16 @@ const ActionItemsContainer = props => {
         onPressActionItem={onPressActionItem}></Actions>
       {hasAdd && (
         <BubbleMenu
-          items={[{text: '+', type: Constants.actionType.ACTION_ADD}]}
+          items={[
+            {
+              icon: 'Round_Btn_Default_Dark',
+              type: Constants.actionType.ACTION_ADD,
+            },
+          ]}
           onPressItem={() => {
             addActionItemModalRef.current.showModal();
           }}
-          style={{marginRight: 16, marginBottom: 32}}
+          style={{marginRight: 20, marginBottom: 110}}
         />
       )}
       <AddActionItemModal ref={addActionItemModalRef} locationId={locationId} />
@@ -68,6 +66,9 @@ const ActionItemsContainer = props => {
         locationId={locationId}
         actionItemId={
           selectedActionItem ? selectedActionItem.action_item_id : null
+        }
+        actionItemType={
+          selectedActionItem ? selectedActionItem.action_item_type : null
         }
       />
     </View>
