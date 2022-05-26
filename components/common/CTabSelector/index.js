@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'stretch',
+    height: 38,
   },
   nextButtonContainer: {
     width: 20,
