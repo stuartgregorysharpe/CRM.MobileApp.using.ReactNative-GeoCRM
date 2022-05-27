@@ -22,6 +22,7 @@ import {GuideInfoView} from './partial/GuideInfoView';
 import {expireToken} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
+import NavigationHeader from '../../../components/Header/NavigationHeader';
 
 let isInfoWindow = false;
 
@@ -29,13 +30,9 @@ export default function FormsScreen(props) {
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
   const [isInfo, setIsInfo] = useState(false);
-  const [locationX, setLocationX] = useState(0);
-  const [locationY, setLocationY] = useState(0);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
-  const [bubbleText, setBubleText] = useState({});
+
+  const [bubbleText, setBubbleText] = useState({});
   const [isFilter, setIsFilter] = useState(false);
-  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const locationIdSpecific = props.route.params
     ? props.route.params.locationInfo
     : null;
@@ -43,7 +40,7 @@ export default function FormsScreen(props) {
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
 
-  console.log('locationIdSpecific', locationIdSpecific);
+  const isShowCustomNavigationHeader = props.isDeeplink;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -136,46 +133,22 @@ export default function FormsScreen(props) {
   };
 
   const _onTouchStart = (e, text) => {
-    // isInfoWindow = true;
-    // setX(e.pageX);
-    // setY(e.pageY);
-    // setLocationX(e.locationX);
-    // setLocationY(e.locationY);
-    console.log('------------- ', text);
-    setBubleText(text);
-    // setTimeout(() => {
-    //   setIsInfo(true);
-    // }, 100)
-
+    setBubbleText(text);
     setIsInfo(true);
-  };
-
-  const getShift = () => {
-    if (Platform.OS === 'ios') {
-      return 65;
-    }
-    return 35;
   };
 
   return (
     <Provider>
-      <View
-        style={styles.container}
-        //onTouchStart={(e) => { setIsInfo(false); }}
-      >
-        {/* <GrayBackground></GrayBackground>
-        {
-          crmStatus && isFilter &&
-          <FormFilterView
-            apply={(filters) => {
-              _callFormLists(filters);
+      <View style={styles.container}>
+        {isShowCustomNavigationHeader && (
+          <NavigationHeader
+            showIcon={true}
+            title={'Forms'}
+            onBackPressed={() => {
+              props.navigation.goBack();
             }}
-            close={() => {
-              setIsFilter(false);
-              dispatch({ type: SLIDE_STATUS, payload: false });
-            }} ></FormFilterView>
-        } */}
-
+          />
+        )}
         <Notification></Notification>
         <FormFilterView
           visible={isFilter}
@@ -198,7 +171,6 @@ export default function FormsScreen(props) {
           }}
           close={() => {
             setIsFilter(false);
-            //dispatch({ type: SLIDE_STATUS, payload: false });
           }}></FormFilterView>
 
         <FilterOptionsModal
@@ -228,7 +200,6 @@ export default function FormsScreen(props) {
           }
           animation={() => {
             setIsFilter(true);
-            //dispatch({ type: SLIDE_STATUS, payload: true });
           }}
           onSearch={text => _onSearch(text)}></SearchBar>
 
@@ -268,21 +239,6 @@ export default function FormsScreen(props) {
           visible={isInfo}
           info={bubbleText}
           onModalClose={() => setIsInfo(false)}></GuideInfoView>
-
-        {/* {
-          isInfo &&
-          <View style={{
-            top: y - locationY - getShift(),
-            position: 'absolute',
-            borderRadius: 5,
-            width: Dimensions.get("window").width,
-            borderRadius: 20,
-          }} key={1}>
-
-            <View style={styles.bubbleTextStyle} key={1}><Text>{bubbleText}</Text></View>
-            <View style={[style.tip, { marginLeft: x - locationX + 3 }]}></View>
-          </View>
-        }         */}
       </View>
     </Provider>
   );

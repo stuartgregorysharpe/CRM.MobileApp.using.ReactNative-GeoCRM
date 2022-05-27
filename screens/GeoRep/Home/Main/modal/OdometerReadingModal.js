@@ -1,35 +1,47 @@
-import React  , { useState , useEffect } from 'react';
-import { View ,StyleSheet , TouchableOpacity, Dimensions , Image ,PermissionsAndroid, Platform}  from 'react-native';
-import { TextInput } from 'react-native-paper';
-import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
-import { AppText } from '../../../../../components/common/AppText';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Image,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
+import {TextInput} from 'react-native-paper';
+import {
+  getApiRequest,
+  postApiRequest,
+  postApiRequestMultipart,
+} from '../../../../../actions/api.action';
+import {AppText} from '../../../../../components/common/AppText';
 import CModal from '../../../../../components/common/CModal';
 import CTextInput from '../../../../../components/common/CTextInput';
-import { SubmitButton } from '../../../../../components/shared/SubmitButton';
+import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
-import { Constants } from '../../../../../constants';
-import { whiteLabel } from '../../../../../constants/Colors';
-import { getPostParameter, selectPicker } from '../../../../../constants/Helper';
+import {Constants} from '../../../../../constants';
+import {whiteLabel} from '../../../../../constants/Colors';
+import {getPostParameter, selectPicker} from '../../../../../constants/Helper';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../../../../../components/modal/PhotoCameraPickerDialog';
 import * as RNLocalize from 'react-native-localize';
-import { useDispatch } from 'react-redux';
-import { Notification } from '../../../../../components/modal/Notification';
-import { showNotification } from '../../../../../actions/notification.action';
+import {useDispatch} from 'react-redux';
+import {Notification} from '../../../../../components/modal/Notification';
+import {showNotification} from '../../../../../actions/notification.action';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
-
-  const {title , isStart , startEndDayId,  currentLocation} = props;
+  const {title, isStart, startEndDayId, currentLocation} = props;
   const dispatch = useDispatch();
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
   const [image, setImage] = useState(null);
   const [isPicker, setIsPicker] = useState(false);
-  const [distanceMeasure , setDistanceMeasure] = useState('km');
+  const [distanceMeasure, setDistanceMeasure] = useState('km');
   const [imageRequired, setImageRequired] = useState(false);
-  const [isStartRequired , setIsStartRequired] = useState(false);
-  const [isEndRequired , setIsEndRequired] = useState(false);
+  const [isStartRequired, setIsStartRequired] = useState(false);
+  const [isEndRequired, setIsEndRequired] = useState(false);
 
   useEffect(() => {
     _callGetOdometer();
@@ -44,57 +56,44 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
     }
   };
 
-  const _callGetOdometer = () => {    
-    console.log("call get odometer")
-    getApiRequest("home/odometer", {}).then((res) => {      
-      console.log("GET odometer" , res)
-      setDistanceMeasure(res.distance_measure);
-      setImageRequired(res.image_required === "1" ? true: false);
-    }).catch((error) => {
-      console.log("ddd",error)
-    });
-  }
-
+  const _callGetOdometer = () => {
+    console.log('call get odometer');
+    getApiRequest('home/odometer', {})
+      .then(res => {
+        console.log('GET odometer', res);
+        setDistanceMeasure(res.distance_measure);
+        setImageRequired(res.image_required === '1' ? true : false);
+      })
+      .catch(error => {});
+  };
 
   const _callOdometer = () => {
-
-    var flag = false;
-    var message = ''
-    if(imageRequired && image === null){
-      message = "Please take a photo";
-      flag = true;   
-      // dispatch(
-      //   showNotification({
-      //     type: 'success',
-      //     message: message,
-      //     buttonText: 'Okay',
-      //   }),
-      // );
-      return;      
+    let hasError = false;
+    if (imageRequired && image === null) {
+      message = 'Please take a photo';
+      hasError = true;
     }
 
-    console.log("is start", isStart)
-    console.log(" val", end)
-    if( isStart && (end == '' || end == undefined) ){
-      message = "Input End Reading";
-      flag = true;
-      setIsStartRequired(true)
-      return;
-    }        
-    if( !isStart && (start == '' || start == undefined) ){
-      message = "Input Start Reading";
-      flag = true;
-      setIsEndRequired(true)
+    if (isStart && (end == '' || end == undefined)) {
+      message = 'Input End Reading';
+      hasError = true;
+      setIsEndRequired(true);
       return;
     }
-   
+    if (!isStart && (start == '' || start == undefined)) {
+      message = 'Input Start Reading';
+      hasError = true;
+      setIsStartRequired(true);
+      return;
+    }
+    if (hasError) return;
     var userParam = getPostParameter(currentLocation);
     var postData = new FormData();
     postData.append('startEndDay_id', startEndDayId);
-    postData.append('reading_type', isStart ? "end_reading" : "start_reading");
+    postData.append('reading_type', isStart ? 'end_reading' : 'start_reading');
     postData.append('reading', isStart ? end : start);
-    if(image){            
-      postData.append('image_included', "1");
+    if (image) {
+      postData.append('image_included', '1');
       postData.append('File[odometer_image]', {
         uri: image.uri,
         type: image.type,
@@ -117,38 +116,39 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         ? currentLocation.longitude
         : '0',
     );
-      
-    postApiRequestMultipart("home/odometer", postData).then((res) => {
-      if(res.status === "success"){
-        setImage(null);             
-        onButtonAction({
-          type: Constants.actionType.ACTION_DONE,
-          value: res.message
-        });   
-      }      
-    }).catch((error) => {
-      console.log("Err",error)
-    });
 
-  }
+    postApiRequestMultipart('home/odometer', postData)
+      .then(res => {
+        if (res.status === 'success') {
+          setImage(null);
+          onButtonAction({
+            type: Constants.actionType.ACTION_DONE,
+            value: res.message,
+          });
+        }
+      })
+      .catch(error => {
+        console.log('Err', error);
+      });
+  };
 
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
-          title: "App Camera Permission",
-          message:"App needs access to your camera ",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK"
-        }
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Camera permission given");
+        console.log('Camera permission given');
         launchCamera();
       } else {
-        console.log("Camera permission denied");
+        console.log('Camera permission denied');
       }
     } catch (err) {
       console.warn(err);
@@ -172,8 +172,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-           setImage(response.assets[0]);
-          // updateLocationImage(response.assets[0].uri);
+          setImage(response.assets[0]);
         }
       }
     });
@@ -199,13 +198,12 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       } else {
         if (response.assets != null && response.assets.length > 0) {
           setImage(response.assets[0]);
-          // updateLocationImage(response.assets[0].uri);
         }
       }
     });
   };
 
-  return (      
+  return (
     <CModal
       ref={ref}
       title={title}
@@ -214,111 +212,125 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       onClear={() => {
         onButtonAction({
           type: Constants.actionType.ACTION_FORM_CLEAR,
-        });  
+        });
       }}
       {...props}>
-
       <View style={styles.container}>
+        <Notification></Notification>
+        <View style={styles.inputContainer}>
+          <CTextInput
+            label="Start Reading"
+            disabled={isStart}
+            value={start}
+            keyboardType={'number-pad'}
+            returnKeyType={'done'}
+            hasError={!isStart && isStartRequired}
+            right={
+              isStartRequired ? null : (
+                <TextInput.Affix
+                  textStyle={{marginTop: 8}}
+                  text={distanceMeasure}
+                />
+              )
+            }
+            isRequired={true}
+            onChangeText={text => {
+              setStart(text);
+              setIsStartRequired(false);
+            }}
+          />
+        </View>
 
-          <Notification></Notification>
+        {isStart && (
           <View style={styles.inputContainer}>
-            <CTextInput                  
-              label="Start Reading"
-              disabled={isStart}
-              value={start}
+            <CTextInput
+              label="End Reading"
+              value={end}
               keyboardType={'number-pad'}
               returnKeyType={'done'}
-              hasError={isStartRequired}
-              right={              
+              style={{marginTop: 10}}
+              hasError={isEndRequired}
+              right={
+                isEndRequired ? null : (
                   <TextInput.Affix
                     textStyle={{marginTop: 8}}
                     text={distanceMeasure}
-                  />              
+                  />
+                )
               }
+              isRequired
               onChangeText={text => {
-                setStart( text);
+                setEnd(text);
+                setIsEndRequired(false);
               }}
             />
-            {isStartRequired && (
-                <View style={{position: 'absolute', right: 0}}>
-                  <Text style={styles.requiredTextStyle}>(required)</Text>
-                </View>
-             )}
           </View>
-          
+        )}
 
-          {
-            isStart && 
-            <View style={styles.inputContainer}>
-               <CTextInput                  
-                  label="End Reading"
-                  value={end}
-                  keyboardType={'number-pad'}
-                  returnKeyType={'done'}
-                  style={{marginTop:10}}
-                  hasError={isEndRequired}
-                  right={        
-                    <TextInput.Affix
-                      textStyle={{marginTop: 8}}
-                      text={distanceMeasure}
-                    />             
-                  }
-                  onChangeText={text => {
-                    setEnd(text)
-                  }}
+        {imageRequired && (
+          <View
+            style={{
+              margsinBottom: 10,
+              marginTop: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View style={{flex: 1}}>
+              <AppText
+                type="secondaryBold"
+                size="big"
+                title="Please take a photo of your vehicle's starting odometer reading"></AppText>
+            </View>
+            {image && (
+              <TouchableOpacity
+                style={[{marginLeft: 10, marginRight: 20}]}
+                onPress={() => {
+                  setIsPicker(true);
+                }}>
+                <Image
+                  style={styles.imageContainer}
+                  source={{uri: image.uri}}
                 />
-                 {isEndRequired && (
-                      <View style={{position: 'absolute', right: 0}}>
-                        <Text style={styles.requiredTextStyle}>(required)</Text>
-                      </View>
-                  )}
-            </View>                      
-          }
-          
-          {
-            imageRequired &&
-              <View style={{margsinBottom:10,marginTop:10, flexDirection:'row', alignItems:'center'}}>
-                  <View style={{flex:1}}>
-                    <AppText type="secondaryBold" size="big" title="Please take a photo of your vehicle's starting odometer reading">                            
-                    </AppText>
-                  </View>                                              
-                      {
-                        image && 
-                          <TouchableOpacity style={[ {marginLeft:10 , marginRight:20 }]} onPress={() => { setIsPicker(true) }}>
-                            <Image style={styles.imageContainer}  source={{uri:image.uri}} />
-                          </TouchableOpacity>               
-                      }                  
-                      {
-                        image === null &&
-                        <TouchableOpacity style={[ styles.imageContainer , {marginLeft:10 , marginRight:20 }]} onPress={() => { setIsPicker(true) }}>
-                          <SvgIcon icon="Add_Image" />
-                        </TouchableOpacity>
-                      }                                                            
-              </View>
-          }
-          
-          <SubmitButton style={{marginTop:10}} title="Submit" onSubmit={() =>{
+              </TouchableOpacity>
+            )}
+            {image === null && (
+              <TouchableOpacity
+                style={[
+                  styles.imageContainer,
+                  {marginLeft: 10, marginRight: 20},
+                ]}
+                onPress={() => {
+                  setIsPicker(true);
+                }}>
+                <SvgIcon icon="Add_Image" />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
 
-            _callOdometer();            
-          }}></SubmitButton>
-          
-          <PhotoCameraPickerDialog visible={isPicker} message={"Choose Image"} 
-              onCamera={() => {
-                if(Platform.OS === "android"){
-                  requestCameraPermission()
-                }else{
-                  launchCamera()
-                }
-              }}
-              onGallery={launchImageLibrary}
-              onModalClose={() => {                        
-                  setIsPicker(false);                
-              }}
-          ></PhotoCameraPickerDialog>
+        <SubmitButton
+          style={{marginTop: 10}}
+          title="Submit"
+          onSubmit={() => {
+            _callOdometer();
+          }}
+        />
 
+        <PhotoCameraPickerDialog
+          visible={isPicker}
+          message={'Choose Image'}
+          onCamera={() => {
+            if (Platform.OS === 'android') {
+              requestCameraPermission();
+            } else {
+              launchCamera();
+            }
+          }}
+          onGallery={launchImageLibrary}
+          onModalClose={() => {
+            setIsPicker(false);
+          }}></PhotoCameraPickerDialog>
       </View>
-       
-                    
     </CModal>
   );
 });
@@ -326,17 +338,17 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    paddingTop:10,
-    marginHorizontal:20,
-    marginBottom:30
+    paddingTop: 10,
+    marginHorizontal: 20,
+    marginBottom: 30,
   },
   imageContainer: {
-    padding:5,
+    padding: 5,
     borderWidth: 1,
     borderColor: whiteLabel().fieldBorder,
     borderRadius: 5,
-    width:Dimensions.get("screen").width / 4.5 + 7,
-    height:Dimensions.get("screen").width / 4.5
+    width: Dimensions.get('screen').width / 4.5 + 7,
+    height: Dimensions.get('screen').width / 4.5,
   },
   inputContainer: {
     justifyContent: 'center',
@@ -346,8 +358,6 @@ const styles = StyleSheet.create({
     color: whiteLabel().endDayBackground,
     marginHorizontal: 10,
   },
-
 });
-
 
 export default OdometerReadingModal;

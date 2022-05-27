@@ -20,11 +20,14 @@ const CTextInput = props => {
       {props.hasError && props.isRequired && (
         <View style={{position: 'absolute', right: 0, top: 15}}>
           <Text
-            style={{
-              color: whiteLabel().endDayBackground,
-              marginHorizontal: 10,
-              fontFamily: Fonts.primaryRegular,
-            }}>
+            style={[
+              {
+                color: whiteLabel().endDayBackground,
+                marginHorizontal: 10,
+                fontFamily: Fonts.primaryRegular,
+              },
+              props.errorTextStyle,
+            ]}>
             (required)
           </Text>
         </View>

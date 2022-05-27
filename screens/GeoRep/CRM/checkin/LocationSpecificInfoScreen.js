@@ -142,10 +142,7 @@ export default function LocationSpecificInfoScreen(props) {
 
   const onFeatureItemClicked = item => {
     if (item.title === 'Forms') {
-      navigationMain.navigate('RepForms', {
-        screen: 'Root',
-        params: {locationInfo: locationInfo},
-      });
+      navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
     if (item.title === 'Customer & Contacts') {
       setCanShowCustomerContactsScreen(true);
