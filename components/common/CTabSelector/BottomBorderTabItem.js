@@ -1,6 +1,6 @@
 import React from 'react';
 import type {Node} from 'react';
-import {StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {Fonts, Values} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 
@@ -12,19 +12,15 @@ const BottomBorderTabItem: () => Node = props => {
   };
   const title = props.item && props.item.title ? props.item.title: ''
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
+      <TouchableOpacity style={[styles.tabItemContainer, props.style]} onPress={() => {
         onSelectTab(props.item, props.index);
       }}>
-      <View style={[styles.tabItemContainer, props.style]}>
-        <View style={{paddingHorizontal: 4}}>
-          <Text
-            style={
-              props.isPicked ? styles.selectedTabItemText : styles.tabItemText
-            }>
-            {title}
-          </Text>
-        </View>
+        <Text
+          style={
+            props.isPicked ? styles.selectedTabItemText : styles.tabItemText
+          }>
+          {title}
+        </Text>
         <View
           style={[
             styles.bottomBar,
@@ -33,8 +29,7 @@ const BottomBorderTabItem: () => Node = props => {
             },
           ]}
         />
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableOpacity>
   );
 };
 
@@ -54,11 +49,13 @@ const styles = StyleSheet.create({
     fontSize: Values.fontSize.small,
     color: whiteLabel().activeTabText,
     fontFamily: Fonts.secondaryBold,
+    marginHorizontal: 4
   },
   tabItemText: {
     fontSize: Values.fontSize.small,
     color: whiteLabel().inactiveTabText,
     fontFamily: Fonts.secondaryMedium,
+    marginHorizontal: 4
   },
 });
 
