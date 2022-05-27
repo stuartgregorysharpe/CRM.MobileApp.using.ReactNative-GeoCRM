@@ -26,6 +26,8 @@ import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
 import Config from '../constants/Config';
 import Constants from '../constants/Constants';
 import UITestScreen from '../screens/GeoRep/UITestScreen';
+import {FormQuestions} from '../screens/GeoRep/Forms/questions/FormQuestions';
+import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSpecificInfoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -149,6 +151,17 @@ export default function AppScreens() {
           navigationOptions={{headerShown: false}}
           options={{header: () => false}}>
           {/* {props => <WebViewScreen {...props} />} */}
+        </Stack.Screen>
+
+        <Stack.Screen
+          name="DeeplinkFormQuestionsScreen"
+          options={{header: () => false}}>
+          {props => <FormQuestions {...props} />}
+        </Stack.Screen>
+        <Stack.Screen
+          name="DeeplinkLocationSpecificInfoScreen"
+          options={{header: () => false}}>
+          {props => <LocationSpecificInfoScreen {...props} />}
         </Stack.Screen>
       </Stack.Navigator>
     </SafeAreaView>

@@ -1,0 +1,33 @@
+[
+  {
+      "field_type": "text",
+      "field_label": "Description",
+      "editable": "0",
+      "field_name": "description",
+      "is_required": true
+  },
+  {
+      "field_type": "dropdown",
+      "field_label": "Select User",
+      "field_name": "selected_user_id",
+      "items": [
+        {
+          "value": "100",
+          "label": "Cydcor ResTest"
+        },
+        {
+          "value": "101",
+          "label": "ClintonTest"
+        }
+      ],
+      "editable": "1",
+      "is_required": true
+  },
+  {
+      "field_type": "date",
+      "field_label": "Select Due Date",
+      "field_name": "due_date",
+      "editable": "1",
+      "is_required": true
+  },
+]

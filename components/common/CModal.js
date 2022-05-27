@@ -18,7 +18,8 @@ import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
-  const {hideClose, hideClear, closableWithOutsideTouch, modalType} = props;
+  const {hideClose, hideClear, closableWithOutsideTouch, modalType, clearText} =
+    props;
   const _modalType = modalType || Constants.modalType.MODAL_TYPE_CENTER;
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
@@ -101,9 +102,12 @@ const CModal = React.forwardRef((props, ref) => {
                     <TouchableOpacity
                       style={styles.clearButtonContainer}
                       onPress={onClear}>
-                      <Text style={styles.clearText}>Clear</Text>
+                      <Text style={styles.clearText}>
+                        {clearText || 'Clear'}
+                      </Text>
                     </TouchableOpacity>
                   )}
+                  {props.customRightHeaderView}
                 </View>
               )}
               {props.children}
@@ -160,9 +164,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontFamily: Fonts.primaryBold,
+    fontFamily: Fonts.secondaryBold,
     fontSize: Values.fontSize.medium,
-    color: Colors.blackColor,
+    color: Colors.primaryColor,
+    marginLeft: 12,
     flex: 1,
   },
   titleContainer: {
@@ -199,7 +204,7 @@ const styles = StyleSheet.create({
   },
   clearText: {
     fontSize: Values.fontSize.small,
-    fontFamily: Fonts.primaryRegular,
+    fontFamily: Fonts.secondaryRegular,
     color: Colors.redColor,
   },
 });

@@ -1,10 +1,10 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   Text,
-  View,  
+  View,
   StyleSheet,
   TouchableOpacity,
-  Image,  
+  Image,
   Platform,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -32,6 +32,7 @@ import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import {GuideInfoView} from '../partial/GuideInfoView';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
+import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import {
   getApiRequest,
   postApiRequest,
@@ -47,9 +48,7 @@ import {Constants} from '../../../../constants';
 import SKUSelect from '../../../../components/shared/SKUSelect';
 
 export const FormQuestions = props => {
-
   const form = props.route.params.data;
-  console.log("changed form", form);
   const location_id = props.route.params.location_id;
   const pageType = props.route.params.pageType;
 
@@ -71,74 +70,69 @@ export const FormQuestions = props => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const dispatch = useDispatch();
-
+  const isShowCustomNavigationHeader = !props.screenProps;
   useEffect(() => {
     refreshHeader();
     _callFormQuestions();
   }, [form]);
-
-
 
   const showSelectionView = useCallback(() => {
     setModalVisible(true);
   }, [options, selectedOptions]);
 
   const refreshHeader = () => {
-    props.screenProps.setOptions({
-      headerTitle: () => {
-        return (
-          <TouchableOpacity
-            onPress={() => {
-
-              if (isDateTimeView) {
-                closeDateTime();
-              } else if (modaVisible) {
-                closeDateTime();
-              } else if (isSign) {
-                closeSignView();
-              } else {
-                if(pageType === "CRM"){
-                  props.navigation.navigate('CRM', { screen: 'Root' });
-                }else{
-                  if (props.navigation.canGoBack()) {
-                    console.log("press back can go back")
-                    props.navigation.goBack();
+    if (props.screenProps) {
+      props.screenProps.setOptions({
+        headerTitle: () => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                if (isDateTimeView) {
+                  closeDateTime();
+                } else if (modaVisible) {
+                  closeDateTime();
+                } else if (isSign) {
+                  closeSignView();
+                } else {
+                  if (pageType === 'CRM') {
+                    props.navigation.navigate('CRM', {screen: 'Root'});
+                  } else {
+                    if (props.navigation.canGoBack()) {
+                      props.navigation.goBack();
+                    }
                   }
-                }                
-              }
-            }}>
-            <View style={style.headerTitleContainerStyle}>
-              <Image
-                resizeMethod="resize"
-                style={{width: 15, height: 20, marginRight: 5}}
-                source={Images.backIcon}
-              />
-              <Text style={style.headerTitle}>Forms</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      },
-      tabBarStyle: {
-        position: 'absolute',
-        height: 50,
-        paddingBottom: Platform.OS == 'android' ? 5 : 0,
-        backgroundColor: Colors.whiteColor,
-      },
-    });
+                }
+              }}>
+              <View style={style.headerTitleContainerStyle}>
+                <Image
+                  resizeMethod="resize"
+                  style={{width: 15, height: 20, marginRight: 5}}
+                  source={Images.backIcon}
+                />
+                <Text style={style.headerTitle}>Forms</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        },
+        tabBarStyle: {
+          position: 'absolute',
+          height: 50,
+          paddingBottom: Platform.OS == 'android' ? 5 : 0,
+          backgroundColor: Colors.whiteColor,
+        },
+      });
+    }
   };
 
   const _callFormQuestions = () => {
-    console.log("form id", form.form_id);
     let param = {
       form_id: form.form_id,
     };
     getApiRequest('forms/forms-questions', param)
-      .then(res => {     
-        console.log("XXX",JSON.stringify(res.questions))   
+      .then(res => {
         groupByQuestions(res.questions);
       })
       .catch(e => {
-        console.log(e);
         expireToken(dispatch, e);
       });
   };
@@ -227,9 +221,10 @@ export const FormQuestions = props => {
     var flag = true;
     formQuestions.forEach(element => {
       element.questions.forEach(item => {
-        console.log("item.questionType",item.questionType)
-        if ( item.rule_compulsory === '1' 
-            && (item.value === null || item.value === '' || item.value === undefined) ) {
+        if (
+          item.rule_compulsory === '1' &&
+          (item.value === null || item.value === '' || item.value === undefined)
+        ) {
           flag = false;
         }
       });
@@ -256,7 +251,10 @@ export const FormQuestions = props => {
           value: item.form_question_id,
         });
 
-        if ( item.question_type === 'multiple' || item.question_type === 'multi_select' ) {
+        if (
+          item.question_type === 'multiple' ||
+          item.question_type === 'multi_select'
+        ) {
           if (item.value && item.value.length > 0) {
             var j = 0;
             item.value.forEach(subElement => {
@@ -273,18 +271,22 @@ export const FormQuestions = props => {
             Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
           item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
         ) {
-          if (value && value.form_answers_array) {            
-            value.form_answers_array.forEach((itemValue) => {                
-                form_answers.push({
-                  ...itemValue,
-                  key: `form_answers[${index}]` + itemValue.key,
-                });                
+          if (value && value.form_answers_array) {
+            value.form_answers_array.forEach(itemValue => {
+              form_answers.push({
+                ...itemValue,
+                key: `form_answers[${index}]` + itemValue.key,
+              });
             });
           }
-        } else {          
+        } else {
           form_answers.push({
             key: `form_answers[${index}][answer]`,
-            value: item.question_type === 'take_photo' || item.question_type === 'upload_file' ? '' : value,
+            value:
+              item.question_type === 'take_photo' ||
+              item.question_type === 'upload_file'
+                ? ''
+                : value,
           });
         }
         index = index + 1;
@@ -310,14 +312,13 @@ export const FormQuestions = props => {
           if (paths != null && paths != '' && paths.length > 0) {
             index = 0;
             for (const path of paths) {
-              if (item.question_type === 'upload_file') {                
+              if (item.question_type === 'upload_file') {
                 files.push({
                   key: `File[${item.form_question_id}][${index}]`,
                   value: path,
                   type: 'upload_file',
                 });
               } else {
-                
                 files.push({
                   key: `File[${item.form_question_id}][${index}]`,
                   value: path,
@@ -341,7 +342,6 @@ export const FormQuestions = props => {
       }
     });
     files.map(item => {
-      
       if (item.key != undefined && item.value != undefined) {
         if (item.type === 'upload_file') {
           postData.append(item.key, {
@@ -350,7 +350,6 @@ export const FormQuestions = props => {
             name: item.value.name,
           });
         } else {
-          
           var words = item.value.split('/');
           var ext = words[words.length - 1].split('.');
           postData.append(item.key, {
@@ -379,28 +378,22 @@ export const FormQuestions = props => {
 
     postApiRequestMultipart('forms/forms-submission', postData)
       .then(res => {
-        
         dispatch(
           showNotification({
             type: 'success',
             message: res.message,
             buttonText: 'Okay',
             buttonAction: () => {
-              
               clearAll();
               dispatch(clearNotification());
-              console.log("page type xxx", pageType)
-              if(pageType === "CRM"){
-                props.navigation.navigate('CRM', { screen: 'Root' });
-              }              
-
+              if (pageType === 'CRM') {
+                props.navigation.navigate('CRM', {screen: 'Root'});
+              }
             },
           }),
         );
       })
-      .catch(e => {
-        
-      });
+      .catch(e => {});
   };
 
   const renderQuestion = (item, key, index) => {
@@ -456,7 +449,6 @@ export const FormQuestions = props => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
-            
             setMode('single');
             setOptions(item.options);
             setSelectedOptions(item.value);
@@ -474,7 +466,6 @@ export const FormQuestions = props => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
-            
             setMode('multiple');
             setOptions(item.options);
             setSelectedOptions(item.value);
@@ -524,7 +515,7 @@ export const FormQuestions = props => {
             setKey(key);
             setIndex(index);
             setSignature(item.value);
-            
+
             setIsSign(true);
           }}></SignatureForm>
       );
@@ -617,6 +608,15 @@ export const FormQuestions = props => {
 
   return (
     <View style={styles.container}>
+      {isShowCustomNavigationHeader && (
+        <NavigationHeader
+          showIcon={true}
+          title={'Forms'}
+          onBackPressed={() => {
+            props.navigation.goBack();
+          }}
+        />
+      )}
       <Notification></Notification>
       <DatetimePickerView
         visible={isDateTimeView}
@@ -628,28 +628,23 @@ export const FormQuestions = props => {
           confirmDateTime(date);
           closeDateTime();
         }}></DatetimePickerView>
-
       <Sign
         visible={isSign}
         signature={signature}
         onOK={handleSignature}
         onClear={() => {
-          
           onValueChangedSelectionView(key, index, null);
         }}
         onClose={() => {
-          
           onValueChangedSelectionView(key, index, null);
           closeSignView();
         }}></Sign>
-
       <SelectionView
         visible={modaVisible}
         options={options}
         mode={mode}
         selectedVals={selectedOptions}
         onValueChanged={value => {
-          
           onValueChangedSelectionView(key, index, value);
         }}
         onClose={() => {
@@ -662,7 +657,6 @@ export const FormQuestions = props => {
         }}>
         {' '}
       </SelectionView>
-
       <UploadFileView
         visible={isUploadFileView}
         item={selectedItem}
@@ -670,13 +664,8 @@ export const FormQuestions = props => {
           setIsUploadFileView(false);
         }}
         onValueChanged={value => {
-          console.log('val', value);
-          console.log('key', key);
-          console.log('index', index);
-
           onValueChangedSelectionView(key, index, value);
         }}></UploadFileView>
-
       <View style={styles.titleContainerStyle}>
         <View style={{flex: 1}}>
           <Text style={styles.formTitleStyle}>{form.form_name}</Text>
@@ -687,7 +676,6 @@ export const FormQuestions = props => {
           <Text style={styles.clearTextStyle}>Clear All Answers</Text>
         </TouchableOpacity>
       </View>
-
       <ScrollView style={{padding: 5}}>
         {formQuestions &&
           formQuestions.map((form, key) => {
@@ -710,7 +698,6 @@ export const FormQuestions = props => {
           )}
         </View>
       </ScrollView>
-
       <GuideInfoView
         visible={isInfo}
         info={bubbleText}

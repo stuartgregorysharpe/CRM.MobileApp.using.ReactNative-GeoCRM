@@ -51,14 +51,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   selectedTabItemText: {
-    fontSize: Values.fontSize.xSmall,
+    fontSize: Values.fontSize.small,
     color: whiteLabel().activeTabText,
-    fontFamily: Fonts.primaryBold,
+    fontFamily: Fonts.secondaryBold,
   },
   tabItemText: {
-    fontSize: Values.fontSize.xSmall,
+    fontSize: Values.fontSize.small,
     color: whiteLabel().inactiveTabText,
-    fontFamily: Fonts.primaryMedium,
+    fontFamily: Fonts.secondaryMedium,
   },
 });
 

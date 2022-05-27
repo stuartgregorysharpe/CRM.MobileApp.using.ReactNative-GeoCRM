@@ -1,27 +1,31 @@
-
 import {View, Text, FlatList, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {AppText} from '../../../../components/common/AppText';
 import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 
-const Actions = props => {
+const Actions = React.forwardRef((props, ref) => {
+  useImperativeHandle(ref, () => ({
+    onLoad: () => {
+      _onLoad();
+    },
+  }));
   const [stockLists, setStockLists] = useState([]);
   const [originStockLists, setOriginStockLists] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const {locationId, tabIndex} = props;
 
-
   useEffect(() => {
+    _onLoad();
+  }, [locationId]);
+  const _onLoad = () => {
     var postData = {};
     if (locationId != undefined) {
       postData = {location_id: locationId};
     }
-    getApiRequest(
-      'https://dev.georep.com/local_api_old/actionitems/action-items-list',
-      postData,
-    )
+    console.log('Actions postData', postData);
+    getApiRequest('actionsitems/action-items-list', postData)
       .then(res => {
         setOriginStockLists(res.action_items);
         if (tabIndex != undefined) {
@@ -31,12 +35,10 @@ const Actions = props => {
         }
       })
       .catch(e => {});
-  }, [locationId]);
-
+  };
   useEffect(() => {
     onApplyStatusFilter(originStockLists);
   }, [tabIndex]);
- 
 
   const onApplyStatusFilter = lists => {
     var tmp = [];
@@ -70,7 +72,6 @@ const Actions = props => {
     }
     setStockLists(tmp);
   };
-  
 
   const onFilter = text => {
     if (text !== '' && text !== undefined) {
@@ -88,7 +89,13 @@ const Actions = props => {
 
   const renderItems = (item, index) => {
     return (
-      <View style={{marginHorizontal: 15}}>
+      <TouchableOpacity
+        onPress={() => {
+          if (props.onPressActionItem) {
+            props.onPressActionItem(item);
+          }
+        }}
+        style={{marginHorizontal: 15}}>
         <View
           style={{
             flexDirection: 'row',
@@ -124,8 +131,9 @@ const Actions = props => {
               style={{fontSize: 10.4}}></AppText>
           </View>
         </View>
-        <View style={{height: 1, backgroundColor: Colors.greyColor}}></View>
-      </View>
+        <View
+          style={{height: 1, backgroundColor: Colors.lightGreyColor}}></View>
+      </TouchableOpacity>
     );
   };
 
@@ -188,6 +196,6 @@ const Actions = props => {
       </View>
     </View>
   );
-};
+});
 
 export default Actions;
