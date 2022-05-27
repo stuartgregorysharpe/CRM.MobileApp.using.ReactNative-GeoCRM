@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import LastScanResultView from './LastScanResultView';
-import {Colors, Constants} from '../../../../constants';
+import {Colors, Constants, Values} from '../../../../constants';
 
 const SKUScanView = props => {
   const totalItemCount = props.totalItemCount || 0;
@@ -88,15 +88,13 @@ const SKUScanView = props => {
         reactivate={true}
         customMarker={renderCustomerMarker()}
         showMarker
-        bottomContent={
-          <LastScanResultView
-            totalItemCount={totalItemCount}
-            lastScanedQrCode={lastScanedQrCode}
-            style={{marginBottom: 32}}
-            onSubmit={() =>
-              onButtonAction({type: Constants.actionType.ACTION_DONE})
-            }
-          />
+      />
+      <LastScanResultView
+        totalItemCount={totalItemCount}
+        lastScanedQrCode={lastScanedQrCode}
+        style={{marginBottom: 0}}
+        onSubmit={() =>
+          onButtonAction({type: Constants.actionType.ACTION_DONE})
         }
       />
     </View>

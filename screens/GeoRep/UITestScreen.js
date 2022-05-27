@@ -9,6 +9,7 @@ import {
 import AddActionItemModal from './CRM/action_items/modals/AddActionItemModal';
 import UpdateActionItemModal from './CRM/action_items/modals/UpdateActionItemModal';
 import ActionItemsModal from './CRM/action_items/modals/ActionItemsModal';
+import SKUScanView from '../../components/shared/SKUSelect/components/SKUScanView';
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
     if (screenProps) {
@@ -21,13 +22,7 @@ export default function UITestScreen({screenProps}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <TouchableOpacity
-          onPress={() => {
-            addActionItemModalRef.current.showModal();
-          }}>
-          <Text>{'Add Action '}</Text>
-        </TouchableOpacity>
-        <ActionItemsModal ref={addActionItemModalRef} locationId={'1391'} />
+        <SKUScanView />
       </View>
     </SafeAreaView>
   );
