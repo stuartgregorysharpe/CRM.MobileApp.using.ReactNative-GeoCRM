@@ -1,24 +1,18 @@
 export default {
-<<<<<<< HEAD
-
-  projectType:{
+  projectType: {
     GEO_REP: 'geo_rep',
     GEO_LIFE: 'geo_life',
-    GEO_CRM: 'geo_crm'
+    GEO_CRM: 'geo_crm',
   },
-  
-  homeStartEndType:{
-    START_MY_DAY : 'start_my_day',
-    END_MY_DAY : 'end_my_day'
+  homeStartEndType: {
+    START_MY_DAY: 'start_my_day',
+    END_MY_DAY: 'end_my_day',
   },
-
-=======
   dateFormat: {
     DATE_FORMAT_DATE_PICKER: 'YYYY/MM/DD',
     DATE_FORMAT_SHORT: 'MM/DD/YYYY',
     DATE_FORMAT_API: 'YYYY-MM-DD',
   },
->>>>>>> feature/GVARN-178
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',

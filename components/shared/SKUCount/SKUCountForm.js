@@ -3,11 +3,8 @@ import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
-<<<<<<< HEAD
-import { boxShadow, style } from '../../../constants/Styles';
-=======
-import {style} from '../../../constants/Styles';
->>>>>>> feature/GVARN-178
+import {boxShadow, style} from '../../../constants/Styles';
+
 import CardView from '../../common/CardView';
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
@@ -34,15 +31,15 @@ const SKUCountForm = props => {
     countItems = formData[selectedCategory].competitors;
     isSegmentNotInStore = formData[selectedCategory].noSegment;
   }
- 
-  const getCategories = (data) => {
+
+  const getCategories = data => {
     return data.categories.map(category => {
       return {
         title: category,
         category: category,
       };
     });
-  }
+  };
 
   const validateForm = () => {
     const invalidCategories = [];
@@ -68,7 +65,7 @@ const SKUCountForm = props => {
     }
     return true;
   };
-  
+
   const onSubmit = () => {
     if (!validateForm()) {
       return;
@@ -85,7 +82,7 @@ const SKUCountForm = props => {
     const formData = constructFormData(item);
     setFormData(formData);
     const categories = getCategories(item);
-    setCategories(categories)
+    setCategories(categories);
     if (categories.length > 0) {
       setSelectedTabIndex(0);
       setSelectedCategory(categories[0].category);
@@ -119,16 +116,9 @@ const SKUCountForm = props => {
           setSelectedTabIndex(index);
           setSelectedCategory(item.category);
         }}
-<<<<<<< HEAD
         containerStyle={[style.card, {marginBottom: 0}]}
-      />         
-      <View style={[style.card, styles.checkBoxContainer]}>
-=======
-        containerStyle={[style.card]}
       />
-
-      <CardView style={styles.checkBoxContainer}>
->>>>>>> feature/GVARN-178
+      <View style={[style.card, styles.checkBoxContainer]}>
         <Text style={[styles.text, {marginRight: 32}]}>
           {'Segment not in store'}
         </Text>
@@ -140,16 +130,15 @@ const SKUCountForm = props => {
         />
       </View>
 
-      
       {!isSegmentNotInStore && (
-          <CounterItemList
-            items={countItems}
-            step={countStep}
-            fixed={countNumberFixed}
-            onItemAction={onCounterItemAction}
-            style={[style.card, {marginBottom: 0}]}
-          />
-      )} 
+        <CounterItemList
+          items={countItems}
+          step={countStep}
+          fixed={countNumberFixed}
+          onItemAction={onCounterItemAction}
+          style={[style.card, {marginBottom: 0}]}
+        />
+      )}
 
       <SubmitButton
         title={'Submit'}
