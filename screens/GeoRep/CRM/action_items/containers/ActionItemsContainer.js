@@ -14,6 +14,7 @@ const ActionItemsContainer = props => {
   const [tabIndex, setTabIndex] = useState(0);
   const addActionItemModalRef = useRef(null);
   const updateActionItemModalRef = useRef(null);
+  const actionListRef = useRef(null);
   const [selectedActionItem, setSelectedActionItem] = useState(null);
   const tabs = [
     {title: 'All', id: 0},
@@ -43,6 +44,7 @@ const ActionItemsContainer = props => {
         />
       </View>
       <Actions
+        ref={actionListRef}
         locationId={locationId}
         tabIndex={tabIndex}
         onPressActionItem={onPressActionItem}></Actions>
@@ -60,7 +62,16 @@ const ActionItemsContainer = props => {
           style={{marginRight: 20, marginBottom: 64}}
         />
       )}
-      <AddActionItemModal ref={addActionItemModalRef} locationId={locationId} />
+      <AddActionItemModal
+        ref={addActionItemModalRef}
+        locationId={locationId}
+        onButtonAction={({type}) => {
+          if (type == Constants.actionType.ACTION_FORM_SUBMIT)
+            if (actionListRef && actionListRef.current) {
+              actionListRef.current.onLoad();
+            }
+        }}
+      />
       <UpdateActionItemModal
         ref={updateActionItemModalRef}
         locationId={locationId}
