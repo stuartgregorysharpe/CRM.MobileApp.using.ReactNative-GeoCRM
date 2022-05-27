@@ -80,7 +80,7 @@ const UpdateActionFormContainer = props => {
     postApiRequestMultipart('actionsitems/action-item-details', submitFormData)
       .then(res => {
         if (res.status === 'success') {
-          notifyMsg(dispatch, 'Success');
+          notifyMsg(dispatch, 'Action Item Updated Successfully');
         }
         setIsLoading(false);
         if (props.onButtonAction) {

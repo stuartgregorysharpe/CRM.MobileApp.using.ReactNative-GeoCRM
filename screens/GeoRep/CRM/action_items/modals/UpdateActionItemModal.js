@@ -39,7 +39,7 @@ const UpdateActionItemModal = React.forwardRef((props, ref) => {
   const title = getModalTitle(actionItemType);
 
   const updateModalInfo = ({createdBy}) => {
-    setCreateByText('created by ' + createdBy);
+    setCreateByText('Created by: ' + createdBy);
   };
   return (
     <CModal

@@ -3,6 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
+import {style} from '../../../constants/Styles';
 import CardView from '../../common/CardView';
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
@@ -101,16 +102,16 @@ const SKUCountForm = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <CardView>
-        <CTabSelector
-          items={categories}
-          selectedIndex={selectedTabIndex}
-          onSelectTab={(item, index) => {
-            setSelectedTabIndex(index);
-            setSelectedCategory(item.category);
-          }}
-        />
-      </CardView>
+      <CTabSelector
+        items={categories}
+        selectedIndex={selectedTabIndex}
+        onSelectTab={(item, index) => {
+          setSelectedTabIndex(index);
+          setSelectedCategory(item.category);
+        }}
+        containerStyle={[style.card]}
+      />
+
       <CardView style={styles.checkBoxContainer}>
         <Text style={[styles.text, {marginRight: 32}]}>
           {'Segment not in store'}

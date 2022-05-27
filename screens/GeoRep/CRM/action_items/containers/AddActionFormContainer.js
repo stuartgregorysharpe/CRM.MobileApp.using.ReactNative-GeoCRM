@@ -47,7 +47,7 @@ const AddActionFormContainer = props => {
     postApiRequest('actionsitems/action-item-details', submitValueData)
       .then(res => {
         if (res.status === 'success') {
-          notifyMsg(dispatch, 'Success');
+          notifyMsg(dispatch, 'Action Item Added Successfully');
         }
         setIsLoading(false);
         if (props.onButtonAction) {

@@ -52,12 +52,12 @@ const styles = StyleSheet.create({
   selectedTabItemText: {
     fontSize: Values.fontSize.small,
     color: whiteLabel().activeTabText,
-    fontFamily: Fonts.primaryBold,
+    fontFamily: Fonts.secondaryBold,
   },
   tabItemText: {
     fontSize: Values.fontSize.small,
     color: whiteLabel().inactiveTabText,
-    fontFamily: Fonts.primaryMedium,
+    fontFamily: Fonts.secondaryMedium,
   },
 });
 

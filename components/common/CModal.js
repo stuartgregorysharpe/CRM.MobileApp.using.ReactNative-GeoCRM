@@ -162,9 +162,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontFamily: Fonts.primaryBold,
+    fontFamily: Fonts.secondaryBold,
     fontSize: Values.fontSize.medium,
     color: Colors.primaryColor,
+    marginLeft: 12,
     flex: 1,
   },
   titleContainer: {
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
   },
   clearText: {
     fontSize: Values.fontSize.small,
-    fontFamily: Fonts.primaryRegular,
+    fontFamily: Fonts.secondaryRegular,
     color: Colors.redColor,
   },
 });

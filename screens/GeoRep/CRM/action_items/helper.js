@@ -38,7 +38,7 @@ export function constructAddActionFormStructure(formBaseData) {
   });
   const selectUserField = {
     field_type: 'dropdown',
-    field_label: 'Select User',
+    field_label: 'User',
     field_name: 'selected_user_id',
     items: userList,
     initial_value: selected_user_id,
@@ -48,7 +48,7 @@ export function constructAddActionFormStructure(formBaseData) {
 
   const dueDateField = {
     field_type: 'date',
-    field_label: 'Select Due Date',
+    field_label: 'Due Date',
     field_name: 'due_date',
     editable: '1',
     initial_value: null,
@@ -131,7 +131,7 @@ export function constructNormalUpdateActionFormStructure(
   });
   const selectStatusField = {
     field_type: 'dropdown',
-    field_label: 'Select Status',
+    field_label: 'Status',
     field_name: 'selected_status',
     items: statusList,
     initial_value: selected_status,
@@ -140,7 +140,7 @@ export function constructNormalUpdateActionFormStructure(
   const due_date = formBaseData.due_date;
   const dueDateField = {
     field_type: 'date',
-    field_label: 'Select Due Date',
+    field_label: 'Due Date',
     field_name: 'due_date',
     editable: '1',
     initial_value: due_date,
@@ -176,15 +176,7 @@ export function constructRedflagActionFormStructure(formBaseData, userType) {
       field_name: generateFieldName(field.field_label),
     };
   });
-  const due_date = formBaseData.due_date;
-  const dueDateField = {
-    field_type: 'date',
-    field_label: 'Select Due Date',
-    field_name: 'due_date',
-    editable: '1',
-    initial_value: due_date,
-  };
-  const formStructure = [...dynamicFields, dueDateField];
+  const formStructure = [...dynamicFields];
 
   const formData = {};
   formStructure.forEach(item => {
@@ -203,7 +195,15 @@ export function constructUpdateActionFormStructure(
       Constants.actionItemType.ACTION_ITEM_TYPE_RED_FLAG_CHURN ||
     actionItemType == Constants.actionItemType.ACTION_ITEM_TYPE_RED_FLAG_DECLINE
   ) {
-    return constructRedflagActionFormStructure(formBaseData, userType);
+    return constructRedflagActionFormStructure(
+      formBaseData,
+      userType,
+      actionItemType,
+    );
   }
-  return constructNormalUpdateActionFormStructure(formBaseData, userType);
+  return constructNormalUpdateActionFormStructure(
+    formBaseData,
+    userType,
+    actionItemType,
+  );
 }

@@ -131,7 +131,8 @@ const Actions = React.forwardRef((props, ref) => {
               style={{fontSize: 10.4}}></AppText>
           </View>
         </View>
-        <View style={{height: 1, backgroundColor: Colors.greyColor}}></View>
+        <View
+          style={{height: 1, backgroundColor: Colors.lightGreyColor}}></View>
       </TouchableOpacity>
     );
   };

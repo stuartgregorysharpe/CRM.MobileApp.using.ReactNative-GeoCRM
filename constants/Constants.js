@@ -50,7 +50,7 @@ export default {
   actionItemType: {
     ACTION_ITEM_TYPE_ACTION: 'Action',
     ACTION_ITEM_TYPE_TASK: 'Task',
-    ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'Red Flag: Churn',
-    ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'Red Flag: Decline',
+    ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
+    ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
 };

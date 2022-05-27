@@ -20,6 +20,23 @@ const DynamicField = props => {
   } = props;
 
   const disabled = editable && editable == '0';
+  const renderNumber = () => {
+    return (
+      <CTextInput
+        label={field_label}
+        key={key}
+        isRequired={is_required}
+        value={value}
+        hasError={hasError}
+        disabled={disabled}
+        keyboardType={'decimal-pad'}
+        onChangeText={text => {
+          updateFormData(field_name, text);
+        }}
+        style={{marginTop: isFirst ? 0 : 10}}
+      />
+    );
+  };
   const renderText = () => {
     return (
       <CTextInput
@@ -40,7 +57,8 @@ const DynamicField = props => {
     return (
       <CSingleSelectInput
         key={key}
-        placeholder={field_label}
+        description={field_label}
+        placeholder={'Select ' + field_label}
         checkedValue={value}
         items={items}
         hasError={hasError}
@@ -56,7 +74,8 @@ const DynamicField = props => {
     return (
       <CDateTimePickerInput
         key={key}
-        placeholder={field_label}
+        description={field_label}
+        placeholder={'Select ' + field_label}
         value={value}
         hasError={hasError}
         disabled={disabled}
@@ -83,6 +102,9 @@ const DynamicField = props => {
   if (!field_type) return null;
   if (field_type == 'text') {
     return renderText();
+  }
+  if (field_type == 'numbers') {
+    return renderNumber();
   }
   if (field_type == 'dropdown') {
     return renderDropdown();
