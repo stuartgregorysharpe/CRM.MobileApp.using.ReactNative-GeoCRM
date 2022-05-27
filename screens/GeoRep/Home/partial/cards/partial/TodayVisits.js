@@ -44,7 +44,7 @@ export default function TodayVisits(props) {
             </View>
                            
             <View style={{flexDirection:'column' , alignItems:'center' , marginTop:-30}}>
-                <AppText color={whiteLabel().mainText} style={{marginBottom:0, marginTop:0}} title="Strike Rate"></AppText>
+                <AppText color={whiteLabel().mainText} style={{marginBottom:5, marginTop:0}} title="Strike Rate"></AppText>
                 <CircularProgress
                     radius={Dimensions.get("window").width * 0.105}
                     //radius={40}

@@ -28,7 +28,7 @@ export default function WeeklyVisits(props) {
                 <ProgressBar colors={colors} steps={[ parseInt(week.completed) , parseInt(week.additional), parseInt(week.missed), parseInt(week.remaining)]} height={25} ></ProgressBar>
             </View>
             <View style={{flexDirection:'column' , alignItems:'center' , marginTop:-30}}>
-                <AppText color={whiteLabel().mainText} style={{marginBottom:0, marginTop:0}} title="Strike Rate"></AppText>
+                <AppText color={whiteLabel().mainText} style={{marginBottom:5, marginTop:0}} title="Strike Rate"></AppText>
                 <CircularProgress
                     radius={Dimensions.get("window").width * 0.105}
                     value={week.strike_rate}            

@@ -2,9 +2,9 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React , { useEffect , useState} from 'react'
 import TopThreeTab from '../../../components/common/TopThreeTab'
-import StockLists from './partial/StockLists';
-import Movements from './partial/Movements';
-import Returns from './partial/Returns';
+import StockLists from './stock/StockLists';
+import Movements from './movements/Movements';
+import Returns from './returns/Returns';
 import { style } from '../../../constants/Styles';
 
 export default function Stock(props) {
@@ -26,10 +26,10 @@ export default function Stock(props) {
                   <Text style={style.headerTitle} >Stock Module</Text>
                 </View></TouchableOpacity>)
             }
-          });      
+          });
         }
     });
-
+            
     return (
         <View style={{flexDirection:'column' , flex:1}}>      
             <TopThreeTab headers={headers} tabIndex={tabIndex}  setTabIndex={(index) => {
