@@ -102,7 +102,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
     }else{
       postData.append('image_included', '0');
     }
-
+    
     var time_zone = RNLocalize.getTimeZone();
     postData.append('user_local_data[time_zone]', time_zone);
     postData.append(

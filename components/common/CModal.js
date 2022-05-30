@@ -15,6 +15,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
+import { whiteLabel } from '../../constants/Colors';
 
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -170,6 +171,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     flex: 1,
   },
+  
   titleContainer: {
     flexDirection: 'row',
     alignSelf: 'stretch',
