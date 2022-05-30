@@ -44,6 +44,7 @@ import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryModal';
 import {useNavigation} from '@react-navigation/native';
+import NavigationHeader from '../../../../components/Header/NavigationHeader';
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
@@ -66,10 +67,13 @@ export default function LocationSpecificInfoScreen(props) {
   const navigationMain = useNavigation();
 
   const showLoopSlider = () => {};
+  const isShowCustomNavigationHeader = !props.screenProps;
 
   useEffect(() => {
+    console.log('specific location info page reload :', location_id);
     refreshHeader();
     initData();
+
     if (location_id !== undefined) {
       openLocationInfo(location_id);
     }
@@ -80,14 +84,16 @@ export default function LocationSpecificInfoScreen(props) {
         handleBackButtonClick,
       );
     };
-  }, []);
+  }, [location_id]);
 
   const hideBottomBar = () => {
-    props.screenProps.setOptions({
-      tabBarStyle: {
-        display: 'none',
-      },
-    });
+    if (props.screenProps) {
+      props.screenProps.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        },
+      });
+    }
   };
 
   const initData = async () => {
@@ -136,10 +142,7 @@ export default function LocationSpecificInfoScreen(props) {
 
   const onFeatureItemClicked = item => {
     if (item.title === 'Forms') {
-      navigationMain.navigate('RepForms', {
-        screen: 'Root',
-        params: {locationInfo: locationInfo},
-      });
+      navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
     if (item.title === 'Customer & Contacts') {
       setCanShowCustomerContactsScreen(true);
@@ -159,53 +162,55 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const refreshHeader = () => {
-    props.screenProps.setOptions({
-      headerTitle: () => {
-        return (
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Specific info header Title Clicked');
-              if (canShowCustomerContactsScreen) {
-                setCanShowCustomerContactsScreen(false);
-                customerContactsRef.current.onBackHandler();
-              } else {
-                console.log('go back ', canShowCustomerContactsScreen);
-                if (props.navigation.canGoBack()) {
-                  if (pageType === 'checkin' || pageType === 'access_crm') {
-                    console.log('called hidebototm');
-                    hideBottomBar();
+    if (props.screenProps) {
+      props.screenProps.setOptions({
+        headerTitle: () => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                console.log('Specific info header Title Clicked');
+                if (canShowCustomerContactsScreen) {
+                  setCanShowCustomerContactsScreen(false);
+                  customerContactsRef.current.onBackHandler();
+                } else {
+                  console.log('go back ', canShowCustomerContactsScreen);
+                  if (props.navigation.canGoBack()) {
+                    if (pageType === 'checkin' || pageType === 'access_crm') {
+                      console.log('called hidebototm');
+                      hideBottomBar();
+                    }
+                    props.navigation.goBack();
                   }
-                  props.navigation.goBack();
                 }
-              }
-            }}>
-            <View style={style.headerTitleContainerStyle}>
-              <Image
-                resizeMethod="resize"
-                style={{width: 15, height: 20, marginRight: 5}}
-                source={Images.backIcon}
-              />
-              <Text style={style.headerTitle}>CRM</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      },
+              }}>
+              <View style={style.headerTitleContainerStyle}>
+                <Image
+                  resizeMethod="resize"
+                  style={{width: 15, height: 20, marginRight: 5}}
+                  source={Images.backIcon}
+                />
+                <Text style={style.headerTitle}>CRM</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        },
 
-      headerLeft: () => (
-        <TouchableOpacity
-          style={style.headerLeftStyle}
-          activeOpacity={1}
-          onPress={() => {
-            setShowItem(0);
-          }}></TouchableOpacity>
-      ),
-      tabBarStyle: {
-        position: 'absolute',
-        height: 50,
-        paddingBottom: Platform.OS == 'android' ? 5 : 0,
-        backgroundColor: Colors.whiteColor,
-      },
-    });
+        headerLeft: () => (
+          <TouchableOpacity
+            style={style.headerLeftStyle}
+            activeOpacity={1}
+            onPress={() => {
+              setShowItem(0);
+            }}></TouchableOpacity>
+        ),
+        tabBarStyle: {
+          position: 'absolute',
+          height: 50,
+          paddingBottom: Platform.OS == 'android' ? 5 : 0,
+          backgroundColor: Colors.whiteColor,
+        },
+      });
+    }
   };
 
   if (canShowCustomerContactsScreen) {
@@ -221,6 +226,15 @@ export default function LocationSpecificInfoScreen(props) {
 
   return (
     <SafeAreaView style={{backgroundColor: locationInfo ? Colors.bgColor : {}}}>
+      {isShowCustomNavigationHeader && (
+        <NavigationHeader
+          showIcon={true}
+          title={'CRM'}
+          onBackPressed={() => {
+            props.navigation.goBack();
+          }}
+        />
+      )}
       <Notification />
 
       {locationInfo != undefined && (

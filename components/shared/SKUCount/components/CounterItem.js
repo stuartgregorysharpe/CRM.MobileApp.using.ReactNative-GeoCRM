@@ -6,7 +6,8 @@ import NumberCounter from './NumberCounter';
 const CounterItem = props => {
   const {item, step, fixed} = props;
   if (!item) return null;
-  const {name, count} = item;
+  const {count} = item;
+  const name = item.name? item.name : ''
   const onCount = nextCount => {
     if (props.onItemAction) {
       props.onItemAction({

@@ -5,4 +5,5 @@ export default {
     faq:require("../assets/images/faq.png"),
     Re_Loop_Button:require("../assets/images/Re_Loop_Button.png"),
     waze:require("../assets/images/waze.png"),
+    tmpSale:require("../assets/images/tmp_geo_sale.png")    
 };

@@ -26,6 +26,10 @@ import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
 import Config from '../constants/Config';
 import Constants from '../constants/Constants';
 import UITestScreen from '../screens/GeoRep/UITestScreen';
+import {FormQuestions} from '../screens/GeoRep/Forms/questions/FormQuestions';
+import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSpecificInfoScreen';
+import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
+import FormsScreen from '../screens/GeoRep/Forms/FormsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -142,13 +146,25 @@ export default function AppScreens() {
           component={BottomTabNavigator}
           options={{headerShown: false}}
         />
-
         <Stack.Screen
           name="WebViewScreen"
           component={WebViewScreen}
           navigationOptions={{headerShown: false}}
           options={{header: () => false}}>
           {/* {props => <WebViewScreen {...props} />} */}
+        </Stack.Screen>
+        <Stack.Screen
+          name="DeeplinkFormQuestionsScreen"
+          options={{header: () => false}}>
+          {props => <FormQuestions {...props} />}
+        </Stack.Screen>
+        <Stack.Screen
+          name="DeeplinkLocationSpecificInfoScreen"
+          options={{header: () => false}}>
+          {props => <LocationSpecificInfoScreen {...props} />}
+        </Stack.Screen>
+        <Stack.Screen name="DeeplinkRepForms" options={{header: () => null}}>
+          {props => <FormsScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
       </Stack.Navigator>
     </SafeAreaView>

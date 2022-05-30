@@ -11,11 +11,13 @@ const CardView = props => {
 };
 
 const styles = StyleSheet.create({
+  
   container: {
     alignSelf: 'stretch',
     backgroundColor: 'white',
-    borderRadius: 4,
+    borderRadius: 4
   },
+
 });
 
 export default CardView;

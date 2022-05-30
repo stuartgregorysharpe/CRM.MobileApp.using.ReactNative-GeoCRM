@@ -1,5 +1,5 @@
 import React , {useState, useEffect } from "react";
-import {View, TouchableOpacity  ,  Text , StyleSheet} from 'react-native';
+import {View, TouchableOpacity  ,  Text , StyleSheet, Dimensions} from 'react-native';
 import SvgIcon from "../../../../components/SvgIcon";
 import Colors, {whiteLabel} from "../../../../constants/Colors";
 import Fonts from "../../../../constants/Fonts";
@@ -46,7 +46,7 @@ export function CrmCalendarSelection({ isDraw, onClickList , onClickDraw, onClic
                       onClickAddToCalendar();
                     }}>
                     <View style={{flexDirection:'row', alignItems:'center'}}>
-                      <Text style={styles.buttonText}>Add to Calendar </Text>
+                      <Text style={styles.buttonText}>Add to Calendar</Text>
                       <SvgIcon icon="Arrow_Right" width='13px' height='13px' />
                     </View>
                   </TouchableOpacity>
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     },
     
     buttonTextStyle: {
-        paddingLeft:15,
-        paddingRight:15,
+        paddingLeft: Dimensions.get("screen").width * 0.03,
+        paddingRight: Dimensions.get("screen").width * 0.03,
         paddingTop:Platform.OS == "android" ? 5 : 8,
         paddingBottom:Platform.OS == "android" ? 5 : 8,
         borderRadius:15,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     },
     buttonText:{
         color: Colors.whiteColor,
-        fontSize: 12,
+        fontSize: 11,
         fontFamily: Fonts.secondaryBold,
     },
     rightContainer:{

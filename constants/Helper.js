@@ -1,144 +1,405 @@
-
 import {Alert} from 'react-native';
-import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
-import { clearNotification, showNotification } from '../actions/notification.action';
-import { setToken } from './Storage';
-import * as RNLocalize from "react-native-localize";
 
+import {CHANGE_LOGIN_STATUS} from '../actions/actionTypes';
+import {
+  clearNotification,
+  showNotification,
+} from '../actions/notification.action';
+import {setToken} from './Storage';
+import * as RNLocalize from 'react-native-localize';
+import {Constants} from '.';
+import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
+import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
+import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
+import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
+import FormsNavigator from '../screens/GeoRep/Forms/FormsNavigator';
+import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
+import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
+import CrmContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
+import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
+import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
+import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
+import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
+import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import Stock from '../screens/GeoRep/Stock/Stock';
+import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
+import AccessScreen from '../screens/GeoLife/AccessScreen';
+import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
+import ProductSales from '../screens/GeoRep/Sales/ProductSales';
 
-export const WHATS_APP_LINK = "https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22";
+export const WHATS_APP_LINK =
+  'https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22';
 
-
-export function notifyMessage(title, msg) {
-    Alert.alert(title, msg, [
-        // {
-        //     text: 'ok',
-        //     onPress: str => console.log('Entered string: ' + str),
-        // },
-        {
-            text: 'Ok',
-            onPress: () => console.log('Pressed Cancel!'),
-            style: 'ok',
-        },
-    ]);
+export function getPageNameByLinker(selectedProject, linker) {
+  switch (linker) {
+    case 'home_geo':
+      return {
+        linker: linker,
+        name: 'Home',
+        router: HomeScreen,
+        activeIcon: 'Home_Black',
+        inActiveIcon: 'Home_Black_Gray',
+      };
+    case 'crm_locations':
+      return {
+        linker: linker,
+        name: 'CRM',
+        router: CRMScreen,
+        activeIcon: 'Location_Arrow',
+        inActiveIcon: 'Location_Arrow_Gray',
+      };
+    case 'web_links':
+      return {
+        linker: linker,
+        name: 'Web Links',
+        router: RepWebLinksScreen,
+        activeIcon: 'Travel_Explore',
+        inActiveIcon: 'Travel_Explore_Gray',
+      };
+    case 'calendar':
+      return {
+        linker: linker,
+        name: 'Calendar',
+        router: CalendarScreen,
+        activeIcon: 'Calendar_Event_Fill',
+        inActiveIcon: 'Calendar_Event_Fill_Gray',
+      };
+    case 'forms':
+      return {
+        linker: linker,
+        name: 'Forms',
+        router: FormsNavigator,
+        activeIcon: 'Form',
+        inActiveIcon: 'Form_inactive',
+      };
+    case 'content_library':
+      if (selectedProject === Constants.projectType.GEO_REP) {
+        return {
+          linker: linker,
+          name: 'Content Library',
+          router: RepContentLibraryScreen,
+          activeIcon: 'Ballot',
+          inActiveIcon: 'Ballot_Gray',
+        };
+      } else if (selectedProject === Constants.projectType.GEO_LIFE) {
+        return {
+          linker: linker,
+          name: 'ContentLibrary',
+          router: LifeContentLibraryScreen,
+          activeIcon: 'Ballot',
+          inActiveIcon: 'Ballot_Gray',
+        };
+      } else if (selectedProject === Constants.projectType.GEO_CRM) {
+        return {
+          linker: linker,
+          name: 'ContentLibrary',
+          router: CrmContentLibraryScreen,
+          activeIcon: 'Ballot',
+          inActiveIcon: 'Ballot_Gray',
+        };
+      }
+    case 'product_sales':
+      return {
+        linker: linker,
+        name: 'Sales',
+        router: ProductSales,
+        activeIcon: 'Shoping_Card',
+        inActiveIcon: 'Shoping_Card_Gray',
+      };
+    case 'notifications':
+      return {
+        linker: linker,
+        name: 'Notifications',
+        router: NotificationsScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+    case 'messages':
+      return {
+        linker: linker,
+        name: 'RepMessages',
+        router: RepMessagesScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+    case 'offline_sync':
+      return {
+        linker: linker,
+        name: 'OfflineSync',
+        router: OfflineSyncScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+    case 'recorded_sales':
+      return {
+        linker: linker,
+        name: 'RecordedSales',
+        router: RecordedSalesScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+    case 'sales_pipeline':
+      return {
+        linker: linker,
+        name: 'RepSalesPipeline',
+        router: RepSalesPipelineScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+    case 'stock_module':
+      return {
+        linker: linker,
+        name: 'Stock',
+        router: Stock,
+        activeIcon: 'Stock',
+        inActiveIcon: 'Stock_Gray',
+      };
+    case 'home_life':
+      return {
+        linker: linker,
+        name: 'Home',
+        router: HomeLifeScreen,
+        activeIcon: 'Home_Black',
+        inActiveIcon: 'Home_Black_Gray',
+      };
+    case 'access':
+      return {
+        linker: linker,
+        name: 'Access',
+        router: AccessScreen,
+        activeIcon: 'Access',
+        inActiveIcon: 'Access_Gray',
+      };
+    case 'business_directory':
+      return {
+        linker: linker,
+        name: 'Business',
+        router: BusinessDirectoryScreen,
+        activeIcon: 'Business_Directory',
+        inActiveIcon: 'Business_Directory_Gray',
+      };
+    case 'help':
+      return {
+        linker: linker,
+        name: 'Help',
+        router: BusinessDirectoryScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+    case 'news':
+      return {
+        linker: linker,
+        name: 'News',
+        router: BusinessDirectoryScreen,
+        activeIcon: 'Pipeline',
+        inActiveIcon: 'Pipeline_Gray',
+      };
+  }
 }
 
-export function selectPicker (title, description ,launchImageLibrary ,launchCamera) {
+export function notifyMessage(title, msg) {
+  Alert.alert(title, msg, [
+    // {
+    //     text: 'ok',
+    //     onPress: str => console.log('Entered string: ' + str),
+    // },
+    {
+      text: 'Ok',
+      onPress: () => console.log('Pressed Cancel!'),
+      style: 'ok',
+    },
+  ]);
+}
+
+export function selectPicker(
+  title,
+  description,
+  launchImageLibrary,
+  launchCamera,
+) {
   return Alert.alert(
     title,
     description,
     [
       // The "Yes" button
       {
-        text: "Gallery",
+        text: 'Gallery',
         onPress: () => {
           launchImageLibrary();
         },
       },
-      // The "No" button        
+      // The "No" button
       {
-        text: "Camera",
+        text: 'Camera',
         onPress: () => {
           launchCamera();
-        }
+        },
       },
-    ]
+    ],
+    {cancelable: true},
   );
 }
 
-
-export function notifyMsg ( dispatch , title  ) { 
-    dispatch(showNotification({ type: 'success', message: title , buttonText: 'Ok', 
-    buttonAction : () => {  
-      dispatch(clearNotification());
-
-    } })); 
+export function notifyMsg(dispatch, title) {
+  dispatch(
+    showNotification({
+      type: 'success',
+      message: title,
+      buttonText: 'Ok',
+      buttonAction: () => {
+        dispatch(clearNotification());
+      },
+    }),
+  );
 }
 
-
-export function getTwoDigit(value){
-    if(value <= 9){
-        return "0" + value;
-    }
-    return String(value);
+export function getTwoDigit(value) {
+  if (value <= 9) {
+    return '0' + value;
+  }
+  return String(value);
 }
 
-export function checkFeatureIncludeParamFromSession (features , param) {
+export function checkFeatureIncludeParamFromSession(features, param) {
   if (features !== undefined) {
     var res = features.includes(param);
     return res;
   } else {
     return false;
   }
-
 }
 
-export function getDistance (prelatlng, currentlatlng) {
-    
-    if(prelatlng.latitude === "" || prelatlng.longitude === ""){
-        return 0;
+export function getDistance(prelatlng, currentlatlng) {
+  if (prelatlng.latitude === '' || prelatlng.longitude === '') {
+    return 0;
+  }
+  const prevLatInRad = toRad(Number(prelatlng.latitude));
+  const prevLongInRad = toRad(Number(prelatlng.longitude));
+  const latInRad = toRad(currentlatlng.latitude);
+  const longInRad = toRad(currentlatlng.longitude);
+  return (
+    // In mile
+    3963 *
+    Math.acos(
+      Math.sin(prevLatInRad) * Math.sin(latInRad) +
+        Math.cos(prevLatInRad) *
+          Math.cos(latInRad) *
+          Math.cos(longInRad - prevLongInRad),
+    )
+  );
+}
+
+const toRad = angle => {
+  return (angle * Math.PI) / 180;
+};
+
+export function isInsidePoly(lat, lon, multiPolycoords) {
+  // ray-casting algorithm based on
+  // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html/pnpoly.html
+
+  var x = lat,
+    y = lon;
+
+  var inside = false;
+  multiPolycoords.map(poly => {
+    vs = poly;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      var xi = vs[i].latitude,
+        yi = vs[i].longitude;
+      var xj = vs[j].latitude,
+        yj = vs[j].longitude;
+
+      var intersect =
+        yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+      if (intersect) inside = !inside;
     }
-    const prevLatInRad = toRad(Number(prelatlng.latitude));
-    const prevLongInRad = toRad(Number(prelatlng.longitude));
-    const latInRad = toRad(currentlatlng.latitude);
-    const longInRad = toRad(currentlatlng.longitude);
-    return (
-      // In mile      
-      3963 *
-      Math.acos(
-        Math.sin(prevLatInRad) * Math.sin(latInRad) +
-          Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
-      )
-    );
-}
-  
-const toRad = (angle) => {
-    return (angle * Math.PI) / 180;
+  });
+  return inside;
 }
 
-export function isInsidePoly  (lat, lon, multiPolycoords) {
-    // ray-casting algorithm based on
-    // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html/pnpoly.html
-    
-    var x = lat,
-      y = lon;
-    
-    var inside = false;
-    multiPolycoords.map(poly => {
-      vs = poly;
-      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-        var xi = vs[i].latitude,
-          yi = vs[i].longitude;
-        var xj = vs[j].latitude,
-          yj = vs[j].longitude;
-              
-        var intersect =
-          yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-        if (intersect) inside = !inside;
-      }
-    });    
-    return inside;
-}
-    
-export function expireToken ( dispatch , e ) {
-  if(e === "expired"){    
-    console.log("token EXPIRED !!!!!")                        
-    dispatch(showNotification({ type: 'success', message: "Access has expired, please login again", buttonText: 'Ok', 
-    buttonAction : () => {
-      console.log("action button")
-      setToken(null);
-      dispatch(clearNotification());
-      dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"});      
-      
-    } }));
+export function expireToken(dispatch, e) {
+  if (e === 'expired') {
+    console.log('token EXPIRED !!!!!');
+    dispatch(
+      showNotification({
+        type: 'success',
+        message: 'Access has expired, please login again',
+        buttonText: 'Ok',
+        buttonAction: () => {
+          console.log('action button');
+          setToken(null);
+          dispatch(clearNotification());
+          dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
+        },
+      }),
+    );
   }
 }
 
-export function getPostParameter (location) {
-  var time_zone = RNLocalize.getTimeZone();  
-  if(location.latitude && location.longitude){
-    return {user_local_data: {time_zone: time_zone, latitude: location.latitude, longitude: location.longitude}};
+export function getPostParameter(location) {
+  var time_zone = RNLocalize.getTimeZone();
+  if (location.latitude && location.longitude) {
+    return {
+      user_local_data: {
+        time_zone: time_zone,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
+    };
   }
   return {};
 }
-    
+
+export function objectToFormData(obj, rootName, ignoreList) {
+  var formData = new FormData();
+
+  function appendFormData(data, root) {
+    if (!ignore(root)) {
+      root = root || '';
+      if (data instanceof File) {
+        formData.append(root, data);
+      } else if (Array.isArray(data)) {
+        for (var i = 0; i < data.length; i++) {
+          appendFormData(data[i], root + '[' + i + ']');
+        }
+      } else if (typeof data === 'object' && data) {
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+            if (root === '') {
+              appendFormData(data[key], key);
+            } else {
+              appendFormData(data[key], root + '[' + key + ']');
+            }
+          }
+        }
+      } else {
+        if (data !== null && typeof data !== 'undefined') {
+          formData.append(root, data);
+        }
+      }
+    }
+  }
+
+  function ignore(root) {
+    return (
+      Array.isArray(ignoreList) &&
+      ignoreList.some(function (x) {
+        return x === root;
+      })
+    );
+  }
+
+  appendFormData(obj, rootName);
+
+  return formData;
+}
+
+export function getFileFormat(path) {
+  const words = path.split('/');
+  const ext = words[words.length - 1].split('.');
+  return {
+    uri: path,
+    type: 'image/' + ext[1],
+    name: words[words.length - 1],
+  };
+}

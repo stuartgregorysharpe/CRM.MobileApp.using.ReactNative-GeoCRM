@@ -1,58 +1,95 @@
 {
-    "form_question_id": "21",
-    "question_group": "Question Group 3",
-    "question_group_id": "3",
-    "question_type": "sku_count",
-    "question_text": "Count Danone and Competitor SKUs on Cold Shelf",
-    "guide_info": {
-        "title": "Question Guide 21",
-        "image": "",
-        "text": "Question Guide 21 Text"
+    "form_question_id":"20",
+    "question_group":"Question Group 3",
+    "question_group_id":"3",
+    "question_type":"sku_count",
+    "question_text":"Count Danone and Competitor SKUs on Cold Shelf",
+    "guide_info":{
+       "title":"Question Guide 20",
+       "image":"",
+       "text":"Question Guide 20 Text"
     },
-    "rule_compulsory": "1",
-    "categories": [
-        "Custard",
-        "Smooth",
-        "Fruit",
-        "Multigrain",
-        "Drinking",
-        "Indulgence",
-        "Maas",
-        "Kids",
-        "Alt Milk",
-        "Cold Shelf"
+    "rule_compulsory":"1",
+    "categories":[
+       "Custard",
+       "Smooth",
+       "Fruit",
+       "Multigrain",
+       "Drinking",
+       "Indulgence",
+       "Maas",
+       "Kids",
+       "Alt Milk",
+       "Cold Shelf"
     ],
-    "brand": "Danone",
-    "competitors": {
-        "Custard" : [ 
-            "Competitor 1",
-                "Competitor 2",
-                "Other"
-            ],
-            "Smooth" : [
-                "Competitor 1",
-                "Competitor 2",
-                "Other"
-            ],
-            "Fruit" : [
-                "Competitor 1",
-                    "Competitor 2",
-                    "Other"
-            ]
-    
-        },
-    "market_targets": {
-        "Custard": "30",
-        "Smooth": "31",
-        "Fruit": "42",
-        "Multigrain": "31",
-        "Drinking": "42",
-        "Indulgence": "38",
-        "Maas": "30",
-        "Kids": "35",
-        "Alt Milk": "33",
-        "Cold Shelf": "50"
+    "brand":"Danone",
+    "competitors":{
+       "Custard":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Smooth":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Fruit":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Multigrain":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Drinking":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Indulgence":[
+          "Competitor 1",
+          "Competitor 2",
+          "Competitor 3",
+          "Competitor 4",
+          "Other"
+       ],
+       "Maas":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Kids":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Alt Milk":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ],
+       "Cold Shelf":[
+          "Competitor 1",
+          "Competitor 2",
+          "Other"
+       ]
     },
-    "completed_data": []
-
-}
+    "market_targets":{
+       "Custard":"30",
+       "Smooth":"32",
+       "Fruit":"38",
+       "Multigrain":"38",
+       "Drinking":"30",
+       "Indulgence":"42",
+       "Maas":"35",
+       "Kids":"29",
+       "Alt Milk":"42",
+       "Cold Shelf":"42"
+    },
+    "completed_data":[
+       
+    ]
+ }

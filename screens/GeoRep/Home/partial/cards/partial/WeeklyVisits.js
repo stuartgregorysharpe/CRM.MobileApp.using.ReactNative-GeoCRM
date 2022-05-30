@@ -1,6 +1,4 @@
-
-
-import { View, Text ,FlatList } from 'react-native'
+import { View, Text ,FlatList ,Dimensions } from 'react-native'
 import React , {useState} from 'react'
 import ProgressBar from '../../ProgressBar'
 import CircularProgress from 'react-native-circular-progress-indicator';
@@ -30,9 +28,9 @@ export default function WeeklyVisits(props) {
                 <ProgressBar colors={colors} steps={[ parseInt(week.completed) , parseInt(week.additional), parseInt(week.missed), parseInt(week.remaining)]} height={25} ></ProgressBar>
             </View>
             <View style={{flexDirection:'column' , alignItems:'center' , marginTop:-30}}>
-                <AppText color={whiteLabel().mainText} style={{marginBottom:0, marginTop:0}} title="Strike Rate"></AppText>
+                <AppText color={whiteLabel().mainText} style={{marginBottom:5, marginTop:0}} title="Strike Rate"></AppText>
                 <CircularProgress
-                    radius={40}
+                    radius={Dimensions.get("window").width * 0.105}
                     value={week.strike_rate}            
                     valueSuffix='%'       
                     progressValueStyle={{fontSize:14}}         

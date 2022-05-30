@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
+import {boxShadow, style} from '../../../constants/Styles';
+
 import CardView from '../../common/CardView';
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
@@ -16,6 +18,7 @@ const SKUCountForm = props => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
   const [formData, setFormData] = useState({});
+  const [categories, setCategories] = useState([]);
   let countStep = 1;
   let countNumberFixed = 0;
   if (questionType == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE) {
@@ -28,13 +31,16 @@ const SKUCountForm = props => {
     countItems = formData[selectedCategory].competitors;
     isSegmentNotInStore = formData[selectedCategory].noSegment;
   }
-  const data = item;
-  const categories = data.categories.map(category => {
-    return {
-      title: category,
-      category: category,
-    };
-  });
+
+  const getCategories = data => {
+    return data.categories.map(category => {
+      return {
+        title: category,
+        category: category,
+      };
+    });
+  };
+
   const validateForm = () => {
     const invalidCategories = [];
     for (category in formData) {
@@ -59,6 +65,7 @@ const SKUCountForm = props => {
     }
     return true;
   };
+
   const onSubmit = () => {
     if (!validateForm()) {
       return;
@@ -71,10 +78,11 @@ const SKUCountForm = props => {
       });
     }
   };
-  useEffect(() => {}, [selectedCategory, item]);
   useEffect(() => {
     const formData = constructFormData(item);
     setFormData(formData);
+    const categories = getCategories(item);
+    setCategories(categories);
     if (categories.length > 0) {
       setSelectedTabIndex(0);
       setSelectedCategory(categories[0].category);
@@ -101,17 +109,16 @@ const SKUCountForm = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <CardView>
-        <CTabSelector
-          items={categories}
-          selectedIndex={selectedTabIndex}
-          onSelectTab={(item, index) => {
-            setSelectedTabIndex(index);
-            setSelectedCategory(item.category);
-          }}
-        />
-      </CardView>
-      <CardView style={styles.checkBoxContainer}>
+      <CTabSelector
+        items={categories}
+        selectedIndex={selectedTabIndex}
+        onSelectTab={(item, index) => {
+          setSelectedTabIndex(index);
+          setSelectedCategory(item.category);
+        }}
+        containerStyle={[style.card, {marginBottom: 0}]}
+      />
+      <View style={[style.card, styles.checkBoxContainer]}>
         <Text style={[styles.text, {marginRight: 32}]}>
           {'Segment not in store'}
         </Text>
@@ -121,16 +128,16 @@ const SKUCountForm = props => {
             setIsSegmentNotInStore(selectedCategory, !isSegmentNotInStore);
           }}
         />
-      </CardView>
+      </View>
+
       {!isSegmentNotInStore && (
-        <CardView style={styles.boxContainer}>
-          <CounterItemList
-            items={countItems}
-            step={countStep}
-            fixed={countNumberFixed}
-            onItemAction={onCounterItemAction}
-          />
-        </CardView>
+        <CounterItemList
+          items={countItems}
+          step={countStep}
+          fixed={countNumberFixed}
+          onItemAction={onCounterItemAction}
+          style={[style.card, {marginBottom: 0}]}
+        />
       )}
 
       <SubmitButton

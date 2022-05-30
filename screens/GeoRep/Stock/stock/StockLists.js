@@ -1,13 +1,13 @@
 
 import { View, Text , FlatList ,TouchableOpacity } from 'react-native'
 import React, {useEffect, useState} from 'react'
-import { Searchbar } from 'react-native-paper'
 import { AppText } from '../../../../components/common/AppText';
 import { getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import Colors, { whiteLabel } from '../../../../constants/Colors';  
 import SvgIcon from '../../../../components/SvgIcon';
-
+import StockListItem from './components/StockListItem';
+import StockListHeader from './components/StockListHeader';
 
 export default function StockLists() {
 
@@ -41,21 +41,7 @@ export default function StockLists() {
 
     const renderItems = (item, index) => {
         return (
-            <View style={{marginHorizontal:15}}>
-                <View style={{flexDirection:'row' , marginTop:15, marginBottom:3, justifyContent:'center', alignItems:'center'}}>
-                    <View style={{flex:3}}>
-                        <AppText size="big" type="secondaryBold" title={item.description} style={{fontSize:12.5}}></AppText>
-                        <AppText type="secondaryMedium" title={item.stock_type} color={Colors.disabledColor}  style={{fontSize:10.4}} ></AppText>
-                    </View>
-                    <View style={{flex:2}}>
-                        <AppText type="secondaryMedium" title={item.stock_type} color={Colors.disabledColor} style={{fontSize:10.4}}></AppText>
-                    </View>
-                    <View style={{flex:2}}>
-                        <AppText type="secondaryMedium" title={item.stock_type} color={Colors.disabledColor} style={{fontSize:10.4}}></AppText>
-                    </View>
-                </View>
-                <View style={{height:1,  backgroundColor:Colors.greyColor}}></View>
-            </View>
+            <StockListItem item={item} key={index}></StockListItem>
         )
     }
 
@@ -75,20 +61,7 @@ export default function StockLists() {
             <View style={{flexDirection:'column'}}>
                 <FlatList                              
                     ListHeaderComponent={()=>
-                        <View style={{marginHorizontal:15}}>
-                            <View style={{flexDirection:'row' , marginTop:15, marginBottom:3, justifyContent:'center', alignItems:'center'}}>
-                                <View style={{flex:3}}>                                    
-                                    <AppText type="secondaryMedium" title={"Description"} color={whiteLabel().mainText}  style={{fontSize:12}} ></AppText>
-                                </View>
-                                <View style={{flex:2}}>
-                                    <AppText type="secondaryMedium" title={"Type"} color={whiteLabel().mainText} style={{fontSize:12}}></AppText>
-                                </View>
-                                <View style={{flex:2}}>
-                                    <AppText type="secondaryMedium" title={"Added Date"} color={whiteLabel().mainText} style={{fontSize:12}}></AppText>
-                                </View>
-                            </View>
-                            <View style={{height:1,  backgroundColor:Colors.blackColor}}></View>
-                        </View>
+                        <StockListHeader></StockListHeader>
                     }
                     removeClippedSubviews={false}                
                     initialNumToRender={10}                    

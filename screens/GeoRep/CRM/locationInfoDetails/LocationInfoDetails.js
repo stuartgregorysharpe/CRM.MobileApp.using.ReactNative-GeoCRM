@@ -261,28 +261,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     });
   };
 
-  // selectPicker = (title, description) => {
-  //   return Alert.alert(
-  //     title,
-  //     description,
-  //     [
-  //       // The "Yes" button
-  //       {
-  //         text: "Gallery",
-  //         onPress: () => {
-  //           launchImageLibrary();
-  //         },
-  //       },
-  //       // The "No" button
-  //       {
-  //         text: "Camera",
-  //         onPress: () => {
-  //           launchCamera();
-  //         }
-  //       },
-  //     ]
-  //   );
-  // }
 
   const updateLocationImage = async path => {
     var data = await RNFS.readFile(path, 'base64').then(res => {
@@ -513,7 +491,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       {showFeedbackDropDownModal()}
 
       <Notification />
-
+      
       <AlertDialog
         visible={isSuccess}
         message={message}

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import SvgIcon from './SvgIcon';
-import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
+import { BG_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
 import { 
   CHANGE_MORE_STATUS, 
   SHOW_MORE_COMPONENT, 
@@ -227,7 +227,8 @@ const lists = {
   ]
 }
 
-export default function Profile() {
+export default function More() {
+  
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
@@ -315,9 +316,11 @@ export default function Profile() {
               {componentListOne.includes(list.navOrder) && <TouchableOpacity 
                 style={styles.selectButton} 
                 onPress={() => {
+                  
                   dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                   dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
                   dispatch({type: SHOW_MORE_COMPONENT, payload: list.navigator});
+                                    
                 }}>
                 <SvgIcon style={{ marginRight: 8 }} icon={list.icon} width='22px' height='22px' />
                 <Text style={styles.selectName}>{list.name}</Text>

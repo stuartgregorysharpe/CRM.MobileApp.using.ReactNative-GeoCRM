@@ -1,7 +1,5 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
-import ActionItemsContainer from './CRM/action_items/containers/ActionItemsContainer';
-import AddActionFormContainer from './CRM/action_items/containers/AddActionFormContainer';
 
 export default function UITestScreen({screenProps}) {
   useEffect(() => {
@@ -11,11 +9,5 @@ export default function UITestScreen({screenProps}) {
       });
     }
   });
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1}}>
-        <AddActionFormContainer />
-      </View>
-    </SafeAreaView>
-  );
+  return <SafeAreaView style={{flex: 1}}></SafeAreaView>;
 }

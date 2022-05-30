@@ -45,12 +45,12 @@ export default function ActivityComments(props) {
                         
                         <TopTab 
                             tabIndex={tabIndex}
-                            headers={headers} onTabClicked={(index) => {
+                            headers={headers} onTabClicked={(index) => {      
                             setTabIndex(index);
                             refPagerView.current.setPage(index);
                         }} ></TopTab>
-                                                
-                        <PagerView 
+
+                        <PagerView
                             onPageSelected={(e) => { changePage(e.nativeEvent); }}
                             ref={refPagerView} style={styles.pagerView} initialPage={0}>
                             <View key="1">
@@ -60,13 +60,9 @@ export default function ActivityComments(props) {
                                 <Comments></Comments>
                             </View>
                         </PagerView>
-
                     </View>
-
                 </View>
-
-        </Modal>
-        
+        </Modal>          
     );
 }
 

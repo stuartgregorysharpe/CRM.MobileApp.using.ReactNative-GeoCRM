@@ -135,6 +135,10 @@ export default function LocationSearchScreen(props) {
   }, [currentLocation]);
 
   useEffect(() => {
+    console.log("selectedLocationsForCalendar",selectedLocationsForCalendar)
+  },[selectedLocationsForCalendar]);
+
+  useEffect(() => {
     if (locationId !== 0 && tabType !== undefined) {
       setPageType({name: 'camera', type: tabType});
       openLocationInfo(locationId);

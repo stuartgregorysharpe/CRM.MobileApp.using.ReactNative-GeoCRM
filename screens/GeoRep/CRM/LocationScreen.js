@@ -22,9 +22,7 @@ import {
 } from 'react-native-extended-stylesheet-breakpoints';
 import {useSelector, useDispatch} from 'react-redux';
 import MapView, {
-  Marker,
-  Region,
-  PROVIDER_GOOGLE,
+  Marker,  
   Polygon,
   Polyline,
 } from 'react-native-maps';
@@ -38,8 +36,7 @@ import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
 import {breakPoint} from '../../../constants/Breakpoint';
 import {
-  CHANGE_CURRENT_LOCATION,
-  CHANGE_LOGIN_STATUS,
+  CHANGE_CURRENT_LOCATION,  
   CHANGE_POLYGONS,
   IS_CALENDAR_SELECTION,
   SELECTED_LOCATIONS_FOR_CALENDAR,
@@ -66,19 +63,11 @@ import {
   getLocalData,
   getMapMinZoomLevel,
   getPinSvg,
-  getPolygonFillColorTransparency,
-  setToken,
-  storePinSvg,
+  getPolygonFillColorTransparency,  
 } from '../../../constants/Storage';
 import {Notification} from '../../../components/modal/Notification';
 import {SvgXml} from 'react-native-svg';
-import {AppText} from '../../../components/common/AppText';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../actions/notification.action';
-import {compose} from 'redux';
-import CheckInStatusView from './partial/CheckInStatusView';
+import MarkerIcon from '../../../components/Marker';
 
 const SlidUpArrow = () => (
   <View style={styles.slidUpArrow}>
@@ -536,6 +525,17 @@ export default function LocationScreen(props) {
 
   }
 
+  const renderMaker = (item, key) => {
+    if(selectedLocationsForCalendar.find(element => element.location_id === item.location_id)){
+      
+      return <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />
+    }
+    if(mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code ){
+      return <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
+    }
+    return <View></View>    
+  }
+
   return (
     <Provider>
       <SafeAreaView style={{ flex: 1 }}>
@@ -697,16 +697,18 @@ export default function LocationScreen(props) {
                     }}>
 
                     {
-                      mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
-                      <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
+                      renderMaker(item, key)
                     }
 
                     {/* {
-                          selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ?
-                          <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />:
-                          <MarkerIcon style={styles.markerIcon} icon={item.pin_image} width="34px" height="34px" />                           
-                        } */}
-                    {/* <MarkerIcon style={styles.markerIcon} xml={pinSvg[0].svg_code} icon={item.pin_image} width="34px" height="34px" /> */}
+                      mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
+                      <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
+                    }     
+                    {
+                      selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ? <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" /> :
+                      <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
+                    } */}
+
                   </Marker>
                 ))}
 
@@ -765,14 +767,15 @@ export default function LocationScreen(props) {
                 <TouchableOpacity style={styles.finishBtnStyle} onPress={() => {
                   setIsFinish(false);
                   setIsDraw(false);
-
                   var selectedLocations = [...selectedLocationsForCalendar];
                   for (var i = 0; i <= locationMaps.length - 1; i++) {
                     var flag = isInsidePoly(locationMaps[i].coordinates.latitude, locationMaps[i].coordinates.longitude, [editing.coordinates]);
                     if (flag) {
+                      console.log("selected ping", locationMaps[i].location_id);
                       selectedLocations = [...selectedLocations, { schedule_order: (i + 1).toString(), location_id: locationMaps[i].location_id, schedule_date: "Today", schedule_time: '', schedule_end_time: '' }];
                     }
                   }
+                  setTracksViewChanges(true);
                   dispatch({ type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedLocations });
                   finish();
                 }}>

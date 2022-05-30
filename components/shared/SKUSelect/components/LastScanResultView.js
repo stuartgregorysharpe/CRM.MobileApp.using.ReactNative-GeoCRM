@@ -7,9 +7,10 @@ import {SubmitButton} from '../../SubmitButton';
 const LastScanResultView = props => {
   const {totalItemCount, lastScanedQrCode} = props;
   return (
-    <CardView style={[styles.container, props.style]}>
+    <View style={[styles.container, props.style]}>
+      <View style={styles.modalHandler} />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{'Item: ' + totalItemCount}</Text>
+        <Text style={styles.headerTitle}>{'Items: ' + totalItemCount}</Text>
       </View>
       <View style={styles.contentContainer}>
         {lastScanedQrCode && (
@@ -25,15 +26,16 @@ const LastScanResultView = props => {
           }}
         />
       </View>
-    </CardView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    marginHorizontal: 10,
-    borderRadius: 4,
+    backgroundColor: Colors.bgColor,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   contentContainer: {
     alignSelf: 'stretch',
@@ -57,6 +59,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.primaryRegular,
     color: Colors.blackColor,
     marginTop: 12,
+  },
+  modalHandler: {
+    height: 4,
+    width: 90,
+    marginVertical: 8,
+    backgroundColor: Colors.grey2,
+    alignSelf: 'center',
   },
 });
 

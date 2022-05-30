@@ -1,4 +1,18 @@
 export default {
+  projectType: {
+    GEO_REP: 'geo_rep',
+    GEO_LIFE: 'geo_life',
+    GEO_CRM: 'geo_crm',
+  },
+  homeStartEndType: {
+    START_MY_DAY: 'start_my_day',
+    END_MY_DAY: 'end_my_day',
+  },
+  dateFormat: {
+    DATE_FORMAT_DATE_PICKER: 'YYYY/MM/DD',
+    DATE_FORMAT_SHORT: 'MM/DD/YYYY',
+    DATE_FORMAT_API: 'YYYY-MM-DD',
+  },
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
@@ -15,6 +29,7 @@ export default {
     ACTION_SELECT_ALL: 'ACTION_SELECT_ALL',
     ACTION_DONE: 'ACTION_DONE',
     ACTION_CAPTURE: 'ACTION_CAPTURE',
+    ACTION_ADD: 'ACTION_ADD',
   },
   debugMode: {
     NO_DEBUG: 0,
@@ -31,5 +46,20 @@ export default {
     MODAL_TYPE_CENTER: 'MODAL_TYPE_CENTER',
     MODAL_TYPE_BOTTOM: 'MODAL_TYPE_BOTTOM',
     MODAL_TYPE_FULL: 'MODAL_TYPE_FULL',
+  },
+  userType: {
+    USER_TYPE_SUPER_ADMIN: 'Super Admin',
+    USER_TYPE_ADMIN: 'Admin',
+  },
+  buttonType: {
+    BUTTON_TYPE_SUMBIT: 'submit',
+    BUTTON_TYPE_FORM_LINK: 'form_link',
+    BUTTON_TYPE_CHECKIN_LINK: 'checkin_link',
+  },
+  actionItemType: {
+    ACTION_ITEM_TYPE_ACTION: 'Action',
+    ACTION_ITEM_TYPE_TASK: 'Task',
+    ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
+    ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
 };

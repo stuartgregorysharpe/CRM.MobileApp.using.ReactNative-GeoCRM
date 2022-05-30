@@ -17,7 +17,7 @@ export default {
     xLarge: 22,
     large: 20,
     medium: 17,
-    small: 15,
+    small: 14,
     xSmall: 12,
     xxSmall: 11,
     xxxSmall: 10,
