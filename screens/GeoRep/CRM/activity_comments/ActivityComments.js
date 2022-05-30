@@ -9,7 +9,6 @@ import Divider from '../../../../components/Divider';
 import PagerView from 'react-native-pager-view';
 import { TopTab } from '../../../../components/common/TopTab';
 
-
 export default function ActivityComments(props) {
 
     const {visible , onModalClosed , locationId} =  props;

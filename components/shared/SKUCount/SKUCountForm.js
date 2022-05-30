@@ -3,9 +3,8 @@ import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Values} from '../../../constants';
-import {boxShadow, style} from '../../../constants/Styles';
+import {style} from '../../../constants/Styles';
 
-import CardView from '../../common/CardView';
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
 import {SubmitButton} from '../SubmitButton';
