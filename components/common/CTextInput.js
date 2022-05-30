@@ -9,7 +9,7 @@ const CTextInput = props => {
       <TextInput
         mode="outlined"
         outlineColor={
-          props.hasError ? whiteLabel().endDayBackground : Colors.primaryColor
+          props.hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder
         }
         activeOutlineColor={
           props.hasError ? whiteLabel().endDayBackground : Colors.disabledColor

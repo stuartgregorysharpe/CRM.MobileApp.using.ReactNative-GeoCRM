@@ -8,6 +8,7 @@ import Colors, { whiteLabel } from '../../../../constants/Colors';
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
 import StockListHeader from './components/StockListHeader';
+import { SubmitButton } from '../../../../components/shared/SubmitButton';
 
 export default function StockLists() {
 
@@ -58,7 +59,7 @@ export default function StockLists() {
               }} />  
             
 
-            <View style={{flexDirection:'column'}}>
+            <View style={{flexDirection:'column', flex:1}}>
                 <FlatList                              
                     ListHeaderComponent={()=>
                         <StockListHeader></StockListHeader>
@@ -72,8 +73,10 @@ export default function StockLists() {
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View>
+
+            <SubmitButton style={{marginHorizontal:20, marginBottom:10}} title="Add Stock"></SubmitButton>
             
-            <TouchableOpacity style={{position:'absolute', right:30, bottom:15, }}>
+            <TouchableOpacity style={{position:'absolute', right:30, bottom:55, }}>
                 <View>
                     <SvgIcon icon="Add_Stock" width='55' height='55' />
                 </View>

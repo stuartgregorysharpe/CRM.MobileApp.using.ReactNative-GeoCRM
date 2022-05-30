@@ -99,6 +99,8 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         type: image.type,
         name: image.fileName,
       });
+    }else{
+      postData.append('image_included', '0');
     }
 
     var time_zone = RNLocalize.getTimeZone();

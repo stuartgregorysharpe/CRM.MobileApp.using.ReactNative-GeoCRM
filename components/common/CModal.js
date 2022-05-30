@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: Fonts.secondaryBold,
     fontSize: Values.fontSize.medium,
-    color: Colors.primaryColor,
+    color: Colors.blackColor,
     marginLeft: 12,
     flex: 1,
   },
