@@ -63,7 +63,16 @@ export const style = StyleSheet.create({
     shadowOpacity: Platform.OS == 'ios' ? 0.1 : 0.8,
     elevation: 1,
   },
-
+  cardContainer: {
+    shadowColor: '#000',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: Platform.OS === 'android' ? 0.27 : 0.27,
+    shadowRadius: Platform.OS === 'android' ? 0.65 : 0.65,
+    alignSelf: 'stretch',
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    padding: 8,
+  },
   card: {
     marginBottom: 10,
     backgroundColor: '#fff',
