@@ -6,6 +6,8 @@ import {
   ScrollView,
   Dimensions,
   Image,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import Colors, {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -96,6 +98,29 @@ const TakePhotoView = props => {
       }
     });
   };
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Camera permission given');
+        launchCamera();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   const launchCamera = () => {
     let options = {
       storageOptions: {
@@ -124,7 +149,13 @@ const TakePhotoView = props => {
       <PhotoCameraPickerDialog
         visible={isPicker}
         message={'Choose Image'}
-        onCamera={launchCamera}
+        onCamera={() => {
+          if (Platform.OS === 'android') {
+            requestCameraPermission();
+          } else {
+            launchCamera();
+          }
+        }}
         onGallery={launchImageLibrary}
         onModalClose={() => {
           setIsPicker(false);
