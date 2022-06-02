@@ -17,6 +17,7 @@ export default {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
     FORM_TYPE_SKU_SELECT: 'sku_select',
+    FORM_TYPE_YES_NO: 'yes_no',
   },
 
   actionType: {
@@ -30,6 +31,7 @@ export default {
     ACTION_DONE: 'ACTION_DONE',
     ACTION_CAPTURE: 'ACTION_CAPTURE',
     ACTION_ADD: 'ACTION_ADD',
+    ACTION_CLOSE: 'ACTION_CLOSE',
   },
   debugMode: {
     NO_DEBUG: 0,

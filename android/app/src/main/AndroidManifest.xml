@@ -24,6 +24,7 @@
       android:allowBackup="false"
       android:largeHeap="true"
       android:usesCleartextTraffic="true"
+      android:requestLegacyExternalStorage="true"
       android:theme="@style/AppTheme">
 
       <!-- You will only need to add this meta-data tag, but make sure it's a child of application -->

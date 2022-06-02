@@ -46,6 +46,7 @@ import * as RNLocalize from 'react-native-localize';
 import UploadFileView from './partial/UploadFileView';
 import {Constants} from '../../../../constants';
 import SKUSelect from '../../../../components/shared/SKUSelect';
+import FormSubmitFeedbackModal from '../../../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
 
 export const FormQuestions = props => {
   const form = props.route.params.data;
@@ -68,6 +69,8 @@ export const FormQuestions = props => {
   const [selectedDate, setSelectedDate] = useState('');
   const [isUploadFileView, setIsUploadFileView] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
+  const formSubmitModalRef = useRef(null);
 
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -386,16 +389,17 @@ export const FormQuestions = props => {
             buttonAction: () => {
               clearAll();
               dispatch(clearNotification());
-              if (pageType === 'CRM') {
-                props.navigation.navigate('CRM', {screen: 'Root'});
-              }
+              onOpenFeedbackModal(res);
             },
           }),
         );
       })
       .catch(e => {});
   };
-
+  const onOpenFeedbackModal = feedbackData => {
+    setFormSubmitFeedback(feedbackData);
+    formSubmitModalRef.current.showModal();
+  };
   const renderQuestion = (item, key, index) => {
     if (item.question_type === 'text') {
       return (
@@ -702,6 +706,20 @@ export const FormQuestions = props => {
         visible={isInfo}
         info={bubbleText}
         onModalClose={() => setIsInfo(false)}></GuideInfoView>
+      <FormSubmitFeedbackModal
+        data={formSubmitFeedback}
+        ref={formSubmitModalRef}
+        onButtonAction={({type}) => {
+          if (
+            type == Constants.actionType.ACTION_DONE ||
+            type == Constants.actionType.ACTION_CLOSE
+          ) {
+            if (pageType === 'CRM') {
+              props.navigation.navigate('CRM', {screen: 'Root'});
+            }
+          }
+        }}
+      />
     </View>
   );
 };

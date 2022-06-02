@@ -1,20 +1,21 @@
 import React, {useMemo} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {Colors, Fonts, Values} from '../../../constants';
-import SKUFeedbackTable from './components/SKUFeedbackTable';
+import SKUFeedbackTable from '../../SKUCount/components/SKUFeedbackTable';
 
-const SKUCountCompletedView = props => {
-  const {item} = props;
-  if (!item) return null;
-  const brand = item.brand;
+const SKUCountFeedbackView = props => {
+  const {data} = props;
+  if (!data) return null;
+  const brand = data.brand;
   constructTableData = item => {
-    const categories = item.categories;
     const completed_data = item.completed_data;
-    const market_targets = item.market_targets;
     if (!completed_data) return [];
+    const categories = [];
+    for (const category in item.completed_data.category_value) {
+      categories.push(category);
+    }
+
     return categories.map(category => {
       const brand = completed_data['category_value'][category] + '%';
-      const market = market_targets[category] + '%';
+      const market = completed_data['market_targets'][category] + '%';
       const fsi = completed_data['fsi_values'][category] + '%';
       const isHighlightFsi =
         Number(completed_data['fsi_values'][category]) >= 100;
@@ -27,8 +28,8 @@ const SKUCountCompletedView = props => {
       };
     });
   };
-  const tableData = useMemo(() => constructTableData(item));
+  const tableData = useMemo(() => constructTableData(data));
   return <SKUFeedbackTable tableData={tableData} brand={brand} />;
 };
 
-export default SKUCountCompletedView;
+export default SKUCountFeedbackView;
