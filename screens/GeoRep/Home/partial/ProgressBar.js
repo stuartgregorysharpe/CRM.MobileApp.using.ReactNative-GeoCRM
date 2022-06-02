@@ -1,10 +1,9 @@
 
 
-import { View, Text , Animated, Dimensions , Easing} from 'react-native'
+import { View , Animated, Dimensions} from 'react-native'
 import React , { useRef , useState , useEffect ,useCallback} from 'react'
 import Colors from '../../../../constants/Colors'
 import { AppText } from '../../../../components/common/AppText';
-
 
 export default function ProgressBar({ steps, colors, height}) {
 

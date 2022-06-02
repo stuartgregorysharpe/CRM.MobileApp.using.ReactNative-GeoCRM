@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  Text,
   TouchableOpacity,
   Dimensions,
   Image,
@@ -12,7 +11,6 @@ import {
 import {TextInput} from 'react-native-paper';
 import {
   getApiRequest,
-  postApiRequest,
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
@@ -29,7 +27,6 @@ import PhotoCameraPickerDialog from '../../../../../components/modal/PhotoCamera
 import * as RNLocalize from 'react-native-localize';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
-import {showNotification} from '../../../../../actions/notification.action';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
   const {title, isStart, startEndDayId, currentLocation} = props;
@@ -102,7 +99,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
     }else{
       postData.append('image_included', '0');
     }
-
+    
     var time_zone = RNLocalize.getTimeZone();
     postData.append('user_local_data[time_zone]', time_zone);
     postData.append(

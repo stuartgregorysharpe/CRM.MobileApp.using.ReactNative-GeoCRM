@@ -3,6 +3,7 @@ import {StyleSheet, Text} from 'react-native';
 
 import CModal from '../../../../../components/common/CModal';
 import {Constants, Fonts, Colors} from '../../../../../constants';
+import { whiteLabel } from '../../../../../constants/Colors';
 
 import UpdateActionFormContainer from '../containers/UpdateActionFormContainer';
 
@@ -72,7 +73,7 @@ const UpdateActionItemModal = React.forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   createdByText: {
     fontFamily: Fonts.primaryRegular,
-    color: Colors.primaryColor,
+    color: whiteLabel().mainText,
     fontSize: 12,
     marginTop: 3,
   },

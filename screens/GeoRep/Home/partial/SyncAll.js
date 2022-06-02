@@ -1,11 +1,10 @@
-import { View, Text , TouchableOpacity} from 'react-native'
+import { View , TouchableOpacity} from 'react-native'
 import React , {useState} from 'react'
 import { style } from '../../../../constants/Styles'
 import SvgIcon from '../../../../components/SvgIcon'
 import Colors, { whiteLabel } from '../../../../constants/Colors'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AppText } from '../../../../components/common/AppText';
-
 
 export default function SyncAll(props) {  
 

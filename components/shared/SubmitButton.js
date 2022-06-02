@@ -27,7 +27,7 @@ export const SubmitButton = ({title, onSubmit, style ,bgStyle}) => {
       <FontAwesomeIcon
         style={styles.submitButtonIcon}
         size={25}
-        color={whiteLabel().actionFullButtonText}
+        color={whiteLabel().actionOutlineButtonText}
         icon={faAngleDoubleRight}
       />
     </TouchableOpacity>

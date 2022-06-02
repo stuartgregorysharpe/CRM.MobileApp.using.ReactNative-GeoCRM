@@ -59,9 +59,10 @@ const ActionItemsContainer = props => {
           onPressItem={() => {
             addActionItemModalRef.current.showModal();
           }}
-          style={{marginRight: 20, marginBottom: 64}}
+          style={{marginRight: 20, marginBottom: 32}}
         />
       )}
+      
       <AddActionItemModal
         ref={addActionItemModalRef}
         locationId={locationId}

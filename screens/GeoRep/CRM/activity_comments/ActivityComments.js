@@ -10,7 +10,7 @@ import PagerView from 'react-native-pager-view';
 import { TopTab } from '../../../../components/common/TopTab';
 
 export default function ActivityComments(props) {
-
+    
     const {visible , onModalClosed , locationId} =  props;
     const [tabIndex , setTabIndex] = useState(0);
     const headers = ["History", "Forms"];
@@ -24,7 +24,7 @@ export default function ActivityComments(props) {
     return (
         <Modal                      
             animationType="fade"        
-            transparent={true}
+            transpatotrent={true}
             visible={visible}
             onRequestClose={onModalClosed}
             onModalClosed={onModalClosed}>
