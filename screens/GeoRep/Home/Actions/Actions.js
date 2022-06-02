@@ -1,4 +1,4 @@
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import {View, FlatList, TouchableOpacity} from 'react-native';
 import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {AppText} from '../../../../components/common/AppText';
 import {getApiRequest} from '../../../../actions/api.action';

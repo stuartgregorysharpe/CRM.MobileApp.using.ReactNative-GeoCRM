@@ -36,20 +36,22 @@ export default function MainPage(props) {
     useEffect(() => {    
         let isSubscribed = true;        
         if(currentLocation.latitude === undefined){
-          console.log("updated curretn location");
+    
           dispatch(updateCurrentLocation());
         }        
         var param = {
           current_latitude: currentLocation.latitude != undefined ? currentLocation.latitude : 1,
           current_longitude: currentLocation.longitude != undefined ? currentLocation.longitude : 1
-        };            
+        };           
+        console.log("ok", param); 
         //https://dev.georep.com/local_api_old/home/main-dashboard
-        getApiRequest("https://dev.georep.com/local_api_old/home/main-dashboard", param).then((res) => {      
+        getApiRequest("home/main-dashboard", param).then(async(res) => {      
             if(isSubscribed){
               console.log("res",res)
               setVisitCard(res.visits_card);
               setActivityCard(res.activity_card);
-              //setIsStart(res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
+              setIsStart(res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
+              await storeLocalValue("start_my_day", res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY  ? '1' : '0' );  
             }          
         }).catch((e) => {
         });
