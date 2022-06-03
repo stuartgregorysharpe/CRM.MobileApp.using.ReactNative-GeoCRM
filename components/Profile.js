@@ -46,8 +46,8 @@ export default function Profile() {
           <Text style={styles.label}>Contact Details:</Text>
           <Text style={styles.text}>+27 81 691 7262</Text>
         </View>
-
       </View>
+      
       <View style={styles.projectBox}>
         <Text style={styles.projectTitle}>App & Projects</Text>
         <View style={styles.selectBox}>

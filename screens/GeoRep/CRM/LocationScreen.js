@@ -4,13 +4,11 @@ import {
   Text,
   TextInput,
   View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableOpacity,  
   Dimensions,
   BackHandler,
   Image,
   Platform,
-  TouchableHighlight,
   AppState,
   PermissionsAndroid,
 } from 'react-native';
@@ -68,25 +66,15 @@ import {
 import {Notification} from '../../../components/modal/Notification';
 import {SvgXml} from 'react-native-svg';
 import MarkerIcon from '../../../components/Marker';
-
-const SlidUpArrow = () => (
-  <View style={styles.slidUpArrow}>
-    <Text style={styles.slidUpArrowText}>Pin Key</Text>
-    <FontAwesomeIcon
-      size={12}
-      icon={faChevronUp}
-      color={whiteLabel().mainText}
-    />
-  </View>
-);
-
+import PinKeySlideUp from './popup/PinKeySlideUp';
+import CheckInStatusView from './partial/CheckInStatusView';
 
 let id = 0;
 let previousZoom = 0;
 let mapPinSvg = null;
 let showingItem = "map_view";
 let isMount = true;
-
+var specificLocationId = 0;
 
 export default function LocationScreen(props) {
   const navigation = props.navigation;
@@ -119,6 +107,7 @@ export default function LocationScreen(props) {
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05");
+  const [isCheckin, setIsCheckin] = useState(false);
 
   useEffect(() => {
     
@@ -138,14 +127,22 @@ export default function LocationScreen(props) {
     };
   }, []);
 
-  // useEffect(()=>{
-  //   refreshHeader();
-  // },[showItem])
+  useEffect(()=>{
+    if (crmStatus || showItem === "addLead") {
+      props.screenProps.setOptions({
+        tabBarStyle: {
+          display: 'none',
+        },
+      });
+    }
+    refreshHeader();
+  },[showItem])
 
   const initCode = async () => {
     var code = await getPolygonFillColorTransparency();
     setTransCode(code);
     var checkin = await getLocalData("@checkin");    
+    setIsCheckin(checkin);
     specificLocationId = await getLocalData("@specific_location_id");
   }
 
@@ -393,15 +390,12 @@ export default function LocationScreen(props) {
     return true;
   };
 
-  const animation = (name) => {
-    if (name !== "addLead") {
-      dispatch({ type: SLIDE_STATUS, payload: true });
-    }
-
+  const animation = (name) => {    
     setShowItem(name);
     showingItem = name;
     if (name === "addLead" || name === "locationInfo") {
       setIsBack(true);
+      console.log("show back icon");
     }
   }
 
@@ -699,16 +693,7 @@ export default function LocationScreen(props) {
                     {
                       renderMaker(item, key)
                     }
-
-                    {/* {
-                      mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code &&
-                      <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
-                    }     
-                    {
-                      selectedLocationsForCalendar.find(element => element.location_id === item.location_id) ? <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" /> :
-                      <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
-                    } */}
-
+                 
                   </Marker>
                 ))}
 
@@ -784,13 +769,25 @@ export default function LocationScreen(props) {
                   </View>
                 </TouchableOpacity>
               }
-
-
             </View>
           }
 
+          {
+              isCheckin === '1' && (                
+                <CheckInStatusView
+                  page="map"
+                  specificLocationId={specificLocationId}
+                  onGo={() => {
+                    props.navigation.navigate('LocationSpecificInfo', {
+                      locationId: specificLocationId,
+                      page: 'checkin',
+                    });
+                  }}></CheckInStatusView>
+              )
+          }
+                    
           <TouchableOpacity
-            style={styles.plusButton}
+            style={[styles.plusButton, { marginBottom: isCheckin === "1" ? 40 : 0}]}
             onPress={() => {
               animation("addLead");
             }}>
@@ -803,7 +800,8 @@ export default function LocationScreen(props) {
               dispatch(getLocationPinKey());
               animation("marker");
             }}>
-            <SlidUpArrow />
+            
+            <PinKeySlideUp/>
           </TouchableOpacity>
 
         </View>
@@ -836,24 +834,7 @@ const styles = EStyleSheet.create(parse({
     bottom: perWidth(100, 70),
     padding: 5
   },
-  slidUpArrow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: whiteLabel().actionFullButtonBackground,
-    backgroundColor: Colors.whiteColor,
-    borderRadius: 6,
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingTop: 2,
-    paddingBottom: 2
-  },
-  slidUpArrowText: {
-    color: whiteLabel().mainText,
-    fontSize: 12,
-    fontFamily: Fonts.secondaryMedium,
-    marginRight: 8,
-  },
+  
   pinKey: {
     width: 80,
     height: 18,
