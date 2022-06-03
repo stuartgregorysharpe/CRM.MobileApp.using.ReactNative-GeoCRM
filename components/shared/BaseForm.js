@@ -15,6 +15,8 @@ const BaseForm = props => {
   };
 
   const isCompulsory = item && item.rule_compulsory === '1';
+  const isShowInfoIcon = item.guide_info !== undefined;
+
   return (
     <View
       style={[
@@ -28,11 +30,15 @@ const BaseForm = props => {
         <View style={{flex: 1, paddingHorizontal: 5}}>
           <Text style={styles.titleStyle}> {item.question_text} </Text>
         </View>
+        {
+          isShowInfoIcon && (
+            <TouchableOpacity
+              onPress={() => onItemAction(Constants.actionType.ACTION_INFO)}>
+              <Icon name={`info-outline`} size={25} color={whiteLabel().mainText} />
+            </TouchableOpacity>
+          )
+        }
 
-        <TouchableOpacity
-          onPress={() => onItemAction(Constants.actionType.ACTION_INFO)}>
-          <Icon name={`info-outline`} size={25} color={whiteLabel().mainText} />
-        </TouchableOpacity>
       </View>
       {props.children}
     </View>

@@ -53,7 +53,7 @@ export const GuideInfoView = ({visible, info, onModalClose}) => {
             )}
             {isShowText && (
               <Title style={{fontFamily: Fonts.primaryRegular, fontSize: 14}}>
-                {info.text}
+                {info.text} 
               </Title>
             )}
 

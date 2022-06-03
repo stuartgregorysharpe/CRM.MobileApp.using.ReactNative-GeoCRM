@@ -133,6 +133,7 @@ export default function FormsScreen(props) {
   };
 
   const _onTouchStart = (e, text) => {
+ 
     setBubbleText(text);
     setIsInfo(true);
   };

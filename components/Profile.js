@@ -3,10 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { useSelector, useDispatch } from 'react-redux';
 
 import SvgIcon from './SvgIcon';
-import { BG_COLOR, PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
+import  Colors, { whiteLabel } from '../constants/Colors';
 import { CHANGE_SELECT_PROJECT, CHANGE_PROFILE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import { color } from 'react-native-reanimated';
+
+
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -29,17 +30,23 @@ export default function Profile() {
         </View>
       </View>
       
-      <View style={[styles.profileInfo, {marginTop:12}]}>
-        <View style={{ width: '48%' }}>
+      <View style={[styles.profileInfo, {marginTop:12, flexDirection:'column', alignItems:'center'}]}>
+
+        <View style={{flexDirection:'row',marginTop:5}}>
           <Text style={styles.label}>User Name:</Text>
-          <Text style={styles.label}>Email Address:</Text>
-          <Text style={styles.label}>Contact Details:</Text>
-        </View>
-        <View style={{ width: '48%' }}>
           <Text style={styles.text}>{userInfo.user_name}</Text>
+        </View>
+
+        <View style={{flexDirection:'row' ,marginTop:5}}>
+          <Text style={styles.label}>Email:</Text>
           <Text style={styles.text}>{userInfo.user_email}</Text>
+        </View>
+
+        <View style={{flexDirection:'row',marginTop:5}}>
+          <Text style={styles.label}>Contact Details:</Text>
           <Text style={styles.text}>+27 81 691 7262</Text>
         </View>
+
       </View>
       <View style={styles.projectBox}>
         <Text style={styles.projectTitle}>App & Projects</Text>
@@ -77,7 +84,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     width: '100%',
     height: Platform.OS == 'ios' ? '120%' : '100%',
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 12,
     paddingTop: 70,
     borderWidth: 1,
@@ -125,12 +132,13 @@ const styles = StyleSheet.create({
   },
   label: {
     textAlign: 'right',
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: Fonts.secondaryBold,
     marginBottom: 4
   },
   text: {
-    color: TEXT_COLOR,
+    marginLeft:5,
+    color: Colors.textColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 4
   },
@@ -162,6 +170,6 @@ const styles = StyleSheet.create({
   selectName: {
     fontSize: 16,
     fontFamily: 'Gilroy-Medium',
-    color: TEXT_COLOR
+    color: Colors.textColor
   }
 })

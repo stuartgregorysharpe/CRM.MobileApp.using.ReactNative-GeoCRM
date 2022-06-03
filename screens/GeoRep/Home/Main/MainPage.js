@@ -47,7 +47,7 @@ export default function MainPage(props) {
         //https://dev.georep.com/local_api_old/home/main-dashboard
         getApiRequest("home/main-dashboard", param).then(async(res) => {      
             if(isSubscribed){
-              console.log("res",res)
+              console.log("res", JSON.stringify(res.visits_card))
               setVisitCard(res.visits_card);
               setActivityCard(res.activity_card);
               setIsStart(res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
