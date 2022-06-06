@@ -11,6 +11,7 @@ import FormSubmitFeedbackContainer from '../../components/shared/FormSubmitFeedb
 
 import dummyData from '../../components/shared/FormSubmitFeedback/dummyData.json';
 import FormSubmitFeedbackModal from '../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
+import TrendChartView from './Touchpoint/components/TrendChartView';
 export default function UITestScreen({screenProps}) {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function UITestScreen({screenProps}) {
         }}>
         <Text>Open modal</Text>
       </TouchableOpacity>
-      <FormSubmitFeedbackModal ref={modalRef} data={dummyData} />
+      <TrendChartView />
     </SafeAreaView>
   );
 }
