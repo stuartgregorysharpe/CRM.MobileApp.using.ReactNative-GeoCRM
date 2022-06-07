@@ -37,6 +37,7 @@ const DynamicField = props => {
       />
     );
   };
+  
   const renderText = () => {
     return (
       <CTextInput

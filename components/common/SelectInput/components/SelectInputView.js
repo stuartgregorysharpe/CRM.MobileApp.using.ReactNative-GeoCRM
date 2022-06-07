@@ -12,7 +12,7 @@ const SelectInputView = props => {
       props.onPress();
     }
   };
-  const showText = text != null && text != '';
+  const showText = text != undefined && text != null && text != '';
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
   };

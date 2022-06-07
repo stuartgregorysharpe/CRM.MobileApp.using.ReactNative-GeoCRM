@@ -55,12 +55,13 @@ export default function MainPage(props) {
     const loadPage = () => {
       if(currentLocation.latitude === undefined){    
         dispatch(updateCurrentLocation());
-      }        
+      }
+
       var param = {
         current_latitude: currentLocation.latitude != undefined ? currentLocation.latitude : 1,
         current_longitude: currentLocation.longitude != undefined ? currentLocation.longitude : 1
       };
-
+      
       if(isLoading == false){
         setIsLoading(true);
         getApiRequest("home/main-dashboard", param).then(async(res) => {              
@@ -81,7 +82,7 @@ export default function MainPage(props) {
             
         }).catch((e) => {        
           setIsLoading(false);
-        });
+        });       
       }    
       initData();
     }

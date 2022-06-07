@@ -396,8 +396,7 @@ export default function LocationScreen(props) {
     setShowItem(name);
     showingItem = name;
     if (name === "addLead" || name === "locationInfo") {
-      setIsBack(true);
-      console.log("show back icon");
+      setIsBack(true);      
     }
   }
 
@@ -802,10 +801,11 @@ export default function LocationScreen(props) {
           <TouchableOpacity
             style={styles.pinKeyButton}
             onPress={() => {
+              console.log("click pin key")
               dispatch(getLocationPinKey());
               animation("marker");
-            }}>
-            
+              dispatch({ type: SLIDE_STATUS, payload: true });
+            }}>            
             <PinKeySlideUp/>
           </TouchableOpacity>
 

@@ -57,7 +57,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
-  const customerContactsRef = useRef();
+  const customerContactsRef = useRef();  
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] =
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
