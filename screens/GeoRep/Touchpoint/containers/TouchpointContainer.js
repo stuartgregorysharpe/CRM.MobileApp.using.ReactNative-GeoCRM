@@ -35,8 +35,8 @@ const TouchpointContainer = props => {
           }}
           containerStyle={[style.card]}
         />
-        {renderContent(tabIndex)}
       </View>
+      {renderContent(tabIndex)}
     </View>
   );
 };
