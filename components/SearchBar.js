@@ -8,7 +8,7 @@ import SvgIcon from './SvgIcon';
 import {boxShadow} from '../constants/Styles';
 import Colors, {whiteLabel} from '../constants/Colors';
 
-const SearchBox = props => {
+const SearchBar = props => {
   const {isFilter, animation, initVal, isLoading, haveFilter} = props;
   const [text, setText] = useState(initVal);
   const onSearch = text => {
@@ -133,4 +133,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchBox;
+export default SearchBar;

@@ -32,6 +32,7 @@ export default {
     ACTION_CAPTURE: 'ACTION_CAPTURE',
     ACTION_ADD: 'ACTION_ADD',
     ACTION_CLOSE: 'ACTION_CLOSE',
+    ACTION_VIEW: 'ACTION_VIEW',
   },
   debugMode: {
     NO_DEBUG: 0,

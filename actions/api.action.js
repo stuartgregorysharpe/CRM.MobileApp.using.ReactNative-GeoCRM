@@ -2,6 +2,13 @@ import axios from 'axios';
 import uuid from 'react-native-uuid';
 import {getBaseUrl, getToken} from '../constants/Storage';
 import FormData from 'form-data';
+export const dummyApiRequest = async (route, param, response) => {
+  return new Promise(function (resolve, reject) {
+    setTimeout(() => {
+      resolve(response);
+    }, 1000);
+  });
+};
 
 export const getApiRequest = async (route, param) => {
   var token = await getToken();

@@ -4,48 +4,62 @@
       "id": 1,
       "name": "Bronwyn Smit",
       "description": "Western Cape",
-      "overall_score": "92"
+      "overall_score": "92",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     },
     {
       "id": 2,
       "name": "Bronwyn Smit2",
       "description": "Western Cape2",
-      "overall_score": "93"
+      "overall_score": "93",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     },
     {
+      "id": 3,
       "name": "Bronwyn Smit3",
       "description": "Western Cape3",
-      "overall_score": "54"
+      "overall_score": "54",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     },
     {
+      "id": 4,
       "name": "Bronwyn Smit4",
       "description": "Western Cape4",
-      "overall_score": "12"
+      "overall_score": "12",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     },
     {
+      "id": 5,
       "name": "Bronwyn Smit5",
       "description": "Western Cape5",
-      "overall_score": "35"
+      "overall_score": "35",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     },
     {
+       "id": 6,
       "name": "Bronwyn Smit6",
       "description": "Western Cape6",
       "overall_score": "36"
     },
     {
+       "id": 7,
       "name": "Bronwyn Smit7",
       "description": "Western Cape7",
       "overall_score": "68"
     },
     {
+      "id": 8,
       "name": "Bronwyn Smit",
       "description": "Western Cape",
-      "overall_score": "99"
+      "overall_score": "99",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     },
     {
+      "id": 9,
       "name": "Bronwyn Smit",
       "description": "Western Cape",
-      "overall_score": "92"
+      "overall_score": "92",
+      "avatar": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg"
     }
   ],
   "trends": {

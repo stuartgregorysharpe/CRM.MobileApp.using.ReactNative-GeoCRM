@@ -11,7 +11,9 @@ import FormSubmitFeedbackContainer from '../../components/shared/FormSubmitFeedb
 
 import dummyData from '../../components/shared/FormSubmitFeedback/dummyData.json';
 import FormSubmitFeedbackModal from '../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
+import {Colors} from '../../constants';
 import TrendChartView from './Touchpoint/components/TrendChartView';
+import LeaderboardContainer from './Touchpoint/containers/LeaderboardContainer';
 export default function UITestScreen({screenProps}) {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -22,15 +24,8 @@ export default function UITestScreen({screenProps}) {
     }
   });
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <TouchableOpacity
-        style={{marginLeft: 12, marginTop: 12}}
-        onPress={() => {
-          modalRef.current.showModal();
-        }}>
-        <Text>Open modal</Text>
-      </TouchableOpacity>
-      <TrendChartView />
+    <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
+      <LeaderboardContainer />
     </SafeAreaView>
   );
 }
