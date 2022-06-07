@@ -42,7 +42,7 @@ export default function TodayVisits(props) {
             <View style={{marginBottom:10, flex:1 , marginRight:10 }}>
                 <ProgressBar colors={colors} steps={[parseInt(today.completed), parseInt(today.additional), parseInt(today.remaining)]} height={25} ></ProgressBar> 
             </View>
-                           
+                                       
             <View style={{flexDirection:'column' , alignItems:'center' , marginTop:-30}}>
                 <AppText color={whiteLabel().mainText} style={{marginBottom:5, marginTop:0}} title="Strike Rate"></AppText>
                 <CircularProgress

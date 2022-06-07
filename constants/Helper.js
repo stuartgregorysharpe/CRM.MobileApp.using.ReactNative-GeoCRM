@@ -338,15 +338,15 @@ export function expireToken(dispatch, e) {
 
 export function getPostParameter(location) {
   var time_zone = RNLocalize.getTimeZone();
-  if (location.latitude && location.longitude) {
-    return {
-      user_local_data: {
-        time_zone: time_zone,
-        latitude: location.latitude,
-        longitude: location.longitude,
-      },
-    };
-  }
+  
+  return {
+    user_local_data: {
+      time_zone: time_zone,
+      latitude:  location && location.latitude != undefined ? location.latitude : 0 ,
+      longitude: location && location.longitude != undefined ? location.longitude : 0 ,
+    },
+  };
+  
   return {};
 }
 

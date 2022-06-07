@@ -36,6 +36,7 @@ import {breakPoint} from '../../../constants/Breakpoint';
 import {
   CHANGE_CURRENT_LOCATION,  
   CHANGE_POLYGONS,
+  CHECKIN,
   IS_CALENDAR_SELECTION,
   SELECTED_LOCATIONS_FOR_CALENDAR,
   SLIDE_STATUS,
@@ -78,12 +79,13 @@ var specificLocationId = 0;
 
 export default function LocationScreen(props) {
   const navigation = props.navigation;
-  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+  const crmStatus = useSelector(state => state.rep.crmSlideStatus);  
   const polygons = useSelector(state => state.location.polygons);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const filterParmeterChanged = useSelector(state => state.selection.mapFilters);
   const isCalendarSelection = useSelector(state => state.selection.isCalendarSelection);
   const selectedLocationsForCalendar = useSelector(state => state.selection.selectedLocationsForCalendar);
+  const isCheckin = useSelector(state => state.location.checkIn);
   const dispatch = useDispatch();
   const [showItem, setShowItem] = useState("map_view");
   const [locationInfo, setLocationInfo] = useState();
@@ -106,11 +108,9 @@ export default function LocationScreen(props) {
   const [isFinish, setIsFinish] = useState(false);
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
-  const [transCode, setTransCode] = useState("05");
-  const [isCheckin, setIsCheckin] = useState(false);
+  const [transCode, setTransCode] = useState("05");  
 
-  useEffect(() => {
-    
+  useEffect(() => {    
     initCode();
     refreshHeader();
     if (crmStatus || showItem === "addLead") {
@@ -121,11 +121,13 @@ export default function LocationScreen(props) {
       });
     }
     requestPermissions();
-    return () => {
-      console.log("ASDFDD");
+    return () => {      
       isMount = false;
     };
   }, []);
+
+  
+
 
   useEffect(()=>{
     if (crmStatus || showItem === "addLead") {
@@ -141,8 +143,8 @@ export default function LocationScreen(props) {
   const initCode = async () => {
     var code = await getPolygonFillColorTransparency();
     setTransCode(code);
-    var checkin = await getLocalData("@checkin");    
-    setIsCheckin(checkin);
+    var checkin = await getLocalData("@checkin");
+    dispatch({ type: CHECKIN, payload: checkin === "1" ? true : false });
     specificLocationId = await getLocalData("@specific_location_id");
   }
 
@@ -258,9 +260,10 @@ export default function LocationScreen(props) {
 
   useEffect(() => {
     console.log('crm navigation');
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', async() => {
       console.log('focuseed');
       isMount = true;
+      specificLocationId = await getLocalData("@specific_location_id");
       refreshHeader();
       if (crmStatus) {
         props.screenProps.setOptions({
@@ -273,15 +276,13 @@ export default function LocationScreen(props) {
         console.log("focuseed on change region")
         map.current.props.onRegionChangeComplete();
       }
-
       
     });
     return unsubscribe;
   }, [navigation]);
 
   useEffect(() => {
-    let isMount = true;
-    console.log("filterParmeterChanged", filterParmeterChanged)
+    let isMount = true;    
     if ( isMount && currentLocation && currentLocation.latitude !== undefined && boundBox !== undefined && isGuranted) {
       setIsLoading(true);
       getLocationMapByRegion(currentLocation, boundBox).then((res) => {
@@ -300,7 +301,6 @@ export default function LocationScreen(props) {
   }, [filterParmeterChanged]);
 
   const clearWatch = () =>{
-    console.log("XXAADD", watchId);
     if (watchId.current) {
       console.log("End  TRacking page --");
       Geolocation.clearWatch(watchId.current);
@@ -317,15 +317,17 @@ export default function LocationScreen(props) {
         return (<TouchableOpacity
           onPress={
             () => {
-              if (showingItem === 'addLead') {
+              if (showingItem === 'addLead' || showItem === "locationInfo") {
                 showingItem = "map_view";
                 setShowItem('map_view');
                 setIsBack(false);
+                if(showItem === "locationInfo"){
+                  dispatch({ type: SLIDE_STATUS, payload: false }); 
+                }
                 return;
               }
               dispatch({ type: SLIDE_STATUS, payload: false });
               setIsBack(false);
-
               if (navigation.canGoBack()) {
                 navigation.goBack();
               }
@@ -497,12 +499,14 @@ export default function LocationScreen(props) {
       dispatch({ type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: selectedLocations });
 
     } else {
+      console.log("open location info");
       openLocaitonInfoDetails(Number(item.location_id));
     }
   }
 
   const openLocaitonInfoDetails = (location_id) => {
     animation("locationInfo");
+    dispatch({ type: SLIDE_STATUS, payload: true });    
     if (currentLocation && currentLocation.latitude !== undefined) {
       getLocationInfo(Number(location_id), currentLocation)
         .then((res) => {
@@ -586,6 +590,7 @@ export default function LocationScreen(props) {
         }
 
         <View style={styles.container}>
+          
           <View style={styles.searchBox}>
             <TouchableOpacity
               activeOpacity={1}
@@ -773,7 +778,7 @@ export default function LocationScreen(props) {
           }
 
           {
-              isCheckin === '1' && (                
+              isCheckin && (                
                 <CheckInStatusView
                   page="map"
                   specificLocationId={specificLocationId}
@@ -787,7 +792,7 @@ export default function LocationScreen(props) {
           }
                     
           <TouchableOpacity
-            style={[styles.plusButton, { marginBottom: isCheckin === "1" ? 40 : 0}]}
+            style={[styles.plusButton, { marginBottom: isCheckin ? 40 : 0}]}
             onPress={() => {
               animation("addLead");
             }}>

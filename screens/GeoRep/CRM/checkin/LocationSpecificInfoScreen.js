@@ -95,7 +95,7 @@ export default function LocationSpecificInfoScreen(props) {
       });
     }
   };
-
+    
   const initData = async () => {
     if (pageType === 'checkin') {
       await storeLocalValue('@checkin', '1');

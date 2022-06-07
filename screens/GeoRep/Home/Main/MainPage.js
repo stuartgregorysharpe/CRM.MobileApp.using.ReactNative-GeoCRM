@@ -18,6 +18,7 @@ import { updateCurrentLocation } from '../../../../actions/google.action';
 import { useDispatch } from 'react-redux';
 import { Notification } from '../../../../components/modal/Notification';
 import { showNotification } from '../../../../actions/notification.action';
+import { CHECKIN } from '../../../../actions/actionTypes';
 
 export default function MainPage(props) {
 
@@ -32,46 +33,71 @@ export default function MainPage(props) {
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const odometerReadingModalRef = useRef(null);
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
+    const [currentCall, setCurrentCall] = useState("");
+    const [checkinStatus , setCheckinStatus] = useState(false);
+    const isCheckin = useSelector(state => state.location.checkIn);
+    const navigation = props.navigation;
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+          loadPage();   
+      });
+      return unsubscribe;
+    }, [navigation]);
 
     useEffect(() => {    
         let isSubscribed = true;        
-        if(currentLocation.latitude === undefined){
-    
-          dispatch(updateCurrentLocation());
-        }        
-        var param = {
-          current_latitude: currentLocation.latitude != undefined ? currentLocation.latitude : 1,
-          current_longitude: currentLocation.longitude != undefined ? currentLocation.longitude : 1
-        };           
-        console.log("ok", param); 
-        //https://dev.georep.com/local_api_old/home/main-dashboard
-        getApiRequest("home/main-dashboard", param).then(async(res) => {      
-            if(isSubscribed){
-              console.log("res", JSON.stringify(res.visits_card))
-              setVisitCard(res.visits_card);
-              setActivityCard(res.activity_card);
-              setIsStart(res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
-              await storeLocalValue("start_my_day", res.startEndDay_state === Constants.homeStartEndType.START_MY_DAY  ? '1' : '0' );  
-            }          
-        }).catch((e) => {
-        });
-        initData();
+        loadPage();
         return () => (isSubscribed = false)
-    },[]);
+    },[isCheckin]);
+
+    const loadPage = () => {
+      if(currentLocation.latitude === undefined){    
+        dispatch(updateCurrentLocation());
+      }        
+      var param = {
+        current_latitude: currentLocation.latitude != undefined ? currentLocation.latitude : 1,
+        current_longitude: currentLocation.longitude != undefined ? currentLocation.longitude : 1
+      };
+
+      if(isLoading == false){
+        setIsLoading(true);
+        getApiRequest("home/main-dashboard", param).then(async(res) => {              
+              setIsLoading(false);
+              setVisitCard(res.items.visits_card);
+              setActivityCard(res.items.activity_card);
+              setCurrentCall(res.items.current_call);
+              setCheckinStatus(res.items.checkin_state);
+              if(res.items.checkin_state != ""){                
+                await storeLocalValue('@checkin', '1');
+                await storeLocalValue('@specific_location_id', res.items.checkin_state);
+                dispatch({ type: CHECKIN, payload: true });
+              }else{                
+                await storeLocalValue('@checkin', '0');
+              }
+              setIsStart(res.items.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
+              await storeLocalValue("start_my_day", res.items.startEndDay_state === Constants.homeStartEndType.START_MY_DAY  ? '1' : '0' );  
+            
+        }).catch((e) => {        
+          setIsLoading(false);
+        });
+      }    
+      initData();
+    }
 
     const initData  = async() =>{
       var startMyDay = await getLocalData("start_my_day");      
       setIsStart( startMyDay === null || startMyDay === "1" ? true: false);
     }
-    
+
     const _callMyDay = () => {
         var userParam = getPostParameter(currentLocation);
         var postData = {
             startEndDay_type: isStart ? Constants.homeStartEndType.START_MY_DAY : Constants.homeStartEndType.END_MY_DAY,
             user_local_data:  userParam.user_local_data !=undefined ? userParam.user_local_data : {time_zone: '', latitude: 0, longitude: 0},
-        };        
-        postApiRequest("home/startEndDay", postData).then( async(res) => {
-          console.log("res" , res);
+        };
+        postApiRequest("home/startEndDay", postData).then( async(res) => {          
           if(res.status === "success"){
             setStartEndDayId(res.startEndDay_id);
             await storeLocalValue("start_my_day", isStart ? '0' : '1' );          
@@ -80,17 +106,13 @@ export default function MainPage(props) {
             if(features.includes("odometer_reading")){
               odometerReadingModalRef.current.showModal();
             }
-
-            
           }        
         }).catch((e) => {
 
         });
     }
 
-    const onCaptureAction = async({type, value}) => {
-      console.log(type);
-      
+    const onCaptureAction = async({type, value}) => {          
       dispatch(
         showNotification({
           type: 'success',
@@ -121,7 +143,7 @@ export default function MainPage(props) {
                 {
                   activityCard &&                   
                   <ActivityCard activityCard={activityCard}></ActivityCard>
-                }                  
+                }
             </View>   
           )
         }else if(index == 2){
@@ -139,16 +161,18 @@ export default function MainPage(props) {
                 <SubmitButton bgStyle={{backgroundColor:isStart? Colors.disabledColor : Colors.redColor , borderRadius:3}}
                   title={isStart? "Start My Day" : 'End My Day'}
                   onSubmit={() => {
-                      _callMyDay()
-                                                               
+                      _callMyDay();                                                               
                   }}
                 ></SubmitButton>
             </View>
-                        
+
             <SyncAll></SyncAll>
-            
-            <CheckOut></CheckOut>
-            
+
+            {
+              isCheckin && 
+              <CheckOut checkinStatus={checkinStatus} currentCall={currentCall} ></CheckOut>
+            }
+                        
             <FlatList            
                 removeClippedSubviews={false}
                 // maxToRenderPerBatch={10}

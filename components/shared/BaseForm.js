@@ -15,8 +15,7 @@ const BaseForm = props => {
   };
 
   const isCompulsory = item && item.rule_compulsory === '1';
-  const isShowInfoIcon = item.guide_info !== undefined;
-
+  const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
   return (
     <View
       style={[
@@ -38,7 +37,6 @@ const BaseForm = props => {
             </TouchableOpacity>
           )
         }
-
       </View>
       {props.children}
     </View>

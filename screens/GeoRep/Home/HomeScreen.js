@@ -56,7 +56,7 @@ export default function HomeScreen(props) {
             setTabIndex(item.name);
           }}></ScrollTab>
       </View>
-      {tabIndex === 'Main' && <MainPage></MainPage>}
+      {tabIndex === 'Main' && <MainPage {...props}></MainPage>}
       {tabIndex === 'Actions' && <ActionItemsContainer />}
     </View>
   );

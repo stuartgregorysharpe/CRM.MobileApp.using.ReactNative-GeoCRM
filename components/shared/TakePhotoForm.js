@@ -12,6 +12,7 @@ export default function TakePhotoForm({item, onPress, onTouchStart}) {
   const onUpdatePhotos = paths => {
     onPress(paths);
   };
+  const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
 
   return (
     <View
@@ -25,16 +26,20 @@ export default function TakePhotoForm({item, onPress, onTouchStart}) {
           <View style={{flex: 1, paddingHorizontal: 5}}>
             <Text style={styles.titleStyle}> {item.question_text} </Text>
           </View>
-          <View
-            onTouchStart={e => {
-              onTouchStart(e.nativeEvent, item.guide_info);
-            }}>
-            <Icon
-              name={`info-outline`}
-              size={25}
-              color={whiteLabel().mainText}
-            />
-          </View>
+          {
+            isShowInfoIcon &&
+            <View
+                onTouchStart={e => {
+                  onTouchStart(e.nativeEvent, item.guide_info);
+                }}>
+                <Icon
+                  name={`info-outline`}
+                  size={25}
+                  color={whiteLabel().mainText}
+                />
+            </View>
+          }
+          
         </View>
         <TakePhotoView
           onUpdatePhotos={onUpdatePhotos}

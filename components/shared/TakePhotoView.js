@@ -20,6 +20,8 @@ import ImageResizer from 'react-native-image-resizer';
 const TakePhotoView = props => {
   const {photos, isOptimize} = props;
   const [isPicker, setIsPicker] = useState(false);
+  const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+  
   const onUpdatePhotos = paths => {
     if (props.onUpdatePhotos) {
       props.onUpdatePhotos(paths);

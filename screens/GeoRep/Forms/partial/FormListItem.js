@@ -15,7 +15,7 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
                     <View style={{flexDirection:'row', flexWrap:'wrap'}}>                                                            
                         <Text style={styles.title}>{item.form_name}</Text>                        
                         {                            
-                            item.guide_info !== undefined && item.guide_info !== [] &&
+                            item.guide_info !== undefined && ( item.guide_info.length != 0 ) &&
                             <TouchableOpacity onPress={() => {                                
                                 onTouchStart("" ,  item.guide_info);
                             } }>

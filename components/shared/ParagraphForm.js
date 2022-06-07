@@ -7,6 +7,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const ParagraphForm = ({item}) => {
     const [text,setText] = useState("");
+    
+
+
     return (
         <View style={[{paddingHorizontal:10}, {marginHorizontal:0 , marginVertical:0 }]}>
             <View style={styles.container}>

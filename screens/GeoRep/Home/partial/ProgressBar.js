@@ -14,8 +14,10 @@ export default function ProgressBar({ steps, colors, height}) {
 
     const viewAnimation = useRef(null);
     const [width, setWidth] = useState(0);
-    
-    
+
+    console.log("stepssteps" , steps);
+
+        
     useEffect(() => {        
         console.log("getTotal",getTotal())
     }, []);
@@ -29,13 +31,20 @@ export default function ProgressBar({ steps, colors, height}) {
         steps.forEach(element => {
             sum = sum + element;
         });
+        if(sum == 0){
+            return 1;
+        }
         return sum;
     }
 
 
     const additionalWidth = (index) => {    
         var itemWidth = width * steps[index] / getTotal();
+        
         if(steps.length === 4){
+            if(itemWidth == width){
+                return  -25 * 3;
+            }
             if( itemWidth < 20){
                 return 35 - itemWidth;
             }else if(itemWidth > 100){
@@ -44,6 +53,9 @@ export default function ProgressBar({ steps, colors, height}) {
                 return 9;
             }
         }else{
+            if(itemWidth == width){
+                return  -25 * 2;
+            }
             if(itemWidth < 10){
                 return 35 - itemWidth;
             }else if(itemWidth > 100){
@@ -98,7 +110,7 @@ export default function ProgressBar({ steps, colors, height}) {
                         zIndex: 4,
                         alignItems:'center'
                     }}>         
-                    <AppText color={Colors.whiteColor} title={steps[1]}></AppText>                                                                                     
+                    <AppText color={Colors.whiteColor} title={steps[1]} style={{marginLeft:5}}></AppText>                                                                                     
                 </Animated.View>
 
                 <Animated.View                    
@@ -113,7 +125,7 @@ export default function ProgressBar({ steps, colors, height}) {
                         zIndex: 3,
                         alignItems:'center'
                     }}>               
-                    <AppText color={Colors.whiteColor} title={steps[2]}></AppText>                                                                           
+                    <AppText color={Colors.whiteColor} title={steps[2]} style={{marginLeft:5}} ></AppText>                                                                           
                 </Animated.View>
 
                 {
@@ -130,7 +142,7 @@ export default function ProgressBar({ steps, colors, height}) {
                             zIndex: 2,
                             alignItems:'center'
                         }}>         
-                        <AppText color={Colors.whiteColor} title={steps[3]}></AppText>                                                                                     
+                        <AppText color={Colors.whiteColor} title={steps[3]} style={{marginLeft:5}} ></AppText>                                                                                     
                     </Animated.View>
                 }
                 
