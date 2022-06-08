@@ -1,68 +1,73 @@
-import React , {useState, useEffect} from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, {useState, useEffect} from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LocationScreen from './LocationScreen';
 import LocationSpecificInfoScreen from './checkin/LocationSpecificInfoScreen';
 import LocationSearchScreen from './LocationSearchScreen';
-import { checkFeatureIncludeParam } from '../../../constants/Storage';
-import { useSelector } from 'react-redux';
+import {checkFeatureIncludeParam} from '../../../constants/Storage';
+import {useSelector} from 'react-redux';
+import TouchpointScreen from '../Touchpoint/TouchpointScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function CRMScreen(props) {
-  
   var screenProps = props.screenProps;
-  if(screenProps === undefined){
+  if (screenProps === undefined) {
     screenProps = props.navigation;
   }
-  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
-  useEffect(() => {
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
+  useEffect(() => {}, []);
 
-  },[]);
-
-  if(features.includes("disable_crm_map_view")){
+  if (features.includes('disable_crm_map_view')) {
     return (
-      <Stack.Navigator>                 
-        <Stack.Screen
-          name="Root"      
-          options={{ header: () => null }}
-        >
-          {props => <LocationSearchScreen {...props} screenProps={screenProps} />}
+      <Stack.Navigator>
+        <Stack.Screen name="Root" options={{header: () => null}}>
+          {props => (
+            <LocationSearchScreen {...props} screenProps={screenProps} />
+          )}
         </Stack.Screen>
 
         <Stack.Screen
-          name="LocationSpecificInfo"        
-          options={{ header: () => null , headerShown: false}}>
-            {props => <LocationSpecificInfoScreen {...props} screenProps={screenProps}  />}
-        </Stack.Screen>               
+          name="LocationSpecificInfo"
+          options={{header: () => null, headerShown: false}}>
+          {props => (
+            <LocationSpecificInfoScreen {...props} screenProps={screenProps} />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     );
-  }else{
+  } else {
     return (
-      <Stack.Navigator> 
-        
-        <Stack.Screen        
-          name="Root"    
-          options={{ header: () => null , headerShown: false}}>      
-            {props => <LocationScreen {...props} screenProps={screenProps} />}
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Root"
+          options={{header: () => null, headerShown: false}}>
+          {props => <LocationScreen {...props} screenProps={screenProps} />}
         </Stack.Screen>
-        
+        <Stack.Screen
+          name="TouchpointScreen"
+          options={{header: () => null, headerShown: false}}>
+          {props => <TouchpointScreen {...props} screenProps={screenProps} />}
+        </Stack.Screen>
         <Stack.Screen
           name="LocationSearch"
           //initialParams={{location_id: ...props.route.params }}
           // component={LocationSearchScreen}
-          options={{ header: () => null }}
-        >
-          {props => <LocationSearchScreen {...props} screenProps={screenProps} />}
+          options={{header: () => null}}>
+          {props => (
+            <LocationSearchScreen {...props} screenProps={screenProps} />
+          )}
         </Stack.Screen>
-  
+
         <Stack.Screen
-          name="LocationSpecificInfo"        
-          options={{ header: () => null , headerShown: false}}>
-            {props => <LocationSpecificInfoScreen {...props} screenProps={screenProps}  />}
-        </Stack.Screen>               
+          name="LocationSpecificInfo"
+          options={{header: () => null, headerShown: false}}>
+          {props => (
+            <LocationSpecificInfoScreen {...props} screenProps={screenProps} />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     );
   }
-
-  
 }

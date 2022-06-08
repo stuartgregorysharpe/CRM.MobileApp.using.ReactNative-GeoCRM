@@ -86,6 +86,10 @@ export default function LocationSpecificInfoScreen(props) {
     };
   }, [location_id]);
 
+  useEffect(() => {
+    refreshHeader();
+  });
+
   const hideBottomBar = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -158,6 +162,9 @@ export default function LocationSpecificInfoScreen(props) {
     }
     if (item.link === 'customer_sales') {
       setIsCustomerSales(true);
+    }
+    if (item.link === 'touchpoints') {
+      navigationMain.navigate('TouchpointScreen');
     }
   };
 
