@@ -5,7 +5,7 @@ import {Colors} from '../../../constants';
 const CLinearChart = props => {
   return (
     <LineChart
-      withVerticalLines={false}
+      withVerticalLines={true}
       withShadow={false}
       fromZero={true}
       chartConfig={{

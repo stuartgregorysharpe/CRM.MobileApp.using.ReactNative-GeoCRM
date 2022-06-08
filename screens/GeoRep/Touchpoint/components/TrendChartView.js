@@ -10,7 +10,7 @@ const TrendChartView = props => {
       <CLinearChart
         segments={10}
         data={{
-          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
           decimalPlaces: 0,
           datasets: [
             {
@@ -55,7 +55,13 @@ const TrendChartView = props => {
         }}
         width={Values.deviceWidth - 32} // from react-native
         height={412}
-        yAxisSuffix="%"
+        yAxisSuffix=" %"
+        formatYLabel={value => {
+          if (value !== undefined) {
+            return Number(value).toFixed(0);
+          }
+          return value;
+        }}
         yAxisInterval={1} // optional, defaults to 1
         style={{
           marginVertical: 8,
@@ -69,6 +75,7 @@ const TrendChartView = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    marginHorizontal: 16,
   },
 });
 

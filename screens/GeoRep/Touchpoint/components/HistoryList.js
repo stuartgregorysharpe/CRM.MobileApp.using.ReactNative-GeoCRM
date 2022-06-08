@@ -1,15 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
-import {style} from '../../../../constants/Styles';
-import LeaderboardItem from './LeaderboardItem';
+import HistoryItem from './HistoryItem';
 
-const LeaderboardList = props => {
+const HistoryList = props => {
   const {items} = props;
   const totalCount = items.length;
   const renderItem = (item, index) => {
     const isLast = totalCount == index + 1;
     return (
-      <LeaderboardItem
+      <HistoryItem
         item={item}
         index={index}
         isLast={isLast}
@@ -23,7 +22,6 @@ const LeaderboardList = props => {
       renderItem={({item, index}) => renderItem(item, index)}
       keyExtractor={(item, index) => index.toString()}
       style={styles.container}
-      contentContainerStyle={[style.cardContainer, {paddingVertical: 0}]}
       onEndReachedThreshold={0.4}
       {...props}
     />
@@ -37,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LeaderboardList;
+export default HistoryList;

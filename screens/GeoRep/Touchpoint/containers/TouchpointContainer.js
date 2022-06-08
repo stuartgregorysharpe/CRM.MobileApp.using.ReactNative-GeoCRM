@@ -3,11 +3,14 @@ import {View, StyleSheet} from 'react-native';
 import CTabSelector from '../../../../components/common/CTabSelector';
 import {style} from '../../../../constants/Styles';
 import HistoryContainer from './HistoryContainer';
+import HistoryDetailContainer from './HistoryDetailContainer';
 import LeaderboardContainer from './LeaderboardContainer';
 import TrendsContainer from './TrendsContainer';
 
 const TouchpointContainer = props => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [isHistoryDetail, setIsHistoryDetail] = useState(false);
+  const [historyId, setHistoryId] = useState(null);
   const tabs = [
     {title: 'Leaderboard', id: 0},
     {title: 'Trends', id: 1},
@@ -20,7 +23,24 @@ const TouchpointContainer = props => {
     } else if (selectedTabIndex == 1) {
       return <TrendsContainer />;
     } else if (selectedTabIndex == 2) {
-      return <HistoryContainer />;
+      if (isHistoryDetail) {
+        return (
+          <HistoryDetailContainer
+            historyId={historyId}
+            onButtonAction={({type}) => {
+              setIsHistoryDetail(false);
+            }}
+          />
+        );
+      }
+      return (
+        <HistoryContainer
+          onItemAction={({type, item}) => {
+            setIsHistoryDetail(true);
+            setHistoryId(item.id);
+          }}
+        />
+      );
     }
     return null;
   };

@@ -26,7 +26,9 @@ export default function UITestScreen({screenProps}) {
   });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
-      <TouchpointContainer />
+      <TouchpointContainer
+        historyNavigationParam={{isHistoryDetail: true, historyId: 1}}
+      />
     </SafeAreaView>
   );
 }
