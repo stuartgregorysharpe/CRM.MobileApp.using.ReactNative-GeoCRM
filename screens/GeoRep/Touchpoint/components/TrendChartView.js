@@ -48,7 +48,7 @@ const TrendChartView = props => {
       return {
         data: item.overall_score,
         color: () => {
-          return colors[getColorForIndex(index)];
+          return getColorForIndex(index);
         },
       };
     });
@@ -83,14 +83,14 @@ const TrendChartView = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <CardView style={{paddingRight: 16, paddingTop: 16}}>
+      <CardView style={{paddingRight: 16, paddingTop: 16, paddingBottom: 16}}>
         <CLinearChart
           segments={10}
           data={{
             labels: data.months,
             datasets: datasets,
           }}
-          width={Values.deviceWidth - 32} // from react-native
+          width={Values.deviceWidth - 50} // from react-native
           height={412}
           yAxisSuffix=" %"
           formatYLabel={value => {
