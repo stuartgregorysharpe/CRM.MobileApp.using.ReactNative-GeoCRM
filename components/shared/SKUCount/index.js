@@ -12,7 +12,6 @@ const SKUCount = props => {
   const isCompleted =
     item.completed_data != false && item.completed_data != null;
   const onOpenSKUCountModal = () => {
-    console.log("onOpenSKUCountModal",skuCountFormModalRef)
     skuCountFormModalRef.current.showModal();
   };
 

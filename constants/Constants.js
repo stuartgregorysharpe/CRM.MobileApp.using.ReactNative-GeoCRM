@@ -19,6 +19,12 @@ export default {
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
     FORM_TYPE_SKU_SELECT: 'sku_select',
     FORM_TYPE_YES_NO: 'yes_no',
+    FORM_TYPE_TEXT: 'text',
+    FORM_TYPE_HEADING: 'heading',
+    FORM_TYPE_PARAGRAH: 'paragraph',
+    FORM_TYPE_MULTIPLE: 'multiple',
+    FORM_TYPE_MULTI_SELECT: 'multi_select',
+    FORM_TYPE_NUMBERS: 'numbers',
   },
 
   actionType: {

@@ -1,7 +1,7 @@
 import {Constants} from '../../../constants';
 
 export function constructFormData(data) {
-  const categories = data.categories;
+  const categories = data.categories || [];
   const value = data.value;
   const formData = {};
   categories.forEach(category => {
@@ -82,7 +82,7 @@ export function getValueFromFormData(formData, item, formIndex) {
       answerData[category] = categoryAnswerData;
     }
   }
-  
+
   return {
     form_answers: [
       {

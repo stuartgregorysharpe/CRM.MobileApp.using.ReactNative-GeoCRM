@@ -3,15 +3,15 @@ import {View, StyleSheet, Text} from 'react-native';
 import {whiteLabel} from '../../../../constants/Colors';
 import Colors from '../../../../constants/Colors';
 
-const SKUSelectFeedbackView = props => {
+const MultipleAnswerFeedbackView = props => {
   const {data} = props;
   if (!data) return null;
-  const products = data.products;
-  if (!products) return null;
+  const answer = data.answer;
+  if (!answer) return null;
 
   return (
     <View style={[styles.container, props.style]}>
-      {products.map((title, index) => {
+      {answer.map((title, index) => {
         return (
           <Text key={index + 'text'} style={styles.text}>
             {title}
@@ -33,4 +33,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SKUSelectFeedbackView;
+export default MultipleAnswerFeedbackView;
