@@ -58,7 +58,7 @@ const SKUSelectForm = props => {
     }
   };
   const onCapture = () => {
-    if (skuCaptureModalRef) {
+    if (skuCaptureModalRef && skuCaptureModalRef.current) {
       skuCaptureModalRef.current.showModal();
     }
   };

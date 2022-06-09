@@ -398,7 +398,9 @@ export const FormQuestions = props => {
   };
   const onOpenFeedbackModal = feedbackData => {
     setFormSubmitFeedback(feedbackData);
-    formSubmitModalRef.current.showModal();
+    if (formSubmitModalRef && formSubmitModalRef.current) {
+      formSubmitModalRef.current.showModal();
+    }
   };
   const renderQuestion = (item, key, index) => {
     if (item.question_type === 'text') {
