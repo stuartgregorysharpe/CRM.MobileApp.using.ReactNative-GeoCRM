@@ -57,7 +57,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
-  const customerContactsRef = useRef();  
+  const customerContactsRef = useRef();
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] =
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
@@ -71,7 +71,6 @@ export default function LocationSpecificInfoScreen(props) {
   const isCheckin = useSelector(state => state.location.checkIn);
 
   useEffect(() => {
-    console.log('specific location info page reload :', location_id);
     refreshHeader();
     initData();
 
@@ -87,13 +86,13 @@ export default function LocationSpecificInfoScreen(props) {
     };
   }, [location_id]);
 
-  useEffect(()=>{
-    if(isCheckin == false){
+  useEffect(() => {
+    if (isCheckin == false) {
       if (props.navigation.canGoBack()) {
         props.navigation.popToTop();
       }
     }
-  },[isCheckin]);
+  }, [isCheckin]);
 
   const hideBottomBar = () => {
     if (props.screenProps) {
@@ -124,7 +123,6 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const handleBackButtonClick = async () => {
-    console.log('back buttn press');
     return true;
   };
 
@@ -139,13 +137,11 @@ export default function LocationSpecificInfoScreen(props) {
         setIsLoading(false);
       })
       .catch(e => {
-        console.log('location info api ', e);
         setIsLoading(false);
       });
   };
 
   const onCloseCustomerContactsScreen = () => {
-    console.log('onCloseCustomerContactsScreen');
     setCanShowCustomerContactsScreen(false);
   };
 
@@ -168,6 +164,9 @@ export default function LocationSpecificInfoScreen(props) {
     if (item.link === 'customer_sales') {
       setIsCustomerSales(true);
     }
+    if (item.link === 'touchpoints') {
+      navigationMain.navigate('TouchpointScreen');
+    }
   };
 
   const refreshHeader = () => {
@@ -177,15 +176,12 @@ export default function LocationSpecificInfoScreen(props) {
           return (
             <TouchableOpacity
               onPress={() => {
-                console.log('Specific info header Title Clicked');
                 if (canShowCustomerContactsScreen) {
                   setCanShowCustomerContactsScreen(false);
                   customerContactsRef.current.onBackHandler();
                 } else {
-                  console.log('go back ', canShowCustomerContactsScreen);
                   if (props.navigation.canGoBack()) {
                     if (pageType === 'checkin' || pageType === 'access_crm') {
-                      console.log('called hidebototm');
                       hideBottomBar();
                     }
                     props.navigation.goBack();

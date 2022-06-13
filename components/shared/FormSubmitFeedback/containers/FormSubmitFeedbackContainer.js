@@ -8,7 +8,7 @@ import OverallScoreView from '../components/OverallScoreView';
 import {groupByFeedbacksWithQuestionGroup} from '../helper';
 
 const FormSubmitFeedbackContainer = props => {
-  const {data} = props;
+  const {data, isShowInScreen} = props;
   if (!data) return null;
   const feedbackGroups = useMemo(() => {
     return groupByFeedbacksWithQuestionGroup(data.feedback);
@@ -33,6 +33,27 @@ const FormSubmitFeedbackContainer = props => {
       });
     }
   };
+  if (isShowInScreen) {
+    return (
+      <View style={[styles.container, props.style]}>
+        <View
+          style={[
+            style.cardContainer,
+            {paddingBottom: 24, marginHorizontal: 8},
+          ]}>
+          <OverallScoreView overallScore={overallScore} />
+          {renderFeedbacks(feedbackGroups)}
+        </View>
+        <SubmitButton
+          title={'Back'}
+          style={{marginTop: 16, marginBottom: 30, marginHorizontal: 8}}
+          onSubmit={() => {
+            onSubmit();
+          }}
+        />
+      </View>
+    );
+  }
   return (
     <View style={[styles.container, props.style]}>
       <View

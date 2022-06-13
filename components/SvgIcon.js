@@ -1062,13 +1062,34 @@ const Access_Gray = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="
 const Business_Directory = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 45 45"><path d="M7.2 46V43H40.8V46ZM7.2 5V2H40.8V5ZM24 25.8Q26.5 25.8 28.2 24.1Q29.9 22.4 29.9 19.9Q29.9 17.4 28.2 15.7Q26.5 14 24 14Q21.5 14 19.8 15.7Q18.1 17.4 18.1 19.9Q18.1 22.4 19.8 24.1Q21.5 25.8 24 25.8ZM6.6 40Q5.4 40 4.5 39.1Q3.6 38.2 3.6 37V11Q3.6 9.7 4.5 8.85Q5.4 8 6.6 8H41.4Q42.6 8 43.5 8.9Q44.4 9.8 44.4 11V37Q44.4 38.2 43.5 39.1Q42.6 40 41.4 40ZM11 37Q13.55 33.85 17.05 32.275Q20.55 30.7 24 30.7Q27.4 30.7 30.975 32.275Q34.55 33.85 37 37H41.4Q41.4 37 41.4 37Q41.4 37 41.4 37V11Q41.4 11 41.4 11Q41.4 11 41.4 11H6.6Q6.6 11 6.6 11Q6.6 11 6.6 11V37Q6.6 37 6.6 37Q6.6 37 6.6 37ZM15.7 37H32.4Q30.85 35.5 28.775 34.6Q26.7 33.7 24 33.7Q21.3 33.7 19.275 34.6Q17.25 35.5 15.7 37ZM24 22.8Q22.8 22.8 21.975 21.95Q21.15 21.1 21.15 19.9Q21.15 18.7 21.975 17.85Q22.8 17 24 17Q25.2 17 26.025 17.85Q26.85 18.7 26.85 19.9Q26.85 21.1 26.025 21.95Q25.2 22.8 24 22.8ZM24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Z" fill="${actionIconBackground}" /></svg>`;
 const Business_Directory_Gray = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 45 45"><path d="M7.2 46V43H40.8V46ZM7.2 5V2H40.8V5ZM24 25.8Q26.5 25.8 28.2 24.1Q29.9 22.4 29.9 19.9Q29.9 17.4 28.2 15.7Q26.5 14 24 14Q21.5 14 19.8 15.7Q18.1 17.4 18.1 19.9Q18.1 22.4 19.8 24.1Q21.5 25.8 24 25.8ZM6.6 40Q5.4 40 4.5 39.1Q3.6 38.2 3.6 37V11Q3.6 9.7 4.5 8.85Q5.4 8 6.6 8H41.4Q42.6 8 43.5 8.9Q44.4 9.8 44.4 11V37Q44.4 38.2 43.5 39.1Q42.6 40 41.4 40ZM11 37Q13.55 33.85 17.05 32.275Q20.55 30.7 24 30.7Q27.4 30.7 30.975 32.275Q34.55 33.85 37 37H41.4Q41.4 37 41.4 37Q41.4 37 41.4 37V11Q41.4 11 41.4 11Q41.4 11 41.4 11H6.6Q6.6 11 6.6 11Q6.6 11 6.6 11V37Q6.6 37 6.6 37Q6.6 37 6.6 37ZM15.7 37H32.4Q30.85 35.5 28.775 34.6Q26.7 33.7 24 33.7Q21.3 33.7 19.275 34.6Q17.25 35.5 15.7 37ZM24 22.8Q22.8 22.8 21.975 21.95Q21.15 21.1 21.15 19.9Q21.15 18.7 21.975 17.85Q22.8 17 24 17Q25.2 17 26.025 17.85Q26.85 18.7 26.85 19.9Q26.85 21.1 26.025 21.95Q25.2 22.8 24 22.8ZM24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Q24 24 24 24Z" fill="${navIconInActive}"/></svg>`;
 
+const Avatar_Placeholder = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="92" height="92" viewBox="0 0 92 92">
+  <defs>
+    <clipPath id="clip-path">
+      <circle id="Ellipse_173" data-name="Ellipse 173" cx="46" cy="46" r="46" transform="translate(117 741.766)" fill="none" stroke="#133c8b" stroke-width="4"/>
+    </clipPath>
+  </defs>
+  <g id="Mask_Group_34" data-name="Mask Group 34" transform="translate(-117 -741.766)" clip-path="url(#clip-path)">
+    <g id="account_circle_black_24dp_3_" data-name="account_circle_black_24dp (3)" transform="translate(109.908 734.751)">
+      <path id="Path_5427" data-name="Path 5427" d="M0,0H106.184V106.184H0Z" fill="none"/>
+      <path id="Path_5428" data-name="Path 5428" d="M46.243,2A44.243,44.243,0,1,0,90.486,46.243,44.259,44.259,0,0,0,46.243,2Zm0,13.273A13.273,13.273,0,1,1,32.97,28.546,13.255,13.255,0,0,1,46.243,15.273Zm0,62.825A31.857,31.857,0,0,1,19.7,63.852c.133-8.8,17.7-13.627,26.546-13.627,8.8,0,26.413,4.823,26.546,13.627A31.857,31.857,0,0,1,46.243,78.1Z" transform="translate(6.849 6.849)" fill="${actionIconBackground}"/>
+    </g>
+  </g>
+</svg>
+`;
+const Description_Black = `<svg xmlns="http://www.w3.org/2000/svg" width="61.742" height="61.743" viewBox="0 0 61.742 61.743">
+  <g id="description_black_24dp_2_" data-name="description_black_24dp (2)" transform="translate(0 0)">
+    <path id="Path_4109" data-name="Path 4109" d="M0,0H61.742V61.743H0Z" transform="translate(0 0)" fill="none"/>
+    <path id="Path_4110" data-name="Path 4110" d="M14.29,38.017H34.871v5.145H14.29Zm0-10.29H34.871v5.145H14.29ZM29.726,2H9.145A5.16,5.16,0,0,0,4,7.145V48.307a5.138,5.138,0,0,0,5.119,5.145h30.9a5.16,5.16,0,0,0,5.145-5.145V17.436Zm10.29,46.307H9.145V7.145H27.153V20.008H40.016Z" transform="translate(6.29 3.145)" fill="${actionIconBackground}"/>
+  </g>
+</svg>
+`;
 const DoubleArrow = `<svg id="Blue_Double_Arrow" data-name="Blue Double Arrow" xmlns="http://www.w3.org/2000/svg" width="62.627" height="48.308" viewBox="0 0 62.627 48.308">
 <path id="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(0 48.308) rotate(-90)" fill="#133c8b"/>
 <path id="angle-down-2" data-name="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(33.453 48.308) rotate(-90)" fill="${actionIconBackground}"/>
 </svg>
 `;
 
-const QR_SCAN  = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 62 62">
+const QR_SCAN = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 62 62">
 <g id="qr_code_scanner_black_24dp" transform="translate(-0.002 -0.002)">
   <rect id="Rectangle_3072" data-name="Rectangle 3072" width="62" height="62" transform="translate(0.002 0.002)" fill="none"/>
   <path id="Path_5354" data-name="Path 5354" d="M21.376,13.626v7.75h-7.75v-7.75h7.75M25.251,9.75H9.75v15.5h15.5V9.75ZM21.376,34.294v7.75h-7.75v-7.75h7.75m3.875-3.875H9.75v15.5h15.5v-15.5ZM42.044,13.626v7.75h-7.75v-7.75h7.75M45.919,9.75h-15.5v15.5h15.5V9.75Zm-15.5,20.668h3.875v3.875H30.418Zm3.875,3.875h3.875v3.875H34.294Zm3.875-3.875h3.875v3.875H38.169Zm-7.75,7.75h3.875v3.875H30.418Zm3.875,3.875h3.875v3.875H34.294Zm3.875-3.875h3.875v3.875H38.169Zm3.875-3.875h3.875v3.875H42.044Zm0,7.75h3.875v3.875H42.044ZM53.67,14.917H48.5V7.167h-7.75V2H53.67Zm0,38.752V40.752H48.5V48.5h-7.75V53.67ZM2,53.67H14.917V48.5H7.167v-7.75H2ZM2,2V14.917H7.167V7.167h7.75V2Z" transform="translate(3.167 3.167)" fill="#fff"/>
@@ -1573,15 +1594,65 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
     {icon == 'Drop_Up' && (
       <SvgXml style={style} xml={Drop_Up} width={width} height={height} />
     )}
-    {icon == 'Shoping_Card' && (<SvgXml style={style} xml={Shoping_Card} width={width} height={height} /> )}
-    {icon == 'Shoping_Card_Gray' && (<SvgXml style={style} xml={Shoping_Card_Gray} width={width} height={height} /> )}
-    {icon == 'Access' && (<SvgXml style={style} xml={Access} width={width} height={height} /> )}
-    {icon == 'Access_Gray' && (<SvgXml style={style} xml={Access_Gray} width={width} height={height} /> )}
-    {icon == 'Business_Directory' && (<SvgXml style={style} xml={Business_Directory} width={width} height={height} /> )}
-    {icon == 'Business_Directory_Gray' && (<SvgXml style={style} xml={Business_Directory_Gray} width={width} height={height} /> )}
-    {icon == 'DoubleArrow' && (<SvgXml style={style} xml={DoubleArrow} width={width} height={height} /> )} 
-    {icon == 'QR_SCAN' && (<SvgXml style={style} xml={QR_SCAN} width={width} height={height} /> )} 
-    {icon == 'Check_List' && (<SvgXml style={style} xml={Check_List} width={width} height={height} /> )} 
-    
+
+    {icon == 'Shoping_Card' && (
+      <SvgXml style={style} xml={Shoping_Card} width={width} height={height} />
+    )}
+    {icon == 'Shoping_Card_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Shoping_Card_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Access' && (
+      <SvgXml style={style} xml={Access} width={width} height={height} />
+    )}
+    {icon == 'Access_Gray' && (
+      <SvgXml style={style} xml={Access_Gray} width={width} height={height} />
+    )}
+    {icon == 'Business_Directory' && (
+      <SvgXml
+        style={style}
+        xml={Business_Directory}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Business_Directory_Gray' && (
+      <SvgXml
+        style={style}
+        xml={Business_Directory_Gray}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Avatar_Placeholder' && (
+      <SvgXml
+        style={style}
+        xml={Avatar_Placeholder}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Description_Black' && (
+      <SvgXml
+        style={style}
+        xml={Description_Black}
+        width={width}
+        height={height}
+      />
+    )}
+
+    {icon == 'DoubleArrow' && (
+      <SvgXml style={style} xml={DoubleArrow} width={width} height={height} />
+    )}
+    {icon == 'QR_SCAN' && (
+      <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
+    )}
+    {icon == 'Check_List' && (
+      <SvgXml style={style} xml={Check_List} width={width} height={height} />
+    )}
   </Fragment>
 );

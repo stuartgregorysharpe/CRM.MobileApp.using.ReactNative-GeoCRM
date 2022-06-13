@@ -32,12 +32,15 @@ const SKUCountForm = props => {
   }
 
   const getCategories = data => {
-    return data.categories.map(category => {
-      return {
-        title: category,
-        category: category,
-      };
-    });
+    if (data && data.categories) {
+      return data.categories.map(category => {
+        return {
+          title: category,
+          category: category,
+        };
+      });
+    }
+    return [];
   };
 
   const validateForm = () => {

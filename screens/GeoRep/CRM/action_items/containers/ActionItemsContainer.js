@@ -24,12 +24,8 @@ const ActionItemsContainer = props => {
   ];
 
   const onPressActionItem = item => {
-    //if (item == selectedActionItem) {
     setSelectedActionItem(item);
     updateActionItemModalRef.current.showModal();
-    //} else {
-
-    //}
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -62,7 +58,7 @@ const ActionItemsContainer = props => {
           style={{marginRight: 20, marginBottom: 32}}
         />
       )}
-      
+
       <AddActionItemModal
         ref={addActionItemModalRef}
         locationId={locationId}

@@ -2,6 +2,8 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {Colors, Constants, Fonts} from '../../../../constants';
+import MultipleAnswerFeedbackView from './MultipleAnswerFeedbackView';
+import SingleAnswerFeedbackView from './SingleAnswerFeedbackView';
 import SKUCountFeedbackView from './SKUCountFeedbackView';
 import SKUSelectFeedbackView from './SKUSelectFeedbackView';
 import YesNoFeedbackView from './YesNoFeedbackView';
@@ -20,6 +22,16 @@ const FeedbackItem = props => {
     }
     if (data.question_type == Constants.questionType.FORM_TYPE_YES_NO) {
       return <YesNoFeedbackView data={data} />;
+    }
+    if (
+      data.question_type == Constants.questionType.FORM_TYPE_TEXT ||
+      data.question_type == Constants.questionType.FORM_TYPE_MULTIPLE ||
+      data.question_type == Constants.questionType.FORM_TYPE_NUMBERS
+    ) {
+      return <SingleAnswerFeedbackView data={data} />;
+    }
+    if (data.question_type == Constants.questionType.FORM_TYPE_MULTI_SELECT) {
+      return <MultipleAnswerFeedbackView data={data} />;
     }
     return null;
   };

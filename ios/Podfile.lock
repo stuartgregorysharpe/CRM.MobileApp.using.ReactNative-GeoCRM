@@ -94,7 +94,7 @@ PODS:
   - GoogleMaps/Maps (3.5.0):
     - GoogleMaps/Base
   - hermes-engine (0.9.0)
-  - IQKeyboardManager (6.5.9)
+  - IQKeyboardManager (6.5.10)
   - libevent (2.1.12)
   - libwebp (1.2.1):
     - libwebp/demux (= 1.2.1)
@@ -728,7 +728,7 @@ SPEC CHECKSUMS:
   Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
   GoogleMaps: 32ca02de09de357a10ac773f2c70f1986751392d
   hermes-engine: bf7577d12ac6ccf53ab8b5af3c6ccf0dd8458c5c
-  IQKeyboardManager: 241cc94ccabc9deb8f8bd7d12f00d73288d13ecc
+  IQKeyboardManager: 45a1fa55c1a5b02c61ac0fd7fd5b62bb4ad20d97
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
@@ -789,4 +789,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 4049ee20db2f7f3802c78722947ad66d4fe713e1
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.10.2

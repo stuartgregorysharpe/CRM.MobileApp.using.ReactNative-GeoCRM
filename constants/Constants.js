@@ -12,12 +12,19 @@ export default {
     DATE_FORMAT_DATE_PICKER: 'YYYY/MM/DD',
     DATE_FORMAT_SHORT: 'MM/DD/YYYY',
     DATE_FORMAT_API: 'YYYY-MM-DD',
+    DATE_FORMAT_LONG: 'ddd, DD MMM YYYY',
   },
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
     FORM_TYPE_SKU_SHELF_SHARE: 'sku_shelf_share',
     FORM_TYPE_SKU_SELECT: 'sku_select',
     FORM_TYPE_YES_NO: 'yes_no',
+    FORM_TYPE_TEXT: 'text',
+    FORM_TYPE_HEADING: 'heading',
+    FORM_TYPE_PARAGRAH: 'paragraph',
+    FORM_TYPE_MULTIPLE: 'multiple',
+    FORM_TYPE_MULTI_SELECT: 'multi_select',
+    FORM_TYPE_NUMBERS: 'numbers',
   },
 
   actionType: {
@@ -32,6 +39,7 @@ export default {
     ACTION_CAPTURE: 'ACTION_CAPTURE',
     ACTION_ADD: 'ACTION_ADD',
     ACTION_CLOSE: 'ACTION_CLOSE',
+    ACTION_VIEW: 'ACTION_VIEW',
   },
   debugMode: {
     NO_DEBUG: 0,
