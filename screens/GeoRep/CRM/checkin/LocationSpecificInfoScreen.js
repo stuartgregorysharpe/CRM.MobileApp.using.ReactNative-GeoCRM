@@ -68,9 +68,9 @@ export default function LocationSpecificInfoScreen(props) {
 
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
+  const isCheckin = useSelector(state => state.location.checkIn);
 
   useEffect(() => {
-    console.log('specific location info page reload :', location_id);
     refreshHeader();
     initData();
 
@@ -87,8 +87,12 @@ export default function LocationSpecificInfoScreen(props) {
   }, [location_id]);
 
   useEffect(() => {
-    refreshHeader();
-  });
+    if (isCheckin == false) {
+      if (props.navigation.canGoBack()) {
+        props.navigation.popToTop();
+      }
+    }
+  }, [isCheckin]);
 
   const hideBottomBar = () => {
     if (props.screenProps) {
@@ -119,7 +123,6 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const handleBackButtonClick = async () => {
-    console.log('back buttn press');
     return true;
   };
 
@@ -134,13 +137,11 @@ export default function LocationSpecificInfoScreen(props) {
         setIsLoading(false);
       })
       .catch(e => {
-        console.log('location info api ', e);
         setIsLoading(false);
       });
   };
 
   const onCloseCustomerContactsScreen = () => {
-    console.log('onCloseCustomerContactsScreen');
     setCanShowCustomerContactsScreen(false);
   };
 
@@ -175,15 +176,12 @@ export default function LocationSpecificInfoScreen(props) {
           return (
             <TouchableOpacity
               onPress={() => {
-                console.log('Specific info header Title Clicked');
                 if (canShowCustomerContactsScreen) {
                   setCanShowCustomerContactsScreen(false);
                   customerContactsRef.current.onBackHandler();
                 } else {
-                  console.log('go back ', canShowCustomerContactsScreen);
                   if (props.navigation.canGoBack()) {
                     if (pageType === 'checkin' || pageType === 'access_crm') {
-                      console.log('called hidebototm');
                       hideBottomBar();
                     }
                     props.navigation.goBack();

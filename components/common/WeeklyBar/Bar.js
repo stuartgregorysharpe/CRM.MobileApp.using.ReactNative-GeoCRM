@@ -57,7 +57,7 @@ export default function Bar({maxValue, title, values}) {
             {
                 values.map((item, index) =>{
                     return (
-                        <View key={index} style={{alignItems:'center', marginLeft:3}} >
+                        <View key={index} style={{alignItems:'center', marginLeft:0}} >
                             {
                                 getHeight(item , index) < 20 && 
                                 <AppText size="medium" color={colors[index]} title={item == 0 ? '' : item} ></AppText>

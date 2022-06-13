@@ -15,6 +15,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const [isYes, setIsYes] = useState(item.value !== null && item.value === "yes" ? true:false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
     const [isPicker , setIsPicker] = useState(false);
+    const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
     
     //console.log("item.include_image.length" ,item.include_image.length)
     const showSelectionDialog = () => {        
@@ -113,12 +114,10 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       }
       return false;
     }
-    
 
     return (
         <View style={[style.card, item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={[styles.container]}>
-
                 
                 <PhotoCameraPickerDialog visible={isPicker} message={"Choose Image"} 
                     onCamera={launchCamera}
@@ -132,14 +131,18 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                     <View style={{flex:1, paddingHorizontal:5}}>
                         <Text style={styles.titleStyle}> {item.question_text}</Text>
                     </View>
-                    <View
-                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} >
-                            <Icon
-                                name={`info-outline`}
-                                size={25}
-                                color={whiteLabel().mainText}                    
-                            />
-                    </View>
+                    {
+                      isShowInfoIcon &&
+                      <View
+                          onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} >
+                              <Icon
+                                  name={`info-outline`}
+                                  size={25}
+                                  color={whiteLabel().mainText}                    
+                              />
+                      </View>
+                    }
+                    
                 </View>
 
                 <View style={{flexDirection:'row' , justifyContent:'center'}}>

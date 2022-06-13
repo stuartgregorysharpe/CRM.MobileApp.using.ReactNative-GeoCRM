@@ -32,6 +32,7 @@ import {
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SUB_SLIDE_STATUS,
   LOCATION_ID_CHANGED,
+  CHECKIN,
 } from '../../../../actions/actionTypes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DeviceInfo from 'react-native-device-info';
@@ -48,7 +49,7 @@ import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
-import {getLocalData} from '../../../../constants/Storage';
+import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
@@ -441,18 +442,21 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-    console.log('postdata', postData);
+    
     postApiRequest('location-info/check-in', postData)
-      .then(res => {
-        console.log('post data res', res);
+      .then( async(res) => {
+        
         setIsFeedback(false);
-        console.log('originFeedbackData', originFeedbackData);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
+        // dispatch check in
+        dispatch({ type: CHECKIN, payload: true });        
+        await storeLocalValue('@checkin', '1');
         props.navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: 'checkin',
         });
+        
       })
       .catch(e => {});
   };

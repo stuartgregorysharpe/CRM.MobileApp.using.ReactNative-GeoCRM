@@ -1083,6 +1083,25 @@ const Description_Black = `<svg xmlns="http://www.w3.org/2000/svg" width="61.742
   </g>
 </svg>
 `;
+const DoubleArrow = `<svg id="Blue_Double_Arrow" data-name="Blue Double Arrow" xmlns="http://www.w3.org/2000/svg" width="62.627" height="48.308" viewBox="0 0 62.627 48.308">
+<path id="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(0 48.308) rotate(-90)" fill="#133c8b"/>
+<path id="angle-down-2" data-name="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(33.453 48.308) rotate(-90)" fill="${actionIconBackground}"/>
+</svg>
+`;
+
+const QR_SCAN = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 62 62">
+<g id="qr_code_scanner_black_24dp" transform="translate(-0.002 -0.002)">
+  <rect id="Rectangle_3072" data-name="Rectangle 3072" width="62" height="62" transform="translate(0.002 0.002)" fill="none"/>
+  <path id="Path_5354" data-name="Path 5354" d="M21.376,13.626v7.75h-7.75v-7.75h7.75M25.251,9.75H9.75v15.5h15.5V9.75ZM21.376,34.294v7.75h-7.75v-7.75h7.75m3.875-3.875H9.75v15.5h15.5v-15.5ZM42.044,13.626v7.75h-7.75v-7.75h7.75M45.919,9.75h-15.5v15.5h15.5V9.75Zm-15.5,20.668h3.875v3.875H30.418Zm3.875,3.875h3.875v3.875H34.294Zm3.875-3.875h3.875v3.875H38.169Zm-7.75,7.75h3.875v3.875H30.418Zm3.875,3.875h3.875v3.875H34.294Zm3.875-3.875h3.875v3.875H38.169Zm3.875-3.875h3.875v3.875H42.044Zm0,7.75h3.875v3.875H42.044ZM53.67,14.917H48.5V7.167h-7.75V2H53.67Zm0,38.752V40.752H48.5V48.5h-7.75V53.67ZM2,53.67H14.917V48.5H7.167v-7.75H2ZM2,2V14.917H7.167V7.167h7.75V2Z" transform="translate(3.167 3.167)" fill="#fff"/>
+</g>
+</svg>
+`;
+const Check_List = `<svg id="checklist_black_24dp" xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 68 68">
+<rect id="Rectangle_3409" data-name="Rectangle 3409" width="68" height="68" fill="none"/>
+<path id="Path_5443" data-name="Path 5443" d="M58.667,12.628h-25.5V18.3h25.5Zm0,22.667h-25.5v5.667h25.5ZM12.03,23.962,2,13.932,5.995,9.937,12,15.943,24.015,3.93,28.01,7.925Zm0,22.667L2,36.6,5.995,32.6,12,38.61,24.015,26.6l3.995,3.995Z" transform="translate(3.667 7.205)" fill="#fff"/>
+</svg>
+`;
+
 export default ({icon, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
     {icon == 'Round_Btn_Default_Dark' && (
@@ -1575,6 +1594,7 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
     {icon == 'Drop_Up' && (
       <SvgXml style={style} xml={Drop_Up} width={width} height={height} />
     )}
+
     {icon == 'Shoping_Card' && (
       <SvgXml style={style} xml={Shoping_Card} width={width} height={height} />
     )}
@@ -1623,6 +1643,16 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
         width={width}
         height={height}
       />
+    )}
+
+    {icon == 'DoubleArrow' && (
+      <SvgXml style={style} xml={DoubleArrow} width={width} height={height} />
+    )}
+    {icon == 'QR_SCAN' && (
+      <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
+    )}
+    {icon == 'Check_List' && (
+      <SvgXml style={style} xml={Check_List} width={width} height={height} />
     )}
   </Fragment>
 );

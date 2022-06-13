@@ -9,7 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
     const [text,setText] = useState(item.value ? item.value :  ''); 
-    
+    const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+
     useEffect(() =>{
         
     },[]);
@@ -27,14 +28,18 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
                     <View style={{flex:1, paddingHorizontal:5}}>
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
-                    <View
-                        onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} >
-                            <Icon
-                                name={`info-outline`}
-                                size={25}
-                                color={whiteLabel().mainText}                    
-                            />
-                    </View>
+                    {
+                        isShowInfoIcon && 
+                        <View
+                            onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} >
+                                <Icon
+                                    name={`info-outline`}
+                                    size={25}
+                                    color={whiteLabel().mainText}                    
+                                />
+                        </View>
+                    }
+                    
                 </View>
                 
                 <View style={[styles.inputContainer , item.rule_editable === "1" ? {} : {backgroundColor:'#EEE'}]}>

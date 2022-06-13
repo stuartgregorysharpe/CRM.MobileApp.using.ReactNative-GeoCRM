@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const SignatureForm = ({item , onPress ,onTouchStart}) => {
     const [text,setText] = useState("");
+    const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+
     return (
         <View style={[style.card,  item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
@@ -17,17 +19,21 @@ export const SignatureForm = ({item , onPress ,onTouchStart}) => {
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
                     
-                    <TouchableOpacity onPress={() =>  onTouchStart('' , item.guide_info) }>
-                    <View
-                        //onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} 
-                        >
-                            <Icon
-                                name={`info-outline`}
-                                size={25}
-                                color={whiteLabel().mainText}                    
-                            />
-                    </View>
-                    </TouchableOpacity>
+                    {
+                        isShowInfoIcon &&
+                        <TouchableOpacity onPress={() =>  onTouchStart('' , item.guide_info) }>
+                            <View
+                                //onTouchStart={(e) => { onTouchStart(e.nativeEvent , item.guide_info);  }} 
+                                >
+                                    <Icon
+                                        name={`info-outline`}
+                                        size={25}
+                                        color={whiteLabel().mainText}                    
+                                    />
+                            </View>
+                        </TouchableOpacity>
+                    }
+                    
                 </View>
                 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>

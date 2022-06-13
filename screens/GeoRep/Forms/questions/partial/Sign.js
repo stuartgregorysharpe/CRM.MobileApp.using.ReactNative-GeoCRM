@@ -15,7 +15,6 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
 
   const [data, setData] = useState(signature);
  
-
   useEffect(() => {    
     setTimeout(() => {
       setData(signature);
