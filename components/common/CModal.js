@@ -1,18 +1,15 @@
 import React, {
   useEffect,
-  useState,
-  useCallback,
+  useState,  
   useImperativeHandle,
 } from 'react';
 import {
   StyleSheet,
-  View,
-  FlatList,
+  View,  
   Modal,
   Image,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableOpacity,  
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 import { whiteLabel } from '../../constants/Colors';
@@ -32,16 +29,20 @@ const CModal = React.forwardRef((props, ref) => {
         props.onShowModal(true);
       }
     },
+
     hideModal: () => {
       setIsVisible(false);
     },
+
   }));
+  
   const onClose = () => {
     if (props.onClose) {
       props.onClose();
     }
     setIsVisible(false);
   };
+
   const onClear = () => {
     if (props.onClear) {
       props.onClear();
@@ -96,9 +97,13 @@ const CModal = React.forwardRef((props, ref) => {
 
               {(props.title || props.icon) && (
                 <View style={styles.titleContainer}>
-                  {props.title && (
-                    <Text style={styles.title}>{props.title}</Text>
-                  )}
+                  
+                  <View style={{flex:1, alignItems: props.headerType === "center" ? 'center' : 'flex-start'}}>
+                    {props.title && (
+                      <Text style={[styles.title, {color: props.headerType === "center" ? whiteLabel().mainText : Colors.blackColor }]}>{props.title}</Text>
+                    )}
+                  </View>
+                                    
                   {!hideClear && (
                     <TouchableOpacity
                       style={styles.clearButtonContainer}
@@ -176,6 +181,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'space-between',
+    alignItems:'center',    
     paddingHorizontal: 15,
   },
   titleIcon: {
@@ -203,6 +209,10 @@ const styles = StyleSheet.create({
     width: 90,
     marginVertical: 8,
     backgroundColor: Colors.grey2,
+  },
+  clearButtonContainer:{
+    position:'absolute',
+    right:20
   },
   clearText: {
     fontSize: Values.fontSize.small,

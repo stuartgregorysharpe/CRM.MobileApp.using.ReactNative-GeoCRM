@@ -10,6 +10,7 @@ const initialState = {
   autoHide : true,
   buttonText : false,
   buttonAction : false,
+  cancelButtonText: false,
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -26,7 +27,8 @@ export default (state=initialState, action) => {
         autoHide: action.payload.autoHide,
         visible: true,
         buttonText : action.payload.buttonText,
-        buttonAction : action.payload.buttonAction
+        buttonAction : action.payload.buttonAction,
+        cancelButtonText : action.payload.cancelButtonText,
       };
 
     case 'CLEAR_NOTIFICATION':

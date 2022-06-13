@@ -7080,9 +7080,9 @@
     "prop-types" "^15.6.2"
 
 "react-native-circular-progress-indicator@^4.1.0":
-  "integrity" "sha512-1fvFzqF5NcSygEzcGNll2GS8Zv7QzG4IjSoMbgsV5ddxh2Lwf70HMM4BX43MUkKOEOcOmsjxqN2TwQP8/2uCIA=="
-  "resolved" "https://registry.npmjs.org/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.1.1.tgz"
-  "version" "4.1.1"
+  "integrity" "sha512-xTMlic71wEZ4XBLLRdpFSik0waslKTNOIa19SE0LqKvmq0DpQKbHHivrlqE/XHJUTADki9tJ+OObq3VGji0IsA=="
+  "resolved" "https://registry.npmjs.org/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.1.0.tgz"
+  "version" "4.1.0"
 
 "react-native-codegen@^0.0.8":
   "integrity" "sha512-k/944+0XD+8l7zDaiKfYabyEKmAmyZgS1mj+4LcSRPyHnrjgCHKrh/Y6jM6kucQ6xU1+1uyMmF/dSkikxK8i+Q=="

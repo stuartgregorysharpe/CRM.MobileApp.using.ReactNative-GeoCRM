@@ -17,6 +17,7 @@ const UpdateActionItemModal = React.forwardRef((props, ref) => {
       ref.current.hideModal();
     }
   };
+  
   const {actionItemType} = props;
   const getModalTitle = actionItemType => {
     if (

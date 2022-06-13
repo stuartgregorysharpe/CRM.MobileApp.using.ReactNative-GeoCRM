@@ -68,6 +68,7 @@ export default function LocationSpecificInfoScreen(props) {
 
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
+  const isCheckin = useSelector(state => state.location.checkIn);
 
   useEffect(() => {
     console.log('specific location info page reload :', location_id);
@@ -86,6 +87,14 @@ export default function LocationSpecificInfoScreen(props) {
     };
   }, [location_id]);
 
+  useEffect(()=>{
+    if(isCheckin == false){
+      if (props.navigation.canGoBack()) {
+        props.navigation.popToTop();
+      }
+    }
+  },[isCheckin]);
+
   const hideBottomBar = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -95,7 +104,7 @@ export default function LocationSpecificInfoScreen(props) {
       });
     }
   };
-    
+
   const initData = async () => {
     if (pageType === 'checkin') {
       await storeLocalValue('@checkin', '1');

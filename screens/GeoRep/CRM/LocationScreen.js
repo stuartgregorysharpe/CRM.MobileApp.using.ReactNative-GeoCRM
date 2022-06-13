@@ -126,9 +126,6 @@ export default function LocationScreen(props) {
     };
   }, []);
 
-  
-
-
   useEffect(()=>{
     if (crmStatus || showItem === "addLead") {
       props.screenProps.setOptions({
