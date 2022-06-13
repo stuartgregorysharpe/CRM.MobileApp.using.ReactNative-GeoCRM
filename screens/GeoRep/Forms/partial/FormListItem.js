@@ -12,11 +12,13 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
         <View style={[styles.container]}>
              <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" ? {borderWidth:1, borderColor:Colors.redColor}:{} ]} onPress={onItemPress}>                
                 <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:3, paddingBottom:3 }}>
-                    <View style={{flexDirection:'row'}}>
+                    <View style={{flexDirection:'row', flexWrap:'wrap'}}>                                                            
                         <Text style={styles.title}>{item.form_name}</Text>                        
                         {                            
-                            item.guide_info !== undefined && item.guide_info !== [] &&
-                            <TouchableOpacity onPress={() => onTouchStart("" ,  "") }>
+                            item.guide_info !== undefined && ( item.guide_info.length != 0 ) &&
+                            <TouchableOpacity onPress={() => {                                
+                                onTouchStart("" ,  item.guide_info);
+                            } }>
                                 {/* JSON.stringify(item.guide_info) */}
                                 <View 
                                     onTouchStart={(e) => {                                        

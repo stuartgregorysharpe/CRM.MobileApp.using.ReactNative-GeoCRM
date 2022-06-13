@@ -8,7 +8,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const UploadFileForm = (props) => {
     const {item , onPress ,onTouchStart , onClose} = props;
-    console.log("UploadFileForm",item);
+    const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+    
     const haveImage = () => {
         if(item.value === null || item.value === undefined || item.value.length === 0){
             return false;
@@ -23,16 +24,19 @@ export const UploadFileForm = (props) => {
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
                     
-                    <TouchableOpacity onPress={() =>  onTouchStart('' , item.guide_info) }>
-                    <View                        
-                        >
-                            <Icon
-                                name={`info-outline`}
-                                size={25}
-                                color={whiteLabel().mainText}                    
-                            />
-                    </View>
-                    </TouchableOpacity>
+                    {
+                        isShowInfoIcon &&
+                        <TouchableOpacity onPress={() =>  onTouchStart('' , item.guide_info) }>
+                            <View>
+                                <Icon
+                                    name={`info-outline`}
+                                    size={25}
+                                    color={whiteLabel().mainText}                    
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    }
+                    
                 </View>
                 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>

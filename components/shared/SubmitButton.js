@@ -1,20 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  Text,
-  Dimensions,
+import {  
+  TouchableOpacity,  
+  StyleSheet,  
+  Text,  
 } from 'react-native';
 import Colors, {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-
+import SvgIcon from '../SvgIcon';
 
 export const SubmitButton = ({title, onSubmit, style ,bgStyle}) => {
+  
   return (
     <TouchableOpacity
       style={[styles.submitButton, style , bgStyle]}
@@ -24,10 +21,13 @@ export const SubmitButton = ({title, onSubmit, style ,bgStyle}) => {
         }
       }}>
       <Text style={[styles.submitButtonText]}>{title}</Text>
+
+      {/* <SvgIcon icon="DoubleArrow" width='20' height='20' style={styles.submitButtonIcon} /> */}      
+
       <FontAwesomeIcon
         style={styles.submitButtonIcon}
         size={25}
-        color={whiteLabel().actionOutlineButtonText}
+        color={whiteLabel().actionFullButtonIcon}
         icon={faAngleDoubleRight}
       />
     </TouchableOpacity>
@@ -57,6 +57,6 @@ const styles = StyleSheet.create({
 
   submitButtonIcon: {
     position: 'absolute',
-    right: 10,
+    right: 10,    
   },
 });

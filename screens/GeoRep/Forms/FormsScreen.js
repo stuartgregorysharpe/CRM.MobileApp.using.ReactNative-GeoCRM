@@ -113,8 +113,7 @@ export default function FormsScreen(props) {
 
   const _callFormLists = async filters => {
     if (filters === null) {
-      filters = await getFilterData('@form_filter');
-      console.log('store filters', filters);
+      filters = await getFilterData('@form_filter');      
     }
     var form_type_id = filters.form_type.map(item => item).join(',');
     let param = {
@@ -125,7 +124,7 @@ export default function FormsScreen(props) {
     getApiRequest('forms/forms-list', param)
       .then(res => {
         setFormLists(res.forms);
-        setOriginalFormLists(res.forms);
+        setOriginalFormLists(res.forms);        
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -133,6 +132,7 @@ export default function FormsScreen(props) {
   };
 
   const _onTouchStart = (e, text) => {
+ 
     setBubbleText(text);
     setIsInfo(true);
   };

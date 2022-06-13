@@ -16,9 +16,8 @@ export default function CRMScreen(props) {
   }
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
   useEffect(() => {
-
   },[]);
-
+  
   if(features.includes("disable_crm_map_view")){
     return (
       <Stack.Navigator>                 

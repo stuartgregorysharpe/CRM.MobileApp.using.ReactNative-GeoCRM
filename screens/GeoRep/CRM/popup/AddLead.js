@@ -160,9 +160,8 @@ export default function AddLead({screenProps, onClose}) {
       console.log( "val", await checkFeatureIncludeParam("add_lead_forms"))
     }
     featureCheck();
-
     setIsLoading(true);
-    dispatch(updateCurrentLocation());
+    //dispatch(updateCurrentLocation());
   }, []);
 
   useEffect(() => {

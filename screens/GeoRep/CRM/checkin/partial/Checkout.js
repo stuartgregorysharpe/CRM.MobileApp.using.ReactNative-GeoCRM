@@ -22,6 +22,7 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../../actions/notification.action';
+import { CHECKIN } from '../../../../../actions/actionTypes';
 
 export default function Checkout(props) {
   const {location_id, goBack} = props;
@@ -38,7 +39,9 @@ export default function Checkout(props) {
     };
 
     postApiRequest('location-info/check-out', postData)
-      .then(res => {
+      .then(async(res) => {
+        await storeLocalValue('@checkin', '0');
+        dispatch({ type: CHECKIN, payload: false });
         goBack(res);
       })
       .catch(e => {

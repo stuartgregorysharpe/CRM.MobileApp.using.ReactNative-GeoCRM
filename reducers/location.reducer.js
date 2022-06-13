@@ -11,8 +11,8 @@ import {
   STATUS_DISPOSITION_FIELDS_UPDATE,
   LOCATION_ID_CHANGED,
   LOCATION_LOOP_LISTS,
-  CHANGE_POLYGONS
-  
+  CHANGE_POLYGONS,
+  CHECKIN  
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -31,12 +31,18 @@ const initialState = {
   statusStageOutcomeUpdate:'init',
   statusLocationInfoUpdate: 'init',
   locationId:0,
-  loopLists:[]
+  loopLists:[],
+  checkIn: false,
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, action) => {
   switch (action.type) {
+    case CHECKIN: 
+      return {
+        ...state,
+        checkIn: action.payload
+      }
     case LOCATION_LOOP_LISTS:
       return {
         ...state,

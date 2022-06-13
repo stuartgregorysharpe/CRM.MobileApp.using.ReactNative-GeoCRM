@@ -1,6 +1,6 @@
 
 import { View, Text , FlatList ,TouchableOpacity } from 'react-native'
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { AppText } from '../../../../components/common/AppText';
 import { getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
@@ -9,12 +9,14 @@ import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
 import StockListHeader from './components/StockListHeader';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
+import AddStockModal from './modal/AddStockModal';
 
 export default function StockLists() {
 
     const [stockLists, setStockLists] = useState([]);
     const [originStockLists, setOriginStockLists] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState("");
+    const addStockModalRef = useRef(null);
 
     useEffect(() =>{
         getApiRequest("https://www.dev.georep.com/local_api_old/stockmodule/stock-list", {}).then((res) => {
@@ -46,6 +48,10 @@ export default function StockLists() {
         )
     }
 
+    const onCaptureAction = async({type, value}) => {
+    };
+
+
     return (
         <View style={{flexDirection:'column', flex:1}}>
             <SearchBar 
@@ -56,8 +62,7 @@ export default function StockLists() {
               initVal={searchKeyword}
               isFilter={true}
               animation={() => {                
-              }} />  
-            
+              }} />            
 
             <View style={{flexDirection:'column', flex:1}}>
                 <FlatList                              
@@ -74,13 +79,25 @@ export default function StockLists() {
                 />
             </View>
 
-            <SubmitButton style={{marginHorizontal:20, marginBottom:10}} title="Add Stock"></SubmitButton>
-            
+            <SubmitButton 
+                onSubmit={() => {
+                if(addStockModalRef.current){
+                    addStockModalRef.current.showModal();
+                }
+            }}
+            style={{marginHorizontal:20, marginBottom:10}} title="Add Stock"></SubmitButton>
+
             <TouchableOpacity style={{position:'absolute', right:30, bottom:55, }}>
                 <View>
                     <SvgIcon icon="Add_Stock" width='55' height='55' />
                 </View>
             </TouchableOpacity>
+            
+            {/* <AddStockModal
+              ref={addStockModalRef}
+              title={"Add Stock"}              
+              onButtonAction={onCaptureAction}
+            /> */}
             
         </View>
     )

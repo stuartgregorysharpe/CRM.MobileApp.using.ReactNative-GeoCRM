@@ -282,20 +282,24 @@ export default function More() {
     <SafeAreaView>
       <ScrollView style={styles.container}>
         <View style={styles.avatarBox}>
+          
           <TouchableOpacity style={styles.closeButton} onPress={() => dispatch({type: CHANGE_MORE_STATUS, payload: 1})}>
             <SvgIcon icon="Close" width='20px' height='20px' />
           </TouchableOpacity>
+
           <View style={styles.avatar}>
             <Text style={styles.avatarLabel}>
               {userInfo.user_name.split(' ')[0] && userInfo.user_name.split(' ')[0][0].toUpperCase()}
               {userInfo.user_name.split(' ')[1] && userInfo.user_name.split(' ')[1][0].toUpperCase()}
             </Text>
           </View>
-          <View style={{ width: '48%' }}>
+          
+          <View style={{ flex:1}}>
             <Text style={styles.boldText}>{userInfo.user_name}</Text>
-            <Text style={styles.text}>{userInfo.user_email}</Text>
+            <Text style={[styles.text, {marginTop:10}]}>{userInfo.user_email}</Text>
             <Text style={styles.text}>+27 81 691 7262</Text>
           </View>
+
         </View>
         <View style={styles.selectBox}>
         <TouchableOpacity 

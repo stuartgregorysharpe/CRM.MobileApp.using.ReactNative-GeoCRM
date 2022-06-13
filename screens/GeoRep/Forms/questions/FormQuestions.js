@@ -133,6 +133,7 @@ export const FormQuestions = props => {
     };
     getApiRequest('forms/forms-questions', param)
       .then(res => {
+        console.log("Res", res.questions);
         groupByQuestions(res.questions);
       })
       .catch(e => {
