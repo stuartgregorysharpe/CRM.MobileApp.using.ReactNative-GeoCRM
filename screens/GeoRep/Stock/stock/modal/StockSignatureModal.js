@@ -2,10 +2,10 @@
 import React , { useState , useEffect, useRef} from 'react'
 import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
-import AddStockContainer from '../container/AddStockContainer';
+import StockSignatureContainer from '../container/StockSignatureContainer';
 
+const StockSignatureModal = React.forwardRef((props, ref) => {
 
-const AddStockModal = React.forwardRef((props, ref) => {
     const onButtonAction = data => {
         if (props.onButtonAction) {
           props.onButtonAction(data);
@@ -14,20 +14,20 @@ const AddStockModal = React.forwardRef((props, ref) => {
           ref.current.hideModal();
         }
     };
+
     return (        
         <CModal
             ref={ref}            
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+            headerType="center"
             closableWithOutsideTouch
             onClear={() => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <AddStockContainer/>
+            <StockSignatureContainer {...props} />
         </CModal>        
     )
 });
 
-
-
-export default AddStockModal;
+export default StockSignatureModal;

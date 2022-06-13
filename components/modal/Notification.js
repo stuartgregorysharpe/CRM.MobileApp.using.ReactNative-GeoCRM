@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Modal, View, Platform , Text ,TouchableHighlight } from 'react-native';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { clearNotification } from '../../actions/notification.action';
-import { whiteLabel } from '../../constants/Colors';
+import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { style } from '../../constants/Styles';
 import { SubmitButton } from '../shared/SubmitButton';
@@ -52,17 +53,51 @@ export const Notification = ({}) => {
             <View style={styles.modalView}>
                 <Text style={styles.title} >{notification.message}</Text>
                 <View style={styles.divider}></View>
-                <TouchableHighlight 
-                underlayColor="#DDDDDD"
-                style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {                                    
-                  if(notification.buttonAction) {
-                    notification.buttonAction();
-                  }else{
-                    dispatch(clearNotification());
-                  }
-                }}>
-                    <Text style={styles.button} >{notification.buttonText}</Text>
-                </TouchableHighlight>
+
+                {
+                  !notification.cancelButtonText  &&
+                  <TouchableHighlight 
+                    underlayColor="#DDDDDD"
+                    style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {                                    
+                      if(notification.buttonAction) {
+                        notification.buttonAction();
+                      }else{
+                        dispatch(clearNotification());
+                      }
+                    }}>
+                      <Text style={styles.button} >{notification.buttonText}</Text>
+                  </TouchableHighlight>
+                }
+                {
+                  notification.cancelButtonText && 
+                  <View style={{flexDirection:'row', justifyContent:'center'}}>
+
+                    <TouchableHighlight 
+                          underlayColor="#DDDDDD"
+                          style={{alignItems:'center', borderBottomLeftRadius:7 , flex:1}} onPress={() => {                                    
+                            dispatch(clearNotification());
+                          }}>
+                            <Text style={styles.cancelButton} >{notification.cancelButtonText}</Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight 
+                    underlayColor="#DDDDDD"
+                    style={{alignItems:'center', borderBottomEndRadius:7 , flex:1 }} onPress={() => {                                    
+                      if(notification.buttonAction) {
+                        notification.buttonAction();
+                      }else{
+                        dispatch(clearNotification());
+                      }
+                    }}>
+                        <Text style={styles.button} >{notification.buttonText}</Text>
+                    </TouchableHighlight>
+                    
+                    
+                </View>
+                }
+
+                
+                
             </View>
         </View>
 
@@ -184,6 +219,13 @@ const styles = StyleSheet.create({
       color:whiteLabel().mainText,
       padding:10
   },
+  cancelButton:{
+    fontFamily:Fonts.secondaryBold,
+    fontSize:18,
+    color:Colors.disabledColor,
+    padding:10
+  },
+
   divider:{
       height:1,
       backgroundColor:'#eee',        

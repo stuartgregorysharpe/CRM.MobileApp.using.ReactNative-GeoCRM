@@ -2,18 +2,23 @@
 import React , { useState , useEffect, useRef} from 'react'
 import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
-import AddStockContainer from '../container/AddStockContainer';
+import SearchLocationContainer from '../container/SearchLocationContainer';
 
+const SearchLocationModal = React.forwardRef((props, ref) => {
 
-const AddStockModal = React.forwardRef((props, ref) => {
     const onButtonAction = data => {
         if (props.onButtonAction) {
           props.onButtonAction(data);
-        }
+        }        
         if (ref) {
           ref.current.hideModal();
         }
     };
+    
+    const onSubmit = () => {
+        onButtonAction({ type: Constants.actionType.ACTION_NEXT });
+    }
+
     return (        
         <CModal
             ref={ref}            
@@ -23,11 +28,10 @@ const AddStockModal = React.forwardRef((props, ref) => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <AddStockContainer/>
+            <SearchLocationContainer  onSubmit={onSubmit} {...props} />
         </CModal>        
     )
+
 });
 
-
-
-export default AddStockModal;
+export default SearchLocationModal;

@@ -1,10 +1,15 @@
-import {View, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Colors} from '../../../../../constants';
 import {AppText} from '../../../../../components/common/AppText';
 import { whiteLabel } from '../../../../../constants/Colors';
+import { useSelector } from 'react-redux';
 
-export default function StockListItem({ onItemPressed , item}) {
+export default function SearchLocationItem({ onItemPressed , item}) {
+
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
+  const isMSISDN = features.includes("msisdn");
+  
   return (
     <TouchableOpacity onPress={onItemPressed}>
       <View style={{marginHorizontal: 15}}>
@@ -20,26 +25,31 @@ export default function StockListItem({ onItemPressed , item}) {
             <AppText
               size="big"
               type="secondaryBold"
-              title={item.description}
+              title={item.name}
               style={{fontSize: 12.5}}></AppText>
             <AppText
               type="secondaryMedium"
-              title={item.stock_type === 'Consumables' ? item.qty : item.serial}
+              title={"Address: " + item.address}
               color={whiteLabel().subText}
               style={{fontSize: 10.4}}></AppText>
+            {
+              isMSISDN && 
+              <AppText
+                type="secondaryMedium"
+                title={"MSISDN: " + item.msisdn}
+                color={whiteLabel().subText}
+                style={{fontSize: 10.4}}></AppText>
+            }
+
           </View>
-          <View style={{flex: 2}}>
+        
+          <View style={{flex: 1, alignItems: 'flex-end'}}>
             <AppText
               type="secondaryMedium"
-              title={item.stock_type}              
+              title={item.distance}              
               style={{fontSize: 10.4}}></AppText>
           </View>
-          <View style={{flex: 2, alignItems: 'flex-end'}}>
-            <AppText
-              type="secondaryMedium"
-              title={item.added_date}              
-              style={{fontSize: 10.4}}></AppText>
-          </View>
+
         </View>
         <View style={{height: 1, backgroundColor: Colors.greyColor}}></View>
       </View>

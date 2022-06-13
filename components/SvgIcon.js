@@ -1068,6 +1068,18 @@ const DoubleArrow = `<svg id="Blue_Double_Arrow" data-name="Blue Double Arrow" x
 </svg>
 `;
 
+const QR_SCAN  = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 62 62">
+<g id="qr_code_scanner_black_24dp" transform="translate(-0.002 -0.002)">
+  <rect id="Rectangle_3072" data-name="Rectangle 3072" width="62" height="62" transform="translate(0.002 0.002)" fill="none"/>
+  <path id="Path_5354" data-name="Path 5354" d="M21.376,13.626v7.75h-7.75v-7.75h7.75M25.251,9.75H9.75v15.5h15.5V9.75ZM21.376,34.294v7.75h-7.75v-7.75h7.75m3.875-3.875H9.75v15.5h15.5v-15.5ZM42.044,13.626v7.75h-7.75v-7.75h7.75M45.919,9.75h-15.5v15.5h15.5V9.75Zm-15.5,20.668h3.875v3.875H30.418Zm3.875,3.875h3.875v3.875H34.294Zm3.875-3.875h3.875v3.875H38.169Zm-7.75,7.75h3.875v3.875H30.418Zm3.875,3.875h3.875v3.875H34.294Zm3.875-3.875h3.875v3.875H38.169Zm3.875-3.875h3.875v3.875H42.044Zm0,7.75h3.875v3.875H42.044ZM53.67,14.917H48.5V7.167h-7.75V2H53.67Zm0,38.752V40.752H48.5V48.5h-7.75V53.67ZM2,53.67H14.917V48.5H7.167v-7.75H2ZM2,2V14.917H7.167V7.167h7.75V2Z" transform="translate(3.167 3.167)" fill="#fff"/>
+</g>
+</svg>
+`;
+const Check_List = `<svg id="checklist_black_24dp" xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 68 68">
+<rect id="Rectangle_3409" data-name="Rectangle 3409" width="68" height="68" fill="none"/>
+<path id="Path_5443" data-name="Path 5443" d="M58.667,12.628h-25.5V18.3h25.5Zm0,22.667h-25.5v5.667h25.5ZM12.03,23.962,2,13.932,5.995,9.937,12,15.943,24.015,3.93,28.01,7.925Zm0,22.667L2,36.6,5.995,32.6,12,38.61,24.015,26.6l3.995,3.995Z" transform="translate(3.667 7.205)" fill="#fff"/>
+</svg>
+`;
 
 export default ({icon, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
@@ -1568,6 +1580,8 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
     {icon == 'Business_Directory' && (<SvgXml style={style} xml={Business_Directory} width={width} height={height} /> )}
     {icon == 'Business_Directory_Gray' && (<SvgXml style={style} xml={Business_Directory_Gray} width={width} height={height} /> )}
     {icon == 'DoubleArrow' && (<SvgXml style={style} xml={DoubleArrow} width={width} height={height} /> )} 
+    {icon == 'QR_SCAN' && (<SvgXml style={style} xml={QR_SCAN} width={width} height={height} /> )} 
+    {icon == 'Check_List' && (<SvgXml style={style} xml={Check_List} width={width} height={height} /> )} 
     
   </Fragment>
 );

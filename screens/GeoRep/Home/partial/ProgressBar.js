@@ -39,16 +39,16 @@ export default function ProgressBar({ steps, colors, height}) {
 
 
     const additionalWidth = (index) => {    
-        var itemWidth = width * steps[index] / getTotal();
-        
+        var itemWidth = width * steps[index] / getTotal();        
         if(steps.length === 4){
             if(itemWidth == width){
                 return  -25 * 3;
             }
+            
             if( itemWidth < 20){
                 return 35 - itemWidth;
-            }else if(itemWidth > 100){
-                return -10;
+            }else if(itemWidth > 45){
+                return  -itemWidth * 0.2;
             }else{
                 return 9;
             }
@@ -56,10 +56,12 @@ export default function ProgressBar({ steps, colors, height}) {
             if(itemWidth == width){
                 return  -25 * 2;
             }
+            console.log("itemWidth" ,itemWidth)
+            
             if(itemWidth < 10){
                 return 35 - itemWidth;
-            }else if(itemWidth > 100){
-                return -10;
+            }else if(itemWidth > 45){
+                return  -itemWidth * 0.2;
             }else{
                 return 8;
             }                     

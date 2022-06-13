@@ -7,6 +7,7 @@ const CTextInput = props => {
   return (
     <View style={[{alignSelf: 'stretch'}, props.style]}>
       <TextInput
+        disabled={props.disabled != undefined ? props.disabled : false}
         mode="outlined"
         outlineColor={
           props.hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder
