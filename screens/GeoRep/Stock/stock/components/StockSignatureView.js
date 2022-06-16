@@ -1,23 +1,48 @@
 
 
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Platform } from 'react-native'
 import React , {useRef} from 'react'
 import CTextInput from '../../../../../components/common/CTextInput'
 import SignatureScreen from "react-native-signature-canvas";
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
+import RNFS from "react-native-fs";
+
 
 export default function StockSignatureView(props) {
 
     const signatureScreenRef =  useRef(null)
-    const { receivedBy , serial,  onChangedReceivedBy, onChangedSerial , signature,  onOK , onClose } = props;
+    const { receivedBy , serial,  onChangedReceivedBy, onChangedSerial , signature,  onSubmit , onClose } = props;
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
 
-    const handleOK = (signature) => {        
-        onOK(signature);
+
+    const handleOK = async(signature) => {
+
+        var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
+
+        const path = outputPath + "/sign.png";        
+        console.log("path", path);
+
+        var data = await RNFS.writeFile(path,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
+            onSubmit(path);
+            return res;
+        });
+        
+        // const path = FileSystem.cacheDirectory + "sign.png";
+        // FileSystem.writeAsStringAsync(
+        //   path,
+        //   signature.replace("data:image/png;base64,", ""),
+        //   { encoding: FileSystem.EncodingType.Base64 }
+        // )
+        //   .then(() => FileSystem.getInfoAsync(path))
+        //   .then(console.log)
+        //   .catch(console.error);
+        
+        // onSubmit(signature);
     };
+
 
     const handleEmpty = () => {    
         onClose();
@@ -64,7 +89,7 @@ export default function StockSignatureView(props) {
                 //onEnd={handleEnd}
                 onOK={handleOK}
                 onEmpty={handleEmpty}
-                //imageType='image/png'
+                imageType='image/png'
                 //onClear={handleClear}
                 // onGetData={handleData}
                 // autoClear={true}

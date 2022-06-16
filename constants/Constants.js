@@ -41,6 +41,13 @@ export default {
     ACTION_CLOSE: 'ACTION_CLOSE',
     ACTION_VIEW: 'ACTION_VIEW',
   },
+
+  stockDetailTypes : {
+    SELL_TO_TRADER: 'SELL_TO_TRADER',
+    SWOP_AT_TRADER: 'SWOP_AT_TRADER',
+    TARDER: 'TRADER'
+  },
+
   debugMode: {
     NO_DEBUG: 0,
     DEBUG_UI_SCREEN: 1,

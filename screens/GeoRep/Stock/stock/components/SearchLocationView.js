@@ -7,7 +7,7 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 
 export default function SearchLocationView(props) {
 
-    const {lists , onItemPressed , onSubmit} = props;
+    const {lists , onItemPressed , onSubmitLocation} = props;
 
     const renderItems = (item, index) => {
         return (
@@ -37,7 +37,7 @@ export default function SearchLocationView(props) {
             </View>
 
             <View style={{marginHorizontal:10, marginTop:20, marginBottom:10}}>
-                <SubmitButton title="Submit" onSubmit={onSubmit} ></SubmitButton>
+                <SubmitButton title="Submit" onSubmit={onSubmitLocation} ></SubmitButton>
             </View>
 
 

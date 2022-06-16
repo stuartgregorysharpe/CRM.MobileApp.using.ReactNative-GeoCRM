@@ -10,10 +10,18 @@ export default function StockDetailsContainer(props) {
          
     const searchLocationModalRef = useRef(null);    
     const isCheckin = useSelector(state => state.location.checkIn);
+    const [stockType, setStockType] = useState(Constants.stockDetailTypes.SELL_TO_TRADER)
         
     const onSearchLocation = async({type, value}) => {
         if(type == Constants.actionType.ACTION_NEXT){
-            props.openSignature()
+            
+            console.log("Location id", value.locationId);
+            if(stockType === Constants.stockDetailTypes.SELL_TO_TRADER){                
+                props.openSignature(value)
+            }else if(stockType === Constants.stockDetailTypes.SWOP_AT_TRADER){
+                props.openSwopAtTrader(value);
+            }
+            
         }
     };
 
@@ -21,36 +29,41 @@ export default function StockDetailsContainer(props) {
 
     },[]);
       
-    const sellToTrader = (type, data) => {
+    const sellToTrader= (type, data) => {
         if(isCheckin){
-            props.openSignature()            
-            //searchLocationModalRef.current.showModal();
+            props.openSignature()        
         }else{
+            setStockType(Constants.stockDetailTypes.SELL_TO_TRADER)
             searchLocationModalRef.current.showModal();
         }                
     }
-
-    const swopAtTrader = (type, data) => {        
-
+    const swopAtTrader = (type, data) => {
+        if(isCheckin){            
+            props.openSwopAtTrader()
+        }else{
+            setStockType(Constants.stockDetailTypes.SWOP_AT_TRADER)
+            searchLocationModalRef.current.showModal();            
+        }        
     }
 
     const trader = (type, data) => {
-        
+        props.openTrader({stockType:Constants.stockDetailTypes.TARDER, value:''});
     }
 
     return (
         <View style={{alignSelf:'stretch'}}>
             <StockDetailsView
                 sellToTrader={sellToTrader}
-                swopAtTrader={swopAtTrader}
-                trader={trader}        
+                swopAtTrader={swopAtTrader}            
+                trader={trader}
                 item={props.item}
                 {...props}
             />
             
-            <SearchLocationModal 
+            <SearchLocationModal
                 ref={searchLocationModalRef}
                 title="Search Location"
+                stockType={stockType}
                 onButtonAction={onSearchLocation}
                 />   
         </View>

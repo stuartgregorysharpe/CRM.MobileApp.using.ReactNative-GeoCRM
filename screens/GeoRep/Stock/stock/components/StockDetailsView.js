@@ -21,8 +21,8 @@ export default function StockDetailsView(props) {
 
             <View style={{marginHorizontal:10 , marginTop:20}}>
                 <SubmitButton title="Sell to Trader" onSubmit={props.sellToTrader} ></SubmitButton>
-                <SubmitButton title="Swop at Trader" style={{marginTop:10}}></SubmitButton>
-                <SubmitButton title="Trader" style={{marginTop:10}}></SubmitButton>
+                <SubmitButton title="Swop at Trader" onSubmit={props.swopAtTrader}  style={{marginTop:10}}></SubmitButton>
+                <SubmitButton title="Trader" onSubmit={props.trader} style={{marginTop:10}}></SubmitButton>
             </View>
                      
         </View>

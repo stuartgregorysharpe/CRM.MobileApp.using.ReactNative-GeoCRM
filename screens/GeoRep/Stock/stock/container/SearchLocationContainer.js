@@ -6,7 +6,9 @@ import SearchLocationView from '../components/SearchLocationView';
 
 export default function SearchLocationContainer(props) {
          
+    const { stockType } = props;
     const [lists, setLists] = useState([]);
+    const [locationId, setLocationId] = useState(0);
 
     useEffect(() => {
         let param = {
@@ -17,14 +19,15 @@ export default function SearchLocationContainer(props) {
         }).catch((e) => {
 
         })
-    },[]);  
+    },[]); 
 
     const onItemPressed = (item) => {
-        console.log("on item prssere", item)
+        console.log("on item prssere", item)        
+        setLocationId(item.location_id)
     }
 
-    const onSubmit = () => {
-        props.onSubmit();
+    const onSubmitLocation = () => {                
+        props.onSubmit(stockType , locationId);
     }
 
     return (
@@ -32,7 +35,7 @@ export default function SearchLocationContainer(props) {
             <SearchLocationView                
                 lists = {lists}
                 onItemPressed = {onItemPressed}
-                onSubmit = {onSubmit}
+                onSubmitLocation = {onSubmitLocation}
                 {...props}
             />
 

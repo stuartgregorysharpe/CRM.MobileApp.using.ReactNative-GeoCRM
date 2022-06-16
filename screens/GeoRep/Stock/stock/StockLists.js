@@ -12,16 +12,21 @@ import AddStockModal from './modal/AddStockModal';
 import StockDetailsModal from './modal/StockDetailsModal';
 import StockSignatureModal from './modal/StockSignatureModal';
 import { Constants } from '../../../../constants';
+import SwopAtTraderModal from './modal/SwopAtTraderModal';
+import TraderModal from './modal/TraderModal';
 
 export default function StockLists() {
 
     const [stockLists, setStockLists] = useState([]);
     const [originStockLists, setOriginStockLists] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [item, setItem] = useState({});
+    const [stockItem, setStockItem] = useState({});
     const addStockModalRef = useRef(null);
     const stockDetailsModalRef = useRef(null)
     const stockSignatureModalRef = useRef(null)
+    const swopAtTraderModalRef = useRef(null)
+    const traderModalRef = useRef(null)
+    const [locationId, setLocationId] = useState(0);
 
     useEffect(() =>{
         getApiRequest("https://www.dev.georep.com/local_api_old/stockmodule/stock-list", {}).then((res) => {
@@ -49,7 +54,7 @@ export default function StockLists() {
 
     const onStockItemPressed = (item) => {
         if(item.stock_type === "Device"){
-            setItem(item);
+            setStockItem(item)
             stockDetailsModalRef.current.showModal();
         }
     }
@@ -63,18 +68,29 @@ export default function StockLists() {
     }
 
     const onCaptureAction = async({type, value}) => {
-
     };
 
     const onStockModalDetails = async({type, value}) => {
         if(type == Constants.actionType.ACTION_NEXT){
-            stockSignatureModalRef.current.showModal();
+            console.log("final locatin id", value)
+            setLocationId(value.locationId);
+            if(value.stockType === Constants.stockDetailTypes.SELL_TO_TRADER){
+                stockSignatureModalRef.current.showModal();
+            }else if(value.stockType === Constants.stockDetailTypes.SWOP_AT_TRADER){
+                swopAtTraderModalRef.current.showModal()
+            }else if(value.stockType === Constants.stockDetailTypes.TARDER){
+                traderModalRef.current.showModal()
+            }
         }
     };
 
     const onStockSignature = async({type, value}) => {
 
     };
+
+    const onTraderModalClosed = ({type, value}) => {
+
+    }
     
     return (
         <View style={{flexDirection:'column', flex:1}}>
@@ -126,15 +142,33 @@ export default function StockLists() {
             <StockDetailsModal
                 ref={stockDetailsModalRef}
                 title={"Details"}
-                item={item}
+                item={stockItem}
                 onButtonAction={onStockModalDetails}
             />
 
             <StockSignatureModal
                 ref={stockSignatureModalRef}
                 title="Please Sign below:"
+                locationId={locationId}
+                item={stockItem}
                 onButtonAction={onStockSignature}
             />
+
+            <SwopAtTraderModal
+                ref={swopAtTraderModalRef}
+                title="Swop at Trader"
+                locationId={locationId}
+                item={stockItem}
+                onButtonAction={onStockSignature}
+            />
+
+            <TraderModal
+                ref={traderModalRef}
+                title="Trader"
+                item={stockItem}
+                onButtonAction={onTraderModalClosed}
+            />
+
             
         </View>
     )
