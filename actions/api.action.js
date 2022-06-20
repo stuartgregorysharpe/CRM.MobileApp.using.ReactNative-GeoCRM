@@ -31,16 +31,19 @@ export const getApiRequest = async (route, param) => {
         },
       })
       .then(res => {
+        console.log("DD",res)
         if (res.data == undefined) {
           resolve([]);
         }
         if (res.data.status == 'success') {
+          console.log("successeddddd")
           resolve(res.data);
         } else {
           resolve(res.data);
         }
       })
       .catch(err => {
+        console.log(url, err)
         const error = err.response;
         if (
           error.status === 401 &&

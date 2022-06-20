@@ -2,9 +2,6 @@
 import { View } from 'react-native'
 import React , {useEffect, useState } from 'react'
 import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
-import SearchLocationView from '../components/SearchLocationView';
-import SwopAtTraderView from '../components/SwopAtTraderView';
-import * as RNLocalize from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import TraderView from '../components/TraderView';
 import { getPostParameter } from '../../../../../constants/Helper';
@@ -33,8 +30,7 @@ export default function TraderContainer(props) {
         mounted = false;
       }
     }, [])
-    
-    
+         
     const onItemSelected = (item) =>{ 
         setUser(item)
     }

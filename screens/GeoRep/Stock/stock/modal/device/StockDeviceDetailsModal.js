@@ -1,12 +1,11 @@
 
 import { View, Text , StyleSheet , TextInput} from 'react-native'
 import React , { useState , useEffect, useRef} from 'react'
-import CModal from '../../../../../components/common/CModal';
-import { Constants } from '../../../../../constants';
-import StockDetailsContainer from '../container/StockDetailsContainer';
-import { value } from 'react-native-extended-stylesheet';
+import CModal from '../../../../../../components/common/CModal';
+import { Constants } from '../../../../../../constants';
+import StockDetailsContainer from '../../container/StockDetailsContainer';
 
-const StockDetailsModal = React.forwardRef((props, ref) => {
+const StockDeviceDetailsModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -46,4 +45,4 @@ const StockDetailsModal = React.forwardRef((props, ref) => {
 
 });
 
-export default StockDetailsModal;
+export default StockDeviceDetailsModal;

@@ -1,12 +1,12 @@
 
 import React , { useState , useEffect, useRef} from 'react'
-import CModal from '../../../../../components/common/CModal';
-import { Constants } from '../../../../../constants';
-import StockSignatureContainer from '../container/StockSignatureContainer';
-import SwopAtTraderContainer from '../container/SwopAtTraderContainer';
-import TraderContainer from '../container/TraderContainer';
+import CModal from '../../../../../../components/common/CModal';
+import { Constants } from '../../../../../../constants';
+import ConsumableSellToStockSignatureView from '../../components/ConsumableSellToStockSignatureView';
+import ConsumableSellToTraderSignatureContainer from '../../container/ConsumableSellToTraderSignatureContainer';
+import TraderContainer from '../../container/TraderContainer';
 
-const TraderModal = React.forwardRef((props, ref) => {
+const SellToTraderSignatureModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -18,6 +18,7 @@ const TraderModal = React.forwardRef((props, ref) => {
     };
 
     return (        
+        
         <CModal
             ref={ref}
             clearText="Back"
@@ -27,10 +28,10 @@ const TraderModal = React.forwardRef((props, ref) => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <TraderContainer {...props} />
+            <ConsumableSellToTraderSignatureContainer {...props} />
         </CModal>  
     )
 
 });
 
-export default TraderModal;
+export default SellToTraderSignatureModal;

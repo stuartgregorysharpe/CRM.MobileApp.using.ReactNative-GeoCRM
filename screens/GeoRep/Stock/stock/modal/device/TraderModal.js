@@ -1,11 +1,10 @@
 
 import React , { useState , useEffect, useRef} from 'react'
-import CModal from '../../../../../components/common/CModal';
-import { Constants } from '../../../../../constants';
-import StockSignatureContainer from '../container/StockSignatureContainer';
-import SwopAtTraderContainer from '../container/SwopAtTraderContainer';
+import CModal from '../../../../../../components/common/CModal';
+import { Constants } from '../../../../../../constants';
+import TraderContainer from '../../container/TraderContainer';
 
-const SwopAtTraderModal = React.forwardRef((props, ref) => {
+const TraderModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -17,6 +16,7 @@ const SwopAtTraderModal = React.forwardRef((props, ref) => {
     };
 
     return (        
+        
         <CModal
             ref={ref}
             clearText="Back"
@@ -26,10 +26,10 @@ const SwopAtTraderModal = React.forwardRef((props, ref) => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <SwopAtTraderContainer {...props} />
+            <TraderContainer {...props} />
         </CModal>  
     )
 
 });
 
-export default SwopAtTraderModal;
+export default TraderModal;

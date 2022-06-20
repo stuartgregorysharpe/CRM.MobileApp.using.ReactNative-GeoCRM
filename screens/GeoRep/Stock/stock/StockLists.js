@@ -9,11 +9,15 @@ import StockListItem from './components/StockListItem';
 import StockListHeader from './components/StockListHeader';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AddStockModal from './modal/AddStockModal';
-import StockDetailsModal from './modal/StockDetailsModal';
-import StockSignatureModal from './modal/StockSignatureModal';
+
 import { Constants } from '../../../../constants';
-import SwopAtTraderModal from './modal/SwopAtTraderModal';
-import TraderModal from './modal/TraderModal';
+import StockDeviceDetailsModal from './modal/device/StockDeviceDetailsModal';
+import StockSignatureModal from './modal/device/StockSignatureModal';
+import SwopAtTraderModal from './modal/device/SwopAtTraderModal';
+import TraderModal from './modal/device/TraderModal';
+import StockConsumableModal from './modal/consumable/StockConsumableModal';
+import ConsumableSellToStockSignatureView from './components/ConsumableSellToStockSignatureView';
+import SellToTraderSignatureModal from './modal/consumable/SellToTraderSignatureModal';
 
 export default function StockLists() {
 
@@ -26,6 +30,8 @@ export default function StockLists() {
     const stockSignatureModalRef = useRef(null)
     const swopAtTraderModalRef = useRef(null)
     const traderModalRef = useRef(null)
+    const stockConsumableModalRef = useRef(null)
+    const consumableSellToTraderModalRef = useRef(null)
     const [locationId, setLocationId] = useState(0);
 
     useEffect(() =>{
@@ -46,16 +52,18 @@ export default function StockLists() {
                 }
             });
             setStockLists(tmp);
-        }else{  
-            
+        }else{        
             setStockLists([...originStockLists]);
         }        
     }
-
-    const onStockItemPressed = (item) => {
-        if(item.stock_type === "Device"){
-            setStockItem(item)
+    
+    const onStockItemPressed = (item) => {        
+        setStockItem(item)
+        if(item.stock_type === Constants.stockType.DEVICE){            
             stockDetailsModalRef.current.showModal();
+        }else if(item.stock_type === Constants.stockType.CONSUMABLE){
+            console.log("open ite");
+            stockConsumableModalRef.current.showModal();
         }
     }
 
@@ -70,15 +78,15 @@ export default function StockLists() {
     const onCaptureAction = async({type, value}) => {
     };
 
-    const onStockModalDetails = async({type, value}) => {
+    const onStockDetailsModalClosed = async({type, value}) => {
         if(type == Constants.actionType.ACTION_NEXT){
             console.log("final locatin id", value)
             setLocationId(value.locationId);
-            if(value.stockType === Constants.stockDetailTypes.SELL_TO_TRADER){
+            if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
                 stockSignatureModalRef.current.showModal();
-            }else if(value.stockType === Constants.stockDetailTypes.SWOP_AT_TRADER){
+            }else if(value.stockType === Constants.stockDeviceType.SWOP_AT_TRADER){
                 swopAtTraderModalRef.current.showModal()
-            }else if(value.stockType === Constants.stockDetailTypes.TARDER){
+            }else if(value.stockType === Constants.stockDeviceType.TARDER){
                 traderModalRef.current.showModal()
             }
         }
@@ -90,7 +98,19 @@ export default function StockLists() {
 
     const onTraderModalClosed = ({type, value}) => {
 
-    }
+    };
+
+    const onStockConsumableModalClosed = ({ type, value}) => {        
+        if(type == Constants.actionType.ACTION_NEXT){
+            if(value === Constants.stockDeviceType.SELL_TO_TRADER){
+                console.log("show sell to stock")
+                consumableSellToTraderModalRef.current.showModal();
+            }else if(value === Constants.stockDeviceType.TRANSFER){
+                console.log("show transfer")
+                traderModalRef.current.showModal()
+            }
+        }
+    };
     
     return (
         <View style={{flexDirection:'column', flex:1}}>
@@ -139,13 +159,14 @@ export default function StockLists() {
               onButtonAction={onCaptureAction}
             />
 
-            <StockDetailsModal
+            {/* stock device modal */}
+            <StockDeviceDetailsModal
                 ref={stockDetailsModalRef}
                 title={"Details"}
                 item={stockItem}
-                onButtonAction={onStockModalDetails}
+                onButtonAction={onStockDetailsModalClosed}
             />
-
+            
             <StockSignatureModal
                 ref={stockSignatureModalRef}
                 title="Please Sign below:"
@@ -153,23 +174,39 @@ export default function StockLists() {
                 item={stockItem}
                 onButtonAction={onStockSignature}
             />
-
+             
             <SwopAtTraderModal
                 ref={swopAtTraderModalRef}
                 title="Swop at Trader"
-                locationId={locationId}
+                locationId={locationId}                
                 item={stockItem}
                 onButtonAction={onStockSignature}
             />
-
+            
             <TraderModal
                 ref={traderModalRef}
                 title="Trader"
                 item={stockItem}
                 onButtonAction={onTraderModalClosed}
-            />
+            /> 
 
             
+            {/* stock consumable modal  */}
+            <StockConsumableModal
+                ref={stockConsumableModalRef}
+                title="Details"
+                item={stockItem}
+                onButtonAction={onStockConsumableModalClosed}
+            />
+
+            <SellToTraderSignatureModal
+                ref={consumableSellToTraderModalRef}
+                title="Sell To Trader"
+                item={stockItem}
+                onButtonAction={onStockConsumableModalClosed}
+            />
+
+
         </View>
     )
 }
