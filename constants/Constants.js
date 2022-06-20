@@ -42,11 +42,17 @@ export default {
     ACTION_VIEW: 'ACTION_VIEW',
   },
 
-  stockDetailTypes : {
+  stockType: {
+    DEVICE : "Device",
+    CONSUMABLE : "Consumables"
+  },
+  
+  stockDeviceType : {
     SELL_TO_TRADER: 'SELL_TO_TRADER',
     SWOP_AT_TRADER: 'SWOP_AT_TRADER',
-    TARDER: 'TRADER'
-  },
+    TARDER: 'TRADER',
+    TRANSFER: 'TRANSFER'
+  },  
 
   debugMode: {
     NO_DEBUG: 0,

@@ -131,6 +131,7 @@ export const FormQuestions = props => {
     let param = {
       form_id: form.form_id,
     };
+    console.log("param", param)
     getApiRequest('forms/forms-questions', param)
       .then(res => {
         console.log("Res", res.questions);
@@ -680,7 +681,7 @@ export const FormQuestions = props => {
         <TouchableOpacity
           style={{alignItems: 'flex-end', padding: 5}}
           onPress={() => clearAll()}>
-          <Text style={styles.clearTextStyle}>Clear All Answers</Text>
+          <Text style={styles.clearTextStyle}>Clear All</Text>
         </TouchableOpacity>
       </View>
       <ScrollView style={{padding: 5}}>

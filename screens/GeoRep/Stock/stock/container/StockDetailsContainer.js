@@ -10,15 +10,15 @@ export default function StockDetailsContainer(props) {
          
     const searchLocationModalRef = useRef(null);    
     const isCheckin = useSelector(state => state.location.checkIn);
-    const [stockType, setStockType] = useState(Constants.stockDetailTypes.SELL_TO_TRADER)
+    const [stockType, setStockType] = useState(Constants.stockDeviceType.SELL_TO_TRADER)
         
     const onSearchLocation = async({type, value}) => {
         if(type == Constants.actionType.ACTION_NEXT){
             
             console.log("Location id", value.locationId);
-            if(stockType === Constants.stockDetailTypes.SELL_TO_TRADER){                
+            if(stockType === Constants.stockDeviceType.SELL_TO_TRADER){                
                 props.openSignature(value)
-            }else if(stockType === Constants.stockDetailTypes.SWOP_AT_TRADER){
+            }else if(stockType === Constants.stockDeviceType.SWOP_AT_TRADER){
                 props.openSwopAtTrader(value);
             }
             
@@ -33,7 +33,7 @@ export default function StockDetailsContainer(props) {
         if(isCheckin){
             props.openSignature()        
         }else{
-            setStockType(Constants.stockDetailTypes.SELL_TO_TRADER)
+            setStockType(Constants.stockDeviceType.SELL_TO_TRADER)
             searchLocationModalRef.current.showModal();
         }                
     }
@@ -41,13 +41,13 @@ export default function StockDetailsContainer(props) {
         if(isCheckin){            
             props.openSwopAtTrader()
         }else{
-            setStockType(Constants.stockDetailTypes.SWOP_AT_TRADER)
+            setStockType(Constants.stockDeviceType.SWOP_AT_TRADER)
             searchLocationModalRef.current.showModal();            
         }        
     }
 
     const trader = (type, data) => {
-        props.openTrader({stockType:Constants.stockDetailTypes.TARDER, value:''});
+        props.openTrader({stockType:Constants.stockDeviceType.TARDER, value:''});
     }
 
     return (
