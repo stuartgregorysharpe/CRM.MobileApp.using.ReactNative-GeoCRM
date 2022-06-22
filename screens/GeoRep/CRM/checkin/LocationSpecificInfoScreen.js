@@ -57,7 +57,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
-  const customerContactsRef = useRef();
+  const customerContactsRef = useRef();  
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] =
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
@@ -65,6 +65,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [isActionItems, setIsActionItems] = useState(false);
   const [isCustomerSales, setIsCustomerSales] = useState(false);
   const navigationMain = useNavigation();
+  
 
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -93,6 +94,7 @@ export default function LocationSpecificInfoScreen(props) {
       }
     }
   }, [isCheckin]);
+
 
   const hideBottomBar = () => {
     if (props.screenProps) {
@@ -156,7 +158,7 @@ export default function LocationSpecificInfoScreen(props) {
       setIsActivityComment(true);
     }
     if (item.title === 'Sales Pipeline') {
-      navigationMain.navigate('RepSalesPipeline', {locationInfo: locationInfo});
+      navigationMain.navigate('RepSalesPipelineScreen', {locationInfo: locationInfo});
     }
     if (item.link === 'actions_items') {
       setIsActionItems(true);

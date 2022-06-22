@@ -23,6 +23,7 @@ import {expireToken} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
+import {useNavigation} from '@react-navigation/native';
 
 let isInfoWindow = false;
 
@@ -41,6 +42,8 @@ export default function FormsScreen(props) {
   const [filters, setFilters] = useState(null);
 
   const isShowCustomNavigationHeader = props.isDeeplink;
+  
+ const navigationMain = useNavigation();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -216,7 +219,13 @@ export default function FormsScreen(props) {
                 item={item}
                 onItemPress={() => {
                   if (!isInfoWindow) {
-                    props.navigation.navigate('FormQuestions', {
+                 
+                    var routeName = "DeeplinkFormQuestionsScreen"
+                    if(!isShowCustomNavigationHeader){
+                      routeName = "FormQuestions"
+                    }
+                    console.log("PPP", routeName)
+                    props.navigation.navigate(routeName, {
                       data: item,
                       location_id:
                         locationIdSpecific != null
