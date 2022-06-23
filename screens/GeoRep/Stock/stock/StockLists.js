@@ -35,7 +35,7 @@ export default function StockLists() {
     const [locationId, setLocationId] = useState(0);
 
     useEffect(() =>{
-        getApiRequest("https://www.dev.georep.com/local_api_old/stockmodule/stock-list", {}).then((res) => {
+        getApiRequest("stockmodule/stock-list", {}).then((res) => {
             setStockLists(res.stock_items);
             setOriginStockLists(res.stock_items);            
         }).catch((e) => {
@@ -52,7 +52,7 @@ export default function StockLists() {
                 }
             });
             setStockLists(tmp);
-        }else{        
+        }else{
             setStockLists([...originStockLists]);
         }        
     }

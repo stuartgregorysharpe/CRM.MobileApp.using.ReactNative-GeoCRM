@@ -31,12 +31,12 @@ export const getApiRequest = async (route, param) => {
         },
       })
       .then(res => {
-        console.log("DD",res)
+        
         if (res.data == undefined) {
           resolve([]);
         }
         if (res.data.status == 'success') {
-          console.log("successeddddd")
+        
           resolve(res.data);
         } else {
           resolve(res.data);
@@ -80,11 +80,11 @@ export const postApiRequest = async (route, postData) => {
         headers: headers,
       })
       .then(res => {
-        console.log('postApiRequest -- response', res);
+        
         if (res.data && res.data.status === 'success') {
           resolve(res.data);
         } else {
-          resolve(res);
+          resolve(res.data);
         }
       })
       .catch(err => {

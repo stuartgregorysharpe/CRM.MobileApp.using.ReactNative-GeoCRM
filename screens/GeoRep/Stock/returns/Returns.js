@@ -12,7 +12,7 @@ export default function Returns() {
   const [returnLists, setReturnLists] = useState([]);
 
   useEffect(() =>{    
-    getApiRequest("https://dev.georep.com/local_api_old/stockmodule/returns-list", {}).then((res) => {
+    getApiRequest("stockmodule/returns-list", {}).then((res) => {
       console.log("Dfdf",res)
         setReturnLists(res.return_items)
     }).catch((e) => {

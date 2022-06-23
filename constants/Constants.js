@@ -40,13 +40,22 @@ export default {
     ACTION_ADD: 'ACTION_ADD',
     ACTION_CLOSE: 'ACTION_CLOSE',
     ACTION_VIEW: 'ACTION_VIEW',
+    ACTION_REMOVE: 'ACTION_REMOVE',
   },
 
   stockType: {
     DEVICE : "Device",
-    CONSUMABLE : "Consumables"
+    CONSUMABLE : "Consumables",
+    SIM: "Sim"
+  },
+
+  networkType: {
+    VODACOM: "Vodacom",
+    CELL : "Cell C",
+    TELKOM: "Telkom"
   },
   
+
   stockDeviceType : {
     SELL_TO_TRADER: 'SELL_TO_TRADER',
     SWOP_AT_TRADER: 'SWOP_AT_TRADER',

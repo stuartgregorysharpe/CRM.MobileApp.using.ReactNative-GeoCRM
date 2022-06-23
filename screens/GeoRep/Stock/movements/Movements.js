@@ -49,9 +49,8 @@ export default function Movements() {
         if(isPageLoading == false && isEndPageLoading == false){
           console.log("page" , page);
             setPageLoading(true)
-            getApiRequest("https://dev.georep.com/local_api_old/stockmodule/movements-list", {page_nr:page}).then((res) => {
-                //console.log("Res", res);
-                console.log(res.movement_items.length)
+            getApiRequest("stockmodule/movements-list", {page_nr:page}).then((res) => {
+                
                 setMovementLists([...movementLists, ...res.movement_items]);
                 setOriginMovementLists(res.movement_items);
                 setPage(page + 1);

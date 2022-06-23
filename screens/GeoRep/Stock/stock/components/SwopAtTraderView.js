@@ -94,8 +94,7 @@ const styles = StyleSheet.create({
   container: {
       alignSelf: 'stretch',
       paddingTop: 10,
-      marginHorizontal: 20,
-      //marginBottom: 30,
+      marginHorizontal: 20,      
       paddingBottom:0,
       height:Dimensions.get("window").height * 0.6
   },

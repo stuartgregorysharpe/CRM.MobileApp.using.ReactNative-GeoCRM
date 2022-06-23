@@ -1101,8 +1101,18 @@ const Check_List = `<svg id="checklist_black_24dp" xmlns="http://www.w3.org/2000
 <path id="Path_5443" data-name="Path 5443" d="M58.667,12.628h-25.5V18.3h25.5Zm0,22.667h-25.5v5.667h25.5ZM12.03,23.962,2,13.932,5.995,9.937,12,15.943,24.015,3.93,28.01,7.925Zm0,22.667L2,36.6,5.995,32.6,12,38.61,24.015,26.6l3.995,3.995Z" transform="translate(3.667 7.205)" fill="#fff"/>
 </svg>
 `;
+const Check_List_Active = `<svg id="checklist_black_24dp" xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 68 68">
+<rect id="Rectangle_3409" data-name="Rectangle 3409" width="68" height="68" fill="none"/>
+<path id="Path_5443" data-name="Path 5443" d="M58.667,12.628h-25.5V18.3h25.5Zm0,22.667h-25.5v5.667h25.5ZM12.03,23.962,2,13.932,5.995,9.937,12,15.943,24.015,3.93,28.01,7.925Zm0,22.667L2,36.6,5.995,32.6,12,38.61,24.015,26.6l3.995,3.995Z" transform="translate(3.667 7.205)" fill="${actionIconBackground}"/>
+</svg>
+`;
+const DELETE = `<svg id="delete_black_24dp_7_" data-name="delete_black_24dp (7)" xmlns="http://www.w3.org/2000/svg" width="61.531" height="61.531" viewBox="0 0 61.531 61.531">
+<path id="Path_5446" data-name="Path 5446" d="M0,0H61.531V61.531H0Z" fill="none"/>
+<path id="Path_5447" data-name="Path 5447" d="M7.564,44.021a5.143,5.143,0,0,0,5.128,5.128H33.2a5.143,5.143,0,0,0,5.128-5.128V13.255H7.564ZM40.893,5.564H31.92L29.356,3H16.537L13.973,5.564H5v5.128H40.893Z" transform="translate(7.819 4.691)" fill="#dc143c"/>
+</svg>
+`;
 
-export default ({icon, width = '100%', height = '100%', style = {}}) => (
+export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
     {icon == 'Round_Btn_Default_Dark' && (
       <SvgXml
@@ -1652,7 +1662,14 @@ export default ({icon, width = '100%', height = '100%', style = {}}) => (
       <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
     )}
     {icon == 'Check_List' && (
-      <SvgXml style={style} xml={Check_List} width={width} height={height} />
+      <SvgXml style={style} fill={color != undefined ? color : '#000'} xml={Check_List} width={width} height={height} />
     )}
+    {icon == 'Check_List_Active' && (
+      <SvgXml style={style} xml={Check_List_Active} width={width} height={height} />
+    )}
+    {icon == 'DELETE' && (
+      <SvgXml style={style} xml={DELETE} width={width} height={height} />
+    )}
+
   </Fragment>
 );
