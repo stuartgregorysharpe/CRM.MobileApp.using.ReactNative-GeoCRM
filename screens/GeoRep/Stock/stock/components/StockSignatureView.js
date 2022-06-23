@@ -7,6 +7,7 @@ import SignatureScreen from "react-native-signature-canvas";
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
+import { Constants } from '../../../../../constants';
 
 
 export default function StockSignatureView(props) {
@@ -17,7 +18,7 @@ export default function StockSignatureView(props) {
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
 
-
+    
     const handleOK = async(signature) => {
 
         var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
@@ -66,7 +67,7 @@ export default function StockSignatureView(props) {
             /> 
 
             {
-                isMSISDN && 
+                (isMSISDN && props.item.stock_type != Constants.stockType.SIM) && 
                 <CTextInput 
                     label={"Assign MSISDN"}
                     value={receivedBy}

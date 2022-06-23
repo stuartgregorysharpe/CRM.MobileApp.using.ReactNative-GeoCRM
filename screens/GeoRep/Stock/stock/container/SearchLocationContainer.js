@@ -27,7 +27,9 @@ export default function SearchLocationContainer(props) {
     }
 
     const onSubmitLocation = () => {                
-        props.onSubmit(stockType , locationId);
+        if(locationId != 0){
+            props.onSubmit(stockType , locationId);
+        }        
     }
 
     return (

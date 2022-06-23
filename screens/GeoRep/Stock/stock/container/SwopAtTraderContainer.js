@@ -15,16 +15,20 @@ export default function SwopAtTraderContainer(props) {
     const currentLocation = useSelector(state => state.rep.currentLocation);
 
     useEffect(() => {
+        let isMount = true;
         let param = {
             location_id: 1,
-        };
-        console.log("param", param);
-        getApiRequest("https://dev.georep.com/local_api_old/locations/location-devices", param ).then((res) => {            
-            console.log("api respnse", res)
-            setLists(res.devices);
+        };        
+        getApiRequest("https://dev.georep.com/local_api_old/locations/location-devices", param ).then((res) => {                        
+            if(isMount){
+                setLists(res.devices);
+            }            
         }).catch((e) => {
             console.log("e" , e);
         })
+        return () =>{
+            isMount = false;
+        }
     },[]); 
      
     const onReturnDevice = (returnDevice) => {        

@@ -24,6 +24,7 @@ import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import {useNavigation} from '@react-navigation/native';
+import { Colors, Constants } from '../../../constants';
 
 let isInfoWindow = false;
 
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bubbleTextStyle: {
-    backgroundColor: '#DDD',
+    backgroundColor: Colors.bgColor,
     padding: 10,
     marginLeft: 30,
     marginRight: 30,

@@ -15,24 +15,27 @@ export default function AddStockContainer(props) {
     const [deviceTypeLists, setDevicetypeLists] =  useState([]);    
     const [stockTypes, setStockTypes] = useState({});    
     const currentLocation = useSelector(state => state.rep.currentLocation);
+    let isMount = true;
 
     useEffect(() => {
         _callStockFieldData();
+        return () => { 
+            isMount = false;
+        }        
     },[]);
 
-    const _callStockFieldData = () => {        
-        
+    const _callStockFieldData = () => {
         getApiRequest("stockmodule/stock-field-data?action=add_stock" , {}).then((res) =>{            
-            if(res.status === "success"){
-                console.log("add stock", res.stock_types);
-                setStockTypes(res.stock_types); 
-                var types = [];
-                for(let value of Object.keys(res.stock_types)){                    
-                    types.push({value:value, label:value});
-                }                
-                console.log("tupes" , types)
-                setDevicetypeLists(types);
-            }
+            if(isMount){
+                if(res.status === "success"){                
+                    setStockTypes(res.stock_types); 
+                    var types = [];
+                    for(let value of Object.keys(res.stock_types)){                    
+                        types.push({value:value, label:value});
+                    }                                
+                    setDevicetypeLists(types);
+                }
+            }            
         }).catch((e) => {
             
         });
@@ -40,22 +43,17 @@ export default function AddStockContainer(props) {
 
     const callAddStock = (type, data) => {
         var userParam = getPostParameter(currentLocation);
-        data['user_local_data'] = userParam.user_local_data;                
-        console.log("post data" , data)
-
+        data['user_local_data'] = userParam.user_local_data;        
         postApiRequest("stockmodule/add-stock" , data).then((res) =>{
             if(res.status === "success"){
                 dispatch(showNotification({type:'success' , message: res.message , buttonText: 'Ok'}));
             }else{
                 dispatch(showNotification({type:'success' , message: res.errors , buttonText: 'Ok'}));
-            }
-            
-            console.log("message" , res)
+            }                    
         }).catch((e) => {
             console.log("error", e)
         })
     }
-
 
     return (
         <View style={{alignSelf:'stretch'}}>

@@ -16,8 +16,10 @@ import StockSignatureModal from './modal/device/StockSignatureModal';
 import SwopAtTraderModal from './modal/device/SwopAtTraderModal';
 import TraderModal from './modal/device/TraderModal';
 import StockConsumableModal from './modal/consumable/StockConsumableModal';
-import ConsumableSellToStockSignatureView from './components/ConsumableSellToStockSignatureView';
 import SellToTraderSignatureModal from './modal/consumable/SellToTraderSignatureModal';
+import SimDetailsModal from './modal/sim/SimDetailsModal';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../../../../actions/notification.action';
 
 export default function StockLists() {
 
@@ -32,22 +34,41 @@ export default function StockLists() {
     const traderModalRef = useRef(null)
     const stockConsumableModalRef = useRef(null)
     const consumableSellToTraderModalRef = useRef(null)
+    const simDetailsModalRef = useRef(null)
     const [locationId, setLocationId] = useState(0);
+    const [iccids, setIccids] = useState([])
+    const [selectedCodes, setSelectedCodes] = useState([]);
+    const dispatch = useDispatch()
+
 
     useEffect(() =>{
+        let isMount = true;
         getApiRequest("stockmodule/stock-list", {}).then((res) => {
-            setStockLists(res.stock_items);
-            setOriginStockLists(res.stock_items);            
+            if(isMount){
+                setStockLists(res.stock_items);
+                setOriginStockLists(res.stock_items);
+                var sims = res.stock_items.filter(item => item.stock_type === Constants.stockType.SIM);
+                var tmp = [];
+                sims.forEach((item) => {
+                    tmp.push({type: item.description, code: item.serial});
+                });
+                setIccids(tmp)
+            }            
         }).catch((e) => {
             console.log("E",e);
         });
+        return () => {
+            isMount = false;
+        }
     },[]);
 
     const onFilter = (text) => {
         if(text !== "" && text !== undefined){
             var tmp = [];
             originStockLists.map((item, index) => {
-                if(item.description.toLowerCase().includes(text.toLowerCase())){
+                if(item.description.toLowerCase().includes(text.toLowerCase()) 
+                || item.stock_type.toLowerCase().includes(text.toLowerCase()) 
+                || item.serial.toLowerCase().includes(text.toLowerCase())){
                     tmp.push(item);
                 }
             });
@@ -61,9 +82,10 @@ export default function StockLists() {
         setStockItem(item)
         if(item.stock_type === Constants.stockType.DEVICE){            
             stockDetailsModalRef.current.showModal();
-        }else if(item.stock_type === Constants.stockType.CONSUMABLE){
-            console.log("open ite");
+        }else if(item.stock_type === Constants.stockType.CONSUMABLE){            
             stockConsumableModalRef.current.showModal();
+        }else if(item.stock_type === Constants.stockType.SIM){                        
+            simDetailsModalRef.current.showModal()
         }
     }
 
@@ -112,6 +134,30 @@ export default function StockLists() {
         }
     };
     
+    const onStockSimDetailsModalClosed = ({ type, value}) => {        
+        if(type == Constants.actionType.ACTION_NEXT){
+            console.log("final locatin id  in sim details", value)
+            setLocationId(value.locationId);
+            if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
+                stockSignatureModalRef.current.showModal();
+            }else if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
+                console.log("dfasdfasdfsdf", value)
+            }else if(value.stockType === Constants.stockDeviceType.TARDER){
+                //traderModalRef.current.showModal()
+            }
+        }else if(type == Constants.actionType.ACTION_CAPTURE) {
+            var check = iccids.filter(item => item.code === value);
+            console.log("check" , check)
+            if(check.length > 0 && !selectedCodes.includes(value)){
+                setSelectedCodes([...selectedCodes, value]);
+                console.log("selectedCodes---" ,selectedCodes)
+                
+            }else{
+                dispatch(showNotification({type:'success', message: 'ICCID not found in stock' , buttonText:'Ok'}))
+            }
+        }
+    };
+
     return (
         <View style={{flexDirection:'column', flex:1}}>
             <SearchBar 
@@ -145,7 +191,7 @@ export default function StockLists() {
                     addStockModalRef.current.showModal();
                 }
             }}
-            style={{marginHorizontal:20, marginBottom:10}} title="Add Stock"></SubmitButton>
+            style={{marginHorizontal:20, marginTop:10, marginBottom:10}} title="Add Stock"></SubmitButton>
 
             <TouchableOpacity style={{position:'absolute', right:30, bottom:55, }}>
                 <View>
@@ -172,6 +218,7 @@ export default function StockLists() {
                 title="Please Sign below:"
                 locationId={locationId}
                 item={stockItem}
+                selectedCodes={selectedCodes}
                 onButtonAction={onStockSignature}
             />
              
@@ -189,7 +236,6 @@ export default function StockLists() {
                 item={stockItem}
                 onButtonAction={onTraderModalClosed}
             /> 
-
             
             {/* stock consumable modal  */}
             <StockConsumableModal
@@ -202,10 +248,18 @@ export default function StockLists() {
             <SellToTraderSignatureModal
                 ref={consumableSellToTraderModalRef}
                 title="Sell To Trader"
-                item={stockItem}
+                item={stockItem}                
                 onButtonAction={onStockConsumableModalClosed}
             />
 
+            {/* stock sim modal  */}
+
+            <SimDetailsModal
+                ref={simDetailsModalRef}    
+                selectedCodes={selectedCodes}
+                codeLists={iccids}
+                onButtonAction={onStockSimDetailsModalClosed}
+            />
 
         </View>
     )

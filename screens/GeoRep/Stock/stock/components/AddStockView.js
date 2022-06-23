@@ -1,7 +1,7 @@
 
 
 import { View , StyleSheet } from 'react-native'
-import React , { useRef , useState} from 'react'
+import React , {  useState} from 'react'
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DeviceView from './stock_types/DeviceView';
@@ -23,7 +23,6 @@ export default function AddStockView(props) {
     const [deviceLists, setDeviceLists] = useState([]);    
 
     const [codeLists, setCodeLists] = useState([]);
-
     var details = '';
     var quantity = '';
 
@@ -53,7 +52,7 @@ export default function AddStockView(props) {
                 telkom.push(value);
                 setCodeLists([...codeLists, tmp]);
             }            
-        }    
+        }
     }
 
     const removeCode = (value) => {        
@@ -74,13 +73,14 @@ export default function AddStockView(props) {
         if(deviceType === Constants.stockType.SIM){
             return "Network";
         }
+        return ""
     }
 
     const onSubmit = () =>{
         var data = {
             stock_type: deviceType,
             device: device,
-            details: details, 
+            details: details,
             quantity: quantity
         }                        
         if(deviceType == Constants.stockType.DEVICE){
@@ -100,13 +100,10 @@ export default function AddStockView(props) {
                 quantity: quantity
             }
         }else if(deviceType == Constants.stockType.SIM){
-            console.log("lists1", vodacom)
-            console.log("lists2", cell)
-            console.log("lists3", telkom)
-
+            
             var simLists = [];
             deviceLists.forEach((item) => {
-                var iccids = [];
+                var iccids = []; 
                 if(item.label == Constants.networkType.VODACOM){
                     iccids = vodacom;
                 }else if(item.label == Constants.networkType.CELL){
@@ -114,18 +111,16 @@ export default function AddStockView(props) {
                 }else if(item.label == Constants.networkType.TELKOM){
                     iccids = telkom;
                 }
-
                 if(iccids.length > 0){
                     console.log("ids", iccids)
                     simLists.push({network: item.label, product_id: item.value , iccids:iccids });
-                }                
+                }
             })
             data = {
                 stock_type: deviceType,
-                sim: simLists           
+                sims: simLists           
             }
         }
-
         console.log("post data", data);
         props.callAddStock(deviceType, data );
     }

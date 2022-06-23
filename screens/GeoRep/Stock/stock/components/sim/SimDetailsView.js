@@ -2,12 +2,13 @@
 import { View, Text ,StyleSheet, Keyboard } from 'react-native'
 import React , { useState ,useEffect , useRef } from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { Constants } from '../../../../../constants';
-import SimScanChildView from './SimScanChildView';
+import { Constants } from '../../../../../../constants';
+import SimScanChildView from './../SimScanChildView';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import SimViewListsModal from '../modal/sim/SimViewListsModal';
+import SimViewListsModal from '../../modal/sim/SimViewListsModal';
+import SimDetailsChildView from './SimDetailsChildView';
 
-export default function SimScanView(props) {
+export default function SimDetailsView(props) {
   
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const simViewListModalRef = useRef(null)
@@ -35,20 +36,23 @@ export default function SimScanView(props) {
     }, []);
     
     const onSuccess = e => {   /// From Camera
-        const {data} = e;
+        const {data} = e;        
+        console.log("scanval", data)
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
     };
 
-    const onSubmit = (value) => { // Manual Input
+    const onAddCode = (value) => { // Manual Input
       props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
+      
+      //props.onAddCode(value)
     }
 
-    const addStock = () => {
-      props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: 0});
+    const onSellToTrader = () => {
+        props.onSellToTrader();
     }
 
-    const changeNetwork = () => {
-      props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
+    const onTransfer = () => {
+      props.onTransfer();
     }
   
     const viewLists = () => {
@@ -56,17 +60,15 @@ export default function SimScanView(props) {
     }
 
     const onSimViewListClosed = ({type, value})=> {      
-      if(type == Constants.actionType.ACTION_CHANGE_NETWORK){
-        changeNetwork()
-      }      
-      if(type == Constants.actionType.ACTION_REMOVE){
-        props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
+      if(type == Constants.actionType.ACTION_CLOSE || type == Constants.actionType.ACTION_CHANGE_NETWORK ){
+        simViewListModalRef.current.hideModal()
       }
-      if(type == Constants.actionType.ACTION_CLOSE){
-        simViewListModalRef.current.hideModal();
+      if(type == Constants.actionType.ACTION_REMOVE){
+        //props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
       }
       if(type == Constants.actionType.ACTION_DONE){
-        addStock()
+        //addStock()
+        
       }
     }
 
@@ -146,12 +148,14 @@ export default function SimScanView(props) {
                   showMarker
             />
 
-            <SimScanChildView
+            <SimDetailsChildView
               onClose={() => {Keyboard.dismiss()}} 
-              addStock={addStock}
-              changeNetwork={changeNetwork}
+              sellToTrader={onSellToTrader}
+              transfer={onTransfer}
               viewLists={viewLists}
-              onSubmit={(value) => onSubmit(value)}></SimScanChildView>
+              onAddCode={(value) => onAddCode(value)}
+              {...props}
+              ></SimDetailsChildView>
             
             <SimViewListsModal
               ref={simViewListModalRef}              

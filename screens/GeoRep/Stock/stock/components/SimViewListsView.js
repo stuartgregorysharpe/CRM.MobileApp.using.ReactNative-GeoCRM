@@ -13,24 +13,19 @@ import { Constants } from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 
 export default function SimViewListsView(props) {
-  
-        
+          
     const { lists, addStock ,removeCode} = props;
-    console.log("llll", lists)
-
-    const closeModal = () =>{
-        console.log("close modal", props)
-        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: 0});
-    }
-
-    const changeNetwork = () => {
+    const closeModal = () => {
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
     }
 
+    const changeNetwork = () => {
+        props.onButtonAction({type: Constants.actionType.ACTION_CHANGE_NETWORK, value: 0});
+    }
 
     const renderItem = (item, index) => {
         return (
-            <View style={{flexDirection:'row', marginTop:5,marginBottom:5}}>
+            <View key={index} style={{flexDirection:'row', marginTop:5,marginBottom:5}}>
                 <View style={{flex:2}}>
                         <AppText type="secondaryBold" title={item.type}></AppText>
                 </View>
@@ -59,8 +54,8 @@ export default function SimViewListsView(props) {
                 <TouchableOpacity onPress={closeModal}>
                     <SvgIcon icon="Close" width='22' height='22'  style={{marginLeft:10}} />
                 </TouchableOpacity>            
-
             </View>
+
             <ScrollView style={{marginTop:10}}>
                 {
                     lists.map((item , index) => {
@@ -71,8 +66,9 @@ export default function SimViewListsView(props) {
             <SubmitButton title="Add Stock" style={{marginTop:20 , marginBottom:30}} onSubmit={addStock}></SubmitButton>          
         </View>
     )
-
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

@@ -30,13 +30,16 @@ export default function SimView(props) {
   }
 
   const onSimViewListClosed = ({type, value})=> {      
-    if(type == Constants.actionType.ACTION_CLOSE){
+    if(type == Constants.actionType.ACTION_CHANGE_NETWORK){
       //changeNetwork()
       simViewListModalRef.current.hideModal();
     }
     if(type == Constants.actionType.ACTION_REMOVE){
       //props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
       props.removeCode(value)
+    }
+    if(type == Constants.actionType.ACTION_CLOSE){
+      simViewListModalRef.current.hideModal();
     }
 
     if(type == Constants.actionType.ACTION_DONE){

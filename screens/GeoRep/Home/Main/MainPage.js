@@ -153,7 +153,7 @@ export default function MainPage(props) {
           </View>);
         }
     }
-
+    
     return (
         <ScrollView style={{flex:1, marginHorizontal:10}}>          
 
@@ -168,7 +168,7 @@ export default function MainPage(props) {
             </View>
 
             <SyncAll></SyncAll>
-
+            
             {
               isCheckin && 
               <CheckOut checkinStatus={checkinStatus} currentCall={currentCall} ></CheckOut>

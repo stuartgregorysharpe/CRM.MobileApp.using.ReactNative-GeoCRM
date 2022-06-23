@@ -76,8 +76,7 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .then((res) => {        
-        console.log("DDD", res);
-
+        
         if (res.data == undefined) {
           resolve([]);
         }
@@ -90,7 +89,7 @@ export const getLocationMapByRegion = async (currentLocation, box) => {
         }
       })
       .catch((err) => {
-        console.log("DDDe ", err);
+        
         const error = err.response;
         if (error.status===401 && error.config && 
           !error.config.__isRetryRequest) {            

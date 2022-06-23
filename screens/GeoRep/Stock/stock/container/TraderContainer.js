@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import TraderView from '../components/TraderView';
 import { getPostParameter } from '../../../../../constants/Helper';
 
+
 export default function TraderContainer(props) {
     
     const [user, setUser] = useState([]);
@@ -35,8 +36,7 @@ export default function TraderContainer(props) {
         setUser(item)
     }
 
-    const onTrader = () => {        
-        
+    const onTrader = () => {                
         var userParam = getPostParameter(currentLocation);
         let postData = {
             stock_type: 'Device',

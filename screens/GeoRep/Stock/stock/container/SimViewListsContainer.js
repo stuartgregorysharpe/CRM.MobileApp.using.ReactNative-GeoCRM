@@ -22,7 +22,7 @@ export default function SimViewListsContainer(props) {
     },[]);
 
     const addData = (value) => {
-        console.log("add data" , value)
+        
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
        
@@ -33,6 +33,7 @@ export default function SimViewListsContainer(props) {
     const addStock = () => {
         props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: 0});   
     }
+
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
             <SimViewListsView
