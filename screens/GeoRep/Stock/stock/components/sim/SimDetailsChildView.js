@@ -10,7 +10,7 @@ import CCircleButton from '../../../../../../components/common/CCircleButton';
 
 export default function SimDetailsChildView(props) {
 
-    const { title ,onAddCode , sellToTrader, transfer, viewLists, onClose} = props;
+    const { selectedCodes, title ,onAddCode , sellToTrader, transfer, viewLists, onClose} = props;
     const [code, setCode] = useState('');
 
     const checkValidation = () => {
@@ -25,21 +25,20 @@ export default function SimDetailsChildView(props) {
                 <Divider></Divider>
             </TouchableOpacity>
             
-            <View style={{flexDirection:'row' , marginTop: 20 , alignItems:'center' }}>
+            <View style={{flexDirection:'row' , marginTop: 10 , alignItems:'center' }}>
                 <View style={{flex:1}}>
-                    <AppText size="big" type="secondaryMedium" title={title ? title: 'Items'}></AppText>
+                    <AppText size="big" type="secondaryMedium" title={title ? title: 'Item: ' + selectedCodes.length }></AppText>
                 </View>                
                 <CCircleButton onClick={() => viewLists() } style={{marginLeft:10}} title="View List" icon="Check_List_Active"></CCircleButton>
             </View>
-            
-            
+                        
             <View style={{height:1, backgroundColor:Colors.primaryColor, marginTop:10}}></View>
-            
+
             <CButtonTextInput 
                 label={"Input ICCID"}
                 value={code}
                 returnKeyType={'done'}             
-                keyboardType="number-pad"                         
+                keyboardType="number-pad"                 
                 isRequired={true}
                 onChangeText={text => {
                     setCode(text)
@@ -50,7 +49,7 @@ export default function SimDetailsChildView(props) {
                         setCode("")
                     }
                 }}
-                style={{marginTop:20, marginBottom:35}}
+                style={{marginTop:20, marginBottom:20}}
             /> 
 
             <SubmitButton title="Sell To Trader" onSubmit={sellToTrader} ></SubmitButton>

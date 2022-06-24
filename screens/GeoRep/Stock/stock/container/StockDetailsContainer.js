@@ -13,15 +13,13 @@ export default function StockDetailsContainer(props) {
     const [stockType, setStockType] = useState(Constants.stockDeviceType.SELL_TO_TRADER)
         
     const onSearchLocation = async({type, value}) => {
-        if(type == Constants.actionType.ACTION_NEXT){
-            
+        if(type == Constants.actionType.ACTION_NEXT){            
             console.log("Location id", value.locationId);
             if(stockType === Constants.stockDeviceType.SELL_TO_TRADER){                
                 props.openSignature(value)
             }else if(stockType === Constants.stockDeviceType.SWOP_AT_TRADER){
                 props.openSwopAtTrader(value);
-            }
-            
+            }            
         }
     };
 

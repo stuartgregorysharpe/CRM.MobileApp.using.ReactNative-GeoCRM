@@ -6,7 +6,6 @@ import { AppText } from '../../../../../components/common/AppText'
 import CButtonTextInput from '../../../../../components/common/CButtonTextInput';
 import Divider from '../../../../../components/Divider';
 import { Colors } from '../../../../../constants';
-import { Button } from '../../../../../components/shared/Button';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 
 

@@ -5,10 +5,12 @@ import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../..
 import { useSelector } from 'react-redux';
 import TraderView from '../components/TraderView';
 import { getPostParameter } from '../../../../../constants/Helper';
+import { Constants } from '../../../../../constants';
 
 
 export default function TraderContainer(props) {
     
+    const { stockItem , selectedCodes} = props;
     const [user, setUser] = useState([]);
     const [lists, setLists] = useState([]);
     const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -16,8 +18,7 @@ export default function TraderContainer(props) {
     useEffect(() => {
       let mounted = true;
       getApiRequest("https://www.dev.georep.com/local_api_old/stockmodule/users", {} ).then((res) => {
-        if(mounted){
-            console.log("Res", res);
+        if(mounted){            
             var tmp = [];
             res.users.map((item , index) => {
                 tmp.push({label:item.username, value:item.user_id});
@@ -37,12 +38,20 @@ export default function TraderContainer(props) {
     }
 
     const onTrader = () => {                
-        var userParam = getPostParameter(currentLocation);
+        var userParam = getPostParameter(currentLocation);    
         let postData = {
-            stock_type: 'Device',
-            stock_item_id: props.item.stock_item_id,
+            stock_type: stockItem.stock_type,
+            stock_item_id: stockItem.stock_item_id,
             transferee_user_id: user.value,
             user_local_data: userParam.user_local_data,
+        }
+        console.log("selectedCodes" , selectedCodes);
+        var stockItemIds = selectedCodes.map((item) =>{
+            return item.stock_item_id;
+        })
+        console.log("stockItemIds", stockItemIds)
+        if(stockItem.stock_type == Constants.stockType.SIM){
+            postData['sims'] = { stock_item_ids : selectedCodes}
         }
         console.log("postData", postData)
         postApiRequest("stockmodule/transfer" ,postData ).then((res) => {

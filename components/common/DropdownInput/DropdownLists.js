@@ -55,7 +55,7 @@ export default function DropdownLists(props) {
   return (
     <View style={{marginTop:15}}>      
         {
-            lists.map((item, index) => {
+            lists !=undefined && lists.length > 0 && lists.map((item, index) => {
                 return renderItem(item, index);
             })
         }

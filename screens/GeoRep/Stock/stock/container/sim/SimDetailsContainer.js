@@ -8,18 +8,14 @@ import { Constants } from '../../../../../../constants';
 
 export default function SimDetailsContainer(props) {
             
+    const { selectedCodes } =  props;
     const searchLocationModalRef = useRef(null);
     const isCheckin = useSelector(state => state.location.checkIn);
     const [stockType, setStockType] = useState(Constants.stockDeviceType.SELL_TO_TRADER)
     
-
-    useEffect(() => {
-
-    },[]);
-
-
     const onSellToTrader = () => {
-        if(props.selectedCodes.length > 0){
+
+        if(selectedCodes.length > 0){
             if(isCheckin){            
                 //props.onSellToTrader()
             }else{
@@ -30,10 +26,13 @@ export default function SimDetailsContainer(props) {
     }
 
     const onTransfer = () => {
-
+        if(selectedCodes.length > 0){
+            var value = {stockType: Constants.stockDeviceType.TARDER, value: 0}
+            props.onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
+        }        
     }
         
-    const onSearchLocation = async({type, value}) => {
+    const onSearchLocationModalClosed = async({type, value}) => {
         if(type == Constants.actionType.ACTION_NEXT){        
             console.log("Location id in search", value.locationId);
             if(stockType === Constants.stockDeviceType.SELL_TO_TRADER){
@@ -43,7 +42,6 @@ export default function SimDetailsContainer(props) {
             }            
         }
     };
-
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
@@ -57,9 +55,9 @@ export default function SimDetailsContainer(props) {
                 ref={searchLocationModalRef}
                 title="Search Location"
                 stockType={stockType}
-                onButtonAction={onSearchLocation}
+                onButtonAction={onSearchLocationModalClosed}
                 />   
-
+  
         </View>
     )
 }

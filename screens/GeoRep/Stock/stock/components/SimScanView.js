@@ -8,32 +8,8 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import SimViewListsModal from '../modal/sim/SimViewListsModal';
 
 export default function SimScanView(props) {
-  
-    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-    const simViewListModalRef = useRef(null)
-
-    useEffect(() => {
-      const keyboardDidShowListener = Keyboard.addListener(
-        'keyboardDidShow',
-        () => {
-          setKeyboardVisible(true); // or some other action
-          console.log("show key board")
-        },
-      );
-      const keyboardDidHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        () => {
-          setKeyboardVisible(false); // or some other action
-          console.log("hide keyboard")
-        },
-      );
-
-      return () => {
-        keyboardDidHideListener.remove();
-        keyboardDidShowListener.remove();
-      };
-    }, []);
     
+    const simViewListModalRef = useRef(null) 
     const onSuccess = e => {   /// From Camera
         const {data} = e;
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});

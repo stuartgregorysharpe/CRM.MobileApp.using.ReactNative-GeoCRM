@@ -14,15 +14,14 @@ export default function StockSignatureContainer(props) {
 
     var msisdn = '';
     var received = '';
-    
+
     const onItemPressed = (item) => {
 
     }
-
+    
     const onSubmit = (signature) => {
 
-        console.log("stockmodule/sell-to-trader", item);
-        console.log("selectedCodes" , selectedCodes)
+        console.log("stockmodule/sell-to-trader", item);        
         if(received != ""){
             var postData = new FormData();
             postData.append('stock_type', item.stock_type);
@@ -45,9 +44,7 @@ export default function StockSignatureContainer(props) {
             }).catch((e) => {
     
             });
-        }
-        
-
+        }        
     }
   
     const onChangedSerial = (serial) => {

@@ -17,7 +17,6 @@ export default function StockSignatureView(props) {
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
-
     
     const handleOK = async(signature) => {
 

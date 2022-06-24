@@ -1,14 +1,8 @@
 import { View, Text ,StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
 import React , { useState } from 'react'
-import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import { AppText } from '../../../../../components/common/AppText';
-import { whiteLabel } from '../../../../../constants/Colors';
 import SvgIcon from '../../../../../components/SvgIcon';
-import CardView from '../../../../../components/common/CardView';
-import CTextInput from '../../../../../components/common/CTextInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
-import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import { Constants } from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 

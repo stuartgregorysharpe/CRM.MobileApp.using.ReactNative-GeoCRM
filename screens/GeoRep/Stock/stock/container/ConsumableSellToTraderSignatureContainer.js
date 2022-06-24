@@ -1,7 +1,6 @@
 
 import { View, Text } from 'react-native'
 import React , {useEffect, useState , useRef} from 'react'
-import StockSignatureView from '../components/StockSignatureView';
 import { postApiRequestMultipart } from '../../../../../actions/api.action';
 import { useSelector } from 'react-redux';
 import * as RNLocalize from 'react-native-localize';

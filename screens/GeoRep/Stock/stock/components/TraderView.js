@@ -14,9 +14,7 @@ import { Constants } from '../../../../../constants';
 export default function TraderView(props) {
   
   const { modalType, item,  lists , onItemSelected , onChangedQuantity, onTrader} = props;  
-  const [userId, setUserId] = useState("");
-  
-
+  const [userId, setUserId] = useState("");  
   return (
     <ScrollView style={styles.container}>
 
@@ -58,7 +56,8 @@ export default function TraderView(props) {
 
 const styles = StyleSheet.create({
   container: {
-      alignSelf: 'stretch',
+      
+      //alignSelf: 'stretch',
       paddingTop: 10,
       marginHorizontal: 20,
       //marginBottom: 30,

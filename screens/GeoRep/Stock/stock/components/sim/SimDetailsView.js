@@ -1,57 +1,38 @@
 
-import { View, Text ,StyleSheet, Keyboard } from 'react-native'
+import { View, StyleSheet, Keyboard } from 'react-native'
 import React , { useState ,useEffect , useRef } from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Constants } from '../../../../../../constants';
-import SimScanChildView from './../SimScanChildView';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import SimViewListsModal from '../../modal/sim/SimViewListsModal';
 import SimDetailsChildView from './SimDetailsChildView';
 
 export default function SimDetailsView(props) {
-  
-    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+      
+    const [isScan, setIsScan] = useState(true)
     const simViewListModalRef = useRef(null)
 
-    useEffect(() => {
-      const keyboardDidShowListener = Keyboard.addListener(
-        'keyboardDidShow',
-        () => {
-          setKeyboardVisible(true); // or some other action
-          console.log("show key board")
-        },
-      );
-      const keyboardDidHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        () => {
-          setKeyboardVisible(false); // or some other action
-          console.log("hide keyboard")
-        },
-      );
-
-      return () => {
-        keyboardDidHideListener.remove();
-        keyboardDidShowListener.remove();
-      };
-    }, []);
-    
     const onSuccess = e => {   /// From Camera
         const {data} = e;        
-        console.log("scanval", data)
-        props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
+        if(isScan){
+          props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
+        }
+        
     };
-
+    
     const onAddCode = (value) => { // Manual Input
-      props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
-      
-      //props.onAddCode(value)
+      if(isScan){
+        props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});          
+      }      
     }
 
     const onSellToTrader = () => {
+        setIsScan(false);
         props.onSellToTrader();
     }
 
     const onTransfer = () => {
+      setIsScan(false);
       props.onTransfer();
     }
   
@@ -68,7 +49,6 @@ export default function SimDetailsView(props) {
       }
       if(type == Constants.actionType.ACTION_DONE){
         //addStock()
-        
       }
     }
 

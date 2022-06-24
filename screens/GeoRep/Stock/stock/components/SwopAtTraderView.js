@@ -3,7 +3,6 @@ import React , { useState } from 'react'
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import { AppText } from '../../../../../components/common/AppText';
 import { whiteLabel } from '../../../../../constants/Colors';
-import SvgIcon from '../../../../../components/SvgIcon';
 import CardView from '../../../../../components/common/CardView';
 import CTextInput from '../../../../../components/common/CTextInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
@@ -13,18 +12,15 @@ import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 export default function SwopAtTraderView(props) {
   
   const {item , lists , onReturnDevice, onReason, onPhotos, onSwop} = props;    
-  const [deviceType ,setDeviceType] = useState('');
   const [reason, setReason] = useState("");
-  const [deviceTypeLists, setDeviceTypeLists] = useState([])
   const [reasonLists , setReasonLists] = useState([{value:'Damaged' , label: 'Damaged'} ,  {value:'Faulty' , label: 'Faulty'} , {value:'Used' , label: 'Used'}])
   const [msisdn, setMsisdn] = useState("");
-  const [isShown,setIsShown] = useState(false);
   const [photos, setPhotos] = useState([]);
+
   return (
     <ScrollView style={styles.container}>
                   
           <AppText title="Return Device" type="secondaryBold" size="medium"></AppText>
-
             <DropdownInput            
               title="Select Device"            
               lists={lists}
@@ -79,9 +75,7 @@ export default function SwopAtTraderView(props) {
               keyboardType={'number-pad'}
               isRequired={true}
               onChangeText={text => {
-                setMsisdn(text)
-                  // setDetails(text);
-                  // onDataChanged(text, quantity);
+                setMsisdn(text)                  
               }}
               style={{marginTop:10}}
           />

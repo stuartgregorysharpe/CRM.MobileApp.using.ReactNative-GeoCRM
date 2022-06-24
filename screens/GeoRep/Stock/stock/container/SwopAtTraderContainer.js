@@ -8,7 +8,9 @@ import { useSelector } from 'react-redux';
 
 export default function SwopAtTraderContainer(props) {
          
-    const [lists, setLists] = useState([{description:'des'}]);
+    const { locationId } = props;
+    
+    const [lists, setLists] = useState([]);
     const [returnDevice, setReturnDevice] = useState();
     const [reason, setReason] = useState('');
     const [photos, setPhotos] = useState([]);
@@ -17,10 +19,12 @@ export default function SwopAtTraderContainer(props) {
     useEffect(() => {
         let isMount = true;
         let param = {
-            location_id: 1,
+            location_id: locationId,
         };        
-        getApiRequest("https://dev.georep.com/local_api_old/locations/location-devices", param ).then((res) => {                        
+        console.log("pp" , param)
+        getApiRequest("locations/location-devices", param ).then((res) => {                        
             if(isMount){
+                console.log("RR", res)
                 setLists(res.devices);
             }            
         }).catch((e) => {
