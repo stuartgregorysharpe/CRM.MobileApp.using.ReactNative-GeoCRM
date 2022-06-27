@@ -12,7 +12,7 @@ export default function SearchLocationContainer(props) {
 
     useEffect(() => {
         let param = {
-            search_text: ''
+            search_text: 'New Location 1'
         };
         getApiRequest("locations/customer-search", param ).then((res) => {            
             setLists(res.items);

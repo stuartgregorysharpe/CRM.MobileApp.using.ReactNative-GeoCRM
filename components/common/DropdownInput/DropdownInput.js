@@ -35,9 +35,7 @@ export default function DropdownInput(props) {
             }}
             lists = {lists}>
           </DropdownLists>
-        }
-        
-        
+        }                
     </View>
   )
 }

@@ -1,6 +1,6 @@
 
 import { View, FlatList } from 'react-native'
-import React from 'react'
+import React , { useState  , useEffect} from 'react'
 import SearchBox from '../../../../../components/SearchBar'
 import SearchLocationItem from './SearchLocationItem';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
@@ -8,6 +8,15 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 export default function SearchLocationView(props) {
 
     const {lists , onItemPressed , onSubmitLocation} = props;
+    const [showLists, setShowLists] = useState(lists);
+
+    useEffect(() => {
+        let isMount = true;
+        setShowLists(lists);        
+        return () => {
+            isMount = false;
+        };
+    }, [lists]);
 
     const renderItems = (item, index) => {
         return (
@@ -18,9 +27,27 @@ export default function SearchLocationView(props) {
         )
     }
     
+    const onSearch = (searchKey) => {        
+        var tmp = [];
+        lists.forEach(element => {
+            if(element.address.toLowerCase().includes(searchKey.toLowerCase())  || element.name.toLowerCase().includes(searchKey.toLowerCase()) ){
+                tmp.push(element);
+            }
+            tmp.push()
+        });
+        setShowLists(tmp);
+        console.log("tm0",tmp)
+    }
+    
+
     return (
         <View>      
-            <SearchBox isFilter={true}></SearchBox>
+            <SearchBox 
+            onSearch={(searchKey) => {
+                onSearch(searchKey);
+            }}
+            isFilter={true}></SearchBox>
+
             <View style={{flexDirection:'column', flex:1 , maxHeight:250}}>
                 <FlatList                              
                     ListHeaderComponent={()=>
@@ -28,7 +55,7 @@ export default function SearchLocationView(props) {
                     }
                     removeClippedSubviews={false}                
                     initialNumToRender={10}
-                    data={lists}            
+                    data={showLists}            
                     renderItem={
                         ({ item, index }) => renderItems(item, index)
                     }

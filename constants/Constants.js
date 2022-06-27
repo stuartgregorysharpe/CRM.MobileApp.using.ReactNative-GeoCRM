@@ -47,7 +47,8 @@ export default {
   stockType: {
     DEVICE : "Device",
     CONSUMABLE : "Consumables",
-    SIM: "Sim"
+    SIM: "Sim",
+    RETURN: "RETURN"
   },
 
   networkType: {

@@ -7,7 +7,6 @@ import TraderView from '../components/TraderView';
 import { getPostParameter } from '../../../../../constants/Helper';
 import { Constants } from '../../../../../constants';
 
-
 export default function TraderContainer(props) {
     
     const { stockItem , selectedCodes} = props;
@@ -17,7 +16,7 @@ export default function TraderContainer(props) {
 
     useEffect(() => {
       let mounted = true;
-      getApiRequest("https://www.dev.georep.com/local_api_old/stockmodule/users", {} ).then((res) => {
+      getApiRequest("stockmodule/users", {} ).then((res) => {
         if(mounted){            
             var tmp = [];
             res.users.map((item , index) => {
