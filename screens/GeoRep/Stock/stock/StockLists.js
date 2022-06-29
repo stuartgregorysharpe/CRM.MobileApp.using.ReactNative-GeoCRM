@@ -38,16 +38,23 @@ export default function StockLists() {
     const [iccids, setIccids] = useState([])
     const [selectedCodes, setSelectedCodes] = useState([]);
     const dispatch = useDispatch()
+    let isMount = true;
 
     useEffect(() =>{
-        let isMount = true;
+        callStockLists();
+        return () => {
+            isMount = false;
+        }
+    },[]);
+
+    const callStockLists = () => {
         getApiRequest("stockmodule/stock-list", {}).then((res) => {
             if(isMount){
                 setStockLists(res.stock_items);
                 setOriginStockLists(res.stock_items);
+                console.log("res.stock_items", res.stock_items)
                 var sims = res.stock_items.filter(item => item.stock_type === Constants.stockType.SIM);
-                var tmp = [];
-                
+                var tmp = [];                
                 sims.forEach((item) => {                    
                     tmp.push({type: item.description, code: item.serial , stock_item_id: item.stock_item_id});
                 });
@@ -56,10 +63,8 @@ export default function StockLists() {
         }).catch((e) => {
             console.log("E",e);
         });
-        return () => {
-            isMount = false;
-        }
-    },[]);
+
+    }
 
     const onFilter = (text) => {
         if(text !== "" && text !== undefined){
@@ -99,7 +104,10 @@ export default function StockLists() {
     }
 
     const onCaptureAction = async({type, value}) => {
-        
+        if(type == Constants.actionType.ACTION_CLOSE){
+            addStockModalRef.current.hideModal();
+            callStockLists();
+        }
     };
 
     const onStockDetailsModalClosed = async({type, value}) => {

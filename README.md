@@ -15,3 +15,9 @@ nvm alias default system
 5. Add Stock Submit  ->  POST /stockmodule/add-stock
 6. Location Devices -> GET  /locations/location-devices?location_id=1354
 7. Transfer User dropdown -> GET   /stockmodule/users
+
+8. POST stockmodule/sell-to-trader
+9. POST stockmodule/swop-at-trader
+10. POST stockmodule/transfer
+11. POST stockmodule/return-device
+12. POST stockmodule/return-to-warehouse

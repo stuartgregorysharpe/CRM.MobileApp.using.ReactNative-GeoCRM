@@ -23,7 +23,7 @@ const AddStockModal = React.forwardRef((props, ref) => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <AddStockContainer/>
+            <AddStockContainer {...props} />
         </CModal>        
     )
 });

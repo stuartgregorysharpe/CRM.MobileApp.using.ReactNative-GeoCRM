@@ -8,18 +8,27 @@ import SearchLocationModal from '../stock/modal/SearchLocationModal';
 import { Constants } from '../../../../constants';
 import { useSelector } from 'react-redux';
 import ReturnDeviceDetailModal from './modal/ReturnDeviceDetailModal';
+import StockSignatureModal from '../stock/modal/device/StockSignatureModal';
 
 export default function Returns() {
 
   const [returnLists, setReturnLists] = useState([]);
   const searchLocationModalRef = useRef(null)
   const returnDeviceDetailRef = useRef(null)
+  const stockSignatureModalRef = useRef(null)
   const isCheckin = useSelector(state => state.location.checkIn);
   const [locationId, setLocationId] = useState(0);
+  const [stockItem , setStockItem] = useState({stock_type: Constants.stockType.RETURN})
+  const [stockItemIds , setStockItemIds] = useState([]);
 
   useEffect(() =>{    
     getApiRequest("stockmodule/returns-list", {}).then((res) => {      
         setReturnLists(res.return_items)
+        var tmp =[];
+        res.return_items.forEach(element => {
+            tmp.push(element.stock_item_id);          
+        });
+        setStockItemIds(tmp)
     }).catch((e) => {
         console.log("E",e);
     });
@@ -39,6 +48,9 @@ export default function Returns() {
       searchLocationModalRef.current.showModal();
     }
   }
+  const onStockToWarehouse = () => {
+    stockSignatureModalRef.current.showModal()
+  }
   const onSearchLocationModalClosed = ({type, value}) => {    
     if(type == Constants.actionType.ACTION_NEXT){
       if(value.stockType === Constants.stockType.RETURN){
@@ -47,6 +59,11 @@ export default function Returns() {
       }
     }
   }
+
+  const onStockSignature = async({type, value}) => {
+
+  };
+
 
   return (
     <View style={{flexDirection:'column', flex:1}}>
@@ -68,7 +85,7 @@ export default function Returns() {
 
         <View style={{marginHorizontal:10 ,  marginBottom:10}}>
           <SubmitButton title="Return Stock" onSubmit={() => onReturnStock() } ></SubmitButton>
-          <SubmitButton style={{marginTop:10}} title="Return All Stock To Warehouse"></SubmitButton>
+          <SubmitButton style={{marginTop:10}} title="Return All Stock To Warehouse" onSubmit={() => onStockToWarehouse()} ></SubmitButton>
         </View>
 
         <ReturnDeviceDetailModal 
@@ -83,6 +100,20 @@ export default function Returns() {
           stockType={Constants.stockType.RETURN}
           onButtonAction={onSearchLocationModalClosed}
           />
+
+        
+        <StockSignatureModal
+            ref={stockSignatureModalRef}
+            title="Please Sign below:"
+            locationId={locationId}
+            item={stockItem}
+            page = {Constants.stockType.RETURN}
+            selectedCodes={[]}
+            stockItemIds={stockItemIds}
+            onButtonAction={onStockSignature}
+        />
+
+
     </View>
   )
 

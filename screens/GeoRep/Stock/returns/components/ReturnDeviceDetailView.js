@@ -10,35 +10,38 @@ import CardView from '../../../../../components/common/CardView';
 
 export default function ReturnDeviceDetailView(props) {
   
-  const {lists , onReturnDevice, onReason, onPhotos, onReturnStock} = props;    
+  const {lists , onReturnDevice, onPhotos, onReturnStock} = props;    
   const [reason, setReason] = useState("");
   const [reasonLists , setReasonLists] = useState([{value:'Damaged' , label: 'Damaged'} ,  {value:'Faulty' , label: 'Faulty'} , {value:'Used' , label: 'Used'}])
   const [photos, setPhotos] = useState([]);
-  const [device, setDevice] = useState({description:'Description' , serial: 'Serial'})
+  const [device, setDevice] = useState(null)
 
   return (
     <ScrollView style={styles.container}>
                   
+          
           <AppText title="Return Device" type="secondaryBold" size="medium"></AppText>
             <DropdownInput            
               title="Select Device"            
               lists={lists}
               onItemSelected={(item) => {
-                onReturnDevice(item);
+                //onReturnDevice(item);
+                onReturnDevice({location_device_id: item.location_device_id, return_reason: reason});
+                setDevice(item);
+
               }}
             >
           </DropdownInput>
 
-
-          {
+          {/* {
             device && 
             <CardView style={{ marginTop:10, borderColor:whiteLabel().borderColor, borderWidth:1}}>
                 <View style={{padding:5}}>
                     <AppText size="medium" type="secondaryBold" title={device != undefined ? device.description :  ''} color={whiteLabel().mainText}></AppText>
-                    <AppText title={device != undefined ? "IMEI: " + device.serial : "IMEI: "} color={whiteLabel().subText}></AppText>
+                    <AppText title={device != undefined ? "IMEI: " + device.imei : "IMEI: "} color={whiteLabel().subText}></AppText>
                 </View>
             </CardView>
-          }
+          } */}
 
           <CSingleSelectInput                    
               description={'Reason'}
@@ -50,8 +53,8 @@ export default function ReturnDeviceDetailView(props) {
               onSelectItem={item => {                                               
                   setReason(item.label);
                   console.log("selected reason", item)
-                  onReason(item.label);
-
+                  //onReason(item.label);
+                  onReturnDevice({location_device_id: device.location_device_id, return_reason: item.label});
               }}
               containerStyle={{marginTop: 15}}
           /> 

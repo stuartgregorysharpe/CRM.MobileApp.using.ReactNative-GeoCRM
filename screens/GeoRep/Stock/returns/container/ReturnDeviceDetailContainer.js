@@ -5,6 +5,8 @@ import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../..
 import * as RNLocalize from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import ReturnDeviceDetailView from '../components/ReturnDeviceDetailView';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../../../../../actions/notification.action';
 
 export default function ReturnDeviceDetailContainer(props) {
          
@@ -13,6 +15,7 @@ export default function ReturnDeviceDetailContainer(props) {
     const [returnDevice, setReturnDevice] = useState();
     const [reason, setReason] = useState('');
     const [photos, setPhotos] = useState([]);
+    const dispatch = useDispatch()
     const currentLocation = useSelector(state => state.rep.currentLocation);
 
     useEffect(() => {
@@ -46,22 +49,36 @@ export default function ReturnDeviceDetailContainer(props) {
 
     const onReturnStock = () => {  
 
+
         var postData = new FormData();
         postData.append('stock_type', "Device");
         postData.append('location_id',  props.locationId);        
-        postData.append('return_device',  returnDevice);
-        postData.append('allocate_device',  reason);
+        postData.append('return_device[location_device_id]', returnDevice.location_device_id);
+        postData.append('return_device[return_reason]', returnDevice.return_reason);
         photos.map((item, index) => {
-            postData.append(`File['return_image'][${index}]`,  item);
+            console.log("iddd", item);
+            var words = item.split('/');
+            var ext = words[words.length - 1].split('.');
+            var key = `return_image[${index}]`;
+            postData.append( key, {
+                uri: item,
+                type: 'image/' + ext[1],
+                name: words[words.length - 1],
+            });
+            //postData.append(`File['return_image'][${index}]`,  item);
         })
         
         var time_zone = RNLocalize.getTimeZone();
         postData.append('user_local_data[time_zone]', time_zone);
         postData.append( 'user_local_data[latitude]', currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0' );
         postData.append( 'user_local_data[longitude]', currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0' );
-                        
+       
+        console.log("post Data" , JSON.stringify(postData))
         postApiRequestMultipart("stockmodule/return-device" , postData).then((res) => {
-
+            //{"message": "Device return added successfully", "status": "success"}
+            if(res.status == "success"){
+                dispatch(showNotification({type:'success' , message: res.message, buttonText:'Ok'}))
+            }
         }).catch((e) => {
 
         });

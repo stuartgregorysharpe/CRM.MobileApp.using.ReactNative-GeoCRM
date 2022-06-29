@@ -17,13 +17,14 @@ export default function StockSignatureView(props) {
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
-    
+    console.log("path", props.item);
+
     const handleOK = async(signature) => {
 
         var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
 
         const path = outputPath + "/sign.png";        
-        console.log("path", path);
+      
 
         var data = await RNFS.writeFile(path,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
             onSubmit(path);
@@ -66,7 +67,7 @@ export default function StockSignatureView(props) {
             /> 
 
             {
-                (isMSISDN && props.item.stock_type != Constants.stockType.SIM) && 
+                props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) && 
                 <CTextInput 
                     label={"Assign MSISDN"}
                     value={receivedBy}

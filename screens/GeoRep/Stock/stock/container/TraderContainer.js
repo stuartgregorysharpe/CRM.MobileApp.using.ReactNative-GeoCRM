@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import TraderView from '../components/TraderView';
 import { getPostParameter } from '../../../../../constants/Helper';
 import { Constants } from '../../../../../constants';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../../../../../actions/notification.action';
 
 export default function TraderContainer(props) {
     
@@ -13,6 +15,7 @@ export default function TraderContainer(props) {
     const [user, setUser] = useState([]);
     const [lists, setLists] = useState([]);
     const currentLocation = useSelector(state => state.rep.currentLocation);
+    const dispatch = useDispatch();
 
     useEffect(() => {
       let mounted = true;
@@ -54,9 +57,9 @@ export default function TraderContainer(props) {
         }
         console.log("postData", postData)
         postApiRequest("stockmodule/transfer" ,postData ).then((res) => {
-            
+            dispatch(showNotification({type: 'success' , message: res.message, buttonText: 'Ok'}))
         }).catch((e) => {
-
+            dispatch(showNotification({type: 'success' , message:"Error", buttonText: 'Ok'}))
         });
     }
 

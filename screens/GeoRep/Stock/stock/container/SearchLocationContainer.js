@@ -8,18 +8,22 @@ export default function SearchLocationContainer(props) {
          
     const { stockType } = props;
     const [lists, setLists] = useState([]);
+    const [originLists, setOriginLists] = useState([]);
     const [locationId, setLocationId] = useState(0);
+    const [isLoading , setIsLoading] = useState(false);
+    var searchKey = '';
+    var changedSearchKey = ''    
 
     useEffect(() => {
-        let param = {
-            search_text: 'New Location 1'
-        };
-        getApiRequest("locations/customer-search", param ).then((res) => {            
-            setLists(res.items);
-        }).catch((e) => {
+        callSearch("")
+    },[]);
 
-        })
-    },[]); 
+    useEffect(() => {
+        if(changedSearchKey != searchKey){
+            onSearch(changedSearchKey);
+        }
+    },[lists]);
+
 
     const onItemPressed = (item) => {
         console.log("on item prssere", item)        
@@ -32,12 +36,42 @@ export default function SearchLocationContainer(props) {
         }        
     }
 
+    const onSearch = (key) => {        
+        changedSearchKey = key;
+
+        if(key == ''){
+            setLists(originLists);
+        }else if(key.length > 1 && !isLoading){
+            searchKey = key;
+            callSearch(key);
+        }          
+    }
+
+    const callSearch = (key) => {
+        setIsLoading(true);
+        let param = {
+            search_text: key
+        };        
+        getApiRequest("locations/customer-search", param ).then((res) => {            
+
+            setLists(res.items);
+            if(key == ""){
+                setOriginLists(res.items);
+            }
+            setIsLoading(false);
+
+        }).catch((e) => {
+            setIsLoading(false);
+        })
+    }
+
     return (
         <View style={{alignSelf:'stretch'}}>
             <SearchLocationView                
                 lists = {lists}
                 onItemPressed = {onItemPressed}
                 onSubmitLocation = {onSubmitLocation}
+                onSearch={onSearch}
                 {...props}
             />
 

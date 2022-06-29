@@ -381,6 +381,7 @@ export const FormQuestions = props => {
         : '0',
     );
 
+    console.log("PDAta" , JSON.stringify(postData))
     postApiRequestMultipart('forms/forms-submission', postData)
       .then(res => {
         dispatch(

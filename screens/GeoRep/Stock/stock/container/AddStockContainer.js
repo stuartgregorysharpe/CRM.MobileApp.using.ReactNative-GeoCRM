@@ -6,7 +6,7 @@ import { getApiRequest, postApiRequest } from '../../../../../actions/api.action
 import { Constants } from '../../../../../constants';
 import { useSelector } from 'react-redux';
 import { getPostParameter } from '../../../../../constants/Helper';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 import { useDispatch } from 'react-redux';
 
 export default function AddStockContainer(props) {
@@ -17,6 +17,7 @@ export default function AddStockContainer(props) {
     const currentLocation = useSelector(state => state.rep.currentLocation);
     let isMount = true;
 
+    console.log("propssssw0", props)
     useEffect(() => {
         _callStockFieldData();
         return () => { 
@@ -46,7 +47,10 @@ export default function AddStockContainer(props) {
         data['user_local_data'] = userParam.user_local_data;        
         postApiRequest("stockmodule/add-stock" , data).then((res) =>{
             if(res.status === "success"){
-                dispatch(showNotification({type:'success' , message: res.message , buttonText: 'Ok'}));
+                dispatch(showNotification({type:'success' , message: res.message , buttonText: 'Ok' ,  buttonAction: async () => {                    
+                    props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
+                    dispatch(clearNotification())
+                }}));
             }else{
                 dispatch(showNotification({type:'success' , message: res.errors , buttonText: 'Ok'}));
             }                    
