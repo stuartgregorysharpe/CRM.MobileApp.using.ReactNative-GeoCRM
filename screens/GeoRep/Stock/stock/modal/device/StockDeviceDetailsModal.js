@@ -20,7 +20,7 @@ const StockDeviceDetailsModal = React.forwardRef((props, ref) => {
         onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
     }
     const openSwopAtTrader = (value) => {  
-        onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
+        props.onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
     }
     const openTrader = (value) => {
         onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });

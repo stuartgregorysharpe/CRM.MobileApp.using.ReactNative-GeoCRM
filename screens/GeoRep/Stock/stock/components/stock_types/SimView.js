@@ -10,8 +10,7 @@ export default function SimView(props) {
 
   const simScanModalRef = useRef(null)
   const simViewListModalRef = useRef(null)
-  
-  console.log("in simview" , props.codeLists)
+    
   const openScan = () => {
     simScanModalRef.current.showModal();
   }
@@ -23,8 +22,7 @@ export default function SimView(props) {
         props.addStock();
     }else if(type == Constants.actionType.ACTION_CLOSE){
         simScanModalRef.current.hideModal()
-    }else if(type == Constants.actionType.ACTION_REMOVE){
-      console.log("remove" , value)
+    }else if(type == Constants.actionType.ACTION_REMOVE){      
       props.removeCode(value)
     }
   }
@@ -42,8 +40,7 @@ export default function SimView(props) {
       simViewListModalRef.current.hideModal();
     }
 
-    if(type == Constants.actionType.ACTION_DONE){
-      //addStock()
+    if(type == Constants.actionType.ACTION_DONE){            
       props.addStock();
     }
   }
@@ -59,12 +56,15 @@ export default function SimView(props) {
       <SimScanModal        
         ref={simScanModalRef}
         codeLists={props.codeLists}
+        isAdded = {props.isAdded}
+        count={props.codeLists.length != 0 ? props.codeLists.length: ''}
         onButtonAction={onSimScan}
       />
       
       <SimViewListsModal
-        ref={simViewListModalRef}              
+        ref={simViewListModalRef}      
         lists={props.codeLists}
+        type="add_stock_view_lists"
         onButtonAction={onSimViewListClosed}
       />
 

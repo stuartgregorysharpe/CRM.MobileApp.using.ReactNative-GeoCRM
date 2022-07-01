@@ -9,6 +9,7 @@ import { Constants } from '../../../../constants';
 import { useSelector } from 'react-redux';
 import ReturnDeviceDetailModal from './modal/ReturnDeviceDetailModal';
 import StockSignatureModal from '../stock/modal/device/StockSignatureModal';
+import { getLocalData } from '../../../../constants/Storage';
 
 export default function Returns() {
 
@@ -20,21 +21,38 @@ export default function Returns() {
   const [locationId, setLocationId] = useState(0);
   const [stockItem , setStockItem] = useState({stock_type: Constants.stockType.RETURN})
   const [stockItemIds , setStockItemIds] = useState([]);
-
+  var checkinLocationId ;
   useEffect(() =>{    
+    var isMount = true;
     getApiRequest("stockmodule/returns-list", {}).then((res) => {      
-        setReturnLists(res.return_items)
-        var tmp =[];
-        res.return_items.forEach(element => {
-            tmp.push(element.stock_item_id);          
-        });
-        setStockItemIds(tmp)
+        if(isMount){
+          setReturnLists(res.return_items)
+          var tmp =[];
+          res.return_items.forEach(element => {
+              tmp.push(element.stock_item_id);          
+          });
+          setStockItemIds(tmp)
+        }        
     }).catch((e) => {
         console.log("E",e);
     });
-},[]);
+    return () => {
+      isMount = false;
+    }
+  },[]);
 
-  
+  useEffect(() => {
+    if(isCheckin){
+      initialize();
+    }
+  },[isCheckin]);
+
+  const initialize = async() =>{
+    checkinLocationId = await getLocalData("@specific_location_id");    
+    setLocationId(checkinLocationId);
+  }
+
+
   const renderItems = (item, index) => {
     return (
         <ReturnListItem item={item}></ReturnListItem>
@@ -42,8 +60,8 @@ export default function Returns() {
   }
 
   const onReturnStock = () => {
-    if(isCheckin){
-
+    if(isCheckin){          
+      returnDeviceDetailRef.current.showModal()
     }else{
       searchLocationModalRef.current.showModal();
     }
@@ -61,10 +79,17 @@ export default function Returns() {
   }
 
   const onStockSignature = async({type, value}) => {
-
+    if(type == Constants.actionType.ACTION_CLOSE){
+      stockSignatureModalRef.current.hideModal()
+    }
   };
-
-
+  
+  const onReturnDeviceDetailsModalClosed = async({type, value}) => {
+    if(type == Constants.actionType.ACTION_CLOSE){
+      returnDeviceDetailRef.current.hideModal()
+    }
+  };
+  
   return (
     <View style={{flexDirection:'column', flex:1}}>
         
@@ -92,6 +117,7 @@ export default function Returns() {
           ref={returnDeviceDetailRef}
           title="Return Device Details"
           locationId={locationId}
+          onButtonAction={onReturnDeviceDetailsModalClosed}
         />
 
         <SearchLocationModal
@@ -100,7 +126,6 @@ export default function Returns() {
           stockType={Constants.stockType.RETURN}
           onButtonAction={onSearchLocationModalClosed}
           />
-
         
         <StockSignatureModal
             ref={stockSignatureModalRef}

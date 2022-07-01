@@ -1111,6 +1111,14 @@ const DELETE = `<svg id="delete_black_24dp_7_" data-name="delete_black_24dp (7)"
 <path id="Path_5447" data-name="Path 5447" d="M7.564,44.021a5.143,5.143,0,0,0,5.128,5.128H33.2a5.143,5.143,0,0,0,5.128-5.128V13.255H7.564ZM40.893,5.564H31.92L29.356,3H16.537L13.973,5.564H5v5.128H40.893Z" transform="translate(7.819 4.691)" fill="#dc143c"/>
 </svg>
 `;
+const DEVICES = `<svg id="Group_5337" data-name="Group 5337" xmlns="http://www.w3.org/2000/svg" width="46.564" height="51.738" viewBox="0 0 46.564 51.738">
+<g id="Group_5336" data-name="Group 5336">
+  <path id="Path_5435" data-name="Path 5435" d="M44.39,6.174H33.577a7.73,7.73,0,0,0-14.59,0H8.174A5.189,5.189,0,0,0,3,11.348V47.564a5.189,5.189,0,0,0,5.174,5.174H44.39a5.189,5.189,0,0,0,5.174-5.174V11.348A5.189,5.189,0,0,0,44.39,6.174ZM26.282,5.527a1.94,1.94,0,1,1-1.94,1.94A1.954,1.954,0,0,1,26.282,5.527ZM44.39,47.564H8.174V11.348H44.39Z" transform="translate(-3 -1)" fill="${actionIconBackground}"/>
+  <path id="Path_5436" data-name="Path 5436" d="M27.9,14.394,22.418,8.91,7,24.3v5.536h5.432Z" transform="translate(3.348 11.552)" fill="${actionIconBackground}"/>
+  <path id="Path_5437" data-name="Path 5437" d="M21.9,12.872a1.281,1.281,0,0,0,0-1.837L18.249,7.388a1.281,1.281,0,0,0-1.837,0L13.67,10.13l5.484,5.484Z" transform="translate(13.932 8.521)" fill="${actionIconBackground}"/>
+</g>
+</svg>
+`;
 
 export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
@@ -1669,6 +1677,9 @@ export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
     )}
     {icon == 'DELETE' && (
       <SvgXml style={style} xml={DELETE} width={width} height={height} />
+    )}
+   {icon == 'DEVICES' && (
+      <SvgXml style={style} xml={DEVICES} width={width} height={height} />
     )}
 
   </Fragment>

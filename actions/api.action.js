@@ -19,8 +19,7 @@ export const getApiRequest = async (route, param) => {
   if (route.includes('local_api_old')) {
     url = route;
   }
-
-  console.log('url', url);
+  
   return new Promise(function (resolve, reject) {
     axios
       .get(url, {

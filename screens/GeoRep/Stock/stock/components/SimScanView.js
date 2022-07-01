@@ -9,12 +9,13 @@ import SimViewListsModal from '../modal/sim/SimViewListsModal';
 
 export default function SimScanView(props) {
     
+    const { count } = props;
     const simViewListModalRef = useRef(null) 
     const onSuccess = e => {   /// From Camera
         const {data} = e;
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
     };
-
+    
     const onSubmit = (value) => { // Manual Input
       props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
@@ -124,14 +125,17 @@ export default function SimScanView(props) {
 
             <SimScanChildView
               onClose={() => {Keyboard.dismiss()}} 
+              title={"Items " + count}
+              isAdded={props.isAdded}
               addStock={addStock}
               changeNetwork={changeNetwork}
               viewLists={viewLists}
               onSubmit={(value) => onSubmit(value)}></SimScanChildView>
             
             <SimViewListsModal
-              ref={simViewListModalRef}              
+              ref={simViewListModalRef}        
               lists={props.codeLists}
+              type="add_stock_view_lists"
               onButtonAction={onSimViewListClosed}
             />
         </View>

@@ -12,6 +12,9 @@ export default function SimDetailsView(props) {
     const [isScan, setIsScan] = useState(true)
     const simViewListModalRef = useRef(null)
 
+    console.log("selectedCodes",props.selectedCodes);
+    console.log("codeLists",props.codeLists);
+
     const onSuccess = e => {   /// From Camera
         const {data} = e;        
         if(isScan){
@@ -40,12 +43,14 @@ export default function SimDetailsView(props) {
       simViewListModalRef.current.showModal();
     }
 
-    const onSimViewListClosed = ({type, value})=> {      
+    const onSimViewListClosed = ({type, value})=> {    
+
       if(type == Constants.actionType.ACTION_CLOSE || type == Constants.actionType.ACTION_CHANGE_NETWORK ){
         simViewListModalRef.current.hideModal()
       }
       if(type == Constants.actionType.ACTION_REMOVE){
-        //props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
+        console.log("remoer", value)
+        props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
       }
       if(type == Constants.actionType.ACTION_DONE){
         //addStock()
@@ -139,7 +144,8 @@ export default function SimDetailsView(props) {
             
             <SimViewListsModal
               ref={simViewListModalRef}              
-              lists={props.codeLists}
+              lists={props.selectedCodes}
+              type="sim_view_lists"
               onButtonAction={onSimViewListClosed}
             />
         </View>

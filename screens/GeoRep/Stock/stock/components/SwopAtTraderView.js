@@ -16,19 +16,32 @@ export default function SwopAtTraderView(props) {
   const [reasonLists , setReasonLists] = useState([{value:'Damaged' , label: 'Damaged'} ,  {value:'Faulty' , label: 'Faulty'} , {value:'Used' , label: 'Used'}])
   const [msisdn, setMsisdn] = useState("");
   const [photos, setPhotos] = useState([]);
+  const [enabled, setEnabled] = useState(false)
+  const [device, setDevice] = useState('');
 
+  const checkEnabled = (device, reason, photos) =>{
+    if(device != null && reason != '' && photos.length > 0){
+      setEnabled(true)
+    }else{
+      setEnabled(false)
+    }
+  }
+  
   return (
     <ScrollView style={styles.container}>
                   
           <AppText title="Return Device" type="secondaryBold" size="medium"></AppText>
             <DropdownInput            
               title="Select Device"            
-              lists={lists}
-              onItemSelected={(item) => {
+              lists={lists}              
+              onItemSelected={(item) => {                
                 onReturnDevice(item);
+                setDevice(item)
+                checkEnabled(item, reason, photos);
               }}
             >
           </DropdownInput>
+          
 
           <CSingleSelectInput                    
               description={'Reason'}
@@ -41,7 +54,7 @@ export default function SwopAtTraderView(props) {
                   setReason(item.label);
                   console.log("selected reason", item)
                   onReason(item.label);
-
+                  checkEnabled(device, item.label, photos);
               }}
               containerStyle={{marginTop: 15}}
           /> 
@@ -53,6 +66,7 @@ export default function SwopAtTraderView(props) {
                 //updateFormData(field_name, photos);
                 setPhotos(photos);
                 onPhotos(photos);
+                checkEnabled(device, reason, photos);
               }}
               disabled={false}
               photos={photos}
@@ -79,7 +93,10 @@ export default function SwopAtTraderView(props) {
               }}
               style={{marginTop:10}}
           />
-          <SubmitButton title="Swop" style={{marginTop:10 , marginBottom:30}} onSubmit={onSwop}></SubmitButton>          
+          {            
+            <SubmitButton enabled={enabled} title="Add Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={onSwop}></SubmitButton>          
+          }
+          
     </ScrollView>
   )
 }
@@ -87,6 +104,7 @@ export default function SwopAtTraderView(props) {
 const styles = StyleSheet.create({
   container: {
       alignSelf: 'stretch',
+      marginTop:8,
       paddingTop: 10,
       marginHorizontal: 20,      
       paddingBottom:0,

@@ -1,7 +1,7 @@
 
 
 import { View , StyleSheet } from 'react-native'
-import React , {  useState} from 'react'
+import React , {  useState , useEffect} from 'react'
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DeviceView from './stock_types/DeviceView';
@@ -21,38 +21,70 @@ export default function AddStockView(props) {
     const [device, setDevice] = useState("");
     const [productId,setProductId] = useState("");
     const [deviceLists, setDeviceLists] = useState([]);    
-
     const [codeLists, setCodeLists] = useState([]);
+    const [enableAddStock, setEnableAddStock] = useState(false);
+    const [isAdded, setIsAdded] = useState(false)
+    const [count, setCount] = useState(0)
     var details = '';
     var quantity = '';
+    
+    useEffect(() => {
+        if(codeLists.length > 0){
+            setCount(codeLists.length);
+        }
+    },[codeLists]);
+    
 
     const onDataChangedDevice = (det, qua) => {
         details = det;
-        quantity = qua;
+        quantity = qua;    
+        if(details != '' && quantity != ''){
+            console.log("true1")
+            setEnableAddStock(true)
+        }else{
+            setEnableAddStock(false)
+        }
+
     }
     const onDataChangedConsumable = (det, qua) => {
         details = det;
         quantity = qua;
+        if(details != '' && quantity != ''){
+            console.log("true2")
+            setEnableAddStock(true)
+        }else{
+            setEnableAddStock(false)
+        }
     }
     const onDataChangedSim = (value) =>{        
-        var tmp = {type: device, code: value};        
+        var tmp = {type: device, code: value};  
+        var flag = false;      
         if(device === Constants.networkType.VODACOM){            
-            if(!vodacom.includes(value.toString())){
+            if(!vodacom.includes(value.toString()) && !cell.includes(value.toString()) && !telkom.includes(value.toString())){
                 vodacom.push(value);
                 setCodeLists([...codeLists, tmp]);
+                flag = true;
             }            
         }else if(device === Constants.networkType.CELL){
-            if(!cell.includes(value.toString())){                
+            console.log(value);
+            if(!vodacom.includes(value.toString()) && !cell.includes(value.toString()) && !telkom.includes(value.toString())){
                 cell.push(value);
                 setCodeLists([...codeLists, tmp]);
-            }
-            
+                flag = true;
+            } 
         }else if(device ===  Constants.networkType.TELKOM){
-            if(!telkom.includes(value.toString())){
+            if(!vodacom.includes(value.toString()) && !cell.includes(value.toString()) && !telkom.includes(value.toString())){
                 telkom.push(value);
                 setCodeLists([...codeLists, tmp]);
+                flag = true;
             }            
         }
+        if(flag){            
+            setIsAdded(true)
+            setEnableAddStock(true)
+        }else{
+            setEnableAddStock(false)
+        }        
     }
 
     const removeCode = (value) => {        
@@ -120,8 +152,7 @@ export default function AddStockView(props) {
                 stock_type: deviceType,
                 sims: simLists           
             }
-        }
-        console.log("post data", data);
+        }        
         props.callAddStock(deviceType, data );
     }
     
@@ -176,14 +207,21 @@ export default function AddStockView(props) {
                 {
                     deviceType === Constants.stockType.SIM &&
                     <SimView  
+                        count = {count == 0 ? '' : count}
                         codeLists={codeLists} 
                         removeCode={removeCode}
-                        addStock={() => onSubmit()} onDataChangedSim={onDataChangedSim} />
+                        isAdded={isAdded}
+                        addStock={() => {
+                            
+                            onSubmit()
+                                                        
+                        }} onDataChangedSim={onDataChangedSim} />
                 }
                 
                 <SubmitButton 
+                    enabled={enableAddStock}
                     onSubmit={() => {
-                        onSubmit()
+                        onSubmit()                                                
                     }}
                 title="Add Stock" style={{marginTop:20}}></SubmitButton>
 

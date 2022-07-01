@@ -1,10 +1,11 @@
 
 import React , { useState , useEffect, useRef} from 'react'
-import CModal from '../../../../../../components/common/CModal';
-import { Constants } from '../../../../../../constants';
-import TraderContainer from '../../container/TraderContainer';
+import CModal from '../../../../components/common/CModal';
+import { Constants } from '../../../../constants';
+import DevicesModalContainer from './DevicesModalContainer';
 
-const TraderModal = React.forwardRef((props, ref) => {
+
+const DevicesModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -16,20 +17,20 @@ const TraderModal = React.forwardRef((props, ref) => {
     };
 
     return (        
-        
+                        
         <CModal
             ref={ref}
-            clearText="Back"
+            hideClear={true}            
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}            
             closableWithOutsideTouch
             onClear={() => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <TraderContainer {...props} />
+            <DevicesModalContainer {...props} />
         </CModal>  
     )
 
 });
 
-export default TraderModal;
+export default DevicesModal;

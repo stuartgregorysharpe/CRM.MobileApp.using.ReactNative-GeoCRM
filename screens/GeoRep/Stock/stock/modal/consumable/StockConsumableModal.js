@@ -15,17 +15,18 @@ const StockConsumableModal = React.forwardRef((props, ref) => {
           ref.current.hideModal();
         }
     };        
-    const openSellToTrader = (value) => {  
-        onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
+    const openSellToTrader = (typeValue , locationId) => {          
+        onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: {stockType: typeValue, locationId: locationId} });
     }
     const openTransfer = (value) => {
-        onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
+        onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: {stockType: value } });
     }
 
     return (
         <CModal
             ref={ref}            
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+            hideClear={true}
             closableWithOutsideTouch
             onClear={() => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });

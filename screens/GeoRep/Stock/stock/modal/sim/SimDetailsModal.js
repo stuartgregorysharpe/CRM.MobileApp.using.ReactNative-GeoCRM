@@ -25,8 +25,7 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
   }
 
 
-  return (
-          
+  return (          
     <CModal
       ref={ref}
       modalType={Constants.modalType.MODAL_TYPE_FULL}

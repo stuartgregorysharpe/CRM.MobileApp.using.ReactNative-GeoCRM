@@ -16,9 +16,12 @@ export default function Movements() {
     const [page,setPage] = useState(0);
     const [originMovementLists, setOriginMovementLists] = useState([]);    
     const [isPageLoading, setPageLoading] = useState(false);
-
+    var isMount = true;
     useEffect(() =>{
-        loadMoreData()
+        loadMoreData();
+        return () => {
+          isMount = false;
+        }
     },[]);
    
     const renderItems = (item, index) => {
@@ -32,10 +35,12 @@ export default function Movements() {
           console.log("page" , page);
             setPageLoading(true)
             getApiRequest("stockmodule/movements-list", {page_nr:page}).then((res) => {                
-                setMovementLists([...movementLists, ...res.movement_items]);
-                setOriginMovementLists(res.movement_items);
-                setPage(page + 1);
-                setPageLoading(false);            
+                if(isMount){
+                  setMovementLists([...movementLists, ...res.movement_items]);
+                  setOriginMovementLists(res.movement_items);
+                  setPage(page + 1);
+                  setPageLoading(false);            
+                }                
             }).catch((e) => {
                 console.log("E",e);
             });            

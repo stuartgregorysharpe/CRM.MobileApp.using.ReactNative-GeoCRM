@@ -3,10 +3,13 @@ import { View } from 'react-native'
 import React , {useEffect, useState } from 'react'
 import { getApiRequest } from '../../../../../actions/api.action';
 import SearchLocationView from '../components/SearchLocationView';
+import { useDispatch } from 'react-redux';
+import { showNotification } from '../../../../../actions/notification.action';
 
 export default function SearchLocationContainer(props) {
          
     const { stockType } = props;
+    const dispatch = useDispatch()
     const [lists, setLists] = useState([]);
     const [originLists, setOriginLists] = useState([]);
     const [locationId, setLocationId] = useState(0);
@@ -24,14 +27,29 @@ export default function SearchLocationContainer(props) {
         }
     },[lists]);
 
+    const onItemPressed = (item) => {    
+        console.log("item pressed", item);    
+        console.log("parame", item.location_id);
 
-    const onItemPressed = (item) => {
-        console.log("on item prssere", item)        
-        setLocationId(item.location_id)
+        setLocationId(item.location_id);
+        let param = {
+            location_id: item.location_id,
+        };
+        
+        getApiRequest("locations/location-devices", param ).then((res) => {            
+            if(res.devices.length > 0){
+                props.onSubmit(stockType , item.location_id);
+            }else{
+                //dispatch(showNotification({type:'success', message: 'No devices foundX', buttonText:'Ok'}))
+            }
+        }).catch((e) => {
+            dispatch(showNotification({type:'success', message: 'No devices found', buttonText:'Ok'}))
+        })
+
     }
 
     const onSubmitLocation = () => {                
-        if(locationId != 0){
+        if(locationId != 0){            
             props.onSubmit(stockType , locationId);
         }        
     }
@@ -44,7 +62,7 @@ export default function SearchLocationContainer(props) {
         }else if(key.length > 1 && !isLoading){
             searchKey = key;
             callSearch(key);
-        }          
+        }
     }
 
     const callSearch = (key) => {
@@ -52,8 +70,7 @@ export default function SearchLocationContainer(props) {
         let param = {
             search_text: key
         };        
-        getApiRequest("locations/customer-search", param ).then((res) => {            
-
+        getApiRequest("locations/customer-search", param ).then((res) => {
             setLists(res.items);
             if(key == ""){
                 setOriginLists(res.items);

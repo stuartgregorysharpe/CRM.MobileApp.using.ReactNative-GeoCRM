@@ -220,7 +220,8 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginBottom: 10,
-    marginRight: 10,
+    marginRight: 15,
+    marginLeft:5,
   },
 
   imageContainer: {

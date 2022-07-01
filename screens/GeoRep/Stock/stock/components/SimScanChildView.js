@@ -1,6 +1,6 @@
 
 import { View, Text, Dimensions, TouchableOpacity } from 'react-native'
-import React , { useState } from 'react'
+import React , { useState,useEffect } from 'react'
 import { SubmitButton } from '../../../../../components/shared/SubmitButton'
 import { AppText } from '../../../../../components/common/AppText'
 import CButtonTextInput from '../../../../../components/common/CButtonTextInput';
@@ -11,8 +11,16 @@ import CCircleButton from '../../../../../components/common/CCircleButton';
 
 export default function SimScanChildView(props) {
 
-    const { title ,onSubmit , addStock, changeNetwork, viewLists, onClose} = props;
-    const [code, setCode] = useState('')
+    const { isAdded, title ,onSubmit , addStock, changeNetwork, viewLists, onClose} = props;
+    const [code, setCode] = useState('');
+
+    useEffect(() => {
+        console.log("is Added", isAdded)
+       if(isAdded){
+           setCode('')
+       }
+    }, [isAdded])
+
     return (
         <View style={{paddingHorizontal:10, paddingTop:0, marginBottom: 20 , backgroundColor:Colors.bgColor}}>
             

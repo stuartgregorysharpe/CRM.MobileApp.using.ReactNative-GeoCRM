@@ -11,10 +11,12 @@ import DropdownInput from '../../../../../components/common/DropdownInput/Dropdo
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import { Constants } from '../../../../../constants';
 
-export default function TraderView(props) {
+export default function TransferView(props) {
   
-  const { modalType, item,  lists , onItemSelected , onChangedQuantity, onTrader} = props;  
+  const { modalType, stockItem,  lists , onItemSelected , onChangedQuantity, onTrader} = props;  
   const [userId, setUserId] = useState("");  
+  const [quantity, setQuantity] = useState("")
+
   return (
     <ScrollView style={styles.container}>
 
@@ -26,7 +28,6 @@ export default function TraderView(props) {
               hasError={false}
               disabled={false}
               onSelectItem={item => { 
-
                   setUserId(item.value);
                   onItemSelected(item)
 
@@ -35,21 +36,22 @@ export default function TraderView(props) {
           /> 
 
           {
-            item && item.stock_type === Constants.stockType.CONSUMABLE &&
+            stockItem && stockItem.stock_type === Constants.stockType.CONSUMABLE &&
             <CTextInput 
-                label={"Received By"}
+                label={"Quantity"}
                 value={quantity}
-                returnKeyType={'done'}                                        
+                returnKeyType={'done'}
+                keyboardType={'number-pad'}
                 isRequired={true}
-                onChangeText={text => {                
+                onChangeText={text => {
+                    setQuantity(text);      
                     onChangedQuantity(text);
                 }}
                 style={{marginTop:15}}
             />                       
           }
-          
-
-          <SubmitButton title="Trader" style={{marginTop:20 , marginBottom:30}} onSubmit={onTrader}></SubmitButton>          
+        
+          <SubmitButton title={"Transfer"} style={{marginTop:20 , marginBottom:30}} onSubmit={onTrader}></SubmitButton>          
     </ScrollView>
   )
 }

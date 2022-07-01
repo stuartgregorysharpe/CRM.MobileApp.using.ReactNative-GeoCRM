@@ -6,7 +6,8 @@ import * as RNLocalize from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import ReturnDeviceDetailView from '../components/ReturnDeviceDetailView';
 import { useDispatch } from 'react-redux';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import { Constants } from '../../../../../constants';
 
 export default function ReturnDeviceDetailContainer(props) {
          
@@ -23,6 +24,7 @@ export default function ReturnDeviceDetailContainer(props) {
         let param = {
             location_id: locationId,
         };        
+        console.log("param", param)
         getApiRequest("locations/location-devices", param ).then((res) => {                        
             if(isMount){      
                 console.log("location id", locationId);
@@ -49,14 +51,12 @@ export default function ReturnDeviceDetailContainer(props) {
 
     const onReturnStock = () => {  
 
-
         var postData = new FormData();
         postData.append('stock_type', "Device");
         postData.append('location_id',  props.locationId);        
         postData.append('return_device[location_device_id]', returnDevice.location_device_id);
         postData.append('return_device[return_reason]', returnDevice.return_reason);
-        photos.map((item, index) => {
-            console.log("iddd", item);
+        photos.map((item, index) => {            
             var words = item.split('/');
             var ext = words[words.length - 1].split('.');
             var key = `return_image[${index}]`;
@@ -64,8 +64,7 @@ export default function ReturnDeviceDetailContainer(props) {
                 uri: item,
                 type: 'image/' + ext[1],
                 name: words[words.length - 1],
-            });
-            //postData.append(`File['return_image'][${index}]`,  item);
+            });            
         })
         
         var time_zone = RNLocalize.getTimeZone();
@@ -74,10 +73,12 @@ export default function ReturnDeviceDetailContainer(props) {
         postData.append( 'user_local_data[longitude]', currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0' );
        
         console.log("post Data" , JSON.stringify(postData))
-        postApiRequestMultipart("stockmodule/return-device" , postData).then((res) => {
-            //{"message": "Device return added successfully", "status": "success"}
+        postApiRequestMultipart("stockmodule/return-device" , postData).then((res) => {            
             if(res.status == "success"){
-                dispatch(showNotification({type:'success' , message: res.message, buttonText:'Ok'}))
+                dispatch(showNotification({type:'success' , message: res.message, buttonText:'Ok' ,buttonAction: async () => {                    
+                    props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
+                    dispatch(clearNotification())                                        
+                }}))
             }
         }).catch((e) => {
 

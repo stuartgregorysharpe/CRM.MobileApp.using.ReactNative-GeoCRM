@@ -225,7 +225,7 @@ export default function FormsScreen(props) {
                     if(!isShowCustomNavigationHeader){
                       routeName = "FormQuestions"
                     }
-                    console.log("PPP", routeName)
+                    
                     props.navigation.navigate(routeName, {
                       data: item,
                       location_id:

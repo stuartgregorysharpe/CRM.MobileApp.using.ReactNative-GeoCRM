@@ -63,7 +63,7 @@ export default function DeviceView(props) {
             <View style={{ marginTop:15 , flexDirection:'row' , alignItems:'center'}}>
                 <TouchableOpacity style={{ flex:1}} onPress={() => popDialog() }>
                     <CTextInput                        
-                        label="Start Reading"                    
+                        label="Input IMEI"                    
                         value={code}     
                         keyboardType={'number-pad'}
                         returnKeyType={'done'}                                       
@@ -75,7 +75,7 @@ export default function DeviceView(props) {
                         }}
                     />
                 </TouchableOpacity>                
-                <SubmitButton 
+                <SubmitButton                     
                     onSubmit={() => {
                         qrScanModalRef.current.showModal()
                     }}

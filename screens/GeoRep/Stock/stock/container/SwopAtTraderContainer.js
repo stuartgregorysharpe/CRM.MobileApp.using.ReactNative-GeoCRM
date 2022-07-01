@@ -6,7 +6,8 @@ import SwopAtTraderView from '../components/SwopAtTraderView';
 import * as RNLocalize from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import { Constants } from '../../../../../constants';
 
 export default function SwopAtTraderContainer(props) {
          
@@ -19,8 +20,6 @@ export default function SwopAtTraderContainer(props) {
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const dispatch = useDispatch();
 
-    console.log("PPP", props.item)
-
     useEffect(() => {
         let isMount = true;
         let param = {
@@ -28,8 +27,7 @@ export default function SwopAtTraderContainer(props) {
         };        
         console.log("pp" , param)
         getApiRequest("locations/location-devices", param ).then((res) => {                        
-            if(isMount){
-                console.log("RR", res)
+            if(isMount){            
                 setLists(res.devices);
             }            
         }).catch((e) => {
@@ -76,7 +74,11 @@ export default function SwopAtTraderContainer(props) {
         postData.append( 'user_local_data[longitude]', currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0' );
                         
         postApiRequestMultipart("stockmodule/swop-at-trader" , postData).then((res) => {
-            dispatch(showNotification({type:'success' , message: res.message, buttonText: 'Ok'}))
+            dispatch(showNotification({type:'success' , message: res.message, buttonText: 'Ok' , buttonAction: async () => {                    
+                props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
+                dispatch(clearNotification())
+                
+            }}))
         }).catch((e) => {
 
         });

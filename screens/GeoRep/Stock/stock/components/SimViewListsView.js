@@ -8,7 +8,7 @@ import CCircleButton from '../../../../../components/common/CCircleButton';
 
 export default function SimViewListsView(props) {
           
-    const { lists, addStock ,removeCode} = props;
+    const { type, lists, addStock ,removeCode} = props;
     const closeModal = () => {
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
     }
@@ -42,9 +42,12 @@ export default function SimViewListsView(props) {
                 <View style={{flex:1}}>
                     <AppText title="Item" size="big" type="secondaryBold"></AppText>                    
                 </View>
-                <CCircleButton 
-                    onClick={changeNetwork}
-                    title="Change Network"></CCircleButton>
+                {
+                    type == "add_stock_view_lists" &&
+                    <CCircleButton 
+                        onClick={changeNetwork}
+                        title="Change Network"></CCircleButton>
+                }
                 <TouchableOpacity onPress={closeModal}>
                     <SvgIcon icon="Close" width='22' height='22'  style={{marginLeft:10}} />
                 </TouchableOpacity>            
@@ -57,7 +60,7 @@ export default function SimViewListsView(props) {
                     })
                 }
             </ScrollView>
-            <SubmitButton title="Add Stock" style={{marginTop:20 , marginBottom:30}} onSubmit={addStock}></SubmitButton>          
+            <SubmitButton title= {type == "add_stock_view_lists" ? "Add Stock" : "Sell To Trader"} style={{marginTop:20 , marginBottom:30}} onSubmit={addStock}></SubmitButton>          
         </View>
     )
 }

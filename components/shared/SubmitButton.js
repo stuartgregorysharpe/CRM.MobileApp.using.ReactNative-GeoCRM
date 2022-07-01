@@ -10,13 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../SvgIcon';
 
-export const SubmitButton = ({title, onSubmit, style , bgStyle  , svgIcon}) => {
+export const SubmitButton = ({title, onSubmit, style , bgStyle , svgIcon , enabled }) => {
   
   return (
     <TouchableOpacity
-      style={[styles.submitButton, style , bgStyle]}
+      //enabled != undefined && !enabled ? {backgroundColor:Colors.disabledColor} : {}
+      style={[styles.submitButton  , style , bgStyle]} 
       onPress={() => {
-        if (onSubmit) {
+        if (onSubmit && (enabled || enabled == undefined)) {
           onSubmit();
         }
       }}>

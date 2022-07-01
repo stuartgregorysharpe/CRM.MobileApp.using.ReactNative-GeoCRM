@@ -1,14 +1,13 @@
 
 
 import { View, StyleSheet, Platform } from 'react-native'
-import React , {useRef} from 'react'
+import React , {useRef , useState} from 'react'
 import CTextInput from '../../../../../components/common/CTextInput'
 import SignatureScreen from "react-native-signature-canvas";
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
 import { Constants } from '../../../../../constants';
-
 
 export default function StockSignatureView(props) {
 
@@ -17,19 +16,19 @@ export default function StockSignatureView(props) {
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
-    console.log("path", props.item);
+    const [enabled, setEnabled] = useState(false);
+    const [path, setPath] = useState(null);
 
     const handleOK = async(signature) => {
-
+        console.log("handle ok")
         var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
-
-        const path = outputPath + "/sign.png";        
-      
-
-        var data = await RNFS.writeFile(path,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
-            onSubmit(path);
+        const filepath = outputPath + "/sign.png";            
+        var data = await RNFS.writeFile(filepath,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
+            console.log("ressss",res)            
             return res;
         });
+
+        setPath(filepath);        
         
         // const path = FileSystem.cacheDirectory + "sign.png";
         // FileSystem.writeAsStringAsync(
@@ -39,8 +38,7 @@ export default function StockSignatureView(props) {
         // )
         //   .then(() => FileSystem.getInfoAsync(path))
         //   .then(console.log)
-        //   .catch(console.error);
-        
+        //   .catch(console.error);        
         // onSubmit(signature);
     };
 
@@ -51,6 +49,32 @@ export default function StockSignatureView(props) {
 
     const handleConfirm = () => {        
         var tmp = signatureScreenRef.current.readSignature();    
+    }
+    const handleEnd = () => {
+        var flag = false;
+        if ( props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) ){
+            if(receivedBy != '' && serial != ''){
+                flag = true;
+            }            
+        }else{
+            if(receivedBy != ''){
+                flag = true;
+            }
+        }
+        setEnabled(flag);
+        handleConfirm();
+    }
+
+    const onFileSubmit = () =>{
+        if(path != null){
+            RNFS.exists(path)
+            .then(res => {
+                if (res) {
+                    onSubmit(path);
+                }                
+            });
+        }
+        
     }
 
     return (
@@ -70,7 +94,7 @@ export default function StockSignatureView(props) {
                 props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) && 
                 <CTextInput 
                     label={"Assign MSISDN"}
-                    value={receivedBy}
+                    value={serial}
                     returnKeyType={'done'}                                        
                     keyboardType={'number-pad'}
                     isRequired={true}
@@ -87,17 +111,17 @@ export default function StockSignatureView(props) {
                 //androidHardwareAccelerationDisabled={false}
                 webStyle={map_style}
                 dataURL={signature}
-                //onEnd={handleEnd}
+                onEnd={handleEnd}
                 onOK={handleOK}
                 onEmpty={handleEmpty}
                 imageType='image/png'
                 //onClear={handleClear}
-                // onGetData={handleData}
+                //onGetData={handleData}
                 // autoClear={true}
                 //descriptionText={text}
             />
 
-            <SubmitButton title="Submit" style={{marginTop:10}} onSubmit={handleConfirm}> </SubmitButton>
+            <SubmitButton enabled={enabled} title="Submit" style={{marginTop:10}} onSubmit={onFileSubmit}> </SubmitButton>
 
         </View>
     )

@@ -44,6 +44,7 @@ export default function SimDetailsChildView(props) {
                     setCode(text)
                 }}
                 onSubmit={() => {
+                    console.log("props.codeLists",props.codeLists)
                     onAddCode(code)
                     if(checkValidation()){
                         setCode("")

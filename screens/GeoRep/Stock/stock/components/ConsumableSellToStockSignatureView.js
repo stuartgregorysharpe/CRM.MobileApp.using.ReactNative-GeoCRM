@@ -1,21 +1,22 @@
 
 
-import { View, StyleSheet, Platform , Keyboard } from 'react-native'
+import { View, Text, StyleSheet, Platform , Keyboard, TouchableOpacity } from 'react-native'
 import React , {useRef , useEffect ,useState } from 'react'
 import CTextInput from '../../../../../components/common/CTextInput'
 import SignatureScreen from "react-native-signature-canvas";
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
+import { AppText } from '../../../../../components/common/AppText';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
+import { Fonts, Values } from '../../../../../constants';
 
 
 export default function ConsumableSellToStockSignatureView(props) {
 
     const signatureScreenRef =  useRef(null)
     const { 
-        receivedBy , 
-        quantity,
-        price,
+        receivedBy ,     
         reference,        
         onChangedReceivedBy, 
         onChangedQuantity,
@@ -27,6 +28,9 @@ export default function ConsumableSellToStockSignatureView(props) {
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
 
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [quantity, setQuantity] = useState('')
+    const [price, setPrice] = useState('')
+    
 
     useEffect(() => {
       const keyboardDidShowListener = Keyboard.addListener(
@@ -88,6 +92,14 @@ export default function ConsumableSellToStockSignatureView(props) {
         }        
     }
 
+    const onClear = () => {
+        signatureScreenRef.current.clearSignature();
+    }
+    const handleClear = () => {    
+    
+    }
+
+
     return (
         <View style={[styles.container , {height: getHeight() }]}>
             <CTextInput 
@@ -107,8 +119,10 @@ export default function ConsumableSellToStockSignatureView(props) {
                 returnKeyType={'done'}                                        
                 keyboardType={'number-pad'}
                 isRequired={true}
-                onChangeText={text => {                
-                    onChangedQuantity(text);
+                onChangeText={text => {  
+                    const cleanNumber = text.replace(/[^0-9]/g, "");       
+                    setQuantity(cleanNumber);             
+                    onChangedQuantity(cleanNumber);
                 }}
                 style={{marginTop:5}}
             />
@@ -119,17 +133,18 @@ export default function ConsumableSellToStockSignatureView(props) {
                 returnKeyType={'done'}                                        
                 keyboardType={'number-pad'}
                 isRequired={true}
-                onChangeText={text => {                
-                    onChangedPrice(text);
+                onChangeText={text => {               
+                    const cleanNumber = text.replace(/[- #*;,<>\{\}\[\]\\\/%+@]/gi, '')  
+                    setPrice(cleanNumber)   
+                    onChangedPrice(cleanNumber);
                 }}
                 style={{marginTop:5}}
             />
 
             <CTextInput 
-                label={"Preference"}
+                label={"Reference"}
                 value={reference}
-                returnKeyType={'done'}                                        
-                keyboardType={'number-pad'}
+                returnKeyType={'done'}                                                        
                 isRequired={true}
                 onChangeText={text => {                
                     onChangedReference(text);
@@ -137,7 +152,16 @@ export default function ConsumableSellToStockSignatureView(props) {
                 style={{marginTop:5}}
             />
 
-
+            <View style={{alignItems:'center', marginTop:10}}>
+                <AppText size="big" color={whiteLabel().mainText} title="Please Sign Below:"></AppText>                
+                <TouchableOpacity
+                      style={styles.clearButtonContainer}
+                      onPress={onClear}>
+                      <Text style={styles.clearText}>
+                        {'Clear'}
+                      </Text>
+                </TouchableOpacity>
+            </View>
             
             <SignatureScreen
                 style={{marginTop:10}}
@@ -165,5 +189,14 @@ const styles = StyleSheet.create({
     container:{
         marginHorizontal:10,        
         height:Platform.OS === 'android' ? 460 : 480,
-    }
+    },
+    clearButtonContainer:{
+        position:'absolute',
+        right:20
+    },
+    clearText: {
+        fontSize: Values.fontSize.small,
+        fontFamily: Fonts.secondaryRegular,
+        color: Colors.redColor,
+    },
 })

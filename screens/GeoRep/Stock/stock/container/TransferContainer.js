@@ -3,19 +3,20 @@ import { View } from 'react-native'
 import React , {useEffect, useState } from 'react'
 import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
 import { useSelector } from 'react-redux';
-import TraderView from '../components/TraderView';
+import TransferView from '../components/TransferView';
 import { getPostParameter } from '../../../../../constants/Helper';
 import { Constants } from '../../../../../constants';
 import { useDispatch } from 'react-redux';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 
-export default function TraderContainer(props) {
+export default function TransferContainer(props) {
     
     const { stockItem , selectedCodes} = props;
     const [user, setUser] = useState([]);
     const [lists, setLists] = useState([]);
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const dispatch = useDispatch();
+    var quantity = '';
 
     useEffect(() => {
       let mounted = true;
@@ -28,8 +29,7 @@ export default function TraderContainer(props) {
             setLists(tmp)
         }
       }).catch((e) => {
-
-      });    
+      });
       return () => {
         mounted = false;
       }
@@ -37,6 +37,9 @@ export default function TraderContainer(props) {
          
     const onItemSelected = (item) =>{ 
         setUser(item)
+    }
+    const onChangedQuantity = (quantityVal) =>{
+        quantity = quantityVal;
     }
 
     const onTrader = () => {                
@@ -50,14 +53,22 @@ export default function TraderContainer(props) {
         console.log("selectedCodes" , selectedCodes);
         var stockItemIds = selectedCodes.map((item) =>{
             return item.stock_item_id;
-        })
-        console.log("stockItemIds", stockItemIds)
-        if(stockItem.stock_type == Constants.stockType.SIM){
-            postData['sims'] = { stock_item_ids : selectedCodes}
+        })        
+        if(stockItem.stock_type == Constants.stockType.SIM){        
+            postData['sims'] = { stock_item_ids : stockItemIds};
+        }else if(stockItem.stock_type == Constants.stockType.CONSUMABLE){
+            if(quantity != ''){
+                postData['transfer_qty'] = quantity;
+            }else{
+                return;
+            }
         }
-        console.log("postData", postData)
-        postApiRequest("stockmodule/transfer" ,postData ).then((res) => {
-            dispatch(showNotification({type: 'success' , message: res.message, buttonText: 'Ok'}))
+
+        postApiRequest("stockmodule/transfer" , postData ).then((res) => {
+            dispatch(showNotification({type: 'success' , message: res.message, buttonText: 'Ok' , buttonAction: async () => {                    
+                props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
+                dispatch(clearNotification());                 
+            }}))
         }).catch((e) => {
             dispatch(showNotification({type: 'success' , message:"Error", buttonText: 'Ok'}))
         });
@@ -66,9 +77,10 @@ export default function TraderContainer(props) {
     return (
         <View style={{alignSelf:'stretch'}}>
             
-            <TraderView                            
+            <TransferView                            
                 onItemSelected={onItemSelected}
-                onTrader = {onTrader}                
+                onTrader = {onTrader}        
+                onChangedQuantity =  {onChangedQuantity}        
                 lists={lists}
                 {...props}
             />

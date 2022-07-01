@@ -44,6 +44,13 @@ export default {
     ACTION_CHANGE_NETWORK : 'ACTION_CHANGE_NETWORK'
   },
 
+  stockPrefix: {
+    DEVICE: 'IMEI: ',
+    CONSUMABLE: 'Qty: ',
+    SIM: 'ICCID: ',
+    MSISDN: 'MSISDN: '
+  },
+
   stockType: {
     DEVICE : "Device",
     CONSUMABLE : "Consumables",

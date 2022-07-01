@@ -6,7 +6,6 @@ import { whiteLabel } from '../../../../../constants/Colors';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
-import CardView from '../../../../../components/common/CardView';
 
 export default function ReturnDeviceDetailView(props) {
   
@@ -21,27 +20,16 @@ export default function ReturnDeviceDetailView(props) {
                   
           
           <AppText title="Return Device" type="secondaryBold" size="medium"></AppText>
-            <DropdownInput            
+            <DropdownInput
               title="Select Device"            
               lists={lists}
-              onItemSelected={(item) => {
-                //onReturnDevice(item);
+              onItemSelected={(item) => {                
                 onReturnDevice({location_device_id: item.location_device_id, return_reason: reason});
                 setDevice(item);
 
               }}
             >
           </DropdownInput>
-
-          {/* {
-            device && 
-            <CardView style={{ marginTop:10, borderColor:whiteLabel().borderColor, borderWidth:1}}>
-                <View style={{padding:5}}>
-                    <AppText size="medium" type="secondaryBold" title={device != undefined ? device.description :  ''} color={whiteLabel().mainText}></AppText>
-                    <AppText title={device != undefined ? "IMEI: " + device.imei : "IMEI: "} color={whiteLabel().subText}></AppText>
-                </View>
-            </CardView>
-          } */}
 
           <CSingleSelectInput                    
               description={'Reason'}

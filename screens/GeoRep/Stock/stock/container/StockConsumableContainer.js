@@ -4,16 +4,37 @@ import React , {useEffect, useState , useRef} from 'react'
 import { useDispatch , useSelector } from 'react-redux';
 import { Constants } from '../../../../../constants';
 import StockConsumableView from '../components/StockConsumableView';
-
+import SearchLocationModal from '../modal/SearchLocationModal';
+    
 export default function StockConsumableContainer(props) {
-         
-    const sellToTrader= (type, data) => {        
-        props.openSellToTrader(Constants.stockDeviceType.SELL_TO_TRADER);     
+             
+    const searchLocationModalRef = useRef(null);    
+    const isCheckin = useSelector(state => state.location.checkIn);
+    const [stockType, setStockType] = useState(Constants.stockDeviceType.SELL_TO_TRADER)
+
+    const sellToTrader= (type, data) => {
+        if(isCheckin){
+            props.openSellToTrader(Constants.stockDeviceType.SELL_TO_TRADER);
+        }else{
+            setStockType(Constants.stockDeviceType.SELL_TO_TRADER)
+            searchLocationModalRef.current.showModal();
+        }
     }
 
     const transfer = (type, data) => {
         props.openTransfer(Constants.stockDeviceType.TRANSFER);
     }
+
+    const onSearchLocation = async({type, value}) => {
+        if(type == Constants.actionType.ACTION_NEXT){            
+            console.log("Location id", value.locationId);
+            if(stockType === Constants.stockDeviceType.SELL_TO_TRADER){                                
+                props.openSellToTrader(Constants.stockDeviceType.SELL_TO_TRADER , value.locationId);
+            }else if(stockType === Constants.stockDeviceType.SWOP_AT_TRADER){
+                
+            }            
+        }
+    };
 
     return (
         <View style={{alignSelf:'stretch'}}>
@@ -22,8 +43,14 @@ export default function StockConsumableContainer(props) {
                 transfer={transfer}                            
                 item={props.item}
                 {...props}
-            />
-      
+            />                  
+            <SearchLocationModal
+                ref={searchLocationModalRef}
+                title="Search Location"
+                stockType={stockType}
+                onButtonAction={onSearchLocation}
+                />   
+
         </View>
     )
 }

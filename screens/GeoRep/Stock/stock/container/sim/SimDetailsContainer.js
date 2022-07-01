@@ -5,6 +5,7 @@ import SimDetailsView from '../../components/sim/SimDetailsView';
 import SearchLocationModal from '../../modal/SearchLocationModal';
 import { useSelector } from 'react-redux';
 import { Constants } from '../../../../../../constants';
+import { getLocalData } from '../../../../../../constants/Storage';
 
 export default function SimDetailsContainer(props) {
             
@@ -12,17 +13,25 @@ export default function SimDetailsContainer(props) {
     const searchLocationModalRef = useRef(null);
     const isCheckin = useSelector(state => state.location.checkIn);
     const [stockType, setStockType] = useState(Constants.stockDeviceType.SELL_TO_TRADER)
+    var checkinLocationId;
     
-    const onSellToTrader = () => {
-
-        if(selectedCodes.length > 0){
-            if(isCheckin){            
-                //props.onSellToTrader()
-            }else{
-                setStockType(Constants.stockDeviceType.SELL_TO_TRADER);
-                searchLocationModalRef.current.showModal();            
-            }     
+    useEffect( () => {
+        if(isCheckin){
+            initialize();
         }
+    },[isCheckin]);
+    const initialize = async() =>{        
+        checkinLocationId = await getLocalData("@specific_location_id");
+    }
+
+    const onSellToTrader = () => {
+        if(isCheckin){            
+            props.openSignature({stockType:Constants.stockDeviceType.SELL_TO_TRADER , locationId:checkinLocationId })
+        }else{
+            setStockType(Constants.stockDeviceType.SELL_TO_TRADER);
+            searchLocationModalRef.current.showModal();            
+        }
+
     }
 
     const onTransfer = () => {

@@ -45,12 +45,9 @@ export default function DropdownLists(props) {
                 </View>
                 <View style={{height:0.5, backgroundColor:Colors.greyColor, marginVertical:3 , marginRight:10}}></View>
             </View>
-        </TouchableOpacity>
-        
-
+        </TouchableOpacity>        
     );
   };
-
 
   return (
     <View style={{marginTop:15}}>      

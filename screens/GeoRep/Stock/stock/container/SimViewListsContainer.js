@@ -14,7 +14,7 @@ export default function SimViewListsContainer(props) {
         props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});   
     }
 
-    const addStock = () => {
+    const addStock = () => {        
         props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: 0});   
     }
 

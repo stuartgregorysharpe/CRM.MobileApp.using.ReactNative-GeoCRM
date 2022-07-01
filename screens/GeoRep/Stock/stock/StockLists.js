@@ -3,7 +3,6 @@ import { View, Text , FlatList ,TouchableOpacity } from 'react-native'
 import React, {useEffect, useState, useRef} from 'react'
 import { getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
-import Colors, { whiteLabel } from '../../../../constants/Colors';  
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
 import StockListHeader from './components/StockListHeader';
@@ -13,7 +12,7 @@ import { Constants } from '../../../../constants';
 import StockDeviceDetailsModal from './modal/device/StockDeviceDetailsModal';
 import StockSignatureModal from './modal/device/StockSignatureModal';
 import SwopAtTraderModal from './modal/device/SwopAtTraderModal';
-import TraderModal from './modal/device/TraderModal';
+import TransferModal from './modal/device/TransferModal';
 import StockConsumableModal from './modal/consumable/StockConsumableModal';
 import SellToTraderSignatureModal from './modal/consumable/SellToTraderSignatureModal';
 import SimDetailsModal from './modal/sim/SimDetailsModal';
@@ -89,7 +88,7 @@ export default function StockLists() {
         }else if(item.stock_type === Constants.stockType.CONSUMABLE){
             stockConsumableModalRef.current.showModal();
         }else if(item.stock_type === Constants.stockType.SIM){
-            setSelectedCodes([{stock_item_id:item.stock_item_id, code:item.serial }]);     
+            setSelectedCodes([{stock_item_id:item.stock_item_id, code:item.serial, type: item.description }]);     
             console.log("selectedCodes",selectedCodes)
             simDetailsModalRef.current.showModal()
         }
@@ -125,25 +124,65 @@ export default function StockLists() {
     };
 
     const onStockSignature = async({type, value}) => {
-
+        if(type == Constants.actionType.ACTION_CLOSE){
+            stockSignatureModalRef.current.hideModal();            
+            if(simDetailsModalRef.current){                
+                simDetailsModalRef.current.hideModal();
+            }
+            callStockLists();
+        }
     };
 
-    const onTraderModalClosed = ({type, value}) => {
-
+    const onSwapAtTraderModalClosed = async({type, value}) => {
+        if(type == Constants.actionType.ACTION_CLOSE){
+            if(swopAtTraderModalRef.current){
+                swopAtTraderModalRef.current.hideModal();
+            }
+            if(stockDetailsModalRef.current){
+                stockDetailsModalRef.current.hideModal();
+            }                    
+            callStockLists();
+        }
+    };
+    
+    const onTransferModalClosed = ({type, value}) => {
+        if(type == Constants.actionType.ACTION_CLOSE){
+            if(traderModalRef.current){
+                traderModalRef.current.hideModal();
+            }            
+            if(simDetailsModalRef.current){
+                simDetailsModalRef.current.hideModal();
+            }
+            callStockLists();
+        }
     };
 
-    const onStockConsumableModalClosed = ({ type, value}) => {        
-        if(type == Constants.actionType.ACTION_NEXT){
-            if(value === Constants.stockDeviceType.SELL_TO_TRADER){
-                console.log("show sell to stock")
+    const onStockConsumableModalClosed = ({ type, value}) => {    
+            
+        if(type == Constants.actionType.ACTION_NEXT){            
+            setLocationId(value.locationId);
+            if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){       
+                console.log("loc id", value.locationId)                     
                 consumableSellToTraderModalRef.current.showModal();
-            }else if(value === Constants.stockDeviceType.TRANSFER){
+            }else if(value.stockType === Constants.stockDeviceType.TRANSFER){
                 console.log("show transfer")
                 traderModalRef.current.showModal()
             }
         }
     };
-    
+
+    const onStockConsumableSellToTraderModalClosed = ({ type, value}) => {    
+        if(type == Constants.actionType.ACTION_CLOSE){
+            if(consumableSellToTraderModalRef.current){
+                consumableSellToTraderModalRef.current.hideModal();
+            }            
+            if(stockConsumableModalRef.current){
+                stockConsumableModalRef.current.hideModal();
+            }
+            callStockLists();
+        }
+    }
+        
     const onStockSimDetailsModalClosed = ({ type, value}) => {        
         if(type == Constants.actionType.ACTION_NEXT){
             console.log("final locatin id  in sim details", type)
@@ -156,18 +195,21 @@ export default function StockLists() {
                 traderModalRef.current.showModal()
             }
         }else if(type == Constants.actionType.ACTION_CAPTURE) {
+            
             var check = iccids.filter(item => item.code === value);
             console.log("check" , check)
             console.log("selectedCodes" , selectedCodes)
             var checkFromSelectedCodes = selectedCodes.filter(item => item.code === value);
-
             if(check.length > 0 && checkFromSelectedCodes.length == 0){
-                setSelectedCodes([...selectedCodes, {stock_item_id:check[0].stock_item_id, code:value }]);
-                console.log("selectedCodes---" ,selectedCodes)
-                
+                setSelectedCodes([...selectedCodes, {stock_item_id:check[0].stock_item_id, code:value , type: check[0].type }]);
+                console.log("selectedCodes---" ,selectedCodes)                
             }else{
                 dispatch(showNotification({type:'success', message: 'ICCID not found in stock' , buttonText:'Ok'}))
             }
+        }else if(type == Constants.actionType.ACTION_REMOVE){            
+            var tmp = selectedCodes.filter(item => item.code !== value.code)
+            setSelectedCodes(tmp)
+
         }
     };
 
@@ -240,15 +282,16 @@ export default function StockLists() {
                 title="Swop at Trader"
                 locationId={locationId}                
                 item={stockItem}
-                onButtonAction={onStockSignature}
+                onButtonAction={onSwapAtTraderModalClosed}
             />
             
-            <TraderModal
+            <TransferModal
                 ref={traderModalRef}
-                title="Trader"
+                title={"Transfer"}
+                hideClear={true}
                 stockItem={stockItem}
                 selectedCodes={selectedCodes}
-                onButtonAction={onTraderModalClosed}
+                onButtonAction={onTransferModalClosed}
             /> 
             
             {/* stock consumable modal  */}
@@ -256,14 +299,16 @@ export default function StockLists() {
                 ref={stockConsumableModalRef}
                 title="Details"
                 item={stockItem}
+                locationId={locationId}
                 onButtonAction={onStockConsumableModalClosed}
             />
 
             <SellToTraderSignatureModal
                 ref={consumableSellToTraderModalRef}
                 title="Sell To Trader"
-                item={stockItem}                
-                onButtonAction={onStockConsumableModalClosed}
+                item={stockItem}       
+                locationId={locationId}         
+                onButtonAction={onStockConsumableSellToTraderModalClosed}
             />
 
             {/* stock sim modal  */}

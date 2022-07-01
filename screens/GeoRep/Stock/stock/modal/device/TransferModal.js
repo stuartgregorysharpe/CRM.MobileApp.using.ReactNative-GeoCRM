@@ -2,11 +2,9 @@
 import React , { useState , useEffect, useRef} from 'react'
 import CModal from '../../../../../../components/common/CModal';
 import { Constants } from '../../../../../../constants';
-import ConsumableSellToStockSignatureView from '../../components/ConsumableSellToStockSignatureView';
-import ConsumableSellToTraderSignatureContainer from '../../container/ConsumableSellToTraderSignatureContainer';
-import TraderContainer from '../../container/TransferContainer';
+import TransferContainer from '../../container/TransferContainer';
 
-const SellToTraderSignatureModal = React.forwardRef((props, ref) => {
+const TransferModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -17,21 +15,20 @@ const SellToTraderSignatureModal = React.forwardRef((props, ref) => {
         }
     };
 
-    return (        
-        
+    return (                
         <CModal
             ref={ref}
-            hideClear={true}            
+            clearText="Back"
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}            
             closableWithOutsideTouch
             onClear={() => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <ConsumableSellToTraderSignatureContainer {...props} />
+            <TransferContainer {...props} />
         </CModal>  
     )
 
 });
 
-export default SellToTraderSignatureModal;
+export default TransferModal;

@@ -13,8 +13,7 @@ const ReturnDeviceDetailModal = React.forwardRef((props, ref) => {
         if (ref) {
           ref.current.hideModal();
         }
-    };
-    
+    };    
     return (        
         <CModal
             ref={ref}

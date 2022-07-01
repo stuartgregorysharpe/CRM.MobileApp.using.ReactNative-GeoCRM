@@ -17,6 +17,7 @@ nvm alias default system
 7. Transfer User dropdown -> GET   /stockmodule/users
 
 8. POST stockmodule/sell-to-trader
+
 9. POST stockmodule/swop-at-trader
 10. POST stockmodule/transfer
 11. POST stockmodule/return-device

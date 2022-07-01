@@ -61,7 +61,6 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
     // }
     //onOK(ref.current.readSignature()); 
   }
-
   
   return (    
     <TouchableWithoutFeedback onPress={onClose}>

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity , StyleSheet } from 'react-native'
 import React , {useState} from 'react'
-import { Colors, Fonts } from '../../../constants';
+import { Colors, Constants, Fonts } from '../../../constants';
 import { whiteLabel } from '../../../constants/Colors';
 import { AppText } from '../../../components/common/AppText';
 import SvgIcon from '../../SvgIcon';
@@ -9,7 +9,7 @@ import DropdownLists from './DropdownLists';
 export default function DropdownInput(props) {
 
   const { title , lists , onItemSelected } = props; 
-  const [visibleTitle,setVisibleTitle] = useState(title);
+  const [selectedItem , setSelectedItem] = useState(null);
   const [isShown, setIsShown] = useState(false);
   
   return (
@@ -18,7 +18,14 @@ export default function DropdownInput(props) {
           setIsShown(!isShown);
         }}>
             <View style={{flex:1}}>
-              <AppText title={visibleTitle} size="medium" ></AppText>
+              <View style={{flexDirection:'row'}}>
+                <AppText style={{flex:1}} title={ selectedItem ? selectedItem.description : title} size="medium" type="secondaryBold"  ></AppText>                 
+                <AppText style={{marginRight:10}} title={selectedItem ? Constants.stockPrefix.MSISDN + selectedItem.msisdn:''} size="medium" ></AppText> 
+              </View>
+              {
+                selectedItem &&
+                <AppText title={selectedItem ? Constants.stockPrefix.DEVICE + selectedItem.imei:''} size="medium" color={Colors.disabledColor} ></AppText> 
+              }              
             </View>
             <View style={{marginRight: 10}}>
               <SvgIcon icon={"Drop_Down"} width="23px" height="23px" />
@@ -29,7 +36,8 @@ export default function DropdownInput(props) {
           isShown && 
           <DropdownLists
             onItemSelected={(item) => {
-              setVisibleTitle(item.description);
+              console.log("selectedItem",selectedItem)
+              setSelectedItem(item);
               onItemSelected(item);              
               setIsShown(!isShown);
             }}

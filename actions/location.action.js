@@ -471,7 +471,7 @@ export const postLeadFields = async (postData) => {
 export const postLocationInfoUpdate = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();
-  console.log("url", `${base_url}/locations-info/location-info-update`);  
+  
   console.log("Param " , postData);
   return new Promise(function (resolve, reject) {
     axios
@@ -563,7 +563,7 @@ export const postStageOutcomUpdate = async (postData) => {
 
   var base_url = await getBaseUrl();
   var token = await getToken();
-  console.log("URL", `${base_url}/location-info/updateStageOutcome`);
+  
   console.log(postData);
   return new Promise(function (resolve, reject) {    
     axios

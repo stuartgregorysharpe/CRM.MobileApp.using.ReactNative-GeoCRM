@@ -14,18 +14,25 @@ export default function CustomerSalesHistory(props) {
 
     const [saleItems, setSaleItems] = useState([]);                
     useEffect(() =>{
+        let isMount = true;
         var postData = {};        
         getApiRequest("https://dev.georep.com/local_api_old/locations/customer-sales-history", postData).then((res) => {
-            var tmp = [];
-            res.sales_items.forEach(element => {
-                element.visible = false;
-                tmp.push(element);
-            });            
-            setSaleItems(tmp);                        
+            if(isMount){
+                var tmp = [];
+                res.sales_items.forEach(element => {
+                    element.visible = false;
+                    tmp.push(element);
+                });            
+                setSaleItems(tmp);                        
+            }            
         }).catch((e) => {
             console.log("E",e);
         });
-    },[]);    
+        return () => {
+            isMount = false;
+        }
+    },[]);
+    
     
     const renderItems = (item, index) => {
         return (
