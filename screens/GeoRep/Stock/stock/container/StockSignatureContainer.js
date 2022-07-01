@@ -62,21 +62,21 @@ export default function StockSignatureContainer(props) {
                         });
 
                     }else if(item.stock_type == Constants.stockType.RETURN){
-
-                        props.stockItemIds.forEach((item , index) => {
-                            postData.append(`stock_item_ids[${index}]`, item);
-                        });
-                        postApiRequestMultipart("stockmodule/return-to-warehouse" , postData).then((res) => {
-                            console.log("re", res)
-                            dispatch(showNotification({type:'success' , message: res.message , buttonText: 'Ok' ,buttonAction: async () => {                    
-                                props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
-                                dispatch(clearNotification())
-                            }}))
-                        }).catch((e) => {
-                            console.log("error", e)
-                            dispatch(showNotification({type:'success' , message: "Error" , buttonText: 'Ok'}))
-                        });
-                        
+                        if(props.stockItemIds.length > 0){
+                            props.stockItemIds.forEach((item , index) => {
+                                postData.append(`stock_item_ids[${index}]`, item);
+                            });
+                            postApiRequestMultipart("stockmodule/return-to-warehouse" , postData).then((res) => {
+                                console.log("re", res)
+                                dispatch(showNotification({type:'success' , message: res.message , buttonText: 'Ok' ,buttonAction: async () => {                    
+                                    props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
+                                    dispatch(clearNotification())
+                                }}))
+                            }).catch((e) => {
+                                console.log("error", e)
+                                dispatch(showNotification({type:'success' , message: "Error" , buttonText: 'Ok'}))
+                            });
+                        }                                         
                     }     
                 } else {
                     console.log('no file exist', signature);                    
