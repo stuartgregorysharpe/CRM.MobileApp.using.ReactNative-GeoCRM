@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
-import {useDispatch} from 'react-redux';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
-
 import SvgIcon from './SvgIcon';
 import {boxShadow} from '../constants/Styles';
 import Colors, {whiteLabel} from '../constants/Colors';

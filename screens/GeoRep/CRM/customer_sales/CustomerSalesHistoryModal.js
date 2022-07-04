@@ -16,8 +16,6 @@ export default function CustomerSalesHistoryModal(props) {
     const [tabIndex, setTabIndex] = useState(0);
     const screenMargin = Platform.OS === "ios" ? 100 : 115;
     const tabs = [{name:'All' , id: 0 } , {name:'Tasks' , id: 1 } , {name:'Action Items' , id: 2 } , {name:'Completed' , id: 3 }]
-    
-    console.log("DDD", tabIndex)
 
     return (
         <Modal                      

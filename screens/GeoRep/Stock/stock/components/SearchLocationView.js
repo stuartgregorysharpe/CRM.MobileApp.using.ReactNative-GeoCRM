@@ -1,14 +1,13 @@
 
 import { View, FlatList } from 'react-native'
-import React from 'react'
+import React , { useState  , useEffect} from 'react'
 import SearchBox from '../../../../../components/SearchBar'
 import SearchLocationItem from './SearchLocationItem';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 
 export default function SearchLocationView(props) {
 
-    const {lists , onItemPressed , onSubmit} = props;
-
+    const {lists , onSearch, onItemPressed , onSubmitLocation} = props;
     const renderItems = (item, index) => {
         return (
             <SearchLocationItem
@@ -18,9 +17,16 @@ export default function SearchLocationView(props) {
         )
     }
     
+
+
     return (
         <View>      
-            <SearchBox isFilter={true}></SearchBox>
+            <SearchBox 
+            onSearch={(searchKey) => {
+                onSearch(searchKey);
+            }}
+            isFilter={true}></SearchBox>
+
             <View style={{flexDirection:'column', flex:1 , maxHeight:250}}>
                 <FlatList                              
                     ListHeaderComponent={()=>
@@ -37,7 +43,7 @@ export default function SearchLocationView(props) {
             </View>
 
             <View style={{marginHorizontal:10, marginTop:20, marginBottom:10}}>
-                <SubmitButton title="Submit" onSubmit={onSubmit} ></SubmitButton>
+                <SubmitButton title="Submit" onSubmit={onSubmitLocation} ></SubmitButton>
             </View>
 
 

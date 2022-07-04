@@ -13,8 +13,10 @@ const BaseForm = props => {
       props.onItemAction({type, item});
     }
   };
+  const isQuesionAnswered = item && item.value != null
 
-  const isCompulsory = item && item.rule_compulsory === '1';
+  const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
+  
   const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
   return (
     <View

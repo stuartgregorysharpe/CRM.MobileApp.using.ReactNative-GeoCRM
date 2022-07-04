@@ -11,7 +11,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import Colors, {PRIMARY_COLOR, BG_COLOR, whiteLabel} from '../constants/Colors';
+import Colors, {BG_COLOR, whiteLabel} from '../constants/Colors';
 import {
   MAP_FILTERS,
   PIPELINE_SEARCH_FILTERS,
@@ -20,15 +20,10 @@ import {
 } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import {
-  clearFilterData,
-  clearPipelineFilterData,
+  clearFilterData,  
   getFilterData,
-  getPipelineFilterData,
-  storeFilterData,
-  storePipelineFilterData,
+  storeFilterData,  
 } from '../constants/Storage';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {getTwoDigit} from '../constants/Helper';
 import FilterOptionsModal from './modal/FilterOptionsModal';
 import StartEndDateSelectionModal from './modal/StartEndDateSelectionModal';
 import {

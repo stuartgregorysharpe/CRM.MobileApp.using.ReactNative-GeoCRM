@@ -26,6 +26,7 @@ const TakePhotoView = props => {
       props.onUpdatePhotos(paths);
     }
   };
+
   const updateImageData = path => {
     setIsPicker(false);
     if (photos && photos !== null) {
@@ -219,15 +220,16 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginBottom: 10,
-    marginRight: 10,
+    marginRight: 15,
+    marginLeft:5,
   },
 
   imageContainer: {
     padding: 5,
     borderWidth: 1,
     borderColor: whiteLabel().fieldBorder,
-    borderRadius: 7,
-    width: Dimensions.get('screen').width / 4.5,
+    borderRadius: 5,
+    width: Dimensions.get('screen').width / 4.5 + 7,
     height: Dimensions.get('screen').width / 4.5,
   },
 

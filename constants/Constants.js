@@ -25,6 +25,7 @@ export default {
     FORM_TYPE_MULTIPLE: 'multiple',
     FORM_TYPE_MULTI_SELECT: 'multi_select',
     FORM_TYPE_NUMBERS: 'numbers',
+    FORM_TYPE_EMAIL_PDF: 'email_pdf'
   },
 
   actionType: {
@@ -40,7 +41,38 @@ export default {
     ACTION_ADD: 'ACTION_ADD',
     ACTION_CLOSE: 'ACTION_CLOSE',
     ACTION_VIEW: 'ACTION_VIEW',
+    ACTION_REMOVE: 'ACTION_REMOVE',
+    ACTION_CHANGE_NETWORK : 'ACTION_CHANGE_NETWORK'
   },
+
+  stockPrefix: {
+    DEVICE: 'IMEI: ',
+    CONSUMABLE: 'Qty: ',
+    SIM: 'ICCID: ',
+    MSISDN: 'MSISDN: '
+  },
+
+  stockType: {
+    DEVICE : "Device",
+    CONSUMABLE : "Consumables",
+    SIM: "Sim",
+    RETURN: "RETURN"
+  },
+
+  networkType: {
+    VODACOM: "Vodacom",
+    CELL : "Cell C",
+    TELKOM: "Telkom"
+  },
+  
+
+  stockDeviceType : {
+    SELL_TO_TRADER: 'SELL_TO_TRADER',
+    SWOP_AT_TRADER: 'SWOP_AT_TRADER',
+    TARDER: 'TRADER',
+    TRANSFER: 'TRANSFER'
+  },  
+
   debugMode: {
     NO_DEBUG: 0,
     DEBUG_UI_SCREEN: 1,

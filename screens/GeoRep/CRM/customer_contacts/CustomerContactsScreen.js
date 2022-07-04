@@ -63,7 +63,7 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState('');
   const headers = ['Customer', 'Contacts'];
-
+  var isMount = true;
   useImperativeHandle(
     ref,
     () => ({
@@ -78,6 +78,7 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
     loadList();
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {
+      isMount = false;
       BackHandler.removeEventListener(
         'hardwareBackPress',
         handleBackButtonClick,
@@ -104,16 +105,18 @@ export const CustomerContactsScreen = forwardRef((props, ref) => {
 
   const loadList = () => {
     if (selectedIndex == 0) {
-      getLocationFields(props.locationId).then(res => {
-        console.log('getLocationFields:', res.custom_master_fields);
-        initPostData(res.custom_master_fields);
-        setLocationFields(res.custom_master_fields);
+      getLocationFields(props.locationId).then(res => {        
+        if(isMount){
+          initPostData(res.custom_master_fields);
+          setLocationFields(res.custom_master_fields);  
+        }        
       });
     } else if (selectedIndex == 1) {
-      setContacts([]);
-      console.log('updating');
+      setContacts([]);      
       getLocationContacts(props.locationId).then(res => {
-        prepareContactsList(res.contacts);
+        if(isMount){
+          prepareContactsList(res.contacts);
+        }
       });
     }
   };

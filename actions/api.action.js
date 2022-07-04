@@ -19,8 +19,7 @@ export const getApiRequest = async (route, param) => {
   if (route.includes('local_api_old')) {
     url = route;
   }
-
-  console.log('url', url);
+  
   return new Promise(function (resolve, reject) {
     axios
       .get(url, {
@@ -31,16 +30,19 @@ export const getApiRequest = async (route, param) => {
         },
       })
       .then(res => {
+        
         if (res.data == undefined) {
           resolve([]);
         }
         if (res.data.status == 'success') {
+        
           resolve(res.data);
         } else {
           resolve(res.data);
         }
       })
       .catch(err => {
+        console.log(url, err)
         const error = err.response;
         if (
           error.status === 401 &&
@@ -77,11 +79,11 @@ export const postApiRequest = async (route, postData) => {
         headers: headers,
       })
       .then(res => {
-        console.log('postApiRequest -- response', res);
+        
         if (res.data && res.data.status === 'success') {
           resolve(res.data);
         } else {
-          resolve(res);
+          resolve(res.data);
         }
       })
       .catch(err => {
@@ -129,7 +131,7 @@ export const postApiRequestMultipart = async (route, postData) => {
         resolve(0);
       })
       .catch(err => {
-        console.log('Err', err);
+        //console.log('api error: ', JSON.stringify(err));
         const error = err.response;
         if (
           error.status === 401 &&

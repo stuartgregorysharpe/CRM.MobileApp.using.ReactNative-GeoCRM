@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems:'center',    
     paddingHorizontal: 15,
+    paddingRight: 50,
   },
   titleIcon: {
     width: 16,

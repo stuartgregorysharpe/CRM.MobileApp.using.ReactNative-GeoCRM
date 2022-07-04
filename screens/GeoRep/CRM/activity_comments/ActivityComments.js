@@ -20,36 +20,34 @@ export default function ActivityComments(props) {
     const changePage = (nativeEvent) => {    
         setTabIndex(nativeEvent.position);
     }
-    
     return (
         <Modal                      
-            animationType="fade"        
-            transpatotrent={true}
-            visible={visible}
-            onRequestClose={onModalClosed}
-            onModalClosed={onModalClosed}>
+        animationType="fade"        
+        transparent={true}
+        visible={visible}
+        onRequestClose={onModalClosed}
+        onModalClosed={onModalClosed}>
 
-                <View style={[style.centeredView]}>
-
-                    <TouchableWithoutFeedback 
-                        onPress={onModalClosed}>
-                      <View style={styles.topContainer}></View>
-                    </TouchableWithoutFeedback>
-                    
-                    <View style={[style.modalView,  styles.modalContainer , {height: Dimensions.get("screen").height -  screenMargin }]}>
-                        
-                        <TouchableOpacity onPress={() =>{onModalClosed()}}>
+            <View style={[style.centeredView]}>
+                
+                <TouchableWithoutFeedback 
+                    onPress={onModalClosed}>
+                  <View style={styles.topContainer}></View>
+                </TouchableWithoutFeedback>
+                
+                <View style={[style.modalView,  styles.modalContainer , {height: Dimensions.get("screen").height -  screenMargin }]}>
+                  
+                    <TouchableOpacity onPress={() =>{onModalClosed()}}>
                         <Divider></Divider>
-                        </TouchableOpacity>
-                        
-                        <TopTab 
+                    </TouchableOpacity>
+
+                    <TopTab 
                             tabIndex={tabIndex}
                             headers={headers} onTabClicked={(index) => {      
                             setTabIndex(index);
                             refPagerView.current.setPage(index);
-                        }} ></TopTab>
-
-                        <PagerView
+                    }} ></TopTab>
+                    <PagerView
                             onPageSelected={(e) => { changePage(e.nativeEvent); }}
                             ref={refPagerView} style={styles.pagerView} initialPage={0}>
                             <View key="1">
@@ -58,11 +56,14 @@ export default function ActivityComments(props) {
                             <View key="2">
                                 <Comments></Comments>
                             </View>
-                        </PagerView>
-                    </View>
+                    </PagerView>
+
                 </View>
-        </Modal>          
-    );
+
+            </View>
+
+        </Modal>
+    )    
 }
 
 const styles = StyleSheet.create({

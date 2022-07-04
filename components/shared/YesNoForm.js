@@ -16,15 +16,13 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
     const [isPicker , setIsPicker] = useState(false);
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    
-    //console.log("item.include_image.length" ,item.include_image.length)
+        
     const showSelectionDialog = () => {        
         setIsPicker(true);      
     }
     const updateImageData = async (path) => {
         setIsPicker(false);
-        //onPress(path);  
-        
+                
         if(item.value && item.value !== null){
             onTakeImage([ path ] ,item.value);
         }else{
@@ -87,7 +85,8 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     }
 
     const isIncludeImage = () => {
-      if(item.include_image.length > 0){
+      
+      if( item.include_image && item.include_image.length > 0){
         return true;
       }
       return false;
@@ -114,9 +113,13 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       }
       return false;
     }
-
+    
+    const isRequiredImage = isIncludeImage();
+    const isQuesionAnswered = isRequiredImage ? item && haveImage() : item && item.value
+    const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
+    
     return (
-        <View style={[style.card, item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card, isCompulsory ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={[styles.container]}>
                 
                 <PhotoCameraPickerDialog visible={isPicker} message={"Choose Image"} 
@@ -176,7 +179,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                         isIncludeImage() && haveImage() && getImagePath() != undefined && getImagePath().map((subItem , index) =>{
                             if(subItem.includes("png") || subItem.includes("jpg")){
                                 return (
-                                  <TouchableOpacity onPress={()=> showSelectionDialog()}>
+                                  <TouchableOpacity key={index} onPress={()=> showSelectionDialog()}>
                                     <View key={"image" + index} style={styles.imageStyle}>
                                         <Image style={styles.imageContainer}  source={{uri:subItem}} />                                    
                                     </View>                                    

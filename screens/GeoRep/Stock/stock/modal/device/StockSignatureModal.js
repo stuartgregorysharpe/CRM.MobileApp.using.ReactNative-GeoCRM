@@ -1,8 +1,9 @@
 
 import React , { useState , useEffect, useRef} from 'react'
-import CModal from '../../../../../components/common/CModal';
-import { Constants } from '../../../../../constants';
-import StockSignatureContainer from '../container/StockSignatureContainer';
+import CModal from '../../../../../../components/common/CModal';
+
+import { Constants } from '../../../../../../constants';
+import StockSignatureContainer from '../../container/StockSignatureContainer';
 
 const StockSignatureModal = React.forwardRef((props, ref) => {
 
@@ -14,8 +15,8 @@ const StockSignatureModal = React.forwardRef((props, ref) => {
           ref.current.hideModal();
         }
     };
-
     return (        
+        
         <CModal
             ref={ref}            
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}

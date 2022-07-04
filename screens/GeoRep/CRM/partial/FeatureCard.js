@@ -16,10 +16,9 @@ export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction 
                 </View>                
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <View style={{flex:1}}>
-                        <Text style={{                        
+                        <Text numberOfLines={1} style={{      
                             fontFamily: Fonts.primaryMedium,
-                            fontSize: 9.8,
-                            letterSpacing:0,
+                            fontSize: 9.8,                                                     
                             color: whiteLabel().helpText, alignContent: 'center', alignItems: 'baseline'
                         }}> {actionTitle} </Text>
                     </View>
