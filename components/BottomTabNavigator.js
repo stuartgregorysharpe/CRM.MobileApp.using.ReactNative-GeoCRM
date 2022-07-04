@@ -45,6 +45,7 @@ export default function RepBottomTabNavigator({navigation}) {
     var tmp = [];
     modules.forEach((element, index) => {
       if (index < 4) {
+        console.log("tab " + index , element )
         tmp = [...tmp, getPageNameByLinker(selectProject, element)];
       }
     });
@@ -58,6 +59,7 @@ export default function RepBottomTabNavigator({navigation}) {
         inActiveIcon: 'Android_More_Horizontal_Gray',
       },
     ];
+    console.log("bottom tab", tmp)
     setBottomTabs(tmp);
     if (selectProject === Constants.projectType.GEO_LIFE) {
       navigation.navigate('Root', {screen: 'Sales'});

@@ -34,8 +34,7 @@ import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import {
-  getApiRequest,
-  postApiRequest,
+  getApiRequest,  
   postApiRequestMultipart,
 } from '../../../../actions/api.action';
 import {
@@ -47,6 +46,7 @@ import UploadFileView from './partial/UploadFileView';
 import {Constants} from '../../../../constants';
 import SKUSelect from '../../../../components/shared/SKUSelect';
 import FormSubmitFeedbackModal from '../../../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
+import EmailPdf from '../../../../components/shared/EmailPdf';
 
 export const FormQuestions = props => {
   const form = props.route.params.data;
@@ -405,6 +405,7 @@ export const FormQuestions = props => {
       formSubmitModalRef.current.showModal();
     }
   };
+
   const renderQuestion = (item, key, index) => {
     if (item.question_type === 'text') {
       return (
@@ -592,9 +593,7 @@ export const FormQuestions = props => {
           }}
         />
       );
-    } else if (
-      item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
-    ) {
+    } else if (item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT) {
       return (
         <SKUSelect
           key={'sku_select_form' + index}
@@ -611,7 +610,23 @@ export const FormQuestions = props => {
           }}
         />
       );
+    } else if( item.question_type === Constants.questionType.FORM_TYPE_EMAIL_PDF){
+      return (
+        <EmailPdf 
+          key={'email_pdf' + index}
+          questionType={item.question_type}
+          item={item}
+          fromIndex={index}
+          onFormAction={({type, value, item}) => {
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {              
+            }
+            if (type == Constants.actionType.ACTION_INFO) {              
+            }
+          }}
+        />
+      )
     }
+
     return <View key={'question' + index}></View>;
   };
 
@@ -627,6 +642,7 @@ export const FormQuestions = props => {
         />
       )}
       <Notification></Notification>
+
       <DatetimePickerView
         visible={isDateTimeView}
         value={selectedDate}
@@ -637,6 +653,7 @@ export const FormQuestions = props => {
           confirmDateTime(date);
           closeDateTime();
         }}></DatetimePickerView>
+
       <Sign
         visible={isSign}
         signature={signature}
@@ -648,6 +665,7 @@ export const FormQuestions = props => {
           onValueChangedSelectionView(key, index, null);
           closeSignView();
         }}></Sign>
+
       <SelectionView
         visible={modaVisible}
         options={options}
@@ -666,6 +684,7 @@ export const FormQuestions = props => {
         }}>
         {' '}
       </SelectionView>
+
       <UploadFileView
         visible={isUploadFileView}
         item={selectedItem}
@@ -675,6 +694,7 @@ export const FormQuestions = props => {
         onValueChanged={value => {
           onValueChangedSelectionView(key, index, value);
         }}></UploadFileView>
+
       <View style={styles.titleContainerStyle}>
         <View style={{flex: 1}}>
           <Text style={styles.formTitleStyle}>{form.form_name}</Text>
@@ -685,6 +705,7 @@ export const FormQuestions = props => {
           <Text style={styles.clearTextStyle}>Clear All</Text>
         </TouchableOpacity>
       </View>
+
       <ScrollView style={{padding: 5}}>
         {formQuestions &&
           formQuestions.map((form, key) => {
@@ -707,10 +728,12 @@ export const FormQuestions = props => {
           )}
         </View>
       </ScrollView>
+
       <GuideInfoView
         visible={isInfo}
         info={bubbleText}
         onModalClose={() => setIsInfo(false)}></GuideInfoView>
+
       <FormSubmitFeedbackModal
         data={formSubmitFeedback}
         ref={formSubmitModalRef}

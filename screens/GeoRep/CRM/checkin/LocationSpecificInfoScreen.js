@@ -159,7 +159,7 @@ export default function LocationSpecificInfoScreen(props) {
       setIsActivityComment(true);
     }
     if (item.title === 'Sales Pipeline') {
-      navigationMain.navigate('RepSalesPipelineScreen', {locationInfo: locationInfo});
+      navigationMain.navigate('DeeplinkRepSalesPipelineScreen', {locationInfo: locationInfo});
     }
     if (item.link === 'actions_items') {
       setIsActionItems(true);

@@ -58,10 +58,12 @@ export default function SalesPipelineScreen(props) {
   const [pageType, setPageType] = useState('add');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
   const [locationName, setLocationName] = useState('');
-  const locationIdSpecific = props.route.params
-    ? props.route.params.locationInfo
-    : null;
-  const isShowCustomNavigationHeader = !props.screenProps;
+  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;
+
+  const isShowCustomNavigationHeader = props.isDeeplink != undefined;
+
+  console.log("props.isDeeplink", props.isDeeplink)
+  console.log("props", props);
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -415,7 +417,7 @@ export default function SalesPipelineScreen(props) {
         {isShowCustomNavigationHeader && (
           <NavigationHeader
             showIcon={true}
-            title={'Forms'}
+            title={'Pipeline'}
             onBackPressed={() => {
               props.navigation.goBack();
             }}

@@ -16,11 +16,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
     const [isPicker , setIsPicker] = useState(false);
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    
-    
-
-    console.log("OKSSS", item)
-
+        
     const showSelectionDialog = () => {        
         setIsPicker(true);      
     }

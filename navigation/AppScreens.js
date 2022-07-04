@@ -171,7 +171,9 @@ export default function AppScreens() {
           {props => <FormsScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
 
-        <Stack.Screen name="RepSalesPipelineScreen" options={{header: () => null}}>
+        <Stack.Screen 
+          name="DeeplinkRepSalesPipelineScreen" 
+          options={{header: () => false}}>
           {props => <SalesPipelineScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
 
