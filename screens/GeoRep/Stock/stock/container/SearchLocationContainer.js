@@ -5,6 +5,7 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import SearchLocationView from '../components/SearchLocationView';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../../actions/notification.action';
+import { Constants } from '../../../../../constants';
 
 export default function SearchLocationContainer(props) {
          
@@ -31,21 +32,23 @@ export default function SearchLocationContainer(props) {
         console.log("item pressed", item);    
         console.log("parame", item.location_id);
 
-        setLocationId(item.location_id);
-        let param = {
-            location_id: item.location_id,
-        };
-        
-        getApiRequest("locations/location-devices", param ).then((res) => {            
-            if(res.devices.length > 0){
-                props.onSubmit(stockType , item.location_id);
-            }else{
-                //dispatch(showNotification({type:'success', message: 'No devices foundX', buttonText:'Ok'}))
-            }
-        }).catch((e) => {
-            dispatch(showNotification({type:'success', message: 'No devices found', buttonText:'Ok'}))
-        })
-
+        console.log("stockType", stockType);
+        if(stockType ==  Constants.stockDeviceType.SELL_TO_TRADER){
+            props.onSubmit(stockType , item.location_id);
+        }else{
+            setLocationId(item.location_id);
+            let param = {
+                location_id: item.location_id,
+            };    
+            getApiRequest("locations/location-devices", param ).then((res) => {            
+                if(res.devices.length > 0){
+                    props.onSubmit(stockType , item.location_id);
+                }else{                
+                }
+            }).catch((e) => {
+                dispatch(showNotification({type:'success', message: 'No devices found', buttonText:'Ok'}))
+            })
+        }        
     }
 
     const onSubmitLocation = () => {                

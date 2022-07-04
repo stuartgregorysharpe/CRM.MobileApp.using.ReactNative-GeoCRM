@@ -6,11 +6,7 @@ import { postApiRequestMultipart } from '../../../../../actions/api.action';
 import { useSelector } from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
 import { Constants } from '../../../../../constants';
-import RNFS, {
-    DownloadFileOptions,
-    DocumentDirectoryPath,
-    downloadFile,
-} from 'react-native-fs';
+import RNFS, {} from 'react-native-fs';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 
@@ -76,7 +72,9 @@ export default function StockSignatureContainer(props) {
                                 console.log("error", e)
                                 dispatch(showNotification({type:'success' , message: "Error" , buttonText: 'Ok'}))
                             });
-                        }                                         
+                        }else{
+                            dispatch(showNotification({type:'success' , message: "No Stock Item IDS" , buttonText: 'Ok'})); 
+                        }                          
                     }     
                 } else {
                     console.log('no file exist', signature);                    
