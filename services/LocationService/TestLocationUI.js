@@ -8,44 +8,48 @@ const TestLocationUI = props => {
   const [currentPosition, setCurrentPosition] = useState({});
   const [serviceType, setServiceType] = useState(3);
   const [isHmsAvailable, setIsHmsAvailable] = useState(false);
-  const currentPositionString = `${currentPosition.latitude},${currentPosition.longitude}`;
   const [status, setStatus] = useState('');
-  const serviceTypeString = getServiceTypeString(serviceType);
+  const currentPositionString = `${currentPosition.latitude},${currentPosition.longitude}`;
+
   const getServiceTypeString = serviceType => {
     if (serviceType == 1) return 'GMS Service';
     if (serviceType == 2) return 'HMS Service';
     return 'Auto';
   };
+  const serviceTypeString = getServiceTypeString(serviceType);
   useEffect(() => {
     onLoad();
   }, [serviceType]);
   const onLoad = () => {
     AvailabilityService.isHMSService().then(isHMS => {
+      console.log(isHMS);
       setIsHmsAvailable(isHMS);
     });
-    LocationService.getLocationService()
-      .requestPermissions()
-      .then(granted => {
+    LocationService.getLocationService().then(locationService => {
+      locationService.requestPermissions().then(granted => {
         if (granted) {
           getCurrentLocation();
         }
       });
+    });
   };
 
   const getCurrentLocation = () => {
-    LocationService.getLocationService().getCurrentPosition(position => {
-      if (position && position.coords) {
-        setStatus('getCurrentLocation');
-        setCurrentPosition(position.coords);
-      }
+    LocationService.getLocationService().then(locationService => {
+      locationService.getCurrentPosition(position => {
+        if (position && position.coords) {
+          setStatus('getCurrentLocation');
+          setCurrentPosition(position.coords);
+        }
+      });
     });
   };
   return (
     <View style={[styles.container, props.style]}>
       <Text style={styles.title}>Service Type:</Text>
       <Text style={styles.description}>{serviceTypeString}</Text>
-      <Text style={styles.title}>HMS Available:</Text>
-      <Text style={styles.description}>{isHmsAvailable}</Text>
+      <Text style={styles.title}>HMS Service Using:</Text>
+      <Text style={styles.description}>{isHmsAvailable + ''} </Text>
       <Text style={styles.title}>Location:</Text>
       <Text style={styles.description}>{currentPositionString}</Text>
       <Text style={styles.title}>Location Get Method:</Text>
@@ -55,6 +59,7 @@ const TestLocationUI = props => {
         onPress={() => {
           const nextServiceType = (serviceType % 3) + 1;
           setServiceType(nextServiceType);
+          setCurrentPosition({});
         }}>
         <Text style={styles.title}>Switch Service</Text>
       </TouchableOpacity>

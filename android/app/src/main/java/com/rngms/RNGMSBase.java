@@ -4,6 +4,7 @@ import android.widget.Toast;
 import android.content.Context; 
 import android.util.Log;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -32,16 +33,17 @@ public class RNGMSBase extends ReactContextBaseJavaModule {
     
     // Check is the device support GMS service 
     // To export a method for JavaScript use, Java methods need to use the @reactmethod annotation
+
     @ReactMethod
-    public boolean isGmsAvailable() {
-        boolean isAvailable = false; 
+    public void isGmsAvailable(Callback booleanCallback) {
+        boolean isAvailable = false;
         Context context = getReactApplicationContext();
         if (null != context) {
             int result = GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(context);
             isAvailable = (ConnectionResult.SUCCESS == result);
-        } 
-
-        return isAvailable;
+        }
+        Log.i("React",  "isGmsAvailable: " + isAvailable);
+        booleanCallback.invoke(isAvailable);
     }
 
 }

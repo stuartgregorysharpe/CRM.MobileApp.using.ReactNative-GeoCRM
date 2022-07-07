@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {SafeAreaView, View} from 'react-native';
+import {SafeAreaView} from 'react-native';
 
 import {Colors} from '../../constants';
 import TestLocationUI from '../../services/LocationService/TestLocationUI';
@@ -13,8 +13,8 @@ export default function UITestScreen({screenProps}) {
     }
   });
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'red'}}>
-      <View></View>
+    <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
+      <TestLocationUI style={{flex: 1}} />
     </SafeAreaView>
   );
 }

@@ -6,5 +6,6 @@ export async function hmsCheckAvailability() {
   const errorCode = await HMSAvailability.isHuaweiMobileServicesAvailable(
     minApkVersion,
   );
+  console.log('hmsCheckAvailability', errorCode);
   return errorCode === 0;
 }
