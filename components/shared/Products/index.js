@@ -1,25 +1,24 @@
 import React, {useRef} from 'react';
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import BaseForm from '../BaseForm';
 import QuestionButton from '../QuestionButton';
-import SKUSelectFormModal from './modals/SKUSelectFormModal';
-import {getQuestionTitle} from './helper';
+import SKUSelectFormModal from './modals/ProductSelectFormModal';
 import { Constants } from '../../../constants';
-const SKUSelect = props => {
+const Products = props => {
+
   const {item, questionType, formIndex} = props;
 
   if (!item) return null;
   const skuSelectFormModalRef = useRef();
   const onOpenSKUCountModal = () => {
     skuSelectFormModalRef.current.showModal();
-  };
-  
+  };  
   const questionButtonType = item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
   const renderContent = () => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={getQuestionTitle(questionType)}
+        title={questionType == Constants.questionType.FORM_TYPE_PRODUCTS ? 'Products' : 'Product Issues'}
         onPress={onOpenSKUCountModal}
       />
     );
@@ -31,13 +30,16 @@ const SKUSelect = props => {
       style={[styles.container, props.style]}
       onItemAction={props.onFormAction}>
       {renderContent()}
+      
       <SKUSelectFormModal
         item={item}
+        title={questionType == Constants.questionType.FORM_TYPE_PRODUCTS ? 'Products' : 'Product Issues'}
         formIndex={formIndex}
         questionType={questionType}
         ref={skuSelectFormModalRef}
         onButtonAction={props.onFormAction}
       />
+
     </BaseForm>
   );
 };
@@ -47,4 +49,5 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
 });
-export default SKUSelect;
+
+export default Products;

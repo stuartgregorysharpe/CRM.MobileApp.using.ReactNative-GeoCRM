@@ -1,9 +1,32 @@
 import React from 'react';
-import { View, Modal, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text} from 'react-native';
+import { View, Modal, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text ,PermissionsAndroid ,Platform} from 'react-native';
 import {  PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 const PhotoCameraPickerDialog = ( { visible , message , onGallery, onCamera ,onModalClose } ) => {    
+
+    const requestCameraPermission = async () => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+              title: 'App Camera Permission',
+              message: 'App needs access to your camera ',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {            
+            onCamera()
+          } else {
+            console.log('Camera permission denied');
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+    };
+
 
     return (
         <TouchableWithoutFeedback onPress={onModalClose}>
@@ -26,7 +49,13 @@ const PhotoCameraPickerDialog = ( { visible , message , onGallery, onCamera ,onM
                             </TouchableHighlight>
                             <TouchableHighlight 
                                 underlayColor="#DDDDDD"
-                                style={{alignItems:'center', flex:1, borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => onCamera() }>
+                                style={{alignItems:'center', flex:1, borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => {
+                                    if (Platform.OS === 'android') {
+                                        requestCameraPermission();
+                                    } else {
+                                        onCamera();
+                                    }
+                                } }>
                                 <Text style={styles.button} >Camera</Text>
                             </TouchableHighlight>
                             

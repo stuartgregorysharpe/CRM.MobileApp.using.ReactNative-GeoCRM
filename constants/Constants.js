@@ -25,7 +25,9 @@ export default {
     FORM_TYPE_MULTIPLE: 'multiple',
     FORM_TYPE_MULTI_SELECT: 'multi_select',
     FORM_TYPE_NUMBERS: 'numbers',
-    FORM_TYPE_EMAIL_PDF: 'email_pdf'
+    FORM_TYPE_EMAIL_PDF: 'email_pdf',
+    FORM_TYPE_PRODUCTS: 'products',
+    FORM_TYPE_PRODUCT_ISSUES: 'product_issues'
   },
 
   actionType: {

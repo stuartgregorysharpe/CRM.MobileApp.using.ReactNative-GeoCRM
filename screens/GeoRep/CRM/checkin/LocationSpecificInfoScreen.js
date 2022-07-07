@@ -46,6 +46,7 @@ import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/DevicesModal';
 import { Constants } from '../../../../constants';
+import { CHECKIN } from '../../../../actions/actionTypes';
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
@@ -164,6 +165,7 @@ export default function LocationSpecificInfoScreen(props) {
     if (item.link === 'actions_items') {
       setIsActionItems(true);
     }
+    
     if(item.link === 'devices'){
       devicesModalRef.current.showModal();
     }
@@ -229,7 +231,7 @@ export default function LocationSpecificInfoScreen(props) {
       devicesModalRef.current.hideModal()
     }
   }
-
+  
   if (canShowCustomerContactsScreen) {
     return (
       <CustomerContactsScreen
@@ -369,14 +371,14 @@ export default function LocationSpecificInfoScreen(props) {
 
             {pageType === 'checkin' && (
               <Checkout
-                goBack={async res => {
-                  await storeLocalValue('@checkin', '0');
+                goBack={async res => {                  
                   dispatch(
                     showNotification({
                       type: 'success',
                       message: res.message,
                       buttonText: 'Okay',
                       buttonAction: async () => {
+                        dispatch({ type: CHECKIN, payload: false });
                         dispatch(clearNotification());
                         goBack();
                       },

@@ -1,4 +1,4 @@
-import { View, Text ,StyleSheet } from 'react-native'
+import { Text ,StyleSheet } from 'react-native'
 import React from 'react'
 import { Constants } from '../../../constants';
 import BaseForm from '../BaseForm';
@@ -29,7 +29,6 @@ export default function EmailPdf(props) {
     );
 
 }
-
 
 const styles = StyleSheet.create({
     container: {

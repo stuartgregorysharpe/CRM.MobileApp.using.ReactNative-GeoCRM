@@ -37,8 +37,9 @@ export default function DevicesModalContainer(props) {
     const handleAction = (value) => {
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
+    
     const openStockModule = () => {
-        navigationMain.navigate('Stock');
+        navigationMain.navigate('DeeplinkStock');
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
     }
     

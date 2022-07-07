@@ -28,10 +28,19 @@ const CSingleSelectInput = props => {
         props.onSelectItem(item);
       }
     }
+    if( type == Constants.actionType.ACTION_FORM_CLEAR){
+      if(props.onClear){
+        props.onClear();
+      }
+      
+    }
   };
   return (
     <View style={[styles.container, props.containerStyle]}>
       <SelectInputView
+        bgType={props.bgType}        
+        style={props.bgStyle}
+        placeholderStyle={props.placeholderStyle}
         showDescription={showDescription}
         description={description || placeholder}
         placeholder={placeholder}

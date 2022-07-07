@@ -47,6 +47,7 @@ import {Constants} from '../../../../constants';
 import SKUSelect from '../../../../components/shared/SKUSelect';
 import FormSubmitFeedbackModal from '../../../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
 import EmailPdf from '../../../../components/shared/EmailPdf';
+import Products from '../../../../components/shared/Products';
 
 export const FormQuestions = props => {
   const form = props.route.params.data;
@@ -619,6 +620,48 @@ export const FormQuestions = props => {
           fromIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {              
+            }
+            if (type == Constants.actionType.ACTION_INFO) {              
+            }
+          }}
+        />
+      )
+    } else if( item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS){
+      return (
+        <Products
+          key={'products' + index}
+          questionType={item.question_type}
+          item={item}
+          fromIndex={index}
+          onFormAction={({type, value, item}) => {
+            
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {    
+              if(value.length > 0){
+                onValueChangedSelectionView(key, index, value);  
+              }else{
+                onValueChangedSelectionView(key, index, null);  
+              }         
+              // console.log("item", item);
+            }
+            if (type == Constants.actionType.ACTION_INFO) {              
+            }
+          }}
+        />
+      )
+    }else if( item.question_type === Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){
+      return (
+        <Products
+          key={'product_issues' + index}
+          questionType={item.question_type}
+          item={item}
+          fromIndex={index}
+          onFormAction={({type, value, item}) => {            
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {    
+              if(value.length > 0){
+                onValueChangedSelectionView(key, index, value);  
+              }else{
+                onValueChangedSelectionView(key, index, null);  
+              }              
             }
             if (type == Constants.actionType.ACTION_INFO) {              
             }
