@@ -22,13 +22,13 @@ import {useSelector, useDispatch} from 'react-redux';
 import MapView, {Marker, Polygon, Polyline} from 'react-native-maps';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch, faChevronUp} from '@fortawesome/free-solid-svg-icons';
-import AddLead from './popup/AddLead';
-import FilterView from '../../../components/FilterView';
-import SvgIcon from '../../../components/SvgIcon';
-import GrayBackground from '../../../components/GrayBackground';
-import Colors, {whiteLabel} from '../../../constants/Colors';
-import {boxShadow, style} from '../../../constants/Styles';
-import {breakPoint} from '../../../constants/Breakpoint';
+import AddLead from '../popup/AddLead';
+import FilterView from '../../../../components/FilterView';
+import SvgIcon from '../../../../components/SvgIcon';
+import GrayBackground from '../../../../components/GrayBackground';
+import Colors, {whiteLabel} from '../../../../constants/Colors';
+import {boxShadow, style} from '../../../../constants/Styles';
+import {breakPoint} from '../../../../constants/Breakpoint';
 import {
   CHANGE_CURRENT_LOCATION,
   CHANGE_POLYGONS,
@@ -36,35 +36,35 @@ import {
   IS_CALENDAR_SELECTION,
   SELECTED_LOCATIONS_FOR_CALENDAR,
   SLIDE_STATUS,
-} from '../../../actions/actionTypes';
+} from '../../../../actions/actionTypes';
 import {
   getLocationPinKey,
   getLocationFilters,
   getLocationInfo,
   getLocationMapByRegion,
-} from '../../../actions/location.action';
-import Fonts from '../../../constants/Fonts';
-import Images from '../../../constants/Images';
-import {MarkerView} from './partial/MarkerView';
-import ClusteredMapView from './components/ClusteredMapView';
-import {LocationInfoDetails} from './locationInfoDetails/LocationInfoDetails';
+} from '../../../../actions/location.action';
+import Fonts from '../../../../constants/Fonts';
+import Images from '../../../../constants/Images';
+import {MarkerView} from '../partial/MarkerView';
+import ClusteredMapView from '../components/ClusteredMapView';
+import {LocationInfoDetails} from '../locationInfoDetails/LocationInfoDetails';
 import Geolocation from 'react-native-geolocation-service';
-import {updateCurrentLocation} from '../../../actions/google.action';
-import {CrmCalendarSelection} from './partial/CrmCalendarSelection';
-import {expireToken, isInsidePoly} from '../../../constants/Helper';
-import AddToCalendar from '../../../components/modal/AddToCalendar';
+import {updateCurrentLocation} from '../../../../actions/google.action';
+import {CrmCalendarSelection} from '../partial/CrmCalendarSelection';
+import {expireToken, isInsidePoly} from '../../../../constants/Helper';
+import AddToCalendar from '../../../../components/modal/AddToCalendar';
 import {
   getLocalData,
   getMapMinZoomLevel,
   getPinSvg,
   getPolygonFillColorTransparency,
-} from '../../../constants/Storage';
-import {Notification} from '../../../components/modal/Notification';
+} from '../../../../constants/Storage';
+import {Notification} from '../../../../components/modal/Notification';
 import {SvgXml} from 'react-native-svg';
-import MarkerIcon from '../../../components/Marker';
-import PinKeySlideUp from './popup/PinKeySlideUp';
-import CheckInStatusView from './partial/CheckInStatusView';
-import AddLeadModal from './add_lead';
+import MarkerIcon from '../../../../components/Marker';
+import PinKeySlideUp from '../popup/PinKeySlideUp';
+import CheckInStatusView from '../partial/CheckInStatusView';
+import AddLeadModal from '../add_lead';
 
 let id = 0;
 let previousZoom = 0;
