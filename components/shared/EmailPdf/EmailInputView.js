@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
 
     selectedText:{
         alignSelf:'center',
-        color: Colors.whiteColor,
-        backgroundColor: Colors.primaryColor,
+        color: Colors.whiteColor,        
+        backgroundColor: whiteLabel().actionFullButtonBackground,
         fontFamily: Fonts.secondaryMedium,
         marginHorizontal:5,
         borderRadius:5,

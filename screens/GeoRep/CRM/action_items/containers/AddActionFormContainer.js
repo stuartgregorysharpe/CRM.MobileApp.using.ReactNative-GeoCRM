@@ -24,6 +24,7 @@ const AddActionFormContainer = props => {
       action_item_type: 'action',
     })
       .then(data => {
+        console.log("DD", data)
         const {formData, formStructure} = constructAddActionFormStructure(data);
         setFormData(formData);
         setFormStructure(formStructure);
@@ -61,6 +62,11 @@ const AddActionFormContainer = props => {
         setIsLoading(false);
       });
   };
+
+  console.log("formData",formData)
+  console.log("formStructure",formStructure)
+  
+
   return (
     <View style={[styles.container, props.style]}>
       <DynamicForm

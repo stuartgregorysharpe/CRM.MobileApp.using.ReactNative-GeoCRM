@@ -15,16 +15,20 @@ const DynamicField = props => {
     value,
     updateFormData,
     hasError,
-    isFirst,
-    key,
+    isFirst,    
+    index,
+    dynamicFieldRef,
   } = props;
 
+  
   const disabled = editable && editable == '0';
   const renderNumber = () => {
     return (
       <CTextInput
         label={field_label}
-        key={key}
+        key={index}
+        dynamicFieldRef={dynamicFieldRef}
+        index={index}        
         isRequired={is_required}
         value={value}
         hasError={hasError}
@@ -42,7 +46,9 @@ const DynamicField = props => {
     return (
       <CTextInput
         label={field_label}
-        key={key}
+        key={index}
+        dynamicFieldRef={dynamicFieldRef}
+        index={index}
         isRequired={is_required}
         value={value}
         hasError={hasError}
@@ -57,7 +63,8 @@ const DynamicField = props => {
   const renderDropdown = () => {
     return (
       <CSingleSelectInput
-        key={key}
+        key={index}
+        
         description={field_label}
         placeholder={'Select ' + field_label}
         checkedValue={value}
@@ -74,7 +81,8 @@ const DynamicField = props => {
   const renderDatePicker = () => {
     return (
       <CDateTimePickerInput
-        key={key}
+        key={index}        
+        
         description={field_label}
         placeholder={'Select ' + field_label}
         value={value}
