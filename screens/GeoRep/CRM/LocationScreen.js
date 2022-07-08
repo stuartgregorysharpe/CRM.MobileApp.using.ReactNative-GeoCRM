@@ -56,7 +56,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import {CrmCalendarSelection} from './partial/CrmCalendarSelection';
 import {expireToken, isInsidePoly} from '../../../constants/Helper';
-0;
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import {
   getLocalData,
@@ -69,6 +68,7 @@ import {SvgXml} from 'react-native-svg';
 import MarkerIcon from '../../../components/Marker';
 import PinKeySlideUp from './popup/PinKeySlideUp';
 import CheckInStatusView from './partial/CheckInStatusView';
+import AddLeadModal from './add_lead';
 
 let id = 0;
 let previousZoom = 0;
@@ -109,8 +109,9 @@ export default function LocationScreen(props) {
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05");  
+  const addLeadModalRef = useRef(null);
 
-  useEffect(() => {    
+  useEffect(() => {
     initCode();
     refreshHeader();
     if (crmStatus || showItem === "addLead") {
@@ -153,7 +154,7 @@ export default function LocationScreen(props) {
         setIsGuranted(true);
       }
     }
-
+    
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -530,6 +531,10 @@ export default function LocationScreen(props) {
     return <View></View>    
   }
 
+  const onAddLeadModalClosed = ({type, value}) => {
+
+  }
+
   return (
     <Provider>
       <SafeAreaView style={{ flex: 1 }}>
@@ -557,13 +562,18 @@ export default function LocationScreen(props) {
               if (location_id) {
                 openLocaitonInfoDetails(Number(location_id));
                 return;
-              }
-              console.log("Clicked");
+              }        
               showingItem = "map_view";
               setShowItem("map_view");
               setIsBack(false);
             }} />
         }
+
+        <AddLeadModal
+          title="Add Lead"
+          ref={addLeadModalRef}                          
+          onButtonAction={onAddLeadModalClosed}
+        />
 
         {
           crmStatus && showItem == "locationInfo" &&
@@ -790,7 +800,8 @@ export default function LocationScreen(props) {
           <TouchableOpacity
             style={[styles.plusButton, { marginBottom: isCheckin ? 40 : 0}]}
             onPress={() => {
-              animation("addLead");
+              //animation("addLead");
+              addLeadModalRef.current.showModal();
             }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
           </TouchableOpacity>

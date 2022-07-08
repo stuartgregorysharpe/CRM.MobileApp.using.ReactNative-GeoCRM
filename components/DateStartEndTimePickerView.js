@@ -2,11 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Text,
-  Modal,
-  TouchableHighlight,
+  StyleSheet,  
+  Modal,  
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
@@ -17,7 +14,7 @@ import Divider from './Divider';
 import DatePicker from 'react-native-modern-datepicker';
 import SvgIcon from './SvgIcon';
 import {SubmitButton} from './shared/SubmitButton';
-import {boxShadow, style} from '../constants/Styles';
+import { style} from '../constants/Styles';
 import {TimePicker} from './TimePicker';
 import {getTwoDigit} from '../constants/Helper';
 

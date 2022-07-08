@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.geoverse_app_rn">
     <uses-permission android:name="android.permission.INTERNET" />
-
     <!-- Define ACCESS_FINE_LOCATION if you will use enableHighAccuracy=true  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -9,9 +8,7 @@
     <!-- Define ACCESS_COARSE_LOCATION if you will use enableHighAccuracy=false  -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
     <uses-permission android:name="android.permission.VIBRATE"/>
-
     <uses-feature android:name="android.hardware.location.network" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
 
@@ -70,8 +67,7 @@
         android:name="androidx.core.content.FileProvider"
         android:authorities="com.geoverse_app_rn.provider"
         android:exported="false"
-        android:grantUriPermissions="true"
-        >
+        android:grantUriPermissions="true">
         <meta-data
             android:name="android.support.FILE_PROVIDER_PATHS"
             android:resource="@xml/file_paths" />

@@ -30,6 +30,8 @@ import {FormQuestions} from '../screens/GeoRep/Forms/questions/FormQuestions';
 import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSpecificInfoScreen';
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import FormsScreen from '../screens/GeoRep/Forms/FormsScreen';
+import SalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import Stock from '../screens/GeoRep/Stock/Stock';
 
 const Stack = createNativeStackNavigator();
 
@@ -153,19 +155,35 @@ export default function AppScreens() {
           options={{header: () => false}}>
           {/* {props => <WebViewScreen {...props} />} */}
         </Stack.Screen>
+
         <Stack.Screen
           name="DeeplinkFormQuestionsScreen"
           options={{header: () => false}}>
           {props => <FormQuestions {...props} />}
         </Stack.Screen>
+
         <Stack.Screen
           name="DeeplinkLocationSpecificInfoScreen"
           options={{header: () => false}}>
           {props => <LocationSpecificInfoScreen {...props} />}
         </Stack.Screen>
+        
         <Stack.Screen name="DeeplinkRepForms" options={{header: () => null}}>
           {props => <FormsScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
+
+        <Stack.Screen 
+          name="DeeplinkRepSalesPipelineScreen" 
+          options={{header: () => false}}>
+          {props => <SalesPipelineScreen {...props} isDeeplink={true} />}
+        </Stack.Screen>
+
+        <Stack.Screen 
+          name="DeeplinkStock" 
+          options={{header: () => false}}>
+          {props => <Stock {...props} isDeeplink={true} />}
+        </Stack.Screen>
+
       </Stack.Navigator>
     </SafeAreaView>
   );

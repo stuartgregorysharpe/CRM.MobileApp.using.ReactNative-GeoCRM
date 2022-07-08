@@ -1,11 +1,10 @@
 
-import { View, Text , StyleSheet , TextInput} from 'react-native'
 import React , { useState , useEffect, useRef} from 'react'
 import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
-import StockDetailsContainer from '../container/StockDetailsContainer';
+import ReturnDeviceDetailContainer from '../container/ReturnDeviceDetailContainer';
 
-const StockDetailsModal = React.forwardRef((props, ref) => {
+const ReturnDeviceDetailModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -14,25 +13,21 @@ const StockDetailsModal = React.forwardRef((props, ref) => {
         if (ref) {
           ref.current.hideModal();
         }
-    };
-    
-    const openSignature = () => {
-        onButtonAction({ type: Constants.actionType.ACTION_NEXT });
-    }
-    
-    return (
+    };    
+    return (        
         <CModal
-            ref={ref}            
-            modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+            ref={ref}
+            clearText="Back"
+            modalType={Constants.modalType.MODAL_TYPE_BOTTOM}            
             closableWithOutsideTouch
             onClear={() => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}
             {...props}>
-            <StockDetailsContainer openSignature={openSignature} {...props} />
-        </CModal>        
+            <ReturnDeviceDetailContainer {...props} />
+        </CModal>  
     )
 
 });
 
-export default StockDetailsModal;
+export default ReturnDeviceDetailModal;

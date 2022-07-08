@@ -27,7 +27,7 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
   const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
   // Called after ref.current.readSignature() reads a non-empty base64 string
   const handleOK = (signature) => {
-    console.log("----",signature);
+    console.log("----", signature);
     onOK(signature); // Callback from Component props
   };
 
@@ -61,7 +61,6 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
     // }
     //onOK(ref.current.readSignature()); 
   }
-
   
   return (    
     <TouchableWithoutFeedback onPress={onClose}>

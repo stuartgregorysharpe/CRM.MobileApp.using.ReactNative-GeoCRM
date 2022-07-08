@@ -1,10 +1,12 @@
 import {View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {Colors} from '../../../../../constants';
+import {Colors, Constants} from '../../../../../constants';
 import {AppText} from '../../../../../components/common/AppText';
 import { whiteLabel } from '../../../../../constants/Colors';
+import { getSubText } from '../../../../../helpers/viewHelper';
 
 export default function StockListItem({ onItemPressed , item}) {
+
   return (
     <TouchableOpacity onPress={onItemPressed}>
       <View style={{marginHorizontal: 15}}>
@@ -24,7 +26,7 @@ export default function StockListItem({ onItemPressed , item}) {
               style={{fontSize: 12.5}}></AppText>
             <AppText
               type="secondaryMedium"
-              title={item.stock_type === 'Consumables' ? item.qty : item.serial}
+              title={getSubText(item)}
               color={whiteLabel().subText}
               style={{fontSize: 10.4}}></AppText>
           </View>

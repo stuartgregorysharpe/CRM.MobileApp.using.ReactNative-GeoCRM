@@ -98,12 +98,12 @@ const CModal = React.forwardRef((props, ref) => {
               {(props.title || props.icon) && (
                 <View style={styles.titleContainer}>
                   
-                  <View style={{flex:1, alignItems: props.headerType === "center" ? 'center' : 'flex-start'}}>
+                  <View style={{flex:1, marginRight:50, alignItems: props.headerType === "center" ? 'center' : 'flex-start'}}>
                     {props.title && (
                       <Text style={[styles.title, {color: props.headerType === "center" ? whiteLabel().mainText : Colors.blackColor }]}>{props.title}</Text>
                     )}
                   </View>
-                                    
+
                   {!hideClear && (
                     <TouchableOpacity
                       style={styles.clearButtonContainer}
@@ -113,7 +113,10 @@ const CModal = React.forwardRef((props, ref) => {
                       </Text>
                     </TouchableOpacity>
                   )}
+                  
                   {props.customRightHeaderView}
+                  
+                  
                 </View>
               )}
               {props.children}
@@ -183,6 +186,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems:'center',    
     paddingHorizontal: 15,
+    //paddingRight: 50,
   },
   titleIcon: {
     width: 16,

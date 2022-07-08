@@ -141,7 +141,7 @@ export function getPageNameByLinker(selectedProject, linker) {
     case 'sales_pipeline':
       return {
         linker: linker,
-        name: 'RepSalesPipeline',
+        name: 'Pipeline',
         router: RepSalesPipelineScreen,
         activeIcon: 'Pipeline',
         inActiveIcon: 'Pipeline_Gray',

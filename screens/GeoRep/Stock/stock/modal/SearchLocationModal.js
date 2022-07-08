@@ -15,13 +15,14 @@ const SearchLocationModal = React.forwardRef((props, ref) => {
         }
     };
     
-    const onSubmit = () => {
-        onButtonAction({ type: Constants.actionType.ACTION_NEXT });
+    const onSubmit = (stockType , locationId) => {        
+        onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: {stockType: stockType, locationId:locationId} });
     }
 
-    return (        
+    return (
         <CModal
             ref={ref}            
+            clearText={"Back"}
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
             closableWithOutsideTouch
             onClear={() => {

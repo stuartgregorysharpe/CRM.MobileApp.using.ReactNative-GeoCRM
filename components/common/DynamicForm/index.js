@@ -11,6 +11,7 @@ import DynamicField from './DynamicField';
 const DynamicForm = React.forwardRef((props, ref) => {
   const {formData, formStructureData} = props;
   const [errors, setErrors] = useState({});
+  const dynamicFieldRef = useRef([]);
   useEffect(() => {
     const initialErrors = {};
     formStructureData.forEach(fieldStructure => {
@@ -68,16 +69,20 @@ const DynamicForm = React.forwardRef((props, ref) => {
     const valid = checkFormFieldValid(requiredFields, null, 'require');
     return valid;
   };
+
+
   const renderFields = () => {
     return formStructureData.map((fieldStructure, index) => {
       return (
         <DynamicField
           {...fieldStructure}
-          key={index + 'field'}
+          //key={index + 'field'}
           updateFormData={updateFormData}
           value={formData[fieldStructure.field_name]}
           hasError={errors[fieldStructure.field_name]}
           isFirst={index == 0}
+          index={index}
+          dynamicFieldRef={dynamicFieldRef}          
         />
       );
     });

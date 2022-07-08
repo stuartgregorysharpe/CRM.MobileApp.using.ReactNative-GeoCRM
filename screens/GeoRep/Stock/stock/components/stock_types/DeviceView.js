@@ -8,7 +8,7 @@ import { Constants } from '../../../../../../constants';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../../actions/notification.action';
 
-export default function DeviceView() {
+export default function DeviceView(props) {
 
     const [details, setDetails] = useState("");
     const [code, setCode] = useState("");
@@ -19,8 +19,15 @@ export default function DeviceView() {
     const onCaptureAction = ({type, value}) => {
         if (type == Constants.actionType.ACTION_CAPTURE) {            
             setCode(value)
+            onDataChanged(details, value);
         }
     };
+
+        
+    const onDataChanged = (details, quantity) =>{
+        props.onDataChanged(details, quantity)
+    }
+
 
     const popDialog = () => {
         if(codeDisabled){
@@ -48,6 +55,7 @@ export default function DeviceView() {
                 isRequired={true}
                 onChangeText={text => {
                     setDetails(text);
+                    onDataChanged(text, code);
                 }}
                 style={{marginTop:15}}
             />
@@ -55,7 +63,7 @@ export default function DeviceView() {
             <View style={{ marginTop:15 , flexDirection:'row' , alignItems:'center'}}>
                 <TouchableOpacity style={{ flex:1}} onPress={() => popDialog() }>
                     <CTextInput                        
-                        label="Start Reading"                    
+                        label="Input IMEI"                    
                         value={code}     
                         keyboardType={'number-pad'}
                         returnKeyType={'done'}                                       
@@ -63,10 +71,11 @@ export default function DeviceView() {
                         disabled={codeDisabled}
                         onChangeText={text => {
                             setCode(text);
+                            onDataChanged(details, text);
                         }}
                     />
                 </TouchableOpacity>                
-                <SubmitButton 
+                <SubmitButton                     
                     onSubmit={() => {
                         qrScanModalRef.current.showModal()
                     }}

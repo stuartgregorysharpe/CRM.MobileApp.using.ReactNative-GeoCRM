@@ -160,8 +160,7 @@ export default function AddLead({screenProps, onClose}) {
       console.log( "val", await checkFeatureIncludeParam("add_lead_forms"))
     }
     featureCheck();
-    setIsLoading(true);
-    //dispatch(updateCurrentLocation());
+    setIsLoading(true);    
   }, []);
 
   useEffect(() => {
@@ -176,8 +175,7 @@ export default function AddLead({screenProps, onClose}) {
   useEffect(() => {    
     if (isLoading) {
       getLeadFields()
-        .then(res => {
-          
+        .then(res => {        
           initPostData(res.custom_master_fields);
           setLeadForms(res.custom_master_fields);
           setAccuracyUnit(res.accuracy_distance_measure);

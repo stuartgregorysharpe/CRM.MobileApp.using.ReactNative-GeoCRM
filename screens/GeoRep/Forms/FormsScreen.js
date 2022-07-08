@@ -23,6 +23,8 @@ import {expireToken} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
+import {useNavigation} from '@react-navigation/native';
+import { Colors, Constants } from '../../../constants';
 
 let isInfoWindow = false;
 
@@ -41,6 +43,8 @@ export default function FormsScreen(props) {
   const [filters, setFilters] = useState(null);
 
   const isShowCustomNavigationHeader = props.isDeeplink;
+  
+ const navigationMain = useNavigation();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -216,7 +220,13 @@ export default function FormsScreen(props) {
                 item={item}
                 onItemPress={() => {
                   if (!isInfoWindow) {
-                    props.navigation.navigate('FormQuestions', {
+                 
+                    var routeName = "DeeplinkFormQuestionsScreen"
+                    if(!isShowCustomNavigationHeader){
+                      routeName = "FormQuestions"
+                    }
+                    
+                    props.navigation.navigate(routeName, {
                       data: item,
                       location_id:
                         locationIdSpecific != null
@@ -249,7 +259,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bubbleTextStyle: {
-    backgroundColor: '#DDD',
+    backgroundColor: Colors.bgColor,
     padding: 10,
     marginLeft: 30,
     marginRight: 30,

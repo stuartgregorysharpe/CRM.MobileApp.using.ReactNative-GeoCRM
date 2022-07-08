@@ -1,7 +1,5 @@
 import React, {useRef, useState, useEffect, useImperativeHandle} from 'react';
-import {
-  SafeAreaView,
-  View,
+import { SafeAreaView, View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -47,7 +45,6 @@ export default function SupportScreen(props) {
     }
   });
 
-
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)
       .then(data => {
@@ -79,9 +76,7 @@ export default function SupportScreen(props) {
         
           <View style={{flexGrow: 1 , marginHorizontal:10}}>
             {tabIndex == 1 && <Ticket ref={ticketRef} />}
-            {tabIndex == 2 && <Faq />}
-
-        
+            {tabIndex == 2 && <Faq />}        
           </View>
 
           {

@@ -83,6 +83,14 @@ export default function FeaturedCardLists(props) {
       });
     }
 
+    featureCards.push({
+      title: `Devices`,
+      icon: 'DEVICES',
+      action: 'View allocated devices',
+      link: 'devices',
+    });
+
+
     if (customer_sales_history_feature) {
       featureCards.push({
         title: `Customer Sales`,

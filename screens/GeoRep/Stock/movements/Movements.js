@@ -1,11 +1,9 @@
 
-import { View, Text , FlatList ,TouchableOpacity , StyleSheet , ActivityIndicator} from 'react-native'
+import { View , FlatList ,TouchableOpacity , StyleSheet , ActivityIndicator} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import { AppText } from '../../../../components/common/AppText';
 import { getApiRequest} from '../../../../actions/api.action';
-import SearchBar from '../../../../components/SearchBar';
 import Colors, { whiteLabel } from '../../../../constants/Colors';  
-import SvgIcon from '../../../../components/SvgIcon';
 import Fonts from '../../../../constants/Fonts'
 import MovementListHeader from './components/MovementListHeader';
 import MovementListItem from './components/MovementListItem';
@@ -16,46 +14,33 @@ export default function Movements() {
   
     const [movementLists, setMovementLists] = useState([]);
     const [page,setPage] = useState(0);
-    const [originMovementLists, setOriginMovementLists] = useState([]);
-    
+    const [originMovementLists, setOriginMovementLists] = useState([]);    
     const [isPageLoading, setPageLoading] = useState(false);
-
+    var isMount = true;
     useEffect(() =>{
-        loadMoreData()
+        loadMoreData();
+        return () => {
+          isMount = false;
+        }
     },[]);
-
-    const onFilter = (text) => {
-        if(text !== "" && text !== undefined){
-            var tmp = [];
-            originMovementLists.map((item, index) => {
-                if(item.description.toLowerCase().includes(text.toLowerCase())){
-                    tmp.push(item);
-                }
-            });
-            setMovementLists(tmp);
-        }else{            
-          setMovementLists([...originMovementLists]);
-        }        
-    }
-
+   
     const renderItems = (item, index) => {
         return (
           <MovementListItem item={item}></MovementListItem>
         )
     }
 
-    const loadMoreData = () => {
-        
+    const loadMoreData = () => {        
         if(isPageLoading == false && isEndPageLoading == false){
           console.log("page" , page);
             setPageLoading(true)
-            getApiRequest("https://dev.georep.com/local_api_old/stockmodule/movements-list", {page_nr:page}).then((res) => {
-                //console.log("Res", res);
-                console.log(res.movement_items.length)
-                setMovementLists([...movementLists, ...res.movement_items]);
-                setOriginMovementLists(res.movement_items);
-                setPage(page + 1);
-                setPageLoading(false);            
+            getApiRequest("stockmodule/movements-list", {page_nr:page}).then((res) => {                
+                if(isMount){
+                  setMovementLists([...movementLists, ...res.movement_items]);
+                  setOriginMovementLists(res.movement_items);
+                  setPage(page + 1);
+                  setPageLoading(false);            
+                }                
             }).catch((e) => {
                 console.log("E",e);
             });            

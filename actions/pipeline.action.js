@@ -38,7 +38,7 @@ export const postAddOpportunityFields = async (postData) => {
   var base_url = await getBaseUrl();
   var token = await getToken();  
   console.log("Paramer " , postData);
-console.log("url", `${base_url}/pipeline/pipeline-add-edit-opportunity`);
+  
   return new Promise(function (resolve, reject) {    
     axios
       .post(`${base_url}/pipeline/pipeline-add-edit-opportunity`, postData, {

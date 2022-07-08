@@ -39,6 +39,7 @@ import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import Geolocation from 'react-native-geolocation-service';
+import NavigationHeader from '../../../components/Header/NavigationHeader';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
@@ -57,9 +58,12 @@ export default function SalesPipelineScreen(props) {
   const [pageType, setPageType] = useState('add');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
   const [locationName, setLocationName] = useState('');
-  const locationIdSpecific = props.route.params
-    ? props.route.params.locationInfo
-    : null;
+  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;
+
+  const isShowCustomNavigationHeader = props.isDeeplink != undefined;
+
+  console.log("props.isDeeplink", props.isDeeplink)
+  console.log("props", props);
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -408,6 +412,18 @@ export default function SalesPipelineScreen(props) {
   return (
     <Provider>
       <View style={{flex: 1}}>
+
+        
+        {isShowCustomNavigationHeader && (
+          <NavigationHeader
+            showIcon={true}
+            title={'Pipeline'}
+            onBackPressed={() => {
+              props.navigation.goBack();
+            }}
+          />
+        )}
+
         <Notification></Notification>
         {canAddPipeline && (
           <AddSalesPipeline
