@@ -3,7 +3,7 @@ package com.geoverse_app_rn;
 import android.app.Application;
 import android.content.Context;
 
-import com.huawei.hms.rn.location.RNHMSLocationPackage;
+
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -16,6 +16,8 @@ import com.facebook.react.bridge.JSIModulePackage; // <- add
 import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add
 import com.rngms.RNGMSPackage;
 import com.huawei.hms.rn.availability.HMSAvailabilityPackage;
+import com.huawei.hms.rn.map.HMSMapPackage;
+import com.huawei.hms.rn.location.RNHMSLocationPackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -33,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
           packages.add(new RNHMSLocationPackage());
           packages.add(new RNGMSPackage());
           packages.add(new HMSAvailabilityPackage());
+          packages.add(new HMSMapPackage());
           return packages;
         }
 

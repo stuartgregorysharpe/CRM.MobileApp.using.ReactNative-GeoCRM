@@ -224,6 +224,7 @@ dependencies {
     implementation project(':react-native-file-opener')
     implementation project(':react-native-hms-availability')
     implementation project(":react-native-hms-location")
+    implementation project(':react-native-hms-map')
     implementation "com.google.android.gms:play-services-location:17.0.0"
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
