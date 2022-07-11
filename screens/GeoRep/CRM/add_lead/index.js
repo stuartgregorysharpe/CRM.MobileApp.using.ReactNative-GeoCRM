@@ -4,7 +4,6 @@ import CModal from '../../../../components/common/CModal';
 import { Constants } from '../../../../constants';
 import AddLeadContainer from './containers/AddLeadContainer';
 
-
 const AddLeadModal = React.forwardRef((props, ref) => {
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -15,7 +14,6 @@ const AddLeadModal = React.forwardRef((props, ref) => {
         }
     };
     return ( 
-
         <CModal
             ref={ref}       
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
@@ -28,7 +26,5 @@ const AddLeadModal = React.forwardRef((props, ref) => {
         </CModal>        
     )
 });
-
-
 
 export default AddLeadModal;

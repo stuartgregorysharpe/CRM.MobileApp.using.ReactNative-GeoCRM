@@ -16,7 +16,7 @@ export default function AddLeadForms(props) {
     const navigationMain = useNavigation();
     const [isInfo, setIsInfo] = useState(false);
     const [bubbleText, setBubleText] = useState({});
-        
+
     const _onTouchStart = (e, text) => {
         setBubleText(text);
         setIsInfo(true);
@@ -55,10 +55,13 @@ export default function AddLeadForms(props) {
                                     if (!isInfoWindow) {
                                         onClose();
                                         console.log("form data", item);
-                                        navigationMain.navigate("RepForms", {
-                                            screen: "FormQuestions",
-                                            params: { data: item , pageType:'CRM' }
+                                        navigationMain.navigate('DeeplinkFormQuestionsScreen', {
+                                            data: {form_id: item.form_id},
                                         });
+                                        // navigationMain.navigate("RepForms", {
+                                        //     screen: "FormQuestions",
+                                        //     params: { data: item , pageType:'CRM' }
+                                        // });
                                     } else {
                                         isInfoWindow = false;
                                     }
@@ -68,10 +71,7 @@ export default function AddLeadForms(props) {
                         ))
                   }
                   </ScrollView>
-                  {/* {
-                      buttonTitle &&
-                      <SubmitButton onSubmit={ () =>  onSave()} title={buttonTitle}></SubmitButton>
-                  } */}                      
+                                        
               </View>
           </View>                
         </TouchableWithoutFeedback >

@@ -240,8 +240,7 @@ export default function AddLead({screenProps, onClose}) {
             isCompulsoryExist = true;
           }
         });
-        setCompulsoryFormExist(isCompulsoryExist);
-        console.log("ASDFF",response.forms)
+        setCompulsoryFormExist(isCompulsoryExist);        
         setFormsList(response.forms);
       }
     }).catch(e => {
@@ -258,7 +257,6 @@ export default function AddLead({screenProps, onClose}) {
           res = element.value;
         }
       });
-
       return res;
     } else {
       return '';

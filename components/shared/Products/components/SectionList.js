@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet , FlatList, Dimensions , Keyboard} from 'react-native';
 import { Constants } from '../../../../constants';
-import { AppText } from '../../../common/AppText';
 import SelectItem from './SelectItem';
 
 const SectionList = props => {
-  const {questionType , productIssue, selectedLists, sections, checkedItemIds} = props;
-  
+
+  const {questionType , productIssue, selectedLists, sections, checkedItemIds} = props;  
   const height = Dimensions.get("screen").height;
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -33,8 +32,7 @@ const SectionList = props => {
   if (!sections) return null;
 
   const isChecked = (product_id) => {
-    if(questionType ==  Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){
-      
+    if(questionType ==  Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){      
       var tmp = selectedLists.filter((item) => {
         if(item.productIssue == productIssue && item.product_id == product_id){
           return true;
@@ -51,16 +49,15 @@ const SectionList = props => {
         return true;
       }
       return false;
-    }
-    
+    }    
   }
-        
+
   const renderItem = (item, index) => {
     return (
       <SelectItem
          item={item}
          key={index + 'section'}
-         index={index}        
+         index={index}
          isChecked={isChecked(item.product_id)} 
          checkedItemIds={checkedItemIds}
          onItemAction={props.onItemAction}
@@ -69,7 +66,7 @@ const SectionList = props => {
   }
 
   return <View style={[styles.container, props.style , {height: isKeyboardVisible ?  height * 0.2 : height * 0.32 } ]}>      
-     <FlatList
+      <FlatList
         data={sections}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => renderItem(item, index)}

@@ -29,7 +29,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
     }
     
     const onSubmit = (signature) => {
-        console.log("stockmodule/sell-to-trader");      
+        
         if(price != '' && quantity != '' && reference != '' && received != ''){
             var postData = new FormData();        
             RNFS.exists(signature)

@@ -31,12 +31,23 @@ const DynamicForm = React.forwardRef((props, ref) => {
       const _formData = {...formData};
       _formData[fieldName] = value;
       props.updateFormData(_formData);
-
       if (fieldName) {
         checkFormFieldValid([fieldName], _formData);
       }
     }
   };
+
+  const updateSecondFormData = (fieldName, value, secondValue) =>{
+    if (props.updateSecondFormData) {
+      const _formData = {...formData};
+      _formData[fieldName] = {value:value, secondValue:secondValue};
+      props.updateSecondFormData(_formData);
+      if (fieldName) {
+        checkFormFieldValid([fieldName], _formData);
+      }
+    }
+  }
+    
   const checkFormFieldValid = (
     fieldNames,
     _formData,
@@ -76,13 +87,16 @@ const DynamicForm = React.forwardRef((props, ref) => {
       return (
         <DynamicField
           {...fieldStructure}
-          //key={index + 'field'}
+          key={index + 'field'}
           updateFormData={updateFormData}
+          updateSecondFormData={updateSecondFormData}
           value={formData[fieldStructure.field_name]}
           hasError={errors[fieldStructure.field_name]}
           isFirst={index == 0}
           index={index}
-          dynamicFieldRef={dynamicFieldRef}          
+          dynamicFieldRef={dynamicFieldRef}
+          
+
         />
       );
     });

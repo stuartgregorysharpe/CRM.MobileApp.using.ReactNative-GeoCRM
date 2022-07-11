@@ -12,7 +12,7 @@ import { clearNotification, showNotification } from '../../../../../actions/noti
 
 export default function StockSignatureContainer(props) {
          
-    const { item , selectedCodes }  = props;
+    const { item , selectedCodes ,signatureModalType }  = props;
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const dispatch = useDispatch();
         
@@ -29,6 +29,12 @@ export default function StockSignatureContainer(props) {
                     if(!signature.includes("file://")){
                         signature = "file://" + signature;
                     }
+
+                    if(signatureModalType == "save"){                        
+                        props.onButtonAction({ type: Constants.actionType.ACTION_DONE , value: {received:received , msisdn:msisdn , signature: signature } });
+                        return;
+                    }
+                    
                     postData.append('signature_image',  { uri: signature, type:'image/png' , name:'sign.png' } );
                     postData.append('received_by',  received);
                     var time_zone = RNLocalize.getTimeZone();
@@ -75,7 +81,7 @@ export default function StockSignatureContainer(props) {
                         }else{
                             dispatch(showNotification({type:'success' , message: "No Stock Item IDS" , buttonText: 'Ok'})); 
                         }                          
-                    }     
+                    }
                 } else {
                     console.log('no file exist', signature);                    
                 }
@@ -101,8 +107,7 @@ export default function StockSignatureContainer(props) {
 
     return (
         <View style={{alignSelf:'stretch'}}>
-            <StockSignatureView                
-            
+            <StockSignatureView                        
                 onSubmit = {onSubmit}                
                 onChangedReceivedBy={onChangedReceivedBy}
                 onChangedSerial={onChangedSerial}
