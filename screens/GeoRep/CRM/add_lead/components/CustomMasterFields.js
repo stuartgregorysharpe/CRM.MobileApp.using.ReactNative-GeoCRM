@@ -15,9 +15,7 @@ export default function CustomMasterFields(props) {
     const [formStructure1, setFormStructure1] = useState([]);
     const [formData2, setFormData2] = useState({});
     const [formStructure2, setFormStructure2] = useState([]);
-
-    //console.log("read forms" , leadForms)
-
+    
     useEffect(() => {
       var isMount = true;
       initData(leadForms, "first");

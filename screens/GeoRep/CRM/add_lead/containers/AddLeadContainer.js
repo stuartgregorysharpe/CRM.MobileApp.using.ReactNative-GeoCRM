@@ -5,7 +5,7 @@ import { Constants } from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
 import { getApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import AddLeadForms from '../../popup/AddLeadForms';
+import AddLeadFormsModal from '../modal/AddLeadFormsModal';
 import SelectDevicesModal from '../modal/SelectDevicesModal';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 import ViewListsModal from '../modal/ViewListsModal';
@@ -13,7 +13,9 @@ import SvgIcon from '../../../../../components/SvgIcon';
 import { useSelector } from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
 import { useDispatch } from 'react-redux';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import FormQuestionModal from '../modal/FormQuestionModal';
+import RNFS, {} from 'react-native-fs';
 
 export default function AddLeadContainer(props) {
 
@@ -28,6 +30,11 @@ export default function AddLeadContainer(props) {
     const [isCurrentLocation, setIsCurrentLocation] = useState('0');
     const [customMasterFields , setCustomMasterFields] = useState({});
     const [primaryData, setPrimaryData] = useState({});
+    const formQuestionModalRef = useRef(null);
+    const [form, setForm] = useState({});
+    const [form_answers, setFormAnswers] = useState([]);
+    const [files, setFiles] = useState([]);
+
     const dispatch = useDispatch();
 
     var isMount = true;
@@ -70,9 +77,8 @@ export default function AddLeadContainer(props) {
         });
     }
 
-    const onAdd = () => {        
-        var postData = new FormData();        
-                
+    const onAdd = () => {
+        var postData = new FormData();                
         postData.append('use_current_geo_location', isCurrentLocation);                
         var time_zone = RNLocalize.getTimeZone();
         postData.append('user_local_data[time_zone]', time_zone);
@@ -94,15 +100,51 @@ export default function AddLeadContainer(props) {
         getCustomMasterParameterData(postData);
         getAllocateDeviceParameterData(postData);
         selectedLists.forEach((item, index) => {
-            postData.append(`allocated_devices[${index}][stock_item_id]`, item.stock_item_id);
-            postData.append(`allocated_devices[${index}][assigned_msisdn]`, item.msisdn);
-            postData.append(`allocated_devices[${index}][received_by]`, item.received);        
-            postData.append(`allocated_devices_signature[${item.stock_item_id}]`, { uri: item.signature, type:'image/png' , name:'sign.png' } );            
+            RNFS.exists(item.signature)
+            .then(res => {
+                if (res) {
+                    postData.append(`allocated_devices[${index}][stock_item_id]`, item.stock_item_id);
+                    postData.append(`allocated_devices[${index}][assigned_msisdn]`, item.msisdn);
+                    postData.append(`allocated_devices[${index}][received_by]`, item.received);        
+                    postData.append(`allocated_devices_signature[${item.stock_item_id}]`, { uri: item.signature, type:'image/png' , name:'sign.png' } );
+                }
+            }).catch((e) =>{
+
+            });
         })
 
+        form_answers.map(item => {
+            if (item.key != undefined && item.value != undefined) {
+              postData.append(item.key, item.value);
+            }
+        });
+          
+        files.map(item => {
+            if (item.key != undefined && item.value != undefined) {
+              if (item.type === 'upload_file') {
+                postData.append(item.key, {
+                  uri: item.value.uri,
+                  type: item.value.type,
+                  name: item.value.name,
+                });
+              } else {
+                var words = item.value.split('/');
+                var ext = words[words.length - 1].split('.');
+                postData.append(item.key, {
+                  uri: item.value,
+                  type: 'image/' + ext[1],
+                  name: words[words.length - 1],
+                });
+              }
+            }
+        });
+
         postApiRequestMultipart("leadfields", postData).then((res) => {        
-            if(res.status == "success"){
-                dispatch(showNotification({type:'success', message:res.message, buttonText:'Ok'}));
+            if(res.status === "success"){
+                dispatch(showNotification({type:'success', message:res.message, buttonText:'Ok' , buttonAction:() => {                    
+                    dispatch(clearNotification());
+                    props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: res.location_id});
+                } }));
             }
         }).catch((e) => {
             console.log("e", e)
@@ -126,7 +168,6 @@ export default function AddLeadContainer(props) {
     }
 
     const  getAllocateDeviceParameterData = (postData) => {
-
         Object.keys(primaryData).forEach((key , index) => {
             if( key != undefined && key != ''){
                 postData.append(`contact[${key}]`, primaryData[key]);
@@ -192,9 +233,21 @@ export default function AddLeadContainer(props) {
         console.log("onChangedCustomMasterFields--", value);
         setCustomMasterFields(value);
     }
-    const onPrimaryContactFields = (value) => {
-        console.log("onPrimaryContactFields", value)
+    const onPrimaryContactFields = (value) => {    
         setPrimaryData(value);
+    }
+
+    const onFormQuestionModalClosed = ({type, value}) => {
+        if(type == Constants.actionType.ACTION_CLOSE){
+            formQuestionModalRef.current.hideModal()
+        }
+        if(type == Constants.actionType.ACTION_DONE){
+            if(value.form_answers != undefined && value.files != undefined){
+                setFormAnswers(value.form_answers);
+                setFiles(value.files);
+                formQuestionModalRef.current.hideModal()
+            }            
+        }
     }
 
     return (
@@ -211,11 +264,19 @@ export default function AddLeadContainer(props) {
                 {...props}
             />
 
-            <AddLeadForms
+            <AddLeadFormsModal
                 onClose={() => {
-                    setCanShowaddLeadForms(!canShowAddLeadForms);
-                    props.onButtonAction({type:  Constants.actionType.ACTION_CLOSE})
+                    setCanShowaddLeadForms(!canShowAddLeadForms);                    
+                    //props.onButtonAction({type:  Constants.actionType.ACTION_CLOSE})
                 }}
+                onNext={(item) => {
+                    if(formQuestionModalRef.current){
+                        console.log("triggered item" , item)
+                        setForm({form_id:item.form_id, form_name:''});
+                        formQuestionModalRef.current.showModal()
+                    }
+                }}
+                navigation={props.navigation}
                 visible={canShowAddLeadForms}
                 formLists={formLists}      
             />
@@ -238,6 +299,13 @@ export default function AddLeadContainer(props) {
                 onButtonAction={onViewListsModal}
             />
 
+            <FormQuestionModal 
+                ref={formQuestionModalRef}
+                hideClear={true}
+                title=''
+                form={form}
+                onButtonAction={onFormQuestionModalClosed}
+            />
             <SubmitButton style={{marginHorizontal:10}} title={"Add"} onSubmit={onAdd}/>
         </View>
     )

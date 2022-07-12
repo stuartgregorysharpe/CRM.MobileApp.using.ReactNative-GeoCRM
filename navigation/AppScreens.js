@@ -143,11 +143,13 @@ export default function AppScreens() {
             detachPreviousScreen: !navigation.isFocused(),
           };
         }}>
+          
         <Stack.Screen
           name="Root"
           component={BottomTabNavigator}
           options={{headerShown: false}}
         />
+
         <Stack.Screen
           name="WebViewScreen"
           component={WebViewScreen}

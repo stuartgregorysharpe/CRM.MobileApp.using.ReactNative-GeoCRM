@@ -2,18 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, FlatList, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Modal, ScrollView, Dimensions, } from 'react-native';
 import { Button, Title } from 'react-native-paper';
-import Divider from '../../../../components/Divider';
-import Colors from '../../../../constants/Colors';
-import Fonts from '../../../../constants/Fonts';
-import { style } from '../../../../constants/Styles';
-import { FormListItem } from '../../Forms/partial/FormListItem';
-
-
+import Divider from '../../../../../components/Divider';
+import { Colors, Fonts } from '../../../../../constants';
+import { style } from '../../../../../constants/Styles';
+import { FormListItem } from '../../../Forms/partial/FormListItem';
 let isInfoWindow = false;
-export default function AddLeadForms(props) {
+
+
+export default function AddLeadFormsModal(props) {
 
     const { onClose } = props;
-    const navigationMain = useNavigation();
+    const navigationMain = props.navigation;// useNavigation();
     const [isInfo, setIsInfo] = useState(false);
     const [bubbleText, setBubleText] = useState({});
 
@@ -54,14 +53,8 @@ export default function AddLeadForms(props) {
                                     // props.onClose();
                                     if (!isInfoWindow) {
                                         onClose();
-                                        console.log("form data", item);
-                                        navigationMain.navigate('DeeplinkFormQuestionsScreen', {
-                                            data: {form_id: item.form_id},
-                                        });
-                                        // navigationMain.navigate("RepForms", {
-                                        //     screen: "FormQuestions",
-                                        //     params: { data: item , pageType:'CRM' }
-                                        // });
+                                        console.log("item", item)                                        
+                                        props.onNext(item);                                        
                                     } else {
                                         isInfoWindow = false;
                                     }

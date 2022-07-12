@@ -69,6 +69,7 @@ import MarkerIcon from '../../../components/Marker';
 import PinKeySlideUp from './popup/PinKeySlideUp';
 import CheckInStatusView from './partial/CheckInStatusView';
 import AddLeadModal from './add_lead';
+import { Constants } from '../../../constants';
 
 let id = 0;
 let previousZoom = 0;
@@ -260,6 +261,7 @@ export default function LocationScreen(props) {
     console.log('crm navigation');
     const unsubscribe = navigation.addListener('focus', async() => {
       console.log('focuseed');
+      
       isMount = true;
       specificLocationId = await getLocalData("@specific_location_id");
       refreshHeader();
@@ -273,8 +275,7 @@ export default function LocationScreen(props) {
       if (map.current !== null && map.current.props) {
         console.log("focuseed on change region")
         map.current.props.onRegionChangeComplete();
-      }
-      
+      }      
     });
     return unsubscribe;
   }, [navigation]);
@@ -517,12 +518,10 @@ export default function LocationScreen(props) {
           setIsRequest(false);
         })
     }
-
   }
 
   const renderMaker = (item, key) => {
-    if(selectedLocationsForCalendar.find(element => element.location_id === item.location_id)){
-      
+    if(selectedLocationsForCalendar.find(element => element.location_id === item.location_id)){      
       return <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />
     }
     if(mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code ){
@@ -532,7 +531,15 @@ export default function LocationScreen(props) {
   }
 
   const onAddLeadModalClosed = ({type, value}) => {
+    if(type == Constants.actionType.ACTION_CLOSE){
+      console.log("hide modal")
+      addLeadModalRef.current.hideModal();
+    }
+    if(type == Constants.actionType.ACTION_DONE){
+      addLeadModalRef.current.hideModal();
+      openLocaitonInfoDetails(Number(value));
 
+    }
   }
 
   return (
@@ -571,7 +578,8 @@ export default function LocationScreen(props) {
 
         <AddLeadModal
           title="Add Lead"
-          ref={addLeadModalRef}                          
+          ref={addLeadModalRef}
+          navigation={props.navigation}
           onButtonAction={onAddLeadModalClosed}
         />
 
@@ -801,7 +809,10 @@ export default function LocationScreen(props) {
             style={[styles.plusButton, { marginBottom: isCheckin ? 40 : 0}]}
             onPress={() => {
               //animation("addLead");
-              addLeadModalRef.current.showModal();
+              console.log(addLeadModalRef.current)
+              if(addLeadModalRef.current){                
+                addLeadModalRef.current.showModal();
+              }              
             }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
           </TouchableOpacity>

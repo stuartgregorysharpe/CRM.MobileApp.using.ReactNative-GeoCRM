@@ -49,6 +49,7 @@ const CModal = React.forwardRef((props, ref) => {
     }
     setIsVisible(false);
   };
+  
   return (
     <View style={[props.style]}>
       <Modal 

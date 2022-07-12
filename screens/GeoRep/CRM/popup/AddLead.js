@@ -34,7 +34,7 @@ import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
 import {checkFeatureIncludeParam} from '../../../../constants/Storage';
 import CustomInput from '../../../../components/common/CustomInput';
-import AddLeadForms from './AddLeadForms';
+import AddLeadFormsModal from '../add_lead/modal/AddLeadFormsModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddLead({screenProps, onClose}) {

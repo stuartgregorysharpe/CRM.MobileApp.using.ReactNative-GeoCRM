@@ -18,7 +18,7 @@ export async function reverseGeocoding (currentLocation, customMasterFields) {
 
         tmp.forEach((element) => {          
           address_components.forEach((item) =>{                            
-            if(item.types.includes("  ") || item.types.includes("point_of_interest") ){
+            if(item.types.includes("establishment") || item.types.includes("point_of_interest") ){
               establishment = item.long_name;
             }
             if(item.types.includes("street_number") && element.core_field_name == "street_address" || item.types.includes("route")  && element.core_field_name == "street_address" ){
