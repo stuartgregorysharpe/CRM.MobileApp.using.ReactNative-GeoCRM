@@ -24,13 +24,17 @@ export default function AddLeadContainer(props) {
     const [accuracyUnit, setAccuracyUnit] = useState('m');        
     const [formLists, setFormLists] = useState([]);
     const [selectedLists, setSelectedLists] = useState([]);
+    
     const selectDeviceModalRef = useRef(null)
     const viewListsModalRef = useRef(null)
+    const formQuestionModalRef = useRef(null);
+    const addLeadFormModalRef = useRef(null);
+
+    const [selectDeviceCount, setSelectDeviceCount] = useState(0);
     const [isCurrentLocation, setIsCurrentLocation] = useState('0');
     const [customMasterFields , setCustomMasterFields] = useState({});
     const [primaryData, setPrimaryData] = useState({});
-    const formQuestionModalRef = useRef(null);
-    const addLeadFormModalRef = useRef(null);
+    
     const [form, setForm] = useState({});
     const [form_answers, setFormAnswers] = useState([]);
     const [files, setFiles] = useState([]);
@@ -204,10 +208,14 @@ export default function AddLeadContainer(props) {
         if(type == Constants.actionType.ACTION_VIEW){
             setSelectedLists(value);            
         }
+        if(type == Constants.actionType.ACTION_NEXT){
+            setSelectDeviceCount(value);
+        }
         if(type == Constants.actionType.ACTION_CLOSE){
             props.onButtonAction({type : Constants.actionType.ACTION_NEXT , value: value});
             selectDeviceModalRef.current.hideModal();
         }
+
     }
 
     const onViewListsModal = ({type, value}) => {
@@ -216,6 +224,7 @@ export default function AddLeadContainer(props) {
             setSelectedLists(tmp);
         }
     }
+
 
     const renderRightPart = () => {        
         return <TouchableOpacity onPress={() => {
@@ -286,7 +295,7 @@ export default function AddLeadContainer(props) {
                 ref={selectDeviceModalRef}
                 hideClear={true}
                 selLists={selectedLists}
-                customRightHeaderView={renderViewLists()}
+                customRightHeaderView={selectDeviceCount > 0 ? renderViewLists() : <></>}
                 title = "Select Devices:"
                 onButtonAction={onSelectDeviceModalClosed}
             />

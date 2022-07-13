@@ -24,14 +24,26 @@ export default function SelectDevicesView(props) {
   };
 
   return (
-    <View style={{marginHorizontal:0, marginTop:5 , height:Dimensions.get("screen").height * 0.4}}>
-       <FlatList
+    <View style={{marginHorizontal:0, marginTop:5 , height:Dimensions.get("screen").height * 0.35}}>
+      <View style={{height:1, backgroundColor:whiteLabel().fieldBorder, marginHorizontal:10}}></View>
+      {
+        stockItems.length > 0 &&
+        <FlatList
           data={stockItems}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => renderItem(item, index)}
           keyExtractor={(item, index) => index.toString()}
           initialNumToRender={10}          
-        />        
+        />      
+      }
+
+      {
+        stockItems.length == 0 &&
+        <View style={{alignSelf:'center', flex:1, justifyContent:'center'}}>
+            <AppText title="No devices available in stock" size="medium" color={Colors.disabledColor} ></AppText>
+        </View>
+      }
+         
     </View>
   )
 

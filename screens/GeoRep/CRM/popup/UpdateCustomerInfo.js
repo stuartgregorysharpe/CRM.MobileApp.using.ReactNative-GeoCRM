@@ -31,6 +31,7 @@ import {
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
+import AddLeadMap from '../add_lead/components/AddLeadMap';
 
 export default function UpdateCustomerInfo({location_id, onClose, pageType}) {
   const dispatch = useDispatch();
@@ -61,8 +62,8 @@ export default function UpdateCustomerInfo({location_id, onClose, pageType}) {
     let postData = {
       location_id: location_id,
       coordinates: {
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
+        latitude: currentLocation.latitude != undefined? currentLocation.latitude : 0,
+        longitude: currentLocation.longitude != undefined ? currentLocation.longitude : 0,
       },
       use_current_geo_location: isCurrentLocation,
       location_name_updated: location_name_updated,
@@ -411,19 +412,8 @@ export default function UpdateCustomerInfo({location_id, onClose, pageType}) {
           <Title style={{fontFamily: Fonts.primaryBold}}>Update</Title>
         </View>
 
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          showsUserLocation={true}
-          followUserLocation={true}
-          showsMyLocationButton={true}
-          zoomEnabled={true}
-          region={{
-            latitude: currentLocation.latitude,
-            longitude: currentLocation.longitude,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001,
-          }}></MapView>
+        <AddLeadMap />
+        
 
         <View style={{padding: 5}}>
           {leadForms.map((field, key) => {

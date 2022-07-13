@@ -15,10 +15,10 @@ export default function AddLeadMap() {
                 showsMyLocationButton={true}
                 zoomEnabled={true}
                 region={{
-                latitude:  currentLocation && currentLocation.latitude != undefined? currentLocation.latitude : 0,
-                longitude: currentLocation && currentLocation.longitude != undefined? currentLocation.longitude : 0,
-                latitudeDelta: 0.001,
-                longitudeDelta: 0.001,
+                    latitude:  currentLocation && currentLocation.latitude != undefined? currentLocation.latitude : 0,
+                    longitude: currentLocation && currentLocation.longitude != undefined? currentLocation.longitude : 0,
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001,
                 }}></MapView>
         </View>
     )

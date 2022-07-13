@@ -66,12 +66,14 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
                 tmp.push(item);
             }        
         });
-        setShowStockItems(tmp);
+        setShowStockItems(tmp);        
+        props.onButtonAction({type: Constants.actionType.ACTION_NEXT , value: tmp.length });
+
     }
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
-            
+
             <SelectDevicesView 
                 stockItems={showStockItems}
                 onItemSelected={(item) =>onItemSelected(item)}
