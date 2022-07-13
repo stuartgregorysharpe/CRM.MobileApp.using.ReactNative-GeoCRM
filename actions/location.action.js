@@ -361,45 +361,6 @@ export const getLocationSearchList = () => (dispatch, getState) => {
   );    
 }
 
-
-export const getLeadFields = async () => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  var user_id = await getUserId();
-  console.log(`${base_url}/leadfields`);
-  
-  return new Promise(function (resolve, reject) {
-    axios
-      .get(`${base_url}/leadfields`, {
-        params: {
-          user_id: user_id
-        },
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == 'success') {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
-}
-
 export const getLocationInfoUpdate = async (location_id) => {
 
   var base_url = await getBaseUrl();
@@ -436,36 +397,6 @@ export const getLocationInfoUpdate = async (location_id) => {
   });
 }
 
-export const postLeadFields = async (postData) => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();      
-  console.log("URL###", `${base_url}/leadfields`);
-  console.log("Param " , postData)
-  return new Promise(function (resolve, reject) {    
-    axios
-      .post(`${base_url}/leadfields`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4()
-        }
-      })
-      .then((res) => {        
-        if (res.data.status === "success") {
-          resolve(res.data.location_id);
-        }
-        resolve(0);
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);
-        }
-      })
-  });
-}
 
 
 export const postLocationInfoUpdate = async (postData) => {
@@ -854,43 +785,3 @@ export const updateCustomerLocationFields = async (postData) => {
 
 }
 
-
-export const getAddLeadFormsList = async (params) => {
-   
-     var base_url = await getBaseUrl();
-     var token = await getToken();
-   
-     console.log(`${base_url}/forms/forms-list`);
-     return new Promise(function (resolve, reject) {
-       axios
-         .get(`${base_url}/forms/forms-list`, {
-           params: {
-             add_lead: 1,
-             location_type:params.location_type,
-             group:params.group,
-             group_split:params.group_split
-           },
-           headers: {
-             Authorization: 'Bearer ' +  token
-           }
-         })
-         .then((res) => {
-           if (res.data == undefined) {
-             resolve([]);
-           }
-           console.log("message", res.data);
-           resolve(res.data);
-   
-         })
-         .catch((err) => {
-           const error = err.response;
-           if (error.status===401 && error.config && 
-             !error.config.__isRetryRequest) {          
-               reject("expired");
-           }else{
-             reject(err);  
-           }
-         })
-     });
-
-}

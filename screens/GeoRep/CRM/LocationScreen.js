@@ -26,7 +26,6 @@ import MapView, {
 } from 'react-native-maps';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch, faChevronUp} from '@fortawesome/free-solid-svg-icons';
-import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
 import SvgIcon from '../../../components/SvgIcon';
 import GrayBackground from '../../../components/GrayBackground';
@@ -56,7 +55,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import {CrmCalendarSelection} from './partial/CrmCalendarSelection';
 import {expireToken, isInsidePoly} from '../../../constants/Helper';
-0;
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import {
   getLocalData,
@@ -69,6 +67,8 @@ import {SvgXml} from 'react-native-svg';
 import MarkerIcon from '../../../components/Marker';
 import PinKeySlideUp from './popup/PinKeySlideUp';
 import CheckInStatusView from './partial/CheckInStatusView';
+import AddLeadModal from './add_lead';
+import { Constants } from '../../../constants';
 
 let id = 0;
 let previousZoom = 0;
@@ -109,31 +109,18 @@ export default function LocationScreen(props) {
   const [tracksViewChanges, setTracksViewChanges] = useState(false);
   const [isGuranted, setIsGuranted] = useState(false);
   const [transCode, setTransCode] = useState("05");  
+  const addLeadModalRef = useRef(null);
 
-  useEffect(() => {    
+  useEffect(() => {
     initCode();
-    refreshHeader();
-    if (crmStatus || showItem === "addLead") {
-      props.screenProps.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
+    refreshHeader();    
     requestPermissions();
     return () => {      
       isMount = false;
     };
   }, []);
 
-  useEffect(()=>{
-    if (crmStatus || showItem === "addLead") {
-      props.screenProps.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
+  useEffect(()=>{    
     refreshHeader();
   },[showItem])
 
@@ -153,7 +140,7 @@ export default function LocationScreen(props) {
         setIsGuranted(true);
       }
     }
-
+    
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -259,6 +246,7 @@ export default function LocationScreen(props) {
     console.log('crm navigation');
     const unsubscribe = navigation.addListener('focus', async() => {
       console.log('focuseed');
+      
       isMount = true;
       specificLocationId = await getLocalData("@specific_location_id");
       refreshHeader();
@@ -272,8 +260,7 @@ export default function LocationScreen(props) {
       if (map.current !== null && map.current.props) {
         console.log("focuseed on change region")
         map.current.props.onRegionChangeComplete();
-      }
-      
+      }      
     });
     return unsubscribe;
   }, [navigation]);
@@ -314,7 +301,7 @@ export default function LocationScreen(props) {
         return (<TouchableOpacity
           onPress={
             () => {
-              if (showingItem === 'addLead' || showItem === "locationInfo") {
+              if (showItem === "locationInfo") {
                 showingItem = "map_view";
                 setShowItem('map_view');
                 setIsBack(false);
@@ -346,13 +333,7 @@ export default function LocationScreen(props) {
         <TouchableOpacity
           style={style.headerLeftStyle}
           activeOpacity={1}
-          onPress={() => {
-            if (showingItem === 'addLead') {
-              showingItem = "map_view";
-              setShowItem('map_view');
-              setIsBack(false);
-              return;
-            }
+          onPress={() => {            
             dispatch({ type: SLIDE_STATUS, payload: false });
             setIsBack(false);
             if (navigation.canGoBack()) {
@@ -376,15 +357,7 @@ export default function LocationScreen(props) {
     if (crmStatus) {
       dispatch({ type: SLIDE_STATUS, payload: false });
       return true;
-    }
-
-    if (showingItem === "addLead") {
-      showingItem = "map_view";
-      setShowItem("map_view");
-      setIsBack(false);
-      refreshHeader()
-      return true;
-    }
+    }    
     props.navigation.goBack();
     return true;
   };
@@ -392,7 +365,7 @@ export default function LocationScreen(props) {
   const animation = (name) => {    
     setShowItem(name);
     showingItem = name;
-    if (name === "addLead" || name === "locationInfo") {
+    if ( name === "locationInfo") {
       setIsBack(true);      
     }
   }
@@ -516,18 +489,28 @@ export default function LocationScreen(props) {
           setIsRequest(false);
         })
     }
-
   }
 
   const renderMaker = (item, key) => {
-    if(selectedLocationsForCalendar.find(element => element.location_id === item.location_id)){
-      
+    if(selectedLocationsForCalendar.find(element => element.location_id === item.location_id)){      
       return <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />
     }
     if(mapPinSvg != null && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)) && mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code ){
       return <SvgXml style={styles.markerIcon} xml={mapPinSvg.find(element => parseInt(element.pin_id) == parseInt(item.pin_id)).svg_code} width="34px" height="34px" />
     }
     return <View></View>    
+  }
+
+  const onAddLeadModalClosed = ({type, value}) => {
+    if(type == Constants.actionType.ACTION_CLOSE){
+      console.log("hide modal")
+      addLeadModalRef.current.hideModal();
+    }
+    if(type == Constants.actionType.ACTION_DONE){
+      addLeadModalRef.current.hideModal();
+      openLocaitonInfoDetails(Number(value));
+
+    }
   }
 
   return (
@@ -550,20 +533,12 @@ export default function LocationScreen(props) {
           </View>
         }
 
-        {
-          showItem === "addLead" &&
-          <AddLead screenProps={props.screenProps}
-            onClose={(location_id) => {
-              if (location_id) {
-                openLocaitonInfoDetails(Number(location_id));
-                return;
-              }
-              console.log("Clicked");
-              showingItem = "map_view";
-              setShowItem("map_view");
-              setIsBack(false);
-            }} />
-        }
+        <AddLeadModal
+          title="Add Lead"
+          ref={addLeadModalRef}
+          navigation={props.navigation}
+          onButtonAction={onAddLeadModalClosed}
+        />
 
         {
           crmStatus && showItem == "locationInfo" &&
@@ -789,8 +764,11 @@ export default function LocationScreen(props) {
                     
           <TouchableOpacity
             style={[styles.plusButton, { marginBottom: isCheckin ? 40 : 0}]}
-            onPress={() => {
-              animation("addLead");
+            onPress={() => {            
+              console.log(addLeadModalRef.current)
+              if(addLeadModalRef.current){                
+                addLeadModalRef.current.showModal();
+              }              
             }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
           </TouchableOpacity>

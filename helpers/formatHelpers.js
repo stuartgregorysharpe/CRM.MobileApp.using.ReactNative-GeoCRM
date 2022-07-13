@@ -66,12 +66,19 @@ export function formatPeriod(
 }
 
 export function validateEmail (text){  
-  let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  if (reg.test(text) === false) {    
+  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+  try{
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {    
+      return false;
+    }
+    else {
+      return true;
+    }
+  }catch(e){
+    console.log("error",e)
     return false;
   }
-  else {
-    return true;
-  }
+  
 }
 

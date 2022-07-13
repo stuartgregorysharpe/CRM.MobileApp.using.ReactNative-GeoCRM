@@ -40,8 +40,7 @@ export default function Checkout(props) {
 
     postApiRequest('location-info/check-out', postData)
       .then(async(res) => {
-        await storeLocalValue('@checkin', '0');
-        dispatch({ type: CHECKIN, payload: false });
+        await storeLocalValue('@checkin', '0');        
         goBack(res);
       })
       .catch(e => {

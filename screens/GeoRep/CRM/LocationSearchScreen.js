@@ -46,8 +46,9 @@ import {LocationInfoDetails} from './locationInfoDetails/LocationInfoDetails';
 import {getFilterData, getLocalData} from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 import {Notification} from '../../../components/modal/Notification';
-import AddLead from './popup/AddLead';
 import CheckInStatusView from './partial/CheckInStatusView';
+import AddLeadModal from './add_lead';
+import { Constants } from '../../../constants';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -59,12 +60,8 @@ export default function LocationSearchScreen(props) {
   const navigation = props.navigation;
   const dispatch = useDispatch();  
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const filterParmeterChanged = useSelector(
-    state => state.selection.searchFilters,
-  );
-  const features = useSelector(
-    state => state.selection.payload.user_scopes.geo_rep.features,
-  );
+  const filterParmeterChanged = useSelector( state => state.selection.searchFilters);
+  const features = useSelector( state => state.selection.payload.user_scopes.geo_rep.features);
   const [orderLists, setOrderLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
   const [showItem, setShowItem] = useState(savedShowItem);    
@@ -73,9 +70,7 @@ export default function LocationSearchScreen(props) {
   const locationId = useSelector(state => state.location.locationId.value);
   const tabType = useSelector(state => state.location.locationId.type);
   const isSelected = useSelector(state => state.selection.isCalendarSelection);
-  const selectedLocationsForCalendar = useSelector(
-    state => state.selection.selectedLocationsForCalendar,
-  );
+  const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState('');
   const [calendarType, setCalendarType] = useState(
@@ -91,11 +86,8 @@ export default function LocationSearchScreen(props) {
   const [pageNumber, setPageNumber] = useState(0);
   const [myLocation, setMyLocation] = useState(currentLocation);
   const [isCheckin, setIsCheckin] = useState(false);
+  const addLeadModalRef = useRef(null)
 
-  useEffect(() => {
-    console.log('SEARCH PAGE REALOAD');
-    ///setCalendarType( props.route.params !== undefined && props.route.params.calendar_type !== undefined ? props.route.params.calendar_type : '');
-  });
 
   useEffect(() => {
     initData();
@@ -103,12 +95,10 @@ export default function LocationSearchScreen(props) {
       isEndPageLoading = false;
       loadMoreData();
     }
-    refreshHeader();
-    console.log('shw item', showItem);
+    refreshHeader();    
   }, []);
 
-  useEffect(() => {
-    console.log('refresh called');
+  useEffect(() => {    
     refreshHeader();
     if (showItem === 0) {
       setTimeout(() => {
@@ -156,22 +146,19 @@ export default function LocationSearchScreen(props) {
       isEndPageLoading = false;
       setPageNumber(0);
       setOrderLists([]);
-      setOriginLists([]);
-      console.log('filter called from filter');
+      setOriginLists([]);      
       loadMoreData();
     }
   }, [filterParmeterChanged]);
 
   useEffect(() => {
-    if (isPageLoading) {
-      console.log('----------');
+    if (isPageLoading) {      
       searchKey = searchKeyword;
       loadData(searchKey);
     }
   }, [isPageLoading]);
 
-  useEffect(() => {
-    console.log('search key board', searchKeyword);
+  useEffect(() => {    
     changedKey = searchKeyword;
   }, [searchKeyword]);
 
@@ -271,20 +258,13 @@ export default function LocationSearchScreen(props) {
     });
   };
 
-  const loadData = async searchKey => {
-    console.log('search key', searchKey);
-    console.log('page number', pageNumber);
-    var filterData = await getFilterData('@filter');
+  const loadData = async searchKey => {    
 
+    var filterData = await getFilterData('@filter');
     getLocationSearchListsByPage(filterData, pageNumber, searchKey)
-      .then(res => {
-        //if (pageNumber === 0) {
-          setIsLoading(false);
-        //}
-        
-        console.log('result length', res.length);
-        console.log('searchKey', searchKey);
-        console.log('current searchKey', changedKey);
+      .then(res => {        
+        setIsLoading(false);
+
         if (searchKey !== changedKey) {
           console.log(searchKey, changedKey);
           setPageNumber(0);
@@ -331,10 +311,7 @@ export default function LocationSearchScreen(props) {
     }
   };
 
-  const animation = name => {
-    console.log('animation', name);
-    //dispatch({type: SLIDE_STATUS, payload: true});
-    console.log('name', name);
+  const animation = name => {        
     switch (name) {
       case 'search-page':
         setShowItem(0);
@@ -352,17 +329,14 @@ export default function LocationSearchScreen(props) {
       case 'addtocalendar':
         setShowItem(3);
         savedShowItem = 3;
-        return;
-      case 'addLead':
-        setShowItem(4);
-        savedShowItem = 4;
-        return;
+        return;      
       default:
         setShowItem(0);
         savedShowItem = 0;
         return;
     }
   };
+
 
   const openLocationInfo = async location_id => {
     animation('locationInfo');
@@ -377,8 +351,7 @@ export default function LocationSearchScreen(props) {
         }
       })
       .catch(e => {
-        expireToken(dispatch, e);
-        console.log('location info api ', e);
+        expireToken(dispatch, e);        
       });
   };
 
@@ -438,8 +411,7 @@ export default function LocationSearchScreen(props) {
       return (
         <View style={styles.footer}>
           <TouchableOpacity
-            activeOpacity={0.9}
-            // onPress={loadMoreData}
+            activeOpacity={0.9}            
             style={styles.loadMoreBtn}>
             <Text style={styles.btnText}>Loading</Text>
             {isPageLoading ? (
@@ -451,6 +423,18 @@ export default function LocationSearchScreen(props) {
     }
     return <View></View>;
   };
+
+  const onAddLeadModalClosed = ({type, value}) => {
+    
+    if(type == Constants.actionType.ACTION_CLOSE){    
+      addLeadModalRef.current.hideModal();
+    }
+    if(type == Constants.actionType.ACTION_DONE){
+      addLeadModalRef.current.hideModal();
+      //openLocaitonInfoDetails(Number(value));
+    }
+  }
+
 
   return (
     <Provider>
@@ -508,8 +492,8 @@ export default function LocationSearchScreen(props) {
                   }
                 : {transform: [{translateY: 0}]},
             ]}>
-            <LocationInfoDetails
-              //{...props}
+              
+            <LocationInfoDetails              
               navigation={navigation}
               ref={locationRef}
               animation={animation}
@@ -549,16 +533,12 @@ export default function LocationSearchScreen(props) {
               }}></AddToCalendar>
           </View>
         )}
-
-        {showItem === 4 && (
-          <AddLead
-            screenProps={props.screenProps}
-            onClose={location_id => {
-              animation('search-page');
-              showBottomBar();
-            }}
-          />
-        )}
+        
+        <AddLeadModal
+          title="Add Lead"
+          ref={addLeadModalRef}
+          onButtonAction={onAddLeadModalClosed}
+        />
 
         <View style={styles.container}>
           <SearchBar
@@ -714,7 +694,7 @@ export default function LocationSearchScreen(props) {
                     {bottom: isCheckin === '1' ? 200 : 150},
                   ]}
                   onPress={() => {
-                    animation('addLead');
+                    addLeadModalRef.current.showModal();
                   }}>
                   <SvgIcon
                     icon="Round_Btn_Default_Dark"

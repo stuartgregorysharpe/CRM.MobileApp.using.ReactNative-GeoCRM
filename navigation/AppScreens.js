@@ -31,6 +31,7 @@ import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSp
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import FormsScreen from '../screens/GeoRep/Forms/FormsScreen';
 import SalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import Stock from '../screens/GeoRep/Stock/Stock';
 
 const Stack = createNativeStackNavigator();
 
@@ -142,11 +143,13 @@ export default function AppScreens() {
             detachPreviousScreen: !navigation.isFocused(),
           };
         }}>
+          
         <Stack.Screen
           name="Root"
           component={BottomTabNavigator}
           options={{headerShown: false}}
         />
+
         <Stack.Screen
           name="WebViewScreen"
           component={WebViewScreen}
@@ -177,7 +180,12 @@ export default function AppScreens() {
           {props => <SalesPipelineScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
 
-        
+        <Stack.Screen 
+          name="DeeplinkStock" 
+          options={{header: () => false}}>
+          {props => <Stock {...props} isDeeplink={true} />}
+        </Stack.Screen>
+
       </Stack.Navigator>
     </SafeAreaView>
   );

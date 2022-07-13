@@ -171,12 +171,12 @@ export const NextPrev = forwardRef((props, ref) => {
       console.log('new_lists2', new_lists);
       setCurrentLoopList(new_lists);
       currentPosition = new_lists.length - 1;
-      await storeLocationLoop(new_lists);
-      if (new_lists.length >= 2) {
-        setPrevLocationName(new_lists[new_lists.length - 2].name);
-        setNextLocationName(locationInfo.next.name);
+      await storeLocationLoop(new_lists);      
+      if (new_lists.length >= 2) {        
+        setPrevLocationName( new_lists[new_lists.length - 2] != undefined ? new_lists[new_lists.length - 2].name : '');
+        setNextLocationName( locationInfo.next != undefined ? locationInfo.next.name : '');        
       } else {
-        setNextLocationName(locationInfo.next.name);
+        setNextLocationName( locationInfo.next != undefined ? locationInfo.next.name : '');
       }
     }
   };

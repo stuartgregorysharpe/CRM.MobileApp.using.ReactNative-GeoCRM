@@ -190,7 +190,7 @@ export default function StockLists() {
             if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
                 stockSignatureModalRef.current.showModal();
             }else if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
-                console.log("dfasdfasdfsdf", value)
+                
             }else if(value.stockType === Constants.stockDeviceType.TARDER){
                 traderModalRef.current.showModal()
             }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native'
 import TakePhotoView from '../../shared/TakePhotoView';
 import CTextInput from '../CTextInput';
 import CDateTimePickerInput from '../SelectInput/CDateTimePickerInput';
@@ -12,19 +13,24 @@ const DynamicField = props => {
     is_required,
     editable,
     items,
-    value,
+    value,    
     updateFormData,
+    updateSecondFormData,
     hasError,
-    isFirst,
-    key,
+    isFirst,    
+    index,
+    dynamicFieldRef,
   } = props;
 
+  
   const disabled = editable && editable == '0';
   const renderNumber = () => {
     return (
       <CTextInput
         label={field_label}
-        key={key}
+        key={index}
+        dynamicFieldRef={dynamicFieldRef}
+        index={index}        
         isRequired={is_required}
         value={value}
         hasError={hasError}
@@ -42,7 +48,9 @@ const DynamicField = props => {
     return (
       <CTextInput
         label={field_label}
-        key={key}
+        key={index}
+        dynamicFieldRef={dynamicFieldRef}
+        index={index}
         isRequired={is_required}
         value={value}
         hasError={hasError}
@@ -50,14 +58,15 @@ const DynamicField = props => {
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 10}}
+        style={{marginTop: isFirst ? 0 : 5}}
       />
     );
   };
+
   const renderDropdown = () => {
     return (
       <CSingleSelectInput
-        key={key}
+        key={index}      
         description={field_label}
         placeholder={'Select ' + field_label}
         checkedValue={value}
@@ -69,12 +78,57 @@ const DynamicField = props => {
         }}
         containerStyle={{marginTop: isFirst ? 0 : 10}}
       />
+
     );
   };
+
+  const renderDropdownInput = () => {
+    console.log("ADSFSDF",value)
+    return (
+      <View>
+        <CSingleSelectInput
+          key={index}          
+          description={field_label}
+          placeholder={'Select ' + field_label}
+          checkedValue={value.value}
+          items={items}
+          hasError={hasError}
+          disabled={disabled}
+          onSelectItem={item => {
+            updateSecondFormData(field_name, item.value , value.secondValue);
+          }}
+          containerStyle={{marginTop: isFirst ? 0 : 10}}
+        />
+
+          {
+            value != '' &&
+            <CTextInput
+              label={field_label + " Number & Details"}
+              key={"text" + index}
+              dynamicFieldRef={dynamicFieldRef}
+              index={index}
+              isRequired={true}
+              value={value.secondValue}
+              hasError={hasError}
+              disabled={disabled}
+              onChangeText={text => {
+                updateSecondFormData(field_name, value.value , text);                
+              }}
+              style={{marginTop: 10}}
+            />
+          }
+        
+
+      </View>
+    );
+  };
+
+  
   const renderDatePicker = () => {
     return (
       <CDateTimePickerInput
-        key={key}
+        key={index}        
+        
         description={field_label}
         placeholder={'Select ' + field_label}
         value={value}
@@ -110,6 +164,11 @@ const DynamicField = props => {
   if (field_type == 'dropdown') {
     return renderDropdown();
   }
+
+  if (field_type == 'dropdown_input') {
+    return renderDropdownInput();
+  }
+  
   if (field_type == 'date') {
     return renderDatePicker();
   }

@@ -24,7 +24,7 @@ const SKUSelect = props => {
       />
     );
   };
-
+  
   return (
     <BaseForm
       item={item}

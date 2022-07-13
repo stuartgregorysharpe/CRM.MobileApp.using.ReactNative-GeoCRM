@@ -78,7 +78,7 @@ export default function DevicesModalView(props) {
             </ScrollView>
 
             {
-                    lists.length > 0 &&
+                   // lists.length > 0 &&
                     <TouchableOpacity
                         style={[style.plusButton, { marginBottom: 0}]}
                         onPress={() => { 

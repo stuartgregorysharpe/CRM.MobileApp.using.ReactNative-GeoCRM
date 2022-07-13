@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react' 
 import CardView from '../../../../../../components/common/CardView'
 import { AppText } from '../../../../../../components/common/AppText'
 import { getSubText } from '../../../../../../helpers/viewHelper'
@@ -14,6 +14,6 @@ export default function StockDetailCard({item}) {
             <AppText title={getSubText(item)} color={whiteLabel().subText}></AppText>
         </View>
     </CardView>
-
   )
+
 }

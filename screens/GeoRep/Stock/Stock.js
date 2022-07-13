@@ -6,10 +6,12 @@ import StockLists from './stock/StockLists';
 import Movements from './movements/Movements';
 import Returns from './returns/Returns';
 import { style } from '../../../constants/Styles';
+import NavigationHeader from '../../../components/Header/NavigationHeader';
 
 export default function Stock(props) {
     const headers = ["Stock","Movements", "Returns"];
     const [tabIndex , setTabIndex] = useState(1);
+    const isShowCustomNavigationHeader = props.isDeeplink != undefined;
 
     useEffect(() => {
         var screenProps = props.screenProps;    
@@ -32,6 +34,15 @@ export default function Stock(props) {
             
     return (
         <View style={{flexDirection:'column' , flex:1}}>      
+            {isShowCustomNavigationHeader && (
+              <NavigationHeader
+                showIcon={true}
+                title={'Stock'}
+                onBackPressed={() => {
+                  props.navigation.goBack();
+                }}
+              />
+            )}
             <TopThreeTab headers={headers} tabIndex={tabIndex}  setTabIndex={(index) => {
                 setTabIndex(index)
             }}></TopThreeTab>
@@ -40,7 +51,7 @@ export default function Stock(props) {
                 {
                     tabIndex === 1 && <StockLists></StockLists>
                 }
-                {
+                { 
                     tabIndex === 2 && <Movements></Movements>
                 }
                 {

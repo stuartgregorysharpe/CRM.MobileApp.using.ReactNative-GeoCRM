@@ -49,6 +49,7 @@ const CModal = React.forwardRef((props, ref) => {
     }
     setIsVisible(false);
   };
+  
   return (
     <View style={[props.style]}>
       <Modal 
@@ -80,6 +81,7 @@ const CModal = React.forwardRef((props, ref) => {
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
             ]}>
+
             <View style={styles.bodyContainer}>
               {!isFullModal && <View style={styles.modalHandler} />}
 
@@ -98,12 +100,12 @@ const CModal = React.forwardRef((props, ref) => {
               {(props.title || props.icon) && (
                 <View style={styles.titleContainer}>
                   
-                  <View style={{flex:1, alignItems: props.headerType === "center" ? 'center' : 'flex-start'}}>
+                  <View style={{flex:1, marginRight:50, alignItems: props.headerType === "center" ? 'center' : 'flex-start'}}>
                     {props.title && (
                       <Text style={[styles.title, {color: props.headerType === "center" ? whiteLabel().mainText : Colors.blackColor }]}>{props.title}</Text>
                     )}
                   </View>
-                                    
+
                   {!hideClear && (
                     <TouchableOpacity
                       style={styles.clearButtonContainer}
@@ -113,7 +115,10 @@ const CModal = React.forwardRef((props, ref) => {
                       </Text>
                     </TouchableOpacity>
                   )}
+                  
                   {props.customRightHeaderView}
+                  
+                  
                 </View>
               )}
               {props.children}
@@ -182,8 +187,10 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'space-between',
     alignItems:'center',    
-    paddingHorizontal: 15,
-    paddingRight: 50,
+    marginTop:5,
+    paddingLeft:5,
+    paddingRight:15,
+    //paddingRight: 50,
   },
   titleIcon: {
     width: 16,

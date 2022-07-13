@@ -6,6 +6,7 @@ import LocationSearchScreen from './LocationSearchScreen';
 import {checkFeatureIncludeParam} from '../../../constants/Storage';
 import {useSelector} from 'react-redux';
 import TouchpointScreen from '../Touchpoint/TouchpointScreen';
+import Stock from '../Stock/Stock';
 
 const Stack = createNativeStackNavigator();
 
@@ -67,6 +68,8 @@ export default function CRMScreen(props) {
             <LocationSpecificInfoScreen {...props} screenProps={screenProps} />
           )}
         </Stack.Screen>
+
+
       </Stack.Navigator>
     );
   }

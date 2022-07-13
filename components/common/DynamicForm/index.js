@@ -11,6 +11,7 @@ import DynamicField from './DynamicField';
 const DynamicForm = React.forwardRef((props, ref) => {
   const {formData, formStructureData} = props;
   const [errors, setErrors] = useState({});
+  const dynamicFieldRef = useRef([]);
   useEffect(() => {
     const initialErrors = {};
     formStructureData.forEach(fieldStructure => {
@@ -30,12 +31,23 @@ const DynamicForm = React.forwardRef((props, ref) => {
       const _formData = {...formData};
       _formData[fieldName] = value;
       props.updateFormData(_formData);
-
       if (fieldName) {
         checkFormFieldValid([fieldName], _formData);
       }
     }
   };
+
+  const updateSecondFormData = (fieldName, value, secondValue) =>{
+    if (props.updateSecondFormData) {
+      const _formData = {...formData};
+      _formData[fieldName] = {value:value, secondValue:secondValue};
+      props.updateSecondFormData(_formData);
+      if (fieldName) {
+        checkFormFieldValid([fieldName], _formData);
+      }
+    }
+  }
+    
   const checkFormFieldValid = (
     fieldNames,
     _formData,
@@ -68,6 +80,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
     const valid = checkFormFieldValid(requiredFields, null, 'require');
     return valid;
   };
+
+
   const renderFields = () => {
     return formStructureData.map((fieldStructure, index) => {
       return (
@@ -75,9 +89,14 @@ const DynamicForm = React.forwardRef((props, ref) => {
           {...fieldStructure}
           key={index + 'field'}
           updateFormData={updateFormData}
+          updateSecondFormData={updateSecondFormData}
           value={formData[fieldStructure.field_name]}
           hasError={errors[fieldStructure.field_name]}
           isFirst={index == 0}
+          index={index}
+          dynamicFieldRef={dynamicFieldRef}
+          
+
         />
       );
     });

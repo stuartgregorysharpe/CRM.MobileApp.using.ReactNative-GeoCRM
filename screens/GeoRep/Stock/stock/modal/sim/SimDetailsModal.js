@@ -19,16 +19,14 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
     }
   };
 
-
-  const openSignature = (value) => {        
+  const openSignature = (value) => {  
     onButtonAction({ type: Constants.actionType.ACTION_NEXT , value: value });
   }
-
-
-  return (          
+  
+  return (
     <CModal
       ref={ref}
-      modalType={Constants.modalType.MODAL_TYPE_FULL}
+      modalType={Constants.modalType.MODAL_TYPE_FULL}     
       {...props}>
       <SimDetailsContainer
         {...props}
