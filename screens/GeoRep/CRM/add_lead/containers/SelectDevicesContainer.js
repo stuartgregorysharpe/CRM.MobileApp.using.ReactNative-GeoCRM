@@ -1,14 +1,12 @@
 
 import { View } from 'react-native'
-import React , {useEffect, useState , useRef ,useImperativeHandle} from 'react'
+import React , {useEffect, useState , useRef} from 'react'
 import SelectDevicesView from '../components/SelectDevicesView';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
 import { Constants } from '../../../../../constants';
-import ViewListsModal from '../modal/ViewListsModal';
 
-//export default function SelectDevicesContainer(props) {
 const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     const { selLists } = props;
@@ -20,8 +18,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     var isMount = true;
     useEffect(() => {
-        setSelectedLists(selLists);
-        console.log("selLists",selLists)
+        setSelectedLists(selLists);        
         callSelectDevices();
         return () =>{
             isMount =  false;
@@ -30,14 +27,15 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     const callSelectDevices = () => {
         getApiRequest("stockmodule/stock-list?stock_type=Device" , {}).then((res) => {            
-            setStockItems(res.stock_items);
-            updateLists( res.stock_items, selLists);
+            if(isMount){
+                setStockItems(res.stock_items);
+                updateLists( res.stock_items, selLists);
+            }            
         }).catch((e) => {
         });
     }
 
     const allocateDevices = () => {
-        console.log("selected devices" , selectedLists);
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value: selectedLists});
     }
 
@@ -60,12 +58,10 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
         }
     }
     
-    const updateLists = (stockItems, selectedLists) => {
-        console.log("update", selectedLists)
+    const updateLists = (stockItems, selectedLists) => {        
         var tmp = [];
         stockItems.forEach((item) => {
             const check = selectedLists.filter(element =>  element.stock_item_id === item.stock_item_id);            
-            console.log("check",check)
             if(check.length == 0){
                 tmp.push(item);
             }        
@@ -75,6 +71,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
+            
             <SelectDevicesView 
                 stockItems={showStockItems}
                 onItemSelected={(item) =>onItemSelected(item)}

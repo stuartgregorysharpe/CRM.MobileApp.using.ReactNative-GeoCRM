@@ -6,7 +6,6 @@ import ViewListsContainer from '../containers/ViewListsContainer';
 
 const ViewListsModal = React.forwardRef((props, ref) => {
 
-  const {item} = props;
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -37,4 +36,5 @@ const ViewListsModal = React.forwardRef((props, ref) => {
         
   );
 });
+
 export default ViewListsModal;

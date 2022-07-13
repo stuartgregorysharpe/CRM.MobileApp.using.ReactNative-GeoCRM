@@ -1,4 +1,4 @@
-import { View, Text, Dimensions ,ScrollView } from 'react-native'
+import { View, Dimensions ,ScrollView } from 'react-native'
 import React from 'react'
 import AddLeadMap from './AddLeadMap'
 import PrimaryContactFields from './PrimaryContactFields'

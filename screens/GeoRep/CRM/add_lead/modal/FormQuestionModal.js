@@ -2,13 +2,10 @@
 import React from 'react';
 import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
-import { FormQuestions } from '../../../Forms/questions/FormQuestions';
 import FormQuestionContainer from '../containers/FormQuestionContainer';
-import ViewListsContainer from '../containers/ViewListsContainer';
 
 const FormQuestionModal = React.forwardRef((props, ref) => {
 
-  const {item} = props;
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -25,7 +22,7 @@ const FormQuestionModal = React.forwardRef((props, ref) => {
     }
   };
 
-  return (    
+  return (
     <CModal
       ref={ref}
       modalType={Constants.modalType.MODAL_TYPE_FULL}
@@ -39,4 +36,5 @@ const FormQuestionModal = React.forwardRef((props, ref) => {
         
   );
 });
+
 export default FormQuestionModal;

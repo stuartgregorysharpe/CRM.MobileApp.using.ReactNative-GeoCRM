@@ -1,5 +1,5 @@
 
-import React , { useState , useEffect, useRef} from 'react'
+import React from 'react'
 import CModal from '../../../../components/common/CModal';
 import { Constants } from '../../../../constants';
 import AddLeadContainer from './containers/AddLeadContainer';

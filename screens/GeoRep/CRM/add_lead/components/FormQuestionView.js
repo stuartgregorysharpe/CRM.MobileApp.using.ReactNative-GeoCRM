@@ -1,6 +1,6 @@
 
 import { View, Text ,ScrollView , StyleSheet ,TouchableOpacity} from 'react-native'
-import React , { useState , useEffect, useRef  ,useCallback } from 'react'
+import React , { useState , useRef  ,useCallback } from 'react'
 import NavigationHeader from '../../../../../components/Header/NavigationHeader';
 import { DatetimePickerView } from '../../../../../components/DatetimePickerView';
 import Sign from '../../../Forms/questions/partial/Sign';
@@ -381,9 +381,7 @@ export default function FormQuestionView(props) {
                         onBackPressed();
                     }}
                 />  
-            }
-            
-
+            }            
             <Notification></Notification>
                 
             <DatetimePickerView

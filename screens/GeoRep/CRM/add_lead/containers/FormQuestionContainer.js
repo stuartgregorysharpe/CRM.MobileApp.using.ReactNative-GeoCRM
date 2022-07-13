@@ -1,6 +1,6 @@
 
 import { View } from 'react-native'
-import React , {useEffect, useState , useRef} from 'react'
+import React , {useEffect, useState} from 'react'
 import FormQuestionView from '../components/FormQuestionView';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
@@ -70,13 +70,8 @@ export default function FormQuestionContainer(props) {
     }
 
     const onSave = () => {
-
-      var flag = true;
-      
-      flag = validateFormQuestionData(formQuestions);
- 
-      if (!flag) {
-        
+      var flag = validateFormQuestionData(formQuestions);
+      if (!flag) {        
         dispatch(
           showNotification({
             type: 'success',
@@ -85,18 +80,13 @@ export default function FormQuestionContainer(props) {
           }),
         );
         return;
-
       }else{
-
         var form_answers = [];    
         form_answers = getFormQuestionData(formQuestions);        
         var files = [];
         files = getFormQuestionFile(formQuestions);             
-        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: {form_answers: form_answers, files: files} });
-        
-      }
-
-      
+        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: {form_answers: form_answers, files: files} });        
+      }      
 
     }
 

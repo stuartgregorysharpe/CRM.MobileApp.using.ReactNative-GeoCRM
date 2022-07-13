@@ -7,10 +7,11 @@ import SvgIcon from '../../../../../components/SvgIcon';
 import { useSelector } from 'react-redux';
 
 export default function AddLeadFormFields(props) {
-  const { compulsaryFormExist , showFormModal , showAllocateModal} = props  
+
+  const { showFormModal , showAllocateModal} = props  
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
   const [isAllocateDevices , setIsAllocateDevices] = useState(false);
-
+  
   useEffect(() => {
     let isMount = true;
     if(features.includes("location_specific_devices")){

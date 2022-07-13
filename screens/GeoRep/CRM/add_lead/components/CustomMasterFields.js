@@ -14,15 +14,10 @@ export default function CustomMasterFields(props) {
     const [formData1, setFormData1] = useState({});
     const [formStructure1, setFormStructure1] = useState([]);
     const [formData2, setFormData2] = useState({});
-    const [formStructure2, setFormStructure2] = useState([]);
-    
-    useEffect(() => {
-      var isMount = true;
+    const [formStructure2, setFormStructure2] = useState([]);    
+    useEffect(() => {      
       initData(leadForms, "first");
       initData(leadForms, "second");
-      return () => {
-        isMount = false;
-      };
     }, [leadForms])
     
     const initData = (leadForms, type) => {      
@@ -53,8 +48,7 @@ export default function CustomMasterFields(props) {
             items: items
           }      
         }
-        //custom_master_field_id
-        //core_field_name
+        
         return {
           ...field,
           key:index,
@@ -128,14 +122,11 @@ export default function CustomMasterFields(props) {
             formData={formData2}
             formStructureData={formStructure2}
             updateFormData={formData => {              
-              console.log("form Data 1", formData)
               setFormData2(formData);
               onChangedCustomMasterFields({...formData1, ...formData});
             }}
-            updateSecondFormData={formData => {
-              console.log("form Data 2", formData)
-              setFormData2(formData);
-              //onChangedCustomMasterFields({...formData1, ...formData});
+            updateSecondFormData={formData => {              
+              setFormData2(formData);              
             }}            
           />
 

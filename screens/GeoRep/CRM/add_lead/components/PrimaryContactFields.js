@@ -13,7 +13,6 @@ export default function PrimaryContactFields(props) {
     const [formData, setFormData] = useState(getFormData());
     const [formStructure, setFormStructure] = useState(getFormStructureData());
     
-
     useEffect(() => {
         var isMount = true;
         initView()

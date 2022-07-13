@@ -6,10 +6,8 @@ import SelectDevicesContainer from '../containers/SelectDevicesContainer';
 
 const SelectDevicesModal = React.forwardRef((props, ref) => {
 
-  const {item} = props;
   const selectDevicesContainerRef = useRef(null)
-
-    useImperativeHandle(
+  useImperativeHandle(
       ref,
       () => ({
         showViewLists() {          
@@ -52,4 +50,5 @@ const SelectDevicesModal = React.forwardRef((props, ref) => {
         
   );
 });
+
 export default SelectDevicesModal;

@@ -21,8 +21,7 @@ export default function AddLeadContainer(props) {
 
     const currentLocation = useSelector(state => state.rep.currentLocation);    
     const [leadForms , setLeadForms] = useState([]);    
-    const [accuracyUnit, setAccuracyUnit] = useState('m');    
-    const [canShowAddLeadForms, setCanShowaddLeadForms] = useState(false)
+    const [accuracyUnit, setAccuracyUnit] = useState('m');        
     const [formLists, setFormLists] = useState([]);
     const [selectedLists, setSelectedLists] = useState([]);
     const selectDeviceModalRef = useRef(null)
@@ -31,6 +30,7 @@ export default function AddLeadContainer(props) {
     const [customMasterFields , setCustomMasterFields] = useState({});
     const [primaryData, setPrimaryData] = useState({});
     const formQuestionModalRef = useRef(null);
+    const addLeadFormModalRef = useRef(null);
     const [form, setForm] = useState({});
     const [form_answers, setFormAnswers] = useState([]);
     const [files, setFiles] = useState([]);
@@ -109,10 +109,10 @@ export default function AddLeadContainer(props) {
                     postData.append(`allocated_devices_signature[${item.stock_item_id}]`, { uri: item.signature, type:'image/png' , name:'sign.png' } );
                 }
             }).catch((e) =>{
-
             });
-        })
-
+            
+        })        
+        
         form_answers.map(item => {
             if (item.key != undefined && item.value != undefined) {
               postData.append(item.key, item.value);
@@ -180,8 +180,8 @@ export default function AddLeadContainer(props) {
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
 
-    const showFormModal = () => {
-        setCanShowaddLeadForms(true)
+    const showFormModal = () => {        
+        addLeadFormModalRef.current.showModal();
     }
     
     const showAllocateModal = () => {        
@@ -265,9 +265,12 @@ export default function AddLeadContainer(props) {
             />
 
             <AddLeadFormsModal
+                ref={addLeadFormModalRef}
+                formLists={formLists}
+                title="Forms"
+                clearText="Close"
                 onClose={() => {
-                    setCanShowaddLeadForms(!canShowAddLeadForms);                    
-                    //props.onButtonAction({type:  Constants.actionType.ACTION_CLOSE})
+                    addLeadFormModalRef.current.hideModal()                    
                 }}
                 onNext={(item) => {
                     if(formQuestionModalRef.current){
@@ -276,9 +279,7 @@ export default function AddLeadContainer(props) {
                         formQuestionModalRef.current.showModal()
                     }
                 }}
-                navigation={props.navigation}
-                visible={canShowAddLeadForms}
-                formLists={formLists}      
+                navigation={props.navigation}                
             />
 
             <SelectDevicesModal
@@ -286,16 +287,16 @@ export default function AddLeadContainer(props) {
                 hideClear={true}
                 selLists={selectedLists}
                 customRightHeaderView={renderViewLists()}
-                title = "Select Devices"
+                title = "Select Devices:"
                 onButtonAction={onSelectDeviceModalClosed}
             />
-                        
+                                                
             <ViewListsModal
                 ref={viewListsModalRef}
                 hideClear={true}
                 selectedLists={selectedLists}
                 customRightHeaderView={renderRightPart()}
-                title = {"Allocated Devices " + selectedLists.length}
+                title = {"Allocated Devices: " + selectedLists.length}
                 onButtonAction={onViewListsModal}
             />
 

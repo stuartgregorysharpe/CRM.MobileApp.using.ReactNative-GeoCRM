@@ -1,4 +1,4 @@
-import { View, Text ,TouchableOpacity ,FlatList, Dimensions  } from 'react-native'
+import { View ,TouchableOpacity ,FlatList, Dimensions  } from 'react-native'
 import React from 'react'
 import { AppText } from '../../../../../components/common/AppText';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
@@ -8,12 +8,12 @@ import SvgIcon from '../../../../../components/SvgIcon';
 
 export default function ViewListsView(props) {
 
-  const {stockItems , onItemSelected , removeDevice } = props;
-  console.log("ASdf", stockItems)
+  const {stockItems , removeDevice } = props;
+  
   const renderItem = (item, index) => {
     return (
         <TouchableOpacity key={index} onPress={() =>{
-            //onItemSelected(item)
+            
         }}>
           <CardView style={{ marginTop:10, marginHorizontal:10 , borderColor:whiteLabel().borderColor, borderWidth:1}}>            
               <View style={{flexDirection:'row'}}>
@@ -32,12 +32,9 @@ export default function ViewListsView(props) {
                     <TouchableOpacity onPress={() => removeDevice(item)}>
                         <SvgIcon icon="DELETE" width="20" height='20' />
                     </TouchableOpacity>                    
-                </View>
-
+                </View>                                               
                 
-                               
               </View>
-
           </CardView>
         </TouchableOpacity>
     );

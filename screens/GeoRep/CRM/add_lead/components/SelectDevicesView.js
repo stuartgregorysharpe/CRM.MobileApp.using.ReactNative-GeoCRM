@@ -1,4 +1,4 @@
-import { View, Text ,TouchableOpacity ,FlatList, Dimensions  } from 'react-native'
+import { View ,TouchableOpacity ,FlatList, Dimensions  } from 'react-native'
 import React from 'react'
 import { AppText } from '../../../../../components/common/AppText';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';

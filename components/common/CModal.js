@@ -81,6 +81,7 @@ const CModal = React.forwardRef((props, ref) => {
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
             ]}>
+
             <View style={styles.bodyContainer}>
               {!isFullModal && <View style={styles.modalHandler} />}
 
@@ -186,7 +187,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'space-between',
     alignItems:'center',    
-    paddingHorizontal: 15,
+    marginTop:5,
+    paddingLeft:5,
+    paddingRight:15,
     //paddingRight: 50,
   },
   titleIcon: {
