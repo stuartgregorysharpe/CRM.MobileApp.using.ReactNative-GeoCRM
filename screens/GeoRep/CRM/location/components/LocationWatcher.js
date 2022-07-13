@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {CHANGE_CURRENT_LOCATION} from '../../../../../actions/actionTypes';
