@@ -42,7 +42,8 @@ const LeaderboardContainer = props => {
       return;
     }
     const filteredItems = allItems.filter(x => {
-      return x.username.includes(keyword);
+      if (!x.username) return false;
+      return x.username.toLowerCase().includes(keyword.toLowerCase());
     });
     setItems(filteredItems);
   };
