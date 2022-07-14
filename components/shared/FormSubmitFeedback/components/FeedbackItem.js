@@ -14,7 +14,10 @@ const FeedbackItem = props => {
   const title = data.question_text;
 
   const renderFeedBack = () => {
-    if (data.question_type == Constants.questionType.FORM_TYPE_SKU_COUNT) {
+    if (
+      data.question_type == Constants.questionType.FORM_TYPE_SKU_COUNT ||
+      data.question_type == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE
+    ) {
       return <SKUCountFeedbackView data={data} />;
     }
     if (data.question_type == Constants.questionType.FORM_TYPE_SKU_SELECT) {

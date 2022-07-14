@@ -11,7 +11,9 @@ import {
 import {Images} from '../../../constants';
 import {style} from '../../../constants/Styles';
 import TouchpointContainer from './containers/TouchpointContainer';
-export default function TouchpointScreen({screenProps}) {
+export default function TouchpointScreen(props) {
+  const {screenProps} = props;
+  const locationId = props.route.params.locationId;
   const navigation = useNavigation();
   useEffect(() => {
     if (screenProps) {
@@ -41,7 +43,7 @@ export default function TouchpointScreen({screenProps}) {
       style={{
         flex: 1,
       }}>
-      <TouchpointContainer style={{flex: 1}} />
+      <TouchpointContainer style={{flex: 1}} locationId={locationId} />
     </SafeAreaView>
   );
 }

@@ -19,6 +19,7 @@ const LeaderboardItem = props => {
   };
   return (
     <TouchableOpacity
+      activeOpacity={1}
       style={[
         styles.container,
         props.style,
@@ -35,7 +36,6 @@ const LeaderboardItem = props => {
       </View>
       <View style={{flex: 1}} />
       <Text style={[styles.noText, {marginRight: 18}]}>{overallScore}</Text>
-      <SvgIcon icon="Slider_Arrow_Right" width="9px" height="18px" />
     </TouchableOpacity>
   );
 };
