@@ -11,6 +11,7 @@ const TouchpointContainer = props => {
   const [tabIndex, setTabIndex] = useState(0);
   const [isHistoryDetail, setIsHistoryDetail] = useState(false);
   const [historyId, setHistoryId] = useState(null);
+  const {locationId} = props;
   const tabs = [
     {title: 'Leaderboard', id: 0},
     {title: 'Trends', id: 1},
@@ -21,7 +22,7 @@ const TouchpointContainer = props => {
     if (selectedTabIndex == 0) {
       return <LeaderboardContainer />;
     } else if (selectedTabIndex == 1) {
-      return <TrendsContainer />;
+      return <TrendsContainer locationId={locationId} />;
     } else if (selectedTabIndex == 2) {
       if (isHistoryDetail) {
         return (
@@ -35,6 +36,7 @@ const TouchpointContainer = props => {
       }
       return (
         <HistoryContainer
+          locationId={locationId}
           onItemAction={({type, item}) => {
             setIsHistoryDetail(true);
             setHistoryId(item.id);

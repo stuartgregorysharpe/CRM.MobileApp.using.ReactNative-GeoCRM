@@ -1,39 +1,37 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {dummyApiRequest} from '../../../../actions/api.action';
-import SearchBar from '../../../../components/SearchBar';
+import {getApiRequest} from '../../../../actions/api.action';
 import HistoryList from '../components/HistoryList';
-import dummyData from '../dummyData.json';
+import {getHistoryListItems} from '../helper';
 const PAGE_SIZE = 50;
 
 const HistoryContainer = props => {
-  const [keyword, setKeyword] = useState('');
   const [items, setItems] = useState([]);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [lastFetchedCount, setLastFetchedCount] = useState(0);
+  const {locationId} = props;
   useEffect(() => {
     onLoad();
   }, []);
-  const onSearch = text => {};
-  const onFilterPress = () => {};
   const onItemAction = ({type, item}) => {
     if (props.onItemAction) {
       props.onItemAction({type, item});
     }
   };
-  const onLoad = (pageIndex = 0, pageSize = PAGE_SIZE) => {
+  const onLoad = (pageIndex = 1, pageSize = PAGE_SIZE) => {
     const params = {
-      page: pageIndex,
-      keyword: keyword,
+      location_id: locationId,
+      page_nr: pageIndex,
     };
     setIsLoading(true);
-    dummyApiRequest('touchpoints/history', params, dummyData.historyList)
-      .then(fetchedItems => {
+    getApiRequest('touchpoints/location-history', params)
+      .then(data => {
+        const fetchedItems = getHistoryListItems(data);
         setLastFetchedCount(fetchedItems.length);
         setPageIndex(pageIndex);
         setIsLoading(false);
-        if (pageIndex == 0) {
+        if (pageIndex == 1) {
           setItems(fetchedItems);
         } else {
           setItems([...items, ...fetchedItems]);

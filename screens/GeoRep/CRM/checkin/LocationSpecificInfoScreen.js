@@ -28,9 +28,7 @@ import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
 import CustomerContactsScreen from '../customer_contacts/CustomerContactsScreen';
-import {  
-  storeLocalValue,
-} from '../../../../constants/Storage';
+import {storeLocalValue} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import Checkout from './partial/Checkout';
 import {getLocationInfo} from '../../../../actions/location.action';
@@ -45,8 +43,8 @@ import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryMod
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/DevicesModal';
-import { Constants } from '../../../../constants';
-import { CHECKIN } from '../../../../actions/actionTypes';
+import {Constants} from '../../../../constants';
+import {CHECKIN} from '../../../../actions/actionTypes';
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
@@ -60,7 +58,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [showItem, setShowItem] = useState(0);
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
-  const customerContactsRef = useRef();  
+  const customerContactsRef = useRef();
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] =
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
@@ -68,7 +66,6 @@ export default function LocationSpecificInfoScreen(props) {
   const [isActionItems, setIsActionItems] = useState(false);
   const [isCustomerSales, setIsCustomerSales] = useState(false);
   const navigationMain = useNavigation();
-  
 
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -96,7 +93,6 @@ export default function LocationSpecificInfoScreen(props) {
       }
     }
   }, [isCheckin]);
-
 
   const hideBottomBar = () => {
     if (props.screenProps) {
@@ -160,20 +156,24 @@ export default function LocationSpecificInfoScreen(props) {
       setIsActivityComment(true);
     }
     if (item.title === 'Sales Pipeline') {
-      navigationMain.navigate('DeeplinkRepSalesPipelineScreen', {locationInfo: locationInfo});
+      navigationMain.navigate('DeeplinkRepSalesPipelineScreen', {
+        locationInfo: locationInfo,
+      });
     }
     if (item.link === 'actions_items') {
       setIsActionItems(true);
     }
-    
-    if(item.link === 'devices'){
+
+    if (item.link === 'devices') {
       devicesModalRef.current.showModal();
     }
     if (item.link === 'customer_sales') {
       setIsCustomerSales(true);
     }
     if (item.link === 'touchpoints') {
-      navigationMain.navigate('TouchpointScreen');
+      navigationMain.navigate('TouchpointScreen', {
+        locationId: locationInfo.location_id,
+      });
     }
   };
 
@@ -227,11 +227,11 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const onDevicesModalClosed = ({type, value}) => {
-    if(type == Constants.actionType.ACTION_CLOSE){
-      devicesModalRef.current.hideModal()
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      devicesModalRef.current.hideModal();
     }
-  }
-  
+  };
+
   if (canShowCustomerContactsScreen) {
     return (
       <CustomerContactsScreen
@@ -280,10 +280,10 @@ export default function LocationSpecificInfoScreen(props) {
       )}
 
       <DevicesModal
-          ref={devicesModalRef}
-          title="Devices"          
-          locationId={locationInfo != undefined ? locationInfo.location_id : 0}
-          onButtonAction={onDevicesModalClosed}
+        ref={devicesModalRef}
+        title="Devices"
+        locationId={locationInfo != undefined ? locationInfo.location_id : 0}
+        onButtonAction={onDevicesModalClosed}
       />
 
       {locationInfo && subSlideStatus && (
@@ -371,14 +371,14 @@ export default function LocationSpecificInfoScreen(props) {
 
             {pageType === 'checkin' && (
               <Checkout
-                goBack={async res => {                  
+                goBack={async res => {
                   dispatch(
                     showNotification({
                       type: 'success',
                       message: res.message,
                       buttonText: 'Okay',
                       buttonAction: async () => {
-                        dispatch({ type: CHECKIN, payload: false });
+                        dispatch({type: CHECKIN, payload: false});
                         dispatch(clearNotification());
                         goBack();
                       },
@@ -387,7 +387,7 @@ export default function LocationSpecificInfoScreen(props) {
                 }}
                 location_id={locationInfo.location_id}></Checkout>
             )}
-            
+
             {/* <View style={styles.filterButton}>
                   <FilterButton text="Contact: Jack Reacher" />
                 </View> */}

@@ -1120,6 +1120,11 @@ const DEVICES = `<svg id="Group_5337" data-name="Group 5337" xmlns="http://www.w
 </svg>
 `;
 
+const Touchpoints = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="40" viewBox="0 0 36 40">
+  <path id="assignment_FILL1_wght400_GRAD0_opsz48_1_" data-name="assignment_FILL1_wght400_GRAD0_opsz48 (1)" d="M9,42a2.988,2.988,0,0,1-3-3V9A2.988,2.988,0,0,1,9,6H19.25a4.437,4.437,0,0,1,1.6-2.875,4.972,4.972,0,0,1,6.3,0A4.437,4.437,0,0,1,28.75,6H39a2.988,2.988,0,0,1,3,3V39a2.988,2.988,0,0,1-3,3Zm5-8H27.65V31H14Zm0-8.5H34v-3H14ZM14,17H34V14H14ZM24,8.15a1.679,1.679,0,0,0,1.225-.525,1.692,1.692,0,0,0,0-2.45,1.692,1.692,0,0,0-2.45,0,1.692,1.692,0,0,0,0,2.45A1.679,1.679,0,0,0,24,8.15Z" transform="translate(-6 -2)" fill="${actionIconBackground}"/>
+</svg>
+`;
+
 export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
     {icon == 'Round_Btn_Default_Dark' && (
@@ -1670,17 +1675,30 @@ export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
       <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
     )}
     {icon == 'Check_List' && (
-      <SvgXml style={style} fill={color != undefined ? color : '#000'} xml={Check_List} width={width} height={height} />
+      <SvgXml
+        style={style}
+        fill={color != undefined ? color : '#000'}
+        xml={Check_List}
+        width={width}
+        height={height}
+      />
     )}
     {icon == 'Check_List_Active' && (
-      <SvgXml style={style} xml={Check_List_Active} width={width} height={height} />
+      <SvgXml
+        style={style}
+        xml={Check_List_Active}
+        width={width}
+        height={height}
+      />
     )}
     {icon == 'DELETE' && (
       <SvgXml style={style} xml={DELETE} width={width} height={height} />
     )}
-   {icon == 'DEVICES' && (
+    {icon == 'DEVICES' && (
       <SvgXml style={style} xml={DEVICES} width={width} height={height} />
     )}
-
+    {icon == 'Touchpoints' && (
+      <SvgXml style={style} xml={Touchpoints} width={width} height={height} />
+    )}
   </Fragment>
 );
