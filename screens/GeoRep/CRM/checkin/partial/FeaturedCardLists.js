@@ -36,7 +36,9 @@ export default function FeaturedCardLists(props) {
     )
       ? true
       : false;
-    const isShowTouchpoint = features.includes('touchpoints') ? true : false;
+    const isShowTouchpoint = features.includes('location_specific_touchpoints')
+      ? true
+      : false;
 
     let featureCards = [];
     if (customer_and_contacts) {
@@ -90,7 +92,6 @@ export default function FeaturedCardLists(props) {
       link: 'devices',
     });
 
-
     if (customer_sales_history_feature) {
       featureCards.push({
         title: `Customer Sales`,
@@ -103,7 +104,7 @@ export default function FeaturedCardLists(props) {
       featureCards.push({
         title: `Touchpoints`,
         icon: 'Touchpoints',
-        action: 'View touchpoints',
+        action: 'View touchpoints history',
         link: 'touchpoints',
       });
     }

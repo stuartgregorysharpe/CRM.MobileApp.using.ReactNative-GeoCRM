@@ -6,7 +6,7 @@ import {whiteLabel} from '../../../../constants/Colors';
 const YesNoFeedbackView = props => {
   const {data} = props;
   if (!data) return null;
-  const isNo = data.answer == 'No';
+  const isNo = data.answer == 'no';
   const title = isNo ? 'No' : 'Yes';
   return (
     <View style={[styles.container, props.style]}>
