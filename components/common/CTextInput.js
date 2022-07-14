@@ -11,7 +11,7 @@ const CTextInput = props => {
       <TextInput
         
         ref={element => {
-          if(dynamicFieldRef != undefined && index != undefined){
+          if(dynamicFieldRef != undefined && index != undefined &&  dynamicFieldRef.current != undefined){
             dynamicFieldRef.current[index] = element;
           }
         }}        
@@ -27,10 +27,15 @@ const CTextInput = props => {
         style={[styles.textInput, props.textInputStyle]}        
         onSubmitEditing={() => {
           if (
+            dynamicFieldRef != undefined &&
+            dynamicFieldRef.current != undefined &&
             index <= dynamicFieldRef.current.length - 2 &&
             dynamicFieldRef.current[index + 1] != null
           ) {            
             dynamicFieldRef.current[index + 1].focus();          
+          }
+          if(props.onSubmitEditing){
+            props.onSubmitEditing();
           }
         }}
       />

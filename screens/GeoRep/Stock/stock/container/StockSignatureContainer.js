@@ -16,7 +16,7 @@ export default function StockSignatureContainer(props) {
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const dispatch = useDispatch();
         
-    var msisdn = '';
+    var msisdn = Constants.barcodePrefix;
     var received = '';
   
     const onSubmit = (signature) => {
@@ -104,13 +104,14 @@ export default function StockSignatureContainer(props) {
 
     }
     
-
     return (
         <View style={{alignSelf:'stretch'}}>
             <StockSignatureView                        
                 onSubmit = {onSubmit}                
                 onChangedReceivedBy={onChangedReceivedBy}
                 onChangedSerial={onChangedSerial}
+                //serial={msisdn === '' ? Constants.barcodePrefix: msisdn}
+                //msisdn={msisdn}
                 onClose={onClose}
                 {...props}
             />

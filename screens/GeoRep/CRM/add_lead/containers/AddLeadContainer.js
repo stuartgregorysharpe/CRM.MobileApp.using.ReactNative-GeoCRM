@@ -292,10 +292,11 @@ export default function AddLeadContainer(props) {
             />
 
             <SelectDevicesModal
+                closableWithOutsideTouch
                 ref={selectDeviceModalRef}
                 hideClear={true}
                 selLists={selectedLists}
-                customRightHeaderView={selectDeviceCount > 0 ? renderViewLists() : <></>}
+                customRightHeaderView={selectDeviceCount > 0 || selectedLists.length > 0 ? renderViewLists() : <></>}
                 title = "Select Devices:"
                 onButtonAction={onSelectDeviceModalClosed}
             />

@@ -13,12 +13,14 @@ import uuid from 'react-native-uuid';
 export default function StockSignatureView(props) {
 
     const signatureScreenRef =  useRef(null)
-    const { receivedBy , serial,  onChangedReceivedBy, onChangedSerial , signature,  onSubmit , onClose } = props;
+    const { receivedBy , onChangedReceivedBy, onChangedSerial , signature,  onSubmit , onClose } = props;
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
     const [enabled, setEnabled] = useState(false);
     const [path, setPath] = useState(null);
+    const [hasMsisdnError , setHasMsisdnError] = useState(false)
+    const [serial, setSerial] = useState(Constants.barcodePrefix)
 
     const handleOK = async(signature) => {
         console.log("handle ok")
@@ -99,10 +101,26 @@ export default function StockSignatureView(props) {
                     returnKeyType={'done'}                                        
                     keyboardType={'number-pad'}
                     isRequired={true}
-                    onChangeText={text => {                
-                        onChangedSerial(text);
+                    hasError={hasMsisdnError}
+                    onChangeText={text => {                        
+                        if(text.length <= 2){
+                            setSerial(Constants.barcodePrefix);
+                            onChangedSerial(Constants.barcodePrefix);
+                        }else{                  
+                            setSerial(text);
+                            onChangedSerial(text);
+                        }
+                        if(text.length === 11){
+                            setHasMsisdnError(false)
+                        }
                     }}
                     style={{marginTop:5}}
+                    maxLength={11}
+                    onBlur={() => {
+                        if(serial.length != 11){
+                          setHasMsisdnError(true);
+                        }                
+                    }}
                 />
             }
 

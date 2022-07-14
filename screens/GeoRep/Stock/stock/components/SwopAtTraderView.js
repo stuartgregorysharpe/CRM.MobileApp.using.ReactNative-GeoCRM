@@ -1,4 +1,4 @@
-import { View, Text ,StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, Dimensions, ScrollView } from 'react-native'
 import React , { useState } from 'react'
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import { AppText } from '../../../../../components/common/AppText';
@@ -8,16 +8,18 @@ import CTextInput from '../../../../../components/common/CTextInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
+import { Constants } from '../../../../../constants';
 
 export default function SwopAtTraderView(props) {
   
   const {item , lists , onReturnDevice, onReason, onPhotos, onSwop} = props;    
   const [reason, setReason] = useState("");
   const [reasonLists , setReasonLists] = useState([{value:'Damaged' , label: 'Damaged'} ,  {value:'Faulty' , label: 'Faulty'} , {value:'Used' , label: 'Used'}])
-  const [msisdn, setMsisdn] = useState("");
+  const [msisdn, setMsisdn] = useState(Constants.barcodePrefix);
   const [photos, setPhotos] = useState([]);
   const [enabled, setEnabled] = useState(false)
   const [device, setDevice] = useState('');
+  const [hasMsisdnError , setHasMsisdnError] = useState(false)
 
   const checkEnabled = (device, reason, photos) =>{
     if(device != null && reason != '' && photos.length > 0){
@@ -62,8 +64,7 @@ export default function SwopAtTraderView(props) {
           
           <TakePhotoView
               isOptimize={true}
-              onUpdatePhotos={photos => {
-                //updateFormData(field_name, photos);
+              onUpdatePhotos={photos => {                
                 setPhotos(photos);
                 onPhotos(photos);
                 checkEnabled(device, reason, photos);
@@ -82,16 +83,30 @@ export default function SwopAtTraderView(props) {
               </View>
           </CardView>
 
-          <CTextInput                    
+          <CTextInput                 
               label="Assign MSISDN"                    
               value={msisdn}
               returnKeyType={'done'}                                        
               keyboardType={'number-pad'}
-              isRequired={true}
+              isRequired={true}            
+              maxLength={11}
+              hasError={hasMsisdnError}
               onChangeText={text => {
-                setMsisdn(text)                  
+                if(text.length <= 2){
+                  setMsisdn(Constants.barcodePrefix)
+                }else{
+                  setMsisdn(text)
+                }
+                if(msisdn.length == 11){
+                  setHasMsisdnError(false)
+                }
+              }}              
+              onBlur={() => {
+                if(msisdn.length != 11){
+                  setHasMsisdnError(true);
+                }                
               }}
-              style={{marginTop:10}}
+              style={{marginTop:10  , }}
           />
           {            
             <SubmitButton enabled={enabled} title="Add Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={onSwop}></SubmitButton>          

@@ -83,7 +83,9 @@ const CModal = React.forwardRef((props, ref) => {
             ]}>
 
             <View style={styles.bodyContainer}>
-              {!isFullModal && <View style={styles.modalHandler} />}
+              
+              {!isFullModal && <TouchableOpacity onPress={onClose}>
+                <View style={styles.modalHandler} /></TouchableOpacity>}
 
               {!hideClose && (
                 <TouchableOpacity
