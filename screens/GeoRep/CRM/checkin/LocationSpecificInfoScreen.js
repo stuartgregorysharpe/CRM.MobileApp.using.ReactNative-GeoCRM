@@ -70,7 +70,7 @@ export default function LocationSpecificInfoScreen(props) {
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
   const isCheckin = useSelector(state => state.location.checkIn);
-
+  const locationId = locationInfo ? locationInfo.location_id : location_id;
   useEffect(() => {
     refreshHeader();
     initData();
@@ -172,7 +172,7 @@ export default function LocationSpecificInfoScreen(props) {
     }
     if (item.link === 'touchpoints') {
       navigationMain.navigate('TouchpointScreen', {
-        locationId: locationInfo.location_id,
+        locationId: locationId,
       });
     }
   };
