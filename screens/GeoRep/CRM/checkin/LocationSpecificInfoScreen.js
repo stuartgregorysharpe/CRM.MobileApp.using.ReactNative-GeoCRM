@@ -79,14 +79,7 @@ export default function LocationSpecificInfoScreen(props) {
     initData();
     if (location_id !== undefined) {
       openLocationInfo(location_id);
-    }
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
+    }    
   }, [location_id]);
 
   useEffect(() => {
