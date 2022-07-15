@@ -1,17 +1,36 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import {whiteLabel} from '../../../../constants/Colors';
+import React, {useState, useEffect, useRef} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import MapView, {Marker, Polygon, Polyline} from 'react-native-maps';
+import {Fonts} from '../../../../constants';
+import Colors, {whiteLabel} from '../../../../constants/Colors';
+import {isInsidePoly} from '../../../../constants/Helper';
+import {getPinSvg} from '../../../../constants/Storage';
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
+import MarkerIconView from '../../components/MarkerIconView';
 let polylineKey = 0;
+let mapPinSvg = null;
+const CURRENT_LOCATION_RADIUS = 200;
 const GmsLocationMap = props => {
-  const {isDrawMode, currentLocation, isTrackViewChanges, polygon} = props;
+  const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
+    props;
   const [polylineEditing, setPolylineEditing] = useState(null);
+  const mapRef = useRef(null);
   const isShowFinishButton =
     isDrawMode &&
     polylineEditing != null &&
     polylineEditing.coordinates.length >= 0;
+  const isShowMap =
+    currentLocation != null &&
+    currentLocation.longitude != undefined &&
+    currentLocation.latitude != undefined;
+  useEffect(() => {
+    loadPinSvg();
+  }, []);
+  const loadPinSvg = async () => {
+    mapPinSvg = await getPinSvg('@map_pin_key');
+  };
   const onPressMap = e => {
+    console.log('onPressMap', e);
     if (props.onPressMap) {
       props.onPressMap(e);
     }
@@ -20,6 +39,7 @@ const GmsLocationMap = props => {
     }
   };
   const onDrawPolyline = coordinate => {
+    console.log('onDrawPolyline', coordinate);
     if (!polylineEditing) {
       setPolylineEditing({
         id: polylineKey++,
@@ -27,44 +47,133 @@ const GmsLocationMap = props => {
         holes: [],
       });
     } else {
-      setEditing({
-        ...editing,
-        coordinates: [...editing.coordinates, coordinate],
+      setPolylineEditing({
+        ...polylineEditing,
+        coordinates: [...polylineEditing.coordinates, coordinate],
       });
-      if (editing.coordinates.length >= 2 && isFinish === false) {
-        setIsFinish(true);
-      }
     }
   };
-  const onFinishDrawing = () => {};
+  const onResetDrawing = () => {
+    setPolylineEditing(null);
+  };
+  const getMarksInDrawedPolygon = (_marks, _coordinates) => {
+    return _marks.filter(x => {
+      isInsidePoly(x.coordinates.latitude, x.coordinates.longitude, [
+        _coordinates,
+      ]);
+    });
+  };
+  const onFinishDrawing = () => {
+    if (props.onFinishDrawing) {
+      const marksInDrawedPolygon = getMarksInDrawedPolygon(
+        markers,
+        polylineEditing.coordinates,
+      );
+      props.onFinishDrawing(marksInDrawedPolygon);
+    }
+    onResetDrawing();
+  };
   const onRegionChangeComplete = (region, markers, bBox, zoom) => {
     if (props.onRegionChangeComplete) {
       props.onRegionChangeComplete(region, markers, bBox, zoom);
     }
   };
+  const checkMarkerSelected = marker => {
+    const foundLocation = selectedLocations.find(
+      element => element.location_id === marker.location_id,
+    );
+    return foundLocation != null;
+  };
+  const renderMarkers = _markers => {
+    if (!_markers) return null;
+    return _markers.map((item, key) => {
+      const isMarkerSelected = checkMarkerSelected(item);
+      return (
+        <Marker
+          key={'markers' + item.location_id}
+          tracksViewChanges={!isDrawMode}
+          onPress={() => {
+            onMarkerPressed(item, key);
+          }}
+          coordinate={{
+            latitude: Number(item.coordinates.latitude),
+            longitude: Number(item.coordinates.longitude),
+          }}>
+          <MarkerIconView
+            item={item}
+            mapPinSvg={mapPinSvg}
+            isSelected={isMarkerSelected}
+          />
+        </Marker>
+      );
+    });
+  };
+  const renderPolygons = _polygons => {
+    const polygons = [];
+    if (_polygons && _polygons.length > 0) {
+      _polygons.forEach(polygon => {
+        polygon.path.forEach(item => {
+          polygons.push(
+            <Polygon
+              key={'polygons' + item.location_id}
+              coordinates={item}
+              strokeColor={polygon.strokeColor}
+              fillColor={polygon.fillColor + transCode}
+              strokeWidth={1}
+            />,
+          );
+        });
+      });
+    }
+    return null;
+  };
+
+  const renderCircle = (_location, _radius) => {
+    return (
+      <MapView.Circle
+        key={(_location.longitude + _location.latitude).toString()}
+        center={{
+          latitude: _location.latitude,
+          longitude: _location.longitude,
+        }}
+        radius={_radius}
+        strokeWidth={1}
+        strokeColor={Colors.primaryColor}
+        fillColor={'rgba(230,238,255,0.5)'}
+      />
+    );
+  };
+  console.log('GmsLocationMap_currentLocation', currentLocation);
   return (
     <View style={[styles.container, props.style]}>
-      <ClusteredMapView
-        clusterColor={whiteLabel().mainText}
-        ref={map}
-        clusteringEnabled={true}
-        style={styles.mapView}
-        editing={editing}
-        scrollEnabled={!isDrawMode}
-        onRegionChangeComplete={onRegionChangeComplete}
-        onPress={onPressMap}
-        initialRegion={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.015,
-        }}
-        currentLocation={currentLocation}></ClusteredMapView>
+      {isShowMap && (
+        <ClusteredMapView
+          clusterColor={whiteLabel().mainText}
+          ref={mapRef}
+          clusteringEnabled={true}
+          style={styles.mapView}
+          editing={polylineEditing}
+          scrollEnabled={!isDrawMode}
+          onRegionChangeComplete={onRegionChangeComplete}
+          onPress={onPressMap}
+          initialRegion={{
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            latitudeDelta: 0.015,
+            longitudeDelta: 0.015,
+          }}
+          currentLocation={currentLocation}>
+          {renderMarkers(markers)}
+          {renderPolygons(polygonData)}
+          {renderCircle(currentLocation, CURRENT_LOCATION_RADIUS)}
+        </ClusteredMapView>
+      )}
+
       {isShowFinishButton && (
         <TouchableOpacity
           style={styles.finishBtnStyle}
           onPress={onFinishDrawing}>
-          <Text style={styles.finishButtonText}></Text>
+          <Text style={styles.finishButtonText}>Finish</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -75,6 +184,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  mapView: {flex: 1},
   finishButtonText: {
     textAlign: 'center',
     fontSize: 14,

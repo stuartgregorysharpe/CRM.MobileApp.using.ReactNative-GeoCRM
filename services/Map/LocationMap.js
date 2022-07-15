@@ -12,9 +12,9 @@ const LocationMap = props => {
     });
   }, []);
   if (isHms) {
-    return <GmsLocationMap {...props} />;
+    return <HmsLocationMap {...props} />;
   }
-  return <HmsLocationMap {...props} />;
+  return <GmsLocationMap {...props} />;
 };
 
 export default LocationMap;

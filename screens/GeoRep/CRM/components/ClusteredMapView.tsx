@@ -163,7 +163,6 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       }
             
       if (superCluster && region) {
-        console.log("change region");
         const bBox = calculateBBox(region)        
         var zoom = returnMapZoom(region, bBox, minZoom)   
         currentZoom = zoom;
