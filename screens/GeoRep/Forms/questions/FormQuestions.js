@@ -21,9 +21,13 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import * as RNLocalize from 'react-native-localize';
-import {Constants} from '../../../../constants';
 import FormQuestionView from '../../CRM/add_lead/components/FormQuestionView';
 import { getFormQuestionData, getFormQuestionFile, validateFormQuestionData } from './helper';
+import { createTable, deleteAllFormTable, deleteFormTable, getFormTableData, insertTable } from '../../../../sqlite/FormDBHelper';
+import { getDBConnection } from '../../../../sqlite/DBHelper';
+import uuid from 'react-native-uuid';
+
+var indempotencyKey;
 
 export const FormQuestions = props => {
 
@@ -32,9 +36,7 @@ export const FormQuestions = props => {
   const pageType = props.route.params.pageType;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [formQuestions, setFormQuestions] = useState([]);
-  const [modaVisible, setModalVisible] = useState(false);
-  const [options, setOptions] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState([]);  
+  const [modaVisible, setModalVisible] = useState(false);    
   const [isDateTimeView, setIsDateTimeView] = useState(false);
   const [isSign, setIsSign] = useState(false);  
   const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
@@ -42,15 +44,34 @@ export const FormQuestions = props => {
 
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
+
   useEffect(() => {
     refreshHeader();
-    _callFormQuestions();
+    loadFromDB(form.form_id)  
   }, [form]);
+  
+  const loadFromDB = async (formId) =>{
+    const db = await getDBConnection();      
+    //await deleteAllFormTable(db)
+    const res = await getFormTableData(db , formId);
+    if(res.length > 0){
+      
+      console.log("from db" , JSON.stringify(res.item(0)))
+      // console.log("indempotencyKey db" ,JSON.parse(res.item(0).indempotencyKey))
+      setFormQuestions(JSON.parse(res.item(0).formQuestions));      
+      indempotencyKey = res.item(0).indempotencyKey;
+      console.log("indempotencyKey",indempotencyKey);
+    }else{
+      console.log("from server")
+      _callFormQuestions();
+    }
+  }
 
-  const showSelectionView = useCallback(() => {
-    setModalVisible(true);
-  }, [options, selectedOptions]);
-
+  const saveDb = async(formQuestions , indempotencyKey) =>{
+    const db = await getDBConnection();  
+    await insertTable(db, form.form_id, formQuestions ,indempotencyKey)        
+  }
+  
   const refreshHeader = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -69,6 +90,7 @@ export const FormQuestions = props => {
                     props.navigation.navigate('CRM', {screen: 'Root'});
                   } else {
                     if (props.navigation.canGoBack()) {
+                      console.log("back btn")                      
                       props.navigation.goBack();
                     }
                   }
@@ -101,14 +123,14 @@ export const FormQuestions = props => {
     };
     console.log("param", param)
     getApiRequest('forms/forms-questions', param)
-      .then(res => {
-        console.log("Res", res.questions);
-        groupByQuestions(res.questions);
+      .then(res => {        
+        groupByQuestions(res.questions);         
       })
       .catch(e => {
         expireToken(dispatch, e);
       });
   };
+
 
   const groupByQuestions = data => {
     var newData = [];
@@ -131,11 +153,13 @@ export const FormQuestions = props => {
     setFormQuestions(newData);
   };
 
+
   const isInNewData = (data, value) => {
     return data.find(item => item.question_group_id === value.question_group_id)
       ? true
       : false;
   };
+
 
   const clearAll = () => {
     var tmp = [...formQuestions];
@@ -162,18 +186,24 @@ export const FormQuestions = props => {
   };
 
   const _onSubmit = async () => {
+
+    if(indempotencyKey === null || indempotencyKey === undefined || indempotencyKey.trim() === ""){
+      indempotencyKey = uuid.v4();
+    }    
+    saveDb(formQuestions , indempotencyKey);
+
     var flag = true;
     flag = validateFormQuestionData(formQuestions);
-    if (!flag) {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: 'Please complete the compulsory questions and then submit',
-          buttonText: 'Okay',
-        }),
-      );
-      return;
-    }
+    // if (!flag) {
+    //   dispatch(
+    //     showNotification({
+    //       type: 'success',
+    //       message: 'Please complete the compulsory questions and then submit',
+    //       buttonText: 'Okay',
+    //     }),
+    //   );
+    //   return;
+    // }
 
     var form_answers = [];    
     form_answers = getFormQuestionData(formQuestions);
@@ -186,7 +216,7 @@ export const FormQuestions = props => {
     postData.append('location_id', location_id);
     postData.append('online_offline', 'online');
     form_answers.map(item => {
-      if (item.key != undefined && item.value != undefined) {
+      if (item.key != undefined && item.value != undefined && item.value != null && item.valuel != '') {
         postData.append(item.key, item.value);
       }
     });
@@ -224,16 +254,19 @@ export const FormQuestions = props => {
         ? currentLocation.longitude
         : '0',
     );
-
-    console.log("PDAta" , JSON.stringify(postData))
-    postApiRequestMultipart('forms/forms-submission', postData)
+    
+    console.log('post Data' , postData)
+    return;
+    postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
       .then(res => {
         dispatch(
           showNotification({
             type: 'success',
             message: res.message,
             buttonText: 'Okay',
-            buttonAction: () => {
+            buttonAction: async() => {
+              const db = await getDBConnection();
+              await deleteFormTable(db, form.form_id);
               clearAll();
               dispatch(clearNotification());
               onOpenFeedbackModal(res);
@@ -241,8 +274,9 @@ export const FormQuestions = props => {
           }),
         );
       })
-      .catch(e => {});
+      .catch(e => {console.log(e)});
   };
+
   const onOpenFeedbackModal = feedbackData => {
     setFormSubmitFeedback(feedbackData);
     if (formSubmitModalRef && formSubmitModalRef.current) {
@@ -252,6 +286,7 @@ export const FormQuestions = props => {
 
   const updateFormQuestions = (value) => {    
       setFormQuestions(value)
+      saveDb(value , '');
   }
 
   const onBackPressed = (value) => {

@@ -21,6 +21,8 @@ import jwt_decode from "jwt-decode";
 import {displayName} from "../app.json";
 import { clearNotification } from '../actions/notification.action';
 import { getDynamicPins, getPinSvgLists } from '../actions/pins.actions';
+import { getDBConnection } from '../sqlite/DBHelper';
+import { createTable } from '../sqlite/FormDBHelper';
 
 export default function SignIn() {  
 
@@ -39,8 +41,14 @@ export default function SignIn() {
 
   //clinton@cydcor.com / Test2021#
   useEffect(() => {  
-    initView();        
-  }, [loginStatus])
+    initView();    
+    initializeDB();
+  }, [loginStatus]);
+
+  const initializeDB = async() => {
+    const db = await getDBConnection();
+    await createTable(db);  
+  }
 
   const initView = async () =>{    
 

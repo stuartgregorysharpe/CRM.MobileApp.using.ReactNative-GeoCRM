@@ -102,7 +102,7 @@ export const postApiRequest = async (route, postData) => {
   });
 };
 
-export const postApiRequestMultipart = async (route, postData) => {
+export const postApiRequestMultipart = async (route, postData , indempotencyKey) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
 
@@ -120,7 +120,7 @@ export const postApiRequestMultipart = async (route, postData) => {
           Accept: 'application/json',
           'Content-Type': 'multipart/form-data',
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': indempotencyKey != undefined ? indempotencyKey : uuid.v4(),
         },
       })
       .then(res => {

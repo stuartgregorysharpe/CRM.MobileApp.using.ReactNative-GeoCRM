@@ -10,6 +10,9 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
     const [text,setText] = useState(item.value ? item.value :  ''); 
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+    const isQuesionAnswered = item && item.value != null
+    const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
+
 
     useEffect(() =>{
         
@@ -22,7 +25,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
 
     return (
-        <View style={[style.card, item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card, isCompulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, paddingHorizontal:5}}>

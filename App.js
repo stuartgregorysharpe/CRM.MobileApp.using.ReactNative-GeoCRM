@@ -9,6 +9,7 @@ import store from './store';
 import AppScreens from './navigation/AppScreens';
 import { enableScreens } from 'react-native-screens';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import SQLite from 'react-native-sqlite-storage';
 
 enableScreens(true);
 
@@ -17,6 +18,8 @@ EStyleSheet.build({
 });
 
 export default function App() {
+
+
   return (
     
 

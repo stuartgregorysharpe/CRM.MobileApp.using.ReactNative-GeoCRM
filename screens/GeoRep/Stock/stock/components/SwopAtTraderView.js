@@ -9,20 +9,23 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import { Constants } from '../../../../../constants';
+import { validateMsisdn } from '../../../../../helpers/formatHelpers';
+var previousText = Constants.msisdnPrefix;
+
 
 export default function SwopAtTraderView(props) {
   
   const {item , lists , onReturnDevice, onReason, onPhotos, onSwop} = props;    
   const [reason, setReason] = useState("");
   const [reasonLists , setReasonLists] = useState([{value:'Damaged' , label: 'Damaged'} ,  {value:'Faulty' , label: 'Faulty'} , {value:'Used' , label: 'Used'}])
-  const [msisdn, setMsisdn] = useState(Constants.barcodePrefix);
+  const [msisdn, setMsisdn] = useState(Constants.msisdnPrefix);
   const [photos, setPhotos] = useState([]);
   const [enabled, setEnabled] = useState(false)
   const [device, setDevice] = useState('');
   const [hasMsisdnError , setHasMsisdnError] = useState(false)
 
   const checkEnabled = (device, reason, photos) =>{
-    if(device != null && reason != '' && photos.length > 0){
+    if( validateMsisdn(msisdn) && device != null && reason != '' && photos.length > 0  ){
       setEnabled(true)
     }else{
       setEnabled(false)
@@ -91,25 +94,39 @@ export default function SwopAtTraderView(props) {
               isRequired={true}            
               maxLength={11}
               hasError={hasMsisdnError}
+              errorText={Constants.msisdnErrorMessage}
               onChangeText={text => {
                 if(text.length <= 2){
-                  setMsisdn(Constants.barcodePrefix)
+                  setMsisdn(Constants.msisdnPrefix)
                 }else{
-                  setMsisdn(text)
-                }
-                if(msisdn.length == 11){
+                  if( text.startsWith(Constants.msisdnPrefix) ){
+                      setMsisdn(text)
+                      previousText = text;
+                  }else{
+                      setMsisdn(previousText)
+                  }                                    
+                }                              
+                if(validateMsisdn(text)){
                   setHasMsisdnError(false)
                 }
               }}              
               onBlur={() => {
-                if(msisdn.length != 11){
+                if(!validateMsisdn(msisdn)){
                   setHasMsisdnError(true);
-                }                
+                }             
               }}
               style={{marginTop:10  , }}
           />
           {            
-            <SubmitButton enabled={enabled} title="Add Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={onSwop}></SubmitButton>          
+            <SubmitButton title="Add Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={() =>{
+              if(!validateMsisdn(msisdn)){
+                setHasMsisdnError(true);
+                return;
+              }
+              if( device != null && reason != '' && photos.length > 0  ){
+                onSwop();
+              }
+            }}></SubmitButton>          
           }
           
     </ScrollView>

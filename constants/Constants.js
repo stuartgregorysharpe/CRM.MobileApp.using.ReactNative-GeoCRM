@@ -106,5 +106,6 @@ export default {
     ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
     ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
-  barcodePrefix : "27"
+  msisdnPrefix : "27",
+  msisdnErrorMessage: 'MSISDN must be 11 digits'
 };

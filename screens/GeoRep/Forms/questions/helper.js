@@ -23,17 +23,15 @@ export function getFormQuestionData(formQuestions) {
 
     formQuestions.forEach(element => {
         element.questions.forEach(item => {
-          var value = item.value;
-          form_answers.push({
-            key: `form_answers[${index}][form_question_id]`,
-            value: item.form_question_id,
-          });
-  
-          if (
-            item.question_type === 'multiple' ||
-            item.question_type === 'multi_select'
-          ) {
+
+          var value = item.value;               
+          if ( item.question_type === 'multiple' || item.question_type === 'multi_select') {            
             if (item.value && item.value.length > 0) {
+              form_answers.push({
+                key: `form_answers[${index}][form_question_id]`,
+                value: item.form_question_id,
+              });
+
               var j = 0;
               item.value.forEach(subElement => {
                 form_answers.push({
@@ -42,8 +40,7 @@ export function getFormQuestionData(formQuestions) {
                 });
                 j = j + 1;
               });
-            }
-            
+            }            
           } else if (
             item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT ||
             item.question_type ===
@@ -51,6 +48,10 @@ export function getFormQuestionData(formQuestions) {
             item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
           ) {
             if (value && value.form_answers_array) {
+              form_answers.push({
+                key: `form_answers[${index}][form_question_id]`,
+                value: item.form_question_id,
+              });
               value.form_answers_array.forEach(itemValue => {
                 form_answers.push({
                   ...itemValue,
@@ -58,14 +59,23 @@ export function getFormQuestionData(formQuestions) {
                 });
               });
             }
-          } else {
+          } else if(item.question_type === 'take_photo' || item.question_type === 'upload_file') {
+            form_answers.push({
+              key: `form_answers[${index}][form_question_id]`,
+              value: item.form_question_id,
+            });
             form_answers.push({
               key: `form_answers[${index}][answer]`,
-              value:
-                item.question_type === 'take_photo' ||
-                item.question_type === 'upload_file'
-                  ? ''
-                  : value,
+              value:''
+            });
+          }else if(value != undefined &&  value != null && value != '') {
+            form_answers.push({
+              key: `form_answers[${index}][form_question_id]`,
+              value: item.form_question_id,
+            });
+            form_answers.push({
+              key: `form_answers[${index}][answer]`,
+              value:value
             });
           }
           index = index + 1;
