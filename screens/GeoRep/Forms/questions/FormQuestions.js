@@ -26,6 +26,7 @@ import { getFormQuestionData, getFormQuestionFile, validateFormQuestionData } fr
 import { createTable, deleteAllFormTable, deleteFormTable, getFormTableData, insertTable } from '../../../../sqlite/FormDBHelper';
 import { getDBConnection } from '../../../../sqlite/DBHelper';
 import uuid from 'react-native-uuid';
+import { getLocalData } from '../../../../constants/Storage';
 
 var indempotencyKey;
 
@@ -54,13 +55,9 @@ export const FormQuestions = props => {
     const db = await getDBConnection();      
     //await deleteAllFormTable(db)
     const res = await getFormTableData(db , formId);
-    if(res.length > 0){
-      
-      console.log("from db" , JSON.stringify(res.item(0)))
-      // console.log("indempotencyKey db" ,JSON.parse(res.item(0).indempotencyKey))
+    if(res.length > 0){            
       setFormQuestions(JSON.parse(res.item(0).formQuestions));      
-      indempotencyKey = res.item(0).indempotencyKey;
-      console.log("indempotencyKey",indempotencyKey);
+      indempotencyKey = res.item(0).indempotencyKey;      
     }else{
       console.log("from server")
       _callFormQuestions();
@@ -175,6 +172,7 @@ export const FormQuestions = props => {
       });
     });
     setFormQuestions(tmp);
+    indempotencyKey = null;
   };
 
   const closeDateTime = () => {
@@ -194,16 +192,16 @@ export const FormQuestions = props => {
 
     var flag = true;
     flag = validateFormQuestionData(formQuestions);
-    // if (!flag) {
-    //   dispatch(
-    //     showNotification({
-    //       type: 'success',
-    //       message: 'Please complete the compulsory questions and then submit',
-    //       buttonText: 'Okay',
-    //     }),
-    //   );
-    //   return;
-    // }
+    if (!flag) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: 'Please complete the compulsory questions and then submit',
+          buttonText: 'Okay',
+        }),
+      );
+      return;
+    }
 
     var form_answers = [];    
     form_answers = getFormQuestionData(formQuestions);
@@ -213,7 +211,8 @@ export const FormQuestions = props => {
 
     var postData = new FormData();
     postData.append('form_id', form.form_id);
-    postData.append('location_id', location_id);
+    var locationId = await getLocalData("@specific_location_id");
+    postData.append('location_id', locationId);
     postData.append('online_offline', 'online');
     form_answers.map(item => {
       if (item.key != undefined && item.value != undefined && item.value != null && item.valuel != '') {
@@ -254,9 +253,7 @@ export const FormQuestions = props => {
         ? currentLocation.longitude
         : '0',
     );
-    
-    console.log('post Data' , postData)
-    return;
+        
     postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
       .then(res => {
         dispatch(

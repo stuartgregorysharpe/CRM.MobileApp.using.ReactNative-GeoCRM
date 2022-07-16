@@ -15,7 +15,7 @@ export const SignatureForm = ({item , onPress ,onTouchStart}) => {
 
 
     return (
-        <View style={[style.card,  isCompulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card,  isCompulsory ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, paddingHorizontal:5}}>

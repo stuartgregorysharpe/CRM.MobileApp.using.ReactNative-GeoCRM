@@ -180,5 +180,6 @@ const styles = StyleSheet.create({
     container:{
         marginHorizontal:10,        
         height:Platform.OS === 'android' ? 360 : 380,
+        marginBottom: Platform.OS === "android" ? 0 : 20
     }
 })

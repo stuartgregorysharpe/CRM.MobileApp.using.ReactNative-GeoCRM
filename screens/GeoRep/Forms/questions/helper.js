@@ -47,11 +47,7 @@ export function getFormQuestionData(formQuestions) {
               Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
             item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
           ) {
-            if (value && value.form_answers_array) {
-              form_answers.push({
-                key: `form_answers[${index}][form_question_id]`,
-                value: item.form_question_id,
-              });
+            if (value && value.form_answers_array) {              
               value.form_answers_array.forEach(itemValue => {
                 form_answers.push({
                   ...itemValue,

@@ -13,7 +13,7 @@ export const SingleSelectForm = ({item , onPress ,onTouchStart}) => {
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
 
     return (
-        <View style={[style.card,  isCompulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginTop:10, marginBottom:5 }]}>
+        <View style={[style.card,  isCompulsory  ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginTop:10, marginBottom:5 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, paddingHorizontal:0}}>
