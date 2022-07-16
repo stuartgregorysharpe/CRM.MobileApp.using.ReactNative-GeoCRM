@@ -22,6 +22,7 @@ export function getFormQuestionData(formQuestions) {
     var index = 0;
 
     formQuestions.forEach(element => {
+
         element.questions.forEach(item => {
 
           var value = item.value;               
@@ -40,20 +41,28 @@ export function getFormQuestionData(formQuestions) {
                 });
                 j = j + 1;
               });
-            }            
+              index = index + 1;
+            }
           } else if (
             item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT ||
             item.question_type ===
               Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
             item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT
           ) {
-            if (value && value.form_answers_array) {              
+            if (value && value.form_answers_array) {
+
+              form_answers.push({
+                key: `form_answers[${index}][form_question_id]`,
+                value: item.form_question_id,
+              });
+
               value.form_answers_array.forEach(itemValue => {
                 form_answers.push({
                   ...itemValue,
                   key: `form_answers[${index}]` + itemValue.key,
                 });
               });
+              index = index + 1;
             }
           } else if(item.question_type === 'take_photo' || item.question_type === 'upload_file') {
             form_answers.push({
@@ -64,6 +73,7 @@ export function getFormQuestionData(formQuestions) {
               key: `form_answers[${index}][answer]`,
               value:''
             });
+            index = index + 1;
           }else if(value != undefined &&  value != null && value != '') {
             form_answers.push({
               key: `form_answers[${index}][form_question_id]`,
@@ -73,8 +83,9 @@ export function getFormQuestionData(formQuestions) {
               key: `form_answers[${index}][answer]`,
               value:value
             });
+            index = index + 1;
           }
-          index = index + 1;
+          
           //}
         });
     });
