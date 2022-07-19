@@ -1,10 +1,8 @@
-import { View, Text ,StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Colors } from '../../constants';
 import { AppText } from './AppText';
 import { whiteLabel } from '../../constants/Colors';
 import SvgIcon from '../SvgIcon';
-
 
 export default function CCircleButton(props) {
     const { onClick , title , icon , style } = props;
@@ -27,7 +25,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         borderRadius: 30, 
         borderWidth:1,
-        borderColor: Colors.primaryColor,
+        borderColor: whiteLabel().fieldBorder,
         padding: 5
     }
 })

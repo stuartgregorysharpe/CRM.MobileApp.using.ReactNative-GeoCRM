@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import dummyData from '../dummyData.json';
 import FormSubmitFeedbackContainer from '../../../../components/shared/FormSubmitFeedback/containers/FormSubmitFeedbackContainer';
-import {dummyApiRequest} from '../../../../actions/api.action';
+import {getApiRequest} from '../../../../actions/api.action';
 import {Constants} from '../../../../constants';
+import {ScrollView} from 'react-native-gesture-handler';
 const HistoryDetailContainer = props => {
   const {historyId} = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -13,15 +13,12 @@ const HistoryDetailContainer = props => {
   }, []);
   const onLoad = () => {
     const params = {
-      historyId: historyId,
+      submission_id: historyId,
     };
     setIsLoading(true);
-    dummyApiRequest(
-      'touchpoints/history-detail',
-      params,
-      dummyData.historyDetail,
-    )
+    getApiRequest('forms/form-areas-for-improvement', params)
       .then(fetchedData => {
+        console.log('fetchedData', JSON.stringify(fetchedData));
         setItem(fetchedData);
       })
       .catch(error => {
@@ -34,17 +31,20 @@ const HistoryDetailContainer = props => {
     }
   };
   return (
-    <FormSubmitFeedbackContainer
-      data={item}
-      isShowInScreen={true}
-      onButtonAction={onButtonAction}
-    />
+    <ScrollView style={styles.container}>
+      <FormSubmitFeedbackContainer
+        data={item}
+        isShowInScreen={true}
+        onButtonAction={onButtonAction}
+      />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 30,
   },
 });
 

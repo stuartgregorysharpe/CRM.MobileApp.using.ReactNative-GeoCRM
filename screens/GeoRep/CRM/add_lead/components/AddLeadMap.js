@@ -1,4 +1,4 @@
-import { View, Text , StyleSheet} from 'react-native'
+import { View, StyleSheet} from 'react-native'
 import React from 'react'
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import { useSelector } from 'react-redux';
@@ -15,10 +15,10 @@ export default function AddLeadMap() {
                 showsMyLocationButton={true}
                 zoomEnabled={true}
                 region={{
-                latitude:  currentLocation && currentLocation.latitude != undefined? currentLocation.latitude : 0,
-                longitude: currentLocation && currentLocation.longitude != undefined? currentLocation.longitude : 0,
-                latitudeDelta: 0.001,
-                longitudeDelta: 0.001,
+                    latitude:  currentLocation && currentLocation.latitude != undefined? currentLocation.latitude : 0,
+                    longitude: currentLocation && currentLocation.longitude != undefined? currentLocation.longitude : 0,
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001,
                 }}></MapView>
         </View>
     )

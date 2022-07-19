@@ -8,6 +8,7 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
 import { Constants } from '../../../../../constants';
+import uuid from 'react-native-uuid';
 
 export default function StockSignatureView(props) {
 
@@ -22,7 +23,7 @@ export default function StockSignatureView(props) {
     const handleOK = async(signature) => {
         console.log("handle ok")
         var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
-        const filepath = outputPath + "/sign.png";            
+        const filepath = outputPath + "/sign" + "-" + uuid.v4() + ".png";
         var data = await RNFS.writeFile(filepath,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
             console.log("ressss",res)            
             return res;

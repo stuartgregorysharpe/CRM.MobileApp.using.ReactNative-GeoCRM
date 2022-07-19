@@ -8,10 +8,9 @@ import {style} from '../../../../constants/Styles';
 import {formatDate} from '../../../../helpers/formatHelpers';
 const HistoryItem = props => {
   const {item, index, isLast} = props;
-  const {form_name, overall_score, created_at} = item;
+  const {form_name, overall_score, date} = item;
   const title = form_name;
   const overallScore = Number(overall_score);
-  const date = formatDate(created_at, Constants.dateFormat.DATE_FORMAT_LONG);
   const onItemAction = data => {
     if (props.onItemAction) {
       props.onItemAction(data);

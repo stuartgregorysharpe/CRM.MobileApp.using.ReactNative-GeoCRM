@@ -1,18 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {dummyApiRequest} from '../../../../actions/api.action';
+import {getApiRequest} from '../../../../actions/api.action';
 import TrendChartView from '../components/TrendChartView';
-import dummyData from '../dummyData.json';
+import {getTrendsData} from '../helper';
 const TrendsContainer = props => {
   const [trends, setTrends] = useState(null);
-
+  const {locationId} = props;
   useEffect(() => {
     onLoad();
   }, []);
   const onLoad = () => {
-    const params = {};
-    dummyApiRequest('touchpoints/trends', params, dummyData.trends)
-      .then(trends => {
+    const params = {
+      location_id: locationId,
+    };
+    getApiRequest('touchpoints/location-trend', params)
+      .then(data => {
+        const trends = getTrendsData(data);
         setTrends(trends);
       })
       .catch(error => {});

@@ -10,6 +10,7 @@ export default function TakePhotoForm({item, onPress, onTouchStart}) {
   const isOptimize = item.optimize && item.optimize === '1';
   const photos = item.value;
   const onUpdatePhotos = paths => {
+    console.log("updated files",)
     onPress(paths);
   };
   const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0

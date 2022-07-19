@@ -9,12 +9,12 @@ const CTextInput = props => {
   return (
     <View style={[{alignSelf: 'stretch'}, props.style]}>
       <TextInput
+        
         ref={element => {
           if(dynamicFieldRef != undefined && index != undefined){
             dynamicFieldRef.current[index] = element;
           }
-        }}
-        //value={props.value != undefined? props.value : ''}                
+        }}        
         disabled={props.disabled != undefined ? props.disabled : false}
         mode="outlined"
         outlineColor={
@@ -23,7 +23,7 @@ const CTextInput = props => {
         activeOutlineColor={
           props.hasError ? whiteLabel().endDayBackground : Colors.disabledColor
         }
-        {...props}
+        {...props}        
         style={[styles.textInput, props.textInputStyle]}        
         onSubmitEditing={() => {
           if (

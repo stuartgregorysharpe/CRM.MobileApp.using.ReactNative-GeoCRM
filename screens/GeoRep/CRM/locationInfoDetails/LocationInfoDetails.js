@@ -693,7 +693,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               locationInfo.location_id !== '' &&
               locationInfo.address !== '' &&
               !(
-                props.pageType.name === 'camera' && props.pageType.type !== 2
+                props.pageType.name != undefined &&  props.pageType.name === 'camera' && props.pageType.type !== 2
               ) && (
                 <NextPrev
                   {...props}
