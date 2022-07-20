@@ -13,9 +13,7 @@ import {
   Keyboard,
   Dimensions,
   Platform,
-  Animated,
-  StyleSheet,
-  Alert,
+  StyleSheet,  
   BackHandler,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -40,12 +38,8 @@ import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
-import {
-  postLocationFeedback,
-  postLocationImage,
-} from '../../../../actions/location.action';
+import { postLocationImage } from '../../../../actions/location.action';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import UpdateCustomerInfo from '../popup/UpdateCustomerInfo';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
@@ -63,6 +57,8 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
+import UpdateCustomerModal from '../update_customer';
+import { Constants } from '../../../../constants';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -98,6 +94,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const [checkinTypes, setCheckInTypes] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const nextPrevRef = useRef();
+  const isDisposition = features.includes('disposition_fields')
+  const updateCustomerModalRef = useRef(null);
 
   useImperativeHandle(
     ref,
@@ -180,8 +178,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     return true;
   };
 
-  const checkFeedbackAndClose = async tapType => {
-    //let check = await checkFeatureIncludeParam("feedback_loc_info_outcome");
+  const checkFeedbackAndClose = async tapType => {    
     if (isFeedbackLocInfoOutcome && !outcomeVal) {
       clickedAction = tapType;
       setIsFeedback(true);
@@ -286,7 +283,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const openCustomerInfo = async () => {
-    setShowItem('update_customer');
+    updateCustomerModalRef.current.showModal()    
   };
 
   const _callLocationFeedback = item => {
@@ -490,10 +487,17 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     }
   };
 
+  const onUpdateCustomerModalClosed = ({type, value}) => {
+    if(type == Constants.actionType.ACTION_CLOSE){
+      props.refreshLocationInfo(locationInfo.location_id);
+      updateCustomerModalRef.current.hideModal();
+    }
+  }
+
+
   return (
     <View style={[styles.container, {flex: 1}]}>
       {showFeedbackDropDownModal()}
-
       <Notification />
       
       <AlertDialog
@@ -503,6 +507,17 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           setIsSuccess(false);
         }}
       />
+
+      {
+        locationInfo !=  undefined  &&
+        <UpdateCustomerModal 
+          ref={updateCustomerModalRef}
+          locationId={locationInfo.location_id}
+          title="Update"
+          onButtonAction={onUpdateCustomerModalClosed}
+        />                   
+      }
+      
 
       {subSlideStatus && (
         <TouchableOpacity
@@ -527,16 +542,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           ]}>
           <RefreshSlider location_id={locationInfo.location_id} />
         </View>
-      )}
-
-      {showItem === 'update_customer' && (
-        <UpdateCustomerInfo
-          location_id={locationInfo.location_id}
-          onClose={() => {
-            props.refreshLocationInfo(locationInfo.location_id);
-            setShowItem('refresh');
-          }}
-        />
       )}
 
       <TouchableOpacity
@@ -764,7 +769,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         )}
       </KeyboardAwareScrollView>
 
-      {showItem !== 'update_customer' &&
+      {
         features &&
         (features.includes('access_crm') || features.includes('checkin')) &&
         !keyboardStatus && (
@@ -789,6 +794,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 />
               </TouchableOpacity>
             )}
+            
             {features && features.includes('checkin') && (
               <TouchableOpacity
                 style={[styles.checkInButton]}
@@ -809,20 +815,21 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           </View>
         )}
 
-      {showItem !== 'update_customer' && (
+      { isDisposition && (
         <TouchableOpacity
           style={[style.plusButton, {marginBottom: 80}]}
           onPress={() => {
             if (!subSlideStatus) {
               locationInfoRef.current.postDispositionData();
             }
-          }}>
+          }}>     
           <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
         </TouchableOpacity>
       )}
     </View>
   );
 });
+
 
 const styles = StyleSheet.create({
   container: {

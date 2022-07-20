@@ -66,7 +66,7 @@ export const postApiRequest = async (route, postData) => {
     url = route;
   }
   console.log('postApiRequest -- url', url);
-  console.log('postApiRequest -- data', postData);
+  //console.log('postApiRequest -- data', postData);
   return new Promise(function (resolve, reject) {
     const headers = {
       Accept: 'application/json',
@@ -134,13 +134,14 @@ export const postApiRequestMultipart = async (route, postData , indempotencyKey)
         //console.log('api error: ', JSON.stringify(err));
         const error = err.response;
         if (
-          error.status === 401 &&
+          error != undefined && error.status != undefined && error.status === 401 &&
           error.config &&
           !error.config.__isRetryRequest
         ) {
           reject('expired');
         } else {
-          reject(err);
+          console.log("Error---", err)
+          reject(err != undefined ? err : 'Undfined Error');
         }
       });
   });

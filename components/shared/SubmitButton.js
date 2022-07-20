@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {  
   TouchableOpacity,  
   StyleSheet,  
-  Text,  
+  Text,
+  ActivityIndicator,  
 } from 'react-native';
 import Colors, {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -10,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../SvgIcon';
 
-export const SubmitButton = ({title, onSubmit, style , bgStyle , svgIcon , enabled }) => {
+export const SubmitButton = ({title, onSubmit, style , bgStyle , svgIcon , enabled , isLoading }) => {
   
   return (
     <TouchableOpacity
@@ -24,18 +25,23 @@ export const SubmitButton = ({title, onSubmit, style , bgStyle , svgIcon , enabl
       <Text style={[styles.submitButtonText]}>{title}</Text>      
       
       {
-        svgIcon != undefined && 
+        !isLoading && svgIcon != undefined && 
         <SvgIcon icon={svgIcon} width='20' height='20' style={styles.submitButtonIcon} />
       }
 
       {
-        svgIcon == undefined && 
+        !isLoading &&  svgIcon == undefined && 
         <FontAwesomeIcon
           style={styles.submitButtonIcon}
           size={25}
           color={whiteLabel().actionFullButtonIcon}
           icon={faAngleDoubleRight}
         />
+      }
+
+      {
+        isLoading  &&
+        <ActivityIndicator color={'#FFF'} style={styles.indicatorStyle} />
       }
       
     </TouchableOpacity>
@@ -68,4 +74,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
   },
+  indicatorStyle:{
+    position: 'absolute',
+    right: 10,
+    
+  }
 });

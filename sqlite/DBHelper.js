@@ -3,16 +3,22 @@ import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite
 
 var db = null;
 export const getDBConnection = async () => {
-    if(db) {
-        console.log("alread created db")
-        return db
-    }
-    db = await openDatabase(
+    try{
+      if(db && db != null) {
+          console.log("alread created db")
+          return db
+      }
+      db = await openDatabase(
         { name: 'MainDB', location: 'default' },
-        () => {} ,
-        error => { console.log(error)}
-    );
-    return db
+        () => { },
+        error => { console.log(error); }
+      );
+      return db
+    }catch(e){
+      console.log("Error" , e);
+      return null;
+    }
+ 
 };
 
 

@@ -1,7 +1,7 @@
 
 import { View } from 'react-native'
 import React , {useEffect, useState} from 'react'
-import FormQuestionView from '../components/FormQuestionView';
+import { FormQuestionView } from '../components/FormQuestionView';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
 import { Constants } from '../../../../../constants';

@@ -317,7 +317,8 @@ export default function AddLeadContainer(props) {
                 form={form}
                 onButtonAction={onFormQuestionModalClosed}
             />
-            <SubmitButton style={{marginHorizontal:10}} title={"Add"} onSubmit={onAdd}/>
+            <SubmitButton style={{marginHorizontal:10, marginBottom: 30}} title={"Add"} onSubmit={onAdd}/>
+            
         </View>
     )
 }

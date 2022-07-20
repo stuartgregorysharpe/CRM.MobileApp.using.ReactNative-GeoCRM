@@ -42,12 +42,13 @@ export default function SignIn() {
   //clinton@cydcor.com / Test2021#
   useEffect(() => {  
     initView();    
-    initializeDB();
+    //initializeDB();
   }, [loginStatus]);
 
   const initializeDB = async() => {
     const db = await getDBConnection();
-    await createTable(db);  
+    if(db != null)
+      await createTable(db);  
   }
 
   const initView = async () =>{    

@@ -16,7 +16,7 @@ import { whiteLabel } from '../../constants/Colors';
 
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
-  const {hideClose, hideClear, closableWithOutsideTouch, modalType, clearText} =
+  const {hideClose, hideClear, hideDivider, closableWithOutsideTouch, modalType, clearText} =
     props;
   const _modalType = modalType || Constants.modalType.MODAL_TYPE_CENTER;
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
@@ -84,7 +84,7 @@ const CModal = React.forwardRef((props, ref) => {
 
             <View style={styles.bodyContainer}>
               
-              {!isFullModal && <TouchableOpacity onPress={onClose}>
+              {!isFullModal && !hideDivider && <TouchableOpacity onPress={onClose}>
                 <View style={styles.modalHandler} /></TouchableOpacity>}
 
               {!hideClose && (
