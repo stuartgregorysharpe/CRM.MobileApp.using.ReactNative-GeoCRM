@@ -27,14 +27,14 @@ const LocationWatcher = props => {
   }
 
   const onUpdateCurrentLocation = position => {
-    /*dispatch({
+    dispatch({
       type: CHANGE_CURRENT_LOCATION,
       payload: {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         accuracy: position.coords.accuracy,
       },
-    });*/
+    });
   };
 
   const initLocationWatch = () => {
