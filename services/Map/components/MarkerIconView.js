@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
+import {SvgXml} from 'react-native-svg';
 import MarkerIcon from '../../../components/Marker';
 
 const MarkerIconView = props => {
@@ -8,9 +9,12 @@ const MarkerIconView = props => {
     return <MarkerIcon icon={'Selected_Marker'} width="34px" height="34px" />;
   }
   let foundPinSvg = null;
-  foundPinSvg = mapPinSvg.find(
-    element => parseInt(element.pin_id) == parseInt(item.pin_id),
-  );
+  if (mapPinSvg) {
+    foundPinSvg = mapPinSvg.find(
+      element => parseInt(element.pin_id) == parseInt(item.pin_id),
+    );
+  }
+
   if (foundPinSvg && foundPinSvg.svg_code) {
     return (
       <SvgXml

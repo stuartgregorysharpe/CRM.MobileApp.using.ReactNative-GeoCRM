@@ -4,7 +4,10 @@ import MapView, {Marker, Polygon, Polyline} from 'react-native-maps';
 import {Fonts} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
-import {getPinSvg} from '../../../../constants/Storage';
+import {
+  getPinSvg,
+  getPolygonFillColorTransparency,
+} from '../../../../constants/Storage';
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
 import MarkerIconView from '../../components/MarkerIconView';
 let polylineKey = 0;
@@ -14,6 +17,7 @@ const GmsLocationMap = props => {
   const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
   const [polylineEditing, setPolylineEditing] = useState(null);
+  const [transCode, setTransCode] = useState('05');
   const mapRef = useRef(null);
   const isShowFinishButton =
     isDrawMode &&
@@ -25,7 +29,12 @@ const GmsLocationMap = props => {
     currentLocation.latitude != undefined;
   useEffect(() => {
     loadPinSvg();
+    initTransCode();
   }, []);
+  const initTransCode = async () => {
+    const code = await getPolygonFillColorTransparency();
+    setTransCode(code);
+  };
   const loadPinSvg = async () => {
     mapPinSvg = await getPinSvg('@map_pin_key');
   };
@@ -93,7 +102,7 @@ const GmsLocationMap = props => {
           key={'markers' + item.location_id}
           tracksViewChanges={!isDrawMode}
           onPress={() => {
-            onMarkerPressed(item, key);
+            props.onMarkerPressed(item, key);
           }}
           coordinate={{
             latitude: Number(item.coordinates.latitude),
@@ -111,11 +120,11 @@ const GmsLocationMap = props => {
   const renderPolygons = _polygons => {
     const polygons = [];
     if (_polygons && _polygons.length > 0) {
-      _polygons.forEach(polygon => {
-        polygon.path.forEach(item => {
+      _polygons.forEach((polygon, index) => {
+        polygon.path.forEach((item, itemIndex) => {
           polygons.push(
             <Polygon
-              key={'polygons' + item.location_id}
+              key={'polygons' + index + 'item' + itemIndex}
               coordinates={item}
               strokeColor={polygon.strokeColor}
               fillColor={polygon.fillColor + transCode}
@@ -125,6 +134,7 @@ const GmsLocationMap = props => {
         });
       });
     }
+    if (polygons.length > 0) return polygons;
     return null;
   };
 

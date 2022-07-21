@@ -15,7 +15,15 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {Fonts} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
-import {getPinSvg} from '../../../../constants/Storage';
+import {
+  getPinSvg,
+  getPolygonFillColorTransparency,
+} from '../../../../constants/Storage';
+import {calcArgbIntValFromHexRgba} from '../../../../helpers/formatHelpers';
+import {
+  calculateBBox,
+  calculateBBoxFromHMS,
+} from '../../../../screens/GeoRep/CRM/components/helpers';
 import MarkerIconView from '../../components/MarkerIconView';
 let polylineKey = 0;
 let mapPinSvg = null;
@@ -25,6 +33,7 @@ const HmsLocationMap = props => {
   const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
   const [polylineEditing, setPolylineEditing] = useState(null);
+  const [transCode, setTransCode] = useState('05');
   const mapRef = useRef(null);
   const isShowFinishButton =
     isDrawMode &&
@@ -36,7 +45,12 @@ const HmsLocationMap = props => {
     currentLocation.latitude != undefined;
   useEffect(() => {
     loadPinSvg();
+    initTransCode();
   }, []);
+  const initTransCode = async () => {
+    const code = await getPolygonFillColorTransparency();
+    setTransCode(code);
+  };
   const loadPinSvg = async () => {
     mapPinSvg = await getPinSvg('@map_pin_key');
   };
@@ -85,12 +99,19 @@ const HmsLocationMap = props => {
     onResetDrawing();
   };
   const onRegionChangeComplete = e => {
-    console.log('onRegionChangeComplete', e);
-    if (props.onRegionChangeComplete) {
-      //props.onRegionChangeComplete(region, markers, bBox, zoom);
-    }
+    mapRef.current.getHuaweiMapInfo().then(info => {
+      if (props.onRegionChangeComplete) {
+        const cameraPosition = info.cameraPosition;
+        const visibleRegion = info.visibleRegion;
+        const zoom = cameraPosition.zoom;
+        const region = cameraPosition.target;
+        const bBox = calculateBBoxFromHMS(visibleRegion);
+        props.onRegionChangeComplete(region, markers, bBox, zoom);
+      }
+    });
   };
   const checkMarkerSelected = marker => {
+    if (!selectedLocations) return false;
     const foundLocation = selectedLocations.find(
       element => element.location_id === marker.location_id,
     );
@@ -104,8 +125,9 @@ const HmsLocationMap = props => {
         <HMSMarker
           key={'markers' + item.location_id}
           onClick={() => {
-            onMarkerPressed(item, key);
+            props.onMarkerPressed(item, key);
           }}
+          clusterable={true}
           coordinate={{
             latitude: Number(item.coordinates.latitude),
             longitude: Number(item.coordinates.longitude),
@@ -120,22 +142,26 @@ const HmsLocationMap = props => {
     });
   };
   const renderPolygons = _polygons => {
+    console.log('polygons', _polygons);
     const polygons = [];
     if (_polygons && _polygons.length > 0) {
-      _polygons.forEach(polygon => {
-        polygon.path.forEach(item => {
+      _polygons.forEach((polygon, index) => {
+        polygon.path.forEach((item, itemIndex) => {
           polygons.push(
             <HMSPolygon
-              key={'polygons' + item.location_id}
+              key={'polygons' + index + 'item' + itemIndex}
               points={item}
-              strokeColor={polygon.strokeColor}
-              fillColor={polygon.fillColor + transCode}
+              strokeColor={calcArgbIntValFromHexRgba(polygon.strokeColor)}
+              fillColor={calcArgbIntValFromHexRgba(
+                polygon.fillColor + transCode,
+              )}
               strokeWidth={1}
             />,
           );
         });
       });
     }
+    if (polygons.length > 0) return polygons;
     return null;
   };
 
@@ -145,8 +171,8 @@ const HmsLocationMap = props => {
         <HMSPolygon
           key={'polygons-draw' + _polylineEditing.id}
           points={_polylineEditing.coordinates}
-          strokeColor="#000"
-          fillColor="rgba(76,146,236,0.5)"
+          strokeColor={calcArgbIntValFromHexRgba('#000000')}
+          fillColor={calcArgbIntValFromHexRgba('#4C92EC80')}
           strokeWidth={1}
         />
       );
@@ -164,8 +190,8 @@ const HmsLocationMap = props => {
         }}
         radius={_radius}
         strokeWidth={1}
-        strokeColor={Colors.primaryColor}
-        fillColor={'rgba(230,238,255,0.5)'}
+        strokeColor={calcArgbIntValFromHexRgba(Colors.primaryColor)}
+        fillColor={calcArgbIntValFromHexRgba('#E6EEFF80')}
       />
     );
   };
@@ -176,18 +202,20 @@ const HmsLocationMap = props => {
         <HMSMap
           clusterColor={whiteLabel().mainText}
           ref={mapRef}
+          liteMode={false}
+          mapType={MapTypes.NORMAL}
           markerClustering={true}
           style={styles.mapView}
           scrollGesturesEnabled={!isDrawMode}
           rotateGesturesEnabled={!isDrawMode}
-          onCameraUpdateFinished={onRegionChangeComplete}
+          onCameraIdle={onRegionChangeComplete}
           onMapClick={onPressMap}
           camera={{
             target: {
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
             },
-            zoom: 3,
+            zoom: 12,
             bearing: 50,
             tilt: 80,
           }}

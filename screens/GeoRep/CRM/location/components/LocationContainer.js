@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import {CHANGE_POLYGONS} from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
   getLocationMapByRegion,
@@ -35,6 +36,8 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
+    console.log('isLoadable', isLoadable);
+    console.log('isLoading', isLoading);
     if (isLoadable) {
       setIsLoading(true);
       getLocationMapByRegion(_currentLocation, boundBox)
@@ -45,6 +48,7 @@ const LocationContainer = props => {
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
         .catch(e => {
+          setIsLoading(false);
           expireToken(dispatch, e);
         });
     }
@@ -52,7 +56,8 @@ const LocationContainer = props => {
   useEffect(() => {
     onLoadMarkers(currentLocation, boundBox);
   }, [mapFilters, currentLocation]);
-  onRegionChanged = async (region, markers, bBox, zoom) => {
+  const onRegionChanged = async (region, markers, bBox, zoom) => {
+    console.log('onRegionChanged');
     const minZoomLevel = await getMapMinZoomLevel();
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
@@ -66,14 +71,22 @@ const LocationContainer = props => {
 
     const isRegionMarkerCountSmall =
       (markers !== undefined && markers.length < 20) || markers === undefined;
+    console.log('isRegionMarkerCountSmall', isRegionMarkerCountSmall);
     const isZoomLevelChangedToMinZoomLevel =
       (previousZoom < minZoomLevel && zoom >= minZoomLevel) ||
       (previousZoom >= zoom && zoom >= minZoomLevel);
-
+    console.log(
+      'isZoomLevelChangedToMinZoomLevel',
+      isZoomLevelChangedToMinZoomLevel,
+    );
+    console.log('minZoomLevel', minZoomLevel);
+    console.log('zoom', zoom);
+    console.log('bBox', bBox);
     const isReloadMarkers =
       !isDrawMode &&
       isRegionMarkerCountSmall &&
       isZoomLevelChangedToMinZoomLevel;
+    console.log('isReloadMarkers', isReloadMarkers);
     if (isReloadMarkers) {
       setBoundBox(bBox);
       onLoadMarkers(currentLocation, bBox);
@@ -90,6 +103,7 @@ const LocationContainer = props => {
     dispatch(getLocationFilters());
     //open filter view
   };
+  const onMarkerPressed = (item, key) => {};
   return (
     <View style={[styles.container, props.style]}>
       <LocationWatcher />
@@ -117,6 +131,7 @@ const LocationContainer = props => {
         markers={markers}
         currentLocation={currentLocation}
         isDrawMode={isDrawMode}
+        onMarkerPressed={onMarkerPressed}
         onRegionChangeComplete={onRegionChanged}
       />
     </View>

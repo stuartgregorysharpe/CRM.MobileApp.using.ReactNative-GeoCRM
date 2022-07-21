@@ -149,10 +149,10 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file('hms-keystore.jks')
+            storePassword 'qqqqqq'
+            keyAlias 'geoversehms'
+            keyPassword 'qqqqqq'
         }
     }
 

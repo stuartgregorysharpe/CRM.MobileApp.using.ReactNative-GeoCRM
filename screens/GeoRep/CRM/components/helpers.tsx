@@ -18,6 +18,14 @@ export const calculateBBox = (region) => {
     region.latitude + region.latitudeDelta, // northLat - max lat
   ]
 }
+export const calculateBBoxFromHMS = (visibleRegion) => {
+  return [
+    visibleRegion.farLeft.longitude,
+    visibleRegion.farLeft.latitude,
+    visibleRegion.nearRight.longitude,
+    visibleRegion.nearRight.latitude,
+  ]
+}
 
 export const returnMapZoom = (region, bBox, minZoom) => {
   const viewport =

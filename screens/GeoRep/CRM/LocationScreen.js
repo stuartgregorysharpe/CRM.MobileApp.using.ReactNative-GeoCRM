@@ -22,7 +22,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import MapView, {Marker, Polygon, Polyline} from 'react-native-maps';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch, faChevronUp} from '@fortawesome/free-solid-svg-icons';
-import AddLead from './popup/AddLead';
 import FilterView from '../../../components/FilterView';
 import SvgIcon from '../../../components/SvgIcon';
 import GrayBackground from '../../../components/GrayBackground';
@@ -65,6 +64,7 @@ import MarkerIcon from '../../../components/Marker';
 import PinKeySlideUp from './popup/PinKeySlideUp';
 import CheckInStatusView from './partial/CheckInStatusView';
 import AddLeadModal from './add_lead';
+import {Constants} from '../../../constants';
 
 let id = 0;
 let previousZoom = 0;
@@ -116,13 +116,6 @@ export default function LocationScreen(props) {
   useEffect(() => {
     initCode();
     refreshHeader();
-    if (crmStatus || showItem === 'addLead') {
-      props.screenProps.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
     requestPermissions();
     return () => {
       isMount = false;
@@ -130,13 +123,6 @@ export default function LocationScreen(props) {
   }, []);
 
   useEffect(() => {
-    if (crmStatus || showItem === 'addLead') {
-      props.screenProps.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
     refreshHeader();
   }, [showItem]);
 
@@ -277,6 +263,7 @@ export default function LocationScreen(props) {
     console.log('crm navigation');
     const unsubscribe = navigation.addListener('focus', async () => {
       console.log('focuseed');
+
       isMount = true;
       specificLocationId = await getLocalData('@specific_location_id');
       refreshHeader();
@@ -339,7 +326,7 @@ export default function LocationScreen(props) {
         return (
           <TouchableOpacity
             onPress={() => {
-              if (showingItem === 'addLead' || showItem === 'locationInfo') {
+              if (showItem === 'locationInfo') {
                 showingItem = 'map_view';
                 setShowItem('map_view');
                 setIsBack(false);
@@ -373,12 +360,6 @@ export default function LocationScreen(props) {
           style={style.headerLeftStyle}
           activeOpacity={1}
           onPress={() => {
-            if (showingItem === 'addLead') {
-              showingItem = 'map_view';
-              setShowItem('map_view');
-              setIsBack(false);
-              return;
-            }
             dispatch({type: SLIDE_STATUS, payload: false});
             setIsBack(false);
             if (navigation.canGoBack()) {
@@ -402,14 +383,6 @@ export default function LocationScreen(props) {
       dispatch({type: SLIDE_STATUS, payload: false});
       return true;
     }
-
-    if (showingItem === 'addLead') {
-      showingItem = 'map_view';
-      setShowItem('map_view');
-      setIsBack(false);
-      refreshHeader();
-      return true;
-    }
     props.navigation.goBack();
     return true;
   };
@@ -417,7 +390,7 @@ export default function LocationScreen(props) {
   const animation = name => {
     setShowItem(name);
     showingItem = name;
-    if (name === 'addLead' || name === 'locationInfo') {
+    if (name === 'locationInfo') {
       setIsBack(true);
     }
   };
@@ -607,7 +580,16 @@ export default function LocationScreen(props) {
     return <View></View>;
   };
 
-  const onAddLeadModalClosed = ({type, value}) => {};
+  const onAddLeadModalClosed = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      console.log('hide modal');
+      addLeadModalRef.current.hideModal();
+    }
+    if (type == Constants.actionType.ACTION_DONE) {
+      addLeadModalRef.current.hideModal();
+      openLocaitonInfoDetails(Number(value));
+    }
+  };
 
   return (
     <Provider>
@@ -640,24 +622,10 @@ export default function LocationScreen(props) {
           </View>
         )}
 
-        {showItem === 'addLead' && (
-          <AddLead
-            screenProps={props.screenProps}
-            onClose={location_id => {
-              if (location_id) {
-                openLocaitonInfoDetails(Number(location_id));
-                return;
-              }
-              showingItem = 'map_view';
-              setShowItem('map_view');
-              setIsBack(false);
-            }}
-          />
-        )}
-
         <AddLeadModal
           title="Add Lead"
           ref={addLeadModalRef}
+          navigation={props.navigation}
           onButtonAction={onAddLeadModalClosed}
         />
 
@@ -934,8 +902,10 @@ export default function LocationScreen(props) {
           <TouchableOpacity
             style={[styles.plusButton, {marginBottom: isCheckin ? 40 : 0}]}
             onPress={() => {
-              //animation("addLead");
-              addLeadModalRef.current.showModal();
+              console.log(addLeadModalRef.current);
+              if (addLeadModalRef.current) {
+                addLeadModalRef.current.showModal();
+              }
             }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
           </TouchableOpacity>

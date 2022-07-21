@@ -3,6 +3,7 @@ import {SafeAreaView} from 'react-native';
 
 import {Colors} from '../../constants';
 import TestLocationUI from '../../services/LocationService/TestLocationUI';
+import HmsMap from '../../services/Map/HsmMap';
 export default function UITestScreen({screenProps}) {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -14,7 +15,7 @@ export default function UITestScreen({screenProps}) {
   });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
-      <TestLocationUI style={{flex: 1}} />
+      <HmsMap style={{flex: 1}} />
     </SafeAreaView>
   );
 }

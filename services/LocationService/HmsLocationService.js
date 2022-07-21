@@ -87,7 +87,9 @@ function watchPosition(
       HMSLocation.FusedLocation.Events.addFusedLocationEventListener(
         locationResult => {
           if (successCallback) {
-            successCallback(locationResult);
+            successCallback({
+              coords: locationResult.lastLocation,
+            });
           }
         },
       );
