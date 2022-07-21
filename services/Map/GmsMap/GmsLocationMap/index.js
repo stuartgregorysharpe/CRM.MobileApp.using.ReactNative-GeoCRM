@@ -88,6 +88,7 @@ const GmsLocationMap = props => {
     }
   };
   const checkMarkerSelected = marker => {
+    if (!selectedLocations) return false;
     const foundLocation = selectedLocations.find(
       element => element.location_id === marker.location_id,
     );

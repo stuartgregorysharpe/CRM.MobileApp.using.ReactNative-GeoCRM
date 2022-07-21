@@ -142,7 +142,6 @@ const HmsLocationMap = props => {
     });
   };
   const renderPolygons = _polygons => {
-    console.log('polygons', _polygons);
     const polygons = [];
     if (_polygons && _polygons.length > 0) {
       _polygons.forEach((polygon, index) => {
