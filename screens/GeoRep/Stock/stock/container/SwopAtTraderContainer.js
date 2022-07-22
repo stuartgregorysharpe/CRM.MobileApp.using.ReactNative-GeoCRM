@@ -49,6 +49,7 @@ export default function SwopAtTraderContainer(props) {
     }
 
     const onSwop = () => {        
+      
         var postData = new FormData();
         postData.append('stock_type', "Device");
         postData.append('location_id',  props.locationId);                

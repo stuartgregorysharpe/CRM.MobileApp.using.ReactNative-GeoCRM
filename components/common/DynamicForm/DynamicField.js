@@ -20,6 +20,7 @@ const DynamicField = props => {
     isFirst,    
     index,
     dynamicFieldRef,
+    isClickable
   } = props;
 
   
@@ -38,7 +39,7 @@ const DynamicField = props => {
         keyboardType={'decimal-pad'}
         onChangeText={text => {
           updateFormData(field_name, text);
-        }}
+        }}                
         style={{marginTop: isFirst ? 0 : 10}}
       />
     );
@@ -62,7 +63,8 @@ const DynamicField = props => {
       />
     );
   };
-
+  
+  
   const renderDropdown = () => {
     return (
       <CSingleSelectInput
@@ -73,6 +75,12 @@ const DynamicField = props => {
         items={items}
         hasError={hasError}
         disabled={disabled}
+        isClickable={isClickable}
+        onPress={() => {
+          if(isClickable){
+            props.onPress();
+          }
+        }}
         onSelectItem={item => {
           updateFormData(field_name, item.value);
         }}
@@ -83,7 +91,7 @@ const DynamicField = props => {
   };
 
   const renderDropdownInput = () => {
-    console.log("ADSFSDF",value)
+            
     return (
       <View>
         <CSingleSelectInput
@@ -94,11 +102,16 @@ const DynamicField = props => {
           items={items}
           hasError={hasError}
           disabled={disabled}
+          isClickable={isClickable}
+          onPress={() => {
+            if(isClickable){
+              props.onPress();
+            }
+          }}          
           onSelectItem={item => {
             updateSecondFormData(field_name, item.value , value.secondValue);
           }}
-          containerStyle={{marginTop: isFirst ? 0 : 10}}
-        />
+          containerStyle={{marginTop: isFirst ? 0 : 10}}/>
 
           {
             value != '' &&

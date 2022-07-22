@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux'
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
 import { getLocalData, storeLocalValue } from '../../../../constants/Storage';
-import { getPostParameter } from '../../../../constants/Helper';
+import { expireToken, getPostParameter } from '../../../../constants/Helper';
 import { Constants } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
 import { updateCurrentLocation } from '../../../../actions/google.action';
@@ -38,6 +38,7 @@ export default function MainPage(props) {
     const isCheckin = useSelector(state => state.location.checkIn);
     const navigation = props.navigation;
     const [isLoading, setIsLoading] = useState(false);
+    let isSubscribed = true;
 
     useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
@@ -46,11 +47,17 @@ export default function MainPage(props) {
       return unsubscribe;
     }, [navigation]);
 
-    useEffect(() => {    
-        let isSubscribed = true;        
+    useEffect(() => {            
         loadPage();
+        if(!isCheckin){
+          cleanLocationId();
+        }
         return () => (isSubscribed = false)
     },[isCheckin]);
+
+    const cleanLocationId = async() => {      
+      await storeLocalValue( '@specific_location_id', '');
+    }
 
     const loadPage = () => {
       if(currentLocation.latitude === undefined){    
@@ -65,7 +72,9 @@ export default function MainPage(props) {
       if(isLoading == false){
         setIsLoading(true);
         getApiRequest("home/main-dashboard", param).then(async(res) => {              
+            if(isSubscribed){
               setIsLoading(false);
+              console.log("visits_card", JSON.stringify(res.items.visits_card))
               setVisitCard(res.items.visits_card);
               setActivityCard(res.items.activity_card);
               setCurrentCall(res.items.current_call);
@@ -79,15 +88,17 @@ export default function MainPage(props) {
               }
               setIsStart(res.items.startEndDay_state === Constants.homeStartEndType.START_MY_DAY ? true : false);
               await storeLocalValue("start_my_day", res.items.startEndDay_state === Constants.homeStartEndType.START_MY_DAY  ? '1' : '0' );  
+            }              
             
         }).catch((e) => {        
-          setIsLoading(false);
+          setIsLoading(false);          
+          expireToken(dispatch, e);
         });       
       }    
       initData();
     }
 
-    const initData  = async() =>{
+    const initData  = async() => {
       var startMyDay = await getLocalData("start_my_day");      
       setIsStart( startMyDay === null || startMyDay === "1" ? true: false);
     }
@@ -98,16 +109,15 @@ export default function MainPage(props) {
             startEndDay_type: isStart ? Constants.homeStartEndType.START_MY_DAY : Constants.homeStartEndType.END_MY_DAY,
             user_local_data:  userParam.user_local_data !=undefined ? userParam.user_local_data : {time_zone: '', latitude: 0, longitude: 0},
         };
-        postApiRequest("home/startEndDay", postData).then( async(res) => {          
+        postApiRequest("home/startEndDay", postData).then( async(res) => {
           if(res.status === "success"){
             setStartEndDayId(res.startEndDay_id);
             await storeLocalValue("start_my_day", isStart ? '0' : '1' );          
             setIsStart(!isStart);
-
             if(features.includes("odometer_reading")){
               odometerReadingModalRef.current.showModal();
             }
-          }        
+          }
         }).catch((e) => {
 
         });
@@ -120,11 +130,7 @@ export default function MainPage(props) {
           message: value,
           buttonText: 'Okay',
         }),
-      ); 
-
-      //setIsStart(!isStart);      
-      //await storeLocalValue("start_my_day", !isStart ? "1" : "0");
-      // odometerReadingModalRef.current.hideModal();
+      );       
     };
     
     const renderCards = (item, index) => {            

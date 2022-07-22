@@ -3,12 +3,13 @@ import React, {
   useEffect,
   useRef,
   useMemo,
-  useImperativeHandle,
+  useImperativeHandle
 } from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet ,TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
 
 const DynamicForm = React.forwardRef((props, ref) => {
+
   const {formData, formStructureData} = props;
   const [errors, setErrors] = useState({});
   const dynamicFieldRef = useRef([]);
@@ -83,20 +84,45 @@ const DynamicForm = React.forwardRef((props, ref) => {
 
 
   const renderFields = () => {
+    if(props.isClickable){
+      return formStructureData.map((fieldStructure, index) => {
+        return (
+          <TouchableOpacity           
+            onPress={() => {            
+            props.onPress();
+          } }>
+            <DynamicField
+              {...fieldStructure}
+              key={index + 'field'}
+              updateFormData={updateFormData}            
+              updateSecondFormData={updateSecondFormData}
+              value={formData[fieldStructure.field_name]}
+              hasError={errors[fieldStructure.field_name]}
+              isFirst={index == 0}
+              isClickable={props.isClickable}
+              onPress={() => {
+                props.onPress();
+              }}
+              index={index}
+              dynamicFieldRef={dynamicFieldRef}          
+            />
+          </TouchableOpacity>
+          
+        );
+      });
+    }
     return formStructureData.map((fieldStructure, index) => {
       return (
         <DynamicField
           {...fieldStructure}
           key={index + 'field'}
-          updateFormData={updateFormData}
+          updateFormData={updateFormData}          
           updateSecondFormData={updateSecondFormData}
           value={formData[fieldStructure.field_name]}
           hasError={errors[fieldStructure.field_name]}
           isFirst={index == 0}
           index={index}
-          dynamicFieldRef={dynamicFieldRef}
-          
-
+          dynamicFieldRef={dynamicFieldRef}          
         />
       );
     });

@@ -582,8 +582,12 @@ export default function LocationScreen(props) {
 
             <FontAwesomeIcon style={styles.searchIcon} size={16} color={whiteLabel().inactiveIcon} icon={faSearch} />
             <TouchableOpacity style={styles.filterImageButton} onPress={() => {
+              
+              console.log("filter");
               dispatch(getLocationFilters());
+              dispatch({ type: SLIDE_STATUS, payload: true }); 
               animation("filter");
+
             }}>
               <SvgIcon icon="Filter" style={styles.Filter} width="30px" height="30px" />
             </TouchableOpacity>

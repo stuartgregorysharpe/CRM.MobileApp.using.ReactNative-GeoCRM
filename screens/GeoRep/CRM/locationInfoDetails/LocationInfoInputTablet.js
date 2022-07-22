@@ -86,6 +86,11 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState('');
   var isBelowStage = false;
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
+  const isDisposition = features.includes('disposition_fields')
+
 
   useImperativeHandle(
     ref,

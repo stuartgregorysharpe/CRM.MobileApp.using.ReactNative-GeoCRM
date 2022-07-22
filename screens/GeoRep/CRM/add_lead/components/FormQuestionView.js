@@ -1,6 +1,6 @@
 
 import { View, Text ,ScrollView , StyleSheet ,TouchableOpacity} from 'react-native'
-import React , { useState , useRef  ,useCallback } from 'react'
+import React , { useState , useRef  ,useCallback , useImperativeHandle , forwardRef } from 'react'
 import NavigationHeader from '../../../../../components/Header/NavigationHeader';
 import { DatetimePickerView } from '../../../../../components/DatetimePickerView';
 import Sign from '../../../Forms/questions/partial/Sign';
@@ -28,9 +28,10 @@ import EmailPdf from '../../../../../components/shared/EmailPdf';
 import SKUCountForm from '../../../../../components/shared/SKUCount';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-export default function FormQuestionView(props) {
+//export default function FormQuestionView(props) {
+export const FormQuestionView = forwardRef((props, ref) => {
         
-    const {  isShowCustomNavigationHeader, form , formQuestions , updateFormQuestions , onBackPressed, onSubmit} = props;    
+    const {  isShowCustomNavigationHeader, form , formQuestions ,pageType, updateFormQuestions , onBackPressed, onSubmit} = props;    
     const [modaVisible, setModalVisible] = useState(false);
     const [options, setOptions] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -46,8 +47,24 @@ export default function FormQuestionView(props) {
     const [isUploadFileView, setIsUploadFileView] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
-    const formSubmitModalRef = useRef(null);
-    
+    const formSubmitModalRef = useRef(null);    
+    const [isLoading, setIsLoading] = useState(false);
+        
+    useImperativeHandle(
+      ref,
+      () => ({
+        openModal(data) {
+          onOpenFeedbackModal(data);
+        },
+        changeLoadingStatus(val) {
+          setIsLoading(val);
+        }
+
+      }),
+      [],
+    );
+
+
     const showSelectionView = useCallback(() => {
         setModalVisible(true);
     }, [options, selectedOptions]);
@@ -55,6 +72,13 @@ export default function FormQuestionView(props) {
     const handleSignature = signature => {
         onValueChangedSelectionView(key, index, signature);
         setIsSign(false);
+    };
+
+    const onOpenFeedbackModal = feedbackData => {
+      setFormSubmitFeedback(feedbackData);
+      if (formSubmitModalRef && formSubmitModalRef.current) {
+        formSubmitModalRef.current.showModal();
+      }
     };
 
     const clearAll = () => {
@@ -371,17 +395,17 @@ export default function FormQuestionView(props) {
     
     return (
         <View style={styles.container}>
-
             {
                 isShowCustomNavigationHeader &&
                 <NavigationHeader
                     showIcon={true}
                     title={'Forms'}
-                    onBackPressed={() => {             
+                    onBackPressed={() => {        
                         onBackPressed();
                     }}
-                />  
-            }            
+                />
+            }
+
             <Notification></Notification>
                 
             <DatetimePickerView
@@ -462,9 +486,13 @@ export default function FormQuestionView(props) {
                 <View style={{marginTop: 10, marginBottom: 70}}>
                 {formQuestions && formQuestions.length > 0 && (
                     <SubmitButton
+                    isLoading={isLoading}
+                    enabled={!isLoading}
                     title="Submit"
                     onSubmit={() => {
+                      if(!isLoading){
                         onSubmit();
+                      }                        
                     }}></SubmitButton>
                 )}
                 </View>
@@ -484,7 +512,7 @@ export default function FormQuestionView(props) {
                     type == Constants.actionType.ACTION_DONE ||
                     type == Constants.actionType.ACTION_CLOSE
                 ) {
-                    if (pageType === 'CRM') {
+                    if (pageType != undefined && pageType === 'CRM') {
                         props.navigation.navigate('CRM', {screen: 'Root'});
                     }
                 }
@@ -493,7 +521,8 @@ export default function FormQuestionView(props) {
 
         </View>
     );
-}
+});
+
 
 const styles = StyleSheet.create({
     container: {

@@ -26,16 +26,24 @@ export default function CustomMasterFields(props) {
         renderForms  = leadForms.filter((item , index) => index == 0);
       }     
       const tmpFormData = {}; 
-      renderForms.forEach(item => {
-        tmpFormData[item.custom_master_field_id] = item.value;
+      renderForms.forEach(field => {
+        var value = field.value;
+        if(field.field_type === "dropdown_input"){
+          if(field.value != null && field.value != '' && field.dropdown_value != undefined){
+            value = {value: field.dropdown_value, secondValue: field.value};          
+          }
+        }
+        tmpFormData[field.custom_master_field_id] = value;
       });
-
       if(type == "first"){
         setFormData1(tmpFormData);
+        onChangedCustomMasterFields({...tmpFormData});
       }else{
         setFormData2(tmpFormData);
+        onChangedCustomMasterFields({...tmpFormData});
       }      
       const dynamicFields = renderForms.map((field, index) => {
+        var value = field.value;
         if( (field.field_type == "dropdown" || field.field_type == "dropdown_input") && field.preset_options != undefined ){
           var items = [];         
           if(field.preset_options != undefined && field.preset_options != ''){
@@ -46,9 +54,9 @@ export default function CustomMasterFields(props) {
           field = {
             ...field,
             items: items
-          }      
-        }
-        
+          }          
+        }       
+                
         return {
           ...field,
           key:index,
@@ -57,7 +65,7 @@ export default function CustomMasterFields(props) {
           editable: field.rule_editable,     
           is_required: true,
           field_label:field.field_name,    
-          value: field.value,      
+          value: value
         };
       });      
       if(type == "first"){
@@ -65,6 +73,7 @@ export default function CustomMasterFields(props) {
       }else{        
         setFormStructure2(dynamicFields)
       }
+      console.log("dynamicFields",dynamicFields)
     }
 
     const renderUseCurrentLocation = key => {
@@ -111,7 +120,7 @@ export default function CustomMasterFields(props) {
             updateFormData={formData => {
               console.log("form data" , formData)
               setFormData1(formData);
-              onChangedCustomMasterFields({...formData, ...formData2});
+              onChangedCustomMasterFields({...formData1, ...formData2});
             }}
           />
 
@@ -123,10 +132,11 @@ export default function CustomMasterFields(props) {
             formStructureData={formStructure2}
             updateFormData={formData => {              
               setFormData2(formData);
-              onChangedCustomMasterFields({...formData1, ...formData});
+              onChangedCustomMasterFields({...formData2, ...formData});
             }}
             updateSecondFormData={formData => {              
               setFormData2(formData);              
+              onChangedCustomMasterFields({...formData2, ...formData});
             }}            
           />
 

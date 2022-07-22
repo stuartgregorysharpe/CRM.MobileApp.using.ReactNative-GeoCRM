@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Platform,
+  Platform,  
 } from 'react-native';
 import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
@@ -21,36 +21,53 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import * as RNLocalize from 'react-native-localize';
-import {Constants} from '../../../../constants';
-import FormQuestionView from '../../CRM/add_lead/components/FormQuestionView';
+import { FormQuestionView } from '../../CRM/add_lead/components/FormQuestionView';
 import { getFormQuestionData, getFormQuestionFile, validateFormQuestionData } from './helper';
+import { createTable, deleteAllFormTable, deleteFormTable, getFormTableData, insertTable } from '../../../../sqlite/FormDBHelper';
+import { getDBConnection } from '../../../../sqlite/DBHelper';
+import uuid from 'react-native-uuid';
+import { getLocalData } from '../../../../constants/Storage';
+import LoadingBar from '../../../../components/LoadingView/loading_bar';
+
+var indempotencyKey;
 
 export const FormQuestions = props => {
 
-  const form = props.route.params.data;
-  const location_id = props.route.params.location_id;
+  const form = props.route.params.data;  
   const pageType = props.route.params.pageType;
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const [formQuestions, setFormQuestions] = useState([]);
-  const [modaVisible, setModalVisible] = useState(false);
-  const [options, setOptions] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState([]);  
+  const [formQuestions, setFormQuestions] = useState([]);  
   const [isDateTimeView, setIsDateTimeView] = useState(false);
-  const [isSign, setIsSign] = useState(false);  
-  const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
-  const formSubmitModalRef = useRef(null);
-
+  const [isSign, setIsSign] = useState(false);      
+  const formQuestionViewRef = useRef();
+  const loadingBarRef = useRef();
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
+
   useEffect(() => {
     refreshHeader();
-    _callFormQuestions();
+    loadFromDB(form.form_id) 
   }, [form]);
+  
+  const loadFromDB = async (formId) =>{
+    const db = await getDBConnection();              
+    if(db != null){
+      const res = await getFormTableData(db , formId);
+      if(res.length > 0){                   
+        setFormQuestions(JSON.parse(res.item(0).formQuestions));      
+        indempotencyKey = res.item(0).indempotencyKey;      
+        return;
+      }      
+    }
+    _callFormQuestions();        
+  }
 
-  const showSelectionView = useCallback(() => {
-    setModalVisible(true);
-  }, [options, selectedOptions]);
-
+  const saveDb = async(formQuestions , indempotencyKey) =>{
+    const db = await getDBConnection();  
+    if( db != null)
+      await insertTable(db, form.form_id, formQuestions ,indempotencyKey)        
+  }
+  
   const refreshHeader = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -60,8 +77,6 @@ export const FormQuestions = props => {
               onPress={() => {
                 if (isDateTimeView) {
                   closeDateTime();
-                } else if (modaVisible) {
-                  closeDateTime();
                 } else if (isSign) {
                   closeSignView();
                 } else {
@@ -69,6 +84,7 @@ export const FormQuestions = props => {
                     props.navigation.navigate('CRM', {screen: 'Root'});
                   } else {
                     if (props.navigation.canGoBack()) {
+                      console.log("back btn")                      
                       props.navigation.goBack();
                     }
                   }
@@ -101,11 +117,12 @@ export const FormQuestions = props => {
     };
     console.log("param", param)
     getApiRequest('forms/forms-questions', param)
-      .then(res => {
-        console.log("Res", res.questions);
-        groupByQuestions(res.questions);
+      .then(res => {     
+        console.log("form question results" , res.questions);
+        groupByQuestions(res.questions);         
       })
       .catch(e => {
+        console.log("ERRR",e)
         expireToken(dispatch, e);
       });
   };
@@ -131,11 +148,13 @@ export const FormQuestions = props => {
     setFormQuestions(newData);
   };
 
+
   const isInNewData = (data, value) => {
     return data.find(item => item.question_group_id === value.question_group_id)
       ? true
       : false;
   };
+
 
   const clearAll = () => {
     var tmp = [...formQuestions];
@@ -151,6 +170,7 @@ export const FormQuestions = props => {
       });
     });
     setFormQuestions(tmp);
+    indempotencyKey = null;
   };
 
   const closeDateTime = () => {
@@ -162,6 +182,11 @@ export const FormQuestions = props => {
   };
 
   const _onSubmit = async () => {
+
+    if(indempotencyKey === null || indempotencyKey === undefined || indempotencyKey.trim() === ""){
+      indempotencyKey = uuid.v4();
+    }    
+    saveDb(formQuestions , indempotencyKey);
     var flag = true;
     flag = validateFormQuestionData(formQuestions);
     if (!flag) {
@@ -175,6 +200,9 @@ export const FormQuestions = props => {
       return;
     }
 
+    loadingBarRef.current.showModal();            
+    var lat = await getLocalData("@latitude");
+    var lon = await getLocalData("@longitude");
     var form_answers = [];    
     form_answers = getFormQuestionData(formQuestions);
 
@@ -183,10 +211,31 @@ export const FormQuestions = props => {
 
     var postData = new FormData();
     postData.append('form_id', form.form_id);
-    postData.append('location_id', location_id);
+    var locationId = await getLocalData("@specific_location_id");
+    postData.append('location_id', locationId);
     postData.append('online_offline', 'online');
+
+    var time_zone = '';
+    try{
+      time_zone = RNLocalize.getTimeZone();
+    }catch(e){
+    }    
+    postData.append('user_local_data[time_zone]', time_zone);
+    postData.append(
+      'user_local_data[latitude]',
+      currentLocation && currentLocation.latitude != null
+        ? currentLocation.latitude
+        : lat != null ? lat : '0',
+    );
+    postData.append(
+      'user_local_data[longitude]',
+      currentLocation && currentLocation.longitude != null
+        ? currentLocation.longitude
+        : lon != null ? lon : '0',
+    );
+
     form_answers.map(item => {
-      if (item.key != undefined && item.value != undefined) {
+      if (item.key != undefined && item.value != undefined && item.value != null && item.valuel != '') {
         postData.append(item.key, item.value);
       }
     });
@@ -210,48 +259,35 @@ export const FormQuestions = props => {
       }
     });
 
-    var time_zone = RNLocalize.getTimeZone();
-    postData.append('user_local_data[time_zone]', time_zone);
-    postData.append(
-      'user_local_data[latitude]',
-      currentLocation && currentLocation.latitude != null
-        ? currentLocation.latitude
-        : '0',
-    );
-    postData.append(
-      'user_local_data[longitude]',
-      currentLocation && currentLocation.longitude != null
-        ? currentLocation.longitude
-        : '0',
-    );
-
-    console.log("PDAta" , JSON.stringify(postData))
-    postApiRequestMultipart('forms/forms-submission', postData)
-      .then(res => {
+    
+        
+    postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
+      .then(res => {        
+        loadingBarRef.current.hideModal();
         dispatch(
           showNotification({
             type: 'success',
             message: res.message,
             buttonText: 'Okay',
-            buttonAction: () => {
+            buttonAction: async() => {
+              const db = await getDBConnection();
+              if( db != null)
+                await deleteFormTable(db, form.form_id);
               clearAll();
-              dispatch(clearNotification());
-              onOpenFeedbackModal(res);
+              dispatch(clearNotification());              
+              formQuestionViewRef.current.openModal(res);           
             },
           }),
         );
       })
-      .catch(e => {});
-  };
-  const onOpenFeedbackModal = feedbackData => {
-    setFormSubmitFeedback(feedbackData);
-    if (formSubmitModalRef && formSubmitModalRef.current) {
-      formSubmitModalRef.current.showModal();
-    }
+      .catch(e => {        
+        loadingBarRef.current.hideModal();        
+      });
   };
 
   const updateFormQuestions = (value) => {    
       setFormQuestions(value)
+      saveDb(value , '');
   }
 
   const onBackPressed = (value) => {
@@ -259,14 +295,24 @@ export const FormQuestions = props => {
   }
 
   return (
-    <FormQuestionView 
-      isShowCustomNavigationHeader={isShowCustomNavigationHeader}
-      form={form}
-      formQuestions={formQuestions}        
-      updateFormQuestions={updateFormQuestions}               
-      onBackPressed={onBackPressed}       
-      onSubmit={_onSubmit}
-    />
+
+    <View style={{flexDirection:'column', alignSelf:'stretch' , flex:1}}>      
+            
+      <FormQuestionView
+        ref={formQuestionViewRef} 
+        isShowCustomNavigationHeader={isShowCustomNavigationHeader}
+        form={form}      
+        formQuestions={formQuestions}        
+        pageType={pageType}
+        updateFormQuestions={updateFormQuestions}               
+        onBackPressed={onBackPressed}       
+        onSubmit={_onSubmit}
+      />
+
+      <LoadingBar            
+        ref={loadingBarRef}
+      />
+    </View>
 
   );
 };

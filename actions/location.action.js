@@ -260,6 +260,15 @@ export const getLocationSearchListsByPage = async (filters, pageNumber , searchK
       },
       error => {
         
+        console.log(" ERROR URL " ,`${base_url}/locations/location-search-list`);
+        console.log({
+          user_id: user_id,
+          filters: filters,
+          current_latitude: -30.559989,
+          current_longitude: 22.937508,
+          page_nr: pageNumber,
+          search_text:searchKey
+        })
         axios
           .get(`${base_url}/locations/location-search-list`, {
             params: {
@@ -360,81 +369,6 @@ export const getLocationSearchList = () => (dispatch, getState) => {
     {enableHighAccuracy: true, timeout: 15000 ,  maximumAge: 2000 , distanceFilter: 2 },
   );    
 }
-
-export const getLocationInfoUpdate = async (location_id) => {
-
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-
-  console.log(`${base_url}/locations/location_info_update_fields_v2`);
-  return new Promise(function (resolve, reject) {
-    axios
-      .get(`${base_url}/locations/location_info_update_fields_v2`, {
-        params: {
-          location_id: location_id
-        },
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        console.log("message", res.data);
-        resolve(res.data);
-
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
-}
-
-
-
-export const postLocationInfoUpdate = async (postData) => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  
-  console.log("Param " , postData);
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/locations-info/location-info-update`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4()
-        }
-      })
-      .then((res) => {
-        if (res.data == undefined) {
-          resolve("Failed");
-          return;
-        }
-        if (res.data.status == "success") {
-          resolve(res.data.message);
-        } else {
-          resolve("Failed");
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
-}
-
 
 
 
@@ -640,78 +574,7 @@ export const postLocationImage = async (postData) => {
   });
 }
 
-export const getLocationFields = async (location_id) => {
-  var token = await getToken();
-  var baseUrl = await getBaseUrl();
-  return new Promise(function (resolve, reject) {
-    axios
-      .get(`${baseUrl}/locations/location-fields`, {
-        params: {
-          location_id: location_id,
-        },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-      .then((res) => {
-        // console.log("getLocationFields:",res.data);
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == "success") {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
 
-}
-
-export const getLocationContacts = async (location_id) => {
-  var token = await getToken();
-  var baseUrl = await getBaseUrl();
-  return new Promise(function (resolve, reject) {
-    axios
-      .get(`${baseUrl}/locations/location-contacts`, {
-        params: {
-          location_id: location_id,
-        },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-      .then((res) => {
-        // console.log("getLocationFields:",res.data);
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == "success") {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);  
-        }
-      })
-  });
-}
 
 export const addEditLocationContact = async (postData) => {
   var token = await getToken();
@@ -748,40 +611,3 @@ export const addEditLocationContact = async (postData) => {
       })
   });
 }
-
-export const updateCustomerLocationFields = async (postData) => {
-  var token = await getToken();
-  var baseUrl = await getBaseUrl();
-  console.log("URL ", `${baseUrl}/locations/location-fields`)
-  console.log("Param " , postData)
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${baseUrl}/locations/location-fields`, postData ,{
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4()
-        }
-      })
-      .then((res) => {        
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == "success") {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch((err) => {
-        const error = err.response;
-        if (error.status===401 && error.config && 
-          !error.config.__isRetryRequest) {          
-            reject("expired");
-        }else{
-          reject(err);
-        }
-      })
-  });
-
-}
-

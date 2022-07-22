@@ -4,8 +4,6 @@ import ProgressBar from '../../ProgressBar'
 import CircularProgress from 'react-native-circular-progress-indicator';
 import Colors, { whiteLabel } from '../../../../../../constants/Colors';
 import { AppText } from '../../../../../../components/common/AppText';
-import VisitCheckinItem from '../components/VisitCheckinItem';
-import { ScrollView } from 'react-native-gesture-handler';
 import Legend from '../../../../../../components/common/Legend';
 import WeeklyBar from '../../../../../../components/common/WeeklyBar/WeeklyBar';
 
@@ -45,6 +43,7 @@ export default function WeeklyVisits(props) {
         <Legend types={barTypes} ></Legend>
        
         <WeeklyBar graph={week.graph}></WeeklyBar>
+
     </View>
   )
 }

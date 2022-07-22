@@ -14,7 +14,6 @@ const BaseForm = props => {
     }
   };
   const isQuesionAnswered = item && item.value != null
-
   const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
   
   const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
