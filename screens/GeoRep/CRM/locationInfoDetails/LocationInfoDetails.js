@@ -98,6 +98,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const [checkinTypes, setCheckInTypes] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const nextPrevRef = useRef();
+  const showDivider = props.isModal == false;
 
   useImperativeHandle(
     ref,
@@ -261,7 +262,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       }
     });
   };
-
 
   const updateLocationImage = async path => {
     var data = await RNFS.readFile(path, 'base64').then(res => {
@@ -442,21 +442,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-    
+
     postApiRequest('location-info/check-in', postData)
-      .then( async(res) => {
-        
+      .then(async res => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
         // dispatch check in
-        dispatch({ type: CHECKIN, payload: true });        
+        dispatch({type: CHECKIN, payload: true});
         await storeLocalValue('@checkin', '1');
         props.navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: 'checkin',
         });
-        
       })
       .catch(e => {});
   };
@@ -495,7 +493,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       {showFeedbackDropDownModal()}
 
       <Notification />
-      
+
       <AlertDialog
         visible={isSuccess}
         message={message}
@@ -538,18 +536,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           }}
         />
       )}
-
-      <TouchableOpacity
-        style={{padding: 6}}
-        onPress={() => {
-          if (statusDispositionInfo) {
-            dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-            return;
-          }
-          dispatch({type: SLIDE_STATUS, payload: false});
-        }}>
-        <Divider />
-      </TouchableOpacity>
+      {showDivider && (
+        <TouchableOpacity
+          style={{padding: 6}}
+          onPress={() => {
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              return;
+            }
+            dispatch({type: SLIDE_STATUS, payload: false});
+          }}>
+          <Divider />
+        </TouchableOpacity>
+      )}
 
       <KeyboardAwareScrollView
         enableOnAndroid={true}
@@ -693,7 +692,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               locationInfo.location_id !== '' &&
               locationInfo.address !== '' &&
               !(
-                props.pageType.name != undefined &&  props.pageType.name === 'camera' && props.pageType.type !== 2
+                props.pageType.name != undefined &&
+                props.pageType.name === 'camera' &&
+                props.pageType.type !== 2
               ) && (
                 <NextPrev
                   {...props}
