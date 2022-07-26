@@ -1,17 +1,21 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState, useEffect, useMemo} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {CHANGE_POLYGONS} from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
   getLocationMapByRegion,
+  getLocationPinKey,
 } from '../../../../../actions/location.action';
 import SearchBar from '../../../../../components/SearchBar';
+import {breakPoint} from '../../../../../constants/Breakpoint';
 import {expireToken} from '../../../../../constants/Helper';
 import {getMapMinZoomLevel} from '../../../../../constants/Storage';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import {CrmCalendarSelection} from '../../partial/CrmCalendarSelection';
+import MarkerViewModal from '../../partial/MarkerViewModal';
+import PinKeySlideUp from '../../popup/PinKeySlideUp';
 import {getPolygonData} from '../helper';
 import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
@@ -27,6 +31,8 @@ const LocationContainer = props => {
   const [isDrawMode, setIsDrawMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isZoomOut, setIsZoomOut] = useState(false);
+  const markerModalRef = useRef(null);
+
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
   );
@@ -103,6 +109,13 @@ const LocationContainer = props => {
     dispatch(getLocationFilters());
     //open filter view
   };
+  const onOpenMarkerModal = () => {
+    dispatch(getLocationPinKey());
+    if (markerModalRef && markerModalRef.current) {
+      markerModalRef.current.showModal();
+    }
+  };
+
   const onMarkerPressed = (item, key) => {};
   return (
     <View style={[styles.container, props.style]}>
@@ -134,13 +147,23 @@ const LocationContainer = props => {
         onMarkerPressed={onMarkerPressed}
         onRegionChangeComplete={onRegionChanged}
       />
+
+      <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
+        <PinKeySlideUp />
+      </TouchableOpacity>
+      <MarkerViewModal ref={markerModalRef} hideClose hideClear />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  pinKeyButton: {
+    position: 'absolute',
+    right: 9,
+    bottom: 70,
+    padding: 5,
   },
 });
 
