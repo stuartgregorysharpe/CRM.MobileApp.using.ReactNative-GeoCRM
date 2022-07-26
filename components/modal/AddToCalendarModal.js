@@ -1,10 +1,9 @@
 import React from 'react';
-import CModal from '../../../../components/common/CModal';
-import {Constants} from '../../../../constants';
+import {Constants} from '../../constants';
+import CModal from '../common/CModal';
+import AddToCalendarContainer from './AddToCalendarContainer';
 
-import {MarkerView} from './MarkerView';
-
-const MarkerViewModal = React.forwardRef((props, ref) => {
+const AddToCalendarModal = React.forwardRef((props, ref) => {
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -19,14 +18,16 @@ const MarkerViewModal = React.forwardRef((props, ref) => {
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       closableWithOutsideTouch
       hideClose
-      hideClear
+      onClear={() => {
+        onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
+      }}
       onClose={() => {
         onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }}
       {...props}>
-      <MarkerView {...props} />
+      <AddToCalendarContainer {...props} isModal={true} />
     </CModal>
   );
 });
 
-export default MarkerViewModal;
+export default AddToCalendarModal;

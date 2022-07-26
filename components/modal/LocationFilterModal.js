@@ -1,10 +1,9 @@
 import React from 'react';
-import CModal from '../../../../components/common/CModal';
-import {Constants} from '../../../../constants';
+import {Constants} from '../../constants';
+import CModal from '../common/CModal';
+import FilterView from '../FilterView';
 
-import {MarkerView} from './MarkerView';
-
-const MarkerViewModal = React.forwardRef((props, ref) => {
+const LocationFilterModal = React.forwardRef((props, ref) => {
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -19,14 +18,13 @@ const MarkerViewModal = React.forwardRef((props, ref) => {
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       closableWithOutsideTouch
       hideClose
-      hideClear
-      onClose={() => {
-        onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+      onClear={() => {
+        onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
       }}
       {...props}>
-      <MarkerView {...props} />
+      <FilterView {...props} />
     </CModal>
   );
 });
 
-export default MarkerViewModal;
+export default LocationFilterModal;

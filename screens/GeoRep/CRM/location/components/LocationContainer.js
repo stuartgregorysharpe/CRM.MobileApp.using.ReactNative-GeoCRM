@@ -2,12 +2,18 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {CHANGE_POLYGONS} from '../../../../../actions/actionTypes';
+import {
+  CHANGE_POLYGONS,
+  IS_CALENDAR_SELECTION,
+  SELECTED_LOCATIONS_FOR_CALENDAR,
+} from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
   getLocationMapByRegion,
   getLocationPinKey,
 } from '../../../../../actions/location.action';
+import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
+import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
 import SearchBar from '../../../../../components/SearchBar';
 import {breakPoint} from '../../../../../constants/Breakpoint';
 import {expireToken} from '../../../../../constants/Helper';
@@ -32,6 +38,8 @@ const LocationContainer = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isZoomOut, setIsZoomOut] = useState(false);
   const markerModalRef = useRef(null);
+  const locationFilterModalRef = useRef(null);
+  const addToCalendarModalRef = useRef(null);
 
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -42,14 +50,11 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
-    console.log('isLoadable', isLoadable);
-    console.log('isLoading', isLoading);
     if (isLoadable) {
       setIsLoading(true);
       getLocationMapByRegion(_currentLocation, boundBox)
         .then(res => {
           setIsLoading(false);
-          console.log('getLocationMapByRegion', res);
           setMarkers(res.locations);
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
@@ -63,7 +68,6 @@ const LocationContainer = props => {
     onLoadMarkers(currentLocation, boundBox);
   }, [mapFilters, currentLocation]);
   const onRegionChanged = async (region, markers, bBox, zoom) => {
-    console.log('onRegionChanged');
     const minZoomLevel = await getMapMinZoomLevel();
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
@@ -77,22 +81,13 @@ const LocationContainer = props => {
 
     const isRegionMarkerCountSmall =
       (markers !== undefined && markers.length < 20) || markers === undefined;
-    console.log('isRegionMarkerCountSmall', isRegionMarkerCountSmall);
     const isZoomLevelChangedToMinZoomLevel =
       (previousZoom < minZoomLevel && zoom >= minZoomLevel) ||
       (previousZoom >= zoom && zoom >= minZoomLevel);
-    console.log(
-      'isZoomLevelChangedToMinZoomLevel',
-      isZoomLevelChangedToMinZoomLevel,
-    );
-    console.log('minZoomLevel', minZoomLevel);
-    console.log('zoom', zoom);
-    console.log('bBox', bBox);
     const isReloadMarkers =
       !isDrawMode &&
       isRegionMarkerCountSmall &&
       isZoomLevelChangedToMinZoomLevel;
-    console.log('isReloadMarkers', isReloadMarkers);
     if (isReloadMarkers) {
       setBoundBox(bBox);
       onLoadMarkers(currentLocation, bBox);
@@ -107,7 +102,9 @@ const LocationContainer = props => {
   };
   const onFilterPress = () => {
     dispatch(getLocationFilters());
-    //open filter view
+    if (locationFilterModalRef && locationFilterModalRef.current) {
+      locationFilterModalRef.current.showModal();
+    }
   };
   const onOpenMarkerModal = () => {
     dispatch(getLocationPinKey());
@@ -115,7 +112,12 @@ const LocationContainer = props => {
       markerModalRef.current.showModal();
     }
   };
-
+  const onOpenAddToCalendar = () => {
+    if (addToCalendarModalRef && addToCalendarModalRef.current) {
+      addToCalendarModalRef.current.showModal();
+    }
+  };
+  const onFinishDrawing = selectedMarkers => {};
   const onMarkerPressed = (item, key) => {};
   return (
     <View style={[styles.container, props.style]}>
@@ -137,7 +139,9 @@ const LocationContainer = props => {
           }}
           onClickList={() => {
             navigateToSearchLocation();
-          }}></CrmCalendarSelection>
+          }}
+          onClickAddToCalendar={onOpenAddToCalendar}
+        />
       )}
       <LocationMap
         polygonData={polygonData}
@@ -146,12 +150,21 @@ const LocationContainer = props => {
         isDrawMode={isDrawMode}
         onMarkerPressed={onMarkerPressed}
         onRegionChangeComplete={onRegionChanged}
+        onFinishDrawing={onFinishDrawing}
       />
 
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />
       </TouchableOpacity>
-      <MarkerViewModal ref={markerModalRef} hideClose hideClear />
+      <MarkerViewModal ref={markerModalRef} />
+      <LocationFilterModal ref={locationFilterModalRef} page={'map'} />
+      <AddToCalendarModal
+        ref={addToCalendarModalRef}
+        onButtonAction={() => {
+          dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+          dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
+        }}
+      />
     </View>
   );
 };
