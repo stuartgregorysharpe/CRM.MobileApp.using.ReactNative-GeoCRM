@@ -27,7 +27,8 @@ export default {
     FORM_TYPE_NUMBERS: 'numbers',
     FORM_TYPE_EMAIL_PDF: 'email_pdf',
     FORM_TYPE_PRODUCTS: 'products',
-    FORM_TYPE_PRODUCT_ISSUES: 'product_issues'
+    FORM_TYPE_PRODUCT_ISSUES: 'product_issues',
+    FORM_TYPE_PRODUCT_RETURN: 'returns',
   },
 
   actionType: {

@@ -50,7 +50,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
       callApi(selectedItems);
     }
   };
-
+  
   const callApi = schedules => {
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -116,7 +116,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
           }
         }}
       />
-
+      
       <FilterButton
         text="Schedule Date"
         onPress={() => {

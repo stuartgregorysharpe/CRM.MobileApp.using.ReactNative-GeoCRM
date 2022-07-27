@@ -3,13 +3,17 @@ import { Platform, View } from 'react-native'
 import React , {useEffect, useState , useRef} from 'react'
 import ProductListsView from '../components/ProductListsView';
 import { Constants } from '../../../../constants';
+import ProductReturnListsView from '../components/ProductReturnListsView';
 
 export default function ProductListsContainer(props) {
     
+    const { questionType } = props;
+
     const addData = (value) => {    
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
-           
+    
+    
     const removeProduct = (value) => {
         props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});   
     }
@@ -20,12 +24,29 @@ export default function ProductListsContainer(props) {
 
     return (
         <View style={{alignSelf:'stretch' , flex:1 , marginBottom: Platform.OS == 'android' ? 0 : 30}}>
-            <ProductListsView
-                onButtonAcstion={addData}            
-                removeProduct={(item) =>removeProduct(item)}
-                onSave={() => onSave()}
-                {...props}
-            />
+
+            {
+                questionType === Constants.questionType.FORM_TYPE_PRODUCT_RETURN && 
+                <ProductReturnListsView
+                    onButtonAcstion={addData}            
+                    removeProduct={(item) =>removeProduct(item)}
+                    onSave={() => onSave()}
+                    {...props}
+                />
+            }
+
+            {
+                questionType != Constants.questionType.FORM_TYPE_PRODUCT_RETURN && 
+                <ProductListsView
+                    onButtonAcstion={addData}            
+                    removeProduct={(item) =>removeProduct(item)}
+                    onSave={() => onSave()}
+                    {...props}
+                />
+            }
+
+
+            
         </View>
     )
 }

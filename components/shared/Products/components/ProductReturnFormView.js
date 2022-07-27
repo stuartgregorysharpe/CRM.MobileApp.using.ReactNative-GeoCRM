@@ -1,9 +1,9 @@
 import { View, Text , StyleSheet ,ScrollView ,Keyboard ,ToastAndroid,
     Platform,
-    AlertIOS, } from 'react-native'
+    AlertIOS,
+    TouchableOpacity, } from 'react-native'
 import React , { useRef , useState ,useEffect ,useImperativeHandle} from 'react'
 import SearchBar from '../../../SearchBar'
-import SKUCaptureModal from '../../SKUSelect/modals/SKUCaptureModal'
 import CSingleSelectInput from '../../../common/SelectInput/CSingleSelectInput';
 import { style } from '../../../../constants/Styles';
 import { whiteLabel } from '../../../../constants/Colors';
@@ -13,16 +13,17 @@ import { Constants, Values } from '../../../../constants';
 import { AppText } from '../../../common/AppText';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../actions/notification.action';
+import ProductReturnSectionList from './ProductReturnSectionList';
+import ProductQrCaptureModal from '../modals/ProductQrCaptureModal';
 
-//export default function ProductSelectFormView(props) {
-const ProductSelectFormView = React.forwardRef((props, ref) => {
+const ProductReturnFormView = React.forwardRef((props, ref) => {
 
-    const {  questionType, item , typeLists, brandLists , productIssues  , selectedLists } = props;
+    const {  questionType, item , typeLists, brandLists , productReturns  , selectedLists } = props;
     const skuCaptureModalRef = useRef(null);
     const [formData, setFormData] = useState(null);
     const [brand, setBrand] = useState("");
     const [type, setType] = useState("");
-    const [productIssue, setProductIssue] = useState('');
+    const [productReturn, setProductReturn] = useState('');
     const [searchKey, setSearchKey] = useState("");         
     const [products, setProducts] = useState([]);
     const [selectedProductIds, setSelectedProductIds] = useState([])
@@ -49,13 +50,13 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
 
     const onCaptureAction = ({type, value}) => {
         if (type == Constants.actionType.ACTION_CAPTURE) {
-            if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productIssue == ''){
+            if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productReturn == ''){
                 dispatch(showNotification({type:'success' , message: 'Please choose an issue before making a selection or scanning'  , buttonText:'Ok'}))
             }else{
                 var tmp = item.products.find(element => element.barcode == value );            
                 if(tmp != null && tmp != undefined){
                     if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){                                    
-                        tmp = { ...tmp, productIssue }                    
+                        tmp = { ...tmp, productReturn }                    
                     }
                     setSelectedProductIds([...selectedProductIds, tmp.product_id]);
                     props.changedSelectedProducts(tmp , "add");
@@ -67,9 +68,20 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                     }
                 }
                 previousCode = value;
-            }            
+            }       
+        }else if(type === Constants.actionType.ACTION_DONE){
+
+            if(value){                          
+                var scanItem = products.find(element => element.product_id === value.product_id);
+                if(scanItem != undefined && value.quantity){
+                    onItemChanged(type , scanItem, value.quantity);
+                }
+                
+            }
         }
+
     };
+
     const onSearch = (key) => {
         setSearchKey(key)
     }
@@ -103,25 +115,30 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
         setProducts(tmp)
     }
 
-    const onItemAction = ({type , item, value}) =>{
-        if(type == Constants.actionType.ACTION_CHECK){
 
-            if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productIssue == ''){
-                dispatch(showNotification({type:'success' , message: 'Please choose an issue before making a selection or scanning'  , buttonText:'Ok'}))
+    const onItemChanged = ({type , item, value}) =>{
+        if(type == Constants.actionType.ACTION_DONE){
+            if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_RETURN && productReturn === ''){                
+                dispatch(showNotification({type:'success' , message: 'Please choose an reason before making a selection or scanning'  , buttonText:'Ok'}))
             }else{
-                if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){                                    
-                    item = { ...item, productIssue }                    
+                if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_RETURN){                                    
+                    item = { ...item, productReturn , value }                    
                 }
+                console.log("product item", item)                
                 if(value){
                     setSelectedProductIds([...selectedProductIds, item.product_id]);                    
                     props.changedSelectedProducts(item , "add");
                 }else{
                     var tmp = selectedProductIds.filter(element => element != item.product_id );
                     setSelectedProductIds(tmp)    
-                    props.changedSelectedProducts(item, "remove");                            
+                    props.changedSelectedProducts(item, "remove");
                 }
             }            
         }
+    }
+
+    const onClear = () => {
+        props.changedSelectedProducts(productReturn, "remove_all");
     }
 
     return (
@@ -146,6 +163,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                     disabled={false}
                     onSelectItem={item => {      
                         setBrand(item.label);
+
                     }}
                     onClear={() => setBrand('') }
                     containerStyle={{marginTop: 0, flex:1}}
@@ -169,60 +187,65 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                 /> 
             </View>            
 
-            {
-                questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES &&
-                <CSingleSelectInput
-                    bgType="card"
-                    bgStyle={[style.card, {borderWidth:0}]}
-                    placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
-                    description={'Product Issues'}
-                    placeholder={'Product Issues'}
-                    checkedValue={productIssue}
-                    items={productIssues}
-                    hasError={false}
-                    disabled={false}
-                    onSelectItem={item => {                        
-                        setProductIssue(item.label)
-                    }}
-                    onClear={() => setProductIssue('') }
-                    containerStyle={{marginTop: 0 ,marginHorizontal:10, flex:1}}
-                /> 
-            }
+
+            <CSingleSelectInput
+                bgType="card"
+                bgStyle={[style.card, {borderWidth:0}]}
+                placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
+                description={'Return Reason'}
+                placeholder={'Return Reason'}
+                checkedValue={productReturn}
+                items={productReturns}
+                hasError={false}
+                disabled={false}
+                onSelectItem={item => {                                            
+                    setProductReturn(item.label)
+                }}
+                onClear={() => setProductReturn('') }
+                containerStyle={{marginTop: 0 ,marginHorizontal:10, flex:1}}
+            /> 
+            
             
             <View style={{flexDirection:'row' ,marginHorizontal: 15, marginBottom:5}}>
-                <View style={{flex:1,marginLeft:5}}>
-                <AppText title='Type' size="medium" color={whiteLabel().mainText} ></AppText>
+                <View style={{flex:2,marginLeft:5}}>
+                    <AppText title='Category' size="medium" color={whiteLabel().mainText} ></AppText>
                 </View>        
-                <View style={{flex:2, alignItems:'center'}}>
-                <AppText title='Product' size="medium" color={whiteLabel().mainText} ></AppText>
+                <View style={{flex:3, alignItems:'flex-start'}}>
+                    <AppText title='Product' size="medium" color={whiteLabel().mainText} ></AppText>
                 </View>
-                <View style={{width:100}}></View>
+                <View style={{flex:1,alignItems:'flex-end', marginRight:10}}>
+                    <TouchableOpacity onPress={() => onClear() }>
+                        <AppText title='Clear' size="medium" color={whiteLabel().endDayBackground} ></AppText>
+                    </TouchableOpacity>                    
+                </View>
             </View>        
 
             <CardView style={{marginHorizontal: 10}}>
                 <View>                                                                              
-                    <SectionList
+                    <ProductReturnSectionList
                         questionType={questionType}
-                        productIssue={productIssue}
+                        productReturn={productReturn}
                         sections={products}
                         checkedItemIds={selectedProductIds}
                         selectedLists={selectedLists}
-                        onItemAction={onItemAction}
+                        onItemChanged={onItemChanged}
                         style={{padding: 8}}
                     />
                 </View>
             </CardView>
             
-            <SKUCaptureModal
+
+            <ProductQrCaptureModal
                 ref={skuCaptureModalRef}                
                 formData={formData}
+                products={products}
                 onButtonAction={onCaptureAction}
             />   
         </View>
     )
 
 });
-export default ProductSelectFormView;
+export default ProductReturnFormView;
 
 const styles = StyleSheet.create({
     container:{

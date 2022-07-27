@@ -181,8 +181,8 @@ export const FormQuestions = props => {
     setIsSign(false);
   };
 
+  
   const _onSubmit = async () => {
-
     if(indempotencyKey === null || indempotencyKey === undefined || indempotencyKey.trim() === ""){
       indempotencyKey = uuid.v4();
     }    
@@ -239,6 +239,7 @@ export const FormQuestions = props => {
         postData.append(item.key, item.value);
       }
     });
+
     files.map(item => {
       if (item.key != undefined && item.value != undefined) {
         if (item.type === 'upload_file') {
@@ -258,9 +259,9 @@ export const FormQuestions = props => {
         }
       }
     });
-
+          
     
-        
+    
     postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
       .then(res => {        
         loadingBarRef.current.hideModal();
@@ -313,7 +314,7 @@ export const FormQuestions = props => {
         ref={loadingBarRef}
       />
     </View>
-
+    
   );
 };
 

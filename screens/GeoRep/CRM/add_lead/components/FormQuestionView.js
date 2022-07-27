@@ -304,6 +304,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
               item={item}
               formIndex={index}
               onFormAction={({type, value, item}) => {
+
                 if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
                   onValueChangedSelectionView(key, index, value);
                 }
@@ -321,6 +322,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
               item={item}
               formIndex={index}
               onFormAction={({type, value, item}) => {
+                console.log("print", type)
+                console.log("print", value)
                 if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
                   onValueChangedSelectionView(key, index, value);
                 }
@@ -332,55 +335,39 @@ export const FormQuestionView = forwardRef((props, ref) => {
           );
         } else if( item.question_type === Constants.questionType.FORM_TYPE_EMAIL_PDF){
           return (              
-            <EmailPdf 
+            <EmailPdf
               key={'email_pdf' + index}
               questionType={item.question_type}
               item={item}
               fromIndex={index}
               onFormAction={({type, value, item}) => {
                 if (type == Constants.actionType.ACTION_FORM_SUBMIT) {              
+                  onValueChangedSelectionView(key, index, value);
                 }
                 if (type == Constants.actionType.ACTION_INFO) {              
                 }
               }}
             />
           )
-        } else if( item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS){
+        } else if( 
+            item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS || 
+            item.question_type === Constants.questionType.FORM_TYPE_PRODUCT_ISSUES ||
+            item.question_type === Constants.questionType.FORM_TYPE_PRODUCT_RETURN
+          ){
           return (
             <Products
               key={'products' + index}
               questionType={item.question_type}
               item={item}
               fromIndex={index}
-              onFormAction={({type, value, item}) => {
-                
+              onFormAction={({type, value, item}) => {                
+                console.log("produc item", value);
                 if (type == Constants.actionType.ACTION_FORM_SUBMIT) {    
                   if(value.length > 0){
                     onValueChangedSelectionView(key, index, value);  
                   }else{
                     onValueChangedSelectionView(key, index, null);  
-                  }         
-                  // console.log("item", item);
-                }
-                if (type == Constants.actionType.ACTION_INFO) {              
-                }
-              }}
-            />
-          )
-        }else if( item.question_type === Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){
-          return (
-            <Products
-              key={'product_issues' + index}
-              questionType={item.question_type}
-              item={item}
-              fromIndex={index}
-              onFormAction={({type, value, item}) => {            
-                if (type == Constants.actionType.ACTION_FORM_SUBMIT) {    
-                  if(value.length > 0){
-                    onValueChangedSelectionView(key, index, value);  
-                  }else{
-                    onValueChangedSelectionView(key, index, null);  
-                  }              
+                  }                           
                 }
                 if (type == Constants.actionType.ACTION_INFO) {              
                 }
@@ -388,7 +375,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
             />
           )
         }
-    
+
         return <View key={'question' + index}></View>;
     };
     

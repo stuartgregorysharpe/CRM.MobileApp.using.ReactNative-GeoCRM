@@ -5,7 +5,7 @@ import BaseForm from '../BaseForm';
 import EmailInputView from './EmailInputView';
 
 export default function EmailPdf(props) {
-        
+
     const {item, questionType, formIndex} = props;
     const isCompleted = item.completed_data != false && item.completed_data != null;
     const questionButtonType = item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
@@ -15,7 +15,7 @@ export default function EmailPdf(props) {
           return <Text>completed</Text>
         }
         return (
-          <EmailInputView />
+          <EmailInputView item={item}  onItemAction={props.onFormAction} />
         );
       };
              
