@@ -25,11 +25,13 @@ import {
 } from '../../../../../constants/Storage';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
+import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
 import CheckInStatusView from '../../partial/CheckInStatusView';
 import {CrmCalendarSelection} from '../../partial/CrmCalendarSelection';
 import MarkerViewModal from '../../partial/MarkerViewModal';
 import PinKeySlideUp from '../../popup/PinKeySlideUp';
 import {getPolygonData} from '../helper';
+import Bubble from './Bubble';
 import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
 const LocationContainer = props => {
@@ -38,6 +40,9 @@ const LocationContainer = props => {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const isCheckin = useSelector(state => state.location.checkIn);
   const polygons = useSelector(state => state.location.polygons);
+  const selectedLocationsForCalendar = useSelector(
+    state => state.selection.selectedLocationsForCalendar,
+  );
   const [markers, setMarkers] = useState([]);
   const polygonData = useMemo(() => getPolygonData(polygons), [polygons]);
   const mapFilters = useSelector(state => state.selection.mapFilters);
@@ -45,10 +50,12 @@ const LocationContainer = props => {
   const [isDrawMode, setIsDrawMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isZoomOut, setIsZoomOut] = useState(false);
+  const [locationInfo, setLocationInfo] = useState();
   const markerModalRef = useRef(null);
   const locationFilterModalRef = useRef(null);
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
+  const locationInfoModalRef = useRef(null);
 
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -64,7 +71,15 @@ const LocationContainer = props => {
       getLocationMapByRegion(_currentLocation, boundBox)
         .then(res => {
           setIsLoading(false);
-          setMarkers(res.locations);
+          setMarkers(
+            res.locations.map((location, index) => {
+              return {
+                ...location,
+                schedule_order: (index + 1).toString(),
+              };
+            }),
+          );
+
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
         .catch(e => {
@@ -135,23 +150,17 @@ const LocationContainer = props => {
       openLocationInfoDetails(Number(value));
     }
   };
-  const openLocationInfoDetails = location_id => {
-    //animation('locationInfo');
+  const openLocationInfoDetails = locationId => {
+    if (locationInfoModalRef && locationFilterModalRef.current) {
+      locationFilterModalRef.current.showModal();
+    }
     if (currentLocation && currentLocation.latitude !== undefined) {
-      getLocationInfo(Number(location_id), currentLocation)
+      getLocationInfo(locationId, currentLocation)
         .then(res => {
-          if (
-            locationRef !== undefined &&
-            locationRef.current !== undefined &&
-            locationRef.current !== null
-          ) {
-            locationRef.current.updateView(res);
-            setLocationInfo(res);
-          }
+          setLocationInfo(res);
         })
         .catch(e => {
           expireToken(dispatch, e);
-          setIsRequest(false);
         });
     }
   };
@@ -162,8 +171,54 @@ const LocationContainer = props => {
       page: 'checkin',
     });
   };
-  const onFinishDrawing = selectedMarkers => {};
-  const onMarkerPressed = (item, key) => {};
+  const onFinishDrawing = selectedMarkers => {
+    if (!selectedMarkers) return;
+    const selectedLocations = selectedMarkers.map(marker => {
+      return {
+        schedule_order: marker.schedule_order,
+        location_id: marker.location_id,
+        schedule_date: 'Today',
+        schedule_time: '',
+        schedule_end_time: '',
+      };
+    });
+    dispatch({
+      type: SELECTED_LOCATIONS_FOR_CALENDAR,
+      payload: selectedLocations,
+    });
+  };
+  const onMarkerPressed = (item, key) => {
+    const itemLocationId = item.location_id;
+    if (isCalendarSelection) {
+      let selectedLocations = [...selectedLocationsForCalendar];
+      const foundLocation = selectedLocations.find(
+        x => x.location_id === itemLocationId,
+      );
+
+      if (foundLocation) {
+        selectedLocations = selectedLocations.filter(
+          ele => ele.location_id !== itemLocationId,
+        );
+      } else {
+        selectedLocations = [
+          ...selectedLocations,
+          {
+            schedule_order: item.schedule_order,
+            location_id: itemLocationId,
+            schedule_date: 'Today',
+            schedule_time: '',
+            schedule_end_time: '',
+          },
+        ];
+      }
+      dispatch({
+        type: SELECTED_LOCATIONS_FOR_CALENDAR,
+        payload: selectedLocations,
+      });
+    } else {
+      openLocationInfoDetails(Number(item.location_id));
+    }
+  };
   return (
     <View style={[styles.container, props.style]}>
       <LocationWatcher />
@@ -197,6 +252,13 @@ const LocationContainer = props => {
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
       />
+      {isZoomOut && (
+        <Bubble
+          title="Zoomed out too far, zoom in to see results"
+          isLoading={isLoading}
+        />
+      )}
+
       {isCheckin && <CheckInStatusView page="map" onGo={onCheckIn} />}
 
       <TouchableOpacity
@@ -225,6 +287,11 @@ const LocationContainer = props => {
         ref={addLeadModalRef}
         navigation={navigation}
         onButtonAction={onAddLeadModalClosed}
+      />
+      <LocationInfoDetailModal
+        ref={locationInfoModalRef}
+        locInfo={locationInfo}
+        pageType={{name: 'search-lists'}}
       />
     </View>
   );
