@@ -11,8 +11,8 @@ import HMSMap, {
 } from '@hmscore/react-native-hms-map';
 
 import React, {useState, useEffect, useRef} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
-import {Fonts} from '../../../../constants';
+import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
+import {Fonts, Images} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
 import {
@@ -26,7 +26,6 @@ import {
 } from '../../../../screens/GeoRep/CRM/components/helpers';
 import MarkerIconView from '../../components/MarkerIconView';
 let polylineKey = 0;
-let mapPinSvg = null;
 const CURRENT_LOCATION_RADIUS = 200;
 
 const HmsLocationMap = props => {
@@ -44,16 +43,13 @@ const HmsLocationMap = props => {
     currentLocation.longitude != undefined &&
     currentLocation.latitude != undefined;
   useEffect(() => {
-    loadPinSvg();
     initTransCode();
   }, []);
   const initTransCode = async () => {
     const code = await getPolygonFillColorTransparency();
     setTransCode(code);
   };
-  const loadPinSvg = async () => {
-    mapPinSvg = await getPinSvg('@map_pin_key');
-  };
+
   const onPressMap = e => {
     console.log('onPressMap', e);
     if (props.onPressMap) {
@@ -83,7 +79,7 @@ const HmsLocationMap = props => {
   };
   const getMarksInDrawedPolygon = (_marks, _coordinates) => {
     return _marks.filter(x => {
-      isInsidePoly(x.coordinates.latitude, x.coordinates.longitude, [
+      return isInsidePoly(x.coordinates.latitude, x.coordinates.longitude, [
         _coordinates,
       ]);
     });
@@ -121,9 +117,23 @@ const HmsLocationMap = props => {
     if (!_markers) return null;
     return _markers.map((item, key) => {
       const isMarkerSelected = checkMarkerSelected(item);
+      let icon = null;
+      if (isMarkerSelected) {
+        icon = {
+          uri: Image.resolveAssetSource(Images.selectedMarkerIcon).uri,
+          width: 100,
+          height: 100,
+        };
+      } else {
+        if (item.pinIcon && item.pinIcon.pin_image) {
+          icon = {uri: item.pinIcon.pin_image};
+        }
+      }
+
       return (
         <HMSMarker
           key={'markers' + item.location_id}
+          icon={icon}
           onClick={() => {
             props.onMarkerPressed(item, key);
           }}
@@ -131,13 +141,8 @@ const HmsLocationMap = props => {
           coordinate={{
             latitude: Number(item.coordinates.latitude),
             longitude: Number(item.coordinates.longitude),
-          }}>
-          <MarkerIconView
-            item={item}
-            mapPinSvg={mapPinSvg}
-            isSelected={isMarkerSelected}
-          />
-        </HMSMarker>
+          }}
+        />
       );
     });
   };
@@ -251,7 +256,7 @@ const styles = StyleSheet.create({
   finishBtnStyle: {
     position: 'absolute',
     alignSelf: 'center',
-    bottom: 60,
+    bottom: 120,
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 10,

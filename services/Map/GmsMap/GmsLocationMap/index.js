@@ -11,7 +11,6 @@ import {
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
 import MarkerIconView from '../../components/MarkerIconView';
 let polylineKey = 0;
-let mapPinSvg = null;
 const CURRENT_LOCATION_RADIUS = 200;
 const GmsLocationMap = props => {
   const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
@@ -28,15 +27,11 @@ const GmsLocationMap = props => {
     currentLocation.longitude != undefined &&
     currentLocation.latitude != undefined;
   useEffect(() => {
-    loadPinSvg();
     initTransCode();
   }, []);
   const initTransCode = async () => {
     const code = await getPolygonFillColorTransparency();
     setTransCode(code);
-  };
-  const loadPinSvg = async () => {
-    mapPinSvg = await getPinSvg('@map_pin_key');
   };
   const onPressMap = e => {
     console.log('onPressMap', e);
@@ -67,7 +62,7 @@ const GmsLocationMap = props => {
   };
   const getMarksInDrawedPolygon = (_marks, _coordinates) => {
     return _marks.filter(x => {
-      isInsidePoly(x.coordinates.latitude, x.coordinates.longitude, [
+      return isInsidePoly(x.coordinates.latitude, x.coordinates.longitude, [
         _coordinates,
       ]);
     });
@@ -98,9 +93,19 @@ const GmsLocationMap = props => {
     if (!_markers) return null;
     return _markers.map((item, key) => {
       const isMarkerSelected = checkMarkerSelected(item);
+      let icon = null;
+      if (isMarkerSelected) {
+        icon = Images.selectedMarkerIcon;
+      } else {
+        if (item.pinIcon && item.pinIcon.pin_image) {
+          icon = {uri: item.pinIcon.pin_image};
+        }
+      }
+
       return (
         <Marker
           key={'markers' + item.location_id}
+          icon={icon}
           tracksViewChanges={!isDrawMode}
           onPress={() => {
             props.onMarkerPressed(item, key);
@@ -108,13 +113,7 @@ const GmsLocationMap = props => {
           coordinate={{
             latitude: Number(item.coordinates.latitude),
             longitude: Number(item.coordinates.longitude),
-          }}>
-          <MarkerIconView
-            item={item}
-            mapPinSvg={mapPinSvg}
-            isSelected={isMarkerSelected}
-          />
-        </Marker>
+          }}></Marker>
       );
     });
   };
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
   finishBtnStyle: {
     position: 'absolute',
     alignSelf: 'center',
-    bottom: 20,
+    bottom: 60,
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 10,

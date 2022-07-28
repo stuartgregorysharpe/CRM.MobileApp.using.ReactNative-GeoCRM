@@ -1,6 +1,8 @@
 import React from 'react';
+import {ScrollView} from 'react-native';
+
 import CModal from '../../../../components/common/CModal';
-import {Constants} from '../../../../constants';
+import {Constants, Values} from '../../../../constants';
 import {LocationInfoDetails} from './LocationInfoDetails';
 
 const LocationInfoDetailModal = React.forwardRef((props, ref) => {
@@ -25,7 +27,10 @@ const LocationInfoDetailModal = React.forwardRef((props, ref) => {
         onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }}
       {...props}>
-      <LocationInfoDetails {...props} isModal={true} />
+      <ScrollView
+        style={{height: Values.deviceHeight - 68, alignSelf: 'stretch'}}>
+        <LocationInfoDetails {...props} isModal={true} />
+      </ScrollView>
     </CModal>
   );
 });

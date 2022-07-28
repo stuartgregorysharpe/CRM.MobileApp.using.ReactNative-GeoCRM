@@ -124,25 +124,34 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         }
       },
       updateView(res) {
-        console.log('locaiton details', res);
-        if (
-          locationInfoRef.current !== undefined &&
-          locationInfoRef.current.updateDispositionData
-        ) {
-          locationInfoRef.current.updateDispositionData(res);
-        }
-        setLocationInfo(res);
-        setIsLoading(false);
-        if (res.feedback.length > 0) {
-          setFeedback(res.feedback[0].feedback_loc_info_outcome[0].options);
-          setFeedbackOptions(
-            res.feedback[0].feedback_loc_info_outcome[0].options,
-          );
-        }
+        updateLocationInfo(res);
       },
     }),
     [showItem],
   );
+
+  const updateLocationInfo = _locationInfo => {
+    if (!_locationInfo) return;
+    if (
+      locationInfoRef.current !== undefined &&
+      locationInfoRef.current.updateDispositionData
+    ) {
+      locationInfoRef.current.updateDispositionData(_locationInfo);
+    }
+    setLocationInfo(_locationInfo);
+    setIsLoading(false);
+    if (_locationInfo.feedback.length > 0) {
+      setFeedback(
+        _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
+      );
+      setFeedbackOptions(
+        _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
+      );
+    }
+  };
+  useEffect(() => {
+    updateLocationInfo(props.locInfo);
+  }, [props.locInfo]);
 
   useEffect(() => {
     outcomeVal = false;
@@ -828,10 +837,12 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bgColor,
+    alignSelf: 'stretch',
   },
   innerContainer: {
     backgroundColor: Colors.bgColor,
     padding: 10,
+    alignSelf: 'stretch',
   },
 
   headerBox: {

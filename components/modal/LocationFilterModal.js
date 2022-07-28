@@ -22,7 +22,12 @@ const LocationFilterModal = React.forwardRef((props, ref) => {
         onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
       }}
       {...props}>
-      <FilterView {...props} />
+      <FilterView
+        {...props}
+        onClose={() => {
+          onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+        }}
+      />
     </CModal>
   );
 });

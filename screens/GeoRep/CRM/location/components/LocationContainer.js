@@ -17,11 +17,13 @@ import AddToCalendarModal from '../../../../../components/modal/AddToCalendarMod
 import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
+import {Constants} from '../../../../../constants';
 import {breakPoint} from '../../../../../constants/Breakpoint';
 import {expireToken} from '../../../../../constants/Helper';
 import {
   getLocalData,
   getMapMinZoomLevel,
+  getPinSvg,
 } from '../../../../../constants/Storage';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
@@ -70,15 +72,25 @@ const LocationContainer = props => {
       setIsLoading(true);
       getLocationMapByRegion(_currentLocation, boundBox)
         .then(res => {
-          setIsLoading(false);
-          setMarkers(
-            res.locations.map((location, index) => {
-              return {
-                ...location,
-                schedule_order: (index + 1).toString(),
-              };
-            }),
-          );
+          getPinSvg('@map_pin_key').then(mapPinSvg => {
+            setIsLoading(false);
+            setMarkers(
+              res.locations.map((location, index) => {
+                let foundPinSvg = null;
+                if (mapPinSvg) {
+                  foundPinSvg = mapPinSvg.find(
+                    element =>
+                      parseInt(element.pin_id) == parseInt(location.pin_id),
+                  );
+                }
+                return {
+                  ...location,
+                  pinIcon: foundPinSvg,
+                  schedule_order: (index + 1).toString(),
+                };
+              }),
+            );
+          });
 
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
@@ -151,8 +163,8 @@ const LocationContainer = props => {
     }
   };
   const openLocationInfoDetails = locationId => {
-    if (locationInfoModalRef && locationFilterModalRef.current) {
-      locationFilterModalRef.current.showModal();
+    if (locationInfoModalRef && locationInfoModalRef.current) {
+      locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
       getLocationInfo(locationId, currentLocation)
@@ -172,6 +184,7 @@ const LocationContainer = props => {
     });
   };
   const onFinishDrawing = selectedMarkers => {
+    console.log('onFinishDrawing', selectedMarkers);
     if (!selectedMarkers) return;
     const selectedLocations = selectedMarkers.map(marker => {
       return {
@@ -247,6 +260,7 @@ const LocationContainer = props => {
         polygonData={polygonData}
         markers={markers}
         currentLocation={currentLocation}
+        selectedLocations={selectedLocationsForCalendar}
         isDrawMode={isDrawMode}
         onMarkerPressed={onMarkerPressed}
         onRegionChangeComplete={onRegionChanged}
@@ -303,7 +317,7 @@ const styles = StyleSheet.create({
   pinKeyButton: {
     position: 'absolute',
     right: 9,
-    bottom: 70,
+    bottom: 120,
     padding: 5,
   },
   plusButton: {

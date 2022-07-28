@@ -4,29 +4,13 @@ import {SvgXml} from 'react-native-svg';
 import MarkerIcon from '../../../components/Marker';
 
 const MarkerIconView = props => {
-  const {isSelected, item, mapPinSvg} = props;
+  const {isSelected, item} = props;
   if (isSelected) {
     return <MarkerIcon icon={'Selected_Marker'} width="34px" height="34px" />;
   }
-  let foundPinSvg = null;
-  if (mapPinSvg) {
-    foundPinSvg = mapPinSvg.find(
-      element => parseInt(element.pin_id) == parseInt(item.pin_id),
-    );
-  }
 
-  if (foundPinSvg && foundPinSvg.svg_code) {
-    return (
-      <SvgXml
-        xml={
-          mapPinSvg.find(
-            element => parseInt(element.pin_id) == parseInt(item.pin_id),
-          ).svg_code
-        }
-        width="34px"
-        height="34px"
-      />
-    );
+  if (item.pinIcon) {
+    return <SvgXml xml={item.pinIcon.svg_code} width="34px" height="34px" />;
   }
   return <View />;
 };

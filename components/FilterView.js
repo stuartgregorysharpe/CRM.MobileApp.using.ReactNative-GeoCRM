@@ -552,7 +552,9 @@ export default function FilterView({navigation, page, onClose, isModal}) {
           } else if (page == 'pipeline') {
             dispatch({type: PIPELINE_SEARCH_FILTERS, payload: cloneFilters});
           }
-          onClose();
+          if (onClose) {
+            onClose();
+          }
         }}>
         Apply Filters
       </Button>

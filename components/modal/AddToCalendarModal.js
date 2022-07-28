@@ -25,7 +25,13 @@ const AddToCalendarModal = React.forwardRef((props, ref) => {
         onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }}
       {...props}>
-      <AddToCalendarContainer {...props} isModal={true} />
+      <AddToCalendarContainer
+        {...props}
+        isModal={true}
+        onClose={() => {
+          onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+        }}
+      />
     </CModal>
   );
 });
