@@ -108,5 +108,6 @@ export default {
     ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
   msisdnPrefix : "27",
-  msisdnErrorMessage: 'MSISDN must be 11 digits'
+  msisdnErrorMessage: 'MSISDN must be 11 digits',
+  chooseReason: 'Please choose a reason before making a selection or scanning'
 };

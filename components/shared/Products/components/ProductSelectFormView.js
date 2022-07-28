@@ -50,7 +50,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
     const onCaptureAction = ({type, value}) => {
         if (type == Constants.actionType.ACTION_CAPTURE) {
             if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productIssue == ''){
-                dispatch(showNotification({type:'success' , message: 'Please choose an issue before making a selection or scanning'  , buttonText:'Ok'}))
+                dispatch(showNotification({type:'success' , message: Constants.chooseReason  , buttonText:'Ok'}))
             }else{
                 var tmp = item.products.find(element => element.barcode == value );            
                 if(tmp != null && tmp != undefined){
@@ -107,7 +107,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
         if(type == Constants.actionType.ACTION_CHECK){
 
             if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productIssue == ''){
-                dispatch(showNotification({type:'success' , message: 'Please choose an issue before making a selection or scanning'  , buttonText:'Ok'}))
+                dispatch(showNotification({type:'success' , message: Constants.chooseReason  , buttonText:'Ok'}))
             }else{
                 if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){                                    
                     item = { ...item, productIssue }                    

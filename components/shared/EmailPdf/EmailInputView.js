@@ -8,20 +8,22 @@ import { validateEmail } from '../../../helpers/formatHelpers';
 export default function EmailInputView(props) {
 
     const { item } = props;    
+    
     const [lists, setLists] = useState([]);
     const [email, setEmail] = useState(email)
 
+
     useEffect(() => {
-        let isMount = true;
-        if(isMount && item.value){
+        //let isMount = true;
+        console.log("email item", item);
+        if(item.value && item.value != null){
+            console.log('triggere' , item.value);
             setLists(item.value);
         }else{
+            console.log('triggere');
             setLists([]);
-        }
-        return () => {
-            isMount = false;
-        };
-    }, [item])
+        } 
+    }, [item.value])
 
     return (
         <View style={styles.container}>
@@ -45,7 +47,7 @@ export default function EmailInputView(props) {
                         onSubmitEditing={(event) => {
                             if(email != '' && email != undefined){
                                 setLists([...lists, email]);
-                                setEmail('');                            
+                                setEmail('');
                                 if(props.onItemAction){                            
                                     props.onItemAction({type:  Constants.actionType.ACTION_FORM_SUBMIT, value: [...lists, email] , item:'' });
                                 }

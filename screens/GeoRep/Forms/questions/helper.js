@@ -1,6 +1,5 @@
-import { sub } from "react-native-reanimated";
-import { Constants } from "../../../../constants";
 
+import { Constants } from "../../../../constants";
 
 export function validateFormQuestionData(formQuestions) {
     var flag = true;
@@ -143,19 +142,15 @@ export function getFormQuestionData(formQuestions) {
               productReturns.push(element.productReturn);
             })
             
-            productReturns.forEach((topElement , i) => {
-              var subIndex = 0;
-              var tmp = {};
+            productReturns.forEach((topElement , i) => {              
               item.value.forEach((element , k) =>{
                 if(topElement === element.productReturn){                  
-                  tmp[element.product_id] = element.value.toString();
-                  subIndex = subIndex + 1;
+                  form_answers.push({
+                    key: `form_answers[${index}][answer][${topElement}][${element.product_id}]`,
+                    value: element.value.toString()
+                  });                  
                 }                
-              });          
-              form_answers.push({
-                key: `form_answers[${index}][answer][${topElement}]`,
-                value: tmp
-              });
+              });              
             });                            
             index = index +1 ;
           }          
@@ -174,9 +169,7 @@ export function getFormQuestionData(formQuestions) {
           //}
         });
     });
-
     return form_answers;
-
 }
 
 
@@ -221,8 +214,6 @@ export function getFormQuestionFile(formQuestions) {
           }
         });
     });
-
     return files;
-
       
 }

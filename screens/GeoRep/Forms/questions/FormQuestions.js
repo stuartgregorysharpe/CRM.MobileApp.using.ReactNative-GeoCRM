@@ -207,8 +207,9 @@ export const FormQuestions = props => {
     form_answers = getFormQuestionData(formQuestions);
 
     var files = [];
-    files = getFormQuestionFile(formQuestions);
 
+    files = getFormQuestionFile(formQuestions);
+    
     var postData = new FormData();
     postData.append('form_id', form.form_id);
     var locationId = await getLocalData("@specific_location_id");
@@ -258,9 +259,7 @@ export const FormQuestions = props => {
           });
         }
       }
-    });
-          
-    
+    });              
     
     postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
       .then(res => {        
