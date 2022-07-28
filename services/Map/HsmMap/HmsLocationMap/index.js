@@ -212,6 +212,7 @@ const HmsLocationMap = props => {
           style={styles.mapView}
           scrollGesturesEnabled={!isDrawMode}
           rotateGesturesEnabled={!isDrawMode}
+          tiltGesturesEnabled={false}
           onCameraIdle={onRegionChangeComplete}
           onMapClick={onPressMap}
           camera={{
@@ -221,7 +222,7 @@ const HmsLocationMap = props => {
             },
             zoom: 12,
             bearing: 50,
-            tilt: 80,
+            tilt: 0,
           }}
           currentLocation={currentLocation}>
           {renderDrawingPolygons(polylineEditing)}

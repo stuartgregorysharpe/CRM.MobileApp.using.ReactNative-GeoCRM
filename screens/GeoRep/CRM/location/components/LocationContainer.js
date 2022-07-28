@@ -58,6 +58,7 @@ const LocationContainer = props => {
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
+  const isShowZoomLabel = isLoading || isZoomOut;
 
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -266,7 +267,7 @@ const LocationContainer = props => {
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
       />
-      {isZoomOut && (
+      {isShowZoomLabel && (
         <Bubble
           title="Zoomed out too far, zoom in to see results"
           isLoading={isLoading}
