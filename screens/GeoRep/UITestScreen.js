@@ -15,7 +15,7 @@ export default function UITestScreen({screenProps}) {
   });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
-      <HmsMap style={{flex: 1}} />
+      <TestLocationUI />
     </SafeAreaView>
   );
 }

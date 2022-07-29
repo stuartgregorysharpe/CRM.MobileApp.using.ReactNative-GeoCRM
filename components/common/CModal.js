@@ -1,18 +1,14 @@
-import React, {
-  useEffect,
-  useState,  
-  useImperativeHandle,
-} from 'react';
+import React, {useEffect, useState, useImperativeHandle} from 'react';
 import {
   StyleSheet,
-  View,  
+  View,
   Modal,
   Image,
   Text,
-  TouchableOpacity,  
+  TouchableOpacity,
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
-import { whiteLabel } from '../../constants/Colors';
+import {whiteLabel} from '../../constants/Colors';
 
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,9 +29,8 @@ const CModal = React.forwardRef((props, ref) => {
     hideModal: () => {
       setIsVisible(false);
     },
-
   }));
-  
+
   const onClose = () => {
     if (props.onClose) {
       props.onClose();
@@ -49,12 +44,14 @@ const CModal = React.forwardRef((props, ref) => {
     }
     setIsVisible(false);
   };
-  
+
   return (
     <View style={[props.style]}>
-      <Modal 
-      animationType="fade"
-      transparent visible={isVisible} onRequestClose={onClose}>
+      <Modal
+        animationType="fade"
+        transparent
+        visible={isVisible}
+        onRequestClose={onClose}>
         <View
           style={[
             isCenterModal && styles.dim,
@@ -81,7 +78,6 @@ const CModal = React.forwardRef((props, ref) => {
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
             ]}>
-
             <View style={styles.bodyContainer}>
               {!isFullModal && <View style={styles.modalHandler} />}
 
@@ -99,10 +95,26 @@ const CModal = React.forwardRef((props, ref) => {
 
               {(props.title || props.icon) && (
                 <View style={styles.titleContainer}>
-                  
-                  <View style={{flex:1, marginRight:50, alignItems: props.headerType === "center" ? 'center' : 'flex-start'}}>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 50,
+                      alignItems:
+                        props.headerType === 'center' ? 'center' : 'flex-start',
+                    }}>
                     {props.title && (
-                      <Text style={[styles.title, {color: props.headerType === "center" ? whiteLabel().mainText : Colors.blackColor }]}>{props.title}</Text>
+                      <Text
+                        style={[
+                          styles.title,
+                          {
+                            color:
+                              props.headerType === 'center'
+                                ? whiteLabel().mainText
+                                : Colors.blackColor,
+                          },
+                        ]}>
+                        {props.title}
+                      </Text>
                     )}
                   </View>
 
@@ -115,10 +127,8 @@ const CModal = React.forwardRef((props, ref) => {
                       </Text>
                     </TouchableOpacity>
                   )}
-                  
+
                   {props.customRightHeaderView}
-                  
-                  
                 </View>
               )}
               {props.children}
@@ -167,6 +177,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     zIndex: 500,
+    overflow: 'hidden',
     backgroundColor: Colors.bgColor,
   },
   fullModalContainer: {
@@ -181,15 +192,15 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     flex: 1,
   },
-  
+
   titleContainer: {
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'space-between',
-    alignItems:'center',    
-    marginTop:5,
-    paddingLeft:5,
-    paddingRight:15,
+    alignItems: 'center',
+    marginTop: 5,
+    paddingLeft: 5,
+    paddingRight: 15,
     //paddingRight: 50,
   },
   titleIcon: {
@@ -218,9 +229,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: Colors.grey2,
   },
-  clearButtonContainer:{
-    position:'absolute',
-    right:20
+  clearButtonContainer: {
+    position: 'absolute',
+    right: 20,
   },
   clearText: {
     fontSize: Values.fontSize.small,

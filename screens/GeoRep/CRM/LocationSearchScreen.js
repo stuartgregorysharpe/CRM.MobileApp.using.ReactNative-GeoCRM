@@ -14,14 +14,9 @@ import {
 } from 'react-native';
 import {Provider} from 'react-native-paper';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  setWidthBreakpoints,
-  parse,
-} from 'react-native-extended-stylesheet-breakpoints';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Colors, {whiteLabel} from '../../../constants/Colors';
-import {breakPoint} from '../../../constants/Breakpoint';
 import {
   IS_CALENDAR_SELECTION,
   LOCATION_ID_CHANGED,
@@ -37,7 +32,7 @@ import {
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
 import {grayBackground, style} from '../../../constants/Styles';
-import {expireToken, getDistance} from '../../../constants/Helper';
+import {expireToken} from '../../../constants/Helper';
 import {LocationItem} from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
@@ -48,7 +43,7 @@ import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 import {Notification} from '../../../components/modal/Notification';
 import CheckInStatusView from './partial/CheckInStatusView';
 import AddLeadModal from './add_lead';
-import { Constants } from '../../../constants';
+import {Constants} from '../../../constants';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -58,19 +53,25 @@ var specificLocationId = 0;
 
 export default function LocationSearchScreen(props) {
   const navigation = props.navigation;
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const filterParmeterChanged = useSelector( state => state.selection.searchFilters);
-  const features = useSelector( state => state.selection.payload.user_scopes.geo_rep.features);
+  const filterParmeterChanged = useSelector(
+    state => state.selection.searchFilters,
+  );
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
   const [orderLists, setOrderLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
-  const [showItem, setShowItem] = useState(savedShowItem);    
+  const [showItem, setShowItem] = useState(savedShowItem);
   const [locationInfo, setLocationInfo] = useState();
   const [searchKeyword, setSearchKeyword] = useState('');
   const locationId = useSelector(state => state.location.locationId.value);
   const tabType = useSelector(state => state.location.locationId.type);
   const isSelected = useSelector(state => state.selection.isCalendarSelection);
-  const selectedLocationsForCalendar = useSelector( state => state.selection.selectedLocationsForCalendar);
+  const selectedLocationsForCalendar = useSelector(
+    state => state.selection.selectedLocationsForCalendar,
+  );
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState('');
   const [calendarType, setCalendarType] = useState(
@@ -86,8 +87,7 @@ export default function LocationSearchScreen(props) {
   const [pageNumber, setPageNumber] = useState(0);
   const [myLocation, setMyLocation] = useState(currentLocation);
   const [isCheckin, setIsCheckin] = useState(false);
-  const addLeadModalRef = useRef(null)
-
+  const addLeadModalRef = useRef(null);
 
   useEffect(() => {
     initData();
@@ -95,10 +95,10 @@ export default function LocationSearchScreen(props) {
       isEndPageLoading = false;
       loadMoreData();
     }
-    refreshHeader();    
+    refreshHeader();
   }, []);
 
-  useEffect(() => {    
+  useEffect(() => {
     refreshHeader();
     if (showItem === 0) {
       setTimeout(() => {
@@ -125,8 +125,8 @@ export default function LocationSearchScreen(props) {
   }, [currentLocation]);
 
   useEffect(() => {
-    console.log("selectedLocationsForCalendar",selectedLocationsForCalendar)
-  },[selectedLocationsForCalendar]);
+    console.log('selectedLocationsForCalendar', selectedLocationsForCalendar);
+  }, [selectedLocationsForCalendar]);
 
   useEffect(() => {
     if (locationId !== 0 && tabType !== undefined) {
@@ -146,19 +146,19 @@ export default function LocationSearchScreen(props) {
       isEndPageLoading = false;
       setPageNumber(0);
       setOrderLists([]);
-      setOriginLists([]);      
+      setOriginLists([]);
       loadMoreData();
     }
   }, [filterParmeterChanged]);
 
   useEffect(() => {
-    if (isPageLoading) {      
+    if (isPageLoading) {
       searchKey = searchKeyword;
       loadData(searchKey);
     }
   }, [isPageLoading]);
 
-  useEffect(() => {    
+  useEffect(() => {
     changedKey = searchKeyword;
   }, [searchKeyword]);
 
@@ -181,7 +181,7 @@ export default function LocationSearchScreen(props) {
               ) {
                 locationRef.current.goBack();
               } else {
-                console.log('yyy');
+                console.log('LOG: goPreviousPage');
                 goPreviousPage();
               }
             }}>
@@ -258,11 +258,14 @@ export default function LocationSearchScreen(props) {
     });
   };
 
-  const loadData = async searchKey => {    
-
+  const loadData = async searchKey => {
     var filterData = await getFilterData('@filter');
     getLocationSearchListsByPage(filterData, pageNumber, searchKey)
-      .then(res => {        
+      .then(res => {
+        console.log(
+          'LOG: getLocationSearchListsByPage - response',
+          JSON.stringify(res),
+        );
         setIsLoading(false);
 
         if (searchKey !== changedKey) {
@@ -311,7 +314,7 @@ export default function LocationSearchScreen(props) {
     }
   };
 
-  const animation = name => {        
+  const animation = name => {
     switch (name) {
       case 'search-page':
         setShowItem(0);
@@ -329,14 +332,13 @@ export default function LocationSearchScreen(props) {
       case 'addtocalendar':
         setShowItem(3);
         savedShowItem = 3;
-        return;      
+        return;
       default:
         setShowItem(0);
         savedShowItem = 0;
         return;
     }
   };
-
 
   const openLocationInfo = async location_id => {
     animation('locationInfo');
@@ -351,7 +353,7 @@ export default function LocationSearchScreen(props) {
         }
       })
       .catch(e => {
-        expireToken(dispatch, e);        
+        expireToken(dispatch, e);
       });
   };
 
@@ -410,9 +412,7 @@ export default function LocationSearchScreen(props) {
     if (!isEndPageLoading && isPageLoading) {
       return (
         <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}            
-            style={styles.loadMoreBtn}>
+          <TouchableOpacity activeOpacity={0.9} style={styles.loadMoreBtn}>
             <Text style={styles.btnText}>Loading</Text>
             {isPageLoading ? (
               <ActivityIndicator color="white" style={{marginLeft: 8}} />
@@ -425,16 +425,14 @@ export default function LocationSearchScreen(props) {
   };
 
   const onAddLeadModalClosed = ({type, value}) => {
-    
-    if(type == Constants.actionType.ACTION_CLOSE){    
+    if (type == Constants.actionType.ACTION_CLOSE) {
       addLeadModalRef.current.hideModal();
     }
-    if(type == Constants.actionType.ACTION_DONE){
+    if (type == Constants.actionType.ACTION_DONE) {
       addLeadModalRef.current.hideModal();
       //openLocaitonInfoDetails(Number(value));
     }
-  }
-
+  };
 
   return (
     <Provider>
@@ -492,8 +490,7 @@ export default function LocationSearchScreen(props) {
                   }
                 : {transform: [{translateY: 0}]},
             ]}>
-              
-            <LocationInfoDetails              
+            <LocationInfoDetails
               navigation={navigation}
               ref={locationRef}
               animation={animation}
@@ -533,7 +530,7 @@ export default function LocationSearchScreen(props) {
               }}></AddToCalendar>
           </View>
         )}
-        
+
         <AddLeadModal
           title="Add Lead"
           ref={addLeadModalRef}

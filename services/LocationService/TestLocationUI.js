@@ -9,6 +9,7 @@ const TestLocationUI = props => {
   const [serviceType, setServiceType] = useState(3);
   const [isHmsAvailable, setIsHmsAvailable] = useState(false);
   const [status, setStatus] = useState('');
+  const [parsedLocation, setParsedLocation] = useState('');
   const currentPositionString = `${currentPosition.latitude},${currentPosition.longitude}`;
 
   const getServiceTypeString = serviceType => {
@@ -32,6 +33,15 @@ const TestLocationUI = props => {
         }
       });
     });
+    LocationService.getLocationService().then(locationService => {
+      locationService
+        .parseCoordinate(
+          'Changjiang Community, Huannan Road, Binjiang District, Hangzhou City, Zhejiang Province',
+        )
+        .then(response => {
+          setParsedLocation(JSON.stringify(response));
+        });
+    });
   };
 
   const getCurrentLocation = () => {
@@ -54,6 +64,11 @@ const TestLocationUI = props => {
       <Text style={styles.description}>{currentPositionString}</Text>
       <Text style={styles.title}>Location Get Method:</Text>
       <Text style={styles.description}>{status}</Text>
+      <Text style={styles.title}>
+        Parse Location:Changjiang Community, Huannan Road, Binjiang District,
+        Hangzhou City, Zhejiang Province
+      </Text>
+      <Text style={styles.description}>{parsedLocation}</Text>
 
       <TouchableOpacity
         onPress={() => {

@@ -3,23 +3,21 @@ import {View, StyleSheet} from 'react-native';
 import HMSMap, {MapTypes, Gravity} from '@hmscore/react-native-hms-map';
 
 const HmsMap = props => {
+  const {region} = props;
+  const {longitude, latitude, zoomEnabled} = region;
   return (
     <HMSMap
       mapType={MapTypes.NORMAL}
       liteMode={false}
+      scrollGesturesEnabled={zoomEnabled}
+      rotateGesturesEnabled={zoomEnabled}
+      tiltGesturesEnabled={false}
       camera={{
         target: {
-          latitude: 41.02155220194891,
-          longitude: 29.0037998967586,
+          latitude: latitude,
+          longitude: longitude,
         },
         zoom: 12,
-      }}
-      logoPosition={Gravity.TOP | Gravity.START}
-      logoPadding={{
-        paddingStart: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        paddingEnd: 0,
       }}
       {...props}
     />

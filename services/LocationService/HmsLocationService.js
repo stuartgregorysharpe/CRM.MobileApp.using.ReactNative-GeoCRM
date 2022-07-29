@@ -119,9 +119,109 @@ function getCurrentPosition(successCallback, failureCallback, options = {}) {
     });
 }
 
+const getGeocoding = async (latitude, longitude) => {
+  return new Promise(function (resolve, reject) {
+    const getFromLocationNameRequest = {
+      latitude: latitude,
+      longitude: longitude,
+      maxResults: 5,
+    };
+
+    const locale = {
+      country: 'en',
+    };
+
+    HMSLocation.Geocoder.Native.getFromLocation(
+      getFromLocationNameRequest,
+      locale,
+    )
+      .then(hwLocationList => {
+        resolve(hwLocationList);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
+const getCoordinate = async address => {
+  return new Promise(function (resolve, reject) {
+    const getFromLocationNameRequest = {
+      locationName: address,
+      maxResults: 5,
+    };
+    console.log('getFromLocationNameRequest', getFromLocationNameRequest);
+
+    const locale = {
+      language: 'en',
+      country: 'us',
+    };
+
+    HMSLocation.Geocoder.Native.getFromLocationName(
+      getFromLocationNameRequest,
+      locale,
+    )
+      .then(hwLocationList => {
+        resolve(hwLocationList);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+async function reverseGeocoding(currentLocation, customMasterFields) {
+  return await getGeocoding(currentLocation.latitude, currentLocation.longitude)
+    .then(results => {
+      if (results != null && results.length > 0) {
+        const address_component = results[0];
+        let addressFields = [...customMasterFields];
+        const addressList = {
+          state: address_component.state,
+          city: address_component.city,
+          country: address_component.countryName,
+          pincode: address_component.postalCode,
+          street_address: address_component.street,
+          suburb: '',
+        };
+        const response = addressFields.map(addressField => {
+          return {
+            ...addressField,
+            value: addressList[addressField.core_field_name] || '',
+          };
+        });
+        return response;
+      }
+    })
+    .catch(e => {
+      console.log(e);
+      return [];
+    });
+}
+async function parseCoordinate(address) {
+  return await getCoordinate(address)
+    .then(results => {
+      console.log('getCoordinate', results);
+      if (results && results.length > 0) {
+        const response = {
+          latitude: results[0].latitude,
+          longitude: results[0].longitude,
+        };
+        return response;
+      }
+      return null;
+    })
+    .catch(e => {
+      console.log(e);
+      return [];
+    });
+}
 export default {
   requestPermissions,
   watchPosition,
   clearWatch,
   getCurrentPosition,
+  getGeocoding,
+  getCoordinate,
+  reverseGeocoding,
+  parseCoordinate,
 };

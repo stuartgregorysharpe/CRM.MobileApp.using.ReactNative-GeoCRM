@@ -199,7 +199,6 @@ const HmsLocationMap = props => {
       />
     );
   };
-  console.log('HmsLocationMap_currentLocation', currentLocation);
   return (
     <View style={[styles.container, props.style]}>
       {isShowMap && (

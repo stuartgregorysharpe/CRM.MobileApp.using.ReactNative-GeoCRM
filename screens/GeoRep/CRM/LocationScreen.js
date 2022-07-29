@@ -47,10 +47,10 @@ import Images from '../../../constants/Images';
 import {MarkerView} from './partial/MarkerView';
 import ClusteredMapView from './components/ClusteredMapView';
 import {LocationInfoDetails} from './locationInfoDetails/LocationInfoDetails';
-import Geolocation from 'react-native-geolocation-service';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import {CrmCalendarSelection} from './partial/CrmCalendarSelection';
 import {expireToken, isInsidePoly} from '../../../constants/Helper';
+import LocationService from '../../../services/LocationService';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import {
   getLocalData,
@@ -933,7 +933,7 @@ const styles = EStyleSheet.create(
       flex: 1,
       justifyContent: 'space-between',
       backgroundColor: Colors.bgColor,
-      paddingBottom: Platform.OS == 'android' ? 50 : 50,
+      paddingBottom: 50,
     },
     map: {
       flexGrow: 1,

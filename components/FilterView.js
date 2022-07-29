@@ -26,12 +26,7 @@ import {
 } from '../constants/Storage';
 import FilterOptionsModal from './modal/FilterOptionsModal';
 import StartEndDateSelectionModal from './modal/StartEndDateSelectionModal';
-import {
-  getLocationSearchList,
-  getLocationsMap,
-} from '../actions/location.action';
 import {getPipelineFilters} from '../actions/pipeline.action';
-import SelectionPicker from './modal/SelectionPicker';
 import {DatetimePickerView} from './DatetimePickerView';
 
 export default function FilterView({navigation, page, onClose, isModal}) {
