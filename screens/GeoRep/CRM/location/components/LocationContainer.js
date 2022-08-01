@@ -179,7 +179,7 @@ const LocationContainer = props => {
   };
   const onCheckIn = async () => {
     const specificLocationId = await getLocalData('@specific_location_id');
-    props.navigation.navigate('LocationSpecificInfo', {
+    navigation.navigate('LocationSpecificInfo', {
       locationId: specificLocationId,
       page: 'checkin',
     });
