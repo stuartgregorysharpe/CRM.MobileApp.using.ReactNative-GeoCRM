@@ -39,7 +39,7 @@ import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryMod
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/DevicesModal';
-import {Constants} from '../../../../constants';
+import {Constants, Strings} from '../../../../constants';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 
@@ -369,7 +369,7 @@ export default function LocationSpecificInfoScreen(props) {
                     showNotification({
                       type: 'success',
                       message: res.message,
-                      buttonText: 'Okay',
+                      buttonText: Strings.Ok,
                       buttonAction: async () => {
                         dispatch({type: CHECKIN, payload: false});
                         dispatch(clearNotification());

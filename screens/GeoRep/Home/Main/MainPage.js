@@ -12,7 +12,7 @@ import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
 import { getLocalData, storeLocalValue } from '../../../../constants/Storage';
 import { expireToken, getPostParameter } from '../../../../constants/Helper';
-import { Constants } from '../../../../constants';
+import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
 import { updateCurrentLocation } from '../../../../actions/google.action';
 import { useDispatch } from 'react-redux';
@@ -128,7 +128,7 @@ export default function MainPage(props) {
         showNotification({
           type: 'success',
           message: value,
-          buttonText: 'Okay',
+          buttonText: Strings.Ok,
         }),
       );       
     };

@@ -58,7 +58,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
-import { Constants } from '../../../../constants';
+import { Constants, Strings } from '../../../../constants';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -308,7 +308,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           showNotification({
             type: 'success',
             message: res.message,
-            buttonText: 'Okay',
+            buttonText: Strings.Ok,
             buttonAction: async () => {
               console.log('clickedActionclickedAction', clickedAction);
               if (clickedAction === 'top') {

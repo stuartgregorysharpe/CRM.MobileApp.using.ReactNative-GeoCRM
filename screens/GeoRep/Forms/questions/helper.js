@@ -155,6 +155,22 @@ export function getFormQuestionData(formQuestions) {
             index = index +1 ;
           }          
 
+          else if(item.question_type ===  Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO && item.value ){            
+            
+            form_answers.push({
+              key: `form_answers[${index}][form_question_id]`,
+              value: item.form_question_id,
+            });                                    
+            item.value.forEach((element, k) => {
+              form_answers.push({
+                key: `form_answers[${index}][answer][${k}]`,
+                value: element.name
+              });                          
+            })                      
+            index = index +1 ;
+          }          
+
+
           else if(value != undefined &&  value != null && value != '') {
             form_answers.push({
               key: `form_answers[${index}][form_question_id]`,
@@ -185,6 +201,7 @@ export function getFormQuestionFile(formQuestions) {
             item.question_type === 'take_photo' ||
             (item.question_type === 'yes_no' && (item.yes_image || item.no_image))
           ) {
+
             var paths = item.value;
             if (item.yes_image != null && item.yes_image != '') {
               paths = item.yes_image;
@@ -211,7 +228,19 @@ export function getFormQuestionFile(formQuestions) {
                 index = index + 1;
               }
             }
-          }
+          }else if( item.question_type === Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO) {
+              if(item.value){
+                item.value.forEach((element , index) => {
+                  files.push({
+                    key: `File[${item.form_question_id}][${element.name}]`,
+                    value: element.path,
+                    type: Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO,
+                  });
+                })
+              }
+              
+          }          
+          
         });
     });
     return files;
