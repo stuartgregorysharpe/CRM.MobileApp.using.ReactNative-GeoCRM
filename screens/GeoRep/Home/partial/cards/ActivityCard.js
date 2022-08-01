@@ -1,5 +1,5 @@
 
-import { View, Text, AppState, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React , { useState ,useRef ,useEffect} from 'react'
 import { style } from '../../../../../constants/Styles'
 import SvgIcon from '../../../../../components/SvgIcon'
@@ -14,7 +14,6 @@ import CircularProgress , { CircularProgressBase }from 'react-native-circular-pr
 
 
 export default function ActivityCard({activityCard}) {
-
     
     const colors = [whiteLabel().graphs.primary, whiteLabel().graphs.color_1 , whiteLabel().graphs.color_3]; 
     const barTypes = [
@@ -22,6 +21,8 @@ export default function ActivityCard({activityCard}) {
         {color:whiteLabel().graphs.color_1, name:'Quotes'} ,
         {color:whiteLabel().graphs.color_3 , name:'Orders'}  ,        
     ];
+
+    console.log("activityCard.action_items",activityCard.action_items)
 
     return (
         <View style={{marginTop:10, flex:1 , flexDirection:'column' }}>
@@ -76,34 +77,36 @@ export default function ActivityCard({activityCard}) {
                         </View>                   
                     </View>
 
-
-                    <View style={{flex:2, alignItems:'center'}}>
-                        
-                        <CircularProgressBase 
-                            radius={42}                           
-                            value={100 * parseInt(activityCard.action_items.current)  / parseInt(activityCard.action_items.total) - 5}                  
-                            activeStrokeColor={whiteLabel().graphs.color_1}
-                            inActiveStrokeColor={"transparent"}
-                        >
-                            <CircularProgressBase                            
-                                value={100 * parseInt(activityCard.action_items.overdue) / parseInt(activityCard.action_items.total) - 5}
-                                rotation={360 * parseInt(activityCard.action_items.current)  / parseInt(activityCard.action_items.total)}
-                                radius={42 }                            
-                                activeStrokeColor={whiteLabel().graphs.color_2}
+                    {
+                        activityCard.action_items.overdue != "0" && activityCard.action_items.total != "0" && activityCard.action_items.total != "0" &&
+                        <View style={{flex:2, alignItems:'center'}}>                            
+                            <CircularProgressBase 
+                                radius={42}                           
+                                value={100 * parseInt(activityCard.action_items.current)  / parseInt(activityCard.action_items.total) - 5}                  
+                                activeStrokeColor={whiteLabel().graphs.color_1}
                                 inActiveStrokeColor={"transparent"}
-                                >
-                                    <CircularProgress
-                                        radius={31}  
-                                        value={activityCard.action_items.total}                                        
-                                        circleBackgroundColor={whiteLabel().graphs.primary}                                        
-                                        progressValueColor={Colors.whiteColor}
-                                        progressValueFontSize={20}
-                                        activeStrokeColor={whiteLabel().graphs.primary}
-                                        inActiveStrokeColor={whiteLabel().graphs.primary}                                        
-                                    />                                
-                            </CircularProgressBase>
-                        </CircularProgressBase>                                               
-                    </View>                    
+                            >
+                                <CircularProgressBase                            
+                                    value={100 * parseInt(activityCard.action_items.overdue) / parseInt(activityCard.action_items.total) - 5}
+                                    rotation={360 * parseInt(activityCard.action_items.current)  / parseInt(activityCard.action_items.total)}
+                                    radius={42 }                            
+                                    activeStrokeColor={whiteLabel().graphs.color_2}
+                                    inActiveStrokeColor={"transparent"}
+                                    >
+                                        <CircularProgress
+                                            radius={31}  
+                                            value={activityCard.action_items.total}                                        
+                                            circleBackgroundColor={whiteLabel().graphs.primary}                                        
+                                            progressValueColor={Colors.whiteColor}
+                                            progressValueFontSize={20}
+                                            activeStrokeColor={whiteLabel().graphs.primary}
+                                            inActiveStrokeColor={whiteLabel().graphs.primary}                                        
+                                        />                                
+                                </CircularProgressBase>
+                            </CircularProgressBase>                                               
+                        </View> 
+                    }
+                                       
                 </View>
 
             </View>

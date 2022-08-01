@@ -2,7 +2,7 @@
 import { View, Text , StyleSheet } from 'react-native'
 import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faSearch, faChevronUp} from '@fortawesome/free-solid-svg-icons';
+import {faChevronUp} from '@fortawesome/free-solid-svg-icons';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
 import { Fonts } from '../../../../constants';
 

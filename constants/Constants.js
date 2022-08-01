@@ -27,7 +27,9 @@ export default {
     FORM_TYPE_NUMBERS: 'numbers',
     FORM_TYPE_EMAIL_PDF: 'email_pdf',
     FORM_TYPE_PRODUCTS: 'products',
-    FORM_TYPE_PRODUCT_ISSUES: 'product_issues'
+    FORM_TYPE_PRODUCT_ISSUES: 'product_issues',
+    FORM_TYPE_PRODUCT_RETURN: 'returns',
+    FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo'
   },
 
   actionType: {
@@ -106,4 +108,7 @@ export default {
     ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
     ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
+  msisdnPrefix : "27",
+  msisdnErrorMessage: 'MSISDN must be 11 digits',
+  chooseReason: 'Please choose a reason before making a selection or scanning'
 };

@@ -18,7 +18,7 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
             setSelectedVal(selectedVals);
         }  
     },[selectedVals]);
-
+        
     useEffect(() => {
         if(visible){
             if(selectedVals === null){
@@ -28,12 +28,8 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
         }
           ;
     },[visible]);
-
    
-    const getCheckedStatus = ( item,  values ) => {
-        console.log("selectedVals - ----", selectedVals);
-        console.log("localSelectedVals - ----", localSelectedVals);
-             
+    const getCheckedStatus = ( item,  values ) => {                     
         var tmp = null;
         if(values !== null && values !== undefined){
             tmp = values.find((element => element === item ));
@@ -64,11 +60,9 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
             }else{
                 setSelectedVal([item]);
                 //onValueChanged([item]);
-            }
-              
+            }              
         }
     }
-
    
     return (        
         <Modal             
@@ -92,8 +86,7 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
                       <View style={styles.topContainer}></View>
                     </TouchableWithoutFeedback>
 
-                    <View style={style.modalView}>       
-                                                
+                    <View style={style.modalView}>                                                 
                         <TouchableOpacity style={{ padding: 6 }}>
                             <Divider />
                         </TouchableOpacity>
@@ -105,20 +98,22 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
                             </TouchableOpacity>
                         </View>
 
-                        { options && options.map((item, key) => (
-                            <View key={key}>
-                            
-                                <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={key}>
-                                    <Text style={styles.pickerItemText}>{item}</Text>
-
-                                    <TouchableOpacity onPress={() => onTapItem(item) }>
-                                        <View style={[styles.checkBoxStyle , getCheckedStatus(item, localSelectedVals)? {} : {backgroundColor:'white'}]}>
-                                            <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
+                        <ScrollView style={{maxHeight:Dimensions.get("screen").height * 0.6}}>
+                            { options && options.map((item, key) => (
+                                <View key={key}>                            
+                                    <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={key}>
+                                        <View style={{flex:1}}>
+                                            <Text style={styles.pickerItemText}>{item}</Text>
                                         </View>
-                                    </TouchableOpacity>                                                
-                                </View>                          
-                            </View>
-                        ))}
+                                        <TouchableOpacity onPress={() => onTapItem(item) }>
+                                            <View style={[styles.checkBoxStyle , getCheckedStatus(item, localSelectedVals)? {} : {backgroundColor:'white'}]}>
+                                                <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
+                                            </View>
+                                        </TouchableOpacity>                                                
+                                    </View>     
+                                </View>
+                            ))}
+                        </ScrollView>                        
 
                         <SubmitButton onSubmit={ () => {                                
                                 onValueChanged(localSelectedVals);                                
@@ -139,7 +134,7 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
 const styles = StyleSheet.create({
 
     container: {
-        width:Dimensions.get("screen").width,        
+        width:Dimensions.get("screen").width,                
         position: 'absolute',
         bottom: 0,
         left: 0,

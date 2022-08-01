@@ -16,6 +16,7 @@ const SelectInputView = props => {
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
   };
+  
   return (
     <TouchableOpacity
       onPress={onPress}

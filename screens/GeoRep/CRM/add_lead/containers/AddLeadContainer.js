@@ -367,6 +367,22 @@ export default function AddLeadContainer(props) {
         onButtonAction={onSelectDeviceModalClosed}
       />
 
+      <SelectDevicesModal
+        closableWithOutsideTouch
+        ref={selectDeviceModalRef}
+        hideClear={true}
+        selLists={selectedLists}
+        customRightHeaderView={
+          selectDeviceCount > 0 || selectedLists.length > 0 ? (
+            renderViewLists()
+          ) : (
+            <></>
+          )
+        }
+        title="Select Devices:"
+        onButtonAction={onSelectDeviceModalClosed}
+      />
+
       <ViewListsModal
         ref={viewListsModalRef}
         hideClear={true}
@@ -384,7 +400,7 @@ export default function AddLeadContainer(props) {
         onButtonAction={onFormQuestionModalClosed}
       />
       <SubmitButton
-        style={{marginHorizontal: 10}}
+        style={{marginHorizontal: 10, marginBottom: 30}}
         title={'Add'}
         onSubmit={onAdd}
       />

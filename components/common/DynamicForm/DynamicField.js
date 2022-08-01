@@ -20,6 +20,7 @@ const DynamicField = props => {
     isFirst,
     index,
     dynamicFieldRef,
+    isClickable,
   } = props;
 
   const disabled = editable && editable == '0';
@@ -72,6 +73,12 @@ const DynamicField = props => {
         items={items}
         hasError={hasError}
         disabled={disabled}
+        isClickable={isClickable}
+        onPress={() => {
+          if (isClickable) {
+            props.onPress();
+          }
+        }}
         onSelectItem={item => {
           updateFormData(field_name, item.value);
         }}
@@ -91,6 +98,12 @@ const DynamicField = props => {
           items={items}
           hasError={hasError}
           disabled={disabled}
+          isClickable={isClickable}
+          onPress={() => {
+            if (isClickable) {
+              props.onPress();
+            }
+          }}
           onSelectItem={item => {
             updateSecondFormData(field_name, item.value, value.secondValue);
           }}

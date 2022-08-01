@@ -318,22 +318,31 @@ export function isInsidePoly(lat, lon, multiPolycoords) {
 }
 
 export function expireToken(dispatch, e) {
-  if (e === 'expired') {
-    console.log('token EXPIRED !!!!!');
+  var message = "";
+  if (e === 'expired') {    
+    console.log('token EXPIRED !!!!!');    
+    message = 'Access has expired, please login again';
     dispatch(
       showNotification({
         type: 'success',
-        message: 'Access has expired, please login again',
+        message: message,
         buttonText: 'Ok',
         buttonAction: () => {
-          console.log('action button');
-          setToken(null);
-          dispatch(clearNotification());
-          dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
+          if (e === 'expired') {
+            setToken(null);
+            dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
+          }        
+          dispatch(clearNotification());          
         },
       }),
     );
+
+  }else{
+    message = 'Submission timed out, Please try again or contact support';
   }
+
+  
+
 }
 
 export function getPostParameter(location) {

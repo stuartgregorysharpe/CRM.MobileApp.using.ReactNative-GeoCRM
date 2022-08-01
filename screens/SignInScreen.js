@@ -25,6 +25,7 @@ import {
   MAP_FILTERS,
 } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
+
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   getFilterData,
@@ -39,6 +40,8 @@ import jwt_decode from 'jwt-decode';
 import {displayName} from '../app.json';
 import {clearNotification} from '../actions/notification.action';
 import {getDynamicPins, getPinSvgLists} from '../actions/pins.actions';
+import {getDBConnection} from '../sqlite/DBHelper';
+import {createTable} from '../sqlite/FormDBHelper';
 
 export default function SignIn() {
   const loginStatus = useSelector(state => state.auth.loginStatus);
@@ -55,9 +58,16 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   //clinton@cydcor.com / Test2021#
+
   useEffect(() => {
     initView();
+    //initializeDB();
   }, [loginStatus]);
+
+  const initializeDB = async () => {
+    const db = await getDBConnection();
+    if (db != null) await createTable(db);
+  };
 
   const initView = async () => {
     var date = new Date().getDate();
@@ -152,7 +162,6 @@ export default function SignIn() {
   return (
     <SafeAreaView style={{flex: 1}}>
       <KeyboardAwareScrollView
-        keyboardShouldPersistTaps={'always'}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{flexGrow: 1, flex: 1}}
         enableOnAndroid={true}

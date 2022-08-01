@@ -10,8 +10,8 @@ import {useSelector} from 'react-redux';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
 import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
-import {getPostParameter} from '../../../../constants/Helper';
-import {Constants} from '../../../../constants';
+import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import {Constants, Strings} from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
 import {updateCurrentLocation} from '../../../../actions/google.action';
 import {useDispatch} from 'react-redux';
@@ -38,6 +38,7 @@ export default function MainPage(props) {
   const isCheckin = useSelector(state => state.location.checkIn);
   const navigation = props.navigation;
   const [isLoading, setIsLoading] = useState(false);
+  let isSubscribed = true;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -47,10 +48,16 @@ export default function MainPage(props) {
   }, [navigation]);
 
   useEffect(() => {
-    let isSubscribed = true;
     loadPage();
+    if (!isCheckin) {
+      cleanLocationId();
+    }
     return () => (isSubscribed = false);
   }, [isCheckin]);
+
+  const cleanLocationId = async () => {
+    await storeLocalValue('@specific_location_id', '');
+  };
 
   const loadPage = () => {
     if (currentLocation.latitude === undefined) {
@@ -68,37 +75,41 @@ export default function MainPage(props) {
       setIsLoading(true);
       getApiRequest('home/main-dashboard', param)
         .then(async res => {
-          setIsLoading(false);
-          //setVisitCard(res.items.visits_card);
-          //setActivityCard(res.items.activity_card);
-          //setCurrentCall(res.items.current_call);
-          setCheckinStatus(res.items.checkin_state);
-          if (res.items.checkin_state != '') {
-            await storeLocalValue('@checkin', '1');
-            await storeLocalValue(
-              '@specific_location_id',
-              res.items.checkin_state,
+          if (isSubscribed) {
+            setIsLoading(false);
+            console.log('visits_card', JSON.stringify(res.items.visits_card));
+            setVisitCard(res.items.visits_card);
+            setActivityCard(res.items.activity_card);
+            setCurrentCall(res.items.current_call);
+            setCheckinStatus(res.items.checkin_state);
+            if (res.items.checkin_state != '') {
+              await storeLocalValue('@checkin', '1');
+              await storeLocalValue(
+                '@specific_location_id',
+                res.items.checkin_state,
+              );
+              dispatch({type: CHECKIN, payload: true});
+            } else {
+              await storeLocalValue('@checkin', '0');
+            }
+            setIsStart(
+              res.items.startEndDay_state ===
+                Constants.homeStartEndType.START_MY_DAY
+                ? true
+                : false,
             );
-            dispatch({type: CHECKIN, payload: true});
-          } else {
-            await storeLocalValue('@checkin', '0');
+            await storeLocalValue(
+              'start_my_day',
+              res.items.startEndDay_state ===
+                Constants.homeStartEndType.START_MY_DAY
+                ? '1'
+                : '0',
+            );
           }
-          setIsStart(
-            res.items.startEndDay_state ===
-              Constants.homeStartEndType.START_MY_DAY
-              ? true
-              : false,
-          );
-          await storeLocalValue(
-            'start_my_day',
-            res.items.startEndDay_state ===
-              Constants.homeStartEndType.START_MY_DAY
-              ? '1'
-              : '0',
-          );
         })
         .catch(e => {
           setIsLoading(false);
+          expireToken(dispatch, e);
         });
     }
     initData();
@@ -126,7 +137,6 @@ export default function MainPage(props) {
           setStartEndDayId(res.startEndDay_id);
           await storeLocalValue('start_my_day', isStart ? '0' : '1');
           setIsStart(!isStart);
-
           if (features.includes('odometer_reading')) {
             odometerReadingModalRef.current.showModal();
           }
@@ -140,13 +150,9 @@ export default function MainPage(props) {
       showNotification({
         type: 'success',
         message: value,
-        buttonText: 'Okay',
+        buttonText: Strings.Ok,
       }),
     );
-
-    //setIsStart(!isStart);
-    //await storeLocalValue("start_my_day", !isStart ? "1" : "0");
-    // odometerReadingModalRef.current.hideModal();
   };
 
   const renderCards = (item, index) => {

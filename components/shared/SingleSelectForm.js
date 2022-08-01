@@ -9,9 +9,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 export const SingleSelectForm = ({item , onPress ,onTouchStart}) => {
     const [text,setText] = useState("");
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+    const isQuesionAnswered = item && item.value != null
+    const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
 
     return (
-        <View style={[style.card,  item.rule_compulsory === "1" ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginTop:10, marginBottom:5 }]}>
+        <View style={[style.card,  isCompulsory  ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginTop:10, marginBottom:5 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, paddingHorizontal:0}}>
