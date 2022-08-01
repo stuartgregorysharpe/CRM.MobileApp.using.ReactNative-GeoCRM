@@ -23,8 +23,7 @@ import Colors, {whiteLabel} from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import SvgIcon from '../../../components/SvgIcon';
 import {breakPoint} from '../../../constants/Breakpoint';
-import {
-  getAddOpportunityContacts,
+import {  
   postAddOpportunityFields,
 } from '../../../actions/pipeline.action';
 import {getToken} from '../../../constants/Storage';
@@ -39,6 +38,7 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import CustomInput from '../../../components/common/CustomInput';
+import { Strings } from '../../../constants';
 
 var selected_location_id = 0;
 var selected_dispositio_id = 0;
@@ -278,7 +278,7 @@ export default function AddSalesPipeline({
         showNotification({
           type: 'success',
           message: 'Please complete the compulsory fields',
-          buttonText: 'Okay',
+          buttonText: Strings.Ok,
         }),
       );
       return;
@@ -329,7 +329,7 @@ export default function AddSalesPipeline({
           showNotification({
             type: 'success',
             message: 'Opportunity added sucessfully',
-            buttonText: 'Okay',
+            buttonText: Strings.Ok,
             buttonAction: async () => {
               onClose();
               dispatch(clearNotification());
@@ -342,7 +342,7 @@ export default function AddSalesPipeline({
           showNotification({
             type: 'success',
             message: 'Failed',
-            buttonText: 'Okay',
+            buttonText: Strings.Ok,
           }),
         );
       });
@@ -971,9 +971,8 @@ export default function AddSalesPipeline({
                 dispatch(
                   showNotification({
                     type: 'success',
-                    message:
-                      'No contacts available. Please make sure a Customer has been selected first',
-                    buttonText: 'Okay',
+                    message: 'No contacts available. Please make sure a Customer has been selected first',
+                    buttonText: Strings.Ok,
                   }),
                 );
               }

@@ -27,6 +27,7 @@ import { GroupTitle } from '../../../Forms/questions/partial/GroupTitle';
 import EmailPdf from '../../../../../components/shared/EmailPdf';
 import SKUCountForm from '../../../../../components/shared/SKUCount';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import MultiSelectPhoto from '../../../../../components/shared/MultiSelectPhoto';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
@@ -374,6 +375,25 @@ export const FormQuestionView = forwardRef((props, ref) => {
               }}
             />
           )
+        } else if(item.question_type === Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO) {
+          
+            return (
+               <MultiSelectPhoto
+                key={"multiple_select_form" + index}
+                questionType={item.question_type}
+                item={item}
+                fromIndex={index}
+                onFormAction={({type, value, item}) => {                                  
+                  console.log("multi select form pressed" )
+                  if (type == Constants.actionType.ACTION_FORM_SUBMIT) {    
+                      console.log("multi select form" , value)
+                      onValueChangedSelectionView(key, index, value);
+                  }
+                  if (type == Constants.actionType.ACTION_INFO) {              
+                  }
+                }}
+               />
+            )
         }
 
         return <View key={'question' + index}></View>;

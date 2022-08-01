@@ -194,4 +194,16 @@ export const style = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
+  
+  checkBoxStyle:{
+    width:25,
+    height:25,
+    borderRadius:15,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:whiteLabel().itemSelectedBackground,
+    borderWidth:1,
+    borderColor:whiteLabel().itemSelectedBackground
+},
+
 });
