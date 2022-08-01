@@ -1,29 +1,30 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 
 import HMSLocation from '@hmscore/react-native-hms-location';
-const locationRequest = {
-  priority:
-    HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
-  interval: 10000,
-  numUpdates: 2147483647,
-  fastestInterval: 10000,
-  expirationTime: 3372036854775807.0,
-  smallestDisplacement: 0.0,
-  maxWaitTime: 0,
-  needAddress: false,
-  language: '',
-  countryCode: '',
-};
 
-const locationSettingsRequest = {
-  locationRequests: [locationRequest],
-  alwaysShow: false,
-  needBle: false,
-};
 async function getLocationAvailability() {
   await HMSLocation.FusedLocation.Native.getLocationAvailability();
 }
 async function checkLocationSettings() {
+  const locationRequest = {
+    priority:
+      HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
+    interval: 10000,
+    numUpdates: 2147483647,
+    fastestInterval: 10000,
+    expirationTime: 3372036854775807.0,
+    smallestDisplacement: 0.0,
+    maxWaitTime: 0,
+    needAddress: false,
+    language: '',
+    countryCode: '',
+  };
+
+  const locationSettingsRequest = {
+    locationRequests: [locationRequest],
+    alwaysShow: false,
+    needBle: false,
+  };
   await HMSLocation.FusedLocation.Native.checkLocationSettings(
     locationSettingsRequest,
   );
@@ -75,6 +76,19 @@ function watchPosition(
   options = {},
   requestCodeCallback,
 ) {
+  const locationRequest = {
+    priority:
+      HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
+    interval: 10000,
+    numUpdates: 2147483647,
+    fastestInterval: 10000,
+    expirationTime: 3372036854775807.0,
+    smallestDisplacement: 0.0,
+    maxWaitTime: 0,
+    needAddress: false,
+    language: '',
+    countryCode: '',
+  };
   HMSLocation.FusedLocation.Native.requestLocationUpdatesWithCallbackEx(
     locationRequest,
   )
