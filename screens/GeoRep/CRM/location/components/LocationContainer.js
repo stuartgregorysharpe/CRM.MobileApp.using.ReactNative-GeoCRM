@@ -181,7 +181,7 @@ const LocationContainer = props => {
     const specificLocationId = await getLocalData('@specific_location_id');
     navigation.navigate('LocationSpecificInfo', {
       locationId: specificLocationId,
-      page: 'checkin',
+      page: 'map',
     });
   };
   const onFinishDrawing = selectedMarkers => {

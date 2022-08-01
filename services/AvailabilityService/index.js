@@ -6,7 +6,7 @@ export async function isHMSService() {
   if (Platform.OS == 'ios') return false;
   const isGmsAvailable = await gmsCheckAvailability();
   const isHmsAvailable = await hmsCheckAvailability();
-  //return isHmsAvailable;
+  return isHmsAvailable;
   return isGmsAvailable == false && isHmsAvailable == true;
 }
 export default {
