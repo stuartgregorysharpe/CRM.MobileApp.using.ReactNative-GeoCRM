@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity , StyleSheet } from 'react-native'
+import { View, TouchableOpacity} from 'react-native'
 import React , {useState , useEffect} from 'react'
-import { Colors, Constants, Fonts } from '../../../constants';
+import { Colors, Fonts } from '../../../constants';
 import { whiteLabel } from '../../../constants/Colors';
 import { AppText } from '../../../components/common/AppText';
 import SvgIcon from '../../SvgIcon';
@@ -71,19 +71,3 @@ export default function TieredMultipleChoiceInput(props) {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop:5,              
-    lineHeight: 30,
-    backgroundColor: Colors.bgColor,
-    borderColor: whiteLabel().fieldBorder,
-    fontFamily: Fonts.primaryRegular,
-    borderWidth: 1,
-    borderRadius: 4,
-    paddingLeft: 10,
-    paddingTop: 7,
-    paddingBottom:7,
-    flexDirection: 'column',
-    flex:1,    
-  },
-})

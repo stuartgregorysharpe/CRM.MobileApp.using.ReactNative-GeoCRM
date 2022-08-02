@@ -44,7 +44,7 @@ export default function TieredMultipleChoiceView(props) {
     if(objects != undefined){
         var tmp = [];
         var objKey = '';
-        
+
         if(selectedDropdownLists[recursiveIndex] && selectedDropdownLists[recursiveIndex] != undefined){
           objKey = selectedDropdownLists[recursiveIndex].label;
         }        
@@ -72,17 +72,14 @@ export default function TieredMultipleChoiceView(props) {
     }    
   }
 
-  const getLists = (index) => {    
+  const getLists = (index) => {
     var lists = filterData(item.options, 0, index);    
     return lists;
   }
 
   const onSubmit =() => {
 
-    console.log("level", level);
-    var lists = getLists(level + 1);
-    console.log("lists", lists);
-
+    var lists = getLists(level + 1);    
     if(lists.length === 0 || dropdownLabels.length == selectedDropdownLists.length ) {
       var value = '';
       selectedDropdownLists.forEach((element , index) => {
