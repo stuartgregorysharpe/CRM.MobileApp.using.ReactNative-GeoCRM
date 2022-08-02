@@ -13,7 +13,7 @@ export default function CheckInStatusView({onGo, page}) {
         <View
           style={[
             styles.checkinBubble,
-            {marginBottom: page === 'map' ? 50 : 150},
+            {marginBottom: page === 'map' ? 60 : 150},
           ]}>
           <AppText
             size="medium"
