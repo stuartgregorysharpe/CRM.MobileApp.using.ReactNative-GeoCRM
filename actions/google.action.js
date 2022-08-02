@@ -2,7 +2,7 @@ import {CHANGE_CURRENT_LOCATION} from './actionTypes';
 import LocationService from '../services/LocationService';
 
 export async function reverseGeocoding(currentLocation, customMasterFields) {
-  const locationService = await LocationService.getLocationService();
+  const locationService = LocationService.GmsLocationService;
   return await locationService.reverseGeocoding(
     currentLocation,
     customMasterFields,
@@ -10,7 +10,7 @@ export async function reverseGeocoding(currentLocation, customMasterFields) {
 }
 
 export async function parseCoordinate(address) {
-  const locationService = await LocationService.getLocationService();
+  const locationService = LocationService.GmsLocationService;
   return await locationService.parseCoordinate(address);
 }
 

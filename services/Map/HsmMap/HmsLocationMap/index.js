@@ -214,6 +214,8 @@ const HmsLocationMap = props => {
           scrollGesturesEnabled={!isDrawMode}
           rotateGesturesEnabled={!isDrawMode}
           tiltGesturesEnabled={false}
+          myLocationButton={true}
+          myLocationButtonEnabled={true}
           onCameraIdle={onRegionChangeComplete}
           onMapClick={onPressMap}
           camera={{
