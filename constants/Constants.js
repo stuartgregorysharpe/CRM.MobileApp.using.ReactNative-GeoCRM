@@ -29,7 +29,8 @@ export default {
     FORM_TYPE_PRODUCTS: 'products',
     FORM_TYPE_PRODUCT_ISSUES: 'product_issues',
     FORM_TYPE_PRODUCT_RETURN: 'returns',
-    FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo'
+    FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo',
+    FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice'
   },
 
   actionType: {

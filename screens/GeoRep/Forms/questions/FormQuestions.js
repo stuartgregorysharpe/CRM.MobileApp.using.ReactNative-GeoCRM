@@ -113,9 +113,10 @@ export const FormQuestions = props => {
   const _callFormQuestions = () => {
     let param = {
       form_id: form.form_id,
-    };    
+    };
     getApiRequest('forms/forms-questions', param)
-      .then(res => {             
+      .then(res => {
+        console.log("question lists" , JSON.stringify(res.questions))
         groupByQuestions(res.questions);         
       })
       .catch(e => {      
