@@ -127,7 +127,7 @@ export const Notification = ({}) => {
 
 const styles = StyleSheet.create({
   notify: {
-    zIndex: 101,
+    zIndex: 999999,
     padding: 20,
     paddingTop: 50,
     marginTop: Platform.OS === 'iOS' ? 20 : 0,    
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       marginTop: 0,      
-      zIndex:99999999999999,
+      zIndex:9999999999,
   },
 
   modalView: {        

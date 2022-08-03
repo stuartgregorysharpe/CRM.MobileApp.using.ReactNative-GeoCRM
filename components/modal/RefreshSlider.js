@@ -15,9 +15,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
-import Colors, {
-  PRIMARY_COLOR,
-  TEXT_COLOR,
+import Colors, {  
   BG_COLOR,
 } from '../../constants/Colors';
 import {breakPoint} from '../../constants/Breakpoint';

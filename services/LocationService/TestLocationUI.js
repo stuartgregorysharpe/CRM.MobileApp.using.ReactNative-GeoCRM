@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from 'react-native';
 import {Colors} from 'react-native-paper';
 import LocationService from '.';
 import {Fonts} from '../../constants';
@@ -10,6 +16,7 @@ const TestLocationUI = props => {
   const [isHmsAvailable, setIsHmsAvailable] = useState(false);
   const [status, setStatus] = useState('');
   const [parsedLocation, setParsedLocation] = useState('');
+  const [reversedAddress, setReversedAddress] = useState('');
   const currentPositionString = `${currentPosition.latitude},${currentPosition.longitude}`;
 
   const getServiceTypeString = serviceType => {
@@ -41,6 +48,12 @@ const TestLocationUI = props => {
         .then(response => {
           setParsedLocation(JSON.stringify(response));
         });
+      locationService
+        .getGeocoding(-33.8832223218751, 18.498525368063824)
+        .then(address => {
+          console.log(JSON.stringify(address));
+          setReversedAddress(JSON.stringify(address));
+        });
     });
   };
 
@@ -55,7 +68,7 @@ const TestLocationUI = props => {
     });
   };
   return (
-    <View style={[styles.container, props.style]}>
+    <ScrollView style={[styles.container, props.style]}>
       <Text style={styles.title}>Service Type:</Text>
       <Text style={styles.description}>{serviceTypeString}</Text>
       <Text style={styles.title}>HMS Service Using:</Text>
@@ -70,6 +83,9 @@ const TestLocationUI = props => {
       </Text>
       <Text style={styles.description}>{parsedLocation}</Text>
 
+      <Text style={styles.title}>-33.890218, 18.510020</Text>
+      <Text style={styles.description}>{reversedAddress}</Text>
+
       <TouchableOpacity
         onPress={() => {
           const nextServiceType = (serviceType % 3) + 1;
@@ -78,7 +94,7 @@ const TestLocationUI = props => {
         }}>
         <Text style={styles.title}>Switch Service</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

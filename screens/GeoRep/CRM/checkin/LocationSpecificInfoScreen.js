@@ -17,7 +17,7 @@ import {
   parse,
 } from 'react-native-extended-stylesheet-breakpoints';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import Colors, {TEXT_COLOR, whiteLabel} from '../../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import {breakPoint} from '../../../../constants/Breakpoint';
@@ -27,28 +27,25 @@ import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
-import CustomerContactsScreen from '../customer_contacts/CustomerContactsScreen';
 import {storeLocalValue} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import Checkout from './partial/Checkout';
 import {getLocationInfo} from '../../../../actions/location.action';
 import {Notification} from '../../../../components/modal/Notification';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryModal';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/DevicesModal';
-import {Constants} from '../../../../constants';
+import {Constants, Strings} from '../../../../constants';
 import {CHECKIN} from '../../../../actions/actionTypes';
+import CustomerContactModal from '../customer_contacts';
 
 export default function LocationSpecificInfoScreen(props) {
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -66,24 +63,21 @@ export default function LocationSpecificInfoScreen(props) {
   const [isActionItems, setIsActionItems] = useState(false);
   const [isCustomerSales, setIsCustomerSales] = useState(false);
   const navigationMain = useNavigation();
-
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
   const isCheckin = useSelector(state => state.location.checkIn);
   const locationId = locationInfo ? locationInfo.location_id : location_id;
+  const customerContactModalRef = useRef(null);
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
+  const isDisposition = features.includes('disposition_fields')
+
+
   useEffect(() => {
     refreshHeader();
     initData();
     if (location_id !== undefined) {
       openLocationInfo(location_id);
-    }
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
+    }    
   }, [location_id]);
 
   useEffect(() => {
@@ -122,9 +116,6 @@ export default function LocationSpecificInfoScreen(props) {
     }
   };
 
-  const handleBackButtonClick = async () => {
-    return true;
-  };
 
   const openLocationInfo = async location_id => {
     setIsLoading(true);
@@ -149,8 +140,8 @@ export default function LocationSpecificInfoScreen(props) {
     if (item.title === 'Forms') {
       navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
-    if (item.title === 'Customer & Contacts') {
-      setCanShowCustomerContactsScreen(true);
+    if (item.link === 'customer_contacts') {      
+      customerContactModalRef.current.showModal();      
     }
     if (item.link === 'activity_comments') {
       setIsActivityComment(true);
@@ -168,7 +159,7 @@ export default function LocationSpecificInfoScreen(props) {
       devicesModalRef.current.showModal();
     }
     if (item.link === 'customer_sales') {
-      setIsCustomerSales(true);
+      setIsCustomerSales(true);            
     }
     if (item.link === 'touchpoints') {
       navigationMain.navigate('TouchpointScreen', {
@@ -232,15 +223,8 @@ export default function LocationSpecificInfoScreen(props) {
     }
   };
 
-  if (canShowCustomerContactsScreen) {
-    return (
-      <CustomerContactsScreen
-        props={props}
-        onClose={onCloseCustomerContactsScreen}
-        locationId={locationInfo.location_id}
-        ref={customerContactsRef}
-      />
-    );
+  const onCustomerContactModalClosed = ({ type, value}) => {
+
   }
 
   return (
@@ -279,6 +263,15 @@ export default function LocationSpecificInfoScreen(props) {
           }></CustomerSalesHistoryModal>
       )}
 
+      {
+        locationInfo != undefined && 
+        <CustomerContactModal
+          ref={customerContactModalRef}
+          locationId={locationInfo.location_id}
+          onButtonAction={onCustomerContactModalClosed}
+        />
+      }
+      
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
@@ -376,7 +369,7 @@ export default function LocationSpecificInfoScreen(props) {
                     showNotification({
                       type: 'success',
                       message: res.message,
-                      buttonText: 'Okay',
+                      buttonText: Strings.Ok,
                       buttonAction: async () => {
                         dispatch({type: CHECKIN, payload: false});
                         dispatch(clearNotification());
@@ -421,11 +414,14 @@ export default function LocationSpecificInfoScreen(props) {
         <View style={{height: 60}}></View>
       </ScrollView>
 
-      <TouchableOpacity
-        style={[style.plusButton, {marginBottom: 80}]}
-        onPress={() => setStatusSubmit(!statusSubmit)}>
-        <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
-      </TouchableOpacity>
+      {
+        isDisposition &&
+        <TouchableOpacity
+          style={[style.plusButton, {marginBottom: 70}]}
+          onPress={() => setStatusSubmit(!statusSubmit)}>
+          <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
+        </TouchableOpacity>
+      }      
     </SafeAreaView>
   );
 }

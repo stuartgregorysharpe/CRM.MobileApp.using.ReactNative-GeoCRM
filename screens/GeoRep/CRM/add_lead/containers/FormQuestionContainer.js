@@ -1,10 +1,10 @@
 
 import { View } from 'react-native'
 import React , {useEffect, useState} from 'react'
-import FormQuestionView from '../components/FormQuestionView';
+import { FormQuestionView } from '../components/FormQuestionView';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 import { getFormQuestionData, getFormQuestionFile, validateFormQuestionData } from '../../../Forms/questions/helper';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../../actions/notification.action';
@@ -75,8 +75,8 @@ export default function FormQuestionContainer(props) {
         dispatch(
           showNotification({
             type: 'success',
-            message: 'Please complete the compulsory questions and then submit',
-            buttonText: 'Okay',
+            message: Strings.Complete_Compulsory_Questions,
+            buttonText: Strings.Ok,
           }),
         );
         return;

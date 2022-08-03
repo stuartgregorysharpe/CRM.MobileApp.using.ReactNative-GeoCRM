@@ -22,6 +22,9 @@ const CSingleSelectInput = props => {
   const onOpenPicker = () => {
     selectModalRef.current.showModal();
   };
+  const onEmpty = () =>{
+    props.onPress();
+  }
   const onButtonAction = ({type, item}) => {
     if (type == Constants.actionType.ACTION_CHECK) {
       if (props.onSelectItem) {
@@ -46,7 +49,7 @@ const CSingleSelectInput = props => {
         placeholder={placeholder}
         hasError={hasError}
         text={text}
-        onPress={onOpenPicker}
+        onPress={props.isClickable ? onEmpty : onOpenPicker}
       />
       <SingleSelectModal
         items={items}

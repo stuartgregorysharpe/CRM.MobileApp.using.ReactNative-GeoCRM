@@ -15,13 +15,14 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     alignSelf: 'center',
-    bottom: 0,
+    bottom: 50,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 7,
     paddingBottom: 7,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
+    zIndex: 999,
     backgroundColor: 'rgba(255,255,255,0.9)',
   },
 });

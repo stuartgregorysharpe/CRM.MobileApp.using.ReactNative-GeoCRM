@@ -9,6 +9,10 @@ import store from './store';
 import AppScreens from './navigation/AppScreens';
 import { enableScreens } from 'react-native-screens';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import SQLite from 'react-native-sqlite-storage';
+import { useEffect } from 'react';
+import { getDBConnection } from './sqlite/DBHelper';
+import { createTable } from './sqlite/FormDBHelper';
 
 enableScreens(true);
 
@@ -17,9 +21,18 @@ EStyleSheet.build({
 });
 
 export default function App() {
-  return (
-    
 
+  useEffect(() => {
+    initializeDB();    
+  }, [])
+
+  const initializeDB = async() => {    
+    const db = await getDBConnection();
+    if(db != null)
+      await createTable(db);  
+  }
+
+  return (    
       <Provider store={store}>
         <SafeAreaProvider>
           <NavigationContainer onReady={() => RNBootSplash.hide()}>

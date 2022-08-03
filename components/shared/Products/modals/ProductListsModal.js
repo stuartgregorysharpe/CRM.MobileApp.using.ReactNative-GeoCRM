@@ -22,7 +22,6 @@ const ProductListsModal = React.forwardRef((props, ref) => {
       }      
     }
   };
-
   
   return (          
     <CModal

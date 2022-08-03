@@ -137,3 +137,13 @@ export function validateEmail(text) {
     return false;
   }
 }
+
+export const validateMsisdn = barcode => {
+  console.log(barcode);
+  if (!/(^\d{11}$)/.test(barcode)) {
+    console.log('validate barcode false');
+    return false;
+  }
+  console.log('validate barcode true');
+  return true;
+};

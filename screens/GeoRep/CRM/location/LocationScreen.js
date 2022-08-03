@@ -42,8 +42,6 @@ const LocationScreen = props => {
           style={style.headerLeftStyle}
           activeOpacity={1}
           onPress={() => {
-            dispatch({type: SLIDE_STATUS, payload: false});
-            setIsBack(false);
             if (navigation.canGoBack()) {
               navigation.goBack();
             }

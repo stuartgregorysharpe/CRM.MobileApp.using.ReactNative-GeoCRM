@@ -9,16 +9,22 @@ import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
 import { Constants } from '../../../../../constants';
 import uuid from 'react-native-uuid';
+import { validateMsisdn } from '../../../../../helpers/formatHelpers';
+var previousText = Constants.msisdnPrefix;
 
 export default function StockSignatureView(props) {
 
     const signatureScreenRef =  useRef(null)
-    const { receivedBy , serial,  onChangedReceivedBy, onChangedSerial , signature,  onSubmit , onClose } = props;
+    const msisdnRef = useRef(null);
+    const { receivedBy , onChangedReceivedBy, onChangedSerial , signature,  onSubmit , onClose } = props;
     const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
     const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
     const isMSISDN = features.includes("msisdn");    
     const [enabled, setEnabled] = useState(false);
     const [path, setPath] = useState(null);
+    const [hasMsisdnError , setHasMsisdnError] = useState(false)
+    const [serial, setSerial] = useState(Constants.msisdnPrefix)
+    
 
     const handleOK = async(signature) => {
         console.log("handle ok")
@@ -52,9 +58,21 @@ export default function StockSignatureView(props) {
         var tmp = signatureScreenRef.current.readSignature();    
     }
     const handleEnd = () => {
+        checkValidation();
+        handleConfirm();
+    }
+
+    const checkValidation = () => {
         var flag = false;
         if ( props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) ){
-            if(receivedBy != '' && serial != ''){
+            console.log("validate")
+            if(validateMsisdn(serial)){
+                flag = true;
+                setHasMsisdnError(false)
+            }else{
+                setHasMsisdnError(true)
+            }
+            if(receivedBy != '' ){
                 flag = true;
             }            
         }else{
@@ -63,19 +81,24 @@ export default function StockSignatureView(props) {
             }
         }
         setEnabled(flag);
-        handleConfirm();
     }
 
-    const onFileSubmit = () =>{
-        if(path != null){
-            RNFS.exists(path)
-            .then(res => {
-                if (res) {
-                    onSubmit(path);
-                }                
-            });
-        }
-        
+    const onFileSubmit = () =>{        
+        if(!validateMsisdn(serial)){
+            setHasMsisdnError(true);
+            msisdnRef.current.focus();
+            return;
+        }                
+        if(enabled){
+            if(path != null){
+                RNFS.exists(path)
+                .then(res => {
+                    if (res) {
+                        onSubmit(path);
+                    }                
+                });
+            }
+        }                
     }
 
     return (
@@ -87,22 +110,47 @@ export default function StockSignatureView(props) {
                 isRequired={true}
                 onChangeText={text => {                
                     onChangedReceivedBy(text);
+                    checkValidation();
                 }}
                 style={{marginTop:15}}
             /> 
 
             {
                 props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) && 
-                <CTextInput 
+                <CTextInput                
+                    cTextRef={msisdnRef}
                     label={"Assign MSISDN"}
                     value={serial}
                     returnKeyType={'done'}                                        
                     keyboardType={'number-pad'}
-                    isRequired={true}
-                    onChangeText={text => {                
-                        onChangedSerial(text);
+                    isRequired={true}                    
+                    hasError={hasMsisdnError}
+                    errorText={Constants.msisdnErrorMessage}
+                    onChangeText={text => {                        
+                        if(text.length <= 2){
+                            setSerial(Constants.msisdnPrefix);
+                            onChangedSerial(Constants.msisdnPrefix);
+                        } else {                
+                            if( text.startsWith(Constants.msisdnPrefix) ){
+                                setSerial(text);
+                                onChangedSerial(text);
+                                previousText = text;
+                            }else{
+                                setSerial(previousText);
+                                onChangedSerial(previousText);
+                            }                                                        
+                        }
+                        if(validateMsisdn(text)){
+                            setHasMsisdnError(false);
+                        }                        
                     }}
                     style={{marginTop:5}}
+                    maxLength={11}
+                    onBlur={() => {                  
+                        if(!validateMsisdn(serial)){
+                            setHasMsisdnError(true);
+                        }                                                                  
+                    }}
                 />
             }
 
@@ -122,7 +170,7 @@ export default function StockSignatureView(props) {
                 //descriptionText={text}
             />
 
-            <SubmitButton enabled={enabled} title="Submit" style={{marginTop:10}} onSubmit={onFileSubmit}> </SubmitButton>
+            <SubmitButton title="Submit" style={{marginTop:10}} onSubmit={onFileSubmit}> </SubmitButton>
 
         </View>
     )
@@ -132,5 +180,6 @@ const styles = StyleSheet.create({
     container:{
         marginHorizontal:10,        
         height:Platform.OS === 'android' ? 360 : 380,
+        marginBottom: Platform.OS === "android" ? 0 : 20
     }
 })

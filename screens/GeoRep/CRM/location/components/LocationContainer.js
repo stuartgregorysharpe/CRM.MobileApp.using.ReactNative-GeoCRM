@@ -46,20 +46,23 @@ const LocationContainer = props => {
     state => state.selection.selectedLocationsForCalendar,
   );
   const [markers, setMarkers] = useState([]);
-  const polygonData = useMemo(() => getPolygonData(polygons), [polygons]);
-  const mapFilters = useSelector(state => state.selection.mapFilters);
+
   const [boundBox, setBoundBox] = useState(undefined);
   const [isDrawMode, setIsDrawMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isZoomOut, setIsZoomOut] = useState(false);
   const [locationInfo, setLocationInfo] = useState();
+  const polygonData = useMemo(() => getPolygonData(polygons), [polygons]);
+  const mapFilters = useSelector(state => state.selection.mapFilters);
   const markerModalRef = useRef(null);
   const locationFilterModalRef = useRef(null);
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
-  const isShowZoomLabel = isLoading || isZoomOut;
-
+  const isShowZoomLabel = isZoomOut;
+  console.log('isLoading', isLoading);
+  console.log('isZoomOut', isZoomOut);
+  console.log('isShowZoomLabel', isShowZoomLabel);
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
   );
@@ -105,7 +108,10 @@ const LocationContainer = props => {
     onLoadMarkers(currentLocation, boundBox);
   }, [mapFilters, currentLocation]);
   const onRegionChanged = async (region, markers, bBox, zoom) => {
+    console.log('onRegionChanged - zoom', zoom);
     const minZoomLevel = await getMapMinZoomLevel();
+    console.log('onRegionChanged - minZoomLevel', minZoomLevel);
+    console.log('onRegionChanged - isZoomOut', isZoomOut);
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
         setIsZoomOut(false);
@@ -179,9 +185,9 @@ const LocationContainer = props => {
   };
   const onCheckIn = async () => {
     const specificLocationId = await getLocalData('@specific_location_id');
-    props.navigation.navigate('LocationSpecificInfo', {
+    navigation.navigate('LocationSpecificInfo', {
       locationId: specificLocationId,
-      page: 'checkin',
+      page: 'map',
     });
   };
   const onFinishDrawing = selectedMarkers => {
@@ -319,13 +325,13 @@ const styles = StyleSheet.create({
   pinKeyButton: {
     position: 'absolute',
     right: 9,
-    bottom: 60,
+    bottom: 80,
     padding: 5,
   },
   plusButton: {
     position: 'absolute',
     right: 20,
-    bottom: 110,
+    bottom: 120,
   },
 });
 

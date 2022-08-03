@@ -39,6 +39,8 @@ const ActionItemsContainer = props => {
           containerStyle={[style.card]}
         />
       </View>
+
+      
       <Actions
         ref={actionListRef}
         locationId={locationId}
@@ -69,6 +71,7 @@ const ActionItemsContainer = props => {
             }
         }}
       />
+
       <UpdateActionItemModal
         ref={updateActionItemModalRef}
         locationId={locationId}

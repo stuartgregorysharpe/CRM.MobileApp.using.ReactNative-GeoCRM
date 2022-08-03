@@ -16,7 +16,11 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
     const [isPicker , setIsPicker] = useState(false);
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+
+
+    
         
+
     const showSelectionDialog = () => {        
         setIsPicker(true);      
     }
@@ -84,13 +88,17 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       });      
     }
 
-    const isIncludeImage = () => {
+    const isIncludeImage = (btnName) => {
       
-      if( item.include_image && item.include_image.length > 0){
-        return true;
+      if( item.include_image && item.include_image.length > 0 ){
+        var check = item.include_image.find(item => item === btnName);
+        if(check != null &&  check != undefined){
+            return true;
+        }        
       }
       return false;
     }
+    
 
     const getImagePath = () =>{
       console.log("image path", item.value);
@@ -114,10 +122,21 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       return false;
     }
     
-    const isRequiredImage = isIncludeImage();
+    const isRequiredImage = isIncludeImage("Yes") || isIncludeImage("No");
     const isQuesionAnswered = isRequiredImage ? item && haveImage() : item && item.value
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
     
+    const getMarginLeft = () => {
+      if(item.value && item.value === 'no' && !isIncludeImage("No")){
+        return 20;
+      }else if(item.value && item.value === "yes" && !isIncludeImage("Yes")){
+        return 20;
+      }else if(item.value === null || item.value === undefined){
+        return 20;
+      }
+      return 0;
+    }
+
     return (
         <View style={[style.card, isCompulsory ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={[styles.container]}>
@@ -150,33 +169,36 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
 
                 <View style={{flexDirection:'row' , justifyContent:'center'}}>
 
-                    <View style={{flexDirection: isIncludeImage() && item.value !== null ? 'column':'row' , justifyContent:'center'}}>
-                        <Button btnStyle={{marginTop:10}} title={'Yes'} onTaped= {item.value !== null && item.value === "yes" ? true:false} 
-                        onClick={() => {
-                            setIsYes(true);
-                            setIsNo(false);
-                            if(item.include_image.length == 0){
-                              onPress("yes" , "no_image");
-                            }else{
-                              onPress("yes" , "include_image");
-                            }                            
-                        }} ></Button>
-
-                        <Button btnStyle={{marginTop:10,marginLeft: isIncludeImage() && item.value !== null ? 0 : 20}} title={'No'} onTaped={item.value !== null && item.value === "no" ? true:false} 
-                        onClick={() =>{
-                            setIsYes(false);
-                            setIsNo(true);
-                            if(item.include_image.length == 0){
-                              onPress("no" , "no_image");
-                            }else{
-                              onPress("no" , "include_image");
-                            }                            
-                        }}
-                        ></Button>
+                    <View style={{flexDirection: isIncludeImage(isYes ? "Yes" : 'No') && item.value !== null ? 'column':'row' , justifyContent:'center'}}>
+                        
+                          <Button btnStyle={{marginTop:10 }} title={'Yes'} onTaped= {item.value !== null && item.value === "yes" ? true:false} 
+                            onClick={() => {
+                                setIsYes(true);
+                                setIsNo(false);
+                                if(item.include_image.length == 0){
+                                  onPress("yes" , "no_image");
+                                }else{
+                                  onPress("yes" , "include_image");
+                                }                            
+                            }} ></Button>
+                                                                      
+                          <Button btnStyle={{marginTop:10 , 
+                          marginLeft: getMarginLeft() }} title={'No'} onTaped={item.value !== null && item.value === "no" ? true:false}
+                          onClick={() =>{
+                              setIsYes(false);
+                              setIsNo(true);
+                              if(item.include_image.length == 0){
+                                onPress("no" , "no_image");
+                              }else{
+                                onPress("no" , "include_image");
+                              }                            
+                          }}
+                          ></Button>
+                          
                     </View>
 
                     {
-                        isIncludeImage() && haveImage() && getImagePath() != undefined && getImagePath().map((subItem , index) =>{
+                        isIncludeImage( isYes ? 'Yes' : 'No' ) && haveImage() && getImagePath() != undefined && getImagePath().map((subItem , index) =>{
                             if(subItem.includes("png") || subItem.includes("jpg")){
                                 return (
                                   <TouchableOpacity key={index} onPress={()=> showSelectionDialog()}>
@@ -190,7 +212,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                     }
 
                     {
-                        isIncludeImage() && item.value !== null && getImagePath() === undefined &&
+                        isIncludeImage( isYes ? 'Yes' : 'No') && item.value !== null && getImagePath() === undefined &&
                         <TouchableOpacity style={[styles.imageContainer, {marginLeft:30 }]} onPress={() => { showSelectionDialog() } }>
                             <SvgIcon icon="Add_Image" />   
                         </TouchableOpacity>

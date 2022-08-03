@@ -32,13 +32,17 @@ const AddActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
-      });
+      });      
   };
+  
   useEffect(() => {
     load();
   }, []);
+
   const onSubmit = () => {
+
     if (!actionFormRef.current.validateForm()) return;
+
     setIsLoading(true);
     const submitValueData = getAddActionItemPostValue(
       formData,

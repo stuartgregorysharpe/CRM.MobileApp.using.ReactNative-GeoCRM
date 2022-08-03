@@ -15,4 +15,6 @@ export async function getLocationService(serviceType) {
 
 export default {
   getLocationService,
+  GmsLocationService,
+  HmsLocationService,
 };

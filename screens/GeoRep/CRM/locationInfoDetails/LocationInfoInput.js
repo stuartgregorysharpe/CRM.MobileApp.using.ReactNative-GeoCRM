@@ -78,7 +78,15 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState('');
   const [options, setOptions] = useState([]);
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
 
+  const isDisposition = features.includes('disposition_fields')
+
+
+  console.log("featuresss" , features);
+  
   useImperativeHandle(
     ref,
     () => ({
@@ -404,6 +412,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
     );
   };
 
+  
   return (
     <View style={styles.container}>
       <AlertDialog
@@ -413,7 +422,8 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           setIsSuccess(false);
         }}></AlertDialog>
 
-      {locationInfo !== undefined && locationInfo.address !== '' && (
+
+      {locationInfo !== undefined && locationInfo.address !== '' && isDisposition && (
         <View style={styles.refreshBox}>
           <TouchableOpacity
             style={styles.shadowBox}
@@ -449,7 +459,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         </View>
       )}
 
-      {locationInfo !== undefined && locationInfo.address !== '' && (
+      {locationInfo !== undefined && locationInfo.address !== '' && isDisposition && (
         <View style={styles.refreshBox}>
           <TouchableOpacity
             style={styles.shadowBox}

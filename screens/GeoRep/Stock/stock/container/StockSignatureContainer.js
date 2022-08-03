@@ -104,18 +104,15 @@ export default function StockSignatureContainer(props) {
 
     }
     
-
     return (
         <View style={{alignSelf:'stretch'}}>
             <StockSignatureView                        
                 onSubmit = {onSubmit}                
                 onChangedReceivedBy={onChangedReceivedBy}
-                onChangedSerial={onChangedSerial}
+                onChangedSerial={onChangedSerial}            
                 onClose={onClose}
                 {...props}
-            />
-
-            
+            />            
         </View>
     )
 }

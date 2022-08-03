@@ -95,6 +95,7 @@ const HmsLocationMap = props => {
     onResetDrawing();
   };
   const onRegionChangeComplete = e => {
+    console.log('onRegionChangeComplete');
     mapRef.current.getHuaweiMapInfo().then(info => {
       if (props.onRegionChangeComplete) {
         const cameraPosition = info.cameraPosition;
@@ -102,6 +103,7 @@ const HmsLocationMap = props => {
         const zoom = cameraPosition.zoom;
         const region = cameraPosition.target;
         const bBox = calculateBBoxFromHMS(visibleRegion);
+        console.log('onRegionChangeComplete - zoom', zoom);
         props.onRegionChangeComplete(region, markers, bBox, zoom);
       }
     });
@@ -212,6 +214,8 @@ const HmsLocationMap = props => {
           scrollGesturesEnabled={!isDrawMode}
           rotateGesturesEnabled={!isDrawMode}
           tiltGesturesEnabled={false}
+          myLocationButton={true}
+          myLocationButtonEnabled={true}
           onCameraIdle={onRegionChangeComplete}
           onMapClick={onPressMap}
           camera={{

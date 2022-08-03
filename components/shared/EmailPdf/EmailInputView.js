@@ -1,14 +1,29 @@
 
 import { View, Text , TextInput, StyleSheet ,ScrollView, Platform, Dimensions} from 'react-native'
-import React , { useState } from 'react'
-import { Colors, Fonts } from '../../../constants';
+import React , { useState ,useEffect } from 'react'
+import { Colors, Constants, Fonts } from '../../../constants';
 import { whiteLabel } from '../../../constants/Colors';
 import { validateEmail } from '../../../helpers/formatHelpers';
 
-export default function EmailInputView() {
+export default function EmailInputView(props) {
 
+    const { item } = props;    
+    
     const [lists, setLists] = useState([]);
     const [email, setEmail] = useState(email)
+
+
+    useEffect(() => {
+        //let isMount = true;
+        console.log("email item", item);
+        if(item.value && item.value != null){
+            console.log('triggere' , item.value);
+            setLists(item.value);
+        }else{
+            console.log('triggere');
+            setLists([]);
+        } 
+    }, [item.value])
 
     return (
         <View style={styles.container}>
@@ -25,21 +40,30 @@ export default function EmailInputView() {
                         style={[styles.textInput]}
                         placeholder={ lists.length > 0 ? 'Add additional' : 'Add email address'}
                         returnKeyType={'done'}
+                        keyboardType="email-address"
                         onChangeText={(text) =>{
                             setEmail(text);
                         }}
-                        onSubmitEditing={(event) => {                            
-                            setLists([...lists, email]);
-                            setEmail('');
+                        onSubmitEditing={(event) => {
+                            if(email != '' && email != undefined){
+                                setLists([...lists, email]);
+                                setEmail('');
+                                if(props.onItemAction){                            
+                                    props.onItemAction({type:  Constants.actionType.ACTION_FORM_SUBMIT, value: [...lists, email] , item:'' });
+                                }
+                            }                            
                         }}
                         onKeyPress={({ nativeEvent }) => {
-                            console.log("on key press");
-                            console.log(nativeEvent)
+                            console.log("on key press" , email);
+                            
                             if(nativeEvent.key === 'Backspace'){                          
-                                if(email == ''){                            
+                                if(email === '' || email === undefined){  
                                     const copyArr = [...lists];
                                     copyArr.splice(-1);
                                     setLists(copyArr);
+                                    if(props.onItemAction){
+                                        props.onItemAction({type:  Constants.actionType.ACTION_FORM_SUBMIT, value: copyArr , item:''});
+                                    }
                                 }
                             }
                         }}                    

@@ -97,7 +97,7 @@ const SelectionPicker = ({ title, clearTitle, buttonTitle, visible, mode, option
                                         
                                         <Text style={styles.pickerItemText}>{item}</Text>
                                         <TouchableOpacity onPress={() => onTapItem(item , index) }>
-                                                <View style={[styles.checkBoxStyle , getCheckedStatus(item, value !== null && value !== undefined ? value : [] )? {} : {backgroundColor:'white'}]}>
+                                                <View style={[style.checkBoxStyle , getCheckedStatus(item, value !== null && value !== undefined ? value : [] )? {} : {backgroundColor:'white'}]}>
                                                 <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
                                             </View>
                                         </TouchableOpacity>                
@@ -135,16 +135,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'black'
     },
-    checkBoxStyle:{
-        width:25,
-        height:25,
-        borderRadius:15,
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:whiteLabel().itemSelectedBackground,
-        borderWidth:1,
-        borderColor:whiteLabel().itemSelectedBackground
-    },
+
     sliderHeader: {                
         flexDirection: 'row',
         justifyContent: 'space-between',

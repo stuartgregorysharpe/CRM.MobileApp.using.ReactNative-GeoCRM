@@ -2,23 +2,43 @@ import React, {useRef} from 'react';
 import { StyleSheet } from 'react-native';
 import BaseForm from '../BaseForm';
 import QuestionButton from '../QuestionButton';
-import SKUSelectFormModal from './modals/ProductSelectFormModal';
+import ProductSelectFormModal from './modals/ProductSelectFormModal';
 import { Constants } from '../../../constants';
+import ProductReturnFormModal from './modals/ProductReturnFormModal';
+
 const Products = props => {
 
   const {item, questionType, formIndex} = props;
-
   if (!item) return null;
-  const skuSelectFormModalRef = useRef();
+  const productSelectFormModalRef = useRef();
+  const productReturnFormModalRef = useRef();
+
   const onOpenSKUCountModal = () => {
-    skuSelectFormModalRef.current.showModal();
-  };  
+
+    if(questionType == Constants.questionType.FORM_TYPE_PRODUCTS || questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){
+      productSelectFormModalRef.current.showModal();
+    }else if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_RETURN){
+      productReturnFormModalRef.current.showModal();
+    }        
+  };
+
   const questionButtonType = item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
+
+  const renderTitle = () =>{
+    if(questionType == Constants.questionType.FORM_TYPE_PRODUCTS ){
+      return "Products";
+    }else if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES ){
+      return "Product Issues";
+    }else if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_RETURN){
+      return "Product Returns";      
+    }
+  }
+  
   const renderContent = () => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={questionType == Constants.questionType.FORM_TYPE_PRODUCTS ? 'Products' : 'Product Issues'}
+        title={renderTitle()}
         onPress={onOpenSKUCountModal}
       />
     );
@@ -29,14 +49,24 @@ const Products = props => {
       item={item}
       style={[styles.container, props.style]}
       onItemAction={props.onFormAction}>
+
       {renderContent()}
-      
-      <SKUSelectFormModal
+
+      <ProductSelectFormModal
         item={item}
         title={questionType == Constants.questionType.FORM_TYPE_PRODUCTS ? 'Products' : 'Product Issues'}
         formIndex={formIndex}
         questionType={questionType}
-        ref={skuSelectFormModalRef}
+        ref={productSelectFormModalRef}
+        onButtonAction={props.onFormAction}
+      />
+
+      <ProductReturnFormModal
+        item={item}
+        title={'Product Returns'}
+        formIndex={formIndex}
+        questionType={questionType}
+        ref={productReturnFormModalRef}
         onButtonAction={props.onFormAction}
       />
 
