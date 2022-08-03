@@ -2,7 +2,7 @@ import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../actions/notification.action';
-import {Colors, Constants, Fonts, Values} from '../../../constants';
+import {Colors, Constants, Fonts, Strings, Values} from '../../../constants';
 import {style} from '../../../constants/Styles';
 
 import CCheckBox from '../../common/CCheckBox';
@@ -62,7 +62,7 @@ const SKUCountForm = props => {
         showNotification({
           type: 'error',
           message: errorMessage,
-          buttonText: 'Okay',
+          buttonText: Strings.Ok,
         }),
       );
       return false;

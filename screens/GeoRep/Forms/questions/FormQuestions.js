@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Text,
   View,
@@ -11,7 +11,7 @@ import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
-import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import {expireToken} from '../../../../constants/Helper';
 import {
   getApiRequest,  
   postApiRequestMultipart,
@@ -23,12 +23,12 @@ import {
 import * as RNLocalize from 'react-native-localize';
 import { FormQuestionView } from '../../CRM/add_lead/components/FormQuestionView';
 import { getFormQuestionData, getFormQuestionFile, validateFormQuestionData } from './helper';
-import { createTable, deleteAllFormTable, deleteFormTable, getFormTableData, insertTable } from '../../../../sqlite/FormDBHelper';
+import { deleteFormTable, getFormTableData, insertTable } from '../../../../sqlite/FormDBHelper';
 import { getDBConnection } from '../../../../sqlite/DBHelper';
 import uuid from 'react-native-uuid';
 import { getLocalData } from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
-
+import { Strings } from '../../../../constants';
 var indempotencyKey;
 
 export const FormQuestions = props => {
@@ -83,8 +83,7 @@ export const FormQuestions = props => {
                   if (pageType === 'CRM') {
                     props.navigation.navigate('CRM', {screen: 'Root'});
                   } else {
-                    if (props.navigation.canGoBack()) {
-                      console.log("back btn")                      
+                    if (props.navigation.canGoBack()) {                      
                       props.navigation.goBack();
                     }
                   }
@@ -114,15 +113,12 @@ export const FormQuestions = props => {
   const _callFormQuestions = () => {
     let param = {
       form_id: form.form_id,
-    };
-    console.log("param", param)
+    };    
     getApiRequest('forms/forms-questions', param)
-      .then(res => {     
-        console.log("form question results" , res.questions);
+      .then(res => {             
         groupByQuestions(res.questions);         
       })
-      .catch(e => {
-        console.log("ERRR",e)
+      .catch(e => {      
         expireToken(dispatch, e);
       });
   };
@@ -155,7 +151,6 @@ export const FormQuestions = props => {
       : false;
   };
 
-
   const clearAll = () => {
     var tmp = [...formQuestions];
     tmp.forEach(element => {
@@ -181,8 +176,8 @@ export const FormQuestions = props => {
     setIsSign(false);
   };
 
+  
   const _onSubmit = async () => {
-
     if(indempotencyKey === null || indempotencyKey === undefined || indempotencyKey.trim() === ""){
       indempotencyKey = uuid.v4();
     }    
@@ -193,8 +188,8 @@ export const FormQuestions = props => {
       dispatch(
         showNotification({
           type: 'success',
-          message: 'Please complete the compulsory questions and then submit',
-          buttonText: 'Okay',
+          message: Strings.Complete_Compulsory_Questions,
+          buttonText: Strings.Ok,
         }),
       );
       return;
@@ -207,8 +202,9 @@ export const FormQuestions = props => {
     form_answers = getFormQuestionData(formQuestions);
 
     var files = [];
-    files = getFormQuestionFile(formQuestions);
 
+    files = getFormQuestionFile(formQuestions);
+    
     var postData = new FormData();
     postData.append('form_id', form.form_id);
     var locationId = await getLocalData("@specific_location_id");
@@ -239,6 +235,7 @@ export const FormQuestions = props => {
         postData.append(item.key, item.value);
       }
     });
+
     files.map(item => {
       if (item.key != undefined && item.value != undefined) {
         if (item.type === 'upload_file') {
@@ -257,10 +254,8 @@ export const FormQuestions = props => {
           });
         }
       }
-    });
-
+    });              
     
-        
     postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
       .then(res => {        
         loadingBarRef.current.hideModal();
@@ -268,7 +263,7 @@ export const FormQuestions = props => {
           showNotification({
             type: 'success',
             message: res.message,
-            buttonText: 'Okay',
+            buttonText: Strings.Ok,
             buttonAction: async() => {
               const db = await getDBConnection();
               if( db != null)
@@ -299,7 +294,7 @@ export const FormQuestions = props => {
     <View style={{flexDirection:'column', alignSelf:'stretch' , flex:1}}>      
             
       <FormQuestionView
-        ref={formQuestionViewRef} 
+        ref={formQuestionViewRef}
         isShowCustomNavigationHeader={isShowCustomNavigationHeader}
         form={form}      
         formQuestions={formQuestions}        
@@ -309,11 +304,11 @@ export const FormQuestions = props => {
         onSubmit={_onSubmit}
       />
 
-      <LoadingBar            
+      <LoadingBar
         ref={loadingBarRef}
       />
     </View>
-
+    
   );
 };
 

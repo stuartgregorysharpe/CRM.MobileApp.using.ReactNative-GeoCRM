@@ -38,8 +38,8 @@ import {expireToken} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
-import Geolocation from 'react-native-geolocation-service';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
+import LocationService from '../../../services/LocationService';
 
 export default function SalesPipelineScreen(props) {
   const dispatch = useDispatch();
@@ -58,12 +58,11 @@ export default function SalesPipelineScreen(props) {
   const [pageType, setPageType] = useState('add');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
   const [locationName, setLocationName] = useState('');
-  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;
+  const locationIdSpecific = props.route.params
+    ? props.route.params.locationInfo
+    : null;
 
   const isShowCustomNavigationHeader = props.isDeeplink != undefined;
-
-  console.log("props.isDeeplink", props.isDeeplink)
-  console.log("props", props);
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -148,22 +147,13 @@ export default function SalesPipelineScreen(props) {
   }, [pipelineFilters]);
 
   async function requestPermissions() {
-    if (Platform.OS === 'ios') {
-      const auth = await Geolocation.requestAuthorization('whenInUse');
-      if (auth === 'granted') {
-        dispatch(updateCurrentLocation());
-      }
-    }
-
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        dispatch(updateCurrentLocation());
-      }
-    }
+    LocationService.getLocationService().then(locationService => {
+      locationService.requestPermissions().then(granted => {
+        if (granted) {
+          dispatch(updateCurrentLocation());
+        }
+      });
+    });
   }
 
   const handleBackButtonClick = () => {
@@ -173,32 +163,6 @@ export default function SalesPipelineScreen(props) {
     }
   };
 
-  const refreshHeader = () => {
-    props.screenProps.setOptions({
-      headerTitle: () => {
-        return (
-          <TouchableOpacity
-            onPress={() => {
-              if (canAddPipeline) {
-                setCanAddPipeline(false);
-              }
-            }}>
-            <View style={style.headerTitleContainerStyle}>
-              {canAddPipeline && (
-                <Image
-                  resizeMethod="resize"
-                  style={{width: 15, height: 20, marginRight: 5}}
-                  source={Images.backIcon}
-                />
-              )}
-              <Text style={style.headerTitle}>Pipeline</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      },
-    });
-  };
-
   const loadPipeLineData = useCallback(
     (filters = '') => {
       setIsLoading(true);
@@ -206,7 +170,6 @@ export default function SalesPipelineScreen(props) {
       if (locationIdSpecific != null) {
         params['location_id'] = locationIdSpecific.location_id;
       }
-      console.log('ASDDA', params);
       getApiRequest('pipeline/pipeline-opportunities', params)
         .then(res => {
           setIsLoading(false);
@@ -412,8 +375,6 @@ export default function SalesPipelineScreen(props) {
   return (
     <Provider>
       <View style={{flex: 1}}>
-
-        
         {isShowCustomNavigationHeader && (
           <NavigationHeader
             showIcon={true}

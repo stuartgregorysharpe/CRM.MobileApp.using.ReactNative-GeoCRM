@@ -26,7 +26,7 @@ import {DatetimePickerView} from '../DatetimePickerView';
 import {expireToken, getPostParameter} from '../../constants/Helper';
 import {Notification} from './Notification';
 
-export default function AddToCalendar({selectedItems, onClose}) {
+export default function AddToCalendar({selectedItems, onClose, isModal}) {
   const dispatch = useDispatch();
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -35,7 +35,8 @@ export default function AddToCalendar({selectedItems, onClose}) {
   const [dateTimeType, setDateTimeType] = useState('date');
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
-
+  const showDivider = isModal != true;
+  console.log('isModal', isModal);
   const handleScheduleDate = date => {
     let datetime = date;
     let time = '';
@@ -50,7 +51,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
       callApi(selectedItems);
     }
   };
-
+  
   const callApi = schedules => {
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -74,17 +75,21 @@ export default function AddToCalendar({selectedItems, onClose}) {
   return (
     <ScrollView style={styles.refreshSliderContainer}>
       <Notification />
-      <TouchableOpacity
-        style={{padding: 6}}
-        onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
-        <Divider />
-      </TouchableOpacity>
+      {showDivider && (
+        <TouchableOpacity
+          style={{padding: 6}}
+          onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+          <Divider />
+        </TouchableOpacity>
+      )}
 
       <View style={styles.sliderHeader}>
         <Title style={{fontFamily: Fonts.primaryBold}}>Add to Calendar</Title>
         <TouchableOpacity
           onPress={() => {
-            onClose();
+            if (onClose) {
+              onClose();
+            }
           }}>
           <Text
             style={{
@@ -116,7 +121,7 @@ export default function AddToCalendar({selectedItems, onClose}) {
           }
         }}
       />
-
+      
       <FilterButton
         text="Schedule Date"
         onPress={() => {
@@ -178,7 +183,9 @@ export default function AddToCalendar({selectedItems, onClose}) {
         visible={isConfirmModal}
         onModalClose={() => {
           setIsConfirmModal(false);
-          onClose();
+          if (onClose) {
+            onClose();
+          }
         }}
         message={message}></AlertDialog>
     </ScrollView>
@@ -192,6 +199,7 @@ const styles = EStyleSheet.create(
     refreshSliderContainer: {
       backgroundColor: Colors.bgColor,
       padding: 10,
+      alignSelf: 'stretch',
     },
     sliderHeader: {
       flexDirection: 'row',

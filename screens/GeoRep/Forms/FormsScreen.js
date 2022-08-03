@@ -257,6 +257,7 @@ export default function FormsScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom:40,
   },
   bubbleTextStyle: {
     backgroundColor: Colors.bgColor,

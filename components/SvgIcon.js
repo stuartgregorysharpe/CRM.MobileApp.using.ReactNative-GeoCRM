@@ -1125,6 +1125,36 @@ const Touchpoints = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="
 </svg>
 `;
 
+const Image_Capture = `<svg xmlns="http://www.w3.org/2000/svg" width="108" height="107" viewBox="0 0 108 107">
+<g id="Group_5585" data-name="Group 5585" transform="translate(-11735.545 -17748.498)">
+  <g id="Rectangle_3294" data-name="Rectangle 3294" transform="translate(11735.545 17748.498)" fill="none" stroke="#133c8b" stroke-width="5">
+    <rect width="108" height="107" rx="7" stroke="none"/>
+    <rect x="2.5" y="2.5" width="103" height="102" rx="4.5" fill="none"/>
+  </g>
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(11752.545 17754.107)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H74.823V74.823H0Z" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M8.235,8.235H30.059V2H8.235A6.254,6.254,0,0,0,2,8.235V30.059H8.235ZM26.941,36.294,14.47,51.882H51.882l-9.353-12.47L36.2,47.86ZM48.764,22.265a4.676,4.676,0,1,0-4.676,4.676A4.67,4.67,0,0,0,48.764,22.265ZM58.117,2H36.294V8.235H58.117V30.059h6.235V8.235A6.254,6.254,0,0,0,58.117,2Zm0,56.117H36.294v6.235H58.117a6.254,6.254,0,0,0,6.235-6.235V36.294H58.117ZM8.235,36.294H2V58.117a6.254,6.254,0,0,0,6.235,6.235H30.059V58.117H8.235Z" transform="translate(4.235 4.235)" fill="#133c8b"/>
+  </g>
+  <text id="Checkout" transform="translate(11789.545 17843.498)" fill="#133c8b" font-size="22" font-family="ProductSans-Medium, Product Sans Medium" font-weight="500"><tspan x="-39.996" y="0">Capture</tspan></text>
+</g>
+</svg>
+`;
+
+const Image_Capture_Disable = `<svg xmlns="http://www.w3.org/2000/svg" width="108" height="107" viewBox="0 0 108 107">
+<g id="Group_5376" data-name="Group 5376" transform="translate(-11735.545 -17748.498)">
+  <g id="Rectangle_3294" data-name="Rectangle 3294" transform="translate(11735.545 17748.498)" fill="none" stroke="#b4b4b4" stroke-width="5">
+    <rect width="108" height="107" rx="7" stroke="none"/>
+    <rect x="2.5" y="2.5" width="103" height="102" rx="4.5" fill="none"/>
+  </g>
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(11752.546 17754.107)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H74.823V74.823H0Z" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M8.235,8.235H30.059V2H8.235A6.254,6.254,0,0,0,2,8.235V30.059H8.235ZM26.941,36.294,14.47,51.882H51.882l-9.353-12.47L36.2,47.86ZM48.764,22.265a4.676,4.676,0,1,0-4.676,4.676A4.67,4.67,0,0,0,48.764,22.265ZM58.117,2H36.294V8.235H58.117V30.059h6.235V8.235A6.254,6.254,0,0,0,58.117,2Zm0,56.117H36.294v6.235H58.117a6.254,6.254,0,0,0,6.235-6.235V36.294H58.117ZM8.235,36.294H2V58.117a6.254,6.254,0,0,0,6.235,6.235H30.059V58.117H8.235Z" transform="translate(4.235 4.235)" fill="#9d9fa2"/>
+  </g>
+  <text id="Checkout" transform="translate(11789.546 17843.498)" fill="#9d9fa2" font-size="22" font-family="ProductSans-Medium, Product Sans Medium" font-weight="500"><tspan x="-39.996" y="0">Capture</tspan></text>
+</g>
+</svg>
+`;
+
 export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
   <Fragment>
     {icon == 'Round_Btn_Default_Dark' && (
@@ -1700,5 +1730,14 @@ export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
     {icon == 'Touchpoints' && (
       <SvgXml style={style} xml={Touchpoints} width={width} height={height} />
     )}
+
+    {icon == 'Image_Capture' && (
+      <SvgXml style={style} xml={Image_Capture} width={width} height={height} />
+    )}
+
+    {icon == 'Image_Capture_Disable' && (
+      <SvgXml style={style} xml={Image_Capture_Disable} width={width} height={height} />
+    )}
+
   </Fragment>
 );

@@ -13,7 +13,7 @@ import {
   Keyboard,
   Dimensions,
   Platform,
-  StyleSheet,  
+  StyleSheet,
   BackHandler,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -38,7 +38,7 @@ import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
-import { postLocationImage } from '../../../../actions/location.action';
+import {postLocationImage} from '../../../../actions/location.action';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
@@ -58,7 +58,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
-import { Constants } from '../../../../constants';
+import {Constants, Strings} from '../../../../constants';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -94,7 +94,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const [checkinTypes, setCheckInTypes] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const nextPrevRef = useRef();
-  const isDisposition = features.includes('disposition_fields')
+
+  const showDivider = props.isModal == false;
+
+  const isDisposition = features.includes('disposition_fields');
   const updateCustomerModalRef = useRef(null);
 
   useImperativeHandle(
@@ -121,25 +124,34 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         }
       },
       updateView(res) {
-        console.log('locaiton details', res);
-        if (
-          locationInfoRef.current !== undefined &&
-          locationInfoRef.current.updateDispositionData
-        ) {
-          locationInfoRef.current.updateDispositionData(res);
-        }
-        setLocationInfo(res);
-        setIsLoading(false);
-        if (res.feedback.length > 0) {
-          setFeedback(res.feedback[0].feedback_loc_info_outcome[0].options);
-          setFeedbackOptions(
-            res.feedback[0].feedback_loc_info_outcome[0].options,
-          );
-        }
+        updateLocationInfo(res);
       },
     }),
     [showItem],
   );
+
+  const updateLocationInfo = _locationInfo => {
+    if (!_locationInfo) return;
+    if (
+      locationInfoRef.current !== undefined &&
+      locationInfoRef.current.updateDispositionData
+    ) {
+      locationInfoRef.current.updateDispositionData(_locationInfo);
+    }
+    setLocationInfo(_locationInfo);
+    setIsLoading(false);
+    if (_locationInfo.feedback.length > 0) {
+      setFeedback(
+        _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
+      );
+      setFeedbackOptions(
+        _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
+      );
+    }
+  };
+  useEffect(() => {
+    updateLocationInfo(props.locInfo);
+  }, [props.locInfo]);
 
   useEffect(() => {
     outcomeVal = false;
@@ -178,7 +190,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     return true;
   };
 
-  const checkFeedbackAndClose = async tapType => {    
+  const checkFeedbackAndClose = async tapType => {
     if (isFeedbackLocInfoOutcome && !outcomeVal) {
       clickedAction = tapType;
       setIsFeedback(true);
@@ -259,7 +271,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     });
   };
 
-
   const updateLocationImage = async path => {
     var data = await RNFS.readFile(path, 'base64').then(res => {
       return res;
@@ -283,7 +294,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const openCustomerInfo = async () => {
-    updateCustomerModalRef.current.showModal()    
+    updateCustomerModalRef.current.showModal();
   };
 
   const _callLocationFeedback = item => {
@@ -308,7 +319,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           showNotification({
             type: 'success',
             message: res.message,
-            buttonText: 'Okay',
+            buttonText: Strings.Ok,
             buttonAction: async () => {
               console.log('clickedActionclickedAction', clickedAction);
               if (clickedAction === 'top') {
@@ -439,21 +450,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-    
+
     postApiRequest('location-info/check-in', postData)
-      .then( async(res) => {
-        
+      .then(async res => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
         // dispatch check in
-        dispatch({ type: CHECKIN, payload: true });        
+        dispatch({type: CHECKIN, payload: true});
         await storeLocalValue('@checkin', '1');
         props.navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: 'checkin',
         });
-        
       })
       .catch(e => {});
   };
@@ -488,18 +497,17 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const onUpdateCustomerModalClosed = ({type, value}) => {
-    if(type == Constants.actionType.ACTION_CLOSE){
+    if (type == Constants.actionType.ACTION_CLOSE) {
       props.refreshLocationInfo(locationInfo.location_id);
       updateCustomerModalRef.current.hideModal();
     }
-  }
-
+  };
 
   return (
     <View style={[styles.container, {flex: 1}]}>
       {showFeedbackDropDownModal()}
       <Notification />
-      
+
       <AlertDialog
         visible={isSuccess}
         message={message}
@@ -508,16 +516,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         }}
       />
 
-      {
-        locationInfo !=  undefined  &&
-        <UpdateCustomerModal 
+      {locationInfo != undefined && (
+        <UpdateCustomerModal
           ref={updateCustomerModalRef}
           locationId={locationInfo.location_id}
           title="Update"
           onButtonAction={onUpdateCustomerModalClosed}
-        />                   
-      }
-      
+        />
+      )}
 
       {subSlideStatus && (
         <TouchableOpacity
@@ -544,17 +550,28 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         </View>
       )}
 
-      <TouchableOpacity
-        style={{padding: 6}}
-        onPress={() => {
-          if (statusDispositionInfo) {
-            dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
-            return;
-          }
-          dispatch({type: SLIDE_STATUS, payload: false});
-        }}>
-        <Divider />
-      </TouchableOpacity>
+      {showItem === 'update_customer' && (
+        <UpdateCustomerInfo
+          location_id={locationInfo.location_id}
+          onClose={() => {
+            props.refreshLocationInfo(locationInfo.location_id);
+            setShowItem('refresh');
+          }}
+        />
+      )}
+      {showDivider && (
+        <TouchableOpacity
+          style={{padding: 6}}
+          onPress={() => {
+            if (statusDispositionInfo) {
+              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              return;
+            }
+            dispatch({type: SLIDE_STATUS, payload: false});
+          }}>
+          <Divider />
+        </TouchableOpacity>
+      )}
 
       <KeyboardAwareScrollView
         enableOnAndroid={true}
@@ -698,7 +715,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               locationInfo.location_id !== '' &&
               locationInfo.address !== '' &&
               !(
-                props.pageType.name != undefined &&  props.pageType.name === 'camera' && props.pageType.type !== 2
+                props.pageType.name != undefined &&
+                props.pageType.name === 'camera' &&
+                props.pageType.type !== 2
               ) && (
                 <NextPrev
                   {...props}
@@ -769,8 +788,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         )}
       </KeyboardAwareScrollView>
 
-      {
-        features &&
+      {features &&
         (features.includes('access_crm') || features.includes('checkin')) &&
         !keyboardStatus && (
           <View style={styles.nextButtonBar}>
@@ -794,7 +812,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 />
               </TouchableOpacity>
             )}
-            
+
             {features && features.includes('checkin') && (
               <TouchableOpacity
                 style={[styles.checkInButton]}
@@ -815,14 +833,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           </View>
         )}
 
-      { isDisposition && (
+      {isDisposition && (
         <TouchableOpacity
           style={[style.plusButton, {marginBottom: 80}]}
           onPress={() => {
             if (!subSlideStatus) {
               locationInfoRef.current.postDispositionData();
             }
-          }}>     
+          }}>
           <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
         </TouchableOpacity>
       )}
@@ -830,14 +848,15 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   );
 });
 
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bgColor,
+    alignSelf: 'stretch',
   },
   innerContainer: {
     backgroundColor: Colors.bgColor,
     padding: 10,
+    alignSelf: 'stretch',
   },
 
   headerBox: {

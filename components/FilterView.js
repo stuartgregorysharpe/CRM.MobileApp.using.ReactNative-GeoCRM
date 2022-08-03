@@ -20,21 +20,16 @@ import {
 } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import {
-  clearFilterData,  
+  clearFilterData,
   getFilterData,
-  storeFilterData,  
+  storeFilterData,
 } from '../constants/Storage';
 import FilterOptionsModal from './modal/FilterOptionsModal';
 import StartEndDateSelectionModal from './modal/StartEndDateSelectionModal';
-import {
-  getLocationSearchList,
-  getLocationsMap,
-} from '../actions/location.action';
 import {getPipelineFilters} from '../actions/pipeline.action';
-import SelectionPicker from './modal/SelectionPicker';
 import {DatetimePickerView} from './DatetimePickerView';
 
-export default function FilterView({navigation, page, onClose}) {
+export default function FilterView({navigation, page, onClose, isModal}) {
   const dispatch = useDispatch();
   const statusLocationFilters = useSelector(
     state => state.location.statusLocationFilters,
@@ -61,7 +56,7 @@ export default function FilterView({navigation, page, onClose}) {
   const [locationFilters, setLocationFilters] = useState([]);
   const [opportunityId, setOpportunityId] = useState('');
   const [modalMode, setModalMode] = useState('single');
-
+  const isShowDivider = isModal;
   useEffect(() => {
     console.log('opened ', page);
     loadFilterDataFromStorage();
@@ -449,11 +444,13 @@ export default function FilterView({navigation, page, onClose}) {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity
-        style={{padding: 6}}
-        onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
-        <Divider />
-      </TouchableOpacity>
+      {isShowDivider && (
+        <TouchableOpacity
+          style={{padding: 6}}
+          onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>
+          <Divider />
+        </TouchableOpacity>
+      )}
 
       <DatetimePickerView
         visible={isDateTimePickerVisible}
@@ -550,7 +547,9 @@ export default function FilterView({navigation, page, onClose}) {
           } else if (page == 'pipeline') {
             dispatch({type: PIPELINE_SEARCH_FILTERS, payload: cloneFilters});
           }
-          onClose();
+          if (onClose) {
+            onClose();
+          }
         }}>
         Apply Filters
       </Button>
@@ -602,6 +601,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: BG_COLOR,
     padding: 10,
+    alignSelf: 'stretch',
   },
   sliderHeader: {
     flexDirection: 'row',

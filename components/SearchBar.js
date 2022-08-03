@@ -7,7 +7,15 @@ import {boxShadow} from '../constants/Styles';
 import Colors, {whiteLabel} from '../constants/Colors';
 
 const SearchBar = props => {
-  const {isFilter, animation, initVal, isLoading, haveFilter} = props;
+  const {
+    isFilter,
+    animation,
+    initVal,
+    isLoading,
+    haveFilter,
+    onSearchBoxPress,
+  } = props;
+
   const [text, setText] = useState(initVal);
   const onSearch = text => {
     if (props.onSearch) {
@@ -26,10 +34,26 @@ const SearchBar = props => {
   const suffixButtonIcon = props.suffixButtonIcon || 'Filter';
   const disabledSuffixButtonIcon =
     props.disabledSuffixButtonIcon || 'Filter_GRAY';
-  return (
-    <View
-      style={[styles.searchBox, props.style]}
-      keyboardShouldPersistTaps="handled">
+
+  const renderTextInput = () => {
+    if (onSearchBoxPress) {
+      return (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            onSearchBoxPress();
+          }}>
+          <View pointerEvents="none">
+            <TextInput
+              style={[styles.searchInput, boxShadow]}
+              placeholder="Search....."
+              placeholderTextColor={whiteLabel().helpText}
+            />
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    return (
       <TextInput
         style={[styles.searchInput, boxShadow]}
         placeholderTextColor={whiteLabel().helpText}
@@ -40,14 +64,19 @@ const SearchBar = props => {
           onSearch(text);
         }}
       />
-
+    );
+  };
+  return (
+    <View
+      style={[styles.searchBox, props.style]}
+      keyboardShouldPersistTaps="handled">
+      {renderTextInput()}
       <FontAwesomeIcon
         style={styles.searchIcon}
         size={16}
         color={whiteLabel().inactiveIcon}
         icon={faSearch}
       />
-
       {isFilter && (
         <TouchableOpacity
           style={styles.filterImageButton}
@@ -76,7 +105,6 @@ const SearchBar = props => {
           )}
         </TouchableOpacity>
       )}
-
       {isShowCloseButton && (
         <TouchableOpacity
           style={styles.closeButtonStyle}
