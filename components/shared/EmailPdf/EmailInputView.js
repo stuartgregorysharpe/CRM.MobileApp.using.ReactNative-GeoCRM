@@ -1,34 +1,28 @@
 
-import { View, Text , TextInput, StyleSheet ,ScrollView, Platform, Dimensions} from 'react-native'
+import { View, Text , TextInput, StyleSheet , Dimensions} from 'react-native'
 import React , { useState ,useEffect } from 'react'
-import { Colors, Constants, Fonts } from '../../../constants';
+import { Colors, Constants, Fonts, Strings } from '../../../constants';
 import { whiteLabel } from '../../../constants/Colors';
 import { validateEmail } from '../../../helpers/formatHelpers';
 
 export default function EmailInputView(props) {
 
-    const { item } = props;    
-    
+    const { item } = props;        
     const [lists, setLists] = useState([]);
     const [email, setEmail] = useState(email)
 
-
-    useEffect(() => {
-        //let isMount = true;
-        console.log("email item", item);
-        if(item.value && item.value != null){
-            console.log('triggere' , item.value);
+    useEffect(() => {                
+        if(item.value && item.value != null){            
             setLists(item.value);
-        }else{
-            console.log('triggere');
+        }else{            
             setLists([]);
-        } 
+        }
     }, [item.value])
 
     return (
         <View style={styles.container}>
-            
-            <View style={{flexWrap:'wrap', flexDirection:'row' , alignItems:'flex-start'}}>
+
+            <View style={styles.subContainer}>
                 {
                     lists.length > 0 && lists.map((item , index) => {
                         return <Text key={index} style={ validateEmail(item) ? styles.selectedText : styles.invalidText } >{item}</Text>
@@ -38,7 +32,7 @@ export default function EmailInputView(props) {
                     <TextInput
                         value={email}
                         style={[styles.textInput]}
-                        placeholder={ lists.length > 0 ? 'Add additional' : 'Add email address'}
+                        placeholder={ lists.length > 0 ? Strings.Add_Additional : Strings.Add_Email_Address}
                         returnKeyType={'done'}
                         keyboardType="email-address"
                         onChangeText={(text) =>{
@@ -53,9 +47,7 @@ export default function EmailInputView(props) {
                                 }
                             }                            
                         }}
-                        onKeyPress={({ nativeEvent }) => {
-                            console.log("on key press" , email);
-                            
+                        onKeyPress={({ nativeEvent }) => {                            
                             if(nativeEvent.key === 'Backspace'){                          
                                 if(email === '' || email === undefined){  
                                     const copyArr = [...lists];
@@ -83,9 +75,14 @@ const styles = StyleSheet.create({
         borderRadius:3,
         borderWidth:1,
         borderColor:whiteLabel().fieldBorder,
-    
     },
 
+    subContainer:{
+        flexWrap:'wrap', 
+        flexDirection:'row' , 
+        alignItems:'flex-start'
+    },
+    
     selectedText:{
         alignSelf:'center',
         color: Colors.whiteColor,        

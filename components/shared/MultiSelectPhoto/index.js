@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {StyleSheet} from 'react-native';
 import BaseForm from '../BaseForm';
 import QuestionButton from '../QuestionButton';
-import { Constants } from '../../../constants';
+import { Constants, Strings } from '../../../constants';
 import MultiSelectPhotoModal from './modals/MultiSelectPhotoModal';
 
 const MultiSelectPhoto = props => {
@@ -20,12 +20,11 @@ const MultiSelectPhoto = props => {
     }
   };
 
-  const renderContent = formCompleted => {
-    //formCompleted
+  const renderContent = formCompleted => {    
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={'Multi-select with Photo'}
+        title={Strings.Multi_Select_Photo}
         onPress={onOpenSKUCountModal}
       />
     );

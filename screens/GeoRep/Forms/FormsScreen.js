@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  View,
-  Dimensions,
+  View,  
   StyleSheet,
   FlatList,
   Image,
-  TouchableOpacity,
-  Platform,
+  TouchableOpacity,  
 } from 'react-native';
 import SearchBar from '../../../components/SearchBar';
 import {FormFilterView} from './partial/FormFilterView';
@@ -24,7 +22,6 @@ import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import {useNavigation} from '@react-navigation/native';
-import { Colors, Constants } from '../../../constants';
 
 let isInfoWindow = false;
 
@@ -258,14 +255,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom:40,
-  },
-  bubbleTextStyle: {
-    backgroundColor: Colors.bgColor,
-    padding: 10,
-    marginLeft: 30,
-    marginRight: 30,
-    borderRadius: 10,
-    fontSize: 16,
-    color: '#fff',
-  },
+  },  
 });

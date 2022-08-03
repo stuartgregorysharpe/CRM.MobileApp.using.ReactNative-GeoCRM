@@ -2,7 +2,7 @@ import { View, Text ,Image, TouchableOpacity ,Platform , StyleSheet } from 'reac
 import React from 'react'
 import { boxShadow, style } from '../../../../constants/Styles';
 import { AppText } from '../../../common/AppText';
-import Colors, { whiteLabel } from '../../../../constants/Colors';
+import Colors from '../../../../constants/Colors';
 import SvgIcon from '../../../../components/SvgIcon';
 
 export default function OptionItem(props) {
@@ -24,7 +24,6 @@ export default function OptionItem(props) {
         }
         return '';
     }
-
 
     const pickUpImage = (item) => {
         if(!isLocked()){
@@ -61,7 +60,6 @@ export default function OptionItem(props) {
                         getImagePath() === '' &&
                         <SvgIcon icon={isLocked() ? "Image_Capture_Disable" : "Image_Capture"} width='35px' height='35px' />
                     }
-
                     
                 </TouchableOpacity>                        
             </View>
