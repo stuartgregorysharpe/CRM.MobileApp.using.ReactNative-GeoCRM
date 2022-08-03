@@ -1,12 +1,12 @@
 
-import { View, Text , FlatList } from 'react-native'
+import { View, FlatList } from 'react-native'
 import React , { useState ,useEffect } from 'react'
 import OptionItem from './OptionItem';
 import PhotoCameraPickerDialog from '../../../modal/PhotoCameraPickerDialog';
 import { SubmitButton } from '../../SubmitButton';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../actions/notification.action';
-import { Constants } from '../../../../constants';
+import { Constants, Strings } from '../../../../constants';
 
 export default function MutiSelectPhotoView(props) {
      
@@ -67,11 +67,9 @@ export default function MutiSelectPhotoView(props) {
             });
 
         }else{
-            dispatch(showNotification({type: 'success', message: 'Please capture an image for each selected option' , buttonText:'Ok'}));
+            dispatch(showNotification({type: 'success', message: Strings.Please_Capture_Image , buttonText:'Ok'}));
         }
-    }
-
-
+  }
       
   return (
     <View style={{ alignSelf:'stretch' , marginHorizontal:10, marginTop:10}}>

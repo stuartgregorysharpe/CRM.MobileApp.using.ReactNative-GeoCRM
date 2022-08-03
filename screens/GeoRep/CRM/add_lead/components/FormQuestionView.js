@@ -28,6 +28,7 @@ import EmailPdf from '../../../../../components/shared/EmailPdf';
 import SKUCountForm from '../../../../../components/shared/SKUCount';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import MultiSelectPhoto from '../../../../../components/shared/MultiSelectPhoto';
+import TieredMultipleChoice from '../../../../../components/shared/TieredMultipleChoice';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
@@ -383,10 +384,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
                 questionType={item.question_type}
                 item={item}
                 fromIndex={index}
-                onFormAction={({type, value, item}) => {                                  
-                  console.log("multi select form pressed" )
-                  if (type == Constants.actionType.ACTION_FORM_SUBMIT) {    
-                      console.log("multi select form" , value)
+                onFormAction={({type, value, item}) => {                                                    
+                  if (type == Constants.actionType.ACTION_FORM_SUBMIT) {                      
                       onValueChangedSelectionView(key, index, value);
                   }
                   if (type == Constants.actionType.ACTION_INFO) {              
@@ -394,6 +393,24 @@ export const FormQuestionView = forwardRef((props, ref) => {
                 }}
                />
             )
+        } else if( item.question_type === Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE ){
+          return (
+            <TieredMultipleChoice
+             key={"tiered_multiple_choice" + index}
+             questionType={item.question_type}
+             item={item}
+             fromIndex={index}
+             onFormAction={({type, value, item}) => {               
+               if ( value != '' && type == Constants.actionType.ACTION_FORM_SUBMIT) {    
+                   console.log("multi select form" , value)
+                   onValueChangedSelectionView(key, index, value);
+               }
+               if (type == Constants.actionType.ACTION_FORM_CLEAR) {              
+                  onValueChangedSelectionView(key, index, null);
+               }
+             }}
+            />
+         )
         }
 
         return <View key={'question' + index}></View>;
