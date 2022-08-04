@@ -68,6 +68,7 @@ var reason_id = '';
 var clickedAction = '';
 
 export const LocationInfoDetails = forwardRef((props, ref) => {
+
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.locInfo);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -94,11 +95,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const [checkinTypes, setCheckInTypes] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const nextPrevRef = useRef();
-
   const showDivider = props.isModal == false;
-
   const isDisposition = features.includes('disposition_fields');
   const updateCustomerModalRef = useRef(null);
+  const isCheckin = useSelector(state => state.location.checkIn);
 
   useImperativeHandle(
     ref,
@@ -468,14 +468,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const onClickCheckIn = async () => {
+    
     var isCheckin = await getLocalData('@checkin');
     if (isCheckin === '1') {
+      console.log("you are checkedin", props.navigation)
       dispatch(
         showNotification({
           type: 'success',
-          message: 'You are currently checked-in to a location',
+          message: Strings.You_Are_Currenly_Checkedin,
           buttonText: 'Continue',
           buttonAction: async () => {
+
+            props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+
             var specificLocationId = await getLocalData(
               '@specific_location_id',
             );
@@ -484,6 +489,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               page: 'checkin',
             });
             dispatch(clearNotification());
+            
           },
         }),
       );

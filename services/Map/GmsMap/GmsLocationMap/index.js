@@ -153,7 +153,7 @@ const GmsLocationMap = props => {
       />
     );
   };
-  console.log('GmsLocationMap_currentLocation', currentLocation);
+  
   return (
     <View style={[styles.container, props.style]}>
       {isShowMap && (

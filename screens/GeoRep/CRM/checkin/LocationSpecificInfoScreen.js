@@ -179,10 +179,7 @@ export default function LocationSpecificInfoScreen(props) {
                   setCanShowCustomerContactsScreen(false);
                   customerContactsRef.current.onBackHandler();
                 } else {
-                  if (props.navigation.canGoBack()) {
-                    if (pageType === 'checkin' || pageType === 'access_crm') {
-                      hideBottomBar();
-                    }
+                  if (props.navigation.canGoBack()) {                    
                     props.navigation.goBack();
                   }
                 }
@@ -362,7 +359,7 @@ export default function LocationSpecificInfoScreen(props) {
               </TouchableOpacity>
             </View>
 
-            {pageType === 'checkin' && (
+            {isCheckin && (
               <Checkout
                 goBack={async res => {
                   dispatch(

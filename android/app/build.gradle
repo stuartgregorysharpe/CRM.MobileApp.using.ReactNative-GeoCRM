@@ -138,6 +138,7 @@ android {
         versionName "1.1.4"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
+
     splits {
         abi {
             reset()

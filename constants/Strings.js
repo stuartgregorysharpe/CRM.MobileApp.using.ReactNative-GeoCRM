@@ -8,4 +8,5 @@ export default {
     Add_Email_Address: 'Add email address',
     Multi_Select_Photo: 'Multi-select with Photo',
     Please_Capture_Image: 'Please capture an image for each selected option',
+    You_Are_Currenly_Checkedin: 'You are currently checked-in to a location',
 }
