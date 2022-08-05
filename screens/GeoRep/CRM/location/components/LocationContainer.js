@@ -60,9 +60,6 @@ const LocationContainer = props => {
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
   const isShowZoomLabel = isZoomOut;
-  console.log('isLoading', isLoading);
-  console.log('isZoomOut', isZoomOut);
-  console.log('isShowZoomLabel', isShowZoomLabel);
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
   );
@@ -108,10 +105,7 @@ const LocationContainer = props => {
     onLoadMarkers(currentLocation, boundBox);
   }, [mapFilters, currentLocation]);
   const onRegionChanged = async (region, markers, bBox, zoom) => {
-    console.log('onRegionChanged - zoom', zoom);
     const minZoomLevel = await getMapMinZoomLevel();
-    console.log('onRegionChanged - minZoomLevel', minZoomLevel);
-    console.log('onRegionChanged - isZoomOut', isZoomOut);
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
         setIsZoomOut(false);
