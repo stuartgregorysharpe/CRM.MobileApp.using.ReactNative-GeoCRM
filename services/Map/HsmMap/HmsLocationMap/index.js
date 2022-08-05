@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   myLocation: {
     position: 'absolute',
     top: 20,
-    right: 20,
+    left: 20,
     width: 55,
     height: 55,
     backgroundColor: Colors.whiteColor,
