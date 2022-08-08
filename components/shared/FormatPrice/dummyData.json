@@ -1,0 +1,67 @@
+{
+    "form_question_id": "30",
+    "question_group": "Question Group 3",
+    "question_group_id": "3",
+    "question_type": "format_price",
+    "question_text": "This is a Format Price Question",            
+    "guide_info": {
+        "title": "Question Guide 2",
+        "image": "",
+        "text": "Question Guide 2 Text"
+    },
+    "rule_compulsory": "0",
+    "formats" : [
+        {
+            "product_id" : "1",
+            "label" : "Product 1",
+            "product_type" : "Type 1",
+            "brand" : "Brand 1",
+            "barcode" : "213223332323",
+            "product_code" : "PC424AB3323",
+            "competitors" : [
+                "Competitor 1",
+                "Competitor 2",
+                "Competitor 3"
+            ]
+        },
+        {
+            "product_id" : "2",
+            "label" : "Product 2",
+            "product_type" : "Type 1",
+            "brand" : "Brand 1",
+            "barcode" : "213223332324",
+            "product_code" : "PC424AB3324",
+            "competitors" : [
+                "Competitor 4",
+                "Competitor 5",
+                "Competitor 6"
+            ]
+        },
+        {
+            "product_id" : "3",
+            "label" : "Product 3",
+            "product_type" : "Type 1",
+            "brand" : "Brand 1",
+            "barcode" : "213223332325",
+            "product_code" : "PC424AB3325",
+            "competitors" : [
+                "Competitor 7",
+                "Competitor 8",
+                "Competitor 9"
+            ]
+        },
+        {
+            "product_id" : "4",
+            "label" : "Product 4",
+            "product_type" : "Type 1",
+            "brand" : "Brand 1",
+            "barcode" : "21322333236",
+            "product_code" : "PC424AB3326",
+            "competitors" : [
+                "Competitor 10",
+                "Competitor 11",
+                "Competitor 12"
+            ]
+        }
+    ]
+}
