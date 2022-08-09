@@ -347,6 +347,8 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.3.2):
     - React-Core
+  - react-native-sqlite-storage (6.0.1):
+    - React-Core
   - react-native-webview (11.16.0):
     - React-Core
   - React-perflogger (0.67.2)
@@ -536,6 +538,7 @@ DEPENDENCIES:
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-sqlite-storage (from `../node_modules/react-native-sqlite-storage`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -643,6 +646,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-sqlite-storage:
+    :path: "../node_modules/react-native-sqlite-storage"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -744,6 +749,7 @@ SPEC CHECKSUMS:
   react-native-maps: a421fe6aeb74279597c4ea9598f25796108e2d89
   react-native-pager-view: b1914469643f40042e65d78cbf3d3dfebd6fb0d9
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
+  react-native-sqlite-storage: f6d515e1c446d1e6d026aa5352908a25d4de3261
   react-native-webview: 28a8636d97ee641f2ee8f20492d7a6c269c1d703
   React-perflogger: 3c9bb7372493e49036f07a82c44c8cf65cbe88db
   React-RCTActionSheet: 052606483045a408693aa7e864410b4a052f541a
@@ -777,4 +783,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 4049ee20db2f7f3802c78722947ad66d4fe713e1
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.10.2

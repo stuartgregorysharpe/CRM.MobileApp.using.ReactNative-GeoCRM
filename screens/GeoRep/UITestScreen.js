@@ -1,9 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native';
+import FormatPrice from '../../components/shared/FormatPrice';
 
 import {Colors} from '../../constants';
-import TestLocationUI from '../../services/LocationService/TestLocationUI';
-import HmsMap from '../../services/Map/HsmMap';
+import dummyData from '../../components/shared/FormatPrice/dummyData.json';
+import FormatPriceView from '../../components/shared/FormatPrice/FormatPriceView';
 export default function UITestScreen({screenProps}) {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function UITestScreen({screenProps}) {
   });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
-      <TestLocationUI />
+      <FormatPriceView item={dummyData} />
     </SafeAreaView>
   );
 }

@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import BaseForm from '../BaseForm';
 import QuestionButton from '../QuestionButton';
 import {Constants, Strings} from '../../../constants';
+import FormatPriceModal from './modals/FormatPriceModal';
 
 const FormatPrice = props => {
   const {item, questionType, formIndex} = props;

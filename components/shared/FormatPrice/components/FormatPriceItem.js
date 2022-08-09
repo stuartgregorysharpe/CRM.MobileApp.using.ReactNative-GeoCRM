@@ -5,10 +5,10 @@ import {Colors, Constants, Fonts, Values} from '../../../../constants';
 const FormatPriceItem = props => {
   const {item} = props;
   if (!item) return null;
-
+  const {label} = item;
   return (
     <View style={[styles.container, styles.bottomBorder, props.style]}>
-      <Text style={styles.text}>{'xxx'}</Text>
+      <Text style={styles.text}>{label}</Text>
     </View>
   );
 };
