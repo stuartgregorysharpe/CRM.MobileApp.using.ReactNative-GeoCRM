@@ -30,7 +30,7 @@ export default {
     FORM_TYPE_PRODUCT_ISSUES: 'product_issues',
     FORM_TYPE_PRODUCT_RETURN: 'returns',
     FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo',
-    FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice'
+    FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice',
   },
 
   actionType: {
@@ -47,36 +47,37 @@ export default {
     ACTION_CLOSE: 'ACTION_CLOSE',
     ACTION_VIEW: 'ACTION_VIEW',
     ACTION_REMOVE: 'ACTION_REMOVE',
-    ACTION_CHANGE_NETWORK : 'ACTION_CHANGE_NETWORK'
+    ACTION_CHANGE_NETWORK: 'ACTION_CHANGE_NETWORK',
+    ACTION_CHANGE_ITEM_PRICE: 'ACTION_CHANGE_ITEM_PRICE',
+    ACTION_CHANGE_ITEM_PRICE_TYPE: 'ACTION_CHANGE_ITEM_PRICE_TYPE',
   },
 
   stockPrefix: {
     DEVICE: 'IMEI: ',
     CONSUMABLE: 'Qty: ',
     SIM: 'ICCID: ',
-    MSISDN: 'MSISDN: '
+    MSISDN: 'MSISDN: ',
   },
 
   stockType: {
-    DEVICE : "Device",
-    CONSUMABLE : "Consumables",
-    SIM: "Sim",
-    RETURN: "RETURN"
+    DEVICE: 'Device',
+    CONSUMABLE: 'Consumables',
+    SIM: 'Sim',
+    RETURN: 'RETURN',
   },
 
   networkType: {
-    VODACOM: "Vodacom",
-    CELL : "Cell C",
-    TELKOM: "Telkom"
+    VODACOM: 'Vodacom',
+    CELL: 'Cell C',
+    TELKOM: 'Telkom',
   },
-  
 
-  stockDeviceType : {
+  stockDeviceType: {
     SELL_TO_TRADER: 'SELL_TO_TRADER',
     SWOP_AT_TRADER: 'SWOP_AT_TRADER',
     TARDER: 'TRADER',
-    TRANSFER: 'TRANSFER'
-  },  
+    TRANSFER: 'TRANSFER',
+  },
 
   debugMode: {
     NO_DEBUG: 0,
@@ -109,7 +110,7 @@ export default {
     ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
     ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
-  msisdnPrefix : "27",
+  msisdnPrefix: '27',
   msisdnErrorMessage: 'MSISDN must be 11 digits',
-  chooseReason: 'Please choose a reason before making a selection or scanning'
+  chooseReason: 'Please choose a reason before making a selection or scanning',
 };

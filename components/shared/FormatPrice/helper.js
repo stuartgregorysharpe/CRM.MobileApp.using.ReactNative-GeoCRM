@@ -118,11 +118,15 @@ export function getQuestionTitle(questionType) {
   return 'Select SKU';
 }
 
-export function filterProducts(products, keyword) {
+export function filterProducts(products, keyword, selectedFormat) {
   if (!products) return [];
+  if (selectedFormat) {
+    return products.filter(x => x.product_id == selectedFormat);
+  }
   if (!keyword) return products;
   const _products = products.filter(
     x => x.label.includes(keyword) || x.price_type.includes(keyword),
   );
+
   return _products;
 }
