@@ -31,6 +31,7 @@ export default {
     FORM_TYPE_PRODUCT_RETURN: 'returns',
     FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo',
     FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice',
+    FORM_TYPE_FORMAT_PRICE: 'format_price',
   },
 
   actionType: {
@@ -50,6 +51,7 @@ export default {
     ACTION_CHANGE_NETWORK: 'ACTION_CHANGE_NETWORK',
     ACTION_CHANGE_ITEM_PRICE: 'ACTION_CHANGE_ITEM_PRICE',
     ACTION_CHANGE_ITEM_PRICE_TYPE: 'ACTION_CHANGE_ITEM_PRICE_TYPE',
+    ACTION_COMP: 'ACTION_COMP',
   },
 
   stockPrefix: {

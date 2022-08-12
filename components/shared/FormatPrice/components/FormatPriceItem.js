@@ -17,9 +17,12 @@ const FormatPriceItem = props => {
   const priceTypeValue = price_type == 'Promo';
   const fixed = props.fixed || 2;
   const onChangePrice = (priceText, isConvertToNumber) => {
-    const nextPrice = isConvertToNumber
+    let nextPrice = isConvertToNumber
       ? Number(priceText).toFixed(fixed)
       : priceText;
+    if (nextPrice == 0 && isConvertToNumber) {
+      nextPrice = '';
+    }
     if (props.onItemAction) {
       props.onItemAction({
         type: Constants.actionType.ACTION_CHANGE_ITEM_PRICE,
@@ -34,6 +37,14 @@ const FormatPriceItem = props => {
         type: Constants.actionType.ACTION_CHANGE_ITEM_PRICE_TYPE,
         item,
         price_type: isPromo ? 'Promo' : 'Normal',
+      });
+    }
+  };
+  const onCompAction = () => {
+    if (props.onItemAction) {
+      props.onItemAction({
+        type: Constants.actionType.ACTION_COMP,
+        item,
       });
     }
   };
@@ -69,7 +80,8 @@ const FormatPriceItem = props => {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: whiteLabel().actionFullButtonBackground,
-        }}>
+        }}
+        onPress={onCompAction}>
         <Text
           style={{
             fontFamily: Fonts.primaryRegular,
@@ -109,6 +121,7 @@ const styles = StyleSheet.create({
     lineHeight: 12,
     textAlign: 'center',
     minHeight: 24,
+    padding: 0,
     borderRadius: 4,
     marginRight: 12,
     borderWidth: 1,

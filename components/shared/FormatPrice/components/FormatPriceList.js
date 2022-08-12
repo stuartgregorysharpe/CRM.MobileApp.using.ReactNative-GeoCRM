@@ -6,7 +6,6 @@ import FormatPriceItem from './FormatPriceItem';
 
 const FormatPriceList = props => {
   const {items} = props;
-  console.log('items', items);
   const renderItem = (item, index) => {
     const isLast = index == items.length - 1;
     return (

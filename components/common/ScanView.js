@@ -78,6 +78,12 @@ const ScanView = props => {
       </View>
     );
   };
+  const renderLastScanResultView = () => {
+    if (props.renderLastScanResultView) {
+      return props.renderLastScanResultView();
+    }
+    return null;
+  };
   return (
     <View style={[styles.container, props.style]}>
       <QRCodeScanner
@@ -86,6 +92,7 @@ const ScanView = props => {
         customMarker={renderCustomerMarker()}
         showMarker
       />
+      {renderLastScanResultView()}
     </View>
   );
 };

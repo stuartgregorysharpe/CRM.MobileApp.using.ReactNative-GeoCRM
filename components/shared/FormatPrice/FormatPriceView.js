@@ -2,22 +2,33 @@ import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {View, StyleSheet, Text, Keyboard} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
+import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Strings, Values} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 import {style} from '../../../constants/Styles';
+import QRScanModal from '../../common/QRScanModal';
 import CSingleSelectInput from '../../common/SelectInput/CSingleSelectInput';
+import {Notification} from '../../modal/Notification';
 import SearchBar from '../../SearchBar';
 import {SubmitButton} from '../SubmitButton';
 import FormatPriceList from './components/FormatPriceList';
-import {constructFormData, filterProducts} from './helper';
+import {
+  captureProductBarcode,
+  constructFormData,
+  filterProducts,
+  getValueFromFormData,
+} from './helper';
+import CompetitorPriceModal from './modals/CompetitorPriceModal';
 
 const FormatPriceView = props => {
   const dispatch = useDispatch();
   const {item, questionType, formIndex} = props;
   const [formData, setFormData] = useState({products: []});
+  const [compPressItem, setCompPressItem] = useState(null);
   const [selectedFormat, setSelectedFormat] = useState(null);
   const [keyword, setKeyword] = useState('');
   const captureModalRef = useRef(null);
+  const competitorPriceModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const products = useMemo(
     () => filterProducts(formData.products, keyword, selectedFormat),
@@ -26,7 +37,7 @@ const FormatPriceView = props => {
   const formats = useMemo(() => {
     return item?.formats?.map(format => {
       return {
-        label: format.label,
+        label: format.product_name,
         value: format.product_id,
       };
     });
@@ -53,16 +64,13 @@ const FormatPriceView = props => {
   const validateForm = () => {};
 
   const onSubmit = () => {
-    if (!validateForm()) {
-      return;
-    }
-    /*const submitValueData = getValueFromFormData(formData, item, formIndex);
+    const submitValueData = getValueFromFormData(formData, item, formIndex);
     if (props.onButtonAction) {
       props.onButtonAction({
         type: Constants.actionType.ACTION_FORM_SUBMIT,
         value: submitValueData,
       });
-    }*/
+    }
   };
   useEffect(() => {
     const formData = constructFormData(item);
@@ -75,6 +83,16 @@ const FormatPriceView = props => {
     if (captureModalRef && captureModalRef.current) {
       captureModalRef.current.showModal();
     }
+  };
+  const showErrorMessage = errorMessage => {
+    console.log('errorMessage', errorMessage);
+    dispatch(
+      showNotification({
+        type: 'error',
+        message: errorMessage,
+        buttonText: Strings.Ok,
+      }),
+    );
   };
   const onItemAction = data => {
     const {type, item} = data;
@@ -102,9 +120,42 @@ const FormatPriceView = props => {
       }
       _products[itemIndex].price_type = price_type;
       setFormData(_formData);
+    } else if (type == Constants.actionType.ACTION_COMP) {
+      if (item.price == null || item.price == undefined || item.price == '') {
+        const errorMessage = 'Please input a price for this format';
+        return showErrorMessage(errorMessage);
+      }
+      setCompPressItem(item);
+      competitorPriceModalRef.current.showModal();
+    }
+  };
+  const onCompetitorSubmit = ({type, competitors}) => {
+    if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+      const _formData = {...formData};
+      const _products = _formData.products;
+      const itemIndex = _products.findIndex(
+        x => x.product_id == compPressItem.product_id,
+      );
+      if (itemIndex < 0) {
+        return false;
+      }
+      _products[itemIndex].competitors = competitors.map(x => {
+        return {...x};
+      });
+      setFormData(_formData);
     }
   };
 
+  const onCaptureAction = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CAPTURE) {
+      const foundProduct = formData.products.find(x => x.barcode == value);
+      console.log('scandedBarCode', value);
+      console.log('foundProduct', foundProduct);
+      if (foundProduct) {
+        setSelectedFormat(foundProduct.product_id);
+      }
+    }
+  };
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar
@@ -137,6 +188,14 @@ const FormatPriceView = props => {
       />
 
       <FormatPriceList items={products} onItemAction={onItemAction} />
+      <CompetitorPriceModal
+        ref={competitorPriceModalRef}
+        title={'Competitors'}
+        competitors={compPressItem?.competitors}
+        onButtonAction={onCompetitorSubmit}
+      />
+      <QRScanModal ref={captureModalRef} onButtonAction={onCaptureAction} />
+      <Notification />
       <SubmitButton
         title={'Submit'}
         style={{marginVertical: 16}}

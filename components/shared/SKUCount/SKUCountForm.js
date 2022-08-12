@@ -7,19 +7,19 @@ import {style} from '../../../constants/Styles';
 
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
+import {Notification} from '../../modal/Notification';
 import {SubmitButton} from '../SubmitButton';
 import CounterItemList from './components/CounterItemList';
 import {constructFormData, getValueFromFormData} from './helper';
 
 const SKUCountForm = props => {
-
   const dispatch = useDispatch();
   const {item, questionType, formIndex} = props;
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState();
   const [formData, setFormData] = useState({});
   const [categories, setCategories] = useState([]);
-  
+
   let countStep = 1;
   let countNumberFixed = 0;
   if (questionType == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE) {
@@ -111,7 +111,7 @@ const SKUCountForm = props => {
     }
     setFormData(_formData);
   };
-  
+
   return (
     <View style={[styles.container, props.style]}>
       <CTabSelector
@@ -123,7 +123,7 @@ const SKUCountForm = props => {
         }}
         containerStyle={[style.card, {marginBottom: 0}]}
       />
-      
+
       <View style={[style.card, styles.checkBoxContainer]}>
         <Text style={[styles.text, {marginRight: 32}]}>
           {'Segment not in store'}
@@ -145,7 +145,7 @@ const SKUCountForm = props => {
           style={[style.card, {marginBottom: 0}]}
         />
       )}
-
+      <Notification />
       <SubmitButton
         title={'Submit'}
         style={{marginVertical: 16}}

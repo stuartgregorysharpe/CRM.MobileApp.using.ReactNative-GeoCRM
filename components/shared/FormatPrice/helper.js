@@ -25,13 +25,16 @@ export function constructFormData(data) {
 }
 function constructProduct(productItem, previousAnswerItem) {
   let competitorsItems = [];
-  if (productItem.competitors) {
-    competitorsItems = productItem.competitors.map(competitorName => {
+
+  if (productItem._competitors) {
+    competitorsItems = productItem._competitors.map(competitorName => {
       return constructCompetitor(competitorName, previousAnswerItem);
     });
   }
+
   return {
     ...productItem,
+    label: productItem.product_name,
     price_type: previousAnswerItem
       ? previousAnswerItem.price_type
       : Constants.priceType.PRICE_TYPE_NORMAL,
@@ -47,7 +50,7 @@ function constructCompetitor(competitorName, previousAnswerItem) {
     });
   }
   return {
-    competitor: 'Competitor 1',
+    competitor: competitorName,
     price_type: foundCompetitor
       ? foundCompetitor.price_type
       : Constants.priceType.PRICE_TYPE_NORMAL,
@@ -73,41 +76,70 @@ export function getProductForId(products, productId) {
   }
   return null;
 }
-export function captureProductBarcode(formData, item, barcode) {
-  console.log('captured', barcode);
-  const capturedProduct = getProductForBarcode(item.products, barcode);
-  if (!capturedProduct) {
-    return formData;
-  }
-  const _formData = {...formData};
-  let _selectedProductIds = _formData.selectedProductIds;
-
-  const foundId = _selectedProductIds.find(
-    x => x == capturedProduct.product_id,
-  );
-  if (!foundId) {
-    _selectedProductIds.push(capturedProduct.product_id);
-  }
-  _formData.selectedProductIds = _selectedProductIds;
-  return _formData;
-}
 
 export function getValueFromFormData(formData, item, formIndex) {
-  const answerData = {
-    selected_product_ids: formData.selectedProductIds,
-  };
+  const products = formData.products;
+  const answers = [];
   const answerDataArray = [];
-  formData.selectedProductIds.forEach((productId, index) => {
-    answerDataArray.push({
-      key: `[answer][selected_product_ids][${index}]`,
-      value: productId,
-    });
+  products.forEach((product, index) => {
+    if (
+      product.price != '' &&
+      product.price != null &&
+      product.price != undefined &&
+      product.price > 0
+    ) {
+      const answer = {
+        selected_product_id: product.product_id,
+        price_type: product.price_type,
+        price: product.price,
+      };
+      answerDataArray.push({
+        key: `[answer][${index}][selected_product_id]`,
+        value: product.product_id,
+      });
+      answerDataArray.push({
+        key: `[answer][${index}][price_type]`,
+        value: product.price_type,
+      });
+      answerDataArray.push({
+        key: `[answer][${index}][price]`,
+        value: product.price,
+      });
+      const competitors = [];
+      if (product.competitors && product.competitors.length > 0) {
+        product.competitors.forEach((competitor, competitorIndex) => {
+          if (
+            competitor.price != '' &&
+            competitor.price != null &&
+            competitor.price != undefined &&
+            competitor.price > 0
+          ) {
+            competitors.push({...competitor});
+            answerDataArray.push({
+              key: `[answer][${index}][competitors][${competitorIndex}][competitor]`,
+              value: competitor.competitor,
+            });
+            answerDataArray.push({
+              key: `[answer][${index}][competitors][${competitorIndex}][price_type]`,
+              value: competitor.price_type,
+            });
+            answerDataArray.push({
+              key: `[answer][${index}][competitors][${competitorIndex}][price]`,
+              value: competitor.price,
+            });
+          }
+        });
+      }
+      answer.competitors = competitors;
+      answers.push(answer);
+    }
   });
+  console.log('answers', answers);
   return {
     form_answers: [
       {
         form_question_id: item.form_question_id,
-        answer: answerData,
+        answer: answers,
       },
     ],
     form_answers_array: answerDataArray,
