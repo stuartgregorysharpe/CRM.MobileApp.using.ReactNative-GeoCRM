@@ -5,7 +5,7 @@ import {whiteLabel} from '../../../../constants/Colors';
 import SvgIcon from '../../../SvgIcon';
 
 const SelectInputView = props => {
-  const {description, placeholder, showDescription, text, hasError } = props;
+  const {description, placeholder, showDescription, text, hasError} = props;
   const iconName = props.dropdownIcon || 'Drop_Down';
   const onPress = () => {
     if (props.onPress) {
@@ -16,7 +16,7 @@ const SelectInputView = props => {
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
   };
-  
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -29,7 +29,9 @@ const SelectInputView = props => {
             : whiteLabel().fieldBorder,
         },
       ]}>
-      { props.bgType != 'card' && showDescription && renderTopDescription(description)}
+      {props.bgType != 'card' &&
+        showDescription &&
+        renderTopDescription(description)}
       {showText ? (
         <Text
           mode="outlined"
@@ -42,7 +44,7 @@ const SelectInputView = props => {
       ) : (
         <Text
           mode="outlined"
-          style={[{flex: 1, color: Colors.placeholder} , props.placeholderStyle]}
+          style={[{flex: 1, color: Colors.placeholder}, props.placeholderStyle]}
           outlineColor={
             hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder
           }>

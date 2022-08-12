@@ -10,6 +10,7 @@ import QRScanModal from '../../common/QRScanModal';
 import CSingleSelectInput from '../../common/SelectInput/CSingleSelectInput';
 import {Notification} from '../../modal/Notification';
 import SearchBar from '../../SearchBar';
+import LastScanResultView from '../SKUSelect/components/LastScanResultView';
 import {SubmitButton} from '../SubmitButton';
 import FormatPriceList from './components/FormatPriceList';
 import {
@@ -23,10 +24,12 @@ import CompetitorPriceModal from './modals/CompetitorPriceModal';
 const FormatPriceView = props => {
   const dispatch = useDispatch();
   const {item, questionType, formIndex} = props;
+  console.log('item', item);
   const [formData, setFormData] = useState({products: []});
   const [compPressItem, setCompPressItem] = useState(null);
   const [selectedFormat, setSelectedFormat] = useState(null);
   const [keyword, setKeyword] = useState('');
+  const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
   const competitorPriceModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -149,10 +152,10 @@ const FormatPriceView = props => {
   const onCaptureAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       const foundProduct = formData.products.find(x => x.barcode == value);
-      console.log('scandedBarCode', value);
-      console.log('foundProduct', foundProduct);
+
       if (foundProduct) {
         setSelectedFormat(foundProduct.product_id);
+        setLastScannedQrCode(value);
       }
     }
   };
@@ -166,7 +169,7 @@ const FormatPriceView = props => {
       />
       <CSingleSelectInput
         bgType="card"
-        bgStyle={[style.card, {borderWidth: 0}]}
+        bgStyle={[style.card, {borderWidth: 0, height: 50}]}
         placeholderStyle={{color: whiteLabel().mainText, fontWeight: '700'}}
         description={'Select Format'}
         placeholder={'Select Format'}
@@ -194,7 +197,19 @@ const FormatPriceView = props => {
         competitors={compPressItem?.competitors}
         onButtonAction={onCompetitorSubmit}
       />
-      <QRScanModal ref={captureModalRef} onButtonAction={onCaptureAction} />
+      <QRScanModal
+        ref={captureModalRef}
+        onButtonAction={onCaptureAction}
+        renderLastScanResultView={() => {
+          return (
+            <LastScanResultView
+              lastScanedQrCode={lastScanedQrCode}
+              style={{marginBottom: 20}}
+              onSubmit={() => captureModalRef.current.hideModal()}
+            />
+          );
+        }}
+      />
       <Notification />
       <SubmitButton
         title={'Submit'}

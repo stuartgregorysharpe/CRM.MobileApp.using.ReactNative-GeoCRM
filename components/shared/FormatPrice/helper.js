@@ -26,8 +26,8 @@ export function constructFormData(data) {
 function constructProduct(productItem, previousAnswerItem) {
   let competitorsItems = [];
 
-  if (productItem._competitors) {
-    competitorsItems = productItem._competitors.map(competitorName => {
+  if (productItem.competitors) {
+    competitorsItems = productItem.competitors.map(competitorName => {
       return constructCompetitor(competitorName, previousAnswerItem);
     });
   }
