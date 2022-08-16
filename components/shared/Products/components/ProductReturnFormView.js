@@ -9,7 +9,7 @@ import { style } from '../../../../constants/Styles';
 import { whiteLabel } from '../../../../constants/Colors';
 import CardView from '../../../common/CardView';
 import SectionList from './SectionList';
-import { Constants, Values } from '../../../../constants';
+import { Constants, Strings, Values } from '../../../../constants';
 import { AppText } from '../../../common/AppText';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../actions/notification.action';
@@ -51,7 +51,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
     const onCaptureAction = ({type, value}) => {
         if (type == Constants.actionType.ACTION_CAPTURE) {
             if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productReturn == ''){                
-                dispatch(showNotification({type:'success' , message: Constants.chooseReason  , buttonText:'Ok'}))
+                dispatch(showNotification({type:Strings.Success , message: Strings.Choose_Reason  , buttonText:'Ok'}))
             }else{
                 var tmp = item.products.find(element => element.barcode == value );            
                 if(tmp != null && tmp != undefined){
@@ -119,7 +119,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
     const onItemChanged = ({type , item, value}) =>{
         if(type == Constants.actionType.ACTION_DONE){
             if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_RETURN && productReturn === ''){                
-                dispatch(showNotification({type:'success' , message: Constants.chooseReason  , buttonText:'Ok'}))
+                dispatch(showNotification({type:Strings.Success , message: Strings.Choose_Reason  , buttonText:'Ok'}))
             }else{
                 if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_RETURN){                                    
                     item = { ...item, productReturn , value }                    

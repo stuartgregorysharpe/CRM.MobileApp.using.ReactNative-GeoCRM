@@ -5,7 +5,6 @@ const tableName = 'formTable';
 
 enablePromise(true);
 
-
 export const createTable = async (db) => {
     await db.transaction(async(tx) =>{        
         const query = `CREATE TABLE IF NOT EXISTS ${tableName}(id INTEGER PRIMARY KEY AUTOINCREMENT, formId INTEGER NOT NULL , indempotencyKey TEXT NOT NULL, formQuestions TEXT NOT NULL );`;

@@ -7,7 +7,7 @@ import SignatureScreen from "react-native-signature-canvas";
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 import uuid from 'react-native-uuid';
 import { validateMsisdn } from '../../../../../helpers/formatHelpers';
 var previousText = Constants.msisdnPrefix;
@@ -34,19 +34,7 @@ export default function StockSignatureView(props) {
             console.log("ressss",res)            
             return res;
         });
-
-        setPath(filepath);        
-        
-        // const path = FileSystem.cacheDirectory + "sign.png";
-        // FileSystem.writeAsStringAsync(
-        //   path,
-        //   signature.replace("data:image/png;base64,", ""),
-        //   { encoding: FileSystem.EncodingType.Base64 }
-        // )
-        //   .then(() => FileSystem.getInfoAsync(path))
-        //   .then(console.log)
-        //   .catch(console.error);        
-        // onSubmit(signature);
+        setPath(filepath);            
     };
 
 
@@ -119,13 +107,13 @@ export default function StockSignatureView(props) {
                 props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) && 
                 <CTextInput                
                     cTextRef={msisdnRef}
-                    label={"Assign MSISDN"}
+                    label={Strings.Assign_Msisdn}
                     value={serial}
                     returnKeyType={'done'}                                        
                     keyboardType={'number-pad'}
                     isRequired={true}                    
                     hasError={hasMsisdnError}
-                    errorText={Constants.msisdnErrorMessage}
+                    errorText={Strings.MSISDN_Error_Message}
                     onChangeText={text => {                        
                         if(text.length <= 2){
                             setSerial(Constants.msisdnPrefix);

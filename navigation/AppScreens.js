@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef , useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   SafeAreaView,
@@ -15,12 +15,13 @@ import SignInScreen from '../screens/SignInScreen';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import Profile from '../components/Profile';
 import More from '../components/More';
-import {PRIMARY_COLOR, whiteLabel} from '../constants/Colors';
+import {whiteLabel} from '../constants/Colors';
 import {grayBackground} from '../constants/Styles';
 import {
   SLIDE_STATUS,
   CHANGE_PROFILE_STATUS,
   CHANGE_MORE_STATUS,
+  CHANGE_LOGIN_STATUS,
 } from '../actions/actionTypes';
 import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
 import Config from '../constants/Config';
@@ -28,23 +29,30 @@ import Constants from '../constants/Constants';
 import UITestScreen from '../screens/GeoRep/UITestScreen';
 import {FormQuestions} from '../screens/GeoRep/Forms/questions/FormQuestions';
 import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSpecificInfoScreen';
-import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import FormsScreen from '../screens/GeoRep/Forms/FormsScreen';
 import SalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
+import DeviceInfo from 'react-native-device-info';
+import { getLocalData, setToken, storeLocalValue } from '../constants/Storage';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppScreens() {
+
   const dispatch = useDispatch();
   const showProfile = useSelector(state => state.rep.showProfile);
   const showMoreScreen = useSelector(state => state.rep.showMoreScreen);
   const loginStatus = useSelector(state => state.auth.loginStatus);
+  const [isVersionUpdated, setIsVersionUpdated] = useState(false);
 
   useEffect(() => {
+
+    checkAppVersion();
+
     dispatch({type: SLIDE_STATUS, payload: false});
     dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
     dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+    
   }, []);
 
   useEffect(() => {
@@ -54,7 +62,6 @@ export default function AppScreens() {
 
   const moreRef = useRef(null);
   const profileRef = useRef(null);
-
   const moreAnimatedValue = useRef(new Animated.Value(1)).current;
   const profileAnimatedValue = useRef(new Animated.Value(1)).current;
 
@@ -74,6 +81,22 @@ export default function AppScreens() {
       useNativeDriver: false,
     }).start();
   };
+
+
+  const checkAppVersion = async () => {
+    var versionCode = DeviceInfo.getVersion();
+    var versionNumber = DeviceInfo.getBuildNumber();
+    var currentVersionCode = await getLocalData("@versionCode");
+    var currentVersionNumber = await getLocalData("@versionNumber");
+    
+    if(versionCode != currentVersionCode || versionNumber != currentVersionNumber){    
+      console.log("version u pdated", currentVersionNumber);
+        await storeLocalValue("@versionCode", versionCode);
+        await storeLocalValue("@versionNumber", versionNumber);
+        //setIsVersionUpdated(true);
+        dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"});
+    }
+  }
 
   const moreTranslateX = moreAnimatedValue.interpolate({
     inputRange: [0, 1],
@@ -95,12 +118,14 @@ export default function AppScreens() {
     ],
     extrapolate: 'clamp',
   });
+  
   if (Config.DEBUG_MODE == Constants.debugMode.DEBUG_UI_SCREEN) {
     return <UITestScreen />;
   }
+
   if (loginStatus != 'success') {
     return <SignInScreen />;
-  }
+  }  
 
   return (
     <SafeAreaView style={styles.container}>

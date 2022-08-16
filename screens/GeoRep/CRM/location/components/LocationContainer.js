@@ -38,6 +38,7 @@ import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
 
 const LocationContainer = props => {
+  
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -206,7 +207,7 @@ const LocationContainer = props => {
     });
     dispatch({
       type: SELECTED_LOCATIONS_FOR_CALENDAR,
-      payload: selectedLocations,
+      payload: selectedLocations, 
     });
   };
   const onMarkerPressed = (item, key) => {
@@ -266,6 +267,7 @@ const LocationContainer = props => {
           onClickAddToCalendar={onOpenAddToCalendar}
         />
       )}
+      
       <LocationMap
         polygonData={polygonData}
         markers={markers}
@@ -276,6 +278,7 @@ const LocationContainer = props => {
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
       />
+
       {isShowZoomLabel && (
         <Bubble
           title="Zoomed out too far, zoom in to see results"
@@ -292,7 +295,9 @@ const LocationContainer = props => {
             addLeadModalRef.current.showModal();
           }
         }}>
+
         <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
+
       </TouchableOpacity>
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />

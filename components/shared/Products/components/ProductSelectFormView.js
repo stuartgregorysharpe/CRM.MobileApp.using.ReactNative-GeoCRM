@@ -9,7 +9,7 @@ import { style } from '../../../../constants/Styles';
 import { whiteLabel } from '../../../../constants/Colors';
 import CardView from '../../../common/CardView';
 import SectionList from './SectionList';
-import { Constants, Values } from '../../../../constants';
+import { Constants, Images, Strings, Values } from '../../../../constants';
 import { AppText } from '../../../common/AppText';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../actions/notification.action';
@@ -50,7 +50,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
     const onCaptureAction = ({type, value}) => {
         if (type == Constants.actionType.ACTION_CAPTURE) {
             if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productIssue == ''){
-                dispatch(showNotification({type:'success' , message: Constants.chooseReason  , buttonText:'Ok'}))
+                dispatch(showNotification({type:Strings.Success , message: Strings.Choose_Reason  , buttonText:'Ok'}))
             }else{
                 var tmp = item.products.find(element => element.barcode == value );            
                 if(tmp != null && tmp != undefined){
@@ -98,8 +98,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                 flag = false;
             }
             return flag;
-        });
-        console.log("filter length",tmp.length)
+        });        
         setProducts(tmp)
     }
 
@@ -107,7 +106,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
         if(type == Constants.actionType.ACTION_CHECK){
 
             if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES && productIssue == ''){
-                dispatch(showNotification({type:'success' , message: Constants.chooseReason  , buttonText:'Ok'}))
+                dispatch(showNotification({type:Images.Success , message: Images.Choose_Reason  , buttonText:'Ok'}))
             }else{
                 if(questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES){                                    
                     item = { ...item, productIssue }                    
