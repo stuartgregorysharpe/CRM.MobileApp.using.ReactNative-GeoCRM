@@ -40,7 +40,7 @@ const HmsLocationMap = props => {
     },
     bearing: 0,
     tilt: 0,
-    zoom: 12,
+    zoom: 15,
   });
   const [transCode, setTransCode] = useState('05');
 
@@ -291,9 +291,9 @@ const styles = StyleSheet.create({
   myLocation: {
     position: 'absolute',
     top: 20,
-    left: 20,
-    width: 55,
-    height: 55,
+    right: 20,
+    width: 50,
+    height: 50,
     backgroundColor: Colors.whiteColor,
     alignItems: 'center',
     borderRadius: 30,
