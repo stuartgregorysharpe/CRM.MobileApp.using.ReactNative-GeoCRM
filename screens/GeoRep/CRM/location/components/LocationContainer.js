@@ -59,7 +59,7 @@ const LocationContainer = props => {
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
-  const isShowZoomLabel = isZoomOut;
+  const isShowZoomLabel = isZoomOut || isLoading;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
   );
