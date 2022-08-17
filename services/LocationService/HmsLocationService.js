@@ -79,12 +79,12 @@ function watchPosition(
   const locationRequest = {
     priority:
       HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
-    interval: 10000,
+    interval: 2000,
     numUpdates: 2147483647,
-    fastestInterval: 10000,
+    fastestInterval: 2000,
     expirationTime: 3372036854775807.0,
-    smallestDisplacement: 0.0,
-    maxWaitTime: 0,
+    smallestDisplacement: 10.5,
+    maxWaitTime: 3000,
     needAddress: false,
     language: '',
     countryCode: '',
