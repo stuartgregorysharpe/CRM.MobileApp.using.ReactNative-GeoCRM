@@ -7,7 +7,7 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DeviceView from './stock_types/DeviceView';
 import ConsumableView from './stock_types/ConsumableView';
 import SimView from './stock_types/SimView';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 
 var vodacom = [];
 var cell = [];
@@ -223,7 +223,7 @@ export default function AddStockView(props) {
                     onSubmit={() => {
                         onSubmit()                                                
                     }}
-                title="Add Stock" style={{marginTop:20}}></SubmitButton>
+                title={Strings.Stock.Add_Stock} style={{marginTop:20}}></SubmitButton>
 
             </View>
     )

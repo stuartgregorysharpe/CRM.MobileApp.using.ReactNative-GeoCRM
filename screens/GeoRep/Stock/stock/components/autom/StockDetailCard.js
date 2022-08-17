@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React from 'react' 
 import CardView from '../../../../../../components/common/CardView'
 import { AppText } from '../../../../../../components/common/AppText'

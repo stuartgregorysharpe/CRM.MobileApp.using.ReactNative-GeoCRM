@@ -21,7 +21,7 @@ export const initializeDB = async() => {
                 return "end";
             }                                            
         }else{
-            console.log("db was not updated");
+            console.log("offline version was not updated");
         }
     }    
 }
@@ -31,8 +31,7 @@ const syncTable = async(basketId) => {
     
     var lists = getBaskets();
     var basket = lists[basketId].slug;
-    var res = await getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + "locations", {});
-    console.log("Syn Table RES", res)
+    var res = await getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + "locations", {});    
     if(res.status === Strings.Success){
         var tables = res.tables;        
         await syncTableData(tables, 0 , 0, basket);
@@ -50,8 +49,6 @@ const syncTable = async(basketId) => {
 
 
 const syncTableData = async (tables , key , pageNumber, basket) => {    
-
-    console.log("table count", tables.length);
     var tableName = tables[key];      
     await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
         await handleRecords(tableName, res.records);        

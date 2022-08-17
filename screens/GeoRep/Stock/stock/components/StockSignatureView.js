@@ -27,11 +27,10 @@ export default function StockSignatureView(props) {
     
 
     const handleOK = async(signature) => {
-        console.log("handle ok")
+        
         var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
         const filepath = outputPath + "/sign" + "-" + uuid.v4() + ".png";
-        var data = await RNFS.writeFile(filepath,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
-            console.log("ressss",res)            
+        var data = await RNFS.writeFile(filepath,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {            
             return res;
         });
         setPath(filepath);            
@@ -52,8 +51,7 @@ export default function StockSignatureView(props) {
 
     const checkValidation = () => {
         var flag = false;
-        if ( props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) ){
-            console.log("validate")
+        if ( props.item.stock_type != Constants.stockType.RETURN && (isMSISDN && props.item.stock_type != Constants.stockType.SIM) ){            
             if(validateMsisdn(serial)){
                 flag = true;
                 setHasMsisdnError(false)
@@ -86,7 +84,7 @@ export default function StockSignatureView(props) {
                     }                
                 });
             }
-        }                
+        }
     }
 
     return (

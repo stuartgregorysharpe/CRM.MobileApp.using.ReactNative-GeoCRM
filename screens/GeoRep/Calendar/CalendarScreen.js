@@ -4,14 +4,12 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,
-  FlatList,
+  TouchableOpacity,  
   SectionList,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faAngleDoubleRight,
-  faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
@@ -21,9 +19,7 @@ import Fonts from '../../../constants/Fonts';
 import {
   checkFeatureIncludeParam,
   getBaseUrl,
-  getLocalData,
-  getToken,
-  setToken,
+  getToken,  
 } from '../../../constants/Storage';
 import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';
@@ -34,19 +30,16 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
-  CHANGE_LOGIN_STATUS,
   LOCATION_LOOP_LISTS,
 } from '../../../actions/actionTypes';
 import moment from 'moment';
 import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../actions/notification.action';
+
 var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
+
   const dispatch = useDispatch();
   const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -105,19 +98,16 @@ export default function CalendarScreen(props) {
 
   const loadList = async type => {
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
-    setIsAdd(await checkFeatureIncludeParam('calendar_add'));
+    setIsAdd(await checkFeatureIncludeParam('calendar_add'));            
     var base_url = await getBaseUrl();
     var token = await getToken();
     if (base_url != null && token != null) {
       getCalendar(base_url, token, type)
-        .then(res => {
-          console.log('calend list', res.length);
+        .then(res => {          
           if (selectedIndex == 2 || selectedIndex == 0) {
-            setTodayList(res);
-            console.log('updated today lists');
+            setTodayList(res);            
           } else {
-            updateListForWeek(res);
-            console.log('updated list');
+            updateListForWeek(res);            
           }
         })
         .catch(e => {
@@ -190,8 +180,7 @@ export default function CalendarScreen(props) {
             {backgroundColor: isActive ? '#eee' : BG_COLOR},
           ]}>
           <CalendarItem
-            onItemSelected={() => {
-              console.log('loop list updated in calendar ');
+            onItemSelected={() => {              
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
             key={item.schedule_id}

@@ -5,7 +5,6 @@ import React , {useRef , useEffect ,useState } from 'react'
 import CTextInput from '../../../../../components/common/CTextInput'
 import SignatureScreen from "react-native-signature-canvas";
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import { useSelector } from 'react-redux';
 import RNFS from "react-native-fs";
 import { AppText } from '../../../../../components/common/AppText';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
@@ -37,14 +36,13 @@ export default function ConsumableSellToStockSignatureView(props) {
         'keyboardDidShow',
         () => {
           setKeyboardVisible(true); // or some other action
-          console.log("show key board")
+          
         },
       );
       const keyboardDidHideListener = Keyboard.addListener(
         'keyboardDidHide',
         () => {
-          setKeyboardVisible(false); // or some other action
-          console.log("hide keyboard")
+          setKeyboardVisible(false); // or some other action          
         },
       );
   
@@ -57,10 +55,7 @@ export default function ConsumableSellToStockSignatureView(props) {
     const handleOK = async(signature) => {
 
         var outputPath = Platform.OS === 'ios' ? `${RNFS.DocumentDirectoryPath}` : `${RNFS.ExternalDirectoryPath}`;
-
-        const path = outputPath + "/sign.png";        
-        console.log("path", path);
-
+        const path = outputPath + "/sign.png";                
         var data = await RNFS.writeFile(path,  signature.replace("data:image/png;base64,", ""),  'base64').then(res => {
             onSubmit(path);
             return res;

@@ -1,9 +1,8 @@
 
-import React , { useState , useEffect, useRef} from 'react'
+import React from 'react'
 import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
 import AddStockContainer from '../container/AddStockContainer';
-
 
 const AddStockModal = React.forwardRef((props, ref) => {
     const onButtonAction = data => {

@@ -8,6 +8,7 @@ import ReturnDeviceDetailView from '../components/ReturnDeviceDetailView';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 import { Constants } from '../../../../../constants';
+import { getFileFormat } from '../../../../../constants/Helper';
 
 export default function ReturnDeviceDetailContainer(props) {
          
@@ -56,15 +57,10 @@ export default function ReturnDeviceDetailContainer(props) {
         postData.append('location_id',  props.locationId);        
         postData.append('return_device[location_device_id]', returnDevice.location_device_id);
         postData.append('return_device[return_reason]', returnDevice.return_reason);
-        photos.map((item, index) => {            
-            var words = item.split('/');
-            var ext = words[words.length - 1].split('.');
+        photos.map((path, index) => {             
+            var fileFormats = getFileFormat(path);                        
             var key = `return_image[${index}]`;
-            postData.append( key, {
-                uri: item,
-                type: 'image/' + ext[1],
-                name: words[words.length - 1],
-            });            
+            postData.append( key, fileFormats);
         })
         
         var time_zone = RNLocalize.getTimeZone();

@@ -23,6 +23,16 @@ export default {
         Weekly: 'Weekly Visits',
     },
     
+    Stock:{
+        Add_Stock: 'Add Stock',
+        ICCID_Not_Found: 'ICCID not found in stock',
+        No_Stock_Item_Ids: 'No Stock Item IDS',
+        No_Device_Found: 'No devices found',
+        Allocate_Device: 'Allocate Device',
+        Have_You_Tried:'Have you tried scanning first?',
+        Input_ICCID: 'Input ICCID'
+
+    }
 
 }
 

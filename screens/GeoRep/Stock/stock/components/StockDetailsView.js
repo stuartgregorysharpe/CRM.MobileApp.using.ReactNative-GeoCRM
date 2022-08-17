@@ -2,11 +2,7 @@
 
 import { View} from 'react-native'
 import React from 'react'
-import CardView from '../../../../../components/common/CardView'
-import { AppText } from '../../../../../components/common/AppText'
-import { whiteLabel } from '../../../../../constants/Colors'
 import { SubmitButton } from '../../../../../components/shared/SubmitButton'
-import { getSubText } from '../../../../../helpers/viewHelper'
 import StockDetailCard from './autom/StockDetailCard'
 
 export default function StockDetailsView(props) {

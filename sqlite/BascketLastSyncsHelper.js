@@ -1,5 +1,5 @@
 
-import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { enablePromise} from 'react-native-sqlite-storage';
 import { getDBConnection } from './DBHelper';
 
 const tableName = 'sync_basket_last_syncs';
@@ -7,7 +7,7 @@ const tableName = 'sync_basket_last_syncs';
 enablePromise(true);
 
 export const createBascketLastSync = async (db) => {
-    await db.transaction(async(tx) =>{        
+    await db.transaction(async(tx) =>{
         const query = `CREATE TABLE IF NOT EXISTS ${tableName}(id INTEGER PRIMARY KEY AUTOINCREMENT, sync_basket TEXT NOT NULL , timestamp TEXT NOT NULL, timezone TEXT NOT NULL );`;
         await tx.executeSql(query);
     });
@@ -22,10 +22,7 @@ export const insertBascketLastSync = async (sync_basket, timestamp, timezone) =>
                 const query = `INSERT INTO ${tableName}(sync_basket, timestamp, timezone) VALUES(? ,? , ?);`;
                 await tx.executeSql(query, [sync_basket, timestamp, timezone]);
             }else{            
-                const query = `UPDATE ${tableName} SET timestamp = ? , timezone = ? WHERE id=${check.item(0).id};`;            
-                console.log("exist", query)
-                console.log("timestamp",timestamp);
-                console.log("id", check.item(0).id)
+                const query = `UPDATE ${tableName} SET timestamp = ? , timezone = ? WHERE id=${check.item(0).id};`;                
                 await tx.executeSql(query, [timestamp , timezone ]);
             }        
         }catch(e){
@@ -41,8 +38,6 @@ export const deleteBascketLastSyncsTable = async (db , id) => {
         await tx.executeSql(query, [id]);
     });
 };
-
-
 
 export const getBascketLastSyncTableData = async ( sync_basket) => {
     var db = await getDBConnection();

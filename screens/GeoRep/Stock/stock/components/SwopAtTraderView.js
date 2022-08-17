@@ -77,7 +77,7 @@ export default function SwopAtTraderView(props) {
               style={{marginVertical: 24}}
           />              
 
-          <AppText title="Allocate Device" type="secondaryBold" size="medium"></AppText>
+          <AppText title={Strings.Stock.Allocate_Device} type="secondaryBold" size="medium"></AppText>
 
           <CardView style={{ marginTop:10, borderColor:whiteLabel().borderColor, borderWidth:1}}>
               <View style={{padding:5}}>
@@ -118,8 +118,9 @@ export default function SwopAtTraderView(props) {
               }}
               style={{marginTop:10  , }}
           />
+          
           {            
-            <SubmitButton title="Add Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={() =>{
+            <SubmitButton title={Strings.Stock.Add_Stock} style={{marginTop:10 , marginBottom:30}} onSubmit={() =>{
               if(!validateMsisdn(msisdn)){
                 setHasMsisdnError(true);
                 return;

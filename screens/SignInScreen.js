@@ -36,11 +36,8 @@ import {
 import jwt_decode from 'jwt-decode';
 import {displayName} from '../app.json';
 import {clearNotification} from '../actions/notification.action';
-import {getDynamicPins, getPinSvgLists} from '../actions/pins.actions';
-import {getDBConnection , createTable, handleRecords, getCount, truncateTable} from '../sqlite/DBHelper';
-import { getApiRequest } from '../actions/api.action';
-import { Images, Strings } from '../constants';
-import { initializeDB } from '../services/SyncDatabaseService/SyncTable';
+import {getDynamicPins} from '../actions/pins.actions';
+import { Images } from '../constants';
 
 export default function SignIn() {
 
@@ -58,12 +55,9 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("called screen");    
-  }, []);
-
-  useEffect(() => {
     initView();    
-  }, [loginStatus]); 
+  }, [loginStatus]);
+
 
   const initView = async () => {
     
@@ -85,8 +79,7 @@ export default function SignIn() {
       dispatch({type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token)});
       dispatch({type: CHANGE_LOGIN_STATUS, payload: 'success'});
     }
-    dispatch(clearNotification());
-    //await truncateTable();
+    dispatch(clearNotification());    
   };
 
   const handleNext = () => {

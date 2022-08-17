@@ -1,6 +1,6 @@
 
 import { View, FlatList } from 'react-native'
-import React , { useState  , useEffect} from 'react'
+import React from 'react'
 import SearchBox from '../../../../../components/SearchBar'
 import SearchLocationItem from './SearchLocationItem';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
@@ -17,8 +17,6 @@ export default function SearchLocationView(props) {
         )
     }
     
-
-
     return (
         <View>      
             <SearchBox 

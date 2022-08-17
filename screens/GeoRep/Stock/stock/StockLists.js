@@ -1,5 +1,5 @@
 
-import { View, Text , FlatList ,TouchableOpacity } from 'react-native'
+import { View, FlatList ,TouchableOpacity } from 'react-native'
 import React, {useEffect, useState, useRef} from 'react'
 import { getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
@@ -8,7 +8,7 @@ import StockListItem from './components/StockListItem';
 import StockListHeader from './components/StockListHeader';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import AddStockModal from './modal/AddStockModal';
-import { Constants } from '../../../../constants';
+import { Constants, Strings } from '../../../../constants';
 import StockDeviceDetailsModal from './modal/device/StockDeviceDetailsModal';
 import StockSignatureModal from './modal/device/StockSignatureModal';
 import SwopAtTraderModal from './modal/device/SwopAtTraderModal';
@@ -51,10 +51,9 @@ export default function StockLists() {
             if(isMount){
                 setStockLists(res.stock_items);
                 setOriginStockLists(res.stock_items);
-                console.log("res.stock_items", res.stock_items)
                 var sims = res.stock_items.filter(item => item.stock_type === Constants.stockType.SIM);
-                var tmp = [];                
-                sims.forEach((item) => {                    
+                var tmp = [];
+                sims.forEach((item) => {       
                     tmp.push({type: item.description, code: item.serial , stock_item_id: item.stock_item_id});
                 });
                 setIccids(tmp)
@@ -88,8 +87,7 @@ export default function StockLists() {
         }else if(item.stock_type === Constants.stockType.CONSUMABLE){
             stockConsumableModalRef.current.showModal();
         }else if(item.stock_type === Constants.stockType.SIM){
-            setSelectedCodes([{stock_item_id:item.stock_item_id, code:item.serial, type: item.description }]);     
-            console.log("selectedCodes",selectedCodes)
+            setSelectedCodes([{stock_item_id:item.stock_item_id, code:item.serial, type: item.description }]);                 
             simDetailsModalRef.current.showModal()
         }
     }
@@ -110,8 +108,7 @@ export default function StockLists() {
     };
 
     const onStockDetailsModalClosed = async({type, value}) => {
-        if(type == Constants.actionType.ACTION_NEXT){
-            console.log("final locatin id", value)
+        if(type == Constants.actionType.ACTION_NEXT){            
             setLocationId(value.locationId);
             if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
                 stockSignatureModalRef.current.showModal();
@@ -161,11 +158,9 @@ export default function StockLists() {
             
         if(type == Constants.actionType.ACTION_NEXT){            
             setLocationId(value.locationId);
-            if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){       
-                console.log("loc id", value.locationId)                     
+            if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){                       
                 consumableSellToTraderModalRef.current.showModal();
-            }else if(value.stockType === Constants.stockDeviceType.TRANSFER){
-                console.log("show transfer")
+            }else if(value.stockType === Constants.stockDeviceType.TRANSFER){                
                 traderModalRef.current.showModal()
             }
         }
@@ -184,8 +179,7 @@ export default function StockLists() {
     }
         
     const onStockSimDetailsModalClosed = ({ type, value}) => {        
-        if(type == Constants.actionType.ACTION_NEXT){
-            console.log("final locatin id  in sim details", type)
+        if(type == Constants.actionType.ACTION_NEXT){            
             setLocationId(value.locationId);
             if(value.stockType === Constants.stockDeviceType.SELL_TO_TRADER){
                 stockSignatureModalRef.current.showModal();
@@ -194,17 +188,13 @@ export default function StockLists() {
             }else if(value.stockType === Constants.stockDeviceType.TARDER){
                 traderModalRef.current.showModal()
             }
-        }else if(type == Constants.actionType.ACTION_CAPTURE) {
-            
-            var check = iccids.filter(item => item.code === value);
-            console.log("check" , check)
-            console.log("selectedCodes" , selectedCodes)
+        }else if(type == Constants.actionType.ACTION_CAPTURE) {            
+            var check = iccids.filter(item => item.code === value);            
             var checkFromSelectedCodes = selectedCodes.filter(item => item.code === value);
             if(check.length > 0 && checkFromSelectedCodes.length == 0){
-                setSelectedCodes([...selectedCodes, {stock_item_id:check[0].stock_item_id, code:value , type: check[0].type }]);
-                console.log("selectedCodes---" ,selectedCodes)                
+                setSelectedCodes([...selectedCodes, {stock_item_id:check[0].stock_item_id, code:value , type: check[0].type }]);                               
             }else{
-                dispatch(showNotification({type:'success', message: 'ICCID not found in stock' , buttonText:'Ok'}))
+                dispatch(showNotification({type:Strings.Success , message: Strings.Stock.ICCID_Not_Found , buttonText:'Ok'}))
             }
         }else if(type == Constants.actionType.ACTION_REMOVE){            
             var tmp = selectedCodes.filter(item => item.code !== value.code)
@@ -246,7 +236,7 @@ export default function StockLists() {
                     addStockModalRef.current.showModal();
                 }
             }}
-            style={{marginHorizontal:20, marginTop:10, marginBottom:10}} title="Add Stock"></SubmitButton>
+            style={{marginHorizontal:20, marginTop:10, marginBottom:10}} title={Strings.Stock.Add_Stock}></SubmitButton>
 
             <TouchableOpacity style={{position:'absolute', right:30, bottom:55, }}>
                 <View>
@@ -256,7 +246,7 @@ export default function StockLists() {
 
             <AddStockModal
               ref={addStockModalRef}
-              title={"Add Stock"}              
+              title={Strings.Stock.Add_Stock}              
               onButtonAction={onCaptureAction}
             />
 

@@ -1,6 +1,5 @@
 
-import { value } from 'react-native-extended-stylesheet';
-import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { openDatabase } from 'react-native-sqlite-storage';
 
 var db = null;
 export const getDBConnection = async () => {
@@ -10,8 +9,7 @@ export const getDBConnection = async () => {
           return db
       }
       db = await openDatabase(
-        { name: 'MainDB', 
-        //createFromLocation : "/data/mydbfile.sqlite"},
+        { name: 'MainDB',       
         location: 'default' },
         () => { },
         error => { console.log(error); }
@@ -34,10 +32,9 @@ export const ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) 
     });
 });
 
-export const createTable = async (db , tables ) => {
-  console.log("dddd");
-  try{            
-      console.log("Total tables length", tables.length);
+
+export const createTable = async (db , tables ) => {  
+  try{      
       await tables.reduce(async (a, table) => {        
         await a;        
         await handleTable(table);
@@ -58,8 +55,7 @@ const handleTable = async (table) => {
 
       var fields = table.fields;
       var indexKeys = table.index_keys;
-
-      console.log(" --- start created db ---")
+      console.log(" --- start created table --- " , tableName);
       var query1 = `CREATE TABLE IF NOT EXISTS ${tableName} (`  
       fields.forEach((element, index) => {
         var isPrimary = false;
@@ -83,13 +79,13 @@ const handleTable = async (table) => {
         query1 = query1 + item;
       });
       query1 = query1 + ");";  
-      console.log("query 1", query1);
+      console.log("CREATE TABLE Query:  ", query1);
       try{
         await db.transaction(async(tx) =>{            
           await tx.executeSql(query1);
         });
       }catch(e){
-        console.log("query 1 error", error)
+        console.log("create table error", error)
       }
             
       await indexKeys.forEach(async(element, index) => {
@@ -103,13 +99,13 @@ const handleTable = async (table) => {
             }        
           })
           var query2 = `CREATE INDEX ${tableName}_${element.key_name} ON ${tableName}(${fieldsLists})`;
-          console.log("query 2", query2)
+          console.log("CREATE INDEX Quer: ", query2)
           try{
             await db.transaction(async(tx) =>{            
               await tx.executeSql(query2);
             });
           }catch(e){
-            console.log("query 2 error", e)
+            console.log("create inddex error", e)
           }
           
         }
@@ -152,10 +148,8 @@ export const truncateTable = async(tableName) => {
     
 }
 
-
 export const handleRecords = async ( tableName, records) => {
-
-  //var index = 0;
+  
   var query = '';
   var fields = '';
   var values = '';
@@ -181,7 +175,7 @@ export const handleRecords = async ( tableName, records) => {
   query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
   try{
     if(db != null){
-      console.log(" run query ", query);
+      console.log(" INSERT Query :  ", query);
       await db.transaction(async(tx) =>{            
         await tx.executeSql(query);
       });

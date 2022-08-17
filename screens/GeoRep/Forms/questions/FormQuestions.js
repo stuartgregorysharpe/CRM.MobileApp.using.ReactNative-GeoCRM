@@ -11,7 +11,7 @@ import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
-import {expireToken} from '../../../../constants/Helper';
+import {expireToken, getFileFormat} from '../../../../constants/Helper';
 import {
   getApiRequest,  
   postApiRequestMultipart,
@@ -246,13 +246,8 @@ export const FormQuestions = props => {
             name: item.value.name,
           });
         } else {
-          var words = item.value.split('/');
-          var ext = words[words.length - 1].split('.');
-          postData.append(item.key, {
-            uri: item.value,
-            type: 'image/' + ext[1],
-            name: words[words.length - 1],
-          });
+          var fileFormats = getFileFormat(item);          
+          postData.append(item.key, fileFormats);
         }
       }
     });              
