@@ -18,9 +18,13 @@ import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../components/modal/Notification';
 import {showNotification} from '../../../../actions/notification.action';
 import {CHECKIN} from '../../../../actions/actionTypes';
+import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
 
 export default function MainPage(props) {
-  const dispatch = useDispatch();
+
+
+  const dispatch = useDispatch();  
+  const [refresh, setRefresh] = useState(false);
   const [isStart, setIsStart] = useState(true);
   const [startEndDayId, setStartEndDayId] = useState(0);
   const [pages, setPages] = useState(['', '']);
@@ -55,6 +59,13 @@ export default function MainPage(props) {
     return () => (isSubscribed = false);
   }, [isCheckin]);
 
+  useEffect(() => {
+    initializeDB().then((res) => {
+      console.log(" ----------------- initaliz db end ---------------- ")
+      setRefresh(true);
+    });
+  }, []);
+
   const cleanLocationId = async () => {
     await storeLocalValue('@specific_location_id', '');
   };
@@ -75,9 +86,9 @@ export default function MainPage(props) {
       setIsLoading(true);
       getApiRequest('home/main-dashboard', param)
         .then(async res => {
+
           if (isSubscribed) {
-            setIsLoading(false);
-            console.log('visits_card', JSON.stringify(res.items.visits_card));
+            setIsLoading(false);            
             setVisitCard(res.items.visits_card);
             setActivityCard(res.items.activity_card);
             setCurrentCall(res.items.current_call);
@@ -120,6 +131,7 @@ export default function MainPage(props) {
     setIsStart(startMyDay === null || startMyDay === '1' ? true : false);
   };
 
+  
   const _callMyDay = () => {
     var userParam = getPostParameter(currentLocation);
     var postData = {
@@ -145,31 +157,30 @@ export default function MainPage(props) {
       .catch(e => {});
   };
 
+
   const onCaptureAction = async ({type, value}) => {
     dispatch(
       showNotification({
-        type: 'success',
+        type: Strings.Success,
         message: value,
         buttonText: Strings.Ok,
       }),
     );
   };
 
+
   const renderCards = (item, index) => {
     if (index == 0) {
       return (
-        <View
-          onLayout={e => {
-            const newWidth = e.nativeEvent.layout.width;
-          }}
-          key="1"
+        <View          
+          key={index}
           style={{marginRight: 1, width: pageWidth}}>
           <Visits {...props} visitCard={visitCard} />
         </View>
       );
     } else if (index == 1) {
       return (
-        <View key="2" style={{marginRight: 1, width: pageWidth}}>
+        <View key={index} style={{marginRight: 1, width: pageWidth}}>
           {activityCard && (
             <ActivityCard activityCard={activityCard}></ActivityCard>
           )}
@@ -177,29 +188,31 @@ export default function MainPage(props) {
       );
     } else if (index == 2) {
       return (
-        <View key="3" style={{marginRight: 1, width: pageWidth}}>
+        <View key={index} style={{marginRight: 1, width: pageWidth}}>
           <Text>dd</Text>
         </View>
       );
     }
   };
 
+
   return (
     <ScrollView style={{flex: 1, marginHorizontal: 10}}>
       <Notification></Notification>
+
       <View style={{marginTop: 5}}>
         <SubmitButton
           bgStyle={{
             backgroundColor: isStart ? Colors.disabledColor : Colors.redColor,
             borderRadius: 3,
           }}
-          title={isStart ? 'Start My Day' : 'End My Day'}
+          title={isStart ? Strings.Start_My_Day : Strings.End_My_Day}
           onSubmit={() => {
             _callMyDay();
           }}></SubmitButton>
       </View>
 
-      <SyncAll></SyncAll>
+      <SyncAll refresh={refresh}></SyncAll>
 
       {isCheckin && (
         <CheckOut
@@ -208,8 +221,7 @@ export default function MainPage(props) {
       )}
 
       <FlatList
-        removeClippedSubviews={false}
-        // maxToRenderPerBatch={10}
+        removeClippedSubviews={false}        
         initialNumToRender={10}
         horizontal={true}
         pagingEnabled={true}

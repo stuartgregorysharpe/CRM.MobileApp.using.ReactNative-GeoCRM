@@ -5,7 +5,7 @@ import SelectDevicesView from '../components/SelectDevicesView';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 
 const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
@@ -80,11 +80,11 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
                 {...props}
             />
 
-            <SubmitButton style={{marginHorizontal:10}} title={"Allocate Devices"} onSubmit={allocateDevices}/>
+            <SubmitButton style={{marginHorizontal:10}} title={Strings.Stock.Allocate_Device} onSubmit={allocateDevices}/>
             
             <StockSignatureModal
                 ref={stockSignatureModalRef}
-                title="Please Sign below:"
+                title={Strings.Stock.Please_Sign}
                 locationId={0}
                 item={stockItem}
                 signatureModalType="save"

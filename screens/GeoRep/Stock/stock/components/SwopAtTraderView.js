@@ -8,7 +8,7 @@ import CTextInput from '../../../../../components/common/CTextInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 import { validateMsisdn } from '../../../../../helpers/formatHelpers';
 var previousText = Constants.msisdnPrefix;
 
@@ -77,7 +77,7 @@ export default function SwopAtTraderView(props) {
               style={{marginVertical: 24}}
           />              
 
-          <AppText title="Allocate Device" type="secondaryBold" size="medium"></AppText>
+          <AppText title={Strings.Stock.Allocate_Device} type="secondaryBold" size="medium"></AppText>
 
           <CardView style={{ marginTop:10, borderColor:whiteLabel().borderColor, borderWidth:1}}>
               <View style={{padding:5}}>
@@ -86,15 +86,16 @@ export default function SwopAtTraderView(props) {
               </View>
           </CardView>
 
+
           <CTextInput                 
-              label="Assign MSISDN"                    
+              label={Strings.Assign_Msisdn}
               value={msisdn}
               returnKeyType={'done'}                                        
               keyboardType={'number-pad'}
               isRequired={true}            
               maxLength={11}
               hasError={hasMsisdnError}
-              errorText={Constants.msisdnErrorMessage}
+              errorText={Strings.MSISDN_Error_Message}
               onChangeText={text => {
                 if(text.length <= 2){
                   setMsisdn(Constants.msisdnPrefix)
@@ -117,8 +118,9 @@ export default function SwopAtTraderView(props) {
               }}
               style={{marginTop:10  , }}
           />
+          
           {            
-            <SubmitButton title="Add Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={() =>{
+            <SubmitButton title={Strings.Stock.Add_Stock} style={{marginTop:10 , marginBottom:30}} onSubmit={() =>{
               if(!validateMsisdn(msisdn)){
                 setHasMsisdnError(true);
                 return;

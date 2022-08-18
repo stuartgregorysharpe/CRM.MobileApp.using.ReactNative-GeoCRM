@@ -1,60 +1,105 @@
 import { View , TouchableOpacity} from 'react-native'
-import React , {useState} from 'react'
+import React , {useState  , useRef, useEffect } from 'react'
 import { style } from '../../../../constants/Styles'
 import SvgIcon from '../../../../components/SvgIcon'
 import Colors, { whiteLabel } from '../../../../constants/Colors'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AppText } from '../../../../components/common/AppText';
+import {BasketListContainer} from './containers/BasketListContainer'
+import { RotationAnimation } from '../../../../components/common/RotationAnimation'
+import { getBascketLastSyncTableData } from '../../../../sqlite/BascketLastSyncsHelper'
+import { Strings, Values } from '../../../../constants'
+
 
 export default function SyncAll(props) {  
 
-  const [expanded,setExpanded] = useState(false);
-  const [syncData, setSyncData] = useState(["","",""]);
+  const [expanded,setExpanded] = useState(false);  
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastSyncedDate, setLastSyncedDate] = useState('');
+  const basketRef = useRef();
 
-  const renderSyncData = (item, index) => {
-    return (
-      <View key={index} style={{ justifyContent:'center', flexDirection:'column'}}>
-        <View style={{height:1, backgroundColor:Colors.lightGreyColor}}></View>
-        <View style={{flexDirection:'row', marginTop:10, marginBottom:5, marginLeft:5}}>
-            <View style={{flex:1}}>
-              <AppText title={index === 0 ? 'Locations' : index === 1 ? 'Products' : 'Stock'} color={whiteLabel().mainText} style={{fontSize:11}}></AppText>
-            </View>
-            <View style={{flex:1}}>
-                <AppText title="21 April 2022 18:45" color={Colors.disabledColor} style={{fontSize:11}}></AppText>
-            </View>
-            <SvgIcon icon="Check_Circle" width='16' height='16' style={{marginRight:10}} />          
-        </View>
-      </View>
-    )
+  const updateLoading = (loading) => {
+    setIsLoading(loading);
+    if(loading){
+      initLastSyncAllDateTime();
+    }
+  }
+  
+  useEffect(() => {
+    initLastSyncAllDateTime();
+  }, [props.refresh])
+
+  useEffect(() => {
+    let isMount = true;        
+    if(isMount && expanded && isLoading){      
+        if(basketRef.current && basketRef.current.startSync){    
+          basketRef.current.startSync();
+        }
+    }else if(isMount && expanded && !isLoading){
+      if(basketRef.current && basketRef.current.expand){    
+        basketRef.current.expand();
+      }        
+    }
+    
+    return () => {
+      isMount = false;
+    };
+
+  }, [isLoading, expanded])
+
+  useEffect(() => {
+    if(!isLoading){
+      initLastSyncAllDateTime();
+    }    
+  }, [isLoading]);
+
+  const initLastSyncAllDateTime = async() => {       
+    var res  =  await getBascketLastSyncTableData("sync_all");
+    var title = '';
+    if(res.length > 0){                                                
+        title = Strings.Last_Synced_Date + res.item(0).timestamp;
+    }      
+    setLastSyncedDate(title);
   }
 
   return (
     <View style={[style.scrollTabCard, {marginTop:10, flexDirection:'column' , paddingTop:5, paddingBottom:5 }]}>
         <View style={{flexDirection:'row', alignItems:'flex-start'}}>      
-          <View style={{backgroundColor:whiteLabel().actionFullButtonBackground , borderRadius:5, marginLeft:5 }}> 
-              <SvgIcon icon="Sync" width='50' height='50' />
-          </View>
-          <View style={{flex:1,  marginLeft:10 , marginTop:3}}>
-            <AppText title="Sync All" type="secondaryBold" color={whiteLabel().mainText} style={{fontSize:12}} ></AppText>
-            <AppText title="Last date synced 12 May 2021" type="secondaryMedium" color={Colors.disabledColor} style={{ fontSize:11, marginTop:5}}></AppText>
+          {
+            !isLoading &&
+            <TouchableOpacity onPress={() => {              
+                if(basketRef.current && basketRef.current.startSync){
+                  basketRef.current.startSync();                  
+                }else{
+                  setExpanded(true)
+                  setIsLoading(true)
+                }
+            }}>
+              <View style={{backgroundColor:whiteLabel().actionFullButtonBackground , borderRadius:5, marginLeft:5 }}>           
+                  <SvgIcon icon="Sync" width='50' height='50' />
+              </View>
+            </TouchableOpacity>
+          }
+
+          {                
+            isLoading && <RotationAnimation  style={{width:50, height:50}} />
+          }
+
+          <View style={{flex:1,  marginLeft:7 , marginTop:3}}>
+            <AppText title="Sync All" type="secondaryBold" color={whiteLabel().mainText} style={{fontSize:Values.fontSize.xSmall}} ></AppText>
+            <AppText title={lastSyncedDate} type="secondaryMedium" color={Colors.disabledColor} style={{ fontSize:Values.fontSize.xxSmall , marginTop:5}}></AppText>
           </View>
 
-          <View style={{flexDirection:'row', marginTop:2 , marginRight: 10 , alignItems:'center' , justifyContent:'center'}}>            
+          <View style={{flexDirection:'row', marginTop:2 , marginRight: 5 , alignItems:'center' , justifyContent:'center'}}>            
+            
             <Icon
                 name={`info-outline`}
                 size={20}
-                color={Colors.redColor} 
-            />
+                color={Colors.redColor}/>
+
             <TouchableOpacity onPress={() => { setExpanded(!expanded)}}>
               <View style={{marginRight:10, marginLeft:10}}>
-                {
-                  expanded && 
-                  <SvgIcon icon={"Up_Arrow"} width='30' height='30'/>
-                }
-                {
-                  !expanded && 
-                  <SvgIcon icon={"Bottom_Arrow"} width='30' height='30' />
-                }
+                <SvgIcon icon={ expanded ? "Up_Arrow" : "Bottom_Arrow"} width='30' height='30'/>                
               </View>
             </TouchableOpacity>
           </View>      
@@ -62,15 +107,8 @@ export default function SyncAll(props) {
 
         {
           expanded &&
-          <View style={{paddingHorizontal:10, marginTop:10}}>
-              {
-                syncData.map((item, index) => {
-                  return renderSyncData(item, index)
-                })
-              }
-          </View>
-        }
-        
+            <BasketListContainer ref={basketRef} updateLoading={updateLoading} />      
+        }        
     </View>
   )
 }

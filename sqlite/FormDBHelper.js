@@ -1,10 +1,9 @@
 
-import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { enablePromise} from 'react-native-sqlite-storage';
 
 const tableName = 'formTable';
 
 enablePromise(true);
-
 
 export const createTable = async (db) => {
     await db.transaction(async(tx) =>{        
@@ -12,6 +11,7 @@ export const createTable = async (db) => {
         await tx.executeSql(query);
     });
 };
+
 
 export const insertTable = async (db , formId, formQuestions, indempotencyKey) => {
     var check = await getFormTableData(db, formId);    

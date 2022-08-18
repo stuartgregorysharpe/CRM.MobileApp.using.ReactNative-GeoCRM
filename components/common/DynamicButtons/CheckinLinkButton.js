@@ -16,6 +16,7 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
+import { Strings } from '../../../constants';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -163,7 +164,7 @@ const CheckinLinkButton = props => {
       dispatch(
         showNotification({
           type: 'success',
-          message: 'You are currently checked-in to a location',
+          message: Strings.You_Are_Currenly_Checkedin,
           buttonText: 'Continue',
           buttonAction: async () => {
             navigation.navigate('DeeplinkLocationSpecificInfoScreen', {

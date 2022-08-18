@@ -27,6 +27,9 @@ const LocationWatcher = props => {
   }
 
   const onUpdateCurrentLocation = position => {
+
+    console.log('GmsLocationMap_currentLocation', position);
+
     dispatch({
       type: CHANGE_CURRENT_LOCATION,
       payload: {

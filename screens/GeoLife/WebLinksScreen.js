@@ -4,6 +4,7 @@ import { SafeAreaView, View, StyleSheet, ScrollView } from 'react-native';
 import Searchbar from '../../components/SearchBar';
 import Card from '../../screens/GeoRep/ContentLibrary/partial/Card';
 import { BG_COLOR } from '../../constants/Colors';
+import Images from '../../constants/Images';
 
 const lists = [
   {
@@ -15,15 +16,15 @@ const lists = [
     title: "Geo Rep International"
   },
   {
-    image: require("../../assets/images/linkedin.png"),
+    image: Images.linkedin,
     title: "Linkedin"
   },
   {
-    image: require("../../assets/images/mask_group.png"),
+    image: Images.maskGroup,
     title: "CNN News"
   },
   {
-    image: require("../../assets/images/chrome.png"),
+    image: Images.chrom,
     title: "Google Search"
   }
 ];

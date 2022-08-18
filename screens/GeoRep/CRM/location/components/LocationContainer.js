@@ -36,7 +36,9 @@ import {getPolygonData} from '../helper';
 import Bubble from './Bubble';
 import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
+
 const LocationContainer = props => {
+  
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -59,7 +61,7 @@ const LocationContainer = props => {
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
-  const isShowZoomLabel = isZoomOut;
+  const isShowZoomLabel = isZoomOut || isLoading;
   console.log('isLoading', isLoading);
   console.log('isZoomOut', isZoomOut);
   console.log('isShowZoomLabel', isShowZoomLabel);
@@ -171,6 +173,7 @@ const LocationContainer = props => {
   };
   const openLocationInfoDetails = locationId => {
     if (locationInfoModalRef && locationInfoModalRef.current) {
+      console.log("open modal")
       locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
@@ -204,10 +207,11 @@ const LocationContainer = props => {
     });
     dispatch({
       type: SELECTED_LOCATIONS_FOR_CALENDAR,
-      payload: selectedLocations,
+      payload: selectedLocations, 
     });
   };
   const onMarkerPressed = (item, key) => {
+    
     const itemLocationId = item.location_id;
     if (isCalendarSelection) {
       let selectedLocations = [...selectedLocationsForCalendar];
@@ -235,7 +239,7 @@ const LocationContainer = props => {
         type: SELECTED_LOCATIONS_FOR_CALENDAR,
         payload: selectedLocations,
       });
-    } else {
+    } else {      
       openLocationInfoDetails(Number(item.location_id));
     }
   };
@@ -263,6 +267,7 @@ const LocationContainer = props => {
           onClickAddToCalendar={onOpenAddToCalendar}
         />
       )}
+      
       <LocationMap
         polygonData={polygonData}
         markers={markers}
@@ -273,6 +278,7 @@ const LocationContainer = props => {
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
       />
+
       {isShowZoomLabel && (
         <Bubble
           title="Zoomed out too far, zoom in to see results"
@@ -289,7 +295,9 @@ const LocationContainer = props => {
             addLeadModalRef.current.showModal();
           }
         }}>
+
         <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
+
       </TouchableOpacity>
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />
@@ -312,6 +320,7 @@ const LocationContainer = props => {
       <LocationInfoDetailModal
         ref={locationInfoModalRef}
         locInfo={locationInfo}
+        navigation={navigation}
         pageType={{name: 'search-lists'}}
       />
     </View>

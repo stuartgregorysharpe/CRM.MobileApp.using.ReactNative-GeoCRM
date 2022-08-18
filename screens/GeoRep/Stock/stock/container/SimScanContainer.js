@@ -1,6 +1,6 @@
 
 import { View } from 'react-native'
-import React , {useEffect, useState , useRef} from 'react'
+import React from 'react'
 import { Constants } from '../../../../../constants';
 import SimScanView from '../components/SimScanView';
 

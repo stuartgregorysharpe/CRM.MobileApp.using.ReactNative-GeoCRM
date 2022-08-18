@@ -5,26 +5,19 @@ import {style} from '../../../constants/Styles';
 import MainPage from './Main/MainPage';
 import {useSelector} from 'react-redux';
 import ActionItemsContainer from '../CRM/action_items/containers/ActionItemsContainer';
+import { generateTabs } from './helper';
+import { initializeDB } from '../../../services/SyncDatabaseService/SyncTable';
 
 export default function HomeScreen(props) {
+
   const [tabIndex, setTabIndex] = useState('Main');
-  const [tabs, setTabs] = useState([{name: 'Main', id: 0}]);
-  const features = useSelector(
-    state => state.selection.payload.user_scopes.geo_rep.features,
-  );
+  const [tabs, setTabs] = useState([{name: 'Main', id: 0}]);  
+  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
 
   useEffect(() => {
-    var tmp = [];
-    if (features.includes('actions_items')) {
-      tmp = [...tabs, {name: 'Actions', id: tabs.length + 1}];
-    }
-    if (features.includes('leaderboard')) {
-      tmp = [...tmp, {name: 'Leaderboard', id: tmp.length + 1}];
-    }
-    if (features.includes('sales')) {
-      tmp = [...tmp, {name: 'Sales', id: tmp.length + 1}];
-    }
-    setTabs(tmp);
+    setTabs(generateTabs(tabs, features));
+    console.log("offline db call -------")
+    
   }, []);
 
   useEffect(() => {
@@ -56,8 +49,11 @@ export default function HomeScreen(props) {
             setTabIndex(item.name);
           }}></ScrollTab>
       </View>
-      {tabIndex === 'Main' && <MainPage {...props}></MainPage>}
+      
+      {tabIndex === 'Main' && <MainPage {...props}> </MainPage>}
       {tabIndex === 'Actions' && <ActionItemsContainer />}
+
     </View>
   );
 }
+

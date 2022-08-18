@@ -1,9 +1,9 @@
-import { View, Text ,StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
-import React , { useState } from 'react'
+import { View, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import React  from 'react'
 import { AppText } from '../../../../../components/common/AppText';
 import SvgIcon from '../../../../../components/SvgIcon';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 
 export default function SimViewListsView(props) {
@@ -60,7 +60,7 @@ export default function SimViewListsView(props) {
                     })
                 }
             </ScrollView>
-            <SubmitButton title= {type == "add_stock_view_lists" ? "Add Stock" : "Sell To Trader"} style={{marginTop:20 , marginBottom:30}} onSubmit={addStock}></SubmitButton>          
+            <SubmitButton title= {type == "add_stock_view_lists" ? Strings.Stock.Add_Stock : "Sell To Trader"} style={{marginTop:20 , marginBottom:30}} onSubmit={addStock}></SubmitButton>          
         </View>
     )
 }
@@ -71,8 +71,7 @@ const styles = StyleSheet.create({
   container: {
       alignSelf: 'stretch',
       paddingTop: 10,
-      marginHorizontal: 20,
-      //marginBottom: 30,
+      marginHorizontal: 20,      
       paddingBottom:0,      
       height:Dimensions.get("window").height * 0.6
   },

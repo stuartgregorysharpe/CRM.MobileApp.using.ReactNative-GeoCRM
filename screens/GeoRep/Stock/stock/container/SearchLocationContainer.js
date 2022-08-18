@@ -5,7 +5,7 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import SearchLocationView from '../components/SearchLocationView';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../../../../actions/notification.action';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 
 export default function SearchLocationContainer(props) {
          
@@ -29,10 +29,7 @@ export default function SearchLocationContainer(props) {
     },[lists]);
 
     const onItemPressed = (item) => {    
-        console.log("item pressed", item);    
-        console.log("parame", item.location_id);
-
-        console.log("stockType", stockType);
+        
         if(stockType ==  Constants.stockDeviceType.SELL_TO_TRADER){
             props.onSubmit(stockType , item.location_id);
         }else{
@@ -46,7 +43,8 @@ export default function SearchLocationContainer(props) {
                 }else{                
                 }
             }).catch((e) => {
-                dispatch(showNotification({type:'success', message: 'No devices found', buttonText:'Ok'}))
+                console.log("error",e)
+                dispatch(showNotification({type: Strings.Success , message: Strings.Stock.No_Device_Found , buttonText:'Ok'}))
             })
         }        
     }

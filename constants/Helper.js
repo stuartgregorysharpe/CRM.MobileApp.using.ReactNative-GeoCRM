@@ -339,10 +339,7 @@ export function expireToken(dispatch, e) {
 
   }else{
     message = 'Submission timed out, Please try again or contact support';
-  }
-
-  
-
+  }  
 }
 
 export function getPostParameter(location) {

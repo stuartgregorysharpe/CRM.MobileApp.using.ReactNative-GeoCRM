@@ -1878,6 +1878,11 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/hooks/-/hooks-2.8.1.tgz"
   "version" "2.8.1"
 
+"@react-native-community/progress-view@^1.3.2":
+  "integrity" "sha512-2i8aAIl4Nu9kwd189LXPJd3yjlu9Snn97zhEAGF9UXlIOWUXOCSS0cwZHIywu1/x+VFlzwuXFL+I7WVdHw+FtQ=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/progress-view/-/progress-view-1.3.2.tgz"
+  "version" "1.3.2"
+
 "@react-native-windows/cli@0.67.1":
   "integrity" "sha512-lIVsXxLOhTHed5rzCowEmmTOZRdtRwSlK1F+cMtqd4i4M02UUAUEm5nVWAErkmalEkNhFGjqBW71oTbNVnW6Jw=="
   "resolved" "https://registry.npmjs.org/@react-native-windows/cli/-/cli-0.67.1.tgz"
@@ -7116,9 +7121,9 @@
     "point-in-polygon" "^1.0.1"
 
 "react-native-circular-progress-indicator@^4.1.0":
-  "integrity" "sha512-1fvFzqF5NcSygEzcGNll2GS8Zv7QzG4IjSoMbgsV5ddxh2Lwf70HMM4BX43MUkKOEOcOmsjxqN2TwQP8/2uCIA=="
-  "resolved" "https://registry.npmjs.org/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.1.1.tgz"
-  "version" "4.1.1"
+  "integrity" "sha512-xTMlic71wEZ4XBLLRdpFSik0waslKTNOIa19SE0LqKvmq0DpQKbHHivrlqE/XHJUTADki9tJ+OObq3VGji0IsA=="
+  "resolved" "https://registry.npmjs.org/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.1.0.tgz"
+  "version" "4.1.0"
 
 "react-native-codegen@^0.0.8":
   "integrity" "sha512-k/944+0XD+8l7zDaiKfYabyEKmAmyZgS1mj+4LcSRPyHnrjgCHKrh/Y6jM6kucQ6xU1+1uyMmF/dSkikxK8i+Q=="
@@ -7134,10 +7139,10 @@
   "resolved" "https://registry.npmjs.org/react-native-detect-press-outside/-/react-native-detect-press-outside-1.0.4.tgz"
   "version" "1.0.4"
 
-"react-native-device-info@^8.4.8":
-  "integrity" "sha512-92676ZWHZHsPM/EW1ulgb2MuVfjYfMWRTWMbLcrCsipkcMaZ9Traz5mpsnCS7KZpsOksnvUinzDIjsct2XGc6Q=="
-  "resolved" "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.4.8.tgz"
-  "version" "8.4.8"
+"react-native-device-info@^8.7.1":
+  "integrity" "sha512-cVMZztFa2Qn6qpQa601W61CtUwZQ1KXfqCOeltejAWEXmgIWivC692WGSdtGudj4upSi1UgMSaGcvKjfcpdGjg=="
+  "resolved" "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.7.1.tgz"
+  "version" "8.7.1"
 
 "react-native-document-picker@^8.1.0":
   "integrity" "sha512-FdaehvEoqkVkMTkIy09wpgHUHh9SskI1k8ug8Dwkwk7MJ+XxzrphAk/mXZtu5RkM1Iwxmd82QfwiQJxrZ2LSVg=="
@@ -7405,7 +7410,7 @@
     "whatwg-fetch" "^3.0.0"
     "ws" "^6.1.4"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@^0.67.0", "react-native@> 0.57", "react-native@>= 0.50.0", "react-native@>= 0.51", "react-native@>= 0.62", "react-native@>=0.14.0", "react-native@>=0.42.0", "react-native@>=0.47", "react-native@>=0.47.1", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@>=0.64.0", "react-native@>=0.65.0", "react-native@>=v0.40.0", "react-native@0.67.1", "react-native@0.67.2":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@^0.67.0", "react-native@> 0.57", "react-native@>= 0.50.0", "react-native@>= 0.51", "react-native@>= 0.62", "react-native@>=0.14.0", "react-native@>=0.42.0", "react-native@>=0.47", "react-native@>=0.47.1", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.59.5", "react-native@>=0.60.0", "react-native@>=0.64.0", "react-native@>=0.65.0", "react-native@>=v0.40.0", "react-native@0.67.1", "react-native@0.67.2":
   "integrity" "sha512-grEtpOLLvtSg8Bivg0ffVRCjTkresqMt7Jdog/geF6VAYhb4RnLaaUCWvyrfyB9buf135FKnqg5BIuve/XQNXA=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.2.tgz"
   "version" "0.67.2"
@@ -7476,7 +7481,7 @@
     "react-shallow-renderer" "^16.13.1"
     "scheduler" "^0.20.2"
 
-"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.6 || ^17.0.0", "react@^17.0.0", "react@> 16.7.0", "react@>= 16.0 || < 18.0", "react@>= 16.x", "react@>=16.3.0", "react@>=16.8.0", "react@>=16.8.6", "react@>=17.0.1", "react@17.0.2":
+"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.6 || ^17.0.0", "react@^17.0.0", "react@> 16.7.0", "react@>= 16.0 || < 18.0", "react@>= 16.x", "react@>=16.3.0", "react@>=16.8.0", "react@>=16.8.6", "react@>=17.0.1", "react@>16.8.3", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"

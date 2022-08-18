@@ -6,7 +6,7 @@ import SimScanContainer from '../../container/SimScanContainer';
 
 
 const SimScanModal = React.forwardRef((props, ref) => {
-  const {item} = props;
+  
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);

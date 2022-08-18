@@ -13,9 +13,7 @@ import {TextInput} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
-import {baseURL} from '../constants';
-import {PRIMARY_COLOR, whiteLabel} from '../constants/Colors';
+import {whiteLabel} from '../constants/Colors';
 import {checkEmail, Login, loginWithEmail} from '../actions/auth.action';
 import {
   CHANGE_LOGIN_STATUS,
@@ -29,8 +27,7 @@ import Fonts from '../constants/Fonts';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   getFilterData,
-  getLocalData,
-  getPinSvg,
+  getLocalData,  
   getToken,
   getUserData,
   storeLocationLoop,
@@ -39,11 +36,11 @@ import {
 import jwt_decode from 'jwt-decode';
 import {displayName} from '../app.json';
 import {clearNotification} from '../actions/notification.action';
-import {getDynamicPins, getPinSvgLists} from '../actions/pins.actions';
-import {getDBConnection} from '../sqlite/DBHelper';
-import {createTable} from '../sqlite/FormDBHelper';
+import {getDynamicPins} from '../actions/pins.actions';
+import { Images } from '../constants';
 
 export default function SignIn() {
+
   const loginStatus = useSelector(state => state.auth.loginStatus);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,21 +54,16 @@ export default function SignIn() {
   const passwordInput = useRef();
   const dispatch = useDispatch();
 
-  //clinton@cydcor.com / Test2021#
-
   useEffect(() => {
-    initView();
-    //initializeDB();
+    initView();    
   }, [loginStatus]);
 
-  const initializeDB = async () => {
-    const db = await getDBConnection();
-    if (db != null) await createTable(db);
-  };
 
   const initView = async () => {
+    
     var date = new Date().getDate();
     var month = new Date().getMonth();
+
     var current = await getLocalData('@current_date');
     if (current !== month.toString() + date.toString()) {
       await storeLocationLoop([]);
@@ -87,8 +79,7 @@ export default function SignIn() {
       dispatch({type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token)});
       dispatch({type: CHANGE_LOGIN_STATUS, payload: 'success'});
     }
-
-    dispatch(clearNotification());
+    dispatch(clearNotification());    
   };
 
   const handleNext = () => {
@@ -117,15 +108,12 @@ export default function SignIn() {
           res.success &&
           res.success.message === 'User authenticated successfully'
         ) {
-          //var pinSvg = await getPinSvg();
-          var filters = await getFilterData('@filter');
-          //if(pinSvg === null){
-          //getPinSvgLists(res.success.access_token).then( async(pinItems) => {
-
+          console.log("dd---")
+          var filters = await getFilterData('@filter');          
           getDynamicPins(res.success.access_token)
             .then(async mapPins => {
-              await storePinSvg('@map_pin_key', mapPins);
-              //await storePinSvg( "@pin_key" , pinItems);
+              console.log("respnose", mapPins)
+              await storePinSvg('@map_pin_key', mapPins);              
               dispatch({type: MAP_FILTERS, payload: filters});
               dispatch({type: CHANGE_USER_INFO, payload: res.success.user});
               dispatch({
@@ -141,14 +129,9 @@ export default function SignIn() {
             })
             .catch(e => {
               console.log('E', e);
-            });
-
-          // }).catch((e) => {
-          //   console.log("ERROR", e);
-          //   setIsLoading(false);
-          // })
-          //}
+            });          
         } else if (res.status === 'failed') {
+          console.log("failed", res);
           setErrorMsg(res.message);
           setPasswordError(true);
           setIsLoading(false);
@@ -158,6 +141,7 @@ export default function SignIn() {
         setIsLoading(false);
       });
   };
+
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -178,7 +162,7 @@ export default function SignIn() {
         <View style={styles.container}>
           <Image
             style={styles.logo}
-            source={require('../assets/images/signIn_logo.png')}
+            source={Images.signInLogo}
           />
           <Text style={styles.title}>Welcome to</Text>
           <Text style={styles.title}>{displayName}</Text>
@@ -271,6 +255,7 @@ export default function SignIn() {
               icon={faAngleDoubleRight}
             />
           </TouchableOpacity>
+  
 
           {step && (
             <TouchableOpacity onPress={() => {}}>
@@ -340,7 +325,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.secondaryBold,
   },
-
+  
   submitButtonIcon: {
     position: 'absolute',
     right: 10,
@@ -350,9 +335,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
   },
-
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-  },
+  
 });

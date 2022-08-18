@@ -1,7 +1,7 @@
 
 import { View } from 'react-native'
-import React , {useEffect, useState , useRef} from 'react'
-import { useDispatch , useSelector } from 'react-redux';
+import React , {useState , useRef} from 'react'
+import { useSelector } from 'react-redux';
 import { Constants } from '../../../../../constants';
 import StockConsumableView from '../components/StockConsumableView';
 import SearchLocationModal from '../modal/SearchLocationModal';
@@ -27,7 +27,6 @@ export default function StockConsumableContainer(props) {
 
     const onSearchLocation = async({type, value}) => {
         if(type == Constants.actionType.ACTION_NEXT){            
-            console.log("Location id", value.locationId);
             if(stockType === Constants.stockDeviceType.SELL_TO_TRADER){                                
                 props.openSellToTrader(Constants.stockDeviceType.SELL_TO_TRADER , value.locationId);
             }else if(stockType === Constants.stockDeviceType.SWOP_AT_TRADER){

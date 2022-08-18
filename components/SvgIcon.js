@@ -887,6 +887,13 @@ const Sync = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3
 </g>
 </svg>
 `;
+const Colored_Sync = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="205" height="203" viewBox="0 0 205 203">
+<g id="Group_5132" data-name="Group 5132" transform="translate(22.065 17.386)"> 
+  <path id="Path_3988" data-name="Path 3988" d="M41.172,14.94V1L22.586,19.586,41.172,38.172V24.233A27.9,27.9,0,0,1,69.052,52.112,27.278,27.278,0,0,1,65.8,65.122l6.784,6.784A37.107,37.107,0,0,0,41.172,14.94Zm0,65.052A27.9,27.9,0,0,1,13.293,52.112,27.277,27.277,0,0,1,16.546,39.1L9.762,32.318A37.107,37.107,0,0,0,41.172,89.284v13.94L59.758,84.638,41.172,66.052Z" transform="translate(41.669 26.147)" fill=${actionIconBackground}/>
+</g>
+</svg>
+`;
+
 const Up_Arrow2 = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48"><path d="M14.15 30.75 12 28.6 24 16.6 36 28.55 33.85 30.7 24 20.85Z " fill="#9d9fa2" /></svg>`;
 
 const Up_Arrow = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path d="M14.15 30.75 12 28.6 24 16.6 36 28.55 33.85 30.7 24 20.85Z" fill="#9d9fa2"/></svg>`;
@@ -1156,6 +1163,8 @@ const Image_Capture_Disable = `<svg xmlns="http://www.w3.org/2000/svg" width="10
 `;
 
 export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
+
+  
   <Fragment>
     {icon == 'Round_Btn_Default_Dark' && (
       <SvgXml
@@ -1576,8 +1585,15 @@ export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
       <SvgXml style={style} xml={Check_Circle} width={width} height={height} />
     )}
     {icon == 'Sync' && (
-      <SvgXml style={style} xml={Sync} width={width} height={height} />
+      <SvgXml 
+      fill={color != undefined ? color : '#fff'}
+      style={[style, {color:'#000'}]} xml={Sync} width={width} height={height} />
     )}
+    {icon == 'Colored_Sync' && (
+      <SvgXml       
+      style={style} xml={Colored_Sync} width={width} height={height} />
+    )}
+
     {icon == 'Bottom_Arrow' && (
       <SvgXml style={style} xml={Bottom_Arrow} width={width} height={height} />
     )}
