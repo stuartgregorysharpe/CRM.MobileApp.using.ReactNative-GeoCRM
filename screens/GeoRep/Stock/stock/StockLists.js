@@ -260,7 +260,7 @@ export default function StockLists() {
             
             <StockSignatureModal
                 ref={stockSignatureModalRef}
-                title="Please Sign below:"
+                title={Strings.Stock.Please_Sign}
                 locationId={locationId}
                 item={stockItem}
                 selectedCodes={selectedCodes}

@@ -4,6 +4,7 @@ import { Button } from 'react-native-paper';
 import SignatureScreen from "react-native-signature-canvas";
 import Divider from '../../../../../components/Divider';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
+import { Strings } from '../../../../../constants';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import { style } from '../../../../../constants/Styles';
@@ -78,7 +79,7 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
             
                         <View style={[styles.titleContainer, {marginTop:5}]}>
                             <View style={{flex:1, alignItems:'center'}}>
-                                <Text style={styles.titleStyle} >Please Sign Below:</Text>
+                                <Text style={styles.titleStyle} >{Strings.Stock.Please_Sign}</Text>
                             </View>
                                       
                             <Button

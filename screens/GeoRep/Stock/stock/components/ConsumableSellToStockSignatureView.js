@@ -8,7 +8,7 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import RNFS from "react-native-fs";
 import { AppText } from '../../../../../components/common/AppText';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
-import { Fonts, Values } from '../../../../../constants';
+import { Fonts, Strings, Values } from '../../../../../constants';
 
 
 export default function ConsumableSellToStockSignatureView(props) {
@@ -148,7 +148,7 @@ export default function ConsumableSellToStockSignatureView(props) {
             />
 
             <View style={{alignItems:'center', marginTop:10}}>
-                <AppText size="big" color={whiteLabel().mainText} title="Please Sign Below:"></AppText>                
+                <AppText size="big" color={whiteLabel().mainText} title={Strings.Stock.Please_Sign}></AppText>                
                 <TouchableOpacity
                       style={styles.clearButtonContainer}
                       onPress={onClear}>

@@ -30,7 +30,10 @@ export default {
         No_Device_Found: 'No devices found',
         Allocate_Device: 'Allocate Device',
         Have_You_Tried:'Have you tried scanning first?',
-        Input_ICCID: 'Input ICCID'
+        Input_ICCID: 'Input ICCID',
+        Return_All_Stock: 'Return All Stock To Warehouse',
+        Return_Stock: 'Return Stock',
+        Please_Sign: 'Please Sign below:'
 
     }
 

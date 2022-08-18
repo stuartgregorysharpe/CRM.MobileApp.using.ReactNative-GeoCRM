@@ -84,7 +84,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
             
             <StockSignatureModal
                 ref={stockSignatureModalRef}
-                title="Please Sign below:"
+                title={Strings.Stock.Please_Sign}
                 locationId={0}
                 item={stockItem}
                 signatureModalType="save"

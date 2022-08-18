@@ -5,7 +5,7 @@ import ReturnListItem from './components/ReturnListItem';
 import ReturnListHeader from './components/ReturnListHeader';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import SearchLocationModal from '../stock/modal/SearchLocationModal';
-import { Constants } from '../../../../constants';
+import { Constants, Strings } from '../../../../constants';
 import { useSelector } from 'react-redux';
 import ReturnDeviceDetailModal from './modal/ReturnDeviceDetailModal';
 import StockSignatureModal from '../stock/modal/device/StockSignatureModal';
@@ -47,7 +47,7 @@ export default function Returns() {
     }
   },[isCheckin]);
 
-  const initialize = async() =>{
+  const initialize = async() =>{  
     checkinLocationId = await getLocalData("@specific_location_id");    
     setLocationId(checkinLocationId);
   }
@@ -109,8 +109,8 @@ export default function Returns() {
         </View>
 
         <View style={{marginHorizontal:10 ,  marginBottom:10}}>
-          <SubmitButton title="Return Stock" onSubmit={() => onReturnStock() } ></SubmitButton>
-          <SubmitButton style={{marginTop:10}} title="Return All Stock To Warehouse" onSubmit={() => onStockToWarehouse()} ></SubmitButton>
+          <SubmitButton title={Strings.Stock.Return_Stock} onSubmit={() => onReturnStock() } ></SubmitButton>
+          <SubmitButton style={{marginTop:10}} title={Strings.Stock.Return_All_Stock} onSubmit={() => onStockToWarehouse()} ></SubmitButton>
         </View>
 
         <ReturnDeviceDetailModal 
@@ -129,7 +129,7 @@ export default function Returns() {
         
         <StockSignatureModal
             ref={stockSignatureModalRef}
-            title="Please Sign below:"
+            title={Strings.Stock.Please_Sign}
             locationId={locationId}
             item={stockItem}
             page = {Constants.stockType.RETURN}

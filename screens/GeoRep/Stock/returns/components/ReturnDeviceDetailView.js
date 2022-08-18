@@ -1,4 +1,4 @@
-import { View, Text ,StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Dimensions, ScrollView } from 'react-native'
 import React , { useState } from 'react'
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import { AppText } from '../../../../../components/common/AppText';
@@ -6,6 +6,7 @@ import { whiteLabel } from '../../../../../constants/Colors';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
+import { Strings } from '../../../../../constants';
 
 export default function ReturnDeviceDetailView(props) {
   
@@ -58,7 +59,7 @@ export default function ReturnDeviceDetailView(props) {
               style={{marginVertical: 24}}
           />              
 
-          <SubmitButton title="Return Stock" style={{marginTop:10 , marginBottom:30}} onSubmit={onReturnStock}></SubmitButton>          
+          <SubmitButton title={Strings.Stock.Return_Stock} style={{marginTop:10 , marginBottom:30}} onSubmit={onReturnStock}></SubmitButton>          
     </ScrollView>
   )
 }

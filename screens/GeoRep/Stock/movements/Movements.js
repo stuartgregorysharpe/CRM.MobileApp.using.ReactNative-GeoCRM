@@ -31,8 +31,7 @@ export default function Movements() {
     }
 
     const loadMoreData = () => {        
-        if(isPageLoading == false && isEndPageLoading == false){
-          console.log("page" , page);
+        if(isPageLoading == false && isEndPageLoading == false){          
             setPageLoading(true)
             getApiRequest("stockmodule/movements-list", {page_nr:page}).then((res) => {                
                 if(isMount){
