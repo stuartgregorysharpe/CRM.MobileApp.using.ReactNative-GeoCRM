@@ -69,6 +69,9 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
+    console.log('boundBox', boundBox);
+    console.log('isLoading', isLoading);
+
     if (isLoadable) {
       setIsLoading(true);
       getLocationMapByRegion(_currentLocation, boundBox)
@@ -121,10 +124,7 @@ const LocationContainer = props => {
     const isZoomLevelChangedToMinZoomLevel =
       (previousZoom < minZoomLevel && zoom >= minZoomLevel) ||
       (previousZoom >= zoom && zoom >= minZoomLevel);
-    const isReloadMarkers =
-      !isDrawMode &&
-      isRegionMarkerCountSmall &&
-      isZoomLevelChangedToMinZoomLevel;
+    const isReloadMarkers = !isDrawMode && isZoomLevelChangedToMinZoomLevel;
     if (isReloadMarkers) {
       setBoundBox(bBox);
       onLoadMarkers(currentLocation, bBox);

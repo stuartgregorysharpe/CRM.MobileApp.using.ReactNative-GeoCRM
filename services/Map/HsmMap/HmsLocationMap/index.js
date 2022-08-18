@@ -116,7 +116,7 @@ const HmsLocationMap = props => {
 
         //setCameraPosition(cameraPosition);
         const bBox = calculateBBoxFromHMS(visibleRegion);
-        props.onRegionChangeComplete(region, markers, bBox, zoom);
+        props.onRegionChangeComplete(region, [], bBox, zoom);
       }
     });
   };
