@@ -125,6 +125,7 @@ const HmsLocationMap = props => {
       latitude: currentLocation.latitude,
       longitude: currentLocation.longitude,
     });
+    mapRef.current.zoomTo(15);
   };
   const checkMarkerSelected = marker => {
     if (!selectedLocations) return false;
