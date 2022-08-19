@@ -32,6 +32,7 @@ const LocationWatcher = props => {
       ) {
         clearLocationWatch();
       }
+      appState.current = nextAppState;
     });
 
     return () => {
@@ -51,6 +52,7 @@ const LocationWatcher = props => {
   }
 
   const onUpdateCurrentLocation = position => {
+    console.log('onUpdateCurrentLocation -----', position);
     dispatch({
       type: CHANGE_CURRENT_LOCATION,
       payload: {
@@ -62,6 +64,7 @@ const LocationWatcher = props => {
   };
 
   const initLocationWatch = () => {
+    console.log('initLocationWatch ----');
     LocationService.getLocationService().then(locationService => {
       locationService.watchPosition(
         onUpdateCurrentLocation,
@@ -74,7 +77,7 @@ const LocationWatcher = props => {
     });
   };
   const clearLocationWatch = () => {
-    console.log('clearLocationWatch', watchIdRef.current);
+    console.log('clearLocationWatch ----', watchIdRef.current);
     if (watchIdRef.current) {
       LocationService.getLocationService().then(locationService => {
         locationService.clearWatch(watchIdRef.current);
