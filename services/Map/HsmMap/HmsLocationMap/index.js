@@ -219,6 +219,25 @@ const HmsLocationMap = props => {
       />
     );
   };
+  const renderMyLocationMarker = _location => {
+    const icon = {
+      uri: Image.resolveAssetSource(Images.currentLocationIcon).uri,
+      width: 50,
+      height: 50,
+    };
+    return (
+      <HMSMarker
+        key={'my_location_marker'}
+        icon={icon}
+        clusterable={false}
+        coordinate={{
+          latitude: Number(_location.latitude),
+          longitude: Number(_location.longitude),
+        }}
+        markerAnchor={[0.5, 0.5]}
+      />
+    );
+  };
   return (
     <View style={[styles.container, props.style]}>
       {isShowMap && (
@@ -233,6 +252,7 @@ const HmsLocationMap = props => {
           rotateGesturesEnabled={!isDrawMode}
           tiltGesturesEnabled={false}
           myLocationButtonEnabled={false}
+          myLocationEnabled={false}
           onCameraIdle={onRegionChangeComplete}
           compassEnabled={true}
           onMapClick={onPressMap}
@@ -240,6 +260,7 @@ const HmsLocationMap = props => {
           currentLocation={currentLocation}
           useAnimation={true}
           animationDuration={1000}>
+          {renderMyLocationMarker(currentLocation)}
           {renderDrawingPolygons(polylineEditing)}
           {renderMarkers(markers)}
           {renderPolygons(polygonData)}

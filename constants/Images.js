@@ -7,4 +7,5 @@ export default {
   waze: require('../assets/images/waze.png'),
   tmpSale: require('../assets/images/tmp_geo_sale.png'),
   selectedMarkerIcon: require('../assets/images/icons/ic_selected_marker.png'),
+  currentLocationIcon: require('../assets/images/icons/ic_current_location.png'),
 };
