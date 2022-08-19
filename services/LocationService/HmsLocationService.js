@@ -84,7 +84,7 @@ function watchPosition(
     fastestInterval: 2000,
     expirationTime: 3372036854775807.0,
     smallestDisplacement: 0.0,
-    maxWaitTime: 0,
+    maxWaitTime: 3000,
     needAddress: false,
     language: '',
     countryCode: '',
