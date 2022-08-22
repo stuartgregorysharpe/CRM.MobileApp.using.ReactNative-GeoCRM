@@ -20,7 +20,7 @@ const FormatPriceItem = props => {
     let nextPrice = isConvertToNumber
       ? Number(priceText).toFixed(fixed)
       : priceText;
-    if (nextPrice == 0 && isConvertToNumber) {
+    if ((nextPrice == 0 || nextPrice == 'NaN') && isConvertToNumber) {
       nextPrice = '';
     }
     if (props.onItemAction) {

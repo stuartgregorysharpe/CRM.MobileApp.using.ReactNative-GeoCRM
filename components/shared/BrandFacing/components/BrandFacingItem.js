@@ -1,66 +1,43 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, Text, TextInput} from 'react-native';
 import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
-import CSwtichButton from '../../../common/CSwitchButton';
 
-const CompetitorPriceItem = props => {
+const BrandFacingItem = props => {
   const {item} = props;
   if (!item) return null;
-  const {competitor, price, price_type} = item;
-  const priceTypeValue = price_type == 'Promo';
-  const fixed = props.fixed || 2;
-  const onChangePrice = (priceText, isConvertToNumber) => {
-    let nextPrice = isConvertToNumber
-      ? Number(priceText).toFixed(fixed)
-      : priceText;
-    if ((nextPrice == 0 || nextPrice == 'NaN') && isConvertToNumber) {
-      nextPrice = '';
+  const {name, facing, type} = item;
+
+  const onChangeFacing = (facingText, isConvertToNumber) => {
+    let nextFacing = isConvertToNumber
+      ? Number(facingText).toFixed(0)
+      : facingText;
+    if ((nextFacing == 0 || nextFacing == 'NaN') && isConvertToNumber) {
+      nextFacing = '';
     }
     if (props.onItemAction) {
       props.onItemAction({
-        type: Constants.actionType.ACTION_CHANGE_ITEM_PRICE,
+        type: Constants.actionType.ACTION_CHANGE_ITEM_FACING,
         item,
-        price: nextPrice,
-      });
-    }
-  };
-  const onChangePriceType = isPromo => {
-    if (props.onItemAction) {
-      props.onItemAction({
-        type: Constants.actionType.ACTION_CHANGE_ITEM_PRICE_TYPE,
-        item,
-        price_type: isPromo ? 'Promo' : 'Normal',
+        facing: nextFacing,
       });
     }
   };
   return (
     <View style={[styles.container, styles.bottomBorder, props.style]}>
-      <Text style={styles.text}>{competitor}</Text>
-      <CSwtichButton
-        onTitle="Promo"
-        offTitle="Normal"
-        value={priceTypeValue}
-        onPress={onChangePriceType}
-        style={{marginRight: 16}}
-      />
+      <Text style={styles.text}>{name}</Text>
+
       <TextInput
         style={styles.textInput}
-        value={price + ''}
+        value={facing + ''}
         onChangeText={text => {
-          onChangePrice(text);
+          onChangeFacing(text);
         }}
         onBlur={() => {
-          onChangePrice(price, true);
+          onChangeFacing(facing, true);
         }}
         onEndEditing={() => {
-          onChangePrice(price, true);
+          onChangeFacing(facing, true);
         }}
         keyboardType={'number-pad'}
       />
@@ -103,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompetitorPriceItem;
+export default BrandFacingItem;

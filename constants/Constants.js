@@ -32,6 +32,7 @@ export default {
     FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo',
     FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice',
     FORM_TYPE_FORMAT_PRICE: 'format_price',
+    FORM_TYPE_BRAND_COMPETITOR_FACING: 'brand_competitor_facings',
   },
 
   actionType: {
@@ -52,6 +53,7 @@ export default {
     ACTION_CHANGE_ITEM_PRICE: 'ACTION_CHANGE_ITEM_PRICE',
     ACTION_CHANGE_ITEM_PRICE_TYPE: 'ACTION_CHANGE_ITEM_PRICE_TYPE',
     ACTION_COMP: 'ACTION_COMP',
+    ACTION_CHANGE_ITEM_FACING: 'ACTION_CHANGE_ITEM_FACING',
   },
 
   stockPrefix: {
