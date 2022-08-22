@@ -160,3 +160,7 @@ export const getBasketDateTime = () => {
     var currentTime = moment().format('DD MMMM YYYY HH:mm');
     return currentTime;
 }
+export const getDateTime = () => {
+  var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+  return currentTime;
+}

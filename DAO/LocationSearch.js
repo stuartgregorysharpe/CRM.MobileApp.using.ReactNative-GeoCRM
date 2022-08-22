@@ -1,7 +1,6 @@
 import { checkConnectivity } from "./helper";
 
-
-export function find(language){
+export function find(){
   
   return new Promise(function(resolve, reject) {
     

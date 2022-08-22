@@ -4,7 +4,6 @@ import { getFilterData, getTokenData, getUserId } from "../constants/Storage";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 import { checkConnectivity } from "./helper";
 
-
 export function find(currentLocation, box){
   
   return new Promise(function(resolve, reject) {
@@ -38,7 +37,7 @@ export function find(currentLocation, box){
                 var locationName = await getLocationName(client_id, business_unit_id);                
                 var locations = await getLocations(client_id, business_unit_id, box);
                 if(locations != '' && locations != undefined){
-                    console.log("get location ", locations)
+                    
                     var tmp = [];
                     for(var i = 0; i < locations.length; i++){
                         var element = locations.item(i);
@@ -53,7 +52,7 @@ export function find(currentLocation, box){
                             }
                         );                    
                     }
-                    console.log("resu", tmp.length);
+                    
                     resolve({locations:tmp, polygons:[]});
                 }else{
                     reject()
@@ -71,38 +70,19 @@ const getLocationName = async (client_id, business_unit_id) => {
 
     const tableName = 'locations_custom_master_fields';
     const locationNameQuery = `SELECT custom_field_name FROM ${tableName} WHERE delete_status = 0 AND client_id = ? AND business_unit_id = ? AND core_field_name = "location_name"`;
-    console.log(locationNameQuery)
-    console.log(client_id)
-    console.log(business_unit_id)
+    
     var res = await ExecuteQuery(locationNameQuery, [client_id, business_unit_id]);    
-    if(res.rows.length > 0){
-        console.log("success" , res.rows.item(0).custom_field_name);
+    if(res.rows.length > 0){    
         return res.rows.item(0).custom_field_name;
     }
     return '';
 }
 
 const getLocations = async (client_id, business_unit_id, box) => {
-
-
-    // if($bounds) {                
-    //     WHERE (CASE WHEN '.$bounds_SouthLat.' < '.$bounds_NorthLat.' 
-    //             THEN lcmd.latitude BETWEEN '.$bounds_SouthLat.' AND '.$bounds_NorthLat.'
-    //             ELSE lcmd.latitude BETWEEN '.$bounds_NorthLat.' AND '.$bounds_SouthLat.'
-    //                 END) 
-    //             AND
-    //             (CASE WHEN '.$bounds_WestLong.' < '.$bounds_EastLong.'
-    //             THEN lcmd.longitude BETWEEN '.$bounds_WestLong.'  AND '.$bounds_EastLong.'
-    //             ELSE lcmd.longitude BETWEEN '.$bounds_EastLong.' AND '.$bounds_WestLong.'
-    //             END
-    //           )
-    // }       
-    console.log("Box", box)
-    //box = [-118.38929833844306, 34.10509329000358, -118.29835468903185, 34.224029109571276];
-    
+        
     var where = ``;
     if(box != undefined){
-        console.log("box.length", box.length)
+    
         if(box.length == 4){
             var westLong = box[0];
             var soundLat = box[1];
@@ -113,7 +93,6 @@ const getLocations = async (client_id, business_unit_id, box) => {
 
         }        
     }
-    //where = ``;
 
     const query0 = `SELECT crm_campaign_id FROM crm_campaigns WHERE business_unit_id = ? AND client_id = ?`;    
     const query = `SELECT cdl.location_id, lcmd.location_name, lcmd.latitude,lcmd.longitude, ldp.png_file, ldp.pin_name, ldp.dynamic_pin_id ` +
@@ -121,15 +100,11 @@ const getLocations = async (client_id, business_unit_id, box) => {
                 `WHERE ${where} lcmd.delete_status = 0 AND cdl.campaign_id IN (${query0}) ` + 
                 `ORDER BY lcmd.location_id DESC`;
     console.log("query", query)
-//business_unit_id, client_id
 
     try{
-        var res = await ExecuteQuery(query, [business_unit_id, client_id]); 
-        console.log("RES", res.rows)
+        var res = await ExecuteQuery(query, [business_unit_id, client_id]);         
         console.log("RESSS", res.rows.length)
-        if( res != undefined  && res.rows.length > 0){
-            console.log("success xx" , res.rows.item(0));        
-            console.log("success xx" , res.rows.length);
+        if( res != undefined  && res.rows.length > 0){            
             return res.rows;
         }else{            
             return '';

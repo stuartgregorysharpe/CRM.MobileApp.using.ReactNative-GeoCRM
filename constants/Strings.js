@@ -18,6 +18,10 @@ export default {
     End_My_Day: 'End My Day',
     sync_basket_last_syncs: 'sync_basket_last_syncs (sync_basket    |   timestamp )',
 
+    Home:{
+        Sync_All: 'Sync All'
+    },
+
     Home_Visit_Tabs: {
         Today: 'Today Visits',
         Weekly: 'Weekly Visits',

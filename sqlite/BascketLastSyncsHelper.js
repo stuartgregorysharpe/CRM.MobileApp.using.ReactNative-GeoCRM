@@ -31,7 +31,6 @@ export const insertBascketLastSync = async (sync_basket, timestamp, timezone) =>
     });    
 };
 
-
 export const deleteBascketLastSyncsTable = async (db , id) => {    
     await db.transaction(async(tx) => {
         const query = `DELETE FROM ${tableName} WHERE id=?`;
@@ -39,7 +38,7 @@ export const deleteBascketLastSyncsTable = async (db , id) => {
     });
 };
 
-export const getBascketLastSyncTableData = async ( sync_basket) => {
+export const getBascketLastSyncTableData = async ( sync_basket ) => {
     var db = await getDBConnection();
     return new Promise(async function (resolve, reject) {
         await db.transaction(async(tx) =>{            

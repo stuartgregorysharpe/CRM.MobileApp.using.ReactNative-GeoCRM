@@ -35,10 +35,13 @@ const syncTable = async(basketId) => {
     
     var lists = getBaskets();
     var basket = lists[basketId].slug;
-    var res = await getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + "locations", {});    
+    var res = await getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + basket, {});    
     if(res.status === Strings.Success){
         var tables = res.tables;        
-        await syncTableData(tables, 0 , 0, basket);
+        console.log("all tables", tables);
+        if(tables.length > 0){
+            await syncTableData(tables, 0 , 0, basket);
+        }        
         if(basketId + 1 < lists.length){                      
             return await syncTable(basketId + 1);
         }else{                                         
@@ -48,28 +51,30 @@ const syncTable = async(basketId) => {
             return "ok";                                               
         }        
     }
-
 }
 
 
 const syncTableData = async (tables , key , pageNumber, basket) => {    
     var tableName = tables[key];      
-    await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
-        await handleRecords(tableName, res.records);        
-        if(pageNumber + 1 < res.total_pages){
-            await syncTableData(tables , key, pageNumber + 1, basket);
-        }else{
-            if(key + 1 < tables.length){                      
-                await syncTableData(tables , key + 1 , 0 , basket );
-            }else{                
-                var time_zone = RNLocalize.getTimeZone();                    
-                var currentTime = getBasketDateTime();
-                await insertBascketLastSync(basket, currentTime, time_zone );                
+    if(tableName != undefined){
+        await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
+            await handleRecords(tableName, res.records);        
+            if(pageNumber + 1 < res.total_pages){
+                await syncTableData(tables , key, pageNumber + 1, basket);
+            }else{
+                if(key + 1 < tables.length){                      
+                    await syncTableData(tables , key + 1 , 0 , basket );
+                }else{                
+                    var time_zone = RNLocalize.getTimeZone();                    
+                    var currentTime = getBasketDateTime();
+                    await insertBascketLastSync(basket, currentTime, time_zone );                
+                }
             }
-        }
-    }).catch((e) => {
-
-    });
+        }).catch((e) => {
+    
+        });    
+    }
+    
 }
 
 

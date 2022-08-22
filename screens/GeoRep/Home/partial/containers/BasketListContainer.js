@@ -99,23 +99,33 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 updateBasket(basket)
             }
 
-            getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + "locations", {}).then(async(res) => {            
+            getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + basket, {}).then(async(res) => {            
               if(res.status === Strings.Success){
                 var tables = res.tables;
                 console.log("All tables", tables)
                 setTotalTableCount(tables.length);
-                await syncTableData(tables, 0 , 0, basket);
+
+                if(tables.length > 0){
+                    await syncTableData(tables, 0 , 0, basket);
+                }else{
+                    await saveSyncedStatusTable(basket);
+                    console.log("lst updated", basket)
+                    if(isOneBasketSync){
+                        initDataFromDB();
+                        setIsLoading(false);
+                    }
+                }
+                
                 if(!isOneBasketSync){
                     if(basketId + 1 < lists.length){      
                         updateBasket(basket);
                         syncTable(basketId + 1);                        
-                    }else{                         
+                    }else{                  
+
                         setCurrentBasket('');
                         setIsLoading(false);
-                        updateBasket(basket);
-                        var time_zone = RNLocalize.getTimeZone();             
-                        var currentTime = getBasketDateTime();
-                        await insertBascketLastSync("sync_all", currentTime, time_zone );          
+                        updateBasket(basket);                        
+                        saveSyncedStatusTable("sync_all");
                         if(props.updateLoading){                                               
                             props.updateLoading(false)
                         }                                                      
@@ -130,36 +140,59 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
     const syncTableData = async (tables , key , pageNumber, basket) => {    
 
-        var tableName = tables[key];      
-        await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {                          
+        var tableName = tables[key];  
+        if(tableName != undefined){
+
+            var lastSyncedParam = await getTimeStampAndTimeZone(basket);
+            await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
           
-            await handleRecords(tableName, res.records);
-            setTotalRecords(res.total_records);            
-            gSyncedRecords = gSyncedRecords + res.records.length;
-            setSyncedRecords( gSyncedRecords );
-            if(pageNumber + 1 < res.total_pages){
-                await syncTableData(tables , key, pageNumber + 1, basket);
-            }else{
-                if(key + 1 < tables.length){
-                    setSyncedTableCount(key + 1);
-                    gSyncedRecords = 0;                    
-                    await syncTableData(tables , key + 1 , 0 , basket );
+                await handleRecords(tableName, res.records);
+                setTotalRecords(res.total_records);            
+                gSyncedRecords = gSyncedRecords + res.records.length;
+                setSyncedRecords( gSyncedRecords );
+                if(pageNumber + 1 < res.total_pages){
+                    await syncTableData(tables , key, pageNumber + 1, basket);
                 }else{
-                    setSyncedTableCount(key + 1);
-                    setSyncedRecords(totalRecords);
-                    var time_zone = RNLocalize.getTimeZone();
-                    var currentTime = getBasketDateTime();
-                    await insertBascketLastSync(basket, currentTime, time_zone );
-                    if(isOneBasketSync){
-                        initDataFromDB();
-                        setIsLoading(false);
+                    if(key + 1 < tables.length){
+                        setSyncedTableCount(key + 1);
+                        gSyncedRecords = 0;                    
+                        await syncTableData(tables , key + 1 , 0 , basket );
+                    }else{
+                        setSyncedTableCount(key + 1);
+                        setSyncedRecords(totalRecords);                        
+                        saveSyncedStatusTable(basket);
+                        if(isOneBasketSync){
+                            initDataFromDB();
+                            setIsLoading(false);
+                        }
                     }
                 }
-            }
-        }).catch((e) => {
-    
-        });
+            }).catch((e) => {
+                console.log("sync-table-data api error", e);
+            });
+        }            
     }
+
+    const saveSyncedStatusTable = async(basket) => {
+        var time_zone = RNLocalize.getTimeZone();
+        var currentTime = getBasketDateTime();
+        await insertBascketLastSync(basket, currentTime, time_zone );
+    }
+
+
+    const getTimeStampAndTimeZone = async(basket) =>{                                  
+        var check = await getBascketLastSyncTableData(basket);
+        if(check.length == 0 ){
+            return "";
+        }else{
+            if(check.length > 0){
+                var timestamp =  check.item(0).timestamp;
+                var timezone = check.item(0).timezone;
+                return `&timestamp=${timestamp}&timezone=${timezone}`;
+            }                  
+        }
+    }
+    
 
     
     const renderSyncData = (item, index) => {

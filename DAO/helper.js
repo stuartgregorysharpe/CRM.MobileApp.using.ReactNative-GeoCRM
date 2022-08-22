@@ -10,9 +10,7 @@ export function checkConnectivity(){
             resolve(false);
         }else{
             NetInfo.addEventListener(networkState => {
-                try{
-                    console.log("Connection type - ", networkState.type);
-                    console.log("Is connected? - ", networkState.isConnected);
+                try{                    
                     var isConnected = networkState.isConnected;
                     resolve(isConnected);
                 }catch(e){
