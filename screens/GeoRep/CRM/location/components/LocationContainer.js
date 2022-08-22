@@ -9,8 +9,7 @@ import {
 } from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
-  getLocationInfo,
-  getLocationMapByRegion,
+  getLocationInfo,  
   getLocationPinKey,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
@@ -18,13 +17,13 @@ import LocationFilterModal from '../../../../../components/modal/LocationFilterM
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants} from '../../../../../constants';
-import {breakPoint} from '../../../../../constants/Breakpoint';
 import {expireToken} from '../../../../../constants/Helper';
 import {
   getLocalData,
   getMapMinZoomLevel,
   getPinSvg,
 } from '../../../../../constants/Storage';
+import { LocationMapDAO } from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -74,36 +73,43 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
+      
     if (isLoadable) {
-      setIsLoading(true);
-      getLocationMapByRegion(_currentLocation, boundBox)
-        .then(res => {
-          getPinSvg('@map_pin_key').then(mapPinSvg => {
-            setIsLoading(false);
-            setMarkers(
-              res.locations.map((location, index) => {
-                let foundPinSvg = null;
-                if (mapPinSvg) {
-                  foundPinSvg = mapPinSvg.find(
-                    element =>
-                      parseInt(element.pin_id) == parseInt(location.pin_id),
-                  );
-                }
-                return {
-                  ...location,
-                  pinIcon: foundPinSvg,
-                  schedule_order: (index + 1).toString(),
-                };
-              }),
-            );
-          });
 
-          dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
-        })
-        .catch(e => {
+      setIsLoading(true);
+      console.log(" load mark api")
+      LocationMapDAO.find(_currentLocation, boundBox).then((res) => {
+
+        getPinSvg('@map_pin_key').then(mapPinSvg => {
+          
+          
           setIsLoading(false);
-          expireToken(dispatch, e);
+          setMarkers(
+            res.locations.map((location, index) => {
+              let foundPinSvg = null;
+              if (mapPinSvg) {
+                foundPinSvg = mapPinSvg.find(
+                  element =>
+                    parseInt(element.pin_id) == parseInt(location.pin_id),
+                );
+              }
+              
+              return {
+                ...location,
+                pinIcon: foundPinSvg,
+                schedule_order: (index + 1).toString(),
+              };
+            }),
+          );
         });
+        dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
+
+      }).catch(e => {
+        console.log("Error")
+        setIsLoading(false);
+        expireToken(dispatch, e);
+      })
+      
     }
   };
   useEffect(() => {

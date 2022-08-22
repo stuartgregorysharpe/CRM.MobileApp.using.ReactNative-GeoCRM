@@ -29,7 +29,6 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const rotationAnimationRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
     var lists = getBaskets();    
-
     useImperativeHandle(ref, () => ({
         startSync() {            
             isOneBasketSync = false;
@@ -103,6 +102,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
             getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + "locations", {}).then(async(res) => {            
               if(res.status === Strings.Success){
                 var tables = res.tables;
+                console.log("All tables", tables)
                 setTotalTableCount(tables.length);
                 await syncTableData(tables, 0 , 0, basket);
                 if(!isOneBasketSync){

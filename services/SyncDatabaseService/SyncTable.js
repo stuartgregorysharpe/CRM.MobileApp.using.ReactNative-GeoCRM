@@ -5,7 +5,7 @@ import { getBaskets } from "../../screens/GeoRep/Home/partial/containers/helper"
 import { createTable, getDBConnection, handleRecords } from "../../sqlite/DBHelper";
 import * as RNLocalize from 'react-native-localize';
 import { getBasketDateTime } from "../../helpers/formatHelpers";
-import { insertBascketLastSync } from "../../sqlite/BascketLastSyncsHelper";
+import { getBascketLastSyncTableData, insertBascketLastSync } from "../../sqlite/BascketLastSyncsHelper";
 
 export const initializeDB = async() => {
     
@@ -13,16 +13,20 @@ export const initializeDB = async() => {
     if(res.status === Strings.Success){
         var offline_db_version = await getLocalData("@offline_db_version");
         if(offline_db_version != res.offline_db_version){                               
-            var tables = res.tables;            
+            var tables = res.tables;   
+            console.log("offlien db structure", tables)         
             const db = await getDBConnection();
             if(db != null){                    
-                await createTable(db ,tables);
-                await syncTable(0);
+                await createTable(db ,tables);                                  
+                var check = await getBascketLastSyncTableData("sync_all");                
+                if(check.length == 0){
+                    await syncTable(0);
+                }                
                 return "end";
             }                                            
         }else{
             console.log("offline version was not updated");
-        }
+        }  
     }    
 }
 

@@ -17,7 +17,7 @@ export const getApiRequest = async (route, param) => {
   var baseUrl = await getBaseUrl();
 
   var url = `${baseUrl}/${route}`;
-  console.log('call url', url);
+  console.log('API Call Log', url);
   if (route.includes('local_api_old')) {
     url = route;
   }

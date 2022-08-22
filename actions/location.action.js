@@ -2,16 +2,10 @@ import LocationService from '../services/LocationService';
 import axios from 'axios';
 import {
   CHANGE_LOGIN_STATUS,
-  STATUS_PIN_KEY,
-  STATUS_LOCATION_MAP,
-  STATUS_LOCATION_FILTERS,
-  STATUS_LOCATION_SEARCH_LISTS,
-  CHANGE_PIN_KEY,
-  CHANGE_LOCATION_MAP,
-  CHANGE_LOCATION_FILTERS,
-  CHANGE_LOCATION_SEARCH_LISTS,
-  CHANGE_CURRENT_LOCATION,
-  CHANGE_POLYGONS,
+  STATUS_PIN_KEY,  
+  STATUS_LOCATION_FILTERS,  
+  CHANGE_PIN_KEY,  
+  CHANGE_LOCATION_FILTERS,  
 } from './actionTypes';
 import uuid from 'react-native-uuid';
 import {
@@ -57,139 +51,6 @@ export const getLocationPinKey = () => (dispatch, getState) => {
     });
 };
 
-export const getLocationMapByRegion = async (currentLocation, box) => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  var user_id = await getUserId();
-  var filters = await getFilterData('@filter');
-  var zoom_bounds = box.map(item => item).join(',');
-
-  return new Promise(function (resolve, reject) {
-    axios
-      .get(`${base_url}/locations/location-map`, {
-        params: {
-          user_id: user_id,
-          filters: filters,
-          current_latitude: currentLocation.latitude,
-          current_longitude: currentLocation.longitude,
-          zoom_bounds: zoom_bounds,
-        },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then(res => {
-        if (res.data == undefined) {
-          return resolve([]);
-        }
-
-        if (res.data.status == 'success') {
-          resolve(res.data);
-          console.log('polygon data', res.data.polygons);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
-
-export const getLocationsMap = () => (dispatch, getState) => {
-  dispatch({type: STATUS_LOCATION_MAP, payload: 'request'});
-  console.log('logss== ', getState().selection.filters);
-  LocationService.getLocationService().then(locationService => {
-    locationService.getCurrentPosition(
-      position => {
-        const {latitude, longitude, accuracy} = position.coords;
-        if (latitude !== undefined) {
-          dispatch({
-            type: CHANGE_CURRENT_LOCATION,
-            payload: {
-              latitude: latitude,
-              longitude: longitude,
-              accuracy: accuracy,
-            },
-          });
-        }
-
-        if (typeof cancelToken != typeof undefined) {
-          cancelToken.cancel('Operation canceled due to new request.');
-        }
-        cancelToken = axios.CancelToken.source();
-        axios
-          .get(
-            `${
-              getState().selection.payload.user_scopes.geo_rep.base_url
-            }/locations/location-map`,
-            {
-              cancelToken: cancelToken.token,
-              params: {
-                user_id:
-                  getState().selection.payload.user_scopes.geo_rep.user_id,
-                current_latitude: latitude,
-                current_longitude: longitude,
-                filters: getState().selection.filters,
-              },
-              headers: {
-                Authorization: 'Bearer ' + getState().selection.token,
-              },
-            },
-          )
-          .then(res => {
-            if (res.data == undefined) {
-              dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});
-              return;
-            }
-
-            if (res.data.error) {
-              dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});
-              return;
-            }
-
-            console.log(
-              'get location map data CHANGE_LOCATION_MAP',
-              res.data.locations.length,
-            );
-            console.log('polygons', JSON.stringify(res.data.polygons.length));
-
-            if (res.data.status == 'success') {
-              dispatch({type: STATUS_LOCATION_MAP, payload: 'success'});
-              dispatch({
-                type: CHANGE_LOCATION_MAP,
-                payload: res.data.locations,
-              });
-              dispatch({type: CHANGE_POLYGONS, payload: res.data.polygons});
-            }
-          })
-          .catch(err => {
-            console.log('map api connection error', err);
-            //dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-            console.log(err);
-          });
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 2000,
-        distanceFilter: 2,
-      },
-    );
-  });
-};
 
 export const getLocationFilters = () => (dispatch, getState) => {
   dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
@@ -224,23 +85,28 @@ export const getLocationFilters = () => (dispatch, getState) => {
     });
 };
 
+
+
 export const getLocationSearchListsByPage = async (
   filters,
   pageNumber,
   searchKey,
 ) => {
+
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();
 
   return new Promise(function (resolve, reject) {
-    LocationService.getLocationService().then(locationService => {
+
+    LocationService.getLocationService().then(locationService => {      
       locationService.getCurrentPosition(
         position => {
           const {latitude, longitude} = position.coords;
           console.log('URL ', `${base_url}/locations/location-search-list`);
           console.log('user_id', user_id);
           console.log('searchKey', searchKey);
+
           axios
             .get(`${base_url}/locations/location-search-list`, {
               params: {
@@ -336,6 +202,8 @@ export const getLocationSearchListsByPage = async (
         },
       );
     });
+
+
   });
 };
 
