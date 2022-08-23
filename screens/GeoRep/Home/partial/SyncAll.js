@@ -86,7 +86,7 @@ export default function SyncAll(props) {
           }
 
           <View style={{flex:1,  marginLeft:7 , marginTop:3}}>
-            <AppText title="Sync All" type="secondaryBold" color={whiteLabel().mainText} style={{fontSize:Values.fontSize.xSmall}} ></AppText>
+            <AppText title={Strings.Home.Sync_All} type="secondaryBold" color={whiteLabel().mainText} style={{fontSize:Values.fontSize.xSmall}} ></AppText>
             <AppText title={lastSyncedDate} type="secondaryMedium" color={Colors.disabledColor} style={{ fontSize:Values.fontSize.xxSmall , marginTop:5}}></AppText>
           </View>
 

@@ -4,13 +4,16 @@ import {AppText} from '../../../../components/common/AppText';
 import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
+import ActionListHeader from './components/ActionListHeader';
 
 const Actions = React.forwardRef((props, ref) => {
+
   useImperativeHandle(ref, () => ({
     onLoad: () => {
       _onLoad();
     },
   }));
+
   const [stockLists, setStockLists] = useState([]);
   const [originStockLists, setOriginStockLists] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -19,12 +22,12 @@ const Actions = React.forwardRef((props, ref) => {
   useEffect(() => {
     _onLoad();
   }, [locationId]);
+
   const _onLoad = () => {
     var postData = {};
     if (locationId != undefined) {
       postData = {location_id: locationId};
-    }
-    console.log('Actions postData', postData);
+    }    
     getApiRequest('actionsitems/action-items-list', postData)
       .then(res => {
         setOriginStockLists(res.action_items);
@@ -49,11 +52,8 @@ const Actions = React.forwardRef((props, ref) => {
         }
       });
     } else if (tabIndex == 1) {
-      lists.map((item, index) => {
-        console.log('status', item.status);
-        console.log('category', item.category);
-        if (item.status !== 'completed' && item.category === 'task') {
-          console.log('pushed');
+      lists.map((item, index) => {        
+        if (item.status !== 'completed' && item.category === 'task') {          
           tmp.push(item);
         }
       });
@@ -86,7 +86,7 @@ const Actions = React.forwardRef((props, ref) => {
       setStockLists([...originStockLists]);
     }
   };
-
+  
   const renderItems = (item, index) => {
     return (
       <TouchableOpacity
@@ -137,8 +137,10 @@ const Actions = React.forwardRef((props, ref) => {
     );
   };
 
+  
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
+      
       <SearchBar
         onSearch={text => {
           onFilter(text);
@@ -152,40 +154,7 @@ const Actions = React.forwardRef((props, ref) => {
       <View style={{flexDirection: 'column'}}>
         <FlatList
           ListHeaderComponent={() => (
-            <View style={{marginHorizontal: 15}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: 15,
-                  marginBottom: 3,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <View style={{flex: 3}}>
-                  <AppText
-                    type="secondaryMedium"
-                    title={'Description'}
-                    color={whiteLabel().mainText}
-                    style={{fontSize: 12}}></AppText>
-                </View>
-                <View style={{flex: 2}}>
-                  <AppText
-                    type="secondaryMedium"
-                    title={'Type'}
-                    color={whiteLabel().mainText}
-                    style={{fontSize: 12}}></AppText>
-                </View>
-                <View style={{flex: 2}}>
-                  <AppText
-                    type="secondaryMedium"
-                    title={'Added Date'}
-                    color={whiteLabel().mainText}
-                    style={{fontSize: 12}}></AppText>
-                </View>
-              </View>
-              <View
-                style={{height: 1, backgroundColor: Colors.blackColor}}></View>
-            </View>
+            <ActionListHeader />
           )}
           removeClippedSubviews={false}
           initialNumToRender={10}

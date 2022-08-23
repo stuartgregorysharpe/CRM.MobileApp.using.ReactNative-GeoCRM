@@ -1,34 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   View,
   TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  Dimensions,
-  ActivityIndicator,
-  RefreshControl,
+  StyleSheet,  
 } from 'react-native';
 import {postApiRequest} from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
-import Colors, {whiteLabel} from '../../../../../constants/Colors';
-import moment from 'moment-timezone';
+import {whiteLabel} from '../../../../../constants/Colors';
 import {getPostParameter} from '../../../../../constants/Helper';
 import {storeLocalValue} from '../../../../../constants/Storage';
 import {useSelector} from 'react-redux';
-import {Notification} from '../../../../../components/modal/Notification';
-import {useDispatch} from 'react-redux';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../../actions/notification.action';
-import { CHECKIN } from '../../../../../actions/actionTypes';
+import { getDateTime } from '../../../../../helpers/formatHelpers';
+
 
 export default function Checkout(props) {
-  const {location_id, goBack} = props;
-  const dispatch = useDispatch();
+
+  const {location_id, goBack} = props;  
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+  var currentTime = getDateTime();
 
   const _callCheckOut = () => {
     var userParam = getPostParameter(currentLocation);
@@ -50,7 +39,7 @@ export default function Checkout(props) {
 
   return (
     <View style={styles.container}>
-      {/* <Notification/> */}
+      
       <TouchableOpacity
         style={{flex: 1}}
         onPress={() => {

@@ -1162,10 +1162,18 @@ const Image_Capture_Disable = `<svg xmlns="http://www.w3.org/2000/svg" width="10
 </svg>
 `;
 
-export default ({icon, color, width = '100%', height = '100%', style = {}}) => (
-
+export default ({icon, xml, color, width = '100%', height = '100%', style = {}}) => (
   
   <Fragment>
+    { xml != null && xml != undefined && (
+      <SvgXml
+        style={style}
+        xml={xml}
+        width={width}
+        height={height}
+      />
+    )}
+
     {icon == 'Round_Btn_Default_Dark' && (
       <SvgXml
         style={style}

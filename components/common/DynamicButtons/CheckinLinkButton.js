@@ -17,6 +17,7 @@ import {
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import { Strings } from '../../../constants';
+import { getDateTime } from '../../../helpers/formatHelpers';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -135,7 +136,7 @@ const CheckinLinkButton = props => {
       });
   };
   const _callCheckedIn = async () => {
-    var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
       location_id: locationId,

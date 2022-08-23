@@ -44,3 +44,7 @@ online view link
 https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
 
 
+
+# Resolve Error in project build
+ 1. Could not resolve project :react-native-hms-availability.
+    Replace the hmscore library manually

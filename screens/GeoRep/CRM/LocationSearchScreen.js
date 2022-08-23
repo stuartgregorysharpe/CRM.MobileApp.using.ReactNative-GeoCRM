@@ -238,6 +238,7 @@ export default function LocationSearchScreen(props) {
       showBottomBar();
     }
   };
+
   const hideBottomBar = () => {
     console.log('hide bottom bar', props.screenProps);
 
@@ -247,6 +248,7 @@ export default function LocationSearchScreen(props) {
       },
     });
   };
+
   const showBottomBar = () => {
     props.screenProps.setOptions({
       tabBarStyle: {
@@ -257,6 +259,7 @@ export default function LocationSearchScreen(props) {
       },
     });
   };
+
 
   const loadData = async searchKey => {
     var filterData = await getFilterData('@filter');
@@ -423,7 +426,7 @@ export default function LocationSearchScreen(props) {
     }
     return <View></View>;
   };
-
+  
   const onAddLeadModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       addLeadModalRef.current.hideModal();
@@ -723,8 +726,7 @@ export default function LocationSearchScreen(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bgColor,
-    flex: 1,
-    //flexDirection:'column',
+    flex: 1,    
     marginBottom: 50,
     paddingBottom: 0,
   },

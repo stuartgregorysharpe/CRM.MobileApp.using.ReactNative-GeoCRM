@@ -23,10 +23,10 @@ export const getDBConnection = async () => {
 
 export const ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) => {
     db.transaction((trans) => {
-      trans.executeSql(sql, params, (trans, results) => {
+      trans.executeSql(sql, params, (trans, results) => {    
         resolve(results);
       },
-        (error) => {
+        (error) => {          
           reject(error);
         });
     });
@@ -175,7 +175,7 @@ export const handleRecords = async ( tableName, records) => {
   query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
   try{
     if(db != null){
-      console.log(" INSERT Query :  ", query);
+      //rconsole.log(" INSERT Query :  ", query);
       await db.transaction(async(tx) =>{            
         await tx.executeSql(query);
       });

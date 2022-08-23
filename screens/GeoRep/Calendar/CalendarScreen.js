@@ -35,8 +35,8 @@ import {
 import moment from 'moment';
 import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
-
 var selectedIndex = 2;
+
 
 export default function CalendarScreen(props) {
 

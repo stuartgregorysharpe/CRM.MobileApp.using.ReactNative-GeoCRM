@@ -53,6 +53,27 @@ export const getToken = async () => {
   }
 };
 
+export const getTokenData = async (type) => {
+  try {
+    var token = await getToken();
+    var data = token != null ? jwt_decode(token) : null;
+    returnData = '';
+    if(type == "base_url"){
+      returnData = data.user_scopes.geo_rep.base_url;
+    }else if(type == "client_id"){
+      returnData = data.user_scopes.geo_rep.client_id;
+    }else if(type == "business_unit_id"){
+      returnData = data.user_scopes.geo_rep.business_unit_id;
+    }    
+    return returnData;
+    
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
+
 export const getBaseUrl = async () => {
   try {
     var token = await getToken();

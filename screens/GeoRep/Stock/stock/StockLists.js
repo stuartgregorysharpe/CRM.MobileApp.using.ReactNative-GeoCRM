@@ -57,12 +57,12 @@ export default function StockLists() {
                     tmp.push({type: item.description, code: item.serial , stock_item_id: item.stock_item_id});
                 });
                 setIccids(tmp)
-            }            
+            }
         }).catch((e) => {
             console.log("E",e);
         });
-
     }
+
 
     const onFilter = (text) => {
         if(text !== "" && text !== undefined){

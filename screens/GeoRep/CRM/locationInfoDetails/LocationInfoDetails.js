@@ -59,6 +59,7 @@ import {
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings} from '../../../../constants';
+import { getDateTime } from '../../../../helpers/formatHelpers';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -441,7 +442,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callCheckedIn = async () => {
-    var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
       location_id: locationInfo.location_id,
