@@ -16,8 +16,10 @@ export default {
     Assign_Msisdn: 'Assign MSISDN',
     Start_My_Day: 'Start My Day',
     End_My_Day: 'End My Day',
-    sync_basket_last_syncs: 'sync_basket_last_syncs (sync_basket    |   timestamp )',
-
+    Description: 'Description',
+    Type: 'Type',
+    Added_Date: 'Added Date',
+    
     Home:{
         Sync_All: 'Sync All'
     },

@@ -26,10 +26,7 @@ export const getLocationPinKey = () => (dispatch, getState) => {
       `${
         getState().selection.payload.user_scopes.geo_rep.base_url
       }/locations/location-pin-key`,
-      {
-        params: {
-          user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-        },
+      {        
         headers: {
           Authorization: 'Bearer ' + getState().selection.token,
         },

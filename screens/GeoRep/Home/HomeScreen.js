@@ -6,7 +6,6 @@ import MainPage from './Main/MainPage';
 import {useSelector} from 'react-redux';
 import ActionItemsContainer from '../CRM/action_items/containers/ActionItemsContainer';
 import { generateTabs } from './helper';
-import { initializeDB } from '../../../services/SyncDatabaseService/SyncTable';
 
 export default function HomeScreen(props) {
 
@@ -15,9 +14,7 @@ export default function HomeScreen(props) {
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
 
   useEffect(() => {
-    setTabs(generateTabs(tabs, features));
-    console.log("offline db call -------")
-    
+    setTabs(generateTabs(tabs, features));        
   }, []);
 
   useEffect(() => {
@@ -25,6 +22,7 @@ export default function HomeScreen(props) {
     if (screenProps === undefined) {
       screenProps = props.navigation;
     }
+    
     if (screenProps) {
       screenProps.setOptions({
         headerTitle: () => {
@@ -42,6 +40,7 @@ export default function HomeScreen(props) {
 
   return (
     <View style={{flex: 1, marginTop: 10}}>
+
       <View style={{marginHorizontal: 10}}>
         <ScrollTab
           tabs={tabs}
