@@ -6,7 +6,8 @@ export function checkConnectivity(){
     return new Promise( async function(resolve, reject) {
    
         var isOnline = await getLocalData("@online");        
-        if(isOnline === "0"){            
+        console.log("isOnline",isOnline)
+        if(isOnline === "0"){
             resolve(false);
         }else{
             NetInfo.addEventListener(networkState => {
@@ -17,8 +18,8 @@ export function checkConnectivity(){
                     reject(e);
                 }            
             });
-        }    
-
+        }   
+        
     });              
 }
 

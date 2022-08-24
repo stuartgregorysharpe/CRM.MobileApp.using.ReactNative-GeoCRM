@@ -74,7 +74,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 tmp.push({ title:element.title , slug:element.slug , isLoading: isOneBasketSync ? true : false , lastSyncedDate:currentTime });
             }else{
                 tmp.push({ title:element.title , slug:element.slug , isLoading: isOneBasketSync ? false : element.isLoading , lastSyncedDate:element.lastSyncedDate });
-            }                       
+            }
         });        
         setBasketLists(tmp);        
         gBascketLists = tmp;
@@ -102,14 +102,12 @@ export const BasketListContainer = forwardRef((props, ref) => {
             getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + basket, {}).then(async(res) => {            
               if(res.status === Strings.Success){
                 var tables = res.tables;
-                console.log("All tables", tables)
-                setTotalTableCount(tables.length);
-
-                if(tables.length > 0){
+                console.log("All tables", tables)                
+                if(tables != null && tables.length > 0){
+                    setTotalTableCount(tables.length);
                     await syncTableData(tables, 0 , 0, basket);
                 }else{
-                    await saveSyncedStatusTable(basket);
-                    console.log("lst updated", basket)
+                    await saveSyncedStatusTable(basket);                    
                     if(isOneBasketSync){
                         initDataFromDB();
                         setIsLoading(false);
@@ -179,7 +177,6 @@ export const BasketListContainer = forwardRef((props, ref) => {
         await insertBascketLastSync(basket, currentTime, time_zone );
     }
 
-
     const getTimeStampAndTimeZone = async(basket) =>{                                  
         var check = await getBascketLastSyncTableData(basket);
         if(check.length == 0 ){
@@ -191,9 +188,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 return `&timestamp=${timestamp}&timezone=${timezone}`;
             }                  
         }
-    }
-    
-
+    }    
     
     const renderSyncData = (item, index) => {
         return (

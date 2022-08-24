@@ -35,7 +35,7 @@ in shell run:
 adb shell
 run-as package-name(com.geoverse_app_rn)
 cat filename.db > /sdcard/filename.db
-exist shell session
+exist shell session (Ctrl  + D)
 adb pull /sdcard/filename.db
 
 adb pull /sdcard/filename.db

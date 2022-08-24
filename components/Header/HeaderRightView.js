@@ -12,19 +12,21 @@ export default function HeaderRightView() {
   const userInfo = useSelector(state => state.auth.userInfo);
   const [toggleSwitch, setToggleSwitch] = useState(true);
   const [canShowToggle, setShowToggle] = useState(true);
+
   useEffect(() => {    
     getToggleStatus();
     setOnlineOffline();
   });
 
   const getToggleStatus = async () => {
-    let res = await checkFeatureIncludeParam("offline_toggle");            
+    let res = await checkFeatureIncludeParam("offline_toggle");        
+    
     setShowToggle(res); 
   }
 
   const setOnlineOffline = async () => {
     var isOnline = await getLocalData("@online");
-    if(isOnline === "1"){
+    if(isOnline === "1" || isOnline === undefined){
       setToggleSwitch(true);
     }else{
       setToggleSwitch(false);

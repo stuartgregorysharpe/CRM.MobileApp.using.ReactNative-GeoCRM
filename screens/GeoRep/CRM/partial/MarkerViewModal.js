@@ -5,6 +5,7 @@ import {Constants} from '../../../../constants';
 import {MarkerView} from './MarkerView';
 
 const MarkerViewModal = React.forwardRef((props, ref) => {
+  
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -13,6 +14,7 @@ const MarkerViewModal = React.forwardRef((props, ref) => {
       ref.current.hideModal();
     }
   };
+
   return (
     <CModal
       ref={ref}

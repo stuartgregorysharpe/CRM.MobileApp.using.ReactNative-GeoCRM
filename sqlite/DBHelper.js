@@ -152,7 +152,7 @@ export const handleRecords = async ( tableName, records) => {
   
   var query = '';
   var fields = '';
-  var values = '';
+  var values = '';  
 
   var tmp = await Promise.all(
     await records.map(async (element, index) => {              
@@ -174,8 +174,7 @@ export const handleRecords = async ( tableName, records) => {
 
   query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
   try{
-    if(db != null){
-      //rconsole.log(" INSERT Query :  ", query);
+    if(db != null){    
       await db.transaction(async(tx) =>{            
         await tx.executeSql(query);
       });
@@ -216,10 +215,18 @@ export const getInsertValues = async ( element ) => {
           value = element[key];
         }
 
-        if(index === 0){
-          body2 = `'${value}'`;
+        if(index === 0){       
+          if(key === "svg_code"){
+            body2 = `'${value}'`;
+          }else{
+            body2 = `"${value}"`;
+          }          
         }else {  
-          body2 = body2 + ", '" + `${value}` + "'";
+          if(key === "svg_code"){
+            body2 = body2 + `, '` + `${value}` + `'`;
+          }else{
+            body2 = body2 + `, "` + `${value}` + `"`;
+          }          
         }
         index = index + 1;
       }    

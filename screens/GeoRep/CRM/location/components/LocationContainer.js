@@ -3,14 +3,15 @@ import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  CHANGE_PIN_KEY,
   CHANGE_POLYGONS,
   IS_CALENDAR_SELECTION,
   SELECTED_LOCATIONS_FOR_CALENDAR,
+  STATUS_PIN_KEY,
 } from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
   getLocationInfo,  
-  getLocationPinKey,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
 import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
@@ -23,7 +24,7 @@ import {
   getMapMinZoomLevel,
   getPinSvg,
 } from '../../../../../constants/Storage';
-import { LocationMapDAO } from '../../../../../DAO';
+import { LocationMapDAO, LocationPinKeyDAO } from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -66,7 +67,11 @@ const LocationContainer = props => {
   console.log('isShowZoomLabel', isShowZoomLabel);
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
-  );
+  );  
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );  
+
   const onLoadMarkers = (_currentLocation, boundBox) => {
     const isLoadable =
       _currentLocation &&
@@ -157,12 +162,21 @@ const LocationContainer = props => {
       locationFilterModalRef.current.showModal();
     }
   };
+
   const onOpenMarkerModal = () => {
-    dispatch(getLocationPinKey());
-    if (markerModalRef && markerModalRef.current) {
+    if (markerModalRef && markerModalRef.current) {        
       markerModalRef.current.showModal();
     }
+    
+    LocationPinKeyDAO.find(features).then((pins) => {      
+      dispatch({type: STATUS_PIN_KEY, payload: 'success'});
+      dispatch({type: CHANGE_PIN_KEY, payload: pins});      
+    }).catch(e => {
+    });
+
   };
+
+
   const onOpenAddToCalendar = () => {
     if (addToCalendarModalRef && addToCalendarModalRef.current) {
       addToCalendarModalRef.current.showModal();
@@ -308,7 +322,9 @@ const LocationContainer = props => {
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />
       </TouchableOpacity>
+
       <MarkerViewModal ref={markerModalRef} />
+
       <LocationFilterModal ref={locationFilterModalRef} page={'map'} />
       <AddToCalendarModal
         ref={addToCalendarModalRef}

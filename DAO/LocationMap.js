@@ -8,11 +8,13 @@ export function find(currentLocation, box){
   
   return new Promise(function(resolve, reject) {
 
-        checkConnectivity().then( async (isConnected) => {            
+        checkConnectivity().then( async (isConnected) => { 
+
             if(isConnected){
                 var user_id = await getUserId();
                 var filters = await getFilterData('@filter');
                 var zoom_bounds = box.map(item => item).join(',');                
+
                 var params = {
                     user_id: user_id,
                     filters: filters,
@@ -27,36 +29,17 @@ export function find(currentLocation, box){
                     } else {
                         reject()
                     }
-                }).catch( e => {    
-                    console.log("error", e)                
+                }).catch( e => {
+                    console.log("error", e)            
                     reject()
                 });      
             }else{
+
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");                
                 var locationName = await getLocationName(client_id, business_unit_id);                
                 var locations = await getLocations(client_id, business_unit_id, box);
-                if(locations != '' && locations != undefined){
-                    
-                    var tmp = [];
-                    for(var i = 0; i < locations.length; i++){
-                        var element = locations.item(i);
-                        tmp.push(
-                            {
-                                location_id: element.location_id,
-                                location_name : {custom_field_name : locationName, value : element.location_name},
-                                coordinates : {latitude: element.latitude , longitude: element.longitude},
-                                pin_image: element.png_file,
-                                pin_name: element.pin_name,
-                                pin_id: element.dynamic_pin_id
-                            }
-                        );                    
-                    }
-                    
-                    resolve({locations:tmp, polygons:[]});
-                }else{
-                    reject()
-                }                                            
+                resolve(getResponse( locationName, locations));
 
             }
         }).catch(e => {
@@ -113,6 +96,26 @@ const getLocations = async (client_id, business_unit_id, box) => {
     }catch(e){
         return '';
     }        
+}
+
+const getResponse = (locationName, locations) => {
+    var tmp = [];
+    if(locations != '' && locations != undefined){                            
+        for(var i = 0; i < locations.length; i++){
+            var element = locations.item(i);
+            tmp.push(
+                {
+                    location_id: element.location_id,
+                    location_name : {custom_field_name : locationName, value : element.location_name},
+                    coordinates : {latitude: element.latitude , longitude: element.longitude},
+                    pin_image: element.png_file,
+                    pin_name: element.pin_name,
+                    pin_id: element.dynamic_pin_id
+                }
+            );                    
+        }                
+    }
+    return {locations:tmp, polygons:[]};
 }
 
 export default {

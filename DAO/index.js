@@ -1,5 +1,6 @@
 
 import LocationSearchDAO from './LocationSearch';
 import LocationMapDAO from './LocationMap';
+import LocationPinKeyDAO from './LocationPinKey';
 
-export { LocationMapDAO, LocationSearchDAO }
+export { LocationMapDAO, LocationSearchDAO , LocationPinKeyDAO }

@@ -1,53 +1,18 @@
 import LocationService from '../services/LocationService';
 import axios from 'axios';
 import {
-  CHANGE_LOGIN_STATUS,
-  STATUS_PIN_KEY,  
-  STATUS_LOCATION_FILTERS,  
-  CHANGE_PIN_KEY,  
+  CHANGE_LOGIN_STATUS,  
+  STATUS_LOCATION_FILTERS,    
   CHANGE_LOCATION_FILTERS,  
 } from './actionTypes';
 import uuid from 'react-native-uuid';
 import {
-  getBaseUrl,
-  getFilterData,
+  getBaseUrl,  
   getLocationLoop,
-  getToken,
-  getUserData,
+  getToken,  
   getUserId,
   setToken,
 } from '../constants/Storage';
-let cancelToken;
-
-export const getLocationPinKey = () => (dispatch, getState) => {
-  dispatch({type: STATUS_PIN_KEY, payload: 'request'});
-  axios
-    .get(
-      `${
-        getState().selection.payload.user_scopes.geo_rep.base_url
-      }/locations/location-pin-key`,
-      {        
-        headers: {
-          Authorization: 'Bearer ' + getState().selection.token,
-        },
-      },
-    )
-    .then(res => {
-      if (res.data == undefined) {
-        dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});
-        return;
-      }
-      if (res.data.status == 'success') {
-        console.log('pin data', res.data.items);
-        dispatch({type: STATUS_PIN_KEY, payload: 'success'});
-        dispatch({type: CHANGE_PIN_KEY, payload: res.data.items});
-      }
-    })
-    .catch(err => {
-      dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});
-    });
-};
-
 
 export const getLocationFilters = () => (dispatch, getState) => {
   dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
