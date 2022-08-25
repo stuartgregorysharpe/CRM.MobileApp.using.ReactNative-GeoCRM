@@ -18,19 +18,16 @@ import CModal from '../../../../../components/common/CModal';
 import CTextInput from '../../../../../components/common/CTextInput';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
-import {Constants} from '../../../../../constants';
+import {Constants, Strings} from '../../../../../constants';
 import {whiteLabel} from '../../../../../constants/Colors';
-import {getPostParameter, selectPicker} from '../../../../../constants/Helper';
 import * as ImagePicker from 'react-native-image-picker';
-import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../../../../../components/modal/PhotoCameraPickerDialog';
 import * as RNLocalize from 'react-native-localize';
-import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
   const {title, isStart, startEndDayId, currentLocation} = props;
-  const dispatch = useDispatch();
+  
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [image, setImage] = useState(null);
@@ -53,11 +50,9 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
     }
   };
 
-  const _callGetOdometer = () => {
-    console.log('call get odometer');
+  const _callGetOdometer = () => {    
     getApiRequest('home/odometer', {})
-      .then(res => {
-        console.log('GET odometer', res);
+      .then(res => {        
         setDistanceMeasure(res.distance_measure);
         setImageRequired(res.image_required === '1' ? true : false);
       })
@@ -67,24 +62,24 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const _callOdometer = () => {
     let hasError = false;
     if (imageRequired && image === null) {
-      message = 'Please take a photo';
+      message = Strings.Please_Take_Photo;
       hasError = true;
     }
 
     if (isStart && (end == '' || end == undefined)) {
-      message = 'Input End Reading';
+      message = Strings.Home.Input_End_Reading;
       hasError = true;
       setIsEndRequired(true);
       return;
     }
     if (!isStart && (start == '' || start == undefined)) {
-      message = 'Input Start Reading';
+      message = Strings.Home.Input_Start_Reading;
       hasError = true;
       setIsStartRequired(true);
       return;
     }
     if (hasError) return;
-    var userParam = getPostParameter(currentLocation);
+    
     var postData = new FormData();
     postData.append('startEndDay_id', startEndDayId);
     postData.append('reading_type', isStart ? 'end_reading' : 'start_reading');
@@ -118,7 +113,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
 
     postApiRequestMultipart('home/odometer', postData)
       .then(res => {
-        if (res.status === 'success') {
+        if (res.status === Strings.Success) {
           setImage(null);
           onButtonAction({
             type: Constants.actionType.ACTION_DONE,
@@ -218,7 +213,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         <Notification></Notification>
         <View style={styles.inputContainer}>
           <CTextInput
-            label="Start Reading"
+            label={Strings.Home.Start_Reading}
             disabled={isStart}
             value={start}
             keyboardType={'number-pad'}
@@ -278,7 +273,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
               <AppText
                 type="secondaryBold"
                 size="big"
-                title="Please take a photo of your vehicle's starting odometer reading"></AppText>
+                title={Strings.Home.Take_Photo}></AppText>
             </View>
             {image && (
               <TouchableOpacity

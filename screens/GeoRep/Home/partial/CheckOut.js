@@ -1,11 +1,10 @@
 import { View ,StyleSheet , TouchableOpacity } from 'react-native'
 import React , { useState, useEffect } from 'react'
-import Colors, { whiteLabel } from '../../../../constants/Colors'
+import { whiteLabel } from '../../../../constants/Colors'
 import { style } from '../../../../constants/Styles'
 import SvgIcon from '../../../../components/SvgIcon'
 import { AppText } from '../../../../components/common/AppText'
 import { getLocalData, storeLocalValue } from '../../../../constants/Storage'
-import moment from 'moment-timezone';
 import { CHECKIN } from '../../../../actions/actionTypes'
 import {useSelector, useDispatch} from 'react-redux';
 import { getPostParameter } from '../../../../constants/Helper'
@@ -18,7 +17,7 @@ export default function CheckOut({ currentCall , checkinStatus }) {
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [locationId, setLocationId] = useState(0);
-
+  
   useEffect(() => {
     initData();
   }, []);
@@ -27,7 +26,6 @@ export default function CheckOut({ currentCall , checkinStatus }) {
     var specificLocationId = await getLocalData("@specific_location_id");
     setLocationId(specificLocationId);
   }
-
 
   const _callCheckOut = () => {
     var userParam = getPostParameter(currentLocation);
@@ -73,7 +71,7 @@ export default function CheckOut({ currentCall , checkinStatus }) {
         <View style={{flex:1, marginTop:10 , marginBottom:10 , paddingTop:7, paddingBottom:7}}>
           <AppText title={currentCall != "" ? currentCall.location_name : 'Spar Century City Cape town df'}           
             size="medium" type="secondaryBold" color={whiteLabel().mainText} ></AppText>
-          {/* <AppText title="Cape Town" size="medium" type="secondaryBold" color={whiteLabel().mainText} style={{marginTop:5}}></AppText> */}
+                    
         </View>
         <TouchableOpacity onPress={() => { _callCheckOut() }}>
           <View style={styles.checkoutStyle}>         

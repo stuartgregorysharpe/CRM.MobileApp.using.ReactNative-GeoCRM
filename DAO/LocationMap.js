@@ -52,8 +52,7 @@ export function find(currentLocation, box){
 const getLocationName = async (client_id, business_unit_id) => {
 
     const tableName = 'locations_custom_master_fields';
-    const locationNameQuery = `SELECT custom_field_name FROM ${tableName} WHERE delete_status = 0 AND client_id = ? AND business_unit_id = ? AND core_field_name = "location_name"`;
-    
+    const locationNameQuery = `SELECT custom_field_name FROM ${tableName} WHERE delete_status = 0 AND client_id = ? AND business_unit_id = ? AND core_field_name = "location_name"`;    
     var res = await ExecuteQuery(locationNameQuery, [client_id, business_unit_id]);    
     if(res.rows.length > 0){    
         return res.rows.item(0).custom_field_name;

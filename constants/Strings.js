@@ -19,9 +19,15 @@ export default {
     Description: 'Description',
     Type: 'Type',
     Added_Date: 'Added Date',
-    
+    Please_Take_Photo: 'Please take a photo',
+
     Home:{
-        Sync_All: 'Sync All'
+        Sync_All: 'Sync All',
+        Odometer_Reading: 'Odometer Reading',
+        Take_Photo: "Please take a photo of your vehicle's starting odometer reading",
+        Start_Reading: 'Start Reading',
+        Input_Start_Reading: 'Input Start Reading',
+        Input_End_Reading : 'Input End Reading'
     },
 
     Home_Visit_Tabs: {
@@ -34,7 +40,7 @@ export default {
         ICCID_Not_Found: 'ICCID not found in stock',
         No_Stock_Item_Ids: 'No Stock Item IDS',
         No_Device_Found: 'No devices found',
-        Allocate_Device: 'Allocate Device',
+        Allocate_Device: 'Allocate Device',  
         Have_You_Tried:'Have you tried scanning first?',
         Input_ICCID: 'Input ICCID',
         Return_All_Stock: 'Return All Stock To Warehouse',

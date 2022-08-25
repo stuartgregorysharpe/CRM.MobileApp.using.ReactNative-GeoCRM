@@ -1,12 +1,9 @@
 
 import { View, StyleSheet } from 'react-native'
-import React , { useState ,useRef ,useEffect} from 'react'
+import React  from 'react'
 import { style } from '../../../../../constants/Styles'
 import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
-import { TopTab } from '../../../../../components/common/TopTab';
-import TodayVisits from './partial/TodayVisits';
-import WeeklyVisits from './partial/WeeklyVisits';
 import ProgressBar from '../ProgressBar';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Legend from '../../../../../components/common/Legend';
@@ -20,9 +17,7 @@ export default function ActivityCard({activityCard}) {
         {color:whiteLabel().graphs.primary, name:'Forms'} ,
         {color:whiteLabel().graphs.color_1, name:'Quotes'} ,
         {color:whiteLabel().graphs.color_3 , name:'Orders'}  ,        
-    ];
-
-    console.log("activityCard.action_items",activityCard.action_items)
+    ];    
 
     return (
         <View style={{marginTop:10, flex:1 , flexDirection:'column' }}>

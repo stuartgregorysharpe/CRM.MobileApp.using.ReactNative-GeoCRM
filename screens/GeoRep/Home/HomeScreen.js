@@ -10,11 +10,11 @@ import { generateTabs } from './helper';
 export default function HomeScreen(props) {
 
   const [tabIndex, setTabIndex] = useState('Main');
-  const [tabs, setTabs] = useState([{name: 'Main', id: 0}]);  
+  const [tabs, setTabs] = useState([]);  
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
 
-  useEffect(() => {
-    setTabs(generateTabs(tabs, features));        
+  useEffect(() => {  
+    setTabs(generateTabs(features));        
   }, []);
 
   useEffect(() => {

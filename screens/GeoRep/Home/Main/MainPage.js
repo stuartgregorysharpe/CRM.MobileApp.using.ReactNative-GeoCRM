@@ -145,7 +145,7 @@ export default function MainPage(props) {
     };
     postApiRequest('home/startEndDay', postData)
       .then(async res => {
-        if (res.status === 'success') {
+        if (res.status === Strings.Success) {
           setStartEndDayId(res.startEndDay_id);
           await storeLocalValue('start_my_day', isStart ? '0' : '1');
           setIsStart(!isStart);
@@ -242,7 +242,7 @@ export default function MainPage(props) {
 
       <OdometerReadingModal
         ref={odometerReadingModalRef}
-        title={'Odometer Reading'}
+        title={Strings.Home.Odometer_Reading}
         isStart={isStart}
         startEndDayId={startEndDayId}
         currentLocation={currentLocation}

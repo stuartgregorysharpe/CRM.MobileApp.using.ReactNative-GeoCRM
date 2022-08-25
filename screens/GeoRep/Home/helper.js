@@ -1,17 +1,35 @@
 
 
-export const generateTabs = ( tabs, features) => {
+export const generateTabs = ( features) => {
 
-    var tmp = [];
-    if (features.includes('actions_items')) {
-      tmp = [...tabs, {name: 'Actions', id: tabs.length + 1}];
+    var tabs = [];
+    var allTabs = getAllTabs();    
+    allTabs.forEach((element, index) => {        
+        if (element.slug === "main" || features.includes(element.slug)) {
+          tabs = [...tabs, {name: element.title, slug: element.slug,  id: index}];
+        }
+    });    
+    return tabs;        
+}
+
+
+const getAllTabs = () => {
+  return [
+    {
+      title: 'Main',
+      slug: 'main'
+    },
+    {
+      title: 'Actions',
+      slug: 'actions_items'
+    },
+    {
+      title: 'Leaderboard',
+      slug: 'leaderboard'
+    },
+    {
+      title: 'sales',
+      slug: 'Sales'
     }
-    if (features.includes('leaderboard')) {
-      tmp = [...tmp, {name: 'Leaderboard', id: tmp.length + 1}];
-    }
-    if (features.includes('sales')) {
-      tmp = [...tmp, {name: 'Sales', id: tmp.length + 1}];
-    }
-    return tmp;
-    
+  ];
 }

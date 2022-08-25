@@ -1,8 +1,8 @@
-import { View, Text ,FlatList ,Dimensions } from 'react-native'
-import React , {useState} from 'react'
+import { View, Dimensions } from 'react-native'
+import React  from 'react'
 import ProgressBar from '../../ProgressBar'
 import CircularProgress from 'react-native-circular-progress-indicator';
-import Colors, { whiteLabel } from '../../../../../../constants/Colors';
+import { whiteLabel } from '../../../../../../constants/Colors';
 import { AppText } from '../../../../../../components/common/AppText';
 import Legend from '../../../../../../components/common/Legend';
 import WeeklyBar from '../../../../../../components/common/WeeklyBar/WeeklyBar';

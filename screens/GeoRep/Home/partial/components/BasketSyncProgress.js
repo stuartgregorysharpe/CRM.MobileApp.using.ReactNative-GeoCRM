@@ -1,6 +1,6 @@
 
 
-import { View, StyleSheet, TouchableOpacity , Animated , Easing} from 'react-native'
+import { View, StyleSheet, TouchableOpacity} from 'react-native'
 import React , { useEffect, useState , useRef} from 'react'
 import { whiteLabel } from '../../../../../constants/Colors'
 import { CHorizontalProgressBar } from '../../../../../components/common/CHorizontalProgressBar';

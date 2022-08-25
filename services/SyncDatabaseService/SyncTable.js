@@ -13,8 +13,7 @@ export const initializeDB = async() => {
     if(res.status === Strings.Success){
         var offline_db_version = await getLocalData("@offline_db_version");
         if(offline_db_version != res.offline_db_version){                               
-            var tables = res.tables;   
-            console.log("offlien db structure", tables)         
+            var tables = res.tables;               
             const db = await getDBConnection();
             if(db != null){                    
                 await createTable(db ,tables);                                  
