@@ -44,6 +44,7 @@ import {Notification} from '../../../components/modal/Notification';
 import CheckInStatusView from './partial/CheckInStatusView';
 import AddLeadModal from './add_lead';
 import {Constants} from '../../../constants';
+import { LocationSearchDAO } from '../../../DAO';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -261,16 +262,13 @@ export default function LocationSearchScreen(props) {
   };
 
 
-  const loadData = async searchKey => {
-    var filterData = await getFilterData('@filter');
-    getLocationSearchListsByPage(filterData, pageNumber, searchKey)
-      .then(res => {
-        console.log(
-          'LOG: getLocationSearchListsByPage - response',
-          JSON.stringify(res),
-        );
-        setIsLoading(false);
 
+  const loadData = async searchKey => {
+
+    var filterData = await getFilterData('@filter');
+    LocationSearchDAO.find(currentLocation, filterData, pageNumber, searchKey , features).then((res) => {
+
+        setIsLoading(false);
         if (searchKey !== changedKey) {
           console.log(searchKey, changedKey);
           setPageNumber(0);
@@ -287,11 +285,41 @@ export default function LocationSearchScreen(props) {
             setPageNumber(pageNumber + 1);
           }
         }
-      })
-      .catch(error => {
-        console.log('error', error);
-        expireToken(dispatch, error);
-      });
+
+    }).catch((e) => {
+
+    });
+
+
+    // getLocationSearchListsByPage(filterData, pageNumber, searchKey)
+    //   .then(res => {
+    //     console.log(
+    //       'LOG: getLocationSearchListsByPage - response',
+    //       JSON.stringify(res),
+    //     );
+    //     setIsLoading(false);
+
+    //     if (searchKey !== changedKey) {
+    //       console.log(searchKey, changedKey);
+    //       setPageNumber(0);
+    //       isEndPageLoading = false;
+    //       getSearchData(res, searchKey, 'pagination');
+    //       searchKey = changedKey;
+    //       loadData(searchKey);
+    //     } else {
+    //       setIsPageLoading(false);
+    //       getSearchData(res, searchKey, 'pagination');
+    //       if (res.length < 50) {
+    //         isEndPageLoading = true;
+    //       } else {
+    //         setPageNumber(pageNumber + 1);
+    //       }
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log('error', error);
+    //     expireToken(dispatch, error);
+    //   });
   };
 
   const goPreviousPage = () => {

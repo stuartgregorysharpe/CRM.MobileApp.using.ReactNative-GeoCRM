@@ -57,7 +57,7 @@ export default function SyncAll(props) {
     var res  =  await getBascketLastSyncTableData("sync_all");
     var title = '';
     if(res.length > 0){                                                
-        title = Strings.Last_Synced_Date + res.item(0).timestamp;
+        title = Strings.Last_Synced_Date + res.item(0).timestamp;  
     }      
     setLastSyncedDate(title);
   }
