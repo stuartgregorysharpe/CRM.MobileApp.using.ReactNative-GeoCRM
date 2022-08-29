@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native';
 import {Colors} from '../../constants';
-import dummyData from '../../components/shared/BrandFacing/dummyData.json';
-import BrandFacingView from '../../components/shared/BrandFacing/BrandFacingView';
+import dummyData from '../../components/shared/FSUCampaign/dummyData.json';
+import FSUCampaign from '../../components/shared/FSUCampaign';
 export default function UITestScreen({screenProps}) {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function UITestScreen({screenProps}) {
   });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
-      <BrandFacingView item={dummyData} />
+      <FSUCampaign item={dummyData} />
     </SafeAreaView>
   );
 }

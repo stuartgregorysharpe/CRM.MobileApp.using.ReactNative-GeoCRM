@@ -1,0 +1,48 @@
+{
+    "form_question_id": "30",
+    "question_group": "Question Group 3",
+    "question_group_id": "3",
+    "question_type": "fsu_campaign",
+    "question_text": "This is a FSU Campaign Question",            
+    "guide_info": {
+        "title": "Question Guide 2",
+        "image": "",
+        "text": "Question Guide 2 Text"
+    },
+    "rule_compulsory": "0",
+    "campaigns" : [
+        {
+            "campaign_name" : "Generic FSU",
+            "fsu_campaign_id" : "1",
+            "achieved" : "50",
+            "target" : "10",
+            "previous" : {
+                "date" : "2022-05-04",
+                "placed" : "5"
+            },
+            "remaining" : "5"
+        },
+        {
+            "campaign_name" : "Generic FSU",
+            "fsu_campaign_id" : "2",
+            "achieved" : "50",
+            "target" : "10",
+            "previous" : {
+                "date" : "2022-05-04",
+                "placed" : "5"
+            },
+            "remaining" : "5"
+        },
+                {
+            "campaign_name" : "Generic FSU",
+            "fsu_campaign_id" : "3",
+            "achieved" : "50",
+            "target" : "10",
+            "previous" : {
+                "date" : "2022-05-04",
+                "placed" : "5"
+            },
+            "remaining" : "5"
+        }
+    ]
+}

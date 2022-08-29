@@ -33,6 +33,7 @@ export default {
     FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice',
     FORM_TYPE_FORMAT_PRICE: 'format_price',
     FORM_TYPE_BRAND_COMPETITOR_FACING: 'brand_competitor_facings',
+    FORM_TYPE_FSU_CAMPAIGN: 'fsu_campaign',
   },
 
   actionType: {
@@ -54,6 +55,7 @@ export default {
     ACTION_CHANGE_ITEM_PRICE_TYPE: 'ACTION_CHANGE_ITEM_PRICE_TYPE',
     ACTION_COMP: 'ACTION_COMP',
     ACTION_CHANGE_ITEM_FACING: 'ACTION_CHANGE_ITEM_FACING',
+    ACTION_CHANGE_ITEM_PLACED: 'ACTION_CHANGE_ITEM_PLACED',
   },
 
   stockPrefix: {

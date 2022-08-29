@@ -42,6 +42,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import MultiSelectPhoto from '../../../../../components/shared/MultiSelectPhoto';
 import TieredMultipleChoice from '../../../../../components/shared/TieredMultipleChoice';
 import BrandFacing from '../../../../../components/shared/BrandFacing';
+import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
@@ -380,6 +381,25 @@ export const FormQuestionView = forwardRef((props, ref) => {
       return (
         <BrandFacing
           key={'brand_competitor_facings' + index}
+          questionType={item.question_type}
+          item={item}
+          formIndex={index}
+          onFormAction={({type, value, item}) => {
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              onValueChangedSelectionView(key, index, value);
+            }
+            if (type == Constants.actionType.ACTION_INFO) {
+              _onTouchStart(null, item.guide_info);
+            }
+          }}
+        />
+      );
+    } else if (
+      item.question_type === Constants.questionType.FORM_TYPE_FSU_CAMPAIGN
+    ) {
+      return (
+        <FSUCampaign
+          key={'fsu_campaign' + index}
           questionType={item.question_type}
           item={item}
           formIndex={index}

@@ -3,8 +3,8 @@ export function constructFormData(data) {
   const formData = {products: []};
 
   console.log(data);
-  const brands = data.Brands || [];
-  const competitors = data.Competitors || [];
+  const brands = data.brands || [];
+  const competitors = data.competitors || [];
   const isInitialAnswerExist =
     value &&
     value.form_answers &&
@@ -75,7 +75,6 @@ export function getValueFromFormData(formData, item, formIndex) {
       answers.push(answer);
     }
   });
-  console.log('answers', answers);
   return {
     form_answers: [
       {
