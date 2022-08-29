@@ -3,6 +3,7 @@ import {View, StyleSheet, Text, TextInput} from 'react-native';
 import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
+import {formatDate} from '../../../../helpers/formatHelpers';
 
 const FSUCampaignItem = props => {
   const {item} = props;
@@ -43,7 +44,12 @@ const FSUCampaignItem = props => {
       </View>
       <View style={[styles.rowContainer, {justifyContent: 'space-between'}]}>
         <Text style={styles.text}>{'FSU Previously Placed'}</Text>
-        <Text style={styles.description}>{item.previous.date}</Text>
+        <Text style={styles.description}>
+          {formatDate(
+            item.previous.date,
+            Constants.dateFormat.DATE_FORMAT_SHORT_NAME,
+          )}
+        </Text>
         <View
           style={[styles.valueContainer, styles.bottomBorder, {height: 24}]}>
           <Text style={styles.text}>{item.previous.placed}</Text>
@@ -53,7 +59,7 @@ const FSUCampaignItem = props => {
       <View style={[styles.rowContainer, {justifyContent: 'space-between'}]}>
         <Text style={styles.text}>{"Remaining FSU's"}</Text>
         <View style={styles.valueContainer}>
-          <Text style={styles.title}>{item.remaining}</Text>
+          <Text style={styles.text}>{item.remaining}</Text>
         </View>
       </View>
       <View style={[styles.rowContainer, {justifyContent: 'space-between'}]}>
