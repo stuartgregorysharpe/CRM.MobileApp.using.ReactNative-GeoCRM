@@ -2,13 +2,24 @@ import React from 'react';
 import {View, StyleSheet, Text, TextInput} from 'react-native';
 import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
+import {
+  integerFieldValidator,
+  numberFieldValidator,
+} from '../../../../constants/Helper';
 
 const BrandFacingItem = props => {
   const {item} = props;
   if (!item) return null;
   const {name, facing, type} = item;
 
-  const onChangeFacing = (facingText, isConvertToNumber) => {
+  const onChangeFacing = (_facingText, _isConvertToNumber) => {
+    let isConvertToNumber = _isConvertToNumber;
+    let facingText = _facingText;
+    if (typeof facingText === 'string' || facingText instanceof String) {
+      while (!integerFieldValidator(facingText) && facingText != '') {
+        facingText = facingText.substring(0, facingText.length - 1);
+      }
+    }
     let nextFacing = isConvertToNumber
       ? Number(facingText).toFixed(0)
       : facingText;
@@ -23,6 +34,7 @@ const BrandFacingItem = props => {
       });
     }
   };
+
   return (
     <View style={[styles.container, styles.bottomBorder, props.style]}>
       <Text style={styles.text}>{name}</Text>

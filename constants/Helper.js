@@ -318,9 +318,9 @@ export function isInsidePoly(lat, lon, multiPolycoords) {
 }
 
 export function expireToken(dispatch, e) {
-  var message = "";
-  if (e === 'expired') {    
-    console.log('token EXPIRED !!!!!');    
+  var message = '';
+  if (e === 'expired') {
+    console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
     dispatch(
       showNotification({
@@ -331,31 +331,29 @@ export function expireToken(dispatch, e) {
           if (e === 'expired') {
             setToken(null);
             dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
-          }        
-          dispatch(clearNotification());          
+          }
+          dispatch(clearNotification());
         },
       }),
     );
-
-  }else{
+  } else {
     message = 'Submission timed out, Please try again or contact support';
   }
-
-  
-
 }
 
 export function getPostParameter(location) {
   var time_zone = RNLocalize.getTimeZone();
-  
+
   return {
     user_local_data: {
       time_zone: time_zone,
-      latitude:  location && location.latitude != undefined ? location.latitude : 0 ,
-      longitude: location && location.longitude != undefined ? location.longitude : 0 ,
+      latitude:
+        location && location.latitude != undefined ? location.latitude : 0,
+      longitude:
+        location && location.longitude != undefined ? location.longitude : 0,
     },
   };
-  
+
   return {};
 }
 
@@ -411,4 +409,14 @@ export function getFileFormat(path) {
     type: 'image/' + ext[1],
     name: words[words.length - 1],
   };
+}
+
+export function numberFieldValidator(numberText) {
+  var numberRegex = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
+  return numberRegex.test(numberText);
+}
+
+export function integerFieldValidator(numberText) {
+  var numberRegex = /^\d*$/;
+  return numberRegex.test(numberText);
 }

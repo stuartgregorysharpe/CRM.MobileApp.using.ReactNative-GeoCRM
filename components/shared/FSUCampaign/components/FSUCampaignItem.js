@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Text, TextInput} from 'react-native';
 import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
+import {integerFieldValidator} from '../../../../constants/Helper';
 import {style} from '../../../../constants/Styles';
 import {formatDate} from '../../../../helpers/formatHelpers';
 
@@ -10,7 +11,14 @@ const FSUCampaignItem = props => {
   if (!item) return null;
   const {name, placed, type} = item;
 
-  const onChangePlaced = (placedText, isConvertToNumber) => {
+  const onChangePlaced = (_placedText, _isConvertToNumber) => {
+    let isConvertToNumber = _isConvertToNumber;
+    let placedText = _placedText;
+    if (typeof placedText === 'string' || placedText instanceof String) {
+      while (!integerFieldValidator(placedText) && placedText != '') {
+        placedText = placedText.substring(0, placedText.length - 1);
+      }
+    }
     let nextPlaced = isConvertToNumber
       ? Number(placedText).toFixed(0)
       : placedText;

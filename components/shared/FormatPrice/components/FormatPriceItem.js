@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {Colors, Constants, Fonts, Values} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
+import {numberFieldValidator} from '../../../../constants/Helper';
 import CSwtichButton from '../../../common/CSwitchButton';
 
 const FormatPriceItem = props => {
@@ -16,7 +17,15 @@ const FormatPriceItem = props => {
   const {label, price, price_type} = item;
   const priceTypeValue = price_type == 'Promo';
   const fixed = props.fixed || 2;
-  const onChangePrice = (priceText, isConvertToNumber) => {
+  const onChangePrice = (_priceText, _isConvertToNumber) => {
+    let isConvertToNumber = _isConvertToNumber;
+    let priceText = _priceText;
+    if (typeof priceText === 'string' || priceText instanceof String) {
+      while (!numberFieldValidator(priceText) && priceText != '') {
+        priceText = priceText.substring(0, priceText.length - 1);
+      }
+    }
+
     let nextPrice = isConvertToNumber
       ? Number(priceText).toFixed(fixed)
       : priceText;
