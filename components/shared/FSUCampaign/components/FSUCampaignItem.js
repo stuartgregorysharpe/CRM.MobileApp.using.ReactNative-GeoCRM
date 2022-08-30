@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     height: 1,
     marginVertical: 4,
     alignSelf: 'stretch',
-    backgroundColor: Colors.splitColor,
+    backgroundColor: whiteLabel().lineSeperator,
   },
 });
 

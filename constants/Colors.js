@@ -46,6 +46,7 @@ export const whiteLabel = () => {
       color_2: '#DC143C', // Red,
       color_3: '#CFD8E8', // Grey
     },
+    lineSeperator: '#70707045',
   };
 };
 

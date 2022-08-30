@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   bottomBorder: {
-    borderBottomColor: Colors.splitColor,
+    borderBottomColor: whiteLabel().lineSeperator,
     borderBottomWidth: 1,
   },
   text: {
