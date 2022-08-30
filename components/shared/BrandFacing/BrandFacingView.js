@@ -92,7 +92,7 @@ const BrandFacingView = props => {
       />
       <BrandFacingList items={products} onItemAction={onItemAction} />
       <SubmitButton
-        title={'Submit'}
+        title={'Save'}
         style={{marginVertical: 16}}
         onSubmit={() => {
           onSubmit();

@@ -212,7 +212,7 @@ const FormatPriceView = props => {
       />
       <Notification />
       <SubmitButton
-        title={'Submit'}
+        title={'Save'}
         style={{marginVertical: 16}}
         onSubmit={() => {
           onSubmit();

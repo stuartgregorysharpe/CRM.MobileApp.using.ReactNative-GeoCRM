@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
     height: 40,
   },
   bottomBorder: {
-    borderBottomColor: whiteLabel().fieldBorder,
+    borderBottomColor: Colors.splitColor,
     borderBottomWidth: 1,
   },
   text: {
     fontFamily: Fonts.primaryMedium,
     fontSize: Values.fontSize.xSmall,
-    color: Colors.primaryColor,
+    color: whiteLabel().inputText,
     flex: 1,
   },
   textInput: {
