@@ -22,7 +22,7 @@ const FormatPrice = props => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={item.question_text}
+        title={Strings.Format_Price}
         onPress={onOpenModal}
       />
     );

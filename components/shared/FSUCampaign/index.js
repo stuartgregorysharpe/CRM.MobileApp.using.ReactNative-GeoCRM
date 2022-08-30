@@ -22,7 +22,7 @@ const FSUCampaign = props => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={item.question_text}
+        title={Strings.Fsu_Campaign}
         onPress={onOpenModal}
       />
     );

@@ -22,7 +22,7 @@ const BrandFacing = props => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={item.question_text}
+        title={Strings.Brand_Competitor_Facings}
         onPress={onOpenModal}
       />
     );
