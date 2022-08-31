@@ -59,7 +59,7 @@ export const FormQuestions = props => {
   }, [form]);
 
   const loadFromDB = async formId => {
-    /*const db = await getDBConnection();
+    const db = await getDBConnection();
     if (db != null) {
       const res = await getFormTableData(db, formId);
       if (res.length > 0) {
@@ -67,7 +67,7 @@ export const FormQuestions = props => {
         indempotencyKey = res.item(0).indempotencyKey;
         return;
       }
-    }*/
+    }
     _callFormQuestions();
   };
 
