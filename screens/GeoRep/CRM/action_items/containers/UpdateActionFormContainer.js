@@ -104,6 +104,7 @@ const UpdateActionFormContainer = props => {
           setFormData(_formData);
         }}
       />
+      
       <DynamicButtons
         buttons={buttons}
         onButtonAction={({type, item}) => {

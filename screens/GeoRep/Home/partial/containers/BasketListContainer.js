@@ -143,7 +143,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
             var lastSyncedParam = await getTimeStampAndTimeZone(basket);
             await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
-          
+                console.log("DB Length", res.records.length);
                 await handleRecords(tableName, res.records);
                 setTotalRecords(res.total_records);            
                 gSyncedRecords = gSyncedRecords + res.records.length;

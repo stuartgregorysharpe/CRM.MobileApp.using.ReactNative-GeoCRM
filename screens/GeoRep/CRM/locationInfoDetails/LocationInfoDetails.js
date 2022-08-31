@@ -60,6 +60,9 @@ import {
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings} from '../../../../constants';
 import { getDateTime } from '../../../../helpers/formatHelpers';
+import { LocationCheckinTypeDAO } from '../../../../DAO';
+
+
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -104,16 +107,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      closePopup() {
-        console.log('isOutcomeUpdated', isOutcomeUpdated);
+      closePopup() {        
         if (showItem !== 'update_customer') {
           checkFeedbackAndClose('top');
         } else {
           setShowItem('refresh');
         }
       },
-      goBack() {
-        console.log('isOutcomeUpdated', isOutcomeUpdated);
+      goBack() {        
         setModalType('feedback');
         if (showItem === 'update_customer') {
           setShowItem('refresh');
@@ -180,6 +181,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       features,
       'checkin_types',
     );
+    
     isFeedbackLocInfoOutcome = checkFeatureIncludeParamFromSession(
       features,
       'feedback_loc_info_outcome',
@@ -253,9 +255,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         path: 'images',
       },
     };
-    ImagePicker.launchCamera(options, response => {
-      console.log('Response = ', response);
-
+    ImagePicker.launchCamera(options, response => {      
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -404,6 +404,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               _callCheckedIn();
             }
           } else if (modalType === 'checkin_reason') {
+            console.log("check in reasons", checkinReason);
             var chk = checkinReason.find(element => element.reason === item);
             if (chk && chk.reason_id) {
               reason_id = checkinReason.find(
@@ -419,26 +420,21 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callCheckInTypes = async () => {
-    //var check = await checkFeatureIncludeParam("checkin_types");
+    
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
-    getApiRequest('locations/checkin-types', {})
-      .then(res => {
-        console.log('re', res);
-        if (res.status === 'success') {
-          var options = [];
-          res.checkin_types.forEach((item, index) => {
-            options.push(item.checkin_type);
-          });
-          setFeedbackOptions(options);
-          setCheckInTypes(res.checkin_types);
-        }
-      })
-      .catch(e => {
-        console.log('E', JSON.stringify(e));
+
+    LocationCheckinTypeDAO.find(features).then((res) => {      
+      var options = [];
+      res.forEach((item, index) => {
+        options.push(item.checkin_type);
       });
+      setFeedbackOptions(options);
+      setCheckInTypes(res);
+    });
+
   };
 
   const _callCheckedIn = async () => {
@@ -456,8 +452,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       .then(async res => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');
-        // dispatch check in
+        setModalType('feedback');        
         dispatch({type: CHECKIN, payload: true});
         await storeLocalValue('@checkin', '1');
         props.navigation.navigate('LocationSpecificInfo', {
@@ -471,16 +466,18 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const onClickCheckIn = async () => {
     
     var isCheckin = await getLocalData('@checkin');
-    if (isCheckin === '1') {
-      console.log("you are checkedin", props.navigation)
+    if (isCheckin === '1') {    
       dispatch(
         showNotification({
           type: 'success',
           message: Strings.You_Are_Currenly_Checkedin,
           buttonText: 'Continue',
           buttonAction: async () => {
-
-            props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+            dispatch(clearNotification());
+            if(props.onButtonAction){
+              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+            }
+            
 
             var specificLocationId = await getLocalData(
               '@specific_location_id',
@@ -488,8 +485,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             props.navigation.navigate('LocationSpecificInfo', {
               locationId: specificLocationId,
               page: 'checkin',
-            });
-            dispatch(clearNotification());
+            });            
             
           },
         }),

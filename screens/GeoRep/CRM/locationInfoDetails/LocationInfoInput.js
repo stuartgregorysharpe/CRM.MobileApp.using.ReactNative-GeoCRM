@@ -82,10 +82,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
 
-  const isDisposition = features.includes('disposition_fields')
-
-
-  console.log("featuresss" , features);
+  const isDisposition = features.includes('disposition_fields')  
   
   useImperativeHandle(
     ref,
@@ -132,8 +129,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         var selectedOutcomes = locationInfo.outcomes.filter(
           outcome => outcome.linked_stage_id == selectedStageId,
         );
-        setSelectedOutcomes(selectedOutcomes);
-        console.log('selectedOutcomes', selectedOutcomes);
+        setSelectedOutcomes(selectedOutcomes);        
         var tmp = [];
         selectedOutcomes.forEach((element, index) => {
           tmp.push(element.outcome_name);
@@ -359,8 +355,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
             : ''
         }
         onModalClose={() => setStageModalVisible(false)}
-        onValueChanged={(item, index) => {
-          console.log(item, locationInfo.stages);
+        onValueChanged={(item, index) => {          
           var stage_id = locationInfo.stages.find(
             element => element.stage_name === item,
           ).stage_id;
@@ -405,9 +400,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           ).outcome_id;
           setSelectedOutComeId(outcome_id);
           setOutComeModalVisible(false);
-          setIsLoading(true);
-          console.log(item, index);
-          console.log(outcome_id);
+          setIsLoading(true);          
         }}></SelectionPicker>
     );
   };
@@ -433,11 +426,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
               locationInfo.stages.forEach(element => {
                 tmp.push(element.stage_name);
               });
-              setOptions(tmp);
-              console.log(
-                'setStageModalVisible(!stageModalVisible)',
-                locationInfo.stages,
-              );
+              setOptions(tmp);              
             }}>
             <Text style={styles.shadowBoxText}>Stage</Text>
             <View>

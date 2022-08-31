@@ -18,6 +18,7 @@ import {
 import {updateCurrentLocation} from '../../../actions/google.action';
 import { Strings } from '../../../constants';
 import { getDateTime } from '../../../helpers/formatHelpers';
+import { LocationCheckinTypeDAO } from '../../../DAO';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -113,28 +114,28 @@ const CheckinLinkButton = props => {
         }}></SelectionPicker>
     );
   };
+
+
+
   const _callCheckInTypes = async () => {
-    //var check = await checkFeatureIncludeParam("checkin_types");
+    
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
-    getApiRequest('locations/checkin-types', {})
-      .then(res => {
-        console.log('re', res);
-        if (res.status === 'success') {
+
+    LocationCheckinTypeDAO.find(features).then((res) => {
           var options = [];
-          res.checkin_types.forEach((item, index) => {
+          res.forEach((item, index) => {
             options.push(item.checkin_type);
           });
           setFeedbackOptions(options);
-          setCheckInTypes(res.checkin_types);
-        }
-      })
-      .catch(e => {
-        console.log('E', JSON.stringify(e));
-      });
+          setCheckInTypes(res);
+    });
+        
   };
+
+
   const _callCheckedIn = async () => {
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
