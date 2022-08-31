@@ -1,10 +1,19 @@
 import {Constants} from '../../../../constants';
 
-export function filterTriggeredQuestions(questions) {
+export function filterTriggeredQuestions(formQuestionGroups) {
+  console.log('filterTriggeredQuestions');
+  const questions = [];
+  formQuestionGroups.forEach(formQuestionGroup => {
+    questions.push(...formQuestionGroup.questions);
+  });
   for (let i = 0; i < questions.length; i++) {
-    const isShow = checkIfQuestionIsTrigger(question[i], questions);
+    const isShow = checkIfQuestionIsTrigger(questions[i], questions);
     questions[i].isHidden = !isShow;
+    if (questions[i].isHidden) {
+      console.log('Hidden:', questions[i].question_text);
+    }
   }
+  return formQuestionGroups;
 }
 export function checkIfQuestionIsTrigger(question, questions) {
   if (!question) return false;
@@ -22,7 +31,19 @@ export function checkIfQuestionIsTrigger(question, questions) {
   if (!conditionQuestion) {
     return true;
   }
-  return checkTriggerCondition(question, conditionQuestion, triggerSetting);
+  const result = checkTriggerCondition(
+    question,
+    conditionQuestion,
+    triggerSetting,
+  );
+  console.log('question: id', question.form_question_id);
+  console.log('question: title', question.question_text);
+  console.log('conditionQuestion: type', conditionQuestion.question_type);
+  console.log('conditionQuestion: value', conditionQuestion.value);
+  console.log('conditionQuestion: title', conditionQuestion.question_text);
+  console.log('triggerSetting', triggerSetting);
+  console.log('conditionResult', result);
+  return result;
 }
 function checkTriggerCondition(question, conditionQuestion, triggerSetting) {
   if (!question || !conditionQuestion || !triggerSetting) {
@@ -46,7 +67,14 @@ function checkTriggerCondition(question, conditionQuestion, triggerSetting) {
 }
 
 function checkDropdownTriggerCondition(condition, answerList, valueList) {
-  if (!Array.isArray(answerList) || !Array.isArray(valueList)) return true;
+  console.log('checkDropdownTriggerCondition -condition', condition);
+  console.log('checkDropdownTriggerCondition -answer', answerList);
+  console.log('checkDropdownTriggerCondition -value', valueList);
+  if (
+    condition != 'ANY' &&
+    (!Array.isArray(answerList) || !Array.isArray(valueList))
+  )
+    return false;
   if (condition == 'ANY') {
     if (valueList && valueList.length > 0) {
       return true;
@@ -57,7 +85,7 @@ function checkDropdownTriggerCondition(condition, answerList, valueList) {
     let isConditionApproved = true;
     if (answerList && answerList.length > 0) {
       answerList.forEach(answer => {
-        isConditionApproved &= valueList.includes(answer);
+        isConditionApproved = isConditionApproved && valueList.includes(answer);
       });
     }
     return isConditionApproved;
@@ -72,11 +100,22 @@ function checkDropdownTriggerCondition(condition, answerList, valueList) {
       });
     }
     return isConditionApproved;
+  } else if (condition == '=') {
+    let isConditionApproved = answerList.length == valueList.length;
+    if (answerList && answerList.length > 0) {
+      answerList.forEach(answer => {
+        isConditionApproved = isConditionApproved && valueList.includes(answer);
+      });
+    }
+    return isConditionApproved;
   }
   return true;
 }
 
 function checkNumbersTriggerCondition(condition, _answer, _value) {
+  console.log('checkNumbersTriggerCondition -condition', condition);
+  console.log('checkNumbersTriggerCondition -answer', _answer);
+  console.log('checkNumbersTriggerCondition -value', _value);
   let answer = Number(_answer);
   let value = Number(_value);
   if (condition == 'ANY') {
@@ -106,8 +145,13 @@ function checkNumbersTriggerCondition(condition, _answer, _value) {
 }
 
 function checkTextTriggerCondition(condition, answer, value) {
+  console.log('checkTextTriggerCondition -condition', condition);
+  console.log('checkTextTriggerCondition -answer', answer);
+  console.log('checkTextTriggerCondition -value', value);
   if (condition == '=') {
-    if (answer !== value) return false;
+    const lowercaseAnswer = answer ? answer.toLowerCase() : '';
+    const lowercaseValue = value ? value.toLowerCase() : '';
+    if (lowercaseAnswer != lowercaseValue) return false;
   } else if (condition == 'ANY') {
     if (value == null || value == '' || value == undefined || !value) {
       return false;
@@ -137,176 +181,183 @@ export function getFormQuestionData(formQuestions) {
 
   formQuestions.forEach(element => {
     element.questions.forEach(item => {
-      var value = item.value;
-      if (
-        item.question_type === 'multiple' ||
-        item.question_type === 'multi_select'
-      ) {
-        if (item.value && item.value.length > 0) {
+      if (item.isHidden) {
+        index++;
+      } else {
+        var value = item.value;
+
+        if (
+          item.question_type === 'multiple' ||
+          item.question_type === 'multi_select'
+        ) {
+          if (item.value && item.value.length > 0) {
+            form_answers.push({
+              key: `form_answers[${index}][form_question_id]`,
+              value: item.form_question_id,
+            });
+
+            var j = 0;
+            item.value.forEach(subElement => {
+              form_answers.push({
+                key: `form_answers[${index}][answer][${j}]`,
+                value: item.question_type === 'take_photo' ? '' : subElement,
+              });
+              j = j + 1;
+            });
+            index = index + 1;
+          }
+        } else if (
+          item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT ||
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
+          item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT ||
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_FORMAT_PRICE ||
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_BRAND_COMPETITOR_FACING ||
+          item.question_type === Constants.questionType.FORM_TYPE_FSU_CAMPAIGN
+        ) {
+          if (value && value.form_answers_array) {
+            form_answers.push({
+              key: `form_answers[${index}][form_question_id]`,
+              value: item.form_question_id,
+            });
+
+            value.form_answers_array.forEach(itemValue => {
+              form_answers.push({
+                ...itemValue,
+                key: `form_answers[${index}]` + itemValue.key,
+              });
+            });
+            index = index + 1;
+          }
+        } else if (
+          item.question_type === 'take_photo' ||
+          item.question_type === 'upload_file'
+        ) {
           form_answers.push({
             key: `form_answers[${index}][form_question_id]`,
             value: item.form_question_id,
           });
-
-          var j = 0;
-          item.value.forEach(subElement => {
-            form_answers.push({
-              key: `form_answers[${index}][answer][${j}]`,
-              value: item.question_type === 'take_photo' ? '' : subElement,
-            });
-            j = j + 1;
+          form_answers.push({
+            key: `form_answers[${index}][answer]`,
+            value: '',
           });
           index = index + 1;
-        }
-      } else if (
-        item.question_type === Constants.questionType.FORM_TYPE_SKU_COUNT ||
-        item.question_type ===
-          Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE ||
-        item.question_type === Constants.questionType.FORM_TYPE_SKU_SELECT ||
-        item.question_type === Constants.questionType.FORM_TYPE_FORMAT_PRICE ||
-        item.question_type ===
-          Constants.questionType.FORM_TYPE_BRAND_COMPETITOR_FACING ||
-        item.question_type === Constants.questionType.FORM_TYPE_FSU_CAMPAIGN
-      ) {
-        if (value && value.form_answers_array) {
+        } else if (
+          item.question_type === Constants.questionType.FORM_TYPE_EMAIL_PDF
+        ) {
           form_answers.push({
             key: `form_answers[${index}][form_question_id]`,
             value: item.form_question_id,
           });
-
-          value.form_answers_array.forEach(itemValue => {
+          form_answers.push({
+            key: `form_answers[${index}][answer]`,
+            value: JSON.stringify(item.value),
+          });
+          index = index + 1;
+        } else if (
+          item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS &&
+          item.value
+        ) {
+          form_answers.push({
+            key: `form_answers[${index}][form_question_id]`,
+            value: item.form_question_id,
+          });
+          item.value.forEach((element, k) => {
             form_answers.push({
-              ...itemValue,
-              key: `form_answers[${index}]` + itemValue.key,
+              key: `form_answers[${index}][answer][selected_product_ids][${k}]`,
+              value: element.product_id,
             });
           });
           index = index + 1;
-        }
-      } else if (
-        item.question_type === 'take_photo' ||
-        item.question_type === 'upload_file'
-      ) {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        form_answers.push({
-          key: `form_answers[${index}][answer]`,
-          value: '',
-        });
-        index = index + 1;
-      } else if (
-        item.question_type === Constants.questionType.FORM_TYPE_EMAIL_PDF
-      ) {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        form_answers.push({
-          key: `form_answers[${index}][answer]`,
-          value: JSON.stringify(item.value),
-        });
-        index = index + 1;
-      } else if (
-        item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS &&
-        item.value
-      ) {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        item.value.forEach((element, k) => {
+        } else if (
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_PRODUCT_ISSUES &&
+          item.value
+        ) {
           form_answers.push({
-            key: `form_answers[${index}][answer][selected_product_ids][${k}]`,
-            value: element.product_id,
+            key: `form_answers[${index}][form_question_id]`,
+            value: item.form_question_id,
           });
-        });
-        index = index + 1;
-      } else if (
-        item.question_type ===
-          Constants.questionType.FORM_TYPE_PRODUCT_ISSUES &&
-        item.value
-      ) {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        var productIssues = [];
-        item.value.forEach(element => {
-          var check = productIssues.find(item => item === element.productIssue);
-          if (check === null || check === undefined)
-            productIssues.push(element.productIssue);
-        });
-        productIssues.forEach((topElement, i) => {
-          var subIndex = 0;
-          item.value.forEach((element, k) => {
-            if (topElement === element.productIssue) {
-              form_answers.push({
-                key: `form_answers[${index}][answer][${topElement}][${subIndex}]`,
-                value: element.product_id,
-              });
-              subIndex = subIndex + 1;
-            }
+          var productIssues = [];
+          item.value.forEach(element => {
+            var check = productIssues.find(
+              item => item === element.productIssue,
+            );
+            if (check === null || check === undefined)
+              productIssues.push(element.productIssue);
           });
-        });
-        index = index + 1;
-      } else if (
-        item.question_type ===
-          Constants.questionType.FORM_TYPE_PRODUCT_RETURN &&
-        item.value
-      ) {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        var productReturns = [];
-        item.value.forEach(element => {
-          var check = productReturns.find(
-            item => item === element.productReturn,
-          );
-          if (check === null || check === undefined)
-            productReturns.push(element.productReturn);
-        });
+          productIssues.forEach((topElement, i) => {
+            var subIndex = 0;
+            item.value.forEach((element, k) => {
+              if (topElement === element.productIssue) {
+                form_answers.push({
+                  key: `form_answers[${index}][answer][${topElement}][${subIndex}]`,
+                  value: element.product_id,
+                });
+                subIndex = subIndex + 1;
+              }
+            });
+          });
+          index = index + 1;
+        } else if (
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_PRODUCT_RETURN &&
+          item.value
+        ) {
+          form_answers.push({
+            key: `form_answers[${index}][form_question_id]`,
+            value: item.form_question_id,
+          });
+          var productReturns = [];
+          item.value.forEach(element => {
+            var check = productReturns.find(
+              item => item === element.productReturn,
+            );
+            if (check === null || check === undefined)
+              productReturns.push(element.productReturn);
+          });
 
-        productReturns.forEach((topElement, i) => {
-          item.value.forEach((element, k) => {
-            if (topElement === element.productReturn) {
-              form_answers.push({
-                key: `form_answers[${index}][answer][${topElement}][${element.product_id}]`,
-                value: element.value.toString(),
-              });
-            }
+          productReturns.forEach((topElement, i) => {
+            item.value.forEach((element, k) => {
+              if (topElement === element.productReturn) {
+                form_answers.push({
+                  key: `form_answers[${index}][answer][${topElement}][${element.product_id}]`,
+                  value: element.value.toString(),
+                });
+              }
+            });
           });
-        });
-        index = index + 1;
-      } else if (
-        item.question_type ===
-          Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO &&
-        item.value
-      ) {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        item.value.forEach((element, k) => {
+          index = index + 1;
+        } else if (
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO &&
+          item.value
+        ) {
           form_answers.push({
-            key: `form_answers[${index}][answer][${k}]`,
-            value: element.name,
+            key: `form_answers[${index}][form_question_id]`,
+            value: item.form_question_id,
           });
-        });
-        index = index + 1;
-      } else if (value != undefined && value != null && value != '') {
-        form_answers.push({
-          key: `form_answers[${index}][form_question_id]`,
-          value: item.form_question_id,
-        });
-        form_answers.push({
-          key: `form_answers[${index}][answer]`,
-          value: value,
-        });
-        index = index + 1;
+          item.value.forEach((element, k) => {
+            form_answers.push({
+              key: `form_answers[${index}][answer][${k}]`,
+              value: element.name,
+            });
+          });
+          index = index + 1;
+        } else if (value != undefined && value != null && value != '') {
+          form_answers.push({
+            key: `form_answers[${index}][form_question_id]`,
+            value: item.form_question_id,
+          });
+          form_answers.push({
+            key: `form_answers[${index}][answer]`,
+            value: value,
+          });
+          index = index + 1;
+        }
       }
-      //}
     });
   });
   return form_answers;

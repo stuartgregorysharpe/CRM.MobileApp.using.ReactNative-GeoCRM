@@ -143,12 +143,13 @@ export const FormQuestionView = forwardRef((props, ref) => {
     setModalVisible(false);
   };
   const onValueChangedSelectionView = async (key, index, value) => {
-    var tmp = [...formQuestions];
-    tmp[key].questions[index].value = value;
-    updateFormQuestions(tmp);
+    let _formQuestions = [...formQuestions];
+    _formQuestions[key].questions[index].value = value;
+    updateFormQuestions(_formQuestions);
   };
 
   const renderQuestion = (item, key, index) => {
+    if (item.isHidden) return null;
     if (item.question_type === 'text') {
       return (
         <TextForm
@@ -596,6 +597,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
       <ScrollView style={{padding: 5}}>
         {formQuestions &&
           formQuestions.map((form, key) => {
+            if (form.isHidden) return null;
             return (
               <View key={'form' + key}>
                 <GroupTitle title={form.question_group}></GroupTitle>

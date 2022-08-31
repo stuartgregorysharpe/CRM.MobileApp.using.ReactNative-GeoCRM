@@ -23,6 +23,7 @@ import {
 import * as RNLocalize from 'react-native-localize';
 import {FormQuestionView} from '../../CRM/add_lead/components/FormQuestionView';
 import {
+  filterTriggeredQuestions,
   getFormQuestionData,
   getFormQuestionFile,
   validateFormQuestionData,
@@ -58,15 +59,15 @@ export const FormQuestions = props => {
   }, [form]);
 
   const loadFromDB = async formId => {
-    const db = await getDBConnection();
+    /*const db = await getDBConnection();
     if (db != null) {
       const res = await getFormTableData(db, formId);
       if (res.length > 0) {
-        setFormQuestions(JSON.parse(res.item(0).formQuestions));
+        updateFormQuestions(JSON.parse(res.item(0).formQuestions));
         indempotencyKey = res.item(0).indempotencyKey;
         return;
       }
-    }
+    }*/
     _callFormQuestions();
   };
 
@@ -150,7 +151,7 @@ export const FormQuestions = props => {
         tmp.questions = [...newTmp];
       }
     });
-    setFormQuestions(newData);
+    updateFormQuestions(newData);
   };
 
   const isInNewData = (data, value) => {
@@ -172,7 +173,7 @@ export const FormQuestions = props => {
         }
       });
     });
-    setFormQuestions(tmp);
+    updateFormQuestions(tmp);
     indempotencyKey = null;
   };
 
@@ -298,9 +299,13 @@ export const FormQuestions = props => {
       });
   };
 
-  const updateFormQuestions = value => {
-    setFormQuestions(value);
+  const updateFormQuestionsAndClearDB = value => {
+    updateFormQuestions(value);
     saveDb(value, '');
+  };
+  const updateFormQuestions = formQuestionGroups => {
+    filterTriggeredQuestions(formQuestionGroups);
+    setFormQuestions(formQuestionGroups);
   };
 
   const onBackPressed = value => {
@@ -315,7 +320,7 @@ export const FormQuestions = props => {
         form={form}
         formQuestions={formQuestions}
         pageType={pageType}
-        updateFormQuestions={updateFormQuestions}
+        updateFormQuestions={updateFormQuestionsAndClearDB}
         onBackPressed={onBackPressed}
         onSubmit={_onSubmit}
       />
