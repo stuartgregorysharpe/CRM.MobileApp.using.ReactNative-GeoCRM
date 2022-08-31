@@ -1,5 +1,118 @@
 import {Constants} from '../../../../constants';
 
+export function filterTriggeredQuestions(questions) {
+  for (let i = 0; i < questions.length; i++) {}
+}
+export function checkIfQuestionIsTrigger(question, questions) {
+  if (!question) return false;
+  if (!question.trigger || question.trigger == []) {
+    return true;
+  }
+
+  const triggerSetting = question.trigger;
+  let conditionQuestion = null;
+  if (triggerSetting.question_id) {
+    conditionQuestion = questions.find(
+      x => x.form_question_id == triggerSetting.question_id,
+    );
+  }
+  if (!conditionQuestion) {
+    return true;
+  }
+  return checkTriggerCondition(question, conditionQuestion, triggerSetting);
+}
+function checkTriggerCondition(question, conditionQuestion, triggerSetting) {
+  if (!question || !conditionQuestion || !triggerSetting) {
+    return true;
+  }
+  const condition = triggerSetting.condition;
+  const answer = triggerSetting.answer;
+  const type = triggerSetting.type;
+
+  const value = conditionQuestion.value;
+
+  if (type == 'text') {
+    return checkTextTriggerCondition(condition, answer, value);
+  } else if (type == 'numbers') {
+    return checkNumbersTriggerCondition(condition, answer, value);
+  } else if (type == 'dropdown') {
+    return checkDropdownTriggerCondition(condition, answer, value);
+  }
+
+  return true;
+}
+
+function checkDropdownTriggerCondition(condition, answerList, valueList) {
+  if (!Array.isArray(answerList) || !Array.isArray(valueList)) return true;
+  if (condition == 'ANY') {
+    if (valueList && valueList.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } else if (condition == 'AND') {
+    let isConditionApproved = true;
+    if (answerList && answerList.length > 0) {
+      answerList.forEach(answer => {
+        isConditionApproved &= valueList.includes(answer);
+      });
+    }
+    return isConditionApproved;
+  } else if (condition == 'OR') {
+    if (answerList.length == 0) {
+      return true;
+    }
+    let isConditionApproved = false;
+    if (answerList && answerList.length > 0) {
+      answerList.forEach(answer => {
+        isConditionApproved = isConditionApproved || valueList.includes(answer);
+      });
+    }
+    return isConditionApproved;
+  }
+  return true;
+}
+
+function checkNumbersTriggerCondition(condition, _answer, _value) {
+  let answer = Number(_answer);
+  let value = Number(_value);
+  if (condition == 'ANY') {
+    if (
+      value == null ||
+      value == '' ||
+      value == undefined ||
+      !value ||
+      isNaN(value)
+    ) {
+      return false;
+    }
+  }
+
+  if (condition == '=') {
+    if (answer !== value) return false;
+  } else if (condition == '>') {
+    if (value <= answer) return false;
+  } else if (condition == '>=') {
+    if (value < answer) return false;
+  } else if (condition == '<') {
+    if (value >= answer) return false;
+  } else if (condition == '<=') {
+    if (value > answer) return false;
+  }
+  return true;
+}
+
+function checkTextTriggerCondition(condition, answer, value) {
+  if (condition == '=') {
+    if (answer !== value) return false;
+  } else if (condition == 'ANY') {
+    if (value == null || value == '' || value == undefined || !value) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function validateFormQuestionData(formQuestions) {
   var flag = true;
   formQuestions.forEach(element => {
