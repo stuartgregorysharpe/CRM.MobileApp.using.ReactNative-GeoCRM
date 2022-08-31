@@ -214,6 +214,9 @@ export default function MainPage(props) {
 
       <SyncAll refresh={refresh}></SyncAll>
 
+      
+
+
       {isCheckin && (
         <CheckOut
           checkinStatus={checkinStatus}

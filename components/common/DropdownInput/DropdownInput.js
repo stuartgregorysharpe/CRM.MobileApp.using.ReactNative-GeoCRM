@@ -25,7 +25,7 @@ export default function DropdownInput(props) {
               {
                 selectedItem &&
                 <AppText title={selectedItem ? Constants.stockPrefix.DEVICE + selectedItem.imei:''} size="medium" color={Colors.disabledColor} ></AppText> 
-              }              
+              }
             </View>
             <View style={{marginRight: 10}}>
               <SvgIcon icon={"Drop_Down"} width="23px" height="23px" />

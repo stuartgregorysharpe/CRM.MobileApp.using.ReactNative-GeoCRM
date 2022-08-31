@@ -28,9 +28,9 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                     console.log("error",e)
                     reject();
                 })
-            }else{
-              
                 
+            }else{
+                              
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
                 
@@ -67,10 +67,9 @@ const fetchDataFromDB = async (query , client_id , business_unit_id) => {
           return res.rows;
       }else{
           return '';
-      }
-      
+      }      
   }catch(e){
-    console.log(e)
+      console.log(e)
       return '';
   }   
 }
