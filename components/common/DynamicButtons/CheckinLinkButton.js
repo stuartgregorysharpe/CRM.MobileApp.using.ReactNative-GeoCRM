@@ -16,6 +16,8 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
+import { Strings } from '../../../constants';
+import { getDateTime } from '../../../helpers/formatHelpers';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -134,7 +136,7 @@ const CheckinLinkButton = props => {
       });
   };
   const _callCheckedIn = async () => {
-    var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
       location_id: locationId,
@@ -163,7 +165,7 @@ const CheckinLinkButton = props => {
       dispatch(
         showNotification({
           type: 'success',
-          message: 'You are currently checked-in to a location',
+          message: Strings.You_Are_Currenly_Checkedin,
           buttonText: 'Continue',
           buttonAction: async () => {
             navigation.navigate('DeeplinkLocationSpecificInfoScreen', {

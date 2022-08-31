@@ -1,20 +1,18 @@
 
-import { View, Text, AppState, FlatList } from 'react-native'
-import React , { useState ,useRef ,useEffect} from 'react'
+import { View } from 'react-native'
+import React , { useState } from 'react'
 import { style } from '../../../../../constants/Styles'
 import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
 import { TopTab } from '../../../../../components/common/TopTab';
 import TodayVisits from './partial/TodayVisits';
 import WeeklyVisits from './partial/WeeklyVisits';
-
+import { Strings } from '../../../../../constants';
 
 export default function Visits({visitCard}) {
 
-    const [tabIndex, setTabIndex] = useState(0);
-    
-    const headers = ["Today Visits" , "Weekly Visits" ]
-    const refPagerView = useRef();    
+    const [tabIndex, setTabIndex] = useState(0);    
+    const headers = [Strings.Home_Visit_Tabs.Today , Strings.Home_Visit_Tabs.Weekly ]    
  
     return (
         <View style={{marginTop:10, flex:1 , flexDirection:'column' }}>

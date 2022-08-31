@@ -1,6 +1,6 @@
 
-import { View, Text } from 'react-native'
-import React , {useEffect, useState , useRef} from 'react'
+import { View } from 'react-native'
+import React from 'react'
 import { postApiRequestMultipart } from '../../../../../actions/api.action';
 import { useSelector } from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
@@ -8,7 +8,7 @@ import ConsumableSellToStockSignatureView from '../components/ConsumableSellToSt
 import RNFS from 'react-native-fs';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 
 export default function ConsumableSellToTraderSignatureContainer(props) {
          
@@ -19,10 +19,6 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
     var quantity = '0';
     var price = '';
     var reference = '';
-
-    useEffect(() => {
-        console.log("stocksignature location id", props.locationId);
-    },[]);
 
     const onItemPressed = (item) => {
 
@@ -52,13 +48,13 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
                     postData.append( 'user_local_data[longitude]', currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0' );                
                     
                     postApiRequestMultipart("stockmodule/sell-to-trader" , postData).then((res) => {
-                        dispatch(showNotification({type:'success' , message: res.message, buttonText: 'Ok' ,buttonAction: async () => {                    
+                        dispatch(showNotification({type: Strings.Success , message: res.message, buttonText: 'Ok' ,buttonAction: async () => {                    
                             props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
                             dispatch(clearNotification());
                         }}));
                     }).catch((e) => {
                         console.log("error", e);
-                        dispatch(showNotification({type:'success' , message: "Error", buttonText: 'Ok'}));
+                        dispatch(showNotification({type: Strings.Success  , message: "Error", buttonText: 'Ok'}));
                     });
 
                 } else {

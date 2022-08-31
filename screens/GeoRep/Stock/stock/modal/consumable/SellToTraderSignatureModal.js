@@ -1,10 +1,8 @@
 
-import React , { useState , useEffect, useRef} from 'react'
+import React from 'react'
 import CModal from '../../../../../../components/common/CModal';
 import { Constants } from '../../../../../../constants';
-import ConsumableSellToStockSignatureView from '../../components/ConsumableSellToStockSignatureView';
 import ConsumableSellToTraderSignatureContainer from '../../container/ConsumableSellToTraderSignatureContainer';
-import TraderContainer from '../../container/TransferContainer';
 
 const SellToTraderSignatureModal = React.forwardRef((props, ref) => {
 
@@ -16,7 +14,7 @@ const SellToTraderSignatureModal = React.forwardRef((props, ref) => {
           ref.current.hideModal();
         }
     };
-
+    
     return (        
         
         <CModal
@@ -31,7 +29,6 @@ const SellToTraderSignatureModal = React.forwardRef((props, ref) => {
             <ConsumableSellToTraderSignatureContainer {...props} />
         </CModal>  
     )
-
 });
 
 export default SellToTraderSignatureModal;

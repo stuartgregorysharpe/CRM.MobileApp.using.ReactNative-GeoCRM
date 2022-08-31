@@ -4,7 +4,7 @@ import React , {useState ,useRef} from 'react'
 import CTextInput from '../../../../../../components/common/CTextInput';
 import { SubmitButton } from '../../../../../../components/shared/SubmitButton';
 import QRScanModal from '../../../../../../components/common/QRScanModal';
-import { Constants } from '../../../../../../constants';
+import { Constants, Strings } from '../../../../../../constants';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../../actions/notification.action';
 
@@ -22,7 +22,6 @@ export default function DeviceView(props) {
             onDataChanged(details, value);
         }
     };
-
         
     const onDataChanged = (details, quantity) =>{
         props.onDataChanged(details, quantity)
@@ -33,8 +32,8 @@ export default function DeviceView(props) {
         if(codeDisabled){
             dispatch(
                 showNotification({
-                  type: 'success',
-                  message: "Have you tried scanning first?",
+                  type: Strings.Success,
+                  message: Strings.Stock.Have_You_Tried,
                   cancelButtonText: 'No',
                   buttonText: 'Yes',
                   buttonAction: async () => {                     

@@ -76,7 +76,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 
       let isMount = true;
 
-      console.log("%%%%% refresh $$$$$$$$$" ,propsChildren);
+      //console.log("%%%%% refresh $$$$$$$$$" ,propsChildren);
       
       if (!clusteringEnabled) {
         updateSpiderMarker([])

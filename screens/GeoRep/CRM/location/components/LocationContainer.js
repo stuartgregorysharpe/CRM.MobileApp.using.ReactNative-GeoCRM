@@ -10,7 +10,6 @@ import {
 import {
   getLocationFilters,
   getLocationInfo,
-  getLocationMapByRegion,
   getLocationPinKey,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
@@ -18,13 +17,13 @@ import LocationFilterModal from '../../../../../components/modal/LocationFilterM
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants} from '../../../../../constants';
-import {breakPoint} from '../../../../../constants/Breakpoint';
 import {expireToken} from '../../../../../constants/Helper';
 import {
   getLocalData,
   getMapMinZoomLevel,
   getPinSvg,
 } from '../../../../../constants/Storage';
+import {LocationMapDAO} from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -36,6 +35,7 @@ import {getPolygonData} from '../helper';
 import Bubble from './Bubble';
 import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
+
 const LocationContainer = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -69,12 +69,11 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
-    console.log('boundBox', boundBox);
-    console.log('isLoading', isLoading);
 
     if (isLoadable) {
       setIsLoading(true);
-      getLocationMapByRegion(_currentLocation, boundBox)
+      console.log(' load mark api');
+      LocationMapDAO.find(_currentLocation, boundBox)
         .then(res => {
           getPinSvg('@map_pin_key').then(mapPinSvg => {
             setIsLoading(false);
@@ -87,6 +86,7 @@ const LocationContainer = props => {
                       parseInt(element.pin_id) == parseInt(location.pin_id),
                   );
                 }
+
                 return {
                   ...location,
                   pinIcon: foundPinSvg,
@@ -95,10 +95,10 @@ const LocationContainer = props => {
               }),
             );
           });
-
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
         .catch(e => {
+          console.log('Error');
           setIsLoading(false);
           expireToken(dispatch, e);
         });
@@ -165,6 +165,7 @@ const LocationContainer = props => {
   };
   const openLocationInfoDetails = locationId => {
     if (locationInfoModalRef && locationInfoModalRef.current) {
+      console.log('open modal');
       locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
@@ -257,6 +258,7 @@ const LocationContainer = props => {
           onClickAddToCalendar={onOpenAddToCalendar}
         />
       )}
+
       <LocationMap
         polygonData={polygonData}
         markers={markers}
@@ -267,6 +269,7 @@ const LocationContainer = props => {
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
       />
+
       {isShowZoomLabel && (
         <Bubble
           title="Zoomed out too far, zoom in to see results"
@@ -306,6 +309,7 @@ const LocationContainer = props => {
       <LocationInfoDetailModal
         ref={locationInfoModalRef}
         locInfo={locationInfo}
+        navigation={navigation}
         pageType={{name: 'search-lists'}}
       />
     </View>

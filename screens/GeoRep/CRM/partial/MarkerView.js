@@ -19,6 +19,7 @@ export function MarkerView({isRequest}) {
       items.push({
         text: pin.label,
         icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1],
+        code:pin.svg_code
       });
     });
     setMarkerIcons(items);
@@ -46,7 +47,9 @@ export function MarkerView({isRequest}) {
               icon={markerIcon.icon}
               width="28px"
               height="28px"
-            />
+            >
+            </MarkerIcon>
+            
             <Text style={styles.markerText}>{markerIcon.text}</Text>
           </View>
         ))}

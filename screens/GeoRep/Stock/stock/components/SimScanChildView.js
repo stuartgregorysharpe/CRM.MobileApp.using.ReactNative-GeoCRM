@@ -1,11 +1,11 @@
 
-import { View, Text, Dimensions, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import React , { useState,useEffect } from 'react'
 import { SubmitButton } from '../../../../../components/shared/SubmitButton'
 import { AppText } from '../../../../../components/common/AppText'
 import CButtonTextInput from '../../../../../components/common/CButtonTextInput';
 import Divider from '../../../../../components/Divider';
-import { Colors } from '../../../../../constants';
+import { Colors, Strings } from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 
 
@@ -14,8 +14,7 @@ export default function SimScanChildView(props) {
     const { isAdded, title ,onSubmit , addStock, changeNetwork, viewLists, onClose} = props;
     const [code, setCode] = useState('');
 
-    useEffect(() => {
-        console.log("is Added", isAdded)
+    useEffect(() => {        
        if(isAdded){
            setCode('')
        }
@@ -39,7 +38,7 @@ export default function SimScanChildView(props) {
             <View style={{height:1, backgroundColor:Colors.primaryColor, marginTop:10}}></View>
             
             <CButtonTextInput 
-                label={"Input ICCID"}
+                label={ Strings.Stock.Input_ICCID }
                 value={code}
                 returnKeyType={'done'}             
                 keyboardType="number-pad"                         
@@ -51,7 +50,7 @@ export default function SimScanChildView(props) {
                 style={{marginTop:20, marginBottom:35}}
             /> 
 
-            <SubmitButton title="Add Stock" onSubmit={addStock} ></SubmitButton>
+            <SubmitButton title={Strings.Stock.Add_Stock} onSubmit={addStock} ></SubmitButton>
         </View>
     )
 }

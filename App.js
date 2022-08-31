@@ -13,6 +13,7 @@ import SQLite from 'react-native-sqlite-storage';
 import { useEffect } from 'react';
 import { getDBConnection } from './sqlite/DBHelper';
 import { createTable } from './sqlite/FormDBHelper';
+import { createBascketLastSync } from './sqlite/BascketLastSyncsHelper';
 
 enableScreens(true);
 
@@ -28,8 +29,12 @@ export default function App() {
 
   const initializeDB = async() => {    
     const db = await getDBConnection();
-    if(db != null)
+    if(db != null){
       await createTable(db);  
+      await createBascketLastSync(db)
+    }
+      
+
   }
 
   return (    
@@ -37,7 +42,6 @@ export default function App() {
         <SafeAreaProvider>
           <NavigationContainer onReady={() => RNBootSplash.hide()}>
             <AppScreens />
-
             {/* <GestureHandlerRootView></GestureHandlerRootView> */}
           </NavigationContainer>
         </SafeAreaProvider>

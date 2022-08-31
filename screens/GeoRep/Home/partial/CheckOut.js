@@ -10,6 +10,7 @@ import { CHECKIN } from '../../../../actions/actionTypes'
 import {useSelector, useDispatch} from 'react-redux';
 import { getPostParameter } from '../../../../constants/Helper'
 import { postApiRequest } from '../../../../actions/api.action'
+import { getDateTime } from '../../../../helpers/formatHelpers'
 
 
 export default function CheckOut({ currentCall , checkinStatus }) {
@@ -27,9 +28,11 @@ export default function CheckOut({ currentCall , checkinStatus }) {
     setLocationId(specificLocationId);
   }
 
+
   const _callCheckOut = () => {
     var userParam = getPostParameter(currentLocation);
-    var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    var currentTime = getDateTime();
+    
     let postData = {
       location_id: checkinStatus,
       checkout_time: currentTime,

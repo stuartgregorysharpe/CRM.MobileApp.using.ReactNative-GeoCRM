@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import React from 'react'
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import ViewListsView from '../components/ViewListsView';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 
 export default function ViewListsContainer(props) {
 
@@ -21,7 +21,7 @@ export default function ViewListsContainer(props) {
                 removeDevice={removeDevice}                
                 {...props}
             />
-            <SubmitButton style={{marginHorizontal:10}} title={"Allocate Devices"} onSubmit={allocateDevices}/>                     
+            <SubmitButton style={{marginHorizontal:10}} title={Strings.Stock.Allocate_Device} onSubmit={allocateDevices}/>                     
         </View>
     )
 }

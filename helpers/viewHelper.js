@@ -1,7 +1,6 @@
 import { Constants } from "../constants";
 
-  export function getSubText  (item){
-      
+  export function getSubText  (item){      
     if(item.stock_type == Constants.stockType.DEVICE){
       return Constants.stockPrefix.DEVICE + item.serial;
     }else if(item.stock_type == Constants.stockType.CONSUMABLE){

@@ -167,6 +167,7 @@ const generateFieldName = fieldLabel => {
   fieldName = fieldLabel.toLowerCase();
   return fieldName;
 };
+
 export function constructRedflagActionFormStructure(formBaseData, userType) {
   if (!formBaseData) return [];
   const dynamicFields = formBaseData.dynamic_fields.map(field => {

@@ -52,7 +52,6 @@ const LocationWatcher = props => {
   }
 
   const onUpdateCurrentLocation = position => {
-    console.log('onUpdateCurrentLocation -----', position);
     dispatch({
       type: CHANGE_CURRENT_LOCATION,
       payload: {

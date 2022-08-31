@@ -9,6 +9,7 @@ import { style } from '../../../constants/Styles';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 
 export default function Stock(props) {
+  
     const headers = ["Stock","Movements", "Returns"];
     const [tabIndex , setTabIndex] = useState(1);
     const isShowCustomNavigationHeader = props.isDeeplink != undefined;

@@ -2,6 +2,8 @@ import {View, Text, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import React from 'react';
 import {AppText} from '../../../../components/common/AppText';
 import {whiteLabel} from '../../../../constants/Colors';
+import Constants from '../../../../services/Constants';
+import { Strings } from '../../../../constants';
 
 export default function CheckInStatusView({onGo, page}) {
   return (
@@ -18,7 +20,7 @@ export default function CheckInStatusView({onGo, page}) {
           <AppText
             size="medium"
             color={whiteLabel().headerText}
-            title="You are currently checked-in to a location."></AppText>
+            title={Strings.You_Are_Currenly_Checkedin} ></AppText>
           <AppText
             size="medium"
             color={whiteLabel().headerText}

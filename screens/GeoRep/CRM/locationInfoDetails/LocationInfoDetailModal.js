@@ -29,7 +29,7 @@ const LocationInfoDetailModal = React.forwardRef((props, ref) => {
       {...props}>
       <ScrollView
         style={{height: Values.deviceHeight - 68, alignSelf: 'stretch'}}>
-        <LocationInfoDetails {...props} isModal={true} />
+        <LocationInfoDetails {...props} isModal={true} onButtonAction={onButtonAction}/>
       </ScrollView>
     </CModal>
   );

@@ -1,6 +1,6 @@
 import {View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {Colors, Constants} from '../../../../../constants';
+import {Colors} from '../../../../../constants';
 import {AppText} from '../../../../../components/common/AppText';
 import { whiteLabel } from '../../../../../constants/Colors';
 import { getSubText } from '../../../../../helpers/viewHelper';

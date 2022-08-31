@@ -3,10 +3,9 @@ import React from 'react';
 import CModal from '../../../../../../components/common/CModal';
 import { Constants } from '../../../../../../constants';
 import SimDetailsContainer from '../../container/sim/SimDetailsContainer';
-import SimScanContainer from '../../container/SimScanContainer';
 
 const SimDetailsModal = React.forwardRef((props, ref) => {
-  const {item} = props;
+  
   const onButtonAction = data => {
  
     if (props.onButtonAction) {

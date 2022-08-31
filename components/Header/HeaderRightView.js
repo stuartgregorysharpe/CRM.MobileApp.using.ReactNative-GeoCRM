@@ -1,24 +1,34 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
 import { PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
-import { checkFeatureIncludeParam } from '../../constants/Storage';
+import { checkFeatureIncludeParam, getLocalData, storeLocalValue } from '../../constants/Storage';
 
 export default function HeaderRightView() {
+
   const dispatch = useDispatch();
   const userInfo = useSelector(state => state.auth.userInfo);
   const [toggleSwitch, setToggleSwitch] = useState(true);
   const [canShowToggle, setShowToggle] = useState(true);
-
-  useEffect(() => {
+  useEffect(() => {    
     getToggleStatus();
-  }, []);
+    setOnlineOffline();
+  });
 
   const getToggleStatus = async () => {
-    let res = await checkFeatureIncludeParam("offline_toggle");
-    setShowToggle(res);
+    let res = await checkFeatureIncludeParam("offline_toggle");            
+    setShowToggle(res); 
+  }
+
+  const setOnlineOffline = async () => {
+    var isOnline = await getLocalData("@online");
+    if(isOnline === "1"){
+      setToggleSwitch(true);
+    }else{
+      setToggleSwitch(false);
+    }
   }
  
   return (
@@ -34,7 +44,9 @@ export default function HeaderRightView() {
           thumbOnStyle={{ backgroundColor: PRIMARY_COLOR }}
           thumbOffStyle={{ backgroundColor: PRIMARY_COLOR }}
           isOn={toggleSwitch}
-          onToggle={toggleSwitch => {
+          onToggle={ async (toggleSwitch)  => {
+            console.log("clicked", toggleSwitch)
+            await storeLocalValue("@online", toggleSwitch ? "1" : "0");            
             setToggleSwitch(toggleSwitch);
           }}
         />}

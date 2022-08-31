@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import MapView, {Marker, Polygon, Polyline} from 'react-native-maps';
+import SvgIcon from '../../../../components/SvgIcon';
 import {Fonts} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
@@ -100,12 +101,14 @@ const GmsLocationMap = props => {
         if (item.pinIcon && item.pinIcon.pin_image) {
           icon = {uri: item.pinIcon.pin_image};
         }
+        //console.log("ITEM -" , item)
       }
 
+      
       return (
         <Marker
           key={'markers' + item.location_id}
-          icon={icon}
+          //icon={icon}
           tracksViewChanges={!isDrawMode}
           onPress={() => {
             props.onMarkerPressed(item, key);
@@ -113,7 +116,9 @@ const GmsLocationMap = props => {
           coordinate={{
             latitude: Number(item.coordinates.latitude),
             longitude: Number(item.coordinates.longitude),
-          }}></Marker>
+          }}>
+            <SvgIcon  width="30" height="30" xml={item.pinIcon.svg_code} />
+          </Marker>
       );
     });
   };
@@ -153,7 +158,7 @@ const GmsLocationMap = props => {
       />
     );
   };
-  console.log('GmsLocationMap_currentLocation', currentLocation);
+  
   return (
     <View style={[styles.container, props.style]}>
       {isShowMap && (

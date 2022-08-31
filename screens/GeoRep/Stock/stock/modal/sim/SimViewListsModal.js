@@ -5,7 +5,7 @@ import { Constants } from '../../../../../../constants';
 import SimViewListsContainer from '../../container/SimViewListsContainer';
 
 const SimViewListsModal = React.forwardRef((props, ref) => {
-  const {item} = props;
+
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -16,8 +16,7 @@ const SimViewListsModal = React.forwardRef((props, ref) => {
       }
     }
     if(data.type ==  Constants.actionType.ACTION_CLOSE) {
-      if (ref) {
-        //ref.current.hideModal();
+      if (ref) {        
         props.onButtonAction(data);
       }      
     }

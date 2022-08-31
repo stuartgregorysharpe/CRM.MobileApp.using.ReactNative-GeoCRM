@@ -13,6 +13,7 @@ export default {
     DATE_FORMAT_SHORT: 'MM/DD/YYYY',
     DATE_FORMAT_API: 'YYYY-MM-DD',
     DATE_FORMAT_LONG: 'ddd, DD MMM YYYY',
+    DATE_FORMAT_DATE_TIME: 'DD MMM YYYY HH:mm'
   },
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
@@ -70,7 +71,6 @@ export default {
     TELKOM: "Telkom"
   },
   
-
   stockDeviceType : {
     SELL_TO_TRADER: 'SELL_TO_TRADER',
     SWOP_AT_TRADER: 'SWOP_AT_TRADER',
@@ -109,7 +109,5 @@ export default {
     ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
     ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
-  msisdnPrefix : "27",
-  msisdnErrorMessage: 'MSISDN must be 11 digits',
-  chooseReason: 'Please choose a reason before making a selection or scanning'
+  msisdnPrefix : "27",  
 };

@@ -1,19 +1,13 @@
-import { View, Text ,StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, ScrollView } from 'react-native'
 import React , { useState } from 'react'
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
-import { AppText } from '../../../../../components/common/AppText';
-import { whiteLabel } from '../../../../../constants/Colors';
-import SvgIcon from '../../../../../components/SvgIcon';
-import CardView from '../../../../../components/common/CardView';
 import CTextInput from '../../../../../components/common/CTextInput';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
-import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import { Constants } from '../../../../../constants';
 
 export default function TransferView(props) {
   
-  const { modalType, stockItem,  lists , onItemSelected , onChangedQuantity, onTrader} = props;  
+  const { stockItem,  lists , onItemSelected , onChangedQuantity, onTrader} = props;  
   const [userId, setUserId] = useState("");  
   const [quantity, setQuantity] = useState("")
 
@@ -57,12 +51,9 @@ export default function TransferView(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-      
-      //alignSelf: 'stretch',
+  container: {            
       paddingTop: 10,
-      marginHorizontal: 20,
-      //marginBottom: 30,
+      marginHorizontal: 20,      
       paddingBottom:0,      
   },
 
