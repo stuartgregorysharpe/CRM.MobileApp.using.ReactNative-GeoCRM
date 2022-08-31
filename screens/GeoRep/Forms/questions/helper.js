@@ -1,7 +1,10 @@
 import {Constants} from '../../../../constants';
 
 export function filterTriggeredQuestions(questions) {
-  for (let i = 0; i < questions.length; i++) {}
+  for (let i = 0; i < questions.length; i++) {
+    const isShow = checkIfQuestionIsTrigger(question[i], questions);
+    questions[i].isHidden = !isShow;
+  }
 }
 export function checkIfQuestionIsTrigger(question, questions) {
   if (!question) return false;
