@@ -20,6 +20,7 @@ export default function SimDetailsContainer(props) {
             initialize();
         }
     },[isCheckin]);
+
     const initialize = async() =>{        
         checkinLocationId = await getLocalData("@specific_location_id");
     }
@@ -31,7 +32,6 @@ export default function SimDetailsContainer(props) {
             setStockType(Constants.stockDeviceType.SELL_TO_TRADER);
             searchLocationModalRef.current.showModal();            
         }
-
     }
 
     const onTransfer = () => {
@@ -42,13 +42,12 @@ export default function SimDetailsContainer(props) {
     }
         
     const onSearchLocationModalClosed = async({type, value}) => {
-        if(type == Constants.actionType.ACTION_NEXT){        
-            console.log("Location id in search", value.locationId);
+        if(type == Constants.actionType.ACTION_NEXT){                    
             if(stockType === Constants.stockDeviceType.SELL_TO_TRADER){
                 props.openSignature(value)
             }else if(stockType === Constants.stockDeviceType.SWOP_AT_TRADER){
-                //props.openSwopAtTrader(value);
-            }            
+                
+            }
         }
     };
 

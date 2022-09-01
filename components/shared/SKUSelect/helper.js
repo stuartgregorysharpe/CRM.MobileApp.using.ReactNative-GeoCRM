@@ -16,6 +16,7 @@ export function constructFormData(data) {
   formData['selectedProductIds'] = selectedProductIds;
   return formData;
 }
+
 function getProductForBarcode(products, barcode) {
   for (sectionName in products) {
     const foundProduct = products[sectionName].find(

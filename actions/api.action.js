@@ -10,12 +10,14 @@ export const dummyApiRequest = async (route, param, response) => {
   });
 };
 
+
 export const getApiRequest = async (route, param) => {
+  
   var token = await getToken();
   var baseUrl = await getBaseUrl();
 
   var url = `${baseUrl}/${route}`;
-  console.log('call url', url);
+  console.log('API Call Log', url);
   if (route.includes('local_api_old')) {
     url = route;
   }

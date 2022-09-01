@@ -19,7 +19,6 @@ nvm alias default system
 11. POST stockmodule/return-device
 12. POST stockmodule/return-to-warehouse
 
-
 # how to generate release apk and aab file
 react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle 
 --assets-dest android/app/src/main/res/
@@ -29,3 +28,23 @@ cd android
 ./gradlew assembleRelease
 ./gradlew bundleRelease
 
+
+# check sqlite file
+adb shell runs the shell
+in shell run:
+adb shell
+run-as package-name(com.geoverse_app_rn)
+cat filename.db > /sdcard/filename.db
+exist shell session
+adb pull /sdcard/filename.db
+
+adb pull /sdcard/filename.db
+
+online view link
+https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
+
+
+
+# Resolve Error in project build
+ 1. Could not resolve project :react-native-hms-availability.
+    Replace the hmscore library manually

@@ -1,20 +1,20 @@
 
 import { View } from 'react-native'
 import React , {useEffect, useState } from 'react'
-import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
+import { getApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
 import * as RNLocalize from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import ReturnDeviceDetailView from '../components/ReturnDeviceDetailView';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 import { Constants } from '../../../../../constants';
+import { getFileFormat } from '../../../../../constants/Helper';
 
 export default function ReturnDeviceDetailContainer(props) {
          
     const { locationId } = props;    
     const [lists, setLists] = useState([]);
-    const [returnDevice, setReturnDevice] = useState();
-    const [reason, setReason] = useState('');
+    const [returnDevice, setReturnDevice] = useState();    
     const [photos, setPhotos] = useState([]);
     const dispatch = useDispatch()
     const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -23,12 +23,9 @@ export default function ReturnDeviceDetailContainer(props) {
         let isMount = true;
         let param = {
             location_id: locationId,
-        };        
-        console.log("param", param)
+        };                
         getApiRequest("locations/location-devices", param ).then((res) => {                        
-            if(isMount){      
-                console.log("location id", locationId);
-                console.log("res" , JSON.stringify(res))          
+            if(isMount){                      
                 setLists(res.devices);
             }
         }).catch((e) => {
@@ -43,7 +40,7 @@ export default function ReturnDeviceDetailContainer(props) {
         setReturnDevice(returnDevice);
     }
     const onReason = (reason) =>{        
-        setReason(reason)
+        
     }
     const onPhotos = (photos) => {
         setPhotos(photos)
@@ -56,23 +53,17 @@ export default function ReturnDeviceDetailContainer(props) {
         postData.append('location_id',  props.locationId);        
         postData.append('return_device[location_device_id]', returnDevice.location_device_id);
         postData.append('return_device[return_reason]', returnDevice.return_reason);
-        photos.map((item, index) => {            
-            var words = item.split('/');
-            var ext = words[words.length - 1].split('.');
+        photos.map((path, index) => {             
+            var fileFormats = getFileFormat(path);                        
             var key = `return_image[${index}]`;
-            postData.append( key, {
-                uri: item,
-                type: 'image/' + ext[1],
-                name: words[words.length - 1],
-            });            
+            postData.append( key, fileFormats);
         })
         
         var time_zone = RNLocalize.getTimeZone();
         postData.append('user_local_data[time_zone]', time_zone);
         postData.append( 'user_local_data[latitude]', currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0' );
         postData.append( 'user_local_data[longitude]', currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0' );
-       
-        console.log("post Data" , JSON.stringify(postData))
+               
         postApiRequestMultipart("stockmodule/return-device" , postData).then((res) => {            
             if(res.status == "success"){
                 dispatch(showNotification({type:'success' , message: res.message, buttonText:'Ok' ,buttonAction: async () => {                    

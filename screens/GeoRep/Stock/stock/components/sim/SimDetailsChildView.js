@@ -5,7 +5,7 @@ import { SubmitButton } from '../../../../../../components/shared/SubmitButton'
 import { AppText } from '../../../../../../components/common/AppText'
 import CButtonTextInput from '../../../../../../components/common/CButtonTextInput';
 import Divider from '../../../../../../components/Divider';
-import { Colors } from '../../../../../../constants';
+import { Colors, Strings } from '../../../../../../constants';
 import CCircleButton from '../../../../../../components/common/CCircleButton';
 
 export default function SimDetailsChildView(props) {
@@ -35,7 +35,7 @@ export default function SimDetailsChildView(props) {
             <View style={{height:1, backgroundColor:Colors.primaryColor, marginTop:10}}></View>
 
             <CButtonTextInput 
-                label={"Input ICCID"}
+                label={Strings.Stock.Input_ICCID}
                 value={code}
                 returnKeyType={'done'}             
                 keyboardType="number-pad"                 

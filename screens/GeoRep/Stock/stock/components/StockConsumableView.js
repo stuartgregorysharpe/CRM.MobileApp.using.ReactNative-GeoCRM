@@ -8,7 +8,7 @@ import StockDetailCard from './autom/StockDetailCard'
 export default function StockConsumableView(props) {
 
     const {item} = props;
-        
+            
     return (
         <View style={{marginBottom:30}}>
 

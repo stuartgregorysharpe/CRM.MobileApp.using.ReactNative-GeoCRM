@@ -23,7 +23,7 @@ function watchPosition(
   watchIDCallback,
 ) {
   let _options = {
-    distanceFilter: 10.5,
+    distanceFilter: 10,
     desiredAccuracy: {
       ios: 'best',
       android: 'highAccuracy',

@@ -10,7 +10,6 @@ import {
 import {
   getLocationFilters,
   getLocationInfo,
-  getLocationMapByRegion,
   getLocationPinKey,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
@@ -18,13 +17,13 @@ import LocationFilterModal from '../../../../../components/modal/LocationFilterM
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants} from '../../../../../constants';
-import {breakPoint} from '../../../../../constants/Breakpoint';
 import {expireToken} from '../../../../../constants/Helper';
 import {
   getLocalData,
   getMapMinZoomLevel,
   getPinSvg,
 } from '../../../../../constants/Storage';
+import {LocationMapDAO} from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -36,6 +35,7 @@ import {getPolygonData} from '../helper';
 import Bubble from './Bubble';
 import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
+
 const LocationContainer = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -59,10 +59,7 @@ const LocationContainer = props => {
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
-  const isShowZoomLabel = isZoomOut;
-  console.log('isLoading', isLoading);
-  console.log('isZoomOut', isZoomOut);
-  console.log('isShowZoomLabel', isShowZoomLabel);
+  const isShowZoomLabel = isZoomOut || isLoading;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
   );
@@ -72,9 +69,11 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
+
     if (isLoadable) {
       setIsLoading(true);
-      getLocationMapByRegion(_currentLocation, boundBox)
+      console.log(' load mark api');
+      LocationMapDAO.find(_currentLocation, boundBox)
         .then(res => {
           getPinSvg('@map_pin_key').then(mapPinSvg => {
             setIsLoading(false);
@@ -87,6 +86,7 @@ const LocationContainer = props => {
                       parseInt(element.pin_id) == parseInt(location.pin_id),
                   );
                 }
+
                 return {
                   ...location,
                   pinIcon: foundPinSvg,
@@ -95,10 +95,10 @@ const LocationContainer = props => {
               }),
             );
           });
-
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
         .catch(e => {
+          console.log('Error');
           setIsLoading(false);
           expireToken(dispatch, e);
         });
@@ -108,10 +108,7 @@ const LocationContainer = props => {
     onLoadMarkers(currentLocation, boundBox);
   }, [mapFilters, currentLocation]);
   const onRegionChanged = async (region, markers, bBox, zoom) => {
-    console.log('onRegionChanged - zoom', zoom);
     const minZoomLevel = await getMapMinZoomLevel();
-    console.log('onRegionChanged - minZoomLevel', minZoomLevel);
-    console.log('onRegionChanged - isZoomOut', isZoomOut);
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
         setIsZoomOut(false);
@@ -127,10 +124,7 @@ const LocationContainer = props => {
     const isZoomLevelChangedToMinZoomLevel =
       (previousZoom < minZoomLevel && zoom >= minZoomLevel) ||
       (previousZoom >= zoom && zoom >= minZoomLevel);
-    const isReloadMarkers =
-      !isDrawMode &&
-      isRegionMarkerCountSmall &&
-      isZoomLevelChangedToMinZoomLevel;
+    const isReloadMarkers = !isDrawMode && isZoomLevelChangedToMinZoomLevel;
     if (isReloadMarkers) {
       setBoundBox(bBox);
       onLoadMarkers(currentLocation, bBox);
@@ -171,6 +165,7 @@ const LocationContainer = props => {
   };
   const openLocationInfoDetails = locationId => {
     if (locationInfoModalRef && locationInfoModalRef.current) {
+      console.log('open modal');
       locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
@@ -263,6 +258,7 @@ const LocationContainer = props => {
           onClickAddToCalendar={onOpenAddToCalendar}
         />
       )}
+
       <LocationMap
         polygonData={polygonData}
         markers={markers}
@@ -273,6 +269,7 @@ const LocationContainer = props => {
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
       />
+
       {isShowZoomLabel && (
         <Bubble
           title="Zoomed out too far, zoom in to see results"
@@ -312,6 +309,7 @@ const LocationContainer = props => {
       <LocationInfoDetailModal
         ref={locationInfoModalRef}
         locInfo={locationInfo}
+        navigation={navigation}
         pageType={{name: 'search-lists'}}
       />
     </View>

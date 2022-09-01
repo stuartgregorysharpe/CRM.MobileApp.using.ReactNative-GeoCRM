@@ -14,6 +14,7 @@ export default {
     DATE_FORMAT_SHORT_NAME: 'DD MMM YYYY',
     DATE_FORMAT_API: 'YYYY-MM-DD',
     DATE_FORMAT_LONG: 'ddd, DD MMM YYYY',
+    DATE_FORMAT_DATE_TIME: 'DD MMM YYYY HH:mm',
   },
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',

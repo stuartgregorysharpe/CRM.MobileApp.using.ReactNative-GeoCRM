@@ -1,5 +1,5 @@
 
-import React , { useState , useEffect, useRef} from 'react'
+import React from 'react'
 import CModal from '../../../../../../components/common/CModal';
 import { Constants } from '../../../../../../constants';
 import SwopAtTraderContainer from '../../container/SwopAtTraderContainer';
@@ -14,7 +14,6 @@ const SwopAtTraderModal = React.forwardRef((props, ref) => {
           ref.current.hideModal();
         }
     };
-
     
     return (        
         <CModal

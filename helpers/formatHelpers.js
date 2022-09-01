@@ -1,4 +1,6 @@
 import Moment from 'moment';
+import moment from 'moment-timezone';
+
 export function calcArgbIntValFromHexRgba(rgbaStr) {
   if (!rgbaStr) return 0;
   const argbWithoutHash = rgbaStr.replace('#', '');
@@ -71,6 +73,8 @@ export function formatDate(
   if (momentString == 'Invalid date') return '/';
   return momentString;
 }
+
+
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -147,3 +151,16 @@ export const validateMsisdn = barcode => {
   console.log('validate barcode true');
   return true;
 };
+
+export const formattedNumber = (num) => {  
+  return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+}
+
+export const getBasketDateTime = () => {
+    var currentTime = moment().format('DD MMMM YYYY HH:mm');
+    return currentTime;
+}
+export const getDateTime = () => {
+  var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+  return currentTime;
+}

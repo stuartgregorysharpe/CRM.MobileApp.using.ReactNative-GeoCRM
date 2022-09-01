@@ -2,7 +2,7 @@
 import { View, Text , TouchableOpacity, StyleSheet} from 'react-native'
 import React , { useState , useEffect } from 'react'
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
-import { Fonts } from '../../../../../constants';
+import { Fonts, Strings } from '../../../../../constants';
 import SvgIcon from '../../../../../components/SvgIcon';
 import { useSelector } from 'react-redux';
 
@@ -42,8 +42,8 @@ export default function AddLeadFormFields(props) {
             onPress={() => {
               showAllocateModal();
             }}>
-            <Text style={{ fontSize: 14, fontFamily: Fonts.secondaryBold, color: whiteLabel().fieldBorder }}>Allocate Devices</Text>
-            <SvgIcon icon="Drop_Down" width='23px' height='23px' />          
+            <Text style={{ fontSize: 14, fontFamily: Fonts.secondaryBold, color: whiteLabel().fieldBorder }}> {Strings.Stock.Allocate_Device} </Text>
+            <SvgIcon icon="Drop_Down" width='23px' height='23px' /> 
           </TouchableOpacity> 
         }
         

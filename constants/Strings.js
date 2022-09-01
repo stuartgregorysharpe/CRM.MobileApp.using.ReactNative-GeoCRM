@@ -14,4 +14,37 @@ export default {
   Tiered_Multiple_Choice: 'Tiered Multiple Choice',
   Brand_Competitor_Facings: 'Capture Facings',
   Fsu_Campaign: 'Capture FSU',
+  You_Are_Currenly_Checkedin: 'You are currently checked-in to a location',
+  Success: 'success',
+  Last_Synced_Date: 'Last Synced Date ',
+  Choose_Reason: 'Please choose a reason before making a selection or scanning',
+  MSISDN_Error_Message: 'MSISDN must be 11 digits',
+  Assign_Msisdn: 'Assign MSISDN',
+  Start_My_Day: 'Start My Day',
+  End_My_Day: 'End My Day',
+  Description: 'Description',
+  Type: 'Type',
+  Added_Date: 'Added Date',
+
+  Home: {
+    Sync_All: 'Sync All',
+  },
+
+  Home_Visit_Tabs: {
+    Today: 'Today Visits',
+    Weekly: 'Weekly Visits',
+  },
+
+  Stock: {
+    Add_Stock: 'Add Stock',
+    ICCID_Not_Found: 'ICCID not found in stock',
+    No_Stock_Item_Ids: 'No Stock Item IDS',
+    No_Device_Found: 'No devices found',
+    Allocate_Device: 'Allocate Device',
+    Have_You_Tried: 'Have you tried scanning first?',
+    Input_ICCID: 'Input ICCID',
+    Return_All_Stock: 'Return All Stock To Warehouse',
+    Return_Stock: 'Return Stock',
+    Please_Sign: 'Please Sign below:',
+  },
 };

@@ -1,6 +1,5 @@
 
-import { View, Text , StyleSheet , TextInput} from 'react-native'
-import React , { useState , useEffect, useRef} from 'react'
+import React from 'react'
 import CModal from '../../../../../../components/common/CModal';
 import { Constants } from '../../../../../../constants';
 import StockDetailsContainer from '../../container/StockDetailsContainer';

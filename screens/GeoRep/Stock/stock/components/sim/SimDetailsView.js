@@ -1,6 +1,6 @@
 
 import { View, StyleSheet, Keyboard } from 'react-native'
-import React , { useState ,useEffect , useRef } from 'react'
+import React , { useState , useRef } from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Constants } from '../../../../../../constants';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -11,10 +11,7 @@ export default function SimDetailsView(props) {
       
     const [isScan, setIsScan] = useState(true)
     const simViewListModalRef = useRef(null)
-
-    console.log("selectedCodes",props.selectedCodes);
-    console.log("codeLists",props.codeLists);
-
+  
     const onSuccess = e => {   /// From Camera
         const {data} = e;        
         if(isScan){
@@ -48,12 +45,11 @@ export default function SimDetailsView(props) {
       if(type == Constants.actionType.ACTION_CLOSE || type == Constants.actionType.ACTION_CHANGE_NETWORK ){
         simViewListModalRef.current.hideModal()
       }
-      if(type == Constants.actionType.ACTION_REMOVE){
-        console.log("remoer", value)
+      if(type == Constants.actionType.ACTION_REMOVE){        
         props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
       }
       if(type == Constants.actionType.ACTION_DONE){
-        //addStock()
+        
       }
     }
 

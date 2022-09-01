@@ -1,18 +1,18 @@
 
 import { View } from 'react-native'
 import React , {useEffect, useState } from 'react'
-import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
+import { getApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
 import SwopAtTraderView from '../components/SwopAtTraderView';
 import * as RNLocalize from 'react-native-localize';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 import { Constants } from '../../../../../constants';
+import { getFileFormat } from '../../../../../constants/Helper';
 
 export default function SwopAtTraderContainer(props) {
          
-    const { locationId , item } = props;
-    
+    const { locationId , item } = props;    
     const [lists, setLists] = useState([]);
     const [returnDevice, setReturnDevice] = useState();
     const [reason, setReason] = useState('');
@@ -24,8 +24,8 @@ export default function SwopAtTraderContainer(props) {
         let isMount = true;
         let param = {
             location_id: locationId,
-        };        
-        console.log("pp" , param)
+        }; 
+
         getApiRequest("locations/location-devices", param ).then((res) => {                        
             if(isMount){            
                 setLists(res.devices);
@@ -51,24 +51,17 @@ export default function SwopAtTraderContainer(props) {
     const onSwop = () => {        
       
         var postData = new FormData();
-        postData.append('stock_type', "Device");
+        postData.append('stock_type', Constants.stockType.DEVICE);
         postData.append('location_id',  props.locationId);                
         postData.append('return_device[location_device_id]', returnDevice.location_device_id);
         postData.append('return_device[return_reason]', reason);
-
         postData.append('allocate_device[stock_item_id]',  item.stock_item_id);
         postData.append('allocate_device[assigned_msisdn]',  item.serial);
-        photos.map((item, index) => {
-            var words = item.split('/');
-            var ext = words[words.length - 1].split('.');
+        photos.map((path, index) => {            
+            var fileFormats = getFileFormat(path);
             var key = `return_image[${index}]`;
-            postData.append( key, {
-                uri: item,
-                type: 'image/' + ext[1],
-                name: words[words.length - 1],
-            });      
-        })
-        
+            postData.append( key, fileFormats);
+        })        
         var time_zone = RNLocalize.getTimeZone();
         postData.append('user_local_data[time_zone]', time_zone);
         postData.append( 'user_local_data[latitude]', currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0' );
@@ -77,8 +70,7 @@ export default function SwopAtTraderContainer(props) {
         postApiRequestMultipart("stockmodule/swop-at-trader" , postData).then((res) => {
             dispatch(showNotification({type:'success' , message: res.message, buttonText: 'Ok' , buttonAction: async () => {                    
                 props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
-                dispatch(clearNotification())
-                
+                dispatch(clearNotification())                
             }}))
         }).catch((e) => {
 
