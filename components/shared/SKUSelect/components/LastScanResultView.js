@@ -9,11 +9,14 @@ const LastScanResultView = props => {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.modalHandler} />
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{'Items: ' + totalItemCount}</Text>
-      </View>
+      {totalItemCount != null && (
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>{'Items: ' + totalItemCount}</Text>
+        </View>
+      )}
+
       <View style={styles.contentContainer}>
-        {lastScanedQrCode && (
+        {lastScanedQrCode != null && (
           <Text style={styles.text}>{'Last Scanned: ' + lastScanedQrCode}</Text>
         )}
         <SubmitButton

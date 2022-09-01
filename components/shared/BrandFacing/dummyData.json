@@ -1,0 +1,25 @@
+{
+    "form_question_id": "30",
+    "question_group": "Question Group 3",
+    "question_group_id": "3",
+    "question_type": "brand_competitor_facings",
+    "question_text": "This is a Brand Competitor Facings Question",            
+    "guide_info": {
+        "title": "Question Guide 2",
+        "image": "",
+        "text": "Question Guide 2 Text"
+    },
+    "rule_compulsory": "0",
+    "Brands" : [
+        "Brand 1",
+        "Brand 2",
+        "Brand 3",
+        "Brand 4"
+    ],
+    "Competitors" : [
+        "Competitor A",
+        "Competitor B",
+        "Competitor C",
+        "Competitor D"
+    ]
+}

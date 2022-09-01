@@ -3,31 +3,27 @@ import {StyleSheet} from 'react-native';
 import BaseForm from '../BaseForm';
 import QuestionButton from '../QuestionButton';
 import {Constants, Strings} from '../../../constants';
-import TieredMultipleChoiceModal from './modals/TieredMultipleChoiceModal';
+import BrandFacingModal from './modals/BrandFacingModal';
 
-const TieredMultipleChoice = props => {
+const BrandFacing = props => {
   const {item, questionType, formIndex} = props;
   if (!item) return null;
-  const multiSelectPhotoModalRef = useRef(null);
-  const isCompleted =
-    item.completed_data != false &&
-    item.completed_data != null &&
-    item.completed_data != undefined;
+  const modalRef = useRef(null);
   const questionButtonType =
     item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : '';
 
-  const onOpenSKUCountModal = () => {
-    if (multiSelectPhotoModalRef && multiSelectPhotoModalRef.current) {
-      multiSelectPhotoModalRef.current.showModal();
+  const onOpenModal = () => {
+    if (modalRef && modalRef.current) {
+      modalRef.current.showModal();
     }
   };
 
-  const renderContent = formCompleted => {
+  const renderContent = () => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={Strings.Tiered_Multiple_Choice}
-        onPress={onOpenSKUCountModal}
+        title={Strings.Brand_Competitor_Facings}
+        onPress={onOpenModal}
       />
     );
   };
@@ -37,14 +33,13 @@ const TieredMultipleChoice = props => {
       item={item}
       style={[styles.container, props.style]}
       onItemAction={props.onFormAction}>
-      {renderContent(isCompleted)}
+      {renderContent()}
 
-      <TieredMultipleChoiceModal
+      <BrandFacingModal
         item={item}
-        title={Strings.Select_Your_Option}
         questionType={questionType}
         formIndex={formIndex}
-        ref={multiSelectPhotoModalRef}
+        ref={modalRef}
         onButtonAction={props.onFormAction}
       />
     </BaseForm>
@@ -57,4 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TieredMultipleChoice;
+export default BrandFacing;

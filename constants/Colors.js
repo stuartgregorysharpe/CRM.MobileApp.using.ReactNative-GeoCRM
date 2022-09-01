@@ -46,6 +46,7 @@ export const whiteLabel = () => {
       color_2: '#DC143C', // Red,
       color_3: '#CFD8E8', // Grey
     },
+    lineSeperator: '#70707045',
   };
 };
 
@@ -71,4 +72,5 @@ export default {
   primaryOpacity20: 'rgba(19, 60, 139, 0.2)',
   grey2: '#D8D8D8',
   yellowColor: '#FB9600',
+  splitColor: '#70707045',
 };

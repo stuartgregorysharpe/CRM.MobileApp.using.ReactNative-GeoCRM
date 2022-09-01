@@ -99,7 +99,9 @@ export class CTabSelector extends Component {
     return (
       <View style={[styles.tabContainer, this.props.containerStyle]}>
         {isShowPrevButton && this.renderPrevButton()}
-        <View style={{flex: 1}}>{this.renderTabs(items)}</View>
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          {this.renderTabs(items)}
+        </View>
         {isShowNextButton && this.renderNextButton()}
       </View>
     );
