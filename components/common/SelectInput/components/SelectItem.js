@@ -38,7 +38,7 @@ const SelectItem = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    height: 32,
+    minHeight: 32,
     flexDirection: 'row',
     paddingHorizontal: 4,
     alignItems: 'center',
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.primaryBold,
     color: Colors.blackColor,
+    flex: 1,
   },
   checkbox: {
     width: 25,

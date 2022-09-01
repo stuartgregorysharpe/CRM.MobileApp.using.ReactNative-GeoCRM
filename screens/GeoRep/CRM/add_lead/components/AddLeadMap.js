@@ -13,6 +13,7 @@ export default function AddLeadMap() {
         followUserLocation={true}
         showsMyLocationButton={true}
         zoomEnabled={true}
+        currentLocation={currentLocation}
         region={{
           latitude:
             currentLocation && currentLocation.latitude != undefined

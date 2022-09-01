@@ -12,6 +12,7 @@ import HMSMap, {
 
 import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
+import SvgIcon from '../../../../components/SvgIcon';
 import {Fonts, Images} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
@@ -32,7 +33,17 @@ const HmsLocationMap = props => {
   const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
   const [polylineEditing, setPolylineEditing] = useState(null);
+  const [cameraPosition, setCameraPosition] = useState({
+    target: {
+      latitude: currentLocation.latitude,
+      longitude: currentLocation.longitude,
+    },
+    bearing: 0,
+    tilt: 0,
+    zoom: 15,
+  });
   const [transCode, setTransCode] = useState('05');
+
   const mapRef = useRef(null);
   const isShowFinishButton =
     isDrawMode &&
@@ -102,11 +113,19 @@ const HmsLocationMap = props => {
         const visibleRegion = info.visibleRegion;
         const zoom = cameraPosition.zoom;
         const region = cameraPosition.target;
+
+        //setCameraPosition(cameraPosition);
         const bBox = calculateBBoxFromHMS(visibleRegion);
-        console.log('onRegionChangeComplete - zoom', zoom);
-        props.onRegionChangeComplete(region, markers, bBox, zoom);
+        props.onRegionChangeComplete(region, [], bBox, zoom);
       }
     });
+  };
+  const goToCurrentLocation = () => {
+    mapRef.current.setCoordinates({
+      latitude: currentLocation.latitude,
+      longitude: currentLocation.longitude,
+    });
+    mapRef.current.zoomTo(15);
   };
   const checkMarkerSelected = marker => {
     if (!selectedLocations) return false;
@@ -201,6 +220,25 @@ const HmsLocationMap = props => {
       />
     );
   };
+  const renderMyLocationMarker = _location => {
+    const icon = {
+      uri: Image.resolveAssetSource(Images.currentLocationIcon).uri,
+      width: 50,
+      height: 50,
+    };
+    return (
+      <HMSMarker
+        key={'my_location_marker'}
+        icon={icon}
+        clusterable={false}
+        coordinate={{
+          latitude: Number(_location.latitude),
+          longitude: Number(_location.longitude),
+        }}
+        markerAnchor={[0.5, 0.5]}
+      />
+    );
+  };
   return (
     <View style={[styles.container, props.style]}>
       {isShowMap && (
@@ -214,20 +252,16 @@ const HmsLocationMap = props => {
           scrollGesturesEnabled={!isDrawMode}
           rotateGesturesEnabled={!isDrawMode}
           tiltGesturesEnabled={false}
-          myLocationButton={true}
-          myLocationButtonEnabled={true}
+          myLocationButtonEnabled={false}
+          myLocationEnabled={false}
           onCameraIdle={onRegionChangeComplete}
+          compassEnabled={true}
           onMapClick={onPressMap}
-          camera={{
-            target: {
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-            },
-            zoom: 12,
-            bearing: 50,
-            tilt: 0,
-          }}
-          currentLocation={currentLocation}>
+          camera={cameraPosition}
+          currentLocation={currentLocation}
+          useAnimation={true}
+          animationDuration={1000}>
+          {renderMyLocationMarker(currentLocation)}
           {renderDrawingPolygons(polylineEditing)}
           {renderMarkers(markers)}
           {renderPolygons(polygonData)}
@@ -242,6 +276,14 @@ const HmsLocationMap = props => {
           <Text style={styles.finishButtonText}>Finish</Text>
         </TouchableOpacity>
       )}
+      <View style={styles.myLocation}>
+        <TouchableOpacity
+          onPress={() => {
+            goToCurrentLocation();
+          }}>
+          <SvgIcon icon="GPS_LOCATION" width="30px" height="30px" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -267,6 +309,26 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 7,
     backgroundColor: whiteLabel().actionFullButtonBackground,
+  },
+  myLocation: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    width: 50,
+    height: 50,
+    backgroundColor: Colors.whiteColor,
+    alignItems: 'center',
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+    zIndex: 20000,
+    justifyContent: 'center',
   },
 });
 

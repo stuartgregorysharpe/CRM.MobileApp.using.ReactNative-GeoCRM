@@ -7,7 +7,7 @@ import {
 } from '../../../../../actions/api.action';
 import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
-import {Constants} from '../../../../../constants';
+import {Constants, Strings} from '../../../../../constants';
 import {
   getFileFormat,
   notifyMsg,
@@ -77,7 +77,7 @@ const UpdateActionFormContainer = props => {
     }
     postApiRequestMultipart('actionsitems/action-item-details', submitFormData)
       .then(res => {
-        if (res.status === 'success') {
+        if (res.status === Strings.Success) {
           notifyMsg(dispatch, 'Action Item Updated Successfully');
         }
         setIsLoading(false);

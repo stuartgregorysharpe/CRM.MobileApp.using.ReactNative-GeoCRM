@@ -1,9 +1,8 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native';
-
 import {Colors} from '../../constants';
-import TestLocationUI from '../../services/LocationService/TestLocationUI';
-import HmsMap from '../../services/Map/HsmMap';
+import dummyData from '../../components/shared/FSUCampaign/dummyData.json';
+import FSUCampaign from '../../components/shared/FSUCampaign';
 export default function UITestScreen({screenProps}) {
   const modalRef = useRef(null);
   useEffect(() => {
@@ -15,7 +14,7 @@ export default function UITestScreen({screenProps}) {
   });
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
-      <TestLocationUI />
+      <FSUCampaign item={dummyData} />
     </SafeAreaView>
   );
 }

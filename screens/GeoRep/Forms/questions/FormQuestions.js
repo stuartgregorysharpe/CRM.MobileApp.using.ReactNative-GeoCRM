@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Platform,  
+  Platform,
 } from 'react-native';
 import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
@@ -13,7 +13,7 @@ import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
 import {expireToken, getFileFormat} from '../../../../constants/Helper';
 import {
-  getApiRequest,  
+  getApiRequest,
   postApiRequestMultipart,
 } from '../../../../actions/api.action';
 import {
@@ -21,24 +21,33 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import * as RNLocalize from 'react-native-localize';
-import { FormQuestionView } from '../../CRM/add_lead/components/FormQuestionView';
-import { getFormQuestionData, getFormQuestionFile, validateFormQuestionData } from './helper';
-import { deleteFormTable, getFormTableData, insertTable } from '../../../../sqlite/FormDBHelper';
-import { getDBConnection } from '../../../../sqlite/DBHelper';
+import {FormQuestionView} from '../../CRM/add_lead/components/FormQuestionView';
+import {
+  filterTriggeredQuestions,
+  getFormQuestionData,
+  getFormQuestionFile,
+  validateFormQuestionData,
+} from './helper';
+import {
+  deleteFormTable,
+  getFormTableData,
+  insertTable,
+} from '../../../../sqlite/FormDBHelper';
+import {getDBConnection} from '../../../../sqlite/DBHelper';
 import uuid from 'react-native-uuid';
-import { getLocalData } from '../../../../constants/Storage';
+import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
-import { Strings } from '../../../../constants';
+import {Strings} from '../../../../constants';
+import {Notification} from '../../../../components/modal/Notification';
 var indempotencyKey;
 
 export const FormQuestions = props => {
-
-  const form = props.route.params.data;  
+  const form = props.route.params.data;
   const pageType = props.route.params.pageType;
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const [formQuestions, setFormQuestions] = useState([]);  
+  const [formQuestions, setFormQuestions] = useState([]);
   const [isDateTimeView, setIsDateTimeView] = useState(false);
-  const [isSign, setIsSign] = useState(false);      
+  const [isSign, setIsSign] = useState(false);
   const formQuestionViewRef = useRef();
   const loadingBarRef = useRef();
   const dispatch = useDispatch();
@@ -46,28 +55,28 @@ export const FormQuestions = props => {
 
   useEffect(() => {
     refreshHeader();
-    loadFromDB(form.form_id) 
+    loadFromDB(form.form_id);
   }, [form]);
-  
-  const loadFromDB = async (formId) =>{
-    const db = await getDBConnection();              
-    if(db != null){
-      const res = await getFormTableData(db , formId);
-      if(res.length > 0){                   
-        setFormQuestions(JSON.parse(res.item(0).formQuestions));      
-        indempotencyKey = res.item(0).indempotencyKey;      
-        return;
-      }      
-    }
-    _callFormQuestions();        
-  }
 
-  const saveDb = async(formQuestions , indempotencyKey) =>{
-    const db = await getDBConnection();  
-    if( db != null)
-      await insertTable(db, form.form_id, formQuestions ,indempotencyKey)        
-  }
-  
+  const loadFromDB = async formId => {
+    const db = await getDBConnection();
+    if (db != null) {
+      const res = await getFormTableData(db, formId);
+      if (res.length > 0) {
+        updateFormQuestions(JSON.parse(res.item(0).formQuestions));
+        indempotencyKey = res.item(0).indempotencyKey;
+        return;
+      }
+    }
+    _callFormQuestions();
+  };
+
+  const saveDb = async (formQuestions, indempotencyKey) => {
+    const db = await getDBConnection();
+    if (db != null)
+      await insertTable(db, form.form_id, formQuestions, indempotencyKey);
+  };
+
   const refreshHeader = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -83,7 +92,7 @@ export const FormQuestions = props => {
                   if (pageType === 'CRM') {
                     props.navigation.navigate('CRM', {screen: 'Root'});
                   } else {
-                    if (props.navigation.canGoBack()) {                      
+                    if (props.navigation.canGoBack()) {
                       props.navigation.goBack();
                     }
                   }
@@ -116,10 +125,10 @@ export const FormQuestions = props => {
     };
     getApiRequest('forms/forms-questions', param)
       .then(res => {
-        console.log("question lists" , JSON.stringify(res.questions))
-        groupByQuestions(res.questions);         
+        console.log('question lists', JSON.stringify(res.questions));
+        groupByQuestions(res.questions);
       })
-      .catch(e => {      
+      .catch(e => {
         expireToken(dispatch, e);
       });
   };
@@ -142,9 +151,8 @@ export const FormQuestions = props => {
         tmp.questions = [...newTmp];
       }
     });
-    setFormQuestions(newData);
+    updateFormQuestions(newData);
   };
-
 
   const isInNewData = (data, value) => {
     return data.find(item => item.question_group_id === value.question_group_id)
@@ -165,7 +173,7 @@ export const FormQuestions = props => {
         }
       });
     });
-    setFormQuestions(tmp);
+    updateFormQuestions(tmp);
     indempotencyKey = null;
   };
 
@@ -177,12 +185,15 @@ export const FormQuestions = props => {
     setIsSign(false);
   };
 
-  
   const _onSubmit = async () => {
-    if(indempotencyKey === null || indempotencyKey === undefined || indempotencyKey.trim() === ""){
+    if (
+      indempotencyKey === null ||
+      indempotencyKey === undefined ||
+      indempotencyKey.trim() === ''
+    ) {
       indempotencyKey = uuid.v4();
-    }    
-    saveDb(formQuestions , indempotencyKey);
+    }
+    saveDb(formQuestions, indempotencyKey);
     var flag = true;
     flag = validateFormQuestionData(formQuestions);
     if (!flag) {
@@ -196,43 +207,51 @@ export const FormQuestions = props => {
       return;
     }
 
-    loadingBarRef.current.showModal();            
-    var lat = await getLocalData("@latitude");
-    var lon = await getLocalData("@longitude");
-    var form_answers = [];    
+    loadingBarRef.current.showModal();
+    var lat = await getLocalData('@latitude');
+    var lon = await getLocalData('@longitude');
+    var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
 
     var files = [];
 
     files = getFormQuestionFile(formQuestions);
-    
+
     var postData = new FormData();
     postData.append('form_id', form.form_id);
-    var locationId = await getLocalData("@specific_location_id");
+    var locationId = await getLocalData('@specific_location_id');
     postData.append('location_id', locationId);
     postData.append('online_offline', 'online');
 
     var time_zone = '';
-    try{
+    try {
       time_zone = RNLocalize.getTimeZone();
-    }catch(e){
-    }    
+    } catch (e) {}
     postData.append('user_local_data[time_zone]', time_zone);
     postData.append(
       'user_local_data[latitude]',
       currentLocation && currentLocation.latitude != null
         ? currentLocation.latitude
-        : lat != null ? lat : '0',
+        : lat != null
+        ? lat
+        : '0',
     );
     postData.append(
       'user_local_data[longitude]',
       currentLocation && currentLocation.longitude != null
         ? currentLocation.longitude
-        : lon != null ? lon : '0',
+        : lon != null
+        ? lon
+        : '0',
     );
 
     form_answers.map(item => {
-      if (item.key != undefined && item.value != undefined && item.value != null && item.valuel != '') {
+      if (
+        item.key != undefined &&
+        item.value != undefined &&
+        item.value != null &&
+        item.valuel != ''
+      ) {
         postData.append(item.key, item.value);
       }
     });
@@ -250,64 +269,60 @@ export const FormQuestions = props => {
           postData.append(item.key, fileFormats);
         }
       }
-    });              
-    
-    postApiRequestMultipart('forms/forms-submission', postData , indempotencyKey)
-      .then(res => {        
+    });
+
+    postApiRequestMultipart('forms/forms-submission', postData, indempotencyKey)
+      .then(res => {
         loadingBarRef.current.hideModal();
         dispatch(
           showNotification({
             type: 'success',
             message: res.message,
             buttonText: Strings.Ok,
-            buttonAction: async() => {
+            buttonAction: async () => {
               const db = await getDBConnection();
-              if( db != null)
-                await deleteFormTable(db, form.form_id);
+              if (db != null) await deleteFormTable(db, form.form_id);
               clearAll();
-              dispatch(clearNotification());              
-              formQuestionViewRef.current.openModal(res);           
+              dispatch(clearNotification());
+              formQuestionViewRef.current.openModal(res);
             },
           }),
         );
       })
-      .catch(e => {        
-        loadingBarRef.current.hideModal();        
+      .catch(e => {
+        loadingBarRef.current.hideModal();
       });
   };
 
-  const updateFormQuestions = (value) => {    
-      setFormQuestions(value)
-      saveDb(value , '');
-  }
+  const updateFormQuestionsAndClearDB = value => {
+    updateFormQuestions(value);
+    saveDb(value, '');
+  };
+  const updateFormQuestions = formQuestionGroups => {
+    filterTriggeredQuestions(formQuestionGroups);
+    setFormQuestions(formQuestionGroups);
+  };
 
-  const onBackPressed = (value) => {
-      props.navigation.goBack();
-  }
+  const onBackPressed = value => {
+    props.navigation.goBack();
+  };
 
   return (
-
-    <View style={{flexDirection:'column', alignSelf:'stretch' , flex:1}}>      
-            
+    <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
       <FormQuestionView
         ref={formQuestionViewRef}
         isShowCustomNavigationHeader={isShowCustomNavigationHeader}
-        form={form}      
-        formQuestions={formQuestions}        
+        form={form}
+        formQuestions={formQuestions}
         pageType={pageType}
-        updateFormQuestions={updateFormQuestions}               
-        onBackPressed={onBackPressed}       
+        updateFormQuestions={updateFormQuestionsAndClearDB}
+        onBackPressed={onBackPressed}
         onSubmit={_onSubmit}
       />
 
-      <LoadingBar
-        ref={loadingBarRef}
-      />
+      <LoadingBar ref={loadingBarRef} />
     </View>
-    
   );
 };
 
-const styles = StyleSheet.create({
-  
-});
+const styles = StyleSheet.create({});

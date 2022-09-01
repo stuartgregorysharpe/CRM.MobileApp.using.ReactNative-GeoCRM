@@ -11,7 +11,7 @@ import {
 } from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
-  getLocationInfo,  
+  getLocationInfo,    
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
 import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
@@ -24,7 +24,7 @@ import {
   getMapMinZoomLevel,
   getPinSvg,
 } from '../../../../../constants/Storage';
-import { LocationMapDAO, LocationPinKeyDAO } from '../../../../../DAO';
+import {LocationMapDAO} from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -38,7 +38,6 @@ import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
 
 const LocationContainer = props => {
-  
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -62,9 +61,6 @@ const LocationContainer = props => {
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
   const isShowZoomLabel = isZoomOut || isLoading;
-  console.log('isLoading', isLoading);
-  console.log('isZoomOut', isZoomOut);
-  console.log('isShowZoomLabel', isShowZoomLabel);
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
   );  
@@ -78,53 +74,46 @@ const LocationContainer = props => {
       _currentLocation.latitude !== undefined &&
       boundBox &&
       !isLoading;
-      
+
     if (isLoadable) {
-
       setIsLoading(true);
-      console.log(" load mark api")
-      LocationMapDAO.find(_currentLocation, boundBox).then((res) => {
+      console.log(' load mark api');
+      LocationMapDAO.find(_currentLocation, boundBox)
+        .then(res => {
+          getPinSvg('@map_pin_key').then(mapPinSvg => {
+            setIsLoading(false);
+            setMarkers(
+              res.locations.map((location, index) => {
+                let foundPinSvg = null;
+                if (mapPinSvg) {
+                  foundPinSvg = mapPinSvg.find(
+                    element =>
+                      parseInt(element.pin_id) == parseInt(location.pin_id),
+                  );
+                }
 
-        getPinSvg('@map_pin_key').then(mapPinSvg => {
-          
-          
+                return {
+                  ...location,
+                  pinIcon: foundPinSvg,
+                  schedule_order: (index + 1).toString(),
+                };
+              }),
+            );
+          });
+          dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
+        })
+        .catch(e => {
+          console.log('Error');
           setIsLoading(false);
-          setMarkers(
-            res.locations.map((location, index) => {
-              let foundPinSvg = null;
-              if (mapPinSvg) {
-                foundPinSvg = mapPinSvg.find(
-                  element =>
-                    parseInt(element.pin_id) == parseInt(location.pin_id),
-                );
-              }
-              
-              return {
-                ...location,
-                pinIcon: foundPinSvg,
-                schedule_order: (index + 1).toString(),
-              };
-            }),
-          );
+          expireToken(dispatch, e);
         });
-        dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
-
-      }).catch(e => {
-        console.log("Error")
-        setIsLoading(false);
-        expireToken(dispatch, e);
-      })
-      
     }
   };
   useEffect(() => {
     onLoadMarkers(currentLocation, boundBox);
   }, [mapFilters, currentLocation]);
   const onRegionChanged = async (region, markers, bBox, zoom) => {
-    console.log('onRegionChanged - zoom', zoom);
     const minZoomLevel = await getMapMinZoomLevel();
-    console.log('onRegionChanged - minZoomLevel', minZoomLevel);
-    console.log('onRegionChanged - isZoomOut', isZoomOut);
     if (zoom >= minZoomLevel) {
       if (isZoomOut === true) {
         setIsZoomOut(false);
@@ -140,10 +129,7 @@ const LocationContainer = props => {
     const isZoomLevelChangedToMinZoomLevel =
       (previousZoom < minZoomLevel && zoom >= minZoomLevel) ||
       (previousZoom >= zoom && zoom >= minZoomLevel);
-    const isReloadMarkers =
-      !isDrawMode &&
-      isRegionMarkerCountSmall &&
-      isZoomLevelChangedToMinZoomLevel;
+    const isReloadMarkers = !isDrawMode && isZoomLevelChangedToMinZoomLevel;
     if (isReloadMarkers) {
       setBoundBox(bBox);
       onLoadMarkers(currentLocation, bBox);
@@ -193,7 +179,7 @@ const LocationContainer = props => {
   };
   const openLocationInfoDetails = locationId => {
     if (locationInfoModalRef && locationInfoModalRef.current) {
-      console.log("open modal")
+      console.log('open modal');
       locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
@@ -227,11 +213,10 @@ const LocationContainer = props => {
     });
     dispatch({
       type: SELECTED_LOCATIONS_FOR_CALENDAR,
-      payload: selectedLocations, 
+      payload: selectedLocations,
     });
   };
   const onMarkerPressed = (item, key) => {
-    
     const itemLocationId = item.location_id;
     if (isCalendarSelection) {
       let selectedLocations = [...selectedLocationsForCalendar];
@@ -259,7 +244,7 @@ const LocationContainer = props => {
         type: SELECTED_LOCATIONS_FOR_CALENDAR,
         payload: selectedLocations,
       });
-    } else {      
+    } else {
       openLocationInfoDetails(Number(item.location_id));
     }
   };
@@ -287,7 +272,7 @@ const LocationContainer = props => {
           onClickAddToCalendar={onOpenAddToCalendar}
         />
       )}
-      
+
       <LocationMap
         polygonData={polygonData}
         markers={markers}
@@ -315,9 +300,7 @@ const LocationContainer = props => {
             addLeadModalRef.current.showModal();
           }
         }}>
-
         <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
-
       </TouchableOpacity>
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />

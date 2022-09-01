@@ -11,9 +11,10 @@ export default {
   dateFormat: {
     DATE_FORMAT_DATE_PICKER: 'YYYY/MM/DD',
     DATE_FORMAT_SHORT: 'MM/DD/YYYY',
+    DATE_FORMAT_SHORT_NAME: 'DD MMM YYYY',
     DATE_FORMAT_API: 'YYYY-MM-DD',
     DATE_FORMAT_LONG: 'ddd, DD MMM YYYY',
-    DATE_FORMAT_DATE_TIME: 'DD MMM YYYY HH:mm'
+    DATE_FORMAT_DATE_TIME: 'DD MMM YYYY HH:mm',
   },
   questionType: {
     FORM_TYPE_SKU_COUNT: 'sku_count',
@@ -31,7 +32,10 @@ export default {
     FORM_TYPE_PRODUCT_ISSUES: 'product_issues',
     FORM_TYPE_PRODUCT_RETURN: 'returns',
     FORM_TYPE_MULTI_SELECT_WITH_THOTO: 'multi_select_with_photo',
-    FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice'
+    FORM_TYPE_TIERED_MULTIPLE_CHOICE: 'tiered_multiple_choice',
+    FORM_TYPE_FORMAT_PRICE: 'format_price',
+    FORM_TYPE_BRAND_COMPETITOR_FACING: 'brand_competitor_facings',
+    FORM_TYPE_FSU_CAMPAIGN: 'fsu_campaign',
   },
 
   actionType: {
@@ -48,35 +52,40 @@ export default {
     ACTION_CLOSE: 'ACTION_CLOSE',
     ACTION_VIEW: 'ACTION_VIEW',
     ACTION_REMOVE: 'ACTION_REMOVE',
-    ACTION_CHANGE_NETWORK : 'ACTION_CHANGE_NETWORK'
+    ACTION_CHANGE_NETWORK: 'ACTION_CHANGE_NETWORK',
+    ACTION_CHANGE_ITEM_PRICE: 'ACTION_CHANGE_ITEM_PRICE',
+    ACTION_CHANGE_ITEM_PRICE_TYPE: 'ACTION_CHANGE_ITEM_PRICE_TYPE',
+    ACTION_COMP: 'ACTION_COMP',
+    ACTION_CHANGE_ITEM_FACING: 'ACTION_CHANGE_ITEM_FACING',
+    ACTION_CHANGE_ITEM_PLACED: 'ACTION_CHANGE_ITEM_PLACED',
   },
 
   stockPrefix: {
     DEVICE: 'IMEI: ',
     CONSUMABLE: 'Qty: ',
     SIM: 'ICCID: ',
-    MSISDN: 'MSISDN: '
+    MSISDN: 'MSISDN: ',
   },
 
   stockType: {
-    DEVICE : "Device",
-    CONSUMABLE : "Consumables",
-    SIM: "Sim",
-    RETURN: "RETURN"
+    DEVICE: 'Device',
+    CONSUMABLE: 'Consumables',
+    SIM: 'Sim',
+    RETURN: 'RETURN',
   },
 
   networkType: {
-    VODACOM: "Vodacom",
-    CELL : "Cell C",
-    TELKOM: "Telkom"
+    VODACOM: 'Vodacom',
+    CELL: 'Cell C',
+    TELKOM: 'Telkom',
   },
-  
-  stockDeviceType : {
+
+  stockDeviceType: {
     SELL_TO_TRADER: 'SELL_TO_TRADER',
     SWOP_AT_TRADER: 'SWOP_AT_TRADER',
     TARDER: 'TRADER',
-    TRANSFER: 'TRANSFER'
-  },  
+    TRANSFER: 'TRANSFER',
+  },
 
   debugMode: {
     NO_DEBUG: 0,
@@ -109,5 +118,7 @@ export default {
     ACTION_ITEM_TYPE_RED_FLAG_CHURN: 'red_flag_churn',
     ACTION_ITEM_TYPE_RED_FLAG_DECLINE: 'red_flag_decline',
   },
-  msisdnPrefix : "27",  
+  msisdnPrefix: '27',
+  msisdnErrorMessage: 'MSISDN must be 11 digits',
+  chooseReason: 'Please choose a reason before making a selection or scanning',
 };

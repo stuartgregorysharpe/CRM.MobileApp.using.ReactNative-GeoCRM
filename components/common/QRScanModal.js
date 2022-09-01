@@ -4,13 +4,16 @@ import CModal from './CModal';
 import ScanView from './ScanView';
 
 const QRScanModal = React.forwardRef((props, ref) => {
+  const {isNotCloseAfterCapture} = props;
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
     if (data.type == Constants.actionType.ACTION_CAPTURE) {
-      if (ref) {
-        ref.current.hideModal();
+      if (!isNotCloseAfterCapture) {
+        if (ref) {
+          ref.current.hideModal();
+        }
       }
     }
   };
@@ -19,11 +22,7 @@ const QRScanModal = React.forwardRef((props, ref) => {
       ref={ref}
       modalType={Constants.modalType.MODAL_TYPE_FULL}
       {...props}>
-      <ScanView
-        {...props}
-        onButtonAction={onButtonAction}
-      />
-
+      <ScanView {...props} onButtonAction={onButtonAction} />
     </CModal>
   );
 });
