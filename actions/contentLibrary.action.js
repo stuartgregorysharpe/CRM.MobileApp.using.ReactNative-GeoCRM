@@ -32,8 +32,8 @@ export function getContentLibrary(base_url, token, params)
           }else{
             reject(err);  
           }
-        })        
-
+        })
+        
     });    
 }
 

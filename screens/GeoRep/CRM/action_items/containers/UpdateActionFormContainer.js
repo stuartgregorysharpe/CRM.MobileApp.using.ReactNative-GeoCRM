@@ -1,14 +1,12 @@
-import React, {useState, useEffect, useReducer, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  getApiRequest,
-  postApiRequest,
+  getApiRequest,  
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
 import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
-import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
 import {
   getFileFormat,
@@ -121,6 +119,7 @@ const UpdateActionFormContainer = props => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
