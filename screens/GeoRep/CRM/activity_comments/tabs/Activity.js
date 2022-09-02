@@ -62,6 +62,7 @@ export default function Activity(props) {
       comment: comment,
       user_local_data: userParam.user_local_data,
     };
+
     postApiRequest('locations/location-add-comment', postData)
       .then(res => {
         if (res.status === 'success') {
@@ -72,7 +73,8 @@ export default function Activity(props) {
       })
       .catch(e => {
         setIsLoading(false);
-      });
+    });
+    
   };
 
   const renderSeparator = () => (
