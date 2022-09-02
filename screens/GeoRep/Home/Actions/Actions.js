@@ -3,7 +3,7 @@ import React, {useEffect, useImperativeHandle, useState} from 'react';
 import {AppText} from '../../../../components/common/AppText';
 import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
-import Colors, {whiteLabel} from '../../../../constants/Colors';
+import Colors from '../../../../constants/Colors';
 import ActionListHeader from './components/ActionListHeader';
 
 const Actions = React.forwardRef((props, ref) => {

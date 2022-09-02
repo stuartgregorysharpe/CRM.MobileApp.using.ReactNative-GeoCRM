@@ -1162,6 +1162,8 @@ const Image_Capture_Disable = `<svg xmlns="http://www.w3.org/2000/svg" width="10
 </svg>
 `;
 
+
+
 export default ({icon, xml, color, width = '100%', height = '100%', style = {}}) => (
   
   <Fragment>

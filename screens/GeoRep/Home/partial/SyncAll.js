@@ -9,6 +9,7 @@ import {BasketListContainer} from './containers/BasketListContainer'
 import { RotationAnimation } from '../../../../components/common/RotationAnimation'
 import { getBascketLastSyncTableData } from '../../../../sqlite/BascketLastSyncsHelper'
 import { Strings, Values } from '../../../../constants'
+import ViewOfflineSyncItem from './components/ViewOfflineSyncItem'
 
 
 export default function SyncAll(props) {  
@@ -57,7 +58,7 @@ export default function SyncAll(props) {
     var res  =  await getBascketLastSyncTableData("sync_all");
     var title = '';
     if(res.length > 0){                                                
-        title = Strings.Last_Synced_Date + res.item(0).timestamp;
+        title = Strings.Last_Synced_Date + res.item(0).timestamp;  
     }      
     setLastSyncedDate(title);
   }
@@ -108,7 +109,14 @@ export default function SyncAll(props) {
         {
           expanded &&
             <BasketListContainer ref={basketRef} updateLoading={updateLoading} />      
-        }        
+        }
+
+        {
+          expanded &&
+          <ViewOfflineSyncItem />
+        }
+        
+
     </View>
   )
 }

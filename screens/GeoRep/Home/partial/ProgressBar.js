@@ -1,11 +1,11 @@
-import {View, Animated, Dimensions} from 'react-native';
-import React, {useRef, useState, useEffect, useCallback} from 'react';
+import {View, Animated } from 'react-native';
+import React, {useRef, useState, useEffect } from 'react';
 import Colors from '../../../../constants/Colors';
 import {AppText} from '../../../../components/common/AppText';
 
 export default function ProgressBar({steps, colors, height}) {
-  const reactive2 = useRef(new Animated.Value(-100)).current;
 
+  const reactive2 = useRef(new Animated.Value(-100)).current;
   const [width, setWidth] = useState(0);
 
   useEffect(() => {

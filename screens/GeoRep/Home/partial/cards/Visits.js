@@ -29,11 +29,12 @@ export default function Visits({visitCard}) {
                         headers={headers} onTabClicked={(index) => {
                             setTabIndex(index);                           
                     }} ></TopTab>
-                                 
+
                     {
                         tabIndex === 0 && visitCard &&
                         <TodayVisits today={visitCard.today}></TodayVisits>
-                    }                    
+                    }
+                                        
                     {
                         tabIndex === 1 && visitCard &&
                         <WeeklyVisits week={visitCard.week}></WeeklyVisits>

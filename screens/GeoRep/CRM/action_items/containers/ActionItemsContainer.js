@@ -1,8 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import Actions from '../../../Home/Actions/Actions';
 import CTabSelector from '../../../../../components/common/CTabSelector';
-import CardView from '../../../../../components/common/CardView';
 import {style} from '../../../../../constants/Styles';
 import BubbleMenu from '../../../../../components/common/BubbleMenu';
 import {Constants} from '../../../../../constants';

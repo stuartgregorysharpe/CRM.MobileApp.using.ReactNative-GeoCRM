@@ -1,15 +1,13 @@
-import React, {useState, useEffect, useReducer, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  getApiRequest,
-  postApiRequest,
+  getApiRequest,  
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
 import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
-import {SubmitButton} from '../../../../../components/shared/SubmitButton';
-import {Constants} from '../../../../../constants';
+import {Constants, Strings} from '../../../../../constants';
 import {
   getFileFormat,
   notifyMsg,
@@ -79,7 +77,7 @@ const UpdateActionFormContainer = props => {
     }
     postApiRequestMultipart('actionsitems/action-item-details', submitFormData)
       .then(res => {
-        if (res.status === 'success') {
+        if (res.status === Strings.Success) {
           notifyMsg(dispatch, 'Action Item Updated Successfully');
         }
         setIsLoading(false);
@@ -104,6 +102,7 @@ const UpdateActionFormContainer = props => {
           setFormData(_formData);
         }}
       />
+      
       <DynamicButtons
         buttons={buttons}
         onButtonAction={({type, item}) => {
@@ -120,6 +119,7 @@ const UpdateActionFormContainer = props => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

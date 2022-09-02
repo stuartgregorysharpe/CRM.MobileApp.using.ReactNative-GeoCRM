@@ -1,12 +1,11 @@
 
-import { View, Text ,FlatList, Dimensions } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import React , {useState} from 'react'
 import ProgressBar from '../../ProgressBar'
 import CircularProgress from 'react-native-circular-progress-indicator';
-import Colors, { whiteLabel } from '../../../../../../constants/Colors';
+import { whiteLabel } from '../../../../../../constants/Colors';
 import { AppText } from '../../../../../../components/common/AppText';
 import VisitCheckinItem from '../components/VisitCheckinItem';
-import { ScrollView } from 'react-native-gesture-handler';
 import Legend from '../../../../../../components/common/Legend';
 
 export default function TodayVisits(props) {
@@ -20,14 +19,7 @@ export default function TodayVisits(props) {
     ];
     const colors = [whiteLabel().graphs.primary, whiteLabel().graphs.color_1, whiteLabel().graphs.color_3];
     const [checkinLists, setCheckinLists] = useState(today.next_calls);
-    const renderSeparator = () => (
-        <View
-          style={{
-            backgroundColor: '#70707045',
-            height: 0.5,
-          }}
-        />
-    );
+    
 
     const renderCheckin = (item, index) => {
         return (

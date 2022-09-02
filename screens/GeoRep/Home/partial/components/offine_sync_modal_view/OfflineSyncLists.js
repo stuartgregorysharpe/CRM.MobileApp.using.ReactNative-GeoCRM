@@ -1,12 +1,13 @@
-import { View, Text , FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { AppText } from '../AppText';
-import Colors , { whiteLabel } from '../../../constants/Colors';
 
-export default function DropdownLists(props) {
+import { AppText } from '../../../../../../components/common/AppText';
+import Colors, { whiteLabel } from '../../../../../../constants/Colors';
 
-    const { lists ,onItemSelected } = props;
-    
+export default function OfflineSyncLists(props) {
+
+    const { lists , onItemSelected } = props;
+
     const renderItem = (item, index) => {
       return (
           <TouchableOpacity key={index} onPress={() =>{
@@ -16,14 +17,15 @@ export default function DropdownLists(props) {
                   <View key={index} style={{ flexDirection:'row', alignItems:'center'}}>
 
                       <View style={{flex: 1}}>
+                        
                           <AppText
                               size="big"
                               type="secondaryBold"
-                              title={item.description}
+                              title={item.label}
                               style={{fontSize: 12.5}}></AppText>
                           <AppText
                               type="secondaryMedium"
-                              title={"IMEI: " + item.imei}
+                              title={item.address}
                               color={whiteLabel().subText}
                               style={{fontSize: 10.4}}></AppText>
                       </View>
@@ -31,7 +33,7 @@ export default function DropdownLists(props) {
                       <View style={{flex: 1, alignItems: 'flex-end', marginRight:10}}>
                           <AppText
                               type="secondaryMedium"
-                              title={"MSISDN: " + item.msisdn}              
+                              title={item.time}              
                               style={{fontSize: 10.4}}></AppText>
                       </View>
 
@@ -41,6 +43,7 @@ export default function DropdownLists(props) {
           </TouchableOpacity>        
       );
     };
+
 
     return (
       <View style={{marginTop:15}}>

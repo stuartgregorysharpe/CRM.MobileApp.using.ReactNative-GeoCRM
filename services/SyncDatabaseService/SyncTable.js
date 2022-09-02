@@ -13,8 +13,7 @@ export const initializeDB = async() => {
     if(res.status === Strings.Success){
         var offline_db_version = await getLocalData("@offline_db_version");
         if(offline_db_version != res.offline_db_version){                               
-            var tables = res.tables;   
-            console.log("offlien db structure", tables)         
+            var tables = res.tables;               
             const db = await getDBConnection();
             if(db != null){                    
                 await createTable(db ,tables);                                  
@@ -36,18 +35,18 @@ const syncTable = async(basketId) => {
     var lists = getBaskets();
     var basket = lists[basketId].slug;
     var res = await getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + basket, {});    
-    if(res.status === Strings.Success){
+    if(res.status === Strings.Success){        
         var tables = res.tables;        
         console.log("all tables", tables);
-        if(tables.length > 0){
+        if( tables != null && tables.length > 0){
             await syncTableData(tables, 0 , 0, basket);
-        }        
+        }else{
+            await saveSyncedStatusTable(basket);
+        }
         if(basketId + 1 < lists.length){                      
             return await syncTable(basketId + 1);
-        }else{                                         
-            var time_zone = RNLocalize.getTimeZone();             
-            var currentTime = getBasketDateTime();
-            await insertBascketLastSync("sync_all", currentTime, time_zone );    
+        }else{                                                     
+            await saveSyncedStatusTable("sync_all");
             return "ok";                                               
         }        
     }
@@ -64,10 +63,8 @@ const syncTableData = async (tables , key , pageNumber, basket) => {
             }else{
                 if(key + 1 < tables.length){                      
                     await syncTableData(tables , key + 1 , 0 , basket );
-                }else{                
-                    var time_zone = RNLocalize.getTimeZone();                    
-                    var currentTime = getBasketDateTime();
-                    await insertBascketLastSync(basket, currentTime, time_zone );                
+                }else{   
+                    await saveSyncedStatusTable(basket);                    
                 }
             }
         }).catch((e) => {
@@ -78,4 +75,9 @@ const syncTableData = async (tables , key , pageNumber, basket) => {
 }
 
 
+const saveSyncedStatusTable = async(basket) => {
+    var time_zone = RNLocalize.getTimeZone();
+    var currentTime = getBasketDateTime();
+    await insertBascketLastSync(basket, currentTime, time_zone );
+}
 

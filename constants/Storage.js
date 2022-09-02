@@ -113,8 +113,7 @@ export const getPolygonFillColorTransparency = async () => {
   try {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
-    var code = data.user_scopes.geo_rep.polygon_fillColor_transparency;
-    console.log('xxxx', code);
+    var code = data.user_scopes.geo_rep.polygon_fillColor_transparency;    
     if (code !== undefined) {
       return '' + parseFloat(code) * 100;
     } else {
@@ -130,7 +129,7 @@ export const getMapMinZoomLevel = async () => {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     var map_min_zoom_level = data.user_scopes.geo_rep.map_min_zoom_level;
-    //console.log("featuers", features);
+    
     if (map_min_zoom_level !== undefined) {
       return parseInt(map_min_zoom_level);
     } else {
@@ -146,7 +145,7 @@ export const checkFeatureIncludeParam = async param => {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     var features = data.user_scopes.geo_rep.features;
-    //console.log("featuers", features);
+    
     if (features !== undefined) {
       var res = features.includes(param);
       return res;
