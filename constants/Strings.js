@@ -21,7 +21,7 @@ export default {
   MSISDN_Error_Message: 'MSISDN must be 11 digits',
   Assign_Msisdn: 'Assign MSISDN',
   Start_My_Day: 'Start My Day',
-  End_My_Day: 'End My Day',
+  End_My_Day: 'End My Day',  
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
