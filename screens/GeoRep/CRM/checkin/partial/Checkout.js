@@ -12,30 +12,7 @@ import {storeLocalValue} from '../../../../../constants/Storage';
 import {useSelector} from 'react-redux';
 import { getDateTime } from '../../../../../helpers/formatHelpers';
 
-
 export default function Checkout(props) {
-
-  const {location_id, goBack} = props;  
-  const currentLocation = useSelector(state => state.rep.currentLocation);
-  var currentTime = getDateTime();
-
-  const _callCheckOut = () => {
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: location_id,
-      checkout_time: currentTime,
-      user_local_data: userParam.user_local_data,
-    };
-
-    postApiRequest('location-info/check-out', postData)
-      .then(async(res) => {
-        await storeLocalValue('@checkin', '0');        
-        goBack(res);
-      })
-      .catch(e => {
-        console.log('che e', e);
-      });
-  };
 
   return (
     <View style={styles.container}>
@@ -43,7 +20,9 @@ export default function Checkout(props) {
       <TouchableOpacity
         style={{flex: 1}}
         onPress={() => {
-          _callCheckOut();
+          if(props._callCheckOut){
+            props._callCheckOut();
+          }          
         }}>
         <View style={styles.checkout}>
           <AppText

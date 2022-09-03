@@ -1,52 +1,58 @@
 
 import { enablePromise} from 'react-native-sqlite-storage';
-import { getDBConnection } from './DBHelper';
+import { createTable, getDBConnection } from './DBHelper';
+import { OfflineSyncITemTable } from './helper';
 
 const tableName = 'offline_sync_items';
 
 enablePromise(true);
 
+export const createOfflineSyncItemTable = async () => {
 
-export const createBascketLastSync = async (db) => {
-    await db.transaction(async(tx) =>{
-        const query = `CREATE TABLE IF NOT EXISTS ${tableName}(id INTEGER PRIMARY KEY AUTOINCREMENT, indempotency_key TEXT NOT NULL ` + 
-                        `, item_type TEXT NOT NULL , item_label TEXT NOT NULL  , item_sub_text TEXT NOT NULL , added_time TEXT NOT NULL ` + 
-                        `, added_timezone TEXT NOT NULL , post_body TEXT NOT NULL , url TEXT NOT NULL , method TEXT NOT NULL , timestamp TEXT NOT NULL, timezone TEXT NOT NULL );`;
-        await tx.executeSql(query);
-    });
+    var db =  await getDBConnection();
+    await createTable(db, OfflineSyncITemTable);
 };
 
 export const insertOfflineSyncItem = async (data) => {
-    var db = await getDBConnection();
-    var check = await getBascketLastSyncTableData(sync_basket);
+        
+    var db = await getDBConnection();    
     await db.transaction(async(tx) =>{
-        try{
-            if(check.length == 0 ){            
-                const query = `INSERT INTO ${tableName}(indempotency_key, item_type, item_label, item_sub_text,added_time, added_timezone , post_body, url, method ) VALUES(? ,? , ?,? ,? , ?,? ,? , ?);`;
-                await tx.executeSql(query, data);
-            }else{            
-                const query = `UPDATE ${tableName} SET timestamp = ? , timezone = ? WHERE id=${check.item(0).id};`;                
-                await tx.executeSql(query, [timestamp , timezone ]);
-            }        
+        try{            
+            const query = `INSERT INTO ${tableName}(indempotency_key, item_type, item_label, item_sub_text,added_time, added_timezone , post_body, url, method ) VALUES(? ,? , ?,? ,? , ?, ? ,? , ?);`;
+            console.log(" insert query ", query);
+            await tx.executeSql(query, data);
         }catch(e){
             console.log("query error",e)
         }
     });    
 };
 
-export const deleteBascketLastSyncsTable = async (db , id) => {    
+export const deleteOfflineSyncItem = async (db , id) => {    
     await db.transaction(async(tx) => {
         const query = `DELETE FROM ${tableName} WHERE id=?`;
         await tx.executeSql(query, [id]);
     });
 };
 
-export const getOfflineSyncItem = async ( sync_basket ) => {
+
+export const getAllOfflineSyncItem = async ( item_type ) => {
     var db = await getDBConnection();
     return new Promise(async function (resolve, reject) {
         await db.transaction(async(tx) =>{            
-            const query = `SELECT * FROM ${tableName} WHERE sync_basket=?`;
-            await tx.executeSql(query, [sync_basket] , (tx, results) => {                
+            const query = `SELECT * FROM ${tableName}`;
+            await tx.executeSql(query, [] , (tx, results) => {                
+                resolve(results.rows);
+            });
+        });
+    });
+};
+
+export const getOfflineSyncItem = async ( item_type ) => {
+    var db = await getDBConnection();
+    return new Promise(async function (resolve, reject) {
+        await db.transaction(async(tx) =>{            
+            const query = `SELECT * FROM ${tableName} WHERE item_type=?`;
+            await tx.executeSql(query, [item_type] , (tx, results) => {                
                 resolve(results.rows);
             });
         });

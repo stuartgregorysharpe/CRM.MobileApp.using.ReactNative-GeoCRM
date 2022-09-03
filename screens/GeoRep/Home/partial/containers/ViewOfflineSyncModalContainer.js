@@ -8,7 +8,7 @@ import ViewOfflineSync from '../components/ViewOfflineSync';
 export default function ViewOfflineSyncModalContainer(props) {
     
     const [typeLists, setTypeLists] = useState([
-        {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: true , isError : false } , 
+        {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
         {label:'Forms' , time: '28 April 2022 18:35' , isStart:false , isSynced: true , isError : false} , 
         {label:'Product Orders' , time: '28 April 2022 18:35' , isStart:false , isSynced: true , isError : false} ,
         {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: true , isError : false}

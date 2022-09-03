@@ -23,4 +23,26 @@ export function checkConnectivity(){
     });              
 }
 
+
+export function getFullAddress (element){
+
+    var address = element.street_address;
+    if(element.suburb != '' && element.suburb != undefined){
+        address = address + ", " + element.suburb;
+    }
+    if(element.city != '' && element.city != undefined){
+        address = address + ", " + element.city;
+    }
+    if(element.state != '' && element.state != undefined){
+        address = address + ", " + element.state;
+    }
+    if(element.country != '' && element.country != undefined){
+        address = address + ", " + element.country;
+    }
+    if(element.pincode != '' && element.pincode != undefined){
+        address = address + ", " + element.pincode;
+    }
+
+    return address;
+}
   

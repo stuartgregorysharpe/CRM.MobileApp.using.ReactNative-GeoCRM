@@ -60,7 +60,7 @@ import {
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings} from '../../../../constants';
 import { getDateTime } from '../../../../helpers/formatHelpers';
-import { LocationCheckinTypeDAO } from '../../../../DAO';
+import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO } from '../../../../DAO';
 
 
 
@@ -434,7 +434,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       setFeedbackOptions(options);
       setCheckInTypes(res);
     });
-
   };
 
   const _callCheckedIn = async () => {
@@ -448,19 +447,20 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       user_local_data: userParam.user_local_data,
     };
 
-    postApiRequest('location-info/check-in', postData)
-      .then(async res => {
-        setIsFeedback(false);
-        setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');        
-        dispatch({type: CHECKIN, payload: true});
-        await storeLocalValue('@checkin', '1');
-        props.navigation.navigate('LocationSpecificInfo', {
-          data: locationInfo,
-          page: 'checkin',
-        });
-      })
-      .catch(e => {});
+    console.log("started")
+    PostLocationCheckinTypesDAO.find(locationInfo, postData).then(async(res) => {
+      console.log("started",res)
+      setIsFeedback(false);
+      setFeedbackOptions(originFeedbackData);
+      setModalType('feedback');        
+      dispatch({type: CHECKIN, payload: true});
+      await storeLocalValue('@checkin', '1');
+      props.navigation.navigate('LocationSpecificInfo', {
+        data: locationInfo,
+        page: 'checkin',
+      });
+    });
+          
   };
 
   const onClickCheckIn = async () => {

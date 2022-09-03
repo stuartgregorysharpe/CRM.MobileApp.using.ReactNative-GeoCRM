@@ -6,8 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,
-  BackHandler,
+  Dimensions,  
   ActivityIndicator,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -42,6 +41,7 @@ import DevicesModal from '../devices/DevicesModal';
 import {Constants, Strings} from '../../../../constants';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
+import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 
 export default function LocationSpecificInfoScreen(props) {
 
@@ -359,8 +359,10 @@ export default function LocationSpecificInfoScreen(props) {
               </TouchableOpacity>
             </View>
 
-            {isCheckin && (
-              <Checkout
+            {
+              isCheckin && 
+              <CheckOutViewContainer 
+                type="specificInfo" 
                 goBack={async res => {
                   dispatch(
                     showNotification({
@@ -375,9 +377,9 @@ export default function LocationSpecificInfoScreen(props) {
                     }),
                   );
                 }}
-                location_id={locationInfo.location_id}></Checkout>
-            )}
-
+              />
+            }
+            
             {/* <View style={styles.filterButton}>
                   <FilterButton text="Contact: Jack Reacher" />
                 </View> */}

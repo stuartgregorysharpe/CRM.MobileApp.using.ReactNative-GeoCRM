@@ -32,8 +32,8 @@ export const ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) 
     });
 });
 
-
 export const createTable = async (db , tables ) => {  
+  console.log("CREATE Table Formats" , JSON.stringify(tables));
   try{      
       await tables.reduce(async (a, table) => {        
         await a;        

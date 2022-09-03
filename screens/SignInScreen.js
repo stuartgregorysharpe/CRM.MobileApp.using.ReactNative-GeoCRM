@@ -38,6 +38,7 @@ import {displayName} from '../app.json';
 import {clearNotification} from '../actions/notification.action';
 import {getDynamicPins} from '../actions/pins.actions';
 import { Images } from '../constants';
+import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
 
 export default function SignIn() {
 
@@ -55,9 +56,13 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    initView();    
+    initView();
+    initData();
   }, [loginStatus]);
 
+  const initData = () => {
+    createOfflineSyncItemTable();
+  }
 
   const initView = async () => {
     

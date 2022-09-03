@@ -1,5 +1,5 @@
 import { View, ActivityIndicator , TouchableOpacity , StyleSheet } from 'react-native'
-import React , {useState , useRef} from 'react'
+import React , {useState , useRef , useEffect} from 'react'
 import OfflineSyncLists from './OfflineSyncLists';
 import SvgIcon from '../../../../../../components/SvgIcon';
 import { AppText } from '../../../../../../components/common/AppText';
@@ -9,6 +9,7 @@ import { Colors, Constants, Fonts } from '../../../../../../constants';
 import { white } from 'react-native-paper/lib/typescript/styles/colors';
 import { CHorizontalProgressBar } from '../../../../../../components/common/CHorizontalProgressBar';
 import ErrorRefresh from './ErrorRefresh';
+import { getAllOfflineSyncItem, getOfflineSyncItem } from '../../../../../../sqlite/OfflineSyncItemsHelper';
 
 
 export default function OfflineSyncType(props) {
@@ -18,13 +19,32 @@ export default function OfflineSyncType(props) {
   const [isShown, setIsShown] = useState(false);  
   const progressRef = useRef();
 
+  
+  useEffect(() => {
+    var isMount = false;
+    if(label === "Location Visits"){
+      initLists();
+    }
+    return () => {
+      isMount = true;
+    };
+  }, [label]);
+
+  const initLists = async() => {
+    var offlineSyncItems = await  getAllOfflineSyncItem("checkin");
+    console.log("oksss", offlineSyncItems)
+    if(offlineSyncItems.length > 0){
+      console.log("oksss")
+    }
+  }
+
   return (
     <View style={[style.card]}>
 
         <View style={styles.container}>
 
             <TouchableOpacity style={{flexDirection:'row', alignItems:'center'}} onPress={() => {
-              if(!isSynced){
+              if(!isSynced){                
                 setIsShown(!isShown);
               }
               
