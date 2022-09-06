@@ -9,13 +9,20 @@ import StagingShipmentList from './components/StagingShipmentList';
 const StagingView = props => {
   const {shipments} = props;
   const [keyword, setKeyword] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
+
   const onCapture = () => {
     if (captureModalRef && captureModalRef.current) {
       captureModalRef.current.showModal();
     }
   };
-  const onCaptureAction = () => {};
+  const onCaptureAction = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CAPTURE) {
+      setLastScannedQrCode(value);
+    }
+  };
   const onSearch = keyword => {
     setKeyword(keyword);
   };
@@ -33,8 +40,10 @@ const StagingView = props => {
         renderLastScanResultView={() => {
           return (
             <ShipmentScanResultView
+              items={selectedItems}
               lastScanedQrCode={lastScanedQrCode}
               style={{marginBottom: 20}}
+              onClose={() => captureModalRef.current.hideModal()}
               onSubmit={() => captureModalRef.current.hideModal()}
             />
           );
