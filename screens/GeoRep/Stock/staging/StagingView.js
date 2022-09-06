@@ -3,8 +3,10 @@ import {View, StyleSheet} from 'react-native';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import SearchBar from '../../../../components/SearchBar';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
+import {Constants} from '../../../../constants';
 import ShipmentScanResultView from './components/ShipmentScanResultView';
 import StagingShipmentList from './components/StagingShipmentList';
+import ScanningListViewModal from './modals/ScanningListViewModal';
 
 const StagingView = props => {
   const {shipments} = props;
@@ -12,6 +14,7 @@ const StagingView = props => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
+  const scanningListViewModalRef = useRef(null);
 
   const onCapture = () => {
     if (captureModalRef && captureModalRef.current) {
@@ -25,6 +28,11 @@ const StagingView = props => {
   };
   const onSearch = keyword => {
     setKeyword(keyword);
+  };
+  const onItemAction = ({type, item}) => {
+    if (type == Constants.actionType.ACTION_VIEW) {
+      scanningListViewModalRef.current.showModal();
+    }
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -49,7 +57,11 @@ const StagingView = props => {
           );
         }}
       />
-      <StagingShipmentList items={shipments} style={{flex: 1}} />
+      <StagingShipmentList
+        items={shipments}
+        style={{flex: 1}}
+        onItemAction={onItemAction}
+      />
       <SubmitButton
         title={'Accept All'}
         onSubmit={() => {
@@ -58,6 +70,10 @@ const StagingView = props => {
           }
         }}
         style={styles.submitButton}
+      />
+      <ScanningListViewModal
+        ref={scanningListViewModalRef}
+        title="Item: 20 00"
       />
     </View>
   );

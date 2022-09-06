@@ -16,6 +16,11 @@ const StagingShipmentItem = props => {
     date,
     Constants.dateFormat.DATE_FORMAT_DATE_TIME,
   );
+  const onItemAction = type => {
+    if (props.onItemAction) {
+      props.onItemAction({type: type, item: item});
+    }
+  };
   return (
     <View style={[styles.container, styles.bottomBorder, props.style]}>
       <View
@@ -32,8 +37,16 @@ const StagingShipmentItem = props => {
           paddingRight: 4,
           flex: 1,
         }}>
-        <AcceptButton onPress={() => {}} style={{marginRight: 10}} />
-        <TouchableOpacity>
+        <AcceptButton
+          onPress={() => {
+            onItemAction(Constants.actionType.ACTION_ACCEPT);
+          }}
+          style={{marginRight: 10}}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            onItemAction(Constants.actionType.ACTION_VIEW);
+          }}>
           <SvgIcon icon="Drop_Down" width="20px" height="20px" />
         </TouchableOpacity>
       </View>
