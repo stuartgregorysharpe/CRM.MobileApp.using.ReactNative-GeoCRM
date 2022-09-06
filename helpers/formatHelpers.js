@@ -63,18 +63,19 @@ export function convertHexToRgbA(hexVal) {
 export function formatDate(
   dateString,
   formatString = 'YYYY-MM-DD',
-  fromFromString = 'YYYY-MM-DD',
+  fromFromString,
 ) {
   if (!dateString) {
     return '/';
   }
-  const momentObj = Moment(dateString, fromFromString);
+  let momentObj = Moment(dateString);
+  if (fromFromString) {
+    momentObj = Moment(dateString, fromFromString);
+  }
   const momentString = momentObj.format(formatString);
   if (momentString == 'Invalid date') return '/';
   return momentString;
 }
-
-
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -152,15 +153,15 @@ export const validateMsisdn = barcode => {
   return true;
 };
 
-export const formattedNumber = (num) => {  
-  return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
-}
+export const formattedNumber = num => {
+  return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+};
 
 export const getBasketDateTime = () => {
-    var currentTime = moment().format('DD MMMM YYYY HH:mm');
-    return currentTime;
-}
+  var currentTime = moment().format('DD MMMM YYYY HH:mm');
+  return currentTime;
+};
 export const getDateTime = () => {
   var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
   return currentTime;
-}
+};

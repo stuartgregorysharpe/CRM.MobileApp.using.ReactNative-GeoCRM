@@ -1,15 +1,42 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {Values, Fonts, Colors} from '../../../../../constants';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import SvgIcon from '../../../../../components/SvgIcon';
+import {Values, Fonts, Colors, Constants} from '../../../../../constants';
 import {whiteLabel} from '../../../../../constants/Colors';
+import {formatDate} from '../../../../../helpers/formatHelpers';
+import AcceptButton from './AcceptButton';
 
 const StagingShipmentItem = props => {
   const {item} = props;
   if (!item) return null;
-
+  const {network, items, date} = item;
+  const quantity = items.length;
+  const quantityLabel = `Qty: ${quantity}`;
+  const addedDate = formatDate(
+    date,
+    Constants.dateFormat.DATE_FORMAT_DATE_TIME,
+  );
   return (
     <View style={[styles.container, styles.bottomBorder, props.style]}>
-      <Text style={styles.text}>{item.network}</Text>
+      <View
+        style={{flexDirection: 'column', justifyContent: 'center', flex: 1}}>
+        <Text style={styles.title}>{network}</Text>
+        <Text style={styles.description}>{quantityLabel}</Text>
+      </View>
+      <Text style={[styles.text, {flex: 1}]}>{addedDate}</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          paddingRight: 4,
+          flex: 1,
+        }}>
+        <AcceptButton onPress={() => {}} style={{marginRight: 10}} />
+        <TouchableOpacity>
+          <SvgIcon icon="Drop_Down" width="20px" height="20px" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -33,6 +60,16 @@ const styles = StyleSheet.create({
     fontSize: Values.fontSize.xSmall,
     color: whiteLabel().inputText,
     flex: 1,
+  },
+  title: {
+    fontFamily: Fonts.primaryBold,
+    fontSize: Values.fontSize.xSmall,
+    color: whiteLabel().inputText,
+  },
+  description: {
+    fontFamily: Fonts.primaryMedium,
+    fontSize: Values.fontSize.xSmall,
+    color: whiteLabel().itemDescriptionText,
   },
   textInput: {
     fontSize: Values.fontSize.xSmall,

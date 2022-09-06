@@ -28,6 +28,7 @@ export const whiteLabel = () => {
     itemSelectedBackground: '#3D8FFB',
     itemSelectedIconFill: '#3D8FFB',
     itemSelectedText: '#FFFFFF',
+    itemDescriptionText: '#9B9B9B',
     subText: '#9D9FA2',
     inactiveTabText: '#9D9FA2',
     activeTabText: '#133C8B',
