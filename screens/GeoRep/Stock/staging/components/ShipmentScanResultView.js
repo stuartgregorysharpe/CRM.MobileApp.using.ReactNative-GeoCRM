@@ -25,7 +25,11 @@ export default function ShipmentScanResultView(props) {
       props.onClose();
     }
   };
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    if (props.onSubmit) {
+      props.onSubmit();
+    }
+  };
 
   return (
     <View
