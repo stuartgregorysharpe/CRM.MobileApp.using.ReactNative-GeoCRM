@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import SearchBar from '../../../../components/SearchBar';
@@ -6,16 +6,22 @@ import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../constants';
 import ShipmentScanResultView from './components/ShipmentScanResultView';
 import StagingShipmentList from './components/StagingShipmentList';
+import {filterItems, getShipmentsFromItems} from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
 
 const StagingView = props => {
-  const {shipments} = props;
   const [keyword, setKeyword] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
+  const [viewListItems, setViewListItems] = useState([]);
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
   const scanningListViewModalRef = useRef(null);
+  const items = useMemo(
+    () => filterItems(props.items, keyword),
+    [props.items, keyword],
+  );
 
+  const shipments = useMemo(() => getShipmentsFromItems(items), [items]);
   const onCapture = () => {
     if (captureModalRef && captureModalRef.current) {
       captureModalRef.current.showModal();
@@ -31,6 +37,9 @@ const StagingView = props => {
   };
   const onItemAction = ({type, item}) => {
     if (type == Constants.actionType.ACTION_VIEW) {
+      if (item.items) {
+        setViewListItems(item.items);
+      }
       scanningListViewModalRef.current.showModal();
     }
   };
@@ -73,7 +82,8 @@ const StagingView = props => {
       />
       <ScanningListViewModal
         ref={scanningListViewModalRef}
-        title="Item: 20 00"
+        title={`Items: ${viewListItems.length}`}
+        items={viewListItems}
       />
     </View>
   );

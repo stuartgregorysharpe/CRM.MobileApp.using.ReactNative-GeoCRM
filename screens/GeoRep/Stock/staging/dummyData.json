@@ -52,7 +52,7 @@
             ]
         },
         {
-            "shipment_id" : "1",
+            "shipment_id" : "2",
             "network" : "Cell C",
             "date" : "2022-04-21 18:45:00",
             "items" : [
@@ -102,7 +102,7 @@
             ]
         },
         {
-            "shipment_id" : "1",
+            "shipment_id" : "3",
             "network" : "Vodacom",
             "date" : "2022-04-21 18:45:00",
             "items" : [
@@ -152,7 +152,7 @@
             ]
         },
         {
-            "shipment_id" : "1",
+            "shipment_id" : "4",
             "network" : "MTN",
             "date" : "2022-04-21 18:45:00",
             "items" : [
