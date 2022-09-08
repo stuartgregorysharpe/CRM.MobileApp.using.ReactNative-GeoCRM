@@ -27,8 +27,8 @@ import AccessScreen from '../screens/GeoLife/AccessScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import ProductSales from '../screens/GeoRep/Sales/ProductSales';
 
-export const WHATS_APP_LINK =
-  'https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22';
+export const WHATS_APP_LINK =  'https://wa.me/27608477174?text=Hi!%20I%20have%20a%20support%20request';
+// OLD LINK : 'https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22';
 
 export function getPageNameByLinker(selectedProject, linker) {
   switch (linker) {
