@@ -201,6 +201,7 @@ const LocationContainer = props => {
   };
   const onFinishDrawing = selectedMarkers => {
     console.log('onFinishDrawing', selectedMarkers);
+    setIsDrawMode(false)
     if (!selectedMarkers) return;
     const selectedLocations = selectedMarkers.map(marker => {
       return {

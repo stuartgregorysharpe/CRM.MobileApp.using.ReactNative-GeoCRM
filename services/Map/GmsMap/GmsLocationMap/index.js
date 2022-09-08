@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import MapView, {Marker, Polygon, Polyline} from 'react-native-maps';
 import SvgIcon from '../../../../components/SvgIcon';
-import {Fonts} from '../../../../constants';
+import {Fonts , Images} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
 import {  
