@@ -55,6 +55,7 @@ const DynamicField = props => {
         value={value}
         hasError={hasError}
         disabled={disabled}
+        pointerEvents={disabled ? "none" : "auto"}
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
