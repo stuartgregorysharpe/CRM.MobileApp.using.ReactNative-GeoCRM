@@ -4,11 +4,12 @@ import { getPostParameter } from '../../../constants/Helper';
 import { getDateTime } from '../../../helpers/formatHelpers';
 import {useSelector, useDispatch} from 'react-redux';
 import { getLocalData, storeLocalValue } from '../../../constants/Storage';
-import { postApiRequest } from '../../../actions/api.action';
 import { CHECKIN } from '../../../actions/actionTypes';
 import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/Checkout';
-import PostLocationCheckOut from '../../../DAO/PostLocationCheckOut';
+import { PostRequestDAO } from '../../../DAO';
+var specificLocationId;
+
 
 
 export default function CheckOutViewContainer(props) {
@@ -16,22 +17,21 @@ export default function CheckOutViewContainer(props) {
     const { type , currentCall } = props;
     const dispatch = useDispatch()
     const currentLocation = useSelector(state => state.rep.currentLocation); 
-    const [locationId, setLocationId] = useState(0);
+    
 
     useEffect(() => {
         initData();
     }, []);
 
     const initData = async() => {        
-        var specificLocationId = await getLocalData("@specific_location_id");    
-        setLocationId(specificLocationId);
+        specificLocationId = await getLocalData("@specific_location_id");            
     }
 
     const checkOutLocation = useCallback(
         () => {
             _callCheckOut();
         },
-        [locationId],
+        [],
     );
     
     const _callCheckOut = () => {
@@ -40,13 +40,13 @@ export default function CheckOutViewContainer(props) {
         var currentTime = getDateTime();
         
         let postData = {
-          location_id: locationId,
+          location_id: specificLocationId,
           checkout_time: currentTime,
           user_local_data: userParam.user_local_data,
         };
-        
-        PostLocationCheckOut.find(locationId, postData).then( async(res) => {
-            console.log("res ponse", res);
+                
+        PostRequestDAO.find(specificLocationId, postData , 'checkout', 'location-info/check-out').then( async(res) => {                        
+            console.log("RES : " , res)
             await storeLocalValue('@checkin', '0');
             dispatch({ type: CHECKIN, payload: false });
             if(type == "specificInfo"){
@@ -56,14 +56,14 @@ export default function CheckOutViewContainer(props) {
             }else{
                 
             }
-        });        
+        }).catch((e) => console.log("checkout error:" , e));
     };
 
     return (
         <View>
             {
                 type == "home" &&
-                <HomeCheckOut currentCall={currentCall} _callC heckOut={checkOutLocation} />
+                <HomeCheckOut currentCall={currentCall} _callCheckOut={checkOutLocation} />
             }
 
             {

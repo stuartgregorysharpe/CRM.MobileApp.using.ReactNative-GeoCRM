@@ -3,14 +3,13 @@ import LocationSearchDAO from './LocationSearch';
 import LocationMapDAO from './LocationMap';
 import LocationPinKeyDAO from './LocationPinKey';
 import LocationCheckinTypeDAO from './LocationCheckinType';
-import PostLocationCheckinTypesDAO from './PostLocationCheckinTypes';
+import PostRequestDAO from './PostRequest';
 
 export { 
             LocationMapDAO, 
             LocationSearchDAO , 
             LocationPinKeyDAO , 
             LocationCheckinTypeDAO,
-
-            PostLocationCheckinTypesDAO
+            PostRequestDAO
         
         }

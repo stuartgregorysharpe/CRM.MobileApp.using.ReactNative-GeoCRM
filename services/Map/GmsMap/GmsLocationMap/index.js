@@ -5,8 +5,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import {Fonts} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
-import {
-  getPinSvg,
+import {  
   getPolygonFillColorTransparency,
 } from '../../../../constants/Storage';
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
@@ -109,7 +108,7 @@ const GmsLocationMap = props => {
         <Marker
           key={'markers' + item.location_id}
           //icon={icon}
-          tracksViewChanges={!isDrawMode}
+          tracksViewChanges={isDrawMode}
           onPress={() => {
             props.onMarkerPressed(item, key);
           }}

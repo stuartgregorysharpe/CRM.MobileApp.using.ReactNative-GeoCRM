@@ -37,7 +37,6 @@ import {LocationItem} from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
-import {LocationInfoDetails} from './locationInfoDetails/LocationInfoDetails';
 import {getFilterData, getLocalData} from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
 import {Notification} from '../../../components/modal/Notification';
@@ -45,6 +44,7 @@ import CheckInStatusView from './partial/CheckInStatusView';
 import AddLeadModal from './add_lead';
 import {Constants} from '../../../constants';
 import { LocationSearchDAO } from '../../../DAO';
+import LocationInfoDetailModal from './locationInfoDetails/LocationInfoDetailModal';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -81,7 +81,7 @@ export default function LocationSearchScreen(props) {
       ? props.route.params.calendar_type
       : '',
   );
-  const locationRef = useRef();
+
   const [pageType, setPageType] = useState({name: 'search-lists'});
   const [isLoading, setIsLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -89,6 +89,7 @@ export default function LocationSearchScreen(props) {
   const [myLocation, setMyLocation] = useState(currentLocation);
   const [isCheckin, setIsCheckin] = useState(false);
   const addLeadModalRef = useRef(null);
+  const locationInfoModalRef = useRef(null);
 
   useEffect(() => {
     initData();
@@ -110,7 +111,7 @@ export default function LocationSearchScreen(props) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('focuseed');
+      console.log('location search focussed');
       if (savedShowItem == 2) {
         console.log('showItem cc', savedShowItem);
         refreshHeader();
@@ -175,16 +176,8 @@ export default function LocationSearchScreen(props) {
         return (
           <TouchableOpacity
             onPress={() => {
-              if (
-                locationRef !== undefined &&
-                locationRef.current !== undefined &&
-                locationRef.current !== null
-              ) {
-                locationRef.current.goBack();
-              } else {
-                console.log('LOG: goPreviousPage');
-                goPreviousPage();
-              }
+              console.log('LOG: goPreviousPage');
+              goPreviousPage();
             }}>
             <View style={style.headerTitleContainerStyle}>
               {(!features.includes('disable_crm_map_view') ||
@@ -213,22 +206,13 @@ export default function LocationSearchScreen(props) {
           style={style.headerLeftStyle}
           activeOpacity={1}
           onPress={() => {
-            if (
-              locationRef !== undefined &&
-              locationRef.current !== undefined &&
-              locationRef.current !== null
-            ) {
-              locationRef.current.closePopup();
-              setPageType({name: 'search-lists'});
-            } else {
-              setShowItem(0);
+            setShowItem(0);
               console.log('set show Item 0');
               dispatch({type: SLIDE_STATUS, payload: false});
               dispatch({
                 type: LOCATION_ID_CHANGED,
                 payload: {value: 0, type: 0},
-              });
-            }
+            });
           }}></TouchableOpacity>
       ),
     });
@@ -260,8 +244,6 @@ export default function LocationSearchScreen(props) {
       },
     });
   };
-
-
 
   const loadData = async searchKey => {
 
@@ -357,8 +339,9 @@ export default function LocationSearchScreen(props) {
         savedShowItem = 1;
         return;
       case 'locationInfo':
-        setShowItem(2);
-        savedShowItem = 2;
+        if(locationInfoModalRef.current){
+          locationInfoModalRef.current.showModal();
+        }        
         return;
       case 'addtocalendar':
         setShowItem(3);
@@ -371,21 +354,16 @@ export default function LocationSearchScreen(props) {
     }
   };
 
-  const openLocationInfo = async location_id => {
+  const openLocationInfo = async location_id => {    
     animation('locationInfo');
-    getLocationInfo(Number(location_id), currentLocation)
+      getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
-        if (
-          locationRef !== undefined &&
-          locationRef.current !== undefined &&
-          locationRef.current !== null
-        ) {
-          locationRef.current.updateView(res);
-        }
+        console.log("location info", res)
+        setLocationInfo(res);        
       })
       .catch(e => {
         expireToken(dispatch, e);
-      });
+    });    
   };
 
   const renderLocation = (item, index) => {
@@ -421,7 +399,8 @@ export default function LocationSearchScreen(props) {
               payload: selectedItems,
             });
           } else {
-            hideBottomBar();
+            //hideBottomBar();
+            console.log("location id", item.location_id);
             openLocationInfo(item.location_id);
           }
         }}></LocationItem>
@@ -460,8 +439,7 @@ export default function LocationSearchScreen(props) {
       addLeadModalRef.current.hideModal();
     }
     if (type == Constants.actionType.ACTION_DONE) {
-      addLeadModalRef.current.hideModal();
-      //openLocaitonInfoDetails(Number(value));
+      addLeadModalRef.current.hideModal();      
     }
   };
 
@@ -507,37 +485,7 @@ export default function LocationSearchScreen(props) {
             />
           </View>
         )}
-
-        {showItem == 2 && (
-          <View
-            style={[
-              styles.transitionView,
-              {top: 0},
-              showItem == 0
-                ? {
-                    transform: [
-                      {translateY: Dimensions.get('window').height + 100},
-                    ],
-                  }
-                : {transform: [{translateY: 0}]},
-            ]}>
-            <LocationInfoDetails
-              navigation={navigation}
-              ref={locationRef}
-              animation={animation}
-              goPreviousPage={goPreviousPage}
-              pageType={pageType}
-              currentLocation={myLocation}
-              refreshLocationInfo={id => {
-                openLocationInfo(id);
-              }}
-              clostDetailsPopup={() => {
-                setShowItem(0);
-              }}
-              locInfo={locationInfo}></LocationInfoDetails>
-          </View>
-        )}
-
+        
         {showItem == 3 && (
           <View
             style={[
@@ -567,6 +515,15 @@ export default function LocationSearchScreen(props) {
           ref={addLeadModalRef}
           onButtonAction={onAddLeadModalClosed}
         />
+
+        
+        <LocationInfoDetailModal
+          ref={locationInfoModalRef}
+          locInfo={locationInfo}
+          navigation={navigation}
+          pageType={{name: 'search-lists'}}
+        />
+        
 
         <View style={styles.container}>
           <SearchBar

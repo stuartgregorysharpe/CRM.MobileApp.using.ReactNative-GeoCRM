@@ -101,7 +101,7 @@ export const OfflineSyncITemTable = [
             {
                 "key_name":"",
                 "type":"PRIMARY",
-                "fields":["checkin_type_reasons_id"]
+                "fields":["id"]
             }
         ],
         "table_name":"offline_sync_items"

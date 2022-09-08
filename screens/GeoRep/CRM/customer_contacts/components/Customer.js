@@ -132,10 +132,13 @@ export default function Customer(props) {
                     formData={formData}
                     formStructureData={formStructure}
                     isClickable={true}
-                    onPress={() =>{
+                    onPress={(item) =>{
                       console.log("onPress");
                       console.log("show modal");
-                      updateCustomerModalRef.current.showModal();
+                      if( item != undefined && item.editable == "0"){
+                        updateCustomerModalRef.current.showModal();
+                      }                      
+                      
                       console.log("show modal");
                     }}
                     updateFormData={formData => {

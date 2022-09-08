@@ -8,6 +8,7 @@ import { AppText } from '../../../../components/common/AppText'
 export default function CheckOut(props) {
 
   const { currentCall } = props;    
+  
   return (
     <View style={{backgroundColor:whiteLabel().actionFullButtonBackground, borderRadius:7}}>
 
@@ -34,10 +35,8 @@ export default function CheckOut(props) {
             size="medium" type="secondaryBold" color={whiteLabel().mainText} ></AppText>
                     
         </View>
-        <TouchableOpacity onPress={() => { 
-            console.log("p", props);
-            if(props._callCheckOut){
-              console.log("Ddd");
+        <TouchableOpacity onPress={() => {             
+            if(props._callCheckOut){              
               props._callCheckOut();
             }
          }}>

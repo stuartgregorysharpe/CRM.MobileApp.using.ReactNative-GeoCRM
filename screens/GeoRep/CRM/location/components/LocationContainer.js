@@ -20,11 +20,11 @@ import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants} from '../../../../../constants';
 import {expireToken} from '../../../../../constants/Helper';
 import {
+  getJsonData,
   getLocalData,
-  getMapMinZoomLevel,
-  getPinSvg,
+  getMapMinZoomLevel,  
 } from '../../../../../constants/Storage';
-import {LocationMapDAO} from '../../../../../DAO';
+import {LocationMapDAO, LocationPinKeyDAO} from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -80,7 +80,7 @@ const LocationContainer = props => {
       console.log(' load mark api');
       LocationMapDAO.find(_currentLocation, boundBox)
         .then(res => {
-          getPinSvg('@map_pin_key').then(mapPinSvg => {
+          getJsonData('@map_pin_key').then(mapPinSvg => {
             setIsLoading(false);
             setMarkers(
               res.locations.map((location, index) => {

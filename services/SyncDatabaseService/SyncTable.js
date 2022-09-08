@@ -35,15 +35,15 @@ const syncTable = async(basketId) => {
     var lists = getBaskets();
     var basket = lists[basketId].slug;
     var res = await getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + basket, {});    
-    if(res.status === Strings.Success){        
-        var tables = res.tables;        
+    if(res.status === Strings.Success){
+        var tables = res.tables;
         console.log("all tables", tables);
         if( tables != null && tables.length > 0){
             await syncTableData(tables, 0 , 0, basket);
         }else{
             await saveSyncedStatusTable(basket);
         }
-        if(basketId + 1 < lists.length){                      
+        if(basketId + 1 < lists.length){
             return await syncTable(basketId + 1);
         }else{                                                     
             await saveSyncedStatusTable("sync_all");
@@ -52,9 +52,8 @@ const syncTable = async(basketId) => {
     }
 }
 
-
 const syncTableData = async (tables , key , pageNumber, basket) => {    
-    var tableName = tables[key];      
+    var tableName = tables[key];       
     if(tableName != undefined){
         await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
             await handleRecords(tableName, res.records);        
@@ -66,7 +65,7 @@ const syncTableData = async (tables , key , pageNumber, basket) => {
                 }else{   
                     await saveSyncedStatusTable(basket);                    
                 }
-            }
+            } 
         }).catch((e) => {
     
         });    

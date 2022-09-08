@@ -152,8 +152,19 @@ export const validateMsisdn = barcode => {
   return true;
 };
 
+
 export const formattedNumber = (num) => {  
-  return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+  try{
+    return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');    
+  }catch(e){
+    console.log("e",e);
+    return num;
+  }
+}
+
+export const getConvertedDateTime = (dateTime) => {
+    var currentTime = moment(dateTime, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY HH:mm');
+    return currentTime;
 }
 
 export const getBasketDateTime = () => {
@@ -162,5 +173,13 @@ export const getBasketDateTime = () => {
 }
 export const getDateTime = () => {
   var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+  return currentTime;
+}
+
+
+
+
+export const getDateTimeFromBasketTime = (dateTime) => {
+  var currentTime = moment(dateTime, 'DD MMMM YYYY HH:mm').format('YYYY-MM-DD HH:mm:ss');
   return currentTime;
 }

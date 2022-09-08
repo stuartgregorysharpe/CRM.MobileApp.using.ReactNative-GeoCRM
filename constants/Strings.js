@@ -25,7 +25,7 @@ export default {
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
-
+    
   Home: {
     Sync_All: 'Sync All',
   },
@@ -47,4 +47,11 @@ export default {
     Return_Stock: 'Return Stock',
     Please_Sign: 'Please Sign below:',
   },
+
+  PostRequestResponse: {
+    Successfully_Checkout: 'Successfully Checkout !',
+    Successfully_Checkin: 'Successfully Checkin !',
+    
+  }
+
 };

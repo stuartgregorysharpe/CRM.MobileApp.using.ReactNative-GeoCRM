@@ -176,11 +176,14 @@ const generateQuery = (latitude, longitude , searchText , pageNumber, features) 
                       `ldp.location_status as "status", ` + 
                       `ldp.status_color as "status_text_color" ` + 
                     `FROM locations_core_master_data AS lcmd ` + 
+                    `LEFT JOIN locations_dynamic_pins as ldp ` + 
+                    `ON lcmd.location_status = ldp.location_status ` + 
                     `WHERE  ` + 
                       `lcmd.delete_status = 0 ` + 
                     `AND lcmd.client_id = ? ` + 
                     `AND lcmd.business_unit_id = ? ` + 
                     `${searchWhere} ${distanceOrder} LIMIT 50 OFFSET ${offset}`;
+  
   }
   
   return query;

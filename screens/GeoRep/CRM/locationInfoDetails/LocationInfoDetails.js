@@ -58,7 +58,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
-import {Constants, Strings} from '../../../../constants';
+import {Constants, Strings, Values} from '../../../../constants';
 import { getDateTime } from '../../../../helpers/formatHelpers';
 import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO } from '../../../../DAO';
 
@@ -142,7 +142,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     }
     setLocationInfo(_locationInfo);
     setIsLoading(false);
-    if (_locationInfo.feedback.length > 0) {
+    console.log("_locationInfo",_locationInfo)    
+    if (_locationInfo.feedback != undefined && _locationInfo.feedback.length > 0) {
       setFeedback(
         _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
       );
@@ -450,11 +451,17 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     console.log("started")
     PostLocationCheckinTypesDAO.find(locationInfo, postData).then(async(res) => {
       console.log("started",res)
+
+      if(props.onButtonAction){
+        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+      }
+
       setIsFeedback(false);
       setFeedbackOptions(originFeedbackData);
       setModalType('feedback');        
       dispatch({type: CHECKIN, payload: true});
       await storeLocalValue('@checkin', '1');
+      await storeLocalValue('@specific_location_id',locationInfo.location_id);
       props.navigation.navigate('LocationSpecificInfo', {
         data: locationInfo,
         page: 'checkin',
@@ -478,7 +485,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
             }
             
-
             var specificLocationId = await getLocalData(
               '@specific_location_id',
             );
@@ -734,6 +740,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                     setLocationInfo(undefined);
                     setIsLoading(true);
                   }}
+                  onEnd={(locInfo) => {                  
+                    setIsLoading(false);
+                    setLocationInfo(locInfo);
+                  }}
+
                   onUpdated={res => {
                     setIsLoading(false);
                     setFilePath('');
@@ -786,6 +797,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 location={locationInfo.coordinates}
                 address={locationInfo.address}></WazeNavigation>
             )}
+
             <View style={{height: 50}}></View>
           </View>
         )}
@@ -801,6 +813,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 onPress={async () => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {
+                    console.log("can ");
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,
                       page: 'access_crm',
@@ -853,6 +866,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
 const styles = StyleSheet.create({
   container: {
+    maxHeight: Values.deviceHeight - 80,
     backgroundColor: Colors.bgColor,
     alignSelf: 'stretch',
   },
@@ -909,7 +923,7 @@ const styles = StyleSheet.create({
 
   nextButtonBar: {
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS == 'android' ? 0 : 25,
     backgroundColor: '#FFF',
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -16,7 +16,7 @@ import {
 import {updateCurrentLocation} from '../../../actions/google.action';
 import { Strings } from '../../../constants';
 import { getDateTime } from '../../../helpers/formatHelpers';
-import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO } from '../../../DAO';
+import { LocationCheckinTypeDAO, PostRequestDAO } from '../../../DAO';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -144,7 +144,7 @@ const CheckinLinkButton = props => {
       user_local_data: userParam.user_local_data,
     };
 
-    PostLocationCheckinTypesDAO.find(null, postData).then(async(res) => {
+    PostRequestDAO.find(locationId, postData, 'checkin', 'location-info/check-in').then(async(res) => {
       setIsFeedback(false);        
       setFeedbackOptions(originFeedbackData);
       setModalType('feedback');

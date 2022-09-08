@@ -10,6 +10,7 @@ import { RotationAnimation } from '../../../../components/common/RotationAnimati
 import { getBascketLastSyncTableData } from '../../../../sqlite/BascketLastSyncsHelper'
 import { Strings, Values } from '../../../../constants'
 import ViewOfflineSyncItem from './components/ViewOfflineSyncItem'
+import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer'
 
 
 export default function SyncAll(props) {  
@@ -113,7 +114,7 @@ export default function SyncAll(props) {
 
         {
           expanded &&
-          <ViewOfflineSyncItem />
+          <ViewOfflineSyncItemContainer />
         }
         
 

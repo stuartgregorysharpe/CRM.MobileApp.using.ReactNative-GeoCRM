@@ -89,7 +89,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
         return (
           <TouchableOpacity           
             onPress={() => {            
-            props.onPress();
+            props.onPress(fieldStructure);
           } }>
             <DynamicField
               {...fieldStructure}

@@ -88,15 +88,6 @@ export default function LocationSpecificInfoScreen(props) {
     }
   }, [isCheckin]);
 
-  const hideBottomBar = () => {
-    if (props.screenProps) {
-      props.screenProps.setOptions({
-        tabBarStyle: {
-          display: 'none',
-        },
-      });
-    }
-  };
 
   const initData = async () => {
     if (pageType === 'checkin') {
@@ -225,7 +216,7 @@ export default function LocationSpecificInfoScreen(props) {
   }
 
   return (
-    <SafeAreaView style={{backgroundColor: locationInfo ? Colors.bgColor : {}}}>
+    <SafeAreaView style={{}}>
       {isShowCustomNavigationHeader && (
         <NavigationHeader
           showIcon={true}
