@@ -61,10 +61,29 @@ export function groupByNetworkFromItems(items) {
       groups.push(group);
     }
   });
+  console.log('groups', groups);
   return groups;
 }
 
+export function filterItemsByBarcode(items, barcode) {
+  if (!barcode) return [];
+  return items.filter(
+    x =>
+      x.iccid == barcode ||
+      x.box == barcode ||
+      x.innerbox == barcode ||
+      x.brick == barcode ||
+      x.kit == barcode,
+  );
+}
 export function filterItems(items, keyword) {
   if (!keyword) return items;
-  return items;
+  return items.filter(
+    x =>
+      x.iccid.includes(keyword) ||
+      x.box.includes(keyword) ||
+      x.innerbox.includes(keyword) ||
+      x.brick.includes(keyword) ||
+      x.kit.includes(keyword),
+  );
 }

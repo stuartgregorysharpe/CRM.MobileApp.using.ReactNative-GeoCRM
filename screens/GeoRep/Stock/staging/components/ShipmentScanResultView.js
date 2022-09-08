@@ -72,7 +72,12 @@ export default function ShipmentScanResultView(props) {
         onChangeText={text => {
           setCode(text);
         }}
-        onSubmit={() => {}}
+        onSubmit={() => {
+          if (props.onAddCode) {
+            props.onAddCode(code);
+            setCode('');
+          }
+        }}
         style={{marginTop: 20, marginBottom: 20}}
       />
       <SubmitButton

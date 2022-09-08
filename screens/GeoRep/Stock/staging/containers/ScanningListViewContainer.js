@@ -1,6 +1,9 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {SearchBar} from 'react-native-screens';
+import SearchBar from '../../../../../components/SearchBar';
+import {SubmitButton} from '../../../../../components/shared/SubmitButton';
+import {Values} from '../../../../../constants';
+
 import ShipmentViewList from '../components/ShipmentViewList';
 import {filterItems, groupByNetworkFromItems} from '../helper';
 
@@ -14,10 +17,24 @@ const ScanningListViewContainer = props => {
   const onSearch = keyword => {
     setKeyword(keyword);
   };
+  const onAccept = () => {
+    if (props.onAccept) {
+      props.onAccept(items);
+    }
+  };
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar onSearch={onSearch} />
-      <ShipmentViewList items={networkGroups} />
+      <ShipmentViewList
+        items={networkGroups}
+        style={{flex: 1}}
+        onItemAction={props.onItemAction}
+      />
+      <SubmitButton
+        title={'Accept'}
+        onSubmit={onAccept}
+        style={styles.submitButton}
+      />
     </View>
   );
 };
@@ -25,7 +42,10 @@ const ScanningListViewContainer = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    height: 300,
+    height: Values.deviceHeight * 0.7,
+  },
+  submitButton: {
+    margin: 8,
   },
 });
 

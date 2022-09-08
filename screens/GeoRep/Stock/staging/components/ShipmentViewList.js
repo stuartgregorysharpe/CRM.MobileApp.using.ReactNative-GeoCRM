@@ -20,20 +20,6 @@ const ShipmentViewList = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          height: 40,
-          borderBottomColor: whiteLabel().actionFullButtonBackground,
-          borderBottomWidth: 2,
-          marginHorizontal: 8,
-          marginBottom: 8,
-        }}>
-        <Text style={[styles.title, {flex: 1}]}>Description</Text>
-        <Text style={[styles.title, {flex: 1}]}>Added Date</Text>
-        <View style={{flex: 1}} />
-      </View>
       <FlatList
         data={items}
         renderItem={({item, index}) => renderItem(item, index)}

@@ -6,7 +6,11 @@ import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../constants';
 import ShipmentScanResultView from './components/ShipmentScanResultView';
 import StagingShipmentList from './components/StagingShipmentList';
-import {filterItems, getShipmentsFromItems} from './helper';
+import {
+  filterItems,
+  filterItemsByBarcode,
+  getShipmentsFromItems,
+} from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
 
 const StagingView = props => {
@@ -16,6 +20,7 @@ const StagingView = props => {
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
   const scanningListViewModalRef = useRef(null);
+  const captureScanningListViewModalRef = useRef(null);
   const items = useMemo(
     () => filterItems(props.items, keyword),
     [props.items, keyword],
@@ -29,8 +34,20 @@ const StagingView = props => {
   };
   const onCaptureAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
+      const capturedItems = filterItemsByBarcode(props.items, value);
+      if (capturedItems && capturedItems.length > 0) {
+        const _selectedItems = [...selectedItems, ...capturedItems];
+        setSelectedItems(_selectedItems);
+        console.log('_selectedItems', selectedItems);
+      }
       setLastScannedQrCode(value);
     }
+  };
+  const onCloseScanModal = () => {
+    console.log('onClose');
+    setSelectedItems([]);
+    setLastScannedQrCode('');
+    captureModalRef.current.hideModal();
   };
   const onSearch = keyword => {
     setKeyword(keyword);
@@ -38,10 +55,37 @@ const StagingView = props => {
   const onItemAction = ({type, item}) => {
     if (type == Constants.actionType.ACTION_VIEW) {
       if (item.items) {
-        setViewListItems(item.items);
+        const _items = [...item.items];
+        setViewListItems(_items);
       }
       scanningListViewModalRef.current.showModal();
     }
+  };
+  const onCaptureViewListItemAction = ({type, item}) => {
+    if (type == Constants.actionType.ACTION_REMOVE) {
+      const _items = selectedItems.filter(x => x.iccid != item.iccid);
+      setSelectedItems(_items);
+    }
+  };
+  const onListViewItemAction = ({type, item}) => {
+    if (type == Constants.actionType.ACTION_REMOVE) {
+      const _items = viewListItems.filter(x => x.iccid != item.iccid);
+      setViewListItems(_items);
+    }
+  };
+  const onPressViewListInScanResult = () => {
+    if (selectedItems) {
+      const _items = [...selectedItems];
+      setViewListItems(_items);
+      console.log('onPressViewListInScanResult');
+      captureScanningListViewModalRef.current.showModal();
+    }
+  };
+  const onAccept = items => {
+    console.log('onAccept: items', items);
+    scanningListViewModalRef.current.hideModal();
+    setSelectedItems([]);
+    captureModalRef.current.hideModal();
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -54,16 +98,33 @@ const StagingView = props => {
       <QRScanModal
         ref={captureModalRef}
         onButtonAction={onCaptureAction}
+        onClose={onCloseScanModal}
         renderLastScanResultView={() => {
-          return (
+          return [
             <ShipmentScanResultView
+              key={'scan-result'}
               items={selectedItems}
               lastScanedQrCode={lastScanedQrCode}
               style={{marginBottom: 20}}
-              onClose={() => captureModalRef.current.hideModal()}
+              onViewList={onPressViewListInScanResult}
+              onAddCode={code => {
+                onCaptureAction({
+                  type: Constants.actionType.ACTION_CAPTURE,
+                  value: code,
+                });
+              }}
+              onClose={onCloseScanModal}
               onSubmit={() => captureModalRef.current.hideModal()}
-            />
-          );
+            />,
+            <ScanningListViewModal
+              key={'capture-list'}
+              ref={captureScanningListViewModalRef}
+              title={`Items: ${selectedItems.length}`}
+              items={selectedItems}
+              onAccept={onAccept}
+              onItemAction={onCaptureViewListItemAction}
+            />,
+          ];
         }}
       />
       <StagingShipmentList
@@ -84,6 +145,8 @@ const StagingView = props => {
         ref={scanningListViewModalRef}
         title={`Items: ${viewListItems.length}`}
         items={viewListItems}
+        onAccept={onAccept}
+        onItemAction={onListViewItemAction}
       />
     </View>
   );

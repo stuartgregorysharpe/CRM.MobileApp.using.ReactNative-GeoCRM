@@ -30,7 +30,7 @@ const SearchBar = props => {
       props.onSuffixButtonPress();
     }
   };
-  const isShowCloseButton = !isFilter && text != '';
+  const isShowCloseButton = !isFilter && text != '' && text != undefined;
   const suffixButtonIcon = props.suffixButtonIcon || 'Filter';
   const disabledSuffixButtonIcon =
     props.disabledSuffixButtonIcon || 'Filter_GRAY';
