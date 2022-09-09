@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
+import {postApiRequest} from '../../../../actions/api.action';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import SearchBar from '../../../../components/SearchBar';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
@@ -82,7 +83,13 @@ const StagingView = props => {
     }
   };
   const onAccept = items => {
-    console.log('onAccept: items', items);
+    if (!items) return;
+    if (props.onAccept) {
+      props.onAccept(items);
+    }
+    onResetSelection();
+  };
+  const onResetSelection = () => {
     scanningListViewModalRef.current.hideModal();
     setSelectedItems([]);
     captureModalRef.current.hideModal();
@@ -99,6 +106,7 @@ const StagingView = props => {
         ref={captureModalRef}
         onButtonAction={onCaptureAction}
         onClose={onCloseScanModal}
+        showClose={true}
         renderLastScanResultView={() => {
           return [
             <ShipmentScanResultView
