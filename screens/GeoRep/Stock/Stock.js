@@ -4,7 +4,7 @@ import TopThreeTab from '../../../components/common/TopThreeTab';
 import StockLists from './stock/StockLists';
 import Movements from './movements/Movements';
 import Returns from './returns/Returns';
-import {style} from '../../../constants/Styles';
+import {boxShadow, style} from '../../../constants/Styles';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import CTabSelector from '../../../components/common/CTabSelector';
 import StockStagingContainer from './staging/StockStagingContainer';
@@ -69,8 +69,15 @@ export default function Stock(props) {
           setSelectedTabIndex(index);
         }}
         containerStyle={[
-          style.card,
-          {marginBottom: 0, height: 40, marginTop: 8, marginHorizontal: 8},
+          boxShadow,
+          {
+            marginBottom: 0,
+            height: 40,
+            marginTop: 8,
+            marginHorizontal: 10,
+            backgroundColor: 'white',
+            borderRadius: 4,
+          },
         ]}
       />
 

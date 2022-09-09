@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import CTabSelector from '../../../../components/common/CTabSelector';
-import {style} from '../../../../constants/Styles';
+import {boxShadow, style} from '../../../../constants/Styles';
 import HistoryContainer from './HistoryContainer';
 import HistoryDetailContainer from './HistoryDetailContainer';
 import LeaderboardContainer from './LeaderboardContainer';
@@ -55,7 +55,14 @@ const TouchpointContainer = props => {
           onSelectTab={(item, index) => {
             setTabIndex(index);
           }}
-          containerStyle={[style.card]}
+          containerStyle={[
+            boxShadow,
+            {
+              height: 40,
+              backgroundColor: 'white',
+              borderRadius: 4,
+            },
+          ]}
         />
       </View>
       {renderContent(tabIndex)}

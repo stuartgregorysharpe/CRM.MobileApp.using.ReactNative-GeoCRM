@@ -2,7 +2,7 @@ import React, {useState, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import Actions from '../../../Home/Actions/Actions';
 import CTabSelector from '../../../../../components/common/CTabSelector';
-import {style} from '../../../../../constants/Styles';
+import {boxShadow, style} from '../../../../../constants/Styles';
 import BubbleMenu from '../../../../../components/common/BubbleMenu';
 import {Constants} from '../../../../../constants';
 import AddActionItemModal from '../modals/AddActionItemModal';
@@ -35,11 +35,17 @@ const ActionItemsContainer = props => {
           onSelectTab={(item, index) => {
             setTabIndex(index);
           }}
-          containerStyle={[style.card]}
+          containerStyle={[
+            boxShadow,
+            {
+              height: 40,
+              backgroundColor: 'white',
+              borderRadius: 4,
+            },
+          ]}
         />
       </View>
 
-      
       <Actions
         ref={actionListRef}
         locationId={locationId}
