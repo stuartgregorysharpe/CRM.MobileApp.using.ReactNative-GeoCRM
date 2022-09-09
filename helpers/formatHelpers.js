@@ -73,7 +73,7 @@ export function formatDate(
     momentObj = Moment(dateString, fromFromString);
   }
   const momentString = momentObj.format(formatString);
-  if (momentString == 'Invalid date') return '/';
+  if (momentString == 'Invalid date') return dateString;
   return momentString;
 }
 

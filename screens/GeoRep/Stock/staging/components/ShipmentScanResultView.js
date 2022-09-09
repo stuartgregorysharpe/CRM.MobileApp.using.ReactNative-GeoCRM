@@ -31,6 +31,18 @@ export default function ShipmentScanResultView(props) {
     }
   };
 
+  const renderActionButtons = () => {
+    if (props.renderActionButtons) {
+      return props.renderActionButtons();
+    } else {
+      return (
+        <SubmitButton
+          title="Accept"
+          onSubmit={onSubmit}
+          style={{marginTop: 10}}></SubmitButton>
+      );
+    }
+  };
   return (
     <View
       style={{
@@ -80,10 +92,7 @@ export default function ShipmentScanResultView(props) {
         }}
         style={{marginTop: 20, marginBottom: 20}}
       />
-      <SubmitButton
-        title="Accept"
-        onSubmit={onSubmit}
-        style={{marginTop: 10}}></SubmitButton>
+      {renderActionButtons()}
     </View>
   );
 }

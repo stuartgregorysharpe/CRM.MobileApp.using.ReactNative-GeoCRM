@@ -1,11 +1,19 @@
 import {View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {Colors} from '../../../../../constants';
+import {Colors, Constants} from '../../../../../constants';
 import {AppText} from '../../../../../components/common/AppText';
-import { whiteLabel } from '../../../../../constants/Colors';
-import { getSubText } from '../../../../../helpers/viewHelper';
+import {whiteLabel} from '../../../../../constants/Colors';
+import {getSubText} from '../../../../../helpers/viewHelper';
+import StagingShipmentItem from '../../staging/components/StagingShipmentItem';
 
-export default function StockListItem({ onItemPressed , item}) {
+export default function StockListItem({onItemPressed, item}) {
+  const {stock_type} = item;
+  let description = item.description;
+  if (stock_type == Constants.stockType.SIM) {
+    description = item.network;
+  }
+  const subText = getSubText(item);
+  const addedDate = item.added_date;
 
   return (
     <TouchableOpacity onPress={onItemPressed}>
@@ -22,24 +30,24 @@ export default function StockListItem({ onItemPressed , item}) {
             <AppText
               size="big"
               type="secondaryBold"
-              title={item.description}
+              title={description}
               style={{fontSize: 12.5}}></AppText>
             <AppText
               type="secondaryMedium"
-              title={getSubText(item)}
+              title={subText}
               color={whiteLabel().subText}
               style={{fontSize: 10.4}}></AppText>
           </View>
           <View style={{flex: 2}}>
             <AppText
               type="secondaryMedium"
-              title={item.stock_type}              
+              title={stock_type}
               style={{fontSize: 10.4}}></AppText>
           </View>
           <View style={{flex: 2, alignItems: 'flex-end'}}>
             <AppText
               type="secondaryMedium"
-              title={item.added_date}              
+              title={addedDate}
               style={{fontSize: 10.4}}></AppText>
           </View>
         </View>

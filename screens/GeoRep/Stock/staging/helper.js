@@ -80,10 +80,15 @@ export function filterItems(items, keyword) {
   if (!keyword) return items;
   return items.filter(
     x =>
-      x.iccid.includes(keyword) ||
-      x.box.includes(keyword) ||
-      x.innerbox.includes(keyword) ||
-      x.brick.includes(keyword) ||
-      x.kit.includes(keyword),
+      (x.description &&
+        x.description.toLowerCase().includes(keyword.toLowerCase())) ||
+      (x.stock_type &&
+        x.stock_type.toLowerCase().includes(keyword.toLowerCase())) ||
+      (x.serial && x.serial.toLowerCase().includes(keyword.toLowerCase())) ||
+      (x.iccid && x.iccid.includes(keyword)) ||
+      (x.box && x.box.includes(keyword)) ||
+      (x.innerbox && x.innerbox.includes(keyword)) ||
+      (x.brick && x.brick.includes(keyword)) ||
+      (x.kit && x.kit.includes(keyword)),
   );
 }
