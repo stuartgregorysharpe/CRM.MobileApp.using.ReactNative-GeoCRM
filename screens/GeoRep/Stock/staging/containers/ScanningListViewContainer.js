@@ -8,18 +8,18 @@ import ShipmentViewList from '../components/ShipmentViewList';
 import {filterItems, groupByNetworkFromItems} from '../helper';
 
 const ScanningListViewContainer = props => {
+  const [keyword, setKeyword] = useState('');
   const items = useMemo(
     () => filterItems(props.items, keyword),
     [props.items, keyword],
   );
   const networkGroups = useMemo(() => groupByNetworkFromItems(items), [items]);
-  const [keyword, setKeyword] = useState('');
   const onSearch = keyword => {
     setKeyword(keyword);
   };
   const onAccept = () => {
     if (props.onAccept) {
-      props.onAccept(items);
+      props.onAccept(props.items);
     }
   };
   return (

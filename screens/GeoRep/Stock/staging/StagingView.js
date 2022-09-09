@@ -60,6 +60,10 @@ const StagingView = props => {
         setViewListItems(_items);
       }
       scanningListViewModalRef.current.showModal();
+    } else if (type == Constants.actionType.ACTION_ACCEPT) {
+      if (item.items) {
+        onAccept(item.items);
+      }
     }
   };
   const onCaptureViewListItemAction = ({type, item}) => {
