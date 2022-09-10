@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Provider} from 'react-native-paper';
-import {SLIDE_STATUS} from '../../../../actions/actionTypes';
 import GrayBackground from '../../../../components/GrayBackground';
 import {Notification} from '../../../../components/modal/Notification';
 import {Colors} from '../../../../constants';
@@ -20,6 +19,14 @@ const LocationScreen = props => {
   useEffect(() => {
     refreshHeader();
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      refreshHeader();      
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const refreshHeader = () => {
     props.screenProps.setOptions({
       headerTitle: () => {

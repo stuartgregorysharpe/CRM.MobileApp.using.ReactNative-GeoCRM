@@ -24,6 +24,8 @@ import RNFS from 'react-native-fs';
 import { getFileFormat } from '../../../../../constants/Helper';
 
 export default function AddLeadContainer(props) {
+
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [leadForms, setLeadForms] = useState([]);
   const [accuracyUnit, setAccuracyUnit] = useState('m');
@@ -61,6 +63,13 @@ export default function AddLeadContainer(props) {
   const getCustomMasterFields = () => {
     getApiRequest('leadfields', {})
       .then(res => {
+        
+        console.log("res.component_title", res.component_title)
+        if(props.changeTitle && res.component_title != undefined){
+
+          props.changeTitle(res.component_title);
+        }
+        
         if (isMount) {
           setLeadForms(res.custom_master_fields);
           setAccuracyUnit(res.accuracy_distance_measure);
@@ -84,7 +93,7 @@ export default function AddLeadContainer(props) {
       group_split: groupSplitItem ? groupSplitItem.value : '',
     };
     getApiRequest('forms/forms-list', param)
-      .then(res => {
+      .then(res => {      
         setFormLists(res.forms);
       })
       .catch(e => {});
@@ -171,6 +180,7 @@ export default function AddLeadContainer(props) {
     postApiRequestMultipart('leadfields', postData)
       .then(res => {
         if (res.status === 'success') {
+          console.log("Succes ====", res);
           dispatch(
             showNotification({
               type: 'success',
@@ -258,8 +268,7 @@ export default function AddLeadContainer(props) {
     }
   };
 
-  const onSelectDeviceModalClosed = ({type, value}) => {
-    console.log('Value ---- ', type);
+  const onSelectDeviceModalClosed = ({type, value}) => {    
     if (type == Constants.actionType.ACTION_VIEW) {
       setSelectedLists(value);
     }
@@ -322,6 +331,7 @@ export default function AddLeadContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
+      
       <AddLeadView
         onButtonAction={onButtonAction}
         leadForms={leadForms}

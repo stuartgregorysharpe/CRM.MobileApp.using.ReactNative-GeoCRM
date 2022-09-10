@@ -42,12 +42,13 @@ import {Constants, Strings} from '../../../../constants';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
+import { AppText } from '../../../../components/common/AppText';
 
 export default function LocationSpecificInfoScreen(props) {
 
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
-  const [locationInfo, setLocationIfo] = useState(props.route.params.data);
+  const [locationInfo, setLocationIfo] = useState(props.route.params.data);  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [pageType, setPageType] = useState(props.route.params.page);
   const location_id = props.route.params.locationId;
@@ -102,6 +103,7 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const goBack = () => {
+    console.log("go back in specific info page");
     if (props.navigation.canGoBack()) {
       props.navigation.goBack();
     }
@@ -214,6 +216,7 @@ export default function LocationSpecificInfoScreen(props) {
   const onCustomerContactModalClosed = ({ type, value}) => {
 
   }
+
 
   return (
     <SafeAreaView style={{}}>
@@ -469,9 +472,8 @@ const styles = EStyleSheet.create(
     },
 
     cardBox: {
-      display: perWidth('flex', 'flex'),
-      width: '100%',
-      padding: 12,
+      //display: perWidth('flex', 'flex'),
+      width: '100%',      
       marginBottom: 8,
     },
 

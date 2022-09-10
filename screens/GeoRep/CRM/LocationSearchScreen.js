@@ -443,6 +443,19 @@ export default function LocationSearchScreen(props) {
     }
   };
 
+  const detailModalClosed = ({type , value}) => {
+    if(type == Constants.actionType.ACTION_CLOSE){
+      if(value === "access_crm"){
+        console.log("========", locationInfo.location_id);
+        navigation.navigate('LocationSpecificInfo', {
+          locationId:locationInfo.location_id,
+          //data: locationInfo,
+          page: 'access_crm',
+        });
+      }
+    }
+  }
+
   return (
     <Provider>
       <SafeAreaView style={{flex: 1}}>
@@ -522,6 +535,7 @@ export default function LocationSearchScreen(props) {
           locInfo={locationInfo}
           navigation={navigation}
           pageType={{name: 'search-lists'}}
+          onButtonAction={detailModalClosed}
         />
         
 

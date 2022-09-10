@@ -291,8 +291,8 @@ const LocationContainer = props => {
           isLoading={isLoading}
         />
       )}
-
-      {isCheckin && <CheckInStatusView page="map" onGo={onCheckIn} />}
+      
+      {isCheckin && !isDrawMode && <CheckInStatusView page="map" onGo={onCheckIn} />}
 
       <TouchableOpacity
         style={[styles.plusButton, {marginBottom: isCheckin ? 40 : 0}]}
@@ -303,6 +303,7 @@ const LocationContainer = props => {
         }}>
         <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
       </TouchableOpacity>
+      
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />
       </TouchableOpacity>
@@ -318,7 +319,7 @@ const LocationContainer = props => {
         }}
       />
       <AddLeadModal
-        title="Add Lead"
+        //title="Add Lead"
         ref={addLeadModalRef}
         navigation={navigation}
         onButtonAction={onAddLeadModalClosed}

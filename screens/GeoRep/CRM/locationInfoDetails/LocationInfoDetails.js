@@ -61,6 +61,7 @@ import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings, Values} from '../../../../constants';
 import { getDateTime } from '../../../../helpers/formatHelpers';
 import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO } from '../../../../DAO';
+import PostRequest from '../../../../DAO/PostRequest';
 
 
 
@@ -289,8 +290,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         setMessage(res);
         setIsSuccess(true);
       })
-      .catch(e => {
-        setMessage(e);
+      .catch(e => {        
+        setMessage("Upload File Failed");      
         setIsSuccess(true);
       });
   };
@@ -329,10 +330,16 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               } else if (clickedAction === 'back') {
                 checkFeedbackAndClose('back');
               } else if (clickedAction === 'access_crm') {
-                props.navigation.navigate('LocationSpecificInfo', {
-                  data: locationInfo,
-                  page: 'access_crm',
-                });
+
+                if(props.onButtonAction){
+                  props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value:'access_crm'});
+                }
+
+                // console.log("details", locationInfo);
+                // props.navigation.navigate('LocationSpecificInfo', {
+                //   data: locationInfo,
+                //   page: 'access_crm',
+                // });
               } else if (clickedAction === 'checkin') {
                 onClickCheckIn();
               } else if (clickedAction === 'prev') {
@@ -449,8 +456,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     };
 
     console.log("started")
-    PostLocationCheckinTypesDAO.find(locationInfo, postData).then(async(res) => {
-      console.log("started",res)
+    PostRequest.find(locationInfo.location_id, postData , "checkin" , "location-info/check-in").then(async(res) => {
 
       if(props.onButtonAction){
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
@@ -466,6 +472,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         data: locationInfo,
         page: 'checkin',
       });
+
     });
           
   };

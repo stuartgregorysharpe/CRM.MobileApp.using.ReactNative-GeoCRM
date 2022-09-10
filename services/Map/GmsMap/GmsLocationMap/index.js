@@ -9,7 +9,7 @@ import {
   getPolygonFillColorTransparency,
 } from '../../../../constants/Storage';
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
-import MarkerIconView from '../../components/MarkerIconView';
+import MarkerIcon from '../../../../components/Marker';
 let polylineKey = 0;
 const CURRENT_LOCATION_RADIUS = 200;
 const GmsLocationMap = props => {
@@ -96,18 +96,12 @@ const GmsLocationMap = props => {
       let icon = null;
       if (isMarkerSelected) {
         icon = Images.selectedMarkerIcon;
-      } else {
-        if (item.pinIcon && item.pinIcon.pin_image) {
-          icon = {uri: item.pinIcon.pin_image};
-        }
-        //console.log("ITEM -" , item)
-      }
-
+      } 
       
       return (
         <Marker
           key={'markers' + item.location_id}
-          //icon={icon}
+          
           tracksViewChanges={isDrawMode}
           onPress={() => {
             props.onMarkerPressed(item, key);
@@ -116,7 +110,11 @@ const GmsLocationMap = props => {
             latitude: Number(item.coordinates.latitude),
             longitude: Number(item.coordinates.longitude),
           }}>
-            <SvgIcon  width="30" height="30" xml={item.pinIcon.svg_code} />
+            {
+              
+              isMarkerSelected ? <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" /> : <SvgIcon  width="30" height="30" xml={ item.pinIcon.svg_code} />
+            }
+
           </Marker>
       );
     });

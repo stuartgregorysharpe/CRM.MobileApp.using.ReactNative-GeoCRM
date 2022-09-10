@@ -25,6 +25,11 @@ export default {
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
+
+  Log:{
+    Post_Api_Error: 'Post Api Call Error : ',
+    Get_Api_Error: 'Get Api Call Error : ',
+  },
     
   Home: {
     Sync_All: 'Sync All',

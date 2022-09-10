@@ -1,42 +1,47 @@
-import { View, Text ,SectionList ,TouchableOpacity ,StyleSheet , Dimensions } from 'react-native'
-import React from 'react'
+import { View, Text ,SectionList ,TouchableOpacity ,StyleSheet , Dimensions ,Linking} from 'react-native'
+import React , { useRef , useState, useEffect  } from 'react'
 import SvgIcon from '../../../../../components/SvgIcon';
 import { style } from '../../../../../constants/Styles';
-import { whiteLabel } from '../../../../../constants/Colors';
-import { Fonts } from '../../../../../constants';
+import  Colors, { whiteLabel } from '../../../../../constants/Colors';
+import { Constants, Fonts } from '../../../../../constants';
+import AddContactModal from '../modal/AddContactModal';
 
 export default function Contacts(props) {
 
-  const { contacts} = props;
+  const { contacts , locationId , updateContacts} = props;
+  const addContactModalRef = useRef(null);
+  const [pageType , setPageType] = useState("");
+  const [contactInfo, setContactInfo] = useState("");
 
-  const renderContactItem = (item, index, tabIndex) => {
+  useEffect(() => {    
+  }, [pageType])
+
+  const renderContactItem = (item, index) => {
     return (
       <TouchableOpacity
-        onPress={() => {
-          // setSelectedContact(item);
-          // setPageType('update');
-          // animation('addcontact');
+        onPress={() => {          
+          setPageType("update");
+          setContactInfo(item);
+          if(addContactModalRef.current){
+            addContactModalRef.current.showModal();
+          }
+
         }}>
-        <View
-          style={[
-            styles.contactItemContainer,
-            {
-              borderColor:
-                item.primary_contact === '1'
-                  ? whiteLabel().headerBackground
-                  : Colors.whiteColor,
-            },
-          ]}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={[style.card, {flexDirection:'row'}]}>
+
+          <View style={{flexDirection: 'column', justifyContent: 'space-between'}}>
             <Text
-              style={{
-                fontSize: 15,
-                fontFamily: Fonts.secondaryBold,
-                color: Colors.textColor,
-              }}>
+              style={{ fontSize: 15, fontFamily: Fonts.secondaryMedium, color: Colors.textColor, }}>
               {item.contact_name}
             </Text>
-            <TouchableOpacity
+            
+            <Text style={{ fontFamily: Fonts.secondaryRegular, color: whiteLabel().subText }}>
+              {item.contact_email}
+            </Text>
+            
+          </View>
+
+          <TouchableOpacity
               onPress={() => {
                 Linking.openURL(`tel:${item.contact_cell}`);
               }}>
@@ -47,21 +52,26 @@ export default function Contacts(props) {
                   fontSize: 15,
                   textDecorationLine: 'underline',
                 }}>
-                {phoneNumberReformat(item.contact_cell)}
+                {item.contact_cell}
               </Text>
-            </TouchableOpacity>
-          </View>
-          <Text
-            style={{
-              fontFamily: Fonts.secondaryRegular,
-              color: whiteLabel().subText,
-            }}>
-            {item.contact_email}
-          </Text>
+          </TouchableOpacity>
+
+        
+          
         </View>
       </TouchableOpacity>
     );
   };
+
+
+  const addContactModalClosed = ({type, value}) => {
+    if(type === Constants.actionType.ACTION_CLOSE){      
+      updateContacts();
+      if(addContactModalRef.current){
+        addContactModalRef.current.hideModal();
+      }      
+    }
+  }
 
   return (        
     <View style={{flex: 1, marginBottom: 60, marginHorizontal:10}}>
@@ -69,10 +79,9 @@ export default function Contacts(props) {
           keyExtractor={(item, index) => index.toString()}
           sections={contacts}
           renderItem={({item, index}) => {
-            return renderContactItem(item, index, tabIndex);
+            return renderContactItem(item, index);
           }}
-          renderSectionHeader={({section}) => {
-            // console.log(section);
+          renderSectionHeader={({section}) => {            
             return (
               <View style={{marginTop: 10}}>
                 <Text
@@ -95,19 +104,29 @@ export default function Contacts(props) {
           }}
         />
 
-
         <View style={styles.plusButtonContainer}>
           <TouchableOpacity
             style={style.innerPlusButton}
-            onPress={() => {
-              setPageType('add');
-              setSelectedContact(null);
-              animation('addcontact');
+            onPress={() => {              
+              setPageType("add");
+              if(addContactModalRef.current){
+                addContactModalRef.current.showModal();
+              }
             }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />            
           </TouchableOpacity>
         </View>
-      </View>
+
+        <AddContactModal
+            ref={addContactModalRef}
+            title= {pageType == 'add' ? 'Add Contact' : 'Update Contact'}
+            pageType={pageType}
+            locationId={locationId}
+            contactInfo={contactInfo}
+            onButtonAction={addContactModalClosed}
+          />
+
+    </View>
 
   )
 }

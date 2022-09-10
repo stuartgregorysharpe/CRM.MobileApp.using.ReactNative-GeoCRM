@@ -10,9 +10,11 @@ export function find(locationId, postData , type, url){
             if(isConnected){
                 postApiRequest(url, postData)
                 .then(async res => {
+                    console.log("Api success" , res);
                     resolve(res);
                 })
                 .catch(e => {
+                    console.log("Error",e)
                     reject();
                 });
 

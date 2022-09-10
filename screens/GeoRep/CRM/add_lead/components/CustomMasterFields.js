@@ -73,7 +73,7 @@ export default function CustomMasterFields(props) {
       }else{        
         setFormStructure2(dynamicFields)
       }
-      console.log("dynamicFields",dynamicFields)
+      
     }
 
     const renderUseCurrentLocation = key => {
