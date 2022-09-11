@@ -1,7 +1,7 @@
 import { getApiRequest } from "../actions/api.action";
 import { Strings } from "../constants";
-import { getTokenData, getUserId } from "../constants/Storage";
-import { checkConnectivity } from "./helper";
+import { getTokenData } from "../constants/Storage";
+import { checkConnectivity, getFullAddress } from "./helper";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 export function find(currentLocation , filters, pageNumber, searchKey , features){
     
@@ -81,25 +81,9 @@ const getResponse = (locations) => {
   if(locations != '' && locations != undefined){        
       for(var i = 0; i < locations.length; i++){
 
-          var element = locations.item(i);        
-          var address = element.street_address;
-          if(element.suburb != '' && element.suburb != undefined){
-            address = address + ", " + element.suburb;
-          }
-          if(element.city != '' && element.city != undefined){
-            address = address + ", " + element.city;
-          }
-          if(element.state != '' && element.state != undefined){
-            address = address + ", " + element.state;
-          }
-          if(element.country != '' && element.country != undefined){
-            address = address + ", " + element.country;
-          }
-          if(element.pincode != '' && element.pincode != undefined){
-            address = address + ", " + element.pincode;
-          }
-           
-          
+          var element = locations.item(i);      
+          var address = getFullAddress(element);                     
+                    
           tmp.push(
               {
                   location_id: element.location_id,
@@ -192,13 +176,14 @@ const generateQuery = (latitude, longitude , searchText , pageNumber, features) 
                       `ldp.location_status as "status", ` + 
                       `ldp.status_color as "status_text_color" ` + 
                     `FROM locations_core_master_data AS lcmd ` + 
+                    `LEFT JOIN locations_dynamic_pins as ldp ` + 
+                    `ON lcmd.location_status = ldp.location_status ` + 
                     `WHERE  ` + 
                       `lcmd.delete_status = 0 ` + 
                     `AND lcmd.client_id = ? ` + 
                     `AND lcmd.business_unit_id = ? ` + 
                     `${searchWhere} ${distanceOrder} LIMIT 50 OFFSET ${offset}`;
-
-
+  
   }
   
   return query;

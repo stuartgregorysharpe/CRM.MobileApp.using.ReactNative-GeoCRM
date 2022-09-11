@@ -34,6 +34,7 @@ export const NextPrev = forwardRef((props, ref) => {
     locationInfo,
     onUpdated,
     onStart,
+    onEnd,
     canGoNextPrev,
   } = props;
   const [isPrev, setIsPrev] = useState(false);
@@ -294,9 +295,8 @@ export const NextPrev = forwardRef((props, ref) => {
 
       console.log('on next');
       if (pageType.name === 'camera') {
-        openLocationInfo(
-          currentLoopLists[getCameraNextPosition(currentPosition)].location_id,
-        );
+                
+        openLocationInfo(currentLoopLists[getCameraNextPosition(currentPosition)].location_id);
         currentPosition = getCameraNextPosition(currentPosition);
         setNextLocationName(
           loopLists[getCameraNextPosition(currentPosition)].name,
@@ -305,9 +305,21 @@ export const NextPrev = forwardRef((props, ref) => {
           loopLists[getCameraPrevPosition(currentPosition)].name,
         );
       } else if (pageType.name === 'search-lists') {
-                        
+        
+        console.log("currentLoopLists",currentLoopLists);
+        console.log("currentLoopLists",locationInfo);
+        
+
         if (currentPosition === currentLoopLists.length - 1) {
-          openNewLocationInfo(locationInfo.next.location_id);
+
+          if(locationInfo.next != undefined && locationInfo.next.location_id != undefined){
+            openNewLocationInfo(locationInfo.next.location_id);
+          }else{
+            checkIsNext();
+            checkIsPrev();
+            onEnd(locationInfo);
+          } 
+
         } else if (currentPosition < currentLoopLists.length - 1) {
           if (currentPosition + 1 == currentLoopLists.length - 1) {
             openLocationInfo(

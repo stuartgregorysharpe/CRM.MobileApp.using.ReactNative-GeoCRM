@@ -17,7 +17,7 @@ export default function AddLeadView(props) {
 
   return (
     <ScrollView
-      style={{height: Dimensions.get('screen').height * 0.74, marginTop: 10}}>
+      style={{height: Dimensions.get('screen').height * 0.7, marginTop: 10}}>
       <View style={{}}>
         <AddLeadMap />
         <View style={{padding: 5}}>

@@ -1,9 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import moment from 'moment-timezone';
-import {getApiRequest, postApiRequest} from '../../../actions/api.action';
 import {
   checkFeatureIncludeParamFromSession,
   getPostParameter,
@@ -18,7 +16,7 @@ import {
 import {updateCurrentLocation} from '../../../actions/google.action';
 import { Strings } from '../../../constants';
 import { getDateTime } from '../../../helpers/formatHelpers';
-import { LocationCheckinTypeDAO } from '../../../DAO';
+import { LocationCheckinTypeDAO, PostRequestDAO } from '../../../DAO';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -131,8 +129,7 @@ const CheckinLinkButton = props => {
           });
           setFeedbackOptions(options);
           setCheckInTypes(res);
-    });
-        
+    });        
   };
 
 
@@ -146,20 +143,19 @@ const CheckinLinkButton = props => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-    postApiRequest('location-info/check-in', postData)
-      .then(res => {
-        console.log('post data res', res);
-        setIsFeedback(false);
-        console.log('originFeedbackData', originFeedbackData);
-        setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');
-        navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          locationId: locationId,
-          page: 'checkin',
-        });
-      })
-      .catch(e => {});
+
+    PostRequestDAO.find(locationId, postData, 'checkin', 'location-info/check-in').then(async(res) => {
+      setIsFeedback(false);        
+      setFeedbackOptions(originFeedbackData);
+      setModalType('feedback');
+      navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+        locationId: locationId,
+        page: 'checkin',
+      });
+    });
+
   };
+
   const onCheckIn = async () => {
     var isCheckin = await getLocalData('@checkin');
     if (isCheckin === '1') {

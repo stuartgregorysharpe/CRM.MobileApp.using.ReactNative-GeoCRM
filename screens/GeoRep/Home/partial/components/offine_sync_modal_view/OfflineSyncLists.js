@@ -25,7 +25,7 @@ export default function OfflineSyncLists(props) {
                               style={{fontSize: 12.5}}></AppText>
                           <AppText
                               type="secondaryMedium"
-                              title={item.address}
+                              title={item.subLabel}
                               color={whiteLabel().subText}
                               style={{fontSize: 10.4}}></AppText>
                       </View>

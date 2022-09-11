@@ -19,6 +19,7 @@ import {Notification} from '../../../../components/modal/Notification';
 import {showNotification} from '../../../../actions/notification.action';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
+import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 
 export default function MainPage(props) {
 
@@ -212,15 +213,13 @@ export default function MainPage(props) {
           }}></SubmitButton>
       </View>
 
-      <SyncAll refresh={refresh}></SyncAll>
-
-      
-
+      <SyncAll refresh={refresh}></SyncAll>      
 
       {isCheckin && (
-        <CheckOut
+        <CheckOutViewContainer        
+          type="home"
           checkinStatus={checkinStatus}
-          currentCall={currentCall}></CheckOut>
+          currentCall={currentCall}></CheckOutViewContainer>
       )}
 
       <FlatList

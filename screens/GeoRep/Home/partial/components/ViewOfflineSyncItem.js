@@ -6,9 +6,11 @@ import SvgIcon from '../../../../../components/SvgIcon'
 import { whiteLabel } from '../../../../../constants/Colors'
 import ViewOfflineSyncModal from '../modal/ViewOfflineSyncModal'
 
-export default function ViewOfflineSyncItem() {
+export default function ViewOfflineSyncItem(props) {
 
+    const { count } = props;
     const offlineSyncModalRef = useRef(null);
+    
 
     const modalClosed = (type, value) => {
 
@@ -36,7 +38,7 @@ export default function ViewOfflineSyncItem() {
                     <AppText title="View Offline Sync Items" type="secondaryBold" color={Colors.primaryColor} ></AppText>      
                     <View style={{position:'absolute', flexDirection:'row', right:10, alignItems:'center'}}>          
                         <View style={{borderRadius:30, borderColor:whiteLabel().borderColor , borderWidth:1, marginRight:10, width:25,height:25 , alignItems:'center', justifyContent:'center'}}>
-                            <AppText title="21" color={Colors.primaryColor}></AppText>
+                            <AppText title={count} color={Colors.primaryColor}></AppText>
                         </View>
                         <SvgIcon icon="DoubleArrow" width="30" height='30' />
                     </View>

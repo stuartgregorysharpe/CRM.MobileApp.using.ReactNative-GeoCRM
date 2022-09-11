@@ -40,6 +40,7 @@ export default function CRMScreen(props) {
       </Stack.Navigator>
     );
   } else {
+    console.log("triggered crm")
     return (
       <Stack.Navigator>
         <Stack.Screen

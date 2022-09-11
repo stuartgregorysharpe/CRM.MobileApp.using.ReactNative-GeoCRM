@@ -1,22 +1,40 @@
 import { View, ActivityIndicator , TouchableOpacity , StyleSheet } from 'react-native'
-import React , {useState , useRef} from 'react'
+import React , {useState , useRef , useEffect} from 'react'
 import OfflineSyncLists from './OfflineSyncLists';
 import SvgIcon from '../../../../../../components/SvgIcon';
 import { AppText } from '../../../../../../components/common/AppText';
 import { whiteLabel } from '../../../../../../constants/Colors';
 import { style } from '../../../../../../constants/Styles';
-import { Colors, Constants, Fonts } from '../../../../../../constants';
-import { white } from 'react-native-paper/lib/typescript/styles/colors';
+import { Colors,  Fonts } from '../../../../../../constants';
 import { CHorizontalProgressBar } from '../../../../../../components/common/CHorizontalProgressBar';
 import ErrorRefresh from './ErrorRefresh';
-
+import { getOfflineSyncItem, getOfflineSyncItemsInBasket } from '../../../../../../sqlite/OfflineSyncItemsHelper';
+import { getConvertedDateTime } from '../../../../../../helpers/formatHelpers';
 
 export default function OfflineSyncType(props) {
 
-  const { lists , onItemSelected , item } = props; 
+  const { onItemSelected , item , isSyncStart } = props; 
   const { isStart, isSynced, isError,  label } = item; 
   const [isShown, setIsShown] = useState(false);  
+  const [lists, setLists] = useState([]);
   const progressRef = useRef();
+  
+  useEffect(() => {
+    var isMount = false;     
+    initLists();
+    return () => {
+      isMount = true;
+    };    
+  }, [label]);
+ 
+  const initLists = async() => {    
+    var res = await getOfflineSyncItemsInBasket(label);
+    if(res != undefined){
+      console.log('lists', res);
+      setLists(res);    
+    }
+    
+  }
 
   return (
     <View style={[style.card]}>
@@ -24,7 +42,7 @@ export default function OfflineSyncType(props) {
         <View style={styles.container}>
 
             <TouchableOpacity style={{flexDirection:'row', alignItems:'center'}} onPress={() => {
-              if(!isSynced){
+              if(!isSynced){                
                 setIsShown(!isShown);
               }
               
@@ -32,7 +50,7 @@ export default function OfflineSyncType(props) {
                 <View style={{flex:1}}>
                   <View style={{flexDirection:'row'}}>
                     <AppText style={{flex:1}} title={label} size="medium" type="secondaryBold" color={whiteLabel().mainText}  ></AppText>                  
-                    <AppText style={{flex:1}} title={ isSynced ? '21 April 2022 22:33' : !isStart ? 'Pendding..' : ''} size="small" type="secondaryMedium" color={Colors.greyColor}  ></AppText>                                
+                    <AppText style={{flex:1}} title={ isSynced ? '21 April 2022 22:33' : isSyncStart && !isStart ? 'Pending..' : ''} size="small" type="secondaryMedium" color={Colors.greyColor}  ></AppText>                                
                   </View>        
                 </View>
                 
@@ -46,7 +64,7 @@ export default function OfflineSyncType(props) {
                     {
                       !isError ?
                       <View style={{marginRight:10, borderRadius:20, borderWidth:1, borderColor:whiteLabel().borderColor , width:22,height:22 , justifyContent:'center', alignItems:'center'}}>
-                        <AppText title="4" color={whiteLabel().mainText} />
+                        <AppText title={lists.length} color={whiteLabel().mainText} />
                       </View> :
                       <ErrorRefresh />
                     }                

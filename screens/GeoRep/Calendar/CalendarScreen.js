@@ -30,6 +30,7 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
+  IS_CALENDAR_SELECTION,
   LOCATION_LOOP_LISTS,
 } from '../../../actions/actionTypes';
 import moment from 'moment';
@@ -332,6 +333,12 @@ export default function CalendarScreen(props) {
           <TouchableOpacity
             style={style.innerPlusButton}
             onPress={() => {
+                            
+              dispatch({
+                type: IS_CALENDAR_SELECTION,
+                payload: true,
+              });
+
               props.navigation.navigate('CRM', {
                 screen: 'LocationSearch',
                 params: {calendar_type: 'optimize'},

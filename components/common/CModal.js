@@ -11,9 +11,11 @@ import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
 
 const CModal = React.forwardRef((props, ref) => {
+
+
+
   const [isVisible, setIsVisible] = useState(false);
-  const {hideClose, hideClear, hideDivider, closableWithOutsideTouch, modalType, clearText} =
-    props;
+  const {hideClose, hideClear, hideDivider, closableWithOutsideTouch, modalType, clearText} = props;  
   const _modalType = modalType || Constants.modalType.MODAL_TYPE_CENTER;
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
