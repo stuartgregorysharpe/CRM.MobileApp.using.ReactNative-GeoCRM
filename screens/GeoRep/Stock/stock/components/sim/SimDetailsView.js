@@ -66,6 +66,8 @@ export default function SimDetailsView(props) {
         title={`Items: ${items.length}`}
         items={items}
         onItemAction={onListAction}
+        onSellToTrader={onSellToTrader}
+        onTransfer={onTransfer}
       />
     </View>
   );

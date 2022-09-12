@@ -9,7 +9,10 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
-    if (data.type == Constants.actionType.ACTION_DONE) {
+    if (
+      data.type == Constants.actionType.ACTION_DONE ||
+      data.type == Constants.actionType.ACTION_NEXT
+    ) {
       if (ref) {
         ref.current.hideModal();
       }
@@ -23,6 +26,7 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
   return (
     <QRScanModal
       ref={ref}
+      isNotCloseAfterCapture
       onButtonAction={onButtonAction}
       onClose={props.onClose}
       showClose={true}

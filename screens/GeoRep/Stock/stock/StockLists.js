@@ -51,6 +51,7 @@ export default function StockLists() {
     () => selectedItems.map(x => x.iccid),
     selectedItems,
   );
+  console.log('selectedCodes', selectedCodes);
   const dispatch = useDispatch();
   let isMount = true;
 
@@ -181,8 +182,8 @@ export default function StockLists() {
       setLocationId(value.locationId);
       if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
         stockSignatureModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
       } else if (value.stockType === Constants.stockDeviceType.TARDER) {
+        console.log('traderModalRef');
         traderModalRef.current.showModal();
       }
     } else if (type == Constants.actionType.ACTION_CAPTURE) {
@@ -203,7 +204,9 @@ export default function StockLists() {
     setLastScannedQrCode('');
     simDetailsModalRef.current.hideModal();
   };
-  const onSelectStockTypeForCapture = () => {};
+  const onSelectStockTypeForCapture = () => {
+    traderModalRef.current.showModal();
+  };
 
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
@@ -279,8 +282,6 @@ export default function StockLists() {
         ref={traderModalRef}
         title={'Transfer'}
         hideClear={true}
-        stockItem={stockItem}
-        selectedCodes={selectedCodes}
         onButtonAction={onTransferModalClosed}
       />
 
