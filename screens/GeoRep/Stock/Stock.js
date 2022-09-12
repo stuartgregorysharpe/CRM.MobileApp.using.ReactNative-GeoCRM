@@ -8,8 +8,9 @@ import {boxShadow, style} from '../../../constants/Styles';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import CTabSelector from '../../../components/common/CTabSelector';
 import StockStagingContainer from './staging/StockStagingContainer';
+import {Notification} from '../../../components/modal/Notification';
 
-export default function Stock(props) {
+const Stock = props => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const topMenuItems = [
     {
@@ -81,6 +82,8 @@ export default function Stock(props) {
         ]}
       />
 
+      <Notification />
+
       <View style={{flex: 1}}>
         {selectedTabIndex === 0 && <StockLists></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
@@ -89,4 +92,6 @@ export default function Stock(props) {
       </View>
     </View>
   );
-}
+};
+
+export default Stock;

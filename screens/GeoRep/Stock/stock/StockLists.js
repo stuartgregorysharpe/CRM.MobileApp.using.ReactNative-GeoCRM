@@ -179,11 +179,11 @@ export default function StockLists() {
 
   const onSimDetailAction = ({type, value, item}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
+      setStockItem({stock_type: Constants.stockType.SIM});
       setLocationId(value.locationId);
       if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
         stockSignatureModalRef.current.showModal();
       } else if (value.stockType === Constants.stockDeviceType.TARDER) {
-        console.log('traderModalRef');
         traderModalRef.current.showModal();
       }
     } else if (type == Constants.actionType.ACTION_CAPTURE) {
@@ -266,7 +266,7 @@ export default function StockLists() {
         title={Strings.Stock.Please_Sign}
         locationId={locationId}
         item={stockItem}
-        selectedCodes={selectedCodes}
+        selectedCodes={selectedItems}
         onButtonAction={onStockSignature}
       />
 
@@ -282,6 +282,8 @@ export default function StockLists() {
         ref={traderModalRef}
         title={'Transfer'}
         hideClear={true}
+        stockItem={stockItem}
+        selectedCodes={selectedItems}
         onButtonAction={onTransferModalClosed}
       />
 

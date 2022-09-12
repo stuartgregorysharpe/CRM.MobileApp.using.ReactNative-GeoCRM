@@ -66,10 +66,7 @@ const StockStagingContainer = props => {
       });
   };
   return (
-    <>
-      <Notification />
-      <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
-    </>
+    <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
   );
 };
 

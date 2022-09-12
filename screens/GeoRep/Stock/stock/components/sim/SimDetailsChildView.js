@@ -34,7 +34,6 @@ export default function SimDetailsChildView(props) {
           </>
         );
       }}
-      onSubmit={() => captureModalRef.current.hideModal()}
     />
   );
 }

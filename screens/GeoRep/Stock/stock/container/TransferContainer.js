@@ -10,6 +10,7 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../../actions/notification.action';
+import {Notification} from '../../../../../components/modal/Notification';
 
 export default function TransferContainer(props) {
   const {stockItem, selectedCodes} = props;
@@ -68,6 +69,7 @@ export default function TransferContainer(props) {
 
     postApiRequest('stockmodule/transfer', postData)
       .then(res => {
+        console.log('res', res);
         dispatch(
           showNotification({
             type: Strings.Success,
@@ -100,6 +102,7 @@ export default function TransferContainer(props) {
         lists={lists}
         {...props}
       />
+      <Notification />
     </View>
   );
 }
