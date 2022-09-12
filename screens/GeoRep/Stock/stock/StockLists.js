@@ -15,10 +15,7 @@ import TransferModal from './modal/device/TransferModal';
 import StockConsumableModal from './modal/consumable/StockConsumableModal';
 import SellToTraderSignatureModal from './modal/consumable/SellToTraderSignatureModal';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../actions/notification.action';
-import QRScanModal from '../../../../components/common/QRScanModal';
-import ShipmentScanResultView from '../staging/components/ShipmentScanResultView';
-import ScanningListViewModal from '../staging/modals/ScanningListViewModal';
+import SimDetailsModal from './modal/sim/SimDetailsModal';
 import {filterItemsByBarcode} from '../staging/helper';
 import {
   filterItems,
@@ -36,8 +33,8 @@ export default function StockLists() {
   const traderModalRef = useRef(null);
   const stockConsumableModalRef = useRef(null);
   const consumableSellToTraderModalRef = useRef(null);
-  const captureScanningListViewModalRef = useRef(null);
-  const captureModalRef = useRef(null);
+
+  const simDetailsModalRef = useRef(null);
   const [locationId, setLocationId] = useState(0);
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const [items, setItems] = useState([]);
@@ -50,11 +47,10 @@ export default function StockLists() {
     [filteredItems],
   );
   const [selectedItems, setSelectedItems] = useState([]);
-  /*const selectedCodes = useMemo(
+  const selectedCodes = useMemo(
     () => selectedItems.map(x => x.iccid),
     selectedItems,
-  );*/
-  const selectedCodes = [];
+  );
   const dispatch = useDispatch();
   let isMount = true;
 
@@ -90,7 +86,7 @@ export default function StockLists() {
         setSelectedItems(item.items);
       }
 
-      captureModalRef.current.showModal();
+      simDetailsModalRef.current.showModal();
     }
   };
 
@@ -126,9 +122,9 @@ export default function StockLists() {
   const onStockSignature = async ({type, value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       stockSignatureModalRef.current.hideModal();
-      /*if (simDetailsModalRef.current) {
+      if (simDetailsModalRef.current) {
         simDetailsModalRef.current.hideModal();
-      }*/
+      }
       callStockLists();
     }
   };
@@ -150,9 +146,9 @@ export default function StockLists() {
       if (traderModalRef.current) {
         traderModalRef.current.hideModal();
       }
-      /*if (simDetailsModalRef.current) {
+      if (simDetailsModalRef.current) {
         simDetailsModalRef.current.hideModal();
-      }*/
+      }
       callStockLists();
     }
   };
@@ -180,7 +176,7 @@ export default function StockLists() {
     }
   };
 
-  /*const onStockSimDetailsModalClosed = ({type, value}) => {
+  const onSimDetailAction = ({type, value, item}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
       setLocationId(value.locationId);
       if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
@@ -190,62 +186,25 @@ export default function StockLists() {
         traderModalRef.current.showModal();
       }
     } else if (type == Constants.actionType.ACTION_CAPTURE) {
-      var check = iccids.filter(item => item.code === value);
-      var checkFromSelectedCodes = selectedCodes.filter(
-        item => item.code === value,
-      );
-      if (check.length > 0 && checkFromSelectedCodes.length == 0) {
-        setSelectedCodes([
-          ...selectedCodes,
-          {
-            stock_item_id: check[0].stock_item_id,
-            code: value,
-            type: check[0].type,
-          },
-        ]);
-      } else {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: Strings.Stock.ICCID_Not_Found,
-            buttonText: 'Ok',
-          }),
-        );
-      }
-    } else if (type == Constants.actionType.ACTION_REMOVE) {
-      var tmp = selectedCodes.filter(item => item.code !== value.code);
-      setSelectedCodes(tmp);
-    }
-  };*/
-
-  const onCaptureAction = ({type, value}) => {
-    if (type == Constants.actionType.ACTION_CAPTURE) {
-      const capturedItems = filterItemsByBarcode(props.items, value);
+      const capturedItems = filterItemsByBarcode(items, value);
       if (capturedItems && capturedItems.length > 0) {
         const _selectedItems = [...selectedItems, ...capturedItems];
         setSelectedItems(_selectedItems);
       }
       setLastScannedQrCode(value);
-    }
-  };
-  const onCloseScanModal = () => {
-    setSelectedItems([]);
-    setLastScannedQrCode('');
-    captureModalRef.current.hideModal();
-  };
-  const onPressViewListInScanResult = () => {
-    if (selectedItems) {
-      console.log('onPressViewListInScanResult');
-      captureScanningListViewModalRef.current.showModal();
-    }
-  };
-  const onCaptureViewListItemAction = ({type, item}) => {
-    if (type == Constants.actionType.ACTION_REMOVE) {
+    } else if (type == Constants.actionType.ACTION_REMOVE) {
       const _items = selectedItems.filter(x => x.iccid != item.iccid);
       setSelectedItems(_items);
     }
   };
+
+  const onCloseScanModal = () => {
+    setSelectedItems([]);
+    setLastScannedQrCode('');
+    simDetailsModalRef.current.hideModal();
+  };
   const onSelectStockTypeForCapture = () => {};
+
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
       <SearchBar
@@ -342,43 +301,12 @@ export default function StockLists() {
         onButtonAction={onStockConsumableSellToTraderModalClosed}
       />
 
-      {/* stock sim modal  <SimDetailsModal
-          ref={simDetailsModalRef}
-          selectedCodes={selectedCodes}
-          codeLists={iccids}
-          onButtonAction={onStockSimDetailsModalClosed} 
-        />*/}
-      <QRScanModal
-        ref={captureModalRef}
-        onButtonAction={onCaptureAction}
+      <SimDetailsModal
+        ref={simDetailsModalRef}
+        items={selectedItems}
+        lastScanedQrCode={lastScanedQrCode}
+        onButtonAction={onSimDetailAction}
         onClose={onCloseScanModal}
-        showClose={true}
-        renderLastScanResultView={() => {
-          return [
-            <ShipmentScanResultView
-              key={'scan-result'}
-              items={selectedItems}
-              lastScanedQrCode={lastScanedQrCode}
-              style={{marginBottom: 20}}
-              onViewList={onPressViewListInScanResult}
-              onAddCode={code => {
-                onCaptureAction({
-                  type: Constants.actionType.ACTION_CAPTURE,
-                  value: code,
-                });
-              }}
-              onClose={onCloseScanModal}
-              onSubmit={() => captureModalRef.current.hideModal()}
-            />,
-            <ScanningListViewModal
-              key={'capture-list'}
-              ref={captureScanningListViewModalRef}
-              title={`Items: ${selectedItems.length}`}
-              items={selectedItems}
-              onItemAction={onCaptureViewListItemAction}
-            />,
-          ];
-        }}
       />
     </View>
   );

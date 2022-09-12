@@ -45,14 +45,16 @@ export default function ShipmentScanResultView(props) {
   };
   return (
     <View
-      style={{
-        paddingHorizontal: 10,
-        paddingTop: 0,
-        marginBottom: 20,
-        backgroundColor: Colors.bgColor,
-        alignSelf: 'stretch',
-        height: 200,
-      }}>
+      style={[
+        {
+          paddingHorizontal: 10,
+          paddingTop: 0,
+          marginBottom: 20,
+          backgroundColor: Colors.bgColor,
+          alignSelf: 'stretch',
+        },
+        props.style,
+      ]}>
       <TouchableOpacity style={{padding: 10}} onPress={() => onClose()}>
         <Divider />
       </TouchableOpacity>
