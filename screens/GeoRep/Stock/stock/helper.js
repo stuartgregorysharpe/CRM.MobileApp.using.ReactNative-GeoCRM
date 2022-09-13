@@ -53,6 +53,17 @@ export function getStockItemsFromItems(items) {
   return stockItems;
 }
 
+export function captureDeviceStockItem(items, barcode) {
+  if (!items) return null;
+  const capturedDevice = items.find(
+    x =>
+      x.stock_type != Constants.stockType.SIM &&
+      x.serial &&
+      x.serial == barcode,
+  );
+  return capturedDevice;
+}
+
 export function filterItems(items, keyword) {
   if (!keyword) return items;
   return items.filter(

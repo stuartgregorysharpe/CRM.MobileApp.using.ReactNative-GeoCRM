@@ -18,10 +18,17 @@ import {useDispatch} from 'react-redux';
 import SimDetailsModal from './modal/sim/SimDetailsModal';
 import {filterItemsByBarcode} from '../staging/helper';
 import {
+  captureDeviceStockItem,
   filterItems,
   getItemsFromStockItems,
   getStockItemsFromItems,
 } from './helper';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../../actions/notification.action';
+import {Notification} from '../../../../components/modal/Notification';
+import QRScanModal from '../../../../components/common/QRScanModal';
 
 export default function StockLists() {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -35,8 +42,10 @@ export default function StockLists() {
   const consumableSellToTraderModalRef = useRef(null);
 
   const simDetailsModalRef = useRef(null);
+  const barcodeScanModalRef = useRef(null);
   const [locationId, setLocationId] = useState(0);
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
+
   const [items, setItems] = useState([]);
   const filteredItems = useMemo(
     () => filterItems(items, searchKeyword),
@@ -116,6 +125,25 @@ export default function StockLists() {
         swopAtTraderModalRef.current.showModal();
       } else if (value.stockType === Constants.stockDeviceType.TARDER) {
         traderModalRef.current.showModal();
+      }
+    }
+  };
+  const onScanAction = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CAPTURE) {
+      if (value) {
+        const capturedItem = captureDeviceStockItem(items, value);
+        if (capturedItem) {
+          setStockItem(capturedItem);
+          stockDetailsModalRef.current.showModal();
+        } else {
+          dispatch(
+            showNotification({
+              type: Strings.Success,
+              message: Strings.Stock.No_Device_Found_In_Stock,
+              buttonText: 'Ok',
+            }),
+          );
+        }
       }
     }
   };
@@ -204,8 +232,26 @@ export default function StockLists() {
     setLastScannedQrCode('');
     simDetailsModalRef.current.hideModal();
   };
+  const onCaptureSim = () => {
+    setSelectedItems([]);
+    simDetailsModalRef.current.showModal();
+    dispatch(clearNotification());
+  };
+  const onCaptureDevice = () => {
+    barcodeScanModalRef.current.showModal();
+    dispatch(clearNotification());
+  };
   const onSelectStockTypeForCapture = () => {
-    traderModalRef.current.showModal();
+    dispatch(
+      showNotification({
+        type: Strings.Success,
+        message: Strings.Stock.Select_Scan_Type,
+        buttonText: 'Sim',
+        cancelButtonText: 'Device',
+        buttonAction: onCaptureSim,
+        cancelButtonAction: onCaptureDevice,
+      }),
+    );
   };
 
   return (
@@ -250,6 +296,7 @@ export default function StockLists() {
       <AddStockModal
         ref={addStockModalRef}
         title={Strings.Stock.Add_Stock}
+        items={items}
         onButtonAction={onAddStockButtonAction}
       />
 
@@ -311,6 +358,12 @@ export default function StockLists() {
         onButtonAction={onSimDetailAction}
         onClose={onCloseScanModal}
       />
+      <QRScanModal
+        ref={barcodeScanModalRef}
+        onButtonAction={onScanAction}
+        showClose={true}
+      />
+      <Notification />
     </View>
   );
 }
