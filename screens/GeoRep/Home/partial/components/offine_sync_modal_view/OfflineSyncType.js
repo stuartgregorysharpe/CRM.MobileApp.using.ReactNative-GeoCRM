@@ -8,12 +8,12 @@ import { style } from '../../../../../../constants/Styles';
 import { Colors,  Fonts } from '../../../../../../constants';
 import { CHorizontalProgressBar } from '../../../../../../components/common/CHorizontalProgressBar';
 import ErrorRefresh from './ErrorRefresh';
-import { getOfflineSyncItem, getOfflineSyncItemsInBasket } from '../../../../../../sqlite/OfflineSyncItemsHelper';
-import { getConvertedDateTime } from '../../../../../../helpers/formatHelpers';
+import { getOfflineSyncItemsInBasket } from '../../../../../../sqlite/OfflineSyncItemsHelper';
+import { getBasketDateTime } from '../../../../../../helpers/formatHelpers';
 
-export default function OfflineSyncType(props) {
+const OfflineSyncType = props => {
 
-  const { onItemSelected , item , isSyncStart } = props; 
+  const { onItemSelected , item , isSyncStart , processValue, totalValue } = props; 
   const { isStart, isSynced, isError,  label } = item; 
   const [isShown, setIsShown] = useState(false);  
   const [lists, setLists] = useState([]);
@@ -26,14 +26,28 @@ export default function OfflineSyncType(props) {
       isMount = true;
     };    
   }, [label]);
+
+  useEffect(() => {
+    if(progressRef.current){
+      progressRef.current.moveToNextStep( processValue * 100 / totalValue );
+    }    
+  }, [processValue]);
  
   const initLists = async() => {    
     var res = await getOfflineSyncItemsInBasket(label);
-    if(res != undefined){
-      console.log('lists', res);
-      setLists(res);    
+    if(res != undefined){      
+      setLists(res);
+    }    
+  }
+
+  const getSubText = () => {
+    if(isSynced){
+      return getBasketDateTime();
     }
-    
+    if(isSyncStart && !isStart){
+      return 'Pending..'
+    }
+    return '';    
   }
 
   return (
@@ -49,11 +63,11 @@ export default function OfflineSyncType(props) {
             }}>
                 <View style={{flex:1}}>
                   <View style={{flexDirection:'row'}}>
-                    <AppText style={{flex:1}} title={label} size="medium" type="secondaryBold" color={whiteLabel().mainText}  ></AppText>                  
-                    <AppText style={{flex:1}} title={ isSynced ? '21 April 2022 22:33' : isSyncStart && !isStart ? 'Pending..' : ''} size="small" type="secondaryMedium" color={Colors.greyColor}  ></AppText>                                
+                    <AppText style={{flex:2}} title={label} size="medium" type="secondaryBold" color={whiteLabel().mainText}  ></AppText>                  
+                    <AppText style={{flex:3}} title={getSubText()} size="small" type="secondaryMedium" color={Colors.greyColor}  ></AppText>                                
                   </View>        
                 </View>
-                
+                                
                 {
                   isSynced && <SvgIcon icon={ "Check_Circle"} width="23px" height="23px" style={{marginRight:10}} /> 
                 }
@@ -80,7 +94,7 @@ export default function OfflineSyncType(props) {
             </TouchableOpacity>
                   
             {
-              isStart && <CHorizontalProgressBar ref={progressRef} isStart={isStart} title={ "1/2 Items Synced"} />
+              isStart && <CHorizontalProgressBar ref={progressRef} isStart={isStart} title={ processValue + "/" + totalValue + " Items Synced"} />
             }
             
             {
@@ -97,6 +111,8 @@ export default function OfflineSyncType(props) {
     </View>
   )
 }
+
+export default OfflineSyncType;
 
 const styles = StyleSheet.create({
   container: {  

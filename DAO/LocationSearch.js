@@ -34,17 +34,15 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
                 
-                var query = '';
-                console.log("current location", currentLocation)
-                query = generateQuery(currentLocation.latitude, currentLocation.longitude, searchKey, pageNumber , features);
-                console.log("query", query);
+                var query = '';                
+                query = generateQuery(currentLocation.latitude, currentLocation.longitude, searchKey, pageNumber , features);                
                 var locations;
                 if(features.includes("disposition_fields")){
                   locations = await fetchDataFromDB(query, null , null);
                 }else{
                   locations = await fetchDataFromDB(query, client_id , business_unit_id);
                 }
-                console.log("locations", locations);
+                
                 resolve(getResponse(locations));
 
             }
@@ -61,8 +59,7 @@ const fetchDataFromDB = async (query , client_id , business_unit_id) => {
         res = await ExecuteQuery(query, [client_id , business_unit_id]);   
       }else{
         res = await ExecuteQuery(query, []);   
-      }
-      console.log("RES",res)
+      }      
       if( res != undefined  && res.rows.length > 0){            
           return res.rows;
       }else{

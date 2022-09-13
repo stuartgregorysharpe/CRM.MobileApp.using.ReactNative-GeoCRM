@@ -8,7 +8,7 @@ import SvgIcon from '../../../../../components/SvgIcon';
 import {RotationAnimation} from '../../../../../components/common/RotationAnimation';
 import { formattedNumber } from '../../../../../helpers/formatHelpers';
 
-export default function BasketSyncProgress(props) {
+const BasketSyncProgress = props => {
 
     const { totalTableCount, syncedTableCount, totalRecords, syncedRecords , isLoading} = props;
     const [startTable, setStartTable] = useState(false);
@@ -85,6 +85,8 @@ export default function BasketSyncProgress(props) {
         </View>
     )
 }
+
+export default BasketSyncProgress;
 
 const styles = StyleSheet.create({
     container:{
