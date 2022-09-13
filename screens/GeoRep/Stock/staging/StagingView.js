@@ -126,7 +126,12 @@ const StagingView = props => {
                 });
               }}
               onClose={onCloseScanModal}
-              onSubmit={() => captureModalRef.current.hideModal()}
+              onSubmit={() => {
+                if (selectedItems && selectedItems.length > 0) {
+                  onAccept(selectedItems);
+                  captureModalRef.current.hideModal();
+                }
+              }}
             />,
             <ScanningListViewModal
               key={'capture-list'}
