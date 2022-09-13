@@ -29,6 +29,7 @@ import {
 } from '../../../../actions/notification.action';
 import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
+import StockListFilterModal from './modal/StockListFilterModal';
 
 export default function StockLists() {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -43,13 +44,15 @@ export default function StockLists() {
 
   const simDetailsModalRef = useRef(null);
   const barcodeScanModalRef = useRef(null);
+  const filterModalRef = useRef(null);
   const [locationId, setLocationId] = useState(0);
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
+  const [filters, setFilters] = useState({stockType: null});
 
   const [items, setItems] = useState([]);
   const filteredItems = useMemo(
-    () => filterItems(items, searchKeyword),
-    [items, searchKeyword],
+    () => filterItems(items, searchKeyword, filters),
+    [items, searchKeyword, filters],
   );
   const stockLists = useMemo(
     () => getStockItemsFromItems(filteredItems),
@@ -254,6 +257,9 @@ export default function StockLists() {
       }),
     );
   };
+  const onPressFilter = () => {
+    filterModalRef.current.showModal();
+  };
 
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
@@ -263,7 +269,8 @@ export default function StockLists() {
         }}
         initVal={searchKeyword}
         isFilter={true}
-        animation={() => {}}
+        haveFilter={filters.stockType != null}
+        animation={onPressFilter}
       />
 
       <View style={{flexDirection: 'column', flex: 1}}>
@@ -365,6 +372,17 @@ export default function StockLists() {
         showClose={true}
         onClose={() => {
           barcodeScanModalRef.current.hideModal();
+        }}
+      />
+      <StockListFilterModal
+        ref={filterModalRef}
+        filters={filters}
+        onButtonAction={({type, value}) => {
+          if (type == Constants.actionType.ACTION_APPLY) {
+            setFilters(value);
+          } else if (type == Constants.actionType.ACTION_FORM_CLEAR) {
+            setFilters({stockType: null});
+          }
         }}
       />
       <Notification />

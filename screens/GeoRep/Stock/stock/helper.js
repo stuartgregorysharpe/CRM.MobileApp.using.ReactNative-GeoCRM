@@ -64,10 +64,13 @@ export function captureDeviceStockItem(items, barcode) {
   return capturedDevice;
 }
 
-export function filterItems(items, keyword) {
-  if (!keyword) return items;
-  return items.filter(
-    x =>
+export function filterItems(items, keyword, filters) {
+  return items.filter(x => {
+    if (filters && filters.stockType && filters.stockType != x.stock_type) {
+      return false;
+    }
+    if (!keyword) return true;
+    return (
       (x.description &&
         x.description.toLowerCase().includes(keyword.toLowerCase())) ||
       (x.stock_type &&
@@ -78,6 +81,7 @@ export function filterItems(items, keyword) {
       (x.box && x.box.includes(keyword)) ||
       (x.innerbox && x.innerbox.includes(keyword)) ||
       (x.brick && x.brick.includes(keyword)) ||
-      (x.kit && x.kit.includes(keyword)),
-  );
+      (x.kit && x.kit.includes(keyword))
+    );
+  });
 }
