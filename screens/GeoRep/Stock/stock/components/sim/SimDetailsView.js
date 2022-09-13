@@ -13,7 +13,7 @@ export default function SimDetailsView(props) {
     // Manual Input
     if (isScan) {
       props.onButtonAction({
-        type: Constants.actionType.ACTION_CAPTURE,
+        type: Constants.actionType.ACTION_INPUT_BARCODE,
         value: value,
       });
     }

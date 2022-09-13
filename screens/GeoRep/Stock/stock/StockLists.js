@@ -217,12 +217,24 @@ export default function StockLists() {
       } else if (value.stockType === Constants.stockDeviceType.TARDER) {
         traderModalRef.current.showModal();
       }
-    } else if (type == Constants.actionType.ACTION_CAPTURE) {
+    } else if (
+      type == Constants.actionType.ACTION_CAPTURE ||
+      type == Constants.actionType.ACTION_INPUT_BARCODE
+    ) {
       console.log('captureitem', value);
       const capturedItems = filterItemsByBarcode(items, value);
       if (capturedItems && capturedItems.length > 0) {
         const _selectedItems = [...selectedItems, ...capturedItems];
         setSelectedItems(_selectedItems);
+      } else if (type == Constants.actionType.ACTION_INPUT_BARCODE) {
+        console.log('show notification');
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: Strings.Stock.Barcode_Not_Found,
+            buttonText: 'Ok',
+          }),
+        );
       }
       setLastScannedQrCode(value);
     } else if (type == Constants.actionType.ACTION_REMOVE) {

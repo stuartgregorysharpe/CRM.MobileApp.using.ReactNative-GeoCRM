@@ -117,7 +117,7 @@ const StagingView = props => {
               key={'scan-result'}
               items={selectedItems}
               lastScanedQrCode={lastScanedQrCode}
-              style={{marginBottom: 20}}
+              style={{marginBottom: 20, height: 200}}
               onViewList={onPressViewListInScanResult}
               onAddCode={code => {
                 onCaptureAction({
