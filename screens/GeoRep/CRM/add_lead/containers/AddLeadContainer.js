@@ -1,4 +1,4 @@
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Constants} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
@@ -25,30 +25,29 @@ import { getFileFormat } from '../../../../../constants/Helper';
 
 export default function AddLeadContainer(props) {
 
-
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const [leadForms, setLeadForms] = useState([]);
-  const [accuracyUnit, setAccuracyUnit] = useState('m');
-  const [formLists, setFormLists] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
 
   const selectDeviceModalRef = useRef(null);
   const viewListsModalRef = useRef(null);
   const formQuestionModalRef = useRef(null);
   const addLeadFormModalRef = useRef(null);
 
+  const [leadForms, setLeadForms] = useState([]);
+  const [accuracyUnit, setAccuracyUnit] = useState('m');
+  const [formLists, setFormLists] = useState([]);
+  const [selectedLists, setSelectedLists] = useState([]);  
   const [selectDeviceCount, setSelectDeviceCount] = useState(0);
   const [isCurrentLocation, setIsCurrentLocation] = useState('0');
   const [customMasterFields, setCustomMasterFields] = useState({});
   const [primaryData, setPrimaryData] = useState({});
-
   const [form, setForm] = useState({});
   const [form_answers, setFormAnswers] = useState([]);
   const [files, setFiles] = useState([]);
 
   const dispatch = useDispatch();
-
+  
   var isMount = true;
+
   useEffect(() => {
     getCustomMasterFields();
     return () => {
@@ -63,14 +62,11 @@ export default function AddLeadContainer(props) {
   const getCustomMasterFields = () => {
     getApiRequest('leadfields', {})
       .then(res => {
-        
-        console.log("res.component_title", res.component_title)
         if(props.changeTitle && res.component_title != undefined){
-
           props.changeTitle(res.component_title);
-        }
-        
+        }        
         if (isMount) {
+          console.log("res==" , res)
           setLeadForms(res.custom_master_fields);
           setAccuracyUnit(res.accuracy_distance_measure);
         }
@@ -353,8 +349,7 @@ export default function AddLeadContainer(props) {
           addLeadFormModalRef.current.hideModal();
         }}
         onNext={item => {
-          if (formQuestionModalRef.current) {
-            console.log('triggered item', item);
+          if (formQuestionModalRef.current) {            
             setForm({form_id: item.form_id, form_name: ''});
             formQuestionModalRef.current.showModal();
           }
@@ -406,7 +401,7 @@ export default function AddLeadContainer(props) {
         onButtonAction={onFormQuestionModalClosed}
       />
       <SubmitButton
-        style={{marginHorizontal: 10, marginBottom: 30}}
+        style={{marginHorizontal: 10, marginBottom: Platform.OS == 'android' ? 10 : 20, marginTop:10 }}
         title={'Add'}
         onSubmit={onAdd}
       />

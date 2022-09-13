@@ -87,7 +87,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
     if(props.isClickable){
       return formStructureData.map((fieldStructure, index) => {
         return (
-          <TouchableOpacity           
+          <TouchableOpacity       
+            key={'form' + index}    
             onPress={() => {            
             props.onPress(fieldStructure);
           } }>
