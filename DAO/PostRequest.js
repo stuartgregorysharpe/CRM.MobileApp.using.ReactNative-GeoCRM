@@ -9,8 +9,7 @@ export function find(locationId, postData , type, url){
         checkConnectivity().then( async (isConnected) => {             
             if(isConnected){
                 postApiRequest(url, postData)
-                .then(async res => {
-                    console.log("Api success" , res);
+                .then(async res => {                    
                     resolve(res);
                 })
                 .catch(e => {
@@ -19,12 +18,12 @@ export function find(locationId, postData , type, url){
                 });
 
             }else{
-                await insertToLocalDB(locationId, postData, type, url);
-                console.log(getResponseMessage(type))
+
+                var res = await insertToLocalDB(locationId, postData, type, url);            
                 resolve({status: Strings.Success , message: getResponseMessage(type)});
             }
         }).catch(e => {
-            reject();
+            reject(e);
         });
   });
 }

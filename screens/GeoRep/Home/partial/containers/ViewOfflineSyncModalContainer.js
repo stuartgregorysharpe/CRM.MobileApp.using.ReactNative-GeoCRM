@@ -1,10 +1,10 @@
 import { View } from 'react-native'
 import React , {useState , useEffect} from 'react'
 import { Constants } from '../../../../../constants';
-import ViewOfflineSync from '../components/ViewOfflineSync';
+import OfflineSyncModalView from '../components/OfflineSyncModalView';
 import { syncPostData } from '../../../../../services/SyncDatabaseService/PostSyncTable';
 
-export default function ViewOfflineSyncModalContainer(props) {
+const ViewOfflineSyncModalContainer = props => {
     
     const [typeLists, setTypeLists] = useState([
         {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
@@ -15,10 +15,13 @@ export default function ViewOfflineSyncModalContainer(props) {
 
     const [isStart, setIsStart] = useState(false);
     const [currentSyncItem, setCurrentSyncItem] = useState(-1);
-
+    const [processValue, setProcessValue] = useState(0);
+    const [totalValue, setTotalValue] = useState(0);
+    const [syncBtnTitle , setSyncBtnTitle] = useState("Sync All Items");
+    const [isActive,setIsActive] = useState(true);
+    
     useEffect(() => {
-        var tmp = [];
-        console.log("currentSyncItem",currentSyncItem);
+        var tmp = [];        
         typeLists.forEach((item, index) => {
             var element = 
             {
@@ -29,8 +32,7 @@ export default function ViewOfflineSyncModalContainer(props) {
                isError : false 
             };
             tmp.push(element);
-        });
-        console.log("updated lists", tmp);
+        });        
         setTypeLists(tmp);
     }, [currentSyncItem])
     
@@ -40,15 +42,17 @@ export default function ViewOfflineSyncModalContainer(props) {
 
     const syncData = async(lists, index) => {
         setCurrentSyncItem(index);
-        console.log("sync bascket name", lists[index].label)
-        var res = await syncPostData(lists[index].label);
-        console.log("Sync Data Response: " , res);
-        if(index < lists.length - 1){
-            console.log("RES", res);
+        setTotalValue(0);
+        var res = await syncPostData(lists[index].label, ( processValue ,  totalValue ) => {            
+            setProcessValue(processValue);
+            setTotalValue(totalValue);            
+        });      
+        if(index < lists.length - 1){           
             await syncData(lists, index + 1);
         }else{
-            setCurrentSyncItem(-1);
+            setCurrentSyncItem(index + 1);
             setIsStart(false);
+            setIsActive(false);
         }
     }
 
@@ -59,14 +63,20 @@ export default function ViewOfflineSyncModalContainer(props) {
     
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
-            <ViewOfflineSync
+            <OfflineSyncModalView
                 onButtonAction={addData}                
                 typeLists={typeLists}                
                 isSyncStart={isStart}        
                 currentSyncItem={currentSyncItem}        
+                processValue={processValue}
+                totalValue={totalValue}
                 startSync={startSync}
+                syncBtnTitle={syncBtnTitle}
+                isActive={isActive}
                 {...props}
             />
         </View>
     )
 }
+
+export default ViewOfflineSyncModalContainer;

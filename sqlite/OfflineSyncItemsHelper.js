@@ -37,7 +37,9 @@ export const insertOfflineSyncItem = async (data) => {
     
 };
 
-export const deleteOfflineSyncItem = async (db , id) => {    
+export const deleteOfflineSyncItem = async (id) => {    
+
+    var db = await getDBConnection();
     await db.transaction(async(tx) => {
         const query = `DELETE FROM ${tableName} WHERE id=?`;
         await tx.executeSql(query, [id]);
@@ -69,23 +71,38 @@ export const getOfflineSyncItem = async ( item_type ) => {
     });
 };
 
+
+export const getOfflineSyncItems = async ( item_types ) => {
+    var db = await getDBConnection();
+    var itemTypes = `(`;
+    item_types.forEach( (element , index) => {
+        if(index == 0){
+            itemTypes += `'` + element + `'`;
+        }else{
+            itemTypes += `, '` + element + `'`;
+        }        
+    });
+    itemTypes += `)`;
+    console.log("item tyoes", itemTypes)
+
+    return new Promise(async function (resolve, reject) {
+        await db.transaction(async(tx) =>{            
+            const query = `SELECT * FROM ${tableName} WHERE item_type IN ${itemTypes}`;
+            console.log("Query", query);
+
+            await tx.executeSql(query, [] , (tx, results) => {                
+                resolve(results.rows);
+            });
+        });
+    });
+};
+
+
 export const getOfflineSyncItemsInBasket = async(basketName) => {
     var basket = OfflineBaskets.find((item) => item.basketName == basketName);
     if(basket != undefined){
         var lists = [];
-        var res = await getOfflineSyncItemByItemType(basket.itemTypes, 0 , lists);
-
-        // basket.itemTypes.forEach(async (element) => {
-        //     const offlineSyncItems = await getOfflineSyncItem(element);
-        //     if (offlineSyncItems.length > 0) {
-        //         for (var i = 0; i < offlineSyncItems.length; i++) {
-        //             const item = offlineSyncItems.item(i);
-        //             tmp.push({ label: item.item_label, subLabel: item.item_sub_text, time: getConvertedDateTime(item.added_time) });
-        //             console.log("pushed ", tmp);
-        //         }
-        //     }
-        // });
-
+        var res = await getOfflineSyncItemByItemType(basket.itemTypes, 0 , lists);        
         return res;
     }
 }

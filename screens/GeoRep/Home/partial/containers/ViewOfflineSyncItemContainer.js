@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React , { useState, useEffect} from 'react'
 import ViewOfflineSyncItem from '../components/ViewOfflineSyncItem'
 import { getAllOfflineSyncItem } from '../../../../../sqlite/OfflineSyncItemsHelper';
 
-export default function ViewOfflineSyncItemContainer() {
+const  ViewOfflineSyncItemContainer = props => {
 
-
+    const { onClosed } = props;
     const [count, setCount] = useState(3);
 
     useEffect(() => {
@@ -14,11 +14,14 @@ export default function ViewOfflineSyncItemContainer() {
 
     const getCount = async() => {
         const items = await getAllOfflineSyncItem();
-        setCount(items.length);        
+        setCount(items.length);  
     }
+    
     return (
         <View>
-            <ViewOfflineSyncItem count={count}/>
+            <ViewOfflineSyncItem count={count} onClosed={onClosed}/>
         </View>
     )
 }
+
+export default ViewOfflineSyncItemContainer;
