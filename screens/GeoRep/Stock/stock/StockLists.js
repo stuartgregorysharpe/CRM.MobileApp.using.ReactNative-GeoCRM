@@ -215,6 +215,7 @@ export default function StockLists() {
         traderModalRef.current.showModal();
       }
     } else if (type == Constants.actionType.ACTION_CAPTURE) {
+      console.log('captureitem', value);
       const capturedItems = filterItemsByBarcode(items, value);
       if (capturedItems && capturedItems.length > 0) {
         const _selectedItems = [...selectedItems, ...capturedItems];
@@ -362,6 +363,9 @@ export default function StockLists() {
         ref={barcodeScanModalRef}
         onButtonAction={onScanAction}
         showClose={true}
+        onClose={() => {
+          barcodeScanModalRef.current.hideModal();
+        }}
       />
       <Notification />
     </View>

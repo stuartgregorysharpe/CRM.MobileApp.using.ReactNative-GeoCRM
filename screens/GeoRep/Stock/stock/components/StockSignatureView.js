@@ -84,7 +84,12 @@ export default function StockSignatureView(props) {
   };
 
   const onFileSubmit = () => {
-    if (!validateMsisdn(serial)) {
+    if (
+      props.item.stock_type != Constants.stockType.RETURN &&
+      isMSISDN &&
+      props.item.stock_type != Constants.stockType.SIM &&
+      !validateMsisdn(serial)
+    ) {
       setHasMsisdnError(true);
       if (msisdnRef.current) {
         msisdnRef.current.focus();

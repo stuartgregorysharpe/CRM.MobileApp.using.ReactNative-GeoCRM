@@ -215,7 +215,6 @@ export default function AddStockView(props) {
         <SimView
           count={count == 0 ? '' : count}
           codeLists={codeLists}
-          items={items}
           removeCode={removeCode}
           isAdded={isAdded}
           addStock={() => {

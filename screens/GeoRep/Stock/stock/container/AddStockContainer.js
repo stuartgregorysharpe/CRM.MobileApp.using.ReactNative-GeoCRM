@@ -10,6 +10,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {useDispatch} from 'react-redux';
+import {Notification} from '../../../../../components/modal/Notification';
 
 export default function AddStockContainer(props) {
   const dispatch = useDispatch();
@@ -83,6 +84,7 @@ export default function AddStockContainer(props) {
         deviceTypeLists={deviceTypeLists}
         {...props}
       />
+      <Notification />
     </View>
   );
 }

@@ -55,7 +55,10 @@ export const Notification = ({}) => {
         : styles.alignLeft,
     [notification],
   );
-
+  console.log('notification', notification);
+  const cancelButtonStyle = notification.cancelButtonAction
+    ? styles.button
+    : styles.cancelButton;
   return (
     <Modal
       animationType="fade"
@@ -108,12 +111,7 @@ export const Notification = ({}) => {
                     dispatch(clearNotification());
                   }
                 }}>
-                <Text
-                  style={
-                    notification.cancelButtonAction
-                      ? styles.button
-                      : styles.cancelButton
-                  }>
+                <Text style={cancelButtonStyle}>
                   {notification.cancelButtonText}
                 </Text>
               </TouchableHighlight>

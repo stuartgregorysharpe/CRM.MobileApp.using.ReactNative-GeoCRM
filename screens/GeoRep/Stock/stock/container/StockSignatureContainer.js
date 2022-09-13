@@ -72,10 +72,7 @@ export default function StockSignatureContainer(props) {
                 postData.append('assigned_msisdn', msisdn);
               } else if (item.stock_type == Constants.stockType.SIM) {
                 selectedCodes.forEach((item, index) => {
-                  postData.append(
-                    `sims[stock_item_ids][${index}]`,
-                    item.stock_item_id,
-                  );
+                  postData.append(`sims[stock_item_ids][${index}]`, item.iccid);
                 });
               }
               postApiRequestMultipart('stockmodule/sell-to-trader', postData)
