@@ -31,6 +31,7 @@ const StockStagingContainer = props => {
       });
   };
   const onAccept = items => {
+    console.log('onAccept');
     setIsLoading(true);
     postApiRequest('stockmodule/staging-accept', {
       iccids: items.map(item => item.iccid),

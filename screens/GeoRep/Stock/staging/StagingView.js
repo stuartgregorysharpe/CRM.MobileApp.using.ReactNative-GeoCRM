@@ -147,8 +147,8 @@ const StagingView = props => {
       <SubmitButton
         title={'Accept All'}
         onSubmit={() => {
-          if (props.onPress) {
-            props.onPress();
+          if (props.onAccept) {
+            props.onAccept(items);
           }
         }}
         style={styles.submitButton}

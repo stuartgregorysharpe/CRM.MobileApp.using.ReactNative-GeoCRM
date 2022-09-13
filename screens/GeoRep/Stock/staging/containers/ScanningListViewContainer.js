@@ -45,7 +45,9 @@ const ScanningListViewContainer = props => {
         <SubmitButton
           key="accept"
           title={'Accept'}
-          onSubmit={props.onAccept}
+          onSubmit={() => {
+            props.onAccept(props.items);
+          }}
           style={styles.submitButton}
         />,
       );
