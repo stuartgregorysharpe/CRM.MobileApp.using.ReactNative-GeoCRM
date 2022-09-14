@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Strings, Values} from '../../../constants';
-import {style} from '../../../constants/Styles';
+import {boxShadow, style} from '../../../constants/Styles';
 
 import CCheckBox from '../../common/CCheckBox';
 import CTabSelector from '../../common/CTabSelector';
@@ -121,7 +121,15 @@ const SKUCountForm = props => {
           setSelectedTabIndex(index);
           setSelectedCategory(item.category);
         }}
-        containerStyle={[style.card, {marginBottom: 0}]}
+        containerStyle={[
+          boxShadow,
+          {
+            marginBottom: 0,
+            height: 40,
+            backgroundColor: 'white',
+            borderRadius: 4,
+          },
+        ]}
       />
 
       <View style={[style.card, styles.checkBoxContainer]}>

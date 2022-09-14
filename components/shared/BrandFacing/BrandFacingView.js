@@ -2,7 +2,7 @@ import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {View, StyleSheet, Text, Keyboard} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Colors, Constants, Fonts, Strings, Values} from '../../../constants';
-import {style} from '../../../constants/Styles';
+import {boxShadow, style} from '../../../constants/Styles';
 import CTabSelector from '../../common/CTabSelector';
 
 import {SubmitButton} from '../SubmitButton';
@@ -88,7 +88,15 @@ const BrandFacingView = props => {
           setSelectedTabIndex(index);
           setSelectedCategory(item.category);
         }}
-        containerStyle={[style.card, {marginBottom: 0}]}
+        containerStyle={[
+          boxShadow,
+          {
+            marginBottom: 0,
+            height: 40,
+            backgroundColor: 'white',
+            borderRadius: 4,
+          },
+        ]}
       />
       <BrandFacingList items={products} onItemAction={onItemAction} />
       <SubmitButton

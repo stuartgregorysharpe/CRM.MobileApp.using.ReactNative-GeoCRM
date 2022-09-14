@@ -63,18 +63,19 @@ export function convertHexToRgbA(hexVal) {
 export function formatDate(
   dateString,
   formatString = 'YYYY-MM-DD',
-  fromFromString = 'YYYY-MM-DD',
+  fromFromString,
 ) {
   if (!dateString) {
     return '/';
   }
-  const momentObj = Moment(dateString, fromFromString);
+  let momentObj = Moment(dateString);
+  if (fromFromString) {
+    momentObj = Moment(dateString, fromFromString);
+  }
   const momentString = momentObj.format(formatString);
   if (momentString == 'Invalid date') return '/';
   return momentString;
 }
-
-
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -152,34 +153,33 @@ export const validateMsisdn = barcode => {
   return true;
 };
 
-
-export const formattedNumber = (num) => {  
-  try{
-    return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');    
-  }catch(e){
-    console.log("e",e);
+export const formattedNumber = num => {
+  try {
+    return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  } catch (e) {
     return num;
   }
-}
+};
 
-export const getConvertedDateTime = (dateTime) => {
-    var currentTime = moment(dateTime, 'YYYY-MM-DD HH:mm:ss').format('DD MMMM YYYY HH:mm');
-    return currentTime;
-}
+export const getConvertedDateTime = dateTime => {
+  var currentTime = moment(dateTime, 'YYYY-MM-DD HH:mm:ss').format(
+    'DD MMMM YYYY HH:mm',
+  );
+  return currentTime;
+};
 
 export const getBasketDateTime = () => {
-    var currentTime = moment().format('DD MMMM YYYY HH:mm');
-    return currentTime;
-}
+  var currentTime = moment().format('DD MMMM YYYY HH:mm');
+  return currentTime;
+};
 export const getDateTime = () => {
   var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
   return currentTime;
-}
+};
 
-
-
-
-export const getDateTimeFromBasketTime = (dateTime) => {
-  var currentTime = moment(dateTime, 'DD MMMM YYYY HH:mm').format('YYYY-MM-DD HH:mm:ss');
+export const getDateTimeFromBasketTime = dateTime => {
+  var currentTime = moment(dateTime, 'DD MMMM YYYY HH:mm').format(
+    'YYYY-MM-DD HH:mm:ss',
+  );
   return currentTime;
-}
+};

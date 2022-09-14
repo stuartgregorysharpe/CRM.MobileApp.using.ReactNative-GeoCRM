@@ -1,8 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Platform, SafeAreaView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Platform,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {Colors, Constants, Values} from '../../constants';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import SvgIcon from '../SvgIcon';
 
 const ScanView = props => {
   useEffect(() => {
@@ -49,6 +56,22 @@ const ScanView = props => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
+  };
+  const renderCloseButton = () => {
+    if (props.showClose) {
+      return (
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => {
+            if (props.onClose) {
+              props.onClose();
+            }
+          }}>
+          <SvgIcon icon="Close" width="30" height="30" />
+        </TouchableOpacity>
+      );
+    }
+    return null;
   };
   const renderCustomerMarker = () => {
     return (
@@ -133,6 +156,7 @@ const ScanView = props => {
         bottomViewStyle={{position: 'absolute'}}
       />
       {renderLastScanResultView()}
+      {renderCloseButton()}
     </SafeAreaView>
   );
 };
@@ -144,6 +168,11 @@ const styles = StyleSheet.create({
   cameraMarker: {
     width: 230,
     height: 230,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 24,
   },
 });
 
