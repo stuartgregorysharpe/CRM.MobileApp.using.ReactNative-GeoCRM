@@ -221,10 +221,15 @@ export default function StockLists() {
       type == Constants.actionType.ACTION_CAPTURE ||
       type == Constants.actionType.ACTION_INPUT_BARCODE
     ) {
-      console.log('captureitem', value);
       const capturedItems = filterItemsByBarcode(items, value);
       if (capturedItems && capturedItems.length > 0) {
-        const _selectedItems = [...selectedItems, ...capturedItems];
+        const _selectedItems = [...selectedItems];
+        capturedItems.forEach(item => {
+          const alreadyExist = selectedItems.find(x => x.iccid == item.iccid);
+          if (!alreadyExist) {
+            _selectedItems.push(item);
+          }
+        });
         setSelectedItems(_selectedItems);
       } else if (type == Constants.actionType.ACTION_INPUT_BARCODE) {
         console.log('show notification');

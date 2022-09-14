@@ -37,7 +37,13 @@ const StagingView = props => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       const capturedItems = filterItemsByBarcode(props.items, value);
       if (capturedItems && capturedItems.length > 0) {
-        const _selectedItems = [...selectedItems, ...capturedItems];
+        const _selectedItems = [...selectedItems];
+        capturedItems.forEach(item => {
+          const alreadyExist = selectedItems.find(x => x.iccid == item.iccid);
+          if (!alreadyExist) {
+            _selectedItems.push(item);
+          }
+        });
         setSelectedItems(_selectedItems);
         console.log('_selectedItems', selectedItems);
       }
@@ -108,6 +114,7 @@ const StagingView = props => {
       />
       <QRScanModal
         ref={captureModalRef}
+        isNotCloseAfterCapture
         onButtonAction={onCaptureAction}
         onClose={onCloseScanModal}
         showClose={true}
