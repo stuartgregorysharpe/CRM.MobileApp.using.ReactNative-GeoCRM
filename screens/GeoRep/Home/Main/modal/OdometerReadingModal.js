@@ -26,8 +26,9 @@ import * as RNLocalize from 'react-native-localize';
 import {Notification} from '../../../../../components/modal/Notification';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
+
   const {title, isStart, startEndDayId, currentLocation} = props;
-  
+
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [image, setImage] = useState(null);
@@ -72,6 +73,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       setIsEndRequired(true);
       return;
     }
+
     if (!isStart && (start == '' || start == undefined)) {
       message = Strings.Home.Input_Start_Reading;
       hasError = true;
@@ -347,11 +349,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     justifyContent: 'center',
   },
-
-  requiredTextStyle: {
-    color: whiteLabel().endDayBackground,
-    marginHorizontal: 10,
-  },
+  
 });
 
 export default OdometerReadingModal;

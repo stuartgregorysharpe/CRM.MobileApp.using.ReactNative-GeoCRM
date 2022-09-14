@@ -1,7 +1,7 @@
 import { getApiRequest } from "../actions/api.action";
 import { Strings } from "../constants";
-import { getTokenData, getUserId } from "../constants/Storage";
-import { checkConnectivity } from "./helper";
+import { getTokenData } from "../constants/Storage";
+import { checkConnectivity, getFullAddress } from "./helper";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 export function find(currentLocation , filters, pageNumber, searchKey , features){
     
@@ -34,17 +34,15 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
                 
-                var query = '';
-                console.log("current location", currentLocation)
-                query = generateQuery(currentLocation.latitude, currentLocation.longitude, searchKey, pageNumber , features);
-                console.log("query", query);
+                var query = '';                
+                query = generateQuery(currentLocation.latitude, currentLocation.longitude, searchKey, pageNumber , features);                
                 var locations;
                 if(features.includes("disposition_fields")){
                   locations = await fetchDataFromDB(query, null , null);
                 }else{
                   locations = await fetchDataFromDB(query, client_id , business_unit_id);
                 }
-                console.log("locations", locations);
+                
                 resolve(getResponse(locations));
 
             }
@@ -61,8 +59,7 @@ const fetchDataFromDB = async (query , client_id , business_unit_id) => {
         res = await ExecuteQuery(query, [client_id , business_unit_id]);   
       }else{
         res = await ExecuteQuery(query, []);   
-      }
-      console.log("RES",res)
+      }      
       if( res != undefined  && res.rows.length > 0){            
           return res.rows;
       }else{
@@ -81,25 +78,9 @@ const getResponse = (locations) => {
   if(locations != '' && locations != undefined){        
       for(var i = 0; i < locations.length; i++){
 
-          var element = locations.item(i);        
-          var address = element.street_address;
-          if(element.suburb != '' && element.suburb != undefined){
-            address = address + ", " + element.suburb;
-          }
-          if(element.city != '' && element.city != undefined){
-            address = address + ", " + element.city;
-          }
-          if(element.state != '' && element.state != undefined){
-            address = address + ", " + element.state;
-          }
-          if(element.country != '' && element.country != undefined){
-            address = address + ", " + element.country;
-          }
-          if(element.pincode != '' && element.pincode != undefined){
-            address = address + ", " + element.pincode;
-          }
-           
-          
+          var element = locations.item(i);      
+          var address = getFullAddress(element);                     
+                    
           tmp.push(
               {
                   location_id: element.location_id,
@@ -192,13 +173,14 @@ const generateQuery = (latitude, longitude , searchText , pageNumber, features) 
                       `ldp.location_status as "status", ` + 
                       `ldp.status_color as "status_text_color" ` + 
                     `FROM locations_core_master_data AS lcmd ` + 
+                    `LEFT JOIN locations_dynamic_pins as ldp ` + 
+                    `ON lcmd.location_status = ldp.location_status ` + 
                     `WHERE  ` + 
                       `lcmd.delete_status = 0 ` + 
                     `AND lcmd.client_id = ? ` + 
                     `AND lcmd.business_unit_id = ? ` + 
                     `${searchWhere} ${distanceOrder} LIMIT 50 OFFSET ${offset}`;
-
-
+  
   }
   
   return query;

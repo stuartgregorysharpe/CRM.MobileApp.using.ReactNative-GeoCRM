@@ -4,7 +4,7 @@ import { getFilterData, getTokenData, getUserId } from "../constants/Storage";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 import { checkConnectivity } from "./helper";
 
-export function find(currentLocation, box){
+export function find(currentLocation, box ,features){
   
   return new Promise(function(resolve, reject) {
 
@@ -36,9 +36,9 @@ export function find(currentLocation, box){
             }else{
 
                 var client_id = await getTokenData("client_id");
-                var business_unit_id = await getTokenData("business_unit_id");                
+                var business_unit_id = await getTokenData("business_unit_id");                   
                 var locationName = await getLocationName(client_id, business_unit_id);                
-                var locations = await getLocations(client_id, business_unit_id, box);
+                var locations = await getLocations(client_id, business_unit_id, box ,features);
                 resolve(getResponse( locationName, locations));
 
             }
@@ -60,7 +60,7 @@ const getLocationName = async (client_id, business_unit_id) => {
     return '';
 }
 
-const getLocations = async (client_id, business_unit_id, box) => {
+const getLocations = async (client_id, business_unit_id, box ,features) => {
         
     var where = ``;
     if(box != undefined){
@@ -76,16 +76,15 @@ const getLocations = async (client_id, business_unit_id, box) => {
         }        
     }
 
-    const query0 = `SELECT crm_campaign_id FROM crm_campaigns WHERE business_unit_id = ? AND client_id = ?`;    
-    const query = `SELECT cdl.location_id, lcmd.location_name, lcmd.latitude,lcmd.longitude, ldp.png_file, ldp.pin_name, ldp.dynamic_pin_id ` +
-                `FROM crm_disposition_locations AS cdl LEFT JOIN locations_core_master_data AS lcmd ON lcmd.location_id = cdl.location_id LEFT JOIN locations_dynamic_pins AS ldp ON ldp.dynamic_pin_id = cdl.dynamic_pin_id ` + 
-                `WHERE ${where} lcmd.delete_status = 0 AND cdl.campaign_id IN (${query0}) ` + 
-                `ORDER BY lcmd.location_id DESC`;
-    console.log("query", query)
-
+    const query = generateQuery(features , where);    
     try{
-        var res = await ExecuteQuery(query, [business_unit_id, client_id]);         
-        console.log("RESSS", res.rows.length)
+        var res;
+        if(features.includes("disposition_fields")){
+            res = await ExecuteQuery(query, [business_unit_id, client_id]);         
+        }else{
+            res = await ExecuteQuery(query, [business_unit_id, client_id , client_id, business_unit_id]);         
+        }    
+
         if( res != undefined  && res.rows.length > 0){            
             return res.rows;
         }else{            
@@ -96,6 +95,47 @@ const getLocations = async (client_id, business_unit_id, box) => {
         return '';
     }        
 }
+
+
+const generateQuery = (features , where) => {
+    var query = ``;
+    if(features.includes("disposition_fields")){
+
+        const query0 = `SELECT crm_campaign_id FROM crm_campaigns WHERE business_unit_id = ? AND client_id = ?`;    
+        query = `SELECT cdl.location_id, lcmd.location_name, lcmd.latitude,lcmd.longitude, ldp.png_file, ldp.pin_name, ldp.dynamic_pin_id ` +
+                    `FROM crm_disposition_locations AS cdl LEFT JOIN locations_core_master_data AS lcmd ON lcmd.location_id = cdl.location_id LEFT JOIN locations_dynamic_pins AS ldp ON ldp.dynamic_pin_id = cdl.dynamic_pin_id ` + 
+                    `WHERE ${where} lcmd.delete_status = 0 AND cdl.campaign_id IN (${query0}) ` + 
+                    `ORDER BY lcmd.location_id DESC`;
+                            
+    }else{
+        console.log("disposition disabled");
+        try{
+
+            query   = `SELECT ` + 
+                            `lcmd.location_id, ` + 
+                            `lcmd.location_name, ` + 
+                            `lcmd.latitude, ` + 
+                            `lcmd.longitude, ` + 
+                            `ldp.png_file, ` + 
+                            `ldp.pin_name, ` + 
+                            `ldp.dynamic_pin_id ` + 
+                          `FROM locations_core_master_data AS lcmd ` + 
+                          `LEFT JOIN locations_dynamic_pins AS ldp ` + 
+                          `ON lcmd.location_status = ldp.location_status  ` + 
+                             `AND ldp.business_unit_id = ? ` + 
+                             `AND ldp.client_id = ? ` + 
+                          `WHERE ${where} ` + 
+                            `lcmd.delete_status = 0 ` + 
+                          `AND lcmd.client_id = ? ` + 
+                          `AND lcmd.business_unit_id = ? `;
+
+        }catch(e){
+            console.log(e)
+        }
+    }
+    return query;
+}
+
 
 const getResponse = (locationName, locations) => {
     var tmp = [];

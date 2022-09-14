@@ -9,8 +9,7 @@ import {BasketListContainer} from './containers/BasketListContainer'
 import { RotationAnimation } from '../../../../components/common/RotationAnimation'
 import { getBascketLastSyncTableData } from '../../../../sqlite/BascketLastSyncsHelper'
 import { Strings, Values } from '../../../../constants'
-import ViewOfflineSyncItem from './components/ViewOfflineSyncItem'
-
+import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer'
 
 export default function SyncAll(props) {  
 
@@ -113,10 +112,11 @@ export default function SyncAll(props) {
 
         {
           expanded &&
-          <ViewOfflineSyncItem />
+          <ViewOfflineSyncItemContainer onClosed={() => {            
+              setExpanded(false);
+          }} />
         }
         
-
     </View>
   )
 }

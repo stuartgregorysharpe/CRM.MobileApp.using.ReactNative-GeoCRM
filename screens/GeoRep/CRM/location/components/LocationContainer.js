@@ -20,11 +20,11 @@ import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants} from '../../../../../constants';
 import {expireToken} from '../../../../../constants/Helper';
 import {
+  getJsonData,
   getLocalData,
-  getMapMinZoomLevel,
-  getPinSvg,
+  getMapMinZoomLevel,  
 } from '../../../../../constants/Storage';
-import {LocationMapDAO} from '../../../../../DAO';
+import {LocationMapDAO, LocationPinKeyDAO} from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
 import AddLeadModal from '../../add_lead';
 import LocationInfoDetailModal from '../../locationInfoDetails/LocationInfoDetailModal';
@@ -80,7 +80,7 @@ const LocationContainer = props => {
       console.log(' load mark api');
       LocationMapDAO.find(_currentLocation, boundBox)
         .then(res => {
-          getPinSvg('@map_pin_key').then(mapPinSvg => {
+          getJsonData('@map_pin_key').then(mapPinSvg => {
             setIsLoading(false);
             setMarkers(
               res.locations.map((location, index) => {
@@ -201,6 +201,7 @@ const LocationContainer = props => {
   };
   const onFinishDrawing = selectedMarkers => {
     console.log('onFinishDrawing', selectedMarkers);
+    setIsDrawMode(false)
     if (!selectedMarkers) return;
     const selectedLocations = selectedMarkers.map(marker => {
       return {
@@ -290,8 +291,8 @@ const LocationContainer = props => {
           isLoading={isLoading}
         />
       )}
-
-      {isCheckin && <CheckInStatusView page="map" onGo={onCheckIn} />}
+      
+      {isCheckin && !isDrawMode && <CheckInStatusView page="map" onGo={onCheckIn} />}
 
       <TouchableOpacity
         style={[styles.plusButton, {marginBottom: isCheckin ? 40 : 0}]}
@@ -302,6 +303,7 @@ const LocationContainer = props => {
         }}>
         <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
       </TouchableOpacity>
+      
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />
       </TouchableOpacity>
@@ -317,7 +319,7 @@ const LocationContainer = props => {
         }}
       />
       <AddLeadModal
-        title="Add Lead"
+        //title="Add Lead"
         ref={addLeadModalRef}
         navigation={navigation}
         onButtonAction={onAddLeadModalClosed}

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import uuid from 'react-native-uuid';
 import {getBaseUrl, getToken} from '../constants/Storage';
-import FormData from 'form-data';
 export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
     setTimeout(() => {
@@ -59,7 +58,7 @@ export const getApiRequest = async (route, param) => {
   });
 };
 
-export const postApiRequest = async (route, postData) => {
+export const postApiRequest = async (route, postData , indempotencyKey) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();
 
@@ -67,14 +66,13 @@ export const postApiRequest = async (route, postData) => {
   if (route.includes('local_api_old')) {
     url = route;
   }
-  console.log('postApiRequest -- url', url);
-  //console.log('postApiRequest -- data', postData);
+  console.log('postApiRequest -- url', url);  
   return new Promise(function (resolve, reject) {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,
-      'Indempotency-Key': uuid.v4(),
+      'Indempotency-Key': indempotencyKey != undefined ? indempotencyKey : uuid.v4(),
     };
     axios
       .post(url, postData, {

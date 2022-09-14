@@ -20,6 +20,7 @@ const CModal = React.forwardRef((props, ref) => {
     modalType,
     clearText,
   } = props;
+
   const _modalType = modalType || Constants.modalType.MODAL_TYPE_CENTER;
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;

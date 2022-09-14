@@ -17,7 +17,7 @@ export const getUserData = async () => {
   }
 };
 
-export const storePinSvg = async (type, value) => {
+export const storeJsonData = async (type, value) => {
   try {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(type, jsonValue);
@@ -25,7 +25,7 @@ export const storePinSvg = async (type, value) => {
     console.log('error', e);
   }
 };
-export const getPinSvg = async type => {
+export const getJsonData = async type => {
   try {
     const jsonValue = await AsyncStorage.getItem(type);
     return jsonValue != null ? JSON.parse(jsonValue) : null;

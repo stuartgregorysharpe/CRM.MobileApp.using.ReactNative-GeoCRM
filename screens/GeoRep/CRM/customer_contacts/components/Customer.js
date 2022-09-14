@@ -1,18 +1,13 @@
-import { View, Text ,ScrollView ,TouchableOpacity , StyleSheet} from 'react-native'
+import { View, ScrollView , StyleSheet} from 'react-native'
 import React , {useRef , useState , useEffect} from 'react'
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import { whiteLabel } from '../../../../../constants/Colors';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { getPostParameter } from '../../../../../constants/Helper';
 import { postApiRequest } from '../../../../../actions/api.action';
-import { showNotification } from '../../../../../actions/notification.action';
 import {useSelector, useDispatch} from 'react-redux';
 import AlertDialog from '../../../../../components/modal/AlertDialog';
 import UpdateCustomerModal from '../../update_customer';
 import { Constants } from '../../../../../constants';
-//import UpdateCustomerModal from '../../update_customer';
 
 export default function Customer(props) {
 
@@ -65,6 +60,7 @@ export default function Customer(props) {
             field_name: field.custom_master_field_id,
             initial_value: field.value, 
             editable: editable,
+            isClickable: disableField(field) ? true : false,
             is_required: true,
             field_label:field.field_name,    
             value: field.value,      
@@ -78,7 +74,12 @@ export default function Customer(props) {
         var fields = [];
         for(let key of Object.keys(formData)){
             if(formData[key] != undefined && formData[key] != ''){
-                fields.push({custom_master_field_id:key, value:formData[key]});
+                const value = formData[key];
+                if(value.value != undefined && value.secondValue != undefined){
+                  fields.push({custom_master_field_id:key, dropdown_value:value.value , value: value.secondValue });
+                }else{
+                  fields.push({custom_master_field_id:key, value:value });
+                }                
             }            
         }  
         
@@ -132,10 +133,13 @@ export default function Customer(props) {
                     formData={formData}
                     formStructureData={formStructure}
                     isClickable={true}
-                    onPress={() =>{
+                    onPress={(item) =>{
                       console.log("onPress");
                       console.log("show modal");
-                      updateCustomerModalRef.current.showModal();
+                      if( item != undefined && item.editable == "0"){
+                        updateCustomerModalRef.current.showModal();
+                      }                      
+                      
                       console.log("show modal");
                     }}
                     updateFormData={formData => {

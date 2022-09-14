@@ -1,10 +1,9 @@
 import { View, TouchableOpacity } from 'react-native'
 import React from 'react'
-
 import { AppText } from '../../../../../../components/common/AppText';
 import Colors, { whiteLabel } from '../../../../../../constants/Colors';
 
-export default function OfflineSyncLists(props) {
+const OfflineSyncLists = props => {
 
     const { lists , onItemSelected } = props;
 
@@ -25,7 +24,7 @@ export default function OfflineSyncLists(props) {
                               style={{fontSize: 12.5}}></AppText>
                           <AppText
                               type="secondaryMedium"
-                              title={item.address}
+                              title={item.subLabel}
                               color={whiteLabel().subText}
                               style={{fontSize: 10.4}}></AppText>
                       </View>
@@ -44,7 +43,6 @@ export default function OfflineSyncLists(props) {
       );
     };
 
-
     return (
       <View style={{marginTop:15}}>
           {
@@ -56,3 +54,4 @@ export default function OfflineSyncLists(props) {
     )
 
 }
+export default OfflineSyncLists;

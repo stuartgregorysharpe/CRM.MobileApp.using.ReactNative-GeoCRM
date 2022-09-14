@@ -30,14 +30,15 @@ import {
   getLocalData,  
   getToken,
   getUserData,
-  storeLocationLoop,
-  storePinSvg,
+  storeJsonData,
+  storeLocationLoop,  
 } from '../constants/Storage';
 import jwt_decode from 'jwt-decode';
 import {displayName} from '../app.json';
 import {clearNotification} from '../actions/notification.action';
 import {getDynamicPins} from '../actions/pins.actions';
 import { Images } from '../constants';
+import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
 
 export default function SignIn() {
 
@@ -55,9 +56,13 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    initView();    
+    initView();
+    initData();
   }, [loginStatus]);
 
+  const initData = () => {
+    createOfflineSyncItemTable();
+  }
 
   const initView = async () => {
     
@@ -113,7 +118,7 @@ export default function SignIn() {
           getDynamicPins(res.success.access_token)
             .then(async mapPins => {
               console.log("respnose", mapPins)
-              await storePinSvg('@map_pin_key', mapPins);              
+              await storeJsonData('@map_pin_key', mapPins);              
               dispatch({type: MAP_FILTERS, payload: filters});
               dispatch({type: CHANGE_USER_INFO, payload: res.success.user});
               dispatch({
