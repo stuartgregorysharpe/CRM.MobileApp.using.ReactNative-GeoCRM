@@ -6,6 +6,7 @@ import CButtonTextInput from '../../../../../components/common/CButtonTextInput'
 import {Colors, Strings} from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 import Divider from '../../../../../components/Divider';
+import {Notification} from '../../../../../components/modal/Notification';
 
 export default function ShipmentScanResultView(props) {
   const {items, title} = props;
@@ -31,16 +32,30 @@ export default function ShipmentScanResultView(props) {
     }
   };
 
+  const renderActionButtons = () => {
+    if (props.renderActionButtons) {
+      return props.renderActionButtons();
+    } else {
+      return (
+        <SubmitButton
+          title="Accept"
+          onSubmit={onSubmit}
+          style={{marginTop: 10}}></SubmitButton>
+      );
+    }
+  };
   return (
     <View
-      style={{
-        paddingHorizontal: 10,
-        paddingTop: 0,
-        marginBottom: 20,
-        backgroundColor: Colors.bgColor,
-        alignSelf: 'stretch',
-        height: 200,
-      }}>
+      style={[
+        {
+          paddingHorizontal: 10,
+          paddingTop: 0,
+          marginBottom: 20,
+          backgroundColor: Colors.bgColor,
+          alignSelf: 'stretch',
+        },
+        props.style,
+      ]}>
       <TouchableOpacity style={{padding: 10}} onPress={() => onClose()}>
         <Divider />
       </TouchableOpacity>
@@ -64,7 +79,7 @@ export default function ShipmentScanResultView(props) {
         }}></View>
 
       <CButtonTextInput
-        label={Strings.Stock.Input_ICCID}
+        label={Strings.Stock.Input_Barcode}
         value={code}
         returnKeyType={'done'}
         keyboardType="number-pad"
@@ -80,10 +95,8 @@ export default function ShipmentScanResultView(props) {
         }}
         style={{marginTop: 20, marginBottom: 20}}
       />
-      <SubmitButton
-        title="Accept"
-        onSubmit={onSubmit}
-        style={{marginTop: 10}}></SubmitButton>
+      <Notification />
+      {renderActionButtons()}
     </View>
   );
 }

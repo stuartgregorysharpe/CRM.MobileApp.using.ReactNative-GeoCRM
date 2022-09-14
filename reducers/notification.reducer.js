@@ -1,5 +1,4 @@
-import { CHANGE_LOGIN_STATUS, CHANGE_USER_INFO } from "../actions/actionTypes";
-
+import {CHANGE_LOGIN_STATUS, CHANGE_USER_INFO} from '../actions/actionTypes';
 
 const initialState = {
   type: null, // success, error
@@ -7,16 +6,16 @@ const initialState = {
   message: null,
   options: null,
   visible: false,
-  autoHide : true,
-  buttonText : false,
-  buttonAction : false,
+  autoHide: true,
+  buttonText: false,
+  buttonAction: false,
   cancelButtonText: false,
-}
+  cancelButtonAction: false,
+};
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (state=initialState, action) => {
-
-  switch(action.type) {
+export default (state = initialState, action) => {
+  switch (action.type) {
     case 'SHOW_NOTIFICATION':
       return {
         ...state,
@@ -26,22 +25,23 @@ export default (state=initialState, action) => {
         options: action.payload.options,
         autoHide: action.payload.autoHide,
         visible: true,
-        buttonText : action.payload.buttonText,
-        buttonAction : action.payload.buttonAction,
-        cancelButtonText : action.payload.cancelButtonText,
+        buttonText: action.payload.buttonText,
+        buttonAction: action.payload.buttonAction,
+        cancelButtonText: action.payload.cancelButtonText,
+        cancelButtonAction: action.payload.cancelButtonAction,
       };
 
     case 'CLEAR_NOTIFICATION':
-        return {
-          ...state,
-          type: null,
-          title: null,
-          message: null,
-          options: null,  
-          autoHide: true,  
-          visible: false,
-        };
-    default: 
+      return {
+        ...state,
+        type: null,
+        title: null,
+        message: null,
+        options: null,
+        autoHide: true,
+        visible: false,
+      };
+    default:
       return state;
   }
-}
+};

@@ -31,6 +31,7 @@ const StockStagingContainer = props => {
       });
   };
   const onAccept = items => {
+    console.log('onAccept');
     setIsLoading(true);
     postApiRequest('stockmodule/staging-accept', {
       iccids: items.map(item => item.iccid),
@@ -66,10 +67,7 @@ const StockStagingContainer = props => {
       });
   };
   return (
-    <>
-      <Notification />
-      <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
-    </>
+    <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
   );
 };
 

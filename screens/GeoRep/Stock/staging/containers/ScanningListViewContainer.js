@@ -17,24 +17,52 @@ const ScanningListViewContainer = props => {
   const onSearch = keyword => {
     setKeyword(keyword);
   };
-  const onAccept = () => {
-    if (props.onAccept) {
-      props.onAccept(props.items);
+
+  const renderButtonActions = () => {
+    const buttons = [];
+    if (props.onSellToTrader) {
+      buttons.push(
+        <SubmitButton
+          key="sellToTrader"
+          title={'Sell To Trader'}
+          onSubmit={props.onSellToTrader}
+          style={styles.submitButton}
+        />,
+      );
     }
+    if (props.onTransfer) {
+      buttons.push(
+        <SubmitButton
+          key="transfer"
+          title={'Transfer'}
+          onSubmit={props.onTransfer}
+          style={styles.submitButton}
+        />,
+      );
+    }
+    if (props.onAccept) {
+      buttons.push(
+        <SubmitButton
+          key="accept"
+          title={'Accept'}
+          onSubmit={() => {
+            props.onAccept(props.items);
+          }}
+          style={styles.submitButton}
+        />,
+      );
+    }
+    return buttons;
   };
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar onSearch={onSearch} />
       <ShipmentViewList
         items={networkGroups}
-        style={{flex: 1}}
+        style={{flex: 1, marginBottom: 8}}
         onItemAction={props.onItemAction}
       />
-      <SubmitButton
-        title={'Accept'}
-        onSubmit={onAccept}
-        style={styles.submitButton}
-      />
+      {renderButtonActions()}
     </View>
   );
 };
@@ -45,7 +73,8 @@ const styles = StyleSheet.create({
     height: Values.deviceHeight * 0.7,
   },
   submitButton: {
-    margin: 8,
+    marginHorizontal: 8,
+    marginBottom: 8,
   },
 });
 

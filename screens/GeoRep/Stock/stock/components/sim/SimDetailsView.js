@@ -1,161 +1,81 @@
-
-import { View, StyleSheet, Keyboard } from 'react-native'
-import React , { useState , useRef } from 'react'
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import { Constants } from '../../../../../../constants';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import SimViewListsModal from '../../modal/sim/SimViewListsModal';
+import {View, StyleSheet, Keyboard} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {Constants} from '../../../../../../constants';
 import SimDetailsChildView from './SimDetailsChildView';
+import ScanningListViewModal from '../../../staging/modals/ScanningListViewModal';
 
 export default function SimDetailsView(props) {
-      
-    const [isScan, setIsScan] = useState(true)
-    const simViewListModalRef = useRef(null)
-  
-    const onSuccess = e => {   /// From Camera
-        const {data} = e;        
-        if(isScan){
-          props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
-        }
-        
-    };
-    
-    const onAddCode = (value) => { // Manual Input
-      if(isScan){
-        props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});          
-      }      
+  const [isScan, setIsScan] = useState(true);
+  const simViewListModalRef = useRef(null);
+  const {items} = props;
+
+  const onAddCode = value => {
+    // Manual Input
+    if (isScan) {
+      props.onButtonAction({
+        type: Constants.actionType.ACTION_INPUT_BARCODE,
+        value: value,
+      });
     }
+  };
 
-    const onSellToTrader = () => {
-        setIsScan(false);
-        props.onSellToTrader();
+  const onSellToTrader = () => {
+    setIsScan(false);
+    props.onSellToTrader();
+  };
+
+  const onTransfer = () => {
+    setIsScan(false);
+    props.onTransfer();
+  };
+
+  const onViewList = () => {
+    simViewListModalRef.current.showModal();
+  };
+
+  const onListAction = ({type, item}) => {
+    if (
+      type == Constants.actionType.ACTION_CLOSE ||
+      type == Constants.actionType.ACTION_CHANGE_NETWORK
+    ) {
+      simViewListModalRef.current.hideModal();
     }
-
-    const onTransfer = () => {
-      setIsScan(false);
-      props.onTransfer();
+    if (type == Constants.actionType.ACTION_REMOVE) {
+      props.onButtonAction({
+        type: Constants.actionType.ACTION_REMOVE,
+        item: item,
+      });
     }
-  
-    const viewLists = () => {
-      simViewListModalRef.current.showModal();
-    }
+  };
 
-    const onSimViewListClosed = ({type, value})=> {    
+  return (
+    <View style={[styles.container, props.style]}>
+      <SimDetailsChildView
+        onClose={() => {
+          Keyboard.dismiss();
+        }}
+        onSellToTrader={onSellToTrader}
+        onTransfer={onTransfer}
+        onViewList={onViewList}
+        onAddCode={value => onAddCode(value)}
+        {...props}></SimDetailsChildView>
 
-      if(type == Constants.actionType.ACTION_CLOSE || type == Constants.actionType.ACTION_CHANGE_NETWORK ){
-        simViewListModalRef.current.hideModal()
-      }
-      if(type == Constants.actionType.ACTION_REMOVE){        
-        props.onButtonAction({type: Constants.actionType.ACTION_REMOVE, value: value});        
-      }
-      if(type == Constants.actionType.ACTION_DONE){
-        
-      }
-    }
-
-    const renderCustomerMarker = () => {
-        return (
-          <View style={styles.cameraMarker}>
-            <View style={{alignSelf: 'stretch', flexDirection: 'row'}}>
-              <View
-                style={{
-                  borderColor: Colors.green2Color,
-                  borderTopWidth: 4,
-                  borderLeftWidth: 4,
-                  width: 80,
-                  height: 80,
-                }}
-              />
-              <View
-                style={{
-                  width: 70,
-                  height: 80,
-                }}
-              />
-              <View
-                style={{
-                  borderColor: Colors.green2Color,
-                  borderTopWidth: 4,
-                  borderRightWidth: 4,
-                  width: 80,
-                  height: 80,
-                }}
-              />
-            </View>
-            <View
-              style={{
-                alignSelf: 'stretch',
-                flexDirection: 'row',
-                height: 70,
-              }}
-            />
-            <View style={{alignSelf: 'stretch', flexDirection: 'row'}}>
-              <View
-                style={{
-                  borderColor: Colors.green2Color,
-                  borderBottomWidth: 4,
-                  borderLeftWidth: 4,
-                  width: 80,
-                  height: 80,
-                }}
-              />
-              <View
-                style={{
-                  width: 70,
-                  height: 80,
-                }}
-              />
-              <View
-                style={{
-                  borderColor: Colors.green2Color,
-                  borderBottomWidth: 4,
-                  borderRightWidth: 4,
-                  width: 80,
-                  height: 80,
-                }}
-              />
-            </View>
-          </View>
-        );
-      };
-
-
-    return (
-        <View style={[styles.container, props.style]}>
-            <QRCodeScanner                
-                  onRead={onSuccess}
-                  reactivate={true}
-                  customMarker={renderCustomerMarker()}
-                  showMarker
-            />
-
-            <SimDetailsChildView
-              onClose={() => {Keyboard.dismiss()}} 
-              sellToTrader={onSellToTrader}
-              transfer={onTransfer}
-              viewLists={viewLists}
-              onAddCode={(value) => onAddCode(value)}
-              {...props}
-              ></SimDetailsChildView>
-            
-            <SimViewListsModal
-              ref={simViewListModalRef}              
-              lists={props.selectedCodes}
-              type="sim_view_lists"
-              onButtonAction={onSimViewListClosed}
-            />
-        </View>
-    )
+      <ScanningListViewModal
+        key={'capture-list'}
+        ref={simViewListModalRef}
+        title={`Items: ${items.length}`}
+        items={items}
+        onItemAction={onListAction}
+        onSellToTrader={onSellToTrader}
+        onTransfer={onTransfer}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,                
-    },
-    cameraMarker: {
-        width: 230,
-        height: 230,
-    },
-
-})
-
+  container: {
+    alignSelf: 'stretch',
+    height: 275,
+  },
+});

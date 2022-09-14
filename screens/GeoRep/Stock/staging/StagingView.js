@@ -117,7 +117,7 @@ const StagingView = props => {
               key={'scan-result'}
               items={selectedItems}
               lastScanedQrCode={lastScanedQrCode}
-              style={{marginBottom: 20}}
+              style={{marginBottom: 20, height: 200}}
               onViewList={onPressViewListInScanResult}
               onAddCode={code => {
                 onCaptureAction({
@@ -126,7 +126,12 @@ const StagingView = props => {
                 });
               }}
               onClose={onCloseScanModal}
-              onSubmit={() => captureModalRef.current.hideModal()}
+              onSubmit={() => {
+                if (selectedItems && selectedItems.length > 0) {
+                  onAccept(selectedItems);
+                  captureModalRef.current.hideModal();
+                }
+              }}
             />,
             <ScanningListViewModal
               key={'capture-list'}
@@ -147,8 +152,8 @@ const StagingView = props => {
       <SubmitButton
         title={'Accept All'}
         onSubmit={() => {
-          if (props.onPress) {
-            props.onPress();
+          if (props.onAccept) {
+            props.onAccept(items);
           }
         }}
         style={styles.submitButton}
