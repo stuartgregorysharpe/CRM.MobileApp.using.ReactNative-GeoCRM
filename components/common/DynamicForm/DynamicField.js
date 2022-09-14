@@ -1,3 +1,4 @@
+import { RuleTester } from 'eslint';
 import React from 'react';
 import {View} from 'react-native';
 import DropdownText from '../../shared/DropdownText';
@@ -89,8 +90,7 @@ const DynamicField = props => {
     );
   };
 
-
-  const renderDropdown = () => {
+  const renderDropdown = (mode) => {
     return (
       <CSingleSelectInput
         key={index}
@@ -101,18 +101,42 @@ const DynamicField = props => {
         hasError={hasError}
         disabled={disabled}
         isClickable={isClickable}
+        mode={mode}
         onPress={() => {
           if (isClickable) {
             props.onPress();
           }
         }}
         onSelectItem={item => {
-          updateFormData(field_name, item.value);
+          
+          if(mode === "single"){
+            updateFormData(field_name, item.value);
+          }else if(mode === "multi"){
+
+            var isData = false;
+            if(value != undefined &&  value != '' &&  value != null){
+              var check = value.find(element => element === item.value );
+              if(check != undefined){
+                isData = true;
+              }  
+            }else{
+              isData = false;
+            }
+
+            if(isData){
+              updateFormData(field_name, value.filter(element => element != item.value));
+            }else{
+              updateFormData(field_name, [...value, item.value]);
+            }
+                   
+          }
+          
         }}
         containerStyle={{marginTop: isFirst ? 0 : 10}}
       />
     );
   };
+
 
   const renderDropdownInput = () => {
     return (
@@ -232,7 +256,7 @@ const DynamicField = props => {
     return renderNumber();
   }
   if (field_type == 'dropdown') {
-    return renderDropdown();
+    return renderDropdown("single");
   }
 
   if (field_type == 'dropdown_input') {
@@ -251,6 +275,10 @@ const DynamicField = props => {
 
   if(field_type == 'dropdown_text') {
     return renderDropdownText();
+  }
+
+  if(field_type == 'multi_select'){
+    return renderDropdown("multi");
   }
 
 

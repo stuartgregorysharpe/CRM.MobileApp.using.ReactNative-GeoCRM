@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
-
 import {Colors, Constants, Fonts} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
-
 import CCheckBox from '../../CCheckBox';
 
 const SelectItem = props => {
+
   const {isChecked, item} = props;
   const {label} = item;
+  
   const onValueChange = value => {
     if (props.onItemAction) {
       props.onItemAction({
@@ -18,6 +18,7 @@ const SelectItem = props => {
       });
     }
   };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -33,6 +34,7 @@ const SelectItem = props => {
       </View>
     </TouchableWithoutFeedback>
   );
+  
 };
 
 const styles = StyleSheet.create({

@@ -1,30 +1,38 @@
-import React, {useState, useEffect, useRef, useMemo} from 'react';
+import React, {useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Constants} from '../../../constants';
 import SelectInputView from './components/SelectInputView';
 import SingleSelectModal from './modals/SingleSelectModal';
 
 const CSingleSelectInput = props => {
-  const {items} = props;
-  const selectModalRef = useRef(null);
-
+  
+  const {items , mode} = props;
   const {placeholder, description, checkedValue, hasError} = props;
 
+  const selectModalRef = useRef(null);
+
   const getTextFormCheckedValue = () => {
-    if (items) {
-      const foundItem = items.find(x => x.value == checkedValue);
-      if (foundItem) return foundItem.label;
-    }
+    if(mode == 'single'){
+      if (items) {
+        const foundItem = items.find(x => x.value == checkedValue);
+        if (foundItem) return foundItem.label;
+      }
+    }else if(mode == 'multi' && checkedValue != ''){
+      return checkedValue.join(', ');
+    }    
     return '';
   };
   const text = useMemo(() => getTextFormCheckedValue());
   const showDescription = text != '' && text != null;
+
   const onOpenPicker = () => {
     selectModalRef.current.showModal();
   };
+
   const onEmpty = () =>{
     props.onPress();
   }
+  
   const onButtonAction = ({type, item}) => {
     if (type == Constants.actionType.ACTION_CHECK) {
       if (props.onSelectItem) {
@@ -54,6 +62,8 @@ const CSingleSelectInput = props => {
       <SingleSelectModal
         items={items}
         modalTitle={placeholder}
+        clearText={mode == "single" ? "Clear" : "Done"}
+        mode={mode}
         checkedValue={checkedValue}
         onButtonAction={onButtonAction}
         ref={selectModalRef}

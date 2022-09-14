@@ -9,18 +9,21 @@ import { reverseGeocoding } from '../../../../../actions/google.action';
 export default function CustomMasterFields(props) {
 
     const { leadForms , accuracyUnit , useGeoLocation , onChangedCustomMasterFields } = props;    
+
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const actionFormRef = useRef();    
     const [formData1, setFormData1] = useState({});
     const [formStructure1, setFormStructure1] = useState([]);
     const [formData2, setFormData2] = useState({});
     const [formStructure2, setFormStructure2] = useState([]);    
+
     useEffect(() => {      
       initData(leadForms, "first");
       initData(leadForms, "second");
     }, [leadForms])
     
     const initData = (leadForms, type) => {      
+
       var renderForms  = leadForms.filter((item , index) => index != 0);
       if(type == "first"){
         renderForms  = leadForms.filter((item , index) => index == 0);
@@ -35,6 +38,7 @@ export default function CustomMasterFields(props) {
         }
         tmpFormData[field.custom_master_field_id] = value;
       });
+
       if(type == "first"){
         setFormData1(tmpFormData);
         onChangedCustomMasterFields({...tmpFormData});
@@ -42,9 +46,10 @@ export default function CustomMasterFields(props) {
         setFormData2(tmpFormData);
         onChangedCustomMasterFields({...tmpFormData});
       }      
+
       const dynamicFields = renderForms.map((field, index) => {
         var value = field.value;
-        if( (field.field_type == "dropdown" || field.field_type == "dropdown_input") && field.preset_options != undefined ){
+        if( (field.field_type == "dropdown" || field.field_type == "dropdown_input" || field.field_type == "multi_select") && field.preset_options != undefined ){
           var items = [];         
           if(field.preset_options != undefined && field.preset_options != ''){
             field.preset_options.forEach((element) => {
@@ -117,8 +122,7 @@ export default function CustomMasterFields(props) {
             ref={actionFormRef}
             formData={formData1}
             formStructureData={formStructure1}
-            updateFormData={formData => {
-              console.log("form data" , formData)
+            updateFormData={formData => {              
               setFormData1(formData);
               onChangedCustomMasterFields({...formData1, ...formData2});
             }}
@@ -130,7 +134,7 @@ export default function CustomMasterFields(props) {
             ref={actionFormRef}
             formData={formData2}
             formStructureData={formStructure2}
-            updateFormData={formData => {              
+            updateFormData={formData => {                   
               setFormData2(formData);
               onChangedCustomMasterFields({...formData2, ...formData});
             }}

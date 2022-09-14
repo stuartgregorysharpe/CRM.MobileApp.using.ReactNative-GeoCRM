@@ -4,15 +4,18 @@ import CModal from '../../../common/CModal';
 import SingleSelectContainer from '../containers/SingleSelectContainer';
 
 const SingleSelectModal = React.forwardRef((props, ref) => {
-  const {modalTitle} = props;
+
+  const {modalTitle , mode} = props;
+
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
-    if (ref) {
+    if (ref && mode === 'single') {
       ref.current.hideModal();
     }
   };
+
   return (
     <CModal
       ref={ref}
@@ -32,5 +35,6 @@ const SingleSelectModal = React.forwardRef((props, ref) => {
       />
     </CModal>
   );
+  
 });
 export default SingleSelectModal;

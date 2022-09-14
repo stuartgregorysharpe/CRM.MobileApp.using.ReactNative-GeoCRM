@@ -12,7 +12,7 @@ const AddItemButton = (props) => {
         
         <TouchableOpacity style={styles.btnContainer} onPress={onPress}>            
             <SvgIcon icon="Pluse_Icon" width='15' height='15' style={{marginRight:5}}/>
-            <AppText title={'Add ' + title}  color={Colors.whiteColor} ></AppText>
+            <AppText title={'Add ' + title}  color={Colors.whiteColor} size="medium" ></AppText>
             <SvgIcon icon="DoubleArrowWhite" width='15' height='15' style={{marginLeft:10}}/>
         </TouchableOpacity>
     )
