@@ -1,5 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
+import DropdownText from '../../shared/DropdownText';
 import TakePhotoView from '../../shared/TakePhotoView';
 import { YesNoForm } from '../../shared/YesNoForm';
 import CTextInput from '../CTextInput';
@@ -21,12 +22,11 @@ const DynamicField = props => {
     isFirst,
     index,
     dynamicFieldRef,
+    preset_options,
     isClickable,
   } = props;
 
-  const disabled = editable && editable == '0';
-
-  console.log("KEY ===== ", index);
+  const disabled = editable && editable == '0';  
 
   const renderNumber = () => {
     return (
@@ -191,7 +191,6 @@ const DynamicField = props => {
   const renderYesNoView = () =>{
 
     return (<YesNoForm
-
           onTakeImage={async (images, type) => {
             if (type === 'yes') {
               
@@ -206,6 +205,20 @@ const DynamicField = props => {
           item={{question_text:field_label, include_image:[], value:value}}
           >    
     </YesNoForm>)
+  }
+
+  const renderDropdownText = () => {
+    return (
+      <DropdownText
+        questionType={field_type}
+        item={{question_text:field_label + "s", field_label:field_label,  field_name:field_name, value:value}}
+        options={preset_options}
+        style={{marginHorizontal:0}}
+        onFormAction={({type, value}) => {          
+          updateFormData(field_name, value);
+        }}
+      />
+    )
   }
 
   if (!field_type) return null;
@@ -234,6 +247,10 @@ const DynamicField = props => {
   }
   if (field_type == 'yes_no') {
     return renderYesNoView();
+  }
+
+  if(field_type == 'dropdown_text') {
+    return renderDropdownText();
   }
 
 
