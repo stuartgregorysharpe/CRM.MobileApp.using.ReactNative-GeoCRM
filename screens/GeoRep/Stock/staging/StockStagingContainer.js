@@ -5,15 +5,17 @@ import dummyData from './dummyData.json';
 import {getItemsFromShipments} from './helper';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
 import {Strings} from '../../../../constants';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
 import {Notification} from '../../../../components/modal/Notification';
+import {getPostParameter} from '../../../../constants/Helper';
 const StockStagingContainer = props => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
   useEffect(() => {
     onLoad();
@@ -32,9 +34,11 @@ const StockStagingContainer = props => {
   };
   const onAccept = items => {
     console.log('onAccept');
+    const userParam = getPostParameter(currentLocation);
     setIsLoading(true);
     postApiRequest('stockmodule/staging-accept', {
       iccids: items.map(item => item.iccid),
+      user_local_data: userParam.user_local_data,
     })
       .then(res => {
         console.log('res', res);

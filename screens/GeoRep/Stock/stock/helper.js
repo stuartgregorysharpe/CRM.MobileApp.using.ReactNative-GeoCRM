@@ -9,7 +9,6 @@ export function getItemsFromStockItems(stockItems) {
         stockItem.items.forEach(item => {
           items.push({
             stock_type: stockItem.stock_type,
-            stockItem_id: stockItem.stockItem_id,
             network: stockItem.network,
             date: stockItem.date,
             ...item,
@@ -41,7 +40,6 @@ export function getStockItemsFromItems(items) {
     if (stockItemItems && stockItemItems.length > 0) {
       const item = stockItemItems[0];
       const stockItem = {
-        stock_item_id: item.stock_item_id,
         stock_type: item.stock_type,
         network: item.network,
         date: item.date,

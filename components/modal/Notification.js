@@ -55,7 +55,6 @@ export const Notification = ({}) => {
         : styles.alignLeft,
     [notification],
   );
-  console.log('notification', notification);
   const cancelButtonStyle = notification.cancelButtonAction
     ? styles.button
     : styles.cancelButton;
