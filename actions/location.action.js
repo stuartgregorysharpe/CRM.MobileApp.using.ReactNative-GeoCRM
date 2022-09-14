@@ -528,45 +528,6 @@ export const getLocationContacts = async location_id => {
   });
 };
 
-export const addEditLocationContact = async postData => {
-  var token = await getToken();
-  var baseUrl = await getBaseUrl();
-  console.log('URL ', `${baseUrl}/locations/add-edit-contacts`);
-  console.log('Param ', postData);
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${baseUrl}/locations/add-edit-contacts`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
-        },
-      })
-      .then(res => {
-        // console.log("getLocationFields:",res.data);
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == 'success') {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
-
 export const updateCustomerLocationFields = async postData => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();

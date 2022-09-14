@@ -26,6 +26,11 @@ export default {
   Type: 'Type',
   Added_Date: 'Added Date',
 
+  Log:{
+    Post_Api_Error: 'Post Api Call Error : ',
+    Get_Api_Error: 'Get Api Call Error : ',
+  },
+    
   Home: {
     Sync_All: 'Sync All',
   },
@@ -51,4 +56,11 @@ export default {
     Please_Sign: 'Please Sign below:',
     Select_Scan_Type: 'Select Scan Type',
   },
+
+  PostRequestResponse: {
+    Successfully_Checkout: 'Successfully Checkout !',
+    Successfully_Checkin: 'Successfully Checkin !',
+    
+  }
+
 };

@@ -1,7 +1,6 @@
 import {View, Text, ScrollView, FlatList, Dimensions} from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import SyncAll from './../partial/SyncAll';
-import CheckOut from './../partial/CheckOut';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import IndicatorDotScroller from '../../../../components/common/IndicatorDotScroller';
 import Colors from '../../../../constants/Colors';
@@ -19,9 +18,9 @@ import {Notification} from '../../../../components/modal/Notification';
 import {showNotification} from '../../../../actions/notification.action';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
+import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 
-export default function MainPage(props) {
-
+const  MainPage = props => {
 
   const dispatch = useDispatch();  
   const [refresh, setRefresh] = useState(false);
@@ -130,7 +129,6 @@ export default function MainPage(props) {
     var startMyDay = await getLocalData('start_my_day');
     setIsStart(startMyDay === null || startMyDay === '1' ? true : false);
   };
-
   
   const _callMyDay = () => {
     var userParam = getPostParameter(currentLocation);
@@ -212,15 +210,13 @@ export default function MainPage(props) {
           }}></SubmitButton>
       </View>
 
-      <SyncAll refresh={refresh}></SyncAll>
-
-      
-
+      <SyncAll refresh={refresh}></SyncAll>      
 
       {isCheckin && (
-        <CheckOut
+        <CheckOutViewContainer        
+          type="home"
           checkinStatus={checkinStatus}
-          currentCall={currentCall}></CheckOut>
+          currentCall={currentCall}></CheckOutViewContainer>
       )}
 
       <FlatList
@@ -254,3 +250,5 @@ export default function MainPage(props) {
     </ScrollView>
   );
 }
+
+export default MainPage;

@@ -55,6 +55,7 @@ const DynamicField = props => {
         value={value}
         hasError={hasError}
         disabled={disabled}
+        pointerEvents={disabled ? "none" : "auto"}
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
@@ -62,6 +63,28 @@ const DynamicField = props => {
       />
     );
   };
+
+  const renderEmailText = () => {
+    return (
+      <CTextInput
+        label={field_label}
+        key={index}
+        dynamicFieldRef={dynamicFieldRef}
+        index={index}
+        isRequired={is_required}
+        value={value}
+        keyboardType="email-address"
+        hasError={hasError}
+        disabled={disabled}
+        pointerEvents={disabled ? "none" : "auto"}
+        onChangeText={text => {
+          updateFormData(field_name, text);
+        }}
+        style={{marginTop: isFirst ? 0 : 5}}
+      />
+    );
+  };
+
 
   const renderDropdown = () => {
     return (
@@ -162,6 +185,9 @@ const DynamicField = props => {
   if (!field_type) return null;
   if (field_type == 'text') {
     return renderText();
+  }
+  if (field_type == 'email'){
+    return renderEmailText();
   }
   if (field_type == 'numbers') {
     return renderNumber();

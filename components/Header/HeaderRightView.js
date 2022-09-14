@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
-import { PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
+import { whiteLabel } from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
@@ -43,8 +43,8 @@ export default function HeaderRightView() {
           onColor="#fff"
           offColor="#a3c0f9"
           size="small"
-          thumbOnStyle={{ backgroundColor: PRIMARY_COLOR }}
-          thumbOffStyle={{ backgroundColor: PRIMARY_COLOR }}
+          thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
+          thumbOffStyle={{ backgroundColor: whiteLabel().headerBackground }}
           isOn={toggleSwitch}
           onToggle={ async (toggleSwitch)  => {
             console.log("clicked", toggleSwitch)

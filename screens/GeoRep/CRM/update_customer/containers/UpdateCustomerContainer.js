@@ -3,7 +3,7 @@ import { Platform, View } from 'react-native'
 import React , {useEffect, useState , useRef} from 'react'
 import { Constants } from '../../../../../constants';
 import UpdateCustomerView from '../components/UpdateCustomerView';
-import { getApiRequest, postApiRequest, postApiRequestMultipart } from '../../../../../actions/api.action';
+import { getApiRequest, postApiRequest } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';

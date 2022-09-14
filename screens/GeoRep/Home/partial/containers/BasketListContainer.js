@@ -183,8 +183,10 @@ export const BasketListContainer = forwardRef((props, ref) => {
             return "";
         }else{
             if(check.length > 0){
+                
                 var timestamp =  check.item(0).timestamp;
                 var timezone = check.item(0).timezone;
+                //var convertedTime = getDateTimeFromBasketTime(timestamp);
                 return `&timestamp=${timestamp}&timezone=${timezone}`;
             }                  
         }

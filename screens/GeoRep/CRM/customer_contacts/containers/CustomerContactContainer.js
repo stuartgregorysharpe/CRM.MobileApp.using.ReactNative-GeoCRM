@@ -14,7 +14,6 @@ export default function CustomerContactContainer(props) {
     const [tabIndex , setTabIndex] = useState(0);
     const headers = ["Customer", "Contacts"];
     const refPagerView = useRef();
-    const screenMargin = Platform.OS === "ios" ? 100 : 115;
     const [locationFields, setLocationFields] = useState([]);
     const [contacts, setContacts] = useState([]);
     const dispatch = useDispatch()
@@ -40,6 +39,8 @@ export default function CustomerContactContainer(props) {
     const getContactsInfo = () => {
         var params = {location_id: locationId};
         getApiRequest("locations/location-contacts" , params).then((res) => {
+            console.log("RES" , locationId)
+            console.log("RES" , res)
             prepareContactsList(res.contacts);
         }).catch((e) => {
 
@@ -84,7 +85,7 @@ export default function CustomerContactContainer(props) {
                         <Customer {...props} locationFields={locationFields}  getCustomerInfo={getCustomerInfo}/> 
                     </View>
                     <View key="2">                        
-                        <Contacts {...props} contacts={contacts} />                    
+                        <Contacts {...props} contacts={contacts} updateContacts={getContactsInfo} />                    
                     </View>
             </PagerView>
             

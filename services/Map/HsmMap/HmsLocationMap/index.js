@@ -16,8 +16,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import {Fonts, Images} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
-import {
-  getPinSvg,
+import {  
   getPolygonFillColorTransparency,
 } from '../../../../constants/Storage';
 import {calcArgbIntValFromHexRgba} from '../../../../helpers/formatHelpers';
