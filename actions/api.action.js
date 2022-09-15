@@ -1,6 +1,7 @@
 import axios from 'axios';
 import uuid from 'react-native-uuid';
 import {getBaseUrl, getToken} from '../constants/Storage';
+import Strings from '../constants/Strings';
 export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
     setTimeout(() => {
@@ -31,12 +32,11 @@ export const getApiRequest = async (route, param) => {
         },
       })
       .then(res => {
-        
+                
         if (res.data == undefined) {
           resolve([]);
         }
-        if (res.data.status == 'success') {
-        
+        if (res.data.status == Strings.Success) {        
           resolve(res.data);
         } else {
           resolve(res.data);
@@ -80,7 +80,7 @@ export const postApiRequest = async (route, postData , indempotencyKey) => {
       })
       .then(res => {
         
-        if (res.data && res.data.status === 'success') {
+        if (res.data && res.data.status === Strings.Success) {
           resolve(res.data);
         } else {
           resolve(res.data);
@@ -125,15 +125,18 @@ export const postApiRequestMultipart = async (route, postData , indempotencyKey)
       })
       .then(res => {
         console.log('res', res.data);
-        if (res.data.status && res.data.status === 'success') {
+        if (res.data.status && res.data.status === Strings.Success) {
           resolve(res.data);
         }
         resolve(0);
       })
       .catch(err => {
         //console.log('api error: ', JSON.stringify(err));
+        console.log("----" ,err)
         const error = err.response;
-        if (
+        if (error != undefined && error.status != undefined && error.status === 400){
+          console.log("error 400", error)
+        }else if (
           error != undefined && error.status != undefined && error.status === 401 &&
           error.config &&
           !error.config.__isRetryRequest

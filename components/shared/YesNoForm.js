@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView, Text, Image,Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, StyleSheet, Text, Image,Dimensions } from 'react-native';
 import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { style } from '../../constants/Styles';
@@ -8,19 +8,15 @@ import { Button } from './Button';
 import SvgIcon from '../SvgIcon';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import * as ImagePicker from 'react-native-image-picker'; 
-import RNFS from 'react-native-fs';
 
 export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
 
-    const [isYes, setIsYes] = useState(item.value !== null && item.value === "yes" ? true:false);
-    const [isNo, setIsNo] = useState(item.value !== null && item.value === "no" ? true:false);
+    const [isYes, setIsYes] = useState(item.value !== null && item.value.toLowerCase() == 'yes' ? true:false);
+    const [isNo, setIsNo] = useState(item.value !== null && item.value.toLowerCase() == 'no' ? true:false);
     const [isPicker , setIsPicker] = useState(false);
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-
-
     
-        
-
+            
     const showSelectionDialog = () => {        
         setIsPicker(true);      
     }
@@ -57,8 +53,6 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
           }
         }
       });
-
-
     }
   
     const launchCamera = () => {
@@ -99,10 +93,9 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       return false;
     }
     
-
     const getImagePath = () =>{
       console.log("image path", item.value);
-      if(item.value === "yes"){        
+      if(item.value != null && item.value.toLowerCase() === "yes"){        
         return item.yes_image;        
       }else{
         return item.no_image;
@@ -113,10 +106,10 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       if(item && item.value === null || item.value === ""){
         return false;
       }
-      if(item && item.value === "yes" && item.yes_image){
+      if(item && item.value != null && item.value.toLowerCase() === "yes" && item.yes_image){
         return true;
       }
-      if(item && item.value === "no" && item.no_image){
+      if(item && item.value != null && item.value.toLowerCase() === "no" && item.no_image){
         return true;
       }
       return false;
@@ -127,18 +120,18 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
     
     const getMarginLeft = () => {
-      if(item.value && item.value === 'no' && !isIncludeImage("No")){
+      if(item.value && item.value.toLowerCase() === 'no' && !isIncludeImage("No")){
         return 20;
-      }else if(item.value && item.value === "yes" && !isIncludeImage("Yes")){
+      }else if(item.value && item.value.toLowerCase() === "yes" && !isIncludeImage("Yes")){
         return 20;
-      }else if(item.value === null || item.value === undefined){
+      }else if(item.value === null || item.value === undefined || item.value === ''){
         return 20;
       }
       return 0;
     }
 
     return (
-        <View style={[style.card, isCompulsory ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
+        <View style={[style.card, isCompulsory ? style.compulsoryStyle :{}, {marginHorizontal:0 , marginVertical:5 }]}>
             <View style={[styles.container]}>
                 
                 <PhotoCameraPickerDialog visible={isPicker} message={"Choose Image"} 
@@ -171,7 +164,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
 
                     <View style={{flexDirection: isIncludeImage(isYes ? "Yes" : 'No') && item.value !== null ? 'column':'row' , justifyContent:'center'}}>
                         
-                          <Button btnStyle={{marginTop:10 }} title={'Yes'} onTaped= {item.value !== null && item.value === "yes" ? true:false} 
+                          <Button btnStyle={{marginTop:10 }} title={'Yes'} onTaped= {item.value !== null && item.value.toLowerCase() === "yes" ? true:false} 
                             onClick={() => {
                                 setIsYes(true);
                                 setIsNo(false);
@@ -183,16 +176,16 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                             }} ></Button>
                                                                       
                           <Button btnStyle={{marginTop:10 , 
-                          marginLeft: getMarginLeft() }} title={'No'} onTaped={item.value !== null && item.value === "no" ? true:false}
-                          onClick={() =>{
-                              setIsYes(false);
-                              setIsNo(true);
-                              if(item.include_image.length == 0){
-                                onPress("no" , "no_image");
-                              }else{
-                                onPress("no" , "include_image");
-                              }                            
-                          }}
+                            marginLeft: getMarginLeft() }} title={'No'} onTaped={item.value !== null && item.value.toLowerCase() === "no" ? true:false}
+                            onClick={() =>{
+                                setIsYes(false);
+                                setIsNo(true);
+                                if(item.include_image.length == 0){
+                                  onPress("no" , "no_image");
+                                }else{
+                                  onPress("no" , "include_image");
+                                }                            
+                            }}
                           ></Button>
                           
                     </View>

@@ -1,4 +1,4 @@
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Constants} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
@@ -25,30 +25,29 @@ import { getFileFormat } from '../../../../../constants/Helper';
 
 export default function AddLeadContainer(props) {
 
-
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const [leadForms, setLeadForms] = useState([]);
-  const [accuracyUnit, setAccuracyUnit] = useState('m');
-  const [formLists, setFormLists] = useState([]);
-  const [selectedLists, setSelectedLists] = useState([]);
 
   const selectDeviceModalRef = useRef(null);
   const viewListsModalRef = useRef(null);
   const formQuestionModalRef = useRef(null);
   const addLeadFormModalRef = useRef(null);
 
+  const [leadForms, setLeadForms] = useState([]);
+  const [accuracyUnit, setAccuracyUnit] = useState('m');
+  const [formLists, setFormLists] = useState([]);
+  const [selectedLists, setSelectedLists] = useState([]);  
   const [selectDeviceCount, setSelectDeviceCount] = useState(0);
   const [isCurrentLocation, setIsCurrentLocation] = useState('0');
   const [customMasterFields, setCustomMasterFields] = useState({});
   const [primaryData, setPrimaryData] = useState({});
-
   const [form, setForm] = useState({});
   const [form_answers, setFormAnswers] = useState([]);
   const [files, setFiles] = useState([]);
 
   const dispatch = useDispatch();
-
+  
   var isMount = true;
+
   useEffect(() => {
     getCustomMasterFields();
     return () => {
@@ -62,20 +61,16 @@ export default function AddLeadContainer(props) {
 
   const getCustomMasterFields = () => {
     getApiRequest('leadfields', {})
-      .then(res => {
-        
-        console.log("res.component_title", res.component_title)
+      .then(res => {        
         if(props.changeTitle && res.component_title != undefined){
-
           props.changeTitle(res.component_title);
-        }
-        
+        }        
         if (isMount) {
           setLeadForms(res.custom_master_fields);
           setAccuracyUnit(res.accuracy_distance_measure);
         }
       })
-      .catch(e => {});
+      .catch(e => { console.log("error", e) });
   };
 
   const getFormLists = async () => {
@@ -93,7 +88,7 @@ export default function AddLeadContainer(props) {
       group_split: groupSplitItem ? groupSplitItem.value : '',
     };
     getApiRequest('forms/forms-list', param)
-      .then(res => {      
+      .then(res => {              
         setFormLists(res.forms);
       })
       .catch(e => {});
@@ -157,7 +152,7 @@ export default function AddLeadContainer(props) {
     });
 
     form_answers.map(item => {
-      if (item.key != undefined && item.value != undefined) {
+      if (item.key != undefined && item.value != undefined && item.value != '') {
         postData.append(item.key, item.value);
       }
     });
@@ -177,10 +172,10 @@ export default function AddLeadContainer(props) {
       }
     });
 
+
     postApiRequestMultipart('leadfields', postData)
-      .then(res => {
-        if (res.status === 'success') {
-          console.log("Succes ====", res);
+      .then(res => {      
+        if (res.status === 'success') {          
           dispatch(
             showNotification({
               type: 'success',
@@ -201,30 +196,47 @@ export default function AddLeadContainer(props) {
         console.log('e', e);
       });
   };
+
+
   const getCustomMasterParameterData = postData => {
     Object.keys(customMasterFields).forEach((key, index) => {
       if (key != undefined && key != '') {
         var check = leadForms.find(item => item.custom_master_field_id == key);
         if (check != null && check != undefined) {
-          postData.append(
-            `custom_master_fields[${index}][custom_master_field_id]`,
-            key,
-          );
-          if (check.field_type == 'dropdown_input') {
+
+          if(customMasterFields[key] != undefined && customMasterFields[key] != ''){
             postData.append(
-              `custom_master_fields[${index}][dropdown_value]`,
-              customMasterFields[key].value,
+              `custom_master_fields[${index}][custom_master_field_id]`,
+              key,
             );
-            postData.append(
-              `custom_master_fields[${index}][value]`,
-              customMasterFields[key].secondValue,
-            );
-          } else {
-            postData.append(
-              `custom_master_fields[${index}][value]`,
-              customMasterFields[key],
-            );
-          }
+  
+            if (check.field_type == 'multi_select') {
+              customMasterFields[key].forEach((element , subIndex) => {
+                postData.append( `custom_master_fields[${index}][value][${subIndex}]`, element );                
+              });
+            }else if (check.field_type == 'dropdown_text') {
+              customMasterFields[key].forEach((element , subIndex) => {
+                postData.append( `custom_master_fields[${index}][value][${subIndex}][option]`, element.option );
+                postData.append( `custom_master_fields[${index}][value][${subIndex}][input]`, element.input );
+              });
+            }else if (check.field_type == 'dropdown_input') {
+              postData.append(
+                `custom_master_fields[${index}][dropdown_value]`,
+                customMasterFields[key].value,
+              );
+              postData.append(
+                `custom_master_fields[${index}][value]`,
+                customMasterFields[key].secondValue,
+              );
+            } else {
+  
+              postData.append(
+                `custom_master_fields[${index}][value]`,
+                customMasterFields[key],
+              );
+            }
+
+          }          
         }
       }
     });
@@ -296,8 +308,7 @@ export default function AddLeadContainer(props) {
   const renderRightPart = () => {
     return (
       <TouchableOpacity
-        onPress={() => {
-          console.log('pressed');
+        onPress={() => {          
           viewListsModalRef.current.hideModal();
         }}>
         <SvgIcon icon="Close" width="20" height="20" />
@@ -308,8 +319,7 @@ export default function AddLeadContainer(props) {
   const useGeoLocation = () => {
     setIsCurrentLocation('1');
   };
-  const onChangedCustomMasterFields = value => {
-    console.log('onChangedCustomMasterFields--', value);
+  const onChangedCustomMasterFields = value => {    
     setCustomMasterFields(value);
   };
   const onPrimaryContactFields = value => {
@@ -353,8 +363,7 @@ export default function AddLeadContainer(props) {
           addLeadFormModalRef.current.hideModal();
         }}
         onNext={item => {
-          if (formQuestionModalRef.current) {
-            console.log('triggered item', item);
+          if (formQuestionModalRef.current) {            
             setForm({form_id: item.form_id, form_name: ''});
             formQuestionModalRef.current.showModal();
           }
@@ -406,7 +415,7 @@ export default function AddLeadContainer(props) {
         onButtonAction={onFormQuestionModalClosed}
       />
       <SubmitButton
-        style={{marginHorizontal: 10, marginBottom: 30}}
+        style={{marginHorizontal: 10, marginBottom: Platform.OS == 'android' ? 10 : 20, marginTop:10 }}
         title={'Add'}
         onSubmit={onAdd}
       />

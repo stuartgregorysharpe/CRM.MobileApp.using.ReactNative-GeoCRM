@@ -5,27 +5,34 @@ import { Fonts } from '../../../../../constants';
 import { useSelector } from 'react-redux';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import { reverseGeocoding } from '../../../../../actions/google.action';
+import { checkIfQuestionIsTrigger } from '../../../Forms/questions/helper';
 
 export default function CustomMasterFields(props) {
 
     const { leadForms , accuracyUnit , useGeoLocation , onChangedCustomMasterFields } = props;    
+
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const actionFormRef = useRef();    
     const [formData1, setFormData1] = useState({});
     const [formStructure1, setFormStructure1] = useState([]);
     const [formData2, setFormData2] = useState({});
-    const [formStructure2, setFormStructure2] = useState([]);    
+    const [formStructure2, setFormStructure2] = useState([]);
+    const [updatedLeadForm , setUpdatedLeadForm] = useState([]);
+
+
     useEffect(() => {      
       initData(leadForms, "first");
       initData(leadForms, "second");
+      setUpdatedLeadForm(leadForms);
     }, [leadForms])
     
     const initData = (leadForms, type) => {      
+
       var renderForms  = leadForms.filter((item , index) => index != 0);
       if(type == "first"){
         renderForms  = leadForms.filter((item , index) => index == 0);
       }     
-      const tmpFormData = {}; 
+      const tmpFormData = {};
       renderForms.forEach(field => {
         var value = field.value;
         if(field.field_type === "dropdown_input"){
@@ -35,16 +42,18 @@ export default function CustomMasterFields(props) {
         }
         tmpFormData[field.custom_master_field_id] = value;
       });
+
       if(type == "first"){
         setFormData1(tmpFormData);
         onChangedCustomMasterFields({...tmpFormData});
       }else{
         setFormData2(tmpFormData);
         onChangedCustomMasterFields({...tmpFormData});
-      }      
+      }
+
       const dynamicFields = renderForms.map((field, index) => {
         var value = field.value;
-        if( (field.field_type == "dropdown" || field.field_type == "dropdown_input") && field.preset_options != undefined ){
+        if( (field.field_type == "dropdown" || field.field_type == "dropdown_input" || field.field_type == "multi_select") && field.preset_options != undefined ){
           var items = [];         
           if(field.preset_options != undefined && field.preset_options != ''){
             field.preset_options.forEach((element) => {
@@ -55,9 +64,9 @@ export default function CustomMasterFields(props) {
             ...field,
             items: items
           }          
-        }       
-                
-        return {
+        }
+
+        return {          
           ...field,
           key:index,
           field_name: field.custom_master_field_id,
@@ -67,13 +76,36 @@ export default function CustomMasterFields(props) {
           field_label:field.field_name,    
           value: value
         };
-      });      
+      }); 
+
       if(type == "first"){
         setFormStructure1(dynamicFields)
       }else{        
-        setFormStructure2(dynamicFields)
+        addValue(formData2 , dynamicFields);
+        filterTriggerForm(dynamicFields);        
+      }      
+    }
+
+    const addValue = (formData , formStructure2) => {
+
+      for(let key of Object.keys(formData)){
+        formStructure2.map(element => {
+          if(element.field_name == key) {
+            element.value = formData[key];
+          }
+          return element;
+        } );
       }
-      
+    }
+    
+    const filterTriggerForm = (formStructure2) => {      
+      let formStructure = [];
+      for (let i = 0; i < formStructure2.length; i++) {                
+        const isShow = checkIfQuestionIsTrigger(formStructure2[i], formStructure2 , 'form');
+        formStructure2[i].isHidden = !isShow;        
+        formStructure.push(formStructure2[i]);
+      }      
+      setFormStructure2(formStructure);
     }
 
     const renderUseCurrentLocation = key => {
@@ -85,13 +117,17 @@ export default function CustomMasterFields(props) {
           ]}
           key={key + 100}
           onPress={async () => {
-            if (currentLocation) {                            
+            if (currentLocation) {
+
+              var leadForms = addValueToLeadForm(formData1, updatedLeadForm);
+              leadForms = addValueToLeadForm(formData2, leadForms);
               var masterFields = await reverseGeocoding(currentLocation, leadForms );              
               if (masterFields.length > 0) {                
                 initData(masterFields, "first");
-                initData(masterFields, "second");                
+                initData(masterFields, "second");
                 useGeoLocation();
               }
+
             }
           }}>
           <Text style={[styles.linkBoxText, {flex: 1}]}>
@@ -110,6 +146,21 @@ export default function CustomMasterFields(props) {
       );
     };
 
+    const addValueToLeadForm = (formData ,updatedLeadForm) => {
+
+      var leadForms = [...updatedLeadForm];
+      for(let key of Object.keys(formData)){
+        leadForms.map(element => {
+          if(element.custom_master_field_id == key) {
+            element.value = formData[key];
+          }
+          return element;
+        } );
+      }
+      return leadForms;
+
+    }
+    
     return (
         <View>
 
@@ -118,9 +169,9 @@ export default function CustomMasterFields(props) {
             formData={formData1}
             formStructureData={formStructure1}
             updateFormData={formData => {
-              console.log("form data" , formData)
               setFormData1(formData);
-              onChangedCustomMasterFields({...formData1, ...formData2});
+              onChangedCustomMasterFields({...formData, ...formData2});
+
             }}
           />
 
@@ -130,13 +181,15 @@ export default function CustomMasterFields(props) {
             ref={actionFormRef}
             formData={formData2}
             formStructureData={formStructure2}
-            updateFormData={formData => {              
+            updateFormData={formData => {                   
               setFormData2(formData);
-              onChangedCustomMasterFields({...formData2, ...formData});
+              addValue(formData , formStructure2);
+              filterTriggerForm(formStructure2);
+              onChangedCustomMasterFields({...formData1, ...formData});
             }}
             updateSecondFormData={formData => {              
               setFormData2(formData);              
-              onChangedCustomMasterFields({...formData2, ...formData});
+              onChangedCustomMasterFields({...formData1, ...formData});
             }}            
           />
 

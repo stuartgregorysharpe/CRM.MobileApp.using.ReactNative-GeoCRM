@@ -1,18 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {Colors, Fonts} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
 import SvgIcon from '../../../SvgIcon';
 
 const SelectInputView = props => {
+
   const {description, placeholder, showDescription, text, hasError} = props;
   const iconName = props.dropdownIcon || 'Drop_Down';
+  const showText = text != undefined && text != null && text != '';
+
   const onPress = () => {
     if (props.onPress) {
       props.onPress();
     }
   };
-  const showText = text != undefined && text != null && text != '';
+  
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
   };
@@ -71,8 +74,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.bgColor,
   },
   container: {
-    alignSelf: 'stretch',
-    height: 40,
+    alignSelf: 'stretch',    
+    minHeight:40,
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: Colors.bgColor,

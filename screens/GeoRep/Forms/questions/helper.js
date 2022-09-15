@@ -7,7 +7,7 @@ export function filterTriggeredQuestions(formQuestionGroups) {
     questions.push(...formQuestionGroup.questions);
   });
   for (let i = 0; i < questions.length; i++) {
-    const isShow = checkIfQuestionIsTrigger(questions[i], questions);
+    const isShow = checkIfQuestionIsTrigger(questions[i], questions , 'question');
     questions[i].isHidden = !isShow;
     if (questions[i].isHidden) {
       console.log('Hidden:', questions[i].question_text);
@@ -15,27 +15,43 @@ export function filterTriggeredQuestions(formQuestionGroups) {
   }
   return formQuestionGroups;
 }
-export function checkIfQuestionIsTrigger(question, questions) {
+
+
+export function checkIfQuestionIsTrigger(question, questions , type) {
+
   if (!question) return false;
   if (!question.trigger || question.trigger == []) {
     return true;
   }
-
-  const triggerSetting = question.trigger;
+  
+  const triggerSetting = question.trigger;    
   let conditionQuestion = null;
-  if (triggerSetting.question_id) {
-    conditionQuestion = questions.find(
-      x => x.form_question_id == triggerSetting.question_id,
-    );
+
+  if(type == 'question'){
+    if (triggerSetting.question_id) {    
+      conditionQuestion = questions.find(
+        x => x.form_question_id == triggerSetting.question_id,
+      );
+    }
+  }else if(type == 'form'){    
+    if (triggerSetting.trigger_field_id) {        
+      conditionQuestion = questions.find(
+        x => x.custom_master_field_id == triggerSetting.trigger_field_id,
+      );
+    }
   }
-  if (!conditionQuestion) {
+    
+  if (!conditionQuestion) {      
     return true;
   }
+  
   const result = checkTriggerCondition(
     question,
     conditionQuestion,
     triggerSetting,
+    type
   );
+  
   console.log('question: id', question.form_question_id);
   console.log('question: title', question.question_text);
   console.log('conditionQuestion: type', conditionQuestion.question_type);
@@ -45,35 +61,42 @@ export function checkIfQuestionIsTrigger(question, questions) {
   console.log('conditionResult', result);
   return result;
 }
-function checkTriggerCondition(question, conditionQuestion, triggerSetting) {
+
+function checkTriggerCondition(question, conditionQuestion, triggerSetting , formType) {
   if (!question || !conditionQuestion || !triggerSetting) {
     return true;
   }
-  const condition = triggerSetting.condition;
-  const answer = triggerSetting.answer;
-  const type = triggerSetting.type;
+  let condition = triggerSetting.condition;  
+  let answer = triggerSetting.answer;
+  let type = triggerSetting.type;
+  let value = conditionQuestion.value;
 
-  const value = conditionQuestion.value;
+  if(formType == 'form'){
+    condition = triggerSetting.trigger_condition;    
+  }
 
   if (type == 'text') {
     return checkTextTriggerCondition(condition, answer, value);
   } else if (type == 'numbers') {
     return checkNumbersTriggerCondition(condition, answer, value);
-  } else if (type == 'dropdown') {
-    return checkDropdownTriggerCondition(condition, answer, value);
+  } else if (type == 'dropdown') {    
+    return checkDropdownTriggerCondition(condition, answer, value , formType);
   }
 
   return true;
 }
 
-function checkDropdownTriggerCondition(condition, answerList, valueList) {
+function checkDropdownTriggerCondition(condition, answerList, valueList ,formType) {
   console.log('checkDropdownTriggerCondition -condition', condition);
   console.log('checkDropdownTriggerCondition -answer', answerList);
   console.log('checkDropdownTriggerCondition -value', valueList);
-  if (
-    condition != 'ANY' &&
-    (!Array.isArray(answerList) || !Array.isArray(valueList))
-  )
+
+  if(formType == 'form'){
+    return checkTextTriggerCondition(condition, answerList, valueList);    
+  }
+
+
+  if ( condition != 'ANY' && (!Array.isArray(answerList) || !Array.isArray(valueList)))
     return false;
   if (condition == 'ANY') {
     if (valueList && valueList.length > 0) {
@@ -100,8 +123,8 @@ function checkDropdownTriggerCondition(condition, answerList, valueList) {
       });
     }
     return isConditionApproved;
-  } else if (condition == '=') {
-    let isConditionApproved = answerList.length == valueList.length;
+  } else if (condition == '=') {    
+    let isConditionApproved = answerList.length == valueList.length;    
     if (answerList && answerList.length > 0) {
       answerList.forEach(answer => {
         isConditionApproved = isConditionApproved && valueList.includes(answer);

@@ -1,20 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {SubmitButton} from '../../../shared/SubmitButton';
 import SingleSelectList from '../components/SingleSelectList';
 
 const SingleSelectContainer = props => {
-  const {buttonTitle, checkedValue} = props;
+
+  const {buttonTitle, checkedValue , mode} = props;
+
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
   };
+  
   return (
     <View style={[styles.container, props.style]}>
       <ScrollView style={{maxHeight: 400, alignSelf: 'stretch'}}>
         <SingleSelectList
           items={props.items}
+          mode={mode}
           checkedValue={checkedValue}
           onItemAction={onButtonAction}
           style={{marginHorizontal: 12}}
