@@ -25,6 +25,8 @@ const DynamicField = props => {
     dynamicFieldRef,
     preset_options,
     isClickable,
+    isHidden,
+    input_label
   } = props;
 
   const disabled = editable && editable == '0';  
@@ -90,7 +92,8 @@ const DynamicField = props => {
     );
   };
 
-  const renderDropdown = (mode) => {
+  const renderDropdown = (mode = 'single') => {
+    
     return (
       <CSingleSelectInput
         key={index}
@@ -147,6 +150,7 @@ const DynamicField = props => {
           placeholder={'Select ' + field_label}
           checkedValue={value.value}
           items={items}
+          mode={'single'}
           hasError={hasError}
           disabled={disabled}
           isClickable={isClickable}
@@ -235,7 +239,7 @@ const DynamicField = props => {
     return (
       <DropdownText
         questionType={field_type}
-        item={{question_text:field_label + "s", field_label:field_label,  field_name:field_name, value:value}}
+        item={{question_text:field_label + "s", field_label:field_label,  field_name:field_name, value:value , input_label:input_label}}
         options={preset_options}
         style={{marginHorizontal:0}}
         onFormAction={({type, value}) => {          
@@ -246,6 +250,9 @@ const DynamicField = props => {
   }
 
   if (!field_type) return null;
+  
+  if(isHidden != undefined && isHidden == true) return null;
+  
   if (field_type == 'text') {
     return renderText();
   }

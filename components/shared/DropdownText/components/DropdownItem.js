@@ -9,10 +9,10 @@ import { style } from '../../../../constants/Styles';
 
 const DropdownItem = (props) => {
 
-    const { title, index, item} = props;
+    const { title, index, input_label, item} = props;
     const { option , input } = item;    
 
-    const [expand, setExpand] = useState(false);
+    const [expand, setExpand] = useState(true);
     const [inputValue, setValue] = useState('');
 
     useEffect(() => {
@@ -26,6 +26,7 @@ const DropdownItem = (props) => {
     return (        
         <View style={[{alignSelf:'stretch'},style.card]}>
             <View style={{alignSelf:'stretch' , flex:1}}>
+                
                 <View style={styles.itemContainer}>                
                     <AppText title={title + " " + index} />                                
                     <View style={styles.optionName}>
@@ -40,7 +41,7 @@ const DropdownItem = (props) => {
                     expand &&
                     <View style={{marginBottom:10}}>
                         <CTextInput
-                            label={''}                                                                                            
+                            label={'Input ' + input_label}                                                                                            
                             value={inputValue}
                             disabled={false}                        
                             onChangeText={text => {

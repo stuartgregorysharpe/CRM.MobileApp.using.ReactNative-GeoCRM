@@ -70,22 +70,33 @@ export default function LocationSpecificInfoScreen(props) {
   const locationId = locationInfo ? locationInfo.location_id : location_id;
   const customerContactModalRef = useRef(null);
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
-  const isDisposition = features.includes('disposition_fields')
+  const isDisposition = features.includes('disposition_fields');
+  let isMout = true;
 
 
   useEffect(() => {
+    isMout = true;
     refreshHeader();
     initData();
     if (location_id !== undefined) {
       openLocationInfo(location_id);
     }    
+    return () =>{
+      isMout = false;
+    }
   }, [location_id]);
 
   useEffect(() => {
+    isMout = true;
     if (isCheckin == false) {
       if (props.navigation.canGoBack()) {
-        props.navigation.popToTop();
+        if(isMout){          
+          //
+        }          
       }
+    }
+    return () =>{
+      isMout = false;
     }
   }, [isCheckin]);
 
@@ -105,7 +116,8 @@ export default function LocationSpecificInfoScreen(props) {
   const goBack = () => {
     console.log("go back in specific info page");
     if (props.navigation.canGoBack()) {
-      props.navigation.goBack();
+      props.navigation.popToTop()
+      //props.navigation.goBack();
     }
   };
 
@@ -114,14 +126,18 @@ export default function LocationSpecificInfoScreen(props) {
     setIsLoading(true);
     getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
-        if (locationInfoRef.current !== undefined) {
-          locationInfoRef.current.updateDispositionData(res);
-        }
-        setLocationIfo(res);
-        setIsLoading(false);
+        if(isMout){
+          if (locationInfoRef.current !== undefined) {
+            locationInfoRef.current.updateDispositionData(res);
+          }
+          setLocationIfo(res);
+          setIsLoading(false);
+        }        
       })
       .catch(e => {
-        setIsLoading(false);
+        if(isMout){
+          setIsLoading(false);
+        }        
       });
   };
 
@@ -365,6 +381,7 @@ export default function LocationSpecificInfoScreen(props) {
                       buttonText: Strings.Ok,
                       buttonAction: async () => {
                         dispatch({type: CHECKIN, payload: false});
+                        
                         dispatch(clearNotification());
                         goBack();
                       },

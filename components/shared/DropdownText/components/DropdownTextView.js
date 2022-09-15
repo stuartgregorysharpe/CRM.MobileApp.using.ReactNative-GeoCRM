@@ -15,6 +15,13 @@ const DropdownTextView = (props) => {
     const [lists, setLists] = useState(item && item.value != '' && item.value != undefined ? item.value : []);
     const [presetOptions, setPresetOptions] = useState([]);
 
+    
+    useEffect(() => {        
+        if(item.value != '' && item.value != undefined && item.value != '[]'){
+            setLists(item && item.value != '' && item.value != undefined ? item.value : []);
+        }        
+    }, [item, item.value]);
+
     useEffect(() => {
         if(options && options.length > 0){
             var tmp = [];
@@ -32,9 +39,10 @@ const DropdownTextView = (props) => {
     }
 
     const onButtonAction = ({type, item}) => {        
-        if (type == Constants.actionType.ACTION_CHECK) {            
-            setLists([...lists, { option:item.label, input:''} ]);
-            props.onItemAction({type:  Constants.actionType.ACTION_FORM_SUBMIT, value: lists , item:''});
+        if (type == Constants.actionType.ACTION_CHECK) {                
+            var updated = [...lists, { option:item.label, input:''} ];            
+            setLists(updated);
+            props.onItemAction({type:  Constants.actionType.ACTION_FORM_SUBMIT, value: updated , item:''});
         }
         if( type == Constants.actionType.ACTION_FORM_CLEAR){
 
@@ -58,7 +66,16 @@ const DropdownTextView = (props) => {
         <View style={styles.container}>
             {
                 lists.map((element , index) => {
-                    return <DropdownItem key={index} title={item.field_label} index={index + 1} item={element} onChange={onChange} />
+                    return (
+                        <DropdownItem 
+                            key={index} 
+                            title={item.field_label} 
+                            index={index + 1} 
+                            input_label={item.input_label} 
+                            item={element} 
+                            onChange={onChange} 
+                        />
+                    )
                 })
             }
 
