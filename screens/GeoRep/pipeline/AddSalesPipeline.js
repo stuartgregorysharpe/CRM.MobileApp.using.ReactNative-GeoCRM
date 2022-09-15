@@ -23,9 +23,7 @@ import Colors, {whiteLabel} from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import SvgIcon from '../../../components/SvgIcon';
 import {breakPoint} from '../../../constants/Breakpoint';
-import {  
-  postAddOpportunityFields,
-} from '../../../actions/pipeline.action';
+import {postAddOpportunityFields} from '../../../actions/pipeline.action';
 import {getToken} from '../../../constants/Storage';
 import {faSearch, faChevronUp} from '@fortawesome/free-solid-svg-icons';
 import SelectionPicker from '../../../components/modal/SelectionPicker';
@@ -38,7 +36,9 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import CustomInput from '../../../components/common/CustomInput';
-import { Strings } from '../../../constants';
+import {Strings} from '../../../constants';
+import CSingleSelectInput from '../../../components/common/SelectInput/CSingleSelectInput';
+import {style} from '../../../constants/Styles';
 
 var selected_location_id = 0;
 var selected_dispositio_id = 0;
@@ -64,6 +64,7 @@ export default function AddSalesPipeline({
   const [addOpportunityResponse, setAddOpportunityResponse] = useState({});
   const [opportunity_fields, setOpportunity_fields] = useState([]);
   const [disposition_fields, setDisposition_fields] = useState([]);
+  const [opportunityNameList, setOpportunityNameList] = useState([]);
   const [selectedOpportunityStatus, setSelectedOpportunityStatusId] =
     useState(null);
   const [opportunityStatusModalVisible, setOpportunityStatusModalVisible] =
@@ -88,7 +89,8 @@ export default function AddSalesPipeline({
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [datePickerMode, setDatePickerMode] = useState('date');
   let requestParams = {};
-
+  const isOpportunityNameSelection =
+    opportunityNameList != undefined && opportunityNameList.length > 0;
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchCustomer != '' && canSearch) {
@@ -153,6 +155,19 @@ export default function AddSalesPipeline({
       }
     });
     setOpporunityFields([...opportunity]);
+    if (res.opportunity_names && res.opportunity_names.length > 0) {
+      const _opportunityNameList = res.opportunity_names.map(
+        opportunityName => {
+          return {
+            label: opportunityName,
+            value: opportunityName,
+          };
+        },
+      );
+      setOpportunityNameList(_opportunityNameList);
+    } else {
+      setOpportunityNameList([]);
+    }
 
     // initialize disposition data
     console.log('DISPOS DATA', res.disposition_fields);
@@ -812,6 +827,60 @@ export default function AddSalesPipeline({
       </View>
     );
   }
+  const renderOpportunityNameField = () => {
+    if (isOpportunityNameSelection) {
+      return (
+        <CSingleSelectInput
+          bgType="card"
+          bgStyle={[style.card, {borderWidth: 0}]}
+          placeholderStyle={{color: whiteLabel().inputText, fontWeight: '400'}}
+          description={'Opportunity Name'}
+          placeholder={'Opportunity Name'}
+          checkedValue={opportunityName}
+          items={opportunityNameList}
+          hasError={false}
+          disabled={false}
+          onSelectItem={item => {
+            setOpportunityName(item.label);
+          }}
+          onClear={() => setOpportunityName('')}
+          containerStyle={{marginTop: 0, marginHorizontal: 0, flex: 1}}
+        />
+      );
+    }
+    return (
+      <TouchableOpacity activeOpacity={1}>
+        <View>
+          <TextInput
+            style={styles.textInput}
+            // multiline={true}
+            label={
+              <Text style={{backgroundColor: Colors.bgColor}}>
+                {'Opportunity Name'}
+              </Text>
+            }
+            value={opportunityName}
+            mode="outlined"
+            outlineColor={
+              isOpportunityNameCompulsory
+                ? whiteLabel().endDayBackground
+                : Colors.disabledColor
+            }
+            activeOutlineColor={
+              isOpportunityNameCompulsory
+                ? whiteLabel().endDayBackground
+                : Colors.disabledColor
+            }
+            onChangeText={text => {
+              setOpportunityName(text);
+            }}
+            blurOnSubmit={false}
+            onSubmitEditing={() => {}}
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <Animated.View>
@@ -971,7 +1040,8 @@ export default function AddSalesPipeline({
                 dispatch(
                   showNotification({
                     type: 'success',
-                    message: 'No contacts available. Please make sure a Customer has been selected first',
+                    message:
+                      'No contacts available. Please make sure a Customer has been selected first',
                     buttonText: Strings.Ok,
                   }),
                 );
@@ -986,36 +1056,7 @@ export default function AddSalesPipeline({
             <SvgIcon icon="Drop_Down" width="23px" height="23px" />
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={1}>
-            <View>
-              <TextInput
-                style={styles.textInput}
-                // multiline={true}
-                label={
-                  <Text style={{backgroundColor: Colors.bgColor}}>
-                    {'Opportunity Name'}
-                  </Text>
-                }
-                value={opportunityName}
-                mode="outlined"
-                outlineColor={
-                  isOpportunityNameCompulsory
-                    ? whiteLabel().endDayBackground
-                    : Colors.disabledColor
-                }
-                activeOutlineColor={
-                  isOpportunityNameCompulsory
-                    ? whiteLabel().endDayBackground
-                    : Colors.disabledColor
-                }
-                onChangeText={text => {
-                  setOpportunityName(text);
-                }}
-                blurOnSubmit={false}
-                onSubmitEditing={() => {}}
-              />
-            </View>
-          </TouchableOpacity>
+          {renderOpportunityNameField()}
 
           {/* Pipeline Modal */}
           <TouchableOpacity
