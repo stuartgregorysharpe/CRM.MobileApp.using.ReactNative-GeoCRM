@@ -124,6 +124,7 @@ export default function FormsScreen(props) {
     };
     getApiRequest('forms/forms-list', param)
       .then(res => {
+        console.log("Form Lists: " , res)
         setFormLists(res.forms);
         setOriginalFormLists(res.forms);        
       })
@@ -132,8 +133,7 @@ export default function FormsScreen(props) {
       });
   };
 
-  const _onTouchStart = (e, text) => {
- 
+  const _onTouchStart = (e, text) => { 
     setBubbleText(text);
     setIsInfo(true);
   };

@@ -1,14 +1,15 @@
-import React, {Fragment, useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, { Fragment, useState, useEffect} from 'react';
+import {useSelector } from 'react-redux';
 import {SafeAreaView, Text, View, StyleSheet} from 'react-native';
-import MarkerIcon from '../../../../components/Marker';
 import Skeleton from '../../../../components/Skeleton';
 import {parse} from 'react-native-extended-stylesheet-breakpoints';
-import {TEXT_COLOR} from '../../../../constants/Colors';
+import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import DeviceInfo from 'react-native-device-info';
+import SvgIcon from '../../../../components/SvgIcon';
 
 export function MarkerView({isRequest}) {
+
   const statusPinKeys = useSelector(state => state.location.statusPinKeys);
   const pins = useSelector(state => state.location.locationPins);
   const [markerIcons, setMarkerIcons] = useState([]);
@@ -21,9 +22,10 @@ export function MarkerView({isRequest}) {
         icon: pin.pin_image.split('/')[pin.pin_image.split('/').length - 1],
         code:pin.svg_code
       });
-    });
+    });    
     setMarkerIcons(items);
   }, [pins]);
+
 
   if (statusPinKeys == 'request' || isRequest) {
     return (
@@ -41,15 +43,8 @@ export function MarkerView({isRequest}) {
     <Fragment>
       <View style={styles.markerContent}>
         {markerIcons.map((markerIcon, key) => (
-          <View style={styles.markerBox} key={key}>
-            <MarkerIcon
-              style={styles.markerIcon}
-              icon={markerIcon.icon}
-              width="28px"
-              height="28px"
-            >
-            </MarkerIcon>
-            
+          <View style={styles.markerBox} key={key}>            
+            <SvgIcon  width="28" height="28" xml={ markerIcon.code} />            
             <Text style={styles.markerText}>{markerIcon.text}</Text>
           </View>
         ))}
@@ -71,13 +66,10 @@ const styles = StyleSheet.create(
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 20,
-    },
-    markerIcon: {
-      marginRight: 10,
-    },
+    },    
     markerText: {
       fontSize: 12,
-      color: TEXT_COLOR,
+      color: Colors.textColor,
       fontFamily: Fonts.secondaryMedium,
     },
   }),
