@@ -7,7 +7,7 @@ export default function DropdownLists(props) {
   const {lists, onItemSelected} = props;
   const renderItem = (item, index) => {
     if (props.renderItem) {
-      return props.renderItem();
+      return props.renderItem(item, index, onItemSelected);
     }
     return (
       <TouchableOpacity

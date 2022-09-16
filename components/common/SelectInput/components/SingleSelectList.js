@@ -11,17 +11,32 @@ const SingleSelectList = props => {
     }
     return false;
   };
+  const renderItem = (item, index, isLast, isChecked, onItemAction) => {
+    if (props.renderItem) {
+      return props.renderItem(item, index, isLast, isChecked, onItemAction);
+    }
+    console.log('item', item);
+
+    return (
+      <SelectItem
+        isChecked={isChecked}
+        item={item}
+        key={index + 'item'}
+        isLast={isLast}
+        onItemAction={onItemAction}
+      />
+    );
+  };
   const renderItems = items => {
     return items.map((item, index) => {
       const isLast = index == items.length - 1;
-      return (
-        <SelectItem
-          isChecked={isChecked(item)}
-          item={item}
-          key={index + 'item'}
-          isLast={isLast}
-          onItemAction={props.onItemAction}
-        />
+
+      return renderItem(
+        item,
+        index,
+        isLast,
+        isChecked(item),
+        props.onItemAction,
       );
     });
   };

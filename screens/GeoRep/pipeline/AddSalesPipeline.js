@@ -90,7 +90,6 @@ export default function AddSalesPipeline({
   const [isOpportunityValue, setIsOpportunityValue] = useState(false);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [datePickerMode, setDatePickerMode] = useState('date');
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [selectedProductChannel, setSelectedProductChannel] = useState(null);
   const [currentChannels, setCurrentChannels] = useState([]);
   const productChannelTiredModalRef = useRef(null);
@@ -195,11 +194,13 @@ export default function AddSalesPipeline({
     setAddOpportunityResponse(res);
     setOpportunity_fields(res.opportunity_fields);
     setDisposition_fields(res.disposition_fields);
+    console.log('current_channels', res.current_channels);
     setCurrentChannels(
       res.current_channels.map(x => {
         return {
-          value: x,
-          label: x,
+          value: x.product_id,
+          label: x.product,
+          ...x,
         };
       }),
     );
@@ -345,7 +346,7 @@ export default function AddSalesPipeline({
       selected_campaign_id: selectedPipelineId,
       current_stage_id: selectedStageId,
       current_outcome_id: selectedOutcomeId,
-      channel_products: selectedProductIds,
+      channel_products: currentChannels.map(x => x.product_id),
       current_opportunity_status_id: selectedOpportunityStatus,
       dispostions: dispostions,
       opportunity_fields: opportunity_fields,
@@ -908,13 +909,12 @@ export default function AddSalesPipeline({
         value: 'please-select',
         label: 'Please Select',
       },
+      ...currentChannels,
     ];
-    if (currentChannels && currentChannels.length > 0) {
-      channelList = currentChannels;
-    }
+
     const text =
-      selectedProductIds.length > 0
-        ? `${selectedProductIds.length} Products Selected`
+      currentChannels.length > 0
+        ? `${currentChannels.length} Products Selected`
         : null;
     if (!isProductChannelEnabled) return null;
     return (
@@ -928,33 +928,57 @@ export default function AddSalesPipeline({
           placeholder={'Select Products'}
           hideClear
           text={text}
-          checkedValue={selectedProductChannel}
+          checkedValue={selectedProductChannel?.value}
           items={channelList}
+          isPressOption
           hasError={false}
           disabled={false}
           onSelectItem={item => {
             productChannelTiredModalRef.current.showModal();
-            setSelectedProductChannel(item.label);
+            if (item.value != 'please-select') {
+              setSelectedProductChannel(item);
+            } else {
+              setSelectedProductChannel(null);
+            }
           }}
           onClear={() => setSelectedProductChannel(null)}
           containerStyle={{marginTop: 0, marginLeft: 5, flex: 1}}
         />
         <ProductChannelTieredModal
           ref={productChannelTiredModalRef}
-          selectedChannel={selectedProductChannel}
+          selectedProduct={selectedProductChannel}
           opportunityName={opportunityName}
-          selectedProductIds={selectedProductIds}
           locationId={selectedCustomerId}
           onButtonAction={data => {
-            console.log(data);
-            if (data && data.type == Constants.actionType.ACTION_FORM_SUBMIT) {
-              if (data.selectedProductIds) {
-                setSelectedProductIds(data.selectedProductIds);
+            const {type, selectedProductItem, selectedDropdownValues} = data;
+            if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              if (selectedDropdownValues.length > 2) {
+                const item = {
+                  channel: selectedDropdownValues[0]?.label,
+                  sub_channel: selectedDropdownValues[1]?.label,
+                  product_type: selectedDropdownValues[2]?.label,
+                  value: selectedProductItem.product_id,
+                  label: selectedProductItem.product,
+                  ...selectedProductItem,
+                };
+
+                if (
+                  !currentChannels.find(x => x.product_id == item.product_id)
+                ) {
+                  const _currentChannels = [...currentChannels];
+
+                  _currentChannels.push(item);
+                  setCurrentChannels(_currentChannels);
+                }
               }
             }
           }}
           onClear={() => {
-            setSelectedProductIds([]);
+            const _currentChannels = currentChannels.filter(
+              x => x.product_id != selectedProductChannel?.product_id,
+            );
+            setCurrentChannels(_currentChannels);
+            setSelectedProductChannel(null);
           }}
         />
       </View>

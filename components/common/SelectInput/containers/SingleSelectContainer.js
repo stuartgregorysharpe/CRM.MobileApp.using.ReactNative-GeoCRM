@@ -4,7 +4,11 @@ import {SubmitButton} from '../../../shared/SubmitButton';
 import SingleSelectList from '../components/SingleSelectList';
 
 const SingleSelectContainer = props => {
-  const {buttonTitle, checkedValue} = props;
+  const {buttonTitle, checkedValue, renderItem, isPressOption} = props;
+  let _checkedValue = checkedValue;
+  if (isPressOption) {
+    _checkedValue = false;
+  }
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -15,8 +19,10 @@ const SingleSelectContainer = props => {
       <ScrollView style={{maxHeight: 400, alignSelf: 'stretch'}}>
         <SingleSelectList
           items={props.items}
-          checkedValue={checkedValue}
+          checkedValue={_checkedValue}
+          isPressOption={isPressOption}
           onItemAction={onButtonAction}
+          renderItem={renderItem}
           style={{marginHorizontal: 12}}
         />
       </ScrollView>

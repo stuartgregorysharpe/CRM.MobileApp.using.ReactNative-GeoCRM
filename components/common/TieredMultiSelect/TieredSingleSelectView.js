@@ -2,19 +2,27 @@ import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import TieredMultipleChoiceInput from '../TieredMutipleChoiceInput';
 import ExpandableMultiSelect from '../MultiSelectInput/ExpandableMultiSelect';
+import ExpandableSingleSelect from '../SelectInput/ExpandableSingleSelect';
 
-const TieredMuliSelectView = props => {
+const TieredSingleSelectView = props => {
   const {
     options,
     dropdownLabels,
-    checkedValueList,
+    checkedValue,
     renderLeafOption,
     idFieldName,
+    selectedDropdownValues,
   } = props;
   const [selectedDropdownLists, setSelectedDropdownLists] = useState([]);
   const [level, setLevel] = useState(0);
+  const [lists, setLists] = useState([]);
   const [showError, setShowError] = useState(false);
 
+  useEffect(() => {
+    if (selectedDropdownValues) {
+      setSelectedDropdownLists([...selectedDropdownValues]);
+    }
+  }, [selectedDropdownValues]);
   const filterData = (objects, recursiveIndex, level) => {
     if (objects != undefined) {
       var tmp = [];
@@ -54,9 +62,10 @@ const TieredMuliSelectView = props => {
     }
   };
 
-  const getLists = index => {
-    var lists = filterData(options, 0, index);
-    return lists;
+  const getList = index => {
+    const list = filterData(options, 0, index);
+    console.log('list', list);
+    return list;
   };
 
   return (
@@ -71,19 +80,19 @@ const TieredMuliSelectView = props => {
         const isLast = index == dropdownLabels.length - 1;
         if (isLast) {
           return (
-            <ExpandableMultiSelect
+            <ExpandableSingleSelect
               hasError={showError && index === level + 1 ? true : false}
               key={index}
-              checkedValueList={checkedValueList}
+              checkedValue={checkedValue}
               onItemSelected={item => {
                 setShowError(false);
                 setLevel(index);
                 if (props.onLeafItemSelected) {
-                  props.onLeafItemSelected(item);
+                  props.onLeafItemSelected(item, selectedDropdownLists);
                 }
               }}
               header={element}
-              items={getLists(index)}
+              items={getList(index)}
               idFieldName={idFieldName}
               renderDropdownItem={renderLeafOption}
             />
@@ -112,11 +121,11 @@ const TieredMuliSelectView = props => {
               }
             }}
             header={element}
-            lists={getLists(index)}
+            lists={getList(index)}
           />
         );
       })}
     </View>
   );
 };
-export default TieredMuliSelectView;
+export default TieredSingleSelectView;

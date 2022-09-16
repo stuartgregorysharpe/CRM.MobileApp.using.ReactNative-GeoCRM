@@ -2,18 +2,31 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {getApiRequest} from '../../../../actions/api.action';
 import TieredMuliSelectView from '../../../../components/common/TieredMultiSelect/TieredMultiSelectView';
+import TieredSingleSelectView from '../../../../components/common/TieredMultiSelect/TieredSingleSelectView';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../constants';
 import ProductSelectItem from '../components/ProductSelectItem';
 
 const ProductChannelTieredContainer = props => {
-  const {opportunityName, selectedChannel, locationId, onButtonAction} = props;
+  const {opportunityName, selectedProduct, locationId, onButtonAction} = props;
   const [item, setItem] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const dropdownLabels = ['Channel', 'Sub-Channel', 'Type', 'Products'];
-  const [selectedProductIds, setSelectedProductIds] = useState(
-    props.selectedProductIds,
-  );
+  const [selectedProductItem, setSelectedProductItem] =
+    useState(selectedProduct);
+  const [selectedDropdownValues, setSelectedDropdownValues] = useState([]);
+  useEffect(() => {
+    if (selectedProduct) {
+      const _dropdownValues = [
+        {label: selectedProduct.channel},
+        {label: selectedProduct.sub_channel},
+        {label: selectedProduct.product_type},
+      ];
+      setSelectedDropdownValues(_dropdownValues);
+    } else {
+      setSelectedDropdownValues([]);
+    }
+  }, [selectedProduct]);
 
   useEffect(() => {
     onLoad();
@@ -27,9 +40,11 @@ const ProductChannelTieredContainer = props => {
     if (locationId && locationId != '') {
       param.location_id = locationId;
     }
+    console.log('param', param);
     getApiRequest('pipeline/product-channel-fields', param)
       .then(data => {
         setIsLoading(false);
+        console.log('data', data);
         setItem(data.product_channel);
       })
       .catch(error => {
@@ -50,25 +65,14 @@ const ProductChannelTieredContainer = props => {
 
   return (
     <View style={[styles.container, props.style]}>
-      <TieredMuliSelectView
+      <TieredSingleSelectView
         options={item}
         dropdownLabels={dropdownLabels}
-        checkedValueList={selectedProductIds}
-        onLeafItemSelected={item => {
-          let _selectedProductIds = [...selectedProductIds];
-          if (_selectedProductIds.length > 0) {
-            const foundId = _selectedProductIds.find(x => x == item.product_id);
-            if (foundId) {
-              _selectedProductIds = _selectedProductIds.filter(
-                x => x != item.product_id,
-              );
-            } else {
-              _selectedProductIds.push(item.product_id);
-            }
-          } else {
-            _selectedProductIds.push(item.product_id);
-          }
-          setSelectedProductIds(_selectedProductIds);
+        selectedDropdownValues={selectedDropdownValues}
+        checkedValue={selectedProductItem?.product_id}
+        onLeafItemSelected={(item, selectedDropdownValues) => {
+          setSelectedProductItem(item);
+          setSelectedDropdownValues(selectedDropdownValues);
         }}
         renderLeafOption={renderLeafOption}
         idFieldName="product_id"
@@ -78,7 +82,8 @@ const ProductChannelTieredContainer = props => {
         onSubmit={() => {
           onButtonAction({
             type: Constants.actionType.ACTION_FORM_SUBMIT,
-            selectedProductIds: selectedProductIds,
+            selectedProductItem: selectedProductItem,
+            selectedDropdownValues,
           });
         }}
         style={{marginTop: 12, marginHorizontal: 8}}

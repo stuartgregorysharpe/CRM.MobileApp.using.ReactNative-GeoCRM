@@ -8,7 +8,14 @@ const CSingleSelectInput = props => {
   const {items, hideClear} = props;
   const selectModalRef = useRef(null);
 
-  const {placeholder, description, checkedValue, hasError} = props;
+  const {
+    placeholder,
+    description,
+    checkedValue,
+    hasError,
+    renderDropdownItem,
+    isPressOption,
+  } = props;
 
   const getTextFormCheckedValue = () => {
     if (items) {
@@ -57,6 +64,8 @@ const CSingleSelectInput = props => {
         modalTitle={placeholder}
         checkedValue={checkedValue}
         onButtonAction={onButtonAction}
+        renderItem={renderDropdownItem}
+        isPressOption={isPressOption}
         ref={selectModalRef}
       />
     </View>
