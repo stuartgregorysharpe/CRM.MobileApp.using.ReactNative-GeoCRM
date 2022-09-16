@@ -36,9 +36,11 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import CustomInput from '../../../components/common/CustomInput';
-import {Strings} from '../../../constants';
+import {Constants, Strings} from '../../../constants';
 import CSingleSelectInput from '../../../components/common/SelectInput/CSingleSelectInput';
 import {style} from '../../../constants/Styles';
+import SelectInputView from '../../../components/common/SelectInput/components/SelectInputView';
+import ProductChannelTieredModal from './modals/ProductChannelTieredModal';
 
 var selected_location_id = 0;
 var selected_dispositio_id = 0;
@@ -88,6 +90,13 @@ export default function AddSalesPipeline({
   const [isOpportunityValue, setIsOpportunityValue] = useState(false);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [datePickerMode, setDatePickerMode] = useState('date');
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [selectedProductChannel, setSelectedProductChannel] = useState(null);
+  const [currentChannels, setCurrentChannels] = useState([]);
+  const productChannelTiredModalRef = useRef(null);
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
   let requestParams = {};
   const isOpportunityNameSelection =
     opportunityNameList != undefined && opportunityNameList.length > 0;
@@ -186,6 +195,14 @@ export default function AddSalesPipeline({
     setAddOpportunityResponse(res);
     setOpportunity_fields(res.opportunity_fields);
     setDisposition_fields(res.disposition_fields);
+    setCurrentChannels(
+      res.current_channels.map(x => {
+        return {
+          value: x,
+          label: x,
+        };
+      }),
+    );
     setContacts(res.contacts);
     if (res.selected_campaign_id) {
       setSelectedPipelineId(res.selected_campaign_id);
@@ -328,6 +345,7 @@ export default function AddSalesPipeline({
       selected_campaign_id: selectedPipelineId,
       current_stage_id: selectedStageId,
       current_outcome_id: selectedOutcomeId,
+      channel_products: selectedProductIds,
       current_opportunity_status_id: selectedOpportunityStatus,
       dispostions: dispostions,
       opportunity_fields: opportunity_fields,
@@ -834,8 +852,8 @@ export default function AddSalesPipeline({
           bgType="card"
           bgStyle={[style.card, {borderWidth: 0}]}
           placeholderStyle={{color: whiteLabel().inputText, fontWeight: '400'}}
-          description={'Opportunity Name'}
-          placeholder={'Opportunity Name'}
+          description={'Select Opportunity Name'}
+          placeholder={'Select Opportunity Name'}
           checkedValue={opportunityName}
           items={opportunityNameList}
           hasError={false}
@@ -881,7 +899,67 @@ export default function AddSalesPipeline({
       </TouchableOpacity>
     );
   };
-
+  const renderProductSection = () => {
+    const isProductChannelEnabled = features?.includes(
+      Constants.features.FEATURE_PRODUCT_CHANNELS,
+    );
+    let channelList = [
+      {
+        value: 'please-select',
+        label: 'Please Select',
+      },
+    ];
+    if (currentChannels && currentChannels.length > 0) {
+      channelList = currentChannels;
+    }
+    const text =
+      selectedProductIds.length > 0
+        ? `${selectedProductIds.length} Products Selected`
+        : null;
+    if (!isProductChannelEnabled) return null;
+    return (
+      <View>
+        <View style={{flexDirection: 'row', marginVertical: 10}}>
+          <Text style={styles.sectionTitle}>Products</Text>
+        </View>
+        <CSingleSelectInput
+          showDescription={true}
+          description={'Products'}
+          placeholder={'Select Products'}
+          hideClear
+          text={text}
+          checkedValue={selectedProductChannel}
+          items={channelList}
+          hasError={false}
+          disabled={false}
+          onSelectItem={item => {
+            productChannelTiredModalRef.current.showModal();
+            setSelectedProductChannel(item.label);
+          }}
+          onClear={() => setSelectedProductChannel(null)}
+          containerStyle={{marginTop: 0, marginLeft: 5, flex: 1}}
+        />
+        <ProductChannelTieredModal
+          ref={productChannelTiredModalRef}
+          selectedChannel={selectedProductChannel}
+          opportunityName={opportunityName}
+          selectedProductIds={selectedProductIds}
+          locationId={selectedCustomerId}
+          onButtonAction={data => {
+            console.log(data);
+            if (data && data.type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              if (data.selectedProductIds) {
+                setSelectedProductIds(data.selectedProductIds);
+              }
+            }
+          }}
+          onClear={() => {
+            setSelectedProductIds([]);
+          }}
+        />
+      </View>
+    );
+  };
   return (
     <Animated.View>
       <ScrollView style={[styles.container]}>
@@ -1190,6 +1268,7 @@ export default function AddSalesPipeline({
               <SvgIcon icon="Drop_Down" width="23px" height="23px" />
             </TouchableOpacity>
           </View>
+          {renderProductSection()}
 
           {disposition_fields.length > 0 && (
             <View>
@@ -1451,6 +1530,15 @@ const styles = EStyleSheet.create(
       position: 'absolute',
       top: 20,
       right: 20,
+    },
+
+    sectionTitle: {
+      flexShrink: 1,
+      color: whiteLabel().mainText,
+      fontFamily: Fonts.secondaryBold,
+      borderBottomColor: whiteLabel().mainText,
+      borderBottomWidth: 2,
+      paddingBottom: 2,
     },
   }),
 );

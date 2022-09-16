@@ -4,29 +4,31 @@ import {Colors, Fonts} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 import {AppText} from '../../../components/common/AppText';
 import SvgIcon from '../../SvgIcon';
-import DropdownLists from './DropdownLists';
-import {style} from '../../../constants/Styles';
 
-export default function TieredMultipleChoiceInput(props) {
+import {style} from '../../../constants/Styles';
+import MultiSelectList from './components/MultiSelectList';
+
+export default function ExpandableMultiSelect(props) {
   const {
     header,
     hasError,
-    selectedItem,
-    lists,
+    checkedValueList,
+    items,
     onItemSelected,
     renderDropdownItem,
+    idFieldName,
   } = props;
   const [isShown, setIsShown] = useState(false);
 
   useEffect(() => {
     let isMount = true;
-    if (isMount && lists.length == 0) {
+    if (isMount && items.length == 0) {
       setIsShown(false);
     }
     return () => {
       isMount = false;
     };
-  }, [lists]);
+  }, [items]);
 
   return (
     <View>
@@ -51,31 +53,23 @@ export default function TieredMultipleChoiceInput(props) {
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}
             onPress={() => {
-              if (lists && lists.length > 0) {
+              if (items && items.length > 0) {
                 setIsShown(!isShown);
               }
             }}>
             <View style={{flex: 1}}>
               <View style={{flexDirection: 'row'}}>
-                {!(selectedItem && selectedItem != undefined) && (
-                  <AppText
-                    style={{flex: 1}}
-                    title={'Please select'}
-                    size="medium"
-                    type="secondaryMedium"
-                    color={
-                      lists && lists.length > 0
-                        ? Colors.blackColor
-                        : Colors.disabledColor
-                    }></AppText>
-                )}
-              </View>
-              {selectedItem && selectedItem != undefined && (
                 <AppText
-                  title={selectedItem != null ? selectedItem.label : ''}
+                  style={{flex: 1}}
+                  title={'Please select'}
                   size="medium"
-                  color={Colors.mainText}></AppText>
-              )}
+                  type="secondaryMedium"
+                  color={
+                    items && items.length > 0
+                      ? Colors.blackColor
+                      : Colors.disabledColor
+                  }></AppText>
+              </View>
             </View>
 
             <View style={{marginRight: 10}}>
@@ -85,16 +79,15 @@ export default function TieredMultipleChoiceInput(props) {
         )}
 
         {isShown && (
-          <DropdownLists
-            onItemSelected={item => {
-              if (onItemSelected) {
-                onItemSelected(item);
-              }
-
-              setIsShown(!isShown);
+          <MultiSelectList
+            items={items}
+            idFieldName={idFieldName}
+            checkedValueList={checkedValueList}
+            onItemAction={({type, item, value}) => {
+              onItemSelected(item);
             }}
             renderItem={renderDropdownItem}
-            lists={lists}></DropdownLists>
+          />
         )}
       </View>
     </View>

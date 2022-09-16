@@ -124,4 +124,7 @@ export default {
   msisdnPrefix: '27',
   msisdnErrorMessage: 'MSISDN must be 11 digits',
   chooseReason: 'Please choose a reason before making a selection or scanning',
+  features: {
+    FEATURE_PRODUCT_CHANNELS: 'product_channels',
+  },
 };
