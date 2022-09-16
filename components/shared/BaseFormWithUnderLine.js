@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View ,TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Colors, Fonts } from '../../constants';
+import { whiteLabel } from '../../constants/Colors';
 
 const BaseFormWithUnderLine = (props) => {
   
@@ -24,7 +25,7 @@ const BaseFormWithUnderLine = (props) => {
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 1, paddingHorizontal: 5}}>
               <Text style={styles.titleStyle}> {item.question_text} </Text>
-              <View style={{flex:1, height: 1, backgroundColor:Colors.primaryColor, marginBottom:10}} ></View>
+              <View style={{flex:1, height: 1, backgroundColor:whiteLabel().fieldBorder, marginBottom:10}} ></View>
             </View>
             {
               isShowInfoIcon && (

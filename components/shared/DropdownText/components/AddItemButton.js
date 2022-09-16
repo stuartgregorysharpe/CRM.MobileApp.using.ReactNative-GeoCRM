@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import SvgIcon from '../../../SvgIcon';
 import { AppText } from '../../../common/AppText';
-import Colors from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import { Values } from '../../../../constants';
 
 const AddItemButton = (props) => {
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
     btnContainer:{
         flexDirection:'row',
-        backgroundColor:Colors.primaryColor,
+        backgroundColor:whiteLabel().actionFullButtonBackground,
         padding:5,
         alignItems:'center',
         borderRadius:5,
