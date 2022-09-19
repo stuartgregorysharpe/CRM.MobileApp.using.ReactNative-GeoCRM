@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {
   Text,
   View,
@@ -92,6 +92,17 @@ export default function AddSalesPipeline({
   const [datePickerMode, setDatePickerMode] = useState('date');
   const [selectedProductChannel, setSelectedProductChannel] = useState(null);
   const [currentChannels, setCurrentChannels] = useState([]);
+  const channelList = useMemo(() => {
+    if (!currentChannels || currentChannels.length == 0) {
+      return [
+        {
+          value: 'please-select',
+          label: 'Please Select',
+        },
+      ];
+    }
+    return currentChannels;
+  }, [currentChannels]);
   const productChannelTiredModalRef = useRef(null);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -904,14 +915,6 @@ export default function AddSalesPipeline({
     const isProductChannelEnabled = features?.includes(
       Constants.features.FEATURE_PRODUCT_CHANNELS,
     );
-    let channelList = [
-      {
-        value: 'please-select',
-        label: 'Please Select',
-      },
-      ...currentChannels,
-    ];
-
     const text =
       currentChannels.length > 0
         ? `${currentChannels.length} Products Selected`
