@@ -100,8 +100,7 @@ const GmsLocationMap = props => {
       
       return (
         <Marker
-          key={'markers' + item.location_id}
-          
+          key={'markers' + item.location_id}          
           tracksViewChanges={isDrawMode}
           onPress={() => {
             props.onMarkerPressed(item, key);
