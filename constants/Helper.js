@@ -211,6 +211,7 @@ export function notifyMessage(title, msg) {
   ]);
 }
 
+
 export function selectPicker(
   title,
   description,
@@ -252,6 +253,8 @@ export function notifyMsg(dispatch, title) {
     }),
   );
 }
+
+
 
 export function getTwoDigit(value) {
   if (value <= 9) {

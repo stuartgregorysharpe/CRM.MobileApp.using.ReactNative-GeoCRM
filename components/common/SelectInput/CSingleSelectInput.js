@@ -17,9 +17,18 @@ const CSingleSelectInput = props => {
         const foundItem = items.find(x => x.value == checkedValue);
         if (foundItem) return foundItem.label;
       }
-    }else if(mode == 'multi' && checkedValue != ''){
-      return checkedValue.join(', ');
-    }    
+    }else if(mode == 'multi' && checkedValue != '' && checkedValue.length > 0){
+      var title = '';
+      checkedValue.forEach((element , index) =>{
+        const foundItem = items.find(x => x.value == element);           
+        if(index == 0) {
+          title = foundItem.label;
+        }else{
+          title = title + ", " + foundItem.label;
+        }
+      });
+      return title;            
+    }
     return '';
   };
   const text = useMemo(() => getTextFormCheckedValue());

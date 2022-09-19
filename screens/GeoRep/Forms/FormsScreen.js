@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState , useRef} from 'react';
 import {
   Text,
   View,  
@@ -8,42 +8,38 @@ import {
   TouchableOpacity,  
 } from 'react-native';
 import SearchBar from '../../../components/SearchBar';
-import {FormFilterView} from './partial/FormFilterView';
 import {FormListItem} from './partial/FormListItem';
 import {Provider} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {getFilterData} from '../../../constants/Storage';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
-import FilterOptionsModal from '../../../components/modal/FilterOptionsModal';
 import {GuideInfoView} from './partial/GuideInfoView';
 import {expireToken} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
-import {useNavigation} from '@react-navigation/native';
+import FormFilterModal from './modal/FormFilterModal';
+import { Constants } from '../../../constants';
 
 let isInfoWindow = false;
 
 export default function FormsScreen(props) {
+
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
   const [isInfo, setIsInfo] = useState(false);
-
   const [bubbleText, setBubbleText] = useState({});
-  const [isFilter, setIsFilter] = useState(false);
   const locationIdSpecific = props.route.params
     ? props.route.params.locationInfo
-    : null;
-  const [modalVisible, setModalVisible] = useState(false);
+    : null;  
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
-
-  const isShowCustomNavigationHeader = props.isDeeplink;
-  
- const navigationMain = useNavigation();
-
+  const isShowCustomNavigationHeader = props.isDeeplink;  
   const dispatch = useDispatch();
+
+  const formFilterModalRef = useRef(null);
+
   useEffect(() => {
     if (props.screenProps) {
       props.screenProps.setOptions({
@@ -123,8 +119,7 @@ export default function FormsScreen(props) {
         locationIdSpecific != null ? locationIdSpecific.location_id : '',
     };
     getApiRequest('forms/forms-list', param)
-      .then(res => {
-        console.log("Form Lists: " , res)
+      .then(res => {        
         setFormLists(res.forms);
         setOriginalFormLists(res.forms);        
       })
@@ -138,6 +133,54 @@ export default function FormsScreen(props) {
     setIsInfo(true);
   };
 
+  const onFormFilterModalClosed = ({type, value}) => {
+    
+    if(type == Constants.actionType.ACTION_CAPTURE){
+      saveFilter(value.value, value.isClick);
+    }
+    if(type == Constants.actionType.ACTION_DONE){
+      _callFormLists(filters);
+      formFilterModalRef.current.hideModal();
+    }
+    if(type == Constants.actionType.ACTION_FORM_CLEAR){      
+      setFilters(null);
+      _callFormLists(null);
+    }
+  }
+
+  const renderItems = (item , index) => {
+    return (
+        <View>
+          <FormListItem
+            key={index}
+            item={item}
+            onItemPress={() => {
+              if (!isInfoWindow) {
+              
+                var routeName = "DeeplinkFormQuestionsScreen"
+                if(!isShowCustomNavigationHeader){
+                  routeName = "FormQuestions"
+                }
+                
+                props.navigation.navigate(routeName, {
+                  data: item,
+                  location_id:
+                    locationIdSpecific != null
+                      ? locationIdSpecific.location_id
+                      : '',
+                });
+              } else {
+                isInfoWindow = false;
+              }
+            }}
+            onTouchStart={(e, text) =>
+              _onTouchStart(e, text)
+            }></FormListItem>
+        </View>
+    )
+  }
+
+  
   return (
     <Provider>
       <View style={styles.container}>
@@ -149,49 +192,16 @@ export default function FormsScreen(props) {
               props.navigation.goBack();
             }}
           />
-        )}
-        <Notification></Notification>
-        <FormFilterView
-          visible={isFilter}
-          onModalHide={() => {
-            consolelog('modal hide');
-          }}
-          apply={() => {
-            console.log('DDfilters', filters);
-            _callFormLists(filters);
-          }}
-          onItemClicked={options => {
-            setOptions(options);
-            setIsFilter(false);
-            setTimeout(() => {
-              setModalVisible(true);
-            }, 500);
-          }}
-          onModalClose={() => {
-            setIsFilter(false);
-          }}
-          close={() => {
-            setIsFilter(false);
-          }}></FormFilterView>
+        )}                
 
-        <FilterOptionsModal
-          clearTitle={'Close'}
-          modaVisible={modalVisible}
-          options={options}
+        <FormFilterModal 
+          title="Filter your search"
+          clearText="Clear Filters"
           filters={filters}
-          selectedType={'form_type'}
-          fieldType={'form_type'}
-          onClose={() => {
-            setModalVisible(false);
-            setTimeout(() => {
-              setIsFilter(true);
-            }, 500);
-          }}
-          onValueChanged={(value, isChecked) => {
-            console.log(value, isChecked);
-            saveFilter(value, isChecked);
-          }}></FilterOptionsModal>
-
+          ref={formFilterModalRef}
+          onButtonAction={onFormFilterModalClosed}
+        />
+       
         <SearchBar
           isFilter={true}
           haveFilter={
@@ -200,7 +210,7 @@ export default function FormsScreen(props) {
               : false
           }
           animation={() => {
-            setIsFilter(true);
+            formFilterModalRef.current.showModal();              
           }}
           onSearch={text => _onSearch(text)}></SearchBar>
 
@@ -210,35 +220,7 @@ export default function FormsScreen(props) {
           maxToRenderPerBatch={10}
           initialNumToRender={10}
           data={formLists}
-          renderItem={({item, index}) => (
-            <View>
-              <FormListItem
-                key={index}
-                item={item}
-                onItemPress={() => {
-                  if (!isInfoWindow) {
-                 
-                    var routeName = "DeeplinkFormQuestionsScreen"
-                    if(!isShowCustomNavigationHeader){
-                      routeName = "FormQuestions"
-                    }
-                    
-                    props.navigation.navigate(routeName, {
-                      data: item,
-                      location_id:
-                        locationIdSpecific != null
-                          ? locationIdSpecific.location_id
-                          : '',
-                    });
-                  } else {
-                    isInfoWindow = false;
-                  }
-                }}
-                onTouchStart={(e, text) =>
-                  _onTouchStart(e, text)
-                }></FormListItem>
-            </View>
-          )}
+          renderItem={({item, index}) => renderItems(item, index)}
           keyExtractor={(item, index) => index.toString()}
         />
 
@@ -246,6 +228,7 @@ export default function FormsScreen(props) {
           visible={isInfo}
           info={bubbleText}
           onModalClose={() => setIsInfo(false)}></GuideInfoView>
+
       </View>
     </Provider>
   );

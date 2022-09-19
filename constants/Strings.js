@@ -16,7 +16,7 @@ export default {
   Fsu_Campaign: 'Capture FSU',
   You_Are_Currenly_Checkedin: 'You are currently checked-in to a location',
   Success: 'success',
-  Last_Synced_Date: 'Last Synced Date ',
+  Last_Synced_Date: 'Last Synced: ',
   Choose_Reason: 'Please choose a reason before making a selection or scanning',
   MSISDN_Error_Message: 'MSISDN must be 11 digits',
   Assign_Msisdn: 'Assign MSISDN',
