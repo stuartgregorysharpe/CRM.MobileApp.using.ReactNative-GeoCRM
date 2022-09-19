@@ -5,7 +5,6 @@ import {Constants} from '../../../../constants';
 import ProductChannelTieredContainer from '../containers/ProductChannelTieredContainer';
 
 const ProductChannelTieredModal = React.forwardRef((props, ref) => {
-  const {questionType} = props;
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -15,7 +14,6 @@ const ProductChannelTieredModal = React.forwardRef((props, ref) => {
     }
   };
 
-  const {item} = props;
   const title = 'Products';
 
   return (
@@ -32,7 +30,6 @@ const ProductChannelTieredModal = React.forwardRef((props, ref) => {
       {...props}>
       <ProductChannelTieredContainer
         {...props}
-        questionType={questionType}
         style={{marginTop: 14}}
         onButtonAction={onButtonAction}
       />

@@ -92,17 +92,7 @@ export default function AddSalesPipeline({
   const [datePickerMode, setDatePickerMode] = useState('date');
   const [selectedProductChannel, setSelectedProductChannel] = useState(null);
   const [currentChannels, setCurrentChannels] = useState([]);
-  const channelList = useMemo(() => {
-    if (!currentChannels || currentChannels.length == 0) {
-      return [
-        {
-          value: 'please-select',
-          label: 'Please Select',
-        },
-      ];
-    }
-    return currentChannels;
-  }, [currentChannels]);
+
   const productChannelTiredModalRef = useRef(null);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -110,6 +100,9 @@ export default function AddSalesPipeline({
   let requestParams = {};
   const isOpportunityNameSelection =
     opportunityNameList != undefined && opportunityNameList.length > 0;
+  const isOutcomeEnabled = features?.includes(
+    Constants.features.FEATURE_OUTCOMES,
+  );
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchCustomer != '' && canSearch) {
@@ -277,13 +270,15 @@ export default function AddSalesPipeline({
     } else {
       setIsStageCompulsory(false);
     }
-
-    if (!selectedOutcomeId || selectedOutcomeId == '') {
-      setIsOutcomeCompulsory(true);
-      canSubmit = false;
-    } else {
-      setIsOutcomeCompulsory(false);
+    if (isOutcomeEnabled) {
+      if (!selectedOutcomeId || selectedOutcomeId == '') {
+        setIsOutcomeCompulsory(true);
+        canSubmit = false;
+      } else {
+        setIsOutcomeCompulsory(false);
+      }
     }
+
     let mandatoryDispositionExist = false;
     let disposition = [...dispositionFields];
     for (let i = 0; i < disposition.length; i++) {
@@ -911,15 +906,69 @@ export default function AddSalesPipeline({
       </TouchableOpacity>
     );
   };
+  const renderOutcome = () => {
+    if (!isOutcomeEnabled) return false;
+    return (
+      <View
+        style={[
+          styles.refreshBox,
+          {
+            borderColor: isOutcomeCompulsory
+              ? whiteLabel().endDayBackground
+              : Colors.whiteColor,
+            borderWidth: isOutcomeCompulsory ? 1 : 0,
+          },
+        ]}>
+        <TouchableOpacity
+          style={[styles.shadowBox, {paddingRight: 15}]}
+          onPress={() => {
+            setShowModal(true);
+            if (addOpportunityResponse.outcomes) {
+              let outcomesList = addOpportunityResponse.outcomes.filter(
+                outcome => outcome.linked_stage_id === selectedStageId,
+              );
+              initializeOptionValue(outcomesList, 'outcomes');
+            }
+          }}>
+          <Text style={styles.shadowBoxText}>Outcome</Text>
+          <View>
+            <View
+              style={styles.button}
+              onPress={() => {
+                if (selectedOutcomes.length > 0) {
+                  setShowModal(true);
+                  if (addOpportunityResponse.outcomes) {
+                    let outcomesList = addOpportunityResponse.outcomes.filter(
+                      outcome => outcome.linked_stage_id === selectedStageId,
+                    );
+                    initializeOptionValue(outcomesList, 'outcomes');
+                  }
+                }
+              }}>
+              <Text style={styles.buttonText}>
+                {selectedOutcomeId
+                  ? addOpportunityResponse.outcomes.find(
+                      x =>
+                        x != null &&
+                        x.outcome_id != null &&
+                        x.outcome_id == selectedOutcomeId,
+                    )?.outcome_name
+                  : 'Select Outcome'}
+              </Text>
+            </View>
+          </View>
+          <SvgIcon icon="Drop_Down" width="23px" height="23px" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
   const renderProductSection = () => {
     const isProductChannelEnabled = features?.includes(
       Constants.features.FEATURE_PRODUCT_CHANNELS,
     );
-    const text =
-      currentChannels.length > 0
-        ? `${currentChannels.length} Products Selected`
-        : null;
+    const text = currentChannels.length > 0 ? currentChannels[0].product : null;
     if (!isProductChannelEnabled) return null;
+    const isCurrentChannelEmpty = currentChannels.length == 0;
     return (
       <View>
         <View style={{flexDirection: 'row', marginVertical: 10}}>
@@ -928,21 +977,22 @@ export default function AddSalesPipeline({
         <CSingleSelectInput
           showDescription={true}
           description={'Products'}
-          placeholder={'Select Products'}
+          placeholder={'Please Select'}
           hideClear
           text={text}
           checkedValue={selectedProductChannel?.value}
-          items={channelList}
+          items={currentChannels}
           isPressOption
           hasError={false}
           disabled={false}
+          isClickable={isCurrentChannelEmpty}
+          onPress={() => {
+            setSelectedProductChannel(null);
+            productChannelTiredModalRef.current.showModal();
+          }}
           onSelectItem={item => {
             productChannelTiredModalRef.current.showModal();
-            if (item.value != 'please-select') {
-              setSelectedProductChannel(item);
-            } else {
-              setSelectedProductChannel(null);
-            }
+            setSelectedProductChannel(item);
           }}
           onClear={() => setSelectedProductChannel(null)}
           containerStyle={{marginTop: 0, marginLeft: 5, flex: 1}}
@@ -1244,60 +1294,7 @@ export default function AddSalesPipeline({
             </TouchableOpacity>
           </View>
 
-          {/* Outcomes Modal */}
-          <View
-            style={[
-              styles.refreshBox,
-              {
-                borderColor: isOutcomeCompulsory
-                  ? whiteLabel().endDayBackground
-                  : Colors.whiteColor,
-                borderWidth: isOutcomeCompulsory ? 1 : 0,
-              },
-            ]}>
-            <TouchableOpacity
-              style={[styles.shadowBox, {paddingRight: 15}]}
-              onPress={() => {
-                setShowModal(true);
-                if (addOpportunityResponse.outcomes) {
-                  let outcomesList = addOpportunityResponse.outcomes.filter(
-                    outcome => outcome.linked_stage_id === selectedStageId,
-                  );
-                  initializeOptionValue(outcomesList, 'outcomes');
-                }
-              }}>
-              <Text style={styles.shadowBoxText}>Outcome</Text>
-              <View>
-                <View
-                  style={styles.button}
-                  onPress={() => {
-                    if (selectedOutcomes.length > 0) {
-                      setShowModal(true);
-                      if (addOpportunityResponse.outcomes) {
-                        let outcomesList =
-                          addOpportunityResponse.outcomes.filter(
-                            outcome =>
-                              outcome.linked_stage_id === selectedStageId,
-                          );
-                        initializeOptionValue(outcomesList, 'outcomes');
-                      }
-                    }
-                  }}>
-                  <Text style={styles.buttonText}>
-                    {selectedOutcomeId
-                      ? addOpportunityResponse.outcomes.find(
-                          x =>
-                            x != null &&
-                            x.outcome_id != null &&
-                            x.outcome_id == selectedOutcomeId,
-                        )?.outcome_name
-                      : 'Select Outcome'}
-                  </Text>
-                </View>
-              </View>
-              <SvgIcon icon="Drop_Down" width="23px" height="23px" />
-            </TouchableOpacity>
-          </View>
+          {renderOutcome()}
           {renderProductSection()}
 
           {disposition_fields.length > 0 && (

@@ -126,5 +126,6 @@ export default {
   chooseReason: 'Please choose a reason before making a selection or scanning',
   features: {
     FEATURE_PRODUCT_CHANNELS: 'product_channels',
+    FEATURE_OUTCOMES: 'outcomes',
   },
 };
