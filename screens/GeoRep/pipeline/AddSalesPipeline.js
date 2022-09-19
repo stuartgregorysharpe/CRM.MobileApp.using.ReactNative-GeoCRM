@@ -985,9 +985,14 @@ export default function AddSalesPipeline({
           isPressOption
           hasError={false}
           disabled={false}
-          isClickable={isCurrentChannelEmpty}
+          isClickable={true}
           onPress={() => {
-            setSelectedProductChannel(null);
+            if (currentChannels.length > 0) {
+              setSelectedProductChannel(currentChannels[0]);
+            } else {
+              setSelectedProductChannel(null);
+            }
+
             productChannelTiredModalRef.current.showModal();
           }}
           onSelectItem={item => {
