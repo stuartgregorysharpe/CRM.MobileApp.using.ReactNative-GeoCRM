@@ -80,14 +80,14 @@ export default function SyncAll(props) {
               </View>
             </TouchableOpacity>
           }
-
+          
           {                
             isLoading && <RotationAnimation  style={{width:50, height:50}} />
           }
 
           <View style={{flex:1,  marginLeft:7 , marginTop:3}}>
-            <AppText title={Strings.Home.Sync_All} type="secondaryBold" color={whiteLabel().mainText} style={{fontSize:Values.fontSize.xSmall}} ></AppText>
-            <AppText title={lastSyncedDate} type="secondaryMedium" color={Colors.disabledColor} style={{ fontSize:Values.fontSize.xxSmall , marginTop:5}}></AppText>
+            <AppText title={Strings.Home.Sync_All} type="secondaryBold" color={whiteLabel().mainText} style={{fontSize:Values.fontSize.small}} ></AppText>
+            <AppText title={lastSyncedDate} type="secondaryMedium" color={Colors.disabledColor} style={{ fontSize:Values.fontSize.xxxSmall , marginTop:5}}></AppText>
           </View>
 
           <View style={{flexDirection:'row', marginTop:2 , marginRight: 5 , alignItems:'center' , justifyContent:'center'}}>            

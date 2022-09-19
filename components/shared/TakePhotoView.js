@@ -78,6 +78,7 @@ const TakePhotoView = props => {
         console.log('error', err);
       });
   };
+  
   const launchImageLibrary = () => {
     let options = {
       storageOptions: {
@@ -148,6 +149,7 @@ const TakePhotoView = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
+      
       <PhotoCameraPickerDialog
         visible={isPicker}
         message={'Choose Image'}
@@ -162,6 +164,7 @@ const TakePhotoView = props => {
         onModalClose={() => {
           setIsPicker(false);
         }}></PhotoCameraPickerDialog>
+
       <View
         style={{
           flexDirection: 'row',

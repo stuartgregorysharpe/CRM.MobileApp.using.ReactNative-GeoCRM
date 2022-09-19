@@ -83,7 +83,7 @@ const getLocations = async (client_id, business_unit_id, box ,features) => {
             res = await ExecuteQuery(query, [business_unit_id, client_id]);         
         }else{
             res = await ExecuteQuery(query, [business_unit_id, client_id , client_id, business_unit_id]);         
-        }    
+        }
 
         if( res != undefined  && res.rows.length > 0){            
             return res.rows;

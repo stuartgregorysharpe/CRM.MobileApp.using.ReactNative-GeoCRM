@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
 import StagingView from './StagingView';
-import dummyData from './dummyData.json';
 import {getItemsFromShipments} from './helper';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
 import {Strings} from '../../../../constants';
@@ -10,26 +8,35 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
-import {Notification} from '../../../../components/modal/Notification';
 import {getPostParameter} from '../../../../constants/Helper';
 const StockStagingContainer = props => {
+
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
+  let isMount = true;
+
   useEffect(() => {
     onLoad();
+    return () => {
+      isMount = false;
+    }
   }, []);
   const onLoad = () => {
     setIsLoading(true);
     getApiRequest('stockmodule/staging')
       .then(data => {
-        setIsLoading(false);
-        const _items = getItemsFromShipments(data.shipments);
-        setItems(_items);
+        if(isMount){
+          setIsLoading(false);
+          const _items = getItemsFromShipments(data.shipments);
+          setItems(_items);
+        }        
       })
       .catch(error => {
-        setIsLoading(false);
+        if(isMount){
+          setIsLoading(false);
+        }        
       });
   };
   const onAccept = items => {
@@ -73,6 +80,7 @@ const StockStagingContainer = props => {
   return (
     <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
   );
-};
+};   
 
 export default StockStagingContainer;
+    
