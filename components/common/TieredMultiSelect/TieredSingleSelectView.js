@@ -11,6 +11,7 @@ const TieredSingleSelectView = props => {
     checkedValue,
     renderLeafOption,
     idFieldName,
+    labelFieldName,
     selectedDropdownValues,
   } = props;
   const [selectedDropdownLists, setSelectedDropdownLists] = useState([]);
@@ -94,6 +95,7 @@ const TieredSingleSelectView = props => {
               header={element}
               items={getList(index)}
               idFieldName={idFieldName}
+              labelFieldName={labelFieldName}
               renderDropdownItem={renderLeafOption}
             />
           );

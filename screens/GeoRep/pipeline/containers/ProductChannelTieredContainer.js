@@ -76,6 +76,7 @@ const ProductChannelTieredContainer = props => {
         }}
         renderLeafOption={renderLeafOption}
         idFieldName="product_id"
+        labelFieldName="product"
       />
       <SubmitButton
         title={'Save'}

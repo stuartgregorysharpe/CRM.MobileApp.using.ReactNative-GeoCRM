@@ -963,9 +963,12 @@ export default function AddSalesPipeline({
                 };
 
                 if (
+                  selectedProductChannel?.product_id != item.product_id &&
                   !currentChannels.find(x => x.product_id == item.product_id)
                 ) {
-                  const _currentChannels = [...currentChannels];
+                  const _currentChannels = currentChannels.filter(
+                    x => x.product_id != selectedProductChannel?.product_id,
+                  );
 
                   _currentChannels.push(item);
                   setCurrentChannels(_currentChannels);

@@ -1,5 +1,5 @@
 import {View, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {Colors, Fonts} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 import {AppText} from '../../../components/common/AppText';
@@ -17,9 +17,15 @@ export default function ExpandableSingleSelect(props) {
     onItemSelected,
     renderDropdownItem,
     idFieldName,
+    labelFieldName = 'label',
   } = props;
   const [isShown, setIsShown] = useState(false);
-
+  const selectedItem = useMemo(() => {
+    if (!items) return null;
+    if (items) {
+      return items.find(x => x[idFieldName] == checkedValue);
+    }
+  });
   useEffect(() => {
     let isMount = true;
     if (isMount && items.length == 0) {
@@ -59,16 +65,26 @@ export default function ExpandableSingleSelect(props) {
             }}>
             <View style={{flex: 1}}>
               <View style={{flexDirection: 'row'}}>
-                <AppText
-                  style={{flex: 1}}
-                  title={'Please select'}
-                  size="medium"
-                  type="secondaryMedium"
-                  color={
-                    items && items.length > 0
-                      ? Colors.blackColor
-                      : Colors.disabledColor
-                  }></AppText>
+                {!(selectedItem && selectedItem != undefined) && (
+                  <AppText
+                    style={{flex: 1}}
+                    title={'Please select'}
+                    size="medium"
+                    type="secondaryMedium"
+                    color={
+                      items && items.length > 0
+                        ? Colors.blackColor
+                        : Colors.disabledColor
+                    }></AppText>
+                )}
+                {selectedItem && selectedItem != undefined && (
+                  <AppText
+                    title={
+                      selectedItem != null ? selectedItem[labelFieldName] : ''
+                    }
+                    size="medium"
+                    color={Colors.mainText}></AppText>
+                )}
               </View>
             </View>
 
@@ -85,6 +101,7 @@ export default function ExpandableSingleSelect(props) {
             checkedValue={checkedValue}
             onItemAction={({type, item, value}) => {
               onItemSelected(item);
+              setIsShown(!isShown);
             }}
             renderItem={renderDropdownItem}
           />
