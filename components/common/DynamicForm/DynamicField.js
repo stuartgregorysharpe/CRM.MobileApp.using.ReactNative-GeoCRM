@@ -1,6 +1,9 @@
+import { RuleTester } from 'eslint';
 import React from 'react';
 import {View} from 'react-native';
+import DropdownText from '../../shared/DropdownText';
 import TakePhotoView from '../../shared/TakePhotoView';
+import { YesNoForm } from '../../shared/YesNoForm';
 import CTextInput from '../CTextInput';
 import CDateTimePickerInput from '../SelectInput/CDateTimePickerInput';
 import CSingleSelectInput from '../SelectInput/CSingleSelectInput';
@@ -20,10 +23,14 @@ const DynamicField = props => {
     isFirst,
     index,
     dynamicFieldRef,
+    preset_options,
     isClickable,
+    isHidden,
+    input_label
   } = props;
 
-  const disabled = editable && editable == '0';
+  const disabled = editable && editable == '0';  
+
   const renderNumber = () => {
     return (
       <CTextInput
@@ -85,8 +92,8 @@ const DynamicField = props => {
     );
   };
 
-
-  const renderDropdown = () => {
+  const renderDropdown = (mode = 'single') => {
+    
     return (
       <CSingleSelectInput
         key={index}
@@ -97,18 +104,42 @@ const DynamicField = props => {
         hasError={hasError}
         disabled={disabled}
         isClickable={isClickable}
+        mode={mode}
         onPress={() => {
           if (isClickable) {
             props.onPress();
           }
         }}
         onSelectItem={item => {
-          updateFormData(field_name, item.value);
+          
+          if(mode === "single"){
+            updateFormData(field_name, item.value);
+          }else if(mode === "multi"){
+
+            var isData = false;
+            if(value != undefined &&  value != '' &&  value != null){
+              var check = value.find(element => element === item.value );
+              if(check != undefined){
+                isData = true;
+              }  
+            }else{
+              isData = false;
+            }
+
+            if(isData){
+              updateFormData(field_name, value.filter(element => element != item.value));
+            }else{
+              updateFormData(field_name, [...value, item.value]);
+            }
+                   
+          }
+          
         }}
         containerStyle={{marginTop: isFirst ? 0 : 10}}
       />
     );
   };
+
 
   const renderDropdownInput = () => {
     return (
@@ -119,6 +150,7 @@ const DynamicField = props => {
           placeholder={'Select ' + field_label}
           checkedValue={value.value}
           items={items}
+          mode={'single'}
           hasError={hasError}
           disabled={disabled}
           isClickable={isClickable}
@@ -136,7 +168,7 @@ const DynamicField = props => {
         {value != '' && (
           <CTextInput
             label={field_label + ' Number & Details'}
-            key={'text' + index}
+            key={"dropdown_input" + index}
             dynamicFieldRef={dynamicFieldRef}
             index={index}
             isRequired={true}
@@ -172,6 +204,7 @@ const DynamicField = props => {
   const renderTakePhotoView = () => {
     return (
       <TakePhotoView
+        key={index}
         isOptimize={true}
         onUpdatePhotos={photos => {
           updateFormData(field_name, photos);
@@ -182,7 +215,44 @@ const DynamicField = props => {
       />
     );
   };
+
+  const renderYesNoView = () =>{
+
+    return (<YesNoForm
+          onTakeImage={async (images, type) => {
+            if (type === 'yes') {
+              
+            } else {
+
+            }
+          }}
+          onPress={(value, type) => {
+            updateFormData(field_name, value);
+          }}
+          key={index}
+          item={{question_text:field_label, include_image:[], value:value}}
+          >    
+    </YesNoForm>)
+  }
+
+  const renderDropdownText = () => {
+    return (
+      <DropdownText
+        questionType={field_type}
+        item={{question_text:field_label + "s", field_label:field_label,  field_name:field_name, value:value , input_label:input_label}}
+        options={preset_options}
+        style={{marginHorizontal:0}}
+        onFormAction={({type, value}) => {          
+          updateFormData(field_name, value);
+        }}
+      />
+    )
+  }
+
   if (!field_type) return null;
+  
+  if(isHidden != undefined && isHidden == true) return null;
+  
   if (field_type == 'text') {
     return renderText();
   }
@@ -193,7 +263,7 @@ const DynamicField = props => {
     return renderNumber();
   }
   if (field_type == 'dropdown') {
-    return renderDropdown();
+    return renderDropdown("single");
   }
 
   if (field_type == 'dropdown_input') {
@@ -206,6 +276,19 @@ const DynamicField = props => {
   if (field_type == 'take_photo') {
     return renderTakePhotoView();
   }
+  if (field_type == 'yes_no') {
+    return renderYesNoView();
+  }
+
+  if(field_type == 'dropdown_text') {
+    return renderDropdownText();
+  }
+
+  if(field_type == 'multi_select'){
+    return renderDropdown("multi");
+  }
+
+
   return null;
 };
 

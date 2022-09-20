@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 import {Constants} from '../../../../../constants';
 import {getLocalData} from '../../../../../constants/Storage';
 
-export const StockDetailsContainer = props => {
+const StockDetailsContainer = props => {
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
   const [stockType, setStockType] = useState(
@@ -79,3 +79,5 @@ export const StockDetailsContainer = props => {
     </View>
   );
 };
+
+export default StockDetailsContainer;

@@ -445,11 +445,10 @@ export default function LocationSearchScreen(props) {
 
   const detailModalClosed = ({type , value}) => {
     if(type == Constants.actionType.ACTION_CLOSE){
-      if(value === "access_crm"){
-        console.log("========", locationInfo.location_id);
+      if(value === "access_crm"){        
         navigation.navigate('LocationSpecificInfo', {
-          locationId:locationInfo.location_id,
-          //data: locationInfo,
+          //locationId:locationInfo.location_id,
+          data: locationInfo,
           page: 'access_crm',
         });
       }

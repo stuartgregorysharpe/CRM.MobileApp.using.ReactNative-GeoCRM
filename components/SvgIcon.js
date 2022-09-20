@@ -1095,6 +1095,12 @@ const DoubleArrow = `<svg id="Blue_Double_Arrow" data-name="Blue Double Arrow" x
 <path id="angle-down-2" data-name="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(33.453 48.308) rotate(-90)" fill="${actionIconBackground}"/>
 </svg>
 `;
+const DoubleArrowWhite = `<svg id="Blue_Double_Arrow" data-name="Blue Double Arrow" xmlns="http://www.w3.org/2000/svg" width="62.627" height="48.308" viewBox="0 0 62.627 48.308">
+<path id="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(0 48.308) rotate(-90)" fill="${actionIconBackground}"/>
+<path id="angle-down-2" data-name="angle-down" d="M48.308,4.16a1.612,1.612,0,0,1-.484,1.153L25.267,28.673a1.488,1.488,0,0,1-2.227,0L.484,5.313a1.617,1.617,0,0,1,0-2.306L2.9.5A1.488,1.488,0,0,1,5.131.5L24.154,20.2,43.177.5A1.488,1.488,0,0,1,45.4.5l2.42,2.506A1.612,1.612,0,0,1,48.308,4.16Z" transform="translate(33.453 48.308) rotate(-90)" fill="${actionIconBackground}"/>
+</svg>
+`;
+
 
 const QR_SCAN = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 62 62">
 <g id="qr_code_scanner_black_24dp" transform="translate(-0.002 -0.002)">
@@ -1162,6 +1168,16 @@ const Image_Capture_Disable = `<svg xmlns="http://www.w3.org/2000/svg" width="10
 </svg>
 `;
 
+const Pluse_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
+<g id="Group_5546" data-name="Group 5546" transform="translate(-61 -1893)">
+  <path id="Path_5455" data-name="Path 5455" d="M17.608-22.563H3.422v-6.345H17.608V-43.451h6.416v14.543H38.247v6.345H24.024V-8.091H17.608Z" transform="translate(61.914 1940.5)" fill="${actionIconBackground}"/>
+  <g id="Rectangle_3431" data-name="Rectangle 3431" transform="translate(61 1893)" fill="none" stroke="rgba(112,112,112,0)" stroke-width="1" opacity="0.24">
+    <rect width="44" height="44" stroke="none"/>
+    <rect x="0.5" y="0.5" width="43" height="43" fill="none"/>
+  </g>
+</g>
+</svg>
+`
 
 
 export default ({icon, xml, color, width = '100%', height = '100%', style = {}}) => (
@@ -1725,7 +1741,10 @@ export default ({icon, xml, color, width = '100%', height = '100%', style = {}})
     )}
 
     {icon == 'DoubleArrow' && (
-      <SvgXml style={style} xml={DoubleArrow} width={width} height={height} />
+      <SvgXml style={style} xml={DoubleArrow} width={width} height={height} fill={color != undefined ? color : '#fff'} />
+    )}
+    {icon == 'DoubleArrowWhite' && (
+      <SvgXml style={style} xml={DoubleArrowWhite} width={width} height={height} fill={color != undefined ? color : '#fff'} />
     )}
     {icon == 'QR_SCAN' && (
       <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
@@ -1764,6 +1783,11 @@ export default ({icon, xml, color, width = '100%', height = '100%', style = {}})
     {icon == 'Image_Capture_Disable' && (
       <SvgXml style={style} xml={Image_Capture_Disable} width={width} height={height} />
     )}
+
+    {icon == 'Pluse_Icon' && (
+      <SvgXml style={style} xml={Pluse_Icon} width={width} height={height} />
+    )}
+
 
   </Fragment>
 );

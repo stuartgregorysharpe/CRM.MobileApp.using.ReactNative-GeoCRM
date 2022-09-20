@@ -450,44 +450,7 @@ export const postLocationImage = async postData => {
   });
 };
 
-export const getLocationFields = async location_id => {
-  var token = await getToken();
-  var baseUrl = await getBaseUrl();
-  return new Promise(function (resolve, reject) {
-    axios
-      .get(`${baseUrl}/locations/location-fields`, {
-        params: {
-          location_id: location_id,
-        },
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then(res => {
-        // console.log("getLocationFields:",res.data);
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        if (res.data.status == 'success') {
-          resolve(res.data);
-        } else {
-          resolve([]);
-        }
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
+
 
 export const getLocationContacts = async location_id => {
   var token = await getToken();
@@ -503,7 +466,7 @@ export const getLocationContacts = async location_id => {
         },
       })
       .then(res => {
-        // console.log("getLocationFields:",res.data);
+        
         if (res.data == undefined) {
           resolve([]);
         }

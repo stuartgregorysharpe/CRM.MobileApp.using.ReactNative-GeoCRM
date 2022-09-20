@@ -3,12 +3,22 @@ import {StyleSheet, View} from 'react-native';
 import SelectItem from './SelectItem';
 
 const SingleSelectList = props => {
-  const {checkedValue, idFieldName = 'value'} = props;
-  console.log('checkedValue', checkedValue);
+  const {checkedValue, idFieldName = 'value', mode} = props;
+
   const isChecked = item => {
-    if (checkedValue) {
-      return checkedValue == item[idFieldName];
+    if (mode === 'single') {
+      if (checkedValue) {
+        return checkedValue == item[idFieldName];
+      }
+    } else if (mode === 'multi') {
+      if (checkedValue != '' && checkedValue != undefined) {
+        var tmp = checkedValue.find(element => element === item[idFieldName]);
+        if (tmp !== null && tmp !== undefined) {
+          return true;
+        }
+      }
     }
+
     return false;
   };
   const renderItem = (item, index, isLast, isChecked, onItemAction) => {
@@ -40,6 +50,7 @@ const SingleSelectList = props => {
       );
     });
   };
+
   return (
     <View style={[styles.container, props.style]}>
       {renderItems(props.items)}

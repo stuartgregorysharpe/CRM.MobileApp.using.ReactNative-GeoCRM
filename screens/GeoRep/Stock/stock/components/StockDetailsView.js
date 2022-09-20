@@ -5,7 +5,7 @@ import React from 'react'
 import { SubmitButton } from '../../../../../components/shared/SubmitButton'
 import StockDetailCard from './autom/StockDetailCard'
 
-export default function StockDetailsView(props) {
+const StockDetailsView = props => {
     const {item} = props;    
     return (
         <View style={{marginBottom:30}}>
@@ -21,3 +21,4 @@ export default function StockDetailsView(props) {
         </View>
     )
 }
+export default StockDetailsView;

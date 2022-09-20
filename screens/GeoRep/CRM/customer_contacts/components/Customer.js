@@ -36,11 +36,12 @@ export default function Customer(props) {
               value = {value: field.preset_options[parseInt(field.preset_field)], secondValue: field.value};
             }              
           }
-          tmpFormData[field.custom_master_field_id] = value;                    
+          tmpFormData[field.custom_master_field_id] = value;         
         });
         setFormData(tmpFormData);        
+
         const dynamicFields = renderForms.map((field, index) => {
-          if( (field.field_type == "dropdown" || field.field_type == "dropdown_input") && field.preset_options != undefined ){
+          if( (field.field_type == "dropdown" || field.field_type == "dropdown_input" || field.field_type == "multi_select" ) && field.preset_options != undefined ){
             var items = [];         
             if(field.preset_options != undefined && field.preset_options != ''){
               field.preset_options.forEach((element) => {
@@ -85,7 +86,7 @@ export default function Customer(props) {
         
         var userParam = getPostParameter(currentLocation);
         let postData = {
-            location_id: locationId,
+            location_id: locationId, //
             fields: fields,
             user_local_data: userParam.user_local_data,
         };

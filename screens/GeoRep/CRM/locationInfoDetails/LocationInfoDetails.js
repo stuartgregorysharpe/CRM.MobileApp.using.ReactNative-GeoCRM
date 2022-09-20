@@ -7,8 +7,7 @@ import React, {
 } from 'react';
 import {
   Text,
-  View,
-  Image,
+  View,  
   TouchableOpacity,
   Keyboard,
   Dimensions,
@@ -36,7 +35,6 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
-import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import {postLocationImage} from '../../../../actions/location.action';
 import AlertDialog from '../../../../components/modal/AlertDialog';
@@ -47,11 +45,9 @@ import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
-  getPostParameter,
-  selectPicker,
+  getPostParameter,  
 } from '../../../../constants/Helper';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
-import moment from 'moment-timezone';
 import {Notification} from '../../../../components/modal/Notification';
 import {
   clearNotification,
@@ -62,6 +58,7 @@ import {Constants, Strings, Values} from '../../../../constants';
 import { getDateTime } from '../../../../helpers/formatHelpers';
 import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO } from '../../../../DAO';
 import PostRequest from '../../../../DAO/PostRequest';
+import LocationInfo from './LocationInfo';
 
 
 
@@ -227,52 +224,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   };
 
-  const launchImageLibrary = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        if (response.assets != null && response.assets.length > 0) {
-          setFilePath(response.assets[0].uri);
-          updateLocationImage(response.assets[0].uri);
-        }
-      }
-    });
-  };
-
-  const launchCamera = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.launchCamera(options, response => {      
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        if (response.assets != null && response.assets.length > 0) {
-          setFilePath(response.assets[0].uri);
-          updateLocationImage(response.assets[0].uri);
-        }
-      }
-    });
-  };
+  const onPathUpdated = (path) => {
+      setFilePath(path);
+      updateLocationImage(path);
+  }    
 
   const updateLocationImage = async path => {
     var data = await RNFS.readFile(path, 'base64').then(res => {
@@ -335,11 +290,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                   props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value:'access_crm'});
                 }
 
-                // console.log("details", locationInfo);
-                // props.navigation.navigate('LocationSpecificInfo', {
-                //   data: locationInfo,
-                //   page: 'access_crm',
-                // });
+                
               } else if (clickedAction === 'checkin') {
                 onClickCheckIn();
               } else if (clickedAction === 'prev') {
@@ -454,14 +405,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-
-    console.log("started")
+    
     PostRequest.find(locationInfo.location_id, postData , "checkin" , "location-info/check-in").then(async(res) => {
-
       if(props.onButtonAction){
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }
-
       setIsFeedback(false);
       setFeedbackOptions(originFeedbackData);
       setModalType('feedback');        
@@ -617,115 +565,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
         {!isLoading && (
           <View>
-            <View style={styles.headerBox}>
-              {locationInfo !== undefined && locationInfo.location_name !== '' && (
-                <View>
-                  <View style={[styles.subtitleBox]}>
-                    <SvgIcon
-                      style={styles.fontIcon}
-                      icon="Person_Sharp"
-                      width="14px"
-                      height="16px"
-                    />
-                    <Text
-                      style={{
-                        color: whiteLabel().mainText,
-                        fontFamily: Fonts.secondaryMedium,
-                        marginLeft: 5,
-                        fontSize: 12,
-                      }}>
-                      Customer Name
-                    </Text>
-                  </View>
-                </View>
-              )}
-            </View>
-
-            {locationInfo !== undefined && locationInfo.location_name !== '' && (
-              <TouchableOpacity
-                onPress={() => {
-                  openCustomerInfo();
-                }}>
-                <View style={[styles.headerBox, {marginTop: 0}]}>
-                  <Text style={styles.title}>
-                    {' '}
-                    {locationInfo.location_name.value}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-
-            <View style={styles.headerBox}>
-              <View style={styles.addressText}>
-                {locationInfo !== undefined && locationInfo.address !== '' && (
-                  <View style={styles.subtitleBox}>
-                    <SvgIcon
-                      style={styles.fontIcon}
-                      icon="Location_Arrow"
-                      width="16px"
-                      height="16px"
-                    />
-                    <Text style={styles.subtitle}>Address</Text>
-                  </View>
-                )}
-                {locationInfo !== undefined && locationInfo.address !== '' && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      openCustomerInfo();
-                    }}>
-                    <Text style={[styles.title, {marginTop: 3}]}>
-                      {locationInfo ? locationInfo.address : ''}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              {locationInfo !== undefined && locationInfo.address !== '' && (
-                <View style={styles.walmartImageBox}>
-                  {locationInfo.location_image !== '' && (
-                    <Image
-                      style={styles.walmartImage}
-                      source={{uri: locationInfo.location_image}}
-                    />
-                  )}
-                  {locationInfo.location_image === '' && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        selectPicker(
-                          'Upload or capture an image:',
-                          '',
-                          launchImageLibrary,
-                          launchCamera,
-                        );
-                      }}>
-                      {filePath !== '' && (
-                        <Image
-                          style={styles.walmartImage}
-                          source={{uri: filePath}}
-                        />
-                      )}
-                      {filePath === '' && (
-                        <View
-                          style={{
-                            paddingTop: 3,
-                            paddingBottom: 3,
-                            borderWidth: 1.5,
-                            borderColor: whiteLabel().fieldBorder,
-                            borderRadius: 5,
-                          }}>
-                          <SvgIcon
-                            style={styles.fontIcon}
-                            icon={'Add_Image'}
-                            width={DeviceInfo.isTablet() ? '150px' : '90px'}
-                            height={DeviceInfo.isTablet() ? '130px' : '80px'}
-                          />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
-            </View>
+          
+            <LocationInfo locationInfo={locationInfo} filePath={filePath} openCustomerInfo={openCustomerInfo} onPathUpdated={onPathUpdated}/>
 
             {locationInfo !== undefined &&
               locationInfo.location_id !== '' &&
@@ -882,52 +723,20 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'stretch',
   },
-
-  headerBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-
-  subtitleBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  subtitle: {
-    color: whiteLabel().mainText,
-    fontSize: 12,
-    textAlign: 'left',
-    fontFamily: Fonts.secondaryMedium,
-  },
+    
+  
   dateText: {
     color: '#0AD10A',
     fontSize: 12,
     fontFamily: Fonts.secondaryMedium,
   },
-  title: {
-    fontSize: 14,
-    color: '#000',
-    fontFamily: Fonts.secondaryBold,
-    lineHeight: 20,
-  },
+
   addressText: {
     flex: 1,
   },
 
-  walmartImageBox: {
-    alignItems: 'flex-end',
-  },
-  walmartImage: {
-    borderWidth: 1,
-    borderColor: whiteLabel().fieldBorder,
-    borderRadius: 7,
-    width: Dimensions.get('screen').width / 4.5,
-    height: Dimensions.get('screen').width / 4.5,
-  },
-
+  
+  
   nextButtonBar: {
     position: 'absolute',
     bottom: Platform.OS == 'android' ? 0 : 25,
@@ -976,9 +785,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.secondaryBold,
   },
-  fontIcon: {
-    marginRight: 4,
-  },
+  
 
   transitionView: {
     position: 'absolute',

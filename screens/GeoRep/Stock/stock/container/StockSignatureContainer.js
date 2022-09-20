@@ -71,7 +71,7 @@ export default function StockSignatureContainer(props) {
                 postData.append('stock_item_id', props.item.stock_item_id);
                 postData.append('assigned_msisdn', msisdn);
               } else if (item.stock_type == Constants.stockType.SIM) {
-                console.log('selectedCodes', selectedCodes);
+                console.log('selectedCodes=', selectedCodes);
                 selectedCodes.forEach((item, index) => {
                   postData.append(
                     `sims[stock_item_ids][${index}]`,

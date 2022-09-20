@@ -27,9 +27,8 @@ export default function CustomerContactContainer(props) {
     }, [tabIndex]);
 
     const getCustomerInfo = () => {
-        var params = {location_id: locationId};
-        getApiRequest("locations/location-fields", params).then((res) =>{
-            console.log("dd" , res);
+        var params = {location_id: locationId}; //
+        getApiRequest("locations/location-fields", params).then((res) =>{            
             setLocationFields(res.custom_master_fields);              
         }).catch((e) =>{
             
@@ -38,9 +37,7 @@ export default function CustomerContactContainer(props) {
 
     const getContactsInfo = () => {
         var params = {location_id: locationId};
-        getApiRequest("locations/location-contacts" , params).then((res) => {
-            console.log("RES" , locationId)
-            console.log("RES" , res)
+        getApiRequest("locations/location-contacts" , params).then((res) => {            
             prepareContactsList(res.contacts);
         }).catch((e) => {
 

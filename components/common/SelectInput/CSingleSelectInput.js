@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useRef, useMemo} from 'react';
+import React, {useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Constants} from '../../../constants';
 import SelectInputView from './components/SelectInputView';
 import SingleSelectModal from './modals/SingleSelectModal';
 
 const CSingleSelectInput = props => {
-  const {items, hideClear} = props;
+  const {items, hideClear, mode} = props;
   const selectModalRef = useRef(null);
 
   const {
@@ -18,21 +18,41 @@ const CSingleSelectInput = props => {
   } = props;
 
   const getTextFormCheckedValue = () => {
-    if (items) {
-      const foundItem = items.find(x => x.value == checkedValue);
-      if (foundItem) return foundItem.label;
+    if (mode == 'single') {
+      if (items) {
+        const foundItem = items.find(x => x.value == checkedValue);
+        if (foundItem) return foundItem.label;
+      }
+    } else if (
+      mode == 'multi' &&
+      checkedValue != '' &&
+      checkedValue.length > 0
+    ) {
+      var title = '';
+      checkedValue.forEach((element, index) => {
+        const foundItem = items.find(x => x.value == element);
+        if (index == 0) {
+          title = foundItem.label;
+        } else {
+          title = title + ', ' + foundItem.label;
+        }
+      });
+      return title;
     }
     return '';
   };
   const _text = useMemo(() => getTextFormCheckedValue());
   const text = props.text ? props.text : _text;
   const showDescription = text != '' && text != null;
+
   const onOpenPicker = () => {
     selectModalRef.current.showModal();
   };
+
   const onEmpty = () => {
     props.onPress();
   };
+
   const onButtonAction = ({type, item}) => {
     if (type == Constants.actionType.ACTION_CHECK) {
       if (props.onSelectItem) {
@@ -62,6 +82,8 @@ const CSingleSelectInput = props => {
         items={items}
         hideClear={hideClear}
         modalTitle={placeholder}
+        clearText={mode == 'single' ? 'Clear' : 'Done'}
+        mode={mode}
         checkedValue={checkedValue}
         onButtonAction={onButtonAction}
         renderItem={renderDropdownItem}
