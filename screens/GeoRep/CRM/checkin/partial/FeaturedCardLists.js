@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {FeatureCard} from './../../partial/FeatureCard';
 import {checkFeatureIncludeParam} from '../../../../../constants/Storage';
 import {useSelector} from 'react-redux';
+import {Values} from '../../../../../constants';
 
 export default function FeaturedCardLists(props) {
   const {onItemClicked} = props;
@@ -85,14 +86,14 @@ export default function FeaturedCardLists(props) {
       });
     }
 
-    if(features.includes('location_specific_devices')){
+    if (features.includes('location_specific_devices')) {
       featureCards.push({
         title: `Devices`,
         icon: 'DEVICES',
         action: 'View allocated devices',
         link: 'devices',
       });
-    }    
+    }
 
     if (customer_sales_history_feature) {
       featureCards.push({
@@ -119,7 +120,10 @@ export default function FeaturedCardLists(props) {
         return (
           <View
             key={index}
-            style={{marginLeft: index % 2 ? 5 : 0, width: '49%'}}>
+            style={{
+              marginLeft: index % 2 ? 10 : 0,
+              width: (Values.deviceWidth - 30) / 2,
+            }}>
             <FeatureCard
               icon={item.icon}
               title={item.title}
@@ -138,8 +142,6 @@ export default function FeaturedCardLists(props) {
 const styles = StyleSheet.create({
   featureCardContainer: {
     flex: 1,
-    marginLeft: 5,
-    marginRight: 5,
     marginBottom: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',

@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,  
+  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -31,7 +31,10 @@ import ActivityComments from '../activity_comments/ActivityComments';
 import Checkout from './partial/Checkout';
 import {getLocationInfo} from '../../../../actions/location.action';
 import {Notification} from '../../../../components/modal/Notification';
-import { clearNotification, showNotification } from '../../../../actions/notification.action';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../../actions/notification.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryModal';
@@ -42,13 +45,12 @@ import {Constants, Strings} from '../../../../constants';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
-import { AppText } from '../../../../components/common/AppText';
+import {AppText} from '../../../../components/common/AppText';
 
 export default function LocationSpecificInfoScreen(props) {
-
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
-  const [locationInfo, setLocationIfo] = useState(props.route.params.data);  
+  const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [pageType, setPageType] = useState(props.route.params.page);
   const location_id = props.route.params.locationId;
@@ -69,10 +71,11 @@ export default function LocationSpecificInfoScreen(props) {
   const isCheckin = useSelector(state => state.location.checkIn);
   const locationId = locationInfo ? locationInfo.location_id : location_id;
   const customerContactModalRef = useRef(null);
-  const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
   const isDisposition = features.includes('disposition_fields');
   let isMout = true;
-
 
   useEffect(() => {
     isMout = true;
@@ -80,26 +83,25 @@ export default function LocationSpecificInfoScreen(props) {
     initData();
     if (location_id !== undefined) {
       openLocationInfo(location_id);
-    }    
-    return () =>{
-      isMout = false;
     }
+    return () => {
+      isMout = false;
+    };
   }, [location_id]);
 
   useEffect(() => {
     isMout = true;
     if (isCheckin == false) {
       if (props.navigation.canGoBack()) {
-        if(isMout){          
+        if (isMout) {
           //
-        }          
+        }
       }
     }
-    return () =>{
+    return () => {
       isMout = false;
-    }
+    };
   }, [isCheckin]);
-
 
   const initData = async () => {
     if (pageType === 'checkin') {
@@ -114,30 +116,29 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const goBack = () => {
-    console.log("go back in specific info page");
+    console.log('go back in specific info page');
     if (props.navigation.canGoBack()) {
-      props.navigation.popToTop()
+      props.navigation.popToTop();
       //props.navigation.goBack();
     }
   };
-
 
   const openLocationInfo = async location_id => {
     setIsLoading(true);
     getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
-        if(isMout){
+        if (isMout) {
           if (locationInfoRef.current !== undefined) {
             locationInfoRef.current.updateDispositionData(res);
           }
           setLocationIfo(res);
           setIsLoading(false);
-        }        
+        }
       })
       .catch(e => {
-        if(isMout){
+        if (isMout) {
           setIsLoading(false);
-        }        
+        }
       });
   };
 
@@ -149,8 +150,8 @@ export default function LocationSpecificInfoScreen(props) {
     if (item.title === 'Forms') {
       navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
-    if (item.link === 'customer_contacts') {      
-      customerContactModalRef.current.showModal();      
+    if (item.link === 'customer_contacts') {
+      customerContactModalRef.current.showModal();
     }
     if (item.link === 'activity_comments') {
       setIsActivityComment(true);
@@ -168,7 +169,7 @@ export default function LocationSpecificInfoScreen(props) {
       devicesModalRef.current.showModal();
     }
     if (item.link === 'customer_sales') {
-      setIsCustomerSales(true);            
+      setIsCustomerSales(true);
     }
     if (item.link === 'touchpoints') {
       navigationMain.navigate('TouchpointScreen', {
@@ -188,7 +189,7 @@ export default function LocationSpecificInfoScreen(props) {
                   setCanShowCustomerContactsScreen(false);
                   customerContactsRef.current.onBackHandler();
                 } else {
-                  if (props.navigation.canGoBack()) {                    
+                  if (props.navigation.canGoBack()) {
                     props.navigation.goBack();
                   }
                 }
@@ -229,10 +230,7 @@ export default function LocationSpecificInfoScreen(props) {
     }
   };
 
-  const onCustomerContactModalClosed = ({ type, value}) => {
-
-  }
-
+  const onCustomerContactModalClosed = ({type, value}) => {};
 
   return (
     <SafeAreaView style={{}}>
@@ -270,15 +268,14 @@ export default function LocationSpecificInfoScreen(props) {
           }></CustomerSalesHistoryModal>
       )}
 
-      {
-        locationInfo != undefined && 
+      {locationInfo != undefined && (
         <CustomerContactModal
           ref={customerContactModalRef}
           locationId={locationInfo.location_id}
           onButtonAction={onCustomerContactModalClosed}
         />
-      }
-      
+      )}
+
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
@@ -369,10 +366,9 @@ export default function LocationSpecificInfoScreen(props) {
               </TouchableOpacity>
             </View>
 
-            {
-              isCheckin && 
-              <CheckOutViewContainer 
-                type="specificInfo" 
+            {isCheckin && (
+              <CheckOutViewContainer
+                type="specificInfo"
                 goBack={async res => {
                   dispatch(
                     showNotification({
@@ -381,7 +377,7 @@ export default function LocationSpecificInfoScreen(props) {
                       buttonText: Strings.Ok,
                       buttonAction: async () => {
                         dispatch({type: CHECKIN, payload: false});
-                        
+
                         dispatch(clearNotification());
                         goBack();
                       },
@@ -389,15 +385,15 @@ export default function LocationSpecificInfoScreen(props) {
                   );
                 }}
               />
-            }
-            
+            )}
+
             {/* <View style={styles.filterButton}>
                   <FilterButton text="Contact: Jack Reacher" />
                 </View> */}
           </View>
         )}
 
-        <View style={styles.innerContainer}>
+        <View style={[styles.innerContainer, {marginBottom: -14}]}>
           <View style={[styles.cardBox]}>
             {locationInfo !== undefined &&
             locationInfo.address !== '' &&
@@ -424,14 +420,13 @@ export default function LocationSpecificInfoScreen(props) {
         <View style={{height: 60}}></View>
       </ScrollView>
 
-      {
-        isDisposition &&
+      {isDisposition && (
         <TouchableOpacity
           style={[style.plusButton, {marginBottom: 70}]}
           onPress={() => setStatusSubmit(!statusSubmit)}>
           <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
         </TouchableOpacity>
-      }      
+      )}
     </SafeAreaView>
   );
 }
@@ -490,7 +485,7 @@ const styles = EStyleSheet.create(
 
     cardBox: {
       //display: perWidth('flex', 'flex'),
-      width: '100%',      
+      width: '100%',
       marginBottom: 8,
     },
 
