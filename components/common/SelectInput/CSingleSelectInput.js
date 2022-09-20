@@ -8,9 +8,17 @@ const CSingleSelectInput = props => {
   const {items, hideClear, mode} = props;
   const selectModalRef = useRef(null);
 
+  const {
+    placeholder,
+    description,
+    checkedValue,
+    hasError,
+    renderDropdownItem,
+    isPressOption,
+  } = props;
 
   const getTextFormCheckedValue = () => {
-    if(mode == 'single' || mode == undefined){
+    if (mode == 'single') {
       if (items) {
         const foundItem = items.find(x => x.value == checkedValue);
         if (foundItem) return foundItem.label;
@@ -74,7 +82,7 @@ const CSingleSelectInput = props => {
         items={items}
         hideClear={hideClear}
         modalTitle={placeholder}
-        clearText={mode == "single" || mode == undefined ? "Clear" : "Done"}
+        clearText={mode == 'single' ? 'Clear' : 'Done'}
         mode={mode}
         checkedValue={checkedValue}
         onButtonAction={onButtonAction}

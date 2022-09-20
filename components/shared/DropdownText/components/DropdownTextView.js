@@ -18,6 +18,7 @@ const DropdownTextView = (props) => {
     
     useEffect(() => {        
         if(item.value != '' && item.value != undefined && item.value != '[]'){
+            console.log("item.value",item.value)
             setLists(item && item.value != '' && item.value != undefined ? item.value : []);
         }        
     }, [item, item.value]);
