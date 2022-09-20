@@ -51,6 +51,7 @@ export default function SwopAtTraderView(props) {
           <CSingleSelectInput                    
               description={'Reason'}
               placeholder={'Select ' + "Reason"}
+              mode='single'
               checkedValue={reason}
               items={reasonLists}
               hasError={false}

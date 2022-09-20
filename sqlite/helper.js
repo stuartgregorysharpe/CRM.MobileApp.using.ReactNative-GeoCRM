@@ -26,6 +26,13 @@ export const  OfflineBaskets = [
             'return_device',
             'return_to_warehouse',
         ]
+    },
+    {
+        basketName: 'Others',
+        itemTypes:[
+            'location-feedback',
+            'other',            
+        ]
     }
 ]
 

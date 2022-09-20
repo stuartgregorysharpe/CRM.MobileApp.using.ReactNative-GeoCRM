@@ -10,6 +10,7 @@ import {
 } from '../../../../constants/Storage';
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
 import MarkerIcon from '../../../../components/Marker';
+import { isMarker } from '../../../../screens/GeoRep/CRM/components/helpers';
 let polylineKey = 0;
 const CURRENT_LOCATION_RADIUS = 200;
 const GmsLocationMap = props => {
@@ -109,11 +110,15 @@ const GmsLocationMap = props => {
             latitude: Number(item.coordinates.latitude),
             longitude: Number(item.coordinates.longitude),
           }}>
-            {
-              
-              isMarkerSelected ? <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" /> : <SvgIcon  width="30" height="30" xml={ item.pinIcon.svg_code} />
+            {              
+              isMarkerSelected &&
+                <MarkerIcon style={styles.markerIcon} icon={'Selected_Marker'} width="34px" height="34px" />               
             }
-
+            {
+              !isMarkerSelected && item.pinIcon != undefined &&
+              <SvgIcon  width="30" height="30" xml={ item.pinIcon.svg_code ? item.pinIcon.svg_code : ''} />
+            }
+                        
           </Marker>
       );
     });

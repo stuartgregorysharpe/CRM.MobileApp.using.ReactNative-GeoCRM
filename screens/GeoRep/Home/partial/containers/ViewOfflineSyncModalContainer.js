@@ -9,8 +9,9 @@ const ViewOfflineSyncModalContainer = props => {
     const [typeLists, setTypeLists] = useState([
         {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
         {label:'Forms' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} , 
-        {label:'Product Orders' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} ,
-        {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false}
+        //{label:'Product Orders' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} ,
+        {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false},
+        {label:'Others' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false}
     ]);
 
     const [isStart, setIsStart] = useState(false);
@@ -58,7 +59,7 @@ const ViewOfflineSyncModalContainer = props => {
 
     const startSync = () => {       
         setIsStart(true); 
-        syncData(typeLists, 0);                
+        syncData(typeLists, 0);
     }
     
     return (

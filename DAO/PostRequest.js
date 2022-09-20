@@ -20,16 +20,17 @@ export function find(locationId, postData , type, url){
             }else{
 
                 var res = await insertToLocalDB(locationId, postData, type, url);            
-                resolve({status: Strings.Success , message: getResponseMessage(type)});
+                resolve({status: Strings.Success , message: getResponseMessage(type , url)});
             }
         }).catch(e => {
             reject(e);
         });
   });
+  
 }
 
 const insertToLocalDB = async(locationId, postData, type, url) => {    
-    await saveOfflineSyncItems(locationId, postData, type , url);    
+    await saveOfflineSyncItems(locationId, postData, type , url);
 }
 
 export default {

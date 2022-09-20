@@ -11,9 +11,7 @@ const LocationInfo = (props) => {
 
     const { locationInfo ,filePath } = props;
 
-    const [isPicker, setIsPicker] = useState(false);
-
-    console.log("filePath",filePath)
+    const [isPicker, setIsPicker] = useState(false);    
 
     return (        
 

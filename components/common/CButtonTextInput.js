@@ -3,7 +3,6 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Colors, Fonts} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
-import { Button } from '../shared/Button';
 import { AppText } from './AppText';
 
 const CButtonTextInput = props => {
@@ -22,7 +21,7 @@ const CButtonTextInput = props => {
         style={[styles.textInput, props.textInputStyle]}
       />
 
-      <TouchableOpacity style={styles.addButtonStyle} onPress={() => props.onSubmit()}>
+      <TouchableOpacity style={[styles.addButtonStyle , {backgroundColor: props.value != undefined && props.value != '' ? whiteLabel().actionFullButtonBackground : Colors.disabledColor } ]} onPress={() => props.onSubmit()}>
           <AppText title="Add" color="white" size="medium" type="secondaryMedium"></AppText>
       </TouchableOpacity>
 
@@ -57,6 +56,7 @@ const styles = StyleSheet.create({
       position:'absolute',
       right:0,
       backgroundColor: Colors.disabledColor,
+      fontFamily:Fonts.secondaryBold,
       marginTop:7,    
       borderTopRightRadius:3,
       borderBottomRightRadius:3,

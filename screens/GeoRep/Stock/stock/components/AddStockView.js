@@ -34,8 +34,7 @@ export default function AddStockView(props) {
   const onDataChangedDevice = (det, qua) => {
     details = det;
     quantity = qua;
-    if (details != '' && quantity != '') {
-      console.log('true1');
+    if (details != '' && quantity != '') {      
       setEnableAddStock(true);
     } else {
       setEnableAddStock(false);
@@ -52,6 +51,7 @@ export default function AddStockView(props) {
     }
   };
   const onDataChangedSim = value => {
+
     var tmp = {type: device, code: value};
     var flag = false;
     if (device === Constants.networkType.VODACOM) {
@@ -86,6 +86,8 @@ export default function AddStockView(props) {
         flag = true;
       }
     }
+
+    console.log("code lists", codeLists)
     if (flag) {
       setIsAdded(true);
       setEnableAddStock(true);
@@ -174,6 +176,7 @@ export default function AddStockView(props) {
         placeholder={'Select Stock Type'}
         checkedValue={deviceType}
         items={deviceTypeLists}
+        mode='single'
         hasError={false}
         disabled={false}
         onSelectItem={item => {
@@ -192,6 +195,7 @@ export default function AddStockView(props) {
         description={getLabel()}
         placeholder={'Select ' + getLabel()}
         checkedValue={productId}
+        mode='single'
         items={deviceLists}
         hasError={false}
         disabled={false}

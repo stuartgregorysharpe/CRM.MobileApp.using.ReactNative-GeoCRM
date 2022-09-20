@@ -47,7 +47,6 @@ import {
   checkFeatureIncludeParamFromSession,
   getPostParameter,  
 } from '../../../../constants/Helper';
-import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
 import {Notification} from '../../../../components/modal/Notification';
 import {
   clearNotification,
@@ -56,11 +55,8 @@ import {
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings, Values} from '../../../../constants';
 import { getDateTime } from '../../../../helpers/formatHelpers';
-import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO } from '../../../../DAO';
-import PostRequest from '../../../../DAO/PostRequest';
+import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO, PostRequestDAO } from '../../../../DAO';
 import LocationInfo from './LocationInfo';
-
-
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -140,7 +136,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     }
     setLocationInfo(_locationInfo);
     setIsLoading(false);
-    console.log("_locationInfo",_locationInfo)    
+    
     if (_locationInfo.feedback != undefined && _locationInfo.feedback.length > 0) {
       setFeedback(
         _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
@@ -150,6 +146,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       );
     }
   };
+
   useEffect(() => {
     updateLocationInfo(props.locInfo);
   }, [props.locInfo]);
@@ -208,7 +205,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       } else if ('access_crm') {
       }
     }
-  };
+  };  
 
   const _canGoNextPrev = () => {
     if (isFeedbackLocInfoOutcome && !outcomeVal) {
@@ -256,7 +253,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callLocationFeedback = item => {
-    console.log('locaiotn', locationInfo.coordinates);
+
     var userParam = getPostParameter(locationInfo.coordinates);
     let postData = {
       location_id: locationInfo.location_id,
@@ -267,30 +264,27 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       ],
       user_local_data: userParam.user_local_data,
     };
-    postApiRequest('locations-info/location-feedback', postData)
-      .then(res => {
+    
+    PostRequestDAO.find(locationInfo.location_id, postData, "location-feedback", "locations-info/location-feedback").then((res) => {
+        
         setIsOutcomeUpdated(true);
         outcomeVal = true;
-        console.log('location feedbaa called');
 
         dispatch(
           showNotification({
-            type: 'success',
+            type: Strings.Success,
             message: res.message,
             buttonText: Strings.Ok,
             buttonAction: async () => {
-              console.log('clickedActionclickedAction', clickedAction);
+              
               if (clickedAction === 'top') {
                 checkFeedbackAndClose('top');
               } else if (clickedAction === 'back') {
                 checkFeedbackAndClose('back');
               } else if (clickedAction === 'access_crm') {
-
                 if(props.onButtonAction){
                   props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value:'access_crm'});
-                }
-
-                
+                }                
               } else if (clickedAction === 'checkin') {
                 onClickCheckIn();
               } else if (clickedAction === 'prev') {
@@ -306,10 +300,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             },
           }),
         );
-      })
-      .catch(error => {
-        console.log(error);
-      });
+                
+    }).catch(e => {
+      console.log("Error : " , e);
+    });
+    
   };
 
   const showFeedbackDropDownModal = () => {
@@ -321,23 +316,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         value={[]}
         visible={isFeedbackModal}
         options={feedbackOptions}
-        onModalClose={() => {
-          console.log('modalType', modalType);
+        onModalClose={() => {          
           if (modalType === 'checkin_reason') {
             var options = [];
             checkinTypes.forEach((item, index) => {
               options.push(item.checkin_type);
-            });
-            console.log('feedback, checkin', originFeedbackData);
+            });            
             setFeedbackOptions(originFeedbackData);
-          } else {
-            console.log(' feedbackd ', originFeedbackData);
+          } else {            
             setFeedbackOptions(originFeedbackData);
           }
           setIsFeedback(false);
         }}
-        onValueChanged={(item, index) => {
-          console.log('modalTypemodalType', modalType);
+        onValueChanged={(item, index) => {          
           if (modalType === 'feedback') {
             _callLocationFeedback(item);
             setIsFeedback(false);
@@ -406,7 +397,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       user_local_data: userParam.user_local_data,
     };
     
-    PostRequest.find(locationInfo.location_id, postData , "checkin" , "location-info/check-in").then(async(res) => {
+    PostRequestDAO.find(locationInfo.location_id, postData , "checkin" , "location-info/check-in").then(async(res) => {
       if(props.onButtonAction){
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }
@@ -431,7 +422,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     if (isCheckin === '1') {    
       dispatch(
         showNotification({
-          type: 'success',
+          type: Strings.Success,
           message: Strings.You_Are_Currenly_Checkedin,
           buttonText: 'Continue',
           buttonAction: async () => {
@@ -652,23 +643,21 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       </KeyboardAwareScrollView>
 
       {features &&
-        (features.includes('access_crm') || features.includes('checkin')) &&
-        !keyboardStatus && (
+        (features.includes('access_crm') || features.includes('checkin')) && !keyboardStatus && (
           <View style={styles.nextButtonBar}>
             {features && features.includes('access_crm') && (
               <TouchableOpacity
                 style={[styles.nextButton, styles.accessButton]}
                 onPress={async () => {
                   clickedAction = 'access_crm';
-                  if (_canGoNextPrev()) {
-                    console.log("can ");
+                  if (_canGoNextPrev()) {                    
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,
                       page: 'access_crm',
                     });
                   }
                 }}>
-                <Text style={styles.nextButtonText}>Access CRM</Text>
+                <Text style={styles.nextButtonText}>{Strings.CRM.Access_CRM}</Text>
                 <FontAwesomeIcon
                   size={22}
                   color={whiteLabel().actionOutlineButtonText}
@@ -686,7 +675,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                     onClickCheckIn();
                   }
                 }}>
-                <Text style={[styles.checkInButtonText]}>Check In</Text>
+                <Text style={[styles.checkInButtonText]}>{Strings.CRM.Check_In}</Text>
                 <FontAwesomeIcon
                   size={22}
                   color={whiteLabel().actionFullButtonIcon}
@@ -708,23 +697,25 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
         </TouchableOpacity>
       )}
+
     </View>
   );
 });
 
 const styles = StyleSheet.create({
+
   container: {
     maxHeight: Values.deviceHeight - 80,
     backgroundColor: Colors.bgColor,
     alignSelf: 'stretch',
   },
+
   innerContainer: {
     backgroundColor: Colors.bgColor,
     padding: 10,
     alignSelf: 'stretch',
   },
-    
-  
+      
   dateText: {
     color: '#0AD10A',
     fontSize: 12,
@@ -734,8 +725,6 @@ const styles = StyleSheet.create({
   addressText: {
     flex: 1,
   },
-
-  
   
   nextButtonBar: {
     position: 'absolute',
@@ -751,6 +740,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.2)',
     borderTopWidth: 0.5,
   },
+
   nextButton: {
     width: '47%',
     flexDirection: 'row',
@@ -780,13 +770,13 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     backgroundColor: whiteLabel().actionFullButtonBackground,
   },
+
   checkInButtonText: {
     color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold,
   },
   
-
   transitionView: {
     position: 'absolute',
     bottom: 0,

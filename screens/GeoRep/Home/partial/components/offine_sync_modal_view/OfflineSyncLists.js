@@ -6,8 +6,11 @@ import Colors, { whiteLabel } from '../../../../../../constants/Colors';
 const OfflineSyncLists = props => {
 
     const { lists , onItemSelected } = props;
+    console.log("MUIT",lists)
 
     const renderItem = (item, index) => {
+
+        
       return (
           <TouchableOpacity key={index} onPress={() =>{
               onItemSelected(item)
@@ -20,11 +23,11 @@ const OfflineSyncLists = props => {
                           <AppText
                               size="big"
                               type="secondaryBold"
-                              title={item.label}
+                              title={item.label + " (" + item.itemType + ")"}
                               style={{fontSize: 12.5}}></AppText>
                           <AppText
                               type="secondaryMedium"
-                              title={item.subLabel}
+                              title={item.subLabel} 
                               color={whiteLabel().subText}
                               style={{fontSize: 10.4}}></AppText>
                       </View>

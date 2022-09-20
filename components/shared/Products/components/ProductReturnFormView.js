@@ -157,6 +157,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
                     placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
                     description={'Brand'}
                     placeholder={'Brand'}
+                    mode='single'
                     checkedValue={brand}
                     items={brandLists}
                     hasError={false}
@@ -175,6 +176,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
                     placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
                     description={'Type'}
                     placeholder={'Type'}
+                    mode='single'
                     checkedValue={type}
                     items={typeLists}
                     hasError={false}
@@ -194,6 +196,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
                 placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
                 description={'Return Reason'}
                 placeholder={'Return Reason'}
+                mode='single'
                 checkedValue={productReturn}
                 items={productReturns}
                 hasError={false}
