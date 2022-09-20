@@ -16,9 +16,7 @@ import {checkFeatureIncludeParam} from '../../../../constants/Storage';
 import {style} from '../../../../constants/Styles';
 
 export default function WazeNavigation({location, address}) {
-  //const [isExpanded , setIsExpanded] = useState(false);
   const [visible, setVisible] = useState(false);
-  const isExpanded = true;
   useEffect(() => {
     checkVisible();
   }, []);
@@ -50,40 +48,30 @@ export default function WazeNavigation({location, address}) {
             </View>
         </TouchableOpacity>*/}
 
-          {isExpanded && (
-            <View
-              style={{
-                flexDirection: 'column',
-                width: '100%',
-              }}>
-              <TouchableOpacity
-                onPress={async () => {
-                  console.log('loc', location);
-                  var wazeByAddress = await checkFeatureIncludeParam(
-                    'waze_by_address',
-                  );
-                  try {
-                    if (wazeByAddress) {
-                      var parseLocation = await parseCoordinate(address);
-                      if (parseLocation) {
-                        Linking.openURL(
-                          `https://waze.com/ul?q=${encodeURIComponent(
-                            address,
-                          )}&ll=` +
-                            parseLocation.latitude +
-                            ',' +
-                            parseLocation.longitude +
-                            '&navigate=yes',
-                        );
-                      } else {
-                        Linking.openURL(
-                          'https://waze.com/ul?ll=' +
-                            location.latitude +
-                            ',' +
-                            location.longitude +
-                            '&navigate=no',
-                        );
-                      }
+          <View
+            style={{
+              flexDirection: 'column',
+              width: '100%',
+            }}>
+            <TouchableOpacity
+              onPress={async () => {
+                console.log('loc', location);
+                var wazeByAddress = await checkFeatureIncludeParam(
+                  'waze_by_address',
+                );
+                try {
+                  if (wazeByAddress) {
+                    var parseLocation = await parseCoordinate(address);
+                    if (parseLocation) {
+                      Linking.openURL(
+                        `https://waze.com/ul?q=${encodeURIComponent(
+                          address,
+                        )}&ll=` +
+                          parseLocation.latitude +
+                          ',' +
+                          parseLocation.longitude +
+                          '&navigate=yes',
+                      );
                     } else {
                       Linking.openURL(
                         'https://waze.com/ul?ll=' +
@@ -93,29 +81,37 @@ export default function WazeNavigation({location, address}) {
                           '&navigate=no',
                       );
                     }
-                  } catch (e) {
-                    if (Platform.OS === 'android') {
-                      Linking.openURL('market://details?id=com.waze');
-                    } else {
-                      Linking.openURL(
-                        'http://itunes.apple.com/us/app/id323229106',
-                      );
-                    }
+                  } else {
+                    Linking.openURL(
+                      'https://waze.com/ul?ll=' +
+                        location.latitude +
+                        ',' +
+                        location.longitude +
+                        '&navigate=no',
+                    );
                   }
-                }}>
-                <View style={{flex: 1, marginLeft: 10, flexWrap: 'wrap'}}>
-                  <View style={styles.wazeStyle}>
-                    <Text style={{fontSize: 12}}>Waze</Text>
-                    <Image
-                      resizeMethod="resize"
-                      style={{width: 20, height: 20, marginLeft: 10}}
-                      source={Images.waze}
-                    />
-                  </View>
+                } catch (e) {
+                  if (Platform.OS === 'android') {
+                    Linking.openURL('market://details?id=com.waze');
+                  } else {
+                    Linking.openURL(
+                      'http://itunes.apple.com/us/app/id323229106',
+                    );
+                  }
+                }
+              }}>
+              <View style={{flex: 1, marginLeft: 10, flexWrap: 'wrap'}}>
+                <View style={styles.wazeStyle}>
+                  <Text style={{fontSize: 12}}>Waze</Text>
+                  <Image
+                    resizeMethod="resize"
+                    style={{width: 20, height: 20, marginLeft: 10}}
+                    source={Images.waze}
+                  />
                 </View>
-              </TouchableOpacity>
-            </View>
-          )}
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
