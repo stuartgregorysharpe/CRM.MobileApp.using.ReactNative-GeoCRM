@@ -26,6 +26,11 @@ export default {
   Type: 'Type',
   Added_Date: 'Added Date',
 
+  CRM:{
+    Access_CRM :'Access CRM',
+    Check_In: 'Check In'
+  },
+
   Log:{
     Post_Api_Error: 'Post Api Call Error : ',
     Get_Api_Error: 'Get Api Call Error : ',
@@ -60,7 +65,7 @@ export default {
   PostRequestResponse: {
     Successfully_Checkout: 'Successfully Checkout !',
     Successfully_Checkin: 'Successfully Checkin !',
-    
+    Successfully_Feedback: 'Successfully Feedback !',
   }
 
 };

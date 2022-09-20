@@ -59,7 +59,7 @@ export function saveOfflineSyncItems(locationId , postData , type, url){
    
         try{            
             var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
-            var res = await ExecuteQuery(query, [locationId]);            
+            var res = await ExecuteQuery(query, [locationId]);
             if( res != undefined  && res.rows.length > 0){
                 var added_time = getDateTime();
                 var location_name = res.rows.item(0).location_name;
@@ -67,7 +67,7 @@ export function saveOfflineSyncItems(locationId , postData , type, url){
                 var data = [
                     uuid.v4(), 
                     type, 
-                    location_name, 
+                    location_name,
                     address,
                     added_time, 
                     postData.user_local_data.time_zone , 
@@ -85,14 +85,16 @@ export function saveOfflineSyncItems(locationId , postData , type, url){
         }catch(e){
             console.log("error" , e);
             reject(e);
-        }        
+        }
     });              
 }
 
-export function getResponseMessage (type) {
+export function getResponseMessage (type , url) {
     if(type ==  'checkin'){
         return Strings.PostRequestResponse.Successfully_Checkin;
     }else if(type == 'checkout'){
         return Strings.PostRequestResponse.Successfully_Checkout;
+    }else if(type == 'location-feedback' && url == 'locations-info/location-feedback'){
+        return Strings.PostRequestResponse.Successfully_Feedback;
     }
 }

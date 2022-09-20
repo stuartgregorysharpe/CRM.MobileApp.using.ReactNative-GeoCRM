@@ -115,7 +115,7 @@ const getOfflineSyncItemByItemType = async(itemLists, index , lists) => {
         if(offlineSyncItems.length > 0){                
             for(var i = 0; i < offlineSyncItems.length; i++){
                 const item = offlineSyncItems.item(i);
-                lists.push({label:item.item_label , subLabel: item.item_sub_text, time: getConvertedDateTime(item.added_time) } );                
+                lists.push({label:item.item_label , subLabel: item.item_sub_text, itemType: item.item_type,  time: getConvertedDateTime(item.added_time) } );                
             }                
         }
         if(index < itemLists.length - 1){

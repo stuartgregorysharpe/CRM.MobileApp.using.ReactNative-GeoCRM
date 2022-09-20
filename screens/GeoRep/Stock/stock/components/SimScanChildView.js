@@ -46,7 +46,10 @@ export default function SimScanChildView(props) {
                 onChangeText={text => {
                     setCode(text)
                 }}
-                onSubmit={() => onSubmit(code) }
+                onSubmit={() => {
+                    onSubmit(code);
+                    setCode('');
+                }}
                 style={{marginTop:20, marginBottom:35}}
             /> 
 

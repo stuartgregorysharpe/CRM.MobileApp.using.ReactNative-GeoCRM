@@ -35,15 +35,16 @@ export default function ReturnDeviceDetailView(props) {
           <CSingleSelectInput                    
               description={'Reason'}
               placeholder={'Select ' + "Reason"}
+              mode='single'
               checkedValue={reason}
               items={reasonLists}
               hasError={false}
               disabled={false}
-              onSelectItem={item => {                                               
+              onSelectItem={item => {                    
                   setReason(item.label);
-                  console.log("selected reason", item)
-                  //onReason(item.label);
-                  onReturnDevice({location_device_id: device.location_device_id, return_reason: item.label});
+                  if(device != null){                    
+                    onReturnDevice({location_device_id: device.location_device_id, return_reason: item.label});
+                  }                                             
               }}
               containerStyle={{marginTop: 15}}
           /> 

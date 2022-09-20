@@ -139,6 +139,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                     placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
                     description={'Brand'}
                     placeholder={'Brand'}
+                    mode='single'
                     checkedValue={brand}
                     items={brandLists}
                     hasError={false}
@@ -156,6 +157,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                     placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
                     description={'Type'}
                     placeholder={'Type'}
+                    mode='single'
                     checkedValue={type}
                     items={typeLists}
                     hasError={false}
@@ -176,6 +178,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
                     placeholderStyle={{color: whiteLabel().mainText, fontWeight:'700' }}
                     description={'Product Issues'}
                     placeholder={'Product Issues'}
+                    mode='single'
                     checkedValue={productIssue}
                     items={productIssues}
                     hasError={false}

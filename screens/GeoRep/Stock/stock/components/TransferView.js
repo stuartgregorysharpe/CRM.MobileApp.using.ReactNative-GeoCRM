@@ -17,6 +17,7 @@ export default function TransferView(props) {
           <CSingleSelectInput                    
               description={'User'}
               placeholder={'Select ' + "User"}
+              mode='single'
               checkedValue={userId}
               items={lists}
               hasError={false}

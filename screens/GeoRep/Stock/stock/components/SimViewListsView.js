@@ -17,6 +17,7 @@ export default function SimViewListsView(props) {
   const closeModal = () => {
     props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
   };
+  
 
   const changeNetwork = () => {
     props.onButtonAction({
@@ -65,6 +66,14 @@ export default function SimViewListsView(props) {
           />
         </TouchableOpacity>
       </View>
+
+      <ScrollView style={{marginTop:10}}>
+        {
+            lists.map((item , index) => {
+                return renderItem(item, index)
+            })
+        }
+      </ScrollView>
 
       <SubmitButton
         title={

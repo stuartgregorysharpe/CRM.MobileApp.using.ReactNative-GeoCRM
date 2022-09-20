@@ -31,6 +31,7 @@ const StockListFilterContainer = props => {
         description={'Stock Type'}
         placeholder={'Select Stock Type'}
         checkedValue={filterData.stockType}
+        mode='single'
         items={deviceTypeList}
         hasError={false}
         disabled={false}
