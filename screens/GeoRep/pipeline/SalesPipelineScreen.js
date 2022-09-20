@@ -480,6 +480,9 @@ export default function SalesPipelineScreen(props) {
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={{paddingHorizontal: 7, marginTop: 0}}
             ItemSeparatorComponent={renderSeparator}
+            style={{
+              marginBottom: DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
+            }}
           />
 
           {!canAddPipeline && (

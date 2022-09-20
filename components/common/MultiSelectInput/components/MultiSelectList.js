@@ -1,24 +1,13 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import SelectItem from './SelectItem';
+import SelectItem from '../../SelectInput/components/SelectItem';
 
-const SingleSelectList = props => {
-  const {checkedValue, idFieldName = 'value', mode} = props;
-
+const MultiSelectList = props => {
+  const {checkedValueList, idFieldName = 'value'} = props;
   const isChecked = item => {
-    if (mode === 'single') {
-      if (checkedValue) {
-        return checkedValue == item[idFieldName];
-      }
-    } else if (mode === 'multi') {
-      if (checkedValue != '' && checkedValue != undefined) {
-        var tmp = checkedValue.find(element => element === item[idFieldName]);
-        if (tmp !== null && tmp !== undefined) {
-          return true;
-        }
-      }
+    if (checkedValueList) {
+      return checkedValueList.includes(item[idFieldName]);
     }
-
     return false;
   };
   const renderItem = (item, index, isLast, isChecked, onItemAction) => {
@@ -40,7 +29,6 @@ const SingleSelectList = props => {
   const renderItems = items => {
     return items.map((item, index) => {
       const isLast = index == items.length - 1;
-
       return renderItem(
         item,
         index,
@@ -50,7 +38,6 @@ const SingleSelectList = props => {
       );
     });
   };
-
   return (
     <View style={[styles.container, props.style]}>
       {renderItems(props.items)}
@@ -68,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SingleSelectList;
+export default MultiSelectList;

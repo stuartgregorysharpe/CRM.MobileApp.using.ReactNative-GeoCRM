@@ -1,32 +1,40 @@
 import {View, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {Colors, Fonts} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 import {AppText} from '../../../components/common/AppText';
 import SvgIcon from '../../SvgIcon';
-import DropdownLists from './DropdownLists';
-import {style} from '../../../constants/Styles';
 
-export default function TieredMultipleChoiceInput(props) {
+import {style} from '../../../constants/Styles';
+import SingleSelectList from './components/SingleSelectList';
+
+export default function ExpandableSingleSelect(props) {
   const {
     header,
     hasError,
-    selectedItem,
-    lists,
+    checkedValue,
+    items,
     onItemSelected,
     renderDropdownItem,
+    idFieldName,
+    labelFieldName = 'label',
   } = props;
   const [isShown, setIsShown] = useState(false);
-
+  const selectedItem = useMemo(() => {
+    if (!items) return null;
+    if (items) {
+      return items.find(x => x[idFieldName] == checkedValue);
+    }
+  });
   useEffect(() => {
     let isMount = true;
-    if (isMount && lists.length == 0) {
+    if (isMount && items.length == 0) {
       setIsShown(false);
     }
     return () => {
       isMount = false;
     };
-  }, [lists]);
+  }, [items]);
 
   return (
     <View>
@@ -51,7 +59,7 @@ export default function TieredMultipleChoiceInput(props) {
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}
             onPress={() => {
-              if (lists && lists.length > 0) {
+              if (items && items.length > 0) {
                 setIsShown(!isShown);
               }
             }}>
@@ -64,18 +72,20 @@ export default function TieredMultipleChoiceInput(props) {
                     size="medium"
                     type="secondaryMedium"
                     color={
-                      lists && lists.length > 0
+                      items && items.length > 0
                         ? Colors.blackColor
                         : Colors.disabledColor
                     }></AppText>
                 )}
+                {selectedItem && selectedItem != undefined && (
+                  <AppText
+                    title={
+                      selectedItem != null ? selectedItem[labelFieldName] : ''
+                    }
+                    size="medium"
+                    color={Colors.mainText}></AppText>
+                )}
               </View>
-              {selectedItem && selectedItem != undefined && (
-                <AppText
-                  title={selectedItem != null ? selectedItem.label : ''}
-                  size="medium"
-                  color={Colors.mainText}></AppText>
-              )}
             </View>
 
             <View style={{marginRight: 10}}>
@@ -85,16 +95,16 @@ export default function TieredMultipleChoiceInput(props) {
         )}
 
         {isShown && (
-          <DropdownLists
-            onItemSelected={item => {
-              if (onItemSelected) {
-                onItemSelected(item);
-              }
-
+          <SingleSelectList
+            items={items}
+            idFieldName={idFieldName}
+            checkedValue={checkedValue}
+            onItemAction={({type, item, value}) => {
+              onItemSelected(item);
               setIsShown(!isShown);
             }}
             renderItem={renderDropdownItem}
-            lists={lists}></DropdownLists>
+          />
         )}
       </View>
     </View>
