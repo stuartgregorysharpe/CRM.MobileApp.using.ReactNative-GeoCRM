@@ -209,7 +209,7 @@ export default function FormsScreen(props) {
           onSearch={text => _onSearch(text)}></SearchBar>
 
         <FlatList
-          style={{margin: 10, marginTop: 0}}
+          style={{margin: 10, marginTop: 0, marginBottom: 0}}
           removeClippedSubviews={false}
           maxToRenderPerBatch={10}
           initialNumToRender={10}
