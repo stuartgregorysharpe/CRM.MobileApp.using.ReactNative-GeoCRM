@@ -38,10 +38,10 @@ const ViewOfflineSyncItem = props => {
                 }
             }}>
                 <View style={styles.container}>
-                    <AppText title="View Offline Sync Items" type="secondaryBold" color={Colors.primaryColor} ></AppText>      
+                    <AppText title="View Offline Sync Items" type="secondaryBold" color={whiteLabel().mainText} ></AppText>      
                     <View style={{position:'absolute', flexDirection:'row', right:10, alignItems:'center'}}>          
                         <View style={styles.numberContainer}>
-                            <AppText title={count} color={Colors.primaryColor}></AppText>
+                            <AppText title={count} color={whiteLabel().subText}></AppText>
                         </View>
                         <SvgIcon icon="DoubleArrow" width="30" height='30' />
                     </View>
