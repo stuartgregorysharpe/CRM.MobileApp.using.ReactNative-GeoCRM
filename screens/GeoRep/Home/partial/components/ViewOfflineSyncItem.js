@@ -5,6 +5,8 @@ import { Colors, Constants } from '../../../../../constants'
 import SvgIcon from '../../../../../components/SvgIcon'
 import { whiteLabel } from '../../../../../constants/Colors'
 import ViewOfflineSyncModal from '../modal/ViewOfflineSyncModal'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 const ViewOfflineSyncItem = props => {
 
@@ -43,7 +45,13 @@ const ViewOfflineSyncItem = props => {
                         <View style={styles.numberContainer}>
                             <AppText title={count} color={whiteLabel().subText}></AppText>
                         </View>
-                        <SvgIcon icon="DoubleArrow" width="30" height='30' />
+                        {/* <SvgIcon icon="DoubleArrow" width="30" height='30' /> */}
+                        <FontAwesomeIcon                            
+                            size={25}
+                            color={whiteLabel().actionFullButtonIcon}
+                            icon={faAngleDoubleRight}
+                        />
+
                     </View>
                 </View>
                 
@@ -78,8 +86,8 @@ const styles = StyleSheet.create({
         borderWidth:1, 
         paddingLeft:1,
         marginRight:10, 
-        width:25,
-        height:25 , 
+        width:23,
+        height:23 , 
         alignItems:'center', 
         justifyContent:'center'        
     }

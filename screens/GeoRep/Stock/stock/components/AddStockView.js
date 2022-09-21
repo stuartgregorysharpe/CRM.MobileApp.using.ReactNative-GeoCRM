@@ -8,10 +8,9 @@ import SimView from './stock_types/SimView';
 import {Constants, Strings} from '../../../../../constants';
 
 var vodacom = [];
-var cell = [];
-var telkom = [];
 
 export default function AddStockView(props) {
+
   const {deviceTypeLists, stockTypes} = props;
 
   const [deviceType, setDeviceType] = useState('');
@@ -22,6 +21,7 @@ export default function AddStockView(props) {
   const [enableAddStock, setEnableAddStock] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const [count, setCount] = useState(0);
+
   var details = '';
   var quantity = '';
 
@@ -40,54 +40,26 @@ export default function AddStockView(props) {
       setEnableAddStock(false);
     }
   };
+
   const onDataChangedConsumable = (det, qua) => {
     details = det;
     quantity = qua;
-    if (details != '' && quantity != '') {
-      console.log('true2');
+    if (details != '' && quantity != '') {      
       setEnableAddStock(true);
     } else {
       setEnableAddStock(false);
     }
   };
-  const onDataChangedSim = value => {
 
+  const onDataChangedSim = value => {
     var tmp = {type: device, code: value};
     var flag = false;
-    if (device === Constants.networkType.VODACOM) {
-      if (
-        !vodacom.includes(value.toString()) &&
-        !cell.includes(value.toString()) &&
-        !telkom.includes(value.toString())
-      ) {
-        vodacom.push(value);
-        setCodeLists([...codeLists, tmp]);
-        flag = true;
-      }
-    } else if (device === Constants.networkType.CELL) {
-      console.log(value);
-      if (
-        !vodacom.includes(value.toString()) &&
-        !cell.includes(value.toString()) &&
-        !telkom.includes(value.toString())
-      ) {
-        cell.push(value);
-        setCodeLists([...codeLists, tmp]);
-        flag = true;
-      }
-    } else if (device === Constants.networkType.TELKOM) {
-      if (
-        !vodacom.includes(value.toString()) &&
-        !cell.includes(value.toString()) &&
-        !telkom.includes(value.toString())
-      ) {
-        telkom.push(value);
-        setCodeLists([...codeLists, tmp]);
-        flag = true;
-      }
+    if(!vodacom.includes(value.toString())){
+      vodacom.push(tmp);
+      setCodeLists([...codeLists, tmp]);
+      flag = true;
     }
 
-    console.log("code lists", codeLists)
     if (flag) {
       setIsAdded(true);
       setEnableAddStock(true);
@@ -98,9 +70,7 @@ export default function AddStockView(props) {
 
   const removeCode = value => {
     let filteredArray = codeLists.filter(item => item.code !== value.code);
-    vodacom = vodacom.filter(item => item !== value.code);
-    cell = cell.filter(item => item !== value.code);
-    telkom = telkom.filter(item => item !== value.code);
+    vodacom = vodacom.filter(item => item.code !== value.code);    
     setCodeLists(filteredArray);
   };
 
@@ -144,15 +114,11 @@ export default function AddStockView(props) {
       var simLists = [];
       deviceLists.forEach(item => {
         var iccids = [];
-        if (item.label == Constants.networkType.VODACOM) {
-          iccids = vodacom;
-        } else if (item.label == Constants.networkType.CELL) {
-          iccids = cell;
-        } else if (item.label == Constants.networkType.TELKOM) {
-          iccids = telkom;
-        }
-        if (iccids.length > 0) {
-          console.log('ids', iccids);
+        var tmp = vodacom.filter(element => element.type == item.label);
+        tmp.forEach((element) =>{
+          iccids.push(element.code);
+        });        
+        if (iccids.length > 0) {          
           simLists.push({
             network: item.label,
             product_id: item.value,
@@ -182,8 +148,7 @@ export default function AddStockView(props) {
         onSelectItem={item => {
           setDeviceType(item.value);
           var tmp = [];
-          stockTypes[item.value].forEach(element => {
-            console.log('XX', element);
+          stockTypes[item.value].forEach(element => {            
             tmp.push({value: element.product_id, label: element.label});
           });
           setDeviceLists(tmp);
