@@ -245,34 +245,34 @@ export const FormQuestions = props => {
         : '0',
     );
 
-    form_answers.map(item => {
+    form_answers.forEach(item => {
       if (
-        item.key != undefined &&
-        item.value != undefined &&
+        item.key &&
+        item.value &&      
         item.value != null &&
         item.valuel != ''
       ) {
+    
         postData.append(item.key, item.value);
       }
     });
 
     files.map(item => {
-      if (item.key != undefined && item.value != undefined) {
+      if (item.key && item.value ) {
         if (item.type === 'upload_file') {
           postData.append(item.key, {
             uri: item.value.uri,
             type: item.value.type,
             name: item.value.name,
           });
-        } else {
-          var fileFormats = getFileFormat(item);          
+        } else {          
+          var fileFormats = getFileFormat(item.value);                    
           postData.append(item.key, fileFormats);
         }
       }
-    });
-
+    });    
     postApiRequestMultipart('forms/forms-submission', postData, indempotencyKey)
-      .then(res => {
+      .then(res => {        
         loadingBarRef.current.hideModal();
         dispatch(
           showNotification({
@@ -290,6 +290,7 @@ export const FormQuestions = props => {
         );
       })
       .catch(e => {
+        
         loadingBarRef.current.hideModal();
       });
   };

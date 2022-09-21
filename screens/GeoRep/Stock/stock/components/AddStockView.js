@@ -54,7 +54,8 @@ export default function AddStockView(props) {
   const onDataChangedSim = value => {
     var tmp = {type: device, code: value};
     var flag = false;
-    if(!vodacom.includes(value.toString())){
+    var check = vodacom.find(element => element.code ==  value.toString());
+    if(check == undefined){
       vodacom.push(tmp);
       setCodeLists([...codeLists, tmp]);
       flag = true;

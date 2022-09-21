@@ -8,8 +8,10 @@ const Stack = createNativeStackNavigator();
 export default function FormsNavigator(props) { 
 
   var screenProps = props.screenProps;
+  var navigationType = 'bottom';
   if(screenProps === undefined){
     screenProps = props.navigation;
+    navigationType = 'slide';
   }
 
   return (
@@ -17,14 +19,14 @@ export default function FormsNavigator(props) {
       <Stack.Screen        
         name="Root"        
         options={{ header: () => null , headerShown: false}}>      
-          {props => <FormsScreen {...props} screenProps={screenProps} />}
+          {props => <FormsScreen {...props}  navigationType={navigationType} screenProps={screenProps} />}
       </Stack.Screen>
 
       <Stack.Screen
         name="FormQuestions"
-        options={{ header: () => null }}       
+        options={{ header: () => null ,  headerShown: false}}       
       >
-        {props => <FormQuestions {...props} screenProps={screenProps} />}
+        {props => <FormQuestions {...props} navigationType={navigationType} screenProps={screenProps} />}
       </Stack.Screen>
 
     </Stack.Navigator>

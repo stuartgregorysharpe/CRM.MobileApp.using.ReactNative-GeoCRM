@@ -861,6 +861,7 @@ export default function AddSalesPipeline({
           placeholderStyle={{color: whiteLabel().inputText, fontWeight: '400'}}
           description={'Select Opportunity Name'}
           placeholder={'Select Opportunity Name'}
+          mode='single'
           checkedValue={opportunityName}
           items={opportunityNameList}
           hasError={false}
