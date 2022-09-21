@@ -63,21 +63,24 @@ export default ViewOfflineSyncItem;
 const styles = StyleSheet.create({
     container:{
         alignItems:'center', 
-        padding:7, 
+        padding:10, 
         marginTop:5, 
         borderRadius:10, 
         borderColor:Colors.redColor, 
         borderWidth:1, 
-        marginHorizontal:10
+        marginHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     numberContainer:{
         borderRadius:30, 
         borderColor:whiteLabel().borderColor , 
         borderWidth:1, 
+        paddingLeft:1,
         marginRight:10, 
         width:25,
         height:25 , 
         alignItems:'center', 
-        justifyContent:'center'
+        justifyContent:'center'        
     }
 })
