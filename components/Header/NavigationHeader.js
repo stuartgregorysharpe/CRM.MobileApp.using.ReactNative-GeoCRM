@@ -34,11 +34,11 @@ export default function NavigationHeader({title, showIcon, onBackPressed}) {
 const styles = StyleSheet.create({
   layoutBarContent: {
     flexDirection: 'row',
-    height: Platform.OS == 'android' ? 72 : 62,
+    height: Platform.OS == 'android' ? 50 : 72,
     width: Dimensions.get('window').width,
     paddingLeft: 15,
     paddingRight: 0,
-    paddingTop: Platform.OS == 'android' ? 20 : 0,
+    paddingTop: Platform.OS == 'android' ? 0 : 25,
     backgroundColor: whiteLabel().headerBackground,
     alignItems: 'center',
     alignContent: 'center',

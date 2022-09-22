@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
@@ -189,7 +190,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     zIndex: 500,
     overflow: 'hidden',
-    backgroundColor: Colors.bgColor,
+    backgroundColor: Colors.bgColor,    
+    paddingBottom: Platform.OS === 'android' ? 0 : 25
   },
   fullModalContainer: {
     position: 'absolute',

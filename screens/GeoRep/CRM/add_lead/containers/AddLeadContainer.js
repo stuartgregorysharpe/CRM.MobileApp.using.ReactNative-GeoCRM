@@ -22,6 +22,7 @@ import {
 import FormQuestionModal from '../modal/FormQuestionModal';
 import RNFS from 'react-native-fs';
 import { getFileFormat } from '../../../../../constants/Helper';
+import { Notification } from '../../../../../components/modal/Notification';
 
 export default function AddLeadContainer(props) {
 
@@ -342,6 +343,8 @@ export default function AddLeadContainer(props) {
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
       
+      <Notification />
+      
       <AddLeadView
         onButtonAction={onButtonAction}
         leadForms={leadForms}
@@ -363,8 +366,8 @@ export default function AddLeadContainer(props) {
           addLeadFormModalRef.current.hideModal();
         }}
         onNext={item => {
-          if (formQuestionModalRef.current) {            
-            setForm({form_id: item.form_id, form_name: ''});
+          if (formQuestionModalRef.current) {
+            setForm({form_id: item.form_id, form_name: item.form_name});
             formQuestionModalRef.current.showModal();
           }
         }}

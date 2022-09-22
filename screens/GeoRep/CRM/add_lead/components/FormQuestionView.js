@@ -20,7 +20,7 @@ import UploadFileView from '../../../Forms/questions/partial/UploadFileView';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {GuideInfoView} from '../../../Forms/partial/GuideInfoView';
 import FormSubmitFeedbackModal from '../../../../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
-import {Constants, Fonts} from '../../../../../constants';
+import {Colors, Constants, Fonts} from '../../../../../constants';
 import {TextForm} from '../../../../../components/shared/TextForm';
 import {YesNoForm} from '../../../../../components/shared/YesNoForm';
 import {HeadingForm} from '../../../../../components/shared/HeadingForm';
@@ -38,7 +38,6 @@ import {Notification} from '../../../../../components/modal/Notification';
 import {GroupTitle} from '../../../Forms/questions/partial/GroupTitle';
 import EmailPdf from '../../../../../components/shared/EmailPdf';
 import SKUCountForm from '../../../../../components/shared/SKUCount';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import MultiSelectPhoto from '../../../../../components/shared/MultiSelectPhoto';
 import TieredMultipleChoice from '../../../../../components/shared/TieredMultipleChoice';
 import BrandFacing from '../../../../../components/shared/BrandFacing';
@@ -73,6 +72,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const formSubmitModalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("form" , form)
+  
   useImperativeHandle(
     ref,
     () => ({
@@ -165,24 +166,27 @@ export const FormQuestionView = forwardRef((props, ref) => {
       );
     } else if (item.question_type === 'yes_no') {
       return (
-        <YesNoForm
-          onTakeImage={async (images, type) => {
-            var tmp = [...formQuestions];
-            if (type === 'yes') {
-              tmp[key].questions[index].yes_image = images;
-            } else {
-              tmp[key].questions[index].no_image = images;
-            }
-            updateFormQuestions(tmp);
-          }}
-          onPress={(value, type) => {
-            onValueChangedSelectionView(key, index, value);
-          }}
-          key={'yes_no_question' + index}
-          item={item}
-          onTouchStart={(e, text) => {
-            _onTouchStart(e, text);
-          }}></YesNoForm>
+        <View style={{marginHorizontal:5}}>
+          <YesNoForm
+            onTakeImage={async (images, type) => {
+              var tmp = [...formQuestions];
+              if (type === 'yes') {
+                tmp[key].questions[index].yes_image = images;
+              } else {
+                tmp[key].questions[index].no_image = images;
+              }
+              updateFormQuestions(tmp);
+            }}
+            onPress={(value, type) => {
+              onValueChangedSelectionView(key, index, value);
+            }}
+            key={'yes_no_question' + index}
+            item={item}
+            onTouchStart={(e, text) => {
+              _onTouchStart(e, text);
+            }}></YesNoForm>
+        </View>
+        
       );
     } else if (item.question_type === 'heading') {
       return (
@@ -521,6 +525,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
 
   return (
     <View style={styles.container}>
+      
       {isShowCustomNavigationHeader && (
         <NavigationHeader
           showIcon={true}
@@ -594,13 +599,16 @@ export const FormQuestionView = forwardRef((props, ref) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={{padding: 5}}>
+      <ScrollView style={{paddingHorizontal:5, paddingBottom:5}}>
         {formQuestions &&
           formQuestions.map((form, key) => {
             if (form.isHidden) return null;
             return (
               <View key={'form' + key}>
-                <GroupTitle title={form.question_group}></GroupTitle>
+                {
+                  form.question_group && form.question_group != null &&
+                  <GroupTitle title={form.question_group}></GroupTitle>
+                }
                 {form.questions.map((item, index) => {
                   return renderQuestion(item, key, index);
                 })}
@@ -652,7 +660,8 @@ const styles = StyleSheet.create({
 
   titleContainerStyle: {
     flexDirection: 'row',
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingTop:10,
     alignItems: 'center',
   },
 

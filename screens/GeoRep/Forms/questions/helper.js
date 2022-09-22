@@ -1,3 +1,4 @@
+import { cos } from 'react-native-reanimated';
 import {Constants} from '../../../../constants';
 
 export function filterTriggeredQuestions(formQuestionGroups) {
@@ -185,12 +186,13 @@ function checkTextTriggerCondition(condition, answer, value) {
 
 export function validateFormQuestionData(formQuestions) {
   var flag = true;
-  formQuestions.forEach(element => {
+  formQuestions.forEach(element => {    
     element.questions.forEach(item => {
       if (
+        item.isHidden == false &&
         item.rule_compulsory === '1' &&
         (item.value === null || item.value === '' || item.value === undefined)
-      ) {
+      ) {        
         flag = false;
       }
     });

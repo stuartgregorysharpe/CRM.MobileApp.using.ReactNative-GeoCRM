@@ -650,7 +650,12 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 style={[styles.nextButton, styles.accessButton]}
                 onPress={async () => {
                   clickedAction = 'access_crm';
-                  if (_canGoNextPrev()) {                    
+                  if (_canGoNextPrev()) {                 
+                    
+                    if(props.onButtonAction){
+                      props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value:'access_crm'});
+                    }
+                    
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,
                       page: 'access_crm',

@@ -5,6 +5,8 @@ import { Colors, Constants } from '../../../../../constants'
 import SvgIcon from '../../../../../components/SvgIcon'
 import { whiteLabel } from '../../../../../constants/Colors'
 import ViewOfflineSyncModal from '../modal/ViewOfflineSyncModal'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 const ViewOfflineSyncItem = props => {
 
@@ -38,12 +40,18 @@ const ViewOfflineSyncItem = props => {
                 }
             }}>
                 <View style={styles.container}>
-                    <AppText title="View Offline Sync Items" type="secondaryBold" color={Colors.primaryColor} ></AppText>      
+                    <AppText title="View Offline Sync Items" type="secondaryBold" color={whiteLabel().mainText} ></AppText>      
                     <View style={{position:'absolute', flexDirection:'row', right:10, alignItems:'center'}}>          
                         <View style={styles.numberContainer}>
-                            <AppText title={count} color={Colors.primaryColor}></AppText>
+                            <AppText title={count} color={whiteLabel().subText}></AppText>
                         </View>
-                        <SvgIcon icon="DoubleArrow" width="30" height='30' />
+                        {/* <SvgIcon icon="DoubleArrow" width="30" height='30' /> */}
+                        <FontAwesomeIcon                            
+                            size={25}
+                            color={whiteLabel().actionFullButtonIcon}
+                            icon={faAngleDoubleRight}
+                        />
+
                     </View>
                 </View>
                 
@@ -63,21 +71,24 @@ export default ViewOfflineSyncItem;
 const styles = StyleSheet.create({
     container:{
         alignItems:'center', 
-        padding:7, 
+        padding:10, 
         marginTop:5, 
         borderRadius:10, 
         borderColor:Colors.redColor, 
         borderWidth:1, 
-        marginHorizontal:10
+        marginHorizontal:10,
+        alignItems:'center',
+        justifyContent:'center'
     },
     numberContainer:{
         borderRadius:30, 
         borderColor:whiteLabel().borderColor , 
         borderWidth:1, 
+        paddingLeft:1,
         marginRight:10, 
-        width:25,
-        height:25 , 
+        width:23,
+        height:23 , 
         alignItems:'center', 
-        justifyContent:'center'
+        justifyContent:'center'        
     }
 })

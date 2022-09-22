@@ -25,6 +25,9 @@ import {Constants} from '../../../constants';
 let isInfoWindow = false;
 
 export default function FormsScreen(props) {
+
+  const { navigationType } = props;
+
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
   const [isInfo, setIsInfo] = useState(false);
