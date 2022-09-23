@@ -11,7 +11,7 @@ import SearchBar from '../../../components/SearchBar';
 import {FormListItem} from './partial/FormListItem';
 import {Provider} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import {getFilterData} from '../../../constants/Storage';
+import {getFilterData, getLocalData} from '../../../constants/Storage';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {GuideInfoView} from './partial/GuideInfoView';
@@ -21,12 +21,10 @@ import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import FormFilterModal from './modal/FormFilterModal';
 import {Constants} from '../../../constants';
-
-let isInfoWindow = false;
+import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 
 export default function FormsScreen(props) {
-
-  const { navigationType } = props;
+  const {navigationType} = props;
 
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
@@ -37,10 +35,13 @@ export default function FormsScreen(props) {
     : null;
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const isShowCustomNavigationHeader = props.isDeeplink;
   const dispatch = useDispatch();
 
   const formFilterModalRef = useRef(null);
+  const searchLocationModalRef = useRef(null);
+  const isCheckin = useSelector(state => state.location.checkIn);
 
   useEffect(() => {
     if (props.screenProps) {
@@ -148,7 +149,44 @@ export default function FormsScreen(props) {
       _callFormLists(null);
     }
   };
+  const onOpenFormItem = (item, locationId) => {
+    var routeName = 'DeeplinkFormQuestionsScreen';
+    if (!isShowCustomNavigationHeader) {
+      routeName = 'FormQuestions';
+    }
 
+    props.navigation.navigate(routeName, {
+      data: item,
+      location_id: locationId,
+    });
+  };
+  const onFormItemPress = async item => {
+    if (locationIdSpecific != null) {
+      onOpenFormItem(item, locationIdSpecific.location_id);
+      return;
+    }
+    console.log('item.location_required:', item.location_required);
+    if (item.location_required == 1) {
+      if (isCheckin) {
+        const checkinLocationId = await getLocalData('@specific_location_id');
+        onOpenFormItem(item, checkinLocationId);
+      } else {
+        setSelectedItem(item);
+        searchLocationModalRef.current.showModal();
+      }
+    } else {
+      onOpenFormItem(item, '');
+    }
+  };
+  const onSearchLocation = async ({type, value}) => {
+    if (type == Constants.actionType.ACTION_NEXT) {
+      if (value && value.locationId) {
+        if (selectedItem) {
+          onOpenFormItem(selectedItem, value.locationId);
+        }
+      }
+    }
+  };
   const renderItems = (item, index) => {
     return (
       <View>
@@ -156,22 +194,7 @@ export default function FormsScreen(props) {
           key={index}
           item={item}
           onItemPress={() => {
-            if (!isInfoWindow) {
-              var routeName = 'DeeplinkFormQuestionsScreen';
-              if (!isShowCustomNavigationHeader) {
-                routeName = 'FormQuestions';
-              }
-
-              props.navigation.navigate(routeName, {
-                data: item,
-                location_id:
-                  locationIdSpecific != null
-                    ? locationIdSpecific.location_id
-                    : '',
-              });
-            } else {
-              isInfoWindow = false;
-            }
+            onFormItemPress(item);
           }}
           onTouchStart={(e, text) => _onTouchStart(e, text)}></FormListItem>
       </View>
@@ -225,6 +248,12 @@ export default function FormsScreen(props) {
           visible={isInfo}
           info={bubbleText}
           onModalClose={() => setIsInfo(false)}></GuideInfoView>
+        <SearchLocationModal
+          ref={searchLocationModalRef}
+          title="Search Location"
+          onButtonAction={onSearchLocation}
+          isSkipLocationIdCheck={true}
+        />
       </View>
     </Provider>
   );
