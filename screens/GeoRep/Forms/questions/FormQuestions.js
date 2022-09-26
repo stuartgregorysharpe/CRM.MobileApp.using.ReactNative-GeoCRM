@@ -43,6 +43,7 @@ var indempotencyKey;
 
 export const FormQuestions = props => {
   const form = props.route.params.data;
+  const location_id = props.route.params.location_id;
   const pageType = props.route.params.pageType;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [formQuestions, setFormQuestions] = useState([]);
@@ -59,7 +60,7 @@ export const FormQuestions = props => {
   }, [form]);
 
   const loadFromDB = async formId => {
-    const db = await getDBConnection();
+    /*const db = await getDBConnection();
     if (db != null) {
       const res = await getFormTableData(db, formId);
       if (res.length > 0) {
@@ -67,7 +68,7 @@ export const FormQuestions = props => {
         indempotencyKey = res.item(0).indempotencyKey;
         return;
       }
-    }
+    }*/
     _callFormQuestions();
   };
 
@@ -123,9 +124,12 @@ export const FormQuestions = props => {
     let param = {
       form_id: form.form_id,
     };
+    if (location_id) {
+      param.location_id = location_id;
+    }
+    console.log('forms/forms-questions', param);
     getApiRequest('forms/forms-questions', param)
       .then(res => {
-        console.log('question lists', JSON.stringify(res.questions));
         groupByQuestions(res.questions);
       })
       .catch(e => {
@@ -220,8 +224,8 @@ export const FormQuestions = props => {
     var postData = new FormData();
     postData.append('form_id', form.form_id);
     let locationId = await getLocalData('@specific_location_id');
-    if (props.location_id && props.location_id != '') {
-      locationId = locationId;
+    if (location_id && location_id != '') {
+      locationId = location_id;
     }
     postData.append('location_id', locationId);
     postData.append('online_offline', 'online');
