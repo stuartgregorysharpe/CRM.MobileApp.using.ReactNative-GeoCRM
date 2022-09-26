@@ -219,7 +219,10 @@ export const FormQuestions = props => {
 
     var postData = new FormData();
     postData.append('form_id', form.form_id);
-    var locationId = await getLocalData('@specific_location_id');
+    let locationId = await getLocalData('@specific_location_id');
+    if (props.location_id && props.location_id != '') {
+      locationId = locationId;
+    }
     postData.append('location_id', locationId);
     postData.append('online_offline', 'online');
 
@@ -246,33 +249,27 @@ export const FormQuestions = props => {
     );
 
     form_answers.forEach(item => {
-      if (
-        item.key &&
-        item.value &&      
-        item.value != null &&
-        item.valuel != ''
-      ) {
-    
+      if (item.key && item.value && item.value != null && item.valuel != '') {
         postData.append(item.key, item.value);
       }
     });
 
     files.map(item => {
-      if (item.key && item.value ) {
+      if (item.key && item.value) {
         if (item.type === 'upload_file') {
           postData.append(item.key, {
             uri: item.value.uri,
             type: item.value.type,
             name: item.value.name,
           });
-        } else {          
-          var fileFormats = getFileFormat(item.value);                    
+        } else {
+          var fileFormats = getFileFormat(item.value);
           postData.append(item.key, fileFormats);
         }
       }
-    });    
+    });
     postApiRequestMultipart('forms/forms-submission', postData, indempotencyKey)
-      .then(res => {        
+      .then(res => {
         loadingBarRef.current.hideModal();
         dispatch(
           showNotification({
@@ -290,7 +287,6 @@ export const FormQuestions = props => {
         );
       })
       .catch(e => {
-        
         loadingBarRef.current.hideModal();
       });
   };
