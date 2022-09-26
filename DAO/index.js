@@ -3,7 +3,7 @@ import LocationMapDAO from './LocationMap';
 import LocationPinKeyDAO from './LocationPinKey';
 import LocationCheckinTypeDAO from './LocationCheckinType';
 import PostRequestDAO from './PostRequest';
-import FormGetRequestDAO from './FormGetRequest'
+import GetRequestFilterDAO from './GetRequestFilter'
 
 
 export { 
@@ -12,5 +12,5 @@ export {
             LocationPinKeyDAO , 
             LocationCheckinTypeDAO,
             PostRequestDAO ,
-            FormGetRequestDAO        
+            GetRequestFilterDAO        
         }

@@ -34,8 +34,7 @@ export default function UpdateCustomerContainer(props) {
  
     const getCustomMasterFields = () => {
         getApiRequest("locations/location_info_update_fields_v2", {location_id:locationId }).then((res) => {
-            if(isMount){             
-                console.log("leadfields", res.custom_master_fields)   
+            if(isMount){                         
                 setLeadForms(res.custom_master_fields);
                 setOriginCustomMasterFields(res.custom_master_fields);
                 setAccuracyUnit(res.accuracy_distance_measure);

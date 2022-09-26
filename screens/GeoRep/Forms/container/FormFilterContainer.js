@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import { Constants } from '../../../../constants';
 import FormFilterModalView from '../components/FormFilterModalView';
-import { FormGetRequestDAO } from '../../../../DAO';
+import { GetRequestFilterDAO } from '../../../../DAO';
 import UrlResource from '../../../../DAO/UrlResource';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 
@@ -13,12 +13,11 @@ const  FormFilterContainer = (props) => {
     let isMount = true;
 
     useEffect(() => {
-        FormGetRequestDAO.find(UrlResource.Form.Filter, {}).then((res) => {                                
+        GetRequestFilterDAO.find(UrlResource.Form.Filter, {}).then((res) => {                                
             initItems(res.items)   
         }).catch((e) => {
             console.log("error" , e)
-        });        
-
+        });
         return () => {
             isMount = false;
         };
