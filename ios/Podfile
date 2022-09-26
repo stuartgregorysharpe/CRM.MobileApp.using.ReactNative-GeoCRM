@@ -28,7 +28,7 @@ target 'GeoCRM' do
   pod 'IQKeyboardManager'
   
   permissions_path = '../node_modules/react-native-permissions/ios'
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
     
   target 'GeoCRMTests' do
     inherit! :complete

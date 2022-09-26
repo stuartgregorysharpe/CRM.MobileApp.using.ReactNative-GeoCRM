@@ -23,7 +23,7 @@ import FormQuestionModal from '../modal/FormQuestionModal';
 import RNFS from 'react-native-fs';
 import { getFileFormat } from '../../../../../constants/Helper';
 import { Notification } from '../../../../../components/modal/Notification';
-import GetRequestLeadfield from '../../../../../DAO/GetRequestLeadfield';
+import { GetRequestFormListsDAO, GetRequestLeadfieldDAO } from '../../../../../DAO';
 
 export default function AddLeadContainer(props) {
 
@@ -61,28 +61,20 @@ export default function AddLeadContainer(props) {
     getFormLists();
   }, [leadForms]);
 
-
   const getCustomMasterFields = () => {
     
-    GetRequestLeadfield.find({}).then((res) => {
-      
+    GetRequestLeadfieldDAO.find({}).then((res) => {      
       if(props.changeTitle && res.component_title != undefined){
         props.changeTitle(res.component_title);
-      }        
+      }
       if (isMount) {
         setLeadForms(res.custom_master_fields);
         setAccuracyUnit(res.accuracy_distance_measure);
       }
 
     }).catch((e) => {
-
+      console.log("error", e) 
     });
-    
-    // getApiRequest('leadfields', {})
-    //   .then(res => {                
-    //   })
-    //   .catch(e => { console.log("error", e) });
-
 
   };
 
@@ -101,12 +93,19 @@ export default function AddLeadContainer(props) {
       group: groupItem ? groupItem.value : '',
       group_split: groupSplitItem ? groupSplitItem.value : '',
     };
-
-    getApiRequest('forms/forms-list', param)
-      .then(res => {              
-        setFormLists(res.forms);
-      })
-      .catch(e => {});
+    
+    GetRequestFormListsDAO.find(param).then((res) => {      
+      setFormLists(res.forms);
+      
+    }).catch((e) => {
+      
+    });
+    
+    // getApiRequest('forms/forms-list', param)
+    //   .then(res => {              
+    //     setFormLists(res.forms);
+    //   })
+    //   .catch(e => {});
   };
 
   const onAdd = () => {

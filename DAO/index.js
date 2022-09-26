@@ -3,8 +3,9 @@ import LocationMapDAO from './LocationMap';
 import LocationPinKeyDAO from './LocationPinKey';
 import LocationCheckinTypeDAO from './LocationCheckinType';
 import PostRequestDAO from './PostRequest';
-import GetRequestFilterDAO from './GetRequestFilter'
-
+import GetRequestFilterDAO from './GetRequestFilter';
+import GetRequestLeadfieldDAO from './GetRequestLeadfield';
+import GetRequestFormListsDAO from './GetRequestFormLists';
 
 export { 
             LocationMapDAO, 
@@ -12,5 +13,7 @@ export {
             LocationPinKeyDAO , 
             LocationCheckinTypeDAO,
             PostRequestDAO ,
-            GetRequestFilterDAO        
+            GetRequestFilterDAO ,
+            GetRequestLeadfieldDAO,
+            GetRequestFormListsDAO
         }

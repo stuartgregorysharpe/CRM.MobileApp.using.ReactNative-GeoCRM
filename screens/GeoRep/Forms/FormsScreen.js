@@ -1,12 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import SearchBar from '../../../components/SearchBar';
 import {FormListItem} from './partial/FormListItem';
 import {Provider} from 'react-native-paper';
@@ -16,11 +9,12 @@ import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {GuideInfoView} from './partial/GuideInfoView';
 import {expireToken} from '../../../constants/Helper';
-import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import FormFilterModal from './modal/FormFilterModal';
 import {Constants} from '../../../constants';
+import GetRequestFormLists from '../../../DAO/GetRequestFormLists';
+import { GetRequestFormListsDAO } from '../../../DAO';
 
 let isInfoWindow = false;
 
@@ -120,14 +114,24 @@ export default function FormsScreen(props) {
       location_id:
         locationIdSpecific != null ? locationIdSpecific.location_id : '',
     };
-    getApiRequest('forms/forms-list', param)
-      .then(res => {
-        setFormLists(res.forms);
-        setOriginalFormLists(res.forms);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
+
+    GetRequestFormListsDAO.find(param).then((res) => {
+      setFormLists(res.forms);
+      setOriginalFormLists(res.forms);
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    });
+
+    //$formAssignments[$assignment['form_id']][$assignment['assignment_type']][$assignment['custom_field_id']][] = $assignment['assignment_value'];
+	    
+    // getApiRequest('forms/forms-list', param)
+    //   .then(res => {
+    //     setFormLists(res.forms);
+    //     setOriginalFormLists(res.forms);
+    //   })
+    //   .catch(e => {
+    //     expireToken(dispatch, e);
+    //   });
   };
 
   const _onTouchStart = (e, text) => {
