@@ -8,7 +8,7 @@ import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 
 export default function SearchLocationContainer(props) {
-  const {stockType} = props;
+  const {stockType, isSkipLocationIdCheck} = props;
   const dispatch = useDispatch();
   const [lists, setLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
@@ -28,7 +28,10 @@ export default function SearchLocationContainer(props) {
   }, [lists]);
 
   const onItemPressed = item => {
-    if (stockType == Constants.stockDeviceType.SELL_TO_TRADER) {
+    if (
+      stockType == Constants.stockDeviceType.SELL_TO_TRADER ||
+      isSkipLocationIdCheck
+    ) {
       props.onSubmit(stockType, item.location_id);
     } else {
       setLocationId(item.location_id);
