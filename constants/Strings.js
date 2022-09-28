@@ -62,6 +62,11 @@ export default {
     Select_Scan_Type: 'Select Scan Type',
   },
 
+  Forms:{
+    Filter_Your_Search : 'Filter your search',
+    Clear_Filters : 'Clear Filters'
+  },
+
   PostRequestResponse: {
     Successfully_Checkout: 'Successfully Checkout !',
     Successfully_Checkin: 'Successfully Checkin !',

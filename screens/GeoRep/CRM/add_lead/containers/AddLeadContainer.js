@@ -2,8 +2,7 @@ import {View, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Constants} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
-import {
-  getApiRequest,
+import {  
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
@@ -80,32 +79,25 @@ export default function AddLeadContainer(props) {
 
   const getFormLists = async () => {
     
-    var locationTypeItem = leadForms.filter(
+    var locationTypeItem = leadForms.find(
       item => item.core_field_name == 'location_type',
     );
-    var groupItem = leadForms.filter(item => item.core_field_name == 'group');
-    var groupSplitItem = leadForms.filter(
+    var groupItem = leadForms.find(item => item.core_field_name == 'group');
+    var groupSplitItem = leadForms.find(
       item => item.core_field_name == 'group_split',
-    );
+    );                  
     var param = {
       add_lead: 1,
-      location_type: locationTypeItem ? locationTypeItem.value : '',
-      group: groupItem ? groupItem.value : '',
-      group_split: groupSplitItem ? groupSplitItem.value : '',
-    };
+      location_type: locationTypeItem ? customMasterFields[locationTypeItem.custom_master_field_id] : '',
+      group: groupItem ? customMasterFields[groupItem.custom_master_field_id] : '',
+      group_split: groupSplitItem ? customMasterFields[groupSplitItem.custom_master_field_id] : '',
+    };    
     
     GetRequestFormListsDAO.find(param).then((res) => {      
-      setFormLists(res.forms);
-      
+      setFormLists(res.forms);      
     }).catch((e) => {
-      
-    });
-    
-    // getApiRequest('forms/forms-list', param)
-    //   .then(res => {              
-    //     setFormLists(res.forms);
-    //   })
-    //   .catch(e => {});
+        console.log(e)
+    });        
   };
 
   const onAdd = () => {
@@ -272,6 +264,7 @@ export default function AddLeadContainer(props) {
   };
 
   const showFormModal = () => {
+    getFormLists();
     addLeadFormModalRef.current.showModal();
   };
 
@@ -334,7 +327,10 @@ export default function AddLeadContainer(props) {
     setIsCurrentLocation('1');
   };
   const onChangedCustomMasterFields = value => {    
+    
+    console.log("custom master data", value);
     setCustomMasterFields(value);
+
   };
   const onPrimaryContactFields = value => {
     setPrimaryData(value);

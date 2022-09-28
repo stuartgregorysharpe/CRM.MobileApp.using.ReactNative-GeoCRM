@@ -112,8 +112,7 @@ const handleTable = async (table) => {
               fieldsLists = fieldsLists + subElement + ", ";
             }        
           })
-          var query2 = `CREATE INDEX ${tableName}_${element.key_name} ON ${tableName}(${fieldsLists})`;
-          console.log("CREATE INDEX Quer: ", query2)
+          var query2 = `CREATE INDEX ${tableName}_${element.key_name} ON ${tableName}(${fieldsLists})`;          
           try{
             await db.transaction(async(tx) =>{            
               await tx.executeSql(query2);
@@ -190,6 +189,7 @@ export const handleRecords = async ( tableName, records) => {
       })
 
       query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
+      console.log(query)
       try{
         if(db != null){    
           await db.transaction(async(tx) =>{            

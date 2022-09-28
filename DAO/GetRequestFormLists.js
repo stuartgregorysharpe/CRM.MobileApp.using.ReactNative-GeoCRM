@@ -18,24 +18,25 @@ export function find(postData){
                 if(client_id && business_unit_id){
 
                     let assignmentLists = await fetchAssignmentDataFromDB(client_id, business_unit_id);                    
-                    let assignmentsData = await getFormAssignmentsData(assignmentLists);                    
-                    var locationCoreMasterData = [];
-                    var customFieldsData = [];
-
+                    let assignmentsData = await getFormAssignmentsData(assignmentLists);                              
+                    var locationCoreMasterData = {};
+                    var customFieldsData = {};
+                    
                     if(hasLocationId(postData)){
                         var coreQuery = generateCoreFieldDataQuery(hasLocationId(postData));
                         var customQuery = generateCustomFieldDataQuery(hasLocationId(postData));
+                                            
                         let coreData = await fetchData(coreQuery);
-                        let customData = await fetchData(customQuery);
-                        console.log("coreData",coreData)
+                        let customData = await fetchData(customQuery);                        
+
                         locationCoreMasterData = getLocationCoreMasterData(coreData);
                         customFieldsData = getCustomFieldData(customData);
+
                     }                
 
                     let excludeIds = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData);
                     let lists = await fetchDataFromDB(client_id, business_unit_id , postData, excludeIds );
-                    let response = await getData(lists);
-                
+                    let response = await getData(lists);                    
                     resolve(response);
 
                 }else{
@@ -59,65 +60,85 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
             var formId = key;                            
             for(let subKey of Object.keys(element[key])){
                 var subElement = element[key][subKey];
+
                 if(subKey == 'location_id'){
-                    if(hasLocationId(postData) && subElement.includes(hasLocationId(postData))){
+                    if(hasLocationId(postData) && !subElement.includes(hasLocationId(postData))){                   
                         excludeFormIds.push(formId);
                     }
                 }
 
                 if(subKey == 'region'){
-                    if(locationCoreMasterData['region'] && subElement.includes(locationCoreMasterData['region'])){
+                    if(locationCoreMasterData['region'] && !subElement.includes(locationCoreMasterData['region'])){                        
                         excludeFormIds.push(formId);
                     }
                 }
 
                 if(subKey == 'location_type'){
-                    if(hasLocationType(postData) && subElement.includes(hasLocationType(postData))){
+                    if(hasLocationType(postData) && !subElement.includes(hasLocationType(postData))){                        
                         excludeFormIds.push(formId);
                     }
-                    if(locationCoreMasterData['location_type'] && subElement.includes(locationCoreMasterData['location_type'])){
-                        excludeFormIds.push(formId);
+                    
+                    if(locationCoreMasterData['location_type'] ){
+                        const locationTypes = subElement.split(",");
+                        locationTypes.forEach((element) => {
+                            if(!element.includes(locationCoreMasterData['location_type'])){                                
+                                excludeFormIds.push(formId);
+                            }                            
+                        });                        
                     }
                 }
 
                 if(subKey == 'group'){
-                    if(hasGroup(postData) && subElement.includes(hasGroup(postData))){
+                    if(hasGroup(postData) && !subElement.includes(hasGroup(postData))){                    
                         excludeFormIds.push(formId);
                     }
-                    if(locationCoreMasterData['group'] && subElement.includes(locationCoreMasterData['group'])){
-                        excludeFormIds.push(formId);
+
+                    if(locationCoreMasterData['group'] && !subElement.includes(locationCoreMasterData['group'])){
+                        const groups = subElement.split(",");
+                        groups.forEach((element) => {
+                            if(!element.includes(locationCoreMasterData['group'])){                                
+                                excludeFormIds.push(formId);
+                            }   
+                        });                        
                     }
                 }
 
                 if(subKey == 'group_split'){
-                    if(hasGroupSplit(postData) && subElement.includes(hasGroupSplit(postData))){
+                    	                        
+                    if(hasGroupSplit(postData) && !subElement.includes(hasGroupSplit(postData))){                        
                         excludeFormIds.push(formId);
                     }
-                    if(locationCoreMasterData['group_split'] && subElement.includes(locationCoreMasterData['group_split'])){
-                        excludeFormIds.push(formId);
+
+                    if(locationCoreMasterData['group_split'] && !subElement.includes(locationCoreMasterData['group_split'])){
+                        const groupSplits = subElement.split(",");
+                        groupSplits.forEach((element) => {
+                            if(!element.includes(locationCoreMasterData['group_split'])){                                
+                                excludeFormIds.push(formId);
+                            }   
+                        });
                     }
                 }
                 
-                if(subKey == 'custom_field'){
-                    for(let customFieldKey of Object.keys(subElement)){
-                        if(subElement[customFieldKey].includes(customFieldsData[customFieldKey])){
+                if(subKey == 'custom_field' && hasLocationId(postData)){
+                    for(let customFieldKey of Object.keys(subElement)){                        
+                        if(!subElement[customFieldKey].includes(customFieldsData[customFieldKey])){                            
                             excludeFormIds.push(formId);
                         }
                     }
                 }
 
                 if(subKey == 'checkin_type'){
-                    if(hasCheckinTypeId(postData) && subElement.includes(hasCheckinTypeId(postData))){
+                    if(hasCheckinTypeId(postData) && !subElement.includes(hasCheckinTypeId(postData))){
                         excludeFormIds.push(formId);
                     }
                 }
 
                 if(subKey == 'checkin_reason'){
-                    if(hasCheckinReasonId(postData) && subElement.includes(hasCheckinReasonId(postData))){
+                    if(hasCheckinReasonId(postData) && !subElement.includes(hasCheckinReasonId(postData))){
                         excludeFormIds.push(formId);
                     }
                 }
-                
+                                
             }                            
         }
     });
@@ -169,24 +190,25 @@ const generateCoreFieldDataQuery = (location_id) => {
 }
 
 const generateCustomFieldDataQuery = (location_id) => {
-    var query  = `SELECT custom_master_field_id,  field_dat  FROM locations_custom_master_field_data WHERE location_id = ` + location_id;
+    var query  = `SELECT custom_master_field_id,  field_data  FROM locations_custom_master_field_data WHERE location_id = ` + location_id;
     return query;
 }
 
 const generateListQuery = (postData , excludeFormIds) => {
-
-    console.log("excludeFormIds",excludeFormIds)
+    
     var query  = `SELECT ` + 
           `f.form_id, ` + 
           `f.form_name, ` + 
-          //`ft.form_type, ` + 
+          `ft.form_type, ` + 
           `f.form_type_id, ` + 
           `f.guide_info_title, ` + 
           `f.guide_info_image, ` + 
           `f.guide_info_text, ` + 
           `f.compulsory, ` + 
-          `f.location_required ` + 
-        `FROM forms as f ` + 
+          `f.location_required ` +
+        `FROM forms as f ` +
+        `LEFT JOIN form_types as ft ` +
+        `ON ft.form_type_id = f.form_type_id ` +
         `WHERE ` + 
             `f.client_id = ? ` + 
         `AND ` + 
@@ -197,16 +219,17 @@ const generateListQuery = (postData , excludeFormIds) => {
           `f.status = 'active' `;
         
           if(hasHomeTypeId(postData)){
-              query = query + ` WHERE ft.form_type_id = ` + hasHomeTypeId(postData);
+              query = query + ` AND ft.form_type_id = ` + hasHomeTypeId(postData);
           }
           
-          if(hasAddLead(postData)){
-            query = query + ` WHERE ft.form_type_id = 1`;
+          if(hasAddLead(postData) && hasAddLead(postData) == 1){
+            query = query + ` AND f.include_add_lead = 1`;
           }
 
           if(excludeFormIds.length > 0){
-            query = query + ` WHERE f.form_id NOT IN ` + excludeFormIds;
+            query = query + ` AND f.form_id NOT IN (` + excludeFormIds.toString() + `)`;
           }
+
     return query;          
 }
 
@@ -219,8 +242,8 @@ const getData = async(lists) => {
     var tmp = [];
     
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
 
+        var element = lists.item(i);
         var guideInfoPath = '';
         var guideInfoData = {};
         if(element.guide_info_image || element.guide_info_title || element.guide_info_text){
@@ -273,9 +296,7 @@ const getFormAssignmentsData = async(lists) => {
             const objKey = `[${element.form_id}][${element.assignment_type}]`; 
             var singleObj = {
                 [element.form_id] : {
-                    [element.assignment_type] : {
-                        [element.custom_field_id] : element.assignment_value
-                    }
+                    [element.assignment_type] : element.assignment_value
                 }
             };                       
             tmp.push(singleObj);       
@@ -285,24 +306,23 @@ const getFormAssignmentsData = async(lists) => {
 }
 
 const getLocationCoreMasterData = (lists) => {
-    var tmp = [];
+    var tmp = {};
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
-        tmp.push({region: element.region, location_type: element.location_type , group: element.group, group_split: element.group_split});        
+        var element = lists.item(i);        
+        tmp = {region: element.region, location_type: element.location_type , group: element.group, group_split: element.group_split};
+        break;
     }
     return tmp;
 }
 
 const getCustomFieldData = (lists) => {
-    var tmp = [];
+    var tmp = {};
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);
-        tmp.push({[element.custom_master_field_id]: element.field_data});
+        tmp = {[element.custom_master_field_id]: element.field_data};
     }
     return tmp;
-}
-
-
+}     
 
 const hasLocationId = (postData) => {
     var check = postData.location_id && postData.location_id != undefined ? true : false;
