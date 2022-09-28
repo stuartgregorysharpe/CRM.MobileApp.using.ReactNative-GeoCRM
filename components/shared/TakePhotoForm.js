@@ -10,13 +10,12 @@ export default function TakePhotoForm({item, onPress, onTouchStart}) {
   const isOptimize = item.optimize && item.optimize === '1';
   const photos = item.value;
   const onUpdatePhotos = paths => {
-    console.log("updated files",)
     onPress(paths);
   };
   const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
   const isQuesionAnswered = item && item.value != null && item.value.length != 0
   const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
-  
+    
   return (
     <View
       style={[

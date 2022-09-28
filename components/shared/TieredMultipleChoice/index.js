@@ -14,7 +14,7 @@ const TieredMultipleChoice = props => {
     item.completed_data != null &&
     item.completed_data != undefined;
   const questionButtonType =
-    item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : '';
+    item.value != null && item.value != '' ? Constants.questionButtonType.QUESTION_BUTTON_DONE : '';
 
   const onOpenSKUCountModal = () => {
     if (multiSelectPhotoModalRef && multiSelectPhotoModalRef.current) {

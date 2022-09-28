@@ -8,10 +8,10 @@ export function filterTriggeredQuestions(formQuestionGroups) {
     questions.push(...formQuestionGroup.questions);
   });
   for (let i = 0; i < questions.length; i++) {
-    const isShow = checkIfQuestionIsTrigger(questions[i], questions , 'question');
+    const isShow = checkIfQuestionIsTrigger(questions[i], questions , 'question');    
     questions[i].isHidden = !isShow;
     if (questions[i].isHidden) {
-      console.log('Hidden:', questions[i].question_text);
+      //console.log('Hidden:', questions[i].question_text);
     }
   }
   return formQuestionGroups;

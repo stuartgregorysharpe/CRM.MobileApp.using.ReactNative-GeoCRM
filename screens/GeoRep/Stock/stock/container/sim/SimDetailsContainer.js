@@ -3,7 +3,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import SimDetailsView from '../../components/sim/SimDetailsView';
 import SearchLocationModal from '../../modal/SearchLocationModal';
 import {useSelector} from 'react-redux';
-import {Constants} from '../../../../../../constants';
+import {Constants, Strings} from '../../../../../../constants';
 import {getLocalData} from '../../../../../../constants/Storage';
 
 export default function SimDetailsContainer(props) {
@@ -58,6 +58,7 @@ export default function SimDetailsContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
+
       <SimDetailsView
         onSellToTrader={onSellToTrader}
         onTransfer={onTransfer}
@@ -66,10 +67,11 @@ export default function SimDetailsContainer(props) {
 
       <SearchLocationModal
         ref={searchLocationModalRef}
-        title="Search Location"
+        title={Strings.Search_Location}
         stockType={stockType}
         onButtonAction={onSearchLocationModalClosed}
       />
+
     </View>
   );
 }

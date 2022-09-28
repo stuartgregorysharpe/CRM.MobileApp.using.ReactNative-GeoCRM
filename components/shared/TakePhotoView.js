@@ -174,7 +174,7 @@ const TakePhotoView = props => {
         <ScrollView
           horizontal={true}
           contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
-          {photos &&
+          {photos != null &&
             photos.length > 0 &&
             photos.map((photo, index) => {
               return (

@@ -25,8 +25,7 @@ export default function FormsScreen(props) {
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  
-  
+    
   const formFilterModalRef = useRef(null);
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
@@ -124,6 +123,7 @@ export default function FormsScreen(props) {
         checkin_reason_id:checkin_reason_id
       }
     }
+
     GetRequestFormListsDAO.find(param).then((res) => {
       setFormLists(res.forms);
       setOriginalFormLists(res.forms);
@@ -151,6 +151,7 @@ export default function FormsScreen(props) {
       _callFormLists(null);
     }
   };
+
   const onOpenFormItem = (item, locationId) => {
     var routeName = 'DeeplinkFormQuestionsScreen';
     if (!isShowCustomNavigationHeader) {
@@ -180,6 +181,7 @@ export default function FormsScreen(props) {
       onOpenFormItem(item, '');
     }
   };
+
   const onSearchLocation = async ({type, value}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
       if (value && value.locationId) {
@@ -189,6 +191,7 @@ export default function FormsScreen(props) {
       }
     }
   };
+
   const renderItems = (item, index) => {
     return (
       <View>
@@ -252,12 +255,14 @@ export default function FormsScreen(props) {
           visible={isInfo}
           info={bubbleText}
           onModalClose={() => setIsInfo(false)}></GuideInfoView>
+
         <SearchLocationModal
           ref={searchLocationModalRef}
-          title="Search Location"
+          title={Strings.Search_Location}
           onButtonAction={onSearchLocation}
           isSkipLocationIdCheck={true}
         />
+        
       </View>
     </Provider>
   );
