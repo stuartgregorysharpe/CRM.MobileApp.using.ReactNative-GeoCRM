@@ -21,7 +21,7 @@ const ScanView = props => {
   const [hasPermission, setHasPermission] = React.useState(false);
   const devices = useCameraDevices();
   const device = devices.back;
-  const isPartialDetect = true;
+  const [isPartialDetect, setIsPartialDetect] = useState(props.isPartialDetect);
   const [frameProcessor, barcodes] = useScanBarcodes(
     [BarcodeFormat.ALL_FORMATS],
     {checkInverted: true},
@@ -107,6 +107,17 @@ const ScanView = props => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
+  };
+  const renderSwitchPartialButton = () => {
+    return (
+      <TouchableOpacity
+        style={styles.switchButton}
+        onPress={() => {
+          setIsPartialDetect(!isPartialDetect);
+        }}>
+        <SvgIcon icon="Sync" width="50" height="50" />
+      </TouchableOpacity>
+    );
   };
   const renderCloseButton = () => {
     if (props.showClose) {
@@ -281,6 +292,7 @@ const ScanView = props => {
       </View>
 
       {renderLastScanResultView()}
+      {renderSwitchPartialButton()}
       {renderCloseButton()}
     </SafeAreaView>
   );
@@ -307,6 +319,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     right: 24,
+  },
+  switchButton: {
+    position: 'absolute',
+    top: 35,
+    left: 24,
   },
   detectLayer: {
     width: '100%',
