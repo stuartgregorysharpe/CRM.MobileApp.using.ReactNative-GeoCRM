@@ -1,8 +1,7 @@
 import {
   View,
   Text,
-  Modal,
-  TouchableWithoutFeedback,
+  Modal,  
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -16,7 +15,6 @@ import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {AppText} from '../../../../../components/common/AppText';
-import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import ImageResizer from 'react-native-image-resizer';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -31,16 +29,14 @@ export default function UploadFileView({
   const [progress, setProgress] = useState(0);
   useEffect(() => {
     setTimeout(() => {
-      if (progress < 10) {
-        console.log('progress', progress);
+      if (progress < 10) {        
         setProgress(progress + 1);
       }
     }, 50);
   }, [progress]);
 
   const onSave = () => {
-    onClose();
-    //onValueChanged([]);
+    onClose();    
   };
 
   const updateImageData = async path => {
@@ -48,8 +44,7 @@ export default function UploadFileView({
       onValueChanged([...item.value, path]);
     } else {
       onValueChanged([path]);
-    }
-    console.log('progress intialize');
+    }    
     setProgress(0);
   };
 
@@ -285,6 +280,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: whiteLabel().fieldBorder,
   },
+  
   textStyle: {
     marginHorizontal: 10,
     color: whiteLabel().actionOutlineButtonText,

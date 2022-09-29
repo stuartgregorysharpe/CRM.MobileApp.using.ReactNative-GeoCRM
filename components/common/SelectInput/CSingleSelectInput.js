@@ -30,12 +30,16 @@ const CSingleSelectInput = props => {
     ) {
       var title = '';
       checkedValue.forEach((element, index) => {
-        const foundItem = items.find(x => x.value == element);
-        if (index == 0) {
-          title = foundItem.label;
-        } else {
-          title = title + ', ' + foundItem.label;
-        }
+        if(items instanceof Array){
+          const foundItem = items.find(x => x.value == element);
+          if(foundItem != undefined){
+            if (index == 0) {
+              title = foundItem.label;
+            } else {
+              title = title + ', ' + foundItem.label;
+            }
+          }          
+        }                
       });
       return title;
     }

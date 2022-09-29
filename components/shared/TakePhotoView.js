@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,8 +9,7 @@ import {
   Platform,
   PermissionsAndroid,
 } from 'react-native';
-import Colors, {whiteLabel} from '../../constants/Colors';
-import Fonts from '../../constants/Fonts';
+import {whiteLabel} from '../../constants/Colors';
 import SvgIcon from '../SvgIcon';
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
@@ -18,7 +17,9 @@ import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import ImageResizer from 'react-native-image-resizer';
 
 const TakePhotoView = props => {
+
   const {photos, isOptimize} = props;
+  
   const [isPicker, setIsPicker] = useState(false);
   
   const onUpdatePhotos = paths => {
@@ -39,6 +40,7 @@ const TakePhotoView = props => {
   const showSelectionDialog = () => {
     setIsPicker(true);
   };
+
   const optimizeImage = (filePath, quality, index) => {
     var outputPath =
       Platform.OS === 'ios'
@@ -101,6 +103,7 @@ const TakePhotoView = props => {
       }
     });
   };
+
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -113,8 +116,7 @@ const TakePhotoView = props => {
           buttonPositive: 'OK',
         },
       );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Camera permission given');
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {        
         launchCamera();
       } else {
         console.log('Camera permission denied');
@@ -146,7 +148,9 @@ const TakePhotoView = props => {
         }
       }
     });
+
   };
+
   return (
     <View style={[styles.container, props.style]}>
       
@@ -171,12 +175,14 @@ const TakePhotoView = props => {
           justifyContent: 'center',
           marginTop: 10,
         }}>
+
         <ScrollView
           horizontal={true}
           contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
           {photos != null &&
-            photos.length > 0 &&
+            photos instanceof Array && photos.length > 0 &&
             photos.map((photo, index) => {
+
               return (
                 <View key={'image' + index} style={styles.imageStyle}>
                   <Image style={styles.imageContainer} source={{uri: photo}} />
@@ -192,6 +198,7 @@ const TakePhotoView = props => {
                   </TouchableOpacity>
                 </View>
               );
+
             })}
 
           <TouchableOpacity
@@ -201,22 +208,18 @@ const TakePhotoView = props => {
             }}>
             <SvgIcon icon="Add_Image" />
           </TouchableOpacity>
+
         </ScrollView>
+
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  
   container: {
     alignSelf: 'stretch',
-  },
-  titleStyle: {
-    textAlign: 'center',
-    paddingVertical: 5,
-    color: Colors.blackColor,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryMedium,
   },
 
   imageStyle: {

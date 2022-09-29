@@ -2,9 +2,7 @@ import {View, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Constants} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
-import {  
-  postApiRequestMultipart,
-} from '../../../../../actions/api.action';
+import {  postApiRequestMultipart } from '../../../../../actions/api.action';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import AddLeadFormsModal from '../modal/AddLeadFormsModal';
 import SelectDevicesModal from '../modal/SelectDevicesModal';
@@ -60,44 +58,43 @@ export default function AddLeadContainer(props) {
     getFormLists();
   }, [leadForms]);
 
-  const getCustomMasterFields = () => {
-    
+  const getCustomMasterFields = () => {    
+
     GetRequestLeadfieldDAO.find({}).then((res) => {      
       if(props.changeTitle && res.component_title != undefined){
         props.changeTitle(res.component_title);
       }
-      if (isMount) {
+      if (isMount) {                 
         setLeadForms(res.custom_master_fields);
-        setAccuracyUnit(res.accuracy_distance_measure);
+        setAccuracyUnit(res.accuracy_distance_measure);        
       }
-
     }).catch((e) => {
       console.log("error", e) 
     });
 
   };
+  
 
   const getFormLists = async () => {
     
-    var locationTypeItem = leadForms.find(
-      item => item.core_field_name == 'location_type',
-    );
+    var locationTypeItem = leadForms.find( item => item.core_field_name == 'location_type');
     var groupItem = leadForms.find(item => item.core_field_name == 'group');
     var groupSplitItem = leadForms.find(
       item => item.core_field_name == 'group_split',
-    );                  
+    );
     var param = {
       add_lead: 1,
       location_type: locationTypeItem ? customMasterFields[locationTypeItem.custom_master_field_id] : '',
       group: groupItem ? customMasterFields[groupItem.custom_master_field_id] : '',
       group_split: groupSplitItem ? customMasterFields[groupSplitItem.custom_master_field_id] : '',
-    };    
+    };
     
     GetRequestFormListsDAO.find(param).then((res) => {      
       setFormLists(res.forms);      
     }).catch((e) => {
         console.log(e)
-    });        
+    });
+
   };
 
   const onAdd = () => {
@@ -424,8 +421,11 @@ export default function AddLeadContainer(props) {
         hideClear={true}
         title=""
         form={form}
+        leadForms={leadForms}
+        customMasterFields={customMasterFields}
         onButtonAction={onFormQuestionModalClosed}
       />
+
       <SubmitButton
         style={{marginHorizontal: 10, marginBottom: Platform.OS == 'android' ? 10 : 20, marginTop:10 }}
         title={'Add'}

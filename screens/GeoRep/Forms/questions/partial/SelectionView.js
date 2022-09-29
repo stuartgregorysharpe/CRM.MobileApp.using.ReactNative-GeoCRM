@@ -29,9 +29,9 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
           ;
     },[visible]);
    
-    const getCheckedStatus = ( item,  values ) => {                     
+    const getCheckedStatus = ( item,  values ) => {
         var tmp = null;
-        if(values !== null && values !== undefined){
+        if(values !== null && values !== undefined && values instanceof Array ){
             tmp = values.find((element => element === item ));
             if(tmp !== null && tmp !== undefined){
                 return true;

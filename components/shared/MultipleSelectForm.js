@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Text } from 'react-native';
 import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { style } from '../../constants/Styles';
@@ -7,10 +7,9 @@ import MultipleButton from './MultipleButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const MultipleSelectForm = ({item , onPress ,onTouchStart }) => {
-    
-    const [text,setText] = useState("");
+        
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    const isQuesionAnswered = item && item.value != null
+    const isQuesionAnswered = item.value != null && item.value != "";
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
 
     return (
@@ -38,7 +37,11 @@ export const MultipleSelectForm = ({item , onPress ,onTouchStart }) => {
                             
                         </View>
                         
-                        <MultipleButton   onPress={ () =>{ onPress(item); }} text={ item.value && item.value.length > 0 ? item.value.join(', ') : 'Select Option'} ></MultipleButton>
+                        <MultipleButton   
+                            onPress={ () =>{ onPress(item); }} 
+                            text={ isQuesionAnswered && item.value instanceof Array ? item.value.join(', ') : 'Select Option'} >
+                        </MultipleButton>
+                        
                     </View>                    
                 </View>
                                 
