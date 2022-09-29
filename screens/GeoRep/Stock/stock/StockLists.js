@@ -95,10 +95,10 @@ export default function StockLists() {
     } else if (item.stock_type === Constants.stockType.CONSUMABLE) {
       stockConsumableModalRef.current.showModal();
     } else if (item.stock_type === Constants.stockType.SIM) {
-      if (item.items) {
-        setSelectedItems(item.items);
-      }      
-      simDetailsModalRef.current.showModal();
+      // if (item.items) {
+      //   setSelectedItems(item.items);
+      // }      
+      // simDetailsModalRef.current.showModal();
     }
   };
 
