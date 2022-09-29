@@ -12,9 +12,10 @@ export function filterTriggeredQuestions(formQuestionGroups) {
       questions,
       'question',
     );
+
     questions[i].isHidden = !isShow;
     if (questions[i].isHidden) {
-      console.log('Hidden:', questions[i].question_text);
+      //console.log('Hidden:', questions[i].question_text);
     }
   }
   return formQuestionGroups;

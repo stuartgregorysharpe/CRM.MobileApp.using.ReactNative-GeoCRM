@@ -10,7 +10,7 @@ import { SubmitButton } from './shared/SubmitButton';
 import { style } from '../constants/Styles';
 import { TimePicker } from './TimePicker';
 
-export const DatetimePickerView = ({ visible , onModalClose, close , value , mode}) => {
+export const DatetimePickerView = ({ visible , onModalClose, onClear, close , value , mode}) => {
 
     const [items, setItems]  =  useState([]);    
     const [options, setOptions] = useState([]);
@@ -25,6 +25,7 @@ export const DatetimePickerView = ({ visible , onModalClose, close , value , mod
             transparent={true}
             visible={visible}
             onRequestClose={onModalClose}>            
+
             <TouchableWithoutFeedback onPress={onModalClose}>
                 <View style={[style.centeredView]}>
                     <TouchableWithoutFeedback onPress={() => {}}>
@@ -44,7 +45,7 @@ export const DatetimePickerView = ({ visible , onModalClose, close , value , mod
                                         color={Colors.selectedRedColor}
                                         uppercase={false} 
                                         onPress={ async() => {                                            
-                                            onModalClose();
+                                            onClear();
                                         }}>
                                     Clear
                                     </Button>

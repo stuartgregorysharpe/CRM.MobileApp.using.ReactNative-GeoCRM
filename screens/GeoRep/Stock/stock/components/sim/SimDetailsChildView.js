@@ -27,10 +27,12 @@ export default function SimDetailsChildView(props) {
               title="Sell To Trader"
               onSubmit={onSellToTrader}
               style={{marginTop: 10}}></SubmitButton>
-            <SubmitButton
+
+            {/* <SubmitButton
               title="Transfer"
               onSubmit={onTransfer}
-              style={{marginTop: 10}}></SubmitButton>
+              style={{marginTop: 10}}></SubmitButton> */}
+              
           </>
         );
       }}

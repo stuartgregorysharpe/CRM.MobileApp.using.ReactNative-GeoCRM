@@ -2,10 +2,7 @@ import {View, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Constants} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
-import {
-  getApiRequest,
-  postApiRequestMultipart,
-} from '../../../../../actions/api.action';
+import {  postApiRequestMultipart } from '../../../../../actions/api.action';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import AddLeadFormsModal from '../modal/AddLeadFormsModal';
 import SelectDevicesModal from '../modal/SelectDevicesModal';
@@ -23,6 +20,7 @@ import FormQuestionModal from '../modal/FormQuestionModal';
 import RNFS from 'react-native-fs';
 import { getFileFormat } from '../../../../../constants/Helper';
 import { Notification } from '../../../../../components/modal/Notification';
+import { GetRequestFormListsDAO, GetRequestLeadfieldDAO } from '../../../../../DAO';
 
 export default function AddLeadContainer(props) {
 
@@ -60,39 +58,43 @@ export default function AddLeadContainer(props) {
     getFormLists();
   }, [leadForms]);
 
-  const getCustomMasterFields = () => {
-    getApiRequest('leadfields', {})
-      .then(res => {        
-        if(props.changeTitle && res.component_title != undefined){
-          props.changeTitle(res.component_title);
-        }        
-        if (isMount) {
-          setLeadForms(res.custom_master_fields);
-          setAccuracyUnit(res.accuracy_distance_measure);
-        }
-      })
-      .catch(e => { console.log("error", e) });
+  const getCustomMasterFields = () => {    
+
+    GetRequestLeadfieldDAO.find({}).then((res) => {      
+      if(props.changeTitle && res.component_title != undefined){
+        props.changeTitle(res.component_title);
+      }
+      if (isMount) {                 
+        setLeadForms(res.custom_master_fields);
+        setAccuracyUnit(res.accuracy_distance_measure);        
+      }
+    }).catch((e) => {
+      console.log("error", e) 
+    });
+
   };
+  
 
   const getFormLists = async () => {
-    var locationTypeItem = leadForms.filter(
-      item => item.core_field_name == 'location_type',
-    );
-    var groupItem = leadForms.filter(item => item.core_field_name == 'group');
-    var groupSplitItem = leadForms.filter(
+    
+    var locationTypeItem = leadForms.find( item => item.core_field_name == 'location_type');
+    var groupItem = leadForms.find(item => item.core_field_name == 'group');
+    var groupSplitItem = leadForms.find(
       item => item.core_field_name == 'group_split',
     );
     var param = {
       add_lead: 1,
-      location_type: locationTypeItem ? locationTypeItem.value : '',
-      group: groupItem ? groupItem.value : '',
-      group_split: groupSplitItem ? groupSplitItem.value : '',
+      location_type: locationTypeItem ? customMasterFields[locationTypeItem.custom_master_field_id] : '',
+      group: groupItem ? customMasterFields[groupItem.custom_master_field_id] : '',
+      group_split: groupSplitItem ? customMasterFields[groupSplitItem.custom_master_field_id] : '',
     };
-    getApiRequest('forms/forms-list', param)
-      .then(res => {              
-        setFormLists(res.forms);
-      })
-      .catch(e => {});
+    
+    GetRequestFormListsDAO.find(param).then((res) => {      
+      setFormLists(res.forms);      
+    }).catch((e) => {
+        console.log(e)
+    });
+
   };
 
   const onAdd = () => {
@@ -259,6 +261,7 @@ export default function AddLeadContainer(props) {
   };
 
   const showFormModal = () => {
+    getFormLists();
     addLeadFormModalRef.current.showModal();
   };
 
@@ -321,7 +324,10 @@ export default function AddLeadContainer(props) {
     setIsCurrentLocation('1');
   };
   const onChangedCustomMasterFields = value => {    
+    
+    console.log("custom master data", value);
     setCustomMasterFields(value);
+
   };
   const onPrimaryContactFields = value => {
     setPrimaryData(value);
@@ -415,8 +421,11 @@ export default function AddLeadContainer(props) {
         hideClear={true}
         title=""
         form={form}
+        leadForms={leadForms}
+        customMasterFields={customMasterFields}
         onButtonAction={onFormQuestionModalClosed}
       />
+
       <SubmitButton
         style={{marginHorizontal: 10, marginBottom: Platform.OS == 'android' ? 10 : 20, marginTop:10 }}
         title={'Add'}

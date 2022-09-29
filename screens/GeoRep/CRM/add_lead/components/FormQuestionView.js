@@ -166,8 +166,11 @@ export const FormQuestionView = forwardRef((props, ref) => {
       );
     } else if (item.question_type === 'yes_no') {
       return (
-        <View style={{marginHorizontal:5}}>
+        <View 
+        key={'yes_no_question_view' + index}
+        style={{marginHorizontal:5}}>
           <YesNoForm
+            key={'yes_no_question' + index}
             onTakeImage={async (images, type) => {
               var tmp = [...formQuestions];
               if (type === 'yes') {
@@ -179,8 +182,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
             }}
             onPress={(value, type) => {
               onValueChangedSelectionView(key, index, value);
-            }}
-            key={'yes_no_question' + index}
+            }}            
             item={item}
             onTouchStart={(e, text) => {
               _onTouchStart(e, text);
@@ -541,6 +543,10 @@ export const FormQuestionView = forwardRef((props, ref) => {
       <DatetimePickerView
         visible={isDateTimeView}
         value={selectedDate}
+        onClear={() => {
+          onValueChangedSelectionView(key, index, null);
+          closeDateTime();
+        }}
         onModalClose={() => {
           closeDateTime();
         }}
@@ -548,6 +554,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
           confirmDateTime(date);
           closeDateTime();
         }}></DatetimePickerView>
+
 
       <Sign
         visible={isSign}
@@ -600,13 +607,13 @@ export const FormQuestionView = forwardRef((props, ref) => {
       </View>
 
       <ScrollView style={{paddingHorizontal:5, paddingBottom:5}}>
-        {formQuestions &&
+        {formQuestions != null &&
           formQuestions.map((form, key) => {
             if (form.isHidden) return null;
             return (
               <View key={'form' + key}>
                 {
-                  form.question_group && form.question_group != null &&
+                  form.question_group != null &&
                   <GroupTitle title={form.question_group}></GroupTitle>
                 }
                 {form.questions.map((item, index) => {
@@ -615,8 +622,9 @@ export const FormQuestionView = forwardRef((props, ref) => {
               </View>
             );
           })}
+
         <View style={{marginTop: 10, marginBottom: 70}}>
-          {formQuestions && formQuestions.length > 0 && (
+          {formQuestions != null && formQuestions.length > 0 && (
             <SubmitButton
               isLoading={isLoading}
               enabled={!isLoading}

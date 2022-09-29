@@ -7,16 +7,18 @@ import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const DateForm = ({item , onPress ,onTouchStart}) => {
+
     const [text,setText] = useState("");
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
     const isQuesionAnswered = item && item.value != null
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
-
-    
+    const hasValue = item.value != null && item.value != '';
+        
     return (
         <View style={[style.card,  isCompulsory  ? style.compulsoryStyle :{}, {marginHorizontal:5 , marginVertical:3 }]}>
             <View style={styles.container}>
                 <View style={{flexDirection:'row'}}>
+                    
                     <View style={{flex:1, paddingHorizontal:5}}>
                         <Text style={styles.titleStyle}> {item.question_text} </Text>
                     </View>
@@ -38,10 +40,10 @@ export const DateForm = ({item , onPress ,onTouchStart}) => {
 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>
                     <TouchableOpacity style={[style.buttonStyle]} onPress={() => {onPress()} }>
-                        <View style={[styles.inputStyle , item.value  !== null ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} > 
-                            <Text style={[styles.textStyle, item.value  !== null ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Select Date'}</Text>
+                        <View style={[styles.inputStyle , hasValue ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} > 
+                            <Text style={[styles.textStyle, hasValue ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Select Date'}</Text>
                             {
-                                item.value !== null ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Question_Calendar" width='20px' height='20px' />
+                                hasValue ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Question_Calendar" width='20px' height='20px' />
                             }                            
                         </View> 
                     </TouchableOpacity>

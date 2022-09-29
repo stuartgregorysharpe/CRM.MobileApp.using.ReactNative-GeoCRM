@@ -122,7 +122,7 @@ export default function Returns() {
 
         <SearchLocationModal
           ref={searchLocationModalRef}
-          title="Search Location"
+          title={Strings.Search_Location}
           stockType={Constants.stockType.RETURN}
           onButtonAction={onSearchLocationModalClosed}
           />

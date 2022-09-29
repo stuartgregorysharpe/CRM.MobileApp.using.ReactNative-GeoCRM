@@ -2,7 +2,7 @@
 import { View } from 'react-native'
 import React , {useState , useRef} from 'react'
 import { useSelector } from 'react-redux';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 import StockConsumableView from '../components/StockConsumableView';
 import SearchLocationModal from '../modal/SearchLocationModal';
     
@@ -37,15 +37,17 @@ export default function StockConsumableContainer(props) {
 
     return (
         <View style={{alignSelf:'stretch'}}>
+            
             <StockConsumableView
                 sellToTrader={sellToTrader}
                 transfer={transfer}                            
                 item={props.item}
                 {...props}
             />                  
+
             <SearchLocationModal
                 ref={searchLocationModalRef}
-                title="Search Location"
+                title={Strings.Search_Location}
                 stockType={stockType}
                 onButtonAction={onSearchLocation}
                 />   

@@ -14,7 +14,7 @@ import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 
 export default function FormQuestionContainer(props) {
-  const {form} = props;
+  const {form , leadForms , customMasterFields} = props;
   const [formQuestions, setQuestions] = useState([]);
   const dispatch = useDispatch();
 
@@ -27,7 +27,7 @@ export default function FormQuestionContainer(props) {
       form_id: form.form_id,
     };
     getApiRequest('forms/forms-questions', param)
-      .then(res => {
+      .then(res => {        
         groupByQuestions(res.questions);
       })
       .catch(e => {
@@ -35,9 +35,22 @@ export default function FormQuestionContainer(props) {
       });
   };
 
+  const getQuestionTagValue = (questionTag) => {
+    var leadFormItem = leadForms.find( item => item.field_tag === questionTag);      
+    if(leadFormItem != undefined){
+      return customMasterFields[leadFormItem.custom_master_field_id];
+    }  
+    return '';
+  }
+
   const groupByQuestions = data => {
     var newData = [];
     data.forEach(element => {
+
+      if(element.question_tag != undefined && element.question_tag != ''){        
+        element.value = getQuestionTagValue(element.question_tag);
+      }
+
       if (!isInNewData(newData, element)) {
         var ques = [element];
         newData.push({
@@ -53,6 +66,7 @@ export default function FormQuestionContainer(props) {
         tmp.questions = [...newTmp];
       }
     });
+
     updateFormQuestions(newData);
   };
 
@@ -62,8 +76,7 @@ export default function FormQuestionContainer(props) {
       : false;
   };
 
-  const updateFormQuestions = formQuestions => {
-    console.log('updated vale', formQuestions);
+  const updateFormQuestions = formQuestions => {    
     filterTriggeredQuestions(formQuestions);
     setQuestions(formQuestions);
   };

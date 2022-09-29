@@ -30,16 +30,18 @@ const ScanningListViewContainer = props => {
         />,
       );
     }
-    if (props.onTransfer) {
-      buttons.push(
-        <SubmitButton
-          key="transfer"
-          title={'Transfer'}
-          onSubmit={props.onTransfer}
-          style={styles.submitButton}
-        />,
-      );
-    }
+    
+    // if (props.onTransfer) {
+    //   buttons.push(
+    //     <SubmitButton
+    //       key="transfer"
+    //       title={'Transfer'}
+    //       onSubmit={props.onTransfer}
+    //       style={styles.submitButton}
+    //     />,
+    //   );
+    // }
+
     if (props.onAccept) {
       buttons.push(
         <SubmitButton

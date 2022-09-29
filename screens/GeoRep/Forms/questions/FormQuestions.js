@@ -38,7 +38,6 @@ import uuid from 'react-native-uuid';
 import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Strings} from '../../../../constants';
-import {Notification} from '../../../../components/modal/Notification';
 var indempotencyKey;
 
 export const FormQuestions = props => {
@@ -127,7 +126,7 @@ export const FormQuestions = props => {
     if (location_id) {
       param.location_id = location_id;
     }
-    console.log('forms/forms-questions', param);
+    console.log('forms/forms-questions params', param);
     getApiRequest('forms/forms-questions', param)
       .then(res => {
         groupByQuestions(res.questions);
@@ -140,6 +139,10 @@ export const FormQuestions = props => {
   const groupByQuestions = data => {
     var newData = [];
     data.forEach(element => {
+      if(element.value != '' && element.value != null){
+        console.log("DATA == " ,element )
+      }
+      
       if (!isInNewData(newData, element)) {
         var ques = [element];
         newData.push({
@@ -300,8 +303,13 @@ export const FormQuestions = props => {
     saveDb(value, '');
   };
   const updateFormQuestions = formQuestionGroups => {
-    filterTriggeredQuestions(formQuestionGroups);
-    setFormQuestions(formQuestionGroups);
+    
+    console.log("formQuestionGroups", JSON.stringify(formQuestionGroups))
+    const res = filterTriggeredQuestions(formQuestionGroups);
+    console.log("formQuestionGroupsNEXT", res);
+    if(res != undefined)
+      setFormQuestions(res);
+
   };
 
   const onBackPressed = value => {
@@ -310,6 +318,7 @@ export const FormQuestions = props => {
 
   return (
     <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
+
       <FormQuestionView
         ref={formQuestionViewRef}
         isShowCustomNavigationHeader={isShowCustomNavigationHeader}
