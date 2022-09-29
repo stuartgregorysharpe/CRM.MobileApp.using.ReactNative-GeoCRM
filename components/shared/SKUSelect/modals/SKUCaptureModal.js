@@ -20,11 +20,7 @@ const SKUCaptureModal = React.forwardRef((props, ref) => {
       ref={ref}
       modalType={Constants.modalType.MODAL_TYPE_FULL}
       {...props}>
-      <SKUScanContainer
-        {...props}
-        style={{marginTop: 14}}
-        onButtonAction={onButtonAction}
-      />
+      <SKUScanContainer {...props} onButtonAction={onButtonAction} />
     </CModal>
   );
 });

@@ -1,11 +1,9 @@
-
 import React from 'react';
 import CModal from '../../../../../components/common/CModal';
-import { Constants } from '../../../../../constants';
+import {Colors, Constants} from '../../../../../constants';
 import FormQuestionContainer from '../containers/FormQuestionContainer';
 
 const FormQuestionModal = React.forwardRef((props, ref) => {
-
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -15,10 +13,10 @@ const FormQuestionModal = React.forwardRef((props, ref) => {
         ref.current.hideModal();
       }
     }
-    if(data.type ==  Constants.actionType.ACTION_CLOSE) {
+    if (data.type == Constants.actionType.ACTION_CLOSE) {
       if (ref) {
         props.onButtonAction(data);
-      }      
+      }
     }
   };
 
@@ -33,7 +31,6 @@ const FormQuestionModal = React.forwardRef((props, ref) => {
         onButtonAction={onButtonAction}
       />
     </CModal>
-        
   );
 });
 

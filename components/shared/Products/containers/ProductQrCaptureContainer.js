@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
-import { getProductForId } from '../../SKUSelect/helper';
+import {getProductForId} from '../../SKUSelect/helper';
 import ProductQrCaptureView from '../components/ProductQrCaptureView';
 //import {getProductForId} from '../helper';
 
@@ -11,7 +11,7 @@ const ProductQrCaptureContainer = props => {
     if (!formData) return false;
     if (formData.selectedProductIds.length > 0) {
       const lastProductId =
-        formData.selectedProductIds[formData.selectedProductIds.length - 1];        
+        formData.selectedProductIds[formData.selectedProductIds.length - 1];
 
       return getProductForId(item.products, lastProductId);
       //return getProductForId(item.products, lastProductId);
@@ -28,21 +28,13 @@ const ProductQrCaptureContainer = props => {
   };
 
   return (
-    <View style={[styles.container, props.style]}>
-      <ProductQrCaptureView
-        onButtonAction={onButtonAction}
-        totalItemCount={totalItemCount}
-        lastScanedQrCode={lastScanedQrCode}
-        products={props.products}
-      />
-    </View>
+    <ProductQrCaptureView
+      onButtonAction={onButtonAction}
+      totalItemCount={totalItemCount}
+      lastScanedQrCode={lastScanedQrCode}
+      products={props.products}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default ProductQrCaptureContainer;

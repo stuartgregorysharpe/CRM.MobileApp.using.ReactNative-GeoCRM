@@ -24,7 +24,9 @@ const ScanView = props => {
   const [isPartialDetect, setIsPartialDetect] = useState(props.isPartialDetect);
   const [frameProcessor, barcodes] = useScanBarcodes(
     [BarcodeFormat.ALL_FORMATS],
-    {checkInverted: true},
+    {
+      checkInverted: true,
+    },
   );
   React.useEffect(() => {
     (async () => {
@@ -39,6 +41,7 @@ const ScanView = props => {
         checkAndCapture(barcode);
       });
     }
+    console.log('barcodes', JSON.stringify(barcodes));
   }, [barcodes]);
   const checkAndCapture = barcode => {
     if (validateBarcode(barcode)) {
@@ -276,7 +279,7 @@ const ScanView = props => {
     return null;
   };
   return (
-    <SafeAreaView style={[styles.container, props.style]}>
+    <View style={[styles.container, props.style]}>
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         {device != null && hasPermission && (
           <Camera
@@ -294,14 +297,14 @@ const ScanView = props => {
       {renderLastScanResultView()}
       {renderSwitchPartialButton()}
       {renderCloseButton()}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignSelf: 'stretch',
+    flex: 1,
   },
   regionCameraMarker: {
     width: Values.deviceWidth - 80,
