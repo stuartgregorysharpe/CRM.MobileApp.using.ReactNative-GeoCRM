@@ -5,29 +5,77 @@ import {
   Platform,
   SafeAreaView,
   TouchableOpacity,
+  Vibration,
 } from 'react-native';
 import {Colors, Constants, Values} from '../../constants';
-import {useCameraDevices} from 'react-native-vision-camera';
+import {useCameraDevices, useFrameProcessor} from 'react-native-vision-camera';
 import {Camera} from 'react-native-vision-camera';
-import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
+import {
+  useScanBarcodes,
+  BarcodeFormat,
+  scanBarcodes,
+} from 'vision-camera-code-scanner';
 
 import SvgIcon from '../SvgIcon';
+import {runOnJS} from 'react-native-reanimated';
 
 const REGION_HEIGHT = 120;
 const REGION_WIDTH = Values.deviceWidth - 80;
 const REGION_POSITION_TOP = (Values.deviceHeight * 0.6 - 120) / 2;
 const REGION_POSITION_LEFT = 40;
+const WINDOW_WIDTH = Values.deviceWidth;
+const WINDOW_HEIGHT = Values.deviceHeight;
 const ScanView = props => {
   const [hasPermission, setHasPermission] = React.useState(false);
   const devices = useCameraDevices();
   const device = devices.back;
   const [isPartialDetect, setIsPartialDetect] = useState(props.isPartialDetect);
-  const [frameProcessor, barcodes] = useScanBarcodes(
-    [BarcodeFormat.ALL_FORMATS],
-    {
+  const isFullCamera = props.renderLastScanResultView ? false : true;
+  const [barcodes, setBarcodes] = useState([]);
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    const detectedBarcodes = scanBarcodes(frame, [BarcodeFormat.ALL_FORMATS], {
       checkInverted: true,
-    },
-  );
+    });
+
+    const xRatio = frame.width / WINDOW_WIDTH;
+    const yRatio = frame.height / WINDOW_HEIGHT;
+
+    const ratio = WINDOW_WIDTH / frame.height;
+
+    const barcodes = [];
+    if (detectedBarcodes.length > 0) {
+      detectedBarcodes.forEach(barcode => {
+        const cornerPoints = barcode.cornerPoints;
+        if (Platform.OS === 'ios') {
+          const resultPoints = cornerPoints.map(corner => {
+            return {
+              x: parseFloat(corner.x) / xRatio,
+              y: parseFloat(corner.y) / yRatio,
+            };
+          });
+
+          barcodes.push({
+            ...barcode,
+            cornerPoints: resultPoints,
+          });
+        } else {
+          const resultPoints = cornerPoints.map(corner => {
+            return {
+              x: parseFloat(corner.x) * ratio,
+              y: parseFloat(corner.y) * ratio,
+            };
+          });
+
+          barcodes.push({
+            ...barcode,
+            cornerPoints: resultPoints,
+          });
+        }
+      });
+    }
+    runOnJS(setBarcodes)(barcodes);
+  }, []);
   React.useEffect(() => {
     (async () => {
       const status = await Camera.requestCameraPermission();
@@ -37,19 +85,25 @@ const ScanView = props => {
 
   React.useEffect(() => {
     if (barcodes) {
+      let isChecked = false;
       barcodes.forEach(barcode => {
-        checkAndCapture(barcode);
+        isChecked = checkAndCapture(barcode);
       });
+      if (isChecked) {
+        Vibration.vibrate();
+      }
     }
-    console.log('barcodes', JSON.stringify(barcodes));
   }, [barcodes]);
   const checkAndCapture = barcode => {
+    let isChecked = false;
     if (validateBarcode(barcode)) {
+      isChecked = true;
       onButtonAction({
         type: Constants.actionType.ACTION_CAPTURE,
         value: barcode.rawValue,
       });
     }
+    return isChecked;
   };
   const validateBarcode = barcode => {
     const cornerPoints = getPointsInView(barcode.cornerPoints);
@@ -75,15 +129,15 @@ const ScanView = props => {
     return isValid;
   };
   const getPointsInView = cornerPoints => {
-    const ratio = 0.72;
     return cornerPoints.map(point => {
       return {
-        x: point.x * ratio,
-        y: point.y * ratio,
+        x: point.x,
+        y: point.y,
       };
     });
   };
   const renderBoundingBoxes = () => {
+    if (!isPartialDetect) return null;
     const pointViews = [];
     barcodes.map((barcode, index) => {
       const cornerPoints = getPointsInView(barcode.cornerPoints);
@@ -280,7 +334,19 @@ const ScanView = props => {
   };
   return (
     <View style={[styles.container, props.style]}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View
+        style={
+          isPartialDetect
+            ? {
+                width: Values.deviceWidth,
+                height: (Values.deviceWidth * 640) / 480,
+              }
+            : {
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }
+        }>
         {device != null && hasPermission && (
           <Camera
             style={StyleSheet.absoluteFill}
@@ -295,7 +361,7 @@ const ScanView = props => {
       </View>
 
       {renderLastScanResultView()}
-      {renderSwitchPartialButton()}
+      {/*renderSwitchPartialButton()*/}
       {renderCloseButton()}
     </View>
   );

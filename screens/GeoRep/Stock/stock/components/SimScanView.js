@@ -126,6 +126,16 @@ export default function SimScanView(props) {
   return (
     <ScanView
       onButtonAction={props.onButtonAction}
+      isPartialDetect={true}
+      showClose={true}
+      onClose={() => {
+        if (props.onButtonAction) {
+          props.onButtonAction({
+            type: Constants.actionType.ACTION_CLOSE,
+            value: 0,
+          });
+        }
+      }}
       renderLastScanResultView={() => {
         return (
           <>
