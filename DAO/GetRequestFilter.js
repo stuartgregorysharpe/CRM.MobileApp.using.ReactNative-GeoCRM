@@ -46,7 +46,7 @@ const generateQuery = (url) => {
     if(url == UrlResource.Form.Filter){
         query = `SELECT  form_type_id, form_type FROM form_types WHERE client_id = ? AND business_unit_id = ? AND delete_status = 0 ORDER BY form_type`;
     }else{
-
+        
     }
     return query;
 }

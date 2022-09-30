@@ -12,7 +12,7 @@ import { getBascketLastSyncTableData, insertBascketLastSync } from '../../../../
 import * as RNLocalize from 'react-native-localize';
 import SvgIcon from '../../../../../components/SvgIcon'
 import { RotationAnimation } from '../../../../../components/common/RotationAnimation'
-import { getBasketDateTime } from '../../../../../helpers/formatHelpers'
+import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../helpers/formatHelpers'
 import { getBaskets } from './helper'
 var gSyncedRecords = 0;
 var gBascketLists = getBaskets();
@@ -99,7 +99,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 updateBasket(basket)
             }
 
-            getApiRequest("database/sync-tables?offline_db_version=1.1&sync_basket=" + basket, {}).then(async(res) => {            
+            getApiRequest("database/sync-tables?offline_db_version=1.2&sync_basket=" + basket, {}).then(async(res) => {            
               if(res.status === Strings.Success){
                 var tables = res.tables;
                 console.log("All tables", tables)                
@@ -143,7 +143,10 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
             var lastSyncedParam = await getTimeStampAndTimeZone(basket);
             await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
-                console.log("DB Length", res.records.length);
+                console.log("Table Record Length", res.records.length);
+                console.log("Page Number" , pageNumber);
+                console.log("Total Page Number", res.total_pages);
+                
                 await handleRecords(tableName, res.records);
                 setTotalRecords(res.total_records);            
                 gSyncedRecords = gSyncedRecords + res.records.length;
@@ -182,12 +185,11 @@ export const BasketListContainer = forwardRef((props, ref) => {
         if(check.length == 0 ){
             return "";
         }else{
-            if(check.length > 0){
-                
+            if(check.length > 0){                
                 var timestamp =  check.item(0).timestamp;
-                var timezone = check.item(0).timezone;
-                //var convertedTime = getDateTimeFromBasketTime(timestamp);
-                return `&timestamp=${timestamp}&timezone=${timezone}`;
+                var timezone = check.item(0).timezone;                
+                var convertedTime = getDateTimeFromBasketTime(timestamp);
+                return `&timestamp=${convertedTime}&timezone=${timezone}`;
             }                  
         }
     }    

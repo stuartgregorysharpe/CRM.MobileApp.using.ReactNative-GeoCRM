@@ -38,6 +38,7 @@ export default function AddLeadView(props) {
             showAllocateModal={props.showAllocateModal}
             compulsaryFormExist={true}
           />
+          
         </View>
       </View>
     </ScrollView>

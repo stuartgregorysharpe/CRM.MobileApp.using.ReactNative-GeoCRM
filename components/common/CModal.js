@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     zIndex: 500,
     overflow: 'hidden',
-    backgroundColor: Colors.bgColor,    
-    paddingBottom: Platform.OS === 'android' ? 0 : 25
+    backgroundColor: Colors.bgColor,
+    paddingBottom: Platform.OS === 'android' ? 0 : 25,
   },
   fullModalContainer: {
     position: 'absolute',

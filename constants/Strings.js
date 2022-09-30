@@ -25,6 +25,7 @@ export default {
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
+  Search_Location: 'Search Location',
 
   CRM:{
     Access_CRM :'Access CRM',
@@ -60,6 +61,11 @@ export default {
     Return_Stock: 'Return Stock',
     Please_Sign: 'Please Sign below:',
     Select_Scan_Type: 'Select Scan Type',
+  },
+
+  Forms:{
+    Filter_Your_Search : 'Filter your search',
+    Clear_Filters : 'Clear Filters'
   },
 
   PostRequestResponse: {

@@ -27,6 +27,7 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
     <QRScanModal
       ref={ref}
       isNotCloseAfterCapture
+      isPartialDetect={true}
       onButtonAction={onButtonAction}
       onClose={props.onClose}
       showClose={true}

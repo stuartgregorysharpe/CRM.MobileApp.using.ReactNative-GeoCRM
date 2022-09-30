@@ -14,22 +14,21 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const [isYes, setIsYes] = useState(item.value !== null && item.value.toLowerCase() == 'yes' ? true:false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value.toLowerCase() == 'no' ? true:false);
     const [isPicker , setIsPicker] = useState(false);
+
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    
-            
+                
     const showSelectionDialog = () => {        
         setIsPicker(true);      
     }
+
     const updateImageData = async (path) => {
-        setIsPicker(false);
-                
-        if(item.value && item.value !== null){
+        setIsPicker(false);                
+        if(item.value != null && item.value !== null){
             onTakeImage([ path ] ,item.value);
         }else{
             onTakeImage([ path ] ,item.value);
         }      
     }
-
     
     const launchImageLibrary = () => {
       
@@ -53,6 +52,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
           }
         }
       });
+
     }
   
     const launchCamera = () => {
@@ -63,9 +63,8 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
           path: 'images',
         },
       };
-      ImagePicker.launchCamera(options, (response) => {
-        console.log('Response = ', response);
 
+      ImagePicker.launchCamera(options, (response) => {        
         if (response.didCancel) {
           console.log('User cancelled image picker');
         } else if (response.error) {
@@ -77,13 +76,12 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
           if(response.assets != null && response.assets.length > 0){         
             updateImageData(response.assets[0].uri);          
           }
-
         }
       });      
+
     }
 
-    const isIncludeImage = (btnName) => {
-      
+    const isIncludeImage = (btnName) => {    
       if( item.include_image && item.include_image.length > 0 ){
         var check = item.include_image.find(item => item === btnName);
         if(check != null &&  check != undefined){
@@ -93,8 +91,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
       return false;
     }
     
-    const getImagePath = () =>{
-      console.log("image path", item.value);
+    const getImagePath = () =>{      
       if(item.value != null && item.value.toLowerCase() === "yes"){        
         return item.yes_image;        
       }else{
@@ -120,9 +117,9 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
     
     const getMarginLeft = () => {
-      if(item.value && item.value.toLowerCase() === 'no' && !isIncludeImage("No")){
+      if(item.value != null && item.value.toLowerCase() === 'no' && !isIncludeImage("No")){
         return 20;
-      }else if(item.value && item.value.toLowerCase() === "yes" && !isIncludeImage("Yes")){
+      }else if(item.value != null && item.value.toLowerCase() === "yes" && !isIncludeImage("Yes")){
         return 20;
       }else if(item.value === null || item.value === undefined || item.value === ''){
         return 20;
@@ -156,8 +153,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                                   color={whiteLabel().mainText}                    
                               />
                       </View>
-                    }
-                    
+                    }                    
                 </View>
 
                 <View style={{flexDirection:'row' , justifyContent:'center'}}>
@@ -213,8 +209,6 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                                         
                 </View>
                 
-
-
             </View>
         </View>
     );
@@ -231,13 +225,7 @@ const styles = StyleSheet.create({
         color: Colors.blackColor,
         fontSize:15,
         fontFamily: Fonts.secondaryMedium
-    },  
-    inputStyle:{                
-        borderColor: Colors.primaryColor,
-        borderWidth: 1,
-        borderRadius:3,
-        padding:10,
-    },
+    },      
     imageContainer: {
         padding:5,
         borderWidth: 1,

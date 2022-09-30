@@ -51,11 +51,25 @@ const handleTable = async (table) => {
   var query0 = `PRAGMA table_info(${tableName});`;        
   var res = await ExecuteQuery(query0,[]);
 
-  if(res.rows.length != table.fields.length){ // table was updated.      
+  if(res.rows.length != table.fields.length){ // table was updated.
 
+      if(res.rows.length != 0){
+        try{          
+          var deleteQyery = `DROP TABLE IF EXISTS ${tableName}`;
+          console.log("drop table :  => " , deleteQyery)
+          await db.transaction(async(tx) =>{            
+            await tx.executeSql(deleteQyery);
+          });
+        }catch(e){
+          console.log("delete table error", e)
+        }
+      }
+      
       var fields = table.fields;
       var indexKeys = table.index_keys;
       console.log(" --- start created table --- " , tableName);
+            
+
       var query1 = `CREATE TABLE IF NOT EXISTS ${tableName} (`  
       fields.forEach((element, index) => {
         var isPrimary = false;
@@ -85,7 +99,7 @@ const handleTable = async (table) => {
           await tx.executeSql(query1);
         });
       }catch(e){
-        console.log("create table error", error)
+        console.log("create table error", e)
       }
             
       await indexKeys.forEach(async(element, index) => {
@@ -98,8 +112,7 @@ const handleTable = async (table) => {
               fieldsLists = fieldsLists + subElement + ", ";
             }        
           })
-          var query2 = `CREATE INDEX ${tableName}_${element.key_name} ON ${tableName}(${fieldsLists})`;
-          console.log("CREATE INDEX Quer: ", query2)
+          var query2 = `CREATE INDEX ${tableName}_${element.key_name} ON ${tableName}(${fieldsLists})`;          
           try{
             await db.transaction(async(tx) =>{            
               await tx.executeSql(query2);
@@ -112,6 +125,7 @@ const handleTable = async (table) => {
       });      
   }else{
     console.log("table was not updated" , tableName);
+    
   }
 }
 
@@ -175,6 +189,7 @@ export const handleRecords = async ( tableName, records) => {
       })
 
       query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
+      console.log(query)
       try{
         if(db != null){    
           await db.transaction(async(tx) =>{            

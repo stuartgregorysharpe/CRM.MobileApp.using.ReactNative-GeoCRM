@@ -328,7 +328,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           }
           setIsFeedback(false);
         }}
-        onValueChanged={(item, index) => {          
+        onValueChanged={async(item, index) => {          
           if (modalType === 'feedback') {
             _callLocationFeedback(item);
             setIsFeedback(false);
@@ -349,6 +349,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               setModalTitle('Check In Reasons');
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
+              await storeLocalValue("@checkin_type_id" , checkin_type_id);
             } else {
               setIsFeedback(false);
               _callCheckedIn();
@@ -360,7 +361,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               reason_id = checkinReason.find(
                 element => element.reason === item,
               ).reason_id;
+              console.log("Save reason id", reason_id)
+              await storeLocalValue("@checkin_reason_id" , reason_id);
               _callCheckedIn();
+              
             } else {
               setModalType('feedback');
             }
@@ -383,6 +387,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       });
       setFeedbackOptions(options);
       setCheckInTypes(res);
+      console.log("check type", res)
     });
   };
 

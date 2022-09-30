@@ -114,6 +114,7 @@ const StagingView = props => {
       />
       <QRScanModal
         ref={captureModalRef}
+        isPartialDetect={true}
         isNotCloseAfterCapture
         onButtonAction={onCaptureAction}
         onClose={onCloseScanModal}

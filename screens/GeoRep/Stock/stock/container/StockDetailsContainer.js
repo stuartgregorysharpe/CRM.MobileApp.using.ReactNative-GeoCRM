@@ -3,7 +3,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import StockDetailsView from '../components/StockDetailsView';
 import SearchLocationModal from '../modal/SearchLocationModal';
 import {useSelector} from 'react-redux';
-import {Constants} from '../../../../../constants';
+import {Constants, Strings} from '../../../../../constants';
 import {getLocalData} from '../../../../../constants/Storage';
 
 const StockDetailsContainer = props => {
@@ -62,6 +62,7 @@ const StockDetailsContainer = props => {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
+      
       <StockDetailsView
         sellToTrader={sellToTrader}
         swopAtTrader={swopAtTrader}
@@ -72,10 +73,11 @@ const StockDetailsContainer = props => {
 
       <SearchLocationModal
         ref={searchLocationModalRef}
-        title="Search Location"
+        title={Strings.Search_Location}
         stockType={stockType}
         onButtonAction={onSearchLocation}
       />
+
     </View>
   );
 };

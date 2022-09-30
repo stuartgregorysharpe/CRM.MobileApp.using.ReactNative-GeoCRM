@@ -9,17 +9,13 @@ import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import { style } from '../../../../../constants/Styles';
 
-
 const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
-
-  //console.log("new signaure", signature);
 
   const [data, setData] = useState(signature);
  
   useEffect(() => {    
     setTimeout(() => {
-      setData(signature);
-      console.log("triggered", ref.current);            
+      setData(signature);      
     }, 2000);
   },[]);
 
@@ -55,11 +51,7 @@ const Sign = ({ visible, signature, onOK , onClear, onClose }) => {
 
   const handleConfirm = () => {
     console.log("end");
-    var tmp = ref.current.readSignature();
-    // if(tmp === undefined){
-    //   console.log("undefined");
-    //   onClose();
-    // }
+    var tmp = ref.current.readSignature();    
     //onOK(ref.current.readSignature()); 
   }
   
@@ -169,15 +161,7 @@ const styles = StyleSheet.create({
         color: whiteLabel().mainText,
         fontSize:16,
         fontFamily:Fonts.primaryBold
-    },  
-    
-    row: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "100%",
-      alignItems: "center",
-    },
+    },        
 });
 
 export default Sign;

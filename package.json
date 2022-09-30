@@ -66,13 +66,15 @@
     "react-native-svg": "^12.1.1",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.0.0",
+    "react-native-vision-camera": "^2.14.1",
     "react-native-webview": "^11.15.1",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.0",
     "supercluster": "^7.1.4",
-    "toggle-switch-react-native": "^3.3.0"
+    "toggle-switch-react-native": "^3.3.0",
+    "vision-camera-code-scanner": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

@@ -45,6 +45,29 @@ https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
 
 
 
+
 # Resolve Error in project build
  1. Could not resolve project :react-native-hms-availability.
     Replace the hmscore library manually
+
+# install guide
+1. go to the project folder, and run 'npm install' command in terminal.
+2. need to add the node_modules manually
+   node_module's name: 'react-native-file-opener', 'react-native-mordern-datepicker', 'react-native-signature-canvas'
+   we need to copy above libraries and replace it in node_modules folder.
+   for HMS app, we need to add "@hmscore" library in node_module folder. 
+   and for HMS app, we need to add 'agconnect-services.json' file under android/app folder.
+3. it is the time to generate apk and aab file for android.
+   we need to run following commands in terminal
+
+   react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle 
+   --assets-dest android/app/src/main/res/
+
+   cd android
+
+   ./gradlew assembleRelease
+   ./gradlew bundleRelease
+
+   assembleRelease command will generate apk file in android/app/release(android/app/build) folder.
+   and bundleRelease will generate aab file in android/app/release(android/app/build) folder.
+

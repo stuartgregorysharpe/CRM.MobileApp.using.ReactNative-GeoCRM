@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		6D630192CB8208AB432390C7 /* libPods-GeoCRM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */; };
 		7C35C73DAF0FDC6C0CB51134 /* libPods-GeoCRM-GeoCRMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FA277BDCB68BCF55F7A2868 /* libPods-GeoCRM-GeoCRMTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		96594E5E27901B0F003E95CC /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96594E5D27901B0F003E95CC /* Test.swift */; };
@@ -25,7 +26,6 @@
 		96696E11278E1B5D00221194 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */; };
 		967CBE30279AE73F005262DB /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 967CBE2E279AE73F005262DB /* BootSplash.storyboard */; };
 		96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EFB4A6278F40940032ECB1 /* libRNFileOpener.a */; };
-		FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C63F7E6D0147D86B789BE363 /* libPods-GeoCRM.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,7 +94,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */,
-				FCEBE281AE34A8C8854124C1 /* libPods-GeoCRM.a in Frameworks */,
+				6D630192CB8208AB432390C7 /* libPods-GeoCRM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,6 +584,8 @@
 				DEVELOPMENT_TEAM = M6YHJDJ6US;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Geo CRM";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -613,6 +615,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6YHJDJ6US;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Geo CRM";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
