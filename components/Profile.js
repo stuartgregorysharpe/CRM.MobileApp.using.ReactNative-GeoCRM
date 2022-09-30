@@ -44,7 +44,7 @@ export default function Profile() {
 
         <View style={{flexDirection:'row',marginTop:5}}>
           <Text style={styles.label}>Contact Details:</Text>
-          <Text style={styles.text}>+27 81 691 7262</Text>
+          <Text style={styles.text}>+{userInfo.user_cell}</Text>
         </View>
       </View>
       

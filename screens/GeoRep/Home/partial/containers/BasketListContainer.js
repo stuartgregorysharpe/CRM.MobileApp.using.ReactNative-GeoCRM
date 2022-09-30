@@ -4,7 +4,7 @@ import { View, TouchableOpacity } from 'react-native'
 import React , { useState, useEffect , useRef, forwardRef ,useImperativeHandle } from 'react'
 import BasketSyncProgress from '../components/BasketSyncProgress'
 import { getApiRequest } from '../../../../../actions/api.action'
-import { handleRecords } from '../../../../../sqlite/DBHelper'
+import { deleteRecords, handleRecords } from '../../../../../sqlite/DBHelper'
 import { Strings } from '../../../../../constants'
 import { AppText } from '../../../../../components/common/AppText'
 import Colors, { whiteLabel } from '../../../../../constants/Colors'
@@ -143,11 +143,14 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
             var lastSyncedParam = await getTimeStampAndTimeZone(basket);
             await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
+
                 console.log("Table Record Length", res.records.length);
                 console.log("Page Number" , pageNumber);
                 console.log("Total Page Number", res.total_pages);
-                
+
+                await deleteRecords(tableName, res.records);
                 await handleRecords(tableName, res.records);
+
                 setTotalRecords(res.total_records);            
                 gSyncedRecords = gSyncedRecords + res.records.length;
                 setSyncedRecords( gSyncedRecords );

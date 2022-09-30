@@ -8,15 +8,20 @@ import Colors, { whiteLabel } from '../../../../constants/Colors';
 import SvgIcon from '../../../../components/SvgIcon';
 import { style } from '../../../../constants/Styles';
 import FastImage from 'react-native-fast-image';
-import Divider from '../../../../components/Divider';
 
 export default function CustomerSalesHistory(props) {
 
-    const [saleItems, setSaleItems] = useState([]);                
+    const { locationId } = props;
+
+    const [saleItems, setSaleItems] = useState([]);
+
     useEffect(() =>{
         let isMount = true;
-        var postData = {};        
-        getApiRequest("https://dev.georep.com/local_api_old/locations/customer-sales-history", postData).then((res) => {
+        var postData = {
+            location_id: locationId
+        };
+        //{base_url}/locations/customer-sales-history?location_id=
+        getApiRequest("locations/customer-sales-history", postData).then((res) => {
             if(isMount){
                 var tmp = [];
                 res.sales_items.forEach(element => {
@@ -37,6 +42,8 @@ export default function CustomerSalesHistory(props) {
     const renderItems = (item, index) => {
         return (
             <View style={[style.card , styles.itemContainer]}>
+
+                
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                     <View>
                         <FastImage style={styles.imageContainer}  source={{uri:item.category_image}} />
@@ -106,6 +113,7 @@ export default function CustomerSalesHistory(props) {
     return (
         <View style={{flexDirection:'column', flex:1}}>        
         
+            <AppText size="big" type="secondaryBold" color={whiteLabel().mainText} title="Customer Sales History" style={{marginLeft:15 , marginTop:20}}></AppText>
             <View style={{flexDirection:'column'}}>
 
                 <FlatList                                                  

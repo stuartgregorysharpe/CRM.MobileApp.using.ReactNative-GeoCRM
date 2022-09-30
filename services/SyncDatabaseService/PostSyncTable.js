@@ -1,4 +1,6 @@
-import { postApiRequest } from "../../actions/api.action";
+import { postApiRequest, postApiRequestMultipart } from "../../actions/api.action";
+import { objectToFormData } from "../../constants/Helper";
+import { jsonToFormData } from "../../helpers/jsonHelper";
 import { OfflineBaskets } from "../../sqlite/helper"
 import { deleteOfflineSyncItem, getOfflineSyncItem, getOfflineSyncItems } from "../../sqlite/OfflineSyncItemsHelper";
 
@@ -15,11 +17,10 @@ export const syncPostData = (basketName, callBack) => {
             resolve(res);
         }        
         resolve({});        
-    });    
+    });
 }
 
 const syncBasketItemType = async(itemTypes, index , callBack , totalValue) => {
-
     const itemType = itemTypes[index];
     console.log("itemTypes", itemTypes)
     if(itemType != undefined){
@@ -47,7 +48,14 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
     const item = items.item(index);
     if(item != undefined){        
         callBack(index + 1, totalValue);        
-        var apiRes = await postApiRequest(item.url, JSON.parse(item.post_body) , item.indempotency_key);
+        var apiRes = {};
+        if(item.item_type == "form_submission"){            
+            var body = objectToFormData(JSON.parse(item.post_body));
+            apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
+        }else{
+            apiRes = await postApiRequest(item.url, JSON.parse(item.post_body) , item.indempotency_key);
+        }
+
         if(apiRes.status == 'success'){            
             await deleteOfflineSyncItem(item.id)
         }

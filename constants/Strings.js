@@ -69,9 +69,10 @@ export default {
   },
 
   PostRequestResponse: {
-    Successfully_Checkout: 'Successfully Checkout !',
-    Successfully_Checkin: 'Successfully Checkin !',
-    Successfully_Feedback: 'Successfully Feedback !',
+    Successfully_Checkout: 'Checkout Successfully!',
+    Successfully_Checkin: 'Checkin Successfully!',
+    Successfully_Feedback: 'Feedback Successfully!',
+    Successfully_Form_Submit: 'Form  Submitted successfully!'
   }
 
 };

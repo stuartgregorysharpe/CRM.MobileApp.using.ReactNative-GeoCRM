@@ -15,8 +15,7 @@ const ViewOfflineSyncItem = props => {
     
     const modalClosed = ({type, value}) => {
         
-        if(type == Constants.actionType.ACTION_CLOSE){            
-            
+        if(type == Constants.actionType.ACTION_CLOSE){                        
         }
     }
 

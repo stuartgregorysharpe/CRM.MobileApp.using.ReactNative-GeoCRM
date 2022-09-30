@@ -158,8 +158,34 @@ export const truncateTable = async(tableName) => {
   }catch(e){
     console.log("error", e)
   }  
-  return res;
-    
+  return res;    
+}
+
+export const deleteRecords = async (tableName , records) => {
+    var tmp = await Promise.all(
+      await records.map(async (element, index) => {                        
+        var query = '';
+        for(let key of Object.keys(element)){                 
+          if(key.endsWith("_id")){
+            if(query == '' && element[key] != null && element[key] != ""){
+              query = key + ' = ' + element[key];
+            }else if(element[key] != null && element[key] != ""){
+              query = query + " AND " + key + ' = ' + element[key];
+            }
+          }          
+        }
+        if(query != ''){
+			var deleteQuery = `DELETE FROM ${tableName} WHERE ` + query;			
+			try{
+			  var res = await ExecuteQuery(deleteQuery,[]);              
+			}catch(e){
+			  console.log("error", e)
+			} 
+		}        
+        return ''; 
+      })
+    );    
+    return tmp;    
 }
 
 export const handleRecords = async ( tableName, records) => {

@@ -20,12 +20,12 @@ export const initializeDB = async() => {
                 var check = await getBascketLastSyncTableData("sync_all");                
                 if(check.length == 0){
                     await syncTable(0);
-                }                
+                }
                 return "end";
-            }                                            
+            }                                        
         }else{
             console.log("offline version was not updated");
-        }  
+        }
     }    
 }
 
