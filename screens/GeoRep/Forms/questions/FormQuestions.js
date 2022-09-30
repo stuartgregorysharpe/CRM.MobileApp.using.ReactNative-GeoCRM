@@ -12,10 +12,7 @@ import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
 import {expireToken, getFileFormat} from '../../../../constants/Helper';
-import {
-  getApiRequest,
-  postApiRequestMultipart,
-} from '../../../../actions/api.action';
+import {  postApiRequestMultipart} from '../../../../actions/api.action';
 import {
   clearNotification,
   showNotification,
@@ -30,7 +27,6 @@ import {
 } from './helper';
 import {
   deleteFormTable,
-  getFormTableData,
   insertTable,
 } from '../../../../sqlite/FormDBHelper';
 import {getDBConnection} from '../../../../sqlite/DBHelper';
@@ -38,6 +34,7 @@ import uuid from 'react-native-uuid';
 import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Strings} from '../../../../constants';
+import { GetRequestFormQuestionsDAO } from '../../../../DAO';
 var indempotencyKey;
 
 export const FormQuestions = props => {
@@ -126,21 +123,20 @@ export const FormQuestions = props => {
     if (location_id) {
       param.location_id = location_id;
     }
-    console.log('forms/forms-questions params', param);
-    getApiRequest('forms/forms-questions', param)
-      .then(res => {
-        groupByQuestions(res.questions);
-      })
-      .catch(e => {
+
+    GetRequestFormQuestionsDAO.find(param).then((res) => {
+      groupByQuestions(res.questions);
+    }).catch((e) => {
         expireToken(dispatch, e);
-      });
+    });
+    
   };
 
   const groupByQuestions = data => {
     var newData = [];
     data.forEach(element => {
       if(element.value != '' && element.value != null){
-        console.log("DATA == " ,element )
+        //console.log("DATA == " ,element )
       }
       
       if (!isInNewData(newData, element)) {
@@ -275,6 +271,7 @@ export const FormQuestions = props => {
         }
       }
     });
+
     postApiRequestMultipart('forms/forms-submission', postData, indempotencyKey)
       .then(res => {
         loadingBarRef.current.hideModal();
@@ -302,13 +299,14 @@ export const FormQuestions = props => {
     updateFormQuestions(value);
     saveDb(value, '');
   };
-  const updateFormQuestions = formQuestionGroups => {
-    
-    console.log("formQuestionGroups", JSON.stringify(formQuestionGroups))
-    const res = filterTriggeredQuestions(formQuestionGroups);
-    console.log("formQuestionGroupsNEXT", res);
-    if(res != undefined)
+  const updateFormQuestions = formQuestionGroups => {        
+    const res = filterTriggeredQuestions(formQuestionGroups);    
+    if(res != undefined){
+      // console.log(" === d",JSON.stringify(formQuestionGroups))
+      // console.log(" === ", JSON.stringify(res))
       setFormQuestions(res);
+    }
+      
 
   };
 

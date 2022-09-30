@@ -18,7 +18,7 @@ const ProductSelectFormContainer = React.forwardRef((props, ref) => {
     const productSelectionFormRef = useRef(null)
 
     useEffect(() => {        
-        if(item != undefined && item.brands != undefined){            
+        if(item != undefined && item.brands != undefined && item.brands != ""){            
             var brandTmp = [];
             item.brands.forEach((item) => {
                 brandTmp.push({label: item, value: item});
@@ -31,7 +31,7 @@ const ProductSelectFormContainer = React.forwardRef((props, ref) => {
             setTypeLists(typeTmp)
         }
         // product issue initialize
-        if(item != undefined && item.product_issues != undefined){
+        if(item != undefined && item.product_issues != undefined && item.product_issues != "" ){
             var tmp = [];
             item.product_issues.forEach((element) => {
                 tmp.push({label: element, value: element });
@@ -39,7 +39,7 @@ const ProductSelectFormContainer = React.forwardRef((props, ref) => {
             setProductIssues(tmp);
         }
 
-        if(item.value != null && item.value != undefined){
+        if(item.value != null && item.value != "" && item.value != undefined){
             setSelectedLists(item.value);
             var ids = [];
             item.value.forEach((element) =>{

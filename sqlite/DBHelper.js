@@ -189,7 +189,7 @@ export const handleRecords = async ( tableName, records) => {
       })
 
       query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
-      console.log(query)
+      //console.log(query)
       try{
         if(db != null){    
           await db.transaction(async(tx) =>{            
