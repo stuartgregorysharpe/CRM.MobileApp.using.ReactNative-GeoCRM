@@ -47,31 +47,18 @@ const ScanView = props => {
     if (detectedBarcodes.length > 0) {
       detectedBarcodes.forEach(barcode => {
         const cornerPoints = barcode.cornerPoints;
-        if (Platform.OS === 'ios') {
-          const resultPoints = cornerPoints.map(corner => {
-            return {
-              x: parseFloat(corner.x) / xRatio,
-              y: parseFloat(corner.y) / yRatio,
-            };
-          });
 
-          barcodes.push({
-            ...barcode,
-            cornerPoints: resultPoints,
-          });
-        } else {
-          const resultPoints = cornerPoints.map(corner => {
-            return {
-              x: parseFloat(corner.x) * ratio,
-              y: parseFloat(corner.y) * ratio,
-            };
-          });
+        const resultPoints = cornerPoints.map(corner => {
+          return {
+            x: parseFloat(corner.x) * ratio,
+            y: parseFloat(corner.y) * ratio,
+          };
+        });
 
-          barcodes.push({
-            ...barcode,
-            cornerPoints: resultPoints,
-          });
-        }
+        barcodes.push({
+          ...barcode,
+          cornerPoints: resultPoints,
+        });
       });
     }
     runOnJS(setBarcodes)(barcodes);
