@@ -47,7 +47,7 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
            // onValueChanged([item]);
         }else {
             console.log("selectedVals",selectedVals)
-            if(localSelectedVals != null && localSelectedVals !== undefined){
+            if(localSelectedVals != null && localSelectedVals !== undefined && localSelectedVals instanceof Array){
                 var check = localSelectedVals.find( element => element === item);
                 if(check != null){
                     var tmp = localSelectedVals.filter( element => element !== item);                
