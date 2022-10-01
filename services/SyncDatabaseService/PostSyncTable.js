@@ -50,7 +50,7 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
         callBack(index + 1, totalValue);        
         var apiRes = {};
         if(item.item_type == "form_submission"){            
-            var body = objectToFormData(JSON.parse(item.post_body));
+            var body = jsonToFormData(JSON.parse(item.post_body));
             apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
         }else{
             apiRes = await postApiRequest(item.url, JSON.parse(item.post_body) , item.indempotency_key);
