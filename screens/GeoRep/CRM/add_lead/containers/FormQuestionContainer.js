@@ -1,7 +1,6 @@
 import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {FormQuestionView} from '../components/FormQuestionView';
-import {getApiRequest} from '../../../../../actions/api.action';
 import {expireToken} from '../../../../../constants/Helper';
 import {Constants, Strings} from '../../../../../constants';
 import {
@@ -12,6 +11,7 @@ import {
 } from '../../../Forms/questions/helper';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
+import { GetRequestFormQuestionsDAO } from '../../../../../DAO';
 
 export default function FormQuestionContainer(props) {
   const {form , leadForms , customMasterFields} = props;
@@ -26,13 +26,12 @@ export default function FormQuestionContainer(props) {
     let param = {
       form_id: form.form_id,
     };
-    getApiRequest('forms/forms-questions', param)
-      .then(res => {        
-        groupByQuestions(res.questions);
-      })
-      .catch(e => {
+
+    GetRequestFormQuestionsDAO.find(param).then((res) => {
+      groupByQuestions(res.questions);
+    }).catch((e) => {
         expireToken(dispatch, e);
-      });
+    });    
   };
 
   const getQuestionTagValue = (questionTag) => {

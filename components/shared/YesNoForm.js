@@ -11,7 +11,7 @@ import * as ImagePicker from 'react-native-image-picker';
 
 export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
 
-    const [isYes, setIsYes] = useState(item.value !== null && item.value.toLowerCase() == 'yes' ? true:false);
+    const [isYes, setIsYes] = useState(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value.toLowerCase() == 'no' ? true:false);
     const [isPicker , setIsPicker] = useState(false);
 

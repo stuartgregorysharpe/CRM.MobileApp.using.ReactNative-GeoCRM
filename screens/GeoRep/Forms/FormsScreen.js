@@ -18,6 +18,7 @@ import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 export default function FormsScreen(props) {
 
   const {navigationType} = props;
+  console.log(" ===== ===== ",navigationType)
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
   const [isInfo, setIsInfo] = useState(false);
@@ -195,14 +196,21 @@ export default function FormsScreen(props) {
   const renderItems = (item, index) => {
     return (
       <View>
-        <FormListItem
-          key={index}
-          item={item}
-          onItemPress={() => {
-            onFormItemPress(item);
-          }}
-          onTouchStart={(e, text) => _onTouchStart(e, text)}></FormListItem>
-      </View>
+        <View>
+          <FormListItem
+            key={index}
+            item={item}
+            onItemPress={() => {
+              onFormItemPress(item);
+            }}
+            onTouchStart={(e, text) => _onTouchStart(e, text)}></FormListItem>
+        </View>
+        { 
+          formLists.length -1 == index &&
+          <View style={{height:50}}>
+          </View>
+        }
+      </View>      
     );
   };
 
@@ -242,7 +250,7 @@ export default function FormsScreen(props) {
           onSearch={text => _onSearch(text)}></SearchBar>
 
         <FlatList
-          style={{margin: 10, marginTop: 0, marginBottom: 0}}
+          style={{marginHorizontal: 10, marginTop: 0, marginBottom:0}}
           removeClippedSubviews={false}
           maxToRenderPerBatch={10}
           initialNumToRender={10}
@@ -271,5 +279,6 @@ export default function FormsScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom:0
   },
 });

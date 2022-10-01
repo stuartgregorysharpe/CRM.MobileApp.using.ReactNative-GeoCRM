@@ -1,25 +1,38 @@
-import { postApiRequest } from "../actions/api.action";
+import { postApiRequest, postApiRequestMultipart } from "../actions/api.action";
 import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./helper";
 import { Strings } from "../constants";
+import { objectToFormData } from "../constants/Helper";
+import { jsonToFormData } from "../helpers/jsonHelper";
 
-export function find(locationId, postData , type, url){
+export function find(locationId, postData , type, url , itemLabel){
   
   return new Promise(function(resolve, reject) {
 
         checkConnectivity().then( async (isConnected) => {             
             if(isConnected){
-                postApiRequest(url, postData)
-                .then(async res => {                    
-                    resolve(res);
-                })
-                .catch(e => {
-                    console.log("Error",e)
-                    reject();
-                });
-
+                if(type == "form_submission"){                                        
+                    const submitFormData =  jsonToFormData(postData);                            
+                    postApiRequestMultipart(url, submitFormData)
+                    .then(async res => {
+                        resolve(res);
+                    })
+                    .catch(e => {
+                        console.log("Error",e)
+                        reject();
+                    });
+                }else{
+                    postApiRequest(url, postData)
+                    .then(async res => {                    
+                        resolve(res);
+                    })
+                    .catch(e => {
+                        console.log("Error",e)
+                        reject();
+                    });
+                }                
             }else{
 
-                var res = await insertToLocalDB(locationId, postData, type, url);            
+                var res = await insertToLocalDB(locationId, postData, type, url , itemLabel);            
                 resolve({status: Strings.Success , message: getResponseMessage(type , url)});
             }
         }).catch(e => {
@@ -29,8 +42,8 @@ export function find(locationId, postData , type, url){
   
 }
 
-const insertToLocalDB = async(locationId, postData, type, url) => {    
-    await saveOfflineSyncItems(locationId, postData, type , url);
+const insertToLocalDB = async(locationId, postData, type, url , itemLabel) => {    
+    await saveOfflineSyncItems(locationId, postData, type , url , itemLabel);
 }
 
 export default {

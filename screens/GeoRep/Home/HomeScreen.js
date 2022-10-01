@@ -18,24 +18,27 @@ export default function HomeScreen(props) {
   }, []);
 
   useEffect(() => {
-    var screenProps = props.screenProps;
-    if (screenProps === undefined) {
-      screenProps = props.navigation;
-    }
-    
-    if (screenProps) {
-      screenProps.setOptions({
-        headerTitle: () => {
-          return (
-            <TouchableOpacity onPress={() => {}}>
-              <View style={style.headerTitleContainerStyle}>
-                <Text style={style.headerTitle}>Home</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        },
-      });
-    }
+      var screenProps = props.screenProps;
+
+      
+	  
+      if (screenProps === undefined) {        	
+        	screenProps = props.navigation;			
+      }
+
+      if (screenProps) {
+        screenProps.setOptions({
+          headerTitle: () => {
+            return (
+              <TouchableOpacity onPress={() => {}}>
+                <View style={style.headerTitleContainerStyle}>
+                  <Text style={style.headerTitle}>Home</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          },
+        });
+      }
   });
 
   return (

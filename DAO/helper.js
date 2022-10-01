@@ -5,6 +5,8 @@ import { ExecuteQuery } from "../sqlite/DBHelper";
 import { insertOfflineSyncItem } from "../sqlite/OfflineSyncItemsHelper";
 import uuid from 'react-native-uuid';
 import { getDateTime } from "../helpers/formatHelpers";
+import * as RNLocalize from 'react-native-localize';
+import { formDataToJsonString } from "../helpers/jsonHelper";
 
 export function checkConnectivity(){
 
@@ -47,43 +49,57 @@ export function getFullAddress (element){
     if(element.pincode != '' && element.pincode != undefined){
         address = address + ", " + element.pincode;
     }
-
     return address;
 }
   
+export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabel){
 
-
-export function saveOfflineSyncItems(locationId , postData , type, url){
-
-    return new Promise( async function(resolve, reject) {
-   
+    return new Promise( async function(resolve, reject) {   
         try{            
             var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
             var res = await ExecuteQuery(query, [locationId]);
+            
+            var location_name = '';
+            var address = '';
             if( res != undefined  && res.rows.length > 0){
-                var added_time = getDateTime();
-                var location_name = res.rows.item(0).location_name;
-                var address = getFullAddress(res.rows.item(0));                
-                var data = [
-                    uuid.v4(), 
-                    type, 
-                    location_name,
-                    address,
-                    added_time, 
-                    postData.user_local_data.time_zone , 
-                    JSON.stringify(postData), 
-                    url, 
-                    'POST'
-                ];                
-                var res = await insertOfflineSyncItem(data);                   
-                resolve(res);                
+                location_name = res.rows.item(0).location_name;
+                address = getFullAddress(res.rows.item(0));
             }else{
-                resolve(undefined)
-                //reject("No location info in the locations_core_master_data table");
+                console.log("No Location ID", locationId)            
+            }         
+            var time_zone = '';
+            try {
+                time_zone = RNLocalize.getTimeZone();
+            } catch (e) {}
+            
+            var added_time = getDateTime();                
+            var item_label = location_name;
+            var item_sub_text = address;
+            var post_body = JSON.stringify(postData);
+
+            if(type == "form_submission"){
+                item_label = itemLabel;
+                item_sub_text = location_name;                
             }
+                                    
+            var data = [
+                uuid.v4(),  //indempotency_key, 
+                type, //item_type
+                item_label, // item_label
+                item_sub_text , // item_sub_text
+                added_time,  // added_time
+                time_zone ,  // added_timezone
+                post_body, // post_body
+                url, 
+                'POST'
+            ];                
+            console.log("SAVE DATA: " , data);
+            var res = await insertOfflineSyncItem(data);                   
+            resolve(res);                
+            
                             
         }catch(e){
-            console.log("error" , e);
+            console.log("save offline item" , e);
             reject(e);
         }
     });              
@@ -96,5 +112,8 @@ export function getResponseMessage (type , url) {
         return Strings.PostRequestResponse.Successfully_Checkout;
     }else if(type == 'location-feedback' && url == 'locations-info/location-feedback'){
         return Strings.PostRequestResponse.Successfully_Feedback;
+    }else if(type == "form_submission"){
+        return Strings.PostRequestResponse.Successfully_Form_Submit;
     }
+    return Strings.PostRequestResponse.Successfully_Checkin;    
 }

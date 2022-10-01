@@ -297,7 +297,7 @@ export default function More() {
           <View style={{ flex:1}}>
             <Text style={styles.boldText}>{userInfo.user_name}</Text>
             <Text style={[styles.text, {marginTop:10}]}>{userInfo.user_email}</Text>
-            <Text style={styles.text}>+27 81 691 7262</Text>
+            <Text style={styles.text}>+{userInfo.user_cell}</Text>
           </View>
 
         </View>

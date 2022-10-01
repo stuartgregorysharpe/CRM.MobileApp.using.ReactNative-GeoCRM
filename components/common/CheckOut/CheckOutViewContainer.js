@@ -45,7 +45,7 @@ export default function CheckOutViewContainer(props) {
           user_local_data: userParam.user_local_data,
         };
                 
-        PostRequestDAO.find(specificLocationId, postData , 'checkout', 'location-info/check-out').then( async(res) => {                        
+        PostRequestDAO.find(specificLocationId, postData , 'checkout', 'location-info/check-out').then( async(res) => {
             console.log("RES : " , res)
             await storeLocalValue('@checkin', '0');
             dispatch({ type: CHECKIN, payload: false });

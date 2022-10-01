@@ -12,10 +12,7 @@ import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
 import {expireToken, getFileFormat} from '../../../../constants/Helper';
-import {
-  getApiRequest,
-  postApiRequestMultipart,
-} from '../../../../actions/api.action';
+import {  postApiRequestMultipart} from '../../../../actions/api.action';
 import {
   clearNotification,
   showNotification,
@@ -30,7 +27,6 @@ import {
 } from './helper';
 import {
   deleteFormTable,
-  getFormTableData,
   insertTable,
 } from '../../../../sqlite/FormDBHelper';
 import {getDBConnection} from '../../../../sqlite/DBHelper';
@@ -38,6 +34,7 @@ import uuid from 'react-native-uuid';
 import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Strings} from '../../../../constants';
+import { GetRequestFormQuestionsDAO, PostRequestDAO } from '../../../../DAO';
 var indempotencyKey;
 
 export const FormQuestions = props => {
@@ -126,23 +123,18 @@ export const FormQuestions = props => {
     if (location_id) {
       param.location_id = location_id;
     }
-    console.log('forms/forms-questions params', param);
-    getApiRequest('forms/forms-questions', param)
-      .then(res => {
-        groupByQuestions(res.questions);
-      })
-      .catch(e => {
+
+    GetRequestFormQuestionsDAO.find(param).then((res) => {
+      groupByQuestions(res.questions);
+    }).catch((e) => {
         expireToken(dispatch, e);
-      });
+    });
+    
   };
 
   const groupByQuestions = data => {
     var newData = [];
-    data.forEach(element => {
-      if(element.value != '' && element.value != null){
-        console.log("DATA == " ,element )
-      }
-      
+    data.forEach(element => {      
       if (!isInNewData(newData, element)) {
         var ques = [element];
         newData.push({
@@ -221,10 +213,10 @@ export const FormQuestions = props => {
     form_answers = getFormQuestionData(formQuestions);
 
     var files = [];
-
     files = getFormQuestionFile(formQuestions);
 
     var postData = new FormData();
+
     postData.append('form_id', form.form_id);
     let locationId = await getLocalData('@specific_location_id');
     if (location_id && location_id != '') {
@@ -263,7 +255,7 @@ export const FormQuestions = props => {
 
     files.map(item => {
       if (item.key && item.value) {
-        if (item.type === 'upload_file') {
+        if (item.type === 'upload_file') {          
           postData.append(item.key, {
             uri: item.value.uri,
             type: item.value.type,
@@ -275,8 +267,60 @@ export const FormQuestions = props => {
         }
       }
     });
-    postApiRequestMultipart('forms/forms-submission', postData, indempotencyKey)
-      .then(res => {
+       
+    var postDataJson = {
+      form_id:form.form_id,
+      location_id: locationId,
+      online_offline: 'online',
+      'user_local_data[time_zone]': time_zone,
+      'user_local_data[latitude]': currentLocation.latitude != null
+      ? currentLocation.latitude
+      : lat != null
+      ? lat
+      : '0',
+      'user_local_data[longitude]': currentLocation.latitude != null
+      ? currentLocation.latitude
+      : lat != null
+      ? lat
+      : '0',
+    }
+    form_answers.forEach(item => {
+      if (item.key && item.value && item.value != null && item.valuel != '') {
+        var itemKey = item.key;
+        var itemValue = item.value;
+        postDataJson = {
+          ...postDataJson,
+          [itemKey]: itemValue
+        };        
+      }
+    });
+
+    files.map(item => {
+      if (item.key && item.value) {
+        if (item.type === 'upload_file') {                    
+          postDataJson = {
+            ...postDataJson,
+            [item.key]: {
+              uri: item.value.uri,
+              type: item.value.type,
+              name: item.value.name,
+            }
+          };        
+        } else {
+          var fileFormats = getFileFormat(item.value);
+          postDataJson = {
+            ...postDataJson,
+            [item.key]: fileFormats
+          };
+        }
+      }
+    });
+
+    console.log("form data" , postData);
+    console.log("json data" , postDataJson)
+    
+
+    PostRequestDAO.find(locationId, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name ).then( async(res) => {
         loadingBarRef.current.hideModal();
         dispatch(
           showNotification({
@@ -292,24 +336,23 @@ export const FormQuestions = props => {
             },
           }),
         );
-      })
-      .catch(e => {
-        loadingBarRef.current.hideModal();
-      });
+    }).catch((e) => {
+      loadingBarRef.current.hideModal();
+    });
+
+    
   };
 
   const updateFormQuestionsAndClearDB = value => {
     updateFormQuestions(value);
     saveDb(value, '');
   };
-  const updateFormQuestions = formQuestionGroups => {
-    
-    console.log("formQuestionGroups", JSON.stringify(formQuestionGroups))
-    const res = filterTriggeredQuestions(formQuestionGroups);
-    console.log("formQuestionGroupsNEXT", res);
-    if(res != undefined)
-      setFormQuestions(res);
 
+  const updateFormQuestions = formQuestionGroups => {        
+    const res = filterTriggeredQuestions(formQuestionGroups);    
+    if(res != undefined){      
+      setFormQuestions(res);
+    }      
   };
 
   const onBackPressed = value => {
