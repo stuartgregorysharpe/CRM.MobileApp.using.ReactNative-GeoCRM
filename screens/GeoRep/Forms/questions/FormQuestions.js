@@ -319,7 +319,6 @@ export const FormQuestions = props => {
     console.log("form data" , postData);
     console.log("json data" , postDataJson)
     
-
     PostRequestDAO.find(locationId, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name ).then( async(res) => {
         loadingBarRef.current.hideModal();
         dispatch(

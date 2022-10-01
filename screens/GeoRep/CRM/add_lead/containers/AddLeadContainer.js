@@ -98,6 +98,7 @@ export default function AddLeadContainer(props) {
   };
 
   const onAdd = () => {
+
     var postData = new FormData();
     postData.append('use_current_geo_location', isCurrentLocation);
     var time_zone = RNLocalize.getTimeZone();
@@ -174,7 +175,6 @@ export default function AddLeadContainer(props) {
         }
       }
     });
-
 
     postApiRequestMultipart('leadfields', postData)
       .then(res => {      
