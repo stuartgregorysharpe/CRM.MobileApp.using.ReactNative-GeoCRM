@@ -229,7 +229,7 @@ export function getFormQuestionData(formQuestions) {
           item.question_type === 'multiple' ||
           item.question_type === 'multi_select'
         ) {
-          if (item.value && item.value.length > 0) {
+          if (item.value && item.value.length > 0 && item.value instanceof  Array) {
             form_answers.push({
               key: `form_answers[${index}][form_question_id]`,
               value: item.form_question_id,
