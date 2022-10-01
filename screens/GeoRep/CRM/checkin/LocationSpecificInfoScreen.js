@@ -37,7 +37,6 @@ import {
 } from '../../../../actions/notification.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
-import CustomerSalesHistoryModal from '../customer_sales/CustomerSalesHistoryModal';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/DevicesModal';
@@ -46,6 +45,7 @@ import {CHECKIN} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import {AppText} from '../../../../components/common/AppText';
+import CustomerSaleHistoryModal from '../customer_sales';
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
@@ -64,13 +64,15 @@ export default function LocationSpecificInfoScreen(props) {
   const [isActivityComment, setIsActivityComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isActionItems, setIsActionItems] = useState(false);
-  const [isCustomerSales, setIsCustomerSales] = useState(false);
+  
   const navigationMain = useNavigation();
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
   const isCheckin = useSelector(state => state.location.checkIn);
   const locationId = locationInfo ? locationInfo.location_id : location_id;
   const customerContactModalRef = useRef(null);
+  const customerSaleHistoryModalRef = useRef(null);
+
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -169,7 +171,9 @@ export default function LocationSpecificInfoScreen(props) {
       devicesModalRef.current.showModal();
     }
     if (item.link === 'customer_sales') {
-      setIsCustomerSales(true);
+      if(customerSaleHistoryModalRef.current){
+        customerSaleHistoryModalRef.current.showModal();
+      }      
     }
     if (item.link === 'touchpoints') {
       navigationMain.navigate('TouchpointScreen', {
@@ -231,6 +235,9 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const onCustomerContactModalClosed = ({type, value}) => {};
+  const onCustomerSaleHistoryModalClosed = ({type, value}) => {
+
+  }
 
   return (
     <SafeAreaView style={{}}>
@@ -259,13 +266,12 @@ export default function LocationSpecificInfoScreen(props) {
           onModalClosed={() => setIsActionItems(false)}></ActionItemsModal>
       )}
 
-      {locationInfo != undefined && (
-        <CustomerSalesHistoryModal
+      {locationInfo != undefined && (        
+        <CustomerSaleHistoryModal
+          ref={customerSaleHistoryModalRef}
           locationId={locationInfo.location_id}
-          visible={isCustomerSales}
-          onModalClosed={() =>
-            setIsCustomerSales(false)
-          }></CustomerSalesHistoryModal>
+          onButtonAction={onCustomerSaleHistoryModalClosed}>            
+          </CustomerSaleHistoryModal>
       )}
 
       {locationInfo != undefined && (

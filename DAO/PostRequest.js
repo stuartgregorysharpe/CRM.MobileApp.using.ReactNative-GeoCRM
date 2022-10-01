@@ -2,6 +2,7 @@ import { postApiRequest, postApiRequestMultipart } from "../actions/api.action";
 import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./helper";
 import { Strings } from "../constants";
 import { objectToFormData } from "../constants/Helper";
+import { jsonToFormData } from "../helpers/jsonHelper";
 
 export function find(locationId, postData , type, url , itemLabel){
   
@@ -9,8 +10,8 @@ export function find(locationId, postData , type, url , itemLabel){
 
         checkConnectivity().then( async (isConnected) => {             
             if(isConnected){
-                if(type == "form_submission"){                    
-                    const submitFormData = objectToFormData(postData, '', []);                    
+                if(type == "form_submission"){                                        
+                    const submitFormData =  jsonToFormData(postData);                            
                     postApiRequestMultipart(url, submitFormData)
                     .then(async res => {
                         resolve(res);

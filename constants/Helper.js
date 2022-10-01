@@ -423,3 +423,4 @@ export function integerFieldValidator(numberText) {
   var numberRegex = /^\d*$/;
   return numberRegex.test(numberText);
 }
+ 

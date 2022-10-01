@@ -24,7 +24,7 @@ export function find(postData){
                     let response = await getData(lists, commonTitle);
                     console.log("response => " , JSON.stringify(response))
                     resolve(response);
-                    
+                                        
                 }else{
                     reject();
                 }            

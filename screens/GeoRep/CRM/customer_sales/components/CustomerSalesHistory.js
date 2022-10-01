@@ -1,12 +1,10 @@
 import { View, Text , FlatList ,TouchableOpacity , StyleSheet } from 'react-native'
 import React, {useEffect, useState} from 'react'
-import { Searchbar } from 'react-native-paper'
-import { AppText } from '../../../../components/common/AppText';
-import { getApiRequest} from '../../../../actions/api.action';
-import SearchBar from '../../../../components/SearchBar';
-import Colors, { whiteLabel } from '../../../../constants/Colors';  
-import SvgIcon from '../../../../components/SvgIcon';
-import { style } from '../../../../constants/Styles';
+import { AppText } from '../../../../../components/common/AppText';
+import { getApiRequest} from '../../../../../actions/api.action';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';  
+import SvgIcon from '../../../../../components/SvgIcon';
+import { style } from '../../../../../constants/Styles';
 import FastImage from 'react-native-fast-image';
 
 export default function CustomerSalesHistory(props) {
@@ -20,6 +18,8 @@ export default function CustomerSalesHistory(props) {
         var postData = {
             location_id: locationId
         };
+
+        //console.log("pst data", postData);
         //{base_url}/locations/customer-sales-history?location_id=
         getApiRequest("locations/customer-sales-history", postData).then((res) => {
             if(isMount){
@@ -37,12 +37,11 @@ export default function CustomerSalesHistory(props) {
             isMount = false;
         }
     },[]);
-    
+
     
     const renderItems = (item, index) => {
         return (
             <View style={[style.card , styles.itemContainer]}>
-
                 
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                     <View>
@@ -112,8 +111,7 @@ export default function CustomerSalesHistory(props) {
 
     return (
         <View style={{flexDirection:'column', flex:1}}>        
-        
-            <AppText size="big" type="secondaryBold" color={whiteLabel().mainText} title="Customer Sales History" style={{marginLeft:15 , marginTop:20}}></AppText>
+            <AppText size="big" type="secondaryBold" color={whiteLabel().mainText} title="Customer Sales History" style={{marginLeft:15 , marginTop:10}}></AppText>
             <View style={{flexDirection:'column'}}>
 
                 <FlatList                                                  
