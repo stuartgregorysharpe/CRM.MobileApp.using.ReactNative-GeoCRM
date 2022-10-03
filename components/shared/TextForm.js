@@ -10,7 +10,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
     const [text,setText] = useState(item.value ? item.value :  ''); 
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    const isQuesionAnswered = item && item.value != null
+    const isQuesionAnswered = item.value != null && item.value != ""
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
 
 

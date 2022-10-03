@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 export const UploadFileForm = (props) => {
     const {item , onPress ,onTouchStart , onClose} = props;
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    const isQuesionAnswered = item && item.value != null
+    const isQuesionAnswered =  item.value != null && item.value != ""
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
 
     const haveImage = () => {

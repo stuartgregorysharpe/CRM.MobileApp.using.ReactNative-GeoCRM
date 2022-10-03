@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 export const SignatureForm = ({item , onPress ,onTouchStart}) => {
     const [text,setText] = useState("");
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-    const isQuesionAnswered = item && item.value != null
+    const isQuesionAnswered =  item.value != null && item.value != ""
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
 
 

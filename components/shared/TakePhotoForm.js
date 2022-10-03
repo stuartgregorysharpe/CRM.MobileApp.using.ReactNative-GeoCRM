@@ -13,7 +13,7 @@ export default function TakePhotoForm({item, onPress, onTouchStart}) {
     onPress(paths);
   };
   const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-  const isQuesionAnswered = item && item.value != null && item.value.length != 0
+  const isQuesionAnswered =  item.value != null &&  item.value != "" && item.value.length != 0
   const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
     
   return (
