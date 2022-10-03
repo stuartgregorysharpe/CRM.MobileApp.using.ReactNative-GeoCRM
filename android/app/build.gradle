@@ -149,7 +149,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 15
         versionName "1.1.5"
-        missingDimensionStrategy 'react-native-camera', 'general'
     }
 
     splits {
