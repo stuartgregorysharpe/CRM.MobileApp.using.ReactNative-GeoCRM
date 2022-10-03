@@ -168,6 +168,14 @@ export const getConvertedDateTime = dateTime => {
   return currentTime;
 };
 
+export const getConvertedDate = dateTime => {
+  var currentTime = moment(dateTime, 'YYYY-MM-DD HH:mm:ss').format(
+    'DD MMMM YYYY',
+  );
+  return currentTime;
+};
+
+
 export const getBasketDateTime = () => {
   var currentTime = moment().format('DD MMM YYYY HH:mm');
   return currentTime;

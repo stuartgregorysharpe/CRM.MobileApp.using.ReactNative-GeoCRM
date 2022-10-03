@@ -6,6 +6,8 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
 import { Constants, Strings } from '../../../../../constants';
+import GetRequestStockLists from '../../../../../DAO/GetRequestStockLists';
+import { GetRequestStockListsDAO } from '../../../../../DAO';
 
 const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
@@ -26,13 +28,22 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
     }, [selLists]);
 
     const callSelectDevices = () => {
-        getApiRequest("stockmodule/stock-list?stock_type=Device" , {}).then((res) => {            
+        var postData = {
+            stock_type : 'Device'
+        }
+        GetRequestStockListsDAO.find(postData).then((res) => {
             if(isMount){
                 setStockItems(res.stock_items);
                 updateLists( res.stock_items, selLists);
-            }            
+            }           
         }).catch((e) => {
-        });
+
+        })
+
+        // getApiRequest("stockmodule/stock-list?stock_type=Device" , {}).then((res) => {            
+             
+        // }).catch((e) => {
+        // });
     }
 
     const allocateDevices = () => {

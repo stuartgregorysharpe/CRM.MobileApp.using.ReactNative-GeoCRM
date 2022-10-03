@@ -21,7 +21,8 @@ export function call( url, postData){
             }else{                
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
-                resolve({status: Strings.Success , isConnected: isConnected, data:{client_id:client_id, business_unit_id:business_unit_id} });
+                var user_id = await getTokenData("user_id");
+                resolve({status: Strings.Success , isConnected: isConnected, data:{client_id:client_id, business_unit_id:business_unit_id , user_id: user_id } });
             }
         }).catch(e => {
             reject(e);
