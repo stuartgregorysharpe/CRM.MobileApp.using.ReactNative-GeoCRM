@@ -113,7 +113,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
     }
     
     const isRequiredImage = isIncludeImage("Yes") || isIncludeImage("No");
-    const isQuesionAnswered = isRequiredImage ? item && haveImage() : item && item.value
+    const isQuesionAnswered = isRequiredImage ? item && haveImage() : item != undefined && item.value != null && item.value != ""
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
     
     const getMarginLeft = () => {
