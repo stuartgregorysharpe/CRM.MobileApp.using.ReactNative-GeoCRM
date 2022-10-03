@@ -47,7 +47,7 @@ export default function DeviceView(props) {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
-      <CTextInput
+      {/*<CTextInput
         label="Details"
         value={details}
         returnKeyType={'done'}
@@ -57,7 +57,7 @@ export default function DeviceView(props) {
           onDataChanged(text, code);
         }}
         style={{marginTop: 15}}
-      />
+      />*/}
 
       <View style={{marginTop: 15, flexDirection: 'row', alignItems: 'center'}}>
         <TouchableOpacity style={{flex: 1}} onPress={() => popDialog()}>
@@ -88,6 +88,9 @@ export default function DeviceView(props) {
         isPartialDetect={true}
         onButtonAction={onCaptureAction}
         showClose={true}
+        onClose={() => {
+          qrScanModalRef.current.hideModal();
+        }}
       />
     </View>
   );
