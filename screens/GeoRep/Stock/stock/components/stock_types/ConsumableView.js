@@ -1,19 +1,18 @@
-
-import { View } from 'react-native'
-import React , {useState} from 'react'
+import {View} from 'react-native';
+import React, {useState} from 'react';
 import CTextInput from '../../../../../../components/common/CTextInput';
 
 export default function ConsumableView(props) {
-    const [details, setDetails] = useState('');
-    const [quantity, setQuantity] = useState('')
-    
-    const onDataChanged = (details, quantity) =>{
-        props.onDataChanged(details, quantity)
-    }
+  const [details, setDetails] = useState('');
+  const [quantity, setQuantity] = useState('');
 
-    return (
-        <View>        
-            <CTextInput                    
+  const onDataChanged = (details, quantity) => {
+    props.onDataChanged(details, quantity);
+  };
+
+  return (
+    <View>
+      {/*<CTextInput                    
                     label="Details"                    
                     value={details}
                     returnKeyType={'done'}                                        
@@ -23,23 +22,20 @@ export default function ConsumableView(props) {
                         onDataChanged(text, quantity);
                     }}
                     style={{marginTop:15}}
-                />
+                />*/}
 
-            <CTextInput
-                    style={{ marginTop:15}}
-                    label="Quantity"                    
-                    value={quantity}     
-                    keyboardType={'number-pad'}
-                    returnKeyType={'done'}                                       
-                    isRequired={true}
-                    onChangeText={text => {
-                        setQuantity(text);
-                        onDataChanged(details, text);
-                    }}
-
-                />
-
-        </View>
-    )
-    
+      <CTextInput
+        style={{marginTop: 15}}
+        label="Quantity"
+        value={quantity}
+        keyboardType={'number-pad'}
+        returnKeyType={'done'}
+        isRequired={true}
+        onChangeText={text => {
+          setQuantity(text);
+          onDataChanged(details, text);
+        }}
+      />
+    </View>
+  );
 }

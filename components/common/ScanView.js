@@ -64,11 +64,12 @@ const ScanView = props => {
     runOnJS(setBarcodes)(barcodes);
   }, []);
   React.useEffect(() => {
-    (async () => {
-      const status = await Camera.requestCameraPermission();
-      setHasPermission(status === 'authorized');
-    })();
+    onRequestPermission();
   }, []);
+  const onRequestPermission = async () => {
+    const status = await Camera.requestCameraPermission();
+    setHasPermission(status === 'authorized');
+  };
 
   React.useEffect(() => {
     if (barcodes) {
