@@ -45,6 +45,7 @@ export default function AddStockContainer(props) {
   };
 
   const callAddStock = (type, data) => {
+    console.log('callAddStock', data);
     var userParam = getPostParameter(currentLocation);
     data['user_local_data'] = userParam.user_local_data;
     postApiRequest('stockmodule/add-stock', data)
