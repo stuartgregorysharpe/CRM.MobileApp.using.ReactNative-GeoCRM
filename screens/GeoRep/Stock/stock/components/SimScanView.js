@@ -1,9 +1,7 @@
 import {View, StyleSheet, Keyboard} from 'react-native';
 import React, {useRef} from 'react';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import {Constants} from '../../../../../constants';
 import SimScanChildView from './SimScanChildView';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import SimViewListsModal from '../modal/sim/SimViewListsModal';
 import ScanView from '../../../../../components/common/ScanView';
 
