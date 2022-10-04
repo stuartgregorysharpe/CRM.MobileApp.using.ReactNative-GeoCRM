@@ -23,6 +23,7 @@ import {
   filterTriggeredQuestions,
   getFormQuestionData,
   getFormQuestionFile,
+  getFormSubmissionPostJsonData,
   validateFormQuestionData,
 } from './helper';
 import {
@@ -192,6 +193,7 @@ export const FormQuestions = props => {
     ) {
       indempotencyKey = uuid.v4();
     }
+
     saveDb(formQuestions, indempotencyKey);
     var flag = true;
     flag = validateFormQuestionData(formQuestions);
@@ -205,120 +207,18 @@ export const FormQuestions = props => {
       );
       return;
     }
+    loadingBarRef.current.showModal();    
 
-    loadingBarRef.current.showModal();
-    var lat = await getLocalData('@latitude');
-    var lon = await getLocalData('@longitude');
     var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
-
     var files = [];
-    files = getFormQuestionFile(formQuestions);
+    files = getFormQuestionFile(formQuestions);       
 
-    var postData = new FormData();
-
-    postData.append('form_id', form.form_id);
     let locationId = await getLocalData('@specific_location_id');
     if (location_id && location_id != '') {
       locationId = location_id;
-    }
-    postData.append('location_id', locationId);
-    postData.append('online_offline', 'online');
-
-    var time_zone = '';
-    try {
-      time_zone = RNLocalize.getTimeZone();
-    } catch (e) {}
-    postData.append('user_local_data[time_zone]', time_zone);
-    postData.append(
-      'user_local_data[latitude]',
-      currentLocation && currentLocation.latitude != null
-        ? currentLocation.latitude
-        : lat != null
-        ? lat
-        : '0',
-    );
-    postData.append(
-      'user_local_data[longitude]',
-      currentLocation && currentLocation.longitude != null
-        ? currentLocation.longitude
-        : lon != null
-        ? lon
-        : '0',
-    );
-
-    form_answers.forEach(item => {
-      if (item.key && item.value && item.value != null && item.valuel != '') {
-        postData.append(item.key, item.value);
-      }
-    });
-
-    files.map(item => {
-      if (item.key && item.value) {
-        if (item.type === 'upload_file') {          
-          postData.append(item.key, {
-            uri: item.value.uri,
-            type: item.value.type,
-            name: item.value.name,
-          });
-        } else {
-          var fileFormats = getFileFormat(item.value);
-          postData.append(item.key, fileFormats);
-        }
-      }
-    });
-       
-    var postDataJson = {
-      form_id:form.form_id,
-      location_id: locationId,
-      online_offline: 'online',
-      'user_local_data[time_zone]': time_zone,
-      'user_local_data[latitude]': currentLocation.latitude != null
-      ? currentLocation.latitude
-      : lat != null
-      ? lat
-      : '0',
-      'user_local_data[longitude]': currentLocation.latitude != null
-      ? currentLocation.latitude
-      : lat != null
-      ? lat
-      : '0',
-    }
-    form_answers.forEach(item => {
-      if (item.key && item.value && item.value != null && item.valuel != '') {
-        var itemKey = item.key;
-        var itemValue = item.value;
-        postDataJson = {
-          ...postDataJson,
-          [itemKey]: itemValue
-        };        
-      }
-    });
-
-    files.map(item => {
-      if (item.key && item.value) {
-        if (item.type === 'upload_file') {                    
-          postDataJson = {
-            ...postDataJson,
-            [item.key]: {
-              uri: item.value.uri,
-              type: item.value.type,
-              name: item.value.name,
-            }
-          };        
-        } else {
-          var fileFormats = getFileFormat(item.value);
-          postDataJson = {
-            ...postDataJson,
-            [item.key]: fileFormats
-          };
-        }
-      }
-    });
-
-    console.log("form data" , postData);
-    console.log("json data" , postDataJson)
-    
+    }    
+    const postDataJson = await getFormSubmissionPostJsonData(form.form_id, locationId , currentLocation, form_answers, files ); 
     PostRequestDAO.find(locationId, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name ).then( async(res) => {
         loadingBarRef.current.hideModal();
         dispatch(
@@ -337,9 +237,7 @@ export const FormQuestions = props => {
         );
     }).catch((e) => {
       loadingBarRef.current.hideModal();
-    });
-
-    
+    });    
   };
 
   const updateFormQuestionsAndClearDB = value => {

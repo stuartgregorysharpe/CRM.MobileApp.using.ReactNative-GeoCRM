@@ -9,7 +9,7 @@ import { checkIfQuestionIsTrigger } from '../../../Forms/questions/helper';
 
 export default function CustomMasterFields(props) {
 
-    const { leadForms , accuracyUnit , useGeoLocation , onChangedCustomMasterFields } = props;    
+    const { leadForms , customMasterFields, accuracyUnit , useGeoLocation , onChangedCustomMasterFields } = props;    
 
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const actionFormRef = useRef();    
@@ -40,15 +40,20 @@ export default function CustomMasterFields(props) {
             value = {value: field.dropdown_value, secondValue: field.value};          
           }
         }
-        tmpFormData[field.custom_master_field_id] = value;
+        if(customMasterFields != undefined && customMasterFields[field.custom_master_field_id] != undefined){
+          tmpFormData[field.custom_master_field_id] = customMasterFields[field.custom_master_field_id]  
+        }else{
+          tmpFormData[field.custom_master_field_id] = value;
+        }
+        
       });
 
       if(type == "first"){
         setFormData1(tmpFormData);
-        onChangedCustomMasterFields({...tmpFormData});
+        onChangedCustomMasterFields({...tmpFormData , ...formData2});
       }else{
         setFormData2(tmpFormData);
-        onChangedCustomMasterFields({...tmpFormData});
+        onChangedCustomMasterFields({...formData1, ...tmpFormData});
       }
 
       const dynamicFields = renderForms.map((field, index) => {

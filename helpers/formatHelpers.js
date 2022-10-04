@@ -175,6 +175,10 @@ export const getConvertedDate = dateTime => {
   return currentTime;
 };
 
+export const getTimeStamp = () => {
+  var currentTime = moment().format('YYYYMMDDHHmmss');
+  return currentTime;
+};
 
 export const getBasketDateTime = () => {
   var currentTime = moment().format('DD MMM YYYY HH:mm');

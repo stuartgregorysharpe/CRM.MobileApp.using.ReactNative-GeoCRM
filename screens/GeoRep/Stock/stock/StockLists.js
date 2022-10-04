@@ -55,6 +55,7 @@ export default function StockLists() {
     () => filterItems(items, searchKeyword, filters),
     [items, searchKeyword, filters],
   );
+  
   const stockLists = useMemo(
     () => getStockItemsFromItems(filteredItems),
     [filteredItems],

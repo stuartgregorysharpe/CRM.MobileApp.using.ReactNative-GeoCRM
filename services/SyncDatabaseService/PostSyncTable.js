@@ -47,13 +47,14 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
 
     const item = items.item(index);
     if(item != undefined){        
-        callBack(index + 1, totalValue);        
+        callBack(index + 1, totalValue);
         var apiRes = {};
         if(item.item_type == "form_submission"){            
             var body = jsonToFormData(JSON.parse(item.post_body));
+            body.append("mode", "offline");
             apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
         }else{
-            apiRes = await postApiRequest(item.url, JSON.parse(item.post_body) , item.indempotency_key);
+            apiRes = await postApiRequest(item.url, { ...JSON.parse(item.post_body), mode: 'offline'} , item.indempotency_key);
         }
 
         if(apiRes.status == 'success'){            

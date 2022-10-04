@@ -1,4 +1,78 @@
 import {Constants} from '../../../../constants';
+import * as RNLocalize from 'react-native-localize';
+import { getLocalData } from '../../../../constants/Storage';
+import { getFileFormat } from '../../../../constants/Helper';
+
+export async function getFormSubmissionPostJsonData (form_id , locationId , currentLocation , form_answers , files ) {
+
+  try{
+
+      var lat = await getLocalData('@latitude');
+      var lon = await getLocalData('@longitude');
+
+      var time_zone = '';
+      try {
+        time_zone = RNLocalize.getTimeZone();
+      } catch (e) {}
+
+      var postDataJson = {
+        form_id: form_id,
+        location_id: locationId,
+        online_offline: 'online',
+        'user_local_data[time_zone]': time_zone,
+        'user_local_data[latitude]': currentLocation.latitude != null
+        ? currentLocation.latitude
+        : lat != null
+        ? lat
+        : '0',
+        'user_local_data[longitude]': currentLocation.latitude != null
+        ? currentLocation.latitude
+        : lon != null
+        ? lon
+        : '0',
+      }
+      form_answers.forEach(item => {
+        if (item.key && item.value && item.value != null && item.valuel != '') {
+          var itemKey = item.key;
+          var itemValue = item.value;
+          postDataJson = {
+            ...postDataJson,
+            [itemKey]: itemValue
+          };        
+        }
+      });
+
+      files.map(item => {
+        if (item.key && item.value) {
+          if (item.type === 'upload_file') {                    
+            postDataJson = {
+              ...postDataJson,
+              [item.key]: {
+                uri: item.value.uri,
+                type: item.value.type,
+                name: item.value.name,
+              }
+            };        
+          } else {
+            
+            var fileFormats = getFileFormat(item.value);
+            postDataJson = {
+              ...postDataJson,
+              [item.key]: fileFormats
+            };
+          }
+        }
+      });
+
+      return postDataJson;
+      
+  }catch(e) {
+    console.log("json err" , e)
+  }
+  
+
+}
+
 
 export function filterTriggeredQuestions(formQuestionGroups) {
   console.log('filterTriggeredQuestions');

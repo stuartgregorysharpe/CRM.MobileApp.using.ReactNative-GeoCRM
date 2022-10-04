@@ -102,7 +102,7 @@ export default function FormQuestionContainer(props) {
       files = getFormQuestionFile(formQuestions);
       props.onButtonAction({
         type: Constants.actionType.ACTION_DONE,
-        value: {form_answers: form_answers, files: files},
+        value: {form_answers: form_answers, files: files , form: form },
       });
     }
   };
