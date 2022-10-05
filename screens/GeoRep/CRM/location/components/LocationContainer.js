@@ -159,7 +159,7 @@ const LocationContainer = props => {
       dispatch({type: CHANGE_PIN_KEY, payload: pins});      
     }).catch(e => {
     });
-
+    
   };
 
 
@@ -172,9 +172,11 @@ const LocationContainer = props => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       addLeadModalRef.current.hideModal();
     }
-    if (type == Constants.actionType.ACTION_DONE) {
+    if (type == Constants.actionType.ACTION_DONE) {      
       addLeadModalRef.current.hideModal();
-      openLocationInfoDetails(Number(value));
+      if(value != undefined && value != ''){
+        openLocationInfoDetails(Number(value));
+      }
     }
   };
   const openLocationInfoDetails = locationId => {

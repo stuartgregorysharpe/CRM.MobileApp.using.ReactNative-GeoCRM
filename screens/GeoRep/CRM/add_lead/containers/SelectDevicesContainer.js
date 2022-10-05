@@ -6,7 +6,6 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
 import { Constants, Strings } from '../../../../../constants';
-import GetRequestStockLists from '../../../../../DAO/GetRequestStockLists';
 import { GetRequestStockListsDAO } from '../../../../../DAO';
 
 const SelectDevicesContainer = React.forwardRef((props, ref) => {

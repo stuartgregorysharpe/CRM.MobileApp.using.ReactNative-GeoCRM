@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import uuid from 'react-native-uuid';
+import { generateKey } from "../constants/Utils";
 
 export function getSupportIssues(base_url, token, params)
 {
@@ -43,7 +44,7 @@ export const  postSupportEmail = async (postData) => {
         .post(`${base_url}/supportmail`, postData, {
             headers: {
               Authorization: 'Bearer ' + token,
-              'Indempotency-Key': uuid.v4() 
+              'Indempotency-Key': generateKey() 
             }
         })
         .then((res) => {                

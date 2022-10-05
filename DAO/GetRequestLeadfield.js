@@ -21,8 +21,7 @@ export function find(postData){
 
                     let commonTitle = await getCommonTitle(client_id, business_unit_id);
                     let lists = await fetchDataFromDB(client_id, business_unit_id);
-                    let response = await getData(lists, commonTitle);
-                    console.log("response => " , JSON.stringify(response))
+                    let response = await getData(lists, commonTitle);                
                     resolve(response);
                                         
                 }else{

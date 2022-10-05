@@ -13,6 +13,7 @@ export default function CustomMasterFields(props) {
 
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const actionFormRef = useRef();    
+    const actionFormRef2= useRef();
     const [formData1, setFormData1] = useState({});
     const [formStructure1, setFormStructure1] = useState([]);
     const [formData2, setFormData2] = useState({});
@@ -76,7 +77,7 @@ export default function CustomMasterFields(props) {
           key:index,
           field_name: field.custom_master_field_id,
           initial_value: field.value, 
-          editable: field.rule_editable,     
+          editable: field.rule_editable, 
           is_required: true,
           field_label:field.field_name,    
           value: value
@@ -183,7 +184,7 @@ export default function CustomMasterFields(props) {
           {renderUseCurrentLocation()}
 
           <DynamicForm
-            ref={actionFormRef}
+            ref={actionFormRef2}
             formData={formData2}
             formStructureData={formStructure2}
             updateFormData={formData => {                   

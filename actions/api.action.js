@@ -2,6 +2,7 @@ import axios from 'axios';
 import uuid from 'react-native-uuid';
 import {getBaseUrl, getToken} from '../constants/Storage';
 import Strings from '../constants/Strings';
+import { generateKey } from '../constants/Utils';
 export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
     setTimeout(() => {
@@ -28,7 +29,7 @@ export const getApiRequest = async (route, param) => {
         params: param,
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {
@@ -72,7 +73,7 @@ export const postApiRequest = async (route, postData , indempotencyKey) => {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,
-      'Indempotency-Key': indempotencyKey != undefined ? indempotencyKey : uuid.v4(),
+      'Indempotency-Key': indempotencyKey != undefined ? indempotencyKey : generateKey(),
     };
     axios
       .post(url, postData, {
@@ -120,7 +121,7 @@ export const postApiRequestMultipart = async (route, postData , indempotencyKey)
           Accept: 'application/json',
           'Content-Type': 'multipart/form-data',
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': indempotencyKey != undefined ? indempotencyKey : uuid.v4(),
+          'Indempotency-Key': indempotencyKey != undefined ? indempotencyKey : generateKey(),
         },
       })
       .then(res => {

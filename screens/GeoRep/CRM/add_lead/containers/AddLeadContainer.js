@@ -2,7 +2,6 @@ import {View, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {Constants, Strings} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
-import {  postApiRequestMultipart } from '../../../../../actions/api.action';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import AddLeadFormsModal from '../modal/AddLeadFormsModal';
 import SelectDevicesModal from '../modal/SelectDevicesModal';
@@ -18,12 +17,12 @@ import {
 } from '../../../../../actions/notification.action';
 import FormQuestionModal from '../modal/FormQuestionModal';
 import RNFS from 'react-native-fs';
-import { getFileFormat } from '../../../../../constants/Helper';
 import { Notification } from '../../../../../components/modal/Notification';
 import { GetRequestFormListsDAO, GetRequestLeadfieldDAO, PostRequestDAO } from '../../../../../DAO';
-import { getLocalData, getTokenData } from '../../../../../constants/Storage';
+import { getTokenData } from '../../../../../constants/Storage';
 import { getTimeStamp } from '../../../../../helpers/formatHelpers';
 import { getFormSubmissionPostJsonData } from '../../../Forms/questions/helper';
+import { getAddLeadLocationName, getAddLeadStreetAddress, getLeadFieldsPostJsonData } from '../helper';
 
 export default function AddLeadContainer(props) {
 
@@ -42,9 +41,7 @@ export default function AddLeadContainer(props) {
 	const [isCurrentLocation, setIsCurrentLocation] = useState('0');
 	const [customMasterFields, setCustomMasterFields] = useState({});
 	const [primaryData, setPrimaryData] = useState({});
-	const [form, setForm] = useState({});
-	const [form_answers, setFormAnswers] = useState([]);
-	const [files, setFiles] = useState([]);
+	const [form, setForm] = useState({});	
 	const [formSubmissions, setFormSubmissions] = useState([]);
 
 	const dispatch = useDispatch();
@@ -61,6 +58,7 @@ export default function AddLeadContainer(props) {
 	useEffect(() => {
 		getFormLists();
 	}, [leadForms]);
+	
 
 	const getCustomMasterFields = () => {    
 
@@ -68,7 +66,8 @@ export default function AddLeadContainer(props) {
 			if(props.changeTitle && res.component_title != undefined){
 				props.changeTitle(res.component_title);
 			}
-			if (isMount) {                 
+			if (isMount) {   
+				console.log("res.custom_master_fields",res.custom_master_fields)              
 				setLeadForms(res.custom_master_fields);
 				setAccuracyUnit(res.accuracy_distance_measure);        
 			}
@@ -93,115 +92,73 @@ export default function AddLeadContainer(props) {
 			group_split: groupSplitItem ? customMasterFields[groupSplitItem.custom_master_field_id] : '',
 		};
 		
-		GetRequestFormListsDAO.find(param).then((res) => {
-			console.log("ADD LEAD Form Lists" , res.forms);
-			setFormLists(res.forms);      
+		GetRequestFormListsDAO.find(param).then((res) => {					
+			updateFormLists(res.forms);
 		}).catch((e) => {
-				console.log(e)
+			console.log(e);
 		});
 
 	};
 
-
-	const onAdd = async() => {
-
-		var postData = new FormData();
-		postData.append('use_current_geo_location', isCurrentLocation);
-		var time_zone = RNLocalize.getTimeZone();
-		postData.append('user_local_data[time_zone]', time_zone);
-		postData.append(
-			'user_local_data[latitude]',
-			currentLocation && currentLocation.latitude != null
-				? currentLocation.latitude
-				: '0',
-		);
-		postData.append(
-			'user_local_data[longitude]',
-			currentLocation && currentLocation.longitude != null
-				? currentLocation.longitude
-				: '0',
-		);
-		postData.append(
-			'coordinates[latitude]',
-			currentLocation && currentLocation.latitude != null
-				? currentLocation.latitude
-				: '0',
-		);
-		postData.append(
-			'coordinates[longitude]',
-			currentLocation && currentLocation.longitude != null
-				? currentLocation.longitude
-				: '0',
-		);
-
-		getCustomMasterParameterData(postData);
-		getAllocateDeviceParameterData(postData);
-		selectedLists.forEach((item, index) => {
-			RNFS.exists(item.signature)
-				.then(res => {
-					if (res) {
-						postData.append(
-							`allocated_devices[${index}][stock_item_id]`,
-							item.stock_item_id,
-						);
-						postData.append(
-							`allocated_devices[${index}][assigned_msisdn]`,
-							item.msisdn,
-						);
-						postData.append(
-							`allocated_devices[${index}][received_by]`,
-							item.received,
-						);
-						postData.append(
-							`allocated_devices_signature[${item.stock_item_id}]`,
-							{uri: item.signature, type: 'image/png', name: 'sign.png'},
-						);
-					}
-				})
-				.catch(e => {});
+	const updateFormLists = (lists) => {
+		var tmp = [...lists];
+		tmp.map((element) =>{
+			var check = formSubmissions.find(item => item.form.form_id == element.form_id);
+			if(check != undefined){
+				element.compulsory = "0";
+			}
+			return element;
 		});
-		
-		var user_id = await getTokenData("user_id");
-		var add_location_id = getTimeStamp() + user_id;
-		postData.append("add_location_id",  add_location_id );
+		console.log("updated lists" , tmp);
+		setFormLists(tmp);
+	}
 
-		PostRequestDAO.find(0, postData , 'leadfields', 'leadfields').then(async(leadFieldsRes) => {
-			if (leadFieldsRes.status == Strings.Success) {	
-				await recursiveFormPost(0 , add_location_id ,leadFieldsRes.location_id , leadFieldsRes);
+
+	const onAdd = async() => {				
+		var user_id = await getTokenData("user_id");
+		var add_location_id = getTimeStamp() + user_id;		
+		const  postDataJson = await getLeadFieldsPostJsonData(isCurrentLocation , currentLocation , leadForms , customMasterFields , primaryData , selectedLists);					
+		const  locationName = getAddLeadLocationName(leadForms, customMasterFields);
+		const  streetAddress = getAddLeadStreetAddress(leadForms, customMasterFields);		
+		PostRequestDAO.find(0, postDataJson , 'leadfields', 'leadfields' , locationName , streetAddress).then(async(leadFieldsRes) => {
+			if (leadFieldsRes.status == Strings.Success) {					
+				await recursiveFormPost(0 , add_location_id ,leadFieldsRes.location_id , leadFieldsRes , locationName);	
 			}else{
-				console.log("DD", res)
+				console.log("failed", res);
 			}
 		}).catch((e) =>{
 
 		});
+
 	};
 
-	const recursiveFormPost = async (index , add_location_id , location_id , apiRes) => {
-		console.log("formSubmissions length" , formSubmissions.length);
-		console.log("formSubmissions index" , index);
-
+	const recursiveFormPost = async (index , add_location_id , location_id , apiRes , locationName) => {
+		
 		if( index <= formSubmissions.length - 1){
 			var formSubmission = formSubmissions[index];
 			var { form, form_answers, files} = formSubmission;
-			const postDataJson = await getFormSubmissionPostJsonData(form.form_id, add_location_id , currentLocation, form_answers, files );				
-			PostRequestDAO.find(add_location_id, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name ).then( async(res) => {					
+			const postDataJson = await getFormSubmissionPostJsonData(form.form_id, add_location_id , currentLocation, form_answers, files );							
+			PostRequestDAO.find(add_location_id, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name , locationName ).then( async(res) => {									
 				if(res.status === Strings.Success){
-					await recursiveFormPost(index + 1, add_location_id , location_id, res);
+					await recursiveFormPost(index + 1, add_location_id , location_id, res , locationName);
 				}				
-			});
+			}).catch((e) => {
+				console.log(e);
+			})
 		}else{			
-			console.log("location id" , location_id);
+			
 			dispatch(
 				showNotification({
 					type: 'success',
 					message: apiRes.message,
 					buttonText: 'Ok',
 					buttonAction: () => {
-						dispatch(clearNotification());
+						dispatch(clearNotification());						
 						props.onButtonAction({
 							type: Constants.actionType.ACTION_DONE,
 							value: location_id,
 						});
+												
 					},
 				}),
 			);
@@ -354,10 +311,12 @@ export default function AddLeadContainer(props) {
 
 				var lists = [...formSubmissions];
 				var check = lists.find(item => item.form.form_id === value.form.form_id);
+				
 				if(check != undefined){
 					console.log("check", check)
-					var tmp = lists.filter(item => item.form.form_id != value.form.form_id);
-					setFormSubmissions([...tmp, ...value]);
+					var tmp = lists.filter(item => item.form.form_id != value.form.form_id);					
+					var item = {form: value.form , files: value.files, form_answers: value.form_answers };
+					setFormSubmissions([...tmp, item]);
 				}else{
 					console.log("formSubmissions", formSubmissions);
 					var item = {form: value.form , files: value.files, form_answers: value.form_answers };				
@@ -401,17 +360,7 @@ export default function AddLeadContainer(props) {
 				}}
 				navigation={props.navigation}
 			/>
-
-			<SelectDevicesModal
-				ref={selectDeviceModalRef}
-				hideClear={true}
-				selLists={selectedLists}
-				customRightHeaderView={
-					selectDeviceCount > 0 ? renderViewLists() : <></>
-				}
-				title="Select Devices:"
-				onButtonAction={onSelectDeviceModalClosed}
-			/>
+			
 
 			<SelectDevicesModal
 				closableWithOutsideTouch

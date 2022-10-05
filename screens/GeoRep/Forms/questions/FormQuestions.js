@@ -36,6 +36,7 @@ import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Strings} from '../../../../constants';
 import { GetRequestFormQuestionsDAO, PostRequestDAO } from '../../../../DAO';
+import { generateKey } from '../../../../constants/Utils';
 var indempotencyKey;
 
 export const FormQuestions = props => {
@@ -191,7 +192,7 @@ export const FormQuestions = props => {
       indempotencyKey === undefined ||
       indempotencyKey.trim() === ''
     ) {
-      indempotencyKey = uuid.v4();
+      indempotencyKey = generateKey();
     }
 
     saveDb(formQuestions, indempotencyKey);

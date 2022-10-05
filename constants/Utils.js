@@ -1,6 +1,8 @@
 
 import { PermissionsAndroid } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
+import uuid from 'react-native-uuid';
+import { getTimeStamp } from '../helpers/formatHelpers';
 
 export const  requestCameraPermission = async ( onCallBack ) => {
         
@@ -79,3 +81,7 @@ export const launchImageLibrary = ( onCallBack ) => {
     });
 };
 
+export const generateKey = () => {
+    var timeStamp = getTimeStamp();
+    return uuid.v4() + "-" + timeStamp;
+}

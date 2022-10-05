@@ -13,6 +13,7 @@ import {
   getUserId,
   setToken,
 } from '../constants/Storage';
+import { generateKey } from '../constants/Utils';
 
 export const getLocationFilters = () => (dispatch, getState) => {
   dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
@@ -216,7 +217,7 @@ export const postLocationInfoUpdate = async postData => {
       .post(`${base_url}/locations-info/location-info-update`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {
@@ -308,7 +309,7 @@ export const postStageOutcomUpdate = async postData => {
       .post(`${base_url}/location-info/updateStageOutcome`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {
@@ -344,7 +345,7 @@ export const postDispositionFields = async postData => {
       .post(`${base_url}/location-info/updateDispositionFields`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {
@@ -378,7 +379,7 @@ export const postReloop = async postData => {
       .post(`${base_url}/location-info/reloop`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {
@@ -420,7 +421,7 @@ export const postLocationImage = async postData => {
       .post(`${base_url}/locations/location-image`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {
@@ -501,7 +502,7 @@ export const updateCustomerLocationFields = async postData => {
       .post(`${baseUrl}/locations/location-fields`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4(),
+          'Indempotency-Key': generateKey(),
         },
       })
       .then(res => {

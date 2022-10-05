@@ -1,5 +1,4 @@
 import { postApiRequest, postApiRequestMultipart } from "../../actions/api.action";
-import { objectToFormData } from "../../constants/Helper";
 import { jsonToFormData } from "../../helpers/jsonHelper";
 import { OfflineBaskets } from "../../sqlite/helper"
 import { deleteOfflineSyncItem, getOfflineSyncItem, getOfflineSyncItems } from "../../sqlite/OfflineSyncItemsHelper";
@@ -34,12 +33,11 @@ const syncBasketItemType = async(itemTypes, index , callBack , totalValue) => {
     }        
 }
 
-
 const syncItemLists = async(itemType , callBack , totalValue) => {
     const items = await getOfflineSyncItem(itemType);
     if(items.length > 0){        
         var res =  await syncItemTypeApi(items, 0 , callBack , totalValue);           
-        return res;                             
+        return res;
     }
 }
 
@@ -49,7 +47,7 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
     if(item != undefined){        
         callBack(index + 1, totalValue);
         var apiRes = {};
-        if(item.item_type == "form_submission"){            
+        if(item.item_type == "form_submission" || item.item_type == "leadfields" ){  
             var body = jsonToFormData(JSON.parse(item.post_body));
             body.append("mode", "offline");
             apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
@@ -60,6 +58,7 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
         if(apiRes.status == 'success'){            
             await deleteOfflineSyncItem(item.id)
         }
+        
         if(index < items.length - 1 ){
             var res = await syncItemTypeApi(items, index + 1 , callBack , totalValue);
             return res;

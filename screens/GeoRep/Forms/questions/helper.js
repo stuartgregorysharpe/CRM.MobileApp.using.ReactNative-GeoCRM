@@ -25,8 +25,8 @@ export async function getFormSubmissionPostJsonData (form_id , locationId , curr
         : lat != null
         ? lat
         : '0',
-        'user_local_data[longitude]': currentLocation.latitude != null
-        ? currentLocation.latitude
+        'user_local_data[longitude]': currentLocation.longitude != null
+        ? currentLocation.longitude
         : lon != null
         ? lon
         : '0',
@@ -129,13 +129,13 @@ export function checkIfQuestionIsTrigger(question, questions, type) {
     type,
   );
 
-  console.log('question: id', question.form_question_id);
-  console.log('question: title', question.question_text);
-  console.log('conditionQuestion: type', conditionQuestion.question_type);
-  console.log('conditionQuestion: value', conditionQuestion.value);
-  console.log('conditionQuestion: title', conditionQuestion.question_text);
-  console.log('triggerSetting', triggerSetting);
-  console.log('conditionResult', result);
+  // console.log('question: id', question.form_question_id);
+  // console.log('question: title', question.question_text);
+  // console.log('conditionQuestion: type', conditionQuestion.question_type);
+  // console.log('conditionQuestion: value', conditionQuestion.value);
+  // console.log('conditionQuestion: title', conditionQuestion.question_text);
+  // console.log('triggerSetting', triggerSetting);
+  // console.log('conditionResult', result);
   return result;
 }
 
@@ -174,9 +174,9 @@ function checkDropdownTriggerCondition(
   valueList,
   formType,
 ) {
-  console.log('checkDropdownTriggerCondition -condition', condition);
-  console.log('checkDropdownTriggerCondition -answer', answerList);
-  console.log('checkDropdownTriggerCondition -value', valueList);
+  // console.log('checkDropdownTriggerCondition -condition', condition);
+  // console.log('checkDropdownTriggerCondition -answer', answerList);
+  // console.log('checkDropdownTriggerCondition -value', valueList);
 
   if (formType == 'form') {
     return checkTextTriggerCondition(condition, answerList, valueList);
@@ -225,9 +225,9 @@ function checkDropdownTriggerCondition(
 }
 
 function checkNumbersTriggerCondition(condition, _answer, _value) {
-  console.log('checkNumbersTriggerCondition -condition', condition);
-  console.log('checkNumbersTriggerCondition -answer', _answer);
-  console.log('checkNumbersTriggerCondition -value', _value);
+  // console.log('checkNumbersTriggerCondition -condition', condition);
+  // console.log('checkNumbersTriggerCondition -answer', _answer);
+  // console.log('checkNumbersTriggerCondition -value', _value);
   let answer = Number(_answer);
   let value = Number(_value);
   if (condition == 'ANY') {
@@ -257,9 +257,9 @@ function checkNumbersTriggerCondition(condition, _answer, _value) {
 }
 
 function checkTextTriggerCondition(condition, answer, value) {
-  console.log('checkTextTriggerCondition -condition', condition);
-  console.log('checkTextTriggerCondition -answer', answer);
-  console.log('checkTextTriggerCondition -value', value);
+  // console.log('checkTextTriggerCondition -condition', condition);
+  // console.log('checkTextTriggerCondition -answer', answer);
+  // console.log('checkTextTriggerCondition -value', value);
   if (condition == '=') {
     const lowercaseAnswer = answer ? answer.toLowerCase() : '';
     const lowercaseValue = value ? value.toLowerCase() : '';

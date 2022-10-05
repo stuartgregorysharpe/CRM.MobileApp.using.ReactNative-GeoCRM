@@ -124,7 +124,7 @@ const getData = (lists) => {
             // }            
             // simItems[element.description].push({date: element.added_date , items: [simItem] });
             console.log("DDDD == " , simItems[element.description]);
-
+            
         }                 
     }
     

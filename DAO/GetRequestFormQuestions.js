@@ -26,7 +26,7 @@ export function find( postData){
                 var business_unit_id = await getTokenData("business_unit_id");
 
                 var lists = await fetchDataFromDB(postData);
-                var questionsLists = await getFormQuestions( lists,  client_id, business_unit_id , postData);
+                var questionsLists = await getFormQuestions( lists,  client_id, business_unit_id , postData);                
                 resolve({status: Strings.Success , questions: questionsLists });
 
             }
@@ -55,7 +55,7 @@ const fetchFieldValueFromDB = async(custom_master_field_id, location_id) => {
 }
 
 const fetchOptionsFromDB = async(form_question_id) => {
-    const query = generateOptionQuery();
+    const query = generateOptionQuery();        
     const res = await ExecuteQuery( query , [ form_question_id ]);
     return res.rows ? res.rows : [];
 }
@@ -180,8 +180,8 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
             guideInfoData["text"]  = element.guide_info_text;
         }
         // Get Options        
-        var optionLists = await fetchOptionsFromDB(element.form_question_id);
-        var optionsData = getOptionData(optionLists);
+        var optionLists = await fetchOptionsFromDB(element.form_question_id);        
+        var optionsData = getOptionData(optionLists);        
 
         // Trigger Data
         var trigger = [];
@@ -209,7 +209,7 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
             question_type : element.question_type,
             question_text : element.question_text,
             guide_info : guideInfoData,
-            rule_compulsory: element.rule_compulsory,
+            rule_compulsory: element.rule_compulsory.toString(),
             trigger: trigger,         
             value: fieldData,   
         };
@@ -227,7 +227,7 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
                     include_image: include_image,
                     optimize: "",                    
                     rule_characters: element.rule_characters,
-                    rule_editable: element.rule_editable,                    
+                    rule_editable: element.rule_editable.toString(),       
                     add_prefix: element.add_prefix,
                     add_suffix: element.add_suffix,
                     question_tag: element.question_tag,
@@ -240,10 +240,8 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
                 { ...bodyRes }
             );
         }else if(questionType == "products" ){
-            var product_types = [];
-            var brands = [];
-            var productLists = await fetchProductsFromDB(business_unit_id, client_id);
-            console.log(" productLists === " ,productLists)
+            
+            var productLists = await fetchProductsFromDB(business_unit_id, client_id);            
             var productsResults = getProductsData(productLists);  
             if(productsResults.length == 3){
                 tmp.push({
@@ -264,11 +262,11 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
                 include_image: [],
                 optimize: "0",                
                 rule_characters: element.rule_characters,
-                rule_editable: element.rule_editable,
+                rule_editable: element.rule_editable.toString(),
                 add_prefix: element.add_prefix,
                 add_suffix: element.add_suffix,
                 question_tag: element.question_tag,
-                options:  element.options
+                options:  optionsData
             })
         }                 
     }
@@ -314,7 +312,7 @@ const getOptionData = (lists) => {
     var tmp = [];
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);
-        tmp.push(element);
+        tmp.push(element.preset_data);
     }
     return tmp;
 }

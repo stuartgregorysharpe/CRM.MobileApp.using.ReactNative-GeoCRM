@@ -2,6 +2,7 @@
 import axios from "axios";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import uuid from 'react-native-uuid';
+import { generateKey } from "../constants/Utils";
 
 export function getCalendar(base_url, token, period)
 {    
@@ -48,7 +49,7 @@ export const updateCalendar = async(postData) => {
     .post(`${base_url}/calenderupdate`, postData, {
       headers: {
         Authorization: 'Bearer ' + token,
-        'Indempotency-Key': uuid.v4()
+        'Indempotency-Key': generateKey()
       }
     })
     .then((res) => {
@@ -81,7 +82,7 @@ export const addCalendar = async(postData) => {
     .post(`${base_url}/calenderadd`, postData, {
       headers: {
         Authorization: 'Bearer ' + token,
-        'Indempotency-Key': uuid.v4()
+        'Indempotency-Key': generateKey()
       }
     })
     .then((res) => {
