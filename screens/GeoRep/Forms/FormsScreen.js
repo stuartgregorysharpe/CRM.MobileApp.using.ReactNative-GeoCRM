@@ -17,8 +17,8 @@ import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 
 export default function FormsScreen(props) {
 
-  const {navigationType} = props;
-  console.log(" ===== ===== ",navigationType)
+  const {navigationType} = props;  
+  const navigation = props.navigation;
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
   const [isInfo, setIsInfo] = useState(false);
@@ -70,6 +70,14 @@ export default function FormsScreen(props) {
     _callFormLists(null);
     initFilter();
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      _callFormLists(null);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
 
   const initFilter = async () => {
     var savedFilters = await getFilterData('@form_filter');

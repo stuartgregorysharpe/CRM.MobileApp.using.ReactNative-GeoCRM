@@ -11,7 +11,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
     const [text,setText] = useState(item.value ? item.value :  ''); 
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
     const isQuesionAnswered = item.value != null && item.value != ""
-    const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
+    const isCompulsory = !isQuesionAnswered && item && (item.rule_compulsory === '1' || item.rule_compulsory === 1);
 
 
     useEffect(() =>{
@@ -54,7 +54,7 @@ export const TextForm = ({item , type , onTouchStart , onTextChanged}) => {
 
                     <TextInput
                         style={[styles.inputStyle  ]}
-                        editable={item.rule_editable === "1" ? true : false}                        
+                        editable={(item.rule_editable === "1" || item.rule_editable === 1) ? true : false}                        
                         placeholder= {type === 'numeric' ? 'Insert value...' : 'Answer here...' }
                         placeholderTextColor={whiteLabel().helpText}
                         keyboardType={type === "numeric" ? 'decimal-pad' : 'default'}

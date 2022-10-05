@@ -35,6 +35,7 @@ import {
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {Notification} from '../../../../components/modal/Notification';
 import {useDispatch, useSelector} from 'react-redux';
+import { generateKey } from '../../../../constants/Utils';
 
 export const Ticket = forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ export const Ticket = forwardRef((props, ref) => {
     if (issue != '' && issueDetails != '') {
       var userParam = getPostParameter(currentLocation);
       let params = {
-        indempotency_key: uuid.v4(),
+        indempotency_key: generateKey(),
         user_email: email,
         user_name: userName,
         user_cell: '+27 0811231234',

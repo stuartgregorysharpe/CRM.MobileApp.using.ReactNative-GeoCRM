@@ -5,7 +5,7 @@ import { getAllOfflineSyncItem } from '../../../../../sqlite/OfflineSyncItemsHel
 
 const  ViewOfflineSyncItemContainer = props => {
 
-    const { onClosed } = props;
+    const { onClosed , onSyncStart } = props;
     const [count, setCount] = useState(3);
 
     useEffect(() => {
@@ -14,12 +14,18 @@ const  ViewOfflineSyncItemContainer = props => {
 
     const getCount = async() => {
         const items = await getAllOfflineSyncItem();
+        console.log("items",items)
         setCount(items.length);  
+    }
+
+    const updateCount = () => {
+        getCount();        
+        onSyncStart();
     }
     
     return (
         <View>
-            <ViewOfflineSyncItem count={count} onClosed={onClosed}/>
+            <ViewOfflineSyncItem count={count} onClosed={onClosed} updateCount={updateCount}/>
         </View>
     )
 }

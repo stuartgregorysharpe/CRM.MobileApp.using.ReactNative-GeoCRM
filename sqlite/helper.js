@@ -17,6 +17,12 @@ export const  OfflineBaskets = [
         ]
     },
     {
+        basketName: 'Add Locations',
+        itemTypes:[
+            'leadfields'
+        ]  
+    },
+    {
         basketName: 'Stock Module',
         itemTypes:[
             'add_stock',

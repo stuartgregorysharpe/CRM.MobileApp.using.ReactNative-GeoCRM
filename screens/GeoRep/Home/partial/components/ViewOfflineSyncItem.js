@@ -10,12 +10,13 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 const ViewOfflineSyncItem = props => {
 
-    const { count , onClosed } = props;
+    const { count , onClosed , updateCount } = props;
     const offlineSyncModalRef = useRef(null);
     
-    const modalClosed = ({type, value}) => {
-        
-        if(type == Constants.actionType.ACTION_CLOSE){                        
+    const modalClosed = ({type, value}) => {        
+        if(type == Constants.actionType.ACTION_CLOSE){
+            offlineSyncModalRef.current.hideModal();
+            updateCount();
         }
     }
 

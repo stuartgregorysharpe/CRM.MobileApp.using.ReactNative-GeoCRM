@@ -7,6 +7,7 @@ import GetRequestFilterDAO from './GetRequestFilter';
 import GetRequestLeadfieldDAO from './GetRequestLeadfield';
 import GetRequestFormListsDAO from './GetRequestFormLists';
 import GetRequestFormQuestionsDAO from './GetRequestFormQuestions';
+import GetRequestStockListsDAO from './GetRequestStockLists';
 
 export { 
             LocationMapDAO, 
@@ -17,5 +18,6 @@ export {
             GetRequestFilterDAO ,
             GetRequestLeadfieldDAO,
             GetRequestFormListsDAO,
-            GetRequestFormQuestionsDAO
+            GetRequestFormQuestionsDAO,
+            GetRequestStockListsDAO
         }

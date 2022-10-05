@@ -30,6 +30,7 @@ import {
 import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
+import { GetRequestStockListsDAO } from '../../../../DAO';
 
 export default function StockLists() {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -54,6 +55,7 @@ export default function StockLists() {
     () => filterItems(items, searchKeyword, filters),
     [items, searchKeyword, filters],
   );
+  
   const stockLists = useMemo(
     () => getStockItemsFromItems(filteredItems),
     [filteredItems],
@@ -63,7 +65,7 @@ export default function StockLists() {
     () => selectedItems.map(x => x.iccid),
     selectedItems,
   );
-  console.log('selectedCodes', selectedCodes);
+  
   const dispatch = useDispatch();
   let isMount = true;
 
@@ -75,17 +77,23 @@ export default function StockLists() {
   }, []);
 
   const callStockLists = () => {
-    getApiRequest('stockmodule/stock-list', {})
-      .then(res => {
-        if (isMount) {
-          console.log('res', JSON.stringify(res));
-          const _items = getItemsFromStockItems(res.stock_items);
-          setItems(_items);
-        }
-      })
-      .catch(e => {
-        console.log('E', e);
-      });
+
+    GetRequestStockListsDAO.find({}).then((res) => {
+      if (isMount) {        
+        console.log("res.stock_items" ,res.stock_items)
+        const _items = getItemsFromStockItems(res.stock_items);
+        setItems(_items);
+      }
+    }).catch((e) => {
+      console.log('stock list api error : ', e);
+    })
+
+    // getApiRequest('stockmodule/stock-list', {})
+    //   .then(res => {       
+    //   })
+    //   .catch(e => {
+    //     console.log('E', e);
+    //   });
   };
 
   const onStockItemPressed = item => {

@@ -12,7 +12,7 @@ const MultiSelectPhoto = props => {
   const multiSelectPhotoModalRef = useRef(null);
   const isCompleted =
     item.completed_data != false && item.completed_data != null && item.completed_data != undefined;
-  const questionButtonType = item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
+  const questionButtonType = item.value != null && item.value != "" ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
 
   const onOpenSKUCountModal = () => {
     if (multiSelectPhotoModalRef && multiSelectPhotoModalRef.current) {

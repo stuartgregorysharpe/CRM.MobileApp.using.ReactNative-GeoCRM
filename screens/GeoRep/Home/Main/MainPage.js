@@ -210,7 +210,7 @@ const  MainPage = props => {
           }}></SubmitButton>
       </View>
 
-      <SyncAll refresh={refresh}></SyncAll>      
+      <SyncAll refresh={refresh} ></SyncAll>      
 
       {isCheckin && (
         <CheckOutViewContainer        

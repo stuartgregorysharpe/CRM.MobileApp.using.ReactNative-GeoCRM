@@ -7,6 +7,7 @@ import uuid from 'react-native-uuid';
 import { getDateTime } from "../helpers/formatHelpers";
 import * as RNLocalize from 'react-native-localize';
 import { formDataToJsonString } from "../helpers/jsonHelper";
+import { generateKey } from "../constants/Utils";
 
 export function checkConnectivity(){
 
@@ -52,7 +53,7 @@ export function getFullAddress (element){
     return address;
 }
   
-export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabel){
+export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabel , itemSubLabel){
 
     return new Promise( async function(resolve, reject) {   
         try{            
@@ -77,13 +78,13 @@ export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabe
             var item_sub_text = address;
             var post_body = JSON.stringify(postData);
 
-            if(type == "form_submission"){
+            if(type == "form_submission" || type == "leadfields"){
                 item_label = itemLabel;
-                item_sub_text = location_name;                
-            }
+                item_sub_text = itemSubLabel != "" ? itemSubLabel : location_name;
+            }  
                                     
             var data = [
-                uuid.v4(),  //indempotency_key, 
+                generateKey(),  //indempotency_key, 
                 type, //item_type
                 item_label, // item_label
                 item_sub_text , // item_sub_text

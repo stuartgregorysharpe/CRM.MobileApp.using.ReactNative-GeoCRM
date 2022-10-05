@@ -9,10 +9,11 @@ import { checkIfQuestionIsTrigger } from '../../../Forms/questions/helper';
 
 export default function CustomMasterFields(props) {
 
-    const { leadForms , accuracyUnit , useGeoLocation , onChangedCustomMasterFields } = props;    
+    const { leadForms , customMasterFields, accuracyUnit , useGeoLocation , onChangedCustomMasterFields } = props;    
 
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const actionFormRef = useRef();    
+    const actionFormRef2= useRef();
     const [formData1, setFormData1] = useState({});
     const [formStructure1, setFormStructure1] = useState([]);
     const [formData2, setFormData2] = useState({});
@@ -40,15 +41,20 @@ export default function CustomMasterFields(props) {
             value = {value: field.dropdown_value, secondValue: field.value};          
           }
         }
-        tmpFormData[field.custom_master_field_id] = value;
+        if(customMasterFields != undefined && customMasterFields[field.custom_master_field_id] != undefined){
+          tmpFormData[field.custom_master_field_id] = customMasterFields[field.custom_master_field_id]  
+        }else{
+          tmpFormData[field.custom_master_field_id] = value;
+        }
+        
       });
 
       if(type == "first"){
         setFormData1(tmpFormData);
-        onChangedCustomMasterFields({...tmpFormData});
+        onChangedCustomMasterFields({...tmpFormData , ...formData2});
       }else{
         setFormData2(tmpFormData);
-        onChangedCustomMasterFields({...tmpFormData});
+        onChangedCustomMasterFields({...formData1, ...tmpFormData});
       }
 
       const dynamicFields = renderForms.map((field, index) => {
@@ -71,7 +77,7 @@ export default function CustomMasterFields(props) {
           key:index,
           field_name: field.custom_master_field_id,
           initial_value: field.value, 
-          editable: field.rule_editable,     
+          editable: field.rule_editable, 
           is_required: true,
           field_label:field.field_name,    
           value: value
@@ -178,7 +184,7 @@ export default function CustomMasterFields(props) {
           {renderUseCurrentLocation()}
 
           <DynamicForm
-            ref={actionFormRef}
+            ref={actionFormRef2}
             formData={formData2}
             formStructureData={formStructure2}
             updateFormData={formData => {                   

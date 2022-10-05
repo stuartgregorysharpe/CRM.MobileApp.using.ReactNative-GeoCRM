@@ -8,9 +8,9 @@ const ViewOfflineSyncModalContainer = props => {
     
     const [typeLists, setTypeLists] = useState([
         {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
-        {label:'Forms' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} , 
-        //{label:'Product Orders' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} ,
         {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false},
+        {label:'Forms' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} , 
+        //{label:'Product Orders' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} ,        
         {label:'Others' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false}
     ]);
 
@@ -54,6 +54,8 @@ const ViewOfflineSyncModalContainer = props => {
             setCurrentSyncItem(index + 1);
             setIsStart(false);
             setIsActive(false);
+            // close modal after sync
+            props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
         }
     }
 

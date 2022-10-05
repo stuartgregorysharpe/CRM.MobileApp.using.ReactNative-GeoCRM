@@ -8,6 +8,7 @@ import RNFS from 'react-native-fs';
 import {Constants, Strings} from '../../../../../constants';
 import uuid from 'react-native-uuid';
 import {validateMsisdn} from '../../../../../helpers/formatHelpers';
+import { generateKey } from '../../../../../constants/Utils';
 var previousText = Constants.msisdnPrefix;
 
 export default function StockSignatureView(props) {
@@ -36,7 +37,7 @@ export default function StockSignatureView(props) {
       Platform.OS === 'ios'
         ? `${RNFS.DocumentDirectoryPath}`
         : `${RNFS.ExternalDirectoryPath}`;
-    const filepath = outputPath + '/sign' + '-' + uuid.v4() + '.png';
+    const filepath = outputPath + '/sign' + '-' + generateKey() + '.png';
     var data = await RNFS.writeFile(
       filepath,
       signature.replace('data:image/png;base64,', ''),

@@ -22,7 +22,7 @@ const Products = props => {
     }        
   };
 
-  const questionButtonType = item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
+  const questionButtonType = item.value != null && item.value != "" ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
 
   const renderTitle = () =>{
     if(questionType == Constants.questionType.FORM_TYPE_PRODUCTS ){

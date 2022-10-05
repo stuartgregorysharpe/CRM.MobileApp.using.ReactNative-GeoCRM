@@ -3,6 +3,7 @@ import { baseURL } from "../constants";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import { CHANGE_LOCATION_FILTERS, CHANGE_LOGIN_STATUS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
 import uuid from 'react-native-uuid';
+import { generateKey } from "../constants/Utils";
 
 
 export const getPipelineFilters = (campaign_id = '') => (dispatch, getState) => {    
@@ -44,7 +45,7 @@ export const postAddOpportunityFields = async (postData) => {
       .post(`${base_url}/pipeline/pipeline-add-edit-opportunity`, postData, {
         headers: {
           Authorization: 'Bearer ' + token,
-          'Indempotency-Key': uuid.v4()
+          'Indempotency-Key': generateKey()
         }
       })
       .then((res) => {
