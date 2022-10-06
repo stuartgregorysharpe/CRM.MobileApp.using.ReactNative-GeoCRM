@@ -1,0 +1,396 @@
+{
+    "status": "success",
+    "total_turnover": {
+        "month_labels": [
+            "Jul",
+            "Aug",
+            "Sep"
+        ],
+        "categories": [
+            {
+                "description": "Trader Payments",
+                "months": {
+                    "Jul": {
+                        "value": "R100 655",
+                        "color": "#9D9FA2"
+                    },
+                    "Aug": {
+                        "value": "R100 655",
+                        "color": "#9D9FA2"
+                    },
+                    "Sep": {
+                        "value": "R100 455",
+                        "color": "#23282D"
+                    }
+                }
+            },
+            {
+                "description": "Vending",
+                "months": {
+                    "Jul": {
+                        "value": "R100 655",
+                        "color": "#9D9FA2"
+                    },
+                    "Aug": {
+                        "value": "R100 655",
+                        "color": "#9D9FA2"
+                    },
+                    "Sep": {
+                        "value": "R100 455",
+                        "color": "#23282D"
+                    }
+                }
+            }
+        ],
+        "grand_totals": {
+            "Jul": {
+                "value": "R100 655",
+                "color": "#9D9FA2"
+            },
+            "Aug": {
+                "value": "R100 655",
+                "color": "#9D9FA2"
+            },
+            "Sep": {
+                "value": "R100 455",
+                "color": "#26B21C"
+            }
+        }
+    },
+    "sections": [
+        {
+            "section_title": "Trader Payments",
+            "section_categories": [
+                {
+                    "category": "Bill Payments",
+                    "last_month": {
+                        "label": "Aug",
+                        "value": "R201 310",
+                        "color": "#9D9FA2"
+                    },
+                    "current_month": {
+                        "label": "Sep",
+                        "value": "R180 255",
+                        "color": "#EE921B",
+                        "arrow": "down"
+                    },
+                    "sub_totals": {
+                        "Jul": {
+                            "value": "R201 210",
+                            "color": "#9D9FA2"
+                        },
+                        "Aug": {
+                            "value": "R201 310",
+                            "color": "#9D9FA2"
+                        },
+                        "Sep": {
+                            "value": "R201 210",
+                            "color": "#26B21C"
+                        }
+                    },
+                    "category_items": [
+                        {
+                            "provider": "Airtime & Data Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Eezi Token Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Airtime & Data Sale Special Bundle",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "category": "1FORU",
+                    "last_month": {
+                        "label": "Aug",
+                        "value": "R201 310",
+                        "color": "#9D9FA2"
+                    },
+                    "current_month": {
+                        "label": "Sep",
+                        "value": "R180 255",
+                        "color": "#EE921B",
+                        "arrow": "down"
+                    },
+                    "sub_totals": {
+                        "Jul": {
+                            "value": "R201 210",
+                            "color": "#9D9FA2"
+                        },
+                        "Aug": {
+                            "value": "R201 310",
+                            "color": "#9D9FA2"
+                        },
+                        "Sep": {
+                            "value": "R201 210",
+                            "color": "#26B21C"
+                        }
+                    },
+                    "category_items": [
+                        {
+                            "provider": "Airtime & Data Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Eezi Token Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Airtime & Data Sale Special Bundle",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "section_title": "Vending",
+            "section_categories": [
+                {
+                    "category": "Airtime",
+                    "last_month": {
+                        "label": "Aug",
+                        "value": "R201 310",
+                        "color": "#9D9FA2"
+                    },
+                    "current_month": {
+                        "label": "Sep",
+                        "value": "R180 255",
+                        "color": "#EE921B",
+                        "arrow": "down"
+                    },
+                    "sub_totals": {
+                        "Jul": {
+                            "value": "R201 210",
+                            "color": "#9D9FA2"
+                        },
+                        "Aug": {
+                            "value": "R201 310",
+                            "color": "#9D9FA2"
+                        },
+                        "Sep": {
+                            "value": "R201 210",
+                            "color": "#26B21C"
+                        }
+                    },
+                    "category_items": [
+                        {
+                            "provider": "Airtime & Data Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Eezi Token Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Airtime & Data Sale Special Bundle",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "category": "Bill Payment",
+                    "last_month": {
+                        "label": "Aug",
+                        "value": "R100 555",
+                        "color": "#9D9FA2"
+                    },
+                    "current_month": {
+                        "label": "Sep",
+                        "value": "R101 655",
+                        "color": "#EE921B",
+                        "arrow": "down"
+                    },
+                    "sub_totals": {
+                        "Jul": {
+                            "value": "R201 210",
+                            "color": "#9D9FA2"
+                        },
+                        "Aug": {
+                            "value": "R201 310",
+                            "color": "#9D9FA2"
+                        },
+                        "Sep": {
+                            "value": "R201 210",
+                            "color": "#26B21C"
+                        }
+                    },
+                    "category_items": [
+                        {
+                            "provider": "Airtime & Data Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Eezi Token Sale",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        },
+                        {
+                            "provider": "Airtime & Data Sale Special Bundle",
+                            "values": {
+                                "Jul": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Aug": {
+                                    "value": "R100 655",
+                                    "color": "#9D9FA2"
+                                },
+                                "Sep": {
+                                    "value": "R100 455",
+                                    "color": "#23282D"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
