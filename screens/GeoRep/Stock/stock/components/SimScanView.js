@@ -1,9 +1,7 @@
 import {View, StyleSheet, Keyboard} from 'react-native';
 import React, {useRef} from 'react';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import {Constants} from '../../../../../constants';
 import SimScanChildView from './SimScanChildView';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import SimViewListsModal from '../modal/sim/SimViewListsModal';
 import ScanView from '../../../../../components/common/ScanView';
 
@@ -55,72 +53,6 @@ export default function SimScanView(props) {
     if (type == Constants.actionType.ACTION_DONE) {
       addStock();
     }
-  };
-
-  const renderCustomerMarker = () => {
-    return (
-      <View style={styles.cameraMarker}>
-        <View style={{alignSelf: 'stretch', flexDirection: 'row'}}>
-          <View
-            style={{
-              borderColor: Colors.green2Color,
-              borderTopWidth: 4,
-              borderLeftWidth: 4,
-              width: 80,
-              height: 80,
-            }}
-          />
-          <View
-            style={{
-              width: 70,
-              height: 80,
-            }}
-          />
-          <View
-            style={{
-              borderColor: Colors.green2Color,
-              borderTopWidth: 4,
-              borderRightWidth: 4,
-              width: 80,
-              height: 80,
-            }}
-          />
-        </View>
-        <View
-          style={{
-            alignSelf: 'stretch',
-            flexDirection: 'row',
-            height: 70,
-          }}
-        />
-        <View style={{alignSelf: 'stretch', flexDirection: 'row'}}>
-          <View
-            style={{
-              borderColor: Colors.green2Color,
-              borderBottomWidth: 4,
-              borderLeftWidth: 4,
-              width: 80,
-              height: 80,
-            }}
-          />
-          <View
-            style={{
-              width: 70,
-              height: 80,
-            }}
-          />
-          <View
-            style={{
-              borderColor: Colors.green2Color,
-              borderBottomWidth: 4,
-              borderRightWidth: 4,
-              width: 80,
-              height: 80,
-            }}
-          />
-        </View>
-      </View>
-    );
   };
 
   return (

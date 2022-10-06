@@ -55,7 +55,7 @@ export default function SwopAtTraderContainer(props) {
     setPhotos(photos);
   };
 
-  const onSwop = () => {
+  const onSwop = data => {
     var postData = new FormData();
     postData.append('stock_type', Constants.stockType.DEVICE);
     postData.append('location_id', props.locationId);
@@ -65,7 +65,7 @@ export default function SwopAtTraderContainer(props) {
     );
     postData.append('return_device[return_reason]', reason);
     postData.append('allocate_device[stock_item_id]', item.stock_item_id);
-    postData.append('allocate_device[assigned_msisdn]', item.serial);
+    postData.append('allocate_device[assigned_msisdn]', data?.msisdn);
     photos.map((path, index) => {
       var fileFormats = getFileFormat(path);
       var key = `return_image[${index}]`;
