@@ -264,18 +264,29 @@ export const getInsertValues = async ( element ) => {
           value = element[key];
         }
 
-        if(index === 0){       
-          if(key === "svg_code"){
+
+        if(index === 0){
+                                        
+          if(key === "svg_code" ){
+            body2 = `'${value}'`;
+          }else if(value.includes(`"`) && value.includes(`'`)){
+            body2 = `'${value.replace(`'`,``)}'`;
+          }else if(value.includes('"')){
             body2 = `'${value}'`;
           }else{
             body2 = `"${value}"`;
-          }          
+          }
         }else {  
-          if(key === "svg_code"){
-            body2 = body2 + `, '` + `${value}` + `'`;
+          if(key === "svg_code" ){
+            body2 =  body2 + `, ` + `'${value}'`;
+          }else if(value.includes(`"`) && value.includes(`'`)){            
+            body2 = body2 + `, ` + `'${value.replace(`'`,``)}'`;
+          }else if(value.includes('"')){
+            body2 =  body2 + `, ` + `'${value}'`;
           }else{
-            body2 = body2 + `, "` + `${value}` + `"`;
-          }          
+            body2 =  body2 + `, ` + `"${value}"`;
+          }
+          
         }
         index = index + 1;
       }    

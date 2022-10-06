@@ -20,6 +20,7 @@ export default function AddStockView(props) {
   const [enableAddStock, setEnableAddStock] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const [count, setCount] = useState(0);
+  const [imei , setEmei] = useState("");
 
   var details = '';
   var quantity = '';
@@ -33,6 +34,7 @@ export default function AddStockView(props) {
   const onDataChangedDevice = (det, qua) => {
     details = det;
     quantity = qua;
+    setEmei(qua);
     if (quantity != '') {
       setEnableAddStock(true);
     } else {
@@ -94,14 +96,16 @@ export default function AddStockView(props) {
       details: details,
       quantity: quantity,
     };
+    console.log("D1" , data);
     if (deviceType == Constants.stockType.DEVICE) {
       data = {
         stock_type: deviceType,
         product_id: productId,
         description: device,
         details: details,
-        device_serial: quantity,
+        device_serial: imei,
       };
+      console.log("D2" , data);
     } else if (deviceType == Constants.stockType.CONSUMABLE) {
       data = {
         stock_type: deviceType,
