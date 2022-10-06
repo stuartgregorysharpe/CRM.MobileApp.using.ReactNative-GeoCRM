@@ -19,7 +19,7 @@ const CustomerSalesHistoryView = props => {
         ListHeaderComponent={() => (
           <TotalTurnoverView
             data={totalTurnOver}
-            style={{marginTop: 16, marginHorizontal: 12}}
+            style={{marginTop: 16, marginHorizontal: 12, marginBottom: 10}}
           />
         )}
         data={sections}

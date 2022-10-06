@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../../components/SvgIcon';
-import {Fonts} from '../../../../../constants';
+import {Fonts, Values} from '../../../../../constants';
 import {whiteLabel} from '../../../../../constants/Colors';
 import {boxShadow, style} from '../../../../../constants/Styles';
 
@@ -152,7 +152,11 @@ const ExpandableCategoryView = props => {
           !isExpanded && {paddingBottom: 8},
           {paddingTop: 8},
         ]}>
-        <View
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            setIsExpanded(!isExpanded);
+          }}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -160,27 +164,32 @@ const ExpandableCategoryView = props => {
             marginLeft: 12,
           }}>
           <SvgIcon icon="Cow_Green_Group_Icon" width="18" height="14" />
-          <Text style={[styles.headerTitleText, {marginLeft: 8}]}>
+          <Text
+            style={[
+              styles.headerTitleText,
+              {
+                fontWeight: 'bold',
+                marginLeft: 8,
+                width: Values.deviceWidth * 0.2,
+              },
+            ]}>
             {category}
           </Text>
           <View style={{flex: 1}} />
+
           {!isExpanded && <MonthPricingView {...last_month} />}
           {!isExpanded && (
             <MonthPricingView {...current_month} style={{marginLeft: 8}} />
           )}
 
-          <TouchableOpacity
-            style={{marginRight: 18, width: 20, height: 20, marginLeft: 8}}
-            onPress={() => {
-              setIsExpanded(!isExpanded);
-            }}>
+          <View style={{marginRight: 18, width: 20, height: 20, marginLeft: 8}}>
             {isExpanded ? (
-              <SvgIcon icon="Drop_Down" width="23px" height="23px" />
-            ) : (
               <SvgIcon icon="Drop_Up" width="23px" height="23px" />
+            ) : (
+              <SvgIcon icon="Drop_Down" width="23px" height="23px" />
             )}
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
         {isExpanded && (
           <View style={{alignSelf: 'stretch'}}>
             <SectionCategoryHeaderView
@@ -240,7 +249,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.primaryRegular,
     color: whiteLabel().mainText,
     textAlign: 'left',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   headerText: {
     fontSize: 12,
