@@ -100,8 +100,9 @@ export const LocationInfoInput = forwardRef((props, ref) => {
             )
           : false;
         setSelectedOutComeId(outcomes ? outcomes.outcome_id : 0);
+
         setSelectedStageId(
-          locInfo.stages
+          locInfo.stages && locInfo.stages.length > 0
             ? locInfo.stages.find(x => x.stage_id == locInfo.current_stage_id)
                 .stage_id
             : 0,
@@ -356,23 +357,25 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         }
         onModalClose={() => setStageModalVisible(false)}
         onValueChanged={(item, index) => {          
-          var stage_id = locationInfo.stages.find(
-            element => element.stage_name === item,
-          ).stage_id;
-          setSelectedStageId(stage_id);
-          setSelectedOutComeId(null);
-          if (locationInfo.outcomes) {
-            var selectedOutcomes = locationInfo.outcomes.filter(
-              outcome => outcome.linked_stage_id == stage_id,
-            );
-            setSelectedOutcomes(selectedOutcomes);
-            var tmp = [];
-            selectedOutcomes.forEach((element, index) => {
-              tmp.push(element.outcome_name);
-            });
-            setOptions(tmp);
-          }
-          setStageModalVisible(false);
+
+          var selectedInfo = locationInfo.stages.find( element => element.stage_name === item);
+          if(selectedInfo != undefined){
+            var stage_id = selectedInfo.stage_id;
+            setSelectedStageId(stage_id);
+            setSelectedOutComeId(null);
+            if (locationInfo.outcomes) {
+              var selectedOutcomes = locationInfo.outcomes.filter(
+                outcome => outcome.linked_stage_id == stage_id,
+              );
+              setSelectedOutcomes(selectedOutcomes);
+              var tmp = [];
+              selectedOutcomes.forEach((element, index) => {
+                tmp.push(element.outcome_name);
+              });
+              setOptions(tmp);
+            }
+            setStageModalVisible(false);
+          }                    
         }}></SelectionPicker>
     );
   };

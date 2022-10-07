@@ -76,9 +76,8 @@ const LocationContainer = props => {
       !isLoading;
 
     if (isLoadable) {
-      setIsLoading(true);
-      console.log(' load mark api');
-      LocationMapDAO.find(_currentLocation, boundBox)
+      setIsLoading(true);      
+      LocationMapDAO.find(_currentLocation, boundBox , features)
         .then(res => {
           getJsonData('@map_pin_key').then(mapPinSvg => {
             setIsLoading(false);
@@ -103,7 +102,7 @@ const LocationContainer = props => {
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
         .catch(e => {
-          console.log('Error');
+          console.log('location map api error : '  , e);
           setIsLoading(false);
           expireToken(dispatch, e);
         });
@@ -158,6 +157,7 @@ const LocationContainer = props => {
       dispatch({type: STATUS_PIN_KEY, payload: 'success'});
       dispatch({type: CHANGE_PIN_KEY, payload: pins});      
     }).catch(e => {
+      console.log("locaiton pin key api error: " , e)
     });
     
   };

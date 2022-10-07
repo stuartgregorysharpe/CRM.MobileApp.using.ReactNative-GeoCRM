@@ -14,6 +14,7 @@ import {
   setToken,
 } from '../constants/Storage';
 import { generateKey } from '../constants/Utils';
+import GetRequestLocationInfo from '../DAO/GetRequestLocationInfo';
 
 export const getLocationFilters = () => (dispatch, getState) => {
   dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
@@ -247,14 +248,13 @@ export const postLocationInfoUpdate = async postData => {
 };
 
 export const getLocationInfo = async (location_id, currentLocation) => {
-  console.log('currentLocation', currentLocation);
+  
   var base_url = await getBaseUrl();
   var token = await getToken();
   var user_id = await getUserId();
   var prev_locations = await getLocationLoop();
   var prev_ids = prev_locations.map(item => item.location_id).join(',');
 
-  console.log('prev_ids', prev_ids);
   var params = {
     user_id: user_id,
     location_id: location_id,
@@ -268,34 +268,41 @@ export const getLocationInfo = async (location_id, currentLocation) => {
       prev_locations: prev_ids,
     };
   }
-  console.log('params', params);
-  //prev_locations=1332,1331&current_latitude=-33.7009653&current_longitude=18.4420495
+
   return new Promise(function (resolve, reject) {
-    axios
-      .get(`${base_url}/locations/location-info`, {
-        params: params,
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then(res => {
-        if (res.data == undefined) {
-          resolve([]);
-        }
-        resolve(res.data);
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
+
+    GetRequestLocationInfo.find(params).then((res) => {
+      resolve(res);
+    }).catch((e) => {
+      reject();
+    });
+    
+    // axios
+    //   .get(`${base_url}/locations/location-info`, {
+    //     params: params,
+    //     headers: {
+    //       Authorization: 'Bearer ' + token,
+    //     },
+    //   })
+    //   .then(res => {
+    //     if (res.data == undefined) {
+    //       resolve([]);
+    //     }
+    //     resolve(res.data);
+    //   })
+    //   .catch(err => {
+    //     const error = err.response;
+    //     if (
+    //       error.status === 401 &&
+    //       error.config &&
+    //       !error.config.__isRetryRequest
+    //     ) {
+    //       reject('expired');
+    //     } else {
+    //       reject(err);
+    //     }
+    //   });
+
   });
 };
 
