@@ -195,3 +195,9 @@ export const getDateTimeFromBasketTime = dateTime => {
   );
   return currentTime;
 };
+
+export const parseDateFromString = dtString => {
+    
+  return dtString.match(/\d{4}([.\-/ ])\d{2}\1\d{2}/);
+
+}

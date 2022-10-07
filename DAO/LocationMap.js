@@ -39,11 +39,12 @@ export function find(currentLocation, box ,features){
                 var business_unit_id = await getTokenData("business_unit_id");                   
                 var locationName = await getLocationName(client_id, business_unit_id);                
                 var locations = await getLocations(client_id, business_unit_id, box ,features);
+            
                 resolve(getResponse( locationName, locations));
 
             }
         }).catch(e => {
-            reject();
+            reject(e);
         });
   });
 
