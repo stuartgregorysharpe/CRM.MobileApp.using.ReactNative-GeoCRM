@@ -1101,7 +1101,6 @@ const DoubleArrowWhite = `<svg id="Blue_Double_Arrow" data-name="Blue Double Arr
 </svg>
 `;
 
-
 const QR_SCAN = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 62 62">
 <g id="qr_code_scanner_black_24dp" transform="translate(-0.002 -0.002)">
   <rect id="Rectangle_3072" data-name="Rectangle 3072" width="62" height="62" transform="translate(0.002 0.002)" fill="none"/>
@@ -1177,19 +1176,44 @@ const Pluse_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="4
   </g>
 </g>
 </svg>
-`
+`;
 
+const Cow_Green_Group_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="61" height="44" viewBox="0 0 61 44">
+  <g id="Group_5905" data-name="Group 5905" transform="translate(-52 -1305)">
+    <g id="Rectangle_3235" data-name="Rectangle 3235" transform="translate(52 1305)" fill="#b2fa00" stroke="#133c8b" stroke-width="2">
+      <rect width="61" height="44" stroke="none"/>
+      <rect x="1" y="1" width="59" height="42" fill="none"/>
+    </g>
+    <path id="Path_4183" data-name="Path 4183" d="M36.726,19.341c-1.373-1.053-2.886-2.651-2.684-4.852a2.883,2.883,0,0,0,1.9-1.5,2.189,2.189,0,0,0-.394-2.627.157.157,0,0,0-.274.114,1.7,1.7,0,0,1-1.4,2.082c-1.618.332-4.4-.066-5.334-.92-.864-.787-.955-1.731-.173-3.2a.157.157,0,0,0-.206-.213,3.042,3.042,0,0,0-2.007,2.993A3,3,0,0,0,28,13.992c-5.041,1.537-7.12-.313-12.843-.394-4.763-.066-5.877,3.851-5.613,7.863a30.17,30.17,0,0,0,.562,4.733c.259,1.043.845,1.65.792,2.974a10.06,10.06,0,0,0-.014,2.518.535.535,0,0,0,.4.427,2.82,2.82,0,0,0,1.546.014c.259-.076.456-.213.4-.441-.466-2-.9-4.709-.442-6.507a.429.429,0,0,1,.682-.294,9.38,9.38,0,0,1,2.2,1.807,11.865,11.865,0,0,1,2.794,6.16.726.726,0,0,0,.447.664,2.275,2.275,0,0,0,1.815-.071.38.38,0,0,0,.206-.422c-.485-1.944-2.065-4.287-2.2-6.355-.029-.422.12-.46.466-.4a10.827,10.827,0,0,0,1.34.142.466.466,0,0,1,.341.161c1.608,1.944,3.423,4.7,3.294,7.564a.5.5,0,0,0,.192.408c.552.451.562,1.456.653,2.376a.5.5,0,0,0,.322.432,3.253,3.253,0,0,0,2.223.024.277.277,0,0,0,.187-.294c-.264-1.807-1.709-3.32-1.368-6.023.072-.588.543-1.432.859-2.523.754-2.585.567-3.405,1.306-4.875.475-.949,1.556-2.172,3.058-1.314a4.175,4.175,0,0,0,2.78.683,3.428,3.428,0,0,0,2.7-2.717A.966.966,0,0,0,36.726,19.341Z" transform="translate(59.203 1304.116)" fill="#000"/>
+  </g>
+</svg>
 
-export default ({icon, xml, color, width = '100%', height = '100%', style = {}}) => (
-  
+`;
+const Price_Rise_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
+  <g id="Group_5918" data-name="Group 5918" transform="translate(-6936 -12299)">
+    <path id="Path_5500" data-name="Path 5500" d="M16.1,25.5V9.7l-6,6L8,13.6l9.65-9.65L27.3,13.6l-2.1,2.1L19.1,9.65V25.5Z" transform="translate(6928 12295.05)" fill="#26b21c"/>
+    <path id="Path_5501" data-name="Path 5501" d="M30.35,43.95l-9.65-9.7,2.1-2.05,6,6V22.4h3V38.25l6.1-6.05L40,34.3Z" transform="translate(6928 12295.05)" fill="#9d9fa2"/>
+  </g>
+</svg>
+`;
+const Price_Fall_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
+  <g id="Group_5904" data-name="Group 5904" transform="translate(-6887 -12299)">
+    <path id="Path_5498" data-name="Path 5498" d="M16.1,25.5V9.7l-6,6L8,13.6l9.65-9.65L27.3,13.6l-2.1,2.1L19.1,9.65V25.5Z" transform="translate(6879 12295.05)" fill="#9d9fa2"/>
+    <path id="Path_5499" data-name="Path 5499" d="M30.35,43.95l-9.65-9.7,2.1-2.05,6,6V22.4h3V38.25l6.1-6.05L40,34.3Z" transform="translate(6879 12295.05)" fill="#ee921b"/>
+  </g>
+</svg>
+`;
+export default ({
+  icon,
+  xml,
+  color,
+  width = '100%',
+  height = '100%',
+  style = {},
+}) => (
   <Fragment>
-    { xml != null && xml != undefined && (
-      <SvgXml
-        style={style}
-        xml={xml}
-        width={width}
-        height={height}
-      />
+    {xml != null && xml != undefined && (
+      <SvgXml style={style} xml={xml} width={width} height={height} />
     )}
 
     {icon == 'Round_Btn_Default_Dark' && (
@@ -1611,13 +1635,16 @@ export default ({icon, xml, color, width = '100%', height = '100%', style = {}})
       <SvgXml style={style} xml={Check_Circle} width={width} height={height} />
     )}
     {icon == 'Sync' && (
-      <SvgXml 
-      fill={color != undefined ? color : '#fff'}
-      style={[style, {color:'#000'}]} xml={Sync} width={width} height={height} />
+      <SvgXml
+        fill={color != undefined ? color : '#fff'}
+        style={[style, {color: '#000'}]}
+        xml={Sync}
+        width={width}
+        height={height}
+      />
     )}
     {icon == 'Colored_Sync' && (
-      <SvgXml       
-      style={style} xml={Colored_Sync} width={width} height={height} />
+      <SvgXml style={style} xml={Colored_Sync} width={width} height={height} />
     )}
 
     {icon == 'Bottom_Arrow' && (
@@ -1741,10 +1768,22 @@ export default ({icon, xml, color, width = '100%', height = '100%', style = {}})
     )}
 
     {icon == 'DoubleArrow' && (
-      <SvgXml style={style} xml={DoubleArrow} width={width} height={height} fill={color != undefined ? color : '#fff'} />
+      <SvgXml
+        style={style}
+        xml={DoubleArrow}
+        width={width}
+        height={height}
+        fill={color != undefined ? color : '#fff'}
+      />
     )}
     {icon == 'DoubleArrowWhite' && (
-      <SvgXml style={style} xml={DoubleArrowWhite} width={width} height={height} fill={color != undefined ? color : '#fff'} />
+      <SvgXml
+        style={style}
+        xml={DoubleArrowWhite}
+        width={width}
+        height={height}
+        fill={color != undefined ? color : '#fff'}
+      />
     )}
     {icon == 'QR_SCAN' && (
       <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
@@ -1781,13 +1820,40 @@ export default ({icon, xml, color, width = '100%', height = '100%', style = {}})
     )}
 
     {icon == 'Image_Capture_Disable' && (
-      <SvgXml style={style} xml={Image_Capture_Disable} width={width} height={height} />
+      <SvgXml
+        style={style}
+        xml={Image_Capture_Disable}
+        width={width}
+        height={height}
+      />
     )}
 
     {icon == 'Pluse_Icon' && (
       <SvgXml style={style} xml={Pluse_Icon} width={width} height={height} />
     )}
-
-
+    {icon == 'Cow_Green_Group_Icon' && (
+      <SvgXml
+        style={style}
+        xml={Cow_Green_Group_Icon}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Price_Rise_Icon' && (
+      <SvgXml
+        style={style}
+        xml={Price_Rise_Icon}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Price_Fall_Icon' && (
+      <SvgXml
+        style={style}
+        xml={Price_Fall_Icon}
+        width={width}
+        height={height}
+      />
+    )}
   </Fragment>
 );
