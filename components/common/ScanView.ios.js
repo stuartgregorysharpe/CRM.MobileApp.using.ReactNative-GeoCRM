@@ -190,6 +190,17 @@ const ScanView = props => {
       },
     };
   };
+  const renderSwitchPartialButton = () => {
+    return (
+      <TouchableOpacity
+        style={styles.switchButton}
+        onPress={() => {
+          setIsPartialDetect(!isPartialDetect);
+        }}>
+        <SvgIcon icon="Sync" width="50" height="50" />
+      </TouchableOpacity>
+    );
+  };
   const renderBoundingBoxes = () => {
     if (!isPartialDetect) return null;
     if (!barcode) return null;
@@ -305,10 +316,12 @@ const ScanView = props => {
         bottomViewStyle={{position: 'absolute'}}
       />
       <View style={styles.detectLayer}>
+        {/*renderSwitchPartialButton()*/}
         {renderCustomerMarker()}
         {renderBoundingBoxes()}
       </View>
       {renderLastScanResultView()}
+
       {renderCloseButton()}
     </SafeAreaView>
   );
@@ -340,6 +353,13 @@ const styles = StyleSheet.create({
     top: Values.statusBarHeight,
     left: 0,
     position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  switchButton: {
+    position: 'absolute',
+    top: 35,
+    left: 24,
   },
 });
 
