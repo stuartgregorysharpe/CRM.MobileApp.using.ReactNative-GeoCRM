@@ -298,13 +298,16 @@ const ScanView = props => {
       <QRCodeScanner
         onRead={onSuccess}
         reactivate={true}
-        customMarker={renderCustomerMarker()}
         showMarker
+        customMarker={<View />}
         cameraStyle={{height: '100%'}}
         topViewStyle={{position: 'absolute'}}
         bottomViewStyle={{position: 'absolute'}}
       />
-      <View style={styles.detectLayer}>{renderBoundingBoxes()}</View>
+      <View style={styles.detectLayer}>
+        {renderCustomerMarker()}
+        {renderBoundingBoxes()}
+      </View>
       {renderLastScanResultView()}
       {renderCloseButton()}
     </SafeAreaView>
@@ -314,6 +317,13 @@ const ScanView = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  regionCameraMarker: {
+    width: Values.deviceWidth - 80,
+    height: 120,
+    position: 'absolute',
+    top: (Values.deviceHeight * 0.6 - 120) / 2,
+    left: 40,
   },
   cameraMarker: {
     width: 230,
