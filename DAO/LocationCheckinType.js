@@ -31,12 +31,10 @@ export function find(features){
                     resolve(getResponse(checkinTypes, business_unit_id, client_id));                                
                 }else{
                     resolve([]);
-                }                             
-                
-
+                }                
             }
         }).catch(e => {
-            reject();
+            reject(e);
         });
   });
 

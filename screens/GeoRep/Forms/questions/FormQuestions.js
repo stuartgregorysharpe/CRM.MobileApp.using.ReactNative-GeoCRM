@@ -238,6 +238,7 @@ export const FormQuestions = props => {
         );
     }).catch((e) => {
       loadingBarRef.current.hideModal();
+      expireToken(dispatch, e);
     });    
   };
 

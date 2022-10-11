@@ -4,6 +4,7 @@ import {StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   checkFeatureIncludeParamFromSession,
+  expireToken,
   getPostParameter,
 } from '../../../constants/Helper';
 import {getLocalData} from '../../../constants/Storage';
@@ -129,7 +130,9 @@ const CheckinLinkButton = props => {
           });
           setFeedbackOptions(options);
           setCheckInTypes(res);
-    });        
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    })
   };
 
 
@@ -152,7 +155,9 @@ const CheckinLinkButton = props => {
         locationId: locationId,
         page: 'checkin',
       });
-    });
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    })
 
   };
 

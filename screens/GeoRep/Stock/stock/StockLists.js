@@ -31,6 +31,7 @@ import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
 import { GetRequestStockListsDAO } from '../../../../DAO';
+import { expireToken } from '../../../../constants/Helper';
 
 export default function StockLists() {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -85,15 +86,8 @@ export default function StockLists() {
         setItems(_items);
       }
     }).catch((e) => {
-      console.log('stock list api error : ', e);
-    })
-
-    // getApiRequest('stockmodule/stock-list', {})
-    //   .then(res => {       
-    //   })
-    //   .catch(e => {
-    //     console.log('E', e);
-    //   });
+      expireToken(dispatch , e);            
+    })    
   };
 
   const onStockItemPressed = item => {

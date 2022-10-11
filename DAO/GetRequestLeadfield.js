@@ -30,7 +30,7 @@ export function find(postData){
 
             }
         }).catch((e) => {
-            reject();
+            reject(e);
         });
 
   });

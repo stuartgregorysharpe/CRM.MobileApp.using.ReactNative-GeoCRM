@@ -45,6 +45,7 @@ import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
+  expireToken,
   getPostParameter,  
 } from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
@@ -303,6 +304,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 
     }).catch(e => {
       console.log("Error : " , e);
+      expireToken(dispatch, e);
     });
     
   };
@@ -388,6 +390,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       setFeedbackOptions(options);
       setCheckInTypes(res);
       console.log("check type", res)
+    }).catch((e) => {
+      expireToken(dispatch, e);
     });
   };
 
@@ -417,7 +421,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         page: 'checkin',
       });
 
-    });
+    }).catch((e) => {
+      expireToken(dispatch , e);
+    })
           
   };
 
@@ -439,6 +445,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             var specificLocationId = await getLocalData(
               '@specific_location_id',
             );
+                        
             props.navigation.navigate('LocationSpecificInfo', {
               locationId: specificLocationId,
               page: 'checkin',

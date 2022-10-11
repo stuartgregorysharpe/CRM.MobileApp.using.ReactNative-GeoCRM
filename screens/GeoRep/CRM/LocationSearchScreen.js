@@ -251,8 +251,7 @@ export default function LocationSearchScreen(props) {
     LocationSearchDAO.find(currentLocation, filterData, pageNumber, searchKey , features).then((res) => {
 
         setIsLoading(false);
-        if (searchKey !== changedKey) {
-          console.log(searchKey, changedKey);
+        if (searchKey !== changedKey) {          
           setPageNumber(0);
           isEndPageLoading = false;
           getSearchData(res, searchKey, 'pagination');
@@ -269,7 +268,7 @@ export default function LocationSearchScreen(props) {
         }
 
     }).catch((e) => {
-
+      expireToken(dispatch, e);
     });
 
 

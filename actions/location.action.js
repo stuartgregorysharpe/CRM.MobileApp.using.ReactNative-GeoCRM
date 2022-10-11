@@ -14,7 +14,7 @@ import {
   setToken,
 } from '../constants/Storage';
 import { generateKey } from '../constants/Utils';
-import GetRequestLocationInfo from '../DAO/GetRequestLocationInfo';
+import { GetRequestLocationInfoDAO } from '../DAO';
 
 export const getLocationFilters = () => (dispatch, getState) => {
   dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
@@ -271,38 +271,12 @@ export const getLocationInfo = async (location_id, currentLocation) => {
 
   return new Promise(function (resolve, reject) {
 
-    GetRequestLocationInfo.find(params).then((res) => {
+    GetRequestLocationInfoDAO.find(params).then((res) => {
       resolve(res);
     }).catch((e) => {
-      reject();
+      reject(e);
     });
-    
-    // axios
-    //   .get(`${base_url}/locations/location-info`, {
-    //     params: params,
-    //     headers: {
-    //       Authorization: 'Bearer ' + token,
-    //     },
-    //   })
-    //   .then(res => {
-    //     if (res.data == undefined) {
-    //       resolve([]);
-    //     }
-    //     resolve(res.data);
-    //   })
-    //   .catch(err => {
-    //     const error = err.response;
-    //     if (
-    //       error.status === 401 &&
-    //       error.config &&
-    //       !error.config.__isRetryRequest
-    //     ) {
-    //       reject('expired');
-    //     } else {
-    //       reject(err);
-    //     }
-    //   });
-
+      
   });
 };
 

@@ -7,64 +7,77 @@ export function find(postData){
   
   return new Promise(function(resolve, reject) {
 
-        GetRequest.call( "stockmodule/stock-list",  postData).then( async(res) => {
+        GetRequest.call("stockmodule/returns-list",  postData).then( async(res) => {
 
             if(res.status == Strings.Success && res.isConnected){
-                resolve(res.data);            
+                resolve(res.data);
             }else if(res.status == Strings.Success && !res.isConnected){
                 
                 const client_id = res.data.client_id;
                 const business_unit_id = res.data.business_unit_id;
                 const user_id = res.data.user_id;
 
-                if(client_id && business_unit_id && user_id){                    
-                    var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);                    
-                    resolve({status: Strings.Success , stock_items: getData(lists)});                                                       
+                if(client_id && business_unit_id && user_id){                                  
+                    var lists = await fetchDataFromDB(business_unit_id, client_id,  user_id , postData);                    
+                    resolve({status: Strings.Success , stock_items: getData(lists)});                    
                 }else{
                     reject();
-                }            
-
+                }
             }
         }).catch((e) => {
             reject(e);
-        });        
+        });
   });
 }
 
 
 const fetchDataFromDB = async(business_unit_id, client_id, user_id  , postData) => {
     const query = generateQuery(postData);    
-    const res = await ExecuteQuery(query, [business_unit_id, client_id , user_id]);
+    const res = await ExecuteQuery(query, [client_id, business_unit_id , client_id, business_unit_id , user_id ]);
     return res.rows ? res.rows : [];    
 }
 
 const generateQuery = (postData) => {
-    var query = `SELECT ` + 
-          `stock_module_item_id, ` + 
-          `description, ` + 
-          `type, ` + 
-          `device_serial_number, ` + 
-          `consumables_quantity, ` + 
-          `added_date, ` + 
-          `sim_iccid, ` + 
-          `sim_box, ` + 
-          `sim_innerbox, ` + 
-          `sim_brick, ` + 
-          `sim_kit ` + 
-        `FROM stock_module_items ` + 
-        `WHERE ` + 
-          `business_unit_id = ? ` + 
-        `AND client_id = ? ` + 
-        `AND user_id = ? ` + 
-        `AND delete_status = 0 ` + 
-        `AND stock_status = 'stock_on_hand'`;
-
-        if(postData != null && postData.stock_type != undefined){
-            if(postData.stock_type == "Device"){
-                query = query + ' AND type = "Device" ';      
-            }
-        }
-        query = query + ` ORDER BY type DESC `;        
+    
+    var query  = `SELECT ` + 
+						`smi.description, ` + 
+						`smi.device_serial_number, ` + 
+						`smi.stock_module_item_id, ` + 
+						`rd.return_reason, ` + 
+						`rd.return_date ` + 
+					`FROM ` + 
+						`stock_module_items AS smi ` + 
+					`LEFT JOIN( ` + 
+						`SELECT ` + 
+						`	* ` + 
+						`FROM ` + 
+							`( ` + 
+							`SELECT ` + 
+								`stock_module_item_id, ` + 
+								`return_reason, ` + 								
+								`added_date AS "return_date" ` + 
+							`FROM ` + 
+								`stock_module_history ` + 
+							`WHERE ` + 
+								`client_id = ? ` + 
+								 `AND delete_status = 0  ` + 
+								 `AND action_type = "return" ` + 
+								`AND business_unit_id = ? ` + 
+							`ORDER BY ` + 
+								`added_date ` + 
+							`DESC ` + 
+							`) AS sh ` + 
+					`GROUP BY ` + 
+						`stock_module_item_id ` + 
+					`) AS rd ` + 
+					`ON ` + 
+						`smi.stock_module_item_id = rd.stock_module_item_id ` + 
+					`WHERE ` + 
+						`smi.client_id = ? ` + 
+						`AND smi.business_unit_id = ? ` + 
+						`AND smi.user_id = ? ` + 
+						`AND smi.delete_status = 0  ` + 
+						`AND smi.stock_status = "returned" `;
     return query;
 }
 
@@ -74,7 +87,6 @@ const getData = (lists) => {
     var simItems  = [];
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);
-
         
         if(element.type == Constants.stockType.DEVICE || element.type == Constants.stockType.CONSUMABLE){
             if(element.type == Constants.stockType.DEVICE) {
@@ -108,23 +120,13 @@ const getData = (lists) => {
                 brick : element.sim_brick,
                 kit : element.sim_kit                
             }
-            
-            console.log("Sim Item  Description : " , element.description);
-            console.log("Sim Item : " , simItem);
 
             simItems.push( {
                 [element.description]:{
                     date: element.added_date,
                     items: [simItem]
                 }
-            });      
-
-            // if (!simItems[element.description]) {
-            //     simItems[element.description] = [];
-            // }            
-            // simItems[element.description].push({date: element.added_date , items: [simItem] });
-            console.log("DDDD == " , simItems[element.description]);
-            
+            });            
         }                 
     }
     

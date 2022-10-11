@@ -6,17 +6,21 @@ import FormFilterModalView from '../components/FormFilterModalView';
 import { GetRequestFilterDAO } from '../../../../DAO';
 import UrlResource from '../../../../DAO/UrlResource';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
+import { expireToken } from '../../../../constants/Helper';
 
 const  FormFilterContainer = (props) => {
     
     const [items , setItems] = useState([]);
+    const dispatch = useDispatch();
+
     let isMount = true;
 
     useEffect(() => {
         GetRequestFilterDAO.find(UrlResource.Form.Filter, {}).then((res) => {                                
             initItems(res.items)   
         }).catch((e) => {
-            console.log("error" , e)
+            console.log("error" , e);
+            expireToken(dispatch , e);
         });
         return () => {
             isMount = false;

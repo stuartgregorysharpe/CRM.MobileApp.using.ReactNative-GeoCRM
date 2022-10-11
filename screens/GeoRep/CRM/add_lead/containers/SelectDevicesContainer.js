@@ -7,15 +7,18 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
 import { Constants, Strings } from '../../../../../constants';
 import { GetRequestStockListsDAO } from '../../../../../DAO';
+import { expireToken } from '../../../../../constants/Helper';
 
 const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
-    const { selLists } = props;
+    const { selLists } = props;    
     const [stockItems, setStockItems] = useState([]);
     const stockSignatureModalRef = useRef(null);
     const [stockItem, setStockItem] = useState();
     const [selectedLists, setSelectedLists] = useState([]);
     const [showStockItems, setShowStockItems] = useState([]);
+
+    const dispatch = useDispatch();
 
     var isMount = true;
     useEffect(() => {
@@ -36,7 +39,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
                 updateLists( res.stock_items, selLists);
             }           
         }).catch((e) => {
-
+            expireToken(dispatch , e);
         })
 
         // getApiRequest("stockmodule/stock-list?stock_type=Device" , {}).then((res) => {            
