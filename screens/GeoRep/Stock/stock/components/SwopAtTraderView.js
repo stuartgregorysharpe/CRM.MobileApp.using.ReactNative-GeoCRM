@@ -49,7 +49,10 @@ export default function SwopAtTraderView(props) {
         title="Select Device"
         lists={lists}
         onItemSelected={item => {
-          onReturnDevice(item);
+          if (onReturnDevice) {
+            onReturnDevice(item);
+          }
+
           setDevice(item);
           checkEnabled(item, reason, photos);
         }}></DropdownInput>
@@ -64,8 +67,11 @@ export default function SwopAtTraderView(props) {
         disabled={false}
         onSelectItem={item => {
           setReason(item.label);
+
           console.log('selected reason', item);
-          onReason(item.label);
+          if (onReason) {
+            onReason(item.label);
+          }
           checkEnabled(device, item.label, photos);
         }}
         containerStyle={{marginTop: 15}}
@@ -75,7 +81,10 @@ export default function SwopAtTraderView(props) {
         isOptimize={true}
         onUpdatePhotos={photos => {
           setPhotos(photos);
-          onPhotos(photos);
+
+          if (onPhotos) {
+            onPhotos(photos);
+          }
           checkEnabled(device, reason, photos);
         }}
         disabled={false}

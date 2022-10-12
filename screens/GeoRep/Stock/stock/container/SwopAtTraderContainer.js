@@ -19,9 +19,6 @@ import {Notification} from '../../../../../components/modal/Notification';
 export default function SwopAtTraderContainer(props) {
   const {locationId, item} = props;
   const [lists, setLists] = useState([]);
-  const [returnDevice, setReturnDevice] = useState();
-  const [reason, setReason] = useState('');
-  const [photos, setPhotos] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
 
@@ -45,23 +42,14 @@ export default function SwopAtTraderContainer(props) {
     };
   }, []);
 
-  const onReturnDevice = returnDevice => {
-    setReturnDevice(returnDevice);
-  };
-  const onReason = reason => {
-    setReason(reason);
-  };
-  const onPhotos = photos => {
-    setPhotos(photos);
-  };
-
   const onSwop = data => {
+    const {reason, photos, device} = data;
     var postData = new FormData();
     postData.append('stock_type', Constants.stockType.DEVICE);
     postData.append('location_id', props.locationId);
     postData.append(
       'return_device[location_device_id]',
-      returnDevice.location_device_id,
+      device.location_device_id,
     );
     postData.append('return_device[return_reason]', reason);
     postData.append('allocate_device[stock_item_id]', item.stock_item_id);
@@ -105,14 +93,7 @@ export default function SwopAtTraderContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
-      <SwopAtTraderView
-        onSwop={onSwop}
-        onReturnDevice={onReturnDevice}
-        onReason={reason => onReason(reason)}
-        onPhotos={photos => onPhotos(photos)}
-        lists={lists}
-        {...props}
-      />
+      <SwopAtTraderView onSwop={onSwop} lists={lists} {...props} />
       <Notification />
     </View>
   );
