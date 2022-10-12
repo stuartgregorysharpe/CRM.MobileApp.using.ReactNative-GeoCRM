@@ -36,7 +36,6 @@ export function find(features){
             reject(e);
         });
   });
-
 }
 
 const generateCheckinTypeQuery = () => {
@@ -49,7 +48,7 @@ const generateCheckinTypeQuery = () => {
                         `business_unit_id = ? ` + 
                     `AND client_id = ? ` + 
                     `AND delete_status = 0 `;    
-    return query;              
+    return query;
 }
 
 const generateReasonQuery = (ids) => {

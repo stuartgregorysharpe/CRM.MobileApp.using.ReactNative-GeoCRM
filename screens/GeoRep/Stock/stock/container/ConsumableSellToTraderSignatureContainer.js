@@ -12,6 +12,7 @@ import {
 } from '../../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
+import { expireToken } from '../../../../../constants/Helper';
 
 export default function ConsumableSellToTraderSignatureContainer(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -78,13 +79,18 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
               })
               .catch(e => {
                 console.log('error', e);
-                dispatch(
-                  showNotification({
-                    type: Strings.Success,
-                    message: 'Error',
-                    buttonText: 'Ok',
-                  }),
-                );
+                if(e === 'expired'){
+                  expireToken(dispatch,e)
+                }else{
+                  dispatch(
+                    showNotification({
+                      type: Strings.Success,
+                      message: 'Error',
+                      buttonText: 'Ok',
+                    }),
+                  );
+                }
+                
               });
           } else {
             console.log('no file exist', signature);

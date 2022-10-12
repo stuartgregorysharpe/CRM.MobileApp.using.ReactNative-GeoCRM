@@ -9,6 +9,7 @@ import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import {Constants, Strings} from '../../../../../constants';
 import {
+  expireToken,
   getFileFormat,
   notifyMsg,
   objectToFormData,
@@ -18,7 +19,9 @@ import {
   constructUpdateActionFormStructure,
   getUpdateActionItemPostValue,
 } from '../helper';
+
 const UpdateActionFormContainer = props => {
+  
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
   const [buttons, setButtons] = useState([]);
@@ -27,6 +30,7 @@ const UpdateActionFormContainer = props => {
   const [isLoading, setIsLoading] = useState(false);
   const actionFormRef = useRef(null);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+
   const load = () => {
     setIsLoading(true);
     getApiRequest('actionsitems/action-item-details', {
@@ -50,11 +54,14 @@ const UpdateActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch, e);
       });
   };
+
   useEffect(() => {
     load();
   }, []);
+
   const onSubmit = () => {
     if (!actionFormRef.current.validateForm()) return;
     setIsLoading(true);
@@ -90,6 +97,7 @@ const UpdateActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch, e);
       });
   };
   return (

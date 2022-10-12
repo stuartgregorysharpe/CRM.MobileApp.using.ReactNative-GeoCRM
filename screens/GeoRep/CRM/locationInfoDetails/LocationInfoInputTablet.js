@@ -44,7 +44,7 @@ import {
 } from '../../../../actions/actionTypes';
 import Fonts from '../../../../constants/Fonts';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import {getPostParameter} from '../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../constants/Helper';
 
 export const LocationInfoInputTablet = forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -174,6 +174,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
+        expireToken(dispatch, e)
       });
   };
 
@@ -201,6 +202,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
       .catch(error => {
         setMessage(error);
         setIsSuccess(true);
+        expireToken(dispatch, error);
       });
   };
 

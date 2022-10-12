@@ -39,12 +39,13 @@ import {clearNotification} from '../actions/notification.action';
 import {getDynamicPins} from '../actions/pins.actions';
 import { Images } from '../constants';
 import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
+import { expireToken } from '../constants/Helper';
 
 export default function SignIn() {
 
   const loginStatus = useSelector(state => state.auth.loginStatus);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('carl@cydcor.com');
+  const [password, setPassword] = useState('Test2021#');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [step, setStep] = useState(false);
@@ -134,6 +135,7 @@ export default function SignIn() {
             })
             .catch(e => {
               console.log('E', e);
+              expireToken(dispatch,e);
             });          
         } else if (res.status === 'failed') {
           console.log("failed", res);

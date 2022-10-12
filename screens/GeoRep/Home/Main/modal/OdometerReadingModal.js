@@ -24,6 +24,8 @@ import * as ImagePicker from 'react-native-image-picker';
 import PhotoCameraPickerDialog from '../../../../../components/modal/PhotoCameraPickerDialog';
 import * as RNLocalize from 'react-native-localize';
 import {Notification} from '../../../../../components/modal/Notification';
+import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../../constants/Helper';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
@@ -37,6 +39,8 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const [imageRequired, setImageRequired] = useState(false);
   const [isStartRequired, setIsStartRequired] = useState(false);
   const [isEndRequired, setIsEndRequired] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     _callGetOdometer();
@@ -57,7 +61,9 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         setDistanceMeasure(res.distance_measure);
         setImageRequired(res.image_required === '1' ? true : false);
       })
-      .catch(error => {});
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const _callOdometer = () => {
@@ -124,7 +130,8 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         }
       })
       .catch(error => {
-        console.log('Err', error);
+        console.log('home/odometer post api error:', error);
+        expireToken(dispatch, e)
       });
   };
 

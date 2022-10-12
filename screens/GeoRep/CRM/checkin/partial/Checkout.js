@@ -4,13 +4,9 @@ import {
   TouchableOpacity,
   StyleSheet,  
 } from 'react-native';
-import {postApiRequest} from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
 import {whiteLabel} from '../../../../../constants/Colors';
-import {getPostParameter} from '../../../../../constants/Helper';
-import {storeLocalValue} from '../../../../../constants/Storage';
-import {useSelector} from 'react-redux';
-import { getDateTime } from '../../../../../helpers/formatHelpers';
+
 
 export default function Checkout(props) {
 

@@ -4,21 +4,29 @@ import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import LeaderboardList from '../components/LeaderboadList';
 import {getLeaderboardItems} from '../helper';
+import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../constants/Helper';
 
 const LeaderboardContainer = props => {
+
   const [keyword, setKeyword] = useState('');
   const [allItems, setAllItems] = useState([]);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch()
+
   useEffect(() => {
     onLoad();
   }, []);
+
   useEffect(() => {
     onLocalFilter();
   }, [keyword]);
+
   const onSearch = text => {
     setKeyword(text);
   };
+
   const onFilterPress = () => {};
   const onItemAction = ({type, item}) => {};
 
@@ -32,10 +40,12 @@ const LeaderboardContainer = props => {
         setItems(fetchedItems);
         setAllItems(fetchedItems);
       })
-      .catch(error => {
+      .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch ,e)
       });
   };
+  
   const onLocalFilter = () => {
     if (!keyword || keyword == '') {
       setItems(allItems);

@@ -32,7 +32,8 @@ export function find(postData){
                 }else{
                     reject();
                 }            
-
+            }else{
+                reject(res.status);
             }
         }).catch((e) => {
             reject(e);

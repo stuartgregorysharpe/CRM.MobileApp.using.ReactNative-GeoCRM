@@ -8,7 +8,7 @@ import ReturnDeviceDetailView from '../components/ReturnDeviceDetailView';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
 import { Constants } from '../../../../../constants';
-import { getFileFormat } from '../../../../../constants/Helper';
+import { expireToken, getFileFormat } from '../../../../../constants/Helper';
 
 export default function ReturnDeviceDetailContainer(props) {
          
@@ -29,7 +29,8 @@ export default function ReturnDeviceDetailContainer(props) {
                 setLists(res.devices);
             }
         }).catch((e) => {
-            console.log("e" , e);
+            console.log("location-devices api  error:" , e);
+            expireToken(dispatch , e);
         })
         return () =>{
             isMount = false;
@@ -72,7 +73,7 @@ export default function ReturnDeviceDetailContainer(props) {
                 }}))
             }
         }).catch((e) => {
-
+            expireToken(dispatch, e)
         });
     }
 

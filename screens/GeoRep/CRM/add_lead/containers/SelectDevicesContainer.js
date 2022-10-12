@@ -2,7 +2,6 @@
 import { View } from 'react-native'
 import React , {useEffect, useState , useRef} from 'react'
 import SelectDevicesView from '../components/SelectDevicesView';
-import { getApiRequest } from '../../../../../actions/api.action';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
 import { Constants, Strings } from '../../../../../constants';
@@ -40,12 +39,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
             }           
         }).catch((e) => {
             expireToken(dispatch , e);
-        })
-
-        // getApiRequest("stockmodule/stock-list?stock_type=Device" , {}).then((res) => {            
-             
-        // }).catch((e) => {
-        // });
+        })        
     }
 
     const allocateDevices = () => {

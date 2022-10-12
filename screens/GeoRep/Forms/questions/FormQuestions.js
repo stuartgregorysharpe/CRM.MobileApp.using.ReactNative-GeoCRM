@@ -12,7 +12,6 @@ import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
 import {expireToken, getFileFormat} from '../../../../constants/Helper';
-import {  postApiRequestMultipart} from '../../../../actions/api.action';
 import {
   clearNotification,
   showNotification,

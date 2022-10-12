@@ -22,11 +22,11 @@ export const initializeDB = async() => {
                     await syncTable(0);
                 }
                 return "end";
-            }                                        
+            }                  
         }else{
             console.log("offline version was not updated");
         }
-    }    
+    }
 }
 
 

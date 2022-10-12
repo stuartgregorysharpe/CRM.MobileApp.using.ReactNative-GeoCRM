@@ -1,6 +1,5 @@
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState, useRef, useMemo} from 'react';
-import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';

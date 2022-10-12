@@ -3,10 +3,12 @@ import { View , FlatList ,TouchableOpacity , StyleSheet , ActivityIndicator} fro
 import React, {useEffect, useState} from 'react'
 import { AppText } from '../../../../components/common/AppText';
 import { getApiRequest} from '../../../../actions/api.action';
-import Colors, { whiteLabel } from '../../../../constants/Colors';  
+import { whiteLabel } from '../../../../constants/Colors';  
 import Fonts from '../../../../constants/Fonts'
 import MovementListHeader from './components/MovementListHeader';
 import MovementListItem from './components/MovementListItem';
+import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../constants/Helper';
 
 var isEndPageLoading = false;
 
@@ -16,7 +18,10 @@ export default function Movements() {
     const [page,setPage] = useState(0);
     const [originMovementLists, setOriginMovementLists] = useState([]);    
     const [isPageLoading, setPageLoading] = useState(false);
+    const dispatch = useDispatch();
+
     var isMount = true;
+
     useEffect(() =>{
         loadMoreData();
         return () => {
@@ -41,7 +46,8 @@ export default function Movements() {
                   setPageLoading(false);            
                 }                
             }).catch((e) => {
-                console.log("E",e);
+                console.log("movements-list api error:",e);
+                expireToken(dispatch , e);
             });            
         }
         

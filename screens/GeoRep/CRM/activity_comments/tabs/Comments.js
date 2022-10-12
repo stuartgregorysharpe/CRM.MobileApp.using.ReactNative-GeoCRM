@@ -6,13 +6,15 @@ import { AppText } from '../../../../../components/common/AppText';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
+import { expireToken } from '../../../../../constants/Helper';
 
 export default function Comments(props) {
 
     //const location_id = props.route.params.location_id;    
     const location_id = props.location_id;
     const [historyItems, setHistoryItems] = useState([]);
-    console.log("lo", location_id)
+    
+    const dispatch = useDispatch()
 
     useEffect(() => {
         
@@ -24,7 +26,7 @@ export default function Comments(props) {
             setHistoryItems(res.history_items);    
             console.log(res);        
         }).catch((e) => {
-
+            expireToken(dispatch, e);
         });
     }
 

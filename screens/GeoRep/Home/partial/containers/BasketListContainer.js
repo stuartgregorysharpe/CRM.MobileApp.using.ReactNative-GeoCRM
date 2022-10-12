@@ -14,6 +14,9 @@ import SvgIcon from '../../../../../components/SvgIcon'
 import { RotationAnimation } from '../../../../../components/common/RotationAnimation'
 import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../helpers/formatHelpers'
 import { getBaskets } from './helper'
+import { useDispatch } from 'react-redux'
+import { expireToken } from '../../../../../constants/Helper'
+
 var gSyncedRecords = 0;
 var gBascketLists = getBaskets();
 var isOneBasketSync = false;
@@ -28,6 +31,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const [currentBasket, setCurrentBasket] = useState("");
     const rotationAnimationRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
+    const dispatch = useDispatch();
+
     var lists = getBaskets();    
     useImperativeHandle(ref, () => ({
         startSync() {            
@@ -131,7 +136,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 }                
               }
             }).catch((e) => {
-                console.log("error" , e)
+                console.log("error" , e);
+                expireToken(dispatch, e);
             })
         }        
     }
@@ -176,6 +182,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 }
             }).catch((e) => {
                 console.log("sync-table-data api error", e);
+                expireToken(dispatch, e);
             });
         }            
     }

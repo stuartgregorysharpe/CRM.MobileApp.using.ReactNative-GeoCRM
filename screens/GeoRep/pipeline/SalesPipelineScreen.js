@@ -8,8 +8,7 @@ import {
   BackHandler,
   Image,
   Dimensions,
-  Platform,
-  PermissionsAndroid,
+  Platform,  
 } from 'react-native';
 import {
   parse,
@@ -184,7 +183,7 @@ export default function SalesPipelineScreen(props) {
           setSelectedStage('0');
         })
         .catch(e => {
-          console.log('Err', e);
+          console.log('pipeline-opportunities api error: ', e);
           expireToken(dispatch, e);
           setIsLoading(false);
         });

@@ -5,6 +5,8 @@ import DevicesModalView from './DevicesModalView';
 import { Constants } from '../../../../constants';
 import { getApiRequest } from '../../../../actions/api.action';
 import { useNavigation } from '@react-navigation/native';
+import { expireToken } from '../../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 export default function DevicesModalContainer(props) {
     
@@ -12,22 +14,23 @@ export default function DevicesModalContainer(props) {
     const  [lists, setLists] = useState([])
     const navigationMain = useNavigation();
 
+    const dispatch = useDispatch()
 
     useEffect(() => {
         let isMount = true;
         let param = {
             location_id: locationId,
         };        
-        console.log("param", param)
-        
+
         getApiRequest("locations/location-devices", param ).then((res) => {                        
             if(isMount){      
                 console.log("location id", locationId);
                 console.log("res" , JSON.stringify(res))          
                 setLists(res.devices);
             }
-        }).catch((e) => {
-            console.log("e" , e);
+        }).catch((e) => {            
+            console.log("location device api error: " , e);
+            expireToken(dispatch , e);
         })
         return () =>{
             isMount = false;
