@@ -1,6 +1,5 @@
 import { View , StyleSheet , FlatList } from 'react-native'
 import React , {useEffect , useState , useRef } from 'react'
-import { getApiRequest } from '../../../../actions/api.action';
 import ReturnListItem from './components/ReturnListItem';
 import ReturnListHeader from './components/ReturnListHeader';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
@@ -12,6 +11,7 @@ import StockSignatureModal from '../stock/modal/device/StockSignatureModal';
 import { getLocalData } from '../../../../constants/Storage';
 import { GetRequestReturnListsDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 export default function Returns() {
 
@@ -28,9 +28,7 @@ export default function Returns() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     var isMount = true;
-
     GetRequestReturnListsDAO.find({}).then((res) => {
 		if(isMount){
 			setReturnLists(res.return_items);
@@ -47,6 +45,7 @@ export default function Returns() {
     return () => {
       isMount = false;
     }
+    
   },[]);
 
   useEffect(() => {
@@ -74,9 +73,11 @@ export default function Returns() {
       searchLocationModalRef.current.showModal();
     }
   }
+
   const onStockToWarehouse = () => {
     stockSignatureModalRef.current.showModal()
   }
+
   const onSearchLocationModalClosed = ({type, value}) => {    
     if(type == Constants.actionType.ACTION_NEXT){
       if(value.stockType === Constants.stockType.RETURN){
@@ -146,14 +147,11 @@ export default function Returns() {
             onButtonAction={onStockSignature}
         />
 
-
     </View>
   )
-
-
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({  
   container:{
       flex:1,                                       
       paddingTop:10

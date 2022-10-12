@@ -265,8 +265,7 @@ export default function LocationSearchScreen(props) {
           } else {
             setPageNumber(pageNumber + 1);
           }
-        }
-
+        }        
     }).catch((e) => {
       expireToken(dispatch, e);
     });

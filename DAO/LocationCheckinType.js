@@ -16,10 +16,9 @@ export function find(features){
                         resolve(res.checkin_types);
                     }else{
                         resolve([]);
-                    }                    
-                }).catch((e) => {
-            
-                    reject();
+                    }
+                }).catch((e) => {            
+                    reject(e);
                 })
             }else{
                 var client_id = await getTokenData("client_id");
