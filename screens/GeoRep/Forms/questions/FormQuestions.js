@@ -24,6 +24,7 @@ import {
   getFormQuestionData,
   getFormQuestionFile,
   getFormSubmissionPostJsonData,
+  loadFormValuesFromDB,
   validateFormQuestionData,
 } from './helper';
 import {deleteFormTable, insertTable} from '../../../../sqlite/FormDBHelper';
@@ -55,15 +56,6 @@ export const FormQuestions = props => {
   }, [form]);
 
   const loadFromDB = async formId => {
-    /*const db = await getDBConnection();
-    if (db != null) {
-      const res = await getFormTableData(db, formId);
-      if (res.length > 0) {
-        updateFormQuestions(JSON.parse(res.item(0).formQuestions));
-        indempotencyKey = res.item(0).indempotencyKey;
-        return;
-      }
-    }*/
     _callFormQuestions();
   };
 
@@ -132,9 +124,15 @@ export const FormQuestions = props => {
       });
   };
 
-  const groupByQuestions = data => {
+  const groupByQuestions = async data => {
+    const savedQuestionValueMap = await loadFormValuesFromDB(form.form_id);
     var newData = [];
-    data.forEach(element => {
+    console.log('savedQuestionValueMap', savedQuestionValueMap);
+    data.forEach(_element => {
+      let element = {..._element};
+      if (savedQuestionValueMap[element.form_question_id]) {
+        element.value = savedQuestionValueMap[element.form_question_id];
+      }
       if (!isInNewData(newData, element)) {
         var ques = [element];
         newData.push({
