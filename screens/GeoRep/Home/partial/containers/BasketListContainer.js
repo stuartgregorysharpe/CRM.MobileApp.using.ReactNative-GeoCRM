@@ -99,7 +99,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 updateBasket(basket)
             }
 
-            getApiRequest("database/sync-tables?offline_db_version=1.2&sync_basket=" + basket, {}).then(async(res) => {            
+            getApiRequest("database/sync-tables?offline_db_version=1.3&sync_basket=" + basket, {}).then(async(res) => {            
               if(res.status === Strings.Success){
                 var tables = res.tables;
                 console.log("All tables", tables)                
