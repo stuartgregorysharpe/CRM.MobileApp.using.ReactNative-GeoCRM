@@ -3,14 +3,20 @@ import React, {useEffect, useState} from 'react';
 import CustomerSalesHistoryView from '../components/CustomerSalesHistoryView';
 import {Values} from '../../../../../constants';
 import {getApiRequest} from '../../../../../actions/api.action';
+import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../../constants/Helper';
 
 export default function CustomerSalesHistoryContainer(props) {
+
   const {locationId} = props;
   const [sections, setSections] = useState([]);
   const [totalTurnOver, setTotalTurnOver] = useState(null);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     onLoad();
   }, []);
+
   const onLoad = () => {
     const postData = {
       location_id: locationId,
@@ -21,9 +27,11 @@ export default function CustomerSalesHistoryContainer(props) {
         setTotalTurnOver(res.total_turnover);
       })
       .catch(e => {
-        console.log('E', e);
+        console.log('customer-sales-history-v2 error: ', e);
+        expireToken(dispatch, e);
       });
   };
+  
   return (
     <View
       style={[{alignSelf: 'stretch', flex: 1, marginBottom: 30}, props.style]}>

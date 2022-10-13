@@ -39,6 +39,7 @@ import {clearNotification} from '../actions/notification.action';
 import {getDynamicPins} from '../actions/pins.actions';
 import { Images } from '../constants';
 import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
+import { expireToken } from '../constants/Helper';
 
 export default function SignIn() {
 
@@ -134,6 +135,7 @@ export default function SignIn() {
             })
             .catch(e => {
               console.log('E', e);
+              expireToken(dispatch,e);
             });          
         } else if (res.status === 'failed') {
           console.log("failed", res);

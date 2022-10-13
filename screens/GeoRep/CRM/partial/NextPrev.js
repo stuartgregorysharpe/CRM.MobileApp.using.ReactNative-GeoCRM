@@ -44,7 +44,8 @@ export const NextPrev = forwardRef((props, ref) => {
   const [loopPosition, setLoopPosition] = useState(-1);
   const [nextLocationName, setNextLocationName] = useState('');
   const [prevLocationName, setPrevLocationName] = useState('');
-  //console.log("currentLoopLists --" , currentLoopLists);
+  
+  const dispatch = useDispatch();
 
   useImperativeHandle(
     ref,
@@ -226,18 +227,16 @@ export const NextPrev = forwardRef((props, ref) => {
         onUpdated(res);
         isClickable = true;
       })
-      .catch(e => {
-        console.log(e);
+      .catch(e => {        
         isClickable = true;
+        expireToken(dispatch, e);
       });
   };
 
   const openNewLocationInfo = location_id => {
-    isClickable = false;
-    console.log('new loc idd', location_id);
+    isClickable = false;    
     getLocationInfo(Number(location_id), currentLocation)
-      .then(async res => {
-        // add new loop item
+      .then(async res => {        
         let item = {
           name: res.location_name.value,
           address: res.address,
@@ -249,6 +248,7 @@ export const NextPrev = forwardRef((props, ref) => {
       })
       .catch(e => {
         isClickable = true;
+        expireToken(dispatch, e);
       });
   };
 

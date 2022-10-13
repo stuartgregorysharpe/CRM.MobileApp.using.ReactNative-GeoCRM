@@ -46,6 +46,7 @@ import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import {AppText} from '../../../../components/common/AppText';
 import CustomerSaleHistoryModal from '../customer_sales';
+import { expireToken } from '../../../../constants/Helper';
 
 export default function LocationSpecificInfoScreen(props) {
   const dispatch = useDispatch();
@@ -134,6 +135,7 @@ export default function LocationSpecificInfoScreen(props) {
             locationInfoRef.current.updateDispositionData(res);
           }
           setLocationIfo(res);
+          console.log("DDD ==== ", res)
           setIsLoading(false);
         }
       })
@@ -141,6 +143,8 @@ export default function LocationSpecificInfoScreen(props) {
         if (isMout) {
           setIsLoading(false);
         }
+
+        expireToken(dispatch, e);
       });
   };
 

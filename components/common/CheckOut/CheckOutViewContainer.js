@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React , { useEffect, useState , useCallback } from 'react'
-import { getPostParameter } from '../../../constants/Helper';
+import { expireToken, getPostParameter } from '../../../constants/Helper';
 import { getDateTime } from '../../../helpers/formatHelpers';
 import {useSelector, useDispatch} from 'react-redux';
 import { getLocalData, storeLocalValue } from '../../../constants/Storage';
@@ -16,8 +16,7 @@ export default function CheckOutViewContainer(props) {
 
     const { type , currentCall } = props;
     const dispatch = useDispatch()
-    const currentLocation = useSelector(state => state.rep.currentLocation); 
-    
+    const currentLocation = useSelector(state => state.rep.currentLocation);    
 
     useEffect(() => {
         initData();
@@ -45,18 +44,19 @@ export default function CheckOutViewContainer(props) {
           user_local_data: userParam.user_local_data,
         };
                 
-        PostRequestDAO.find(specificLocationId, postData , 'checkout', 'location-info/check-out').then( async(res) => {
-            console.log("RES : " , res)
+        PostRequestDAO.find(specificLocationId, postData , 'checkout', 'location-info/check-out').then( async(res) => {            
             await storeLocalValue('@checkin', '0');
             dispatch({ type: CHECKIN, payload: false });
             if(type == "specificInfo"){
                 if(props.goBack){
                     props.goBack(res);
                 }
-            }else{
-                
+            }else{                
             }
-        }).catch((e) => console.log("checkout error:" , e));
+        }).catch((e) => {
+            console.log("checkout error:" , e);
+            expireToken(dispatch, e);
+        });
     };
 
     return (

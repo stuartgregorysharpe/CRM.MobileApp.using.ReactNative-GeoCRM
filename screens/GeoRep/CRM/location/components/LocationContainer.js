@@ -157,7 +157,8 @@ const LocationContainer = props => {
       dispatch({type: STATUS_PIN_KEY, payload: 'success'});
       dispatch({type: CHANGE_PIN_KEY, payload: pins});      
     }).catch(e => {
-      console.log("locaiton pin key api error: " , e)
+      console.log("locaiton pin key api error: " , e);
+      expireToken(dispatch, e);
     });
     
   };

@@ -152,7 +152,9 @@ const  MainPage = props => {
           }
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch, e)
+      });
   };
 
 

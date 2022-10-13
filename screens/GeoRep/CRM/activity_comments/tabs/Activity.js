@@ -14,13 +14,14 @@ import {AppText} from '../../../../../components/common/AppText';
 import {HistoryListItem} from './partial/HistoryListItem';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
-import {getPostParameter, notifyMsg} from '../../../../../constants/Helper';
+import {expireToken, getPostParameter, notifyMsg} from '../../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
 import Fonts from '../../../../../constants/Fonts';
 import {useSelector} from 'react-redux';
 
 export default function Activity(props) {
+
   const dispatch = useDispatch();
   const location_id = props.location_id;
   const [historyItems, setHistoryItems] = useState([]);
@@ -50,7 +51,9 @@ export default function Activity(props) {
         })
         .catch(e => {
           setIsLoading(false);
+          expireToken(dispatch, e);
         });
+        
     }
   };
 
@@ -73,6 +76,7 @@ export default function Activity(props) {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch ,e);
     });
     
   };

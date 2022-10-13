@@ -1,8 +1,6 @@
 import axios from "axios";
-import { baseURL } from "../constants";
 import { getBaseUrl, getToken } from "../constants/Storage";
 import { CHANGE_LOCATION_FILTERS, CHANGE_LOGIN_STATUS, CHANGE_PIPELINE_FILTERS, STATUS_LOCATION_FILTERS, STATUS_PIPELINE_FILTERS } from "./actionTypes";
-import uuid from 'react-native-uuid';
 import { generateKey } from "../constants/Utils";
 
 

@@ -6,11 +6,14 @@ import Colors from '../../../constants/Colors';
 import { getWebLinks } from '../../../actions/weblinks.action';
 import { getBaseUrl, getToken } from '../../../constants/Storage';
 import { style } from '../../../constants/Styles';
+import { expireToken } from '../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 export default function WebLinksScreen(props) {
 
   const [lists, setLists] = useState([]);
   const [searchLists, setSearchLists] = useState([]);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     var screenProps = props.screenProps;    
@@ -47,6 +50,7 @@ export default function WebLinksScreen(props) {
       })
       .catch(error=>{
         setLists([]);
+        expireToken(dispatch,error);
       });
     }    
   }

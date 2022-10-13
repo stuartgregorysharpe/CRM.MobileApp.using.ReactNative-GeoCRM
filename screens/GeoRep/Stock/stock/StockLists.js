@@ -1,6 +1,5 @@
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState, useRef, useMemo} from 'react';
-import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
@@ -31,6 +30,7 @@ import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
 import { GetRequestStockListsDAO } from '../../../../DAO';
+import { expireToken } from '../../../../constants/Helper';
 
 export default function StockLists() {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -85,15 +85,8 @@ export default function StockLists() {
         setItems(_items);
       }
     }).catch((e) => {
-      console.log('stock list api error : ', e);
-    })
-
-    // getApiRequest('stockmodule/stock-list', {})
-    //   .then(res => {       
-    //   })
-    //   .catch(e => {
-    //     console.log('E', e);
-    //   });
+      expireToken(dispatch , e);            
+    })    
   };
 
   const onStockItemPressed = item => {

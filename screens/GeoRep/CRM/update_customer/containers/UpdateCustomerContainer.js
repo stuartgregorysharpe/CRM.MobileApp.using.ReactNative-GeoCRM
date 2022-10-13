@@ -8,7 +8,7 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
-import { getPostParameter } from '../../../../../constants/Helper';
+import { expireToken, getPostParameter } from '../../../../../constants/Helper';
 
 export default function UpdateCustomerContainer(props) {
 
@@ -33,6 +33,7 @@ export default function UpdateCustomerContainer(props) {
     }, []);
  
     const getCustomMasterFields = () => {
+
         getApiRequest("locations/location_info_update_fields_v2", {location_id:locationId }).then((res) => {
             if(isMount){                         
                 setLeadForms(res.custom_master_fields);
@@ -40,7 +41,7 @@ export default function UpdateCustomerContainer(props) {
                 setAccuracyUnit(res.accuracy_distance_measure);
             }            
         }).catch((e) => {
-
+            expireToken(dispatch , e);
         })
     }
 
@@ -85,6 +86,7 @@ export default function UpdateCustomerContainer(props) {
                 props.onButtonAction({type:Constants.actionType.ACTION_CLOSE});
             } }));
         }).catch((e) => {
+            expireToken(dispatch, e)
         });
     }
 

@@ -31,7 +31,7 @@ export function find(currentLocation, box ,features){
                     }
                 }).catch( e => {
                     console.log("error", e)            
-                    reject()
+                    reject(e)
                 });      
             }else{
 

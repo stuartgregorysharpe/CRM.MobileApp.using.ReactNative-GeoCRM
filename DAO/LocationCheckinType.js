@@ -16,10 +16,9 @@ export function find(features){
                         resolve(res.checkin_types);
                     }else{
                         resolve([]);
-                    }                    
-                }).catch((e) => {
-            
-                    reject();
+                    }
+                }).catch((e) => {            
+                    reject(e);
                 })
             }else{
                 var client_id = await getTokenData("client_id");
@@ -31,15 +30,12 @@ export function find(features){
                     resolve(getResponse(checkinTypes, business_unit_id, client_id));                                
                 }else{
                     resolve([]);
-                }                             
-                
-
+                }                
             }
         }).catch(e => {
-            reject();
+            reject(e);
         });
   });
-
 }
 
 const generateCheckinTypeQuery = () => {
@@ -52,7 +48,7 @@ const generateCheckinTypeQuery = () => {
                         `business_unit_id = ? ` + 
                     `AND client_id = ? ` + 
                     `AND delete_status = 0 `;    
-    return query;              
+    return query;
 }
 
 const generateReasonQuery = (ids) => {

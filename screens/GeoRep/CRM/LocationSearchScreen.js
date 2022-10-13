@@ -26,8 +26,7 @@ import {
 } from '../../../actions/actionTypes';
 import {
   getLocationFilters,
-  getLocationInfo,
-  getLocationSearchListsByPage,
+  getLocationInfo,  
 } from '../../../actions/location.action';
 import Fonts from '../../../constants/Fonts';
 import Images from '../../../constants/Images';
@@ -251,8 +250,7 @@ export default function LocationSearchScreen(props) {
     LocationSearchDAO.find(currentLocation, filterData, pageNumber, searchKey , features).then((res) => {
 
         setIsLoading(false);
-        if (searchKey !== changedKey) {
-          console.log(searchKey, changedKey);
+        if (searchKey !== changedKey) {          
           setPageNumber(0);
           isEndPageLoading = false;
           getSearchData(res, searchKey, 'pagination');
@@ -266,42 +264,13 @@ export default function LocationSearchScreen(props) {
           } else {
             setPageNumber(pageNumber + 1);
           }
-        }
-
+        }        
     }).catch((e) => {
-
+      expireToken(dispatch, e);
     });
 
 
-    // getLocationSearchListsByPage(filterData, pageNumber, searchKey)
-    //   .then(res => {
-    //     console.log(
-    //       'LOG: getLocationSearchListsByPage - response',
-    //       JSON.stringify(res),
-    //     );
-    //     setIsLoading(false);
-
-    //     if (searchKey !== changedKey) {
-    //       console.log(searchKey, changedKey);
-    //       setPageNumber(0);
-    //       isEndPageLoading = false;
-    //       getSearchData(res, searchKey, 'pagination');
-    //       searchKey = changedKey;
-    //       loadData(searchKey);
-    //     } else {
-    //       setIsPageLoading(false);
-    //       getSearchData(res, searchKey, 'pagination');
-    //       if (res.length < 50) {
-    //         isEndPageLoading = true;
-    //       } else {
-    //         setPageNumber(pageNumber + 1);
-    //       }
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log('error', error);
-    //     expireToken(dispatch, error);
-    //   });
+    
   };
 
   const goPreviousPage = () => {

@@ -17,7 +17,7 @@ export function find( postData){
                 })
                 .catch(e => {
                     console.log("Error",e)
-                    reject();
+                    reject(e);
                 });
 
             }else{

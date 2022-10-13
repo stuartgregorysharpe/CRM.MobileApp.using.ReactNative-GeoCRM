@@ -26,7 +26,7 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                     }                    
                 }).catch((e) => {
                     console.log("error",e)
-                    reject();
+                    reject(e);
                 })
                 
             }else{
@@ -47,7 +47,7 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
 
             }
         }).catch(e => {
-            reject();
+            reject(e);
         });
     });
 }

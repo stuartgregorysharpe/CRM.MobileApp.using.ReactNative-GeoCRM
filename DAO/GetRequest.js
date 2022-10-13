@@ -13,9 +13,8 @@ export function call( url, postData){
                 .then(async res => {                                     
                     resolve({status: Strings.Success , isConnected:isConnected, data: res});
                 })
-                .catch(e => {
-                    console.log("Error",e)
-                    resolve({status: 'error' , isConnected: isConnected,  data: []});
+                .catch(e => {                    
+                    resolve({status: e , isConnected: isConnected,  data: []});
                 });
 
             }else{                

@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
+import { expireToken } from '../../../../../constants/Helper';
 
 export default function SearchLocationContainer(props) {
   const {stockType, isSkipLocationIdCheck} = props;
@@ -47,13 +48,17 @@ export default function SearchLocationContainer(props) {
         })
         .catch(e => {
           console.log('error', e);
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: Strings.Stock.No_Device_Found,
-              buttonText: 'Ok',
-            }),
-          );
+          if (e === 'expired') {
+            expireToken(dispatch , e);
+          }else{
+            dispatch(
+              showNotification({
+                type: Strings.Success,
+                message: Strings.Stock.No_Device_Found,
+                buttonText: 'Ok',
+              }),
+            );
+          }                                       
         });
     }
   };
@@ -90,6 +95,7 @@ export default function SearchLocationContainer(props) {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch , e)
       });
   };
 

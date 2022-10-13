@@ -11,8 +11,7 @@ export function find(postData){
         GetRequest.call( "locations/location-info",  postData).then( async(res) => {
 
             if(res.status == Strings.Success && res.isConnected){
-                resolve(res.data);
-            
+                resolve(res.data);            
             }else if(res.status == Strings.Success && !res.isConnected){
                 
                 const client_id = res.data.client_id;
@@ -33,10 +32,11 @@ export function find(postData){
                 }else{
                     reject();
                 }            
-
+            }else{
+                reject(res.status);
             }
         }).catch((e) => {
-            reject();
+            reject(e);
         });
 
   });
