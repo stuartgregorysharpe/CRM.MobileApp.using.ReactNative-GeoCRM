@@ -52,29 +52,34 @@ export function getFullAddress (element){
     }
     return address;
 }
+
+
   
 export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabel , itemSubLabel){
 
-    return new Promise( async function(resolve, reject) {   
-        try{            
-            var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
-            var res = await ExecuteQuery(query, [locationId]);
-            
+    return new Promise( async function(resolve, reject) {
+        try{
             var location_name = '';
             var address = '';
-            if( res != undefined  && res.rows.length > 0){
-                location_name = res.rows.item(0).location_name;
-                address = getFullAddress(res.rows.item(0));
-            }else{
-                console.log("No Location ID", locationId)            
-            }         
+
+            if(locationId != 0){
+                var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
+                var res = await ExecuteQuery(query, [locationId]);
+                if( res != undefined  && res.rows.length > 0){
+                    location_name = res.rows.item(0).location_name;
+                    address = getFullAddress(res.rows.item(0));
+                }else{
+                    console.log("No Location ID", locationId)            
+                }
+            }
+
             var time_zone = '';
             try {
                 time_zone = RNLocalize.getTimeZone();
             } catch (e) {}
             
             var added_time = getDateTime();                
-            var item_label = location_name;
+            var item_label =  itemLabel != '' ? itemLabel : location_name;
             var item_sub_text = address;
             var post_body = JSON.stringify(postData);
 
