@@ -14,7 +14,6 @@ import {useEffect} from 'react';
 import {getDBConnection} from './sqlite/DBHelper';
 import {createTable} from './sqlite/FormDBHelper';
 import {createBascketLastSync} from './sqlite/BascketLastSyncsHelper';
-import Orientation from 'react-native-orientation-locker';
 
 enableScreens(true);
 
@@ -25,7 +24,6 @@ EStyleSheet.build({
 export default function App() {
   useEffect(() => {
     initializeDB();
-    Orientation.lockToPortrait();
   }, []);
 
   const initializeDB = async () => {
