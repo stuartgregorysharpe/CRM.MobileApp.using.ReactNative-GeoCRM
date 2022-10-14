@@ -17,7 +17,6 @@ import com.rngms.RNGMSPackage;
 import com.huawei.hms.rn.availability.HMSAvailabilityPackage;
 import com.huawei.hms.rn.map.HMSMapPackage;
 import com.huawei.hms.rn.location.RNHMSLocationPackage;
-import org.wonday.orientation.OrientationActivityLifecycle;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -59,7 +58,6 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    registerActivityLifecycleCallbacks(OrientationActivityLifecycle.getInstance());
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
