@@ -7,10 +7,12 @@ import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatur
 import { Constants, Strings } from '../../../../../constants';
 import { GetRequestStockListsDAO } from '../../../../../DAO';
 import { expireToken } from '../../../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     const { selLists } = props;    
+
     const [stockItems, setStockItems] = useState([]);
     const stockSignatureModalRef = useRef(null);
     const [stockItem, setStockItem] = useState();
@@ -20,6 +22,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
     const dispatch = useDispatch();
 
     var isMount = true;
+
     useEffect(() => {
         setSelectedLists(selLists);        
         callSelectDevices();
@@ -101,5 +104,6 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
         </View>
     )
-});
+}); 
+
 export default SelectDevicesContainer;

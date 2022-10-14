@@ -208,8 +208,12 @@ export const FormQuestionView = forwardRef((props, ref) => {
           }}
           onPress={item => {
             setMode('single');
-            setOptions(item.options);
-            setSelectedOptions(item.value);
+            setOptions(item.options);            
+            if(item.value != '' && item.value != null && item.value instanceof Array){
+              setSelectedOptions(item.value);
+            }else{
+              setSelectedOptions([item.value]);
+            }            
             setKey(key);
             setIndex(index);
             showSelectionView();
