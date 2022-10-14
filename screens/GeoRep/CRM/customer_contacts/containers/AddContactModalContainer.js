@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import React from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import AddContactModalView from '../components/AddContactModalView';
-import { getPostParameter } from '../../../../../constants/Helper';
+import { expireToken, getPostParameter } from '../../../../../constants/Helper';
 import { useSelector } from 'react-redux';
 import { postApiRequest } from '../../../../../actions/api.action';
 import { useDispatch } from 'react-redux';
@@ -27,8 +27,7 @@ export default function AddContactModalContainer(props) {
         if (pageType === 'update' && contactInfo != undefined) {            
             postData = {...postData , contact_id: contactInfo.contact_id};
         }
-
-        console.log("post data", postData)
+        
         postApiRequest("locations/add-edit-contacts", postData).then((res) => {
             console.log("res", res)
             if(res.status == Strings.Success){
@@ -40,6 +39,7 @@ export default function AddContactModalContainer(props) {
             }
         }).catch((e) => {
             console.log(Strings.Log.Post_Api_Error, e);
+            expireToken(dispatch, e);
         })        
     }
 

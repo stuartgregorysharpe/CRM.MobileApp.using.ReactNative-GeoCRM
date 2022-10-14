@@ -13,7 +13,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Constants} from '../../../../../constants';
-import {getFileFormat} from '../../../../../constants/Helper';
+import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 
 export default function SwopAtTraderContainer(props) {
@@ -35,7 +35,8 @@ export default function SwopAtTraderContainer(props) {
         }
       })
       .catch(e => {
-        console.log('e', e);
+        console.log('location-devices api error:', e);
+        expireToken(dispatch ,e )
       });
     return () => {
       isMount = false;
@@ -88,7 +89,9 @@ export default function SwopAtTraderContainer(props) {
           }),
         );
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch,e)
+      });
   };
 
   return (

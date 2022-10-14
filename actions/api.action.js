@@ -53,7 +53,7 @@ export const getApiRequest = async (route, param) => {
         ) {
           reject('expired');
         } else {
-          reject(err);
+          reject('error');
         }
       });
   });

@@ -12,6 +12,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import { expireToken } from '../../../../../constants/Helper';
 
 export default function StockSignatureContainer(props) {
   const {item, selectedCodes, signatureModalType} = props;
@@ -96,13 +97,18 @@ export default function StockSignatureContainer(props) {
                   );
                 })
                 .catch(e => {
-                  dispatch(
-                    showNotification({
-                      type: Strings.Success,
-                      message: 'Error',
-                      buttonText: 'Ok',
-                    }),
-                  );
+                  if(e === 'expired'){
+                    expireToken(dispatch, e)
+                  }else{
+                    dispatch(
+                      showNotification({
+                        type: Strings.Success,
+                        message: 'Error',
+                        buttonText: 'Ok',
+                      }),
+                    );
+                  }
+                  
                 });
             } else if (item.stock_type == Constants.stockType.RETURN) {
               if (props.stockItemIds.length > 0) {
@@ -130,13 +136,17 @@ export default function StockSignatureContainer(props) {
                   })
                   .catch(e => {
                     console.log('error', e);
-                    dispatch(
-                      showNotification({
-                        type: Strings.Success,
-                        message: 'Error',
-                        buttonText: 'Ok',
-                      }),
-                    );
+                    if(e === 'expired'){
+                      expireToken(dispatch, e)
+                    }else{
+                      dispatch(
+                        showNotification({
+                          type: Strings.Success,
+                          message: 'Error',
+                          buttonText: 'Ok',
+                        }),
+                      );
+                    }                    
                   });
               } else {
                 dispatch(

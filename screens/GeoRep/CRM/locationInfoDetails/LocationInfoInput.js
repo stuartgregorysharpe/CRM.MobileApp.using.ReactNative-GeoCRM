@@ -33,9 +33,10 @@ import {
 } from '../../../../actions/actionTypes';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import {getPostParameter} from '../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../constants/Helper';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
+
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.infoInput);
   const locationConfirmModalVisible = useSelector(
@@ -167,6 +168,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
+        expireToken(dispatch, e);
       });
   };
 
@@ -194,6 +196,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       .catch(error => {
         setMessage(error);
         setIsSuccess(true);
+        expireToken(dispatch, error);
       });
   };
 

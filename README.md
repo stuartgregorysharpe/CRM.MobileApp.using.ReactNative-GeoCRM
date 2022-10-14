@@ -24,7 +24,7 @@ react-native bundle --platform android --dev false --entry-file index.js --bundl
 --assets-dest android/app/src/main/res/
 
 cd android
-
+  
 ./gradlew assembleRelease
 ./gradlew bundleRelease
 

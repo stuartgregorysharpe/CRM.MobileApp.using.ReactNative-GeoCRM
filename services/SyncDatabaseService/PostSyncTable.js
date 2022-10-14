@@ -54,7 +54,7 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
         }else{
             apiRes = await postApiRequest(item.url, { ...JSON.parse(item.post_body), mode: 'offline'} , item.indempotency_key);
         }
-
+        
         if(apiRes.status == 'success'){            
             await deleteOfflineSyncItem(item.id)
         }

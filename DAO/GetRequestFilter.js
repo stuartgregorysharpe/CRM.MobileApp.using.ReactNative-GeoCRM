@@ -1,4 +1,4 @@
-import { getApiRequest, postApiRequest } from "../actions/api.action";
+import { getApiRequest } from "../actions/api.action";
 import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./helper";
 import { Strings } from "../constants";
 import { getTokenData } from "../constants/Storage";
@@ -17,7 +17,7 @@ export function find(url, postData){
                 })
                 .catch(e => {
                     console.log("Error",e)
-                    reject();
+                    reject(e);
                 });
 
             }else{

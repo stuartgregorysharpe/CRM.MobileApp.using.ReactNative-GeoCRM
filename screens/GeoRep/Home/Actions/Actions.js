@@ -5,6 +5,8 @@ import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import Colors from '../../../../constants/Colors';
 import ActionListHeader from './components/ActionListHeader';
+import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../constants/Helper';
 
 const Actions = React.forwardRef((props, ref) => {
 
@@ -18,6 +20,7 @@ const Actions = React.forwardRef((props, ref) => {
   const [originStockLists, setOriginStockLists] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const {locationId, tabIndex} = props;
+  const dispatch = useDispatch()
 
   useEffect(() => {
     _onLoad();
@@ -37,8 +40,11 @@ const Actions = React.forwardRef((props, ref) => {
           setStockLists(res.action_items);
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch , e);
+      });
   };
+
   useEffect(() => {
     onApplyStatusFilter(originStockLists);
   }, [tabIndex]);

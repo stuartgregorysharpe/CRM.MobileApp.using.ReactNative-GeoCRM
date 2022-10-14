@@ -10,7 +10,7 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../../actions/notification.action';
-import {getPostParameter} from '../../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 
 export default function UpdateCustomerContainer(props) {
   const {locationId} = props;
@@ -44,7 +44,9 @@ export default function UpdateCustomerContainer(props) {
           setAccuracyUnit(res.accuracy_distance_measure);
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const onAdd = () => {
@@ -107,7 +109,9 @@ export default function UpdateCustomerContainer(props) {
           }),
         );
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const checkChangedStatus = () => {

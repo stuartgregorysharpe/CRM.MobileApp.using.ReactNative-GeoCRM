@@ -1,13 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {getApiRequest} from '../../../../actions/api.action';
-import TieredMuliSelectView from '../../../../components/common/TieredMultiSelect/TieredMultiSelectView';
 import TieredSingleSelectView from '../../../../components/common/TieredMultiSelect/TieredSingleSelectView';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../constants';
 import ProductSelectItem from '../components/ProductSelectItem';
+import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../constants/Helper';
 
 const ProductChannelTieredContainer = props => {
+
   const {opportunityName, selectedProduct, locationId, onButtonAction} = props;
   const [item, setItem] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +17,8 @@ const ProductChannelTieredContainer = props => {
   const [selectedProductItem, setSelectedProductItem] =
     useState(selectedProduct);
   const [selectedDropdownValues, setSelectedDropdownValues] = useState([]);
+  const dispatch = useDispatch()
+
   useEffect(() => {
     if (selectedProduct) {
       const _dropdownValues = [
@@ -31,6 +35,7 @@ const ProductChannelTieredContainer = props => {
   useEffect(() => {
     onLoad();
   }, [opportunityName, locationId]);
+
   const onLoad = () => {
     setIsLoading(true);
     const param = {};
@@ -39,18 +44,18 @@ const ProductChannelTieredContainer = props => {
     }
     if (locationId && locationId != '') {
       param.location_id = locationId;
-    }
-    console.log('param', param);
+    }    
     getApiRequest('pipeline/product-channel-fields', param)
       .then(data => {
-        setIsLoading(false);
-        console.log('data', data);
+        setIsLoading(false);        
         setItem(data.product_channel);
       })
-      .catch(error => {
+      .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch , e);
       });
   };
+
   const renderLeafOption = (item, index, isLast, isChecked, onItemAction) => {
     return (
       <ProductSelectItem

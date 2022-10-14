@@ -5,11 +5,12 @@ import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
-import {notifyMsg} from '../../../../../constants/Helper';
+import {expireToken, notifyMsg} from '../../../../../constants/Helper';
 import {
   constructAddActionFormStructure,
   getAddActionItemPostValue,
 } from '../helper';
+
 const AddActionFormContainer = props => {
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
@@ -18,13 +19,13 @@ const AddActionFormContainer = props => {
   const [isLoading, setIsLoading] = useState(false);
   const actionFormRef = useRef(null);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+
   const load = () => {
     setIsLoading(true);
     getApiRequest('actionsitems/action-item-details', {
       action_item_type: 'action',
     })
-      .then(data => {
-        console.log("DD", data)
+      .then(data => {        
         const {formData, formStructure} = constructAddActionFormStructure(data);
         setFormData(formData);
         setFormStructure(formStructure);
@@ -32,6 +33,7 @@ const AddActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch, e);
       });      
   };
   
@@ -64,6 +66,7 @@ const AddActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch , e);
       });
   };
 

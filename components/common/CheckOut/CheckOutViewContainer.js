@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
-import {getPostParameter} from '../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {getDateTime} from '../../../helpers/formatHelpers';
 import {useSelector, useDispatch} from 'react-redux';
 import {getLocalData, storeLocalValue} from '../../../constants/Storage';
@@ -56,7 +56,10 @@ export default function CheckOutViewContainer(props) {
         } else {
         }
       })
-      .catch(e => console.log('checkout error:', e));
+      .catch(e => {
+        console.log('checkout error:', e);
+        expireToken(dispatch, e);
+      });
   };
 
   return (

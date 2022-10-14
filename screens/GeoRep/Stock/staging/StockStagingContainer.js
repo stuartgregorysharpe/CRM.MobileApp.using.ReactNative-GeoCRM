@@ -8,7 +8,7 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
-import {getPostParameter} from '../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../constants/Helper';
 const StockStagingContainer = props => {
 
   const [items, setItems] = useState([]);
@@ -23,6 +23,7 @@ const StockStagingContainer = props => {
       isMount = false;
     }
   }, []);
+
   const onLoad = () => {
     setIsLoading(true);
     getApiRequest('stockmodule/staging')
@@ -33,14 +34,15 @@ const StockStagingContainer = props => {
           setItems(_items);
         }        
       })
-      .catch(error => {
+      .catch(e => {
         if(isMount){
           setIsLoading(false);
-        }        
+        }
+        expireToken(dispatch , e);
       });
   };
-  const onAccept = items => {
-    console.log('onAccept');
+
+  const onAccept = items => {    
     const userParam = getPostParameter(currentLocation);
     setIsLoading(true);
     postApiRequest('stockmodule/staging-accept', {
@@ -75,6 +77,7 @@ const StockStagingContainer = props => {
       .catch(e => {
         setIsLoading(false);
         console.log('error', e);
+        expireToken(dispatch,e)
       });
   };
   return (

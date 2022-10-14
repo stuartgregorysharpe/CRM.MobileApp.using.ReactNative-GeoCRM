@@ -7,6 +7,7 @@ import Customer from '../components/Customer';
 import Contacts from '../components/Contacts';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { useDispatch } from 'react-redux';
+import { expireToken } from '../../../../../constants/Helper';
 
 export default function CustomerContactContainer(props) {
       
@@ -31,7 +32,7 @@ export default function CustomerContactContainer(props) {
         getApiRequest("locations/location-fields", params).then((res) =>{            
             setLocationFields(res.custom_master_fields);              
         }).catch((e) =>{
-            
+            expireToken(dispatch , e);
         })
     }
 
@@ -40,7 +41,7 @@ export default function CustomerContactContainer(props) {
         getApiRequest("locations/location-contacts" , params).then((res) => {            
             prepareContactsList(res.contacts);
         }).catch((e) => {
-
+            expireToken(dispatch , e);
         })
     }
 

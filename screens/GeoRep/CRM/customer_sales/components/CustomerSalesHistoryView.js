@@ -1,8 +1,5 @@
 import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {AppText} from '../../../../../components/common/AppText';
-import {getApiRequest} from '../../../../../actions/api.action';
-import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import TotalTurnoverView from './TotalTurnoverView';
 import SectionView from './SectionView';
 

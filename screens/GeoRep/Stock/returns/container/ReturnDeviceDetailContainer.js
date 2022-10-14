@@ -13,7 +13,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Constants} from '../../../../../constants';
-import {getFileFormat} from '../../../../../constants/Helper';
+import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 
 export default function ReturnDeviceDetailContainer(props) {
   const {locationId} = props;
@@ -35,6 +35,7 @@ export default function ReturnDeviceDetailContainer(props) {
       })
       .catch(e => {
         console.log('e', e);
+        expireToken(dispatch, e);
       });
     return () => {
       isMount = false;
@@ -88,7 +89,10 @@ export default function ReturnDeviceDetailContainer(props) {
           );
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        console.log('e', e);
+        expireToken(dispatch, e);
+      });
   };
 
   return (

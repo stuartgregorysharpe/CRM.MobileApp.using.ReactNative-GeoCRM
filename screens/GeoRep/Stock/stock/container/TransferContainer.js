@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
 import TransferView from '../components/TransferView';
-import {getPostParameter} from '../../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {Constants, Strings} from '../../../../../constants';
 import {useDispatch} from 'react-redux';
 import {
@@ -13,6 +13,7 @@ import {
 import {Notification} from '../../../../../components/modal/Notification';
 
 export default function TransferContainer(props) {
+
   const {stockItem, selectedCodes} = props;
   const [user, setUser] = useState([]);
   const [lists, setLists] = useState([]);
@@ -32,7 +33,9 @@ export default function TransferContainer(props) {
           setLists(tmp);
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch ,e)
+      });
     return () => {
       mounted = false;
     };
@@ -83,13 +86,18 @@ export default function TransferContainer(props) {
         );
       })
       .catch(e => {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: 'Error',
-            buttonText: 'Ok',
-          }),
-        );
+        if(e === 'expired'){
+          expireToken(dispatch, e)
+        }else{
+          dispatch(
+            showNotification({
+              type: Strings.Success,
+              message: 'Error',
+              buttonText: 'Ok',
+            }),
+          );
+        }
+        
       });
   };
 

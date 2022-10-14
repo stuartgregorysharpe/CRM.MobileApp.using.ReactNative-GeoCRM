@@ -4,7 +4,7 @@ import AddStockView from '../components/AddStockView';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {Constants, Strings} from '../../../../../constants';
 import {useSelector} from 'react-redux';
-import {getPostParameter} from '../../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {
   clearNotification,
   showNotification,
@@ -41,7 +41,9 @@ export default function AddStockContainer(props) {
           }
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const callAddStock = (type, data) => {
@@ -74,6 +76,7 @@ export default function AddStockContainer(props) {
       })
       .catch(e => {
         console.log('error', e);
+        expireToken(dispatch,e)
       });
   };
 

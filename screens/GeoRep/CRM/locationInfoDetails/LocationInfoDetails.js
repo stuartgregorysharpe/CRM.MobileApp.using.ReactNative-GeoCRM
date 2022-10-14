@@ -45,6 +45,7 @@ import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
+  expireToken,
   getPostParameter,
 } from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
@@ -251,6 +252,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       .catch(e => {
         setMessage('Upload File Failed');
         setIsSuccess(true);
+        expireToken(dispatch, e);
       });
   };
 
@@ -315,6 +317,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       })
       .catch(e => {
         console.log('Error : ', e);
+        expireToken(dispatch, e);
       });
   };
 
@@ -389,15 +392,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     setModalType('checkin_type');
     setFeedbackOptions([]);
 
-    LocationCheckinTypeDAO.find(features).then(res => {
-      var options = [];
-      res.forEach((item, index) => {
-        options.push(item.checkin_type);
+    LocationCheckinTypeDAO.find(features)
+      .then(res => {
+        var options = [];
+        res.forEach((item, index) => {
+          options.push(item.checkin_type);
+        });
+        setFeedbackOptions(options);
+        setCheckInTypes(res);
+        console.log('check type', res);
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
       });
-      setFeedbackOptions(options);
-      setCheckInTypes(res);
-      console.log('check type', res);
-    });
   };
 
   const _callCheckedIn = async () => {
@@ -416,21 +423,28 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       postData,
       'checkin',
       'location-info/check-in',
-    ).then(async res => {
-      if (props.onButtonAction) {
-        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-      }
-      setIsFeedback(false);
-      setFeedbackOptions(originFeedbackData);
-      setModalType('feedback');
-      dispatch({type: CHECKIN, payload: true});
-      await storeLocalValue('@checkin', '1');
-      await storeLocalValue('@specific_location_id', locationInfo.location_id);
-      props.navigation.navigate('LocationSpecificInfo', {
-        data: locationInfo,
-        page: 'checkin',
+    )
+      .then(async res => {
+        if (props.onButtonAction) {
+          props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+        }
+        setIsFeedback(false);
+        setFeedbackOptions(originFeedbackData);
+        setModalType('feedback');
+        dispatch({type: CHECKIN, payload: true});
+        await storeLocalValue('@checkin', '1');
+        await storeLocalValue(
+          '@specific_location_id',
+          locationInfo.location_id,
+        );
+        props.navigation.navigate('LocationSpecificInfo', {
+          data: locationInfo,
+          page: 'checkin',
+        });
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
       });
-    });
   };
 
   const onClickCheckIn = async () => {
@@ -450,6 +464,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             var specificLocationId = await getLocalData(
               '@specific_location_id',
             );
+
             props.navigation.navigate('LocationSpecificInfo', {
               locationId: specificLocationId,
               page: 'checkin',
