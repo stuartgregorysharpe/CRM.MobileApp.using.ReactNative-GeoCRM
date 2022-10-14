@@ -9,14 +9,12 @@ import CCircleButton from '../../../../../components/common/CCircleButton';
 import ViewListsModal from '../modal/ViewListsModal';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {useSelector} from 'react-redux';
-import * as RNLocalize from 'react-native-localize';
 import {useDispatch} from 'react-redux';
 import {
 	clearNotification,
 	showNotification,
 } from '../../../../../actions/notification.action';
 import FormQuestionModal from '../modal/FormQuestionModal';
-import RNFS from 'react-native-fs';
 import { Notification } from '../../../../../components/modal/Notification';
 import { GetRequestFormListsDAO, GetRequestLeadfieldDAO, PostRequestDAO } from '../../../../../DAO';
 import { getTokenData } from '../../../../../constants/Storage';
@@ -67,16 +65,14 @@ export default function AddLeadContainer(props) {
 			if(props.changeTitle && res.component_title != undefined){
 				props.changeTitle(res.component_title);
 			}
-			if (isMount) {   
-				console.log("res.custom_master_fields",res.custom_master_fields)              
+			if (isMount) {				
 				setLeadForms(res.custom_master_fields);
 				setAccuracyUnit(res.accuracy_distance_measure);        
 			}
 		}).catch((e) => {
-			console.log("error", e);
+			console.log("leadfield api error", e);
 			expireToken(dispatch, e);
 		});
-
 	};
 	
 
@@ -97,10 +93,9 @@ export default function AddLeadContainer(props) {
 		GetRequestFormListsDAO.find(param).then((res) => {					
 			updateFormLists(res.forms);
 		}).catch((e) => {
-			console.log(e);
+			console.log("formlists api error:" , e);
 			expireToken(dispatch, e);
 		});
-
 	};
 
 	const updateFormLists = (lists) => {
@@ -111,11 +106,9 @@ export default function AddLeadContainer(props) {
 				element.compulsory = "0";
 			}
 			return element;
-		});
-		console.log("updated lists" , tmp);
+		});		
 		setFormLists(tmp);
 	}
-
 
 	const onAdd = async() => {				
 		var user_id = await getTokenData("user_id");
@@ -168,63 +161,8 @@ export default function AddLeadContainer(props) {
 			);
 						
 		}
-
 	}
-
-
-	const getCustomMasterParameterData = postData => {
-		Object.keys(customMasterFields).forEach((key, index) => {
-			if (key != undefined && key != '') {
-				var check = leadForms.find(item => item.custom_master_field_id == key);
-				if (check != null && check != undefined) {
-
-					if(customMasterFields[key] != undefined && customMasterFields[key] != ''){
-						postData.append(
-							`custom_master_fields[${index}][custom_master_field_id]`,
-							key,
-						);
 	
-						if (check.field_type == 'multi_select') {
-							customMasterFields[key].forEach((element , subIndex) => {
-								postData.append( `custom_master_fields[${index}][value][${subIndex}]`, element );                
-							});
-						}else if (check.field_type == 'dropdown_text') {
-							customMasterFields[key].forEach((element , subIndex) => {
-								postData.append( `custom_master_fields[${index}][value][${subIndex}][option]`, element.option );
-								postData.append( `custom_master_fields[${index}][value][${subIndex}][input]`, element.input );
-							});
-						}else if (check.field_type == 'dropdown_input') {
-							postData.append(
-								`custom_master_fields[${index}][dropdown_value]`,
-								customMasterFields[key].value,
-							);
-							postData.append(
-								`custom_master_fields[${index}][value]`,
-								customMasterFields[key].secondValue,
-							);
-						} else {
-	
-							postData.append(
-								`custom_master_fields[${index}][value]`,
-								customMasterFields[key],
-							);
-
-						}
-
-					}          
-				}
-			}
-		});
-	};
-
-	const getAllocateDeviceParameterData = postData => {
-		Object.keys(primaryData).forEach((key, index) => {
-			if (key != undefined && key != '') {
-				postData.append(`contact[${key}]`, primaryData[key]);
-			}
-		});
-	};
-
 	const onButtonAction = value => {
 		props.onButtonAction({
 			type: Constants.actionType.ACTION_CAPTURE,
@@ -295,12 +233,11 @@ export default function AddLeadContainer(props) {
 	const useGeoLocation = () => {
 		setIsCurrentLocation('1');
 	};
-	const onChangedCustomMasterFields = value => {    
-		
-		console.log("custom master data", value);
-		setCustomMasterFields(value);
 
+	const onChangedCustomMasterFields = value => {    				
+		setCustomMasterFields(value);
 	};
+	
 	const onPrimaryContactFields = value => {
 		setPrimaryData(value);
 	};
@@ -311,21 +248,18 @@ export default function AddLeadContainer(props) {
 		}
 		if (type == Constants.actionType.ACTION_DONE) {
 			if (value.form_answers != undefined && value.files != undefined) {
-				console.log("value", value);
 
 				var lists = [...formSubmissions];
 				var check = lists.find(item => item.form.form_id === value.form.form_id);
 				
-				if(check != undefined){
-					console.log("check", check)
+				if(check != undefined){					
 					var tmp = lists.filter(item => item.form.form_id != value.form.form_id);					
 					var item = {form: value.form , files: value.files, form_answers: value.form_answers };
 					setFormSubmissions([...tmp, item]);
-				}else{
-					console.log("formSubmissions", formSubmissions);
+				}else{					
 					var item = {form: value.form , files: value.files, form_answers: value.form_answers };				
 					setFormSubmissions([...lists, item]);
-				}				
+				}			
 				formQuestionModalRef.current.hideModal();
 			}
 		}
@@ -398,6 +332,7 @@ export default function AddLeadContainer(props) {
 				form={form}
 				leadForms={leadForms}				
 				customMasterFields={customMasterFields}
+				selectedLists={selectedLists}
 				onButtonAction={onFormQuestionModalClosed}
 			/>
 
