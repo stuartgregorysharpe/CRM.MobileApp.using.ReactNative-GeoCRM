@@ -1,78 +1,110 @@
 import {Constants} from '../../../../constants';
 import * as RNLocalize from 'react-native-localize';
-import { getLocalData } from '../../../../constants/Storage';
-import { getFileFormat } from '../../../../constants/Helper';
+import {getLocalData} from '../../../../constants/Storage';
+import {getFileFormat} from '../../../../constants/Helper';
+import {getDBConnection} from '../../../../sqlite/DBHelper';
+import {getFormTableData} from '../../../../sqlite/FormDBHelper';
 
-export async function getFormSubmissionPostJsonData (form_id , locationId , currentLocation , form_answers , files ) {
-
-  try{
-
-      var lat = await getLocalData('@latitude');
-      var lon = await getLocalData('@longitude');
-
-      var time_zone = '';
-      try {
-        time_zone = RNLocalize.getTimeZone();
-      } catch (e) {}
-
-      var postDataJson = {
-        form_id: form_id,
-        location_id: locationId,
-        online_offline: 'online',
-        'user_local_data[time_zone]': time_zone,
-        'user_local_data[latitude]': currentLocation.latitude != null
-        ? currentLocation.latitude
-        : lat != null
-        ? lat
-        : '0',
-        'user_local_data[longitude]': currentLocation.longitude != null
-        ? currentLocation.longitude
-        : lon != null
-        ? lon
-        : '0',
-      }
-      form_answers.forEach(item => {
-        if (item.key && item.value && item.value != null && item.valuel != '') {
-          var itemKey = item.key;
-          var itemValue = item.value;
-          postDataJson = {
-            ...postDataJson,
-            [itemKey]: itemValue
-          };        
-        }
-      });
-
-      files.map(item => {
-        if (item.key && item.value) {
-          if (item.type === 'upload_file') {                    
-            postDataJson = {
-              ...postDataJson,
-              [item.key]: {
-                uri: item.value.uri,
-                type: item.value.type,
-                name: item.value.name,
-              }
-            };        
-          } else {
-            
-            var fileFormats = getFileFormat(item.value);
-            postDataJson = {
-              ...postDataJson,
-              [item.key]: fileFormats
-            };
-          }
-        }
-      });
-
-      return postDataJson;
-      
-  }catch(e) {
-    console.log("json err" , e)
+export async function loadFormValuesFromDB(formId) {
+  let formQuestions = null;
+  const db = await getDBConnection();
+  if (db != null) {
+    const res = await getFormTableData(db, formId);
+    if (res.length > 0) {
+      formQuestions = JSON.parse(res.item(0).formQuestions);
+      indempotencyKey = res.item(0).indempotencyKey;
+    }
   }
-  
-
+  return getFormQuestionValueMap(formQuestions);
 }
 
+export function getFormQuestionValueMap(formQuestionGroups) {
+  if (!formQuestionGroups) return {};
+  const formQuestionValueMap = {};
+  formQuestionGroups.forEach(formQuestionGroup => {
+    if (formQuestionGroup.questions) {
+      const questions = formQuestionGroup.questions;
+      questions.forEach(question => {
+        if (question.value) {
+          formQuestionValueMap[question.form_question_id] = question.value;
+        }
+      });
+    }
+  });
+  return formQuestionValueMap;
+}
+
+export async function getFormSubmissionPostJsonData(
+  form_id,
+  locationId,
+  currentLocation,
+  form_answers,
+  files,
+) {
+  try {
+    var lat = await getLocalData('@latitude');
+    var lon = await getLocalData('@longitude');
+
+    var time_zone = '';
+    try {
+      time_zone = RNLocalize.getTimeZone();
+    } catch (e) {}
+
+    var postDataJson = {
+      form_id: form_id,
+      location_id: locationId,
+      online_offline: 'online',
+      'user_local_data[time_zone]': time_zone,
+      'user_local_data[latitude]':
+        currentLocation.latitude != null
+          ? currentLocation.latitude
+          : lat != null
+          ? lat
+          : '0',
+      'user_local_data[longitude]':
+        currentLocation.longitude != null
+          ? currentLocation.longitude
+          : lon != null
+          ? lon
+          : '0',
+    };
+    form_answers.forEach(item => {
+      if (item.key && item.value && item.value != null && item.valuel != '') {
+        var itemKey = item.key;
+        var itemValue = item.value;
+        postDataJson = {
+          ...postDataJson,
+          [itemKey]: itemValue,
+        };
+      }
+    });
+
+    files.map(item => {
+      if (item.key && item.value) {
+        if (item.type === 'upload_file') {
+          postDataJson = {
+            ...postDataJson,
+            [item.key]: {
+              uri: item.value.uri,
+              type: item.value.type,
+              name: item.value.name,
+            },
+          };
+        } else {
+          var fileFormats = getFileFormat(item.value);
+          postDataJson = {
+            ...postDataJson,
+            [item.key]: fileFormats,
+          };
+        }
+      }
+    });
+
+    return postDataJson;
+  } catch (e) {
+    console.log('json err', e);
+  }
+}
 
 export function filterTriggeredQuestions(formQuestionGroups) {
   console.log('filterTriggeredQuestions');
@@ -303,7 +335,11 @@ export function getFormQuestionData(formQuestions) {
           item.question_type === 'multiple' ||
           item.question_type === 'multi_select'
         ) {
-          if (item.value && item.value.length > 0 && item.value instanceof  Array) {
+          if (
+            item.value &&
+            item.value.length > 0 &&
+            item.value instanceof Array
+          ) {
             form_answers.push({
               key: `form_answers[${index}][form_question_id]`,
               value: item.form_question_id,

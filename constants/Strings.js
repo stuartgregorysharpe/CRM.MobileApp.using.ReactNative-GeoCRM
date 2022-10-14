@@ -1,5 +1,6 @@
 export default {
   Ok: 'Okay',
+  Complete_Compulsory_Fields: 'Please complete the compulsory fields.',
   Complete_Compulsory_Questions:
     'Please complete the compulsory questions and then submit',
   Select_Your_Option: 'Select your option: ',
@@ -27,16 +28,16 @@ export default {
   Added_Date: 'Added Date',
   Search_Location: 'Search Location',
 
-  CRM:{
-    Access_CRM :'Access CRM',
-    Check_In: 'Check In'
+  CRM: {
+    Access_CRM: 'Access CRM',
+    Check_In: 'Check In',
   },
 
-  Log:{
+  Log: {
     Post_Api_Error: 'Post Api Call Error : ',
     Get_Api_Error: 'Get Api Call Error : ',
   },
-    
+
   Home: {
     Sync_All: 'Sync All',
   },
@@ -63,16 +64,15 @@ export default {
     Select_Scan_Type: 'Select Scan Type',
   },
 
-  Forms:{
-    Filter_Your_Search : 'Filter your search',
-    Clear_Filters : 'Clear Filters'
+  Forms: {
+    Filter_Your_Search: 'Filter your search',
+    Clear_Filters: 'Clear Filters',
   },
 
   PostRequestResponse: {
     Successfully_Checkout: 'Checkout Successfully!',
     Successfully_Checkin: 'Checkin Successfully!',
     Successfully_Feedback: 'Feedback Successfully!',
-    Successfully_Form_Submit: 'Form  Submitted successfully!'
-  }
-
+    Successfully_Form_Submit: 'Form  Submitted successfully!',
+  },
 };

@@ -1,5 +1,12 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import SearchBar from '../../../components/SearchBar';
 import {FormListItem} from './partial/FormListItem';
 import {Provider} from 'react-native-paper';
@@ -12,27 +19,28 @@ import {expireToken} from '../../../constants/Helper';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import FormFilterModal from './modal/FormFilterModal';
 import {Constants, Strings} from '../../../constants';
-import { GetRequestFormListsDAO } from '../../../DAO';
+import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 
 export default function FormsScreen(props) {
-
-  const {navigationType} = props;  
+  const {navigationType} = props;
   const navigation = props.navigation;
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
   const [isInfo, setIsInfo] = useState(false);
-  const [bubbleText, setBubbleText] = useState({});  
+  const [bubbleText, setBubbleText] = useState({});
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-    
+
   const formFilterModalRef = useRef(null);
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
   const dispatch = useDispatch();
 
-  const locationIdSpecific = props.route.params ? props.route.params.locationInfo : null;
+  const locationIdSpecific = props.route.params
+    ? props.route.params.locationInfo
+    : null;
   const isShowCustomNavigationHeader = props.isDeeplink;
 
   useEffect(() => {
@@ -78,7 +86,6 @@ export default function FormsScreen(props) {
     return unsubscribe;
   }, [navigation]);
 
-
   const initFilter = async () => {
     var savedFilters = await getFilterData('@form_filter');
     setFilters(savedFilters);
@@ -88,7 +95,7 @@ export default function FormsScreen(props) {
     var data = [...filters.form_type];
     var index = data.indexOf(value);
     if (index !== -1) {
-      if (!isChecked) {      
+      if (!isChecked) {
         data.splice(index, 1);
       }
     } else {
@@ -123,23 +130,25 @@ export default function FormsScreen(props) {
         locationIdSpecific != null ? locationIdSpecific.location_id : '',
     };
 
-    if(isCheckin){
-      var checkin_type_id = await getLocalData("@checkin_type_id");
-      var checkin_reason_id = await getLocalData("@checkin_reason_id");      
-      param = {
-        ...param,
-        checkin_type_id:checkin_type_id,
-        checkin_reason_id:checkin_reason_id
+    if (locationIdSpecific != null && isCheckin) {
+      const checkin_type_id = await getLocalData('@checkin_type_id');
+      const checkin_reason_id = await getLocalData('@checkin_reason_id');
+      if (checkin_type_id && checkin_reason_id != '') {
+        param.checkin_type_id = checkin_type_id;
+      }
+      if (checkin_reason_id && checkin_reason_id != '') {
+        param.checkin_reason_id = checkin_reason_id;
       }
     }
 
-    GetRequestFormListsDAO.find(param).then((res) => {
-      setFormLists(res.forms);
-      setOriginalFormLists(res.forms);
-    }).catch((e) => {
-      expireToken(dispatch, e);
-    });
-
+    GetRequestFormListsDAO.find(param)
+      .then(res => {
+        setFormLists(res.forms);
+        setOriginalFormLists(res.forms);
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const _onTouchStart = (e, text) => {
@@ -177,7 +186,7 @@ export default function FormsScreen(props) {
     if (locationIdSpecific != null) {
       onOpenFormItem(item, locationIdSpecific.location_id);
       return;
-    }    
+    }
     if (item.location_required == 1) {
       if (isCheckin) {
         const checkinLocationId = await getLocalData('@specific_location_id');
@@ -213,12 +222,8 @@ export default function FormsScreen(props) {
             }}
             onTouchStart={(e, text) => _onTouchStart(e, text)}></FormListItem>
         </View>
-        { 
-          formLists.length -1 == index &&
-          <View style={{height:50}}>
-          </View>
-        }
-      </View>      
+        {formLists.length - 1 == index && <View style={{height: 50}}></View>}
+      </View>
     );
   };
 
@@ -226,7 +231,7 @@ export default function FormsScreen(props) {
     <Provider>
       <View style={styles.container}>
         {isShowCustomNavigationHeader && (
-          <View style={{marginTop:20}}>
+          <View style={{marginTop: 20}}>
             <NavigationHeader
               showIcon={true}
               title={'Forms'}
@@ -234,7 +239,7 @@ export default function FormsScreen(props) {
                 props.navigation.goBack();
               }}
             />
-          </View>          
+          </View>
         )}
 
         <FormFilterModal
@@ -258,7 +263,7 @@ export default function FormsScreen(props) {
           onSearch={text => _onSearch(text)}></SearchBar>
 
         <FlatList
-          style={{marginHorizontal: 10, marginTop: 0, marginBottom:0}}
+          style={{marginHorizontal: 10, marginTop: 0, marginBottom: 0}}
           removeClippedSubviews={false}
           maxToRenderPerBatch={10}
           initialNumToRender={10}
@@ -278,7 +283,6 @@ export default function FormsScreen(props) {
           onButtonAction={onSearchLocation}
           isSkipLocationIdCheck={true}
         />
-        
       </View>
     </Provider>
   );
@@ -287,6 +291,6 @@ export default function FormsScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom:0
+    paddingBottom: 0,
   },
 });

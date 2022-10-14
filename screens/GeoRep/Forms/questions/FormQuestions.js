@@ -23,19 +23,17 @@ import {
   getFormQuestionData,
   getFormQuestionFile,
   getFormSubmissionPostJsonData,
+  loadFormValuesFromDB,
   validateFormQuestionData,
 } from './helper';
-import {
-  deleteFormTable,
-  insertTable,
-} from '../../../../sqlite/FormDBHelper';
+import {deleteFormTable, insertTable} from '../../../../sqlite/FormDBHelper';
 import {getDBConnection} from '../../../../sqlite/DBHelper';
 import uuid from 'react-native-uuid';
 import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Strings} from '../../../../constants';
-import { GetRequestFormQuestionsDAO, PostRequestDAO } from '../../../../DAO';
-import { generateKey } from '../../../../constants/Utils';
+import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
+import {generateKey} from '../../../../constants/Utils';
 var indempotencyKey;
 
 export const FormQuestions = props => {
@@ -57,15 +55,6 @@ export const FormQuestions = props => {
   }, [form]);
 
   const loadFromDB = async formId => {
-    /*const db = await getDBConnection();
-    if (db != null) {
-      const res = await getFormTableData(db, formId);
-      if (res.length > 0) {
-        updateFormQuestions(JSON.parse(res.item(0).formQuestions));
-        indempotencyKey = res.item(0).indempotencyKey;
-        return;
-      }
-    }*/
     _callFormQuestions();
   };
 
@@ -125,17 +114,24 @@ export const FormQuestions = props => {
       param.location_id = location_id;
     }
 
-    GetRequestFormQuestionsDAO.find(param).then((res) => {
-      groupByQuestions(res.questions);
-    }).catch((e) => {
+    GetRequestFormQuestionsDAO.find(param)
+      .then(res => {
+        groupByQuestions(res.questions);
+      })
+      .catch(e => {
         expireToken(dispatch, e);
-    });
-    
+      });
   };
 
-  const groupByQuestions = data => {
+  const groupByQuestions = async data => {
+    const savedQuestionValueMap = await loadFormValuesFromDB(form.form_id);
     var newData = [];
-    data.forEach(element => {      
+    console.log('savedQuestionValueMap', savedQuestionValueMap);
+    data.forEach(_element => {
+      let element = {..._element};
+      if (savedQuestionValueMap[element.form_question_id]) {
+        element.value = savedQuestionValueMap[element.form_question_id];
+      }
       if (!isInNewData(newData, element)) {
         var ques = [element];
         newData.push({
@@ -207,19 +203,32 @@ export const FormQuestions = props => {
       );
       return;
     }
-    loadingBarRef.current.showModal();    
+    loadingBarRef.current.showModal();
 
     var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
     var files = [];
-    files = getFormQuestionFile(formQuestions);       
+    files = getFormQuestionFile(formQuestions);
 
     let locationId = await getLocalData('@specific_location_id');
     if (location_id && location_id != '') {
       locationId = location_id;
-    }    
-    const postDataJson = await getFormSubmissionPostJsonData(form.form_id, locationId , currentLocation, form_answers, files ); 
-    PostRequestDAO.find(locationId, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name ).then( async(res) => {
+    }
+    const postDataJson = await getFormSubmissionPostJsonData(
+      form.form_id,
+      locationId,
+      currentLocation,
+      form_answers,
+      files,
+    );
+    PostRequestDAO.find(
+      locationId,
+      postDataJson,
+      'form_submission',
+      'forms/forms-submission',
+      form.form_name,
+    )
+      .then(async res => {
         loadingBarRef.current.hideModal();
         dispatch(
           showNotification({
@@ -235,10 +244,11 @@ export const FormQuestions = props => {
             },
           }),
         );
-    }).catch((e) => {
-      loadingBarRef.current.hideModal();
-      expireToken(dispatch, e);
-    });    
+      })
+      .catch(e => {
+        loadingBarRef.current.hideModal();
+        expireToken(dispatch, e);
+      });
   };
 
   const updateFormQuestionsAndClearDB = value => {
@@ -246,11 +256,11 @@ export const FormQuestions = props => {
     saveDb(value, '');
   };
 
-  const updateFormQuestions = formQuestionGroups => {        
-    const res = filterTriggeredQuestions(formQuestionGroups);    
-    if(res != undefined){      
+  const updateFormQuestions = formQuestionGroups => {
+    const res = filterTriggeredQuestions(formQuestionGroups);
+    if (res != undefined) {
       setFormQuestions(res);
-    }      
+    }
   };
 
   const onBackPressed = value => {
@@ -259,11 +269,11 @@ export const FormQuestions = props => {
 
   return (
     <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
-
       <FormQuestionView
         ref={formQuestionViewRef}
         isShowCustomNavigationHeader={isShowCustomNavigationHeader}
         form={form}
+        navigation={props.navigation}
         formQuestions={formQuestions}
         pageType={pageType}
         updateFormQuestions={updateFormQuestionsAndClearDB}

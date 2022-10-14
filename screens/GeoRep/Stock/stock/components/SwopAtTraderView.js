@@ -10,10 +10,14 @@ import DropdownInput from '../../../../../components/common/DropdownInput/Dropdo
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import {Constants, Strings} from '../../../../../constants';
 import {validateMsisdn} from '../../../../../helpers/formatHelpers';
+import {useDispatch} from 'react-redux';
+import {showNotification} from '../../../../../actions/notification.action';
+import {Notification} from '../../../../../components/modal/Notification';
 var previousText = Constants.msisdnPrefix;
 
 export default function SwopAtTraderView(props) {
   const {item, lists, onReturnDevice, onReason, onPhotos, onSwop} = props;
+  const dispatch = useDispatch();
   const [reason, setReason] = useState('');
   const [reasonLists, setReasonLists] = useState([
     {value: 'Damaged', label: 'Damaged'},
@@ -23,9 +27,10 @@ export default function SwopAtTraderView(props) {
   const [msisdn, setMsisdn] = useState(Constants.msisdnPrefix);
   const [photos, setPhotos] = useState([]);
   const [enabled, setEnabled] = useState(false);
-  const [device, setDevice] = useState('');
+  const [device, setDevice] = useState(null);
   const [hasMsisdnError, setHasMsisdnError] = useState(false);
-
+  const [hasSelectDeviceError, setHasSelectDeviceError] = useState(false);
+  const [hasReasonError, setHasReasonError] = useState(false);
   const checkEnabled = (device, reason, photos) => {
     if (
       validateMsisdn(msisdn) &&
@@ -48,8 +53,16 @@ export default function SwopAtTraderView(props) {
       <DropdownInput
         title="Select Device"
         lists={lists}
+        hasError={hasSelectDeviceError}
         onItemSelected={item => {
-          onReturnDevice(item);
+          console.log('onSelectItem', item);
+          if (onReturnDevice) {
+            onReturnDevice(item);
+          }
+          if (item) {
+            setHasSelectDeviceError(false);
+          }
+
           setDevice(item);
           checkEnabled(item, reason, photos);
         }}></DropdownInput>
@@ -60,12 +73,15 @@ export default function SwopAtTraderView(props) {
         mode="single"
         checkedValue={reason}
         items={reasonLists}
-        hasError={false}
+        hasError={hasReasonError}
         disabled={false}
         onSelectItem={item => {
           setReason(item.label);
+          setHasReasonError(false);
           console.log('selected reason', item);
-          onReason(item.label);
+          if (onReason) {
+            onReason(item.label);
+          }
           checkEnabled(device, item.label, photos);
         }}
         containerStyle={{marginTop: 15}}
@@ -75,7 +91,10 @@ export default function SwopAtTraderView(props) {
         isOptimize={true}
         onUpdatePhotos={photos => {
           setPhotos(photos);
-          onPhotos(photos);
+
+          if (onPhotos) {
+            onPhotos(photos);
+          }
           checkEnabled(device, reason, photos);
         }}
         disabled={false}
@@ -143,11 +162,18 @@ export default function SwopAtTraderView(props) {
           title={Strings.Stock.Add_Stock}
           style={{marginTop: 10, marginBottom: 30}}
           onSubmit={() => {
-            if (!validateMsisdn(msisdn)) {
+            const isMsisdnValid = validateMsisdn(msisdn);
+            if (!isMsisdnValid) {
               setHasMsisdnError(true);
-              return;
             }
-            if (device != null && reason != '' && photos.length > 0) {
+            if (!device) {
+              setHasSelectDeviceError(true);
+            }
+            if (reason == '') {
+              setHasReasonError(true);
+            }
+
+            if (device != null && reason != '' && isMsisdnValid) {
               onSwop({
                 item,
                 device,
@@ -155,9 +181,19 @@ export default function SwopAtTraderView(props) {
                 photos,
                 msisdn,
               });
+            } else {
+              dispatch(
+                showNotification({
+                  type: 'success',
+                  message: Strings.Complete_Compulsory_Fields,
+                  buttonText: Strings.Ok,
+                }),
+              );
+              return;
             }
           }}></SubmitButton>
       }
+      <Notification />
     </ScrollView>
   );
 }
