@@ -6,8 +6,7 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
 import {Constants, Strings} from '../../../../../constants';
-import uuid from 'react-native-uuid';
-import {validateMsisdn} from '../../../../../helpers/formatHelpers';
+import {validateMsisdn} from '../../../../../helpers/validateHelper';
 import { generateKey } from '../../../../../constants/Utils';
 var previousText = Constants.msisdnPrefix;
 

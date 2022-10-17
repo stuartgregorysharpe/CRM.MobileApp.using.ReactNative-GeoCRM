@@ -15,9 +15,11 @@ import { GetRequestStockFieldDataDAO, PostRequestDAO } from '../../../../../DAO'
 export default function AddStockContainer(props) {
 
   const dispatch = useDispatch();
+
   const [deviceTypeLists, setDevicetypeLists] = useState([]);
   const [stockTypes, setStockTypes] = useState({});  
   const currentLocation = useSelector(state => state.rep.currentLocation);
+
   let isMount = true;
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function AddStockContainer(props) {
 
     GetRequestStockFieldDataDAO.find(postData).then((res) => {
       if (isMount) {
-        if (res.status === Strings.Success) {
+        if (res.status === Strings.Success) {          
           setStockTypes(res.stock_types);
           var types = [];
           for (let value of Object.keys(res.stock_types)) {
@@ -54,8 +56,15 @@ export default function AddStockContainer(props) {
     
     var userParam = getPostParameter(currentLocation);
     data['user_local_data'] = userParam.user_local_data;		
-
-    PostRequestDAO.find(0, data, "add_stock", 'stockmodule/add-stock', data.stock_type , "sublbel").then((res) => {
+    var subLabel = '';
+    if(data.stock_type == Constants.stockType.DEVICE || data.stock_type == Constants.stockType.CONSUMABLE){
+      subLabel = data.description;
+    }else{
+      //subLabel = data.sims.join(",");
+      subLabel = data.sims.map((item) => item.network).join(', ');
+    }    
+    
+    PostRequestDAO.find(0, data, "add_stock", 'stockmodule/add-stock', data.stock_type , subLabel).then((res) => {
       if (res.status === Strings.Success) {
         dispatch(
           showNotification({

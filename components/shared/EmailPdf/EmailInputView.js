@@ -3,7 +3,7 @@ import { View, Text , TextInput, StyleSheet , Dimensions} from 'react-native'
 import React , { useState ,useEffect } from 'react'
 import { Colors, Constants, Fonts, Strings } from '../../../constants';
 import { whiteLabel } from '../../../constants/Colors';
-import { validateEmail } from '../../../helpers/formatHelpers';
+import { validateEmail } from '../../../helpers/validateHelper';
 
 export default function EmailInputView(props) {
 

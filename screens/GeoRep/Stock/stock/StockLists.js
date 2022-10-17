@@ -79,21 +79,13 @@ export default function StockLists() {
   const callStockLists = () => {
 
     GetRequestStockListsDAO.find({}).then((res) => {
-      if (isMount) {        
-        console.log("res.stock_items" ,res.stock_items)
+      if (isMount) {                
         const _items = getItemsFromStockItems(res.stock_items);
         setItems(_items);
       }
     }).catch((e) => {
       console.log('stock list api error : ', e);
-    })
-
-    // getApiRequest('stockmodule/stock-list', {})
-    //   .then(res => {       
-    //   })
-    //   .catch(e => {
-    //     console.log('E', e);
-    //   });
+    })    
   };
 
   const onStockItemPressed = item => {

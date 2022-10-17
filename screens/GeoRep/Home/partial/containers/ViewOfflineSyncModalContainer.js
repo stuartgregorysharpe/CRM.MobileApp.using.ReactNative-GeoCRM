@@ -10,6 +10,7 @@ const ViewOfflineSyncModalContainer = props => {
         {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
         {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false},
         {label:'Forms' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} , 
+        {label:'Stock Module' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} , 
         //{label:'Product Orders' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false} ,        
         {label:'Others' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false}
     ]);

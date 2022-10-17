@@ -13,8 +13,7 @@ const MultiSelectList = props => {
   const renderItem = (item, index, isLast, isChecked, onItemAction) => {
     if (props.renderItem) {
       return props.renderItem(item, index, isLast, isChecked, onItemAction);
-    }
-    console.log('item', item);
+    }    
 
     return (
       <SelectItem

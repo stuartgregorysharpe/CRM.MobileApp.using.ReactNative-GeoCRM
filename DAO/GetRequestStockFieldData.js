@@ -19,8 +19,7 @@ export function find(postData){
                 if(client_id && business_unit_id && user_id && postData.action){
                     if(postData.action == 'add_stock'){  
                         var lists = await fetchDataFromDB(business_unit_id, client_id);
-                        var stockTypes = getData(lists);
-                        console.log("RES" , stockTypes)
+                        var stockTypes = getData(lists);                        
                         resolve({status: Strings.Success , stock_types: stockTypes });
                     }else{
                         reject("no_add_stock");
@@ -80,8 +79,7 @@ const getData = (lists) => {
                     [Constants.stockType.DEVICE]: [...stock_types[Constants.stockType.DEVICE], devicedata],
                     [Constants.stockType.CONSUMABLE] : [...stock_types[Constants.stockType.CONSUMABLE]],
                     [Constants.stockType.SIM] : [...stock_types[Constants.stockType.SIM]]
-                }
-                console.log("Stock types", stock_types)
+                }                
             }
 
             if(element.product_tag == Constants.stockType.CONSUMABLE){
@@ -90,7 +88,7 @@ const getData = (lists) => {
                     product_id : element.product_id
                 }                        
                 stock_types = {
-                    [Constants.stockType.DEVICE] : [...stock_types[Constants.stockType.DEVICE]],
+                    [Constants.stockType.DEVICE] : stock_types[Constants.stockType.DEVICE],
                     [Constants.stockType.CONSUMABLE]: [...stock_types[Constants.stockType.CONSUMABLE], devicedata],
                     [Constants.stockType.SIM] : stock_types[Constants.stockType.SIM]
                 }
@@ -102,7 +100,7 @@ const getData = (lists) => {
                     product_id : element.product_id
                 }
                 stock_types = {
-                    [Constants.stockType.DEVICE] : [stock_types[Constants.stockType.DEVICE]],
+                    [Constants.stockType.DEVICE] : stock_types[Constants.stockType.DEVICE],
                     [Constants.stockType.CONSUMABLE] : stock_types[Constants.stockType.CONSUMABLE],
                     [Constants.stockType.SIM]: [...stock_types[Constants.stockType.SIM], devicedata]
                 }

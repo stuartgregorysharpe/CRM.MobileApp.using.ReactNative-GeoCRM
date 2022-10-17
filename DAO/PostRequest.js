@@ -3,7 +3,7 @@ import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./h
 import { Strings } from "../constants";
 import { jsonToFormData } from "../helpers/jsonHelper";
 
-export function find(locationId, postData , type, url , itemLabel , itemSubLabel = ''){
+export function find(locationId, postData , type, url , itemLabel , itemSubLabel){
   
   return new Promise(function(resolve, reject) {
 

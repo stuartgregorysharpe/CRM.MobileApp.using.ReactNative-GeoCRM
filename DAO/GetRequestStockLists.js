@@ -109,8 +109,8 @@ const getData = (lists) => {
                 kit : element.sim_kit                
             }
             
-            console.log("Sim Item  Description : " , element.description);
-            console.log("Sim Item : " , simItem);
+            // console.log("Sim Item  Description : " , element.description);
+            // console.log("Sim Item : " , simItem);
 
             simItems.push( {
                 [element.description]:{
@@ -123,7 +123,7 @@ const getData = (lists) => {
             //     simItems[element.description] = [];
             // }            
             // simItems[element.description].push({date: element.added_date , items: [simItem] });
-            console.log("DDDD == " , simItems[element.description]);
+            
             
         }                 
     }

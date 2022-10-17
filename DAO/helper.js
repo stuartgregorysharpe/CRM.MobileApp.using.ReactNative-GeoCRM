@@ -53,12 +53,29 @@ export function getFullAddress (element){
     return address;
 }
 
+const getItemLabel = (locationName, address, label) => {
+    if(label != ""){
+        return label;
+    }
+    return locationName;
+}
+
+const getItemSubLabel = (locationName, address, subLabel , type) => {
+    if(subLabel != ""){
+        return subLabel;
+    }
+    if(type == "form_submission" || type == "leadfields"){
+        return locationName;
+    }
+    return address;
+}
 
   
-export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabel , itemSubLabel){
+export function saveOfflineSyncItems(locationId , postData , type, url , itemLabel , itemSubLabel){
 
     return new Promise( async function(resolve, reject) {
         try{
+       
             var location_name = '';
             var address = '';
 
@@ -73,21 +90,19 @@ export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabe
                 }
             }
 
+            
             var time_zone = '';
             try {
                 time_zone = RNLocalize.getTimeZone();
             } catch (e) {}
             
-            var added_time = getDateTime();                
-            var item_label =  itemLabel != '' ? itemLabel : location_name;
-            var item_sub_text = address;
+            var added_time = getDateTime();
+            var item_label =  getItemLabel(location_name, address , itemLabel);
+            var item_sub_text = getItemSubLabel(location_name , address , itemSubLabel , type);
             var post_body = JSON.stringify(postData);
 
-            if(type == "form_submission" || type == "leadfields"){
-                item_label = itemLabel;
-                item_sub_text = itemSubLabel != "" ? itemSubLabel : location_name;
-            }  
-                                    
+            console.log("typer" , type)
+
             var data = [
                 generateKey(),  //indempotency_key, 
                 type, //item_type

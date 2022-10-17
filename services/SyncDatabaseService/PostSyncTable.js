@@ -21,7 +21,7 @@ export const syncPostData = (basketName, callBack) => {
 
 const syncBasketItemType = async(itemTypes, index , callBack , totalValue) => {
     const itemType = itemTypes[index];
-    console.log("itemTypes", itemTypes)
+    
     if(itemType != undefined){
         console.log("Item ", itemType);
         var res = await syncItemLists(itemType , callBack ,totalValue);
@@ -54,7 +54,7 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
         }else{
             apiRes = await postApiRequest(item.url, { ...JSON.parse(item.post_body), mode: 'offline'} , item.indempotency_key);
         }
-
+        console.log("offline sync api res " , apiRes);
         if(apiRes.status == 'success'){            
             await deleteOfflineSyncItem(item.id)
         }
