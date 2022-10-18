@@ -338,7 +338,7 @@ const LocationSpecificInfoScreen = props => {
                     height="14px"
                   />
                   <Text style={styles.subtitle}>
-                    {locationInfo.location_name.custom_field_name
+                    {locationInfo.location_name?.custom_field_name
                       ? locationInfo.location_name.custom_field_name
                       : ''}
                   </Text>
