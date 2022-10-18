@@ -144,6 +144,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
             var lastSyncedParam = await getTimeStampAndTimeZone(basket);
             await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
 
+                console.log("length data" , res.records);
                 console.log("Table Record Length", res.records.length);
                 console.log("Page Number" , pageNumber);
                 console.log("Total Page Number", res.total_pages);

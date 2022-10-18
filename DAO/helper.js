@@ -6,7 +6,6 @@ import { insertOfflineSyncItem } from "../sqlite/OfflineSyncItemsHelper";
 import uuid from 'react-native-uuid';
 import { getDateTime } from "../helpers/formatHelpers";
 import * as RNLocalize from 'react-native-localize';
-import { formDataToJsonString } from "../helpers/jsonHelper";
 import { generateKey } from "../constants/Utils";
 
 export function checkConnectivity(){
@@ -126,6 +125,7 @@ export function saveOfflineSyncItems(locationId , postData , type, url , itemLab
     });              
 }
 
+
 export function getResponseMessage (type , url) {
     if(type ==  'checkin'){
         return Strings.PostRequestResponse.Successfully_Checkin;
@@ -135,6 +135,8 @@ export function getResponseMessage (type , url) {
         return Strings.PostRequestResponse.Successfully_Feedback;
     }else if(type == "form_submission"){
         return Strings.PostRequestResponse.Successfully_Form_Submit;
+    }else if(type == "add_stock"){
+        return Strings.Stock.Successfully_Stock_Submit;
     }
     return Strings.PostRequestResponse.Successfully_Checkin;    
 }

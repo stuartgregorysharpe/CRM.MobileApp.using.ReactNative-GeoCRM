@@ -12,6 +12,8 @@ import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
 
 export default function SyncAll(props) {
+//export const SyncAll = forwardRef((props, ref) => {
+
   const [expanded, setExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [lastSyncedDate, setLastSyncedDate] = useState('');
@@ -27,6 +29,15 @@ export default function SyncAll(props) {
   useEffect(() => {
     initLastSyncAllDateTime();
   }, [props.refresh]);
+
+  useEffect(() => {
+      if(!props.isExpandSync){
+        setExpanded(false);
+      }
+  }, [props.isExpandSync]);
+
+  
+
 
   useEffect(() => {
     let isMount = true;

@@ -1,6 +1,5 @@
 import {View, FlatList, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState, useRef, useMemo} from 'react';
-import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
@@ -32,7 +31,9 @@ import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
 import { GetRequestStockListsDAO } from '../../../../DAO';
 
-export default function StockLists() {
+export default function StockLists(props) {
+
+  const navigation = props.navigation;
   const [searchKeyword, setSearchKeyword] = useState('');
   const [stockItem, setStockItem] = useState({});
   const addStockModalRef = useRef(null);
@@ -75,6 +76,14 @@ export default function StockLists() {
       isMount = false;
     };
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      callStockLists();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
 
   const callStockLists = () => {
 
@@ -130,6 +139,7 @@ export default function StockLists() {
       }
     }
   };
+
   const onScanAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
@@ -252,15 +262,18 @@ export default function StockLists() {
     setLastScannedQrCode('');
     simDetailsModalRef.current.hideModal();
   };
+
   const onCaptureSim = () => {
     setSelectedItems([]);
     simDetailsModalRef.current.showModal();
     dispatch(clearNotification());
   };
+
   const onCaptureDevice = () => {
     barcodeScanModalRef.current.showModal();
     dispatch(clearNotification());
   };
+
   const onSelectStockTypeForCapture = () => {
     dispatch(
       showNotification({

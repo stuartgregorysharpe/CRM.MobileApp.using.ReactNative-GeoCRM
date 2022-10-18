@@ -18,7 +18,8 @@ export function find(postData){
                 const user_id = res.data.user_id;
 
                 if(client_id && business_unit_id && user_id){                    
-                    var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);                    
+                    var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);               
+                    console.log("offline list", JSON.stringify(lists))     
                     resolve({status: Strings.Success , stock_items: getData(lists)});                                                       
                 }else{
                     reject();

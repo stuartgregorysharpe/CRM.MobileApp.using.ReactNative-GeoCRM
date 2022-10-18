@@ -85,7 +85,7 @@ const Stock = props => {
       <Notification />
 
       <View style={{flex: 1}}>
-        {selectedTabIndex === 0 && <StockLists></StockLists>}
+        {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
         {selectedTabIndex === 2 && <Movements></Movements>}
         {selectedTabIndex === 3 && <Returns></Returns>}

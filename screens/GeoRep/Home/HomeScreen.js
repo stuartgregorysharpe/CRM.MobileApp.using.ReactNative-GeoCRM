@@ -18,10 +18,7 @@ export default function HomeScreen(props) {
   }, []);
 
   useEffect(() => {
-      var screenProps = props.screenProps;
-
-      
-	  
+      var screenProps = props.screenProps;      	  
       if (screenProps === undefined) {        	
         	screenProps = props.navigation;			
       }
