@@ -30,7 +30,9 @@ export default {
 
   CRM: {
     Access_CRM: 'Access CRM',
-    Check_In: 'Check In',
+    Check_In: 'Check In',    
+    Submisison_ID: 'Submission ID: ',
+    Form_Activity_For: 'Form Activity for '
   },
 
   Log: {

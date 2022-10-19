@@ -1,79 +1,109 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  StyleSheet,
-  Animated,
-  ScrollView,
-  SectionList,
-  Dimensions,
-  Linking,
-  BackHandler,
+  View,  
+  StyleSheet,  
+  ActivityIndicator,  
+  FlatList,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
-import {getApiRequest} from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
-import {SubmitButton} from '../../../../../components/shared/SubmitButton';
-import SvgIcon from '../../../../../components/SvgIcon';
-import Colors, {whiteLabel} from '../../../../../constants/Colors';
+import { Strings } from '../../../../../constants';
 import {expireToken} from '../../../../../constants/Helper';
+import { GetRequestFormSubmissionsDAO } from '../../../../../DAO';
+import { FormSubmissionListItem } from './partial/FormSubmissionListItem';
+import LoadMore from './partial/LoadMore';
 
 export default function Comments(props) {
-  //const location_id = props.route.params.location_id;
+  
   const location_id = props.location_id;
-  const [historyItems, setHistoryItems] = useState([]);
 
+  const [lists, setLists] = useState([]);
+  const [isLoading , setIsLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [locationName , setLocationName] = useState("");
+ 
   const dispatch = useDispatch();
+  let isMount = true;
 
-  useEffect(() => {}, []);
+  useEffect(() => {
 
-  const _callApiRequest = () => {
-    let param = {page: 1, location_id: location_id};
-    getApiRequest(
-      'https://dev.georep.com/local_api_old/locations/location-history',
-      param,
-    )
-      .then(res => {
-        setHistoryItems(res.history_items);
-        console.log(res);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
+	getFormSubmissions(page);
+	return () => {
+		isMount = false;
+	}
+  }, []);
+
+  const getFormSubmissions = pageNumber => {
+	  if(!isLoading){
+		setIsLoading(true);
+		const postData = {
+			location_id : location_id,
+			page_nr: pageNumber
+		}		
+		GetRequestFormSubmissionsDAO.find(postData).then((res) => {		
+			if(isMount){
+				setLocationName(res.location_name);
+				if(pageNumber == 0){
+					setLists(res.submissions);
+				}else{
+					setLists([...lists, ...res.submissions]);
+				}								
+				setPage(pageNumber + 1);
+				setIsLoading(false);
+			}			
+		}).catch((e) => {
+			if(isMount){
+				expireToken(dispatch , e);
+				setIsLoading(false);
+			}			
+		});
+
+	  }	  
+  }
+  
+  const renderItems = (item, index) => {
+    return (
+      <View key={index}>
+        <FormSubmissionListItem
+          index={index}
+          isStart={index === 0 ? true : false}
+          isEnd={lists.length - 1 === index ? true : false}
+          item={item}></FormSubmissionListItem>
+      </View>
+    );
   };
 
-  return (
-    <View style={styles.container}>
-      <View
-        style={{
-          marginTop: 30,
-          width: Dimensions.get('screen').width,
-          flex: 1,
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}>
-        <SvgIcon style={styles.pickerIcon} icon="Faq" height="300" />
-        <View style={{padding: 20, alignItems: 'center'}}>
-          <AppText
-            color={whiteLabel().helpText}
-            style={{textAlign: 'center'}}
-            size="medium"
-            title="No forms currently available,"></AppText>
-          <AppText
-            color={whiteLabel().helpText}
-            style={{textAlign: 'center'}}
-            size="medium"
-            title="please check back at a later stage."></AppText>
-        </View>
-      </View>
+  const renderSeparator = () => (
+    <View
+      style={{
+        backgroundColor: '#70707045',
+        height: 0.5,
+      }}
+    />
+  );
 
-      {/* <View style={{ marginBottom:10, marginTop:10, width:Dimensions.get('window').width * 0.94 }}>
-                <SubmitButton 
-                    onSubmit={() => { }}
-                    title="Add comment"></SubmitButton>
-            </View>                             */}
+  return (
+    <View style={styles.container}>      
+		<View style={{marginTop: 5, marginBottom: 10 , marginLeft:5}}>
+			<AppText size="medium" type="secondaryBold" title={Strings.CRM.Form_Activity_For + locationName}></AppText>
+		</View>
+		
+		<FlatList
+			data={lists}
+			renderItem={({item, index}) => renderItems(item, index)}
+			keyExtractor={(item, index) => index.toString()}
+			contentContainerStyle={{paddingHorizontal: 7, marginTop: 0}}
+			ItemSeparatorComponent={renderSeparator}
+		/>
+
+		{isLoading && <ActivityIndicator />}
+
+		<LoadMore 
+			loadMore={() => {
+				getFormSubmissions(page);
+			}}
+		/>
+		
     </View>
   );
 }
@@ -81,6 +111,6 @@ export default function Comments(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+	paddingHorizontal: 10
   },
 });

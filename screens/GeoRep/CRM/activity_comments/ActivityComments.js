@@ -55,7 +55,7 @@ export default function ActivityComments(props) {
                                 <Activity {...props} location_id={locationId} />
                             </View>
                             <View key="2">
-                                <Comments></Comments>
+                                <Comments {...props} location_id={locationId} ></Comments>
                             </View>
                     </PagerView>
 
