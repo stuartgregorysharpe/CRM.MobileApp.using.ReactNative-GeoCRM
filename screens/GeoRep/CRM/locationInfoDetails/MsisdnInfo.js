@@ -24,7 +24,7 @@ const MsisdnInfo = props => {
       <View style={styles.rowContainer}>
         <SvgIcon
           style={styles.fontIcon}
-          icon="Location_Arrow"
+          icon="Sim_Card_Alert_Icon"
           width="16px"
           height="16px"
         />
