@@ -18,6 +18,7 @@ import {
   launchImageLibrary,
   requestCameraPermission,
 } from '../../../../constants/Utils';
+import MsisdnInfo from './MsisdnInfo';
 
 const LocationInfo = props => {
   const {locationInfo, filePath} = props;
@@ -135,6 +136,7 @@ const LocationInfo = props => {
             )}
           </View>
         </View>
+        <MsisdnInfo locationInfo={locationInfo} style={{marginLeft: 10}} />
       </View>
 
       {renderLocationImage()}

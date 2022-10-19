@@ -12,7 +12,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
-import { expireToken } from '../../../../../constants/Helper';
+import {expireToken} from '../../../../../constants/Helper';
 
 export default function StockSignatureContainer(props) {
   const {item, selectedCodes, signatureModalType} = props;
@@ -97,9 +97,9 @@ export default function StockSignatureContainer(props) {
                   );
                 })
                 .catch(e => {
-                  if(e === 'expired'){
-                    expireToken(dispatch, e)
-                  }else{
+                  if (e === 'expired') {
+                    expireToken(dispatch, e);
+                  } else {
                     dispatch(
                       showNotification({
                         type: Strings.Success,
@@ -108,7 +108,6 @@ export default function StockSignatureContainer(props) {
                       }),
                     );
                   }
-                  
                 });
             } else if (item.stock_type == Constants.stockType.RETURN) {
               if (props.stockItemIds.length > 0) {
@@ -136,9 +135,9 @@ export default function StockSignatureContainer(props) {
                   })
                   .catch(e => {
                     console.log('error', e);
-                    if(e === 'expired'){
-                      expireToken(dispatch, e)
-                    }else{
+                    if (e === 'expired') {
+                      expireToken(dispatch, e);
+                    } else {
                       dispatch(
                         showNotification({
                           type: Strings.Success,
@@ -146,7 +145,7 @@ export default function StockSignatureContainer(props) {
                           buttonText: 'Ok',
                         }),
                       );
-                    }                    
+                    }
                   });
               } else {
                 dispatch(

@@ -3,6 +3,7 @@ export default {
   Complete_Compulsory_Fields: 'Please complete the compulsory fields.',
   Complete_Compulsory_Questions:
     'Please complete the compulsory questions and then submit',
+  Please_Sign_Message: 'Please Sign',
   Select_Your_Option: 'Select your option: ',
   Complete_All_Fields: 'Please complete all fields',
   Add_Additional: 'Add additional',

@@ -1203,6 +1203,22 @@ const Price_Fall_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="32" heig
   </g>
 </svg>
 `;
+
+const Sim_Card_Alert_Icon = `<svg id="sim_card_alert_black_24dp" xmlns="http://www.w3.org/2000/svg" width="39.892" height="39.892" viewBox="0 0 39.892 39.892">
+  <g id="Group_4463" data-name="Group 4463" transform="translate(0)">
+    <rect id="Rectangle_2421" data-name="Rectangle 2421" width="39.892" height="39.892" fill="none"/>
+  </g>
+  <g id="Group_4467" data-name="Group 4467" transform="translate(6.736 3.316)">
+    <g id="Group_4466" data-name="Group 4466">
+      <g id="Group_4465" data-name="Group 4465">
+        <g id="Group_4464" data-name="Group 4464">
+          <path id="Path_4201" data-name="Path 4201" d="M27.209,2H13.947L4.033,11.947,4,31.84a3.325,3.325,0,0,0,3.316,3.316H27.209a3.325,3.325,0,0,0,3.316-3.316V5.316A3.325,3.325,0,0,0,27.209,2Zm0,29.84Z" transform="translate(-4 -2)" fill="${actionIconBackground}"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+`;
 export default ({
   icon,
   xml,
@@ -1851,6 +1867,14 @@ export default ({
       <SvgXml
         style={style}
         xml={Price_Fall_Icon}
+        width={width}
+        height={height}
+      />
+    )}
+    {icon == 'Sim_Card_Alert_Icon' && (
+      <SvgXml
+        style={style}
+        xml={Sim_Card_Alert_Icon}
         width={width}
         height={height}
       />
