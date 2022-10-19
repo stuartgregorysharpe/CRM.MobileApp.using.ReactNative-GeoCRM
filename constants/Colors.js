@@ -3,7 +3,7 @@ export const BG_COLOR = '#F9F9F9';
 export const TEXT_COLOR = '#23282D';
 export const GREEN_COLOR = '#b7e2bb';
 export const BLUE_COLOR = '#b7cce2';
-export const GRAY_COLOR = 'rgba(21, 90, 161, 0.31)';
+export const GRAY_COLOR = '#155aa14f';
 
 export const whiteLabel = () => {
   return {
@@ -67,10 +67,10 @@ export default {
   disabledColor: '#9D9FA2',
   tickBoxColor: '#002a55',
   selectedRedColor: '#dc143c',
-  greyColor: 'rgba(21, 90, 161, 0.31)',
+  greyColor: '#155aa14f',
   lightGreyColor: '#eee',
   lightBlueColor: '#4594DB',
-  primaryOpacity20: 'rgba(19, 60, 139, 0.2)',
+  primaryOpacity20: '#133c8b33',
   grey2: '#D8D8D8',
   yellowColor: '#FB9600',
   splitColor: '#70707045',

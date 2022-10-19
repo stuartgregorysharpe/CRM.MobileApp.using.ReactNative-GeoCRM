@@ -2,7 +2,6 @@ import React, {useEffect, useState, useImperativeHandle} from 'react';
 import {
   StyleSheet,
   View,
-  Modal,
   Image,
   Text,
   TouchableOpacity,
@@ -10,7 +9,7 @@ import {
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
-
+import Modal from 'react-native-modal';
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const {
@@ -59,7 +58,8 @@ const CModal = React.forwardRef((props, ref) => {
         animationType="fade"
         transparent
         visible={isVisible}
-        onRequestClose={onClose}>
+        onRequestClose={onClose}
+        style={{margin: 0}}>
         <View
           style={[
             isCenterModal && styles.dim,
@@ -154,7 +154,7 @@ const CModal = React.forwardRef((props, ref) => {
 
 const styles = StyleSheet.create({
   dim: {
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: '#00000059',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   bottomModalDim: {
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: '#00000059',
     flex: 1,
     alignItems: 'center',
   },
