@@ -24,7 +24,51 @@ const LocationInfo = props => {
   const {locationInfo, filePath} = props;
 
   const [isPicker, setIsPicker] = useState(false);
-
+  const renderImage = () => {
+    if (filePath !== '')
+      return <Image style={styles.walmartImage} source={{uri: filePath}} />;
+    if (locationInfo.location_image !== '') {
+      return (
+        <Image
+          style={styles.walmartImage}
+          source={{uri: locationInfo.location_image}}
+        />
+      );
+    }
+    return (
+      <View
+        style={{
+          width: 100,
+          paddingTop: 3,
+          paddingBottom: 3,
+          borderWidth: 1.5,
+          borderColor: whiteLabel().fieldBorder,
+          borderRadius: 5,
+        }}>
+        <SvgIcon
+          style={styles.fontIcon}
+          icon={'Add_Image'}
+          width={DeviceInfo.isTablet() ? '150px' : '90px'}
+          height={DeviceInfo.isTablet() ? '130px' : '80px'}
+        />
+      </View>
+    );
+  };
+  const renderLocationImage = () => {
+    const isLocationInfoAvailable =
+      locationInfo !== undefined && locationInfo.address !== '';
+    if (!isLocationInfoAvailable) return null;
+    return (
+      <View style={[styles.walmartImageBox]}>
+        <TouchableOpacity
+          onPress={() => {
+            setIsPicker(true);
+          }}>
+          {renderImage()}
+        </TouchableOpacity>
+      </View>
+    );
+  };
   return (
     <View style={{flexDirection: 'row', flex: 1}}>
       <View style={{flex: 1}}>
@@ -94,44 +138,8 @@ const LocationInfo = props => {
         </View>
         <MsisdnInfo locationInfo={locationInfo} style={{marginLeft: 10}} />
       </View>
-      {locationInfo !== undefined && locationInfo.address !== '' && (
-        <View style={[styles.walmartImageBox]}>
-          {locationInfo.location_image !== '' && (
-            <Image
-              style={styles.walmartImage}
-              source={{uri: locationInfo.location_image}}
-            />
-          )}
-          {locationInfo.location_image === '' && (
-            <TouchableOpacity
-              onPress={() => {
-                setIsPicker(true);
-              }}>
-              {filePath !== '' && (
-                <Image style={styles.walmartImage} source={{uri: filePath}} />
-              )}
-              {filePath === '' && (
-                <View
-                  style={{
-                    width: 100,
-                    paddingTop: 3,
-                    paddingBottom: 3,
-                    borderWidth: 1.5,
-                    borderColor: whiteLabel().fieldBorder,
-                    borderRadius: 5,
-                  }}>
-                  <SvgIcon
-                    style={styles.fontIcon}
-                    icon={'Add_Image'}
-                    width={DeviceInfo.isTablet() ? '150px' : '90px'}
-                    height={DeviceInfo.isTablet() ? '130px' : '80px'}
-                  />
-                </View>
-              )}
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+
+      {renderLocationImage()}
 
       <PhotoCameraPickerDialog
         visible={isPicker}
