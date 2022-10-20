@@ -17,8 +17,9 @@ export function find(postData){
                 const business_unit_id = res.data.business_unit_id;
                 const user_id = res.data.user_id;
                 
+                resolve({status:'error' , message: 'Feature available in online mode only'});
                 // need to implement offline feature
-
+                
                 resolve([]);
 
             }else{

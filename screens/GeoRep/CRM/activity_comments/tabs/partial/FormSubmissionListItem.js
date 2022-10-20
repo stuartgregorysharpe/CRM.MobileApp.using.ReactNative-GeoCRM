@@ -11,7 +11,9 @@ export const FormSubmissionListItem = ({ item, isStart, isEnd , onItemPress , in
     return (
         <View style={[styles.container]} key={index}> 
         
-            <TouchableOpacity style={{flexDirection:'row', flex:1 , alignItems:'center'}} onPress={onItemPress}>     
+            <TouchableOpacity style={{flexDirection:'row', flex:1 , alignItems:'center'}} onPress={() => {
+                onItemPress(item);
+            }}>     
 
                 <View style={{flexDirection:'column', flex:1}}>
 

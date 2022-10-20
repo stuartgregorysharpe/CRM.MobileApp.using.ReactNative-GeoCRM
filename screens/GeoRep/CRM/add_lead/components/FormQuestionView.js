@@ -45,7 +45,8 @@ import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
-  const {
+  const {    
+    submissionType,
     isShowCustomNavigationHeader,
     form,
     formQuestions,
@@ -71,8 +72,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
   const formSubmitModalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log('form', form);
 
   useImperativeHandle(
     ref,
@@ -171,6 +170,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
           style={{marginHorizontal: 5}}>
           <YesNoForm
             key={'yes_no_question' + index}
+            submissionType={submissionType}
             onTakeImage={async (images, type) => {
               var tmp = [...formQuestions];
               if (type === 'yes') {
@@ -285,6 +285,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
         <TakePhotoForm
           key={'take_photo_question' + `${key}${index}`}
           item={item}
+          submissionType={submissionType}
           onTouchStart={(e, text) => {
             _onTouchStart(e, text);
           }}
@@ -487,11 +488,13 @@ export const FormQuestionView = forwardRef((props, ref) => {
       return (
         <MultiSelectPhoto
           key={'multiple_select_form' + index}
+          submissionType={submissionType}
           questionType={item.question_type}
           item={item}
           fromIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              console.log(" ==== " , item)
               onValueChangedSelectionView(key, index, value);
             }
             if (type == Constants.actionType.ACTION_INFO) {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect , useRef} from 'react';
 import {
   View,  
   StyleSheet,  
@@ -7,64 +7,113 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {AppText} from '../../../../../components/common/AppText';
-import { Strings } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
 import {expireToken} from '../../../../../constants/Helper';
-import { GetRequestFormSubmissionsDAO } from '../../../../../DAO';
+import { GetRequestFormQuestionsDAO, GetRequestFormSubmissionsDAO, PostRequestDAO } from '../../../../../DAO';
 import { FormSubmissionListItem } from './partial/FormSubmissionListItem';
 import LoadMore from './partial/LoadMore';
+import FormQuestionModal from '../../add_lead/modal/FormQuestionModal';
+import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import { getFormSubmissionPostJsonData } from '../../../Forms/questions/helper';
+import { useSelector } from 'react-redux';
 
 export default function Comments(props) {
   
-  const location_id = props.location_id;
+  	const location_id = props.location_id;
+	const [lists, setLists] = useState([]);
+	const [isLoading , setIsLoading] = useState(false);
+	const [page, setPage] = useState(0);
+	const [locationName , setLocationName] = useState("");
+	const formQuestionModalRef = useRef(null);
+	const [form, setForm] = useState({});
 
-  const [lists, setLists] = useState([]);
-  const [isLoading , setIsLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [locationName , setLocationName] = useState("");
- 
-  const dispatch = useDispatch();
-  let isMount = true;
+	const currentLocation = useSelector(state => state.rep.currentLocation);
+	const dispatch = useDispatch();
+	let isMount = true;
 
-  useEffect(() => {
+	useEffect(() => {
 
-	getFormSubmissions(page);
-	return () => {
-		isMount = false;
+		getFormSubmissions(page);
+		return () => {
+			isMount = false;
+		}
+	}, []);
+
+	const getFormSubmissions = pageNumber => {
+		if(!isLoading){
+			setIsLoading(true);
+			const postData = {
+				location_id : location_id,
+				page_nr: pageNumber
+			}		
+			GetRequestFormSubmissionsDAO.find(postData).then((res) => {		
+				if(isMount){
+					if(res.status == Strings.Success){
+						setLocationName(res.location_name);
+						if(pageNumber == 0){
+							setLists(res.submissions);
+						}else{
+							setLists([...lists, ...res.submissions]);
+						}								
+						setPage(pageNumber + 1);
+					}else{
+						dispatch(showNotification({type: Strings.Success , message: res.message , buttonText:'Ok', buttonAction:() => {
+							dispatch(clearNotification());
+						}}))
+					}				
+					setIsLoading(false);
+				}			
+			}).catch((e) => {
+				if(isMount){
+					expireToken(dispatch , e);
+					setIsLoading(false);
+				}			
+			});	
+		}
 	}
-  }, []);
 
-  const getFormSubmissions = pageNumber => {
-	  if(!isLoading){
-		setIsLoading(true);
-		const postData = {
-			location_id : location_id,
-			page_nr: pageNumber
-		}		
-		GetRequestFormSubmissionsDAO.find(postData).then((res) => {		
-			if(isMount){
-				setLocationName(res.location_name);
-				if(pageNumber == 0){
-					setLists(res.submissions);
-				}else{
-					setLists([...lists, ...res.submissions]);
-				}								
-				setPage(pageNumber + 1);
-				setIsLoading(false);
-			}			
+	const editFormQuestion = async (form_answers, files) => {			
+		const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
+		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name , '' ).then( async(res) => {									
+			if(res.status === Strings.Success){
+				dispatch(showNotification({type: Strings.Success , message: res.message , buttonText:'Ok', buttonAction:() => {					
+					setPage(0)
+					getFormSubmissions(0);					
+					dispatch(clearNotification());
+				}}));
+			}				
 		}).catch((e) => {
-			if(isMount){
-				expireToken(dispatch , e);
-				setIsLoading(false);
-			}			
-		});
+			console.log(e);		
+			expireToken(dispatch, e);		
+		})
+	}
 
-	  }	  
-  }
+
+  const onFormQuestionModalClosed = ({type, value}) => {
+	if (type == Constants.actionType.ACTION_CLOSE) {
+		formQuestionModalRef.current.hideModal();
+	}
+	if (type == Constants.actionType.ACTION_DONE) {
+		if (value.form_answers != undefined && value.files != undefined) {		
+			editFormQuestion(value.form_answers, value.files);			
+			formQuestionModalRef.current.hideModal();
+		}
+	}
+};
+
+
+
   
   const renderItems = (item, index) => {
     return (
       <View key={index}>
         <FormSubmissionListItem
+			onItemPress={(item) => {				
+				setForm({submission_id: item.submission_id, form_name: item.form_name});
+				if(formQuestionModalRef.current){
+					formQuestionModalRef.current.showModal();
+				}
+			}}
           index={index}
           isStart={index === 0 ? true : false}
           isEnd={lists.length - 1 === index ? true : false}
@@ -104,6 +153,21 @@ export default function Comments(props) {
 			}}
 		/>
 		
+		
+
+	
+		<FormQuestionModal
+				ref={formQuestionModalRef}
+				hideClear={true}
+				title=""
+				form={form}
+				submissionType={"edit"}
+				//leadForms={leadForms}	
+				//customMasterFields={customMasterFields}
+				//selectedLists={selectedLists}
+				onButtonAction={onFormQuestionModalClosed}
+			/> 
+
     </View>
   );
 }

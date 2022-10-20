@@ -15,21 +15,31 @@ export default function TieredMultipleChoiceView(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    var tmp = [];
+    var dropdownLists = [];
     if (item.dropdown_labels != undefined) {
       for (let value of Object.keys(item.dropdown_labels)) {
-        tmp.push(item.dropdown_labels[value]);
+        dropdownLists.push(item.dropdown_labels[value]);
       }
-      setDropdownLabels(tmp);
+      setDropdownLabels(dropdownLists);
     }
+      
     if (item.value != null && item.value != undefined) {
-      var splits = item.value.split(' - ');
-      tmp = [];
-      splits.forEach(item => {
-        tmp.push({label: item});
-      });
-      setSelectedDropdownLists(tmp);
+      dropdownLists = [];
+      if(typeof item.value === 'object'){
+        console.log(" is object ");
+        for (let key of Object.keys(item.value)) {
+          dropdownLists.push({label: item.value[key]});
+        }
+      }else{
+        console.log(" is not object ")
+        var splits = item.value.split(' - ');        
+        splits.forEach(item => {
+          dropdownLists.push({label: item});
+        });        
+      }
+      setSelectedDropdownLists(dropdownLists);      
     }
+
   }, [item, item.value]);
 
   useEffect(() => {}, [selectedDropdownLists]);
@@ -112,17 +122,29 @@ export default function TieredMultipleChoiceView(props) {
         marginTop: 7,
         marginBottom: 7,
       }}>
+        
       {dropdownLabels.map((element, index) => {
         return (
           <TieredMultipleChoiceInput
             hasError={showError && index === level + 1 ? true : false}
             key={index}
-            selectedItem={selectedDropdownLists[index]}
-            renderDropdownItem={props.renderDropdownItem}
+            selectedItem={selectedDropdownLists[index]}            
             onItemSelected={item => {
-              if (!props.renderDropdownItem) {
+              setShowError(false);
+              setLevel(index);
+              if (index < selectedDropdownLists.length) {
+                const tmp = [];
+                selectedDropdownLists.forEach((element, k) => {
+                  if (k < index) {
+                    tmp.push(element);
+                  } else if (k === index) {
+                    tmp.push(item);
+                  }
+                });
+                setSelectedDropdownLists(tmp);
+              } else {
                 setSelectedDropdownLists([...selectedDropdownLists, item]);
-              }
+              }            
             }}
             header={element}
             lists={getLists(index)}
