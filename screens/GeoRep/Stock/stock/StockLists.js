@@ -120,17 +120,22 @@ const StockLists = () => {
     }
   };
 
-  const onStockDetailsModalClosed = async ({type, value}) => {
-    if (type == Constants.actionType.ACTION_NEXT) {
-      setLocationId(value.locationId);
-      if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
-        stockSignatureModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.SWOP_AT_TRADER) {
-        swopAtTraderModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.TARDER) {
-        traderModalRef.current.showModal();
+  const onStockDetailsModalClosed = ({type, value}) => {
+    stockDetailsModalRef.current.hideModal();
+    setTimeout(() => {
+      if (type == Constants.actionType.ACTION_NEXT) {
+        setLocationId(value.locationId);
+        if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
+          stockSignatureModalRef.current.showModal();
+        } else if (
+          value.stockType === Constants.stockDeviceType.SWOP_AT_TRADER
+        ) {
+          swopAtTraderModalRef.current.showModal();
+        } else if (value.stockType === Constants.stockDeviceType.TARDER) {
+          traderModalRef.current.showModal();
+        }
       }
-    }
+    }, 500);
   };
   const onScanAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
@@ -211,13 +216,16 @@ const StockLists = () => {
 
   const onSimDetailAction = ({type, value, item}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
+      simDetailsModalRef.current.hideModal();
       setStockItem({stock_type: Constants.stockType.SIM});
       setLocationId(value.locationId);
-      if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
-        stockSignatureModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.TARDER) {
-        traderModalRef.current.showModal();
-      }
+      setTimeout(() => {
+        if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
+          stockSignatureModalRef.current.showModal();
+        } else if (value.stockType === Constants.stockDeviceType.TARDER) {
+          traderModalRef.current.showModal();
+        }
+      }, 700);
     } else if (
       type == Constants.actionType.ACTION_CAPTURE ||
       type == Constants.actionType.ACTION_INPUT_BARCODE

@@ -5,9 +5,6 @@ import StockDetailsContainer from '../../container/StockDetailsContainer';
 
 const StockDeviceDetailsModal = React.forwardRef((props, ref) => {
   const onButtonAction = data => {
-    if (ref) {
-      ref.current.hideModal();
-    }
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
