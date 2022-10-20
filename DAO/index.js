@@ -10,7 +10,7 @@ import GetRequestFormQuestionsDAO from './GetRequestFormQuestions';
 import GetRequestStockListsDAO from './GetRequestStockLists';
 import GetRequestLocationInfoDAO from './GetRequestLocationInfo';
 import GetRequestReturnListsDAO from './GetRequestReturnLists';
-
+import GetRequestFormSubmissionsDAO from './GetRequestFormSubmissions';
 
 export {
             LocationMapDAO, 
@@ -24,5 +24,6 @@ export {
             GetRequestFormQuestionsDAO,
             GetRequestStockListsDAO,
             GetRequestLocationInfoDAO,
-            GetRequestReturnListsDAO
+            GetRequestReturnListsDAO,
+            GetRequestFormSubmissionsDAO
         }

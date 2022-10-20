@@ -8,17 +8,26 @@ import { Button } from './Button';
 import SvgIcon from '../SvgIcon';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import * as ImagePicker from 'react-native-image-picker'; 
+import { useDispatch } from 'react-redux';
+import { clearNotification, showNotification } from '../../actions/notification.action';
 
-export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
+export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submissionType }) => {
 
     const [isYes, setIsYes] = useState(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value.toLowerCase() == 'no' ? true:false);
     const [isPicker , setIsPicker] = useState(false);
+    const dispatch = useDispatch()
 
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
                 
     const showSelectionDialog = () => {        
-        setIsPicker(true);      
+        if(submissionType == "edit"){
+          dispatch(showNotification({type:'success' , message: 'Edit image not allowed' , buttonText: 'Ok', buttonAction: () => {
+            dispatch(clearNotification())
+          }}))
+        }else{
+          setIsPicker(true);      
+        }        
     }
 
     const updateImageData = async (path) => {
@@ -190,7 +199,10 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
                         isIncludeImage( isYes ? 'Yes' : 'No' ) && haveImage() && getImagePath() != undefined && getImagePath().map((subItem , index) =>{
                             if(subItem.includes("png") || subItem.includes("jpg")){
                                 return (
-                                  <TouchableOpacity key={index} onPress={()=> showSelectionDialog()}>
+                                  <TouchableOpacity key={index} onPress={()=> {
+                                    showSelectionDialog()
+                                    
+                                  }}>
                                     <View key={"image" + index} style={styles.imageStyle}>
                                         <Image style={styles.imageContainer}  source={{uri:subItem}} />                                    
                                     </View>                                    
@@ -202,7 +214,9 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage }) => {
 
                     {
                         isIncludeImage( isYes ? 'Yes' : 'No') && item.value !== null && getImagePath() === undefined &&
-                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:30 }]} onPress={() => { showSelectionDialog() } }>
+                        <TouchableOpacity style={[styles.imageContainer, {marginLeft:30 }]} onPress={() => { 
+                            showSelectionDialog()                          
+                          } }>
                             <SvgIcon icon="Add_Image" />   
                         </TouchableOpacity>
                     }

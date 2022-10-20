@@ -12,7 +12,7 @@ export default function EmailInputView(props) {
     const [email, setEmail] = useState(email)
 
     useEffect(() => {                
-        if(item.value && item.value != null){            
+        if(item.value && item.value != null && item.value != ""){ 
             setLists(item.value);
         }else{            
             setLists([]);
@@ -32,7 +32,7 @@ export default function EmailInputView(props) {
                     <TextInput
                         value={email}
                         style={[styles.textInput]}
-                        placeholder={ lists.length > 0 ? Strings.Add_Additional : Strings.Add_Email_Address}
+                        placeholder={ lists instanceof Array && lists.length > 0 ? Strings.Add_Additional : Strings.Add_Email_Address}
                         returnKeyType={'done'}
                         keyboardType="email-address"
                         onChangeText={(text) =>{

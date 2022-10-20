@@ -25,9 +25,17 @@ export default function FormQuestionContainer(props) {
 	}, [form]);
 
 	const _callFormQuestions = () => {
-		let param = {
-			form_id: form.form_id,
-		};
+		let param = {};
+		if(form.form_id != undefined){
+			param = {
+				form_id: form.form_id,
+			};
+		}else if(form.submission_id != undefined){
+			param = {
+				submission_id: form.submission_id,
+			};
+		}
+		console.log("PIST  param" , param)
 		GetRequestFormQuestionsDAO.find(param).then((res) => {
 			groupByQuestions(res.questions);
 		}).catch((e) => {
@@ -50,8 +58,26 @@ export default function FormQuestionContainer(props) {
 		var newData = [];
 		data.forEach(element => {
 
+		// initialize the value with question_tag
 		if(element.question_tag != undefined && element.question_tag != ''){        
 			element.value = getQuestionTagValue(element.question_tag);
+		}
+
+		// updated value for tired mutiple choice
+		if(element.question_type ===  Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE){
+			if (element.value != null && element.value != undefined) {
+				var dropdownLists = '';
+				if(typeof element.value === 'object'){				  
+				  for (let key of Object.keys(element.value)) {
+					  if(dropdownLists == ''){
+						dropdownLists = element.value[key];
+					  }else{
+						dropdownLists = dropdownLists  + " - "  + element.value[key];
+					  }					
+				  }
+				}
+				element.value = dropdownLists; // Updated Value in Tired Multiple Choice
+			}
 		}
 
 		if (!isInNewData(newData, element)) {

@@ -10,7 +10,7 @@ export default function OptionItem(props) {
     const {  item, index, checkedLists, onTapItem , onPickUpImage} = props;
 
     const isLocked = () => {
-        var check = checkedLists.find(element => element.name === item);
+        var check = checkedLists.find(element => element.value === item);
         if(check != null && check != undefined){
             return false;
         }
@@ -18,9 +18,9 @@ export default function OptionItem(props) {
     }
 
     const getImagePath = () => {
-        var check = checkedLists.find(element => element.name === item);
+        var check = checkedLists.find(element => element.value === item);
         if(check != null && check != undefined){
-            return check.path;
+            return check.image;
         }
         return '';
     }

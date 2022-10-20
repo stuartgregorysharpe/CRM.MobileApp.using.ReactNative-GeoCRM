@@ -18,6 +18,7 @@ export default function TieredMultipleChoiceInput(props) {
   } = props;
   const [isShown, setIsShown] = useState(false);
 
+  //console.log("selectedItem",selectedItem)
   useEffect(() => {
     let isMount = true;
     if (isMount && lists.length == 0) {
@@ -57,7 +58,7 @@ export default function TieredMultipleChoiceInput(props) {
             }}>
             <View style={{flex: 1}}>
               <View style={{flexDirection: 'row'}}>
-                {!(selectedItem && selectedItem != undefined) && (
+                {!(selectedItem && selectedItem != undefined && selectedItem.label != "") && (
                   <AppText
                     style={{flex: 1}}
                     title={'Please select'}
@@ -70,7 +71,7 @@ export default function TieredMultipleChoiceInput(props) {
                     }></AppText>
                 )}
               </View>
-              {selectedItem && selectedItem != undefined && (
+              {selectedItem && selectedItem != undefined && selectedItem.label != "" && (
                 <AppText
                   title={selectedItem != null ? selectedItem.label : ''}
                   size="medium"

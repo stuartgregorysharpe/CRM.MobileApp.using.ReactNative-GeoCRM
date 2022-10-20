@@ -7,7 +7,7 @@ import MultiSelectPhotoModal from './modals/MultiSelectPhotoModal';
 
 const MultiSelectPhoto = props => {
 
-  const {item, questionType, formIndex} = props;
+  const {item, questionType, formIndex , submissionType} = props;
   if (!item) return null;
   const multiSelectPhotoModalRef = useRef(null);
   const isCompleted =
@@ -40,6 +40,7 @@ const MultiSelectPhoto = props => {
         item={item}
         questionType={questionType}
         formIndex={formIndex}
+        submissionType={submissionType}
         ref={multiSelectPhotoModalRef}
         onButtonAction={props.onFormAction}
       />

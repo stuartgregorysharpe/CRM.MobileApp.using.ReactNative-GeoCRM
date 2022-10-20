@@ -16,7 +16,6 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
-import * as RNLocalize from 'react-native-localize';
 import {FormQuestionView} from '../../CRM/add_lead/components/FormQuestionView';
 import {
   filterTriggeredQuestions,
@@ -28,10 +27,9 @@ import {
 } from './helper';
 import {deleteFormTable, insertTable} from '../../../../sqlite/FormDBHelper';
 import {getDBConnection} from '../../../../sqlite/DBHelper';
-import uuid from 'react-native-uuid';
 import {getLocalData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
-import {Strings} from '../../../../constants';
+import {Constants, Strings} from '../../../../constants';
 import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
 import {generateKey} from '../../../../constants/Utils';
 var indempotencyKey;
@@ -131,7 +129,25 @@ export const FormQuestions = props => {
       let element = {..._element};
       if (savedQuestionValueMap[element.form_question_id]) {
         element.value = savedQuestionValueMap[element.form_question_id];
-      }
+      }      
+
+		// updated value for tired mutiple choice
+		if(element.question_type ===  Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE){
+			if (element.value != null && element.value != undefined) {
+				var dropdownLists = '';
+				if(typeof element.value === 'object'){				  
+				  for (let key of Object.keys(element.value)) {
+					  if(dropdownLists == ''){
+						dropdownLists = element.value[key];
+					  }else{
+						dropdownLists = dropdownLists  + " - "  + element.value[key];
+					  }					
+				  }
+				}
+				element.value = dropdownLists; // Updated Value in Tired Multiple Choice
+			}
+		}
+
       if (!isInNewData(newData, element)) {
         var ques = [element];
         newData.push({
@@ -147,7 +163,7 @@ export const FormQuestions = props => {
         tmp.questions = [...newTmp];
       }
     });
-    updateFormQuestions(newData);
+    updateFormQuestions(newData);    
   };
 
   const isInNewData = (data, value) => {

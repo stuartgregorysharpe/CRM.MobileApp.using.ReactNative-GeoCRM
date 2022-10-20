@@ -40,8 +40,12 @@ export async function getFormSubmissionPostJsonData(
   currentLocation,
   form_answers,
   files,
+  type = "submit"
 ) {
   try {
+
+    console.log("Type", type);
+
     var lat = await getLocalData('@latitude');
     var lon = await getLocalData('@longitude');
 
@@ -50,8 +54,20 @@ export async function getFormSubmissionPostJsonData(
       time_zone = RNLocalize.getTimeZone();
     } catch (e) {}
 
-    var postDataJson = {
-      form_id: form_id,
+    var postDataJson = {};
+    if(type == "edit"){
+      postDataJson = {
+        're-submission' : "1",
+        "previous_submission_id" : form_id
+      }
+    }else{
+      postDataJson = {
+        form_id: form_id
+      }
+    }
+
+    postDataJson = {
+      ...postDataJson,      
       location_id: locationId,
       online_offline: 'online',
       'user_local_data[time_zone]': time_zone,
@@ -79,27 +95,28 @@ export async function getFormSubmissionPostJsonData(
       }
     });
 
-    files.map(item => {
-      if (item.key && item.value) {
-        if (item.type === 'upload_file') {
-          postDataJson = {
-            ...postDataJson,
-            [item.key]: {
-              uri: item.value.uri,
-              type: item.value.type,
-              name: item.value.name,
-            },
-          };
-        } else {
-          var fileFormats = getFileFormat(item.value);
-          postDataJson = {
-            ...postDataJson,
-            [item.key]: fileFormats,
-          };
+    if(type == "submit"){
+      files.map(item => {
+        if (item.key && item.value) {
+          if (item.type === 'upload_file') {
+            postDataJson = {
+              ...postDataJson,
+              [item.key]: {
+                uri: item.value.uri,
+                type: item.value.type,
+                name: item.value.name,
+              },
+            };
+          } else {
+            var fileFormats = getFileFormat(item.value);
+            postDataJson = {
+              ...postDataJson,
+              [item.key]: fileFormats,
+            };
+          }
         }
-      }
-    });
-
+      });
+    }
     return postDataJson;
   } catch (e) {
     console.log('json err', e);
@@ -491,7 +508,7 @@ export function getFormQuestionData(formQuestions) {
           item.value.forEach((element, k) => {
             form_answers.push({
               key: `form_answers[${index}][answer][${k}]`,
-              value: element.name,
+              value: element.value,
             });
           });
           index = index + 1;
@@ -520,7 +537,7 @@ export function getFormQuestionFile(formQuestions) {
       if (
         item.question_type === 'upload_file' ||
         item.question_type === 'take_photo' ||
-        (item.question_type === 'yes_no' && (item.yes_image || item.no_image))
+        (item.question_type === 'yes_no' && (item.yes_image && item.yes_image != undefined && item.yes_image.length > 0 || item.no_image && item.no_image !=undefined && item.no_image.length > 0))
       ) {
         var paths = item.value;
         if (item.yes_image != null && item.yes_image != '') {
@@ -556,7 +573,7 @@ export function getFormQuestionFile(formQuestions) {
           item.value.forEach((element, index) => {
             files.push({
               key: `File[${item.form_question_id}][${element.name}]`,
-              value: element.path,
+              value: element.image,
               type: Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO,
             });
           });
