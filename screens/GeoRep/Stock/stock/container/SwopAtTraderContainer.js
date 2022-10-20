@@ -16,7 +16,7 @@ import {Constants} from '../../../../../constants';
 import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 
-export default function SwopAtTraderContainer(props) {
+const SwopAtTraderContainer = props => {
   const {locationId, item} = props;
   const [lists, setLists] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -36,7 +36,7 @@ export default function SwopAtTraderContainer(props) {
       })
       .catch(e => {
         console.log('location-devices api error:', e);
-        expireToken(dispatch ,e )
+        expireToken(dispatch, e);
       });
     return () => {
       isMount = false;
@@ -90,7 +90,7 @@ export default function SwopAtTraderContainer(props) {
         );
       })
       .catch(e => {
-        expireToken(dispatch,e)
+        expireToken(dispatch, e);
       });
   };
 
@@ -100,4 +100,6 @@ export default function SwopAtTraderContainer(props) {
       <Notification />
     </View>
   );
-}
+};
+
+export default SwopAtTraderContainer;

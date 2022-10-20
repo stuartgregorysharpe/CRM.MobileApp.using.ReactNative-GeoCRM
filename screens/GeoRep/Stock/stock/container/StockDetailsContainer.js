@@ -13,7 +13,7 @@ const StockDetailsContainer = props => {
     Constants.stockDeviceType.SELL_TO_TRADER,
   );
   var checkinLocationId;
-  const onSearchLocation = async ({type, value}) => {
+  const onSearchLocation = ({type, value}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
       if (stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
         props.openSignature(value);
@@ -33,7 +33,7 @@ const StockDetailsContainer = props => {
     checkinLocationId = await getLocalData('@specific_location_id');
   };
 
-  const sellToTrader = async (type, data) => {
+  const sellToTrader = (type, data) => {
     if (isCheckin) {
       props.openSignature({
         stockType: Constants.stockDeviceType.SELL_TO_TRADER,
@@ -62,7 +62,6 @@ const StockDetailsContainer = props => {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
-      
       <StockDetailsView
         sellToTrader={sellToTrader}
         swopAtTrader={swopAtTrader}
@@ -77,7 +76,6 @@ const StockDetailsContainer = props => {
         stockType={stockType}
         onButtonAction={onSearchLocation}
       />
-
     </View>
   );
 };

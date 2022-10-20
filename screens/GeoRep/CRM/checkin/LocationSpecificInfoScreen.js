@@ -338,7 +338,8 @@ const LocationSpecificInfoScreen = props => {
                     height="14px"
                   />
                   <Text style={styles.subtitle}>
-                    {locationInfo.location_name != undefined && locationInfo.location_name.custom_field_name != undefined
+
+                    {locationInfo.location_name != undefined && locationInfo.location_name.custom_field_name != undefined                    
                       ? locationInfo.location_name.custom_field_name
                       : ''}
                   </Text>
