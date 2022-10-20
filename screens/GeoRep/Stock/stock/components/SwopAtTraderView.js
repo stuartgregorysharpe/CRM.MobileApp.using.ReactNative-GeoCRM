@@ -15,7 +15,7 @@ import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 var previousText = Constants.msisdnPrefix;
 
-export default function SwopAtTraderView(props) {
+const SwopAtTraderView = props => {
   const {item, lists, onReturnDevice, onReason, onPhotos, onSwop} = props;
   const dispatch = useDispatch();
   const [reason, setReason] = useState('');
@@ -196,7 +196,7 @@ export default function SwopAtTraderView(props) {
       <Notification />
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -217,3 +217,5 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').width / 4.5,
   },
 });
+
+export default SwopAtTraderView;

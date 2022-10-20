@@ -6,9 +6,9 @@ import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
-import { expireToken } from '../../../../../constants/Helper';
+import {expireToken} from '../../../../../constants/Helper';
 
-export default function SearchLocationContainer(props) {
+const SearchLocationContainer = props => {
   const {stockType, isSkipLocationIdCheck} = props;
   const dispatch = useDispatch();
   const [lists, setLists] = useState([]);
@@ -49,8 +49,8 @@ export default function SearchLocationContainer(props) {
         .catch(e => {
           console.log('error', e);
           if (e === 'expired') {
-            expireToken(dispatch , e);
-          }else{
+            expireToken(dispatch, e);
+          } else {
             dispatch(
               showNotification({
                 type: Strings.Success,
@@ -58,7 +58,7 @@ export default function SearchLocationContainer(props) {
                 buttonText: 'Ok',
               }),
             );
-          }                                       
+          }
         });
     }
   };
@@ -95,7 +95,7 @@ export default function SearchLocationContainer(props) {
       })
       .catch(e => {
         setIsLoading(false);
-        expireToken(dispatch , e)
+        expireToken(dispatch, e);
       });
   };
 
@@ -111,4 +111,6 @@ export default function SearchLocationContainer(props) {
       <Notification />
     </View>
   );
-}
+};
+
+export default SearchLocationContainer;
