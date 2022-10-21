@@ -161,6 +161,7 @@ const SwopAtTraderView = props => {
         <SubmitButton
           title={Strings.Stock.Add_Stock}
           style={{marginTop: 10, marginBottom: 30}}
+          isLoading={props.isLoading}
           onSubmit={() => {
             const isMsisdnValid = validateMsisdn(msisdn);
             if (!isMsisdnValid) {
