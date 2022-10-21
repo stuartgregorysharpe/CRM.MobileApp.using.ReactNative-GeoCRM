@@ -18,13 +18,13 @@ export const FormSubmissionListItem = ({ item, isStart, isEnd , onItemPress , in
                 <View style={{flexDirection:'column', flex:1}}>
 
                     <View style={{ flex: 1, flexDirection:'row', alignItems:'flex-start', paddingTop:3, paddingBottom:3, }}>
-                        <View style={{flexDirection:'row'}}>
+                        <View style={{flexDirection:'row' , flex:1}}>
                             <AppText 
                                 style={{textDecorationLine: 'underline'}}
                                 size="medium"
                                 type="secondaryBold" title={item.form_name} color={whiteLabel().mainText}></AppText>
                         </View>
-                        <View style={{alignItems:'flex-end', flex:1}}>
+                        <View style={{alignItems:'flex-end'}}>
                             <AppText 
                                 style={{fontSize:13}}
                                 type="secondaryRegular" title={item.date} color={whiteLabel().mainText}></AppText>                    

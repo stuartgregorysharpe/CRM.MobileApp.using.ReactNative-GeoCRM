@@ -43,16 +43,21 @@ export default function FormQuestionContainer(props) {
 		});    
 	};
 
-	const getQuestionTagValue = (questionTag) => {
-		var leadFormItem = leadForms.find( item => item.field_tag === questionTag);      
-		if(leadFormItem != undefined){
-			return customMasterFields[leadFormItem.custom_master_field_id];
+
+	const getQuestionTagValue = (questionTag , value) => {
+		if(leadForms != undefined){
+			var leadFormItem = leadForms.find( item => item.field_tag === questionTag);      
+			if(leadFormItem != undefined){
+				return customMasterFields[leadFormItem.custom_master_field_id];
+			}
+		}		
+		if(selectedLists != undefined){
+			if(questionTag === "msisdn"){     
+				return selectedLists.map(item => item.msisdn).join(', ');
+			}    
 		}
-		if(questionTag === "msisdn"){     
-			return selectedLists.map(item => item.msisdn).join(', ');
-		}    
-		return '';
-	}
+		return value;
+	}	
 
 	const groupByQuestions = data => {      
 		var newData = [];
@@ -60,7 +65,7 @@ export default function FormQuestionContainer(props) {
 
 		// initialize the value with question_tag
 		if(element.question_tag != undefined && element.question_tag != ''){        
-			element.value = getQuestionTagValue(element.question_tag);
+			element.value = getQuestionTagValue(element.question_tag , element.value);
 		}
 
 		// updated value for tired mutiple choice
