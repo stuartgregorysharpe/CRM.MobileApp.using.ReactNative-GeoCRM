@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useImperativeHandle} from 'react';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import {Fonts} from '../../../../../constants';
 import {useSelector} from 'react-redux';
@@ -7,7 +7,7 @@ import DynamicForm from '../../../../../components/common/DynamicForm';
 import {reverseGeocoding} from '../../../../../actions/google.action';
 import {checkIfQuestionIsTrigger} from '../../../Forms/questions/helper';
 
-export default function CustomMasterFields(props) {
+const CustomMasterFields = React.forwardRef((props, ref) => {
   const {
     leadForms,
     customMasterFields,
@@ -24,7 +24,29 @@ export default function CustomMasterFields(props) {
   const [formData2, setFormData2] = useState({});
   const [formStructure2, setFormStructure2] = useState([]);
   const [updatedLeadForm, setUpdatedLeadForm] = useState([]);
-
+  useImperativeHandle(
+    ref,
+    () => ({
+      validateForm: () => {
+        return _validateForm();
+      },
+    }),
+    [],
+  );
+  const _validateForm = () => {
+    let isValid = true;
+    if (actionFormRef) {
+      if (!actionFormRef.current.validateForm()) {
+        isValid = false;
+      }
+    }
+    if (actionFormRef2) {
+      if (!actionFormRef2.current.validateForm()) {
+        isValid = false;
+      }
+    }
+    return isValid;
+  };
   useEffect(() => {
     initData(leadForms, 'first');
     initData(leadForms, 'second');
@@ -92,11 +114,12 @@ export default function CustomMasterFields(props) {
         field_name: field.custom_master_field_id,
         initial_value: field.value,
         editable: field.rule_editable,
-        is_required: true,
+        is_required: field.rule_compulsory === '1',
         field_label: field.field_name,
         value: value,
       };
     });
+    console.log('customMasterFields: dynamicFields', dynamicFields);
 
     if (type == 'first') {
       setFormStructure1(dynamicFields);
@@ -219,7 +242,7 @@ export default function CustomMasterFields(props) {
       />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   textInput: {
@@ -243,3 +266,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default CustomMasterFields;

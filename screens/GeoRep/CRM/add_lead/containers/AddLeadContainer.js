@@ -38,6 +38,7 @@ export default function AddLeadContainer(props) {
   const viewListsModalRef = useRef(null);
   const formQuestionModalRef = useRef(null);
   const addLeadFormModalRef = useRef(null);
+  const addLeadViewRef = useRef(null);
 
   const [leadForms, setLeadForms] = useState([]);
   const [accuracyUnit, setAccuracyUnit] = useState('m');
@@ -128,7 +129,16 @@ export default function AddLeadContainer(props) {
     setFormLists(tmp);
   };
 
+  const validateForm = () => {
+    let isValid = true;
+
+    if (addLeadViewRef) {
+      isValid = isValid && addLeadViewRef.current.validateForm();
+    }
+    return isValid;
+  };
   const onAdd = async () => {
+    if (!validateForm()) return;
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;
@@ -349,6 +359,7 @@ export default function AddLeadContainer(props) {
       <Notification />
 
       <AddLeadView
+        ref={addLeadViewRef}
         onButtonAction={onButtonAction}
         leadForms={leadForms}
         accuracyUnit={accuracyUnit}
