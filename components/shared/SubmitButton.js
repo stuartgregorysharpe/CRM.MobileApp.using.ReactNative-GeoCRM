@@ -1,49 +1,58 @@
 import React, {useState, useEffect} from 'react';
-import {  
-  TouchableOpacity,  
-  StyleSheet,  
+import {
+  TouchableOpacity,
+  StyleSheet,
   Text,
-  ActivityIndicator,  
+  ActivityIndicator,
 } from 'react-native';
 import Colors, {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../SvgIcon';
 
-export const SubmitButton = ({title, onSubmit, style , bgStyle , svgIcon , enabled , isLoading }) => {
-  
+export const SubmitButton = ({
+  title,
+  onSubmit,
+  style,
+  bgStyle,
+  svgIcon,
+  enabled,
+  isLoading,
+}) => {
   return (
     <TouchableOpacity
       //enabled != undefined && !enabled ? {backgroundColor:Colors.disabledColor} : {}
-      style={[styles.submitButton  , style , bgStyle]} 
+      disabled={isLoading}
+      style={[styles.submitButton, style, bgStyle]}
       onPress={() => {
         if (onSubmit && (enabled || enabled == undefined)) {
           onSubmit();
         }
       }}>
-      <Text style={[styles.submitButtonText]}>{title}</Text>      
-      
-      {
-        !isLoading && svgIcon != undefined && 
-        <SvgIcon icon={svgIcon} width='20' height='20' style={styles.submitButtonIcon} />
-      }
+      <Text style={[styles.submitButtonText]}>{title}</Text>
 
-      {
-        !isLoading &&  svgIcon == undefined && 
+      {!isLoading && svgIcon != undefined && (
+        <SvgIcon
+          icon={svgIcon}
+          width="20"
+          height="20"
+          style={styles.submitButtonIcon}
+        />
+      )}
+
+      {!isLoading && svgIcon == undefined && (
         <FontAwesomeIcon
           style={styles.submitButtonIcon}
           size={25}
           color={whiteLabel().actionFullButtonIcon}
           icon={faAngleDoubleRight}
         />
-      }
+      )}
 
-      {
-        isLoading  &&
+      {isLoading && (
         <ActivityIndicator color={'#FFF'} style={styles.indicatorStyle} />
-      }
-      
+      )}
     </TouchableOpacity>
   );
 };
@@ -57,7 +66,7 @@ const styles = StyleSheet.create({
     color: whiteLabel().actionFullButtonText,
     fontSize: 15,
     fontFamily: Fonts.secondaryBold,
-    marginRight:15
+    marginRight: 15,
   },
 
   submitButton: {
@@ -74,9 +83,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
   },
-  indicatorStyle:{
+  indicatorStyle: {
     position: 'absolute',
     right: 10,
-    
-  }
+  },
 });

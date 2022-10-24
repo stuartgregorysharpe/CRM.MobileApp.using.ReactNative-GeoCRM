@@ -18,6 +18,7 @@ export default function AddStockContainer(props) {
   const [stockTypes, setStockTypes] = useState({});
   const {items} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   let isMount = true;
 
   useEffect(() => {
@@ -47,11 +48,12 @@ export default function AddStockContainer(props) {
   };
 
   const callAddStock = (type, data) => {
-    console.log('callAddStock', data);
+    setIsLoading(true);
     var userParam = getPostParameter(currentLocation);
     data['user_local_data'] = userParam.user_local_data;
     postApiRequest('stockmodule/add-stock', data)
       .then(res => {
+        setIsLoading(false);
         if (res.status === Strings.Success) {
           dispatch(
             showNotification({
@@ -75,8 +77,9 @@ export default function AddStockContainer(props) {
         }
       })
       .catch(e => {
+        setIsLoading(false);
         console.log('error', e);
-        expireToken(dispatch,e)
+        expireToken(dispatch, e);
       });
   };
 
@@ -86,6 +89,7 @@ export default function AddStockContainer(props) {
         callAddStock={callAddStock}
         stockTypes={stockTypes}
         deviceTypeLists={deviceTypeLists}
+        isLoading={isLoading}
         {...props}
       />
       <Notification />

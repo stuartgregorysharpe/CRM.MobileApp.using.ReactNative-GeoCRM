@@ -20,7 +20,7 @@ export default function AddStockView(props) {
   const [enableAddStock, setEnableAddStock] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const [count, setCount] = useState(0);
-  const [imei , setEmei] = useState("");
+  const [imei, setEmei] = useState('');
 
   var details = '';
   var quantity = '';
@@ -96,7 +96,7 @@ export default function AddStockView(props) {
       details: details,
       quantity: quantity,
     };
-    console.log("D1" , data);
+    console.log('D1', data);
     if (deviceType == Constants.stockType.DEVICE) {
       data = {
         stock_type: deviceType,
@@ -105,7 +105,7 @@ export default function AddStockView(props) {
         details: details,
         device_serial: imei,
       };
-      console.log("D2" , data);
+      console.log('D2', data);
     } else if (deviceType == Constants.stockType.CONSUMABLE) {
       data = {
         stock_type: deviceType,
@@ -202,6 +202,7 @@ export default function AddStockView(props) {
         onSubmit={() => {
           onSubmit();
         }}
+        isLoading={props.isLoading}
         title={Strings.Stock.Add_Stock}
         style={{marginTop: 20}}></SubmitButton>
     </View>

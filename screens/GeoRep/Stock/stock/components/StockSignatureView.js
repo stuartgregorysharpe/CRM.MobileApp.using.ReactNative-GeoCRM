@@ -52,7 +52,9 @@ export default function StockSignatureView(props) {
   };
 
   const handleConfirm = () => {
-    var tmp = signatureScreenRef.current.readSignature();
+    if (signatureScreenRef.current) {
+      signatureScreenRef.current.readSignature();
+    }
   };
   const handleEnd = () => {
     checkValidation();
@@ -214,6 +216,7 @@ export default function StockSignatureView(props) {
 
       <SubmitButton
         title="Submit"
+        isLoading={props.isLoading}
         style={{marginTop: 10, marginBottom: 10}}
         onSubmit={onFileSubmit}>
         {' '}

@@ -13,11 +13,11 @@ import {
 import {Notification} from '../../../../../components/modal/Notification';
 
 export default function TransferContainer(props) {
-
   const {stockItem, selectedCodes} = props;
   const [user, setUser] = useState([]);
   const [lists, setLists] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   var quantity = '';
 
@@ -34,7 +34,7 @@ export default function TransferContainer(props) {
         }
       })
       .catch(e => {
-        expireToken(dispatch ,e)
+        expireToken(dispatch, e);
       });
     return () => {
       mounted = false;
@@ -69,9 +69,10 @@ export default function TransferContainer(props) {
         return;
       }
     }
-
+    setIsLoading(true);
     postApiRequest('stockmodule/transfer', postData)
       .then(res => {
+        setIsLoading(false);
         console.log('res', res);
         dispatch(
           showNotification({
@@ -86,9 +87,10 @@ export default function TransferContainer(props) {
         );
       })
       .catch(e => {
-        if(e === 'expired'){
-          expireToken(dispatch, e)
-        }else{
+        setIsLoading(false);
+        if (e === 'expired') {
+          expireToken(dispatch, e);
+        } else {
           dispatch(
             showNotification({
               type: Strings.Success,
@@ -97,7 +99,6 @@ export default function TransferContainer(props) {
             }),
           );
         }
-        
       });
   };
 
@@ -108,6 +109,7 @@ export default function TransferContainer(props) {
         onTrader={onTrader}
         onChangedQuantity={onChangedQuantity}
         lists={lists}
+        isLoading={isLoading}
         {...props}
       />
       <Notification />

@@ -20,6 +20,7 @@ const SwopAtTraderContainer = props => {
   const {locationId, item} = props;
   const [lists, setLists] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const SwopAtTraderContainer = props => {
 
   const onSwop = data => {
     const {reason, photos, device} = data;
+    setIsLoading(true);
     var postData = new FormData();
     postData.append('stock_type', Constants.stockType.DEVICE);
     postData.append('location_id', props.locationId);
@@ -77,6 +79,7 @@ const SwopAtTraderContainer = props => {
 
     postApiRequestMultipart('stockmodule/swop-at-trader', postData)
       .then(res => {
+        setIsLoading(false);
         dispatch(
           showNotification({
             type: 'success',
@@ -90,13 +93,19 @@ const SwopAtTraderContainer = props => {
         );
       })
       .catch(e => {
+        setIsLoading(false);
         expireToken(dispatch, e);
       });
   };
 
   return (
     <View style={{alignSelf: 'stretch'}}>
-      <SwopAtTraderView onSwop={onSwop} lists={lists} {...props} />
+      <SwopAtTraderView
+        onSwop={onSwop}
+        lists={lists}
+        {...props}
+        isLoading={isLoading}
+      />
       <Notification />
     </View>
   );
