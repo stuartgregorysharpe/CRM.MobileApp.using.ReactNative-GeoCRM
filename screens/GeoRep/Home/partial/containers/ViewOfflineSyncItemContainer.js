@@ -18,9 +18,9 @@ const  ViewOfflineSyncItemContainer = props => {
         setCount(items.length);  
     }
 
-    const updateCount = () => {
+    const updateCount = (message) => {
         getCount();        
-        onSyncStart();
+        onSyncStart(message);
     }
     
     return (

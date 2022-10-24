@@ -1,4 +1,5 @@
 import { postApiRequest, postApiRequestMultipart } from "../../actions/api.action";
+import { Strings } from "../../constants";
 import { jsonToFormData } from "../../helpers/jsonHelper";
 import { OfflineBaskets } from "../../sqlite/helper"
 import { deleteOfflineSyncItem, getOfflineSyncItem, getOfflineSyncItems } from "../../sqlite/OfflineSyncItemsHelper";
@@ -11,7 +12,7 @@ export const syncPostData = (basketName, callBack) => {
         if(basket != undefined && basket.itemTypes){            
             var offlineItems = await getOfflineSyncItems(basket.itemTypes);       
             const totalValue = offlineItems.length;
-            callBack(0, totalValue);
+            callBack(0, totalValue , '');
             var res  = await syncBasketItemType( basket.itemTypes, 0 , callBack , totalValue); 
             resolve(res);
         }        
@@ -45,20 +46,31 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
 
     const item = items.item(index);
     if(item != undefined){        
-        callBack(index + 1, totalValue);
-        var apiRes = {};
-        if(item.item_type == "form_submission" || item.item_type == "leadfields" ){  
-            var body = jsonToFormData(JSON.parse(item.post_body));
-            body.append("mode", "offline");
-            apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
-        }else{
-            apiRes = await postApiRequest(item.url, { ...JSON.parse(item.post_body), mode: 'offline'} , item.indempotency_key);
+        callBack(index + 1, totalValue , "");
+
+        try{
+
+            var apiRes = {};
+            if(item.item_type == "form_submission" || item.item_type == "leadfields" ){  
+                var body = jsonToFormData(JSON.parse(item.post_body));
+                body.append("mode", "offline");
+                apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
+            }else{
+                apiRes = await postApiRequest(item.url, { ...JSON.parse(item.post_body), mode: 'offline'} , item.indempotency_key);
+            }
+
+            if(apiRes.status == Strings.Success){  
+                await deleteOfflineSyncItem(item.id);
+            }else if(apiRes.status != Strings.Success) { 
+                await deleteOfflineSyncItem(item.id);
+                callBack(-1, -1 , apiRes);
+                return apiRes;
+            }
+            
+        }catch(e){
+            callBack(-2 , -2 , {errors: 'Some items could not be synced, please contact support'});
         }
-        console.log("offline sync api res " , apiRes);
-        if(apiRes.status == 'success'){            
-            await deleteOfflineSyncItem(item.id)
-        }
-        
+                
         if(index < items.length - 1 ){
             var res = await syncItemTypeApi(items, index + 1 , callBack , totalValue);
             return res;

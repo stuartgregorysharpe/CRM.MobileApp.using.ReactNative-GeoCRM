@@ -14,6 +14,8 @@ import SvgIcon from '../../../../../components/SvgIcon'
 import { RotationAnimation } from '../../../../../components/common/RotationAnimation'
 import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../helpers/formatHelpers'
 import { getBaskets } from './helper'
+import { useDispatch } from 'react-redux'
+import { clearNotification, showNotification } from '../../../../../actions/notification.action'
 var gSyncedRecords = 0;
 var gBascketLists = getBaskets();
 var isOneBasketSync = false;
@@ -28,12 +30,14 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const [currentBasket, setCurrentBasket] = useState("");
     const rotationAnimationRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
-    var lists = getBaskets();    
+    var lists = getBaskets();
+    const dispatch = useDispatch();
+
     useImperativeHandle(ref, () => ({
-        startSync() {            
+        startSync(message) {            
             isOneBasketSync = false;
             setBasketLists(getBaskets());
-            syncTable(0);
+            syncTable(0 , message);
         },
         expand() {            
             initDataFromDB();                  
@@ -81,7 +85,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
     }
          
 
-    const syncTable = (basketId) => {        
+    const syncTable = (basketId , message) => {        
         if(!isLoading){
             var basket = lists[basketId].slug;
             setCurrentBasket(basket);
@@ -117,7 +121,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 if(!isOneBasketSync){
                     if(basketId + 1 < lists.length){      
                         updateBasket(basket);
-                        syncTable(basketId + 1);                        
+                        syncTable(basketId + 1 , message);                        
                     }else{                  
 
                         setCurrentBasket('');
@@ -126,7 +130,14 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         saveSyncedStatusTable("sync_all");
                         if(props.updateLoading){                                               
                             props.updateLoading(false)
-                        }                                                      
+                        }
+
+                        if(message != '' && message != null){
+                            dispatch(showNotification({type:Strings.Success , message: message, buttonText: Strings.Ok , buttonAction: () => {
+                                dispatch(clearNotification());
+                            } }));
+                        }
+
                     }
                 }                
               }
@@ -172,7 +183,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         if(isOneBasketSync){
                             initDataFromDB();
                             setIsLoading(false);
-                        }
+                        }                        
                     }
                 }
             }).catch((e) => {
@@ -226,7 +237,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         <TouchableOpacity onPress={() => {
                             if(!isLoading){
                                 isOneBasketSync = true;
-                                syncTable(index);
+                                syncTable(index , '');
                             }                            
                         }}>
                             <View style={{backgroundColor:whiteLabel().actionFullButtonBackground , borderRadius:5, marginLeft:5 }}>           

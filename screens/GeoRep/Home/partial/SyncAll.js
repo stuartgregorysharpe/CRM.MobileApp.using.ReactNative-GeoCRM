@@ -156,9 +156,9 @@ export default function SyncAll(props) {
 
       {expanded && (
         <ViewOfflineSyncItemContainer
-          onSyncStart={() =>{ 
+          onSyncStart={(message) =>{ 
             if (basketRef.current && basketRef.current.startSync) {
-              basketRef.current.startSync();
+              basketRef.current.startSync(message);
             }
           }}
           onClosed={() => {

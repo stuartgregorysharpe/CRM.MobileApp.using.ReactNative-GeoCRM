@@ -26,6 +26,7 @@ export default {
   Type: 'Type',
   Added_Date: 'Added Date',
   Search_Location: 'Search Location',
+  Continue: 'Continue',
 
   CRM:{
     Access_CRM :'Access CRM',
