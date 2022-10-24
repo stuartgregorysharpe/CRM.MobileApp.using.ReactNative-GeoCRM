@@ -138,7 +138,16 @@ export default function AddLeadContainer(props) {
     return isValid;
   };
   const onAdd = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Complete_Compulsory_Fields,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;
