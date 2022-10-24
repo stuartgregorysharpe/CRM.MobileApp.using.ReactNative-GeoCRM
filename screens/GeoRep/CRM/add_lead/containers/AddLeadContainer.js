@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Platform} from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
 import {Constants, Strings} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
@@ -51,6 +51,18 @@ export default function AddLeadContainer(props) {
   const [form, setForm] = useState({});
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidOtherForms, setIsValidOtherForms] = useState(false);
+  const validateFormList = lists => {
+    console.log('lists', lists);
+    let isValid = true;
+    lists.forEach(item => {
+      if (item.compulsory == '1') {
+        isValid = false;
+      }
+    });
+    setIsValidOtherForms(isValid);
+    return isValid;
+  };
 
   const dispatch = useDispatch();
 
@@ -126,6 +138,7 @@ export default function AddLeadContainer(props) {
       }
       return element;
     });
+    validateFormList(tmp);
     setFormLists(tmp);
   };
 
@@ -133,8 +146,12 @@ export default function AddLeadContainer(props) {
     let isValid = true;
 
     if (addLeadViewRef) {
-      isValid = isValid && addLeadViewRef.current.validateForm();
+      if (!addLeadViewRef.current.validateForm()) isValid = false;
     }
+    if (!isValidOtherForms) {
+      isValid = validateFormList(lists);
+    }
+
     return isValid;
   };
   const onAdd = async () => {
@@ -377,6 +394,7 @@ export default function AddLeadContainer(props) {
         onPrimaryContactFields={onPrimaryContactFields}
         showFormModal={showFormModal}
         showAllocateModal={showAllocateModal}
+        isValidOtherForms={isValidOtherForms}
         {...props}
       />
 

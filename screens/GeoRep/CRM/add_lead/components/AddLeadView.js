@@ -14,6 +14,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
     useGeoLocation,
     onChangedCustomMasterFields,
     onPrimaryContactFields,
+    isValidOtherForms,
   } = props;
   const customMasterFieldsFormRef = useRef(null);
   useImperativeHandle(
@@ -56,7 +57,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
           <AddLeadFormFields
             showFormModal={props.showFormModal}
             showAllocateModal={props.showAllocateModal}
-            compulsaryFormExist={true}
+            isValidOtherForms={isValidOtherForms}
           />
         </View>
       </View>
