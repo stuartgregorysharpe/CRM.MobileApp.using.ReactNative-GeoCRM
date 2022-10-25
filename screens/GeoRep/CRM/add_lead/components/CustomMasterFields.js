@@ -179,6 +179,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
               initData(masterFields, 'first');
               initData(masterFields, 'second');
               useGeoLocation();
+              validateForm();
             }
           }
         }}>
@@ -216,6 +217,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
       <DynamicForm
         ref={actionFormRef}
         formData={formData1}
+        isShowRequiredFromBegining={true}
         formStructureData={formStructure1}
         updateFormData={formData => {
           setFormData1(formData);
@@ -228,6 +230,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
       <DynamicForm
         ref={actionFormRef2}
         formData={formData2}
+        isShowRequiredFromBegining={true}
         formStructureData={formStructure2}
         updateFormData={formData => {
           setFormData2(formData);

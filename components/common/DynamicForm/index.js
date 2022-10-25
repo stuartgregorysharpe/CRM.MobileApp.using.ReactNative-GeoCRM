@@ -3,14 +3,13 @@ import React, {
   useEffect,
   useRef,
   useMemo,
-  useImperativeHandle
+  useImperativeHandle,
 } from 'react';
-import {View, StyleSheet ,TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
 
 const DynamicForm = React.forwardRef((props, ref) => {
-
-  const {formData, formStructureData} = props;
+  const {formData, formStructureData, isShowRequiredFromBegining} = props;
   const [errors, setErrors] = useState({});
   const dynamicFieldRef = useRef([]);
   useEffect(() => {
@@ -21,6 +20,9 @@ const DynamicForm = React.forwardRef((props, ref) => {
       }
     });
     setErrors(initialErrors);
+    if (isShowRequiredFromBegining) {
+      _validateForm();
+    }
   }, [formStructureData]);
   useImperativeHandle(ref, () => ({
     validateForm: () => {
@@ -38,17 +40,17 @@ const DynamicForm = React.forwardRef((props, ref) => {
     }
   };
 
-  const updateSecondFormData = (fieldName, value, secondValue) =>{
+  const updateSecondFormData = (fieldName, value, secondValue) => {
     if (props.updateSecondFormData) {
       const _formData = {...formData};
-      _formData[fieldName] = {value:value, secondValue:secondValue};
+      _formData[fieldName] = {value: value, secondValue: secondValue};
       props.updateSecondFormData(_formData);
       if (fieldName) {
         checkFormFieldValid([fieldName], _formData);
       }
     }
-  }
-    
+  };
+
   const checkFormFieldValid = (
     fieldNames,
     _formData,
@@ -82,20 +84,19 @@ const DynamicForm = React.forwardRef((props, ref) => {
     return valid;
   };
 
-
   const renderFields = () => {
-    if(props.isClickable){
+    if (props.isClickable) {
       return formStructureData.map((fieldStructure, index) => {
         return (
-          <TouchableOpacity       
-            key={'form' + index}    
-            onPress={() => {            
-            props.onPress(fieldStructure);
-          } }>
+          <TouchableOpacity
+            key={'form' + index}
+            onPress={() => {
+              props.onPress(fieldStructure);
+            }}>
             <DynamicField
               {...fieldStructure}
               key={index + 'field'}
-              updateFormData={updateFormData}            
+              updateFormData={updateFormData}
               updateSecondFormData={updateSecondFormData}
               value={formData[fieldStructure.field_name]}
               hasError={errors[fieldStructure.field_name]}
@@ -105,27 +106,25 @@ const DynamicForm = React.forwardRef((props, ref) => {
                 props.onPress();
               }}
               index={index}
-              dynamicFieldRef={dynamicFieldRef}          
+              dynamicFieldRef={dynamicFieldRef}
             />
           </TouchableOpacity>
-          
         );
       });
     }
-    
-    return formStructureData.map((fieldStructure, index) => {
 
+    return formStructureData.map((fieldStructure, index) => {
       return (
         <DynamicField
           {...fieldStructure}
           key={index + 'field'}
-          updateFormData={updateFormData}          
+          updateFormData={updateFormData}
           updateSecondFormData={updateSecondFormData}
           value={formData[fieldStructure.field_name]}
           hasError={errors[fieldStructure.field_name]}
           isFirst={index == 0}
           index={index}
-          dynamicFieldRef={dynamicFieldRef}          
+          dynamicFieldRef={dynamicFieldRef}
         />
       );
     });

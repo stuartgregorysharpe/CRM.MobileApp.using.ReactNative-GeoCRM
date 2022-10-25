@@ -17,6 +17,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
     isValidOtherForms,
   } = props;
   const customMasterFieldsFormRef = useRef(null);
+  const primaryContactFieldsRef = useRef(null);
   useImperativeHandle(
     ref,
     () => ({
@@ -30,6 +31,11 @@ const AddLeadView = React.forwardRef((props, ref) => {
     let isValid = true;
     if (customMasterFieldsFormRef) {
       if (!customMasterFieldsFormRef.current.validateForm()) {
+        isValid = false;
+      }
+    }
+    if (primaryContactFieldsRef) {
+      if (!primaryContactFieldsRef.current.validateForm()) {
         isValid = false;
       }
     }
@@ -51,6 +57,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
           />
 
           <PrimaryContactFields
+            ref={primaryContactFieldsRef}
             onPrimaryContactFields={onPrimaryContactFields}
           />
 

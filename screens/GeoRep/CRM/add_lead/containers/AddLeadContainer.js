@@ -51,7 +51,7 @@ export default function AddLeadContainer(props) {
   const [form, setForm] = useState({});
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isValidOtherForms, setIsValidOtherForms] = useState(false);
+
   const validateFormList = lists => {
     console.log('lists', lists);
     let isValid = true;
@@ -60,10 +60,16 @@ export default function AddLeadContainer(props) {
         isValid = false;
       }
     });
-    setIsValidOtherForms(isValid);
     return isValid;
   };
+  const isValidOtherForms = useMemo(() => {
+    return validateFormList(formLists);
+  }, [formLists]);
 
+  useEffect(() => {
+    updateFormLists(formLists);
+  }, [formSubmissions]);
+  console.log('isValidOtherForms', isValidOtherForms);
   const dispatch = useDispatch();
 
   var isMount = true;
@@ -138,7 +144,6 @@ export default function AddLeadContainer(props) {
       }
       return element;
     });
-    validateFormList(tmp);
     setFormLists(tmp);
   };
 
@@ -149,7 +154,7 @@ export default function AddLeadContainer(props) {
       if (!addLeadViewRef.current.validateForm()) isValid = false;
     }
     if (!isValidOtherForms) {
-      isValid = validateFormList(lists);
+      isValid = false;
     }
 
     return isValid;
