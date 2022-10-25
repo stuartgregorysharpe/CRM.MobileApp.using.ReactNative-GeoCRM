@@ -1,5 +1,12 @@
-import {View, Text, TextInput, StyleSheet, Dimensions} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
 import {Colors, Constants, Fonts, Strings} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 import {validateEmail} from '../../../helpers/formatHelpers';
@@ -8,6 +15,7 @@ export default function EmailInputView(props) {
   const {item} = props;
   const [lists, setLists] = useState([]);
   const [email, setEmail] = useState(email);
+  const textInputRef = useRef(null);
 
   useEffect(() => {
     if (item.value && item.value != null && item.value != '') {
@@ -29,9 +37,17 @@ export default function EmailInputView(props) {
       }
     }
   };
-
+  const onPressContainer = () => {
+    if (textInputRef) {
+      console.log('focus');
+      textInputRef.current.focus();
+    }
+  };
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      activeOpacity={1}
+      style={styles.container}
+      onPress={onPressContainer}>
       <View style={styles.subContainer}>
         {lists.length > 0 &&
           lists.map((item, index) => {
@@ -45,10 +61,11 @@ export default function EmailInputView(props) {
               </Text>
             );
           })}
-        <View>
+        <View style={{alignSelf: 'stretch'}}>
           <TextInput
             value={email}
             style={[styles.textInput]}
+            ref={textInputRef}
             placeholder={
               lists instanceof Array && lists.length > 0
                 ? Strings.Add_Additional
@@ -84,7 +101,7 @@ export default function EmailInputView(props) {
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
