@@ -1,9 +1,9 @@
 import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
+import {postApiRequest} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
 import TransferView from '../components/TransferView';
-import {getPostParameter} from '../../../../../constants/Helper';
+import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {Constants, Strings} from '../../../../../constants';
 import {useDispatch} from 'react-redux';
 import {
@@ -11,31 +11,40 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import { GetRequestStockUsersDAO } from '../../../../../DAO';
 
 export default function TransferContainer(props) {
+
   const {stockItem, selectedCodes} = props;
+
   const [user, setUser] = useState([]);
   const [lists, setLists] = useState([]);
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
+
   var quantity = '';
 
   useEffect(() => {
+
     let mounted = true;
-    getApiRequest('stockmodule/users', {})
-      .then(res => {
-        if (mounted) {
-          var tmp = [];
-          res.users.map((item, index) => {
-            tmp.push({label: item.username, value: item.user_id});
-          });
-          setLists(tmp);
-        }
-      })
-      .catch(e => {});
+    GetRequestStockUsersDAO.find({}).then((res) => {
+      if (mounted) {
+        var tmp = [];
+        res.users.map((item, index) => {
+          tmp.push({label: item.username, value: item.user_id});
+        });
+        setLists(tmp);
+      }
+    }).catch((e) => {
+      console.log("stockmodule users api error: " , e);
+      expireToken(dispatch , e);
+    });
+
     return () => {
       mounted = false;
     };
+    
   }, []);
 
   const onItemSelected = item => {
@@ -68,8 +77,7 @@ export default function TransferContainer(props) {
     }
 
     postApiRequest('stockmodule/transfer', postData)
-      .then(res => {
-        console.log('res', res);
+      .then(res => {        
         dispatch(
           showNotification({
             type: Strings.Success,

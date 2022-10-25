@@ -5,7 +5,7 @@ import React , { useState, useEffect , useRef, forwardRef ,useImperativeHandle }
 import BasketSyncProgress from '../components/BasketSyncProgress'
 import { getApiRequest } from '../../../../../actions/api.action'
 import { deleteRecords, handleRecords } from '../../../../../sqlite/DBHelper'
-import { Strings } from '../../../../../constants'
+import { offlineDBVersion, Strings } from '../../../../../constants'
 import { AppText } from '../../../../../components/common/AppText'
 import Colors, { whiteLabel } from '../../../../../constants/Colors'
 import { getBascketLastSyncTableData, insertBascketLastSync } from '../../../../../sqlite/BascketLastSyncsHelper'
@@ -103,7 +103,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 updateBasket(basket)
             }
 
-            getApiRequest("database/sync-tables?offline_db_version=1.3&sync_basket=" + basket, {}).then(async(res) => {            
+            getApiRequest(`database/sync-tables?offline_db_version=${offlineDBVersion}&sync_basket=` + basket, {}).then(async(res) => {            
               if(res.status === Strings.Success){
                 var tables = res.tables;
                 console.log("All tables", tables)                
