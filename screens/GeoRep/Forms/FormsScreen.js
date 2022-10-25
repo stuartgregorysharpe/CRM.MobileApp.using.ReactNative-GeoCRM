@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import SearchBar from '../../../components/SearchBar';
 import {FormListItem} from './partial/FormListItem';
@@ -231,15 +232,13 @@ export default function FormsScreen(props) {
     <Provider>
       <View style={styles.container}>
         {isShowCustomNavigationHeader && (
-          <View style={{marginTop: 20}}>
-            <NavigationHeader
-              showIcon={true}
-              title={'Forms'}
-              onBackPressed={() => {
-                props.navigation.goBack();
-              }}
-            />
-          </View>
+          <NavigationHeader
+            showIcon={true}
+            title={'Forms'}
+            onBackPressed={() => {
+              props.navigation.goBack();
+            }}
+          />
         )}
 
         <FormFilterModal

@@ -56,11 +56,17 @@ const DynamicButtons = props => {
             key={buttonType}
             locationId={buttonData.location_id}
             style={{marginTop: 12}}
-            onPress={() => {
+            onFinishProcess={() => {
               onButtonAction({
                 type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,
                 item: buttonData,
               });
+            }}
+            onPress={() => {
+              /*onButtonAction({
+                type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,
+                item: buttonData,
+              });*/
             }}
           />
         );

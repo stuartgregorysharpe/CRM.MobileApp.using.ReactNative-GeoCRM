@@ -29,6 +29,7 @@ export default {
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
+  Due_Date: 'Due Date',
   Search_Location: 'Search Location',
 
   CRM: {

@@ -46,7 +46,7 @@ export const FormQuestions = props => {
   const loadingBarRef = useRef();
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
-
+  console.log('location_id', location_id);
   useEffect(() => {
     refreshHeader();
     loadFromDB(form.form_id);
@@ -129,24 +129,27 @@ export const FormQuestions = props => {
       let element = {..._element};
       if (savedQuestionValueMap[element.form_question_id]) {
         element.value = savedQuestionValueMap[element.form_question_id];
-      }      
+      }
 
-		// updated value for tired mutiple choice
-		if(element.question_type ===  Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE){
-			if (element.value != null && element.value != undefined) {
-				var dropdownLists = '';
-				if(typeof element.value === 'object'){				  
-				  for (let key of Object.keys(element.value)) {
-					  if(dropdownLists == ''){
-						dropdownLists = element.value[key];
-					  }else{
-						dropdownLists = dropdownLists  + " - "  + element.value[key];
-					  }					
-				  }
-				}
-				element.value = dropdownLists; // Updated Value in Tired Multiple Choice
-			}
-		}
+      // updated value for tired mutiple choice
+      if (
+        element.question_type ===
+        Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE
+      ) {
+        if (element.value != null && element.value != undefined) {
+          var dropdownLists = '';
+          if (typeof element.value === 'object') {
+            for (let key of Object.keys(element.value)) {
+              if (dropdownLists == '') {
+                dropdownLists = element.value[key];
+              } else {
+                dropdownLists = dropdownLists + ' - ' + element.value[key];
+              }
+            }
+          }
+          element.value = dropdownLists; // Updated Value in Tired Multiple Choice
+        }
+      }
 
       if (!isInNewData(newData, element)) {
         var ques = [element];
@@ -163,7 +166,7 @@ export const FormQuestions = props => {
         tmp.questions = [...newTmp];
       }
     });
-    updateFormQuestions(newData);    
+    updateFormQuestions(newData);
   };
 
   const isInNewData = (data, value) => {

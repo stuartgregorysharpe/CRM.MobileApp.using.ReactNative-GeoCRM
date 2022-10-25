@@ -12,9 +12,10 @@ import {PRIMARY_COLOR, whiteLabel} from '../../constants/Colors';
 import Images from '../../constants/Images';
 import {style} from '../../constants/Styles';
 
-export default function NavigationHeader({title, showIcon, onBackPressed}) {
+export default function NavigationHeader(props) {
+  const {title, showIcon, onBackPressed} = props;
   return (
-    <View style={[styles.layoutBarContent]}>
+    <View style={[styles.layoutBarContent, props.style]}>
       <TouchableOpacity style={{alignSelf: 'center'}} onPress={onBackPressed}>
         <View style={styles.layoutBar}>
           {showIcon && (
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     paddingLeft: 15,
     paddingRight: 0,
+    marginTop: Platform.OS == 'android' ? 20 : 0,
     paddingTop: Platform.OS == 'android' ? 0 : 25,
     backgroundColor: whiteLabel().headerBackground,
     alignItems: 'center',

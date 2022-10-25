@@ -15,7 +15,8 @@ const FormLinkButton = props => {
           props.onPress();
         }
         navigation.navigate('DeeplinkFormQuestionsScreen', {
-          data: {form_id: formId, location_id: locationId},
+          data: {form_id: formId},
+          location_id: locationId,
         });
       }}
       style={props.style}
