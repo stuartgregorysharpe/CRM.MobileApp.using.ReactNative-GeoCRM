@@ -38,6 +38,7 @@ const DynamicButtons = props => {
             title={buttonData.button_label}
             key={buttonType}
             formId={buttonData.form_id}
+            locationId={buttonData.location_id}
             style={{marginTop: 12}}
             onPress={() => {
               onButtonAction({
