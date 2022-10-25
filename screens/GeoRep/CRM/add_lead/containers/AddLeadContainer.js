@@ -153,9 +153,6 @@ export default function AddLeadContainer(props) {
     if (addLeadViewRef) {
       if (!addLeadViewRef.current.validateForm()) isValid = false;
     }
-    if (!isValidOtherForms) {
-      isValid = false;
-    }
 
     return isValid;
   };
@@ -164,7 +161,17 @@ export default function AddLeadContainer(props) {
       dispatch(
         showNotification({
           type: 'success',
-          message: Strings.Complete_Compulsory_Fields,
+          message: Strings.Complete_Required_Fields,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
+    if (!isValidOtherForms) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Complete_Required_Forms,
           buttonText: Strings.Ok,
         }),
       );
