@@ -11,21 +11,26 @@ const PrimaryContactFields = React.forwardRef((props, ref) => {
   const [isCustomerAndContacts, setIsCustomerAndContacts] = useState(false);
   const [formData, setFormData] = useState(getFormData());
   const [formStructure, setFormStructure] = useState(getFormStructureData());
-
+  let _hasCustomerFeature = true;
   useImperativeHandle(
     ref,
     () => ({
-      validateForm: () => {
-        return _validateForm();
+      validateForm: async () => {
+        return await _validateForm();
       },
     }),
     [],
   );
-  const _validateForm = () => {
+  const _validateForm = async () => {
     let isValid = true;
+    const isCustomerAndContacts = await checkFeatureIncludeParam(
+      'customer_and_contacts',
+    );
     if (!isCustomerAndContacts) return true;
     if (actionFormRef && actionFormRef.current) {
-      if (!actionFormRef.current.validateForm()) {
+      const isFormValid = actionFormRef.current.validateForm();
+      console.log('isFormValid', isFormValid);
+      if (!isFormValid) {
         isValid = false;
       }
     }

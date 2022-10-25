@@ -21,13 +21,13 @@ const AddLeadView = React.forwardRef((props, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      validateForm: () => {
-        return _validateForm();
+      validateForm: async () => {
+        return await _validateForm();
       },
     }),
     [],
   );
-  const _validateForm = () => {
+  const _validateForm = async () => {
     let isValid = true;
     if (customMasterFieldsFormRef) {
       if (!customMasterFieldsFormRef.current.validateForm()) {
@@ -35,7 +35,11 @@ const AddLeadView = React.forwardRef((props, ref) => {
       }
     }
     if (primaryContactFieldsRef) {
-      if (!primaryContactFieldsRef.current.validateForm()) {
+      console.log('primaryContactFieldsRef');
+      const isPrimaryValid =
+        await primaryContactFieldsRef.current.validateForm();
+      console.log('primaryContactFieldsRef Valid', isPrimaryValid);
+      if (!isPrimaryValid) {
         isValid = false;
       }
     }

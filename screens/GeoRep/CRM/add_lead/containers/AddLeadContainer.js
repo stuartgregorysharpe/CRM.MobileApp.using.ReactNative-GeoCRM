@@ -147,17 +147,19 @@ export default function AddLeadContainer(props) {
     setFormLists(tmp);
   };
 
-  const validateForm = () => {
+  const validateForm = async () => {
     let isValid = true;
 
     if (addLeadViewRef) {
-      if (!addLeadViewRef.current.validateForm()) isValid = false;
+      const isValidForm = await addLeadViewRef.current.validateForm();
+      if (!isValidForm) isValid = false;
     }
 
     return isValid;
   };
   const onAdd = async () => {
-    if (!validateForm()) {
+    const isFormValid = await validateForm();
+    if (!isFormValid) {
       dispatch(
         showNotification({
           type: 'success',
@@ -212,8 +214,8 @@ export default function AddLeadContainer(props) {
           );
         } else {
           console.log('failed', res);
+          setIsLoading(false);
         }
-        setIsLoading(false);
       })
       .catch(e => {
         setIsLoading(false);
@@ -259,9 +261,11 @@ export default function AddLeadContainer(props) {
         })
         .catch(e => {
           console.log(e);
+          setIsLoading(false);
           expireToken(dispatch, e);
         });
     } else {
+      setIsLoading(false);
       dispatch(
         showNotification({
           type: 'success',
