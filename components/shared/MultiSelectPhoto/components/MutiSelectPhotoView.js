@@ -4,11 +4,11 @@ import OptionItem from './OptionItem';
 import PhotoCameraPickerDialog from '../../../modal/PhotoCameraPickerDialog';
 import {SubmitButton} from '../../SubmitButton';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../actions/notification.action';
+import {clearNotification, showNotification} from '../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../constants';
 
 export default function MutiSelectPhotoView(props) {
-  const {item} = props;
+  const {item , submissionType} = props;
   const [checkedLists, setCheckedLists] = useState([]);
   const [isPicker, setIsPicker] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
@@ -27,17 +27,26 @@ export default function MutiSelectPhotoView(props) {
         index={index}
         checkedLists={checkedLists}
         onTapItem={item => {
-          var check = checkedLists.find(element => element.name === item);
+          var check = checkedLists.find(element => element.value === item);
           if (check != undefined) {
-            var tmp = checkedLists.filter(element => element.name != item);
+            var tmp = checkedLists.filter(element => element.value != item);
             setCheckedLists(tmp);
           } else {
-            setCheckedLists([...checkedLists, {name: item, path: ''}]);
+            setCheckedLists([...checkedLists, {value: item, image: ''}]);
           }
         }}
         onPickUpImage={item => {
           setIsPicker(true);
           setSelectedItem(item);
+          // if(submissionType == "edit"){
+          //   dispatch(showNotification({type: Strings.Success ,  message : 'Edit image not allowed' , buttonText: 'Ok' , buttonAction: () => {
+          //     dispatch(clearNotification())
+          //   }}))
+          // }else{
+          //   setIsPicker(true);
+          //   setSelectedItem(item);
+          // }
+          
         }}
       />
     );
@@ -45,9 +54,10 @@ export default function MutiSelectPhotoView(props) {
 
   const isValidate = () => {
     var flag = true;
+    console.log("checkedLists",checkedLists);
     checkedLists.forEach(element => {
       console.log('ee', element);
-      if (element.path === '' || element.path === undefined) {
+      if (element.image === '' || element.image === undefined) {
         console.log('false');
         flag = false;
       }
@@ -93,15 +103,15 @@ export default function MutiSelectPhotoView(props) {
         visible={isPicker}
         message={'Choose Image'}
         updateImageData={path => {
-          var tmp = [];
+          
+          const changedLists = [];
           checkedLists.forEach(item => {
-            if (item.name === selectedItem) {
-              tmp.push({name: selectedItem, path: path});
-            } else {
-              tmp.push(item);
+            if (item.value != selectedItem) {
+              changedLists.push(item);              
             }
           });
-          setCheckedLists(tmp);
+          changedLists.push({value: selectedItem, image: path});
+          setCheckedLists(changedLists);
           setIsPicker(false);
         }}
         onModalClose={() => {

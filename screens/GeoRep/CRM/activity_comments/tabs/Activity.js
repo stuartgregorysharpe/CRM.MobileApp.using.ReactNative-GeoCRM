@@ -1,56 +1,69 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  TouchableOpacity,
   StyleSheet,
   FlatList,
   TextInput,
   Dimensions,
-  ActivityIndicator,
-  RefreshControl,
+  ActivityIndicator,  
 } from 'react-native';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
 import {HistoryListItem} from './partial/HistoryListItem';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
-import {getPostParameter, notifyMsg} from '../../../../../constants/Helper';
+import {expireToken, getPostParameter, notifyMsg} from '../../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
 import Fonts from '../../../../../constants/Fonts';
 import {useSelector} from 'react-redux';
+import LoadMore from './partial/LoadMore';
 
 export default function Activity(props) {
-  const dispatch = useDispatch();
+
   const location_id = props.location_id;
+    
   const [historyItems, setHistoryItems] = useState([]);
   const [comment, setComment] = useState('');
   const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [title, setTitle] = useState('');
 
+  const dispatch = useDispatch();
+
+  let isMount = true;
+
   useEffect(() => {
     loadHistory(page);
+    return () => {
+      isMount = false;
+    }
   }, []);
 
   const loadHistory = pageNumber => {
     if (!isLoading) {
       setIsLoading(true);
       let param = {page: pageNumber, location_id: location_id};
-
       getApiRequest('locations/location-history', param)
         .then(res => {
-          setHistoryItems([...historyItems, ...res.history_items]);
-          setPage(pageNumber + 1);
-          console.log('results', res);
-          setIsLoading(false);
-          setTitle(res.location_name);
+          if(isMount){
+            if(pageNumber == 0){
+              setHistoryItems(res.history_items);
+            }else{
+              setHistoryItems([...historyItems, ...res.history_items]);
+            }          
+            setPage(pageNumber + 1);
+            setIsLoading(false);
+            setTitle(res.location_name);
+          }          
         })
         .catch(e => {
-          setIsLoading(false);
-        });
+          if(isMount){
+            setIsLoading(false);
+            expireToken(dispatch, e);
+          }          
+        });        
     }
   };
 
@@ -73,6 +86,7 @@ export default function Activity(props) {
       })
       .catch(e => {
         setIsLoading(false);
+        expireToken(dispatch ,e);
     });
     
   };
@@ -106,7 +120,7 @@ export default function Activity(props) {
     <View style={styles.container}>
       <Notification />
       <View style={{marginTop: 5, marginBottom: 10}}>
-        <AppText size="medium" type="title" title={title}></AppText>
+        <AppText size="medium" type="secondaryMedium" title={title}></AppText>
       </View>
 
       <FlatList
@@ -120,17 +134,12 @@ export default function Activity(props) {
       {isLoading && <ActivityIndicator />}
 
       <View style={{alignItems: 'center', flexDirection: 'column'}}>
-        <TouchableOpacity
-          style={{marginBottom: 10, marginTop: 10}}
-          onPress={() => {
+
+        <LoadMore 
+          loadMore={() => {
             loadMore();
-          }}>
-          <AppText
-            type=""
-            color={whiteLabel().mainText}
-            size="small"
-            title="Load More ..."></AppText>
-        </TouchableOpacity>
+          }}
+        />
 
         <TextInput
           style={{

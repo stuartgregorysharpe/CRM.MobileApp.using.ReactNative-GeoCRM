@@ -21,6 +21,7 @@ export default function TransferContainer(props) {
   const [lists, setLists] = useState([]);
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   var quantity = '';
@@ -75,9 +76,10 @@ export default function TransferContainer(props) {
         return;
       }
     }
-
-    postApiRequest('stockmodule/transfer', postData)
-      .then(res => {        
+    setIsLoading(true);
+    postApiRequest('stockmodule/transfer', postData)      
+      .then(res => {
+        setIsLoading(false);        
         dispatch(
           showNotification({
             type: Strings.Success,
@@ -91,13 +93,18 @@ export default function TransferContainer(props) {
         );
       })
       .catch(e => {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: 'Error',
-            buttonText: 'Ok',
-          }),
-        );
+        setIsLoading(false);
+        if (e === 'expired') {
+          expireToken(dispatch, e);
+        } else {
+          dispatch(
+            showNotification({
+              type: Strings.Success,
+              message: 'Error',
+              buttonText: 'Ok',
+            }),
+          );
+        }
       });
   };
 
@@ -108,6 +115,7 @@ export default function TransferContainer(props) {
         onTrader={onTrader}
         onChangedQuantity={onChangedQuantity}
         lists={lists}
+        isLoading={isLoading}
         {...props}
       />
       <Notification />

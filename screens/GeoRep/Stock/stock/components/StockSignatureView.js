@@ -3,24 +3,22 @@ import React, {useRef, useState} from 'react';
 import CTextInput from '../../../../../components/common/CTextInput';
 import SignatureScreen from 'react-native-signature-canvas';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
 import {Constants, Strings} from '../../../../../constants';
 import {validateMsisdn} from '../../../../../helpers/validateHelper';
-import { generateKey } from '../../../../../constants/Utils';
+import {generateKey} from '../../../../../constants/Utils';
+import {showNotification} from '../../../../../actions/notification.action';
+import {Notification} from '../../../../../components/modal/Notification';
+
 var previousText = Constants.msisdnPrefix;
 
 export default function StockSignatureView(props) {
+  const dispatch = useDispatch();
   const signatureScreenRef = useRef(null);
   const msisdnRef = useRef(null);
-  const {
-    receivedBy,
-    onChangedReceivedBy,
-    onChangedSerial,
-    signature,
-    onSubmit,
-    onClose,
-  } = props;
+  const {onChangedReceivedBy, onChangedSerial, signature, onSubmit, onClose} =
+    props;
   const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -28,7 +26,9 @@ export default function StockSignatureView(props) {
   const isMSISDN = features.includes('msisdn');
   const [enabled, setEnabled] = useState(false);
   const [path, setPath] = useState(null);
+  const [receivedBy, setReceivedBy] = useState();
   const [hasMsisdnError, setHasMsisdnError] = useState(false);
+  const [hasReceivedByError, setHasReceivedByError] = useState(false);
   const [serial, setSerial] = useState(Constants.msisdnPrefix);
 
   const handleOK = async signature => {
@@ -52,7 +52,9 @@ export default function StockSignatureView(props) {
   };
 
   const handleConfirm = () => {
-    var tmp = signatureScreenRef.current.readSignature();
+    if (signatureScreenRef.current) {
+      signatureScreenRef.current.readSignature();
+    }
   };
   const handleEnd = () => {
     checkValidation();
@@ -84,6 +86,7 @@ export default function StockSignatureView(props) {
   };
 
   const onFileSubmit = () => {
+    let isValidForm = true;
     if (
       props.item.stock_type != Constants.stockType.RETURN &&
       isMSISDN &&
@@ -91,20 +94,48 @@ export default function StockSignatureView(props) {
       !validateMsisdn(serial)
     ) {
       setHasMsisdnError(true);
-      if (msisdnRef.current) {
+      /*if (msisdnRef.current) {
         msisdnRef.current.focus();
-      }
-
+      }*/
+      isValidForm = false;
+    }
+    if (!receivedBy || receivedBy == '') {
+      setHasReceivedByError(true);
+      isValidForm = false;
+    }
+    if (!isValidForm) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Complete_Compulsory_Fields,
+          buttonText: Strings.Ok,
+        }),
+      );
       return;
     }
-    if (enabled) {
-      if (path != null) {
-        RNFS.exists(path).then(res => {
-          if (res) {
-            onSubmit(path);
-          }
-        });
-      }
+
+    if (path != null) {
+      RNFS.exists(path).then(res => {
+        if (res) {
+          onSubmit(path);
+        } else {
+          dispatch(
+            showNotification({
+              type: 'success',
+              message: Strings.Please_Sign_Message,
+              buttonText: Strings.Ok,
+            }),
+          );
+        }
+      });
+    } else {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Please_Sign_Message,
+          buttonText: Strings.Ok,
+        }),
+      );
     }
   };
 
@@ -112,12 +143,17 @@ export default function StockSignatureView(props) {
     <View style={styles.container}>
       <CTextInput
         label={'Received By'}
+        isRequired={true}
         value={receivedBy}
         returnKeyType={'done'}
-        isRequired={true}
+        hasError={hasReceivedByError}
         onChangeText={text => {
           onChangedReceivedBy(text);
+          setReceivedBy(text);
           checkValidation();
+          if (text && text != '') {
+            setHasReceivedByError(false);
+          }
         }}
         style={{marginTop: 15}}
       />
@@ -180,10 +216,12 @@ export default function StockSignatureView(props) {
 
       <SubmitButton
         title="Submit"
-        style={{marginTop: 10}}
+        isLoading={props.isLoading}
+        style={{marginTop: 10, marginBottom: 10}}
         onSubmit={onFileSubmit}>
         {' '}
       </SubmitButton>
+      <Notification />
     </View>
   );
 }

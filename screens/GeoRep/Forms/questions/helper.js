@@ -1,78 +1,127 @@
 import {Constants} from '../../../../constants';
 import * as RNLocalize from 'react-native-localize';
-import { getLocalData } from '../../../../constants/Storage';
-import { getFileFormat } from '../../../../constants/Helper';
+import {getLocalData} from '../../../../constants/Storage';
+import {getFileFormat} from '../../../../constants/Helper';
+import {getDBConnection} from '../../../../sqlite/DBHelper';
+import {getFormTableData} from '../../../../sqlite/FormDBHelper';
 
-export async function getFormSubmissionPostJsonData (form_id , locationId , currentLocation , form_answers , files ) {
+export async function loadFormValuesFromDB(formId) {
+  let formQuestions = null;
+  const db = await getDBConnection();
+  if (db != null) {
+    const res = await getFormTableData(db, formId);
+    if (res.length > 0) {
+      formQuestions = JSON.parse(res.item(0).formQuestions);
+      indempotencyKey = res.item(0).indempotencyKey;
+    }
+  }
+  return getFormQuestionValueMap(formQuestions);
+}
 
-  try{
-
-      var lat = await getLocalData('@latitude');
-      var lon = await getLocalData('@longitude');
-
-      var time_zone = '';
-      try {
-        time_zone = RNLocalize.getTimeZone();
-      } catch (e) {}
-
-      var postDataJson = {
-        form_id: form_id,
-        location_id: locationId,
-        online_offline: 'online',
-        'user_local_data[time_zone]': time_zone,
-        'user_local_data[latitude]': currentLocation.latitude != null
-        ? currentLocation.latitude
-        : lat != null
-        ? lat
-        : '0',
-        'user_local_data[longitude]': currentLocation.longitude != null
-        ? currentLocation.longitude
-        : lon != null
-        ? lon
-        : '0',
-      }
-      form_answers.forEach(item => {
-        if (item.key && item.value && item.value != null && item.valuel != '') {
-          var itemKey = item.key;
-          var itemValue = item.value;
-          postDataJson = {
-            ...postDataJson,
-            [itemKey]: itemValue
-          };        
+export function getFormQuestionValueMap(formQuestionGroups) {
+  if (!formQuestionGroups) return {};
+  const formQuestionValueMap = {};
+  formQuestionGroups.forEach(formQuestionGroup => {
+    if (formQuestionGroup.questions) {
+      const questions = formQuestionGroup.questions;
+      questions.forEach(question => {
+        if (question.value) {
+          formQuestionValueMap[question.form_question_id] = question.value;
         }
       });
+    }
+  });
+  return formQuestionValueMap;
+}
 
+export async function getFormSubmissionPostJsonData(
+  form_id,
+  locationId,
+  currentLocation,
+  form_answers,
+  files,
+  type = "submit"
+) {
+  try {
+
+    console.log("Type", type);
+
+    var lat = await getLocalData('@latitude');
+    var lon = await getLocalData('@longitude');
+
+    var time_zone = '';
+    try {
+      time_zone = RNLocalize.getTimeZone();
+    } catch (e) {}
+
+    var postDataJson = {};
+    if(type == "edit"){
+      postDataJson = {
+        're-submission' : "1",
+        "previous_submission_id" : form_id
+      }
+    }else{
+      postDataJson = {
+        form_id: form_id
+      }
+    }
+
+    postDataJson = {
+      ...postDataJson,      
+      location_id: locationId,
+      online_offline: 'online',
+      'user_local_data[time_zone]': time_zone,
+      'user_local_data[latitude]':
+        currentLocation.latitude != null
+          ? currentLocation.latitude
+          : lat != null
+          ? lat
+          : '0',
+      'user_local_data[longitude]':
+        currentLocation.longitude != null
+          ? currentLocation.longitude
+          : lon != null
+          ? lon
+          : '0',
+    };
+    form_answers.forEach(item => {
+      if (item.key && item.value && item.value != null && item.valuel != '') {
+        var itemKey = item.key;
+        var itemValue = item.value;
+        postDataJson = {
+          ...postDataJson,
+          [itemKey]: itemValue,
+        };
+      }
+    });
+
+    if(type == "submit"){
       files.map(item => {
         if (item.key && item.value) {
-          if (item.type === 'upload_file') {                    
+          if (item.type === 'upload_file') {
             postDataJson = {
               ...postDataJson,
               [item.key]: {
                 uri: item.value.uri,
                 type: item.value.type,
                 name: item.value.name,
-              }
-            };        
+              },
+            };
           } else {
-            
             var fileFormats = getFileFormat(item.value);
             postDataJson = {
               ...postDataJson,
-              [item.key]: fileFormats
+              [item.key]: fileFormats,
             };
           }
         }
       });
-
-      return postDataJson;
-      
-  }catch(e) {
-    console.log("json err" , e)
+    }
+    return postDataJson;
+  } catch (e) {
+    console.log('json err', e);
   }
-  
-
 }
-
 
 export function filterTriggeredQuestions(formQuestionGroups) {
   console.log('filterTriggeredQuestions');
@@ -303,7 +352,11 @@ export function getFormQuestionData(formQuestions) {
           item.question_type === 'multiple' ||
           item.question_type === 'multi_select'
         ) {
-          if (item.value && item.value.length > 0 && item.value instanceof  Array) {
+          if (
+            item.value &&
+            item.value.length > 0 &&
+            item.value instanceof Array
+          ) {
             form_answers.push({
               key: `form_answers[${index}][form_question_id]`,
               value: item.form_question_id,
@@ -455,7 +508,7 @@ export function getFormQuestionData(formQuestions) {
           item.value.forEach((element, k) => {
             form_answers.push({
               key: `form_answers[${index}][answer][${k}]`,
-              value: element.name,
+              value: element.value,
             });
           });
           index = index + 1;
@@ -484,7 +537,7 @@ export function getFormQuestionFile(formQuestions) {
       if (
         item.question_type === 'upload_file' ||
         item.question_type === 'take_photo' ||
-        (item.question_type === 'yes_no' && (item.yes_image || item.no_image))
+        (item.question_type === 'yes_no' && (item.yes_image && item.yes_image != undefined && item.yes_image.length > 0 || item.no_image && item.no_image !=undefined && item.no_image.length > 0))
       ) {
         var paths = item.value;
         if (item.yes_image != null && item.yes_image != '') {
@@ -520,7 +573,7 @@ export function getFormQuestionFile(formQuestions) {
           item.value.forEach((element, index) => {
             files.push({
               key: `File[${item.form_question_id}][${element.name}]`,
-              value: element.path,
+              value: element.image,
               type: Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO,
             });
           });

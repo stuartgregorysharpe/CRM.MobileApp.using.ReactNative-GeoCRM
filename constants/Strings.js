@@ -1,7 +1,11 @@
 export default {
   Ok: 'Okay',
+  Complete_Compulsory_Fields: 'Please complete the compulsory fields.',
+  Complete_Required_Fields: 'Please complete the required fields.',
+  Complete_Required_Forms: 'Please complete the required forms.',
   Complete_Compulsory_Questions:
     'Please complete the compulsory questions and then submit',
+  Please_Sign_Message: 'Please Sign',
   Select_Your_Option: 'Select your option: ',
   Complete_All_Fields: 'Please complete all fields',
   Add_Additional: 'Add additional',
@@ -25,19 +29,22 @@ export default {
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
+  Due_Date: 'Due Date',
   Search_Location: 'Search Location',
   Continue: 'Continue',
 
-  CRM:{
-    Access_CRM :'Access CRM',
-    Check_In: 'Check In'
+  CRM: {
+    Access_CRM: 'Access CRM',
+    Check_In: 'Check In',
+    Submisison_ID: 'Submission ID: ',
+    Form_Activity_For: 'Form Activity for ',
   },
 
-  Log:{
+  Log: {
     Post_Api_Error: 'Post Api Call Error : ',
     Get_Api_Error: 'Get Api Call Error : ',
   },
-    
+
   Home: {
     Sync_All: 'Sync All',
   },
@@ -66,16 +73,15 @@ export default {
     Successfully_Sell_To_Trader: 'Saved to Offline sync successfully'
   },
 
-  Forms:{
-    Filter_Your_Search : 'Filter your search',
-    Clear_Filters : 'Clear Filters'
+  Forms: {
+    Filter_Your_Search: 'Filter your search',
+    Clear_Filters: 'Clear Filters',
   },
 
   PostRequestResponse: {
     Successfully_Checkout: 'Checkout Successfully!',
     Successfully_Checkin: 'Checkin Successfully!',
     Successfully_Feedback: 'Feedback Successfully!',
-    Successfully_Form_Submit: 'Form  Submitted successfully!'
-  }
-
+    Successfully_Form_Submit: 'Form  Submitted successfully!',
+  },
 };

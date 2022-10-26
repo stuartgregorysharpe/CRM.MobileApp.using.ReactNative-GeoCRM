@@ -16,6 +16,8 @@ import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../hel
 import { getBaskets } from './helper'
 import { useDispatch } from 'react-redux'
 import { clearNotification, showNotification } from '../../../../../actions/notification.action'
+import { expireToken } from '../../../../../constants/Helper'
+
 var gSyncedRecords = 0;
 var gBascketLists = getBaskets();
 var isOneBasketSync = false;
@@ -142,7 +144,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 }                
               }
             }).catch((e) => {
-                console.log("error" , e)
+                console.log("error" , e);
+                expireToken(dispatch, e);
             })
         }        
     }
@@ -188,6 +191,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 }
             }).catch((e) => {
                 console.log("sync-table-data api error", e);
+                expireToken(dispatch, e);
             });
         }            
     }

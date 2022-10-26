@@ -29,12 +29,17 @@ import {
 import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
+
 import { GetRequestStockListsDAO } from '../../../../DAO';
 import { getLocalData } from '../../../../constants/Storage';
+import {expireToken} from '../../../../constants/Helper';
 
-export default function StockLists(props) {
+
+
+const StockLists = (props) => {
 
   const navigation = props.navigation;
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [stockItem, setStockItem] = useState({});
   const addStockModalRef = useRef(null);
@@ -57,7 +62,7 @@ export default function StockLists(props) {
     () => filterItems(items, searchKeyword, filters),
     [items, searchKeyword, filters],
   );
-  
+
   const stockLists = useMemo(
     () => getStockItemsFromItems(filteredItems),
     [filteredItems],
@@ -67,7 +72,7 @@ export default function StockLists(props) {
     () => selectedItems.map(x => x.iccid),
     selectedItems,
   );
-  
+
   const dispatch = useDispatch();
   let isMount = true;
 
@@ -100,15 +105,17 @@ export default function StockLists(props) {
 
 
   const callStockLists = () => {
-
-    GetRequestStockListsDAO.find({}).then((res) => {
-      if (isMount) {                
-        const _items = getItemsFromStockItems(res.stock_items);        
-        setItems(_items);
-      }
-    }).catch((e) => {
-      console.log('stock list api error : ', e);
-    })    
+    GetRequestStockListsDAO.find({})
+      .then(res => {
+        if (isMount) {
+          console.log('res.stock_items', res.stock_items);
+          const _items = getItemsFromStockItems(res.stock_items);
+          setItems(_items);
+        }
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const onStockItemPressed = item => {
@@ -141,19 +148,26 @@ export default function StockLists(props) {
     }
   };
 
-  const onStockDetailsModalClosed = async ({type, value}) => {
-    if (type == Constants.actionType.ACTION_NEXT) {
-      if(value.locationId != undefined && value.locationId != null){
-        setLocationId(value.locationId);
-      }      
-      if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
-        stockSignatureModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.SWOP_AT_TRADER) {
-        swopAtTraderModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.TARDER) {
-        traderModalRef.current.showModal();
+  const onStockDetailsModalClosed = ({type, value}) => {
+    stockDetailsModalRef.current.hideModal();
+    setTimeout(() => {
+      if (type == Constants.actionType.ACTION_NEXT) {
+        
+        if(value.locationId != undefined && value.locationId != null){
+          setLocationId(value.locationId);
+        } 
+        
+        if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
+          stockSignatureModalRef.current.showModal();
+        } else if (
+          value.stockType === Constants.stockDeviceType.SWOP_AT_TRADER
+        ) {
+          swopAtTraderModalRef.current.showModal();
+        } else if (value.stockType === Constants.stockDeviceType.TARDER) {
+          traderModalRef.current.showModal();
+        }
       }
-    }
+    }, 500);
   };
 
   const onScanAction = ({type, value}) => {
@@ -209,7 +223,7 @@ export default function StockLists(props) {
       callStockLists();
     }
   };
-
+  
   const onStockConsumableModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_NEXT) {      
       if(value.locationId != undefined && value.locationId != null){
@@ -237,15 +251,20 @@ export default function StockLists(props) {
 
   const onSimDetailAction = ({type, value, item}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
+      simDetailsModalRef.current.hideModal();
       setStockItem({stock_type: Constants.stockType.SIM});
+      
       if(value.locationId != undefined && value.locationId != null){
         setLocationId(value.locationId);
-      }      
-      if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
-        stockSignatureModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.TARDER) {
-        traderModalRef.current.showModal();
-      }
+      }       
+
+      setTimeout(() => {
+        if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
+          stockSignatureModalRef.current.showModal();
+        } else if (value.stockType === Constants.stockDeviceType.TARDER) {
+          traderModalRef.current.showModal();
+        }
+      }, 700);
     } else if (
       type == Constants.actionType.ACTION_CAPTURE ||
       type == Constants.actionType.ACTION_INPUT_BARCODE
@@ -438,4 +457,6 @@ export default function StockLists(props) {
       <Notification />
     </View>
   );
-}
+};
+
+export default StockLists;

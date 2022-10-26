@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import {
   Text,
-  View,  
+  View,
   TouchableOpacity,
   Keyboard,
   Dimensions,
@@ -45,7 +45,8 @@ import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
-  getPostParameter,  
+  expireToken,
+  getPostParameter,
 } from '../../../../constants/Helper';
 import {Notification} from '../../../../components/modal/Notification';
 import {
@@ -54,8 +55,12 @@ import {
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings, Values} from '../../../../constants';
-import { getDateTime } from '../../../../helpers/formatHelpers';
-import { LocationCheckinTypeDAO, PostLocationCheckinTypesDAO, PostRequestDAO } from '../../../../DAO';
+import {getDateTime} from '../../../../helpers/formatHelpers';
+import {
+  LocationCheckinTypeDAO,
+  PostLocationCheckinTypesDAO,
+  PostRequestDAO,
+} from '../../../../DAO';
 import LocationInfo from './LocationInfo';
 
 var outcomeVal = false;
@@ -66,7 +71,6 @@ var reason_id = '';
 var clickedAction = '';
 
 export const LocationInfoDetails = forwardRef((props, ref) => {
-
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.locInfo);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -101,14 +105,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      closePopup() {        
+      closePopup() {
         if (showItem !== 'update_customer') {
           checkFeedbackAndClose('top');
         } else {
           setShowItem('refresh');
         }
       },
-      goBack() {        
+      goBack() {
         setModalType('feedback');
         if (showItem === 'update_customer') {
           setShowItem('refresh');
@@ -136,8 +140,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     }
     setLocationInfo(_locationInfo);
     setIsLoading(false);
-    
-    if (_locationInfo.feedback != undefined && _locationInfo.feedback.length > 0) {
+
+    if (
+      _locationInfo.feedback != undefined &&
+      _locationInfo.feedback.length > 0
+    ) {
       setFeedback(
         _locationInfo.feedback[0].feedback_loc_info_outcome[0].options,
       );
@@ -177,7 +184,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       features,
       'checkin_types',
     );
-    
+
     isFeedbackLocInfoOutcome = checkFeatureIncludeParamFromSession(
       features,
       'feedback_loc_info_outcome',
@@ -205,7 +212,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       } else if ('access_crm') {
       }
     }
-  };  
+  };
 
   const _canGoNextPrev = () => {
     if (isFeedbackLocInfoOutcome && !outcomeVal) {
@@ -221,10 +228,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     dispatch({type: SUB_SLIDE_STATUS, payload: true});
   };
 
-  const onPathUpdated = (path) => {
-      setFilePath(path);
-      updateLocationImage(path);
-  }    
+  const onPathUpdated = path => {
+    setFilePath(path);
+    updateLocationImage(path);
+  };
 
   const updateLocationImage = async path => {
     var data = await RNFS.readFile(path, 'base64').then(res => {
@@ -242,9 +249,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         setMessage(res);
         setIsSuccess(true);
       })
-      .catch(e => {        
-        setMessage("Upload File Failed");      
+      .catch(e => {
+        setMessage('Upload File Failed');
         setIsSuccess(true);
+        expireToken(dispatch, e);
       });
   };
 
@@ -253,7 +261,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callLocationFeedback = item => {
-
     var userParam = getPostParameter(locationInfo.coordinates);
     let postData = {
       location_id: locationInfo.location_id,
@@ -264,9 +271,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       ],
       user_local_data: userParam.user_local_data,
     };
-    
-    PostRequestDAO.find(locationInfo.location_id, postData, "location-feedback", "locations-info/location-feedback").then((res) => {
-        
+
+    PostRequestDAO.find(
+      locationInfo.location_id,
+      postData,
+      'location-feedback',
+      'locations-info/location-feedback',
+    )
+      .then(res => {
         setIsOutcomeUpdated(true);
         outcomeVal = true;
 
@@ -276,15 +288,17 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             message: res.message,
             buttonText: Strings.Ok,
             buttonAction: async () => {
-              
               if (clickedAction === 'top') {
                 checkFeedbackAndClose('top');
               } else if (clickedAction === 'back') {
                 checkFeedbackAndClose('back');
               } else if (clickedAction === 'access_crm') {
-                if(props.onButtonAction){
-                  props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value:'access_crm'});
-                }                
+                if (props.onButtonAction) {
+                  props.onButtonAction({
+                    type: Constants.actionType.ACTION_CLOSE,
+                    value: 'access_crm',
+                  });
+                }
               } else if (clickedAction === 'checkin') {
                 onClickCheckIn();
               } else if (clickedAction === 'prev') {
@@ -300,11 +314,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             },
           }),
         );
-                
-    }).catch(e => {
-      console.log("Error : " , e);
-    });
-    
+      })
+      .catch(e => {
+        console.log('Error : ', e);
+        expireToken(dispatch, e);
+      });
   };
 
   const showFeedbackDropDownModal = () => {
@@ -316,19 +330,19 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         value={[]}
         visible={isFeedbackModal}
         options={feedbackOptions}
-        onModalClose={() => {          
+        onModalClose={() => {
           if (modalType === 'checkin_reason') {
             var options = [];
             checkinTypes.forEach((item, index) => {
               options.push(item.checkin_type);
-            });            
+            });
             setFeedbackOptions(originFeedbackData);
-          } else {            
+          } else {
             setFeedbackOptions(originFeedbackData);
           }
           setIsFeedback(false);
         }}
-        onValueChanged={async(item, index) => {          
+        onValueChanged={async (item, index) => {
           if (modalType === 'feedback') {
             _callLocationFeedback(item);
             setIsFeedback(false);
@@ -349,22 +363,21 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               setModalTitle('Check In Reasons');
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
-              await storeLocalValue("@checkin_type_id" , checkin_type_id);
+              await storeLocalValue('@checkin_type_id', checkin_type_id);
             } else {
               setIsFeedback(false);
               _callCheckedIn();
             }
           } else if (modalType === 'checkin_reason') {
-            console.log("check in reasons", checkinReason);
+            console.log('check in reasons', checkinReason);
             var chk = checkinReason.find(element => element.reason === item);
             if (chk && chk.reason_id) {
               reason_id = checkinReason.find(
                 element => element.reason === item,
               ).reason_id;
-              console.log("Save reason id", reason_id)
-              await storeLocalValue("@checkin_reason_id" , reason_id);
+              console.log('Save reason id', reason_id);
+              await storeLocalValue('@checkin_reason_id', reason_id);
               _callCheckedIn();
-              
             } else {
               setModalType('feedback');
             }
@@ -374,21 +387,24 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callCheckInTypes = async () => {
-    
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
 
-    LocationCheckinTypeDAO.find(features).then((res) => {      
-      var options = [];
-      res.forEach((item, index) => {
-        options.push(item.checkin_type);
+    LocationCheckinTypeDAO.find(features)
+      .then(res => {
+        var options = [];
+        res.forEach((item, index) => {
+          options.push(item.checkin_type);
+        });
+        setFeedbackOptions(options);
+        setCheckInTypes(res);
+        console.log('check type', res);
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
       });
-      setFeedbackOptions(options);
-      setCheckInTypes(res);
-      console.log("check type", res)
-    });
   };
 
   const _callCheckedIn = async () => {
@@ -401,30 +417,39 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-    
-    PostRequestDAO.find(locationInfo.location_id, postData , "checkin" , "location-info/check-in").then(async(res) => {
-      if(props.onButtonAction){
-        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-      }
-      setIsFeedback(false);
-      setFeedbackOptions(originFeedbackData);
-      setModalType('feedback');        
-      dispatch({type: CHECKIN, payload: true});
-      await storeLocalValue('@checkin', '1');
-      await storeLocalValue('@specific_location_id',locationInfo.location_id);
-      props.navigation.navigate('LocationSpecificInfo', {
-        data: locationInfo,
-        page: 'checkin',
-      });
 
-    });
-          
+    PostRequestDAO.find(
+      locationInfo.location_id,
+      postData,
+      'checkin',
+      'location-info/check-in',
+    )
+      .then(async res => {
+        if (props.onButtonAction) {
+          props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+        }
+        setIsFeedback(false);
+        setFeedbackOptions(originFeedbackData);
+        setModalType('feedback');
+        dispatch({type: CHECKIN, payload: true});
+        await storeLocalValue('@checkin', '1');
+        await storeLocalValue(
+          '@specific_location_id',
+          locationInfo.location_id,
+        );
+        props.navigation.navigate('LocationSpecificInfo', {
+          data: locationInfo,
+          page: 'checkin',
+        });
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const onClickCheckIn = async () => {
-    
     var isCheckin = await getLocalData('@checkin');
-    if (isCheckin === '1') {    
+    if (isCheckin === '1') {
       dispatch(
         showNotification({
           type: Strings.Success,
@@ -432,18 +457,18 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           buttonText: 'Continue',
           buttonAction: async () => {
             dispatch(clearNotification());
-            if(props.onButtonAction){
+            if (props.onButtonAction) {
               props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
             }
-            
+
             var specificLocationId = await getLocalData(
               '@specific_location_id',
             );
+
             props.navigation.navigate('LocationSpecificInfo', {
               locationId: specificLocationId,
               page: 'checkin',
-            });            
-            
+            });
           },
         }),
       );
@@ -458,7 +483,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
   const onUpdateCustomerModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
-      props.refreshLocationInfo(locationInfo.location_id);
+      if (props.refreshLocationInfo) {
+        props.refreshLocationInfo(locationInfo.location_id);
+      }
+
       updateCustomerModalRef.current.hideModal();
     }
   };
@@ -514,7 +542,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         <UpdateCustomerInfo
           location_id={locationInfo.location_id}
           onClose={() => {
-            props.refreshLocationInfo(locationInfo.location_id);
+            if (props.refreshLocationInfo) {
+              props.refreshLocationInfo(locationInfo.location_id);
+            }
+
             setShowItem('refresh');
           }}
         />
@@ -561,8 +592,12 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
         {!isLoading && (
           <View>
-          
-            <LocationInfo locationInfo={locationInfo} filePath={filePath} openCustomerInfo={openCustomerInfo} onPathUpdated={onPathUpdated}/>
+            <LocationInfo
+              locationInfo={locationInfo}
+              filePath={filePath}
+              openCustomerInfo={openCustomerInfo}
+              onPathUpdated={onPathUpdated}
+            />
 
             {locationInfo !== undefined &&
               locationInfo.location_id !== '' &&
@@ -584,11 +619,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                     setLocationInfo(undefined);
                     setIsLoading(true);
                   }}
-                  onEnd={(locInfo) => {                  
+                  onEnd={locInfo => {
                     setIsLoading(false);
                     setLocationInfo(locInfo);
                   }}
-
                   onUpdated={res => {
                     setIsLoading(false);
                     setFilePath('');
@@ -648,26 +682,31 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       </KeyboardAwareScrollView>
 
       {features &&
-        (features.includes('access_crm') || features.includes('checkin')) && !keyboardStatus && (
+        (features.includes('access_crm') || features.includes('checkin')) &&
+        !keyboardStatus && (
           <View style={styles.nextButtonBar}>
             {features && features.includes('access_crm') && (
               <TouchableOpacity
                 style={[styles.nextButton, styles.accessButton]}
                 onPress={async () => {
                   clickedAction = 'access_crm';
-                  if (_canGoNextPrev()) {                 
-                    
-                    if(props.onButtonAction){
-                      props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value:'access_crm'});
+                  if (_canGoNextPrev()) {
+                    if (props.onButtonAction) {
+                      props.onButtonAction({
+                        type: Constants.actionType.ACTION_CLOSE,
+                        value: 'access_crm',
+                      });
                     }
-                    
+
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,
                       page: 'access_crm',
                     });
                   }
                 }}>
-                <Text style={styles.nextButtonText}>{Strings.CRM.Access_CRM}</Text>
+                <Text style={styles.nextButtonText}>
+                  {Strings.CRM.Access_CRM}
+                </Text>
                 <FontAwesomeIcon
                   size={22}
                   color={whiteLabel().actionOutlineButtonText}
@@ -685,7 +724,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                     onClickCheckIn();
                   }
                 }}>
-                <Text style={[styles.checkInButtonText]}>{Strings.CRM.Check_In}</Text>
+                <Text style={[styles.checkInButtonText]}>
+                  {Strings.CRM.Check_In}
+                </Text>
                 <FontAwesomeIcon
                   size={22}
                   color={whiteLabel().actionFullButtonIcon}
@@ -707,13 +748,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
         </TouchableOpacity>
       )}
-
     </View>
   );
 });
 
 const styles = StyleSheet.create({
-
   container: {
     maxHeight: Values.deviceHeight - 80,
     backgroundColor: Colors.bgColor,
@@ -725,7 +764,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'stretch',
   },
-      
+
   dateText: {
     color: '#0AD10A',
     fontSize: 12,
@@ -735,7 +774,7 @@ const styles = StyleSheet.create({
   addressText: {
     flex: 1,
   },
-  
+
   nextButtonBar: {
     position: 'absolute',
     bottom: Platform.OS == 'android' ? 0 : 25,
@@ -786,7 +825,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.secondaryBold,
   },
-  
+
   transitionView: {
     position: 'absolute',
     bottom: 0,

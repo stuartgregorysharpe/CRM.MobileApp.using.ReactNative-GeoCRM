@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import {
   View,
   TouchableOpacity,
-  ScrollView,
-  Dimensions,
+  ScrollView,  
   Text,
 } from 'react-native';
 import {Title, Button} from 'react-native-paper';
@@ -23,14 +22,14 @@ import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 import {postReloop} from '../../actions/location.action';
 import {
-  getPostParameter,
-  getTwoDigit,
-  notifyMessage,
+  expireToken,
+  getPostParameter,  
 } from '../../constants/Helper';
 import AlertDialog from './AlertDialog';
 import {DatetimePickerView} from '../DatetimePickerView';
 
 export default function RefreshSlider({location_id, onClose}) {
+  
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
@@ -61,6 +60,7 @@ export default function RefreshSlider({location_id, onClose}) {
       .catch(error => {
         setMessage('Failed');
         setIsConfirmModal(true);
+        expireToken(dispatch, error)
       });
   };
 
@@ -121,6 +121,7 @@ export default function RefreshSlider({location_id, onClose}) {
             .catch(error => {
               setMessage('Failed');
               setIsConfirmModal(true);
+              expireToken(dispatch, error)
             });
         }}
       />

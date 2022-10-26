@@ -46,8 +46,9 @@ import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import {AppText} from '../../../../components/common/AppText';
 import CustomerSaleHistoryModal from '../customer_sales';
+import {expireToken} from '../../../../constants/Helper';
 
-export default function LocationSpecificInfoScreen(props) {
+const LocationSpecificInfoScreen = props => {
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
@@ -64,7 +65,7 @@ export default function LocationSpecificInfoScreen(props) {
   const [isActivityComment, setIsActivityComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isActionItems, setIsActionItems] = useState(false);
-  
+
   const navigationMain = useNavigation();
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -134,6 +135,7 @@ export default function LocationSpecificInfoScreen(props) {
             locationInfoRef.current.updateDispositionData(res);
           }
           setLocationIfo(res);
+          console.log('DDD ==== ', res);
           setIsLoading(false);
         }
       })
@@ -141,6 +143,8 @@ export default function LocationSpecificInfoScreen(props) {
         if (isMout) {
           setIsLoading(false);
         }
+
+        expireToken(dispatch, e);
       });
   };
 
@@ -171,9 +175,9 @@ export default function LocationSpecificInfoScreen(props) {
       devicesModalRef.current.showModal();
     }
     if (item.link === 'customer_sales') {
-      if(customerSaleHistoryModalRef.current){
+      if (customerSaleHistoryModalRef.current) {
         customerSaleHistoryModalRef.current.showModal();
-      }      
+      }
     }
     if (item.link === 'touchpoints') {
       navigationMain.navigate('TouchpointScreen', {
@@ -235,9 +239,7 @@ export default function LocationSpecificInfoScreen(props) {
   };
 
   const onCustomerContactModalClosed = ({type, value}) => {};
-  const onCustomerSaleHistoryModalClosed = ({type, value}) => {
-
-  }
+  const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
 
   return (
     <SafeAreaView style={{}}>
@@ -266,12 +268,13 @@ export default function LocationSpecificInfoScreen(props) {
           onModalClosed={() => setIsActionItems(false)}></ActionItemsModal>
       )}
 
-      {locationInfo != undefined && (        
+      {locationInfo != undefined && (
         <CustomerSaleHistoryModal
           ref={customerSaleHistoryModalRef}
           locationId={locationInfo.location_id}
-          onButtonAction={onCustomerSaleHistoryModalClosed}>            
-          </CustomerSaleHistoryModal>
+          onButtonAction={
+            onCustomerSaleHistoryModalClosed
+          }></CustomerSaleHistoryModal>
       )}
 
       {locationInfo != undefined && (
@@ -335,13 +338,14 @@ export default function LocationSpecificInfoScreen(props) {
                     height="14px"
                   />
                   <Text style={styles.subtitle}>
-                    {locationInfo.location_name.custom_field_name
+
+                    {locationInfo.location_name != undefined && locationInfo.location_name.custom_field_name != undefined                    
                       ? locationInfo.location_name.custom_field_name
                       : ''}
                   </Text>
                 </View>
                 <Text style={styles.title}>
-                  {locationInfo.location_name.value}
+                  { locationInfo.location_name != undefined ? locationInfo.location_name.value : ''}
                 </Text>
               </View>
               <View style={styles.subtitleBox}>
@@ -435,7 +439,7 @@ export default function LocationSpecificInfoScreen(props) {
       )}
     </SafeAreaView>
   );
-}
+};
 
 const perWidth = setWidthBreakpoints(breakPoint);
 
@@ -526,3 +530,5 @@ const styles = EStyleSheet.create(
     },
   }),
 );
+
+export default LocationSpecificInfoScreen;

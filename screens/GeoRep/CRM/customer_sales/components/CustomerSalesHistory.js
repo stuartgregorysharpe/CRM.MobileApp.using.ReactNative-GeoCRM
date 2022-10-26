@@ -6,12 +6,15 @@ import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import SvgIcon from '../../../../../components/SvgIcon';
 import { style } from '../../../../../constants/Styles';
 import FastImage from 'react-native-fast-image';
+import { expireToken } from '../../../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 export default function CustomerSalesHistory(props) {
 
     const { locationId } = props;
 
     const [saleItems, setSaleItems] = useState([]);
+    const dispatch = useDispatch();
 
     useEffect(() =>{
         let isMount = true;
@@ -19,8 +22,6 @@ export default function CustomerSalesHistory(props) {
             location_id: locationId
         };
 
-        //console.log("pst data", postData);
-        //{base_url}/locations/customer-sales-history?location_id=
         getApiRequest("locations/customer-sales-history", postData).then((res) => {
             if(isMount){
                 var tmp = [];
@@ -31,7 +32,8 @@ export default function CustomerSalesHistory(props) {
                 setSaleItems(tmp);                        
             }            
         }).catch((e) => {
-            console.log("E",e);
+            console.log("customer-sales-history api error: ",e);
+            expireToken(dispatch , e);
         });
         return () => {
             isMount = false;

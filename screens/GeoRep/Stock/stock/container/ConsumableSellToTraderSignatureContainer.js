@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {postApiRequestMultipart} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
@@ -13,10 +13,12 @@ import {
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import PostRequest from '../../../../../DAO/PostRequest';
+import {expireToken} from '../../../../../constants/Helper';
 
 export default function ConsumableSellToTraderSignatureContainer(props) {
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   var received = '';
@@ -28,8 +30,10 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
 
   const onSubmit = signature => {
     if (price != '' && quantity != '' && reference != '' && received != '') {
-      //var postData = new FormData();
+      
       var postData = {};
+      setIsLoading(true);
+      //var postData = new FormData();
       RNFS.exists(signature)
         .then(res => {
           if (res) {
@@ -103,6 +107,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
                 }),
               );
             }).catch((e) => {
+              expireToken(dispatch, e);
               dispatch(
                 showNotification({
                   type: Strings.Success,
@@ -112,19 +117,14 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
               );
             });
 
-            // postApiRequestMultipart('stockmodule/sell-to-trader', postData)
-            //   .then(res => {
-                
-            //   })
-            //   .catch(e => {
-            //     console.log('error', e);
-                
-            //   });
+           
           } else {
+            setIsLoading(false);
             console.log('no file exist', signature);
           }
         })
         .catch(error => {
+          setIsLoading(false);
           console.log('error', error);
         });
     }
@@ -155,6 +155,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
         onChangedQuantity={onChangedQuantity}
         onChangedPrice={onChangedPrice}
         onChangedReference={onChangedReference}
+        isLoading={isLoading}
         {...props}
       />
       <Notification />

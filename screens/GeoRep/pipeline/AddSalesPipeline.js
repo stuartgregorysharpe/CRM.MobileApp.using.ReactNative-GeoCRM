@@ -128,8 +128,7 @@ export default function AddSalesPipeline({
         requestParams['campaign_id'] = selectedPipelineId;
         if (pageType === 'update' && opportunity_id && opportunity_id !== '') {
           requestParams['opportunity_id'] = opportunity_id;
-        }
-        console.log(' request params', requestParams);
+        }        
         getApiRequest('pipeline/pipeline-add-edit-opportunity', requestParams)
           .then(res => {
             console.log('RES', res);
@@ -378,13 +377,18 @@ export default function AddSalesPipeline({
         );
       })
       .catch(error => {
-        dispatch(
-          showNotification({
-            type: 'success',
-            message: 'Failed',
-            buttonText: Strings.Ok,
-          }),
-        );
+        if(error === 'expired'){
+          expireToken(dispatch, error)
+        }else{
+          dispatch(
+            showNotification({
+              type: 'success',
+              message: 'Failed',
+              buttonText: Strings.Ok,
+            }),
+          );
+        }
+        
       });
   };
 

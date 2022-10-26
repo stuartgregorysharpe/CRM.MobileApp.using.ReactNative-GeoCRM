@@ -9,6 +9,7 @@ import {
   clearNotification,
   showNotification,
 } from '../../../../../../actions/notification.action';
+import {Notification} from '../../../../../../components/modal/Notification';
 
 export default function DeviceView(props) {
 
@@ -104,6 +105,7 @@ export default function DeviceView(props) {
           qrScanModalRef.current.hideModal();
         }}
       />
+      <Notification />
     </View>
   );
 }

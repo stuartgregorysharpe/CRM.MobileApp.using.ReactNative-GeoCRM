@@ -46,6 +46,7 @@ import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
   const {
+    submissionType,
     isShowCustomNavigationHeader,
     form,
     formQuestions,
@@ -72,8 +73,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const formSubmitModalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log("form" , form)
-  
   useImperativeHandle(
     ref,
     () => ({
@@ -166,11 +165,12 @@ export const FormQuestionView = forwardRef((props, ref) => {
       );
     } else if (item.question_type === 'yes_no') {
       return (
-        <View 
-        key={'yes_no_question_view' + index}
-        style={{marginHorizontal:5}}>
+        <View
+          key={'yes_no_question_view' + index}
+          style={{marginHorizontal: 5}}>
           <YesNoForm
             key={'yes_no_question' + index}
+            submissionType={submissionType}
             onTakeImage={async (images, type) => {
               var tmp = [...formQuestions];
               if (type === 'yes') {
@@ -182,13 +182,12 @@ export const FormQuestionView = forwardRef((props, ref) => {
             }}
             onPress={(value, type) => {
               onValueChangedSelectionView(key, index, value);
-            }}            
+            }}
             item={item}
             onTouchStart={(e, text) => {
               _onTouchStart(e, text);
             }}></YesNoForm>
         </View>
-        
       );
     } else if (item.question_type === 'heading') {
       return (
@@ -210,7 +209,15 @@ export const FormQuestionView = forwardRef((props, ref) => {
           onPress={item => {
             setMode('single');
             setOptions(item.options);
-            setSelectedOptions(item.value);
+            if (
+              item.value != '' &&
+              item.value != null &&
+              item.value instanceof Array
+            ) {
+              setSelectedOptions(item.value);
+            } else {
+              setSelectedOptions([item.value]);
+            }
             setKey(key);
             setIndex(index);
             showSelectionView();
@@ -282,6 +289,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
         <TakePhotoForm
           key={'take_photo_question' + `${key}${index}`}
           item={item}
+          submissionType={submissionType}
           onTouchStart={(e, text) => {
             _onTouchStart(e, text);
           }}
@@ -484,11 +492,13 @@ export const FormQuestionView = forwardRef((props, ref) => {
       return (
         <MultiSelectPhoto
           key={'multiple_select_form' + index}
+          submissionType={submissionType}
           questionType={item.question_type}
           item={item}
           fromIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
+              console.log(' ==== ', item);
               onValueChangedSelectionView(key, index, value);
             }
             if (type == Constants.actionType.ACTION_INFO) {
@@ -527,7 +537,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
 
   return (
     <View style={styles.container}>
-      
       {isShowCustomNavigationHeader && (
         <NavigationHeader
           showIcon={true}
@@ -535,6 +544,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
           onBackPressed={() => {
             onBackPressed();
           }}
+          style={{marginTop: props.isModal || Platform.OS == 'ios' ? 0 : 20}}
         />
       )}
 
@@ -554,7 +564,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
           confirmDateTime(date);
           closeDateTime();
         }}></DatetimePickerView>
-
 
       <Sign
         visible={isSign}
@@ -606,16 +615,15 @@ export const FormQuestionView = forwardRef((props, ref) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={{paddingHorizontal:5, paddingBottom:5}}>
+      <ScrollView style={{paddingHorizontal: 5, paddingBottom: 5}}>
         {formQuestions != null &&
           formQuestions.map((form, key) => {
             if (form.isHidden) return null;
             return (
               <View key={'form' + key}>
-                {
-                  form.question_group != null &&
+                {form.question_group != null && (
                   <GroupTitle title={form.question_group}></GroupTitle>
-                }
+                )}
                 {form.questions.map((item, index) => {
                   return renderQuestion(item, key, index);
                 })}
@@ -653,6 +661,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
           ) {
             if (pageType != undefined && pageType === 'CRM') {
               props.navigation.navigate('CRM', {screen: 'Root'});
+            } else {
+              props.navigation?.goBack();
             }
           }
         }}
@@ -669,7 +679,7 @@ const styles = StyleSheet.create({
   titleContainerStyle: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingTop:10,
+    paddingTop: 10,
     alignItems: 'center',
   },
 

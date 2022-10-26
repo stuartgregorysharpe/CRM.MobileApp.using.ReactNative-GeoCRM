@@ -20,7 +20,7 @@ export function find(features){
                     }                    
                 }).catch((e) => {
                     console.log("error",e)
-                    reject();
+                    reject(e);
                 })
             }else{
                 var client_id = await getTokenData("client_id");
@@ -37,7 +37,7 @@ export function find(features){
 
             }
         }).catch(e => {
-            reject();
+            reject(e);
         });
   });
 

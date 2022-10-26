@@ -1,6 +1,6 @@
 import React from 'react';
 import CModal from '../../../../../components/common/CModal';
-import {Colors, Constants} from '../../../../../constants';
+import {Constants} from '../../../../../constants';
 import FormQuestionContainer from '../containers/FormQuestionContainer';
 
 const FormQuestionModal = React.forwardRef((props, ref) => {

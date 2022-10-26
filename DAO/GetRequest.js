@@ -13,15 +13,15 @@ export function call( url, postData){
                 .then(async res => {                          
                     resolve({status: Strings.Success , isConnected:isConnected, data: res});
                 })
-                .catch(e => {
-                    console.log("Error",e)
-                    resolve({status: 'error' , isConnected: isConnected,  data: []});
+                .catch(e => {                    
+                    resolve({status: e , isConnected: isConnected,  data: []});
                 });
 
             }else{                
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
                 var user_id = await getTokenData("user_id");
+                console.log("Offline Api : " , url);
                 resolve({status: Strings.Success , isConnected: isConnected, data:{client_id:client_id, business_unit_id:business_unit_id , user_id: user_id } });
             }
         }).catch(e => {

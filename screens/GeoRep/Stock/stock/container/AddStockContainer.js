@@ -19,7 +19,6 @@ export default function AddStockContainer(props) {
   const [deviceTypeLists, setDevicetypeLists] = useState([]);
   const [stockTypes, setStockTypes] = useState({});  
   const currentLocation = useSelector(state => state.rep.currentLocation);
-
   let isMount = true;
 
   useEffect(() => {
@@ -99,6 +98,7 @@ export default function AddStockContainer(props) {
         callAddStock={callAddStock}
         stockTypes={stockTypes}
         deviceTypeLists={deviceTypeLists}
+        isLoading={isLoading}
         {...props}
       />
       <Notification />

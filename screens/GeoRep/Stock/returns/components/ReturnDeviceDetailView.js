@@ -7,9 +7,13 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import {Strings} from '../../../../../constants';
+import {Notification} from '../../../../../components/modal/Notification';
+import {showNotification} from '../../../../../actions/notification.action';
+import {useDispatch} from 'react-redux';
 
 export default function ReturnDeviceDetailView(props) {
-  const {lists, onReturnDevice, onPhotos, onReturnStock} = props;
+  const {lists, onReturnStock} = props;
+  const dispatch = useDispatch();
   const [reason, setReason] = useState('');
   const [reasonLists, setReasonLists] = useState([
     {value: 'Damaged', label: 'Damaged'},
@@ -19,7 +23,8 @@ export default function ReturnDeviceDetailView(props) {
   ]);
   const [photos, setPhotos] = useState([]);
   const [device, setDevice] = useState(null);
-
+  const [hasSelectDeviceError, setHasSelectDeviceError] = useState(false);
+  const [hasReasonError, setHasReasonError] = useState(false);
   return (
     <ScrollView style={styles.container}>
       <AppText
@@ -29,12 +34,12 @@ export default function ReturnDeviceDetailView(props) {
       <DropdownInput
         title="Select Device"
         lists={lists}
+        hasError={hasSelectDeviceError}
         onItemSelected={item => {
-          onReturnDevice({
-            location_device_id: item.location_device_id,
-            return_reason: reason,
-          });
           setDevice(item);
+          if (item) {
+            setHasSelectDeviceError(false);
+          }
         }}></DropdownInput>
 
       <CSingleSelectInput
@@ -43,16 +48,11 @@ export default function ReturnDeviceDetailView(props) {
         mode="single"
         checkedValue={reason}
         items={reasonLists}
-        hasError={false}
+        hasError={hasReasonError}
         disabled={false}
         onSelectItem={item => {
           setReason(item.label);
-          if (device != null) {
-            onReturnDevice({
-              location_device_id: device.location_device_id,
-              return_reason: item.label,
-            });
-          }
+          setHasReasonError(false);
         }}
         containerStyle={{marginTop: 15}}
       />
@@ -61,7 +61,6 @@ export default function ReturnDeviceDetailView(props) {
         isOptimize={true}
         onUpdatePhotos={photos => {
           setPhotos(photos);
-          onPhotos(photos);
         }}
         disabled={false}
         photos={photos}
@@ -71,7 +70,33 @@ export default function ReturnDeviceDetailView(props) {
       <SubmitButton
         title={Strings.Stock.Return_Stock}
         style={{marginTop: 10, marginBottom: 30}}
-        onSubmit={onReturnStock}></SubmitButton>
+        onSubmit={() => {
+          if (!device) {
+            setHasSelectDeviceError(true);
+          }
+          if (reason == '') {
+            setHasReasonError(true);
+          }
+          if (device != null && reason != '') {
+            if (onReturnStock) {
+              onReturnStock({
+                device,
+                reason,
+                photos,
+              });
+            }
+          } else {
+            dispatch(
+              showNotification({
+                type: 'success',
+                message: Strings.Complete_Compulsory_Fields,
+                buttonText: Strings.Ok,
+              }),
+            );
+            return;
+          }
+        }}></SubmitButton>
+      <Notification />
     </ScrollView>
   );
 }

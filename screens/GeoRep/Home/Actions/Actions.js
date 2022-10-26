@@ -5,9 +5,10 @@ import {getApiRequest} from '../../../../actions/api.action';
 import SearchBar from '../../../../components/SearchBar';
 import Colors from '../../../../constants/Colors';
 import ActionListHeader from './components/ActionListHeader';
+import {useDispatch} from 'react-redux';
+import {expireToken} from '../../../../constants/Helper';
 
 const Actions = React.forwardRef((props, ref) => {
-
   useImperativeHandle(ref, () => ({
     onLoad: () => {
       _onLoad();
@@ -18,6 +19,7 @@ const Actions = React.forwardRef((props, ref) => {
   const [originStockLists, setOriginStockLists] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const {locationId, tabIndex} = props;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     _onLoad();
@@ -27,7 +29,7 @@ const Actions = React.forwardRef((props, ref) => {
     var postData = {};
     if (locationId != undefined) {
       postData = {location_id: locationId};
-    }    
+    }
     getApiRequest('actionsitems/action-items-list', postData)
       .then(res => {
         setOriginStockLists(res.action_items);
@@ -37,35 +39,40 @@ const Actions = React.forwardRef((props, ref) => {
           setStockLists(res.action_items);
         }
       })
-      .catch(e => {});
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
+
   useEffect(() => {
     onApplyStatusFilter(originStockLists);
   }, [tabIndex]);
 
   const onApplyStatusFilter = lists => {
+    console.log('onApplyStatusFilter');
+
     var tmp = [];
     if (tabIndex == 0) {
       lists.map((item, index) => {
-        if (item.status !== 'completed') {
+        if (item.status !== 'Completed') {
           tmp.push(item);
         }
       });
     } else if (tabIndex == 1) {
-      lists.map((item, index) => {        
-        if (item.status !== 'completed' && item.category === 'task') {          
+      lists.map((item, index) => {
+        if (item.status !== 'Completed' && item.category === 'task') {
           tmp.push(item);
         }
       });
     } else if (tabIndex == 2) {
       lists.map((item, index) => {
-        if (item.status !== 'completed' && item.category === 'action') {
+        if (item.status !== 'Completed' && item.category === 'action') {
           tmp.push(item);
         }
       });
     } else {
       lists.map((item, index) => {
-        if (item.status === 'completed') {
+        if (item.status === 'Completed') {
           tmp.push(item);
         }
       });
@@ -86,7 +93,7 @@ const Actions = React.forwardRef((props, ref) => {
       setStockLists([...originStockLists]);
     }
   };
-  
+
   const renderItems = (item, index) => {
     return (
       <TouchableOpacity
@@ -137,10 +144,8 @@ const Actions = React.forwardRef((props, ref) => {
     );
   };
 
-  
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
-      
       <SearchBar
         onSearch={text => {
           onFilter(text);
@@ -153,9 +158,7 @@ const Actions = React.forwardRef((props, ref) => {
 
       <View style={{flexDirection: 'column'}}>
         <FlatList
-          ListHeaderComponent={() => (
-            <ActionListHeader />
-          )}
+          ListHeaderComponent={() => <ActionListHeader />}
           removeClippedSubviews={false}
           initialNumToRender={10}
           data={stockLists}

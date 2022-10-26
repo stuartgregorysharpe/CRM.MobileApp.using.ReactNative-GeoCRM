@@ -27,9 +27,11 @@ export function find(postData){
                     reject();
                 }            
 
+            }else{
+                reject(res.status);
             }
         }).catch((e) => {
-            reject();
+            reject(e);
         });        
   });
 }

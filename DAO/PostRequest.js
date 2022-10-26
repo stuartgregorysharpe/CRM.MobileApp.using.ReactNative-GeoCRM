@@ -17,8 +17,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                         resolve(res);
                     })
                     .catch(e => {
-                        console.log("Error",e)
-                        reject();
+                        console.log( url + "api error: ",e)
+                        reject(e);
                     });
                 }else{
                     postApiRequest(url, {...postData, mode: 'online' })
@@ -27,7 +27,7 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                     })
                     .catch(e => {
                         console.log("Error",e)
-                        reject();
+                        reject(e);
                     });
                 }                
             }else{

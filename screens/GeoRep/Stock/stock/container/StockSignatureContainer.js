@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import StockSignatureView from '../components/StockSignatureView';
 import {postApiRequestMultipart} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
@@ -13,11 +13,13 @@ import {
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 import PostRequest from '../../../../../DAO/PostRequest';
+import {expireToken} from '../../../../../constants/Helper';
 
 export default function StockSignatureContainer(props) {
 
   const {item, selectedCodes, signatureModalType} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   var msisdn = '';
@@ -25,6 +27,7 @@ export default function StockSignatureContainer(props) {
 
   const onSubmit = signature => {
     if (received != '' && signature != null) {
+      setIsLoading(true);
       var postData = new FormData();
       RNFS.exists(signature)
         .then(res => {
@@ -42,6 +45,7 @@ export default function StockSignatureContainer(props) {
                   signature: signature,
                 },
               });
+              setIsLoading(false);
               return;
             }
 
@@ -169,6 +173,7 @@ export default function StockSignatureContainer(props) {
                   postData,
                 )
                   .then(res => {
+                    setIsLoading(false);
                     dispatch(
                       showNotification({
                         type: Strings.Success,
@@ -184,16 +189,22 @@ export default function StockSignatureContainer(props) {
                     );
                   })
                   .catch(e => {
+                    setIsLoading(false);
                     console.log('error', e);
-                    dispatch(
-                      showNotification({
-                        type: Strings.Success,
-                        message: 'Error',
-                        buttonText: 'Ok',
-                      }),
-                    );
+                    if (e === 'expired') {
+                      expireToken(dispatch, e);
+                    } else {
+                      dispatch(
+                        showNotification({
+                          type: Strings.Success,
+                          message: 'Error',
+                          buttonText: 'Ok',
+                        }),
+                      );
+                    }
                   });
               } else {
+                setIsLoading(false);
                 dispatch(
                   showNotification({
                     type: Strings.Success,
@@ -202,13 +213,17 @@ export default function StockSignatureContainer(props) {
                   }),
                 );
               }
+            } else {
+              setIsLoading(false);
             }
           } else {
             console.log('no file exist', signature);
+            setIsLoading(false);
           }
         })
         .catch(error => {
           console.log('error', error);
+          setIsLoading(false);
         });
     }
   };
@@ -230,6 +245,7 @@ export default function StockSignatureContainer(props) {
         onChangedReceivedBy={onChangedReceivedBy}
         onChangedSerial={onChangedSerial}
         onClose={onClose}
+        isLoading={isLoading}
         {...props}
       />
       <Notification />

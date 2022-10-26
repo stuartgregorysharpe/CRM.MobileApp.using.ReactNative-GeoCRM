@@ -26,8 +26,8 @@ export default function AddStockView(props) {
 	const [imei , setEmei] = useState("");	
 	const [errors, setErrors] = useState({});
 
-  	const dispatch = useDispatch()
-
+  const dispatch = useDispatch()
+                  
   var details = '';
   var quantity = '';
 
@@ -258,6 +258,7 @@ export default function AddStockView(props) {
         onSubmit={() => {          
           onSubmit();
         }}
+        isLoading={props.isLoading}
         title={Strings.Stock.Add_Stock}
         style={{marginTop: 20}}></SubmitButton>
     </View>

@@ -13,16 +13,14 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Constants} from '../../../../../constants';
-import {getFileFormat} from '../../../../../constants/Helper';
+import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 
-export default function SwopAtTraderContainer(props) {
+const SwopAtTraderContainer = props => {
   const {locationId, item} = props;
   const [lists, setLists] = useState([]);
-  const [returnDevice, setReturnDevice] = useState();
-  const [reason, setReason] = useState('');
-  const [photos, setPhotos] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,30 +36,23 @@ export default function SwopAtTraderContainer(props) {
         }
       })
       .catch(e => {
-        console.log('e', e);
+        console.log('location-devices api error:', e);
+        expireToken(dispatch, e);
       });
     return () => {
       isMount = false;
     };
   }, []);
 
-  const onReturnDevice = returnDevice => {
-    setReturnDevice(returnDevice);
-  };
-  const onReason = reason => {
-    setReason(reason);
-  };
-  const onPhotos = photos => {
-    setPhotos(photos);
-  };
-
   const onSwop = data => {
+    const {reason, photos, device} = data;
+    setIsLoading(true);
     var postData = new FormData();
     postData.append('stock_type', Constants.stockType.DEVICE);
     postData.append('location_id', props.locationId);
     postData.append(
       'return_device[location_device_id]',
-      returnDevice.location_device_id,
+      device.location_device_id,
     );
     postData.append('return_device[return_reason]', reason);
     postData.append('allocate_device[stock_item_id]', item.stock_item_id);
@@ -88,6 +79,7 @@ export default function SwopAtTraderContainer(props) {
 
     postApiRequestMultipart('stockmodule/swop-at-trader', postData)
       .then(res => {
+        setIsLoading(false);
         dispatch(
           showNotification({
             type: 'success',
@@ -100,20 +92,23 @@ export default function SwopAtTraderContainer(props) {
           }),
         );
       })
-      .catch(e => {});
+      .catch(e => {
+        setIsLoading(false);
+        expireToken(dispatch, e);
+      });
   };
 
   return (
     <View style={{alignSelf: 'stretch'}}>
       <SwopAtTraderView
         onSwop={onSwop}
-        onReturnDevice={onReturnDevice}
-        onReason={reason => onReason(reason)}
-        onPhotos={photos => onPhotos(photos)}
         lists={lists}
         {...props}
+        isLoading={isLoading}
       />
       <Notification />
     </View>
   );
-}
+};
+
+export default SwopAtTraderContainer;

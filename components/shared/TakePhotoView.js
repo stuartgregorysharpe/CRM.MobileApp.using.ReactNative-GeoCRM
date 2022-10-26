@@ -15,11 +15,13 @@ import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import ImageResizer from 'react-native-image-resizer';
+import { useDispatch } from 'react-redux';
+import { clearNotification, showNotification } from '../../actions/notification.action';
 
 const TakePhotoView = props => {
 
-  const {photos, isOptimize} = props;
-  
+  const {photos, isOptimize , submissionType} = props;
+  const dispatch = useDispatch()
   const [isPicker, setIsPicker] = useState(false);
   
   const onUpdatePhotos = paths => {
@@ -204,7 +206,14 @@ const TakePhotoView = props => {
           <TouchableOpacity
             style={[styles.imageContainer, {marginLeft: 10}]}
             onPress={() => {
-              showSelectionDialog();
+              if(submissionType == "edit"){
+                dispatch(showNotification({type:'success', message:'Edit image not allowed' , buttonText:'Ok' , buttonAction:() => {
+                  dispatch(clearNotification());
+                }}))
+              }else{
+                showSelectionDialog();
+              }
+              
             }}>
             <SvgIcon icon="Add_Image" />
           </TouchableOpacity>

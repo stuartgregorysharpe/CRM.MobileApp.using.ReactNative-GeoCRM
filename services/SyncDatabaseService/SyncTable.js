@@ -22,11 +22,11 @@ export const initializeDB = async() => {
                     await syncTable(0);
                 }
                 return "end";
-            }                                        
+            }                  
         }else{
             console.log("offline version was not updated");
         }
-    }    
+    }
 }
 
 
@@ -47,7 +47,7 @@ const syncTable = async(basketId) => {
             return await syncTable(basketId + 1);
         }else{                                                     
             await saveSyncedStatusTable("sync_all");
-            return "ok";                                               
+            return "sync all tables";                                           
         }        
     }
 }
