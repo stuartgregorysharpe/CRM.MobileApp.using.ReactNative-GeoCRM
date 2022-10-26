@@ -62,7 +62,8 @@ export default {
     Return_Stock: 'Return Stock',
     Please_Sign: 'Please Sign below:',
     Select_Scan_Type: 'Select Scan Type',
-    Successfully_Stock_Submit: 'Stock added to offline sync menu successfully'
+    Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
+    Successfully_Sell_To_Trader: 'Saved to Offline sync successfully'
   },
 
   Forms:{

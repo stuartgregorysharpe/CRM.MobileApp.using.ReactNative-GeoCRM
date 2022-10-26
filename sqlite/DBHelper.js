@@ -213,10 +213,7 @@ export const handleRecords = async ( tableName, records) => {
         }
       })
 
-      query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
-      if(tableName == 'stock_module_users_view'){
-        console.log(query)
-      }
+      query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;        
       //console.log(query)
       try{
         if(db != null){    

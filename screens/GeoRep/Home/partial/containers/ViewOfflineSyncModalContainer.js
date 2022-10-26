@@ -22,8 +22,8 @@ const ViewOfflineSyncModalContainer = props => {
     const [processValue, setProcessValue] = useState(0);
     const [totalValue, setTotalValue] = useState(0);
     const [syncBtnTitle , setSyncBtnTitle] = useState("Sync All Items");
-    const [isActive,setIsActive] = useState(true);
-    const [isHttpError, setIsHttpError] = useState(false);
+    const [isActive,setIsActive] = useState(true);    
+    var isHttpError = false;
     var isError = false;
     
     const dispatch = useDispatch()
@@ -60,7 +60,8 @@ const ViewOfflineSyncModalContainer = props => {
                     dispatch(clearNotification());
                 }}))
             }else if(processValue == -2 && totalValue == -2){
-                setIsHttpError(true);
+                console.log("http error");                
+                isHttpError = true;
             } else {
                 setProcessValue(processValue);
                 setTotalValue(totalValue);
@@ -74,6 +75,7 @@ const ViewOfflineSyncModalContainer = props => {
                 setIsStart(false);
                 setIsActive(false);
                 // close modal after sync
+                console.log(" isHttpError " , isHttpError);
                 props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: isHttpError ? 'Some items could not be synced, please contact support' : '' });
             }
         }        

@@ -12,8 +12,10 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import PostRequest from '../../../../../DAO/PostRequest';
 
 export default function StockSignatureContainer(props) {
+
   const {item, selectedCodes, signatureModalType} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
@@ -43,13 +45,31 @@ export default function StockSignatureContainer(props) {
               return;
             }
 
+            var time_zone = RNLocalize.getTimeZone();
+            var postJsonData = {
+              signature_image : {
+                uri: signature,
+                type: 'image/png',
+                name: 'sign.png',
+              },
+              received_by : received,
+              'user_local_data[time_zone]' : time_zone,
+              'user_local_data[latitude]' : currentLocation && currentLocation.latitude != null
+              ? currentLocation.latitude
+              : '0',
+              'user_local_data[longitude]' : currentLocation && currentLocation.longitude != null
+              ? currentLocation.longitude
+              : '0'              
+            }
+
+
             postData.append('signature_image', {
               uri: signature,
               type: 'image/png',
               name: 'sign.png',
             });
             postData.append('received_by', received);
-            var time_zone = RNLocalize.getTimeZone();
+            
             postData.append('user_local_data[time_zone]', time_zone);
             postData.append(
               'user_local_data[latitude]',
@@ -65,45 +85,80 @@ export default function StockSignatureContainer(props) {
             );
 
             if (item.stock_type != Constants.stockType.RETURN) {
-              postData.append('stock_type', item.stock_type);
-              postData.append('location_id', props.locationId);
+
+              postJsonData = {
+                ...postJsonData,
+                stock_type : item.stock_type,
+                location_id : props.locationId
+              }
+
+
+              // postData.append('stock_type', item.stock_type);
+              // postData.append('location_id', props.locationId);
+              
               if (item.stock_type == Constants.stockType.DEVICE) {
-                postData.append('stock_item_id', props.item.stock_item_id);
-                postData.append('assigned_msisdn', msisdn);
+                postJsonData = {
+                  ...postJsonData,
+                  stock_item_id : props.item.stock_item_id,
+                  assigned_msisdn : msisdn
+                }
+                // postData.append('stock_item_id', props.item.stock_item_id);
+                // postData.append('assigned_msisdn', msisdn);
               } else if (item.stock_type == Constants.stockType.SIM) {
-                console.log('selectedCodes=', selectedCodes);
+
+                //console.log('selectedCodes=', selectedCodes);
+
+
                 selectedCodes.forEach((item, index) => {
-                  postData.append(
-                    `sims[stock_item_ids][${index}]`,
-                    item.stock_item_id,
-                  );
+
+                  var keyValue = `sims[stock_item_ids][${index}]`;
+                  postJsonData = {
+                    ...postJsonData,
+                    [keyValue] : item.stock_item_id.toString()
+                  }
+                  
+                  // postData.append(
+                  //   `sims[stock_item_ids][${index}]`,
+                  //   item.stock_item_id,
+                  // );
                 });
               }
-              postApiRequestMultipart('stockmodule/sell-to-trader', postData)
-                .then(res => {
-                  dispatch(
-                    showNotification({
-                      type: Strings.Success,
-                      message: res.message,
-                      buttonText: 'Ok',
-                      buttonAction: async () => {
-                        props.onButtonAction({
-                          type: Constants.actionType.ACTION_CLOSE,
-                        });
-                        dispatch(clearNotification());
-                      },
-                    }),
-                  );
-                })
-                .catch(e => {
-                  dispatch(
-                    showNotification({
-                      type: Strings.Success,
-                      message: 'Error',
-                      buttonText: 'Ok',
-                    }),
-                  );
-                });
+
+              var networks = selectedCodes.map(item => item.network).join(',');              
+
+              PostRequest.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
+              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks ).then((res) => {
+                dispatch(
+                  showNotification({
+                    type: Strings.Success,
+                    message: res.message,
+                    buttonText: 'Ok',
+                    buttonAction: async () => {
+                      props.onButtonAction({
+                        type: Constants.actionType.ACTION_CLOSE,
+                      });
+                      dispatch(clearNotification());
+                    },
+                  }),
+                );
+              }).catch((e) => {
+                dispatch(
+                  showNotification({
+                    type: Strings.Success,
+                    message: 'Error',
+                    buttonText: 'Ok',
+                  }),
+                );
+              });
+
+              // postApiRequestMultipart('stockmodule/sell-to-trader', postData)
+              //   .then(res => {
+                  
+              //   })
+              //   .catch(e => {
+                  
+              //   });
+              
             } else if (item.stock_type == Constants.stockType.RETURN) {
               if (props.stockItemIds.length > 0) {
                 props.stockItemIds.forEach((item, index) => {

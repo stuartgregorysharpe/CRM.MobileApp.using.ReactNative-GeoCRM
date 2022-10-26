@@ -51,7 +51,8 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
         try{
 
             var apiRes = {};
-            if(item.item_type == "form_submission" || item.item_type == "leadfields" ){  
+            if(item.item_type == "form_submission" || item.item_type == "leadfields" || item.item_type == "sell_to_trader" ){  
+                console.log("item.post_body" ,item.post_body)
                 var body = jsonToFormData(JSON.parse(item.post_body));
                 body.append("mode", "offline");
                 apiRes = await postApiRequestMultipart(item.url, body , item.indempotency_key );
@@ -59,6 +60,7 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
                 apiRes = await postApiRequest(item.url, { ...JSON.parse(item.post_body), mode: 'offline'} , item.indempotency_key);
             }
 
+            console.log("Response : " , apiRes);
             if(apiRes.status == Strings.Success){  
                 await deleteOfflineSyncItem(item.id);
             }else if(apiRes.status != Strings.Success) { 
@@ -68,9 +70,10 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
             }
             
         }catch(e){
+            console.log("sync 400 error");
             callBack(-2 , -2 , {errors: 'Some items could not be synced, please contact support'});
         }
-                
+
         if(index < items.length - 1 ){
             var res = await syncItemTypeApi(items, index + 1 , callBack , totalValue);
             return res;

@@ -71,6 +71,7 @@ const  MainPage = props => {
   };
 
   const loadPage = () => {
+    
     if (currentLocation.latitude === undefined) {
       dispatch(updateCurrentLocation());
     }
@@ -86,9 +87,8 @@ const  MainPage = props => {
       setIsLoading(true);
       getApiRequest('home/main-dashboard', param)
         .then(async res => {
-
-          if (isSubscribed) {
-            setIsLoading(false);            
+          setIsLoading(false);
+          if (isSubscribed) {                        
             setVisitCard(res.items.visits_card);
             setActivityCard(res.items.activity_card);
             setCurrentCall(res.items.current_call);

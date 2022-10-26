@@ -1,5 +1,5 @@
 import {View, FlatList, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState, useRef, useMemo} from 'react';
+import React, {useEffect, useState, useRef, useMemo ,useCallback} from 'react';
 import SearchBar from '../../../../components/SearchBar';
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
@@ -30,6 +30,7 @@ import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
 import { GetRequestStockListsDAO } from '../../../../DAO';
+import { getLocalData } from '../../../../constants/Storage';
 
 export default function StockLists(props) {
 
@@ -72,6 +73,7 @@ export default function StockLists(props) {
 
   useEffect(() => {
     callStockLists();
+    initializeLocationId();
     return () => {
       isMount = false;
     };
@@ -80,16 +82,28 @@ export default function StockLists(props) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       callStockLists();
+      initializeLocationId();
     });
     return unsubscribe;
   }, [navigation]);
+
+  // const initializeLocationId = async () => {
+      
+  // }
+
+  const initializeLocationId = useCallback( async() => {
+    var locationId = await getLocalData("@specific_location_id");    
+    if(locationId != null && locationId != undefined && locationId != ''){
+      setLocationId(locationId);      
+    }      
+  }, [locationId]);
 
 
   const callStockLists = () => {
 
     GetRequestStockListsDAO.find({}).then((res) => {
       if (isMount) {                
-        const _items = getItemsFromStockItems(res.stock_items);
+        const _items = getItemsFromStockItems(res.stock_items);        
         setItems(_items);
       }
     }).catch((e) => {
@@ -129,7 +143,9 @@ export default function StockLists(props) {
 
   const onStockDetailsModalClosed = async ({type, value}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
-      setLocationId(value.locationId);
+      if(value.locationId != undefined && value.locationId != null){
+        setLocationId(value.locationId);
+      }      
       if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
         stockSignatureModalRef.current.showModal();
       } else if (value.stockType === Constants.stockDeviceType.SWOP_AT_TRADER) {
@@ -195,8 +211,10 @@ export default function StockLists(props) {
   };
 
   const onStockConsumableModalClosed = ({type, value}) => {
-    if (type == Constants.actionType.ACTION_NEXT) {
-      setLocationId(value.locationId);
+    if (type == Constants.actionType.ACTION_NEXT) {      
+      if(value.locationId != undefined && value.locationId != null){
+        setLocationId(value.locationId);
+      }      
       if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
         consumableSellToTraderModalRef.current.showModal();
       } else if (value.stockType === Constants.stockDeviceType.TRANSFER) {
@@ -220,7 +238,9 @@ export default function StockLists(props) {
   const onSimDetailAction = ({type, value, item}) => {
     if (type == Constants.actionType.ACTION_NEXT) {
       setStockItem({stock_type: Constants.stockType.SIM});
-      setLocationId(value.locationId);
+      if(value.locationId != undefined && value.locationId != null){
+        setLocationId(value.locationId);
+      }      
       if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
         stockSignatureModalRef.current.showModal();
       } else if (value.stockType === Constants.stockDeviceType.TARDER) {

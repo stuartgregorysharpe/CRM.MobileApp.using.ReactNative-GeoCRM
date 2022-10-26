@@ -68,7 +68,6 @@ const getItemSubLabel = (locationName, address, subLabel , type) => {
     }
     return address;
 }
-
   
 export function saveOfflineSyncItems(locationId , postData , type, url , itemLabel , itemSubLabel){
 
@@ -137,6 +136,8 @@ export function getResponseMessage (type , url) {
         return Strings.PostRequestResponse.Successfully_Form_Submit;
     }else if(type == "add_stock"){
         return Strings.Stock.Successfully_Stock_Submit;
+    }else if(type == "sell_to_trader"){
+        return Strings.Stock.Successfully_Sell_To_Trader
     }
     return Strings.PostRequestResponse.Successfully_Checkin;    
 }

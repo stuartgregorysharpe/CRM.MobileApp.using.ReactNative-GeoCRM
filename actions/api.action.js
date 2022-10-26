@@ -112,8 +112,10 @@ export const postApiRequestMultipart = async (route, postData , indempotencyKey)
     url = route;
   }
 
+  console.log(' multipart postApiRequest -- url', url);  
+
   return new Promise(function (resolve, reject) {
-    console.log('url', url);
+  
     console.log('myforms', JSON.stringify(postData));
     axios
       .post(url, postData, {
@@ -132,8 +134,7 @@ export const postApiRequestMultipart = async (route, postData , indempotencyKey)
         resolve(0);
       })
       .catch(err => {
-        //console.log('api error: ', JSON.stringify(err));
-        console.log("----" ,err)
+        //console.log('api error: ', JSON.stringify(err));        
         const error = err.response;
         if (error != undefined && error.status != undefined && error.status === 400){
           console.log("error 400", error)
