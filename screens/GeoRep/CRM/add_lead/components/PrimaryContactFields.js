@@ -23,9 +23,7 @@ const PrimaryContactFields = React.forwardRef((props, ref) => {
   );
   const _validateForm = async () => {
     let isValid = true;
-    const isCustomerAndContacts = await checkFeatureIncludeParam(
-      'customer_and_contacts',
-    );
+    const isCustomerAndContacts = await checkFeatureIncludeParam('contacts');
     if (!isCustomerAndContacts) return true;
     if (actionFormRef && actionFormRef.current) {
       const isFormValid = actionFormRef.current.validateForm();
@@ -45,7 +43,7 @@ const PrimaryContactFields = React.forwardRef((props, ref) => {
   }, []);
 
   const initView = async () => {
-    const tmp = await checkFeatureIncludeParam('customer_and_contacts');
+    const tmp = await checkFeatureIncludeParam('contacts');
     setIsCustomerAndContacts(tmp);
   };
 
