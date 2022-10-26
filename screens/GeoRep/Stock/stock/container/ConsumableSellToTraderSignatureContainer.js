@@ -18,11 +18,10 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-
-  var received = '';
-  var quantity = '0';
-  var price = '';
-  var reference = '';
+  const [received, setReceived] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [reference, setReference] = useState('');
 
   const onItemPressed = item => {};
 
@@ -108,16 +107,16 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
   };
 
   const onChangedReceivedBy = recv => {
-    received = recv;
+    setReceived(recv);
   };
   const onChangedQuantity = qty => {
-    quantity = qty;
+    setQuantity(qty);
   };
   const onChangedPrice = priceVal => {
-    price = priceVal;
+    setPrice(priceVal);
   };
   const onChangedReference = referenceVal => {
-    reference = referenceVal;
+    setReference(referenceVal);
   };
 
   const onClose = () => {};
@@ -133,6 +132,8 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
         onChangedPrice={onChangedPrice}
         onChangedReference={onChangedReference}
         isLoading={isLoading}
+        receivedBy={received}
+        reference={reference}
         {...props}
       />
       <Notification />

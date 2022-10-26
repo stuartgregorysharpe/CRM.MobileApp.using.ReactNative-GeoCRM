@@ -14,8 +14,12 @@ import RNFS from 'react-native-fs';
 import {AppText} from '../../../../../components/common/AppText';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import {Fonts, Strings, Values} from '../../../../../constants';
+import {showNotification} from '../../../../../actions/notification.action';
+import {Notification} from '../../../../../components/modal/Notification';
+import {useDispatch} from 'react-redux';
 
 export default function ConsumableSellToStockSignatureView(props) {
+  const dispatch = useDispatch();
   const signatureScreenRef = useRef(null);
   const {
     receivedBy,
@@ -33,6 +37,11 @@ export default function ConsumableSellToStockSignatureView(props) {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
+  const [path, setPath] = useState(null);
+  const [hasPriceError, setHasPriceError] = useState(false);
+  const [hasQuantityError, setHasQuantityError] = useState(false);
+  const [hasReceivedByError, setHasReceivedByError] = useState(false);
+  const [hasReferenceError, setHasReferenceError] = useState(false);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -59,15 +68,15 @@ export default function ConsumableSellToStockSignatureView(props) {
       Platform.OS === 'ios'
         ? `${RNFS.DocumentDirectoryPath}`
         : `${RNFS.ExternalDirectoryPath}`;
-    const path = outputPath + '/sign.png';
-    var data = await RNFS.writeFile(
-      path,
+    const filepath = outputPath + '/sign.png';
+    await RNFS.writeFile(
+      filepath,
       signature.replace('data:image/png;base64,', ''),
       'base64',
     ).then(res => {
-      onSubmit(path);
       return res;
     });
+    setPath(filepath);
   };
 
   const handleEmpty = () => {
@@ -75,7 +84,52 @@ export default function ConsumableSellToStockSignatureView(props) {
   };
 
   const handleConfirm = () => {
-    var tmp = signatureScreenRef.current.readSignature();
+    if (signatureScreenRef.current) {
+      signatureScreenRef.current.readSignature();
+    }
+  };
+  const handleEnd = () => {
+    validateForm();
+    handleConfirm();
+  };
+
+  const onFileSubmit = () => {
+    let isValidForm = validateForm();
+
+    if (!isValidForm) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Complete_Compulsory_Fields,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
+
+    if (path != null) {
+      RNFS.exists(path).then(res => {
+        if (res) {
+          onSubmit(path);
+        } else {
+          dispatch(
+            showNotification({
+              type: 'success',
+              message: Strings.Please_Sign_Message,
+              buttonText: Strings.Ok,
+            }),
+          );
+        }
+      });
+    } else {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Please_Sign_Message,
+          buttonText: Strings.Ok,
+        }),
+      );
+    }
   };
   const getHeight = () => {
     if (!isKeyboardVisible) {
@@ -97,16 +151,40 @@ export default function ConsumableSellToStockSignatureView(props) {
     signatureScreenRef.current.clearSignature();
   };
   const handleClear = () => {};
-
+  const validateForm = () => {
+    let isValid = true;
+    if (!receivedBy || receivedBy == '') {
+      isValid = false;
+      setHasReceivedByError(true);
+    }
+    if (!price || price == '') {
+      isValid = false;
+      setHasPriceError(true);
+    }
+    if (!quantity || quantity == '') {
+      isValid = false;
+      setHasQuantityError(true);
+    }
+    if (!reference || reference == '') {
+      isValid = false;
+      setHasReferenceError(true);
+    }
+    return isValid;
+  };
   return (
     <View style={[styles.container, {height: getHeight()}]}>
+      <Notification />
       <CTextInput
         label={'Received By'}
         value={receivedBy}
         returnKeyType={'done'}
         isRequired={true}
+        hasError={hasReceivedByError}
         onChangeText={text => {
           onChangedReceivedBy(text);
+          if (text && text != '') {
+            setHasReceivedByError(false);
+          }
         }}
         style={{marginTop: 15}}
       />
@@ -116,11 +194,16 @@ export default function ConsumableSellToStockSignatureView(props) {
         value={quantity}
         returnKeyType={'done'}
         keyboardType={'number-pad'}
+        hasError={hasQuantityError}
         isRequired={true}
         onChangeText={text => {
           const cleanNumber = text.replace(/[^0-9]/g, '');
           setQuantity(cleanNumber);
           onChangedQuantity(cleanNumber);
+
+          if (text && text != '') {
+            setHasQuantityError(false);
+          }
         }}
         style={{marginTop: 5}}
       />
@@ -129,12 +212,17 @@ export default function ConsumableSellToStockSignatureView(props) {
         label={'Price'}
         value={price}
         returnKeyType={'done'}
+        hasError={hasPriceError}
         keyboardType={'number-pad'}
         isRequired={true}
         onChangeText={text => {
           const cleanNumber = text.replace(/[- #*;,<>\{\}\[\]\\\/%+@]/gi, '');
           setPrice(cleanNumber);
           onChangedPrice(cleanNumber);
+
+          if (text && text != '') {
+            setHasPriceError(false);
+          }
         }}
         style={{marginTop: 5}}
       />
@@ -142,10 +230,14 @@ export default function ConsumableSellToStockSignatureView(props) {
       <CTextInput
         label={'Reference'}
         value={reference}
+        hasError={hasReferenceError}
         returnKeyType={'done'}
         isRequired={true}
         onChangeText={text => {
           onChangedReference(text);
+          if (text && text != '') {
+            setHasReferenceError(false);
+          }
         }}
         style={{marginTop: 5}}
       />
@@ -166,6 +258,7 @@ export default function ConsumableSellToStockSignatureView(props) {
         webStyle={map_style}
         dataURL={signature}
         onOK={handleOK}
+        onEnd={handleEnd}
         onEmpty={handleEmpty}
         imageType="image/png"
       />
@@ -173,7 +266,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       <SubmitButton
         title="Submit"
         style={{marginTop: 10}}
-        onSubmit={handleConfirm}
+        onSubmit={onFileSubmit}
         isLoading={props.isLoading}>
         {' '}
       </SubmitButton>
