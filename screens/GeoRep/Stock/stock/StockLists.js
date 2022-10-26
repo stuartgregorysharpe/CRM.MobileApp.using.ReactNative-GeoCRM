@@ -192,14 +192,16 @@ const StockLists = () => {
   };
 
   const onStockConsumableModalClosed = ({type, value}) => {
-    if (type == Constants.actionType.ACTION_NEXT) {
-      setLocationId(value.locationId);
-      if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
-        consumableSellToTraderModalRef.current.showModal();
-      } else if (value.stockType === Constants.stockDeviceType.TRANSFER) {
-        traderModalRef.current.showModal();
+    setTimeout(() => {
+      if (type == Constants.actionType.ACTION_NEXT) {
+        setLocationId(value.locationId);
+        if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
+          consumableSellToTraderModalRef.current.showModal();
+        } else if (value.stockType === Constants.stockDeviceType.TRANSFER) {
+          traderModalRef.current.showModal();
+        }
       }
-    }
+    }, 500);
   };
 
   const onStockConsumableSellToTraderModalClosed = ({type, value}) => {
