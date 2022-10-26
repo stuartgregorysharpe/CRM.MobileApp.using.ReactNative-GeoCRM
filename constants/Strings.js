@@ -1,6 +1,8 @@
 export default {
   Ok: 'Okay',
   Complete_Compulsory_Fields: 'Please complete the compulsory fields.',
+  Complete_Required_Fields: 'Please complete the required fields.',
+  Complete_Required_Forms: 'Please complete the required forms.',
   Complete_Compulsory_Questions:
     'Please complete the compulsory questions and then submit',
   Please_Sign_Message: 'Please Sign',
@@ -27,13 +29,14 @@ export default {
   Description: 'Description',
   Type: 'Type',
   Added_Date: 'Added Date',
+  Due_Date: 'Due Date',
   Search_Location: 'Search Location',
 
   CRM: {
     Access_CRM: 'Access CRM',
-    Check_In: 'Check In',    
+    Check_In: 'Check In',
     Submisison_ID: 'Submission ID: ',
-    Form_Activity_For: 'Form Activity for '
+    Form_Activity_For: 'Form Activity for ',
   },
 
   Log: {

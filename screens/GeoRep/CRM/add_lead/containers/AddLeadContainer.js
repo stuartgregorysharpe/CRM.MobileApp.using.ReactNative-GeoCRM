@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Platform} from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
 import {Constants, Strings} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
@@ -38,6 +38,7 @@ export default function AddLeadContainer(props) {
   const viewListsModalRef = useRef(null);
   const formQuestionModalRef = useRef(null);
   const addLeadFormModalRef = useRef(null);
+  const addLeadViewRef = useRef(null);
 
   const [leadForms, setLeadForms] = useState([]);
   const [accuracyUnit, setAccuracyUnit] = useState('m');
@@ -51,6 +52,24 @@ export default function AddLeadContainer(props) {
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const validateFormList = lists => {
+    console.log('lists', lists);
+    let isValid = true;
+    lists.forEach(item => {
+      if (item.compulsory == '1') {
+        isValid = false;
+      }
+    });
+    return isValid;
+  };
+  const isValidOtherForms = useMemo(() => {
+    return validateFormList(formLists);
+  }, [formLists]);
+
+  useEffect(() => {
+    updateFormLists(formLists);
+  }, [formSubmissions]);
+  console.log('isValidOtherForms', isValidOtherForms);
   const dispatch = useDispatch();
 
   var isMount = true;
@@ -128,7 +147,38 @@ export default function AddLeadContainer(props) {
     setFormLists(tmp);
   };
 
+  const validateForm = async () => {
+    let isValid = true;
+
+    if (addLeadViewRef) {
+      const isValidForm = await addLeadViewRef.current.validateForm();
+      if (!isValidForm) isValid = false;
+    }
+
+    return isValid;
+  };
   const onAdd = async () => {
+    const isFormValid = await validateForm();
+    if (!isFormValid) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Complete_Required_Fields,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
+    if (!isValidOtherForms) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Complete_Required_Forms,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;
@@ -164,8 +214,8 @@ export default function AddLeadContainer(props) {
           );
         } else {
           console.log('failed', res);
+          setIsLoading(false);
         }
-        setIsLoading(false);
       })
       .catch(e => {
         setIsLoading(false);
@@ -211,9 +261,11 @@ export default function AddLeadContainer(props) {
         })
         .catch(e => {
           console.log(e);
+          setIsLoading(false);
           expireToken(dispatch, e);
         });
     } else {
+      setIsLoading(false);
       dispatch(
         showNotification({
           type: 'success',
@@ -349,6 +401,7 @@ export default function AddLeadContainer(props) {
       <Notification />
 
       <AddLeadView
+        ref={addLeadViewRef}
         onButtonAction={onButtonAction}
         leadForms={leadForms}
         accuracyUnit={accuracyUnit}
@@ -357,6 +410,7 @@ export default function AddLeadContainer(props) {
         onPrimaryContactFields={onPrimaryContactFields}
         showFormModal={showFormModal}
         showAllocateModal={showAllocateModal}
+        isValidOtherForms={isValidOtherForms}
         {...props}
       />
 

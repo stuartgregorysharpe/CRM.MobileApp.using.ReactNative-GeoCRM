@@ -7,7 +7,7 @@ import {
   expireToken,
   getPostParameter,
 } from '../../../constants/Helper';
-import {getLocalData} from '../../../constants/Storage';
+import {getLocalData, storeLocalValue} from '../../../constants/Storage';
 import SelectionPicker from '../../modal/SelectionPicker';
 import {SubmitButton} from '../../shared/SubmitButton';
 import {
@@ -15,9 +15,11 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
-import { Strings } from '../../../constants';
-import { getDateTime } from '../../../helpers/formatHelpers';
-import { LocationCheckinTypeDAO, PostRequestDAO } from '../../../DAO';
+import {Strings} from '../../../constants';
+import {getDateTime} from '../../../helpers/formatHelpers';
+import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
+import {Notification} from '../../modal/Notification';
+import {CHECKIN} from '../../../actions/actionTypes';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -36,17 +38,12 @@ const CheckinLinkButton = props => {
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
 
-  var isCheckinTypes = false;
   var checkin_type_id = '';
   var reason_id = '';
   useEffect(() => {
     initData();
   }, []);
   const initData = () => {
-    isCheckinTypes = checkFeatureIncludeParamFromSession(
-      features,
-      'checkin_types',
-    );
     dispatch(updateCurrentLocation());
   };
   const showFeedbackDropDownModal = () => {
@@ -114,27 +111,26 @@ const CheckinLinkButton = props => {
     );
   };
 
-
-
   const _callCheckInTypes = async () => {
-    
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
 
-    LocationCheckinTypeDAO.find(features).then((res) => {
-          var options = [];
-          res.forEach((item, index) => {
-            options.push(item.checkin_type);
-          });
-          setFeedbackOptions(options);
-          setCheckInTypes(res);
-    }).catch((e) => {
-      expireToken(dispatch, e);
-    })
+    LocationCheckinTypeDAO.find(features)
+      .then(res => {
+        console.log('res', res);
+        var options = [];
+        res.forEach((item, index) => {
+          options.push(item.checkin_type);
+        });
+        setFeedbackOptions(options);
+        setCheckInTypes(res);
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
-
 
   const _callCheckedIn = async () => {
     var currentTime = getDateTime();
@@ -147,18 +143,33 @@ const CheckinLinkButton = props => {
       user_local_data: userParam.user_local_data,
     };
 
-    PostRequestDAO.find(locationId, postData, 'checkin', 'location-info/check-in').then(async(res) => {
-      setIsFeedback(false);        
-      setFeedbackOptions(originFeedbackData);
-      setModalType('feedback');
-      navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-        locationId: locationId,
-        page: 'checkin',
+    PostRequestDAO.find(
+      locationId,
+      postData,
+      'checkin',
+      'location-info/check-in',
+    )
+      .then(async res => {
+        setIsFeedback(false);
+        setFeedbackOptions(originFeedbackData);
+        setModalType('feedback');
+        dispatch({type: CHECKIN, payload: true});
+        await storeLocalValue('@checkin', '1');
+        await storeLocalValue('@specific_location_id', locationId);
+        navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+          locationId: locationId,
+          page: 'checkin',
+        });
+        onFinishProcess();
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
       });
-    }).catch((e) => {
-      expireToken(dispatch, e);
-    })
-
+  };
+  const onFinishProcess = () => {
+    if (props.onFinishProcess) {
+      props.onFinishProcess();
+    }
   };
 
   const onCheckIn = async () => {
@@ -175,10 +186,16 @@ const CheckinLinkButton = props => {
               page: 'checkin',
             });
             dispatch(clearNotification());
+            onFinishProcess();
           },
         }),
       );
     } else {
+      const isCheckinTypes = checkFeatureIncludeParamFromSession(
+        features,
+        'checkin_types',
+      );
+      console.log('isCheckinTypes', isCheckinTypes);
       if (isCheckinTypes) {
         _callCheckInTypes();
       } else {
@@ -203,6 +220,7 @@ const CheckinLinkButton = props => {
         }}
         style={props.style}
       />
+      <Notification />
     </>
   );
 };

@@ -45,7 +45,7 @@ import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
-  const {    
+  const {
     submissionType,
     isShowCustomNavigationHeader,
     form,
@@ -208,12 +208,16 @@ export const FormQuestionView = forwardRef((props, ref) => {
           }}
           onPress={item => {
             setMode('single');
-            setOptions(item.options);            
-            if(item.value != '' && item.value != null && item.value instanceof Array){
+            setOptions(item.options);
+            if (
+              item.value != '' &&
+              item.value != null &&
+              item.value instanceof Array
+            ) {
               setSelectedOptions(item.value);
-            }else{
+            } else {
               setSelectedOptions([item.value]);
-            }            
+            }
             setKey(key);
             setIndex(index);
             showSelectionView();
@@ -494,7 +498,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
           fromIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
-              console.log(" ==== " , item)
+              console.log(' ==== ', item);
               onValueChangedSelectionView(key, index, value);
             }
             if (type == Constants.actionType.ACTION_INFO) {
@@ -540,6 +544,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
           onBackPressed={() => {
             onBackPressed();
           }}
+          style={{marginTop: props.isModal || Platform.OS == 'ios' ? 0 : 20}}
         />
       )}
 

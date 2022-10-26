@@ -38,6 +38,7 @@ const DynamicButtons = props => {
             title={buttonData.button_label}
             key={buttonType}
             formId={buttonData.form_id}
+            locationId={buttonData.location_id}
             style={{marginTop: 12}}
             onPress={() => {
               onButtonAction({
@@ -55,11 +56,17 @@ const DynamicButtons = props => {
             key={buttonType}
             locationId={buttonData.location_id}
             style={{marginTop: 12}}
-            onPress={() => {
+            onFinishProcess={() => {
               onButtonAction({
                 type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,
                 item: buttonData,
               });
+            }}
+            onPress={() => {
+              /*onButtonAction({
+                type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,
+                item: buttonData,
+              });*/
             }}
           />
         );

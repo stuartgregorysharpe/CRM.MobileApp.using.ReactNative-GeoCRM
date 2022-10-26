@@ -143,6 +143,7 @@ export const postApiRequestMultipart = async (
           error.status != undefined &&
           error.status === 400
         ) {
+          reject('invalid post');
           console.log('error 400', error);
         } else if (
           error != undefined &&
