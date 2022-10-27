@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useImperativeHandle,
 } from 'react';
+
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
 
@@ -64,6 +65,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
         if (data[fieldName] == '' || data[fieldName] == null) {
           _errors[fieldName] = true;
           valid = false;
+          console.log('Error fieldName', fieldName);
         } else {
           _errors[fieldName] = false;
         }
@@ -72,14 +74,35 @@ const DynamicForm = React.forwardRef((props, ref) => {
     setErrors(_errors);
     return valid;
   };
+  const checkAllowedFieldType = fieldType => {
+    const allowedFieldTypes = [
+      'text',
+      'email',
+      'numbers',
+      'dropdown',
+      'dropdown_input',
+      'date',
+      'take_photo',
+      'yes_no',
+      'dropdown_text',
+      'multi_select',
+    ];
+    if (!fieldType) return false;
+    return allowedFieldTypes.includes(fieldType);
+  };
   const _validateForm = () => {
     const requiredFields = [];
     formStructureData.forEach(fieldStructure => {
-      if (fieldStructure.is_required) {
+      const isAlowedField = checkAllowedFieldType(fieldStructure.field_type);
+      if (
+        fieldStructure.is_required &&
+        fieldStructure.isHidden !== true &&
+        isAlowedField
+      ) {
         requiredFields.push(fieldStructure.field_name);
       }
     });
-    console.log('requiredFields', requiredFields);
+
     const valid = checkFormFieldValid(requiredFields, null, 'require');
     return valid;
   };
