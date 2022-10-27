@@ -66,7 +66,6 @@ export default function StockSignatureContainer(props) {
               : '0'              
             }
 
-
             postData.append('signature_image', {
               uri: signature,
               type: 'image/png',
@@ -96,35 +95,19 @@ export default function StockSignatureContainer(props) {
                 location_id : props.locationId
               }
 
-
-              // postData.append('stock_type', item.stock_type);
-              // postData.append('location_id', props.locationId);
-              
               if (item.stock_type == Constants.stockType.DEVICE) {
                 postJsonData = {
                   ...postJsonData,
                   stock_item_id : props.item.stock_item_id,
                   assigned_msisdn : msisdn
-                }
-                // postData.append('stock_item_id', props.item.stock_item_id);
-                // postData.append('assigned_msisdn', msisdn);
+                }                
               } else if (item.stock_type == Constants.stockType.SIM) {
-
-                //console.log('selectedCodes=', selectedCodes);
-
-
                 selectedCodes.forEach((item, index) => {
-
                   var keyValue = `sims[stock_item_ids][${index}]`;
                   postJsonData = {
                     ...postJsonData,
                     [keyValue] : item.stock_item_id.toString()
-                  }
-                  
-                  // postData.append(
-                  //   `sims[stock_item_ids][${index}]`,
-                  //   item.stock_item_id,
-                  // );
+                  }                                  
                 });
               }
 
@@ -146,23 +129,16 @@ export default function StockSignatureContainer(props) {
                   }),
                 );
               }).catch((e) => {
+                expireToken(dispatch, e);
                 dispatch(
                   showNotification({
                     type: Strings.Success,
                     message: 'Error',
-                    buttonText: 'Ok',
+                    buttonText: Strings.Ok,
                   }),
                 );
               });
 
-              // postApiRequestMultipart('stockmodule/sell-to-trader', postData)
-              //   .then(res => {
-                  
-              //   })
-              //   .catch(e => {
-                  
-              //   });
-              
             } else if (item.stock_type == Constants.stockType.RETURN) {
               if (props.stockItemIds.length > 0) {
                 props.stockItemIds.forEach((item, index) => {

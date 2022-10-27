@@ -30,7 +30,6 @@ export function find(postData){
   });
 }
 
-
 const fetchDataFromDB = async(client_id, business_unit_id) => {
     const query = generateQuery();
     const res = await ExecuteQuery(query, [client_id, business_unit_id]);

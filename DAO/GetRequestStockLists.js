@@ -1,5 +1,5 @@
 import { Constants, Strings } from "../constants";
-import { getConvertedDate, getConvertedDateTime, getDateTime, getDateTimeFromBasketTime } from "../helpers/formatHelpers";
+import { getConvertedDate } from "../helpers/formatHelpers";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 import GetRequest from "./GetRequest";
 import { getOfflineSyncItem } from '../sqlite/OfflineSyncItemsHelper'
@@ -20,8 +20,7 @@ export function find(postData){
 
                 if(client_id && business_unit_id && user_id){                    
                     var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);                                   
-                    var offlineItems = await getOfflineSyncItem('sell_to_trader');                                    
-                    console.log("offlineItems list", JSON.stringify(offlineItems));
+                    var offlineItems = await getOfflineSyncItem('sell_to_trader');                    
                     resolve({status: Strings.Success , stock_items: getData(lists , offlineItems)});                                                       
                 }else{
                     reject();
@@ -148,12 +147,8 @@ const getData = (lists , offlineItems) => {
                 brick : element.sim_brick,
                 kit : element.sim_kit                
             }
-            
-            // console.log("Sim Item  Description : " , element.description);
-            // console.log("Sim Item : " , simItem);
-
-            var discountCount = getDiscount(offlineItems , Constants.stockType.SIM , element.stock_module_item_id);
-            console.log("discountCount" ,discountCount )
+                    
+            var discountCount = getDiscount(offlineItems , Constants.stockType.SIM , element.stock_module_item_id);            
             if(discountCount == 0){
                 simItems.push( {
                     [element.description]:{
@@ -161,13 +156,7 @@ const getData = (lists , offlineItems) => {
                         items: [simItem]
                     }
                 });      
-            }
-            
-            // if (!simItems[element.description]) {
-            //     simItems[element.description] = [];
-            // }            
-            // simItems[element.description].push({date: element.added_date , items: [simItem] });
-                        
+            }                        
         }                 
     }
     

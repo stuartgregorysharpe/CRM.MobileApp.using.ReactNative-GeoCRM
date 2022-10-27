@@ -1,6 +1,5 @@
 import {View} from 'react-native';
 import React, {useState} from 'react';
-import {postApiRequestMultipart} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
 import ConsumableSellToStockSignatureView from '../components/ConsumableSellToStockSignatureView';
@@ -20,20 +19,11 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-<<<<<<< HEAD
-
-  var received = '';
-  var quantity = '0';
-  var price = '';
-  var reference = '';
-  
-=======
   const [received, setReceived] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [reference, setReference] = useState('');
 
->>>>>>> 73b4c1e015f4776e5f08142ad01bc2ab19c11bdc
   const onItemPressed = item => {};
 
   const onSubmit = signature => {
@@ -41,7 +31,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
       
       var postData = {};
       setIsLoading(true);
-      //var postData = new FormData();
+      
       RNFS.exists(signature)
         .then(res => {
           if (res) {
@@ -49,6 +39,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
               signature = 'file://' + signature;
             }
             var time_zone = RNLocalize.getTimeZone();
+
             postData = {
               signature_image: {
                 uri: signature,
@@ -70,42 +61,13 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
               ? currentLocation.longitude
               : '0'
             }
-
-            // postData.append('signature_image', {
-            //   uri: signature,
-            //   type: 'image/png',
-            //   name: 'sign.png',
-            // });
-            // postData.append('stock_type', Constants.stockType.CONSUMABLE);
-            // postData.append('stock_item_id', props.item.stock_item_id);
-            // postData.append('location_id', props.locationId);
-            // postData.append('received_by', received);
-            // postData.append('sell_quantity', quantity);
-            // postData.append('price', price);
-            // postData.append('reference', reference);
-            // var time_zone = RNLocalize.getTimeZone();
-            // postData.append('user_local_data[time_zone]', time_zone);
-            // postData.append(
-            //   'user_local_data[latitude]',
-            //   currentLocation && currentLocation.latitude != null
-            //     ? currentLocation.latitude
-            //     : '0',
-            // );
-            // postData.append(
-            //   'user_local_data[longitude]',
-            //   currentLocation && currentLocation.longitude != null
-            //     ? currentLocation.longitude
-            //     : '0',
-            // );            
-      
-            console.log("  save post data ==== " ,postData);
-            
+                      
             PostRequest.find(0, postData, "sell_to_trader" , "stockmodule/sell-to-trader", Constants.stockType.CONSUMABLE , props.item.description ).then((res) => {
               dispatch(
                 showNotification({
                   type: Strings.Success,
                   message: res.message,
-                  buttonText: 'Ok',
+                  buttonText: Strings.Ok,
                   buttonAction: async () => {
                     props.onButtonAction({
                       type: Constants.actionType.ACTION_CLOSE,
@@ -120,7 +82,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
                 showNotification({
                   type: Strings.Success,
                   message: 'Error',
-                  buttonText: 'Ok',
+                  buttonText: Strings.Ok,
                 }),
               );
             });
