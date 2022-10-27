@@ -16,9 +16,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import {Fonts, Images} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {isInsidePoly} from '../../../../constants/Helper';
-import {  
-  getPolygonFillColorTransparency,
-} from '../../../../constants/Storage';
+import {getPolygonFillColorTransparency} from '../../../../constants/Storage';
 import {calcArgbIntValFromHexRgba} from '../../../../helpers/formatHelpers';
 import {
   calculateBBox,
@@ -137,7 +135,7 @@ const HmsLocationMap = props => {
     if (!_markers) return null;
     return _markers.map((item, key) => {
       const isMarkerSelected = checkMarkerSelected(item);
-      let icon = null;
+      let icon = undefined;
       if (isMarkerSelected) {
         icon = {
           uri: Image.resolveAssetSource(Images.selectedMarkerIcon).uri,
@@ -146,7 +144,7 @@ const HmsLocationMap = props => {
         };
       } else {
         if (item.pinIcon && item.pinIcon.pin_image) {
-          icon = {uri: item.pinIcon.pin_image};
+          icon = {uri: item.pinIcon.pin_image, width: 100, height: 100};
         }
       }
 

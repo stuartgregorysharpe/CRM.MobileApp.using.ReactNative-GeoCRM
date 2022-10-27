@@ -11,7 +11,7 @@ import {
 } from '../../../../../actions/actionTypes';
 import {
   getLocationFilters,
-  getLocationInfo,    
+  getLocationInfo,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
 import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
@@ -22,7 +22,7 @@ import {expireToken} from '../../../../../constants/Helper';
 import {
   getJsonData,
   getLocalData,
-  getMapMinZoomLevel,  
+  getMapMinZoomLevel,
 } from '../../../../../constants/Storage';
 import {LocationMapDAO, LocationPinKeyDAO} from '../../../../../DAO';
 import LocationMap from '../../../../../services/Map/LocationMap';
@@ -63,10 +63,10 @@ const LocationContainer = props => {
   const isShowZoomLabel = isZoomOut || isLoading;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
-  );  
+  );
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
-  );  
+  );
 
   const onLoadMarkers = (_currentLocation, boundBox) => {
     const isLoadable =
@@ -76,8 +76,8 @@ const LocationContainer = props => {
       !isLoading;
 
     if (isLoadable) {
-      setIsLoading(true);      
-      LocationMapDAO.find(_currentLocation, boundBox , features)
+      setIsLoading(true);
+      LocationMapDAO.find(_currentLocation, boundBox, features)
         .then(res => {
           getJsonData('@map_pin_key').then(mapPinSvg => {
             setIsLoading(false);
@@ -102,7 +102,7 @@ const LocationContainer = props => {
           dispatch({type: CHANGE_POLYGONS, payload: res.polygons});
         })
         .catch(e => {
-          console.log('location map api error : '  , e);
+          console.log('location map api error : ', e);
           setIsLoading(false);
           expireToken(dispatch, e);
         });
@@ -110,7 +110,7 @@ const LocationContainer = props => {
   };
   useEffect(() => {
     onLoadMarkers(currentLocation, boundBox);
-  }, [mapFilters, currentLocation]);
+  }, [mapFilters]);
   const onRegionChanged = async (region, markers, bBox, zoom) => {
     const minZoomLevel = await getMapMinZoomLevel();
     if (zoom >= minZoomLevel) {
@@ -149,20 +149,20 @@ const LocationContainer = props => {
   };
 
   const onOpenMarkerModal = () => {
-    if (markerModalRef && markerModalRef.current) {        
+    if (markerModalRef && markerModalRef.current) {
       markerModalRef.current.showModal();
     }
-    
-    LocationPinKeyDAO.find(features).then((pins) => {      
-      dispatch({type: STATUS_PIN_KEY, payload: 'success'});
-      dispatch({type: CHANGE_PIN_KEY, payload: pins});      
-    }).catch(e => {
-      console.log("locaiton pin key api error: " , e);
-      expireToken(dispatch, e);
-    });
-    
-  };
 
+    LocationPinKeyDAO.find(features)
+      .then(pins => {
+        dispatch({type: STATUS_PIN_KEY, payload: 'success'});
+        dispatch({type: CHANGE_PIN_KEY, payload: pins});
+      })
+      .catch(e => {
+        console.log('locaiton pin key api error: ', e);
+        expireToken(dispatch, e);
+      });
+  };
 
   const onOpenAddToCalendar = () => {
     if (addToCalendarModalRef && addToCalendarModalRef.current) {
@@ -173,9 +173,9 @@ const LocationContainer = props => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       addLeadModalRef.current.hideModal();
     }
-    if (type == Constants.actionType.ACTION_DONE) {      
+    if (type == Constants.actionType.ACTION_DONE) {
       addLeadModalRef.current.hideModal();
-      if(value != undefined && value != ''){
+      if (value != undefined && value != '') {
         openLocationInfoDetails(Number(value));
       }
     }
@@ -204,7 +204,7 @@ const LocationContainer = props => {
   };
   const onFinishDrawing = selectedMarkers => {
     console.log('onFinishDrawing', selectedMarkers);
-    setIsDrawMode(false)
+    setIsDrawMode(false);
     if (!selectedMarkers) return;
     const selectedLocations = selectedMarkers.map(marker => {
       return {
@@ -294,8 +294,10 @@ const LocationContainer = props => {
           isLoading={isLoading}
         />
       )}
-      
-      {isCheckin && !isDrawMode && <CheckInStatusView page="map" onGo={onCheckIn} />}
+
+      {isCheckin && !isDrawMode && (
+        <CheckInStatusView page="map" onGo={onCheckIn} />
+      )}
 
       <TouchableOpacity
         style={[styles.plusButton, {marginBottom: isCheckin ? 40 : 0}]}
@@ -306,7 +308,7 @@ const LocationContainer = props => {
         }}>
         <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
       </TouchableOpacity>
-      
+
       <TouchableOpacity style={styles.pinKeyButton} onPress={onOpenMarkerModal}>
         <PinKeySlideUp />
       </TouchableOpacity>
