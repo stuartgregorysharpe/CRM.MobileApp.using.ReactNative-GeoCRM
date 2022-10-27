@@ -29,6 +29,8 @@ export default function StockSignatureContainer(props) {
     if (received != '' && signature != null) {
       setIsLoading(true);
       var postData = new FormData();
+      var time_zone = RNLocalize.getTimeZone();
+
       RNFS.exists(signature)
         .then(res => {
           if (res) {
@@ -48,57 +50,31 @@ export default function StockSignatureContainer(props) {
               setIsLoading(false);
               return;
             }
-
-            var time_zone = RNLocalize.getTimeZone();
+            
             var postJsonData = {
               signature_image : {
                 uri: signature,
                 type: 'image/png',
-                name: 'sign.png',
+                name: 'sign_' + item.stock_type + '.png',
               },
               received_by : received,
               'user_local_data[time_zone]' : time_zone,
-              'user_local_data[latitude]' : currentLocation && currentLocation.latitude != null
-              ? currentLocation.latitude
-              : '0',
-              'user_local_data[longitude]' : currentLocation && currentLocation.longitude != null
-              ? currentLocation.longitude
-              : '0'              
+              'user_local_data[latitude]' : currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0',
+              'user_local_data[longitude]' : currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0'
             }
 
-            postData.append('signature_image', {
-              uri: signature,
-              type: 'image/png',
-              name: 'sign.png',
-            });
-            postData.append('received_by', received);
-            
-            postData.append('user_local_data[time_zone]', time_zone);
-            postData.append(
-              'user_local_data[latitude]',
-              currentLocation && currentLocation.latitude != null
-                ? currentLocation.latitude
-                : '0',
-            );
-            postData.append(
-              'user_local_data[longitude]',
-              currentLocation && currentLocation.longitude != null
-                ? currentLocation.longitude
-                : '0',
-            );
-
             if (item.stock_type != Constants.stockType.RETURN) {
-
+              
               postJsonData = {
                 ...postJsonData,
                 stock_type : item.stock_type,
-                location_id : props.locationId
+                location_id : props.locationId.toString()
               }
 
               if (item.stock_type == Constants.stockType.DEVICE) {
                 postJsonData = {
                   ...postJsonData,
-                  stock_item_id : props.item.stock_item_id,
+                  stock_item_id : props.item.stock_item_id.toString(),
                   assigned_msisdn : msisdn
                 }                
               } else if (item.stock_type == Constants.stockType.SIM) {
@@ -140,6 +116,28 @@ export default function StockSignatureContainer(props) {
               });
 
             } else if (item.stock_type == Constants.stockType.RETURN) {
+
+              postData.append('signature_image', {
+                uri: signature,
+                type: 'image/png',
+                name: 'sign.png',
+              });
+              postData.append('received_by', received);
+              
+              postData.append('user_local_data[time_zone]', time_zone);
+              postData.append(
+                'user_local_data[latitude]',
+                currentLocation && currentLocation.latitude != null
+                  ? currentLocation.latitude
+                  : '0',
+              );
+              postData.append(
+                'user_local_data[longitude]',
+                currentLocation && currentLocation.longitude != null
+                  ? currentLocation.longitude
+                  : '0',
+              );
+
               if (props.stockItemIds.length > 0) {
                 props.stockItemIds.forEach((item, index) => {
                   postData.append(`stock_item_ids[${index}]`, item);

@@ -80,7 +80,7 @@ const getDiscount = ( offlineItems ,  stock_type, stock_item_id) => {
         if(element.item_label === stock_type){
             const body =  JSON.parse(element.post_body);
             if(stock_type === Constants.stockType.CONSUMABLE || stock_type === Constants.stockType.DEVICE){
-                if(body.stock_item_id === stock_item_id){
+                if(parseInt(body.stock_item_id) == parseInt(stock_item_id)){
                     if(stock_type === Constants.stockType.CONSUMABLE){
                         count = count +  parseInt(body.sell_quantity);
                     }else{    
@@ -121,7 +121,7 @@ const getData = (lists , offlineItems) => {
             }                        
             var discountCount = 0 ;            
             discountCount = getDiscount(offlineItems , element.type, element.stock_module_item_id);
-                                    
+            console.log("discountCount == ", discountCount , element.stock_module_item_id , element.type )  
             if( !(discountCount == 1 &&  element.type != Constants.stockType.CONSUMABLE) ){
                 tmp.push(
                     {

@@ -17,6 +17,7 @@ import {Fonts, Strings, Values} from '../../../../../constants';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 import {useDispatch} from 'react-redux';
+import { generateKey } from '../../../../../constants/Utils';
 
 export default function ConsumableSellToStockSignatureView(props) {
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       Platform.OS === 'ios'
         ? `${RNFS.DocumentDirectoryPath}`
         : `${RNFS.ExternalDirectoryPath}`;
-    const filepath = outputPath + '/sign.png';
+    const filepath = outputPath + '/sign-' + generateKey()  +  '.png';
     await RNFS.writeFile(
       filepath,
       signature.replace('data:image/png;base64,', ''),

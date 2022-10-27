@@ -119,14 +119,17 @@ export const postApiRequestMultipart = async (
   return new Promise(function (resolve, reject) {
   
     console.log('myforms', JSON.stringify(postData));
+    //headers:{"Accept":"application/json, text/plain, /","Content-Type": "multipart/form-data"}
+    const key = indempotencyKey != undefined ? indempotencyKey : generateKey();
+
     axios
       .post(url, postData, {
         headers: {
-          Accept: 'application/json',
+          'Access-Control-Allow-Origin' : '*',
+          'Accept': 'application/json, text/plain',
           'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key':
-            indempotencyKey != undefined ? indempotencyKey : generateKey(),
+          'Authorization': 'Bearer ' + token,
+          'Indempotency-Key': key ,
         },
       })
       .then(res => {
@@ -138,7 +141,7 @@ export const postApiRequestMultipart = async (
       })
       .catch(err => {
         //console.log('api error: ', JSON.stringify(err));
-        console.log('----', err);
+        console.log('----', err , url, postData, token, indempotencyKey);
         const error = err.response;
         if (
           error != undefined &&
