@@ -51,7 +51,8 @@ export default function DeviceView(props) {
   };
 
   const validateError = () => {
-    if( errors['imei'] != undefined  && !codeDisabled){
+    console.log("validate error" ,errors)
+    if( errors != undefined && errors['imei'] != undefined  && !codeDisabled){
       return errors['imei'];
     }
     return false;

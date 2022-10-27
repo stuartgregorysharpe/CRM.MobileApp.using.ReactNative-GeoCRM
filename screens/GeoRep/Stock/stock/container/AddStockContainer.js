@@ -1,6 +1,7 @@
 import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AddStockView from '../components/AddStockView';
+import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {Constants, Strings} from '../../../../../constants';
 import {useSelector} from 'react-redux';
 import {expireToken, getPostParameter} from '../../../../../constants/Helper';
@@ -10,15 +11,14 @@ import {
 } from '../../../../../actions/notification.action';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
-import { GetRequestStockFieldDataDAO, PostRequestDAO } from '../../../../../DAO';
 
 export default function AddStockContainer(props) {
-
   const dispatch = useDispatch();
-
   const [deviceTypeLists, setDevicetypeLists] = useState([]);
-  const [stockTypes, setStockTypes] = useState({});  
+  const [stockTypes, setStockTypes] = useState({});
+  const {items} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [isLoading, setIsLoading] = useState(false);
   let isMount = true;
 
   useEffect(() => {
@@ -29,67 +29,58 @@ export default function AddStockContainer(props) {
   }, []);
 
   const _callStockFieldData = () => {
-
-    var postData = {
-      action: 'add_stock'
-    };
-
-    GetRequestStockFieldDataDAO.find(postData).then((res) => {
-      if (isMount) {
-        if (res.status === Strings.Success) {          
-          setStockTypes(res.stock_types);
-          var types = [];
-          for (let value of Object.keys(res.stock_types)) {
-            types.push({value: value, label: value});
+    getApiRequest('stockmodule/stock-field-data?action=add_stock', {})
+      .then(res => {
+        if (isMount) {
+          if (res.status === Strings.Success) {
+            setStockTypes(res.stock_types);
+            var types = [];
+            for (let value of Object.keys(res.stock_types)) {
+              types.push({value: value, label: value});
+            }
+            setDevicetypeLists(types);
           }
-          setDevicetypeLists(types);
         }
-      }
-    }).catch((e) => {
-
-    }); 
-    
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const callAddStock = (type, data) => {
-    
+    setIsLoading(true);
     var userParam = getPostParameter(currentLocation);
-    data['user_local_data'] = userParam.user_local_data;		
-    var subLabel = '';
-    if(data.stock_type == Constants.stockType.DEVICE || data.stock_type == Constants.stockType.CONSUMABLE){
-      subLabel = data.description;
-    }else{
-      //subLabel = data.sims.join(",");
-      subLabel = data.sims.map((item) => item.network).join(', ');
-    }    
-    
-    PostRequestDAO.find(0, data, "add_stock", 'stockmodule/add-stock', data.stock_type , subLabel).then((res) => {
-      if (res.status === Strings.Success) {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: res.message,
-            buttonText: 'Ok',
-            buttonAction: async () => {
-              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-              dispatch(clearNotification());
-            },
-          }),
-        );
-      } else {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: res.errors,
-            buttonText: 'Ok',
-          }),
-        );
-      }
-
-    }).catch((e) => {
-		expireToken(dispatch, e);
-    });
-
+    data['user_local_data'] = userParam.user_local_data;
+    postApiRequest('stockmodule/add-stock', data)
+      .then(res => {
+        setIsLoading(false);
+        if (res.status === Strings.Success) {
+          dispatch(
+            showNotification({
+              type: Strings.Success,
+              message: res.message,
+              buttonText: 'Ok',
+              buttonAction: async () => {
+                props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+                dispatch(clearNotification());
+              },
+            }),
+          );
+        } else {
+          dispatch(
+            showNotification({
+              type: Strings.Success,
+              message: res.errors,
+              buttonText: 'Ok',
+            }),
+          );
+        }
+      })
+      .catch(e => {
+        setIsLoading(false);
+        console.log('error', e);
+        expireToken(dispatch, e);
+      });
   };
 
   return (

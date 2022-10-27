@@ -34,11 +34,16 @@ export default function ConsumableView(props) {
         keyboardType={'number-pad'}
         returnKeyType={'done'}
         isRequired={true}
-        hasError={errors['quantity'] != undefined ? errors['quantity'] : false}
+        hasError={ errors != undefined && errors['quantity'] != undefined ? errors['quantity'] : false}
+        
         onChangeText={text => {
           setQuantity(text);
           onDataChanged(details, text);
         }}
+        onBlur={() => {
+          onDataChanged(details, quantity);
+        }}
+
       />
     </View>
   );
