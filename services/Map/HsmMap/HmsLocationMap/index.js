@@ -135,7 +135,7 @@ const HmsLocationMap = props => {
     if (!_markers) return null;
     return _markers.map((item, key) => {
       const isMarkerSelected = checkMarkerSelected(item);
-      let icon = null;
+      let icon = undefined;
       if (isMarkerSelected) {
         icon = {
           uri: Image.resolveAssetSource(Images.selectedMarkerIcon).uri,
