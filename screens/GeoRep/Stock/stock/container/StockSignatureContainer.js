@@ -14,6 +14,7 @@ import {
 import {Notification} from '../../../../../components/modal/Notification';
 import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
+import { generateKey } from '../../../../../constants/Utils';
 
 export default function StockSignatureContainer(props) {
 
@@ -55,7 +56,7 @@ export default function StockSignatureContainer(props) {
               signature_image : {
                 uri: signature,
                 type: 'image/png',
-                name: 'sign_' + item.stock_type + '.png',
+                name: 'sign_' + generateKey() + '.png',
               },
               received_by : received,
               'user_local_data[time_zone]' : time_zone,

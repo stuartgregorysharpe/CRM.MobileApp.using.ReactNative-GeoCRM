@@ -13,6 +13,7 @@ import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
+import { generateKey } from '../../../../../constants/Utils';
 
 export default function ConsumableSellToTraderSignatureContainer(props) {
 
@@ -44,7 +45,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
               signature_image: {
                 uri: signature,
                 type: 'image/png',
-                name: 'sign.png',
+                name: 'sign' + generateKey()  + '.png',
               },
               stock_type: Constants.stockType.CONSUMABLE,
               stock_item_id: props.item.stock_item_id,
