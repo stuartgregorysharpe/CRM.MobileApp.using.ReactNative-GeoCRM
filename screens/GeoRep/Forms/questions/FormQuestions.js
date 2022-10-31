@@ -199,7 +199,13 @@ export const FormQuestions = props => {
   const closeSignView = () => {
     setIsSign(false);
   };
-
+  const onOpenFormFeedbackModal = res => {
+    if (res?.data?.areas_form_improvement_feedback == '1') {
+      formQuestionViewRef.current.openModal(res);
+    } else {
+      onBackPressed();
+    }
+  };
   const _onSubmit = async () => {
     if (
       indempotencyKey === null ||
@@ -249,6 +255,7 @@ export const FormQuestions = props => {
     )
       .then(async res => {
         loadingBarRef.current.hideModal();
+
         dispatch(
           showNotification({
             type: 'success',
@@ -259,7 +266,7 @@ export const FormQuestions = props => {
               if (db != null) await deleteFormTable(db, form.form_id);
               clearAll();
               dispatch(clearNotification());
-              formQuestionViewRef.current.openModal(res);
+              onOpenFormFeedbackModal(res);
             },
           }),
         );
