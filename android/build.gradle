@@ -15,7 +15,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        //jcenter()
+        gradlePluginPortal()
         maven {url 'https://developer.huawei.com/repo/'}  
     }
 

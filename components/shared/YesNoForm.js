@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect , useRef } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Image,Dimensions } from 'react-native';
 import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -9,25 +9,22 @@ import SvgIcon from '../SvgIcon';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import * as ImagePicker from 'react-native-image-picker'; 
 import { useDispatch } from 'react-redux';
-import { clearNotification, showNotification } from '../../actions/notification.action';
 
 export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submissionType }) => {
 
     const [isYes, setIsYes] = useState(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value.toLowerCase() == 'no' ? true:false);
     const [isPicker , setIsPicker] = useState(false);
-    const dispatch = useDispatch()
-
+    const dispatch = useDispatch();
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
-                
-    const showSelectionDialog = () => {        
+  
+
+    const showSelectionDialog = () => {
         if(submissionType == "edit"){
-          dispatch(showNotification({type:'success' , message: 'Edit image not allowed' , buttonText: 'Ok', buttonAction: () => {
-            dispatch(clearNotification())
-          }}))
+          setIsPicker(true);
         }else{
-          setIsPicker(true);      
-        }        
+          setIsPicker(true);   
+        }
     }
 
     const updateImageData = async (path) => {
@@ -138,6 +135,9 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submiss
 
     return (
         <View style={[style.card, isCompulsory ? style.compulsoryStyle :{}, {marginHorizontal:0 , marginVertical:5 }]}>
+
+            
+            
             <View style={[styles.container]}>
                 
                 <PhotoCameraPickerDialog visible={isPicker} message={"Choose Image"} 

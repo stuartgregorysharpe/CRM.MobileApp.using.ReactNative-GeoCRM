@@ -624,7 +624,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
                 {form.question_group != null && (
                   <GroupTitle title={form.question_group}></GroupTitle>
                 )}
-                {form.questions.map((item, index) => {
+                {form.questions != undefined && form.questions.map((item, index) => {
                   return renderQuestion(item, key, index);
                 })}
               </View>

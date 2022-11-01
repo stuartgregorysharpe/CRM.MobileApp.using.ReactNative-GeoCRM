@@ -95,7 +95,7 @@ export async function getFormSubmissionPostJsonData(
       }
     });
 
-    if(type == "submit"){
+    //if(type == "submit"){
       files.map(item => {
         if (item.key && item.value) {
           if (item.type === 'upload_file') {
@@ -116,7 +116,7 @@ export async function getFormSubmissionPostJsonData(
           }
         }
       });
-    }
+    //}
     return postDataJson;
   } catch (e) {
     console.log('json err', e);
@@ -538,7 +538,8 @@ export function getFormQuestionFile(formQuestions) {
         item.question_type === 'upload_file' ||
         item.question_type === 'take_photo' ||
         (item.question_type === 'yes_no' && (item.yes_image && item.yes_image != undefined && item.yes_image.length > 0 || item.no_image && item.no_image !=undefined && item.no_image.length > 0))
-      ) {
+      ) {        
+
         var paths = item.value;
         if (item.yes_image != null && item.yes_image != '') {
           paths = item.yes_image;
@@ -549,37 +550,44 @@ export function getFormQuestionFile(formQuestions) {
         if (paths != null && paths != '' && paths.length > 0) {
           index = 0;
           for (const path of paths) {
-            if (item.question_type === 'upload_file') {
-              files.push({
-                key: `File[${item.form_question_id}][${index}]`,
-                value: path,
-                type: 'upload_file',
-              });
-            } else {
-              files.push({
-                key: `File[${item.form_question_id}][${index}]`,
-                value: path,
-                type: 'image',
-              }); //, base64:item.base64
-            }
-            index = index + 1;
+            if(path != "" && path.length > 2){
+              if (item.question_type === 'upload_file') {
+                files.push({
+                  key: `File[${item.form_question_id}][${index}]`,
+                  value: path,
+                  type: 'upload_file',
+                });
+              } else {
+                files.push({
+                  key: `File[${item.form_question_id}][${index}]`,
+                  value: path,
+                  type: 'image',
+                }); //, base64:item.base64
+              }
+              index = index + 1;
+            }            
           }
         }
       } else if (
         item.question_type ===
         Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO
       ) {
+              
+
         if (item.value) {
           item.value.forEach((element, index) => {
-            files.push({
-              key: `File[${item.form_question_id}][${element.name}]`,
-              value: element.image,
-              type: Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO,
-            });
+            if(!element.image.includes("http")){
+              files.push({
+                key: `File[${item.form_question_id}][${element.value}]`,
+                value: element.image,
+                type: Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO,
+              });
+            }
           });
         }
       }
     });
   });
+  
   return files;
 }

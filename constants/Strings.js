@@ -31,6 +31,7 @@ export default {
   Added_Date: 'Added Date',
   Due_Date: 'Due Date',
   Search_Location: 'Search Location',
+  Download_Image: 'Downloading Images ...',
 
   CRM: {
     Access_CRM: 'Access CRM',

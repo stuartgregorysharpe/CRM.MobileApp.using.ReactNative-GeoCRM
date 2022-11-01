@@ -85,3 +85,12 @@ export const generateKey = () => {
     var timeStamp = getTimeStamp();
     return uuid.v4() + "-" + timeStamp;
 }
+
+export function getFileName(path) {
+  const words = path.split('/');
+  const ext = words[words.length - 1].split('.');
+  return {    
+    ext: ext[1],
+    name: ext[0],
+  };
+}

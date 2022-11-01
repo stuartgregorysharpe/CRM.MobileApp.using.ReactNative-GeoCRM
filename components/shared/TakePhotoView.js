@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect , useRef} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -16,14 +16,13 @@ import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import ImageResizer from 'react-native-image-resizer';
 import { useDispatch } from 'react-redux';
-import { clearNotification, showNotification } from '../../actions/notification.action';
 
 const TakePhotoView = props => {
 
   const {photos, isOptimize , submissionType} = props;
   const dispatch = useDispatch()
-  const [isPicker, setIsPicker] = useState(false);
-  
+  const [isPicker, setIsPicker] = useState(false);  
+
   const onUpdatePhotos = paths => {
     if (props.onUpdatePhotos) {
       props.onUpdatePhotos(paths);
@@ -31,6 +30,7 @@ const TakePhotoView = props => {
   };
 
   const updateImageData = path => {
+    console.log("update image =======" , photos , path)
     setIsPicker(false);
     if (photos && photos !== null) {
       onUpdatePhotos([...photos, path]);
@@ -155,7 +155,7 @@ const TakePhotoView = props => {
 
   return (
     <View style={[styles.container, props.style]}>
-      
+                  
       <PhotoCameraPickerDialog
         visible={isPicker}
         message={'Choose Image'}
@@ -206,10 +206,8 @@ const TakePhotoView = props => {
           <TouchableOpacity
             style={[styles.imageContainer, {marginLeft: 10}]}
             onPress={() => {
-              if(submissionType == "edit"){
-                dispatch(showNotification({type:'success', message:'Edit image not allowed' , buttonText:'Ok' , buttonAction:() => {
-                  dispatch(clearNotification());
-                }}))
+              if(submissionType == "edit"){                
+                showSelectionDialog();
               }else{
                 showSelectionDialog();
               }
