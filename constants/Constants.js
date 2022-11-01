@@ -128,4 +128,9 @@ export default {
     FEATURE_PRODUCT_CHANNELS: 'product_channels',
     FEATURE_OUTCOMES: 'outcomes',
   },
+
+  validateType: {
+    VALIDATE_TYPE_REQUIRED: 'required',
+    VALIDATE_TYPE_RULE_CHARACTERS: 'rule_characters',
+  },
 };

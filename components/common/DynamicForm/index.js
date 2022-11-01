@@ -12,6 +12,7 @@ import DynamicField from './DynamicField';
 const DynamicForm = React.forwardRef((props, ref) => {
   const {formData, formStructureData, isShowRequiredFromBegining} = props;
   const [errors, setErrors] = useState({});
+  const [errorMessages, setErrorMessages] = useState({});
   const dynamicFieldRef = useRef([]);
   useEffect(() => {
     const initialErrors = {};
@@ -28,6 +29,9 @@ const DynamicForm = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     validateForm: () => {
       return _validateForm();
+    },
+    getErrorMessages: () => {
+      return errorMessages;
     },
   }));
   const updateFormData = (fieldName, value) => {
@@ -52,26 +56,106 @@ const DynamicForm = React.forwardRef((props, ref) => {
     }
   };
 
-  const checkFormFieldValid = (
-    fieldNames,
-    _formData,
-    validateType = 'require',
-  ) => {
+  const checkValidRequiredField = value => {
+    if (value == '' || value == null) {
+      return false;
+    }
+    return true;
+  };
+  const getFieldStructureData = fieldName => {
+    if (!formStructureData) return null;
+    return formStructureData.find(x => x.field_name == fieldName);
+  };
+  const checkValidRuleCharactersField = (fieldName, value, _errorMessages) => {
+    const fieldStructureData = getFieldStructureData(fieldName);
+
+    if (!fieldStructureData) return true;
+    const rule_characters = fieldStructureData.rule_characters;
+    const questionText = fieldStructureData.field_label;
+    console.log('rule_characters', rule_characters);
+    console.log('fieldStructureData', fieldStructureData);
+    let isValid = true;
+    let errorMessage = null;
+    if (!rule_characters || rule_characters == '') return true;
+
+    if (rule_characters.includes(',')) {
+      const splited = rule_characters.split(',');
+      if (splited.length > 1) {
+        const characterLengthString = splited[1].trim();
+        const operator = splited[0];
+        console.log('rule_characters', rule_characters);
+        console.log('operator', operator);
+        console.log('characterLengthString', characterLengthString);
+        if (characterLengthString != '') {
+          const characterLength = Number(characterLengthString);
+          if (operator == '=') {
+            if (
+              value &&
+              typeof value == 'string' &&
+              value.length != characterLength
+            ) {
+              errorMessage = `${questionText} must have ${characterLength} characters`;
+              isValid = false;
+              _errorMessages[fieldName] = errorMessage;
+            }
+          } else if (operator == '>') {
+            if (
+              value &&
+              typeof value == 'string' &&
+              value.length <= characterLength
+            ) {
+              errorMessage = `${questionText} must have longer than ${characterLength} characters`;
+              _errorMessages[fieldName] = errorMessage;
+              isValid = false;
+            }
+          } else if (operator == '<') {
+            if (
+              value &&
+              typeof value == 'string' &&
+              value.length >= characterLength
+            ) {
+              errorMessage = `${questionText} must have shorter than ${characterLength} characters`;
+              _errorMessages[fieldName] = errorMessage;
+              isValid = false;
+            }
+          }
+        }
+      }
+    }
+    console.log('errorMessage', errorMessage);
+    console.log('isValid', isValid);
+    return isValid;
+  };
+  const checkFormFieldValid = (fieldNames, _formData) => {
     let valid = true;
-    const data = _formData || formData;
     const _errors = {...errors};
+    const _errorMessages = {...errorMessages};
+    const data = _formData || formData;
     fieldNames.forEach(fieldName => {
       if (fieldName) {
-        if (data[fieldName] == '' || data[fieldName] == null) {
+        if (checkValidRequiredField(data[fieldName])) {
+          _errors[fieldName] = false;
+        } else {
           _errors[fieldName] = true;
           valid = false;
-          console.log('Error fieldName', fieldName);
+        }
+        if (
+          !checkValidRuleCharactersField(
+            fieldName,
+            data[fieldName],
+            _errorMessages,
+          )
+        ) {
+          _errors[fieldName] = true;
         } else {
-          _errors[fieldName] = false;
+          if (valid) {
+            _errors[fieldName] = false;
+          }
         }
       }
     });
     setErrors(_errors);
+    setErrorMessages(_errorMessages);
     return valid;
   };
   const checkAllowedFieldType = fieldType => {
@@ -90,20 +174,27 @@ const DynamicForm = React.forwardRef((props, ref) => {
     if (!fieldType) return false;
     return allowedFieldTypes.includes(fieldType);
   };
+  const checkFieldNeedToValidate = fieldStructure => {
+    const isAllowedField = checkAllowedFieldType(fieldStructure.field_type);
+    const isRuleCharacter =
+      fieldStructure.rule_characters != '' &&
+      fieldStructure.rule_characters != undefined;
+    return (
+      (fieldStructure.is_required || isRuleCharacter) &&
+      fieldStructure.isHidden !== true &&
+      isAllowedField
+    );
+  };
   const _validateForm = () => {
-    const requiredFields = [];
+    const validateFields = [];
     formStructureData.forEach(fieldStructure => {
-      const isAlowedField = checkAllowedFieldType(fieldStructure.field_type);
-      if (
-        fieldStructure.is_required &&
-        fieldStructure.isHidden !== true &&
-        isAlowedField
-      ) {
-        requiredFields.push(fieldStructure.field_name);
+      const isAllowedField = checkAllowedFieldType(fieldStructure.field_type);
+      if (checkFieldNeedToValidate(fieldStructure)) {
+        validateFields.push(fieldStructure.field_name);
       }
     });
 
-    const valid = checkFormFieldValid(requiredFields, null, 'require');
+    const valid = checkFormFieldValid(validateFields, null);
     return valid;
   };
 
