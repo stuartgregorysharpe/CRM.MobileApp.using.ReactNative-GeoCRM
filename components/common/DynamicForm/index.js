@@ -104,7 +104,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
               typeof value == 'string' &&
               value.length <= characterLength
             ) {
-              errorMessage = `${questionText} must have longer than ${characterLength} characters`;
+              errorMessage = `${questionText} must have more than ${characterLength} characters`;
               _errorMessages[fieldName] = errorMessage;
               isValid = false;
             }
@@ -114,7 +114,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
               typeof value == 'string' &&
               value.length >= characterLength
             ) {
-              errorMessage = `${questionText} must have shorter than ${characterLength} characters`;
+              errorMessage = `${questionText} must have less than ${characterLength} characters`;
               _errorMessages[fieldName] = errorMessage;
               isValid = false;
             }
