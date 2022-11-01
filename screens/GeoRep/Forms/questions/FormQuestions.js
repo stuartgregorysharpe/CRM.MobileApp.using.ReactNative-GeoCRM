@@ -200,7 +200,7 @@ export const FormQuestions = props => {
     setIsSign(false);
   };
   const onOpenFormFeedbackModal = res => {
-    if (res?.data?.areas_form_improvement_feedback == '1') {
+    if (res?.areas_form_improvement_feedback == '1') {
       formQuestionViewRef.current.openModal(res);
     } else {
       onBackPressed();
