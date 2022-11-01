@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
-import { whiteLabel } from '../../constants/Colors';
+import Colors, { whiteLabel } from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
@@ -19,9 +19,8 @@ export default function HeaderRightView() {
   });
 
   const getToggleStatus = async () => {
-    let res = await checkFeatureIncludeParam("offline_toggle");        
-    
-    setShowToggle(res); 
+    let res = await checkFeatureIncludeParam("offline_toggle");    
+    setShowToggle(res);
   }
 
   const setOnlineOffline = async () => {
@@ -41,7 +40,7 @@ export default function HeaderRightView() {
           label={toggleSwitch ? "Online" : "Offline"}
           labelStyle={styles.toggleSwitchLabel}
           onColor="#fff"
-          offColor="#a3c0f9"
+          offColor={Colors.redColor}
           size="small"
           thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
           thumbOffStyle={{ backgroundColor: whiteLabel().headerBackground }}
@@ -49,7 +48,7 @@ export default function HeaderRightView() {
           onToggle={ async (toggleSwitch)  => {
             console.log("clicked", toggleSwitch)
             await storeLocalValue("@online", toggleSwitch ? "1" : "0");            
-            setToggleSwitch(toggleSwitch);
+            setToggleSwitch(toggleSwitch);      
           }}
         />}
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 })}>
@@ -63,6 +62,7 @@ export default function HeaderRightView() {
 }
 
 const styles = StyleSheet.create({
+
   layoutBarContent: {
     height: 62,
     justifyContent: 'center',
@@ -70,25 +70,26 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     backgroundColor: whiteLabel().headerBackground,
   },
-  layoutBar: {
 
-  },
   headerRightView: {
     flexDirection: 'row',
     marginRight: 12,
     marginBottom: 20,
     marginTop: 20
   },
+
   toggleSwitch: {
     marginRight: 12,
     flexDirection: 'row',
     alignItems: 'center'
   },
+
   toggleSwitchLabel: {
     color: '#fff',
     fontSize: 12,
     fontFamily: 'Gilroy-Medium'
   },
+
   headerAvatar: {
     justifyContent: 'center',
     borderColor: '#fff',
