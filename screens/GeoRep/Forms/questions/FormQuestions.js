@@ -216,13 +216,13 @@ export const FormQuestions = props => {
     }
 
     saveDb(formQuestions, indempotencyKey);
-    var flag = true;
-    flag = validateFormQuestionData(formQuestions);
-    if (!flag) {
+    var error = true;
+    error = validateFormQuestionData(formQuestions);
+    if (error) {
       dispatch(
         showNotification({
           type: 'success',
-          message: Strings.Complete_Compulsory_Questions,
+          message: error,
           buttonText: Strings.Ok,
         }),
       );

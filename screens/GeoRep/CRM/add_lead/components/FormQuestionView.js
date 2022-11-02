@@ -72,6 +72,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
   const formSubmitModalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState(false);
 
   useImperativeHandle(
     ref,
