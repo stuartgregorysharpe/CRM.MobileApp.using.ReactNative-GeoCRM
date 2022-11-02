@@ -125,12 +125,12 @@ export default function FormQuestionContainer(props) {
   };
 
   const onSave = () => {
-    var flag = validateFormQuestionData(formQuestions);
-    if (!flag) {
+    var error = validateFormQuestionData(formQuestions);
+    if (error) {
       dispatch(
         showNotification({
           type: 'success',
-          message: Strings.Complete_Compulsory_Questions,
+          message: error,
           buttonText: Strings.Ok,
         }),
       );
