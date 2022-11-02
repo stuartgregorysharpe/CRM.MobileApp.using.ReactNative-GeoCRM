@@ -10,7 +10,7 @@ import {
   checkFeatureIncludeParam,
   getLocalData,
 } from '../../../../constants/Storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
 let isCheckIn = '0';
@@ -22,6 +22,9 @@ export function CalendarItem({
   tabIndex,
   onItemSelected,
 }) {
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
   useEffect(() => {
     initData();
   }, []);
@@ -30,9 +33,12 @@ export function CalendarItem({
     isCheckIn = await getLocalData('@checkin');
   };
 
+  const checkOpenReplaceCheckin = () => {
+    return features != null && features.includes('open_replace_checkin');
+  };
   const dispatch = useDispatch();
   const getButtonColor = checkin_state => {
-    if (checkFeatureIncludeParam('open_replace_checkin')) {
+    if (checkOpenReplaceCheckin()) {
       return whiteLabel().actionFullButtonBackground;
     } else {
       if (checkin_state === 'checkin_required') {
@@ -46,7 +52,7 @@ export function CalendarItem({
   };
 
   const getButtonText = checkin_state => {
-    if (checkFeatureIncludeParam('open_replace_checkin')) {
+    if (checkOpenReplaceCheckin()) {
       return 'Open';
     } else {
       if (checkin_state === 'checkin_required') {
@@ -86,7 +92,7 @@ export function CalendarItem({
               {backgroundColor: getButtonColor(item.checkin_state)},
             ]}
             onPress={() => {
-              if (checkFeatureIncludeParam('open_replace_checkin')) {
+              if (checkOpenReplaceCheckin()) {
                 dispatch({
                   type: LOCATION_ID_CHANGED,
                   payload: {value: item.location_id, type: tabIndex},
