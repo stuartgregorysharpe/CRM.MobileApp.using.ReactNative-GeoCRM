@@ -1,5 +1,5 @@
 import {View, FlatList, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState, useRef, useMemo} from 'react';
+import React, {useEffect, useState, useRef, useMemo ,useCallback} from 'react';
 import SearchBar from '../../../../components/SearchBar';
 import SvgIcon from '../../../../components/SvgIcon';
 import StockListItem from './components/StockListItem';
@@ -29,10 +29,17 @@ import {
 import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
-import {GetRequestStockListsDAO} from '../../../../DAO';
+
+import { GetRequestStockListsDAO } from '../../../../DAO';
+import { getLocalData } from '../../../../constants/Storage';
 import {expireToken} from '../../../../constants/Helper';
 
-const StockLists = () => {
+
+
+const StockLists = (props) => {
+
+  const navigation = props.navigation;
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [stockItem, setStockItem] = useState({});
   const addStockModalRef = useRef(null);
@@ -71,10 +78,31 @@ const StockLists = () => {
 
   useEffect(() => {
     callStockLists();
+    initializeLocationId();
     return () => {
       isMount = false;
     };
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      callStockLists();
+      initializeLocationId();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  // const initializeLocationId = async () => {
+      
+  // }
+
+  const initializeLocationId = useCallback( async() => {
+    var locationId = await getLocalData("@specific_location_id");    
+    if(locationId != null && locationId != undefined && locationId != ''){
+      setLocationId(locationId);      
+    }      
+  }, [locationId]);
+
 
   const callStockLists = () => {
     GetRequestStockListsDAO.find({})
@@ -124,7 +152,11 @@ const StockLists = () => {
     stockDetailsModalRef.current.hideModal();
     setTimeout(() => {
       if (type == Constants.actionType.ACTION_NEXT) {
-        setLocationId(value.locationId);
+        
+        if(value.locationId != undefined && value.locationId != null){
+          setLocationId(value.locationId);
+        } 
+        
         if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
           stockSignatureModalRef.current.showModal();
         } else if (
@@ -137,6 +169,7 @@ const StockLists = () => {
       }
     }, 500);
   };
+
   const onScanAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
@@ -190,11 +223,13 @@ const StockLists = () => {
       callStockLists();
     }
   };
-
+  
   const onStockConsumableModalClosed = ({type, value}) => {
     setTimeout(() => {
       if (type == Constants.actionType.ACTION_NEXT) {
-        setLocationId(value.locationId);
+        if(value.locationId != undefined && value.locationId != null){
+          setLocationId(value.locationId);
+        }         
         if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
           consumableSellToTraderModalRef.current.showModal();
         } else if (value.stockType === Constants.stockDeviceType.TRANSFER) {
@@ -220,7 +255,11 @@ const StockLists = () => {
     if (type == Constants.actionType.ACTION_NEXT) {
       simDetailsModalRef.current.hideModal();
       setStockItem({stock_type: Constants.stockType.SIM});
-      setLocationId(value.locationId);
+      
+      if(value.locationId != undefined && value.locationId != null){
+        setLocationId(value.locationId);
+      }       
+
       setTimeout(() => {
         if (value.stockType === Constants.stockDeviceType.SELL_TO_TRADER) {
           stockSignatureModalRef.current.showModal();
@@ -264,15 +303,18 @@ const StockLists = () => {
     setLastScannedQrCode('');
     simDetailsModalRef.current.hideModal();
   };
+
   const onCaptureSim = () => {
     setSelectedItems([]);
     simDetailsModalRef.current.showModal();
     dispatch(clearNotification());
   };
+
   const onCaptureDevice = () => {
     barcodeScanModalRef.current.showModal();
     dispatch(clearNotification());
   };
+
   const onSelectStockTypeForCapture = () => {
     dispatch(
       showNotification({

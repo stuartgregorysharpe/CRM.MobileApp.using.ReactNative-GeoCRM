@@ -3,13 +3,13 @@ import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./h
 import { Strings } from "../constants";
 import { jsonToFormData } from "../helpers/jsonHelper";
 
-export function find(locationId, postData , type, url , itemLabel , itemSubLabel = ''){
+export function find(locationId, postData , type, url , itemLabel , itemSubLabel){
   
   return new Promise(function(resolve, reject) {
 
-        checkConnectivity().then( async (isConnected) => {             
+        checkConnectivity().then( async (isConnected) => {
             if(isConnected){
-                if(type == "form_submission" || type === "leadfields"){                                                            
+                if(type == "form_submission" || type === "leadfields" || type === "sell_to_trader"){                                                            
                     const submitFormData =  jsonToFormData(postData);
                     submitFormData.append("mode", "online");
                     postApiRequestMultipart(url, submitFormData)
