@@ -33,7 +33,8 @@ export default {
   Due_Date: 'Due Date',
   Search_Location: 'Search Location',
   This_Function_Not_Available : 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
-
+  Offline_Mode: 'You are now operating in Offline mode.',
+  Online_Mode: 'You are now operationg in Online mode',
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',

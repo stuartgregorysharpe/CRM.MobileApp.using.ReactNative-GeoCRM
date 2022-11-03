@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_OFFLINE_STATUS, CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
 import { checkFeatureIncludeParam, getLocalData, storeLocalValue } from '../../constants/Storage';
+import { showNotification } from '../../actions/notification.action';
+import Strings from '../../constants/Strings';
+import Fonts from '../../constants/Fonts';
 
 export default function HeaderRightView() {
 
@@ -41,7 +44,7 @@ export default function HeaderRightView() {
           style={styles.toggleSwitch}
           label={toggleSwitch ? "Online" : "Offline"}
           labelStyle={styles.toggleSwitchLabel}
-          onColor="#fff"
+          onColor={Colors.whiteColor}
           offColor={Colors.redColor}
           size="small"
           thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
@@ -51,6 +54,7 @@ export default function HeaderRightView() {
             await storeLocalValue("@online", toggleSwitch ? "1" : "0");            
             dispatch({type: CHANGE_OFFLINE_STATUS , payload: !toggleSwitch });
             setToggleSwitch(toggleSwitch);
+            dispatch(showNotification({type: Strings.Success , message: toggleSwitch ? Strings.Online_Mode : Strings.Offline_Mode , buttonText: 'Ok'}));
           }}
         />}
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 })}>
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   toggleSwitchLabel: {
     color: '#fff',
     fontSize: 12,
-    fontFamily: 'Gilroy-Medium'
+    fontFamily: Fonts.secondaryMedium
   },
 
   headerAvatar: {
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
   headerAvatarText: {
     fontSize: 17,
     color: '#fff',
-    fontFamily: 'Gilroy-Bold',
+    fontFamily: Fonts.secondaryBold,
     alignSelf: 'center'
   }
 })
