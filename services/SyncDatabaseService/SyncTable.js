@@ -10,6 +10,7 @@ import { getBascketLastSyncTableData, insertBascketLastSync } from "../../sqlite
 export const initializeDB = async() => {
     
     var res = await getApiRequest("database/offline_database_structure", {offline_db_version: offlineDBVersion});
+
     if(res.status === Strings.Success){
         var offline_db_version = await getLocalData("@offline_db_version");
         if(offline_db_version != res.offline_db_version){                               
@@ -34,6 +35,7 @@ const syncTable = async(basketId) => {
     
     var lists = getBaskets();
     var basket = lists[basketId].slug;
+    
     var res = await getApiRequest(`database/sync-tables?offline_db_version=${offlineDBVersion}&sync_basket=` + basket, {});    
     if(res.status === Strings.Success){
         var tables = res.tables;
