@@ -4,13 +4,11 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,  
+  TouchableOpacity,
   SectionList,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faAngleDoubleRight,
-} from '@fortawesome/free-solid-svg-icons';
+import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
@@ -19,7 +17,8 @@ import Fonts from '../../../constants/Fonts';
 import {
   checkFeatureIncludeParam,
   getBaseUrl,
-  getToken,  
+  getToken,
+  storeLocalValue,
 } from '../../../constants/Storage';
 import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';
@@ -36,19 +35,21 @@ import {
 import moment from 'moment';
 import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
+import {useIsFocused} from '@react-navigation/native';
+
 var selectedIndex = 2;
 
-
 export default function CalendarScreen(props) {
-
   const dispatch = useDispatch();
   const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const isFocused = useIsFocused();
   const [tabIndex, setTabIndex] = useState(2);
   const [lists, setLists] = useState([]);
   const [todayList, setTodayList] = useState([]);
   const [isOptimize, setIsOptimize] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -71,6 +72,9 @@ export default function CalendarScreen(props) {
   });
 
   useEffect(() => {
+    onRefresh();
+  }, [isFocused]);
+  const onRefresh = () => {
     if (selectedIndex === 1) {
       if (lists.length === 0) {
         loadList('last_week');
@@ -85,7 +89,7 @@ export default function CalendarScreen(props) {
         loadList('week_ahead');
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -96,25 +100,29 @@ export default function CalendarScreen(props) {
     });
     return unsubscribe;
   }, [navigation]);
-
+  console.log('isLoading', isLoading);
   const loadList = async type => {
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
-    setIsAdd(await checkFeatureIncludeParam('calendar_add'));            
+    setIsAdd(await checkFeatureIncludeParam('calendar_add'));
     var base_url = await getBaseUrl();
     var token = await getToken();
     if (base_url != null && token != null) {
+      setIsLoading(true);
       getCalendar(base_url, token, type)
-        .then(res => {          
+        .then(res => {
+          console.log('res', res);
           if (selectedIndex == 2 || selectedIndex == 0) {
-            setTodayList(res);            
+            setTodayList(res);
           } else {
-            updateListForWeek(res);            
+            updateListForWeek(res);
           }
+          setIsLoading(false);
         })
         .catch(e => {
           setLists([]);
           setTodayList([]);
           expireToken(dispatch, e);
+          setIsLoading(false);
         });
     }
   };
@@ -164,6 +172,7 @@ export default function CalendarScreen(props) {
           item={item}
           current={currentLocation}
           tabIndex={tabIndex}
+          onRefresh={onRefresh}
           onItemSelected={() => {}}></CalendarItem>
       </View>
     );
@@ -181,7 +190,7 @@ export default function CalendarScreen(props) {
             {backgroundColor: isActive ? '#eee' : BG_COLOR},
           ]}>
           <CalendarItem
-            onItemSelected={() => {              
+            onItemSelected={() => {
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
             key={item.schedule_id}
@@ -272,6 +281,7 @@ export default function CalendarScreen(props) {
               renderItem={({item, index}) => {
                 return renderCalendarItem(item, index, tabIndex);
               }}
+              refreshing={isLoading}
               renderSectionHeader={({section}) => {
                 console.log(section);
                 return (
@@ -307,6 +317,7 @@ export default function CalendarScreen(props) {
                   setTodayList(newlists);
                   updateTodayLocationLists(tmp);
                 }}
+                refreshing={isLoading}
                 keyExtractor={item => item.schedule_id}
                 renderItem={renderTodayItem}
               />
@@ -333,7 +344,6 @@ export default function CalendarScreen(props) {
           <TouchableOpacity
             style={style.innerPlusButton}
             onPress={() => {
-                            
               dispatch({
                 type: IS_CALENDAR_SELECTION,
                 payload: true,
