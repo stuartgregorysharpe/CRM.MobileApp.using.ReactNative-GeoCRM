@@ -12,11 +12,12 @@ import { useDispatch } from 'react-redux';
 
 export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submissionType }) => {
 
-    const [isYes, setIsYes] = useState(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
+    const [isYes, setIsYes] = useState(false);
     const [isNo, setIsNo] = useState(item.value !== null && item.value.toLowerCase() == 'no' ? true:false);
     const [isPicker , setIsPicker] = useState(false);
     const dispatch = useDispatch();
     const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+
   
 
     const showSelectionDialog = () => {
@@ -122,6 +123,16 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submiss
     const isQuesionAnswered = isRequiredImage ? item && haveImage() : item != undefined && item.value != null && item.value != ""
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
     
+
+    useEffect(() => {
+      // if(isRequiredImage){
+      //   setIsYes(isIncludeImage("Yes"));
+      // }else{        
+      // }
+      setIsYes(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
+      
+    },[]);
+
     const getMarginLeft = () => {
       if(item.value != null && item.value.toLowerCase() === 'no' && !isIncludeImage("No")){
         return 20;
@@ -213,7 +224,7 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submiss
                     }
 
                     {
-                        isIncludeImage( isYes ? 'Yes' : 'No') && item.value !== null && getImagePath() === undefined &&
+                        isIncludeImage( isYes ? 'Yes' : 'No') && item.value !== null && (getImagePath() === undefined || getImagePath().length == 0) &&
                         <TouchableOpacity style={[styles.imageContainer, {marginLeft:30 }]} onPress={() => { 
                             showSelectionDialog()                          
                           } }>
