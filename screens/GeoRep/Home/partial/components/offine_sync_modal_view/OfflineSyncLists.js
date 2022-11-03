@@ -6,7 +6,7 @@ import Colors, { whiteLabel } from '../../../../../../constants/Colors';
 const OfflineSyncLists = props => {
 
     const { lists , onItemSelected } = props;
-    console.log("MUIT",lists)
+    
 
     const renderItem = (item, index) => {
 

@@ -1,7 +1,8 @@
 import { Constants, Strings } from "../constants";
-import { getConvertedDate, getConvertedDateTime, getDateTime, getDateTimeFromBasketTime } from "../helpers/formatHelpers";
+import { getConvertedDate } from "../helpers/formatHelpers";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 import GetRequest from "./GetRequest";
+import { getOfflineSyncItem } from '../sqlite/OfflineSyncItemsHelper'
 
 export function find(postData){
   
@@ -18,8 +19,9 @@ export function find(postData){
                 const user_id = res.data.user_id;
 
                 if(client_id && business_unit_id && user_id){                    
-                    var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);                    
-                    resolve({status: Strings.Success , stock_items: getData(lists)});                                                       
+                    var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);                                   
+                    var offlineItems = await getOfflineSyncItem('sell_to_trader');                    
+                    resolve({status: Strings.Success , stock_items: getData(lists , offlineItems)});                                                       
                 }else{
                     reject();
                 }            
@@ -70,14 +72,44 @@ const generateQuery = (postData) => {
     return query;
 }
 
+const getDiscount = ( offlineItems ,  stock_type, stock_item_id) => {
+    
+    var count = 0;
+    for(var i = 0; i < offlineItems.length; i++){
+        var element = offlineItems.item(i);        
+        if(element.item_label === stock_type){
+            const body =  JSON.parse(element.post_body);
+            if(stock_type === Constants.stockType.CONSUMABLE || stock_type === Constants.stockType.DEVICE){
+                if(parseInt(body.stock_item_id) == parseInt(stock_item_id)){
+                    if(stock_type === Constants.stockType.CONSUMABLE){
+                        count = count +  parseInt(body.sell_quantity);
+                    }else{    
+                        return 1;
+                    }                
+                }
+            }else{
+                Object.keys(body).forEach(key => {                    
+                    if(key.includes("stock_item_ids")){
+                        console.log("keysss ==" , stock_item_id , body[key])
+                        if(body[key] === stock_item_id.toString()){                                                        
+                            count = 1;
+                        }
+                    }
+                });
+            }            
+                   
+        }
+    }
+    return count;
+}
 
-const getData = (lists) => {
+const getData = (lists , offlineItems) => {
     var tmp = [];    
     var simItems  = [];
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);
 
-        
+        var qty = 0;
         if(element.type == Constants.stockType.DEVICE || element.type == Constants.stockType.CONSUMABLE){
             if(element.type == Constants.stockType.DEVICE) {
                 serial = element.device_serial_number;
@@ -86,18 +118,23 @@ const getData = (lists) => {
             if(element.type == Constants.stockType.CONSUMABLE) {
                 serial = "";
                 qty = element.consumables_quantity;
+            }                        
+            var discountCount = 0 ;            
+            discountCount = getDiscount(offlineItems , element.type, element.stock_module_item_id);
+            console.log("discountCount == ", discountCount , element.stock_module_item_id , element.type )  
+            if( !(discountCount == 1 &&  element.type != Constants.stockType.CONSUMABLE) ){
+                tmp.push(
+                    {
+                        stock_item_id: element.stock_module_item_id,
+                        description : element.description,
+                        stock_type : element.type,
+                        added_date : getConvertedDate(element.added_date),
+                        serial : serial,
+                        qty :  qty != "" ? parseInt(qty) - discountCount : ''
+                    }
+                );  
             }
-            
-            tmp.push(
-                {
-                    stock_item_id: element.stock_module_item_id,
-                    description : element.description,
-                    stock_type : element.type,
-                    added_date : getConvertedDate(element.added_date),
-                    serial : serial,
-                    qty : qty
-                }
-            );                 
+                           
         }
         
         if(element.type == Constants.stockType.SIM){
@@ -110,28 +147,22 @@ const getData = (lists) => {
                 brick : element.sim_brick,
                 kit : element.sim_kit                
             }
-            
-            console.log("Sim Item  Description : " , element.description);
-            console.log("Sim Item : " , simItem);
-
-            simItems.push( {
-                [element.description]:{
-                    date: element.added_date,
-                    items: [simItem]
-                }
-            });      
-
-            // if (!simItems[element.description]) {
-            //     simItems[element.description] = [];
-            // }            
-            // simItems[element.description].push({date: element.added_date , items: [simItem] });
-            console.log("DDDD == " , simItems[element.description]);
-            
+                    
+            var discountCount = getDiscount(offlineItems , Constants.stockType.SIM , element.stock_module_item_id);            
+            if(discountCount == 0){
+                simItems.push( {
+                    [element.description]:{
+                        date: element.added_date,
+                        items: [simItem]
+                    }
+                });      
+            }                        
         }                 
     }
     
     simItems.forEach((item) => {
-        Object.keys(item).forEach(key => {
+        Object.keys(item).forEach(key => {            
+
             tmp.push({
                 stock_type : Constants.stockType.SIM,
                 network: key,

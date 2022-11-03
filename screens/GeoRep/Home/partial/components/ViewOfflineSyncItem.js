@@ -16,7 +16,8 @@ const ViewOfflineSyncItem = props => {
     const modalClosed = ({type, value}) => {        
         if(type == Constants.actionType.ACTION_CLOSE){
             offlineSyncModalRef.current.hideModal();
-            updateCount();
+            console.log(" modal closed value" , value , type);
+            updateCount(value);
         }
     }
 

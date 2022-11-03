@@ -18,14 +18,17 @@ const  ViewOfflineSyncItemContainer = props => {
         setCount(items.length);  
     }
 
-    const updateCount = () => {
+    const updateCount = (message) => {
         getCount();        
-        onSyncStart();
+        onSyncStart(message);
+        console.log(" ============= on start "  , message);
     }
     
     return (
         <View>
-            <ViewOfflineSyncItem count={count} onClosed={onClosed} updateCount={updateCount}/>
+            <ViewOfflineSyncItem count={count} onClosed={onClosed} updateCount={(messge) => {
+                updateCount(messge);
+            }}/>
         </View>
     )
 }

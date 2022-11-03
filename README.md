@@ -60,8 +60,7 @@ https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
 3. it is the time to generate apk and aab file for android.
    we need to run following commands in terminal
 
-   react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle 
-   --assets-dest android/app/src/main/res/
+   react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
 
    cd android
 

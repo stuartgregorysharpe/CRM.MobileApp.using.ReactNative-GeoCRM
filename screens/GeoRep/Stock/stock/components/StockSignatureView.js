@@ -6,11 +6,11 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
 import {Constants, Strings} from '../../../../../constants';
-import uuid from 'react-native-uuid';
-import {validateMsisdn} from '../../../../../helpers/formatHelpers';
+import {validateMsisdn} from '../../../../../helpers/validateHelper';
 import {generateKey} from '../../../../../constants/Utils';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+
 var previousText = Constants.msisdnPrefix;
 
 export default function StockSignatureView(props) {

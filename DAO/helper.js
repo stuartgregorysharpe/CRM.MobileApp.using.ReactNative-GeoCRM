@@ -6,7 +6,6 @@ import { insertOfflineSyncItem } from "../sqlite/OfflineSyncItemsHelper";
 import uuid from 'react-native-uuid';
 import { getDateTime } from "../helpers/formatHelpers";
 import * as RNLocalize from 'react-native-localize';
-import { formDataToJsonString } from "../helpers/jsonHelper";
 import { generateKey } from "../constants/Utils";
 
 export function checkConnectivity(){
@@ -52,37 +51,56 @@ export function getFullAddress (element){
     }
     return address;
 }
-  
-export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabel , itemSubLabel){
 
-    return new Promise( async function(resolve, reject) {   
-        try{            
-            var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
-            var res = await ExecuteQuery(query, [locationId]);
-            
+const getItemLabel = (locationName, address, label) => {
+    if(label != ""){
+        return label;
+    }
+    return locationName;
+}
+
+const getItemSubLabel = (locationName, address, subLabel , type) => {
+    if(subLabel != ""){
+        return subLabel;
+    }
+    if(type == "form_submission" || type == "leadfields"){
+        return locationName;
+    }
+    return address;
+}
+  
+export function saveOfflineSyncItems(locationId , postData , type, url , itemLabel , itemSubLabel){
+
+    return new Promise( async function(resolve, reject) {
+        try{
+       
             var location_name = '';
             var address = '';
-            if( res != undefined  && res.rows.length > 0){
-                location_name = res.rows.item(0).location_name;
-                address = getFullAddress(res.rows.item(0));
-            }else{
-                console.log("No Location ID", locationId)            
-            }         
+
+            if(locationId != 0){
+                var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
+                var res = await ExecuteQuery(query, [locationId]);
+                if( res != undefined  && res.rows.length > 0){
+                    location_name = res.rows.item(0).location_name;
+                    address = getFullAddress(res.rows.item(0));
+                }else{
+                    console.log("No Location ID", locationId)            
+                }
+            }
+
+            
             var time_zone = '';
             try {
                 time_zone = RNLocalize.getTimeZone();
             } catch (e) {}
             
-            var added_time = getDateTime();                
-            var item_label = location_name;
-            var item_sub_text = address;
+            var added_time = getDateTime();
+            var item_label =  getItemLabel(location_name, address , itemLabel);
+            var item_sub_text = getItemSubLabel(location_name , address , itemSubLabel , type);
             var post_body = JSON.stringify(postData);
 
-            if(type == "form_submission" || type == "leadfields"){
-                item_label = itemLabel;
-                item_sub_text = itemSubLabel != "" ? itemSubLabel : location_name;
-            }  
-                                    
+            console.log("typer" , type)
+
             var data = [
                 generateKey(),  //indempotency_key, 
                 type, //item_type
@@ -106,6 +124,7 @@ export function saveOfflineSyncItems(locationId , postData , type, url ,itemLabe
     });              
 }
 
+
 export function getResponseMessage (type , url) {
     if(type ==  'checkin'){
         return Strings.PostRequestResponse.Successfully_Checkin;
@@ -115,6 +134,10 @@ export function getResponseMessage (type , url) {
         return Strings.PostRequestResponse.Successfully_Feedback;
     }else if(type == "form_submission"){
         return Strings.PostRequestResponse.Successfully_Form_Submit;
+    }else if(type == "add_stock"){
+        return Strings.Stock.Successfully_Stock_Submit;
+    }else if(type == "sell_to_trader"){
+        return Strings.Stock.Successfully_Sell_To_Trader
     }
     return Strings.PostRequestResponse.Successfully_Checkin;    
 }

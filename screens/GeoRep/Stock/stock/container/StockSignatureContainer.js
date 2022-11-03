@@ -12,9 +12,12 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
+import { generateKey } from '../../../../../constants/Utils';
 
 export default function StockSignatureContainer(props) {
+
   const {item, selectedCodes, signatureModalType} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +30,8 @@ export default function StockSignatureContainer(props) {
     if (received != '' && signature != null) {
       setIsLoading(true);
       var postData = new FormData();
+      var time_zone = RNLocalize.getTimeZone();
+
       RNFS.exists(signature)
         .then(res => {
           if (res) {
@@ -46,75 +51,94 @@ export default function StockSignatureContainer(props) {
               setIsLoading(false);
               return;
             }
-
-            postData.append('signature_image', {
-              uri: signature,
-              type: 'image/png',
-              name: 'sign.png',
-            });
-            postData.append('received_by', received);
-            var time_zone = RNLocalize.getTimeZone();
-            postData.append('user_local_data[time_zone]', time_zone);
-            postData.append(
-              'user_local_data[latitude]',
-              currentLocation && currentLocation.latitude != null
-                ? currentLocation.latitude
-                : '0',
-            );
-            postData.append(
-              'user_local_data[longitude]',
-              currentLocation && currentLocation.longitude != null
-                ? currentLocation.longitude
-                : '0',
-            );
+            
+            var postJsonData = {
+              signature_image : {
+                uri: signature,
+                type: 'image/png',
+                name: 'sign_' + generateKey() + '.png',
+              },
+              received_by : received,
+              'user_local_data[time_zone]' : time_zone,
+              'user_local_data[latitude]' : currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0',
+              'user_local_data[longitude]' : currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0'
+            }
 
             if (item.stock_type != Constants.stockType.RETURN) {
-              postData.append('stock_type', item.stock_type);
-              postData.append('location_id', props.locationId);
+              
+              postJsonData = {
+                ...postJsonData,
+                stock_type : item.stock_type,
+                location_id : props.locationId.toString()
+              }
+
               if (item.stock_type == Constants.stockType.DEVICE) {
-                postData.append('stock_item_id', props.item.stock_item_id);
-                postData.append('assigned_msisdn', msisdn);
+                postJsonData = {
+                  ...postJsonData,
+                  stock_item_id : props.item.stock_item_id.toString(),
+                  assigned_msisdn : msisdn
+                }                
               } else if (item.stock_type == Constants.stockType.SIM) {
-                console.log('selectedCodes=', selectedCodes);
                 selectedCodes.forEach((item, index) => {
-                  postData.append(
-                    `sims[stock_item_ids][${index}]`,
-                    item.stock_item_id,
-                  );
+                  var keyValue = `sims[stock_item_ids][${index}]`;
+                  postJsonData = {
+                    ...postJsonData,
+                    [keyValue] : item.stock_item_id.toString()
+                  }                                  
                 });
               }
-              postApiRequestMultipart('stockmodule/sell-to-trader', postData)
-                .then(res => {
-                  setIsLoading(false);
-                  dispatch(
-                    showNotification({
-                      type: Strings.Success,
-                      message: res.message,
-                      buttonText: 'Ok',
-                      buttonAction: async () => {
-                        props.onButtonAction({
-                          type: Constants.actionType.ACTION_CLOSE,
-                        });
-                        dispatch(clearNotification());
-                      },
-                    }),
-                  );
-                })
-                .catch(e => {
-                  setIsLoading(false);
-                  if (e === 'expired') {
-                    expireToken(dispatch, e);
-                  } else {
-                    dispatch(
-                      showNotification({
-                        type: Strings.Success,
-                        message: 'Error',
-                        buttonText: 'Ok',
-                      }),
-                    );
-                  }
-                });
+
+              var networks = selectedCodes.map(item => item.network).join(',');              
+
+              PostRequest.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
+              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks ).then((res) => {
+                dispatch(
+                  showNotification({
+                    type: Strings.Success,
+                    message: res.message,
+                    buttonText: 'Ok',
+                    buttonAction: async () => {
+                      props.onButtonAction({
+                        type: Constants.actionType.ACTION_CLOSE,
+                      });
+                      dispatch(clearNotification());
+                    },
+                  }),
+                );
+              }).catch((e) => {
+                expireToken(dispatch, e);
+                dispatch(
+                  showNotification({
+                    type: Strings.Success,
+                    message: 'Error',
+                    buttonText: Strings.Ok,
+                  }),
+                );
+              });
+
             } else if (item.stock_type == Constants.stockType.RETURN) {
+
+              postData.append('signature_image', {
+                uri: signature,
+                type: 'image/png',
+                name: 'sign.png',
+              });
+              postData.append('received_by', received);
+              
+              postData.append('user_local_data[time_zone]', time_zone);
+              postData.append(
+                'user_local_data[latitude]',
+                currentLocation && currentLocation.latitude != null
+                  ? currentLocation.latitude
+                  : '0',
+              );
+              postData.append(
+                'user_local_data[longitude]',
+                currentLocation && currentLocation.longitude != null
+                  ? currentLocation.longitude
+                  : '0',
+              );
+
               if (props.stockItemIds.length > 0) {
                 props.stockItemIds.forEach((item, index) => {
                   postData.append(`stock_item_ids[${index}]`, item);

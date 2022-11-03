@@ -1,4 +1,4 @@
-import {Constants} from '../../../../constants';
+import {Constants, Strings} from '../../../../constants';
 import * as RNLocalize from 'react-native-localize';
 import {getLocalData} from '../../../../constants/Storage';
 import {getFileFormat} from '../../../../constants/Helper';
@@ -40,11 +40,10 @@ export async function getFormSubmissionPostJsonData(
   currentLocation,
   form_answers,
   files,
-  type = "submit"
+  type = 'submit',
 ) {
   try {
-
-    console.log("Type", type);
+    console.log('Type', type);
 
     var lat = await getLocalData('@latitude');
     var lon = await getLocalData('@longitude');
@@ -55,19 +54,19 @@ export async function getFormSubmissionPostJsonData(
     } catch (e) {}
 
     var postDataJson = {};
-    if(type == "edit"){
+    if (type == 'edit') {
       postDataJson = {
-        're-submission' : "1",
-        "previous_submission_id" : form_id
-      }
-    }else{
+        're-submission': '1',
+        previous_submission_id: form_id,
+      };
+    } else {
       postDataJson = {
-        form_id: form_id
-      }
+        form_id: form_id,
+      };
     }
 
     postDataJson = {
-      ...postDataJson,      
+      ...postDataJson,
       location_id: locationId,
       online_offline: 'online',
       'user_local_data[time_zone]': time_zone,
@@ -321,8 +320,58 @@ function checkTextTriggerCondition(condition, answer, value) {
   return true;
 }
 
+export function checkRuleCharactersFormQuestion(formQuestionItem) {
+  const rule_characters = formQuestionItem.rule_characters;
+  if (!rule_characters || rule_characters == '') return null;
+  let errorMessage = null;
+  const questionText = formQuestionItem.question_text;
+  const value = formQuestionItem.value;
+
+  if (rule_characters.includes(',')) {
+    const splited = rule_characters.split(',');
+    if (splited.length > 1) {
+      const characterLengthString = splited[1].trim();
+      const operator = splited[0];
+      console.log('rule_characters', rule_characters);
+      console.log('operator', operator);
+      console.log('characterLengthString', characterLengthString);
+      if (characterLengthString != '') {
+        const characterLength = Number(characterLengthString);
+        if (operator == '=') {
+          if (
+            value &&
+            typeof value == 'string' &&
+            value.length != characterLength
+          ) {
+            errorMessage = `${questionText} must have ${characterLength} characters`;
+          }
+        } else if (operator == '>') {
+          if (
+            value &&
+            typeof value == 'string' &&
+            value.length <= characterLength
+          ) {
+            errorMessage = `${questionText} must have more than ${characterLength} characters`;
+          }
+        } else if (operator == '<') {
+          console.log('value');
+          if (
+            value &&
+            typeof value == 'string' &&
+            value.length >= characterLength
+          ) {
+            errorMessage = `${questionText} must have less than ${characterLength} characters`;
+            console.log('errorMessage', errorMessage);
+          }
+        }
+      }
+    }
+  }
+  console.log('errorMessage', errorMessage);
+  return errorMessage;
+}
 export function validateFormQuestionData(formQuestions) {
-  var flag = true;
+  let error = null;
   formQuestions.forEach(element => {
     element.questions.forEach(item => {
       if (
@@ -330,11 +379,22 @@ export function validateFormQuestionData(formQuestions) {
         item.rule_compulsory === '1' &&
         (item.value === null || item.value === '' || item.value === undefined)
       ) {
-        flag = false;
+        error = Strings.Complete_Compulsory_Questions;
+      } else {
+        console.log('item', item);
+        if (
+          item.isHidden == false &&
+          item.rule_characters &&
+          item.rule_characters != ''
+        ) {
+          if (error == null) {
+            error = checkRuleCharactersFormQuestion(item);
+          }
+        }
       }
     });
   });
-  return flag;
+  return error;
 }
 
 export function getFormQuestionData(formQuestions) {
@@ -537,9 +597,14 @@ export function getFormQuestionFile(formQuestions) {
       if (
         item.question_type === 'upload_file' ||
         item.question_type === 'take_photo' ||
-        (item.question_type === 'yes_no' && (item.yes_image && item.yes_image != undefined && item.yes_image.length > 0 || item.no_image && item.no_image !=undefined && item.no_image.length > 0))
-      ) {        
-
+        (item.question_type === 'yes_no' &&
+          ((item.yes_image &&
+            item.yes_image != undefined &&
+            item.yes_image.length > 0) ||
+            (item.no_image &&
+              item.no_image != undefined &&
+              item.no_image.length > 0)))
+      ) {
         var paths = item.value;
         if (item.yes_image != null && item.yes_image != '') {
           paths = item.yes_image;
