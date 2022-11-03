@@ -14,9 +14,15 @@ import {whiteLabel} from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {checkFeatureIncludeParam} from '../../../../constants/Storage';
 import {style} from '../../../../constants/Styles';
+import { useDispatch } from 'react-redux';
+import { checkConnectivity } from '../../../../DAO/helper';
+import { showOfflineDialog } from '../../../../constants/Helper';
 
 export default function WazeNavigation({location, address}) {
+
   const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch()
+
   useEffect(() => {
     checkVisible();
   }, []);
@@ -24,6 +30,54 @@ export default function WazeNavigation({location, address}) {
   const checkVisible = async () => {
     setVisible(await checkFeatureIncludeParam('navigation'));
   };
+
+  const openWaze = async() => {
+
+    var wazeByAddress = await checkFeatureIncludeParam(
+      'waze_by_address',
+    );
+    try {
+      if (wazeByAddress) {
+        var parseLocation = await parseCoordinate(address);
+        if (parseLocation) {
+          Linking.openURL(
+            `https://waze.com/ul?q=${encodeURIComponent(
+              address,
+            )}&ll=` +
+              parseLocation.latitude +
+              ',' +
+              parseLocation.longitude +
+              '&navigate=yes',
+          );
+        } else {
+          Linking.openURL(
+            'https://waze.com/ul?ll=' +
+              location.latitude +
+              ',' +
+              location.longitude +
+              '&navigate=no',
+          );
+        }
+      } else {
+        Linking.openURL(
+          'https://waze.com/ul?ll=' +
+            location.latitude +
+            ',' +
+            location.longitude +
+            '&navigate=no',
+        );
+      }
+    } catch (e) {
+      if (Platform.OS === 'android') {
+        Linking.openURL('market://details?id=com.waze');
+      } else {
+        Linking.openURL(
+          'http://itunes.apple.com/us/app/id323229106',
+        );
+      }
+    }
+
+  }
 
   return (
     <View styles={styles.container}>
@@ -55,50 +109,15 @@ export default function WazeNavigation({location, address}) {
             }}>
             <TouchableOpacity
               onPress={async () => {
-                console.log('loc', location);
-                var wazeByAddress = await checkFeatureIncludeParam(
-                  'waze_by_address',
-                );
-                try {
-                  if (wazeByAddress) {
-                    var parseLocation = await parseCoordinate(address);
-                    if (parseLocation) {
-                      Linking.openURL(
-                        `https://waze.com/ul?q=${encodeURIComponent(
-                          address,
-                        )}&ll=` +
-                          parseLocation.latitude +
-                          ',' +
-                          parseLocation.longitude +
-                          '&navigate=yes',
-                      );
-                    } else {
-                      Linking.openURL(
-                        'https://waze.com/ul?ll=' +
-                          location.latitude +
-                          ',' +
-                          location.longitude +
-                          '&navigate=no',
-                      );
-                    }
-                  } else {
-                    Linking.openURL(
-                      'https://waze.com/ul?ll=' +
-                        location.latitude +
-                        ',' +
-                        location.longitude +
-                        '&navigate=no',
-                    );
+                
+                checkConnectivity().then((isConnected) => {
+                  if(isConnected){
+                    openWaze()
+                  }else{
+                    showOfflineDialog(dispatch)
                   }
-                } catch (e) {
-                  if (Platform.OS === 'android') {
-                    Linking.openURL('market://details?id=com.waze');
-                  } else {
-                    Linking.openURL(
-                      'http://itunes.apple.com/us/app/id323229106',
-                    );
-                  }
-                }
+                })
+                
               }}>
               <View style={{flex: 1, marginLeft: 10, flexWrap: 'wrap'}}>
                 <View style={styles.wazeStyle}>

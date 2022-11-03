@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native
 import Colors, { whiteLabel } from '../../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
+import { CHANGE_OFFLINE_STATUS, CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
 import { checkFeatureIncludeParam, getLocalData, storeLocalValue } from '../../constants/Storage';
 
 export default function HeaderRightView() {
@@ -13,10 +13,10 @@ export default function HeaderRightView() {
   const [toggleSwitch, setToggleSwitch] = useState(true);
   const [canShowToggle, setShowToggle] = useState(true);
 
-  useEffect(() => {    
+  useEffect(() => {
     getToggleStatus();
     setOnlineOffline();
-  });
+  },[]);
 
   const getToggleStatus = async () => {
     let res = await checkFeatureIncludeParam("offline_toggle");    
@@ -24,14 +24,16 @@ export default function HeaderRightView() {
   }
 
   const setOnlineOffline = async () => {
-    var isOnline = await getLocalData("@online");
+    var isOnline = await getLocalData("@online");    
     if(isOnline === "1" || isOnline === undefined){
       setToggleSwitch(true);
+      dispatch({type: CHANGE_OFFLINE_STATUS , payload: false});
     }else{
       setToggleSwitch(false);
+      dispatch({type: CHANGE_OFFLINE_STATUS , payload: true});
     }
   }
- 
+
   return (
     <View style={styles.headerRightView}>
       {canShowToggle &&
@@ -45,10 +47,10 @@ export default function HeaderRightView() {
           thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
           thumbOffStyle={{ backgroundColor: whiteLabel().headerBackground }}
           isOn={toggleSwitch}
-          onToggle={ async (toggleSwitch)  => {
-            console.log("clicked", toggleSwitch)
+          onToggle={ async (toggleSwitch)  => {            
             await storeLocalValue("@online", toggleSwitch ? "1" : "0");            
-            setToggleSwitch(toggleSwitch);      
+            dispatch({type: CHANGE_OFFLINE_STATUS , payload: !toggleSwitch });
+            setToggleSwitch(toggleSwitch);
           }}
         />}
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 })}>

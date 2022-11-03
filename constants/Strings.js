@@ -20,6 +20,7 @@ export default {
   Fsu_Campaign: 'Capture FSU',
   You_Are_Currenly_Checkedin: 'You are currently checked-in to a location',
   Success: 'success',
+  Failed: 'Failed',
   Last_Synced_Date: 'Last Synced: ',
   Choose_Reason: 'Please choose a reason before making a selection or scanning',
   MSISDN_Error_Message: 'MSISDN must be 11 digits',
@@ -31,6 +32,7 @@ export default {
   Added_Date: 'Added Date',
   Due_Date: 'Due Date',
   Search_Location: 'Search Location',
+  This_Function_Not_Available : 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
 
   CRM: {
     Access_CRM: 'Access CRM',

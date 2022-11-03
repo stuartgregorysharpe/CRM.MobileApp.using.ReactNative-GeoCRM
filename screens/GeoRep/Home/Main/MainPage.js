@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
 import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
-import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import {expireToken, getPostParameter, showOfflineDialog} from '../../../../constants/Helper';
 import {Constants, Strings} from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
 import {updateCurrentLocation} from '../../../../actions/google.action';
@@ -19,6 +19,8 @@ import {showNotification} from '../../../../actions/notification.action';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import {initializeDB} from '../../../../services/SyncDatabaseService/SyncTable';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
+import { checkConnectivity } from '../../../../DAO/helper';
+import { PostRequestDAO } from '../../../../DAO';
 
 const MainPage = props => {
   const dispatch = useDispatch();
@@ -31,6 +33,7 @@ const MainPage = props => {
   const [visitCard, setVisitCard] = useState(null);
   const pageWidth = Dimensions.get('screen').width - 20;
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const odometerReadingModalRef = useRef(null);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -40,6 +43,7 @@ const MainPage = props => {
   const isCheckin = useSelector(state => state.location.checkIn);
   const navigation = props.navigation;
   const [isLoading, setIsLoading] = useState(false);
+  const [isScrollable , setIsScrollable] = useState(true);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -60,7 +64,21 @@ const MainPage = props => {
       console.log(' ----------------- initaliz db end ---------------- ');
       setRefresh(true);
     });
+    checkConnectivity().then((isConnected) => {
+        if(!isConnected){
+          setIsScrollable(false)
+        }
+    })
   }, []);
+
+  useEffect(() => {
+    console.log("changed offline status", offlineStatus)
+    if(offlineStatus){
+      setIsScrollable(false)
+    }else{
+      setIsScrollable(true)
+    }
+  }, [offlineStatus]);
 
   const cleanLocationId = async () => {
     await storeLocalValue('@specific_location_id', '');
@@ -125,6 +143,7 @@ const MainPage = props => {
   };
 
   const _callMyDay = () => {
+
     var userParam = getPostParameter(currentLocation);
     var postData = {
       startEndDay_type: isStart
@@ -135,20 +154,21 @@ const MainPage = props => {
           ? userParam.user_local_data
           : {time_zone: '', latitude: 0, longitude: 0},
     };
-    postApiRequest('home/startEndDay', postData)
-      .then(async res => {
-        if (res.status === Strings.Success) {
-          setStartEndDayId(res.startEndDay_id);
-          await storeLocalValue('start_my_day', isStart ? '0' : '1');
-          setIsStart(!isStart);
-          if (features.includes('odometer_reading')) {
-            odometerReadingModalRef.current.showModal();
-          }
+
+    PostRequestDAO.find(0, postData, "start_end_day" , 'home/startEndDay', '' , '' , dispatch).then( async(res) => {
+      if (res.status === Strings.Success) {
+        setStartEndDayId(res.startEndDay_id);
+        await storeLocalValue('start_my_day', isStart ? '0' : '1');
+        setIsStart(!isStart);
+        if (features.includes('odometer_reading')) {
+          odometerReadingModalRef.current.showModal();
         }
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
+      }else if(res.status === "NOIMPLEMENT"){
+        showOfflineDialog(dispatch);
+      }
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    });   
   };
 
   const onCaptureAction = async ({type, value}) => {
@@ -214,6 +234,7 @@ const MainPage = props => {
         removeClippedSubviews={false}
         initialNumToRender={10}
         horizontal={true}
+        scrollEnabled={isScrollable}
         pagingEnabled={true}
         showsHorizontalScrollIndicator={false}
         data={pages}

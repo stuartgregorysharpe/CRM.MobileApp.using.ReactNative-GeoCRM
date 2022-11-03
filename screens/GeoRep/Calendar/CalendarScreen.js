@@ -34,8 +34,9 @@ import {
   LOCATION_LOOP_LISTS,
 } from '../../../actions/actionTypes';
 import moment from 'moment';
-import {expireToken, getPostParameter} from '../../../constants/Helper';
+import {expireToken, getPostParameter, showOfflineDialog} from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
+import { checkConnectivity } from '../../../DAO/helper';
 var selectedIndex = 2;
 
 
@@ -196,6 +197,36 @@ export default function CalendarScreen(props) {
     );
   };
 
+  const onTabChanged = (tabIndex) => {
+    checkConnectivity().then((isConnected) => {
+      if(isConnected){
+        setTabIndex(tabIndex);
+        selectedIndex = tabIndex;
+        var weekName = "last_week";
+        if(tabIndex == 2){
+          weekName = "today"
+        }else if(tabIndex == 3){
+          weekName = "week_ahead";
+        }
+        loadList(weekName);    
+      }else{
+        showOfflineDialog(dispatch)
+      }
+    })    
+  }
+
+  const addLocationToCalendar = () => {
+    dispatch({
+      type: IS_CALENDAR_SELECTION,
+      payload: true,
+    });
+
+    props.navigation.navigate('CRM', {
+      screen: 'LocationSearch',
+      params: {calendar_type: 'optimize'},
+    });
+  }
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -204,9 +235,7 @@ export default function CalendarScreen(props) {
           <TouchableOpacity
             style={styles.tabItem}
             onPress={() => {
-              setTabIndex(1);
-              selectedIndex = 1;
-              loadList('last_week');
+              onTabChanged(1)
             }}>
             <Text
               style={[
@@ -220,9 +249,7 @@ export default function CalendarScreen(props) {
           <TouchableOpacity
             style={styles.tabItem}
             onPress={() => {
-              setTabIndex(2);
-              selectedIndex = 2;
-              loadList('today');
+              onTabChanged(2)
             }}>
             <Text
               style={[
@@ -236,9 +263,7 @@ export default function CalendarScreen(props) {
           <TouchableOpacity
             style={styles.tabItem}
             onPress={() => {
-              setTabIndex(3);
-              selectedIndex = 3;
-              loadList('week_ahead');
+              onTabChanged(3)
             }}>
             <Text
               style={[
@@ -333,16 +358,16 @@ export default function CalendarScreen(props) {
           <TouchableOpacity
             style={style.innerPlusButton}
             onPress={() => {
-                            
-              dispatch({
-                type: IS_CALENDAR_SELECTION,
-                payload: true,
-              });
+              
+              checkConnectivity().then((isConnected) => {
+                if(isConnected){
+                  addLocationToCalendar();
+                }else{
+                  showOfflineDialog(dispatch)
+                }
+              })
+              
 
-              props.navigation.navigate('CRM', {
-                screen: 'LocationSearch',
-                params: {calendar_type: 'optimize'},
-              });
             }}>
             <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
           </TouchableOpacity>

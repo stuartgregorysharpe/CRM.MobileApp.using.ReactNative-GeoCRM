@@ -13,15 +13,14 @@ export default function HomeScreen(props) {
   const [tabs, setTabs] = useState([]);  
   const features = useSelector(state => state.selection.payload.user_scopes.geo_rep.features);
 
+
   useEffect(() => {  
     setTabs(generateTabs(features));        
   }, []);
 
   useEffect(() => {
-      var screenProps = props.screenProps;
 
-      
-	  
+      var screenProps = props.screenProps;      	  
       if (screenProps === undefined) {        	
         	screenProps = props.navigation;			
       }
@@ -48,7 +47,7 @@ export default function HomeScreen(props) {
         <ScrollTab
           tabs={tabs}
           onTabSelection={item => {
-            setTabIndex(item.name);
+			setTabIndex(item.name);                    
           }}></ScrollTab>
       </View>
       

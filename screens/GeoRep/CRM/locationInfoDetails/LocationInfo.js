@@ -19,11 +19,17 @@ import {
   requestCameraPermission,
 } from '../../../../constants/Utils';
 import MsisdnInfo from './MsisdnInfo';
+import { useDispatch } from 'react-redux';
+import { checkConnectivity } from '../../../../DAO/helper';
+import { showOfflineDialog } from '../../../../constants/Helper';
 
 const LocationInfo = props => {
+
   const {locationInfo, filePath} = props;
 
   const [isPicker, setIsPicker] = useState(false);
+  const dispatch = useDispatch()
+
   const renderImage = () => {
     if (filePath !== '')
       return <Image style={styles.walmartImage} source={{uri: filePath}} />;
@@ -62,7 +68,14 @@ const LocationInfo = props => {
       <View style={[styles.walmartImageBox]}>
         <TouchableOpacity
           onPress={() => {
-            setIsPicker(true);
+            checkConnectivity().then((isConnected) => {
+              if(isConnected){
+                setIsPicker(true);
+              }else{
+                showOfflineDialog(dispatch);
+              }
+            })
+            
           }}>
           {renderImage()}
         </TouchableOpacity>
