@@ -48,6 +48,7 @@ const MainPage = props => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       loadPage();
+      
     });
     return unsubscribe;
   }, [navigation]);
@@ -85,6 +86,7 @@ const MainPage = props => {
   };
 
   const loadPage = () => {
+    
     if (currentLocation.latitude === undefined) {
       dispatch(updateCurrentLocation());
     }

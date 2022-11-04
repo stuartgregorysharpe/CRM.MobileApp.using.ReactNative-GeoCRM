@@ -41,11 +41,11 @@ export const SignatureForm = ({item , onPress ,onTouchStart}) => {
                 
                 <View style={{flexDirection:'row' , justifyContent:'center' , marginTop:10}}>
                     <TouchableOpacity style={[style.buttonStyle]} onPress={() => {onPress()} }>
-                        <View style={[styles.inputStyle , item.value  !== null ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} > 
+                        <View style={[styles.inputStyle , item.value  != null && item.value != '' ?  {backgroundColor : whiteLabel().actionFullButtonBackground } : {} ]} > 
                         
-                            <Text style={[styles.textStyle, item.value  !== null ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Signature'}</Text>
+                            <Text style={[styles.textStyle, item.value  !== null && item.value != '' ?  {color : whiteLabel().actionFullButtonText } : {} ]} >{'Signature'}</Text>
                             {
-                                item.value !== null ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Signature_Btn_Right_Arrow" width='13px' height='13px' />
+                                item.value !== null && item.value != '' ?<SvgIcon icon="Question_Btn_Done" width='20px' height='20px' /> : <SvgIcon icon="Signature_Btn_Right_Arrow" width='13px' height='13px' />
                             }
                             
                         </View> 

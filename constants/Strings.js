@@ -35,6 +35,9 @@ export default {
   This_Function_Not_Available : 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
   Offline_Mode: 'You are now operating in Offline mode.',
   Online_Mode: 'You are now operationg in Online mode',
+  Download_Image: 'Downloading Images ...',
+  Continue: 'Continue',
+  
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',
@@ -71,6 +74,8 @@ export default {
     Return_Stock: 'Return Stock',
     Please_Sign: 'Please Sign below:',
     Select_Scan_Type: 'Select Scan Type',
+    Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
+    Successfully_Sell_To_Trader: 'Saved to Offline sync successfully'
   },
 
   Forms: {

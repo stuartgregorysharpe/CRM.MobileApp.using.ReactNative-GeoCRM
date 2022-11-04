@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {FormQuestionView} from '../components/FormQuestionView';
 import {expireToken} from '../../../../../constants/Helper';
 import {Constants, Strings} from '../../../../../constants';
@@ -12,11 +12,15 @@ import {
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {GetRequestFormQuestionsDAO} from '../../../../../DAO';
+import { downloadFormQuestionImages } from '../../../../../services/DownloadService/ImageDownload';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 export default function FormQuestionContainer(props) {
+
   const {form, leadForms, customMasterFields, selectedLists} = props;
 
   const [formQuestions, setQuestions] = useState([]);
+  const loadingBarRef = useRef(null)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -105,8 +109,8 @@ export default function FormQuestionContainer(props) {
         tmp.questions = [...newTmp];
       }
     });
-    updateFormQuestions(newData);
-    console.log('newData == ', JSON.stringify(newData));
+    updateFormQuestionsForDownloading(newData);
+  
   };
 
   const isInNewData = (data, value) => {
@@ -115,10 +119,28 @@ export default function FormQuestionContainer(props) {
       : false;
   };
 
-  const updateFormQuestions = formQuestions => {
-    filterTriggeredQuestions(formQuestions);
-    setQuestions(formQuestions);
+  const updateFormQuestionsForDownloading = async(formQuestions) => {
+    var res = filterTriggeredQuestions(formQuestions);
+    if (res != undefined) {
+      // start downlod service 
+      console.log('newData == ', JSON.stringify(res));
+      loadingBarRef.current.showModal();
+      var newFormQuestions = await downloadFormQuestionImages(res);
+      if(newFormQuestions != undefined){
+        console.log("new form questions " , JSON.stringify(newFormQuestions));
+        setQuestions(newFormQuestions);
+      }
+      loadingBarRef.current.hideModal();
+      // end download        
+    }        
   };
+
+  const updateFormQuestions = (formQuestions) =>{
+    var res = filterTriggeredQuestions(formQuestions);
+    if (res != undefined) {
+      setQuestions(res)
+    }
+  }
 
   const onBackPressed = () => {
     props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
@@ -140,6 +162,8 @@ export default function FormQuestionContainer(props) {
       form_answers = getFormQuestionData(formQuestions);
       var files = [];
       files = getFormQuestionFile(formQuestions);
+
+      console.log(" post files ========= " , files)
       props.onButtonAction({
         type: Constants.actionType.ACTION_DONE,
         value: {form_answers: form_answers, files: files, form: form},
@@ -149,6 +173,11 @@ export default function FormQuestionContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1, marginBottom: 0}}>
+      
+      <LoadingBar ref={loadingBarRef} description={Strings.Download_Image} />
+
+      
+
       <FormQuestionView
         formQuestions={formQuestions}
         updateFormQuestions={updateFormQuestions}

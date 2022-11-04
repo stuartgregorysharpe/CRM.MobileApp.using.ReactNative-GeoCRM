@@ -37,17 +37,21 @@ export default function CheckOutViewContainer(props) {
       user_local_data: userParam.user_local_data,
     };
 
+  
     PostRequestDAO.find(
       specificLocationId,
       postData,
       'checkout',
       'location-info/check-out',
+      '',''
     )
       .then(async res => {
         console.log('RES : ', res);
         await storeLocalValue('@checkin', '0');
         await storeLocalValue('@checkin_type_id', '');
         await storeLocalValue('@checkin_reason_id', '');
+        await storeLocalValue('@specific_location_id', '');
+        console.log(" pooo  ====== ")
         dispatch({type: CHECKIN, payload: false});
         if (type == 'specificInfo') {
           if (props.goBack) {
@@ -63,6 +67,7 @@ export default function CheckOutViewContainer(props) {
   };
 
   return (
+
     <View>
       {type == 'home' && (
         <HomeCheckOut

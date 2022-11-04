@@ -10,6 +10,8 @@ import GetRequestFormQuestionsDAO from './GetRequestFormQuestions';
 import GetRequestStockListsDAO from './GetRequestStockLists';
 import GetRequestLocationInfoDAO from './GetRequestLocationInfo';
 import GetRequestReturnListsDAO from './GetRequestReturnLists';
+import GetRequestStockFieldDataDAO from './GetRequestStockFieldData';
+import GetRequestStockUsersDAO from './GetRequestStockUsers';
 import GetRequestFormSubmissionsDAO from './GetRequestFormSubmissions';
 
 export {
@@ -25,5 +27,7 @@ export {
             GetRequestStockListsDAO,
             GetRequestLocationInfoDAO,
             GetRequestReturnListsDAO,
+            GetRequestStockFieldDataDAO,
+            GetRequestStockUsersDAO,
             GetRequestFormSubmissionsDAO
         }

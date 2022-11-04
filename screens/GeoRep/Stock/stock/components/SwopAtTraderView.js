@@ -9,7 +9,7 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import DropdownInput from '../../../../../components/common/DropdownInput/DropdownInput';
 import TakePhotoView from '../../../../../components/shared/TakePhotoView';
 import {Constants, Strings} from '../../../../../constants';
-import {validateMsisdn} from '../../../../../helpers/formatHelpers';
+import {validateMsisdn} from '../../../../../helpers/validateHelper';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';

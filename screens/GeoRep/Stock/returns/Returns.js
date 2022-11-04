@@ -24,9 +24,9 @@ export default function Returns() {
   const [locationId, setLocationId] = useState(0);
   const [stockItem , setStockItem] = useState({stock_type: Constants.stockType.RETURN})
   const [stockItemIds , setStockItemIds] = useState([]);
-  var checkinLocationId ;
-  
   const dispatch = useDispatch();
+
+  var checkinLocationId ;
 
   useEffect(() => {
     var isMount = true;

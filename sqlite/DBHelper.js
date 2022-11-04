@@ -44,7 +44,6 @@ export const createTable = async (db , tables ) => {
   }
 };
 
-
 const handleTable = async (table) => {
 
   var tableName = table.table_name;
@@ -214,7 +213,7 @@ export const handleRecords = async ( tableName, records) => {
         }
       })
 
-      query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
+      query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;        
       //console.log(query)
       try{
         if(db != null){    

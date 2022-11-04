@@ -1,5 +1,5 @@
 import { getApiRequest } from "../../actions/api.action"
-import { Strings } from "../../constants";
+import { offlineDBVersion, Strings } from "../../constants";
 import { getLocalData } from "../../constants/Storage";
 import { getBaskets } from "../../screens/GeoRep/Home/partial/containers/helper";
 import { createTable, getDBConnection, handleRecords } from "../../sqlite/DBHelper";
@@ -9,7 +9,8 @@ import { getBascketLastSyncTableData, insertBascketLastSync } from "../../sqlite
 
 export const initializeDB = async() => {
     
-    var res = await getApiRequest("database/offline_database_structure", {offline_db_version: '1.3'});
+    var res = await getApiRequest("database/offline_database_structure", {offline_db_version: offlineDBVersion});
+
     if(res.status === Strings.Success){
         var offline_db_version = await getLocalData("@offline_db_version");
         if(offline_db_version != res.offline_db_version){                               
@@ -34,7 +35,8 @@ const syncTable = async(basketId) => {
     
     var lists = getBaskets();
     var basket = lists[basketId].slug;
-    var res = await getApiRequest("database/sync-tables?offline_db_version=1.3&sync_basket=" + basket, {});    
+    
+    var res = await getApiRequest(`database/sync-tables?offline_db_version=${offlineDBVersion}&sync_basket=` + basket, {});    
     if(res.status === Strings.Success){
         var tables = res.tables;
         console.log("all tables", tables);

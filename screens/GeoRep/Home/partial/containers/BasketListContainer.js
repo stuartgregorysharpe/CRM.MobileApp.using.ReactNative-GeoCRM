@@ -5,7 +5,7 @@ import React , { useState, useEffect , useRef, forwardRef ,useImperativeHandle }
 import BasketSyncProgress from '../components/BasketSyncProgress'
 import { getApiRequest } from '../../../../../actions/api.action'
 import { deleteRecords, handleRecords } from '../../../../../sqlite/DBHelper'
-import { Strings } from '../../../../../constants'
+import { offlineDBVersion, Strings } from '../../../../../constants'
 import { AppText } from '../../../../../components/common/AppText'
 import Colors, { whiteLabel } from '../../../../../constants/Colors'
 import { getBascketLastSyncTableData, insertBascketLastSync } from '../../../../../sqlite/BascketLastSyncsHelper'
@@ -15,6 +15,7 @@ import { RotationAnimation } from '../../../../../components/common/RotationAnim
 import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../helpers/formatHelpers'
 import { getBaskets } from './helper'
 import { useDispatch } from 'react-redux'
+import { clearNotification, showNotification } from '../../../../../actions/notification.action'
 import { expireToken } from '../../../../../constants/Helper'
 
 var gSyncedRecords = 0;
@@ -31,14 +32,14 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const [currentBasket, setCurrentBasket] = useState("");
     const rotationAnimationRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
+    var lists = getBaskets();
     const dispatch = useDispatch();
 
-    var lists = getBaskets();    
     useImperativeHandle(ref, () => ({
-        startSync() {            
+        startSync(message) {            
             isOneBasketSync = false;
             setBasketLists(getBaskets());
-            syncTable(0);
+            syncTable(0 , message);
         },
         expand() {            
             initDataFromDB();                  
@@ -86,7 +87,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
     }
          
 
-    const syncTable = (basketId) => {        
+    const syncTable = (basketId , message) => {        
         if(!isLoading){
             var basket = lists[basketId].slug;
             setCurrentBasket(basket);
@@ -104,7 +105,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 updateBasket(basket)
             }
 
-            getApiRequest("database/sync-tables?offline_db_version=1.3&sync_basket=" + basket, {}).then(async(res) => {            
+            getApiRequest(`database/sync-tables?offline_db_version=${offlineDBVersion}&sync_basket=` + basket, {}).then(async(res) => {            
+
               if(res.status === Strings.Success){
                 var tables = res.tables;
                 console.log("All tables", tables)                
@@ -122,7 +124,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 if(!isOneBasketSync){
                     if(basketId + 1 < lists.length){      
                         updateBasket(basket);
-                        syncTable(basketId + 1);                        
+                        syncTable(basketId + 1 , message);                        
                     }else{                  
 
                         setCurrentBasket('');
@@ -131,7 +133,14 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         saveSyncedStatusTable("sync_all");
                         if(props.updateLoading){                                               
                             props.updateLoading(false)
-                        }                                                      
+                        }
+
+                        if(message != '' && message != null){
+                            dispatch(showNotification({type:Strings.Success , message: message, buttonText: Strings.Ok , buttonAction: () => {
+                                dispatch(clearNotification());
+                            } }));
+                        }
+
                     }
                 }                
               }
@@ -150,6 +159,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
             var lastSyncedParam = await getTimeStampAndTimeZone(basket);
             await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
 
+                //console.log("length data" , res.records);
                 console.log("Table Record Length", res.records.length);
                 console.log("Page Number" , pageNumber);
                 console.log("Total Page Number", res.total_pages);
@@ -177,7 +187,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         if(isOneBasketSync){
                             initDataFromDB();
                             setIsLoading(false);
-                        }
+                        }                        
                     }
                 }
             }).catch((e) => {
@@ -232,7 +242,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         <TouchableOpacity onPress={() => {
                             if(!isLoading){
                                 isOneBasketSync = true;
-                                syncTable(index);
+                                syncTable(index , '');
                             }                            
                         }}>
                             <View style={{backgroundColor:whiteLabel().actionFullButtonBackground , borderRadius:5, marginLeft:5 }}>           
