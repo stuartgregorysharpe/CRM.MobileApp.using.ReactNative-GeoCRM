@@ -5,21 +5,43 @@ import { useDispatch, useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
 import { CHANGE_OFFLINE_STATUS, CHANGE_PROFILE_STATUS } from '../../actions/actionTypes';
 import { checkFeatureIncludeParam, getLocalData, storeLocalValue } from '../../constants/Storage';
-import { showNotification } from '../../actions/notification.action';
+import { clearNotification, showNotification } from '../../actions/notification.action';
 import Strings from '../../constants/Strings';
 import Fonts from '../../constants/Fonts';
 
-export default function HeaderRightView() {
+
+export default function HeaderRightView({navigation}) {
 
   const dispatch = useDispatch();
   const userInfo = useSelector(state => state.auth.userInfo);
   const [toggleSwitch, setToggleSwitch] = useState(true);
   const [canShowToggle, setShowToggle] = useState(true);
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
 
   useEffect(() => {
     getToggleStatus();
     setOnlineOffline();
   },[]);
+
+  useEffect(() => {    
+  }, [offlineStatus]);
+
+  const showMessage = (toggleSwitch) => {
+    dispatch(showNotification({
+      type: Strings.Success , 
+      message: toggleSwitch ? Strings.Online_Mode : Strings.Offline_Mode , 
+      buttonText: 'Ok',
+      buttonAction: () => {
+        dispatch(clearNotification())
+        if(toggleSwitch){
+          navigation.navigate('Home' , {sync: true});
+        }
+      }
+    })); 
+  }
+
+
+
 
   const getToggleStatus = async () => {
     let res = await checkFeatureIncludeParam("offline_toggle");    
@@ -42,19 +64,20 @@ export default function HeaderRightView() {
       {canShowToggle &&
         <ToggleSwitch
           style={styles.toggleSwitch}
-          label={toggleSwitch ? "Online" : "Offline"}
+          label={!offlineStatus ? "Online" : "Offline"}
           labelStyle={styles.toggleSwitchLabel}
           onColor={Colors.whiteColor}
           offColor={Colors.redColor}
           size="small"
           thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
           thumbOffStyle={{ backgroundColor: whiteLabel().headerBackground }}
-          isOn={toggleSwitch}
+          isOn={!offlineStatus}
           onToggle={ async (toggleSwitch)  => {            
             await storeLocalValue("@online", toggleSwitch ? "1" : "0");            
             dispatch({type: CHANGE_OFFLINE_STATUS , payload: !toggleSwitch });
             setToggleSwitch(toggleSwitch);
-            dispatch(showNotification({type: Strings.Success , message: toggleSwitch ? Strings.Online_Mode : Strings.Offline_Mode , buttonText: 'Ok'}));
+            showMessage(toggleSwitch);
+            
           }}
         />}
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 })}>

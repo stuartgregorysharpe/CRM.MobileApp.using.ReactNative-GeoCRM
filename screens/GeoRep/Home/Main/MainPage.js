@@ -1,6 +1,6 @@
 import {View, Text, ScrollView, FlatList, Dimensions} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
-import SyncAll from './../partial/SyncAll';
+import React, {useState, useEffect, useRef ,forwardRef , useImperativeHandle} from 'react';
+import {SyncAll} from './../partial/SyncAll';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import IndicatorDotScroller from '../../../../components/common/IndicatorDotScroller';
 import Colors from '../../../../constants/Colors';
@@ -22,9 +22,10 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 import { checkConnectivity } from '../../../../DAO/helper';
 import { PostRequestDAO } from '../../../../DAO';
 
-const MainPage = props => {
-  const dispatch = useDispatch();
-  const [refresh, setRefresh] = useState(false);
+//const MainPage = props => {
+export const MainPage = forwardRef((props, ref) => {
+
+  const dispatch = useDispatch();  
   const [isStart, setIsStart] = useState(true);
   const [startEndDayId, setStartEndDayId] = useState(0);
   const [pages, setPages] = useState(['', '']);
@@ -44,6 +45,15 @@ const MainPage = props => {
   const navigation = props.navigation;
   const [isLoading, setIsLoading] = useState(false);
   const [isScrollable , setIsScrollable] = useState(true);
+  const syncAllViewRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    onlineSyncTable() {       
+      if(syncAllViewRef.current){               
+        syncAllViewRef.current.syncAllData();        
+      }
+    },
+  }));
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -52,6 +62,7 @@ const MainPage = props => {
     });
     return unsubscribe;
   }, [navigation]);
+
 
   useEffect(() => {
     loadPage();
@@ -63,7 +74,9 @@ const MainPage = props => {
   useEffect(() => {
     initializeDB().then(res => {
       console.log(' ----------------- initaliz db end ---------------- ');
-      setRefresh(true);
+      if(syncAllViewRef.current){
+        syncAllViewRef.current.refreshView();
+      }
     });
     checkConnectivity().then((isConnected) => {
         if(!isConnected){
@@ -223,7 +236,7 @@ const MainPage = props => {
           }}></SubmitButton>
       </View>
 
-      <SyncAll refresh={refresh}></SyncAll>
+      <SyncAll  ref={syncAllViewRef} ></SyncAll>
 
       {isCheckin && (
         <CheckOutViewContainer
@@ -263,6 +276,6 @@ const MainPage = props => {
       />
     </ScrollView>
   );
-};
+});
 
-export default MainPage;
+//export default MainPage;

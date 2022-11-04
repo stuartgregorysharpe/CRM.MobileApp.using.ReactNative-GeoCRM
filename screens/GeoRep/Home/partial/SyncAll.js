@@ -1,5 +1,5 @@
 import {View, TouchableOpacity} from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect , forwardRef,useImperativeHandle} from 'react';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
@@ -11,8 +11,7 @@ import {getBascketLastSyncTableData} from '../../../../sqlite/BascketLastSyncsHe
 import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
 
-export default function SyncAll(props) {
-//export const SyncAll = forwardRef((props, ref) => {
+export const SyncAll = forwardRef((props, ref) => {
 
   const [expanded, setExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +25,17 @@ export default function SyncAll(props) {
     }
   };
 
-  useEffect(() => {
-    initLastSyncAllDateTime();
+  useImperativeHandle(ref, () => ({
+    syncAllData() {       
+      setExpanded(true);
+      setIsLoading(true);
+      //startTableSync();
+    },
+  }));
+
+
+  useEffect(() => {    
+    initLastSyncAllDateTime();        
   }, [props.refresh]);
 
   useEffect(() => {
@@ -36,15 +44,11 @@ export default function SyncAll(props) {
       }
   }, [props.isExpandSync]);
 
-  
-
 
   useEffect(() => {
     let isMount = true;
     if (isMount && expanded && isLoading) {
-      if (basketRef.current && basketRef.current.startSync) {
-        basketRef.current.startSync();
-      }
+      startTableSync();
     } else if (isMount && expanded && !isLoading) {
       if (basketRef.current && basketRef.current.expand) {
         basketRef.current.expand();
@@ -71,6 +75,17 @@ export default function SyncAll(props) {
     setLastSyncedDate(title);
   };
 
+
+  const startTableSync = () => {    
+    console.log("start table syss")
+    if (basketRef.current && basketRef.current.startSync) {
+      console.log("sync table start");
+      basketRef.current.startSync();
+    }else{
+      console.log("start table syss")
+    }
+  }
+
   return (
     <View
       style={[
@@ -87,7 +102,7 @@ export default function SyncAll(props) {
           <TouchableOpacity
             onPress={() => {
               if (basketRef.current && basketRef.current.startSync) {
-                basketRef.current.startSync();
+                startTableSync();
               } else {
                 setExpanded(true);
                 setIsLoading(true);
@@ -157,9 +172,7 @@ export default function SyncAll(props) {
       {expanded && (
         <ViewOfflineSyncItemContainer
           onSyncStart={(message) =>{ 
-            if (basketRef.current && basketRef.current.startSync) {
-              basketRef.current.startSync(message);
-            }
+            startTableSync();
           }}
           onClosed={() => {
             setExpanded(false);
@@ -168,4 +181,4 @@ export default function SyncAll(props) {
       )}
     </View>
   );
-}
+});
