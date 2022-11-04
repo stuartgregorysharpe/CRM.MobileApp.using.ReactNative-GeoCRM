@@ -7,6 +7,7 @@ import { Fonts } from '../../../../constants';
 import { checkConnectivity } from '../../../../DAO/helper';
 import { showNotification } from '../../../../actions/notification.action';
 import { showOfflineDialog } from '../../../../constants/Helper';
+import SvgIcon from '../../../../components/SvgIcon';
 
 const SelectLocationView = (props) => {
 
@@ -121,6 +122,7 @@ const SelectLocationView = (props) => {
                         <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={styles.buttonText}>Add to Calendar</Text>
+                        
                         <SvgIcon
                             icon="Arrow_Right"
                             width="13px"
