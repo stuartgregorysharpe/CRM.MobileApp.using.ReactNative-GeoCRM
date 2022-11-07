@@ -1,8 +1,6 @@
-import {Constants, Strings} from '../constants';
-import {getConvertedDate} from '../helpers/formatHelpers';
+import {Strings} from '../constants';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import GetRequest from './GetRequest';
-import {getOfflineSyncItem} from '../sqlite/OfflineSyncItemsHelper';
 
 export function find() {
   return new Promise(function (resolve, reject) {
