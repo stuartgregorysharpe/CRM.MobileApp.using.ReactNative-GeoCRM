@@ -104,8 +104,8 @@ export default function ContentLibraryScreen(props) {
   loadList = async () => {
     GetRequestContentlibraryDAO.find()
       .then(res => {
-        setLibraryLists(res);
-        setSearchLibraryLists(res);
+        setLibraryLists(res.folders);
+        setSearchLibraryLists(res.folders);
       })
       .catch(error => {
         expireToken(dispatch, error);
