@@ -1,5 +1,5 @@
 import { View, TouchableOpacity , StyleSheet } from 'react-native'
-import React , { useRef } from 'react'
+import React , { useRef , useEffect} from 'react'
 import { AppText } from '../../../../../components/common/AppText'
 import { Colors, Constants } from '../../../../../constants'
 import SvgIcon from '../../../../../components/SvgIcon'
@@ -7,12 +7,20 @@ import { whiteLabel } from '../../../../../constants/Colors'
 import ViewOfflineSyncModal from '../modal/ViewOfflineSyncModal'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux'
 
 const ViewOfflineSyncItem = props => {
 
-    const { count , onClosed , updateCount } = props;
+    const { count , onClosed , updateCount , isManual } = props;
     const offlineSyncModalRef = useRef(null);
+    const offlineStatus = useSelector(state => state.auth.offlineStatus);
     
+    useEffect(() => {
+        if(!offlineStatus && !isManual){
+            openModal();
+        }
+    }, [offlineStatus])
+
     const modalClosed = ({type, value}) => {        
         if(type == Constants.actionType.ACTION_CLOSE){
             offlineSyncModalRef.current.hideModal();
@@ -33,12 +41,17 @@ const ViewOfflineSyncItem = props => {
             </TouchableOpacity>            
         )
     }
+
+    const openModal = () => {
+        if(offlineSyncModalRef.current){
+            offlineSyncModalRef.current.showModal()
+        }
+    }
+
     
     return (
         <TouchableOpacity onPress={() => {
-                if(offlineSyncModalRef.current){
-                    offlineSyncModalRef.current.showModal()
-                }
+                openModal();
             }}>
                 <View style={styles.container}>
                     <AppText title="View Offline Sync Items" type="secondaryBold" color={whiteLabel().mainText} ></AppText>      
@@ -58,6 +71,7 @@ const ViewOfflineSyncItem = props => {
                 
                 <ViewOfflineSyncModal
                     ref={offlineSyncModalRef}
+                    isManual={isManual}
                     title="Offline Sync"          
                     customRightHeaderView={renderCloseIcon()}
                     onButtonAction={modalClosed}

@@ -118,7 +118,7 @@ const LocationInfo = props => {
             <View style={[styles.headerBox, {marginTop: 0}]}>
               <Text style={styles.title}>
                 {' '}
-                {locationInfo.location_name.value}
+                { locationInfo.location_name ? locationInfo.location_name.value : ''}
               </Text>
             </View>
           </TouchableOpacity>

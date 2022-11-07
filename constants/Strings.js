@@ -37,6 +37,8 @@ export default {
   Online_Mode: 'You are now operating in Online Mode',
   Download_Image: 'Downloading Images ...',
   Continue: 'Continue',
+  Offline_Mode_Message: 'Due to loss of connectivity, services have automatically switched to Offline mode.',
+  Online_Mode_Message: 'Connectivity has been restored and all services have automatically switched back to Online mode.',
 
   CRM: {
     Access_CRM: 'Access CRM',

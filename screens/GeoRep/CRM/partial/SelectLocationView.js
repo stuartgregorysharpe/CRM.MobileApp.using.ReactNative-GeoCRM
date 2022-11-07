@@ -11,7 +11,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 
 const SelectLocationView = (props) => {
 
-    const { isLoading , isSelected , features , selectedLocationsForCalendar} = props;
+    const { isLoading , isSelected , features , selectedLocationsForCalendar , addToCalendar} = props;
 
     const dispatch = useDispatch()
 
@@ -116,7 +116,7 @@ const SelectLocationView = (props) => {
                         style={styles.buttonTextStyle}
                         onPress={() => {
                         if (selectedLocationsForCalendar.length > 0) {
-                            animation('addtocalendar');
+                            addToCalendar()                            
                         }
                         }}>
                         <View
@@ -142,6 +142,7 @@ export default SelectLocationView
 const styles = StyleSheet.create({
 
     buttonContainer: {
+        alignSelf:'stretch',
         paddingTop: 8,
         paddingBottom: 17,
         flexDirection: 'row',
@@ -167,6 +168,11 @@ const styles = StyleSheet.create({
         color: whiteLabel().actionFullButtonText,
         fontSize: 12,
         fontFamily: Fonts.secondaryBold,
+    },
+
+    rightContainer: {
+        flex: 1,
+        alignItems: 'flex-end',
     },
 
 })

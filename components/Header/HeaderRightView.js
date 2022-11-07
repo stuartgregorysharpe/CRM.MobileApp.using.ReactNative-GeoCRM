@@ -23,7 +23,8 @@ export default function HeaderRightView({navigation}) {
     setOnlineOffline();
   },[]);
 
-  useEffect(() => {    
+  useEffect(() => {   
+     setToggleSwitch(!offlineStatus)
   }, [offlineStatus]);
 
   const showMessage = (toggleSwitch) => {
@@ -32,6 +33,7 @@ export default function HeaderRightView({navigation}) {
       message: toggleSwitch ? Strings.Online_Mode : Strings.Offline_Mode , 
       buttonText: 'Ok',
       buttonAction: () => {
+        dispatch({type: CHANGE_OFFLINE_STATUS , payload: !toggleSwitch });
         dispatch(clearNotification())
         if(toggleSwitch){
           navigation.navigate('Home' , {sync: true});
@@ -64,20 +66,23 @@ export default function HeaderRightView({navigation}) {
       {canShowToggle &&
         <ToggleSwitch
           style={styles.toggleSwitch}
-          label={!offlineStatus ? "Online" : "Offline"}
+          label={toggleSwitch ? "Online" : "Offline"}
           labelStyle={styles.toggleSwitchLabel}
           onColor={Colors.whiteColor}
           offColor={Colors.redColor}
           size="small"
           thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
           thumbOffStyle={{ backgroundColor: whiteLabel().headerBackground }}
-          isOn={!offlineStatus}
+          isOn={toggleSwitch}
           onToggle={ async (toggleSwitch)  => {            
-            await storeLocalValue("@online", toggleSwitch ? "1" : "0");            
-            dispatch({type: CHANGE_OFFLINE_STATUS , payload: !toggleSwitch });
+            await storeLocalValue("@online", toggleSwitch ? "1" : "0");   
+            if(!toggleSwitch){ // offline
+              await storeLocalValue("@manual_online_offline" , "1");
+            }else{
+              await storeLocalValue("@manual_online_offline" , "0");
+            }
             setToggleSwitch(toggleSwitch);
-            showMessage(toggleSwitch);
-            
+            showMessage(toggleSwitch);          
           }}
         />}
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 })}>

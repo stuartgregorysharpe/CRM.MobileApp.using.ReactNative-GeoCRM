@@ -277,7 +277,7 @@ export default function LocationSearchScreen(props) {
       });
   };
 
-  const goPreviousPage = () => {
+  const goPreviousPage = () => {    
     if (navigation.canGoBack()) {
       navigation.goBack();
       dispatch({type: SLIDE_STATUS, payload: false});
@@ -543,11 +543,14 @@ export default function LocationSearchScreen(props) {
           
             
             <SelectLocationView 
-				features={features}
-				isLoading={isLoading}
-				isSelected={isSelected}
-				selectedLocationsForCalendar={selectedLocationsForCalendar}
-				goPreviousPage={goPreviousPage}
+                features={features}
+                isLoading={isLoading}
+                isSelected={isSelected}
+                selectedLocationsForCalendar={selectedLocationsForCalendar}
+                goPreviousPage={goPreviousPage}
+                addToCalendar={() => {
+                  animation('addtocalendar');
+                }}
             />
 
             {isLoading && (
@@ -613,12 +616,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 50,
     paddingBottom: 0,
-  },
-    
-  rightContainer: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
+  },      
     
   transitionView: {
     position: 'absolute',

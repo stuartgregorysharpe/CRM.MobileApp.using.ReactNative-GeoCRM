@@ -5,9 +5,11 @@ import OfflineSyncModalView from '../components/OfflineSyncModalView';
 import { syncPostData } from '../../../../../services/SyncDatabaseService/PostSyncTable';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import { useSelector } from 'react-redux';
 
 const ViewOfflineSyncModalContainer = props => {
-    
+        
+    const { isManual } = props;
     const [typeLists, setTypeLists] = useState([
         {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
         {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false},
@@ -23,6 +25,7 @@ const ViewOfflineSyncModalContainer = props => {
     const [totalValue, setTotalValue] = useState(0);
     const [syncBtnTitle , setSyncBtnTitle] = useState("Sync All Items");
     const [isActive,setIsActive] = useState(true);    
+    const offlineStatus = useSelector(state => state.auth.offlineStatus);
     var isHttpError = false;
     var isError = false;
     
@@ -42,7 +45,13 @@ const ViewOfflineSyncModalContainer = props => {
             tmp.push(element);
         });        
         setTypeLists(tmp);
-    }, [currentSyncItem])
+    }, [currentSyncItem]);
+    
+    useEffect(() => {
+        if(!offlineStatus && !isManual){
+            startSync();
+        }        
+    },[offlineStatus]);
     
     const addData = (value) => {    
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});

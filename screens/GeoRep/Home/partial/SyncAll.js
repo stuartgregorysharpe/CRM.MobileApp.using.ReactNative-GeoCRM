@@ -10,6 +10,7 @@ import {RotationAnimation} from '../../../../components/common/RotationAnimation
 import {getBascketLastSyncTableData} from '../../../../sqlite/BascketLastSyncsHelper';
 import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
+import { useSelector } from 'react-redux';
 
 export const SyncAll = forwardRef((props, ref) => {
 
@@ -17,6 +18,8 @@ export const SyncAll = forwardRef((props, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastSyncedDate, setLastSyncedDate] = useState('');
   const basketRef = useRef();
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
+  const [isManual, setIsManual] = useState(true); // expland it manually or automatically(offline change)
 
   const updateLoading = loading => {
     setIsLoading(loading);
@@ -27,15 +30,22 @@ export const SyncAll = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     syncAllData() {       
+      
+      //setExpanded(true);
+      //setIsLoading(true);
+      setIsManual(false);
       setExpanded(true);
-      setIsLoading(true);
-      //startTableSync();
+      //setIsLoading(true);
+      
     },
+    refreshView() {
+      initLastSyncAllDateTime();
+    }
   }));
 
 
   useEffect(() => {    
-    initLastSyncAllDateTime();        
+    initLastSyncAllDateTime();
   }, [props.refresh]);
 
   useEffect(() => {
@@ -54,7 +64,6 @@ export const SyncAll = forwardRef((props, ref) => {
         basketRef.current.expand();
       }
     }
-
     return () => {
       isMount = false;
     };
@@ -153,6 +162,7 @@ export const SyncAll = forwardRef((props, ref) => {
           <TouchableOpacity
             onPress={() => {
               setExpanded(!expanded);
+              setIsManual(true);
             }}>
             <View style={{marginRight: 10, marginLeft: 10}}>
               <SvgIcon
@@ -166,11 +176,12 @@ export const SyncAll = forwardRef((props, ref) => {
       </View>
 
       {expanded && (
-        <BasketListContainer ref={basketRef} updateLoading={updateLoading} />
+        <BasketListContainer isManual={isManual} ref={basketRef} updateLoading={updateLoading} />
       )}
 
       {expanded && (
         <ViewOfflineSyncItemContainer
+          isManual={isManual} 
           onSyncStart={(message) =>{ 
             startTableSync();
           }}
