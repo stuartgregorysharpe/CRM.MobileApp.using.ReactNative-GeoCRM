@@ -49,5 +49,10 @@ allprojects {
         google()
         maven { url 'https://www.jitpack.io' }
         maven { url 'https://developer.huawei.com/repo/' }
+        configurations.all {
+            resolutionStrategy {
+                force 'com.facebook.react:react-native:0.67.2'
+            }
+        }
     }
 }
