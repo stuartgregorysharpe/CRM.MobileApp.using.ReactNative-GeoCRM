@@ -17,12 +17,10 @@ export function find() {
 
           if (client_id && business_unit_id) {
             const lists = await fetchDataFromDB(business_unit_id, client_id);
-            console.log('contentlibrary:fetchDataFromDB', lists);
             const assets_path = await getAssetsPath(
               client_id,
               business_unit_id,
             );
-            console.log('assets_path', assets_path);
             resolve({
               status: Strings.Success,
               folders: getData(lists, assets_path),
@@ -70,9 +68,7 @@ const getAssetsPath = async (client_id, business_unit_id) => {
               WHERE client_id = ?
               AND business_unit_id = ?`;
   const res = await ExecuteQuery(query, [client_id, business_unit_id]);
-  console.log('res.rows', res.rows);
-  console.log('client_id', client_id);
-  console.log('business_unit_id', business_unit_id);
+
   if (res.rows && res.rows.length > 0) {
     return res.rows.item(0).assets_path;
   }
@@ -83,9 +79,8 @@ const getData = (lists, assets_path) => {
   const foldersArrayData = {};
   for (let i = 0; i < lists.length; i++) {
     const item = lists.item(i);
-    console.log('item', item);
+
     const categoryName = item.category_name;
-    console.log('categoryName', categoryName);
     if (foldersArrayData[categoryName]) {
       //Increment file count
       foldersArrayData[categoryName]['file_count'] =
@@ -121,7 +116,6 @@ const getData = (lists, assets_path) => {
       foldersArrayData[categoryName]['files'].push(fileDetails);
     }
   }
-  console.log('foldersArrayData', JSON.stringify(foldersArrayData));
   return Object.values(foldersArrayData);
 };
 
