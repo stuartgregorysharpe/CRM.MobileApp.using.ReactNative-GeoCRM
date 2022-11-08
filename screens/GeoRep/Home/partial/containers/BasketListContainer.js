@@ -17,6 +17,7 @@ import { getBaskets } from './helper'
 import { useDispatch } from 'react-redux'
 import { clearNotification, showNotification } from '../../../../../actions/notification.action'
 import { expireToken } from '../../../../../constants/Helper'
+import { CHANGE_SYNC_START } from '../../../../../actions/actionTypes'
 
 var gSyncedRecords = 0;
 var gBascketLists = getBaskets();
@@ -89,6 +90,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
     const syncTable = (basketId , message) => {        
         if(!isLoading){
+            
+            dispatch({type: CHANGE_SYNC_START , payload: true });
             var basket = lists[basketId].slug;
             setCurrentBasket(basket);
             setIsLoading(true);
@@ -118,6 +121,10 @@ export const BasketListContainer = forwardRef((props, ref) => {
                     if(isOneBasketSync){
                         initDataFromDB();
                         setIsLoading(false);
+                        dispatch({type: CHANGE_SYNC_START , payload: false });
+                        if(props.changeIsManual){
+                            props.changeIsManual(true)
+                        }
                     }
                 }
                 
@@ -129,6 +136,10 @@ export const BasketListContainer = forwardRef((props, ref) => {
 
                         setCurrentBasket('');
                         setIsLoading(false);
+                        dispatch({type: CHANGE_SYNC_START , payload: false });
+                        if(props.changeIsManual){
+                            props.changeIsManual(true)
+                        }
                         updateBasket(basket);                        
                         saveSyncedStatusTable("sync_all");
                         if(props.updateLoading){                                               
@@ -147,6 +158,10 @@ export const BasketListContainer = forwardRef((props, ref) => {
             }).catch((e) => {
                 console.log("error" , e);
                 expireToken(dispatch, e);
+                dispatch({type: CHANGE_SYNC_START , payload: false });
+                if(props.changeIsManual){
+                    props.changeIsManual(true)
+                }
             })
         }        
     }
@@ -157,9 +172,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
         if(tableName != undefined){
 
             var lastSyncedParam = await getTimeStampAndTimeZone(basket);
-            await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
-
-                //console.log("length data" , res.records);
+            await getApiRequest(`database/sync-table-data?offline_db_version=${offlineDBVersion}&table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
+                
                 console.log("Table Record Length", res.records.length);
                 console.log("Page Number" , pageNumber);
                 console.log("Total Page Number", res.total_pages);

@@ -135,9 +135,12 @@ const LocationContainer = props => {
     }
     previousZoom = zoom;
   };
+
   const navigateToSearchLocation = () => {
     navigation.navigate('LocationSearch');
   };
+
+  
   const onPressSearch = () => {
     navigateToSearchLocation();
   };

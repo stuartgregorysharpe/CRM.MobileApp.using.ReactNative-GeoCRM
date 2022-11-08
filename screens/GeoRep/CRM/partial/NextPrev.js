@@ -21,7 +21,8 @@ import {
 } from '../../../../constants/Storage';
 import SvgIcon from '../../../../components/SvgIcon';
 import DeviceInfo from 'react-native-device-info';
-import {expireToken} from '../../../../constants/Helper';
+import {expireToken, showOfflineDialog} from '../../../../constants/Helper';
+import { checkConnectivity } from '../../../../DAO/helper';
 var currentPosition = -1;
 var isClickable = true;
 
@@ -342,9 +343,18 @@ export const NextPrev = forwardRef((props, ref) => {
           <TouchableOpacity
             style={styles.leftContainer}
             onPress={async () => {
-              if (canGoNextPrev('prev') === true) {
-                onPrev();
-              }
+
+              checkConnectivity().then((isConnected) => {
+                if(isConnected){
+                  if (canGoNextPrev('prev') === true) {
+                    onPrev();
+                  }
+                }else{
+                  showOfflineDialog(dispatch);
+                }
+              })
+              
+              
             }}>
             <View
               style={[styles.prevStyle, {paddingLeft: 10, paddingRight: 10}]}>
@@ -366,9 +376,18 @@ export const NextPrev = forwardRef((props, ref) => {
           <TouchableOpacity
             style={[styles.rightContainer]}
             onPress={async () => {
-              if (canGoNextPrev('next') === true) {
-                onNext();
-              }
+
+              checkConnectivity().then((isConnected) => {
+                if(isConnected){
+                  if (canGoNextPrev('next') === true) {
+                    onNext();
+                  }
+                }else{
+                  showOfflineDialog(dispatch);
+                }
+              })
+              
+
             }}>
             <View
               style={[styles.prevStyle, {paddingLeft: 20, paddingRight: 10}]}>

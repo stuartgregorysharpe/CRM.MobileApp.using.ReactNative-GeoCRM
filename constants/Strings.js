@@ -20,6 +20,7 @@ export default {
   Fsu_Campaign: 'Capture FSU',
   You_Are_Currenly_Checkedin: 'You are currently checked-in to a location',
   Success: 'success',
+  Failed: 'Failed',
   Last_Synced_Date: 'Last Synced: ',
   Choose_Reason: 'Please choose a reason before making a selection or scanning',
   MSISDN_Error_Message: 'MSISDN must be 11 digits',
@@ -31,9 +32,14 @@ export default {
   Added_Date: 'Added Date',
   Due_Date: 'Due Date',
   Search_Location: 'Search Location',
+  This_Function_Not_Available : 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
+  Offline_Mode: 'You are now operating in Offline Mode',
+  Online_Mode: 'You are now operating in Online Mode',
   Download_Image: 'Downloading Images ...',
   Continue: 'Continue',
-  
+  Offline_Mode_Message: 'Due to loss of connectivity, services have automatically switched to Offline mode.',
+  Online_Mode_Message: 'Connectivity has been restored and all services have automatically switched back to Online mode.',
+
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',

@@ -55,9 +55,9 @@ const syncTable = async(basketId) => {
 }
 
 const syncTableData = async (tables , key , pageNumber, basket) => {    
-    var tableName = tables[key];       
+    var tableName = tables[key];
     if(tableName != undefined){
-        await getApiRequest(`database/sync-table-data?table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
+        await getApiRequest(`database/sync-table-data?offline_db_version=${offlineDBVersion}&table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
             await handleRecords(tableName, res.records);        
             if(pageNumber + 1 < res.total_pages){
                 await syncTableData(tables , key, pageNumber + 1, basket);

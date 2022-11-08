@@ -1,6 +1,6 @@
 import NetInfo from "@react-native-community/netinfo";
 import { Strings } from "../constants";
-import { getLocalData } from "../constants/Storage";
+import { getLocalData, storeLocalValue } from "../constants/Storage";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 import { insertOfflineSyncItem } from "../sqlite/OfflineSyncItemsHelper";
 import uuid from 'react-native-uuid';
@@ -10,18 +10,20 @@ import { generateKey } from "../constants/Utils";
 
 export function checkConnectivity(){
 
-    return new Promise( async function(resolve, reject) {
-   
+    return new Promise( async function(resolve, reject) {   
+
         var isOnline = await getLocalData("@online");        
         console.log("isOnline",isOnline)
         if(isOnline === "0"){
             resolve(false);
         }else{
-            NetInfo.addEventListener(networkState => {
-                try{                    
-                    var isConnected = networkState.isConnected;
+            NetInfo.addEventListener( async networkState => {
+                try{
+                    console.log("GET NETWORK STATUS : " , networkState) ;
+                    var isConnected = networkState.isConnected ;                    
+                    //await storeLocalValue("@online" , isConnected ? "1" : '0');
                     resolve(isConnected);
-                }catch(e){
+                }catch(e){                    
                     reject(e);
                 }            
             });

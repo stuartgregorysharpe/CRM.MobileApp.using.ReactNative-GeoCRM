@@ -5,9 +5,12 @@ import OfflineSyncModalView from '../components/OfflineSyncModalView';
 import { syncPostData } from '../../../../../services/SyncDatabaseService/PostSyncTable';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import { useSelector } from 'react-redux';
+import { CHANGE_SYNC_START } from '../../../../../actions/actionTypes';
 
 const ViewOfflineSyncModalContainer = props => {
-    
+        
+    const { isManual } = props;
     const [typeLists, setTypeLists] = useState([
         {label:'Location Visits' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false } , 
         {label:'Add Locations' , time: '28 April 2022 18:35' , isStart:false , isSynced: false , isError : false},
@@ -23,6 +26,7 @@ const ViewOfflineSyncModalContainer = props => {
     const [totalValue, setTotalValue] = useState(0);
     const [syncBtnTitle , setSyncBtnTitle] = useState("Sync All Items");
     const [isActive,setIsActive] = useState(true);    
+    const offlineStatus = useSelector(state => state.auth.offlineStatus);
     var isHttpError = false;
     var isError = false;
     
@@ -42,7 +46,14 @@ const ViewOfflineSyncModalContainer = props => {
             tmp.push(element);
         });        
         setTypeLists(tmp);
-    }, [currentSyncItem])
+    }, [currentSyncItem]);
+    
+    useEffect(() => {
+        console.log("offlien item sync start", offlineStatus, isManual)
+        if(!offlineStatus && !isManual){
+            startSync();
+        }
+    },[offlineStatus , isManual]);
     
     const addData = (value) => {    
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
@@ -67,6 +78,7 @@ const ViewOfflineSyncModalContainer = props => {
                 setTotalValue(totalValue);
             }
         });
+
         if(!isError){
             if(index < lists.length - 1){           
                 await syncData(lists, index + 1);
@@ -78,11 +90,12 @@ const ViewOfflineSyncModalContainer = props => {
                 console.log(" isHttpError " , isHttpError);
                 props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: isHttpError ? 'Some items could not be synced, please contact support' : '' });
             }
-        }        
+        }   
     }
 
     const startSync = () => {       
         setIsStart(true); 
+        dispatch({type: CHANGE_SYNC_START , payload: true });
         syncData(typeLists, 0);
     }
     
