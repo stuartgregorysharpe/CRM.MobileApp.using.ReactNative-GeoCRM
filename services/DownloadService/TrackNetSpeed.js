@@ -17,7 +17,7 @@ export const convertStringToByteArray = (str) => {
 }
 
 
-export const getSpeed = async (route, param) => {
+export const getSpeedTest = async (route, param) => {
 
     var token = await getToken();
     var baseUrl = await getBaseUrl();
@@ -37,24 +37,19 @@ export const getSpeed = async (route, param) => {
         })
         .then(res => {     
             var byteArray = convertStringToByteArray(JSON.stringify(res));
-            console.log("byte alrray ", byteArray.length);
+            console.log("byte alrray ", byteArray.length);            
             const _end = new Date().getTime();
-            const kbPerSecond = Math.floor((byteArray.length/1024)/((_end-_start)/1000));
+            console.log("start time" , _start);
+            console.log("end time" , _end);
+            console.log("elapsed time" , _end -_start)
+            const kbPerSecond = Math.floor((byteArray.length/1024)/((_end -_start)/1000));
+            console.log("kbPerSecond",kbPerSecond);
             resolve(kbPerSecond);
 
         })
         .catch(err => {
           console.log(url, err);
-          const error = err.response;
-          if (
-            error.status === 401 &&
-            error.config &&
-            !error.config.__isRetryRequest
-          ) {
-            reject('expired');
-          } else {
-            reject('error');
-          }
+          reject(err);
         });
     });
   };

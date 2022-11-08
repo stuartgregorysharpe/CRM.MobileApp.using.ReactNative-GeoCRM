@@ -16,7 +16,7 @@ import {updateCurrentLocation} from '../../../../actions/google.action';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../components/modal/Notification';
 import {showNotification} from '../../../../actions/notification.action';
-import {CHECKIN} from '../../../../actions/actionTypes';
+import {CHANGE_SYNC_START, CHECKIN} from '../../../../actions/actionTypes';
 import {initializeDB} from '../../../../services/SyncDatabaseService/SyncTable';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import { checkConnectivity } from '../../../../DAO/helper';
@@ -74,6 +74,7 @@ export const MainPage = forwardRef((props, ref) => {
   useEffect(() => {
     initializeDB().then(res => {
       console.log(' ----------------- initaliz db end ---------------- ');
+      dispatch({type: CHANGE_SYNC_START , payload: false });
       if(syncAllViewRef.current){
         syncAllViewRef.current.refreshView();
       }

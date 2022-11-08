@@ -86,6 +86,7 @@ export const SyncAll = forwardRef((props, ref) => {
 
 
   const startTableSync = () => {    
+    setIsManual(true);
     console.log("start table syss")
     if (basketRef.current && basketRef.current.startSync) {
       console.log("sync table start");
@@ -176,12 +177,19 @@ export const SyncAll = forwardRef((props, ref) => {
       </View>
 
       {expanded && (
-        <BasketListContainer isManual={isManual} ref={basketRef} updateLoading={updateLoading} />
+        <BasketListContainer 
+        changeIsManual={(flag) => {
+          setIsManual(flag);
+        }}
+        isManual={isManual} ref={basketRef} updateLoading={updateLoading} />
       )}
 
       {expanded && (
         <ViewOfflineSyncItemContainer
           isManual={isManual} 
+          changeIsManual={(flag) => {
+            setIsManual(flag);
+          }}
           onSyncStart={(message) =>{ 
             startTableSync();
           }}
