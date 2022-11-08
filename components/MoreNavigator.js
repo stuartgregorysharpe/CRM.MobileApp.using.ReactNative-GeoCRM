@@ -34,9 +34,9 @@ import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
-import { checkConnectivity } from '../DAO/helper';
-import { showOfflineDialog } from '../constants/Helper';
-import { useDispatch } from 'react-redux';
+import {checkConnectivity} from '../DAO/helper';
+import {showOfflineDialog} from '../constants/Helper';
+import {useDispatch} from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,7 +48,7 @@ export default function RepMoreScreen({navigation}) {
   const [componentListTwo, setComponentListTwo] = useState([]);
   const [componentListThree, setComponentListThree] = useState([]);
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
@@ -96,15 +96,11 @@ export default function RepMoreScreen({navigation}) {
     }
   }, [visibleMore]);
 
-
   const ChangeScreen = key => {
-
-    console.log("offlineStatus", offlineStatus, key)
-    if(offlineStatus 
-        && (key === 'RepWebLinks'
-        || key === 'RepContentLibrary')){
-          showOfflineDialog(dispatch)
-          return;
+    console.log('offlineStatus', offlineStatus, key);
+    if (offlineStatus && key === 'RepWebLinks') {
+      showOfflineDialog(dispatch);
+      return;
     }
 
     switch (key) {
