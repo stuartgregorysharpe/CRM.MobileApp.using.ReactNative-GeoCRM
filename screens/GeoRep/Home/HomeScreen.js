@@ -54,10 +54,10 @@ export default function HomeScreen(props) {
               }            
             }
           });   
-        }
-           
-      }      
-    }, 20 * 1000); //parseInt(speed_test.frequency)
+        }           
+      }  
+          
+    }, parseInt(speed_test.frequency) * 1000); //parseInt(speed_test.frequency)
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     }
