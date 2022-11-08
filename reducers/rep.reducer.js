@@ -10,7 +10,8 @@ import {
   CHANGE_DISPOSITION_INFO,
   CHANGE_LOCATION_ACTION,
   CHANGE_BOTTOM_TAB_ACTION,
-  LOCATION_CONFIRM_MODAL_VISIBLE
+  LOCATION_CONFIRM_MODAL_VISIBLE,
+  CHANGE_SYNC_START
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -25,12 +26,18 @@ const initialState = {
   statusDispositionInfo: false,
   locationAction: null,
   bottomTabAction: null,
-  locationConfirmModalVisible: false
+  locationConfirmModalVisible: false,
+  syncStart: true
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state=initialState, action) => {
   switch(action.type) {
+    case CHANGE_SYNC_START:
+      return {
+        ...state,
+        syncStart: action.payload
+      }
     case BACK_ICON_STATUS:
       return {
         ...state,

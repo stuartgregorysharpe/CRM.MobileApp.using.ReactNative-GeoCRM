@@ -10,8 +10,8 @@ import { useDispatch } from 'react-redux';
 
 export default function ScrollTab(props) {
 
-    const { tabs ,onTabSelection } = props;
-    const [selectedTab, setSelectedTab] = useState(0);
+    const { tabs , onTabSelection , selectedTab } = props;
+    //const [selectedTab, setSelectedTab] = useState(0);
     const dispatch = useDispatch()
 
     return (
@@ -24,7 +24,7 @@ export default function ScrollTab(props) {
                         
                         checkConnectivity().then((isConnected) => {
                             if(isConnected || item.name === "Main"){
-                                setSelectedTab(item.id);
+                                //setSelectedTab(item.id);
                                 onTabSelection(item);
                             }else{
                                 showOfflineDialog(dispatch);

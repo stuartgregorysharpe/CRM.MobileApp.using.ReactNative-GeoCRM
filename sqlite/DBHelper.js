@@ -213,18 +213,20 @@ export const handleRecords = async ( tableName, records) => {
         }
       })
 
-      query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;        
-      //console.log(query)
-      try{
-        if(db != null){    
-          await db.transaction(async(tx) =>{            
-            await tx.executeSql(query);
-          });
-        }    
-      }catch(e){
-        console.log("error occure", e);
-      }  
-      
+      if(values != ''){
+        query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;                
+        try{
+          if(db != null){    
+            await db.transaction(async(tx) =>{            
+              await tx.executeSql(query);
+            });
+          }    
+        }catch(e){
+          console.log("error occure", e);
+        }
+      }else{
+        console.log('No data to insert' , tableName);
+      }           
   }catch(e){
     console.log(e);
   }

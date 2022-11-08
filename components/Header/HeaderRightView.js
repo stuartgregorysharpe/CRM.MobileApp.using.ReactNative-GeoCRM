@@ -23,9 +23,9 @@ export default function HeaderRightView({navigation}) {
     setOnlineOffline();
   },[]);
 
-  useEffect(() => {   
-     setToggleSwitch(!offlineStatus)
-  }, [offlineStatus]);
+  // useEffect(() => {   
+  //    setToggleSwitch(!offlineStatus)
+  // }, [offlineStatus]);
 
   const showMessage = (toggleSwitch) => {
     dispatch(showNotification({
@@ -42,21 +42,20 @@ export default function HeaderRightView({navigation}) {
     })); 
   }
 
-
-
-
   const getToggleStatus = async () => {
     let res = await checkFeatureIncludeParam("offline_toggle");    
     setShowToggle(res);
   }
 
   const setOnlineOffline = async () => {
-    var isOnline = await getLocalData("@online");    
+    var isOnline = await getLocalData("@online");  
+    console.log("initialize setOnlineOffline ==== ", isOnline)  
     if(isOnline === "1" || isOnline === undefined){
       setToggleSwitch(true);
       dispatch({type: CHANGE_OFFLINE_STATUS , payload: false});
     }else{
       setToggleSwitch(false);
+      console.log("initialize setOnlineOffline ==== ", isOnline)  
       dispatch({type: CHANGE_OFFLINE_STATUS , payload: true});
     }
   }
@@ -66,14 +65,14 @@ export default function HeaderRightView({navigation}) {
       {canShowToggle &&
         <ToggleSwitch
           style={styles.toggleSwitch}
-          label={toggleSwitch ? "Online" : "Offline"}
+          label={!offlineStatus ? "Online" : "Offline"}
           labelStyle={styles.toggleSwitchLabel}
           onColor={Colors.whiteColor}
           offColor={Colors.redColor}
           size="small"
           thumbOnStyle={{ backgroundColor: whiteLabel().headerBackground }}
           thumbOffStyle={{ backgroundColor: whiteLabel().headerBackground }}
-          isOn={toggleSwitch}
+          isOn={!offlineStatus}
           onToggle={ async (toggleSwitch)  => {            
             await storeLocalValue("@online", toggleSwitch ? "1" : "0");   
             if(!toggleSwitch){ // offline
@@ -82,7 +81,7 @@ export default function HeaderRightView({navigation}) {
               await storeLocalValue("@manual_online_offline" , "0");
             }
             setToggleSwitch(toggleSwitch);
-            showMessage(toggleSwitch);          
+            showMessage(toggleSwitch);
           }}
         />}
       <TouchableOpacity style={styles.headerAvatar} onPress={() => dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 })}>

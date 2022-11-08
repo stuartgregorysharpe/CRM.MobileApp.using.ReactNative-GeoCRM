@@ -16,11 +16,15 @@ const ViewOfflineSyncItem = props => {
     const offlineStatus = useSelector(state => state.auth.offlineStatus);
     
     useEffect(() => {
+        
         if(!offlineStatus && !isManual){
             openModal();
+            // if(props.changeIsManual){
+            //     props.changeIsManual(true);
+            // }
         }
-    }, [offlineStatus])
-
+    }, [offlineStatus, isManual])
+ 
     const modalClosed = ({type, value}) => {        
         if(type == Constants.actionType.ACTION_CLOSE){
             offlineSyncModalRef.current.hideModal();
