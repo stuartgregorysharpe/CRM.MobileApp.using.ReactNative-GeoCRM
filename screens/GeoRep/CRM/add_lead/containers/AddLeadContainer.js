@@ -307,7 +307,7 @@ export default function AddLeadContainer(props) {
         icon="Check_List_Active"></CCircleButton>
     );
   };
-
+  
   const viewLists = () => {
     if (viewListsModalRef) {
       viewListsModalRef.current.showModal();
@@ -480,3 +480,4 @@ export default function AddLeadContainer(props) {
     </View>
   );
 }
+ 

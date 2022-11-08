@@ -11,9 +11,11 @@ import {useSelector} from 'react-redux';
 import { style} from '../../../constants/Styles';
 import {Ticket} from './tabs/Ticket';
 import Faq from './tabs/Faq';
-import {WHATS_APP_LINK} from '../../../constants/Helper';
+import {showOfflineDialog, WHATS_APP_LINK} from '../../../constants/Helper';
 import TopThreeTab from '../../../components/common/TopThreeTab';
 import { SubmitButton } from '../../../components/shared/SubmitButton';
+import { checkConnectivity } from '../../../DAO/helper';
+import { useDispatch } from 'react-redux';
 
 export default function SupportScreen(props) {
 
@@ -21,6 +23,7 @@ export default function SupportScreen(props) {
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [tabIndex, setTabIndex] = useState(1);
   const ticketRef = useRef();
+   const dispatch = useDispatch();
 
   useEffect(() => {
     if (props.screenProps) {
@@ -82,7 +85,19 @@ export default function SupportScreen(props) {
           {
             tabIndex == 1 &&
             <SubmitButton style={{marginHorizontal:10}} title="Submit" onSubmit={() => {
-              ticketRef.current.callPostSupport();
+
+              checkConnectivity().then((isConnected) => {
+                if(isConnected){
+                  if(ticketRef.current){
+                    ticketRef.current.callPostSupport();
+                  }
+                }else{
+                  showOfflineDialog(dispatch)
+                }
+              })
+              
+              
+
             }}></SubmitButton>
           }
 

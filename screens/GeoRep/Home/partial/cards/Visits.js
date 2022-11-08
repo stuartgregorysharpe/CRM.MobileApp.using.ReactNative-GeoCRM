@@ -7,9 +7,15 @@ import {TopTab} from '../../../../../components/common/TopTab';
 import TodayVisits from './partial/TodayVisits';
 import WeeklyVisits from './partial/WeeklyVisits';
 import {Strings} from '../../../../../constants';
+import { checkConnectivity } from '../../../../../DAO/helper';
+import { showOfflineDialog } from '../../../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 const Visits = ({visitCard}) => {
+
   const [tabIndex, setTabIndex] = useState(0);
+  const dispatch = useDispatch();
+  
   const headers = [
     Strings.Home_Visit_Tabs.Today,
     Strings.Home_Visit_Tabs.Weekly,
@@ -33,7 +39,14 @@ const Visits = ({visitCard}) => {
           textStyle={{fontSize: 13}}
           headers={headers}
           onTabClicked={index => {
-            setTabIndex(index);
+            checkConnectivity().then((isConnected) => {
+              if(isConnected){
+                setTabIndex(index);
+              }else{
+                showOfflineDialog(dispatch)
+              }
+            });            
+            
           }}></TopTab>
 
         {tabIndex === 0 && visitCard && (

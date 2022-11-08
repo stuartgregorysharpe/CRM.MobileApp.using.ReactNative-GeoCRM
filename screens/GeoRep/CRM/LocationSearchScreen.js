@@ -10,13 +10,12 @@ import {
   Image,
   Platform,
   ActivityIndicator,
-  BackHandler,
 } from 'react-native';
 import {Provider} from 'react-native-paper';
 import {useSelector, useDispatch} from 'react-redux';
 import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
-import Colors, {whiteLabel} from '../../../constants/Colors';
+import Colors from '../../../constants/Colors';
 import {
   IS_CALENDAR_SELECTION,
   LOCATION_ID_CHANGED,
@@ -44,6 +43,7 @@ import AddLeadModal from './add_lead';
 import {Constants} from '../../../constants';
 import {LocationSearchDAO} from '../../../DAO';
 import LocationInfoDetailModal from './locationInfoDetails/LocationInfoDetailModal';
+import SelectLocationView from './partial/SelectLocationView';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -52,6 +52,7 @@ var savedShowItem = 0;
 var specificLocationId = 0;
 
 export default function LocationSearchScreen(props) {
+	
   const navigation = props.navigation;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -276,7 +277,7 @@ export default function LocationSearchScreen(props) {
       });
   };
 
-  const goPreviousPage = () => {
+  const goPreviousPage = () => {    
     if (navigation.canGoBack()) {
       navigation.goBack();
       dispatch({type: SLIDE_STATUS, payload: false});
@@ -539,103 +540,18 @@ export default function LocationSearchScreen(props) {
           />
 
           <View>
-            <View style={styles.buttonContainer}>
-              <View style={styles.leftContainer}>
-                <TouchableOpacity
-                  disabled={isLoading}
-                  style={[
-                    styles.buttonTextStyle,
-                    {
-                      backgroundColor: isLoading
-                        ? Colors.skeletonColor
-                        : isSelected
-                        ? Colors.disabledColor
-                        : whiteLabel().actionFullButtonBackground,
-                    },
-                  ]}
-                  onPress={() => {
-                    if (!isLoading) {
-                      if (isSelected) {
-                        dispatch({
-                          type: SELECTED_LOCATIONS_FOR_CALENDAR,
-                          payload: [],
-                        });
-                      }
-                      dispatch({
-                        type: IS_CALENDAR_SELECTION,
-                        payload: !isSelected,
-                      });
-                    }
-                  }}>
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      {
-                        color: isLoading
-                          ? Colors.skeletonColor
-                          : Colors.whiteColor,
-                      },
-                    ]}>
-                    {isSelected ? 'Cancel' : 'Select'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {isSelected && !features.includes('disable_crm_map_view') && (
-                <View style={{alignItems: 'flex-start'}}>
-                  <TouchableOpacity
-                    disabled={isLoading}
-                    style={[
-                      styles.buttonTextStyle,
-                      {
-                        backgroundColor: Colors.bgColor,
-                        borderColor: isLoading
-                          ? Colors.bgColor
-                          : Colors.skeletonColor,
-                        borderWidth: 2,
-                        marginLeft: 10,
-                      },
-                    ]}
-                    onPress={() => {
-                      if (isSelected) {
-                        dispatch({type: IS_CALENDAR_SELECTION, payload: true});
-                        goPreviousPage();
-                      }
-                    }}>
-                    <Text
-                      style={[
-                        styles.buttonText,
-                        {color: isLoading ? Colors.bgColor : Colors.blackColor},
-                      ]}>
-                      {'Map'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-
-              <View style={styles.rightContainer}>
-                {isLoading === false &&
-                  isSelected &&
-                  selectedLocationsForCalendar.length > 0 && (
-                    <TouchableOpacity
-                      style={styles.buttonTextStyle}
-                      onPress={() => {
-                        if (selectedLocationsForCalendar.length > 0) {
-                          animation('addtocalendar');
-                        }
-                      }}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={styles.buttonText}>Add to Calendar</Text>
-                        <SvgIcon
-                          icon="Arrow_Right"
-                          width="13px"
-                          height="13px"
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  )}
-              </View>
-            </View>
+          
+            
+            <SelectLocationView 
+                features={features}
+                isLoading={isLoading}
+                isSelected={isSelected}
+                selectedLocationsForCalendar={selectedLocationsForCalendar}
+                goPreviousPage={goPreviousPage}
+                addToCalendar={() => {
+                  animation('addtocalendar');
+                }}
+            />
 
             {isLoading && (
               <LocationSearchScreenPlaceholder></LocationSearchScreenPlaceholder>
@@ -700,41 +616,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 50,
     paddingBottom: 0,
-  },
-
-  buttonContainer: {
-    paddingTop: 8,
-    paddingBottom: 17,
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10,
-    alignItems: 'center',
-  },
-
-  leftContainer: {
-    alignItems: 'flex-start',
-  },
-
-  rightContainer: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
-
-  buttonTextStyle: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: Platform.OS == 'android' ? 5 : 8,
-    paddingBottom: Platform.OS == 'android' ? 5 : 8,
-    borderRadius: 15,
-    backgroundColor: whiteLabel().actionFullButtonBackground,
-  },
-
-  buttonText: {
-    color: whiteLabel().actionFullButtonText,
-    fontSize: 12,
-    fontFamily: Fonts.secondaryBold,
-  },
-
+  },      
+    
   transitionView: {
     position: 'absolute',
     bottom: 0,
