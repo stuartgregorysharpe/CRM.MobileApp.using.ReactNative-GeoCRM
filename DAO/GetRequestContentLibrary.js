@@ -112,7 +112,7 @@ const getData = (lists, assets_path) => {
       //Load file details into folder
       const fileDetails = {
         filename: item.filename,
-        file_path: assets_path + '/content_library/' + item.filename,
+        file_path: assets_path + 'content_library/' + item.filename,
         modified_date: item.modified_date,
         file_size: getFileSizeString(item.file_size),
       };
