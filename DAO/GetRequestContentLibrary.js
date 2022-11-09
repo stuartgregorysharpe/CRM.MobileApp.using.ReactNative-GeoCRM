@@ -41,13 +41,21 @@ const fetchDataFromDB = async (business_unit_id, client_id) => {
   const res = await ExecuteQuery(query, [business_unit_id, client_id]);
   return res.rows ? res.rows : [];
 };
+const getFileSizeString = file_size => {
+  const fileSize = Number(file_size);
+  console.log(fileSize);
+  if (fileSize < 1024) return fileSize + ' b';
+  if (fileSize >= 1024 && fileSize < 1024 * 1024)
+    return (fileSize / 1024).toFixed(2) + ' kb';
+  if (fileSize >= 1024 * 1024 && fileSize < 1024 * 1024 * 1024)
+    return (fileSize / (1024 * 1024)).toFixed(2) + ' mb';
+  return (fileSize / (1024 * 1024 * 1024)).toFixed(2) + ' gb';
+};
 
 const generateQuery = () => {
   const query = `SELECT cc.category_name,c.filename,
-       DATE(c.time_stamp) AS "modified_date",
-       CASE WHEN c.file_size < 1024 THEN (c.file_size || " kb")
-            WHEN c.file_size > 1024 AND c.file_size <(1024 * 1024) THEN (round(c.file_size / 1024, 2) || " mb") 
-            ELSE (round(c.file_size /(1024 * 1024), 2) || " gb") END AS "file_size"
+       c.file_size,
+       DATE(c.time_stamp) AS "modified_date"
       FROM content AS c
       LEFT JOIN content_categories AS cc 
       ON c.category_id = cc.category_id
@@ -89,7 +97,7 @@ const getData = (lists, assets_path) => {
         filename: item.filename,
         file_path: assets_path + 'content_library/' + item.filename,
         modified_date: item.modified_date,
-        file_size: item.file_size,
+        file_size: getFileSizeString(item.file_size),
       };
       if (!foldersArrayData[categoryName]['files']) {
         foldersArrayData[categoryName]['files'] = [];
@@ -106,7 +114,7 @@ const getData = (lists, assets_path) => {
         filename: item.filename,
         file_path: assets_path + '/content_library/' + item.filename,
         modified_date: item.modified_date,
-        file_size: item.file_size,
+        file_size: getFileSizeString(item.file_size),
       };
       if (!foldersArrayData[categoryName]['files']) {
         foldersArrayData[categoryName]['files'] = [];
