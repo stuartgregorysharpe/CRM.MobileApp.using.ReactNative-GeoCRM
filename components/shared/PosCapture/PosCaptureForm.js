@@ -26,7 +26,6 @@ const PosCaptureForm = props => {
   const {item, questionType, formIndex} = props;
   console.log('item', item);
   const [formData, setFormData] = useState({products: []});
-  const [selectedFormat, setSelectedFormat] = useState(null);
   const [keyword, setKeyword] = useState('');
   const captureModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -35,8 +34,8 @@ const PosCaptureForm = props => {
   const [type, setType] = useState('');
   const [selectedProductItem, setSelectedProductItem] = useState(null);
   const products = useMemo(
-    () => filterProducts(item.products, keyword, selectedFormat),
-    [formData, keyword, selectedFormat],
+    () => filterProducts(item.products, keyword, type, brand),
+    [formData, keyword, type, brand],
   );
   const brandList = useMemo(() => getBrands(item, type), [item, type]);
   const typeList = useMemo(() => getTypes(item), [item]);
@@ -127,7 +126,7 @@ const PosCaptureForm = props => {
           hasError={false}
           disabled={false}
           onSelectItem={item => {
-            setType(item.label);
+            setType(item?.label || '');
             setBrand('');
           }}
           onClear={() => setType('')}
@@ -145,7 +144,7 @@ const PosCaptureForm = props => {
           hasError={false}
           disabled={false}
           onSelectItem={item => {
-            setBrand(item.label);
+            setBrand(item?.label || '');
           }}
           onClear={() => setBrand('')}
           containerStyle={{marginTop: 0, flex: 1}}

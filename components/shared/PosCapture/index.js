@@ -34,6 +34,7 @@ const PosCapture = props => {
       {renderContent()}
       <PosCaptureFormModal
         item={item}
+        title={getQuestionTitle(questionType)}
         formIndex={formIndex}
         questionType={questionType}
         ref={posCaptureModalRef}

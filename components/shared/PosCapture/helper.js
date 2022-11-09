@@ -128,15 +128,22 @@ export function getQuestionTitle(questionType) {
 export function filterProducts(products, keyword, type, brand) {
   if (!products) return [];
 
-  if (!keyword) return products;
+  if (
+    (!keyword || keyword == '') &&
+    (!type || type == '') &&
+    (!brand || brand == '')
+  )
+    return products;
   const _products = products.filter(
     x =>
-      x.product_name.includes(keyword) ||
-      x.barcode.includes(keyword) ||
-      x.brand.includes(keyword) ||
-      x.product_type.includes(keyword) ||
-      x.brand == brand ||
-      x.product_type == type,
+      (!keyword ||
+        keyword == '' ||
+        x.product_name.includes(keyword) ||
+        x.barcode.includes(keyword) ||
+        x.brand.includes(keyword) ||
+        x.product_type.includes(keyword)) &&
+      (!brand || brand == '' || x.brand == brand) &&
+      (!type || type == '' || x.product_type == type),
   );
 
   return _products;
