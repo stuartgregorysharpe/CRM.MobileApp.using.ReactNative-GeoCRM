@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {Fonts, Values} from '../../../../constants';
+import {Constants, Fonts, Values} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
 
 const ProductItem = props => {
@@ -15,11 +15,20 @@ const ProductItem = props => {
   const {brand, product_name, product_type} = item;
 
   return (
-    <View style={[styles.container, styles.bottomBorder, props.style]}>
+    <TouchableOpacity
+      style={[styles.container, styles.bottomBorder, props.style]}
+      onPress={() => {
+        if (props.onItemAction) {
+          props.onItemAction({
+            type: Constants.actionType.ACTION_VIEW,
+            item: item,
+          });
+        }
+      }}>
       <Text style={styles.text}>{product_type}</Text>
       <Text style={styles.text}>{product_name}</Text>
       <Text style={styles.text}>{brand}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

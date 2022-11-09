@@ -1,7 +1,7 @@
 import React from 'react';
 import {Constants} from '../../../../constants';
 import CModal from '../../../common/CModal';
-import PosCaptureFormContainer from '../containers/PosCaptureFormContainer';
+import PosCaptureForm from '../PosCaptureForm';
 
 const PosCaptureFormModal = React.forwardRef((props, ref) => {
   const {item} = props;
@@ -18,10 +18,10 @@ const PosCaptureFormModal = React.forwardRef((props, ref) => {
   return (
     <CModal
       ref={ref}
-      modalType={Constants.modalType.MODAL_TYPE_FULL}
+      modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       {...props}>
-      <PosCaptureFormContainer {...props} onButtonAction={onButtonAction} />
+      <PosCaptureForm {...props} onButtonAction={onButtonAction} />
     </CModal>
   );
 });
-export default SKUCaptureModal;
+export default PosCaptureFormModal;

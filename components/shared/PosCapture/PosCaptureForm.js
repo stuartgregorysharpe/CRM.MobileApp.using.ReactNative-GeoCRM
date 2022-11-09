@@ -5,15 +5,19 @@ import {showNotification} from '../../../actions/notification.action';
 import {Colors, Constants, Fonts, Strings, Values} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
 import {style} from '../../../constants/Styles';
+import ClosableView from '../../common/ClosableView';
 import QRScanModal from '../../common/QRScanModal';
 import CSingleSelectInput from '../../common/SelectInput/CSingleSelectInput';
 import {Notification} from '../../modal/Notification';
 import SearchBar from '../../SearchBar';
 import {SubmitButton} from '../SubmitButton';
 import ProductList from './components/ProductList';
+import PointOfSaleFormContainer from './containers/PointOfSaleFormContainer';
 import {
   constructFormData,
   filterProducts,
+  getBrands,
+  getTypes,
   getValueFromFormData,
 } from './helper';
 
@@ -24,24 +28,19 @@ const PosCaptureForm = props => {
   const [formData, setFormData] = useState({products: []});
   const [selectedFormat, setSelectedFormat] = useState(null);
   const [keyword, setKeyword] = useState('');
-  const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
-  const competitorPriceModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isShowPosDetailView, setIsShowPosDetailView] = useState(false);
   const [brand, setBrand] = useState('');
   const [type, setType] = useState('');
+  const [selectedProductItem, setSelectedProductItem] = useState(null);
   const products = useMemo(
-    () => filterProducts(formData.products, keyword, selectedFormat),
+    () => filterProducts(item.products, keyword, selectedFormat),
     [formData, keyword, selectedFormat],
   );
-  const formats = useMemo(() => {
-    return item?.formats?.map(format => {
-      return {
-        label: format.product_name,
-        value: format.product_id,
-      };
-    });
-  }, item);
+  const brandList = useMemo(() => getBrands(item, type), [item, type]);
+  const typeList = useMemo(() => getTypes(item), [item]);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -94,50 +93,16 @@ const PosCaptureForm = props => {
       }),
     );
   };
+  const onPressPointOfSales = () => {};
   const onItemAction = data => {
     const {type, item} = data;
-    if (type == Constants.actionType.ACTION_CHANGE_ITEM_PRICE) {
-      const {price} = data;
-      const _formData = {...formData};
-      const _products = _formData.products;
-      const itemIndex = _products.findIndex(
-        x => x.product_id == item.product_id,
-      );
-      if (itemIndex < 0) {
-        return false;
-      }
-      _products[itemIndex].price = price;
-      setFormData(_formData);
-    } else if (type == Constants.actionType.ACTION_CHANGE_ITEM_PRICE_TYPE) {
-      const {price_type} = data;
-      const _formData = {...formData};
-      const _products = _formData.products;
-      const itemIndex = _products.findIndex(
-        x => x.product_id == item.product_id,
-      );
-      if (itemIndex < 0) {
-        return false;
-      }
-      _products[itemIndex].price_type = price_type;
-      setFormData(_formData);
-    } else if (type == Constants.actionType.ACTION_COMP) {
-      if (item.price == null || item.price == undefined || item.price == '') {
-        const errorMessage = 'Please input a price for this format';
-        return showErrorMessage(errorMessage);
-      }
-      setCompPressItem(item);
-      competitorPriceModalRef.current.showModal();
-    }
+    setSelectedProductItem(item);
+    setIsShowPosDetailView(true);
   };
 
   const onCaptureAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       const foundProduct = formData.products.find(x => x.barcode == value);
-
-      if (foundProduct) {
-        setSelectedFormat(foundProduct.product_id);
-        setLastScannedQrCode(value);
-      }
     }
   };
   return (
@@ -147,26 +112,9 @@ const PosCaptureForm = props => {
         onSearch={onSearch}
         suffixButtonIcon="Scan_Icon"
         onSuffixButtonPress={onCapture}
+        style={{paddingHorizontal: 0}}
       />
-      <View style={{flexDirection: 'row', marginHorizontal: 10}}>
-        <CSingleSelectInput
-          bgType="card"
-          bgStyle={[style.card, {borderWidth: 0}]}
-          placeholderStyle={{color: whiteLabel().mainText, fontWeight: '700'}}
-          description={'Brand'}
-          placeholder={'Brand'}
-          mode="single"
-          checkedValue={brand}
-          items={brandLists}
-          hasError={false}
-          disabled={false}
-          onSelectItem={item => {
-            setBrand(item.label);
-          }}
-          onClear={() => setBrand('')}
-          containerStyle={{marginTop: 0, flex: 1}}
-        />
-
+      <View style={{flexDirection: 'row', marginHorizontal: 0}}>
         <CSingleSelectInput
           bgType="card"
           bgStyle={[style.card, {borderWidth: 0}]}
@@ -175,18 +123,61 @@ const PosCaptureForm = props => {
           placeholder={'Type'}
           mode="single"
           checkedValue={type}
-          items={typeLists}
+          items={typeList}
           hasError={false}
           disabled={false}
           onSelectItem={item => {
             setType(item.label);
+            setBrand('');
           }}
           onClear={() => setType('')}
-          containerStyle={{marginTop: 0, marginLeft: 5, flex: 1}}
+          containerStyle={{marginTop: 0, marginRight: 5, flex: 1}}
+        />
+        <CSingleSelectInput
+          bgType="card"
+          bgStyle={[style.card, {borderWidth: 0}]}
+          placeholderStyle={{color: whiteLabel().mainText, fontWeight: '700'}}
+          description={'Brand'}
+          placeholder={'Brand'}
+          mode="single"
+          checkedValue={brand}
+          items={brandList}
+          hasError={false}
+          disabled={false}
+          onSelectItem={item => {
+            setBrand(item.label);
+          }}
+          onClear={() => setBrand('')}
+          containerStyle={{marginTop: 0, flex: 1}}
         />
       </View>
+      <SubmitButton
+        title={'View Point of Sales'}
+        style={{marginTop: 4, marginBottom: 8}}
+        onSubmit={() => {
+          onPressPointOfSales();
+        }}
+      />
+      {!isShowPosDetailView && (
+        <ProductList
+          style={{
+            maxHeight: isKeyboardVisible
+              ? Values.deviceHeight * 0.2
+              : Values.deviceHeight * 0.6,
+            alignSelf: 'stretch',
+          }}
+          items={products}
+          onItemAction={onItemAction}
+        />
+      )}
 
-      <ProductList items={products} onItemAction={onItemAction} />
+      <ClosableView
+        isVisible={isShowPosDetailView}
+        onClose={() => {
+          setIsShowPosDetailView(false);
+        }}>
+        <PointOfSaleFormContainer product={selectedProductItem} />
+      </ClosableView>
 
       <QRScanModal ref={captureModalRef} onButtonAction={onCaptureAction} />
       <Notification />
