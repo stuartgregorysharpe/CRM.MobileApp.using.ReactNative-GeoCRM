@@ -26,7 +26,7 @@ const PosCaptureForm = props => {
   const dispatch = useDispatch();
   const {item, questionType, formIndex} = props;
   console.log('item', item);
-  const [formData, setFormData] = useState({posItems: []});
+  const [formData, setFormData] = useState({posItems: [], fileArray: []});
   const [keyword, setKeyword] = useState('');
   const captureModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -87,7 +87,7 @@ const PosCaptureForm = props => {
     const {type, item} = data;
     if (type == Constants.actionType.ACTION_REMOVE) {
       const items = formData?.posItems.filter(x => x.id != item.id);
-      const newFormData = {posItems: items};
+      const newFormData = {...formData, posItems: items};
       setFormData(newFormData);
     }
   };
@@ -112,11 +112,17 @@ const PosCaptureForm = props => {
     if (posItems.length > 0) {
       index = posItems[posItems.length - 1].id + 1;
     }
-    posItems.push({
+    const fileArray = [...formData.fileArray];
+    const newPostItem = {
       ...data,
       id: index,
-    });
-    const newFormData = {posItems};
+    };
+    if (data.image) {
+      fileArray.push(data.image);
+      newPostItem.image_index = fileArray.length - 1;
+    }
+    posItems.push(newPostItem);
+    const newFormData = {...formData, posItems};
     setFormData(newFormData);
     setIsShowPosDetailView(false);
   };

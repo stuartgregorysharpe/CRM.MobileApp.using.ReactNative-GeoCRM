@@ -34,6 +34,7 @@ const PointOfSaleFormContainer = props => {
       product_id: product.product_id,
       qty: '',
       image_index: '',
+      image: null,
     };
     setFormData(posFormData);
   };

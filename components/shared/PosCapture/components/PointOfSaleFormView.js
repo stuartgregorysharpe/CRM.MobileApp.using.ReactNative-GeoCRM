@@ -14,6 +14,7 @@ import {
 } from '../../../../constants/Helper';
 import {boxShadow, style} from '../../../../constants/Styles';
 import CSingleSelectInput from '../../../common/SelectInput/CSingleSelectInput';
+import ImagePickerButton from '../../../ImagePickerButton';
 import SvgIcon from '../../../SvgIcon';
 import {Button} from '../../Button';
 
@@ -102,9 +103,13 @@ const POSItemView = props => {
             }}
             keyboardType={'number-pad'}
           />
-          <TouchableOpacity onPress={onPressCamera}>
-            <SvgIcon icon="Camera_Icon" width="23px" height="23px" />
-          </TouchableOpacity>
+          <ImagePickerButton
+            onPickImage={asset => {
+              if (asset?.uri) {
+                onUpdateFormData({image: uri});
+              }
+            }}
+          />
         </View>
       </View>
     </View>

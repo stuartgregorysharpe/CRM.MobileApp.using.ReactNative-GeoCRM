@@ -1,6 +1,6 @@
 export function constructFormData(data) {
   const value = data.value;
-  const formData = {posItems: []};
+  const formData = {posItems: [], fileArray: []};
   const isInitialAnswerExist =
     value &&
     value.form_answers &&
@@ -142,6 +142,7 @@ export function getValueFromFormData(formData, item, formIndex) {
       },
     ],
     form_answers_array: answerDataArray,
+    file_array: formData.fileArray,
   };
 }
 
