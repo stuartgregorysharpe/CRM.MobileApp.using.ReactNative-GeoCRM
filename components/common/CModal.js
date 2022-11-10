@@ -60,12 +60,14 @@ const CModal = React.forwardRef((props, ref) => {
         transparent
         visible={isVisible}
         onRequestClose={onClose}>
+
         <View
           style={[
             isCenterModal && styles.dim,
             isBottomModal && styles.bottomModalDim,
             isFullModal && styles.fullModalDim,
           ]}>
+
           {closableWithOutsideTouch && (
             <TouchableOpacity
               activeOpacity={1}
@@ -86,6 +88,8 @@ const CModal = React.forwardRef((props, ref) => {
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
             ]}>
+
+
             <View style={styles.bodyContainer}>
               {!isFullModal && !hideDivider && (
                 <TouchableOpacity onPress={onClose}>
@@ -106,7 +110,7 @@ const CModal = React.forwardRef((props, ref) => {
               )}
 
               {(props.title || props.icon) && (
-                <View style={styles.titleContainer}>
+                <View style={[styles.titleContainer, {marginTop: hideDivider ? 10: 5}]}>
                   <View
                     style={{
                       flex: 1,
@@ -158,7 +162,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    
   },
+  
   modalContainer: {
     margin: 32,
     position: 'absolute',
@@ -167,7 +173,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     justifyContent: 'center',
     borderRadius: 8,
-    width: 300,
+    width: '90%',
     zIndex: 500,
   },
   bottomModalDim: {

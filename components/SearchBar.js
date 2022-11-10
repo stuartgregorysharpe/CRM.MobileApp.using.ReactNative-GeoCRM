@@ -13,6 +13,7 @@ const SearchBar = props => {
     initVal,
     isLoading,
     haveFilter,
+    placeholder,
     onSearchBoxPress,
   } = props;
 
@@ -46,7 +47,7 @@ const SearchBar = props => {
           <View pointerEvents="none">
             <TextInput
               style={[styles.searchInput, boxShadow]}
-              placeholder="Search....."
+              placeholder={placeholder ? placeholder : "Search....."}
               placeholderTextColor={whiteLabel().helpText}
             />
           </View>
@@ -57,7 +58,7 @@ const SearchBar = props => {
       <TextInput
         style={[styles.searchInput, boxShadow]}
         placeholderTextColor={whiteLabel().helpText}
-        placeholder="Search....."
+        placeholder={placeholder ? placeholder : "Search....."}
         value={text}
         onChangeText={text => {
           setText(text);

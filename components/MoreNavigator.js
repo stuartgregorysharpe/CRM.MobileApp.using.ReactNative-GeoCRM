@@ -6,7 +6,7 @@ import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
-import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
+import ProductSalesScreen from '../screens/GeoRep/Sales/ProductSales';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
@@ -99,7 +99,7 @@ export default function RepMoreScreen({navigation}) {
 
   const ChangeScreen = key => {
 
-    console.log("offlineStatus", offlineStatus, key)
+    
     if(offlineStatus 
         && (key === 'RepWebLinks'
         || key === 'RepContentLibrary')){

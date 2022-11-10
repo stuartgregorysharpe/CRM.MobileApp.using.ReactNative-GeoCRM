@@ -9,7 +9,8 @@ import {Notification} from '../../../../../components/modal/Notification';
 import {expireToken} from '../../../../../constants/Helper';
 
 const SearchLocationContainer = props => {
-  const {stockType, isSkipLocationIdCheck} = props;
+
+  const { type, stockType, isSkipLocationIdCheck} = props;
   const dispatch = useDispatch();
   const [lists, setLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
@@ -19,12 +20,17 @@ const SearchLocationContainer = props => {
   var changedSearchKey = '';
 
   useEffect(() => {
-    callSearch('');
+    if(type != 'setup')
+      callSearch('');
   }, []);
 
   useEffect(() => {
     if (changedSearchKey != searchKey) {
       onSearch(changedSearchKey);
+    }
+
+    if(props.onStartSearch && lists.length > 0){
+      props.onStartSearch(true);
     }
   }, [lists]);
 
@@ -33,7 +39,13 @@ const SearchLocationContainer = props => {
       stockType == Constants.stockDeviceType.SELL_TO_TRADER ||
       isSkipLocationIdCheck
     ) {
-      props.onSubmit(stockType, item.location_id);
+      if(type === "setup"){
+        props.onSubmit(item, item.location_id);
+        setLists([]);
+      }else{
+        props.onSubmit(stockType, item.location_id);
+      }
+      
     } else {
       setLocationId(item.location_id);
       let param = {
@@ -70,8 +82,7 @@ const SearchLocationContainer = props => {
   };
 
   const onSearch = key => {
-    changedSearchKey = key;
-
+    changedSearchKey = key;  
     if (key == '') {
       setLists(originLists);
     } else if (key.length > 1 && !isLoading) {

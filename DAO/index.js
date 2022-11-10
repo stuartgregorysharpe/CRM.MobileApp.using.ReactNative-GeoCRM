@@ -13,6 +13,7 @@ import GetRequestReturnListsDAO from './GetRequestReturnLists';
 import GetRequestStockFieldDataDAO from './GetRequestStockFieldData';
 import GetRequestStockUsersDAO from './GetRequestStockUsers';
 import GetRequestFormSubmissionsDAO from './GetRequestFormSubmissions';
+import GetRequestSetupFieldDAO from './sales/GetRequestSetupFields';
 
 export {
             LocationMapDAO, 
@@ -29,5 +30,6 @@ export {
             GetRequestReturnListsDAO,
             GetRequestStockFieldDataDAO,
             GetRequestStockUsersDAO,
-            GetRequestFormSubmissionsDAO
+            GetRequestFormSubmissionsDAO,
+            GetRequestSetupFieldDAO
         }

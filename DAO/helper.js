@@ -80,7 +80,7 @@ export function saveOfflineSyncItems(locationId , postData , type, url , itemLab
             var address = '';
 
             if(locationId != 0){
-                var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`;                                          
+                var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`; 
                 var res = await ExecuteQuery(query, [locationId]);
                 if( res != undefined  && res.rows.length > 0){
                     location_name = res.rows.item(0).location_name;

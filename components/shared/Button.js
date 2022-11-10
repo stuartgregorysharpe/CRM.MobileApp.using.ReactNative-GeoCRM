@@ -6,7 +6,7 @@ import { style } from '../../constants/Styles';
 import SvgIcon from '../SvgIcon';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export const Button = ({btnStyle, title , onTaped , onClick }) => {
+export const Button = ({btnStyle, style, selectedButtonStyle, textStyle, title , onTaped , onClick }) => {
     
     const [isclicked, setIsClicked] = useState(onTaped);
 
@@ -16,10 +16,10 @@ export const Button = ({btnStyle, title , onTaped , onClick }) => {
 
     return (
         <TouchableOpacity style={[style.buttonStyle , btnStyle]} onPress={() => { onClick()} }> 
-            <View style={ !isclicked?  [styles.inputStyle] : [styles.inputStyle , styles.selectedStyle ] }>
-                <Text style={ isclicked ? [style.textStyle, {color: whiteLabel().actionFullButtonText }] : [style.textStyle] }>{title}</Text>
+            <View style={ !isclicked?  [styles.inputStyle , style] : [styles.inputStyle , styles.selectedStyle ,selectedButtonStyle ] }>
+                <Text style={ isclicked ? [styles.textStyle, textStyle, {color: whiteLabel().actionFullButtonText }] : [styles.textStyle ,textStyle ] }>{title}</Text>
                 {
-                    isclicked &&  <View style={{marginLeft:10}}><SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' /></View>
+                    selectedButtonStyle === undefined && isclicked &&  <View style={{marginLeft:10}}><SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' /></View>
                 }
             </View> 
         </TouchableOpacity>
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
         flex:1,        
         paddingVertical:3
     },
+    
     buttonStyle:{
         flex:1,        
         alignItems:'center',        

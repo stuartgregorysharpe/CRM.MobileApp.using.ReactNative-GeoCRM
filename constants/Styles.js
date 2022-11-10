@@ -79,7 +79,7 @@ export const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 4,
+    borderRadius: 6,
     padding: 8,
     shadowColor: '#000',
     shadowOffset: {width: 1, height: 1},

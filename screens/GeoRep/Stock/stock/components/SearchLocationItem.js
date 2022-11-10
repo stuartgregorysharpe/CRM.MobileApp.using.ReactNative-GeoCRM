@@ -12,11 +12,11 @@ export default function SearchLocationItem({ onItemPressed , item}) {
   
   return (
     <TouchableOpacity onPress={onItemPressed}>
-      <View style={{marginHorizontal: 15}}>
+      <View style={{marginHorizontal: 15,}}>
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 15,
+            marginTop: 10,
             marginBottom: 3,
             justifyContent: 'center',
             alignItems: 'center',
