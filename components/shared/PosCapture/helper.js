@@ -1,6 +1,6 @@
 export function constructFormData(data) {
   const value = data.value;
-  const formData = {products: []};
+  const formData = {posItems: []};
   const isInitialAnswerExist =
     value &&
     value.form_answers &&
@@ -9,7 +9,7 @@ export function constructFormData(data) {
     value.form_answers[0].answer.length > 0;
 
   if (isInitialAnswerExist) {
-    formData.products = [...value.form_answers[0].answer];
+    formData.posItems = [...value.form_answers[0].answer];
   }
   return formData;
 }
@@ -35,6 +35,36 @@ export function getProductForId(products, productId) {
 }
 
 export function getTypes(data) {
+  const products = data?.products;
+  if (!products) return [];
+  const labels = [];
+  products.forEach(product => {
+    if (!labels.includes(product.product_type)) {
+      labels.push(product.product_type);
+    }
+  });
+  return labels.map(label => {
+    return {label: label, value: label};
+  });
+}
+export function getBrands(data) {
+  const products = data?.products;
+  if (!products) return [];
+  const labels = [];
+  products.forEach(product => {
+    if (!labels.includes(product.brand)) {
+      labels.push(product.brand);
+    }
+  });
+  return labels.map(label => {
+    return {label: label, value: label};
+  });
+}
+export function getTouchpoints(data) {
+  return data?.touchpoints;
+}
+
+export function getPlacementTypes(data) {
   const placement_areas = data?.placement_areas;
   if (!placement_areas) return [];
   const labels = Object.keys(placement_areas);
@@ -42,7 +72,7 @@ export function getTypes(data) {
     return {label: label, value: label};
   });
 }
-export function getBrands(data, type) {
+export function getPlacementAreas(data, type) {
   const placement_areas = data?.placement_areas;
   if (!placement_areas || !type || type == '' || !placement_areas[type])
     return [];

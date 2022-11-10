@@ -25,7 +25,7 @@ const PosCaptureForm = props => {
   const dispatch = useDispatch();
   const {item, questionType, formIndex} = props;
   console.log('item', item);
-  const [formData, setFormData] = useState({products: []});
+  const [formData, setFormData] = useState({posItems: []});
   const [keyword, setKeyword] = useState('');
   const captureModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -35,9 +35,9 @@ const PosCaptureForm = props => {
   const [selectedProductItem, setSelectedProductItem] = useState(null);
   const products = useMemo(
     () => filterProducts(item.products, keyword, type, brand),
-    [formData, keyword, type, brand],
+    [item, keyword, type, brand],
   );
-  const brandList = useMemo(() => getBrands(item, type), [item, type]);
+  const brandList = useMemo(() => getBrands(item), [item]);
   const typeList = useMemo(() => getTypes(item), [item]);
 
   useEffect(() => {
@@ -93,6 +93,13 @@ const PosCaptureForm = props => {
     );
   };
   const onPressPointOfSales = () => {};
+  const onRecordPos = data => {
+    const posItems = [...formData.posItems];
+    posItems.push(data);
+    const newFormData = {posItems};
+    setFormData(newFormData);
+    setIsShowPosDetailView(false);
+  };
   const onItemAction = data => {
     const {type, item} = data;
     setSelectedProductItem(item);
@@ -127,7 +134,6 @@ const PosCaptureForm = props => {
           disabled={false}
           onSelectItem={item => {
             setType(item?.label || '');
-            setBrand('');
           }}
           onClear={() => setType('')}
           containerStyle={{marginTop: 0, marginRight: 5, flex: 1}}
@@ -153,6 +159,7 @@ const PosCaptureForm = props => {
       <SubmitButton
         title={'View Point of Sales'}
         style={{marginTop: 4, marginBottom: 8}}
+        svgIcon={'Check_List'}
         onSubmit={() => {
           onPressPointOfSales();
         }}
@@ -175,18 +182,24 @@ const PosCaptureForm = props => {
         onClose={() => {
           setIsShowPosDetailView(false);
         }}>
-        <PointOfSaleFormContainer product={selectedProductItem} />
+        <PointOfSaleFormContainer
+          product={selectedProductItem}
+          item={item}
+          onRecord={onRecordPos}
+        />
       </ClosableView>
 
       <QRScanModal ref={captureModalRef} onButtonAction={onCaptureAction} />
       <Notification />
-      <SubmitButton
-        title={'Save'}
-        style={{marginVertical: 16}}
-        onSubmit={() => {
-          onSubmit();
-        }}
-      />
+      {!isShowPosDetailView && (
+        <SubmitButton
+          title={'Save'}
+          style={{marginVertical: 16}}
+          onSubmit={() => {
+            onSubmit();
+          }}
+        />
+      )}
     </View>
   );
 };

@@ -51,7 +51,7 @@
             "product_name": "ND JR DS POUCH MIX FRUIT 24X100G",
             "barcode": "6009708461667",
             "brand": "Brand 1",
-            "product_type": "ALMOND DRINK"
+            "product_type": "ALMOND DRINK 2"  
         },
         {
             "product_id": "13",
@@ -64,14 +64,14 @@
             "product_id": "14",
             "product_name": "ND JR BB POUCH BANANA 24X150G",
             "barcode": "6009708461643",
-            "brand": "Brand 1",
+            "brand": "Brand 2",
             "product_type": "ALMOND DRINK"
         },
         {
             "product_id": "15",
             "product_name": "ND JR BB POUCH STRAWB 24X150G",
             "barcode": "6009708461650",
-            "brand": "Brand 1",
+            "brand": "Brand 2",
             "product_type": "ALMOND DRINK"
         }
     ]
