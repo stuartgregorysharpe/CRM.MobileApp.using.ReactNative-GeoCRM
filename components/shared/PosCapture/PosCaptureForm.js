@@ -20,6 +20,7 @@ import {
   getTypes,
   getValueFromFormData,
 } from './helper';
+import PosRecordListModal from './modals/PosRecordListModal';
 
 const PosCaptureForm = props => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const PosCaptureForm = props => {
   );
   const brandList = useMemo(() => getBrands(item), [item]);
   const typeList = useMemo(() => getTypes(item), [item]);
-
+  const posRecordListModalRef = useRef(null);
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -82,6 +83,14 @@ const PosCaptureForm = props => {
       captureModalRef.current.showModal();
     }
   };
+  const onRecordItemAction = data => {
+    const {type, item} = data;
+    if (type == Constants.actionType.ACTION_REMOVE) {
+      const items = formData?.posItems.filter(x => x.id != item.id);
+      const newFormData = {posItems: items};
+      setFormData(newFormData);
+    }
+  };
   const showErrorMessage = errorMessage => {
     console.log('errorMessage', errorMessage);
     dispatch(
@@ -92,10 +101,21 @@ const PosCaptureForm = props => {
       }),
     );
   };
-  const onPressPointOfSales = () => {};
+  const onPressPointOfSales = () => {
+    if (posRecordListModalRef) {
+      posRecordListModalRef.current.showModal();
+    }
+  };
   const onRecordPos = data => {
     const posItems = [...formData.posItems];
-    posItems.push(data);
+    let index = 1;
+    if (posItems.length > 0) {
+      index = posItems[posItems.length - 1].id + 1;
+    }
+    posItems.push({
+      ...data,
+      id: index,
+    });
     const newFormData = {posItems};
     setFormData(newFormData);
     setIsShowPosDetailView(false);
@@ -108,7 +128,11 @@ const PosCaptureForm = props => {
 
   const onCaptureAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
-      const foundProduct = formData.products.find(x => x.barcode == value);
+      const foundProduct = item.products.find(x => x.barcode == value);
+      if (foundProduct) {
+        setSelectedProductItem(foundProduct);
+        setIsShowPosDetailView(true);
+      }
     }
   };
   return (
@@ -190,6 +214,11 @@ const PosCaptureForm = props => {
       </ClosableView>
 
       <QRScanModal ref={captureModalRef} onButtonAction={onCaptureAction} />
+      <PosRecordListModal
+        ref={posRecordListModalRef}
+        items={formData?.posItems}
+        onItemAction={onRecordItemAction}
+      />
       <Notification />
       {!isShowPosDetailView && (
         <SubmitButton

@@ -10,7 +10,6 @@
         "text": ""
     },
     "rule_compulsory": "0",
-    "value": "",
     "trigger": [],
     "question_tag": "",
     "touchpoints": [
@@ -74,5 +73,134 @@
             "brand": "Brand 2",
             "product_type": "ALMOND DRINK"
         }
+    ],
+    "value": {
+    "form_answers" : [
+        {
+            "form_question_id" : "34",
+            "answer" : [
+                {
+                    "touchpoint" : "01",
+                    "placement_type" : "Primary Placement",
+                    "area" : "Primary Shelf 1",
+                    "product_id" : "11",
+                    "qty" : "5",
+                    "image_index" : "1"
+                },
+                {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                }
+            ]
+        }
     ]
+    }
 }

@@ -15,7 +15,9 @@ const PosCapture = props => {
   };
 
   const questionButtonType =
-    item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : '';
+    item.value != null && item.value != ''
+      ? Constants.questionButtonType.QUESTION_BUTTON_DONE
+      : '';
   const renderContent = () => {
     return (
       <QuestionButton
