@@ -15,11 +15,15 @@ export function constructFormData(data) {
         x => x.product_id == posItem.product_id,
       );
       if (!product) return posItem;
-      return {
+      const item = {
         ...posItem,
         ...product,
         id: index + 1,
       };
+      if (item.image_index && item.image_index != '') {
+        item.image_index = Number(item.image_index);
+      }
+      return item;
     });
     if (value?.file_array) {
       formData.fileArray = [...value?.file_array];
@@ -107,6 +111,7 @@ export function getValueFromFormData(formData, item, formIndex) {
       qty: product.qty,
       placement_type: product.placement_type,
       area: product.area,
+      image: product.image,
       image_index: product.image_index,
     };
     answerDataArray.push({
@@ -129,10 +134,10 @@ export function getValueFromFormData(formData, item, formIndex) {
       key: `[answer][${index}][area]`,
       value: product.area,
     });
-    if (product.image_index !== '' && product.image_index != undefined)
+    if (product.image_index !== '' && product.image_index !== undefined)
       answerDataArray.push({
         key: `[answer][${index}][image_index]`,
-        value: product.image_index,
+        value: product.image_index + '',
       });
 
     answers.push(answer);

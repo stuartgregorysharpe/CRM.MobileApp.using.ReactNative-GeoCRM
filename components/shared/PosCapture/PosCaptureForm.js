@@ -109,7 +109,6 @@ const PosCaptureForm = props => {
     }
   };
   const onRecordPos = data => {
-    console.log('onRecordPos', data);
     const posItems = [...formData.posItems];
     let index = 1;
     if (posItems.length > 0) {
@@ -124,6 +123,7 @@ const PosCaptureForm = props => {
       fileArray.push(data.image);
       newPostItem.image_index = fileArray.length - 1;
     }
+    console.log('onRecordPos', newPostItem);
     posItems.push(newPostItem);
     const newFormData = {...formData, posItems, fileArray};
     setFormData(newFormData);
