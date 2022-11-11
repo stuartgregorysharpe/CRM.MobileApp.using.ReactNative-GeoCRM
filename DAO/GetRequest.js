@@ -8,9 +8,9 @@ export function call( url, postData){
   return new Promise(function(resolve, reject) {
 
         checkConnectivity().then( async (isConnected) => {             
-            if(isConnected){
+            if(isConnected){                
                 getApiRequest(url, postData)
-                .then(async res => {                                     
+                .then(async res => {                          
                     resolve({status: Strings.Success , isConnected:isConnected, data: res});
                 })
                 .catch(e => {                    

@@ -1,5 +1,5 @@
 import {View, FlatList} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import OptionItem from './OptionItem';
 import PhotoCameraPickerDialog from '../../../modal/PhotoCameraPickerDialog';
 import {SubmitButton} from '../../SubmitButton';
@@ -7,16 +7,18 @@ import {useDispatch} from 'react-redux';
 import {clearNotification, showNotification} from '../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../constants';
 
+
 export default function MutiSelectPhotoView(props) {
   const {item , submissionType} = props;
   const [checkedLists, setCheckedLists] = useState([]);
   const [isPicker, setIsPicker] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();  
 
   useEffect(() => {
     if (item.value != null && item.value != '') {
       setCheckedLists(item.value);
+      console.log("checkedLists ====xx ", item.value)
     }
   }, [item.value, item]);
 
@@ -83,7 +85,8 @@ export default function MutiSelectPhotoView(props) {
   };
 
   return (
-    <View style={{alignSelf: 'stretch', marginHorizontal: 10, marginTop: 10}}>
+    <View style={{alignSelf: 'stretch', marginHorizontal: 10, marginTop: 10}}>      
+      
       <FlatList
         data={item.options}
         showsVerticalScrollIndicator={false}

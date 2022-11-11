@@ -1,8 +1,10 @@
 import axios from 'axios';
 import uuid from 'react-native-uuid';
-import {getBaseUrl, getToken} from '../constants/Storage';
-import Strings from '../constants/Strings';
+import { Strings } from '../constants';
+import { getBaseUrl, getToken } from '../constants/Storage';
 import {generateKey} from '../constants/Utils';
+import { convertStringToByteArray } from '../services/DownloadService/TrackNetSpeed';
+
 export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
     setTimeout(() => {
@@ -11,6 +13,8 @@ export const dummyApiRequest = async (route, param, response) => {
   });
 };
 axios.defaults.timeout = 15000;
+
+
 
 export const getApiRequest = async (route, param) => {
   var token = await getToken();
@@ -21,7 +25,7 @@ export const getApiRequest = async (route, param) => {
   if (route.includes('local_api_old')) {
     url = route;
   }
-
+  //const _start = new Date().getTime();
   return new Promise(function (resolve, reject) {
     axios
       .get(url, {
@@ -32,10 +36,16 @@ export const getApiRequest = async (route, param) => {
         },
       })
       .then(res => {
+              
+        // var byteArray = convertStringToByteArray(JSON.stringify(res));
+        // const _end = new Date().getTime();
+        // const kbPerSecond = Math.floor((byteArray.length/1024)/((_end-_start)/1000));
+        // console.log("GET api speed:  ", kbPerSecond);
+                
         if (res.data == undefined) {
           resolve([]);
         }
-        if (res.data.status == Strings.Success) {
+        if (res.data.status == Strings) {
           resolve(res.data);
         } else {
           resolve(res.data);
@@ -114,18 +124,24 @@ export const postApiRequestMultipart = async (
     url = route;
   }
 
+  console.log(' multipart postApiRequest -- url', url);  
+
   return new Promise(function (resolve, reject) {
-    console.log('url', url);
+  
     console.log('myforms', JSON.stringify(postData));
+    //headers:{"Accept":"application/json, text/plain, /","Content-Type": "multipart/form-data"}
+    const key = indempotencyKey != undefined ? indempotencyKey : generateKey();
+
     axios
       .post(url, postData, {
         headers: {
-          Accept: 'application/json',
+          'Access-Control-Allow-Origin' : '*',
+          'Accept': 'application/json, text/plain',
           'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key':
-            indempotencyKey != undefined ? indempotencyKey : generateKey(),
+          'Authorization': 'Bearer ' + token,
+          'Indempotency-Key': key ,
         },
+        timeout : 30000
       })
       .then(res => {
         console.log('res', res.data);
@@ -136,7 +152,7 @@ export const postApiRequestMultipart = async (
       })
       .catch(err => {
         //console.log('api error: ', JSON.stringify(err));
-        console.log('----', err);
+        console.log('----', err , url, postData, token, indempotencyKey);
         const error = err.response;
         if (
           error != undefined &&

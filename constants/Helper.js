@@ -7,7 +7,7 @@ import {
 } from '../actions/notification.action';
 import {setToken} from './Storage';
 import * as RNLocalize from 'react-native-localize';
-import {Constants} from '.';
+import {Constants, Strings} from '.';
 import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
@@ -343,6 +343,20 @@ export function expireToken(dispatch, e) {
     message = 'Submission timed out, Please try again or contact support';
   }
 }
+
+export function showOfflineDialog(dispatch) {
+  dispatch(
+    showNotification({
+      type: Strings.Success,
+      message: Strings.This_Function_Not_Available,
+      buttonText: 'Ok',
+      buttonAction: () => {        
+        dispatch(clearNotification());
+      },
+    }),
+  );
+}
+
 
 export function getPostParameter(location) {
   var time_zone = RNLocalize.getTimeZone();

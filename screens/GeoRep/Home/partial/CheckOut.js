@@ -42,7 +42,7 @@ export default function CheckOut(props) {
          }}>
           <View style={styles.checkoutStyle}>         
             <AppText title="Check Out" size="medium" type="primaryMedium" color={whiteLabel().actionFullButtonText} ></AppText>
-          </View> 
+          </View>          
         </TouchableOpacity>
 
       </View>

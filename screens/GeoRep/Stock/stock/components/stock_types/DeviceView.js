@@ -12,10 +12,14 @@ import {
 import {Notification} from '../../../../../../components/modal/Notification';
 
 export default function DeviceView(props) {
+
+  const { errors } = props;
+
   const [details, setDetails] = useState('');
   const [code, setCode] = useState('');
   const qrScanModalRef = useRef(null);
   const [codeDisabled, setCodeDisabled] = useState(true);
+
   const dispatch = useDispatch();
 
   const onCaptureAction = ({type, value}) => {
@@ -46,6 +50,14 @@ export default function DeviceView(props) {
     }
   };
 
+  const validateError = () => {
+    console.log("validate error" ,errors)
+    if( errors != undefined && errors['imei'] != undefined  && !codeDisabled){
+      return errors['imei'];
+    }
+    return false;
+  }
+
   return (
     <View style={{alignSelf: 'stretch'}}>
       {/*<CTextInput
@@ -69,6 +81,7 @@ export default function DeviceView(props) {
             returnKeyType={'done'}
             isRequired={true}
             disabled={codeDisabled}
+            hasError={validateError()}            
             onChangeText={text => {
               setCode(text);
               onDataChanged(details, text);

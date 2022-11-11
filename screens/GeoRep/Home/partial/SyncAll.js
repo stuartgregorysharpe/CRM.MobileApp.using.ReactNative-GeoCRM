@@ -1,5 +1,5 @@
 import {View, TouchableOpacity} from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect , forwardRef,useImperativeHandle} from 'react';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
@@ -10,12 +10,16 @@ import {RotationAnimation} from '../../../../components/common/RotationAnimation
 import {getBascketLastSyncTableData} from '../../../../sqlite/BascketLastSyncsHelper';
 import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
+import { useSelector } from 'react-redux';
 
-export default function SyncAll(props) {
+export const SyncAll = forwardRef((props, ref) => {
+
   const [expanded, setExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [lastSyncedDate, setLastSyncedDate] = useState('');
   const basketRef = useRef();
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
+  const [isManual, setIsManual] = useState(true); // expland it manually or automatically(offline change)
 
   const updateLoading = loading => {
     setIsLoading(loading);
@@ -24,22 +28,42 @@ export default function SyncAll(props) {
     }
   };
 
-  useEffect(() => {
+  useImperativeHandle(ref, () => ({
+    syncAllData() {       
+      
+      //setExpanded(true);
+      //setIsLoading(true);
+      setIsManual(false);
+      setExpanded(true);
+      //setIsLoading(true);
+      
+    },
+    refreshView() {
+      initLastSyncAllDateTime();
+    }
+  }));
+
+
+  useEffect(() => {    
     initLastSyncAllDateTime();
   }, [props.refresh]);
 
   useEffect(() => {
+      if(!props.isExpandSync){
+        setExpanded(false);
+      }
+  }, [props.isExpandSync]);
+
+
+  useEffect(() => {
     let isMount = true;
     if (isMount && expanded && isLoading) {
-      if (basketRef.current && basketRef.current.startSync) {
-        basketRef.current.startSync();
-      }
+      startTableSync();
     } else if (isMount && expanded && !isLoading) {
       if (basketRef.current && basketRef.current.expand) {
         basketRef.current.expand();
       }
     }
-
     return () => {
       isMount = false;
     };
@@ -60,6 +84,18 @@ export default function SyncAll(props) {
     setLastSyncedDate(title);
   };
 
+
+  const startTableSync = () => {    
+    setIsManual(true);
+    console.log("start table syss")
+    if (basketRef.current && basketRef.current.startSync) {
+      console.log("sync table start");
+      basketRef.current.startSync();
+    }else{
+      console.log("start table syss")
+    }
+  }
+
   return (
     <View
       style={[
@@ -76,7 +112,7 @@ export default function SyncAll(props) {
           <TouchableOpacity
             onPress={() => {
               if (basketRef.current && basketRef.current.startSync) {
-                basketRef.current.startSync();
+                startTableSync();
               } else {
                 setExpanded(true);
                 setIsLoading(true);
@@ -127,6 +163,7 @@ export default function SyncAll(props) {
           <TouchableOpacity
             onPress={() => {
               setExpanded(!expanded);
+              setIsManual(true);
             }}>
             <View style={{marginRight: 10, marginLeft: 10}}>
               <SvgIcon
@@ -140,15 +177,21 @@ export default function SyncAll(props) {
       </View>
 
       {expanded && (
-        <BasketListContainer ref={basketRef} updateLoading={updateLoading} />
+        <BasketListContainer 
+        changeIsManual={(flag) => {
+          setIsManual(flag);
+        }}
+        isManual={isManual} ref={basketRef} updateLoading={updateLoading} />
       )}
 
       {expanded && (
         <ViewOfflineSyncItemContainer
-          onSyncStart={() =>{ 
-            if (basketRef.current && basketRef.current.startSync) {
-              basketRef.current.startSync();
-            }
+          isManual={isManual} 
+          changeIsManual={(flag) => {
+            setIsManual(flag);
+          }}
+          onSyncStart={(message) =>{ 
+            startTableSync();
           }}
           onClosed={() => {
             setExpanded(false);
@@ -157,4 +200,4 @@ export default function SyncAll(props) {
       )}
     </View>
   );
-}
+});

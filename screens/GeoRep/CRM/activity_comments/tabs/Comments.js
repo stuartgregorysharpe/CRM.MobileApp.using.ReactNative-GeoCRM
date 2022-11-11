@@ -60,19 +60,20 @@ export default function Comments(props) {
 						dispatch(showNotification({type: Strings.Success , message: res.message , buttonText:'Ok', buttonAction:() => {
 							dispatch(clearNotification());
 						}}))
-					}				
-					setIsLoading(false);
-				}			
+					}									
+				}	
+				setIsLoading(false);		
 			}).catch((e) => {
 				if(isMount){
-					expireToken(dispatch , e);
-					setIsLoading(false);
-				}			
-			});	
+					expireToken(dispatch , e);					
+				}
+				setIsLoading(false);
+			});
 		}
 	}
 
 	const editFormQuestion = async (form_answers, files) => {			
+		console.log("files ", files);
 		const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
 		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name , '' ).then( async(res) => {									
 			if(res.status === Strings.Success){
@@ -89,47 +90,45 @@ export default function Comments(props) {
 	}
 
 
-  const onFormQuestionModalClosed = ({type, value}) => {
-	if (type == Constants.actionType.ACTION_CLOSE) {
-		formQuestionModalRef.current.hideModal();
-	}
-	if (type == Constants.actionType.ACTION_DONE) {
-		if (value.form_answers != undefined && value.files != undefined) {		
-			editFormQuestion(value.form_answers, value.files);			
+  	const onFormQuestionModalClosed = ({type, value}) => {
+		if (type == Constants.actionType.ACTION_CLOSE) {
 			formQuestionModalRef.current.hideModal();
 		}
-	}
-};
+		if (type == Constants.actionType.ACTION_DONE) {
+			if (value.form_answers != undefined && value.files != undefined) {		
+				editFormQuestion(value.form_answers, value.files);			
+				formQuestionModalRef.current.hideModal();
+			}
+		}
+	};
 
+	const renderItems = (item, index) => {
+		return (
+			<View key={index}>
+				<FormSubmissionListItem
+					onItemPress={(item) => {				
+						setForm({submission_id: item.submission_id, form_name: item.form_name});
+						if(formQuestionModalRef.current){
+							formQuestionModalRef.current.showModal();
+						}
+					}}
+					index={index}
+					isStart={index === 0 ? true : false}
+					isEnd={lists.length - 1 === index ? true : false}
+					item={item}>
+				</FormSubmissionListItem>
+			</View>
+		);
+	};
 
-
-  
-  const renderItems = (item, index) => {
-    return (
-      <View key={index}>
-        <FormSubmissionListItem
-			onItemPress={(item) => {				
-				setForm({submission_id: item.submission_id, form_name: item.form_name});
-				if(formQuestionModalRef.current){
-					formQuestionModalRef.current.showModal();
-				}
-			}}
-          index={index}
-          isStart={index === 0 ? true : false}
-          isEnd={lists.length - 1 === index ? true : false}
-          item={item}></FormSubmissionListItem>
-      </View>
-    );
-  };
-
-  const renderSeparator = () => (
-    <View
-      style={{
-        backgroundColor: '#70707045',
-        height: 0.5,
-      }}
-    />
-  );
+	const renderSeparator = () => (
+		<View
+		style={{
+			backgroundColor: '#70707045',
+			height: 0.5,
+		}}
+		/>
+	);
 
   return (
     <View style={styles.container}>      
@@ -152,10 +151,7 @@ export default function Comments(props) {
 				getFormSubmissions(page);
 			}}
 		/>
-		
-		
-
-	
+				
 		<FormQuestionModal
 				ref={formQuestionModalRef}
 				hideClear={true}

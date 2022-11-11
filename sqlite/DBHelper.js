@@ -33,7 +33,7 @@ export const ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) 
 });
 
 export const createTable = async (db , tables ) => {  
-  console.log("CREATE Table Formats" , JSON.stringify(tables));
+  //console.log("CREATE Table Formats" , JSON.stringify(tables));
   try{      
       await tables.reduce(async (a, table) => {        
         await a;        
@@ -43,7 +43,6 @@ export const createTable = async (db , tables ) => {
     console.log("exception ", e)
   }
 };
-
 
 const handleTable = async (table) => {
 
@@ -214,18 +213,20 @@ export const handleRecords = async ( tableName, records) => {
         }
       })
 
-      query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;  
-      //console.log(query)
-      try{
-        if(db != null){    
-          await db.transaction(async(tx) =>{            
-            await tx.executeSql(query);
-          });
-        }    
-      }catch(e){
-        console.log("error occure", e);
-      }  
-      
+      if(values != ''){
+        query = `INSERT INTO ${tableName} ${fields} VALUES ${values};`;                
+        try{
+          if(db != null){    
+            await db.transaction(async(tx) =>{            
+              await tx.executeSql(query);
+            });
+          }    
+        }catch(e){
+          console.log("error occure", e);
+        }
+      }else{
+        console.log('No data to insert' , tableName);
+      }           
   }catch(e){
     console.log(e);
   }

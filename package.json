@@ -31,6 +31,7 @@
     "moment-timezone": "^0.5.34",
     "react": "17.0.2",
     "react-native": "0.67.2",
+    "react-native-background-timer": "^2.4.1",
     "react-native-bootsplash": "^3.2.6",
     "react-native-camera": "^4.2.1",
     "react-native-chart-kit": "^6.12.0",

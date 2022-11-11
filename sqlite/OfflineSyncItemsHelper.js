@@ -83,7 +83,7 @@ export const getOfflineSyncItems = async ( item_types ) => {
         }        
     });
     itemTypes += `)`;
-    console.log("item tyoes", itemTypes)
+    
 
     return new Promise(async function (resolve, reject) {
         await db.transaction(async(tx) =>{            

@@ -4,12 +4,15 @@ import React , {useState} from 'react'
 import { boxShadow } from '../../constants/Styles';
 import Fonts from '../../constants/Fonts';
 import Colors, { whiteLabel } from '../../constants/Colors';
-import { AppText } from './AppText';
+import { checkConnectivity } from '../../DAO/helper';
+import { showOfflineDialog } from '../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 export default function ScrollTab(props) {
 
-    const { tabs ,onTabSelection } = props;
-    const [selectedTab, setSelectedTab] = useState(0);
+    const { tabs , onTabSelection , selectedTab } = props;
+    //const [selectedTab, setSelectedTab] = useState(0);
+    const dispatch = useDispatch()
 
     return (
         <View style={[styles.tabContainer, boxShadow, { alignItems: 'center' , }]}>
@@ -18,13 +21,18 @@ export default function ScrollTab(props) {
                 }}>
                 { tabs && tabs.map((item, index) => {
                     return <TouchableOpacity key={index} onPress={() => { 
-                        console.log("Selected tab", item.id)
-                         setSelectedTab(item.id);
-                         onTabSelection(item);
-                    }}>
-                        {/* <View style={styles.headerWrapper}>
-                            <AppText title={item.name} type={selectedTab === item.id ? "secondaryBold" : "secondaryMedium"} color={Colors.primaryColor} size="medium"></AppText>
-                        </View> */}
+                        
+                        checkConnectivity().then((isConnected) => {
+                            if(isConnected || item.name === "Main"){
+                                //setSelectedTab(item.id);
+                                onTabSelection(item);
+                            }else{
+                                showOfflineDialog(dispatch);
+                            }
+                        }).catch((e) => {
+                        });
+                         
+                    }}>                        
                         <View style={[styles.headerWrapper, {borderBottomColor: selectedTab === item.id ? whiteLabel().activeTabText : 'transparent'}]}>
                             <Text key={index} style={[ styles.tabText, selectedTab === item.id ? styles.tabActiveText : {}]}> {item.name} </Text>
                         </View>

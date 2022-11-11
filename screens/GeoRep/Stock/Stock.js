@@ -9,8 +9,12 @@ import NavigationHeader from '../../../components/Header/NavigationHeader';
 import CTabSelector from '../../../components/common/CTabSelector';
 import StockStagingContainer from './staging/StockStagingContainer';
 import {Notification} from '../../../components/modal/Notification';
+import { checkConnectivity } from '../../../DAO/helper';
+import { showOfflineDialog } from '../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 const Stock = props => {
+
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const topMenuItems = [
     {
@@ -31,6 +35,7 @@ const Stock = props => {
     },
   ];
   const isShowCustomNavigationHeader = props.isDeeplink != undefined;
+  const dispatch = useDispatch()
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -67,7 +72,14 @@ const Stock = props => {
         items={topMenuItems}
         selectedIndex={selectedTabIndex}
         onSelectTab={(item, index) => {
-          setSelectedTabIndex(index);
+          checkConnectivity().then((isConnected) => {
+            if(isConnected || item.title != "Movements" ){
+              setSelectedTabIndex(index);              
+            }else{
+              showOfflineDialog(dispatch)
+            }
+          })
+          
         }}
         containerStyle={[
           boxShadow,
@@ -85,7 +97,7 @@ const Stock = props => {
       <Notification />
 
       <View style={{flex: 1}}>
-        {selectedTabIndex === 0 && <StockLists></StockLists>}
+        {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
         {selectedTabIndex === 2 && <Movements></Movements>}
         {selectedTabIndex === 3 && <Returns></Returns>}

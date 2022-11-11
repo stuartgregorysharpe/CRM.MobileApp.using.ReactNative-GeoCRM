@@ -3,8 +3,11 @@ import React, {useState} from 'react';
 import CTextInput from '../../../../../../components/common/CTextInput';
 
 export default function ConsumableView(props) {
+
+  const { errors } = props;
+
   const [details, setDetails] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState('');  
 
   const onDataChanged = (details, quantity) => {
     props.onDataChanged(details, quantity);
@@ -31,10 +34,16 @@ export default function ConsumableView(props) {
         keyboardType={'number-pad'}
         returnKeyType={'done'}
         isRequired={true}
+        hasError={ errors != undefined && errors['quantity'] != undefined ? errors['quantity'] : false}
+        
         onChangeText={text => {
           setQuantity(text);
           onDataChanged(details, text);
         }}
+        onBlur={() => {
+          onDataChanged(details, quantity);
+        }}
+
       />
     </View>
   );

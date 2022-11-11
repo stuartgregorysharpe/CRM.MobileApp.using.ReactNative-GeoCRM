@@ -128,30 +128,7 @@ export function formatPeriod(
   );
 }
 
-export function validateEmail(text) {
-  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  try {
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(text) === false) {
-      return false;
-    } else {
-      return true;
-    }
-  } catch (e) {
-    console.log('error', e);
-    return false;
-  }
-}
 
-export const validateMsisdn = barcode => {
-  console.log(barcode);
-  if (!/(^\d{11}$)/.test(barcode)) {
-    console.log('validate barcode false');
-    return false;
-  }
-  console.log('validate barcode true');
-  return true;
-};
 
 export const formattedNumber = num => {
   try {
@@ -179,6 +156,12 @@ export const getTimeStamp = () => {
   var currentTime = moment().format('YYYYMMDDHHmmss');
   return currentTime;
 };
+
+export const getTime = () => {
+  var currentTime = moment().format('HH:mm');
+  return currentTime;
+};
+
 
 export const getBasketDateTime = () => {
   var currentTime = moment().format('DD MMM YYYY HH:mm');

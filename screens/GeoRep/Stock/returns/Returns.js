@@ -10,8 +10,9 @@ import ReturnDeviceDetailModal from './modal/ReturnDeviceDetailModal';
 import StockSignatureModal from '../stock/modal/device/StockSignatureModal';
 import { getLocalData } from '../../../../constants/Storage';
 import { GetRequestReturnListsDAO } from '../../../../DAO';
-import { expireToken } from '../../../../constants/Helper';
+import { expireToken, showOfflineDialog } from '../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
+import { checkConnectivity } from '../../../../DAO/helper';
 
 export default function Returns() {
 
@@ -23,9 +24,9 @@ export default function Returns() {
   const [locationId, setLocationId] = useState(0);
   const [stockItem , setStockItem] = useState({stock_type: Constants.stockType.RETURN})
   const [stockItemIds , setStockItemIds] = useState([]);
-  var checkinLocationId ;
-  
   const dispatch = useDispatch();
+
+  var checkinLocationId ;
 
   useEffect(() => {
     var isMount = true;
@@ -67,15 +68,28 @@ export default function Returns() {
   }
 
   const onReturnStock = () => {
-    if(isCheckin){          
-      returnDeviceDetailRef.current.showModal()
-    }else{
-      searchLocationModalRef.current.showModal();
-    }
+    checkConnectivity().then((isConnected) => {
+      if(isConnected){
+        if(isCheckin){          
+          returnDeviceDetailRef.current.showModal()
+        }else{
+          searchLocationModalRef.current.showModal();
+        }
+      }else{
+        showOfflineDialog(dispatch)
+      }
+    })    
   }
 
   const onStockToWarehouse = () => {
-    stockSignatureModalRef.current.showModal()
+    checkConnectivity().then((isConnected) => {
+      if(isConnected){
+        stockSignatureModalRef.current.showModal()
+      }else{
+        showOfflineDialog(dispatch)
+      }
+    })
+    
   }
 
   const onSearchLocationModalClosed = ({type, value}) => {    
