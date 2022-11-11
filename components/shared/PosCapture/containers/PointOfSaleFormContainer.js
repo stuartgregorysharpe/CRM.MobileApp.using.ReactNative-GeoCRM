@@ -51,33 +51,44 @@ const PointOfSaleFormContainer = props => {
       touchpoint: false,
     });
   };
-  const validateForm = _formData => {
+  const validateForm = (_formData, isPartialValidate = false) => {
     const errorMessage = Strings.Complete_Required_Fields;
     if (!_formData) return errorMessage;
-    const _errors = {
-      placement_type: false,
-      area: false,
-      qty: false,
-      touchpoint: false,
-    };
+    const _errors = {};
     let result = false;
-    if (!_formData.touchpoint || _formData.touchpoint == '') {
-      _errors['touchpoint'] = true;
-      result = errorMessage;
+    if (!isPartialValidate || _formData.touchpoint !== undefined) {
+      if (!_formData.touchpoint || _formData.touchpoint == '') {
+        _errors['touchpoint'] = true;
+        result = errorMessage;
+      } else {
+        _errors['touchpoint'] = false;
+      }
     }
-    if (!_formData.placement_type || _formData.placement_type == '') {
-      _errors['placement_type'] = true;
-      result = errorMessage;
+    if (!isPartialValidate || _formData.placement_type !== undefined) {
+      if (!_formData.placement_type || _formData.placement_type == '') {
+        _errors['placement_type'] = true;
+        result = errorMessage;
+      } else {
+        _errors['placement_type'] = false;
+      }
     }
-    if (!_formData.area || _formData.area == '') {
-      _errors['area'] = true;
-      result = errorMessage;
+    if (!isPartialValidate || _formData.area !== undefined) {
+      if (!_formData.area || _formData.area == '') {
+        _errors['area'] = true;
+        result = errorMessage;
+      } else {
+        _errors['area'] = false;
+      }
     }
-    if (!_formData.qty || _formData.qty == '' || _formData.qty == 0) {
-      _errors['qty'] = true;
-      result = errorMessage;
+    if (!isPartialValidate || _formData.qty !== undefined) {
+      if (!_formData.qty || _formData.qty == '' || _formData.qty == 0) {
+        _errors['qty'] = true;
+        result = errorMessage;
+      } else {
+        _errors['qty'] = false;
+      }
     }
-    setErrors(_errors);
+    setErrors({...errors, ..._errors});
     return result;
   };
   const onRecord = data => {
@@ -111,9 +122,9 @@ const PointOfSaleFormContainer = props => {
         onUpdateFormData={data => {
           console.log('onUpdateformData', data);
           if (data) {
+            validateForm(data, true);
             const newFormData = {...formData, ...data};
             setFormData(newFormData);
-            validateForm(newFormData);
           }
         }}
       />
