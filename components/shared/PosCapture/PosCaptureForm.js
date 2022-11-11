@@ -63,7 +63,9 @@ const PosCaptureForm = props => {
   const validateForm = () => {};
 
   const onSubmit = () => {
+    console.log('formData', JSON.stringify(formData));
     const submitValueData = getValueFromFormData(formData, item, formIndex);
+    console.log('submitValueData', JSON.stringify(submitValueData));
     if (props.onButtonAction) {
       props.onButtonAction({
         type: Constants.actionType.ACTION_FORM_SUBMIT,
@@ -107,6 +109,7 @@ const PosCaptureForm = props => {
     }
   };
   const onRecordPos = data => {
+    console.log('onRecordPos', data);
     const posItems = [...formData.posItems];
     let index = 1;
     if (posItems.length > 0) {
@@ -122,7 +125,7 @@ const PosCaptureForm = props => {
       newPostItem.image_index = fileArray.length - 1;
     }
     posItems.push(newPostItem);
-    const newFormData = {...formData, posItems};
+    const newFormData = {...formData, posItems, fileArray};
     setFormData(newFormData);
     setIsShowPosDetailView(false);
   };
@@ -199,7 +202,7 @@ const PosCaptureForm = props => {
           style={{
             maxHeight: isKeyboardVisible
               ? Values.deviceHeight * 0.2
-              : Values.deviceHeight * 0.6,
+              : Values.deviceHeight * 0.4,
             alignSelf: 'stretch',
           }}
           items={products}
@@ -219,7 +222,14 @@ const PosCaptureForm = props => {
         />
       </ClosableView>
 
-      <QRScanModal ref={captureModalRef} onButtonAction={onCaptureAction} />
+      <QRScanModal
+        ref={captureModalRef}
+        onClose={() => {
+          captureModalRef.current.hideModal();
+        }}
+        showClose={true}
+        onButtonAction={onCaptureAction}
+      />
       <PosRecordListModal
         ref={posRecordListModalRef}
         items={formData?.posItems}

@@ -82,6 +82,7 @@ const PointOfSaleFormContainer = props => {
         areaList={areaList}
         touchpointList={touchpointList}
         onUpdateFormData={data => {
+          console.log('onUpdateformData', data);
           if (data) {
             setFormData({...formData, ...data});
           }

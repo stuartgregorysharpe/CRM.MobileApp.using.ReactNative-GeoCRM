@@ -441,7 +441,9 @@ export function getFormQuestionData(formQuestions) {
             Constants.questionType.FORM_TYPE_FORMAT_PRICE ||
           item.question_type ===
             Constants.questionType.FORM_TYPE_BRAND_COMPETITOR_FACING ||
-          item.question_type === Constants.questionType.FORM_TYPE_FSU_CAMPAIGN
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_FSU_CAMPAIGN ||
+          item.question_type === Constants.questionType.FORM_TYPE_POS_CAPTURE
         ) {
           if (value && value.form_answers_array) {
             form_answers.push({
@@ -654,7 +656,7 @@ export function getFormQuestionFile(formQuestions) {
         if (item.value?.file_array && item.value?.file_array.length > 0) {
           index = 0;
           console.log('item.value?.file_array', item.value?.file_array);
-          item.value.fileArray.forEach((path, index) => {
+          item.value.file_array.forEach((path, index) => {
             if (!path.includes('http')) {
               files.push({
                 key: `File[${item.form_question_id}][${index}]`,

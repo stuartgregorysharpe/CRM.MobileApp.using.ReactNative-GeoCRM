@@ -31,7 +31,7 @@ export const Button = ({
 
   return (
     <TouchableOpacity
-      style={[style.buttonStyle, btnStyle]}
+      style={[btnStyle]}
       onPress={() => {
         onClick();
       }}>

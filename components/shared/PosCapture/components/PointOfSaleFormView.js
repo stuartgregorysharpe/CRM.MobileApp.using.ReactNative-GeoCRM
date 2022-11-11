@@ -65,13 +65,15 @@ const POSItemView = props => {
     if ((nextQty == 0 || nextQty == 'NaN') && isConvertToNumber) {
       nextQty = '';
     }
+    onUpdateFormData({
+      qty: nextQty,
+    });
+  };
+  const onUpdateFormData = data => {
     if (props.onUpdateFormData) {
-      props.onUpdateFormData({
-        qty: nextQty,
-      });
+      props.onUpdateFormData(data);
     }
   };
-  const onPressCamera = () => {};
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.headerContainer}>
@@ -106,7 +108,7 @@ const POSItemView = props => {
           <ImagePickerButton
             onPickImage={asset => {
               if (asset?.uri) {
-                onUpdateFormData({image: uri});
+                onUpdateFormData({image: asset?.uri});
               }
             }}
           />

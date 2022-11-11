@@ -1,4 +1,5 @@
 export function constructFormData(data) {
+  console.log('data', JSON.stringify(data));
   const value = data.value;
   const formData = {posItems: [], fileArray: []};
   const isInitialAnswerExist =
@@ -20,6 +21,9 @@ export function constructFormData(data) {
         id: index + 1,
       };
     });
+    if (value?.file_array) {
+      formData.fileArray = [...value?.file_array];
+    }
   }
   return formData;
 }

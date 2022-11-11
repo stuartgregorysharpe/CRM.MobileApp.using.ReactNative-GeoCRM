@@ -9,16 +9,24 @@ const PosCaptureFormModal = React.forwardRef((props, ref) => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
-    if (data.type == Constants.actionType.ACTION_DONE) {
+    if (data.type == Constants.actionType.ACTION_FORM_SUBMIT) {
       if (ref) {
         ref.current.hideModal();
       }
     }
   };
+  const title = item.question_text;
   return (
     <CModal
       ref={ref}
+      title={title}
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+      closableWithOutsideTouch
+      onClear={() => {
+        onButtonAction({
+          type: Constants.actionType.ACTION_FORM_CLEAR,
+        });
+      }}
       {...props}>
       <PosCaptureForm {...props} onButtonAction={onButtonAction} />
     </CModal>
