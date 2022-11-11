@@ -26,9 +26,10 @@ const PointOfSaleFormContainer = props => {
   if (!product) return null;
   const constructPOSFormData = product => {
     if (!product) return;
+    const _touchpointList = getTouchpoints(item);
     const posFormData = {
       ...product,
-      touchpoint: '',
+      touchpoint: _touchpointList.length > 0 ? _touchpointList[0] : '',
       placement_type: '',
       area: '',
       product_id: product.product_id,
@@ -39,7 +40,7 @@ const PointOfSaleFormContainer = props => {
     setFormData(posFormData);
   };
   const validateForm = formData => {
-    const errorMessage = Strings.Complete_Compulsory_Fields;
+    const errorMessage = Strings.Complete_Required_Fields;
     if (!formData) return errorMessage;
     if (
       !formData.touchpoint ||

@@ -35,6 +35,7 @@ const PosRecordListModal = React.forwardRef((props, ref) => {
       ref={ref}
       hideClear
       title="Point of Sale Record"
+      closableWithOutsideTouch
       customRightHeaderView={renderCloseIcon()}
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       {...props}>

@@ -27,7 +27,7 @@ const ProductItem = props => {
       }}>
       <Text style={styles.text}>{product_type}</Text>
       <Text style={styles.text}>{product_name}</Text>
-      <Text style={styles.text}>{brand}</Text>
+      <Text style={[styles.text, {marginLeft: 16}]}>{brand}</Text>
     </TouchableOpacity>
   );
 };

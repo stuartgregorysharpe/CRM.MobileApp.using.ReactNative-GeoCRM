@@ -159,25 +159,28 @@ export function getQuestionTitle(questionType) {
   return 'Point of Sale';
 }
 
-export function filterProducts(products, keyword, type, brand) {
+export function filterProducts(products, _keyword, _type, _brand) {
   if (!products) return [];
 
   if (
-    (!keyword || keyword == '') &&
-    (!type || type == '') &&
-    (!brand || brand == '')
+    (!_keyword || _keyword == '') &&
+    (!_type || _type == '') &&
+    (!_brand || _brand == '')
   )
     return products;
+  const keyword = _keyword.toLowerCase();
+  const type = _type.toLowerCase();
+  const brand = _brand.toLowerCase();
   const _products = products.filter(
     x =>
       (!keyword ||
         keyword == '' ||
-        x.product_name.includes(keyword) ||
-        x.barcode.includes(keyword) ||
-        x.brand.includes(keyword) ||
-        x.product_type.includes(keyword)) &&
-      (!brand || brand == '' || x.brand == brand) &&
-      (!type || type == '' || x.product_type == type),
+        x.product_name.toLowerCase().includes(keyword) ||
+        x.barcode.toLowerCase().includes(keyword) ||
+        x.brand.toLowerCase().includes(keyword) ||
+        x.product_type.toLowerCase().includes(keyword)) &&
+      (!brand || brand == '' || x.brand.toLowerCase() == brand) &&
+      (!type || type == '' || x.product_type.toLowerCase() == type),
   );
 
   return _products;

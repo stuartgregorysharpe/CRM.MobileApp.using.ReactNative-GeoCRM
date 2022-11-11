@@ -33,8 +33,8 @@ const PosRecordList = props => {
         <Text style={[styles.title, {flex: 1}]}>Tp</Text>
         <Text style={[styles.title, {flex: 2}]}>Type</Text>
         <Text style={[styles.title, {flex: 3}]}>POS</Text>
-        <Text style={[styles.title, {flex: 1}]}>Qty</Text>
-        <View style={{flex: 1}}></View>
+        <Text style={[styles.title, {flex: 1, textAlign: 'center'}]}>Qty</Text>
+        <View style={{width: 30}}></View>
       </View>
       <FlatList
         data={items}

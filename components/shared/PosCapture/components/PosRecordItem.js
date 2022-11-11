@@ -19,9 +19,11 @@ const PosRecordItem = props => {
     <View style={[styles.container, props.style]}>
       <Text style={[styles.text, {flex: 1}]}>{touchpoint}</Text>
       <Text style={[styles.text, {flex: 2}]}>{placement_type}</Text>
-      <Text style={[styles.text, {flex: 3}]}>{product_name}</Text>
-      <Text style={[styles.text, {flex: 1}]}>{qty}</Text>
-      <View style={{flex: 1}}>
+      <Text style={[styles.text, {flex: 3, paddingHorizontal: 4}]}>
+        {product_name}
+      </Text>
+      <Text style={[styles.text, {flex: 1, textAlign: 'center'}]}>{qty}</Text>
+      <View style={{width: 30}}>
         <TouchableOpacity
           onPress={() => {
             if (props.onItemAction) {

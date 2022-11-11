@@ -18,11 +18,15 @@ const PosCapture = props => {
     item.value != null && item.value != ''
       ? Constants.questionButtonType.QUESTION_BUTTON_DONE
       : '';
+  const questionButtonTitle =
+    questionButtonType == Constants.questionButtonType.QUESTION_BUTTON_DONE
+      ? 'Captured'
+      : 'Capture';
   const renderContent = () => {
     return (
       <QuestionButton
         questionButtonType={questionButtonType}
-        title={getQuestionTitle(questionType)}
+        title={questionButtonTitle}
         onPress={onOpenPosCaptureModal}
       />
     );
