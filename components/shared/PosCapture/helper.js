@@ -1,7 +1,6 @@
 export function constructFormData(data) {
-  console.log('data', JSON.stringify(data));
   const value = data.value;
-  const formData = {posItems: [], fileArray: []};
+  const formData = {posItems: []};
   const isInitialAnswerExist =
     value &&
     value.form_answers &&
@@ -25,9 +24,6 @@ export function constructFormData(data) {
       }
       return item;
     });
-    if (value?.file_array) {
-      formData.fileArray = [...value?.file_array];
-    }
   }
   return formData;
 }
@@ -104,6 +100,8 @@ export function getValueFromFormData(formData, item, formIndex) {
   const posItems = formData.posItems;
   const answers = [];
   const answerDataArray = [];
+  const fileArray = [];
+
   posItems.forEach((product, index) => {
     const answer = {
       product_id: product.product_id,
@@ -112,8 +110,11 @@ export function getValueFromFormData(formData, item, formIndex) {
       placement_type: product.placement_type,
       area: product.area,
       image: product.image,
-      image_index: product.image_index,
     };
+    if (product.image) {
+      fileArray.push(product.image);
+      answer.image_index = fileArray.length - 1;
+    }
     answerDataArray.push({
       key: `[answer][${index}][product_id]`,
       value: product.product_id,
@@ -134,10 +135,10 @@ export function getValueFromFormData(formData, item, formIndex) {
       key: `[answer][${index}][area]`,
       value: product.area,
     });
-    if (product.image_index !== '' && product.image_index !== undefined)
+    if (answer.image)
       answerDataArray.push({
         key: `[answer][${index}][image_index]`,
-        value: product.image_index + '',
+        value: answer.image_index + '',
       });
 
     answers.push(answer);
@@ -151,7 +152,7 @@ export function getValueFromFormData(formData, item, formIndex) {
       },
     ],
     form_answers_array: answerDataArray,
-    file_array: formData.fileArray,
+    file_array: fileArray,
   };
 }
 

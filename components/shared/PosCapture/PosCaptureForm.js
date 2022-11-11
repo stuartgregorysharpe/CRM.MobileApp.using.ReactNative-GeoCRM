@@ -25,8 +25,8 @@ import PosRecordListModal from './modals/PosRecordListModal';
 const PosCaptureForm = props => {
   const dispatch = useDispatch();
   const {item, questionType, formIndex} = props;
-  console.log('item', item);
-  const [formData, setFormData] = useState({posItems: [], fileArray: []});
+
+  const [formData, setFormData] = useState({posItems: []});
   const [keyword, setKeyword] = useState('');
   const captureModalRef = useRef(null);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -114,18 +114,13 @@ const PosCaptureForm = props => {
     if (posItems.length > 0) {
       index = posItems[posItems.length - 1].id + 1;
     }
-    const fileArray = [...formData.fileArray];
     const newPostItem = {
       ...data,
       id: index,
     };
-    if (data.image) {
-      fileArray.push(data.image);
-      newPostItem.image_index = fileArray.length - 1;
-    }
     console.log('onRecordPos', newPostItem);
     posItems.push(newPostItem);
-    const newFormData = {...formData, posItems, fileArray};
+    const newFormData = {...formData, posItems};
     setFormData(newFormData);
     setIsShowPosDetailView(false);
   };
