@@ -479,10 +479,18 @@ export function getFormQuestionData(formQuestions) {
             key: `form_answers[${index}][form_question_id]`,
             value: item.form_question_id,
           });
-          form_answers.push({
-            key: `form_answers[${index}][answer]`,
-            value: JSON.stringify(item.value),
-          });
+          if (item.value === '' || item.value === undefined) {
+            form_answers.push({
+              key: `form_answers[${index}][answer]`,
+              value: '',
+            });
+          } else {
+            form_answers.push({
+              key: `form_answers[${index}][answer]`,
+              value: JSON.stringify(item.value),
+            });
+          }
+
           index = index + 1;
         } else if (
           item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS &&
