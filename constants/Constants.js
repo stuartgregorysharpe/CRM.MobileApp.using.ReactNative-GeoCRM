@@ -128,4 +128,8 @@ export default {
     FEATURE_PRODUCT_CHANNELS: 'product_channels',
     FEATURE_OUTCOMES: 'outcomes',
   },
+  deviceType: [    
+    'Additional',
+    'Primary'
+  ]
 };

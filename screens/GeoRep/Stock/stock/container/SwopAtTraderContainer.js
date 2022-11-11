@@ -17,6 +17,7 @@ import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 
 const SwopAtTraderContainer = props => {
+  
   const {locationId, item} = props;
   const [lists, setLists] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);

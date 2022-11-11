@@ -41,7 +41,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
-import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
+import {getLocalData, storeJsonData, storeLocalValue} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
@@ -431,12 +431,13 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true});
+        dispatch({type: CHECKIN, payload: true});        
         await storeLocalValue('@checkin', '1');
         await storeLocalValue(
           '@specific_location_id',
           locationInfo.location_id,
         );
+        await storeJsonData("@checkin_location", locationInfo);
         props.navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: 'checkin',

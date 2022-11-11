@@ -319,6 +319,7 @@ const LocationContainer = props => {
       <MarkerViewModal ref={markerModalRef} />
 
       <LocationFilterModal ref={locationFilterModalRef} page={'map'} />
+      
       <AddToCalendarModal
         ref={addToCalendarModalRef}
         onButtonAction={() => {

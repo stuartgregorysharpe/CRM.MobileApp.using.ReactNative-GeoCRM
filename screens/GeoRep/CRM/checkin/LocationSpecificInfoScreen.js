@@ -26,7 +26,7 @@ import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
-import {storeLocalValue} from '../../../../constants/Storage';
+import {getJsonData, storeLocalValue} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import Checkout from './partial/Checkout';
 import {getLocationInfo} from '../../../../actions/location.action';
@@ -39,7 +39,7 @@ import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
-import DevicesModal from '../devices/DevicesModal';
+import DevicesModal from '../devices/modal/DevicesModal';
 import {Constants, Strings} from '../../../../constants';
 import {CHECKIN} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
@@ -85,7 +85,7 @@ const LocationSpecificInfoScreen = props => {
     refreshHeader();
     initData();
     if (location_id !== undefined) {
-      openLocationInfo(location_id);
+      //openLocationInfo(location_id);
     }
     return () => {
       isMout = false;
@@ -101,10 +101,25 @@ const LocationSpecificInfoScreen = props => {
         }
       }
     }
+
+    if(isCheckin){
+      getCheckInLocation();
+    }
+
     return () => {
       isMout = false;
     };
   }, [isCheckin]);
+
+  const getCheckInLocation = async() => {
+    var location = await getJsonData("@checkin_location");    
+    if(location != null){
+      if (locationInfoRef.current !== undefined) {
+        locationInfoRef.current.updateDispositionData(location);
+      }
+      setLocationIfo(location);
+    }    
+  }
 
   const initData = async () => {
     if (pageType === 'checkin') {
@@ -288,7 +303,7 @@ const LocationSpecificInfoScreen = props => {
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
-        locationId={locationInfo != undefined ? locationInfo.location_id : 0}
+        locationId={location_id != undefined ? location_id : locationInfo != undefined ? locationInfo.location_id : 0}
         onButtonAction={onDevicesModalClosed}
       />
 
