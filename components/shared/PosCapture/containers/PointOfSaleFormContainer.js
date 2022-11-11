@@ -12,6 +12,12 @@ import {getPlacementAreas, getPlacementTypes, getTouchpoints} from '../helper';
 
 const PointOfSaleFormContainer = props => {
   const [formData, setFormData] = useState(null);
+  const [errors, setErrors] = useState({
+    placement_type: false,
+    area: false,
+    qty: false,
+    touchpoint: false,
+  });
   const dispatch = useDispatch();
   const {product, item} = props;
   const placementTypeList = useMemo(() => getPlacementTypes(item), [item]);
@@ -38,22 +44,41 @@ const PointOfSaleFormContainer = props => {
       image: null,
     };
     setFormData(posFormData);
+    setErrors({
+      placement_type: false,
+      area: false,
+      qty: false,
+      touchpoint: false,
+    });
   };
-  const validateForm = formData => {
+  const validateForm = _formData => {
     const errorMessage = Strings.Complete_Required_Fields;
-    if (!formData) return errorMessage;
-    if (
-      !formData.touchpoint ||
-      formData.touchpoint == '' ||
-      !formData.placement_type ||
-      formData.placement_type == '' ||
-      !formData.area ||
-      formData.area == '' ||
-      !formData.qty ||
-      formData.qty == ''
-    )
-      return errorMessage;
-    return false;
+    if (!_formData) return errorMessage;
+    const _errors = {
+      placement_type: false,
+      area: false,
+      qty: false,
+      touchpoint: false,
+    };
+    let result = false;
+    if (!_formData.touchpoint || _formData.touchpoint == '') {
+      _errors['touchpoint'] = true;
+      result = errorMessage;
+    }
+    if (!_formData.placement_type || _formData.placement_type == '') {
+      _errors['placement_type'] = true;
+      result = errorMessage;
+    }
+    if (!_formData.area || _formData.area == '') {
+      _errors['area'] = true;
+      result = errorMessage;
+    }
+    if (!_formData.qty || _formData.qty == '' || _formData.qty == 0) {
+      _errors['qty'] = true;
+      result = errorMessage;
+    }
+    setErrors(_errors);
+    return result;
   };
   const onRecord = data => {
     const errorMessage = validateForm(data);
@@ -81,11 +106,14 @@ const PointOfSaleFormContainer = props => {
         product={product}
         placementTypeList={placementTypeList}
         areaList={areaList}
+        errors={errors}
         touchpointList={touchpointList}
         onUpdateFormData={data => {
           console.log('onUpdateformData', data);
           if (data) {
-            setFormData({...formData, ...data});
+            const newFormData = {...formData, ...data};
+            setFormData(newFormData);
+            validateForm(newFormData);
           }
         }}
       />

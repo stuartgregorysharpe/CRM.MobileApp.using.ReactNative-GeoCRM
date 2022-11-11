@@ -48,9 +48,10 @@ const TouchpointFlowList = props => {
 };
 
 const POSItemView = props => {
-  const {formData} = props;
+  const {formData, errors} = props;
   if (!formData) return null;
   const {product_type, touchpoint, area, qty, product_name} = formData;
+
   const fixed = props.fixed || 0;
   const onChangeQuantity = (_qtyText, _isConvertToNumber) => {
     let isConvertToNumber = _isConvertToNumber;
@@ -92,7 +93,12 @@ const POSItemView = props => {
         <Text style={styles.text}>{product_name}</Text>
         <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
           <TextInput
-            style={styles.textInput}
+            style={[
+              styles.textInput,
+              errors?.qty && {
+                borderColor: Colors.selectedRedColor,
+              },
+            ]}
             value={qty + ''}
             onChangeText={text => {
               onChangeQuantity(text);
@@ -150,7 +156,8 @@ const TouchpointView = props => {
   );
 };
 const PlacementView = props => {
-  const {formData, placementTypeList, areaList} = props;
+  const {formData, placementTypeList, areaList, errors} = props;
+
   if (!formData) return null;
   const {placement_type, area} = formData;
   const onUpdateFormData = data => {
@@ -165,17 +172,17 @@ const PlacementView = props => {
         <Text style={[styles.title, {flex: 1}]}>Placement Type</Text>
         <Text style={[styles.title, {flex: 1}]}>Area</Text>
       </View>
-      <View style={{flexDirection: 'row', marginHorizontal: 0}}>
+      <View style={{flexDirection: 'row', marginHorizontal: 8}}>
         <CSingleSelectInput
           bgType="card"
-          bgStyle={[style.card, {borderWidth: 0}]}
+          bgStyle={[style.card, {borderWidth: errors?.placement_type ? 1 : 0}]}
           placeholderStyle={{color: whiteLabel().mainText, fontWeight: '700'}}
           description={'Type'}
           placeholder={'Type'}
           mode="single"
           checkedValue={placement_type}
           items={placementTypeList}
-          hasError={false}
+          hasError={errors?.placement_type}
           disabled={false}
           onSelectItem={item => {
             onUpdateFormData({
@@ -192,14 +199,14 @@ const PlacementView = props => {
         />
         <CSingleSelectInput
           bgType="card"
-          bgStyle={[style.card, {borderWidth: 0}]}
+          bgStyle={[style.card, {borderWidth: errors?.area ? 1 : 0}]}
           placeholderStyle={{color: whiteLabel().mainText, fontWeight: '700'}}
           description={'Brand'}
           placeholder={'Brand'}
           mode="single"
           checkedValue={area}
           items={areaList}
-          hasError={false}
+          hasError={errors?.area}
           disabled={false}
           onSelectItem={item => {
             onUpdateFormData({area: item?.label || ''});
@@ -212,7 +219,7 @@ const PlacementView = props => {
   );
 };
 const PointOfSaleFormView = props => {
-  const {formData, areaList, placementTypeList, touchpointList} = props;
+  const {formData, areaList, placementTypeList, touchpointList, errors} = props;
   const onUpdateFormData = data => {
     if (props.onUpdateFormData) {
       props.onUpdateFormData(data);
@@ -226,7 +233,11 @@ const PointOfSaleFormView = props => {
         boxShadow,
         props.style,
       ]}>
-      <POSItemView formData={formData} onUpdateFormData={onUpdateFormData} />
+      <POSItemView
+        formData={formData}
+        onUpdateFormData={onUpdateFormData}
+        errors={errors}
+      />
       <TouchpointView
         formData={formData}
         touchpointList={touchpointList}
@@ -235,6 +246,7 @@ const PointOfSaleFormView = props => {
       <PlacementView
         formData={formData}
         areaList={areaList}
+        errors={errors}
         placementTypeList={placementTypeList}
         onUpdateFormData={onUpdateFormData}
       />
