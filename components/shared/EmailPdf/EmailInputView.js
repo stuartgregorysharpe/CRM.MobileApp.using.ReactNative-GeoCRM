@@ -9,7 +9,7 @@ import {
 import React, {useState, useEffect, useRef} from 'react';
 import {Colors, Constants, Fonts, Strings} from '../../../constants';
 import {whiteLabel} from '../../../constants/Colors';
-import {validateEmail} from '../../../helpers/formatHelpers';
+import {validateEmail} from '../../../helpers/validateHelper';
 
 export default function EmailInputView(props) {
   const {item} = props;
