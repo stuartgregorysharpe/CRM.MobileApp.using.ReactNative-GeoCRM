@@ -64,6 +64,14 @@ const PosCaptureForm = props => {
 
   const onSubmit = () => {
     console.log('formData', JSON.stringify(formData));
+    if (formData.posItems.length == 0) {
+      if (props.onButtonAction) {
+        props.onButtonAction({
+          type: Constants.actionType.ACTION_FORM_CLEAR,
+        });
+      }
+      return;
+    }
     const submitValueData = getValueFromFormData(formData, item, formIndex);
     console.log('submitValueData', JSON.stringify(submitValueData));
     if (props.onButtonAction) {

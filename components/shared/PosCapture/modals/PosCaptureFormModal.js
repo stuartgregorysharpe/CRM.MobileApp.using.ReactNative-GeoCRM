@@ -9,7 +9,10 @@ const PosCaptureFormModal = React.forwardRef((props, ref) => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
-    if (data.type == Constants.actionType.ACTION_FORM_SUBMIT) {
+    if (
+      data.type == Constants.actionType.ACTION_FORM_SUBMIT ||
+      data.type == Constants.actionType.ACTION_FORM_CLEAR
+    ) {
       if (ref) {
         ref.current.hideModal();
       }
