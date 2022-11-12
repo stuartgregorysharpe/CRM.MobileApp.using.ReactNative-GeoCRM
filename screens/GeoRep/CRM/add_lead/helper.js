@@ -197,9 +197,7 @@ async function getJsonWithFile ( json, selectedLists) {
       
     var postDataJson = {...json};
     if(selectedLists != undefined && selectedLists instanceof Array && selectedLists.length > 0){
-        console.log("selectedLists === ", selectedLists.length)
-        for( var index = 0; index < selectedLists.length ; index++){
-            console.log("index" ,index);
+        for( var index = 0; index < selectedLists.length ; index++){            
             var item =  selectedLists[index];
             var res = await RNFS.exists(item.signature);
             console.log("with" , res)
@@ -209,6 +207,7 @@ async function getJsonWithFile ( json, selectedLists) {
                     [`allocated_devices[${index}][stock_item_id]`] : item.stock_item_id,
                     [`allocated_devices[${index}][assigned_msisdn]`] : item.msisdn,
                     [`allocated_devices[${index}][received_by]`] : item.received,
+                    [`allocated_devices[${index}][primary_device]`] : item.primary_device,
                     [`allocated_devices_signature[${item.stock_item_id}]`] : {uri: item.signature, type: 'image/png', name: 'sign.png'}
                 };	
             }

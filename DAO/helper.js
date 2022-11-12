@@ -3,7 +3,6 @@ import { Strings } from "../constants";
 import { getLocalData, storeLocalValue } from "../constants/Storage";
 import { ExecuteQuery } from "../sqlite/DBHelper";
 import { insertOfflineSyncItem } from "../sqlite/OfflineSyncItemsHelper";
-import uuid from 'react-native-uuid';
 import { getDateTime } from "../helpers/formatHelpers";
 import * as RNLocalize from 'react-native-localize';
 import { generateKey } from "../constants/Utils";
@@ -19,9 +18,8 @@ export function checkConnectivity(){
         }else{
             NetInfo.addEventListener( async networkState => {
                 try{
-                    console.log("GET NETWORK STATUS : " , networkState) ;
+                    //console.log("GET NETWORK STATUS : " , networkState) ;
                     var isConnected = networkState.isConnected ;                    
-                    //await storeLocalValue("@online" , isConnected ? "1" : '0');
                     resolve(isConnected);
                 }catch(e){                    
                     reject(e);
@@ -116,9 +114,8 @@ export function saveOfflineSyncItems(locationId , postData , type, url , itemLab
             ];                
             console.log("SAVE DATA: " , data);
             var res = await insertOfflineSyncItem(data);                   
-            resolve(res);                
-            
-                            
+            resolve(res);
+
         }catch(e){
             console.log("save offline item" , e);
             reject(e);
@@ -140,6 +137,8 @@ export function getResponseMessage (type , url) {
         return Strings.Stock.Successfully_Stock_Submit;
     }else if(type == "sell_to_trader"){
         return Strings.Stock.Successfully_Sell_To_Trader
+    }else if(type == "device_update"){
+        return Strings.PostRequestResponse.Successfully_Device_Update;
     }
     return Strings.PostRequestResponse.Successfully_Checkin;    
 }

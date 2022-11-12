@@ -85,14 +85,13 @@ export const SyncAll = forwardRef((props, ref) => {
   };
 
 
-  const startTableSync = () => {    
-    setIsManual(true);
-    console.log("start table syss")
+  const startTableSync = () => {        
+    setIsManual(true);    
     if (basketRef.current && basketRef.current.startSync) {
       console.log("sync table start");
       basketRef.current.startSync();
     }else{
-      console.log("start table syss")
+      console.log("start table sync failed")
     }
   }
 

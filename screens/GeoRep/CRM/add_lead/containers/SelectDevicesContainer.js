@@ -45,7 +45,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
         })        
     }
 
-    const allocateDevices = () => {
+    const allocateDevices = () => {        
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value: selectedLists});
     }
 
@@ -58,10 +58,17 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
         if(type == Constants.actionType.ACTION_DONE){
             if(value.signature != null && value.signature != undefined){
                 const check = selectedLists.filter(element =>  element.stock_item_id === stockItem.stock_item_id);
-                if(check.length == 0){
-                   setSelectedLists([...selectedLists, {...value, ...stockItem}]);
-                   updateLists( stockItems, [...selectedLists, {...value, ...stockItem}]);
-                   props.onButtonAction({type: Constants.actionType.ACTION_VIEW , value: [...selectedLists, {...value, ...stockItem}] });
+                if(check.length == 0){                    
+                    var tmpSelectedLists = [...selectedLists];
+                    if(value.primary_device === '1'){ // Allow Only One Primary Device
+                        tmpSelectedLists = tmpSelectedLists.map((element) => {
+                            element.primary_device = "0";
+                            return element;
+                        })
+                    }                    
+                   setSelectedLists([...tmpSelectedLists, {...value, ...stockItem}]);
+                   updateLists( stockItems, [...tmpSelectedLists, {...value, ...stockItem}]);
+                   props.onButtonAction({type: Constants.actionType.ACTION_VIEW , value: [...tmpSelectedLists, {...value, ...stockItem}] });
                 }            
             }            
             stockSignatureModalRef.current.hideModal();

@@ -131,5 +131,9 @@ export default {
   deviceType: [    
     'Additional',
     'Primary'
-  ]
+  ],
+  deviceTypeLabel : {
+    PRIMARY : 'Primary Device',
+    ADDITIONAL : 'Additional Device'
+  }
 };

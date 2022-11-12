@@ -26,7 +26,8 @@ export default function StockSignatureContainer(props) {
   var msisdn = '';
   var received = '';
 
-  const onSubmit = signature => {
+  const onSubmit = ( signature, deviceType) => {
+    
     if (received != '' && signature != null) {
       setIsLoading(true);
       var postData = new FormData();
@@ -39,6 +40,7 @@ export default function StockSignatureContainer(props) {
               signature = 'file://' + signature;
             }
 
+            console.log("signatureModalType",signatureModalType , deviceType)
             if (signatureModalType == 'save') {
               props.onButtonAction({
                 type: Constants.actionType.ACTION_DONE,
@@ -46,6 +48,7 @@ export default function StockSignatureContainer(props) {
                   received: received,
                   msisdn: msisdn,
                   signature: signature,
+                  primary_device: deviceType === Constants.deviceTypeLabel.PRIMARY ? "1" : "0"
                 },
               });
               setIsLoading(false);
@@ -89,7 +92,7 @@ export default function StockSignatureContainer(props) {
               }
 
               var networks = selectedCodes.map(item => item.network).join(',');              
-
+              console.log("stockmodule/sell-to-trader", postJsonData)
               PostRequest.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
               item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks ).then((res) => {
                 dispatch(
@@ -164,7 +167,7 @@ export default function StockSignatureContainer(props) {
                     );
                   })
                   .catch(e => {
-                    setIsLoading(false);
+                    setIsLoading(false);  
                     console.log('error', e);
                     if (e === 'expired') {
                       expireToken(dispatch, e);

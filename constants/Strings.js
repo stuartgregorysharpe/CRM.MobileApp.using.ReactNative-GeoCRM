@@ -77,7 +77,9 @@ export default {
     Please_Sign: 'Please Sign below:',
     Select_Scan_Type: 'Select Scan Type',
     Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
-    Successfully_Sell_To_Trader: 'Saved to Offline sync successfully'
+    Successfully_Sell_To_Trader: 'Saved to Offline sync successfully',
+    Primary_Additional: 'Primary/Additional'
+    
   },
 
   Forms: {
@@ -90,5 +92,6 @@ export default {
     Successfully_Checkin: 'Checkin Successfully!',
     Successfully_Feedback: 'Feedback Successfully!',
     Successfully_Form_Submit: 'Form  Submitted successfully!',
+    Successfully_Device_Update: 'Device update added to offline sync menu successfully',
   },
 };

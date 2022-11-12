@@ -2,7 +2,6 @@ import { Strings } from "../../constants";
 import { ExecuteQuery } from "../../sqlite/DBHelper";
 import GetRequest from "../GetRequest";
 
-
 export function find(postData){
   
   return new Promise(function(resolve, reject) {
@@ -63,7 +62,7 @@ const getDeviceLists = (lists) => {
             description: element.device_type,
             imei: element.device_imei,
             msisdn: element.device_msisdn,
-            primary_device: element.primary_device
+            primary_device: element.primary_device.toString()
         })
     }
     return deviceLists;
