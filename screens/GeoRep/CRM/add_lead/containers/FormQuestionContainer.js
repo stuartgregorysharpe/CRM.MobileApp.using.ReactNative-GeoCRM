@@ -131,7 +131,7 @@ export default function FormQuestionContainer(props) {
       loadingBarRef.current.showModal();
       var newFormQuestions = await downloadFormQuestionImages(res);
       if(newFormQuestions != undefined){
-        console.log("new form questions " , JSON.stringify(newFormQuestions));
+        //console.log("new form questions " , JSON.stringify(newFormQuestions));
         setQuestions(newFormQuestions);
       }
       loadingBarRef.current.hideModal();

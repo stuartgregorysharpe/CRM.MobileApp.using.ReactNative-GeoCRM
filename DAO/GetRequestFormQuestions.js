@@ -48,6 +48,12 @@ const fetchFieldDetailsFromDB = async(client_id, business_unit_id , question_tag
     return res.rows ? res.rows : [];    
 }
 
+const fetchPrimaryDeviceFromDB = async(location_id) => {
+    const query = generatePrimaryDeviceQuery();
+    const res = await ExecuteQuery(query, [location_id]);
+    return res.rows ? res.rows : [];
+}
+
 const fetchFieldValueFromDB = async(custom_master_field_id, location_id) => {
     const query = generateFieldValueQuery();    
     const res = await ExecuteQuery(query, [custom_master_field_id, location_id]);
@@ -153,6 +159,11 @@ const generateProductQuery = () => {
     return query;
 }
 
+const generatePrimaryDeviceQuery = () => {
+    var query  = `SELECT device_msisdn  FROM location_devices WHERE primary_device = 1 AND location_id = ?`;    
+    return query;
+}
+
 
 const getFormQuestions = async(lists , client_id, business_unit_id , postData ) => {
 
@@ -161,10 +172,17 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
         var element = lists.item(i);
         const question_tag = element.question_tag;
         var fieldData = '';
+
         if(postData.location_id != undefined){
-            if( question_tag != undefined && question_tag != ""){                
-                var fieldDataLists = await fetchFieldDetailsFromDB(client_id, business_unit_id, question_tag);                
-                fieldData = await getFieldData(fieldDataLists , postData);
+            if( question_tag != undefined && question_tag != ""){        
+                if(question_tag === "msisdn"){
+                    var primaryDeivce = await fetchPrimaryDeviceFromDB(postData.location_id);
+                    fieldData = await getPrimaryDeviceData( primaryDeivce );
+                    console.log("question tag => ", fieldData)
+                }else{
+                    var fieldDataLists = await fetchFieldDetailsFromDB(client_id, business_unit_id, question_tag);                
+                    fieldData = await getFieldData(fieldDataLists , postData);
+                }                
             }
         }
         
@@ -273,6 +291,15 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
     return tmp;
 }
 
+const getPrimaryDeviceData = async(lists) => {
+    var value = '';
+    for(var i = 0; i < lists.length; i++){
+        var element = lists.item(i);
+        value = element.device_msisdn;
+    }
+    return value;
+}
+
 const getFieldData = async(lists , postData)  => {
     var tmp = {};
     var value = '';
@@ -298,7 +325,7 @@ const getFieldValue = (lists) => {
     var value = '';
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);
-        if(element.field_type == "multiple" || element.field_type == "multi_select"){
+        if(element.field_type == "multiple" || element.field_type == "multi_select" || element.field_type == "dropdown"){
             value =  element.field_data.split(",");
         }
         if(element.field_type == "text" || element.field_type == "numbers"){

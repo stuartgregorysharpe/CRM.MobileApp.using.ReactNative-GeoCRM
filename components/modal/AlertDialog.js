@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text} from 'react-native';
-import {  PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
+import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 

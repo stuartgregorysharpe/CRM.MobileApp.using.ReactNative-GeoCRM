@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import { PRIMARY_COLOR, BG_COLOR } from '../constants/Colors';
+import { BG_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import Colors from '../../constants/Colors';
@@ -78,7 +78,7 @@ export default function FilterView({navigation}) {
       ))}
       <Button 
         mode="contained" 
-        color={PRIMARY_COLOR} 
+        color={Colors.primaryColor} 
         uppercase={false} 
         labelStyle={{
           fontSize: 18, 
