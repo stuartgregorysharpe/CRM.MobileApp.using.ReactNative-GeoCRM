@@ -2,9 +2,14 @@ import { postApiRequest, postApiRequestMultipart } from "../actions/api.action";
 import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./helper";
 import { Strings } from "../constants";
 import { jsonToFormData } from "../helpers/jsonHelper";
+import { showOfflineDialog } from "../constants/Helper";
 
 export function find(locationId, postData , type, url , itemLabel , itemSubLabel){
   
+    const nonImplementedApis = [
+        "start_end_day"
+    ];
+
   return new Promise(function(resolve, reject) {
 
         checkConnectivity().then( async (isConnected) => {
@@ -30,10 +35,14 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                         reject(e);
                     });
                 }                
-            }else{
-                var res = await insertToLocalDB(locationId, postData, type, url , itemLabel , itemSubLabel);                
-                var message = getResponseMessage(type , url);
-                resolve({status: Strings.Success , message: message });
+            }else{                
+                if(nonImplementedApis.includes(type)){                                   
+                    resolve({status: "NOIMPLEMENT"});
+                }else{                    
+                    var res = await insertToLocalDB(locationId, postData, type, url , itemLabel , itemSubLabel);                
+                    var message = getResponseMessage(type , url);
+                    resolve({status: Strings.Success , message: message });
+                }                
             }
         }).catch(e => {
             reject(e);

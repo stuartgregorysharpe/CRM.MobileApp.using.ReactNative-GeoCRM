@@ -43,6 +43,7 @@ const StockStagingContainer = props => {
   };
 
   const onAccept = items => {    
+    
     const userParam = getPostParameter(currentLocation);
     setIsLoading(true);
     postApiRequest('stockmodule/staging-accept', {

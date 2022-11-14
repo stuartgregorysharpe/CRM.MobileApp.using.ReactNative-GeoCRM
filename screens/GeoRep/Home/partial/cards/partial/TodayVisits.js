@@ -20,7 +20,6 @@ const TodayVisits = props => {
     whiteLabel().graphs.color_1,
     whiteLabel().graphs.color_3,
   ];
-  const [checkinLists, setCheckinLists] = useState(today.next_calls);
 
   const renderCheckin = (item, index) => {
     return <VisitCheckinItem item={item} key={index}></VisitCheckinItem>;
@@ -71,7 +70,7 @@ const TodayVisits = props => {
       <Legend types={barTypes}></Legend>
 
       <View style={{marginTop: 10, marginHorizontal: 10}}>
-        {checkinLists.map((item, index) => {
+        {today?.next_calls?.map((item, index) => {
           return renderCheckin(item, index);
         })}
       </View>

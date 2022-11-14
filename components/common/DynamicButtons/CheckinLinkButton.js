@@ -203,9 +203,11 @@ const CheckinLinkButton = props => {
       }
     }
   };
-  return (
-    <>
-      {showFeedbackDropDownModal()}
+  const renderSubmitButton = () => {
+    if (props.renderSubmitButton) {
+      return props.renderSubmitButton(onCheckIn);
+    }
+    return (
       <SubmitButton
         title={title}
         onSubmit={() => {
@@ -220,6 +222,12 @@ const CheckinLinkButton = props => {
         }}
         style={props.style}
       />
+    );
+  };
+  return (
+    <>
+      {showFeedbackDropDownModal()}
+      {renderSubmitButton()}
       <Notification />
     </>
   );

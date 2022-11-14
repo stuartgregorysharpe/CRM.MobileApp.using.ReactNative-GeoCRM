@@ -29,6 +29,7 @@ import FileViewer from 'react-native-file-viewer';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {expireToken} from '../../../constants/Helper';
+import {GetRequestContentlibraryDAO} from '../../../DAO';
 
 export default function ContentLibraryScreen(props) {
   const dispatch = useDispatch();
@@ -101,21 +102,16 @@ export default function ContentLibraryScreen(props) {
   };
 
   loadList = async () => {
-    var base_url = await getBaseUrl();
-    var token = await getToken();
-    if (base_url != null && token != null) {
-      let params = {};
-      getContentLibrary(base_url, token, params)
-        .then(res => {
-          setLibraryLists(res);
-          setSearchLibraryLists(res);
-        })
-        .catch(error => {
-          expireToken(dispatch, error);
-          setLibraryLists([]);
-          setSearchLibraryLists([]);
-        });
-    }
+    GetRequestContentlibraryDAO.find()
+      .then(res => {
+        setLibraryLists(res.folders);
+        setSearchLibraryLists(res.folders);
+      })
+      .catch(error => {
+        expireToken(dispatch, error);
+        setLibraryLists([]);
+        setSearchLibraryLists([]);
+      });
   };
 
   const showChildItem = index => {
@@ -266,7 +262,7 @@ export default function ContentLibraryScreen(props) {
       </SafeAreaView>
     );
   }
-    
+
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>

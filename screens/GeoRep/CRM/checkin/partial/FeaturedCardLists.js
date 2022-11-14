@@ -1,16 +1,21 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {FeatureCard} from './../../partial/FeatureCard';
-import {checkFeatureIncludeParam} from '../../../../../constants/Storage';
 import {useSelector} from 'react-redux';
 import {Values} from '../../../../../constants';
+import { checkConnectivity } from '../../../../../DAO/helper';
+import { showOfflineDialog } from '../../../../../constants/Helper';
+import { useDispatch } from 'react-redux';
 
 export default function FeaturedCardLists(props) {
+
   const {onItemClicked} = props;
   const [featureCards, setFeatureCards] = useState([]);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
-  );
+  );  
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     loadFeatureCards();
@@ -48,6 +53,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Person_Sharp_feature_card',
         action: 'View all information',
         link: 'customer_contacts',
+        isOffline: false,
       });
     }
 
@@ -57,6 +63,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Form_feature_card',
         action: 'Specific to this location',
         link: 'forms',
+        isOffline: true,
       });
     }
     if (history_and_comments) {
@@ -65,6 +72,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Activity_Comments',
         action: 'Activity tree',
         link: 'activity_comments',
+        isOffline: false,
       });
     }
 
@@ -74,6 +82,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Sales_Pipeline_feature_Card',
         action: 'View location pipeline',
         link: 'sales_pipeline',
+        isOffline: false,
       });
     }
 
@@ -83,6 +92,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Action_Item',
         action: 'Specific actions to be addressed',
         link: 'actions_items',
+        isOffline: false,
       });
     }
 
@@ -92,6 +102,7 @@ export default function FeaturedCardLists(props) {
         icon: 'DEVICES',
         action: 'View allocated devices',
         link: 'devices',
+        isOffline: true,
       });
     }
 
@@ -101,6 +112,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Customer_Sales',
         action: 'View customer sales history',
         link: 'customer_sales',
+        isOffline: false,
       });
     }
     if (isShowTouchpoint) {
@@ -109,6 +121,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Touchpoints',
         action: 'View touchpoints history',
         link: 'touchpoints',
+        isOffline: false,
       });
     }
     setFeatureCards([...featureCards]);
@@ -129,7 +142,16 @@ export default function FeaturedCardLists(props) {
               title={item.title}
               actionTitle={item.action}
               onAction={() => {
-                onItemClicked(item);
+
+                checkConnectivity().then((isConnected) => {
+                  if(isConnected || item.isOffline){
+                    onItemClicked(item);
+                  }else{
+                    showOfflineDialog(dispatch)
+                  }
+                })
+                
+
               }}
             />
           </View>

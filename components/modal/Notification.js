@@ -73,7 +73,12 @@ export const Notification = ({}) => {
           },
         ]}>
         <View style={styles.modalView}>
-          <Text style={styles.title}>{notification.message}</Text>
+          {
+            notification.title != undefined &&
+            <Text style={styles.title}>{notification.title}</Text>
+          }
+          
+          <Text style={styles.message}>{notification.message}</Text>
           <View style={styles.divider}></View>
 
           {!notification.cancelButtonText && (
@@ -243,8 +248,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: Fonts.secondaryBold,
     fontSize: 16,
+    color: Colors.primaryColor,    
+    paddingTop:15
+  },
+
+  message: {
+    textAlign: 'center',
+    fontFamily: Fonts.secondaryBold,
+    fontSize: 16,
     color: '#000',
-    padding: 13,
+    padding: 10,
   },
 
   button: {

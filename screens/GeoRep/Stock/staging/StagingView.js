@@ -4,6 +4,8 @@ import QRScanModal from '../../../../components/common/QRScanModal';
 import SearchBar from '../../../../components/SearchBar';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../constants';
+import { showOfflineDialog } from '../../../../constants/Helper';
+import { checkConnectivity } from '../../../../DAO/helper';
 import ShipmentScanResultView from './components/ShipmentScanResultView';
 import StagingShipmentList from './components/StagingShipmentList';
 import {
@@ -12,8 +14,10 @@ import {
   getShipmentsFromItems,
 } from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
+import { useDispatch } from 'react-redux';
 
 const StagingView = props => {
+
   const [keyword, setKeyword] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
   const [viewListItems, setViewListItems] = useState([]);
@@ -25,13 +29,21 @@ const StagingView = props => {
     () => filterItems(props.items, keyword),
     [props.items, keyword],
   );
+  const dispatch = useDispatch()
 
   const shipments = useMemo(() => getShipmentsFromItems(items), [items]);
   const onCapture = () => {
-    if (captureModalRef && captureModalRef.current) {
-      captureModalRef.current.showModal();
-    }
+    checkConnectivity().then((isConnected) => {
+      if(isConnected){
+        if (captureModalRef && captureModalRef.current) {
+          captureModalRef.current.showModal();
+        }
+      }else{
+        showOfflineDialog(dispatch)
+      }
+    })    
   };
+  
   const onCaptureAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       const capturedItems = filterItemsByBarcode(props.items, value);
@@ -91,18 +103,27 @@ const StagingView = props => {
       captureScanningListViewModalRef.current.showModal();
     }
   };
+
   const onAccept = items => {
-    if (!items) return;
-    if (props.onAccept) {
-      props.onAccept(items);
-    }
-    onResetSelection();
+    checkConnectivity().then((isConnected) => {
+      if(isConnected){
+        if (!items) return;
+        if (props.onAccept) {
+          props.onAccept(items);
+        }
+        onResetSelection();
+      }else{
+        showOfflineDialog(dispatch);
+      }
+    })    
   };
+
   const onResetSelection = () => {
     scanningListViewModalRef.current.hideModal();
     setSelectedItems([]);
     captureModalRef.current.hideModal();
   };
+
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar
@@ -159,9 +180,16 @@ const StagingView = props => {
       <SubmitButton
         title={'Accept All'}
         onSubmit={() => {
-          if (props.onAccept) {
-            props.onAccept(items);
-          }
+
+          checkConnectivity().then((isConnected) => {
+            if(isConnected){
+              if (props.onAccept) {
+                props.onAccept(items);
+              }
+            }else{
+              showOfflineDialog(dispatch)
+            }
+          })          
         }}
         style={styles.submitButton}
       />
