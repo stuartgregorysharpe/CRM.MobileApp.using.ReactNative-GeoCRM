@@ -152,7 +152,7 @@ export default function StockSignatureView(props) {
         }),
       );
     }
-  },[path,deviceType]);
+  },[path,deviceType,serial]);
 
   const renderDeviceView = () => {
     return (

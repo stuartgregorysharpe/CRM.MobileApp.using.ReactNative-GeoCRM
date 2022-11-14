@@ -57,7 +57,11 @@ export default function FormQuestionContainer(props) {
     }
     if (selectedLists != undefined) {
       if (questionTag === 'msisdn') {
-        return selectedLists.map(item => item.msisdn).join(', ');
+        var primaryDevice = selectedLists.find(element => element.primary_device === '1');
+        if(primaryDevice != undefined){
+          return primaryDevice.msisdn;
+        }
+        return '';        
       }
     }
     return value;
