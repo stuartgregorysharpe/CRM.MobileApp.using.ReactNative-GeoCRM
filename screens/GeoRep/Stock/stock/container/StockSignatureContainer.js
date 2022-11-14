@@ -19,6 +19,7 @@ import { generateKey } from '../../../../../constants/Utils';
 export default function StockSignatureContainer(props) {
 
   const {item, selectedCodes, signatureModalType} = props;
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -79,7 +80,8 @@ export default function StockSignatureContainer(props) {
                 postJsonData = {
                   ...postJsonData,
                   stock_item_id : props.item.stock_item_id.toString(),
-                  assigned_msisdn : msisdn
+                  assigned_msisdn : msisdn,
+                  primary_device: deviceType === Constants.deviceTypeLabel.PRIMARY ? "1" : "0"
                 }                
               } else if (item.stock_type == Constants.stockType.SIM) {
                 selectedCodes.forEach((item, index) => {
@@ -90,9 +92,8 @@ export default function StockSignatureContainer(props) {
                   }                                  
                 });
               }
+              var networks = selectedCodes.map(item => item.network).join(',');
 
-              var networks = selectedCodes.map(item => item.network).join(',');              
-              console.log("stockmodule/sell-to-trader", postJsonData)
               PostRequest.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
               item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks ).then((res) => {
                 dispatch(

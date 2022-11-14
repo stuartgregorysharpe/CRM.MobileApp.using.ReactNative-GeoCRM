@@ -59,6 +59,7 @@ export default function HomeScreen(props) {
                   await storeLocalValue("@online", "1");
                   dispatch({type: CHANGE_OFFLINE_STATUS , payload: false });   
                   dispatch(clearNotification());
+                  dispatch(clearNotification());
                 } }));
               }
             }

@@ -5,7 +5,7 @@ import SignatureScreen from 'react-native-signature-canvas';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
-import {Constants, Strings} from '../../../../../constants';
+import {Colors, Constants, Strings} from '../../../../../constants';
 import {validateMsisdn} from '../../../../../helpers/validateHelper';
 import {generateKey} from '../../../../../constants/Utils';
 import {showNotification} from '../../../../../actions/notification.action';
@@ -30,7 +30,7 @@ export default function StockSignatureView(props) {
   const [hasMsisdnError, setHasMsisdnError] = useState(false);
   const [hasReceivedByError, setHasReceivedByError] = useState(false);
   const [serial, setSerial] = useState(Constants.msisdnPrefix);
-  const [deviceType, setDeviceTpye] = useState('');
+  const [deviceType, setDeviceType] = useState('');
   const [deviceTypeError, setDeviceTypeError] = useState(false)
 
   const handleOK = async signature => {
@@ -76,7 +76,7 @@ export default function StockSignatureView(props) {
       } else {
         setHasMsisdnError(true);
       }
-      if(deviceType == ''){
+      if(deviceType === ''){
         setDeviceTypeError(true)
       }else{
         setDeviceTypeError(false)
@@ -98,18 +98,26 @@ export default function StockSignatureView(props) {
       props.item.stock_type != Constants.stockType.RETURN &&
       isMSISDN &&
       props.item.stock_type != Constants.stockType.SIM &&
-      !validateMsisdn(serial) && (deviceType === '' || deviceType === undefined)      
+      !validateMsisdn(serial)      
     ) {
-      setHasMsisdnError(true);
-      if(deviceType === '')
-        setDeviceTypeError(true)
+      setHasMsisdnError(true);      
       isValidForm = false;
+    }
+
+    if( props.item.stock_type != Constants.stockType.RETURN &&
+      isMSISDN &&
+      props.item.stock_type != Constants.stockType.SIM && (deviceType === '' || deviceType === undefined) ){
+        setDeviceTypeError(true);
+        isValidForm = false;
     }
     
     if (!receivedBy || receivedBy == '') {
       setHasReceivedByError(true);
       isValidForm = false;
     }
+
+    console.log("validate error" , isValidForm);
+    
     if (!isValidForm) {
       dispatch(
         showNotification({
@@ -188,13 +196,14 @@ export default function StockSignatureView(props) {
           <CSingleSelectInput
             description={Strings.Stock.Primary_Additional}
             placeholder={Strings.Stock.Primary_Additional}
+            placeholderStyle={{color:Colors.textGeyColor}}
             mode="single"
             checkedValue={deviceType}
             items={[{label: Constants.deviceTypeLabel.PRIMARY , value: Constants.deviceTypeLabel.PRIMARY} , {label:Constants.deviceTypeLabel.ADDITIONAL , value: Constants.deviceTypeLabel.ADDITIONAL}]}
             hasError={deviceTypeError}
             disabled={false}
             onSelectItem={item => {
-              setDeviceTpye(item.value);
+              setDeviceType(item.value);
             }}
             containerStyle={{marginTop: 15}}
           />

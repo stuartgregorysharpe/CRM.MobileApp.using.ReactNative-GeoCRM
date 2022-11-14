@@ -2,7 +2,7 @@ import {View, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import {AppText} from '../../../../../components/common/AppText';
-import {whiteLabel} from '../../../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import CardView from '../../../../../components/common/CardView';
 import CTextInput from '../../../../../components/common/CTextInput';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
@@ -16,6 +16,7 @@ import {Notification} from '../../../../../components/modal/Notification';
 var previousText = Constants.msisdnPrefix;
 
 const SwopAtTraderView = props => {
+
   const {item, lists, onReturnDevice, onReason, onPhotos, onSwop} = props;
   const dispatch = useDispatch();
   const [reason, setReason] = useState('');
@@ -25,22 +26,22 @@ const SwopAtTraderView = props => {
     {value: 'Used', label: 'Used'},
   ]);
   const [msisdn, setMsisdn] = useState(Constants.msisdnPrefix);
-  const [photos, setPhotos] = useState([]);
-  const [enabled, setEnabled] = useState(false);
+  const [photos, setPhotos] = useState([]);  
   const [device, setDevice] = useState(null);
+  const [deviceType , setDeviceType] = useState(null)
   const [hasMsisdnError, setHasMsisdnError] = useState(false);
   const [hasSelectDeviceError, setHasSelectDeviceError] = useState(false);
   const [hasReasonError, setHasReasonError] = useState(false);
+  const [hasDeviceTypeError , setHasDeviceTypeError] =  useState(false);
+
   const checkEnabled = (device, reason, photos) => {
     if (
       validateMsisdn(msisdn) &&
       device != null &&
       reason != '' &&
       photos.length > 0
-    ) {
-      setEnabled(true);
-    } else {
-      setEnabled(false);
+    ) {      
+    } else {      
     }
   };
 
@@ -157,6 +158,21 @@ const SwopAtTraderView = props => {
         style={{marginTop: 10}}
       />
 
+      <CSingleSelectInput
+            description={Strings.Stock.Primary_Additional}
+            placeholder={Strings.Stock.Primary_Additional}
+            placeholderStyle={{color:Colors.textGeyColor}}
+            mode="single"
+            checkedValue={deviceType}
+            items={[{label: Constants.deviceTypeLabel.PRIMARY , value: Constants.deviceTypeLabel.PRIMARY} , {label:Constants.deviceTypeLabel.ADDITIONAL , value: Constants.deviceTypeLabel.ADDITIONAL}]}
+            hasError={hasDeviceTypeError}
+            disabled={false}
+            onSelectItem={item => {
+              setDeviceType(item.value);
+            }}
+            containerStyle={{marginTop: 15}}
+          />
+
       {
         <SubmitButton
           title={Strings.Stock.Add_Stock}
@@ -173,14 +189,20 @@ const SwopAtTraderView = props => {
             if (reason == '') {
               setHasReasonError(true);
             }
+            if(deviceType == null || deviceType == ''){
+              setHasDeviceTypeError(true);
+            }
 
-            if (device != null && reason != '' && isMsisdnValid) {
+            console.log("device type => " , deviceType);
+            
+            if (device != null && reason != '' && isMsisdnValid && deviceType != null && deviceType != '') {
               onSwop({
                 item,
                 device,
                 reason,
                 photos,
                 msisdn,
+				        deviceType
               });
             } else {
               dispatch(
