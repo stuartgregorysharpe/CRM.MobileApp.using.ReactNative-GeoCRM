@@ -12,31 +12,30 @@ import SvgIcon from '../../../SvgIcon';
 import {SubmitButton} from '../../SubmitButton';
 import {Colors, Constants, Fonts} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
+import {useMemo} from 'react';
 
 export default function ProductReturnListsView(props) {
   const {questionType, groups, lists, onSave, removeProduct} = props;
+  const getItemList = (groups, lists) => {
+    const items = [];
+    groups.forEach(group => {
+      const subItems = lists.filter(item => item.productReturn === group.value);
+      subItems.forEach((sitem, index) => {
+        items.push({...sitem, groupName: group.value, isHeader: index == 0});
+      });
+    });
+    return items;
+  };
+  const itemList = useMemo(() => {
+    return getItemList(groups, lists);
+  }, [groups, lists]);
 
-  // useEffect(() => {
-  //     getGroupData(groups,  lists)
-  // }, [lists , groups])
+  const renderItem = item => {
+    const {groupName, isHeader} = item;
 
-  // const getGroupData = (groups, lists) => {
-  //     var tmp = [];
-  //     groups.forEach(element => {
-  //         var items = lists.filter(item => item.productReturn === element.value );
-  //         items.forEach((subItem) => {
-  //             tmp.push(subItem);
-  //         })
-  //     });
-
-  //     console.log("FFFF" , tmp)
-  //     setGroupLists(tmp);
-  // }
-
-  const renderItem = (item, index, groupName, keyIndex) => {
     return (
-      <View key={keyIndex + 'product'}>
-        {index == 0 && renderHeader(groupName)}
+      <View>
+        {isHeader && renderHeader(groupName)}
         <View style={{flexDirection: 'row', marginTop: 5, marginBottom: 5}}>
           <View style={{flex: 2}}>
             <AppText
@@ -97,23 +96,15 @@ export default function ProductReturnListsView(props) {
       </View>
     );
   };
-  const renderProductItems = () => {
-    const items = [];
-    let keyIndex = 0;
-    groups.forEach(group => {
-      const subItems = lists.filter(item => item.productReturn === group.value);
-      subItems.forEach((sitem, index) => {
-        keyIndex++;
-        items.push(renderItem(sitem, index, group.label, keyIndex));
-      });
-    });
-    return items;
-  };
 
   return (
     <View style={styles.container}>
-      <ScrollView style={{marginTop: 10}}>{renderProductItems()}</ScrollView>
-
+      <FlatList
+        data={itemList}
+        renderItem={({item, index}) => renderItem(item, index)}
+        keyExtractor={(item, index) => index.toString()}
+        extraData={this.props}
+      />
       <SubmitButton
         title={'Save'}
         style={{marginTop: 20, marginBottom: 30}}
