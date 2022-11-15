@@ -284,7 +284,8 @@ const generateProductQuery = () => {
     `AND ` +
     `pcmd.client_id = ? ` +
     `AND  ` +
-    `pcmd.delete_status = 0 `;
+    `pcmd.delete_status = 0
+     ORDER by pcmd.product_name`;
   return query;
 };
 
