@@ -31,7 +31,7 @@ const ProductReturnFormContainer = React.forwardRef((props, ref) => {
 
     // product issue initialize
     if (item != undefined && item.return_reasons != undefined) {
-      var tmp = [];
+      const tmp = [];
       item.return_reasons.forEach(element => {
         tmp.push({label: element, value: element});
       });
@@ -116,7 +116,6 @@ const ProductReturnFormContainer = React.forwardRef((props, ref) => {
 
   const onProductListModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_REMOVE) {
-      console.log('va', value);
       changedSelectedProducts(value, 'remove');
       productSelectionFormRef.current.updatedSelectedLists(value);
     }

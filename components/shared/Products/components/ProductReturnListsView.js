@@ -5,6 +5,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {AppText} from '../../../common/AppText';
