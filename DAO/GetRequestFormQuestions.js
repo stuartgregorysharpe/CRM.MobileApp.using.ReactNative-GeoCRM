@@ -428,13 +428,11 @@ const getFormQuestions = async (
         client_id,
       );
       const returnProductsResults = getProductsData(returnProductLists);
-      console.log('returnProductsResults', returnProductsResults);
       const reasonList = await fetchReasonsFromDB(
         business_unit_id,
         client_id,
         element.form_question_id,
       );
-      console.log('reasonList', reasonList);
       const reasons = getReasonData(reasonList);
       if (returnProductsResults.length == 3) {
         tmp.push({
