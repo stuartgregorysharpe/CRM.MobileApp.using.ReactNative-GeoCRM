@@ -152,7 +152,7 @@ const getLocationData = async (lists, contactsLists, msisdn) => {
   var tmp = {};
   for (var i = 0; i < lists.length; i++) {
     var element = lists.item(i);
-    console.log('-------', element);
+    
     var coordinate = {
       latitude: element.latitude,
       longitude: element.longitude,

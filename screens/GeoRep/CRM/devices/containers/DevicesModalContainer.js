@@ -32,6 +32,7 @@ export default function DevicesModalContainer(props) {
         let param = {
             location_id: locationId,
         };                
+                
         GetRequestLocationDevicesDAO.find(param).then((res) => {
             if(isMount){                             
                 setLists(res.devices);

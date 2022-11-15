@@ -2,6 +2,7 @@ import { baseURL, Strings } from "../constants";
 import UrlResource from "./UrlResource";
 import GetRequest from "./GetRequest";
 import { ExecuteQuery } from "../sqlite/DBHelper";
+import { getTokenData } from "../constants/Storage";
 
 export function find(postData){
   
@@ -14,11 +15,24 @@ export function find(postData){
             }else if(res.status == Strings.Success && !res.isConnected){
                 
                 const client_id = res.data.client_id;
-                const business_unit_id = res.data.business_unit_id;                
+                const business_unit_id = res.data.business_unit_id;
+                const user_id = res.data.user_id;
+                const user_type = await getTokenData("user_type");
+                const role = await getTokenData("role");
+                let userTypeList = fetchUserTypeIdFromDB(user_type);
+                var userTypeId = getUserTypeId(userTypeList);
+                
+                // var xxx = `SELECT form_name FROM forms WHERE form_id = 13`;
+                // console.log("query", xxx)
+                // const ress = await ExecuteQuery(xxx, []);
+                // var bb =  ress.rows ? ress.rows : [];  
+                // console.log("dddd ", bb);
+
+
                 if(client_id && business_unit_id){
 
                     let assignmentLists = await fetchAssignmentDataFromDB(client_id, business_unit_id);                    
-                    let assignmentsData = await getFormAssignmentsData(assignmentLists);                              
+                    let assignmentsData = await getFormAssignmentsData(assignmentLists);
                     var locationCoreMasterData = {};
                     var customFieldsData = {};
                     
@@ -34,14 +48,14 @@ export function find(postData){
 
                     }                
 
-                    let excludeIds = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData);
-                    let lists = await fetchDataFromDB(client_id, business_unit_id , postData, excludeIds );
+                    let data = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , user_id);
+                    let lists = await fetchDataFromDB(client_id, business_unit_id , postData, data.excludeFormIds, data.limitFormIds );
                     let response = await getData(lists);                    
                     resolve(response);
 
                 }else{
                     reject();
-                }
+                }  
 
             }else{
                 reject(res.status);
@@ -54,28 +68,33 @@ export function find(postData){
     });  
 }
 
-const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, customFieldsData ) => {
+const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , userId ) => {
 
     var excludeFormIds = [];
+    var limitFormIds = [];    
     assignmentsData.forEach((element, index) => {                                                
         for(let key of Object.keys(element)){
-            var formId = key;                            
-            for(let subKey of Object.keys(element[key])){
-                var subElement = element[key][subKey];
 
-                if(subKey == 'location_id'){
+            var formId = key;           
+            limitFormIds.push(formId);
+
+            for(let type of Object.keys(element[key])){
+                
+                var subElement = element[key][type];
+                                
+                if(type == 'location_id'){
                     if(hasLocationId(postData) && !subElement.includes(hasLocationId(postData))){                   
                         excludeFormIds.push(formId);
                     }
                 }
 
-                if(subKey == 'region'){
+                if(type == 'region'){
                     if(locationCoreMasterData['region'] && !subElement.includes(locationCoreMasterData['region'])){                        
                         excludeFormIds.push(formId);
                     }
                 }
 
-                if(subKey == 'location_type'){
+                if(type == 'location_type'){
                     if(hasLocationType(postData) && !subElement.includes(hasLocationType(postData))){                        
                         excludeFormIds.push(formId);
                     }
@@ -90,7 +109,7 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                     }
                 }
 
-                if(subKey == 'group'){
+                if(type == 'group'){
                     if(hasGroup(postData) && !subElement.includes(hasGroup(postData))){                    
                         excludeFormIds.push(formId);
                     }
@@ -105,7 +124,7 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                     }
                 }
 
-                if(subKey == 'group_split'){
+                if(type == 'group_split'){
                     	                        
                     if(hasGroupSplit(postData) && !subElement.includes(hasGroupSplit(postData))){                        
                         excludeFormIds.push(formId);
@@ -121,7 +140,19 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                     }
                 }
                 
-                if(subKey == 'custom_field' && hasLocationId(postData)){
+                // -------------  Added New Part  --------------- //
+                if(type == 'location_status'){
+                    if(locationCoreMasterData['location_status'] != ''){
+                        const locationStatusSplits = subElement.split(",");
+                        locationStatusSplits.forEach((element) => {
+                            if(!element.includes(locationCoreMasterData['location_status'])){                                
+                                excludeFormIds.push(formId);
+                            }   
+                        });                       
+                    }
+                }
+
+                if(type == 'custom_field' && hasLocationId(postData)){
                     for(let customFieldKey of Object.keys(subElement)){                        
                         if(!subElement[customFieldKey].includes(customFieldsData[customFieldKey])){                            
                             excludeFormIds.push(formId);
@@ -129,23 +160,76 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                     }
                 }
 
-                if(subKey == 'checkin_type'){
+                if(type == 'checkin_type'){
                     if(hasCheckinTypeId(postData) && !subElement.includes(hasCheckinTypeId(postData))){
                         excludeFormIds.push(formId);
                     }
                 }
 
-                if(subKey == 'checkin_reason'){
+                if(type == 'checkin_reason'){
                     if(hasCheckinReasonId(postData) && !subElement.includes(hasCheckinReasonId(postData))){
                         excludeFormIds.push(formId);
+                    }
+                }
+
+                if(type == 'role'){
+                    if(!subElement.includes(role)){
+                        excludeFormIds.push(formId);
+                    }
+                }
+
+                if( type == 'user_type'){
+                    if(!subElement.includes(userTypeId)){
+                        excludeFormIds.push(formId);
+                    }
+                }
+
+                if( type == 'user'){
+                    if(!subElement.includes(userId)){
+                        excludeFormIds.push(formId);
+                    }
+                }
+
+                if( type == 'valid_start_date') {
+                    const today = new Date().getTime();
+                    if(today < subElement[0]) {
+                      excludeFormIds.push(formId);
+                    }
+                }
+
+                if( type == 'valid_end_date') {
+                    const today = new Date()                    
+                    if(today > subElement[0]) {
+                      excludeFormIds.push(formId);
+                    }
+                }
+
+                if(type == 'available_specific_days') {
+                    var weekdays = [];
+                    weekdays[0] = "Sunday";
+                    weekdays[1] = "Monday";
+                    weekdays[2] = "Tuesday";
+                    weekdays[3] = "Wednesday";
+                    weekdays[4] = "Thursday";
+                    weekdays[5] = "Friday";
+                    weekdays[6] = "Saturday";
+                    
+                    //Get today's day name (E.g. "Friday")
+                    const today = new Date()
+                    todayName= weekdays[ today.getDay() ]
+                  
+                    if(!subElement.includes(todayName)) {
+                      excludeFormIds.push(formId);
                     }
                 }
                                 
             }                            
         }
     });
-        
-    return excludeFormIds;
+    
+    console.log(" excludeFormIds => ", excludeFormIds)
+    console.log(" limitFormIds => ", limitFormIds)
+    return {excludeFormIds: excludeFormIds, limitFormIds :limitFormIds};
 }
 
 
@@ -160,15 +244,21 @@ const fetchData = async(query) => {
     return res.rows ? res.rows : [];    
 }
 
-const fetchDataFromDB = async(client_id, business_unit_id , postData, excludeFormIds ) => {
-    const query = generateListQuery(postData, excludeFormIds)
+const fetchDataFromDB = async(client_id, business_unit_id , postData, excludeFormIds , limitFormIds ) => {    
+    const query = generateListQuery(postData, excludeFormIds , limitFormIds)    
     const res = await ExecuteQuery(query, [client_id, business_unit_id]);
+    return res.rows ? res.rows : [];    
+}
+
+const fetchUserTypeIdFromDB = async( user_type ) => {
+    const query = generateUserTypeId()
+    const res = await ExecuteQuery(query, [user_type]);
     return res.rows ? res.rows : [];    
 }
 
 const generateAssignemtnQuery = () => {
     
-    var query = `SELECT ` + 
+    var query = `SELECT fs.form_assignment_id, ` + 
                         `fs.form_id, ` + 
                         `fs.assignment_type, ` + 
                         `fs.custom_field_id, ` + 
@@ -196,7 +286,7 @@ const generateCustomFieldDataQuery = (location_id) => {
     return query;
 }
 
-const generateListQuery = (postData , excludeFormIds) => {
+const generateListQuery = (postData , excludeFormIds , limitFormIds) => {
     
     var query  = `SELECT ` + 
           `f.form_id, ` + 
@@ -219,6 +309,7 @@ const generateListQuery = (postData , excludeFormIds) => {
           `f.delete_status = 0 ` + 
         `AND  ` + 
           `f.status = 'active' `;
+          
         
           if(hasHomeTypeId(postData)){
               query = query + ` AND ft.form_type_id = ` + hasHomeTypeId(postData);
@@ -231,12 +322,21 @@ const generateListQuery = (postData , excludeFormIds) => {
           if(excludeFormIds.length > 0){
             query = query + ` AND f.form_id NOT IN (` + excludeFormIds.toString() + `)`;
           }
+          if(hasLocationId(postData)){
+            query = query + ` AND f.form_id IN (` + limitFormIds.toString() + `)`;
+          }
+          query = query + ` ORDER BY f.form_name`;
 
     return query;          
 }
 
 const generateCountQuery = (form_id) => {
     var query = `SELECT count(form_question_id) as cnt  FROM form_questions WHERE delete_status = 0 AND status = 'active' AND form_id = `  + form_id;
+    return query;
+}
+
+const generateUserTypeId = () => {
+    var query  = `SELECT user_type_id FROM local_user_types WHERE project_id = 2 AND user_type = ?`;
     return query;
 }
 
@@ -280,7 +380,7 @@ const getData = async(lists) => {
 const getFormAssignmentsData = async(lists) => {
     var tmp = [];
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
+        var element = lists.item(i);        
         
         if(element.assignment_type === 'custom_field'){                        
             
@@ -325,6 +425,15 @@ const getCustomFieldData = (lists) => {
     }
     return tmp;
 }     
+
+const getUserTypeId = (lists) => {
+    var userTypeId = '';
+    for(var i = 0; i < lists.length; i++){
+        var element = lists.item(i);
+        userTypeId = element.user_type_id;
+    }
+    return userTypeId;
+}
 
 const hasLocationId = (postData) => {
     var check = postData.location_id && postData.location_id != undefined ? true : false;

@@ -24,6 +24,7 @@ import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 
 export default function FormsScreen(props) {
+
   const {navigationType} = props;
   const navigation = props.navigation;
   const [originalFormLists, setOriginalFormLists] = useState([]);
@@ -142,6 +143,7 @@ export default function FormsScreen(props) {
       }
     }
 
+    console.log("post param => ", param)
     GetRequestFormListsDAO.find(param)
       .then(res => {
         setFormLists(res.forms);

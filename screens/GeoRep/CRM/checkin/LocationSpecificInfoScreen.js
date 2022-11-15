@@ -49,6 +49,7 @@ import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
 
 const LocationSpecificInfoScreen = props => {
+
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
@@ -84,9 +85,7 @@ const LocationSpecificInfoScreen = props => {
     isMout = true;
     refreshHeader();
     initData();
-    if (location_id !== undefined) {
-      //openLocationInfo(location_id);
-    }
+    
     return () => {
       isMout = false;
     };
@@ -118,7 +117,11 @@ const LocationSpecificInfoScreen = props => {
         locationInfoRef.current.updateDispositionData(location);
       }
       setLocationIfo(location);
-    }    
+    }else{
+      if (location_id !== undefined) {
+        openLocationInfo(location_id);
+      }
+    }
   }
 
   const initData = async () => {

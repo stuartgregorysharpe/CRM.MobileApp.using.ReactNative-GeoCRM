@@ -54,11 +54,18 @@ const fetchPrimaryDeviceFromDB = async(location_id) => {
     return res.rows ? res.rows : [];
 }
 
-const fetchFieldValueFromDB = async(custom_master_field_id, location_id) => {
+const fetchFieldValueFromCustomDB = async(custom_master_field_id, location_id) => {
     const query = generateFieldValueQuery();    
     const res = await ExecuteQuery(query, [custom_master_field_id, location_id]);
     return res.rows ? res.rows : [];    
 }
+
+const fetchFieldValueFromCoreDB = async(location_id) => {
+    const query = generateFieldValueCoreQuery();
+    const res = await ExecuteQuery(query, [location_id]);
+    return res.rows ? res.rows : [];    
+}
+
 
 const fetchOptionsFromDB = async(form_question_id) => {
     const query = generateOptionQuery();        
@@ -140,6 +147,11 @@ const generateFieldValueQuery = () => {
     return query;
 }
 
+const generateFieldValueCoreQuery = () => {
+    var query  =  `SELECT * FROM locations_core_master_data WHERE location_id = ? LIMIT 1`;
+    return query;
+}
+
 const generateOptionQuery = () => {
     var query = `SELECT  preset_data FROM form_question_presets WHERE form_question_id = ? AND delete_status = 0`;
     return query;
@@ -177,11 +189,13 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
             if( question_tag != undefined && question_tag != ""){        
                 if(question_tag === "msisdn"){
                     var primaryDeivce = await fetchPrimaryDeviceFromDB(postData.location_id);
-                    fieldData = await getPrimaryDeviceData( primaryDeivce );
-                    console.log("question tag => ", fieldData)
+                    fieldData = await getPrimaryDeviceData( primaryDeivce );                    
                 }else{
-                    var fieldDataLists = await fetchFieldDetailsFromDB(client_id, business_unit_id, question_tag);                
+                    console.log(question_tag , client_id , business_unit_id);
+                    var fieldDataLists = await fetchFieldDetailsFromDB(client_id, business_unit_id, question_tag);                    
                     fieldData = await getFieldData(fieldDataLists , postData);
+                    console.log("field value => " , fieldData);
+
                 }                
             }
         }
@@ -229,7 +243,7 @@ const getFormQuestions = async(lists , client_id, business_unit_id , postData ) 
             guide_info : guideInfoData,
             rule_compulsory: element.rule_compulsory.toString(),
             trigger: trigger,         
-            value: fieldData,   
+            value: fieldData,
         };
 
         const questionType =  element.question_type;
@@ -305,17 +319,19 @@ const getFieldData = async(lists , postData)  => {
     var value = '';
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);
-        if(element.core_field_name != null && element.core_field_name != ""){
-            if( element.field_type == 'multiple' || element.field_type == 'multi_select'){
+        console.log("element => ", element)
+        if(element.core_field_name != null && element.core_field_name != ""){ 
+            var fieldValueCoreLists = await fetchFieldValueFromCoreDB(postData.location_id);
+            value = getFieldValueCore(fieldValueCoreLists , element.field_type, element.core_field_name);            
+        }else if(element.custom_master_field_id != null && element.custom_master_field_id != ""){            
+            var fieldValueLists = await fetchFieldValueFromCustomDB(element.custom_master_field_id , postData.location_id);
+            value = getFieldValue(fieldValueLists);
+        }else{
+            if( element.field_type == 'multiple' || element.field_type == 'multi_select' || element.field_type == 'dropdown'){
                 value = element.core_field_name.split(",");
             }else if(element.field_type ==  'text' || element.field_type == 'numbers') {
                 value = element.core_field_name;
             }
-        }
-
-        if(element.custom_master_field_id != null && element.custom_master_field_id != ""){            
-            var fieldValueLists = await fetchFieldValueFromDB(element.custom_master_field_id , postData.location_id);
-            value = getFieldValue(fieldValueLists);
         }
     }    
     return value;
@@ -324,12 +340,35 @@ const getFieldData = async(lists , postData)  => {
 const getFieldValue = (lists) => {
     var value = '';
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
+        var element = lists.item(i);        
         if(element.field_type == "multiple" || element.field_type == "multi_select" || element.field_type == "dropdown"){
             value =  element.field_data.split(",");
         }
         if(element.field_type == "text" || element.field_type == "numbers"){
             value =  element.field_data;
+        }
+    }
+    return value;
+}
+
+const getFieldValueCore = (lists , fieldType, keyValue) => {
+
+    /*if( element.field_type == 'multiple' || element.field_type == 'multi_select' || element.field_type == 'dropdown'){
+        value = element.core_field_name.split(",");
+    }else if(element.field_type ==  'text' || element.field_type == 'numbers') {
+        value = element.core_field_name;
+    }*/
+
+    var value = '';
+    for(var i = 0; i < lists.length; i++){
+        var element = lists.item(i);
+        console.log("DDD =>" , element)
+        console.log("DDD =>" , element[keyValue])
+        if(fieldType == "multiple" || fieldType == "multi_select" || fieldType == "dropdown"){
+            value =  element[keyValue].split(",");
+        }
+        if(fieldType == "text" || fieldType == "numbers"){
+            value =  element[keyValue];
         }
     }
     return value;
