@@ -581,7 +581,8 @@ const getProductsData = lists => {
 
     productRes.push({
       product_id: element.product_id,
-      lable: element.product_name,
+      label: element.product_name,
+      product_name: element.product_name,
       product_type: element.product_type,
       brand: element.brand,
       barcode: element.barcode,
