@@ -446,7 +446,7 @@ const getFormQuestions = async (
         });
       }
     } else if (questionType == 'pos_capture') {
-      const pleacementAreas = {};
+      /*const pleacementAreas = {};
       const touchpoints = await fetchTouchpointsFromDB(
         business_unit_id,
         client_id,
@@ -465,15 +465,12 @@ const getFormQuestions = async (
         business_unit_id,
         client_id,
       );
-      console.log('touchpoints', touchpoints);
-      console.log('pleacementAreas', pleacementAreas);
-      console.log('productsResult', productsResults);
       tmp.push({
         ...bodyRes,
         touchpoints: touchpoints,
         placement_areas: pleacementAreas,
         products: productsResult,
-      });
+      });*/
     } else if (
       questionType == 'sku_select' ||
       questionType == 'sku_count' ||
