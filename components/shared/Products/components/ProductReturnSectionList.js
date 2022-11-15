@@ -10,6 +10,8 @@ const ProductReturnSectionList = props => {
   const height = Dimensions.get('screen').height;
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
+  console.log('selectedLists', selectedLists);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -44,6 +46,7 @@ const ProductReturnSectionList = props => {
         return false;
       });
 
+      console.log('selectedLists', tmp);
       if (tmp === undefined) {
         return '';
       } else {
