@@ -6,14 +6,17 @@ import DeviceView from './stock_types/DeviceView';
 import ConsumableView from './stock_types/ConsumableView';
 import SimView from './stock_types/SimView';
 import {Constants, Strings} from '../../../../../constants';
-import { validateNumber } from '../../../../../helpers/validateHelper';
-import { useDispatch } from 'react-redux';
-import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import {validateNumber} from '../../../../../helpers/validateHelper';
+import {useDispatch} from 'react-redux';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../../../actions/notification.action';
+import {Notification} from '../../../../../components/modal/Notification';
 
 var vodacom = [];
 
 export default function AddStockView(props) {
-
   const {deviceTypeLists, stockTypes} = props;
 
   const [deviceType, setDeviceType] = useState('');
@@ -30,7 +33,7 @@ export default function AddStockView(props) {
   var details = '';
   var quantity = '';
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (codeLists.length > 0) {
@@ -96,123 +99,137 @@ export default function AddStockView(props) {
     return '';
   };
 
-
   const isValidate = () => {
     var isAvailable = true;
-    if (deviceType == Constants.stockType.DEVICE) { 
-      if(imei == ""){
-        isAvailable = false;
-        if(!isAvailable){
-          const _errors = {...errors};
-          _errors['imei'] = true;
-          setErrors(_errors);		
-        }				 
-      }
-    }else if (deviceType == Constants.stockType.CONSUMABLE) {
-		console.log("=====", quantity)
-        isAvailable =  validateNumber(quantity);
-        if(!isAvailable){
-          const _errors = {...errors};
-          _errors['quantity'] = true;
-          setErrors(_errors);		
-        }
-      }else if (deviceType == Constants.stockType.SIM) {    
-        var simLists = getSimLists();
-        if(simLists.length == 0){
-          isAvailable = false;		
-        }		
-      }
-      return isAvailable;
-  }
 
+    if (deviceType == '') {
+      setErrors({stockType: true});
+      return false;
+    }
+    if (deviceType == Constants.stockType.DEVICE) {
+      const _errors = {...errors};
+      if (imei == '') {
+        isAvailable = false;
+        _errors['imei'] = true;
+      }
+      if (device == '') {
+        isAvailable = false;
+        _errors['device'] = true;
+      }
+      setErrors(_errors);
+    } else if (deviceType == Constants.stockType.CONSUMABLE) {
+      isAvailable = validateNumber(quantity);
+      const _errors = {...errors};
+      if (!isAvailable) {
+        _errors['quantity'] = true;
+      }
+      setErrors(_errors);
+    } else if (deviceType == Constants.stockType.SIM) {
+      var simLists = getSimLists();
+      if (simLists.length == 0) {
+        isAvailable = false;
+      }
+    }
+    if (!enableAddStock) return false;
+    return isAvailable;
+  };
 
   const onSubmit = () => {
-
-	if(isValidate()){
-
-		var data = {
-			stock_type: deviceType,
-			device: device,
-			details: details,
-			quantity: quantity,
-		  };
-		  console.log('D1', data);
-		  if (deviceType == Constants.stockType.DEVICE) {
-			data = {
-			  stock_type: deviceType,
-			  product_id: productId,
-			  description: device,
-			  details: details,
-			  device_serial: imei,
-			};
-			console.log('D2', data);
-		  } else if (deviceType == Constants.stockType.CONSUMABLE) {
-			data = {
-			  stock_type: deviceType,
-			  product_id: productId,
-			  description: device,
-			  details: details,
-			  quantity: quantity,
-			};
-		  } else if (deviceType == Constants.stockType.SIM) {
-			var simLists = [];
-			deviceLists.forEach(item => {
-			  var iccids = [];
-			  var tmp = vodacom.filter(element => element.type == item.label);
-			  tmp.forEach(element => {
-				iccids.push(element.code);
-			  });
-			  if (iccids.length > 0) {
-				simLists.push({
-				  network: item.label,
-				  product_id: item.value,
-				  iccids: iccids,
-				});
-			  }
-			});
-			data = {
-			  stock_type: deviceType,
-			  sims: simLists,
-			};
-		  }
-		  props.callAddStock(deviceType, data);
-
-	}else{
-		
-		dispatch(showNotification({type:Strings.Success, message: getModalMessage(), buttonText: 'Ok' , buttonAction:() => {
-			dispatch(clearNotification());
-		} }));
-	}    
+    if (isValidate()) {
+      setErrors({});
+      var data = {
+        stock_type: deviceType,
+        device: device,
+        details: details,
+        quantity: quantity,
+      };
+      console.log('D1', data);
+      if (deviceType == Constants.stockType.DEVICE) {
+        data = {
+          stock_type: deviceType,
+          product_id: productId,
+          description: device,
+          details: details,
+          device_serial: imei,
+        };
+        console.log('D2', data);
+      } else if (deviceType == Constants.stockType.CONSUMABLE) {
+        data = {
+          stock_type: deviceType,
+          product_id: productId,
+          description: device,
+          details: details,
+          quantity: quantity,
+        };
+      } else if (deviceType == Constants.stockType.SIM) {
+        var simLists = [];
+        deviceLists.forEach(item => {
+          var iccids = [];
+          var tmp = vodacom.filter(element => element.type == item.label);
+          tmp.forEach(element => {
+            iccids.push(element.code);
+          });
+          if (iccids.length > 0) {
+            simLists.push({
+              network: item.label,
+              product_id: item.value,
+              iccids: iccids,
+            });
+          }
+        });
+        data = {
+          stock_type: deviceType,
+          sims: simLists,
+        };
+      }
+      props.callAddStock(deviceType, data);
+    } else {
+      dispatch(
+        showNotification({
+          type: Strings.Success,
+          message: getModalMessage(),
+          buttonText: 'Ok',
+          buttonAction: () => {
+            dispatch(clearNotification());
+          },
+        }),
+      );
+    }
   };
 
   const getModalMessage = () => {
-    if(deviceType == Constants.stockType.DEVICE || deviceType == Constants.stockType.CONSUMABLE){
-      return "Please complete compulsory fields.";
-    }else{
-      return "No sims scanned/selected.";
-    }    
-  }
+    if (deviceType == '') {
+      return 'Please complete compulsory fields.';
+    }
+    if (
+      deviceType == Constants.stockType.DEVICE ||
+      deviceType == Constants.stockType.CONSUMABLE
+    ) {
+      return 'Please complete compulsory fields.';
+    } else {
+      return 'No sims scanned/selected.';
+    }
+  };
 
   const getSimLists = () => {
-	var simLists = [];		
-	deviceLists.forEach(item => {
-	  var iccids = [];
-	  var tmp = vodacom.filter(element => element.type == item.label);
-	  tmp.forEach(element => {
-		iccids.push(element.code);
-	  });
-	  if (iccids.length > 0) {
-		simLists.push({
-		  network: item.label,
-		  product_id: item.value,
-		  iccids: iccids,
-		});
-	  }
-	});
-	return simLists;
-  }
+    var simLists = [];
+    deviceLists.forEach(item => {
+      var iccids = [];
+      var tmp = vodacom.filter(element => element.type == item.label);
+      tmp.forEach(element => {
+        iccids.push(element.code);
+      });
+      if (iccids.length > 0) {
+        simLists.push({
+          network: item.label,
+          product_id: item.value,
+          iccids: iccids,
+        });
+      }
+    });
+    return simLists;
+  };
 
-  
   return (
     <View style={styles.container}>
       <CSingleSelectInput
@@ -222,10 +239,11 @@ export default function AddStockView(props) {
         checkedValue={deviceType}
         items={deviceTypeLists}
         mode="single"
-        hasError={false}
+        hasError={errors['stockType']}
         disabled={false}
         onSelectItem={item => {
           setDeviceType(item.value);
+          setErrors({...errors, stockType: false});
           var tmp = [];
           stockTypes[item.value].forEach(element => {
             tmp.push({value: element.product_id, label: element.label});
@@ -241,22 +259,25 @@ export default function AddStockView(props) {
         checkedValue={productId}
         mode="single"
         items={deviceLists}
-        hasError={false}
+        hasError={errors['device']}
         disabled={false}
         onSelectItem={item => {
-          console.log('item', item);
           setDevice(item.label);
+          setErrors({...errors, device: false});
           setProductId(item.value);
         }}
         containerStyle={{marginTop: 15}}
       />
 
       {deviceType === Constants.stockType.DEVICE && (
-        <DeviceView onDataChanged={onDataChangedDevice} errors={errors}/>
+        <DeviceView onDataChanged={onDataChangedDevice} errors={errors} />
       )}
 
       {deviceType === Constants.stockType.CONSUMABLE && (
-        <ConsumableView onDataChanged={onDataChangedConsumable} errors={errors}/>
+        <ConsumableView
+          onDataChanged={onDataChangedConsumable}
+          errors={errors}
+        />
       )}
 
       {deviceType === Constants.stockType.SIM && (
@@ -273,13 +294,13 @@ export default function AddStockView(props) {
       )}
 
       <SubmitButton
-        enabled={enableAddStock}
         onSubmit={() => {
           onSubmit();
         }}
-        isLoading={props.isLoading?props.isLoading: false}
+        isLoading={props.isLoading ? props.isLoading : false}
         title={Strings.Stock.Add_Stock}
         style={{marginTop: 20}}></SubmitButton>
+      <Notification />
     </View>
   );
 }
