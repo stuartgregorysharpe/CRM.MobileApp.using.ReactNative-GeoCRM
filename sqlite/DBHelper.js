@@ -47,7 +47,7 @@ export const createTable = async (db , tables ) => {
 const handleTable = async (table) => {
 
   var tableName = table.table_name;
-  var query0 = `PRAGMA table_info(${tableName});`;        
+  var query0 = `PRAGMA table_info(${tableName});`;
   var res = await ExecuteQuery(query0,[]);
 
   if(res.rows.length != table.fields.length){ // table was updated.
@@ -161,28 +161,44 @@ export const truncateTable = async(tableName) => {
 }
 
 export const deleteRecords = async (tableName , records) => {
-    var tmp = await Promise.all(
+
+    var primaryQuery = `SELECT l.name FROM pragma_table_info("${tableName}") as l WHERE l.pk = 1;`;
+    var primaryKey = '';
+    try{
+      var res = await ExecuteQuery(primaryQuery,[]);
+      var lists = res.rows ? res.rows : [];
+      for(var i = 0; i < lists.length; i++){
+        var element = lists.item(i);      
+        primaryKey = element.name;
+        console.log("primary key ====> ", primaryKey)
+      }
+    }catch(e){
+      console.log("error", e);
+    }    
+
+    var tmp = await Promise.all(            
       await records.map(async (element, index) => {                        
         var query = '';
-        for(let key of Object.keys(element)){                 
-          if(key.endsWith("_id")){
-            if(query == '' && element[key] != null && element[key] != ""){
-              query = key + ' = ' + element[key];
-            }else if(element[key] != null && element[key] != ""){
-              query = query + " AND " + key + ' = ' + element[key];
-            }
-          }          
+        // for(let key of Object.keys(element)){                 
+        //   if(key.endsWith("_id")){
+        //     if(query == '' && element[key] != null && element[key] != ""){
+        //       query = key + ' = ' + element[key];
+        //     }else if(element[key] != null && element[key] != ""){
+        //       query = query + " AND " + key + ' = ' + element[key];
+        //     }
+        //   }          
+        // }        
+        if(primaryKey != ''){          
+          var deleteQuery = `DELETE FROM ${tableName} WHERE ${primaryKey} = ${element[primaryKey]}`;
+          try{            
+            var res = await ExecuteQuery(deleteQuery,[]);              
+          }catch(e){
+            console.log("error ", e)
+          } 
         }
-        if(query != ''){
-			var deleteQuery = `DELETE FROM ${tableName} WHERE ` + query;			
-			try{
-			  var res = await ExecuteQuery(deleteQuery,[]);              
-			}catch(e){
-			  console.log("error", e)
-			} 
-		}        
         return ''; 
       })
+
     );    
     return tmp;    
 }

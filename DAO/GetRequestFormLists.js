@@ -2,6 +2,7 @@ import { baseURL, Strings } from "../constants";
 import UrlResource from "./UrlResource";
 import GetRequest from "./GetRequest";
 import { ExecuteQuery } from "../sqlite/DBHelper";
+import { getTokenData } from "../constants/Storage";
 
 export function find(postData){
   
@@ -14,11 +15,24 @@ export function find(postData){
             }else if(res.status == Strings.Success && !res.isConnected){
                 
                 const client_id = res.data.client_id;
-                const business_unit_id = res.data.business_unit_id;                
+                const business_unit_id = res.data.business_unit_id;
+                const user_id = res.data.user_id;
+                const user_type = await getTokenData("user_type");
+                const role = await getTokenData("role");                
+                let userTypeList = await fetchUserTypeIdFromDB(user_type);                
+                var userTypeId = getUserTypeId(userTypeList);
+                
+                //var xxx = `SELECT form_name FROM forms WHERE form_id = 13`;                
+                // var xxx = `SELECT * FROM form_assignments WHERE delete_status = 0 AND form_id = 13`;                
+                // const ress = await ExecuteQuery(xxx, []);
+                // var bb =  ress.rows ? ress.rows : [];  
+                // console.log(" ============="  , JSON.stringify(bb))                
+
+
                 if(client_id && business_unit_id){
 
                     let assignmentLists = await fetchAssignmentDataFromDB(client_id, business_unit_id);                    
-                    let assignmentsData = await getFormAssignmentsData(assignmentLists);                              
+                    let assignmentsData = await getFormAssignmentsData(assignmentLists);
                     var locationCoreMasterData = {};
                     var customFieldsData = {};
                     
@@ -34,14 +48,14 @@ export function find(postData){
 
                     }                
 
-                    let excludeIds = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData);
-                    let lists = await fetchDataFromDB(client_id, business_unit_id , postData, excludeIds );
+                    let data = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , user_id);
+                    let lists = await fetchDataFromDB(client_id, business_unit_id , postData, data.excludeFormIds, data.limitFormIds );
                     let response = await getData(lists);                    
                     resolve(response);
 
                 }else{
                     reject();
-                }
+                }  
 
             }else{
                 reject(res.status);
@@ -54,74 +68,97 @@ export function find(postData){
     });  
 }
 
-const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, customFieldsData ) => {
+const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , userId ) => {
 
     var excludeFormIds = [];
+    var limitFormIds = [];      
+    
+    //console.log("assignmentsData :" , JSON.stringify(assignmentsData))
+    //console.log("locationCoreMasterData",locationCoreMasterData)
+
     assignmentsData.forEach((element, index) => {                                                
         for(let key of Object.keys(element)){
-            var formId = key;                            
-            for(let subKey of Object.keys(element[key])){
-                var subElement = element[key][subKey];
 
-                if(subKey == 'location_id'){
+            var formId = key;           
+            limitFormIds.push(formId);
+
+            for(let type of Object.keys(element[key])){
+                
+                var subElement = element[key][type];                                
+                
+                if(type == 'location_id'){
                     if(hasLocationId(postData) && !subElement.includes(hasLocationId(postData))){                   
                         excludeFormIds.push(formId);
                     }
                 }
 
-                if(subKey == 'region'){
+                if(type == 'region'){
                     if(locationCoreMasterData['region'] && !subElement.includes(locationCoreMasterData['region'])){                        
                         excludeFormIds.push(formId);
                     }
                 }
-
-                if(subKey == 'location_type'){
+                
+                if(type == 'location_type'){
                     if(hasLocationType(postData) && !subElement.includes(hasLocationType(postData))){                        
                         excludeFormIds.push(formId);
+                        // Need to check this part with @Clinton
                     }
-                    
+                
                     if(locationCoreMasterData['location_type'] ){
-                        const locationTypes = subElement.split(",");
+                        const locationTypes = locationCoreMasterData['location_type'].split(",");
                         locationTypes.forEach((element) => {
-                            if(!element.includes(locationCoreMasterData['location_type'])){                                
+                            if(!subElement.includes(element)){  
                                 excludeFormIds.push(formId);
                             }                            
                         });                        
                     }
                 }
 
-                if(subKey == 'group'){
+                if(type == 'group'){
                     if(hasGroup(postData) && !subElement.includes(hasGroup(postData))){                    
                         excludeFormIds.push(formId);
                     }
 
-                    if(locationCoreMasterData['group'] && !subElement.includes(locationCoreMasterData['group'])){
-                        const groups = subElement.split(",");
+                    if(locationCoreMasterData['group']){
+                        const groups = locationCoreMasterData['group'].split(",");
                         groups.forEach((element) => {
-                            if(!element.includes(locationCoreMasterData['group'])){                                
+                            if(!subElement.includes(element)){  
                                 excludeFormIds.push(formId);
                             }   
                         });                        
                     }
                 }
 
-                if(subKey == 'group_split'){
+                if(type == 'group_split'){
                     	                        
                     if(hasGroupSplit(postData) && !subElement.includes(hasGroupSplit(postData))){                        
                         excludeFormIds.push(formId);
                     }
 
-                    if(locationCoreMasterData['group_split'] && !subElement.includes(locationCoreMasterData['group_split'])){
-                        const groupSplits = subElement.split(",");
+                    if(locationCoreMasterData['group_split']){
+                        const groupSplits = locationCoreMasterData['group_split'].split(",");
                         groupSplits.forEach((element) => {
-                            if(!element.includes(locationCoreMasterData['group_split'])){                                
+                            if(!subElement.includes(element)){                                
                                 excludeFormIds.push(formId);
                             }   
                         });
                     }
                 }
                 
-                if(subKey == 'custom_field' && hasLocationId(postData)){
+                // -------------  Added New Part  --------------- //
+                if(type == 'location_status'){
+                    if(locationCoreMasterData['location_status'] != '' && locationCoreMasterData['location_status'] != undefined){
+                        const locationStatusSplits = locationCoreMasterData['location_status'].split(",");
+                        locationStatusSplits.forEach((element) => {
+                            
+                            if(!subElement.includes(element)){
+                                excludeFormIds.push(formId);
+                            }   
+                        });                       
+                    }
+                }
+
+                if(type == 'custom_field' && hasLocationId(postData)){
                     for(let customFieldKey of Object.keys(subElement)){                        
                         if(!subElement[customFieldKey].includes(customFieldsData[customFieldKey])){                            
                             excludeFormIds.push(formId);
@@ -129,15 +166,73 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                     }
                 }
 
-                if(subKey == 'checkin_type'){
+                if(type == 'checkin_type'){
                     if(hasCheckinTypeId(postData) && !subElement.includes(hasCheckinTypeId(postData))){
                         excludeFormIds.push(formId);
                     }
                 }
 
-                if(subKey == 'checkin_reason'){
+                if(type == 'checkin_reason'){
                     if(hasCheckinReasonId(postData) && !subElement.includes(hasCheckinReasonId(postData))){
                         excludeFormIds.push(formId);
+                    }
+                }
+
+                if(type == 'role'){
+                    if(!subElement.includes(role)){
+                        excludeFormIds.push(formId);
+                    }
+                }
+
+                if( type == 'user_type'){                    
+                    if(!subElement.includes(userTypeId.toString())){                        
+                        excludeFormIds.push(formId);
+                    }
+                }
+
+                if( type == 'user'){                    
+                    if(!subElement.includes(userId)){
+                        excludeFormIds.push(formId);                        
+                    }
+                }
+
+                if( type == 'valid_start_date') {
+                    
+                    const today = new Date().getTime();                          
+                    if(subElement[0] && subElement[0] != undefined){
+                        if(today < new Date(subElement[0]).getTime()) {
+                            excludeFormIds.push(formId);
+                        }
+                    }
+                    
+                }
+
+                if( type == 'valid_end_date') {
+                    const today = new Date()                    
+                    if(subElement[0] && subElement[0] != undefined){
+                        if(today > new Date(subElement[0]).getTime()) {
+                            excludeFormIds.push(formId);
+                        }
+                    }
+                    
+                }
+
+                if(type == 'available_specific_days') {
+                    var weekdays = [];
+                    weekdays[0] = "Sunday";
+                    weekdays[1] = "Monday";
+                    weekdays[2] = "Tuesday";
+                    weekdays[3] = "Wednesday";
+                    weekdays[4] = "Thursday";
+                    weekdays[5] = "Friday";
+                    weekdays[6] = "Saturday";
+                    
+                    //Get today's day name (E.g. "Friday")
+                    const today = new Date()
+                    todayName= weekdays[ today.getDay() ]
+                  
+                    if(!subElement.includes(todayName)) {
+                      excludeFormIds.push(formId);
                     }
                 }
                                 
@@ -145,7 +240,8 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
         }
     });
         
-    return excludeFormIds;
+    console.log("excludeFormIds",excludeFormIds)
+    return {excludeFormIds: excludeFormIds, limitFormIds :limitFormIds};
 }
 
 
@@ -160,15 +256,22 @@ const fetchData = async(query) => {
     return res.rows ? res.rows : [];    
 }
 
-const fetchDataFromDB = async(client_id, business_unit_id , postData, excludeFormIds ) => {
-    const query = generateListQuery(postData, excludeFormIds)
+const fetchDataFromDB = async(client_id, business_unit_id , postData, excludeFormIds , limitFormIds ) => {    
+    const query = generateListQuery(postData, excludeFormIds , limitFormIds)    
     const res = await ExecuteQuery(query, [client_id, business_unit_id]);
+    return res.rows ? res.rows : [];    
+}
+
+const fetchUserTypeIdFromDB = async( user_type ) => {
+    const query = generateUserTypeId()
+    const res = await ExecuteQuery(query, [user_type]);
+    console.log("res",res)
     return res.rows ? res.rows : [];    
 }
 
 const generateAssignemtnQuery = () => {
     
-    var query = `SELECT ` + 
+    var query = `SELECT fs.form_assignment_id, ` + 
                         `fs.form_id, ` + 
                         `fs.assignment_type, ` + 
                         `fs.custom_field_id, ` + 
@@ -182,7 +285,7 @@ const generateAssignemtnQuery = () => {
                       `AND ` + 
                         `f.business_unit_id = ? ` + 
                       `AND ` + 
-                        `f.delete_status = 0 `;                        
+                        `f.delete_status = 0 AND fs.delete_status = 0`;                        
     return query;
 }
 
@@ -196,7 +299,7 @@ const generateCustomFieldDataQuery = (location_id) => {
     return query;
 }
 
-const generateListQuery = (postData , excludeFormIds) => {
+const generateListQuery = (postData , excludeFormIds , limitFormIds) => {
     
     var query  = `SELECT ` + 
           `f.form_id, ` + 
@@ -219,6 +322,7 @@ const generateListQuery = (postData , excludeFormIds) => {
           `f.delete_status = 0 ` + 
         `AND  ` + 
           `f.status = 'active' `;
+          
         
           if(hasHomeTypeId(postData)){
               query = query + ` AND ft.form_type_id = ` + hasHomeTypeId(postData);
@@ -231,12 +335,21 @@ const generateListQuery = (postData , excludeFormIds) => {
           if(excludeFormIds.length > 0){
             query = query + ` AND f.form_id NOT IN (` + excludeFormIds.toString() + `)`;
           }
+          if(hasLocationId(postData)){
+            query = query + ` AND f.form_id IN (` + limitFormIds.toString() + `)`;
+          }
+          query = query + ` ORDER BY f.form_name`;
 
     return query;          
 }
 
 const generateCountQuery = (form_id) => {
     var query = `SELECT count(form_question_id) as cnt  FROM form_questions WHERE delete_status = 0 AND status = 'active' AND form_id = `  + form_id;
+    return query;
+}
+
+const generateUserTypeId = () => {
+    var query  = `SELECT user_type_id FROM local_user_types WHERE project_id = 2 AND user_type = ?`;
     return query;
 }
 
@@ -268,7 +381,7 @@ const getData = async(lists) => {
                 form_type_id: element.form_type_id,
                 guide_info: guideInfoData,
                 question_count: countRes && countRes.length > 0 ? countRes.item(0).cnt : 0,
-                compulsory: element.compulsory,
+                compulsory: element.compulsory.toString(),
                 location_required: element.location_required
             }
         );            
@@ -279,39 +392,96 @@ const getData = async(lists) => {
 
 const getFormAssignmentsData = async(lists) => {
     var tmp = [];
+
+    let values = {};
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
-        
+        var element = lists.item(i);                        
+
         if(element.assignment_type === 'custom_field'){                        
             
-            const objKey = `[${element.form_id}][${element.assignment_type}][${element.custom_field_id}]`; 
-            
-            var singleObj = {
-                [element.form_id] : {
+            // const objKey = `[${element.form_id}][${element.assignment_type}][${element.custom_field_id}]`; 
+
+            if (values[element.form_id]) {                
+                if (values[element.form_id][element.assignment_type]) {
+                    if(values[element.form_id][element.assignment_type][element.custom_field_id]){
+                        values[element.form_id][element.assignment_type][element.custom_field_id] = [...values[element.form_id][element.assignment_type][element.custom_field_id], element.assignment_value];
+                    }else{
+                        values[element.form_id][element.assignment_type][element.custom_field_id] = [element.assignment_value];
+                    }                    
+                } else {
+                    values[element.form_id][element.assignment_type] = {
+                        [element.custom_field_id] : [element.assignment_value]
+                    };
+                }
+            } else {
+                values[element.form_id] = {
                     [element.assignment_type] : {
-                        [element.custom_field_id] : element.assignment_value
+                        [element.custom_field_id] : [element.assignment_value]
                     }
-                }
-            };                        
-            tmp.push(singleObj);
+                };                 
+            }
+            
+            // var singleObj = {
+            //     [element.form_id] : {
+            //         [element.assignment_type] : {
+            //             [element.custom_field_id] : element.assignment_value
+            //         }
+            //     }
+            // };                        
+            // tmp.push(singleObj);
         }else{
-            const objKey = `[${element.form_id}][${element.assignment_type}]`; 
-            var singleObj = {
-                [element.form_id] : {
-                    [element.assignment_type] : element.assignment_value
+            // const objKey = `[${element.form_id}][${element.assignment_type}]`; 
+            
+            if (values[element.form_id]) {
+                if (values[element.form_id][element.assignment_type]) {
+                    values[element.form_id][element.assignment_type] = [...values[element.form_id][element.assignment_type], element.assignment_value];
+                } else {
+                    values[element.form_id][element.assignment_type] = [element.assignment_value];
                 }
-            };                       
-            tmp.push(singleObj);       
-        }     
+            } else {
+                values[element.form_id] = {
+                    [element.assignment_type] : [element.assignment_value]
+                };   
+                // var singleObj = {
+                //     [element.form_id] : {
+                //         [element.assignment_type] : element.assignment_value
+                //     }
+                // };
+            }
+            
+            // {"13" : {
+            //     "user" : ["107","101"]
+            //     "data" : ["107","101"]
+            // }}
+
+            /*
+            {form_id:13, ass_type: "user", ass_value:"107"}
+            {form_id:13, ass_type: "user", ass_value:"101"}
+            {form_id:1, ass_type: "data", ass_value:"101"}
+             */
+
+            // tmp.push(singleObj);       
+        } 
     }
-    return tmp;
+    /*
+    {
+        "13": {"user": [1, 2]},
+        "14";
+    }
+    */
+   const res_array = Object.keys(values).map(key => {
+       return {
+           [key]: values[key]
+       };
+   });
+    return res_array;
 }
 
 const getLocationCoreMasterData = (lists) => {
     var tmp = {};
     for(var i = 0; i < lists.length; i++){
         var element = lists.item(i);        
-        tmp = {region: element.region, location_type: element.location_type , group: element.group, group_split: element.group_split};
+        tmp = element;// {region: element.region, location_type: element.location_type , group: element.group, group_split: element.group_split};
         break;
     }
     return tmp;
@@ -325,6 +495,16 @@ const getCustomFieldData = (lists) => {
     }
     return tmp;
 }     
+
+const getUserTypeId = (lists) => {
+    var userTypeId = '';
+    for(var i = 0; i < lists.length; i++){
+        console.log("xxxxxx" ,element)
+        var element = lists.item(i);
+        userTypeId = element.user_type_id;
+    }
+    return userTypeId;
+}
 
 const hasLocationId = (postData) => {
     var check = postData.location_id && postData.location_id != undefined ? true : false;

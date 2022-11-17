@@ -17,7 +17,9 @@ import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 
 const SwopAtTraderContainer = props => {
+  
   const {locationId, item} = props;
+
   const [lists, setLists] = useState([]);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,16 +31,26 @@ const SwopAtTraderContainer = props => {
       location_id: locationId,
     };
 
-    getApiRequest('locations/location-devices', param)
-      .then(res => {
-        if (isMount) {
-          setLists(res.devices);
+
+    GetRequestLocationDevicesDAO.find(param).then((res) => {
+        if(isMount){                             
+            setLists(res.devices);
         }
-      })
-      .catch(e => {
-        console.log('location-devices api error:', e);
-        expireToken(dispatch, e);
-      });
+    }).catch((e) => {
+        console.log("location device api error: " , e);
+        expireToken(dispatch , e);
+    });
+    
+    // getApiRequest('locations/location-devices', param)
+    //   .then(res => {
+    //     if (isMount) {
+    //       setLists(res.devices);
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log('location-devices api error:', e);
+    //     expireToken(dispatch, e);
+    //   });
     return () => {
       isMount = false;
     };
@@ -57,6 +69,7 @@ const SwopAtTraderContainer = props => {
     postData.append('return_device[return_reason]', reason);
     postData.append('allocate_device[stock_item_id]', item.stock_item_id);
     postData.append('allocate_device[assigned_msisdn]', data?.msisdn);
+    postData.append('allocate_device[primary_device]', data?.deviceType === Constants.deviceTypeLabel.PRIMARY ? "1" : "0");
     photos.map((path, index) => {
       var fileFormats = getFileFormat(path);
       var key = `return_image[${index}]`;
@@ -75,8 +88,7 @@ const SwopAtTraderContainer = props => {
       currentLocation && currentLocation.longitude != null
         ? currentLocation.longitude
         : '0',
-    );
-
+    );    
     postApiRequestMultipart('stockmodule/swop-at-trader', postData)
       .then(res => {
         setIsLoading(false);

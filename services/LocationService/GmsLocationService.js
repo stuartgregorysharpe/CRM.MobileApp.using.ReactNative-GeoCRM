@@ -58,7 +58,7 @@ function getCurrentPosition(successCallback, failureCallback, options = {}) {
   let _options = {
     enableHighAccuracy: true,
     timeout: 15000,
-    maximumAge: 10000,
+    //maximumAge: 10000,
     ...options,
   };
   Geolocation.getCurrentPosition(successCallback, failureCallback, _options);

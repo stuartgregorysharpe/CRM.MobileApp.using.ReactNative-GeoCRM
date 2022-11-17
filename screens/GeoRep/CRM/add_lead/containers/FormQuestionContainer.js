@@ -57,7 +57,11 @@ export default function FormQuestionContainer(props) {
     }
     if (selectedLists != undefined) {
       if (questionTag === 'msisdn') {
-        return selectedLists.map(item => item.msisdn).join(', ');
+        var primaryDevice = selectedLists.find(element => element.primary_device === '1');
+        if(primaryDevice != undefined){
+          return primaryDevice.msisdn;
+        }
+        return '';        
       }
     }
     return value;
@@ -127,7 +131,7 @@ export default function FormQuestionContainer(props) {
       loadingBarRef.current.showModal();
       var newFormQuestions = await downloadFormQuestionImages(res);
       if(newFormQuestions != undefined){
-        console.log("new form questions " , JSON.stringify(newFormQuestions));
+        //console.log("new form questions " , JSON.stringify(newFormQuestions));
         setQuestions(newFormQuestions);
       }
       loadingBarRef.current.hideModal();

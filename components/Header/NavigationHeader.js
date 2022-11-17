@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {PRIMARY_COLOR, whiteLabel} from '../../constants/Colors';
+import { whiteLabel} from '../../constants/Colors';
 import Images from '../../constants/Images';
 import {style} from '../../constants/Styles';
 

@@ -66,7 +66,11 @@ export const getTokenData = async (type) => {
       returnData = data.user_scopes.geo_rep.business_unit_id;
     }else if(type == "user_id"){
       returnData = data.user_scopes.geo_rep.user_id;
-    }    
+    }else if( type == "user_type"){
+      returnData = data.user_scopes.geo_rep.user_type;
+    }else if( type == "role"){
+      returnData = data.user_scopes.geo_rep.role;
+    }
     return returnData;
     
   } catch (e) {

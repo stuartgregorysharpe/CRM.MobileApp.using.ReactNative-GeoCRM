@@ -11,7 +11,8 @@ import {
   CHANGE_LOCATION_ACTION,
   CHANGE_BOTTOM_TAB_ACTION,
   LOCATION_CONFIRM_MODAL_VISIBLE,
-  CHANGE_SYNC_START
+  CHANGE_SYNC_START,
+  LOCATION_CHECK_OUT_COMPULSORY
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -27,12 +28,18 @@ const initialState = {
   locationAction: null,
   bottomTabAction: null,
   locationConfirmModalVisible: false,
-  syncStart: true
+  syncStart: true,
+  locationCheckOutCompulsory: false
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state=initialState, action) => {
   switch(action.type) {
+    case LOCATION_CHECK_OUT_COMPULSORY: 
+      return {
+        ...state,
+        locationCheckOutCompulsory: action.payload
+      }
     case CHANGE_SYNC_START:
       return {
         ...state,

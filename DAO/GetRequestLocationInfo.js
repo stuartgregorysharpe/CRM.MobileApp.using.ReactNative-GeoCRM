@@ -59,10 +59,8 @@ const fetchContactDataFromDB = async location_id => {
 };
 
 const fetchMsisdnDataFromDB = async location_id => {
-  const query = generateMsisdnQuery();
-  console.log('fetchMsisdnDataFromDB', query);
-  const res = await ExecuteQuery(query, [location_id]);
-  console.log('fetchMsisdnDataFromDB: res', res);
+  const query = generateMsisdnQuery();  
+  const res = await ExecuteQuery(query, [location_id]);  
   var lists = res.rows ? res.rows : [];
   return lists;
 };
@@ -152,7 +150,7 @@ const getLocationData = async (lists, contactsLists, msisdn) => {
   var tmp = {};
   for (var i = 0; i < lists.length; i++) {
     var element = lists.item(i);
-    console.log('-------', element);
+    
     var coordinate = {
       latitude: element.latitude,
       longitude: element.longitude,

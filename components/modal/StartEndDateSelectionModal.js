@@ -9,9 +9,7 @@ import {
 } from 'react-native';
 import {Modal, Title} from 'react-native-paper';
 import Colors, {
-  BG_COLOR,
-  GRAY_COLOR,
-  PRIMARY_COLOR,
+  BG_COLOR,  
   whiteLabel,
 } from '../../constants/Colors';
 import {notifyMessage} from '../../constants/Helper';

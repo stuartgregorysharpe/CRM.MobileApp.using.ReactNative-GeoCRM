@@ -13,22 +13,27 @@ import GetRequestReturnListsDAO from './GetRequestReturnLists';
 import GetRequestStockFieldDataDAO from './GetRequestStockFieldData';
 import GetRequestStockUsersDAO from './GetRequestStockUsers';
 import GetRequestFormSubmissionsDAO from './GetRequestFormSubmissions';
+import GetRequestLocationDevicesDAO from './locations/GetRequestLocationDevices';
 import GetRequestContentlibraryDAO from './GetRequestContentLibrary';
+
 export {
-  LocationMapDAO,
-  LocationSearchDAO,
-  LocationPinKeyDAO,
-  LocationCheckinTypeDAO,
-  PostRequestDAO,
-  GetRequestFilterDAO,
-  GetRequestLeadfieldDAO,
-  GetRequestFormListsDAO,
-  GetRequestFormQuestionsDAO,
-  GetRequestStockListsDAO,
-  GetRequestLocationInfoDAO,
-  GetRequestReturnListsDAO,
-  GetRequestStockFieldDataDAO,
-  GetRequestStockUsersDAO,
-  GetRequestFormSubmissionsDAO,
-  GetRequestContentlibraryDAO,
-};
+    LocationMapDAO, 
+    LocationSearchDAO , 
+    LocationPinKeyDAO , 
+    LocationCheckinTypeDAO,
+    PostRequestDAO ,
+    GetRequestFilterDAO ,
+    GetRequestLeadfieldDAO,
+    GetRequestFormListsDAO,
+    GetRequestFormQuestionsDAO,
+    GetRequestStockListsDAO,
+    GetRequestLocationInfoDAO,
+    GetRequestReturnListsDAO,
+    GetRequestStockFieldDataDAO,
+    GetRequestStockUsersDAO,
+    GetRequestFormSubmissionsDAO,
+    GetRequestLocationDevicesDAO,
+    GetRequestContentlibraryDAO
+
+}
+

@@ -17,7 +17,7 @@ const AddLeadFormsModal = React.forwardRef((props, ref) => {
       <View style={{alignSelf: 'stretch', marginHorizontal: 10, marginTop: 10}}>
         <ScrollView
           style={{
-            maxHeight: Dimensions.get('screen').height * 0.5,
+            maxHeight: Dimensions.get('screen').height * 0.8,
             marginBottom: 10,
           }}>
           {props.formLists.map((item, index) => (

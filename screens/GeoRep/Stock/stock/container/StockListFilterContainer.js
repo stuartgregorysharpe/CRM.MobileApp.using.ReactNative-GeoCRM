@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import {Fonts} from '../../../../../constants';
-import {PRIMARY_COLOR, whiteLabel} from '../../../../../constants/Colors';
+import {whiteLabel} from '../../../../../constants/Colors';
 
 const StockListFilterContainer = props => {
   const [filterData, setFilterData] = useState({stockType: null});

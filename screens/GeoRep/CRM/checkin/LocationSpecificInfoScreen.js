@@ -26,9 +26,9 @@ import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
-import {storeLocalValue} from '../../../../constants/Storage';
+import {getJsonData, storeLocalValue} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
-import Checkout from './partial/Checkout';
+
 import {getLocationInfo} from '../../../../actions/location.action';
 import {Notification} from '../../../../components/modal/Notification';
 import {
@@ -39,16 +39,17 @@ import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
-import DevicesModal from '../devices/DevicesModal';
+import DevicesModal from '../devices/modal/DevicesModal';
 import {Constants, Strings} from '../../../../constants';
-import {CHECKIN} from '../../../../actions/actionTypes';
+import {CHECKIN, LOCATION_CHECK_OUT_COMPULSORY} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
-import {AppText} from '../../../../components/common/AppText';
 import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
+import { GetRequestFormListsDAO } from '../../../../DAO';
 
 const LocationSpecificInfoScreen = props => {
+
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
@@ -65,7 +66,7 @@ const LocationSpecificInfoScreen = props => {
   const [isActivityComment, setIsActivityComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isActionItems, setIsActionItems] = useState(false);
-
+  const [isFormCompulsory, setIsFormCompulsory] = useState(true);
   const navigationMain = useNavigation();
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -73,7 +74,6 @@ const LocationSpecificInfoScreen = props => {
   const locationId = locationInfo ? locationInfo.location_id : location_id;
   const customerContactModalRef = useRef(null);
   const customerSaleHistoryModalRef = useRef(null);
-
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -81,12 +81,13 @@ const LocationSpecificInfoScreen = props => {
   let isMout = true;
 
   useEffect(() => {
+
+  },[]);
+
+  useEffect(() => {
     isMout = true;
     refreshHeader();
-    initData();
-    if (location_id !== undefined) {
-      openLocationInfo(location_id);
-    }
+    initData();    
     return () => {
       isMout = false;
     };
@@ -94,17 +95,47 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     isMout = true;
+
     if (isCheckin == false) {
       if (props.navigation.canGoBack()) {
         if (isMout) {
-          //
+          props.navigation.goBack();
         }
       }
+    }
+    if(isCheckin){
+      getCheckInLocation();
     }
     return () => {
       isMout = false;
     };
+
   }, [isCheckin]);
+
+  useEffect(() => {
+    const unsubscribe = navigationMain.addListener('focus', () => {
+      getCheckInLocation();
+    });
+    return unsubscribe;
+  }, [navigationMain]);
+
+
+
+  const getCheckInLocation = async() => {
+    var location = await getJsonData("@checkin_location");    
+    if(location != null){
+      if (locationInfoRef.current !== undefined) {
+        locationInfoRef.current.updateDispositionData(location);
+      }
+      setLocationIfo(location);
+      getFormLists(location.location_id);
+    }else{
+      if (location_id !== undefined) {
+        openLocationInfo(location_id);
+        getFormLists(location_id);
+      }
+    }
+  }
 
   const initData = async () => {
     if (pageType === 'checkin') {
@@ -121,8 +152,7 @@ const LocationSpecificInfoScreen = props => {
   const goBack = () => {
     console.log('go back in specific info page');
     if (props.navigation.canGoBack()) {
-      props.navigation.popToTop();
-      //props.navigation.goBack();
+      props.navigation.popToTop();      
     }
   };
 
@@ -241,6 +271,32 @@ const LocationSpecificInfoScreen = props => {
   const onCustomerContactModalClosed = ({type, value}) => {};
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
 
+  const getFormLists = (locationId) => {
+    console.log("form lists => " , locationId);
+    var param = {
+      location_id: locationId
+    }
+    GetRequestFormListsDAO.find(param).then((res) => {
+      getCompulsoryForm(res.forms);
+    }).catch((e) => {
+
+    })
+  }
+
+  const getCompulsoryForm = async (lists) => {
+    var formLists = [...lists];
+    const formIds = await getJsonData("@form_ids");
+    var flag = false;
+    formLists.forEach((element) => {
+      if(element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id)) ){        
+        flag = true;
+      }
+    });
+    setIsFormCompulsory(flag);
+    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});  
+  };
+
+
   return (
     <SafeAreaView style={{}}>
       {isShowCustomNavigationHeader && (
@@ -288,7 +344,7 @@ const LocationSpecificInfoScreen = props => {
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
-        locationId={locationInfo != undefined ? locationInfo.location_id : 0}
+        locationId={location_id != undefined ? location_id : locationInfo != undefined ? locationInfo.location_id : 0}
         onButtonAction={onDevicesModalClosed}
       />
 
@@ -314,15 +370,17 @@ const LocationSpecificInfoScreen = props => {
         </View>
       )}
 
-      {isLoading && (
+      {/* {isLoading && (
         <View style={{marginTop: 100}}>
           <ActivityIndicator />
         </View>
-      )}
+      )} */}
 
       <ScrollView style={styles.container}>
         {locationInfo != undefined && (
           <View style={styles.headerBox}>
+
+
             <View
               style={{
                 flexDirection: 'row',
@@ -360,6 +418,7 @@ const LocationSpecificInfoScreen = props => {
                 </Text>
               </View>
             </View>
+            
             <View style={styles.headerTitleBox}>
               <View style={styles.subtitleBox}>
                 <SvgIcon
@@ -370,10 +429,7 @@ const LocationSpecificInfoScreen = props => {
                 />
                 <Text style={styles.subtitle}>Address:</Text>
               </View>
-              <Text style={styles.title}>{locationInfo.address}</Text>
-              <TouchableOpacity style={styles.checkoutButton}>
-                <Text style={styles.checkoutButtonText}>Check out</Text>
-              </TouchableOpacity>
+              <Text style={styles.title}>{locationInfo.address}</Text>              
             </View>
 
             {isCheckin && (
@@ -387,7 +443,7 @@ const LocationSpecificInfoScreen = props => {
                       buttonText: Strings.Ok,
                       buttonAction: async () => {
                         dispatch({type: CHECKIN, payload: false});
-
+                        dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
                         dispatch(clearNotification());
                         goBack();
                       },
@@ -396,7 +452,6 @@ const LocationSpecificInfoScreen = props => {
                 }}
               />
             )}
-
             {/* <View style={styles.filterButton}>
                   <FilterButton text="Contact: Jack Reacher" />
                 </View> */}
@@ -426,6 +481,7 @@ const LocationSpecificInfoScreen = props => {
         </View>
 
         <FeaturedCardLists
+          isFormCompulsory={isFormCompulsory}
           onItemClicked={onFeatureItemClicked}></FeaturedCardLists>
         <View style={{height: 60}}></View>
       </ScrollView>
@@ -502,22 +558,7 @@ const styles = EStyleSheet.create(
     filterButton: {
       display: perWidth('none', 'flex'),
     },
-    checkoutButton: {
-      display: perWidth('flex', 'none'),
-      backgroundColor: '#fff',
-      justifyContent: 'center',
-      alignItems: 'center',
-      alignSelf: 'center',
-      marginLeft: 'auto',
-      width: 160,
-      height: 40,
-      borderRadius: 20,
-    },
-    checkoutButtonText: {
-      fontSize: 16,
-      color: Colors.primaryColor,
-      fontFamily: Fonts.primaryMedium,
-    },
+
     transitionView: {
       position: 'absolute',
       bottom: 50,

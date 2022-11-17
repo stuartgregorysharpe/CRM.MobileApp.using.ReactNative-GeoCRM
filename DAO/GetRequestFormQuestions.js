@@ -79,11 +79,19 @@ const fetchProductsFromDB = async (business_unit_id, client_id) => {
   const res = await ExecuteQuery(query, [business_unit_id, client_id]);
   return res.rows ? res.rows : [];
 };
+
 const fetchReturnProductsFromDB = async (business_unit_id, client_id) => {
   const query = generateReturnProductQuery();
   const res = await ExecuteQuery(query, [business_unit_id, client_id]);
   return res.rows ? res.rows : [];
 };
+
+const fetchPrimaryDeviceFromDB = async(location_id) => {
+  const query = generatePrimaryDeviceQuery();
+  const res = await ExecuteQuery(query, [location_id]);
+  return res.rows ? res.rows : [];
+}
+
 const fetchReasonsFromDB = async (
   business_unit_id,
   client_id,
@@ -308,6 +316,12 @@ const generateReturnProductQuery = () => {
   return query;
 };
 
+const generatePrimaryDeviceQuery = () => {
+  var query  = `SELECT device_msisdn  FROM location_devices WHERE primary_device = 1 AND location_id = ?`;    
+  return query;
+}
+
+
 const getFormQuestions = async (
   lists,
   client_id,
@@ -321,12 +335,18 @@ const getFormQuestions = async (
     var fieldData = '';
     if (postData.location_id != undefined) {
       if (question_tag != undefined && question_tag != '') {
-        var fieldDataLists = await fetchFieldDetailsFromDB(
-          client_id,
-          business_unit_id,
-          question_tag,
-        );
-        fieldData = await getFieldData(fieldDataLists, postData);
+        if(question_tag === "msisdn"){
+          var primaryDeivce = await fetchPrimaryDeviceFromDB(postData.location_id);
+          fieldData = await getPrimaryDeviceData( primaryDeivce );                 
+        }else{
+          var fieldDataLists = await fetchFieldDetailsFromDB(
+            client_id,
+            business_unit_id,
+            question_tag,
+          );
+          fieldData = await getFieldData(fieldDataLists, postData);
+        }
+        
       }
     }
 

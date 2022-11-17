@@ -157,6 +157,8 @@ export default function AddLeadContainer(props) {
 
     return isValid;
   };
+
+  
   const onAdd = async () => {
     const isFormValid = await validateForm();
     if (!isFormValid) {
@@ -195,6 +197,8 @@ export default function AddLeadContainer(props) {
       leadForms,
       customMasterFields,
     );
+
+    console.log("post data ====== " , postDataJson)
     PostRequestDAO.find(
       0,
       postDataJson,

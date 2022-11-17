@@ -11,18 +11,19 @@ import {
   getLocalData,
 } from '../../../../constants/Storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
+import {CHECKIN, LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
-import {getDateTime} from '../../../../helpers/formatHelpers';
-import {PostRequestDAO} from '../../../../DAO';
+import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
+
   const {navigation, item, current, tabIndex, onItemSelected} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
+  
   useEffect(() => {
     initData();
   }, []);
@@ -62,33 +63,16 @@ export function CalendarItem(props) {
       }
     }
   };
-  const onCheckout = locationId => {
-    var userParam = getPostParameter(current);
-    var currentTime = getDateTime();
 
-    let postData = {
-      location_id: item.location_id,
-      checkout_time: currentTime,
-      user_local_data: userParam.user_local_data,
-    };
+  const renderCheckOutButton = () => {
+    return <CheckOutViewContainer
+                type="calendar"
+                goBack={async res => {                  
+                  console.log("res", res)
+                }}
+              />
+  }
 
-    PostRequestDAO.find(
-      locationId,
-      postData,
-      'checkout',
-      'location-info/check-out',
-    )
-      .then(async res => {
-        await storeLocalValue('@checkin', '0');
-        await storeLocalValue('@checkin_type_id', '');
-        await storeLocalValue('@checkin_reason_id', '');
-        dispatch({type: CHECKIN, payload: false});
-      })
-      .catch(e => {
-        console.log('checkout error:', e);
-        expireToken(dispatch, e);
-      });
-  };
   const renderStatusButton = () => {
     if (
       item.checkin_state === 'checkin_required' ||
@@ -141,13 +125,6 @@ export function CalendarItem(props) {
               params: {location_id: item.location_id},
             });
             onItemSelected();
-          } else {
-            if (item.checkin_state === 'checkin_current') {
-              onCheckout();
-              if (props.onRefresh) {
-                props.onRefresh();
-              }
-            }
           }
         }}>
         <Text style={styles.itemButtonText}>
@@ -163,6 +140,8 @@ export function CalendarItem(props) {
       </TouchableOpacity>
     );
   };
+
+  
   if (item != undefined && item.coordinates != undefined) {
     return (
       <View style={[styles.itemContainer, style.card]}>
@@ -184,7 +163,11 @@ export function CalendarItem(props) {
             {' '}
             {item.schedule_time}
           </Text>
-          {renderStatusButton()}
+          {
+            item.checkin_state === 'checkin_current' ? renderCheckOutButton() : renderStatusButton()
+          }
+          
+
           {/* <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text> */}
         </View>
       </View>

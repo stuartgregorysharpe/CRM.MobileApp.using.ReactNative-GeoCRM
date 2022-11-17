@@ -46,8 +46,8 @@ export default function HomeScreen(props) {
           getSpeedTest("",{}).then( async(res) => {
             
             const isOnline = await getLocalData("@online");
-            console.log("DATA: " ,speed_test)
-            console.log("SPEED:  " , res , isOnline ,manual)
+            // console.log("DATA: " ,speed_test)
+            // console.log("SPEED:  " , res , isOnline ,manual)
             if(parseInt(speed_test.minimum_speed_required) >= res && (isOnline === "1" || isOnline === undefined) ){ // offline
               console.log("Go to Offline")
               showOfflineMessage();
@@ -58,6 +58,7 @@ export default function HomeScreen(props) {
                   navigation.navigate('Home' , {sync: true});
                   await storeLocalValue("@online", "1");
                   dispatch({type: CHANGE_OFFLINE_STATUS , payload: false });   
+                  dispatch(clearNotification());
                   dispatch(clearNotification());
                 } }));
               }

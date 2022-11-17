@@ -4,10 +4,10 @@ import SvgIcon from '../../../../components/SvgIcon';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 
-export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction }) {
+export function FeatureCard({ icon = '', title = '', actionTitle = '', onAction , isFormCompulsory }) {
     return (
         <TouchableOpacity onPress={onAction}>
-            <View style={styles.container}>                
+            <View style={[styles.container, isFormCompulsory ? styles.compusoryStyle : {} ]}>                
                 <View style={styles.headerContainer}>
                     <SvgIcon icon={icon} width='13px' height='13px' />
                     <View style={{flex:1}}>
@@ -50,6 +50,10 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.primaryBold, 
         fontSize: 12,
         color:  Colors.blackColor 
+    },
+    compusoryStyle: {
+        borderColor:'red', 
+        borderWidth:1
     }
     
 })

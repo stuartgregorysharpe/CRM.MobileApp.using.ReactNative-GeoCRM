@@ -1,32 +1,33 @@
-import NetInfo from '@react-native-community/netinfo';
-import {Strings} from '../constants';
-import {getLocalData, storeLocalValue} from '../constants/Storage';
-import {ExecuteQuery} from '../sqlite/DBHelper';
-import {insertOfflineSyncItem} from '../sqlite/OfflineSyncItemsHelper';
-import uuid from 'react-native-uuid';
-import {getDateTime} from '../helpers/formatHelpers';
+import NetInfo from "@react-native-community/netinfo";
+import { Strings } from "../constants";
+import { getLocalData, storeLocalValue } from "../constants/Storage";
+import { ExecuteQuery } from "../sqlite/DBHelper";
+import { insertOfflineSyncItem } from "../sqlite/OfflineSyncItemsHelper";
+import { getDateTime } from "../helpers/formatHelpers";
 import * as RNLocalize from 'react-native-localize';
 import {generateKey} from '../constants/Utils';
 
-export function checkConnectivity() {
-  return new Promise(async function (resolve, reject) {
-    var isOnline = await getLocalData('@online');
-    console.log('isOnline', isOnline);
-    if (isOnline === '0') {
-      resolve(false);
-    } else {
-      NetInfo.addEventListener(async networkState => {
-        try {
-          console.log('GET NETWORK STATUS : ', networkState);
-          var isConnected = networkState.isConnected;
-          //await storeLocalValue("@online" , isConnected ? "1" : '0');
-          resolve(isConnected);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
-  });
+export function checkConnectivity(){
+
+    return new Promise( async function(resolve, reject) {   
+
+        var isOnline = await getLocalData("@online");        
+        console.log("isOnline",isOnline)
+        if(isOnline === "0"){
+            resolve(false);
+        }else{
+            NetInfo.addEventListener( async networkState => {
+                try{
+                    //console.log("GET NETWORK STATUS : " , networkState) ;
+                    var isConnected = networkState.isConnected ;                    
+                    resolve(isConnected);
+                }catch(e){                    
+                    reject(e);
+                }            
+            });
+        }   
+        
+    });              
 }
 
 export function getFullAddress(element) {
@@ -74,6 +75,7 @@ export function saveOfflineSyncItems(
   itemLabel,
   itemSubLabel,
 ) {
+
   return new Promise(async function (resolve, reject) {
     try {
       var location_name = '';
@@ -107,43 +109,44 @@ export function saveOfflineSyncItems(
 
       console.log('typer', type);
 
+
       var data = [
-        generateKey(), //indempotency_key,
-        type, //item_type
-        item_label, // item_label
-        item_sub_text, // item_sub_text
-        added_time, // added_time
-        time_zone, // added_timezone
-        post_body, // post_body
-        url,
-        'POST',
-      ];
-      console.log('SAVE DATA: ', data);
-      var res = await insertOfflineSyncItem(data);
+          generateKey(),  //indempotency_key, 
+          type, //item_type
+          item_label, // item_label
+          item_sub_text , // item_sub_text
+          added_time,  // added_time
+          time_zone ,  // added_timezone
+          post_body, // post_body
+          url, 
+          'POST'
+      ];                
+      console.log("SAVE DATA: " , data);
+      var res = await insertOfflineSyncItem(data);                   
       resolve(res);
-    } catch (e) {
-      console.log('save offline item', e);
-      reject(e);
+
+    }catch(e){
+        console.log("save offline item" , e);
+        reject(e);
     }
-  });
+  });              
 }
 
-export function getResponseMessage(type, url) {
-  if (type == 'checkin') {
-    return Strings.PostRequestResponse.Successfully_Checkin;
-  } else if (type == 'checkout') {
-    return Strings.PostRequestResponse.Successfully_Checkout;
-  } else if (
-    type == 'location-feedback' &&
-    url == 'locations-info/location-feedback'
-  ) {
-    return Strings.PostRequestResponse.Successfully_Feedback;
-  } else if (type == 'form_submission') {
-    return Strings.PostRequestResponse.Successfully_Form_Submit;
-  } else if (type == 'add_stock') {
-    return Strings.Stock.Successfully_Stock_Submit;
-  } else if (type == 'sell_to_trader') {
-    return Strings.Stock.Successfully_Sell_To_Trader;
+export function getResponseMessage (type , url) {
+  if(type ==  'checkin'){
+      return Strings.PostRequestResponse.Successfully_Checkin;
+  }else if(type == 'checkout'){
+      return Strings.PostRequestResponse.Successfully_Checkout;
+  }else if(type == 'location-feedback' && url == 'locations-info/location-feedback'){
+      return Strings.PostRequestResponse.Successfully_Feedback;
+  }else if(type == "form_submission"){
+      return Strings.PostRequestResponse.Successfully_Form_Submit;
+  }else if(type == "add_stock"){
+      return Strings.Stock.Successfully_Stock_Submit;
+  }else if(type == "sell_to_trader"){
+      return Strings.Stock.Successfully_Sell_To_Trader
+  }else if(type == "device_update"){
+      return Strings.PostRequestResponse.Successfully_Device_Update;
   }
-  return Strings.PostRequestResponse.Successfully_Checkin;
+  return Strings.PostRequestResponse.Successfully_Checkin;    
 }

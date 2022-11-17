@@ -38,6 +38,7 @@ export const  OfflineBaskets = [
         itemTypes:[
             'location-feedback',
             'other',            
+            'device_update'
         ]
     }
 ]

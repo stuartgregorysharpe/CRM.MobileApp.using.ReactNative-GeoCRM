@@ -11,7 +11,7 @@ import { Dimensions, LayoutAnimation, Platform , View ,StyleSheet , TouchableOpa
 import MapView, { MapViewProps, Polyline , Polygon, Callout, PROVIDER_GOOGLE} from 'react-native-maps'
 import SuperCluster from 'supercluster'
 import SvgIcon from '../../../../components/SvgIcon'
-import Colors, { PRIMARY_COLOR } from '../../../../constants/Colors'
+import Colors from '../../../../constants/Colors'
 
 import { MapClusteringProps } from './ClusteredMapViewTypes'
 import ClusterMarker from './ClusteredMarker'
