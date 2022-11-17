@@ -66,7 +66,7 @@ const LocationSpecificInfoScreen = props => {
   const [isActivityComment, setIsActivityComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isActionItems, setIsActionItems] = useState(false);
-  const [isFormCompulsory, setIsFormCompulsory] = useState(false);
+  const [isFormCompulsory, setIsFormCompulsory] = useState(true);
   const navigationMain = useNavigation();
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -95,10 +95,11 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     isMout = true;
+
     if (isCheckin == false) {
       if (props.navigation.canGoBack()) {
         if (isMout) {
-          //
+          props.navigation.goBack();
         }
       }
     }
@@ -286,9 +287,9 @@ const LocationSpecificInfoScreen = props => {
     var formLists = [...lists];
     const formIds = await getJsonData("@form_ids");
     var flag = false;
-    formLists.forEach((element) => {      
+    formLists.forEach((element) => {
       if(element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id)) ){        
-        flag = true;        
+        flag = true;
       }
     });
     setIsFormCompulsory(flag);
@@ -442,7 +443,7 @@ const LocationSpecificInfoScreen = props => {
                       buttonText: Strings.Ok,
                       buttonAction: async () => {
                         dispatch({type: CHECKIN, payload: false});
-
+                        dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
                         dispatch(clearNotification());
                         goBack();
                       },

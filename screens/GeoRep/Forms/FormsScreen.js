@@ -21,6 +21,7 @@ import FormFilterModal from './modal/FormFilterModal';
 import {Constants, Strings} from '../../../constants';
 import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
+import { LOCATION_CHECK_OUT_COMPULSORY } from '../../../actions/actionTypes';
 
 export default function FormsScreen(props) {
 
@@ -102,10 +103,24 @@ export default function FormsScreen(props) {
     if(formIds != null){
       formIds.forEach((id) => {
         formIdLists.push(id)
-      })        
+      })
     }    
-    setFormIds(formIdLists)
+    setFormIds(formIdLists);
+
   }
+
+  const getCompulsoryForm = async (lists) => {
+    var formLists = [...lists];
+    const formIds = await getJsonData("@form_ids");
+    var flag = false;
+    formLists.forEach((element) => {
+      if(element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id)) ){        
+        flag = true;
+      }
+    });    
+    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
+  };
+
 
   const initFilter = async () => {
     var savedFilters = await getFilterData('@form_filter');
@@ -167,6 +182,7 @@ export default function FormsScreen(props) {
         if(isMount){
           setFormLists(res.forms);
           setOriginalFormLists(res.forms);
+          getCompulsoryForm(res.forms);
         }        
     })
     .catch(e => {

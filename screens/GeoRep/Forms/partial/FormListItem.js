@@ -7,7 +7,7 @@ import { boxShadow, style } from '../../../../constants/Styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const FormListItem = ({ item,  onItemPress , onTouchStart , isSubmitted }) =>{
-            
+ 
     return (
         <View style={[styles.container]}>
              <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" && !isSubmitted ? {borderWidth:1, borderColor:Colors.redColor}:{} ]} onPress={onItemPress}>                
@@ -36,7 +36,7 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart , isSubmitted }
                 </View>
 
                 {
-                    item.compulsory === "1" &&
+                    (item.compulsory === "1" || isSubmitted) &&
                     <View>
                         {/* <SvgIcon icon="Forms_Red_Compulsory" width='18px' height='18px'/> */}
                         <View style={[ isSubmitted ?  styles.greenDotStyle : styles.redDotStyle , { marginRight:10}]}></View>

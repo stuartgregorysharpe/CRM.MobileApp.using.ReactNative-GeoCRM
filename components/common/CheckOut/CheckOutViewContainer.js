@@ -20,11 +20,16 @@ export default function CheckOutViewContainer(props) {
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationCheckOutCompulsory = useSelector(state => state.rep.locationCheckOutCompulsory);
+
   const navigationMain = useNavigation();
 
   useEffect(() => {
     initData();
   }, []);
+
+  useEffect(() => {
+    console.log("updated location com", locationCheckOutCompulsory )
+  }, [locationCheckOutCompulsory]);
 
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');
@@ -32,11 +37,11 @@ export default function CheckOutViewContainer(props) {
 
   const checkOutLocation = useCallback(() => {
     _callCheckOut();
-  }, []);
-
-
+  }, [locationCheckOutCompulsory]);
+  
   const _callCheckOut = () => {
 
+    console.log("locationCheckOutCompulsory",locationCheckOutCompulsory)
     if(locationCheckOutCompulsory){
       dispatch(showNotification({type : Strings.Success , message: Strings.CRM.Complete_Compulsory_Form , buttonText: Strings.Ok , buttonAction : async() => {
 
@@ -78,6 +83,7 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@form_ids', [])
           console.log(" pooo  ====== ")
           dispatch({type: CHECKIN, payload: false});
+          dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
           if (type == 'specificInfo') {
             if (props.goBack) {
               props.goBack(res);
@@ -90,9 +96,7 @@ export default function CheckOutViewContainer(props) {
           expireToken(dispatch, e);
         });
         
-    }
-
-    
+    }    
   };
 
   return (
