@@ -27,7 +27,7 @@ import {
 } from './helper';
 import {deleteFormTable, insertTable} from '../../../../sqlite/FormDBHelper';
 import {getDBConnection} from '../../../../sqlite/DBHelper';
-import {getLocalData} from '../../../../constants/Storage';
+import {getJsonData, getLocalData, storeJsonData} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Constants, Strings} from '../../../../constants';
 import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
@@ -46,10 +46,15 @@ export const FormQuestions = props => {
   const loadingBarRef = useRef();
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
-  console.log('location_id', location_id);
+  let isMount = true;
+  
   useEffect(() => {
+    isMount = true;
     refreshHeader();
     loadFromDB(form.form_id);
+    return () => {
+      isMount =false;
+    }
   }, [form]);
 
   const loadFromDB = async formId => {
@@ -114,7 +119,9 @@ export const FormQuestions = props => {
 
     GetRequestFormQuestionsDAO.find(param)
       .then(res => {
-        groupByQuestions(res.questions);
+        if(isMount){
+          groupByQuestions(res.questions);
+        }        
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -206,6 +213,7 @@ export const FormQuestions = props => {
       onBackPressed();
     }
   };
+
   const _onSubmit = async () => {
     if (
       indempotencyKey === null ||
@@ -246,6 +254,7 @@ export const FormQuestions = props => {
       form_answers,
       files,
     );
+
     PostRequestDAO.find(
       locationId,
       postDataJson,
@@ -265,6 +274,19 @@ export const FormQuestions = props => {
               const db = await getDBConnection();
               if (db != null) await deleteFormTable(db, form.form_id);
               clearAll();
+              const formIds = await getJsonData("@form_ids");
+              var formIdLists = [];
+              if(formIds != null){                
+                formIds.forEach((id) => {
+                  formIdLists.push(id)
+                })                  
+                formIdLists.push(form.form_id);
+                await storeJsonData("@form_ids", formIdLists)
+              }else{
+                formIdLists.push(form.form_id)
+                await storeJsonData("@form_ids", formIdLists);
+              }
+
               dispatch(clearNotification());
               onOpenFormFeedbackModal(res);
             },

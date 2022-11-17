@@ -95,26 +95,26 @@ export async function getFormSubmissionPostJsonData(
     });
 
     //if(type == "submit"){
-      files.map(item => {
-        if (item.key && item.value) {
-          if (item.type === 'upload_file') {
-            postDataJson = {
-              ...postDataJson,
-              [item.key]: {
-                uri: item.value.uri,
-                type: item.value.type,
-                name: item.value.name,
-              },
-            };
-          } else {
-            var fileFormats = getFileFormat(item.value);
-            postDataJson = {
-              ...postDataJson,
-              [item.key]: fileFormats,
-            };
-          }
+    files.map(item => {
+      if (item.key && item.value) {
+        if (item.type === 'upload_file') {
+          postDataJson = {
+            ...postDataJson,
+            [item.key]: {
+              uri: item.value.uri,
+              type: item.value.type,
+              name: item.value.name,
+            },
+          };
+        } else {
+          var fileFormats = getFileFormat(item.value);
+          postDataJson = {
+            ...postDataJson,
+            [item.key]: fileFormats,
+          };
         }
-      });
+      }
+    });
     //}
     return postDataJson;
   } catch (e) {
@@ -441,7 +441,9 @@ export function getFormQuestionData(formQuestions) {
             Constants.questionType.FORM_TYPE_FORMAT_PRICE ||
           item.question_type ===
             Constants.questionType.FORM_TYPE_BRAND_COMPETITOR_FACING ||
-          item.question_type === Constants.questionType.FORM_TYPE_FSU_CAMPAIGN
+          item.question_type ===
+            Constants.questionType.FORM_TYPE_FSU_CAMPAIGN ||
+          item.question_type === Constants.questionType.FORM_TYPE_POS_CAPTURE
         ) {
           if (value && value.form_answers_array) {
             form_answers.push({
@@ -477,10 +479,18 @@ export function getFormQuestionData(formQuestions) {
             key: `form_answers[${index}][form_question_id]`,
             value: item.form_question_id,
           });
-          form_answers.push({
-            key: `form_answers[${index}][answer]`,
-            value: JSON.stringify(item.value),
-          });
+          if (item.value === '' || item.value === undefined) {
+            form_answers.push({
+              key: `form_answers[${index}][answer]`,
+              value: '',
+            });
+          } else {
+            form_answers.push({
+              key: `form_answers[${index}][answer]`,
+              value: JSON.stringify(item.value),
+            });
+          }
+
           index = index + 1;
         } else if (
           item.question_type === Constants.questionType.FORM_TYPE_PRODUCTS &&
@@ -615,7 +625,7 @@ export function getFormQuestionFile(formQuestions) {
         if (paths != null && paths != '' && paths.length > 0) {
           index = 0;
           for (const path of paths) {
-            if(path != "" && path.length > 2){
+            if (path != '' && path.length > 2) {
               if (item.question_type === 'upload_file') {
                 files.push({
                   key: `File[${item.form_question_id}][${index}]`,
@@ -630,18 +640,16 @@ export function getFormQuestionFile(formQuestions) {
                 }); //, base64:item.base64
               }
               index = index + 1;
-            }            
+            }
           }
         }
       } else if (
         item.question_type ===
         Constants.questionType.FORM_TYPE_MULTI_SELECT_WITH_THOTO
       ) {
-              
-
         if (item.value) {
           item.value.forEach((element, index) => {
-            if(!element.image.includes("http")){
+            if (!element.image.includes('http')) {
               files.push({
                 key: `File[${item.form_question_id}][${element.value}]`,
                 value: element.image,
@@ -650,9 +658,26 @@ export function getFormQuestionFile(formQuestions) {
             }
           });
         }
+      } else if (
+        item.question_type == Constants.questionType.FORM_TYPE_POS_CAPTURE
+      ) {
+        if (item.value?.file_array && item.value?.file_array.length > 0) {
+          index = 0;
+          console.log('item.value?.file_array', item.value?.file_array);
+          item.value.file_array.forEach((path, index) => {
+            if (!path.includes('http')) {
+              files.push({
+                key: `File[${item.form_question_id}][${index}]`,
+                value: path,
+                type: Constants.questionType.FORM_TYPE_POS_CAPTURE,
+              });
+              index++;
+            }
+          });
+        }
       }
     });
   });
-  
+
   return files;
 }

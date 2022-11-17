@@ -22,11 +22,10 @@ export function find(postData){
                 let userTypeList = fetchUserTypeIdFromDB(user_type);
                 var userTypeId = getUserTypeId(userTypeList);
                 
-                // var xxx = `SELECT form_name FROM forms WHERE form_id = 13`;
-                // console.log("query", xxx)
+                // var xxx = `SELECT form_name FROM forms WHERE form_id = 13`;                
                 // const ress = await ExecuteQuery(xxx, []);
                 // var bb =  ress.rows ? ress.rows : [];  
-                // console.log("dddd ", bb);
+                // console.log(" ============="  , JSON.stringify(bb))                
 
 
                 if(client_id && business_unit_id){
@@ -71,7 +70,8 @@ export function find(postData){
 const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , userId ) => {
 
     var excludeFormIds = [];
-    var limitFormIds = [];    
+    var limitFormIds = [];      
+    
     assignmentsData.forEach((element, index) => {                                                
         for(let key of Object.keys(element)){
 
@@ -80,8 +80,8 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
 
             for(let type of Object.keys(element[key])){
                 
-                var subElement = element[key][type];
-                                
+                var subElement = element[key][type];                                
+                
                 if(type == 'location_id'){
                     if(hasLocationId(postData) && !subElement.includes(hasLocationId(postData))){                   
                         excludeFormIds.push(formId);
@@ -93,16 +93,17 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                         excludeFormIds.push(formId);
                     }
                 }
-
+                
                 if(type == 'location_type'){
                     if(hasLocationType(postData) && !subElement.includes(hasLocationType(postData))){                        
                         excludeFormIds.push(formId);
+                        // Need to check this part with @Clinton
                     }
-                    
+                
                     if(locationCoreMasterData['location_type'] ){
-                        const locationTypes = subElement.split(",");
+                        const locationTypes = locationCoreMasterData['location_type'].split(",");
                         locationTypes.forEach((element) => {
-                            if(!element.includes(locationCoreMasterData['location_type'])){                                
+                            if(!subElement.includes(element)){  
                                 excludeFormIds.push(formId);
                             }                            
                         });                        
@@ -114,10 +115,10 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                         excludeFormIds.push(formId);
                     }
 
-                    if(locationCoreMasterData['group'] && !subElement.includes(locationCoreMasterData['group'])){
-                        const groups = subElement.split(",");
+                    if(locationCoreMasterData['group']){
+                        const groups = locationCoreMasterData['group'].split(",");
                         groups.forEach((element) => {
-                            if(!element.includes(locationCoreMasterData['group'])){                                
+                            if(!subElement.includes(element)){  
                                 excludeFormIds.push(formId);
                             }   
                         });                        
@@ -130,10 +131,10 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                         excludeFormIds.push(formId);
                     }
 
-                    if(locationCoreMasterData['group_split'] && !subElement.includes(locationCoreMasterData['group_split'])){
-                        const groupSplits = subElement.split(",");
+                    if(locationCoreMasterData['group_split']){
+                        const groupSplits = locationCoreMasterData['group_split'].split(",");
                         groupSplits.forEach((element) => {
-                            if(!element.includes(locationCoreMasterData['group_split'])){                                
+                            if(!subElement.includes(element)){                                
                                 excludeFormIds.push(formId);
                             }   
                         });
@@ -143,8 +144,8 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                 // -------------  Added New Part  --------------- //
                 if(type == 'location_status'){
                     if(locationCoreMasterData['location_status'] != ''){
-                        const locationStatusSplits = subElement.split(",");
-                        locationStatusSplits.forEach((element) => {
+                        //const locationStatusSplits = subElement.split(",");
+                        subElement.forEach((element) => {
                             if(!element.includes(locationCoreMasterData['location_status'])){                                
                                 excludeFormIds.push(formId);
                             }   
@@ -184,9 +185,9 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
                     }
                 }
 
-                if( type == 'user'){
+                if( type == 'user'){                    
                     if(!subElement.includes(userId)){
-                        excludeFormIds.push(formId);
+                        excludeFormIds.push(formId);                        
                     }
                 }
 
@@ -226,9 +227,7 @@ const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, 
             }                            
         }
     });
-    
-    console.log(" excludeFormIds => ", excludeFormIds)
-    console.log(" limitFormIds => ", limitFormIds)
+        
     return {excludeFormIds: excludeFormIds, limitFormIds :limitFormIds};
 }
 
@@ -272,7 +271,7 @@ const generateAssignemtnQuery = () => {
                       `AND ` + 
                         `f.business_unit_id = ? ` + 
                       `AND ` + 
-                        `f.delete_status = 0 `;                        
+                        `f.delete_status = 0 AND fs.delete_status = 0`;                        
     return query;
 }
 
@@ -368,7 +367,7 @@ const getData = async(lists) => {
                 form_type_id: element.form_type_id,
                 guide_info: guideInfoData,
                 question_count: countRes && countRes.length > 0 ? countRes.item(0).cnt : 0,
-                compulsory: element.compulsory,
+                compulsory: element.compulsory.toString(),
                 location_required: element.location_required
             }
         );            
@@ -379,32 +378,89 @@ const getData = async(lists) => {
 
 const getFormAssignmentsData = async(lists) => {
     var tmp = [];
+
+    let values = {};
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);        
-        
+        var element = lists.item(i);                        
+
         if(element.assignment_type === 'custom_field'){                        
             
-            const objKey = `[${element.form_id}][${element.assignment_type}][${element.custom_field_id}]`; 
-            
-            var singleObj = {
-                [element.form_id] : {
+            // const objKey = `[${element.form_id}][${element.assignment_type}][${element.custom_field_id}]`; 
+
+            if (values[element.form_id]) {                
+                if (values[element.form_id][element.assignment_type]) {
+                    if(values[element.form_id][element.assignment_type][element.custom_field_id]){
+                        values[element.form_id][element.assignment_type][element.custom_field_id] = [...values[element.form_id][element.assignment_type][element.custom_field_id], element.assignment_value];
+                    }else{
+                        values[element.form_id][element.assignment_type][element.custom_field_id] = [element.assignment_value];
+                    }                    
+                } else {
+                    values[element.form_id][element.assignment_type] = {
+                        [element.custom_field_id] : [element.assignment_value]
+                    };
+                }
+            } else {
+                values[element.form_id] = {
                     [element.assignment_type] : {
-                        [element.custom_field_id] : element.assignment_value
+                        [element.custom_field_id] : [element.assignment_value]
                     }
-                }
-            };                        
-            tmp.push(singleObj);
+                };                 
+            }
+            
+            // var singleObj = {
+            //     [element.form_id] : {
+            //         [element.assignment_type] : {
+            //             [element.custom_field_id] : element.assignment_value
+            //         }
+            //     }
+            // };                        
+            // tmp.push(singleObj);
         }else{
-            const objKey = `[${element.form_id}][${element.assignment_type}]`; 
-            var singleObj = {
-                [element.form_id] : {
-                    [element.assignment_type] : element.assignment_value
+            // const objKey = `[${element.form_id}][${element.assignment_type}]`; 
+            
+            if (values[element.form_id]) {
+                if (values[element.form_id][element.assignment_type]) {
+                    values[element.form_id][element.assignment_type] = [...values[element.form_id][element.assignment_type], element.assignment_value];
+                } else {
+                    values[element.form_id][element.assignment_type] = [element.assignment_value];
                 }
-            };                       
-            tmp.push(singleObj);       
-        }     
+            } else {
+                values[element.form_id] = {
+                    [element.assignment_type] : [element.assignment_value]
+                };   
+                // var singleObj = {
+                //     [element.form_id] : {
+                //         [element.assignment_type] : element.assignment_value
+                //     }
+                // };
+            }
+            
+            // {"13" : {
+            //     "user" : ["107","101"]
+            //     "data" : ["107","101"]
+            // }}
+
+            /*
+            {form_id:13, ass_type: "user", ass_value:"107"}
+            {form_id:13, ass_type: "user", ass_value:"101"}
+            {form_id:1, ass_type: "data", ass_value:"101"}
+             */
+
+            // tmp.push(singleObj);       
+        } 
     }
-    return tmp;
+    /*
+    {
+        "13": {"user": [1, 2]},
+        "14";
+    }
+    */
+   const res_array = Object.keys(values).map(key => {
+       return {
+           [key]: values[key]
+       };
+   });
+    return res_array;
 }
 
 const getLocationCoreMasterData = (lists) => {

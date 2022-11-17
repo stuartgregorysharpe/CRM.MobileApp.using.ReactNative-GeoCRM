@@ -45,6 +45,7 @@ export default {
     Check_In: 'Check In',
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
+    Complete_Compulsory_Form : 'Please complete the compulsory forms'
   },
 
   Log: {

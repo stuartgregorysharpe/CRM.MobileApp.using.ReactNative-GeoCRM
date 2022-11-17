@@ -59,10 +59,8 @@ const fetchContactDataFromDB = async location_id => {
 };
 
 const fetchMsisdnDataFromDB = async location_id => {
-  const query = generateMsisdnQuery();
-  console.log('fetchMsisdnDataFromDB', query);
-  const res = await ExecuteQuery(query, [location_id]);
-  console.log('fetchMsisdnDataFromDB: res', res);
+  const query = generateMsisdnQuery();  
+  const res = await ExecuteQuery(query, [location_id]);  
   var lists = res.rows ? res.rows : [];
   return lists;
 };

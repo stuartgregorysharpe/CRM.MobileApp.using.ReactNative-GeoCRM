@@ -6,11 +6,11 @@ import Fonts from '../../../../constants/Fonts';
 import { boxShadow, style } from '../../../../constants/Styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
-                
+export const FormListItem = ({ item,  onItemPress , onTouchStart , isSubmitted }) =>{
+            
     return (
         <View style={[styles.container]}>
-             <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" || item.compulsory == 1 ? {borderWidth:1, borderColor:Colors.redColor}:{} ]} onPress={onItemPress}>                
+             <TouchableOpacity style={[style.card, boxShadow , item.compulsory === "1" && !isSubmitted ? {borderWidth:1, borderColor:Colors.redColor}:{} ]} onPress={onItemPress}>                
                 <View style={{ flex: 1, flexDirection:'column', alignItems:'flex-start', paddingTop:3, paddingBottom:3 }}>
                     <View style={{flexDirection:'row', flexWrap:'wrap'}}>                                                            
                         <Text style={styles.title}>{item.form_name}</Text>                        
@@ -39,7 +39,7 @@ export const FormListItem = ({ item,  onItemPress , onTouchStart}) =>{
                     item.compulsory === "1" &&
                     <View>
                         {/* <SvgIcon icon="Forms_Red_Compulsory" width='18px' height='18px'/> */}
-                        <View style={[styles.redDotStyle , { marginRight:10}]}></View>
+                        <View style={[ isSubmitted ?  styles.greenDotStyle : styles.redDotStyle , { marginRight:10}]}></View>
                     </View>
                 }
 
@@ -80,6 +80,12 @@ const styles = StyleSheet.create({
         height:15,
         borderRadius:10,
         backgroundColor: Colors.selectedRedColor
+    },
+    greenDotStyle:{
+        width:15,
+        height:15,
+        borderRadius:10,
+        backgroundColor: Colors.green2Color
     }
        
 });

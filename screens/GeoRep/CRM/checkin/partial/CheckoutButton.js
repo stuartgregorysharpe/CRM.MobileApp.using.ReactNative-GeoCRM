@@ -8,7 +8,7 @@ import {AppText} from '../../../../../components/common/AppText';
 import {whiteLabel} from '../../../../../constants/Colors';
 
 
-export default function Checkout(props) {
+export default function CheckoutButton(props) {
 
   return (
     <View style={styles.container}>

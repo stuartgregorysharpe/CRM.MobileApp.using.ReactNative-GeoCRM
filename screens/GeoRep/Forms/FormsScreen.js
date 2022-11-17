@@ -5,14 +5,13 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  TouchableOpacity,
-  Platform,
+  TouchableOpacity,  
 } from 'react-native';
 import SearchBar from '../../../components/SearchBar';
 import {FormListItem} from './partial/FormListItem';
 import {Provider} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import {getFilterData, getLocalData} from '../../../constants/Storage';
+import {getFilterData, getJsonData, getLocalData} from '../../../constants/Storage';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {GuideInfoView} from './partial/GuideInfoView';
@@ -34,16 +33,19 @@ export default function FormsScreen(props) {
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-
   const formFilterModalRef = useRef(null);
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
+  const [formIds, setFormIds] = useState([])
+  
   const dispatch = useDispatch();
 
   const locationIdSpecific = props.route.params
     ? props.route.params.locationInfo
     : null;
+
   const isShowCustomNavigationHeader = props.isDeeplink;
+  let isMount = true;
 
   useEffect(() => {
     if (props.screenProps) {
@@ -77,16 +79,33 @@ export default function FormsScreen(props) {
   });
 
   useEffect(() => {
+    isMount = true;
     _callFormLists(null);
     initFilter();
+    initializeFormIds();
+    return () => {
+      isMount = false;
+    }
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       _callFormLists(null);
+      initializeFormIds();
     });
     return unsubscribe;
   }, [navigation]);
+
+  const initializeFormIds = async() => {
+    var formIds = await getJsonData("@form_ids");
+    var formIdLists = [];
+    if(formIds != null){
+      formIds.forEach((id) => {
+        formIdLists.push(id)
+      })        
+    }    
+    setFormIds(formIdLists)
+  }
 
   const initFilter = async () => {
     var savedFilters = await getFilterData('@form_filter');
@@ -143,15 +162,17 @@ export default function FormsScreen(props) {
       }
     }
 
-    console.log("post param => ", param)
     GetRequestFormListsDAO.find(param)
-      .then(res => {
-        setFormLists(res.forms);
-        setOriginalFormLists(res.forms);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
+      .then(res => {        
+        if(isMount){
+          setFormLists(res.forms);
+          setOriginalFormLists(res.forms);
+        }        
+    })
+    .catch(e => {
+      expireToken(dispatch, e);
+    });
+    
   };
 
   const _onTouchStart = (e, text) => {
@@ -219,7 +240,8 @@ export default function FormsScreen(props) {
         <View>
           <FormListItem
             key={index}
-            item={item}
+            item={item}            
+            isSubmitted={formIds.includes(item.form_id)}
             onItemPress={() => {
               onFormItemPress(item);
             }}
@@ -284,6 +306,7 @@ export default function FormsScreen(props) {
           onButtonAction={onSearchLocation}
           isSkipLocationIdCheck={true}
         />
+
       </View>
     </Provider>
   );
