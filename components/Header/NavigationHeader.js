@@ -35,12 +35,12 @@ export default function NavigationHeader(props) {
 const styles = StyleSheet.create({
   layoutBarContent: {
     flexDirection: 'row',
-    height: Platform.OS == 'android' ? 50 : 72,
+    height: Platform.OS == 'android' ? 50 : 55,
     width: Dimensions.get('window').width,
     paddingLeft: 15,
     paddingRight: 0,
     marginTop: Platform.OS == 'android' ? 20 : 0,
-    paddingTop: Platform.OS == 'android' ? 0 : 25,
+    paddingTop: Platform.OS == 'android' ? 0 : 0,
     backgroundColor: whiteLabel().headerBackground,
     alignItems: 'center',
     alignContent: 'center',
