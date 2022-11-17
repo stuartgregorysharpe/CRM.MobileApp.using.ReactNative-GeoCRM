@@ -14,6 +14,7 @@ import {
 } from '../../../../../actions/notification.action';
 import {Constants} from '../../../../../constants';
 import {expireToken, getFileFormat} from '../../../../../constants/Helper';
+import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
 
 export default function ReturnDeviceDetailContainer(props) {
   const {locationId} = props;
@@ -27,16 +28,26 @@ export default function ReturnDeviceDetailContainer(props) {
     let param = {
       location_id: locationId,
     };
-    getApiRequest('locations/location-devices', param)
-      .then(res => {
-        if (isMount) {
-          setLists(res.devices);
+  
+    GetRequestLocationDevicesDAO.find(param).then((res) => {
+        if(isMount){                             
+            setLists(res.devices);
         }
-      })
-      .catch(e => {
-        console.log('e', e);
-        expireToken(dispatch, e);
-      });
+    }).catch((e) => {
+        console.log("location device api error: " , e);
+        expireToken(dispatch , e);
+    })
+    
+    // getApiRequest('locations/location-devices', param)
+    //   .then(res => {
+    //     if (isMount) {
+    //       setLists(res.devices);
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log('e', e);
+    //     expireToken(dispatch, e);
+    //   });
     return () => {
       isMount = false;
     };

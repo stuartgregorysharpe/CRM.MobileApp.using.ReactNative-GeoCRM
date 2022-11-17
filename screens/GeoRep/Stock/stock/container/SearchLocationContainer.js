@@ -7,6 +7,7 @@ import {showNotification} from '../../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import {expireToken} from '../../../../../constants/Helper';
+import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
 
 const SearchLocationContainer = props => {
 
@@ -51,15 +52,14 @@ const SearchLocationContainer = props => {
       let param = {
         location_id: item.location_id,
       };
-      getApiRequest('locations/location-devices', param)
-        .then(res => {
-          if (res.devices.length > 0) {
-            props.onSubmit(stockType, item.location_id);
-          } else {
-          }
-        })
-        .catch(e => {
-          console.log('error', e);
+
+      
+      GetRequestLocationDevicesDAO.find(param).then((res) => {
+        if (res.devices.length > 0) {
+          props.onSubmit(stockType, item.location_id);
+        } else {
+        }
+      }).catch((e) => {          
           if (e === 'expired') {
             expireToken(dispatch, e);
           } else {
@@ -71,7 +71,20 @@ const SearchLocationContainer = props => {
               }),
             );
           }
-        });
+
+      })
+      
+      // getApiRequest('locations/location-devices', param)
+      //   .then(res => {
+      //     if (res.devices.length > 0) {
+      //       props.onSubmit(stockType, item.location_id);
+      //     } else {
+      //     }
+      //   })
+      //   .catch(e => {
+      //     console.log('error', e);
+          
+      //   });
     }
   };
 

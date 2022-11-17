@@ -1,0 +1,206 @@
+{
+    "form_question_id": "34",
+    "question_group": "Group 1",
+    "question_group_id": "1",
+    "question_type": "pos_capture",
+    "question_text": "POS Question",
+    "guide_info": {
+        "title": "",
+        "image": "",
+        "text": ""
+    },
+    "rule_compulsory": "0",
+    "trigger": [],
+    "question_tag": "",
+    "touchpoints": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "Other"
+    ],
+    "placement_areas": {
+        "Primary Placement": [
+            "Primary Shelf 1",
+            "Primary Shelf 2"
+        ],
+        "Secondary Placement": [
+            "Bakery",
+            "Biscuits",
+            "Cereals Aisle",
+            "Checkouts",
+            "Drinking Fridge",
+            "Fridge End",
+            "Fruit and Veg",
+            "Fruit Juice",
+            "Walk Through Aisles near Fruit Juice"
+        ]
+    },
+    "products": [
+        {
+            "product_id": "11",
+            "product_name": "ALPRO ALMOND DRINK PROF 12X1L",
+            "barcode": "5411188125341",
+            "brand": "Brand 1",
+            "product_type": "ALMOND DRINK"
+        },
+        {
+            "product_id": "12",
+            "product_name": "ND JR DS POUCH MIX FRUIT 24X100G",
+            "barcode": "6009708461667",
+            "brand": "Brand 1",
+            "product_type": "ALMOND DRINK 2"  
+        },
+        {
+            "product_id": "13",
+            "product_name": "ND JR DS POUCH STRAWB 24X100G",
+            "barcode": "6009708461674",
+            "brand": "Brand 1",
+            "product_type": "ALMOND DRINK"
+        },
+        {
+            "product_id": "14",
+            "product_name": "ND JR BB POUCH BANANA 24X150G",
+            "barcode": "6009708461643",
+            "brand": "Brand 2",
+            "product_type": "ALMOND DRINK"
+        },
+        {
+            "product_id": "15",
+            "product_name": "ND JR BB POUCH STRAWB 24X150G",
+            "barcode": "6009708461650",
+            "brand": "Brand 2",
+            "product_type": "ALMOND DRINK"
+        }
+    ],
+    "value": {
+    "form_answers" : [
+        {
+            "form_question_id" : "34",
+            "answer" : [
+                {
+                    "touchpoint" : "01",
+                    "placement_type" : "Primary Placement",
+                    "area" : "Primary Shelf 1",
+                    "product_id" : "11",
+                    "qty" : "5",
+                    "image_index" : "1"
+                },
+                {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                },
+                    {
+                    "touchpoint" : "02",
+                    "placement_type" : "Secondary Placement",
+                    "area" : "Bakery",
+                    "product_id" : "12",
+                    "qty" : "6",
+                    "image_index" : "2"
+                }
+            ]
+        }
+    ]
+    }
+}

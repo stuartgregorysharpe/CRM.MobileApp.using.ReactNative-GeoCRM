@@ -113,42 +113,53 @@ export const MainPage = forwardRef((props, ref) => {
     };
     if (isLoading == false) {
       setIsLoading(true);
-      getApiRequest('home/main-dashboard', param)
-        .then(async res => {
-          setIsLoading(false);
 
-          setVisitCard(res.items.visits_card);
-          setActivityCard(res.items.activity_card);
-          setCurrentCall(res.items.current_call);
-          setCheckinStatus(res.items.checkin_state);
-          if (res.items.checkin_state != '') {
-            await storeLocalValue('@checkin', '1');
-            await storeLocalValue(
-              '@specific_location_id',
-              res.items.checkin_state,
+     
+      checkConnectivity().then((isConnected) => {
+        if(isConnected){
+
+          getApiRequest('home/main-dashboard', param)
+          .then(async res => {
+            setIsLoading(false);
+
+            setVisitCard(res.items.visits_card);
+            setActivityCard(res.items.activity_card);
+            setCurrentCall(res.items.current_call);
+            setCheckinStatus(res.items.checkin_state);
+            if (res.items.checkin_state != '') {
+              await storeLocalValue('@checkin', '1');
+              await storeLocalValue(
+                '@specific_location_id',
+                res.items.checkin_state,
+              );
+              dispatch({type: CHECKIN, payload: true});
+            } else {
+              await storeLocalValue('@checkin', '0');
+            }
+            setIsStart(
+              res.items.startEndDay_state ===
+                Constants.homeStartEndType.START_MY_DAY
+                ? true
+                : false,
             );
-            dispatch({type: CHECKIN, payload: true});
-          } else {
-            await storeLocalValue('@checkin', '0');
-          }
-          setIsStart(
-            res.items.startEndDay_state ===
-              Constants.homeStartEndType.START_MY_DAY
-              ? true
-              : false,
-          );
-          await storeLocalValue(
-            'start_my_day',
-            res.items.startEndDay_state ===
-              Constants.homeStartEndType.START_MY_DAY
-              ? '1'
-              : '0',
-          );
-        })
-        .catch(e => {
-          setIsLoading(false);
-          expireToken(dispatch, e);
-        });
+            await storeLocalValue(
+              'start_my_day',
+              res.items.startEndDay_state ===
+                Constants.homeStartEndType.START_MY_DAY
+                ? '1'
+                : '0',
+            );
+          })
+          .catch(e => {
+            setIsLoading(false);
+            expireToken(dispatch, e);
+          });
+          
+        }
+      });
+
+
+      
     }
     initData();
   };

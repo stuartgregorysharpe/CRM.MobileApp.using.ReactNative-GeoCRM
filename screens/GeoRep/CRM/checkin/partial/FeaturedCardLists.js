@@ -9,17 +9,16 @@ import { useDispatch } from 'react-redux';
 
 export default function FeaturedCardLists(props) {
 
-  const {onItemClicked} = props;
+  const {onItemClicked , isFormCompulsory} = props;
   const [featureCards, setFeatureCards] = useState([]);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );  
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     loadFeatureCards();
-  }, []);
+  }, [isFormCompulsory]);
 
   const loadFeatureCards = async () => {
     const customer_and_contacts = features.includes('customer_and_contacts')
@@ -47,6 +46,7 @@ export default function FeaturedCardLists(props) {
       : false;
 
     let featureCards = [];
+
     if (customer_and_contacts) {
       featureCards.push({
         title: `Customer & Contacts`,
@@ -54,6 +54,7 @@ export default function FeaturedCardLists(props) {
         action: 'View all information',
         link: 'customer_contacts',
         isOffline: false,
+        isFormCompulsory: false
       });
     }
 
@@ -64,8 +65,10 @@ export default function FeaturedCardLists(props) {
         action: 'Specific to this location',
         link: 'forms',
         isOffline: true,
+        isFormCompulsory: isFormCompulsory
       });
     }
+
     if (history_and_comments) {
       featureCards.push({
         title: `Activity & Comments`,
@@ -73,6 +76,7 @@ export default function FeaturedCardLists(props) {
         action: 'Activity tree',
         link: 'activity_comments',
         isOffline: false,
+        isFormCompulsory: false
       });
     }
 
@@ -83,6 +87,8 @@ export default function FeaturedCardLists(props) {
         action: 'View location pipeline',
         link: 'sales_pipeline',
         isOffline: false,
+        isFormCompulsory: false
+
       });
     }
 
@@ -93,6 +99,7 @@ export default function FeaturedCardLists(props) {
         action: 'Specific actions to be addressed',
         link: 'actions_items',
         isOffline: false,
+        isFormCompulsory: false
       });
     }
 
@@ -103,6 +110,7 @@ export default function FeaturedCardLists(props) {
         action: 'View allocated devices',
         link: 'devices',
         isOffline: true,
+        isFormCompulsory: false
       });
     }
 
@@ -113,8 +121,10 @@ export default function FeaturedCardLists(props) {
         action: 'View customer sales history',
         link: 'customer_sales',
         isOffline: false,
+        isFormCompulsory: false
       });
     }
+
     if (isShowTouchpoint) {
       featureCards.push({
         title: `Touchpoints`,
@@ -122,8 +132,10 @@ export default function FeaturedCardLists(props) {
         action: 'View touchpoints history',
         link: 'touchpoints',
         isOffline: false,
+        isFormCompulsory: false
       });
     }
+
     setFeatureCards([...featureCards]);
   };
 
@@ -141,6 +153,7 @@ export default function FeaturedCardLists(props) {
               icon={item.icon}
               title={item.title}
               actionTitle={item.action}
+              isFormCompulsory={item.isFormCompulsory}
               onAction={() => {
 
                 checkConnectivity().then((isConnected) => {

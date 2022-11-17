@@ -36,50 +36,51 @@ export default function HomeScreen(props) {
 
   useEffect(() => {
 
-    // BackgroundTimer.stopBackgroundTimer();    
-    // BackgroundTimer.runBackgroundTimer( async() => {          
+    BackgroundTimer.stopBackgroundTimer();    
+    BackgroundTimer.runBackgroundTimer( async() => {          
 
-    //   if(speed_test.enabled === "1" && !syncStart){  
+      if(speed_test.enabled === "1" && !syncStart){  
 
-    //     const manual = await getLocalData("@manual_online_offline");        
-    //     if(manual != "1"){
-    //       getSpeedTest("",{}).then( async(res) => {
+        const manual = await getLocalData("@manual_online_offline");        
+        if(manual != "1"){
+          getSpeedTest("",{}).then( async(res) => {
             
-    //         const isOnline = await getLocalData("@online");
-    //         console.log("DATA: " ,speed_test)
-    //         console.log("SPEED:  " , res , isOnline ,manual)
-    //         if(parseInt(speed_test.minimum_speed_required) >= res && (isOnline === "1" || isOnline === undefined) ){ // offline
-    //           console.log("Go to Offline")
-    //           showOfflineMessage();
-    //         }else if( parseInt(speed_test.minimum_speed_required) < res && isOnline === "0") { // online               
-    //           if( (manual === "0" || manual === undefined) && isOnline === "0"){                
-    //             console.log("Go to Online")
-    //             dispatch(showNotification({type: Strings.Success, message: Strings.Online_Mode_Message , buttonText: Strings.Ok , buttonAction : async() => {
-    //               navigation.navigate('Home' , {sync: true});
-    //               await storeLocalValue("@online", "1");
-    //               dispatch({type: CHANGE_OFFLINE_STATUS , payload: false });   
-    //               dispatch(clearNotification());
-    //             } }));
-    //           }
-    //         }
-    //       }).catch(async(e) => {    
+            const isOnline = await getLocalData("@online");
+            // console.log("DATA: " ,speed_test)
+            // console.log("SPEED:  " , res , isOnline ,manual)
+            if(parseInt(speed_test.minimum_speed_required) >= res && (isOnline === "1" || isOnline === undefined) ){ // offline
+              console.log("Go to Offline")
+              showOfflineMessage();
+            }else if( parseInt(speed_test.minimum_speed_required) < res && isOnline === "0") { // online               
+              if( (manual === "0" || manual === undefined) && isOnline === "0"){                
+                console.log("Go to Online")
+                dispatch(showNotification({type: Strings.Success, message: Strings.Online_Mode_Message , buttonText: Strings.Ok , buttonAction : async() => {
+                  navigation.navigate('Home' , {sync: true});
+                  await storeLocalValue("@online", "1");
+                  dispatch({type: CHANGE_OFFLINE_STATUS , payload: false });   
+                  dispatch(clearNotification());
+                  dispatch(clearNotification());
+                } }));
+              }
+            }
+          }).catch(async(e) => {    
 
-    //           const isOnline = await getLocalData("@online");        
-    //           console.log("go to offline in error case" , isOnline)      
-    //           if(isOnline === "1" || isOnline === undefined ){
-    //             console.log("go to offline in error case")
-    //             showOfflineMessage();
-    //           }
+              const isOnline = await getLocalData("@online");        
+              console.log("go to offline in error case" , isOnline)      
+              if(isOnline === "1" || isOnline === undefined ){
+                console.log("go to offline in error case")
+                showOfflineMessage();
+              }
               
-    //       });
+          });
 
-    //     }           
-    //   }  
+        }           
+      }  
 
-    // }, parseInt(speed_test.frequency) * 1000); //parseInt(speed_test.frequency)
-    // return () => {
-    //   BackgroundTimer.stopBackgroundTimer();
-    // }
+    }, parseInt(speed_test.frequency) * 1000); //parseInt(speed_test.frequency)
+    return () => {
+      BackgroundTimer.stopBackgroundTimer();
+    }
 
   } , [syncStart])
 

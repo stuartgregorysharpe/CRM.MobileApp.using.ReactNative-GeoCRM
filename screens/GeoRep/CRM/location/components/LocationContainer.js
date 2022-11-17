@@ -38,6 +38,7 @@ import LocationWatcher from './LocationWatcher';
 let previousZoom = 0;
 
 const LocationContainer = props => {
+  
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -319,6 +320,7 @@ const LocationContainer = props => {
       <MarkerViewModal ref={markerModalRef} />
 
       <LocationFilterModal ref={locationFilterModalRef} page={'map'} />
+      
       <AddToCalendarModal
         ref={addToCalendarModalRef}
         onButtonAction={() => {

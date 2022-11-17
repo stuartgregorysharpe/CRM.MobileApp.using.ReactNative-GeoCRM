@@ -1,35 +1,37 @@
 import {View, StyleSheet, Platform} from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState , useCallback} from 'react';
 import CTextInput from '../../../../../components/common/CTextInput';
 import SignatureScreen from 'react-native-signature-canvas';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
-import {Constants, Strings} from '../../../../../constants';
+import {Colors, Constants, Strings} from '../../../../../constants';
 import {validateMsisdn} from '../../../../../helpers/validateHelper';
 import {generateKey} from '../../../../../constants/Utils';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 
 var previousText = Constants.msisdnPrefix;
 
 export default function StockSignatureView(props) {
+
   const dispatch = useDispatch();
   const signatureScreenRef = useRef(null);
   const msisdnRef = useRef(null);
-  const {onChangedReceivedBy, onChangedSerial, signature, onSubmit, onClose} =
-    props;
+  const {onChangedReceivedBy, onChangedSerial, signature, onSubmit, onClose} = props;
   const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
-  const isMSISDN = features.includes('msisdn');
-  const [enabled, setEnabled] = useState(false);
+  const isMSISDN = features.includes('msisdn');  
   const [path, setPath] = useState(null);
   const [receivedBy, setReceivedBy] = useState();
   const [hasMsisdnError, setHasMsisdnError] = useState(false);
   const [hasReceivedByError, setHasReceivedByError] = useState(false);
   const [serial, setSerial] = useState(Constants.msisdnPrefix);
+  const [deviceType, setDeviceType] = useState('');
+  const [deviceTypeError, setDeviceTypeError] = useState(false)
 
   const handleOK = async signature => {
     var outputPath =
@@ -51,7 +53,7 @@ export default function StockSignatureView(props) {
     onClose();
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = () => {   
     if (signatureScreenRef.current) {
       signatureScreenRef.current.readSignature();
     }
@@ -74,6 +76,11 @@ export default function StockSignatureView(props) {
       } else {
         setHasMsisdnError(true);
       }
+      if(deviceType === ''){
+        setDeviceTypeError(true)
+      }else{
+        setDeviceTypeError(false)
+      }
       if (receivedBy != '') {
         flag = true;
       }
@@ -81,28 +88,36 @@ export default function StockSignatureView(props) {
       if (receivedBy != '') {
         flag = true;
       }
-    }
-    setEnabled(flag);
+    }    
   };
 
-  const onFileSubmit = () => {
-    let isValidForm = true;
+  const onFileSubmit = useCallback(() => {
+    
+    let isValidForm = true;    
     if (
       props.item.stock_type != Constants.stockType.RETURN &&
       isMSISDN &&
       props.item.stock_type != Constants.stockType.SIM &&
-      !validateMsisdn(serial)
+      !validateMsisdn(serial)      
     ) {
-      setHasMsisdnError(true);
-      /*if (msisdnRef.current) {
-        msisdnRef.current.focus();
-      }*/
+      setHasMsisdnError(true);      
       isValidForm = false;
     }
+
+    if( props.item.stock_type != Constants.stockType.RETURN &&
+      isMSISDN &&
+      props.item.stock_type != Constants.stockType.SIM && (deviceType === '' || deviceType === undefined) ){
+        setDeviceTypeError(true);
+        isValidForm = false;
+    }
+    
     if (!receivedBy || receivedBy == '') {
       setHasReceivedByError(true);
       isValidForm = false;
     }
+
+    console.log("validate error" , isValidForm);
+    
     if (!isValidForm) {
       dispatch(
         showNotification({
@@ -117,7 +132,7 @@ export default function StockSignatureView(props) {
     if (path != null) {
       RNFS.exists(path).then(res => {
         if (res) {
-          onSubmit(path);
+          onSubmit(path , deviceType);
         } else {
           dispatch(
             showNotification({
@@ -137,30 +152,11 @@ export default function StockSignatureView(props) {
         }),
       );
     }
-  };
+  },[path,deviceType,serial]);
 
-  return (
-    <View style={styles.container}>
-      <CTextInput
-        label={'Received By'}
-        isRequired={true}
-        value={receivedBy}
-        returnKeyType={'done'}
-        hasError={hasReceivedByError}
-        onChangeText={text => {
-          onChangedReceivedBy(text);
-          setReceivedBy(text);
-          checkValidation();
-          if (text && text != '') {
-            setHasReceivedByError(false);
-          }
-        }}
-        style={{marginTop: 15}}
-      />
-
-      {props.item.stock_type != Constants.stockType.RETURN &&
-        isMSISDN &&
-        props.item.stock_type != Constants.stockType.SIM && (
+  const renderDeviceView = () => {
+    return (
+      <View>
           <CTextInput
             cTextRef={msisdnRef}
             label={Strings.Assign_Msisdn}
@@ -196,7 +192,50 @@ export default function StockSignatureView(props) {
               }
             }}
           />
-        )}
+
+          <CSingleSelectInput
+            description={Strings.Stock.Primary_Additional}
+            placeholder={Strings.Stock.Primary_Additional}
+            placeholderStyle={{color:Colors.textGeyColor}}
+            mode="single"
+            checkedValue={deviceType}
+            items={[{label: Constants.deviceTypeLabel.PRIMARY , value: Constants.deviceTypeLabel.PRIMARY} , {label:Constants.deviceTypeLabel.ADDITIONAL , value: Constants.deviceTypeLabel.ADDITIONAL}]}
+            hasError={deviceTypeError}
+            disabled={false}
+            onSelectItem={item => {
+              setDeviceType(item.value);
+            }}
+            containerStyle={{marginTop: 15}}
+          />
+
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.container}>
+      <CTextInput
+        label={'Received By'}
+        isRequired={true}
+        value={receivedBy}
+        returnKeyType={'done'}
+        hasError={hasReceivedByError}
+        onChangeText={text => {
+          onChangedReceivedBy(text);
+          setReceivedBy(text);
+          checkValidation();
+          if (text && text != '') {
+            setHasReceivedByError(false);
+          }
+        }}
+        style={{marginTop: 15}}
+      />
+
+      {props.item.stock_type != Constants.stockType.RETURN &&
+        isMSISDN &&
+        props.item.stock_type != Constants.stockType.SIM && (
+          renderDeviceView()
+      )}
 
       <SignatureScreen
         style={{marginTop: 10}}
@@ -229,7 +268,7 @@ export default function StockSignatureView(props) {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
-    height: Platform.OS === 'android' ? 360 : 380,
+    height: Platform.OS === 'android' ? 400 : 420,
     marginBottom: Platform.OS === 'android' ? 0 : 20,
   },
 });

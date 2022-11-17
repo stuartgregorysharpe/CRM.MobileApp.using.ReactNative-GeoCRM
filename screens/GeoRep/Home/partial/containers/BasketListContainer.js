@@ -179,8 +179,9 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 console.log("Total Page Number", res.total_pages);
 
                 if(lastSyncedParam != null && lastSyncedParam != ""){
+                    console.log("delete previous ones");
                     await deleteRecords(tableName, res.records);
-                }
+                }                
                 
                 await handleRecords(tableName, res.records);
 

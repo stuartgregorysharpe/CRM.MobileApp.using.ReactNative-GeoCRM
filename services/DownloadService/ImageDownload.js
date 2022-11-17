@@ -51,26 +51,28 @@ export function downloadImageFiles(photos){
   return new Promise( async function(resolve, reject) {
 
     var localPaths = [];
-    for(let i = 0; i < photos.length; i++){     
-      if(photos[i].includes("http")){        
-        var downloadFile = getFileName(photos[i]);
-        console.log("file path", photos[i], JSON.stringify(downloadFile) );
-        var fileName =  downloadFile.name;
-        var ext = downloadFile.ext;      
-
-        var res = await downloadImageFile(photos[i], fileName, ext);
-        console.log("download res", res);
-        if ( res && res.statusCode === 200 && res.bytesWritten > 0 ){
-          var path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}` ;        
-          if (!path.includes('file://')) {
-            path = 'file://' + path;
-          }
-          localPaths.push(path);
-        } 
-      }else{
-        localPaths.push(photos[i]);
-      }      
-    }    
+    if(photos != undefined){
+      for(let i = 0; i < photos.length; i++){     
+        if(photos[i].includes("http")){        
+          var downloadFile = getFileName(photos[i]);
+          console.log("file path", photos[i], JSON.stringify(downloadFile) );
+          var fileName =  downloadFile.name;
+          var ext = downloadFile.ext;      
+  
+          var res = await downloadImageFile(photos[i], fileName, ext);
+          console.log("download res", res);
+          if ( res && res.statusCode === 200 && res.bytesWritten > 0 ){
+            var path = Platform.OS === 'ios' ?  `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}` :  `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}` ;        
+            if (!path.includes('file://')) {
+              path = 'file://' + path;
+            }
+            localPaths.push(path);
+          } 
+        }else{
+          localPaths.push(photos[i]);
+        }      
+      }   
+    }     
     resolve(localPaths);
 
   });

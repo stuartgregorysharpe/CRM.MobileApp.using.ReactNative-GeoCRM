@@ -22,7 +22,7 @@ export const getSpeedTest = async (route, param) => {
     var token = await getToken();
     var baseUrl = await getBaseUrl();
     var url = `${baseUrl}/${route}`;
-    console.log('Track URL : ', url);    
+    //console.log('Track URL : ', url);    
   
     const _start = new Date().getTime();
 
@@ -37,13 +37,13 @@ export const getSpeedTest = async (route, param) => {
         })
         .then(res => {     
             var byteArray = convertStringToByteArray(JSON.stringify(res));
-            console.log("byte alrray ", byteArray.length);            
+            //console.log("byte alrray ", byteArray.length);            
             const _end = new Date().getTime();
-            console.log("start time" , _start);
-            console.log("end time" , _end);
-            console.log("elapsed time" , _end -_start)
+            //console.log("start time" , _start);
+            //console.log("end time" , _end);
+            //console.log("elapsed time" , _end -_start)
             const kbPerSecond = Math.floor((byteArray.length/1024)/((_end -_start)/1000));
-            console.log("kbPerSecond",kbPerSecond);
+            //console.log("kbPerSecond",kbPerSecond);
             resolve(kbPerSecond);
 
         })

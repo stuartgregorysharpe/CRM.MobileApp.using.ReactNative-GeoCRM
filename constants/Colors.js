@@ -58,6 +58,7 @@ export default {
   primaryColor: '#133C8B',
   bgColor: '#F9F9F9',
   textColor: '#23282D',
+  textGeyColor: '#777777',
   greenColor: '#b7e2bb',
   green2Color: '#0ED20E',
 

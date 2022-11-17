@@ -19,8 +19,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import {useSelector, useDispatch} from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, {
-  PRIMARY_COLOR,
+import Colors, {  
   TEXT_COLOR,
   BG_COLOR,
   BLUE_COLOR,

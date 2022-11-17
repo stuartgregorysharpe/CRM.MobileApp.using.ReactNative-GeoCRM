@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, StyleSheet , Text , Image} from 'react-native';
-import { PRIMARY_COLOR, whiteLabel } from '../../constants/Colors';
+import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import Images from '../../constants/Images';
 import HeaderRightView from './HeaderRightView';

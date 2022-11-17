@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-
 import SvgIcon from './SvgIcon';
 import { boxShadow, style } from '../constants/Styles';
-import { PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
+import Colors, { whiteLabel } from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 
 export default function FilterButton(props) {
@@ -25,7 +24,7 @@ export default function FilterButton(props) {
 const styles = StyleSheet.create({
   
   cardtitle: {
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontSize: 14,
     fontFamily:Fonts.secondaryMedium,
   },

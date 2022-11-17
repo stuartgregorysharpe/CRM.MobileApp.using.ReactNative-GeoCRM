@@ -5,23 +5,25 @@ import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
-import {getDistance} from '../../../../constants/Helper';
+import {getDistance, getPostParameter} from '../../../../constants/Helper';
 import {
   checkFeatureIncludeParam,
   getLocalData,
 } from '../../../../constants/Storage';
-import {useDispatch} from 'react-redux';
-import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
+import {useDispatch, useSelector} from 'react-redux';
+import {CHECKIN, LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
+import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
+import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 let isCheckIn = '0';
 
-export function CalendarItem({
-  navigation,
-  item,
-  current,
-  tabIndex,
-  onItemSelected,
-}) {
+export function CalendarItem(props) {
+
+  const {navigation, item, current, tabIndex, onItemSelected} = props;
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
+  
   useEffect(() => {
     initData();
   }, []);
@@ -30,9 +32,12 @@ export function CalendarItem({
     isCheckIn = await getLocalData('@checkin');
   };
 
+  const checkOpenReplaceCheckin = () => {
+    return features != null && features.includes('open_replace_checkin');
+  };
   const dispatch = useDispatch();
   const getButtonColor = checkin_state => {
-    if (checkFeatureIncludeParam('open_replace_checkin')) {
+    if (checkOpenReplaceCheckin()) {
       return whiteLabel().actionFullButtonBackground;
     } else {
       if (checkin_state === 'checkin_required') {
@@ -46,7 +51,7 @@ export function CalendarItem({
   };
 
   const getButtonText = checkin_state => {
-    if (checkFeatureIncludeParam('open_replace_checkin')) {
+    if (checkOpenReplaceCheckin()) {
       return 'Open';
     } else {
       if (checkin_state === 'checkin_required') {
@@ -59,6 +64,84 @@ export function CalendarItem({
     }
   };
 
+  const renderCheckOutButton = () => {
+    return <CheckOutViewContainer
+                type="calendar"
+                goBack={async res => {                  
+                  console.log("res", res)
+                }}
+              />
+  }
+
+  const renderStatusButton = () => {
+    if (
+      item.checkin_state === 'checkin_required' ||
+      item.checkin_state === 'checkin_completed'
+    ) {
+      return (
+        <CheckinLinkButton
+          title="Check In"
+          locationId={item.location_id}
+          renderSubmitButton={onCheckIn => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  onCheckIn();
+                }}
+                style={[
+                  styles.itemButton,
+                  {backgroundColor: getButtonColor(item.checkin_state)},
+                ]}>
+                <Text style={styles.itemButtonText}>
+                  {' '}
+                  {getButtonText(item.checkin_state)}{' '}
+                </Text>
+                <FontAwesomeIcon
+                  style={styles.itemButtonIcon}
+                  size={16}
+                  color={whiteLabel().actionFullButtonIcon}
+                  icon={faCheckCircle}
+                />
+              </TouchableOpacity>
+            );
+          }}
+        />
+      );
+    }
+    return (
+      <TouchableOpacity
+        style={[
+          styles.itemButton,
+          {backgroundColor: getButtonColor(item.checkin_state)},
+        ]}
+        onPress={() => {
+          if (checkOpenReplaceCheckin()) {
+            dispatch({
+              type: LOCATION_ID_CHANGED,
+              payload: {value: item.location_id, type: tabIndex},
+            });
+            navigation.navigate('CRM', {
+              screen: 'LocationSearch',
+              params: {location_id: item.location_id},
+            });
+            onItemSelected();
+          }
+        }}>
+        <Text style={styles.itemButtonText}>
+          {' '}
+          {getButtonText(item.checkin_state)}{' '}
+        </Text>
+        <FontAwesomeIcon
+          style={styles.itemButtonIcon}
+          size={16}
+          color={whiteLabel().actionFullButtonIcon}
+          icon={faCheckCircle}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  
   if (item != undefined && item.coordinates != undefined) {
     return (
       <View style={[styles.itemContainer, style.card]}>
@@ -80,35 +163,11 @@ export function CalendarItem({
             {' '}
             {item.schedule_time}
           </Text>
-          <TouchableOpacity
-            style={[
-              styles.itemButton,
-              {backgroundColor: getButtonColor(item.checkin_state)},
-            ]}
-            onPress={() => {
-              if (checkFeatureIncludeParam('open_replace_checkin')) {
-                dispatch({
-                  type: LOCATION_ID_CHANGED,
-                  payload: {value: item.location_id, type: tabIndex},
-                });
-                navigation.navigate('CRM', {
-                  screen: 'LocationSearch',
-                  params: {location_id: item.location_id},
-                });
-                onItemSelected();
-              }
-            }}>
-            <Text style={styles.itemButtonText}>
-              {' '}
-              {getButtonText(item.checkin_state)}{' '}
-            </Text>
-            <FontAwesomeIcon
-              style={styles.itemButtonIcon}
-              size={16}
-              color={whiteLabel().actionFullButtonIcon}
-              icon={faCheckCircle}
-            />
-          </TouchableOpacity>
+          {
+            item.checkin_state === 'checkin_current' ? renderCheckOutButton() : renderStatusButton()
+          }
+          
+
           {/* <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text> */}
         </View>
       </View>

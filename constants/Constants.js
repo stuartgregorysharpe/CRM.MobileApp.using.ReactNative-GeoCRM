@@ -36,6 +36,7 @@ export default {
     FORM_TYPE_FORMAT_PRICE: 'format_price',
     FORM_TYPE_BRAND_COMPETITOR_FACING: 'brand_competitor_facings',
     FORM_TYPE_FSU_CAMPAIGN: 'fsu_campaign',
+    FORM_TYPE_POS_CAPTURE: 'pos_capture',
   },
 
   actionType: {
@@ -128,4 +129,12 @@ export default {
     FEATURE_PRODUCT_CHANNELS: 'product_channels',
     FEATURE_OUTCOMES: 'outcomes',
   },
+  deviceType: [    
+    'Additional',
+    'Primary'
+  ],
+  deviceTypeLabel : {
+    PRIMARY : 'Primary Device',
+    ADDITIONAL : 'Additional Device'
+  }
 };

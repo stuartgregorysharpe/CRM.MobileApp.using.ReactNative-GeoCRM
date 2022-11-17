@@ -1,6 +1,6 @@
 import {StyleSheet, Platform, Dimensions} from 'react-native';
 import Fonts from './Fonts';
-import Colors, {BG_COLOR, PRIMARY_COLOR, whiteLabel} from './Colors';
+import Colors, { whiteLabel} from './Colors';
 
 export const boxShadow = StyleSheet.create({
   shadowColor: '#808080',

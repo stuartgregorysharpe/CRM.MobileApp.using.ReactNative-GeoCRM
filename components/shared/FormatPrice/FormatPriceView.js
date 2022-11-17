@@ -173,7 +173,7 @@ const FormatPriceView = props => {
         placeholderStyle={{color: whiteLabel().mainText, fontWeight: '700'}}
         description={'Select Format'}
         placeholder={'Select Format'}
-        mode='single'
+        mode="single"
         checkedValue={selectedFormat}
         items={formats}
         hasError={false}
