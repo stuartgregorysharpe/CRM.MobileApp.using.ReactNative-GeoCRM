@@ -11,8 +11,8 @@ import {
 } from '../../../../../actions/notification.action';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
-import GetRequestStockFieldData from '../../../../../DAO/GetRequestStockFieldData';
-import { GetRequestStockFieldDataDAO } from '../../../../../DAO';
+import { GetRequestStockFieldDataDAO, PostRequestDAO } from '../../../../../DAO';
+import PostRequest from '../../../../../DAO/PostRequest';
 
 export default function AddStockContainer(props) {
   const dispatch = useDispatch();
@@ -49,39 +49,44 @@ export default function AddStockContainer(props) {
   };
   
   const callAddStock = (type, data) => {
+
     setIsLoading(true);
     var userParam = getPostParameter(currentLocation);
-    data['user_local_data'] = userParam.user_local_data;
-    postApiRequest('stockmodule/add-stock', data)
-      .then(res => {
-        setIsLoading(false);
-        if (res.status === Strings.Success) {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.message,
-              buttonText: 'Ok',
-              buttonAction: async () => {
-                props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-                dispatch(clearNotification());
-              },
-            }),
-          );
-        } else {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.errors,
-              buttonText: 'Ok',
-            }),
-          );
-        }
-      })
-      .catch(e => {
-        setIsLoading(false);
-        console.log('error', e);
-        expireToken(dispatch, e);
-      });
+    data['user_local_data'] = userParam.user_local_data; 
+    var subTitle = type; 
+    if( type == Constants.stockType.DEVICE || type == Constants.stockType.CONSUMABLE){
+      subTitle = data.description;
+    }else{      
+      subTitle = data.sims.map(item => item.network).join(', ');
+    }    
+    PostRequestDAO.find(0, data, "add_stock", "stockmodule/add-stock" , type, subTitle ).then((res ) => {
+      setIsLoading(false);
+      if (res.status === Strings.Success) {
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: res.message,
+            buttonText: 'Ok',
+            buttonAction: async () => {
+              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+              dispatch(clearNotification());
+            },
+          }),
+        );
+      } else {
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: res.errors,
+            buttonText: 'Ok',
+          }),
+        );
+      }
+    }).catch((e) => {
+      setIsLoading(false);      
+      expireToken(dispatch, e);
+    });
+
   };
 
   return (

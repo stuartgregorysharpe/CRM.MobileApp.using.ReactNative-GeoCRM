@@ -106,6 +106,8 @@ const Stock = props => {
           if(Dimensions.get("screen").height - height < 200) {
             console.log("margin ====")
             setMarginBottom(40)
+          }else{
+            setMarginBottom(0)
           }
         }}
       >
