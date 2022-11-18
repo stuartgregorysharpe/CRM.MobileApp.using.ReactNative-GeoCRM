@@ -11,6 +11,8 @@ import {
 } from '../../../../../actions/notification.action';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
+import GetRequestStockFieldData from '../../../../../DAO/GetRequestStockFieldData';
+import { GetRequestStockFieldDataDAO } from '../../../../../DAO';
 
 export default function AddStockContainer(props) {
   const dispatch = useDispatch();
@@ -29,24 +31,23 @@ export default function AddStockContainer(props) {
   }, []);
 
   const _callStockFieldData = () => {
-    getApiRequest('stockmodule/stock-field-data?action=add_stock', {})
-      .then(res => {
-        if (isMount) {
-          if (res.status === Strings.Success) {
-            setStockTypes(res.stock_types);
-            var types = [];
-            for (let value of Object.keys(res.stock_types)) {
-              types.push({value: value, label: value});
-            }
-            setDevicetypeLists(types);
-          }
-        }
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
-  };
 
+    GetRequestStockFieldDataDAO.find({action: 'add_stock'}).then((res) => {
+      if (isMount) {
+        if (res.status === Strings.Success) {
+          setStockTypes(res.stock_types);
+          var types = [];
+          for (let value of Object.keys(res.stock_types)) {
+            types.push({value: value, label: value});
+          }
+          setDevicetypeLists(types);
+        }
+      }
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    });
+  };
+  
   const callAddStock = (type, data) => {
     setIsLoading(true);
     var userParam = getPostParameter(currentLocation);

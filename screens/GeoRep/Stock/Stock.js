@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import TopThreeTab from '../../../components/common/TopThreeTab';
 import StockLists from './stock/StockLists';
@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 const Stock = props => {
 
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const [marginBottom , setMarginBottom] = useState(0)
   const topMenuItems = [
     {
       title: 'Stock',
@@ -97,7 +98,17 @@ const Stock = props => {
       <Notification />
 
       {/* marginBottom:50 */}
-      <View style={{flex: 1 ,  }}>
+      <View style={{flex: 1 , marginBottom: marginBottom }} 
+        onLayout={(event) => {
+          var {x, y, width, height} = event.nativeEvent.layout;
+          console.log("height" , height);
+          console.log("deivce height",  Dimensions.get("screen").height)
+          if(Dimensions.get("screen").height - height < 200) {
+            console.log("margin ====")
+            setMarginBottom(40)
+          }
+        }}
+      >
         {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
         {selectedTabIndex === 2 && <Movements></Movements>}
