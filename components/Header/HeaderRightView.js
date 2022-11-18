@@ -27,6 +27,7 @@ export default function HeaderRightView({navigation}) {
   //    setToggleSwitch(!offlineStatus)
   // }, [offlineStatus]);
 
+
   const showMessage = (toggleSwitch) => {
     dispatch(showNotification({
       type: Strings.Success , 

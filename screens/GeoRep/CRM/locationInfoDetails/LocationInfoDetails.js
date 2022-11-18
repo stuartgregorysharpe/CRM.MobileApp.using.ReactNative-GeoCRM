@@ -133,8 +133,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const updateLocationInfo = _locationInfo => {
     if (!_locationInfo) return;
     if (
-      locationInfoRef.current !== undefined &&
-      locationInfoRef.current.updateDispositionData
+      locationInfoRef.current != undefined &&
+      locationInfoRef.current != null
     ) {
       locationInfoRef.current.updateDispositionData(_locationInfo);
     }
@@ -449,8 +449,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const onClickCheckIn = async () => {
-    var isCheckin = await getLocalData('@checkin');
-    if (isCheckin === '1') {
+    //var isCheckin = await getLocalData('@checkin');
+    
+    if (isCheckin) {
       dispatch(
         showNotification({
           type: Strings.Success,
@@ -464,8 +465,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
             var specificLocationId = await getLocalData(
               '@specific_location_id',
-            );
+            );            
 
+            console.log("specificLocationId =>",specificLocationId)
             props.navigation.navigate('LocationSpecificInfo', {
               locationId: specificLocationId,
               page: 'checkin',
@@ -630,8 +632,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                     setLocationInfo(res);
                     outcomeVal = false;
                     if (
-                      locationInfoRef.current !== undefined &&
-                      locationInfoRef.current.updateDispositionData
+                      locationInfoRef.current != undefined &&
+                      locationInfoRef.current != null
                     ) {
                       locationInfoRef.current.updateDispositionData(res);
                     }
@@ -721,7 +723,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 style={[styles.checkInButton]}
                 onPress={async () => {
                   clickedAction = 'checkin';
-                  if (_canGoNextPrev()) {
+                  if (_canGoNextPrev()) {                    
                     onClickCheckIn();
                   }
                 }}>

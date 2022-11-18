@@ -124,7 +124,7 @@ const LocationSpecificInfoScreen = props => {
   const getCheckInLocation = async() => {
     var location = await getJsonData("@checkin_location");    
     if(location != null){
-      if (locationInfoRef.current !== undefined) {
+      if (locationInfoRef.current != undefined && locationInfoRef.current != null) {
         locationInfoRef.current.updateDispositionData(location);
       }
       setLocationIfo(location);
@@ -161,7 +161,7 @@ const LocationSpecificInfoScreen = props => {
     getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
         if (isMout) {
-          if (locationInfoRef.current !== undefined) {
+          if (locationInfoRef.current != undefined && locationInfoRef.current != null) {
             locationInfoRef.current.updateDispositionData(res);
           }
           setLocationIfo(res);
