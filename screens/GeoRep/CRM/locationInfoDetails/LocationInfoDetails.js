@@ -697,12 +697,15 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 onPress={async () => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {
+
                     if (props.onButtonAction) {
                       props.onButtonAction({
                         type: Constants.actionType.ACTION_CLOSE,
                         value: 'access_crm',
                       });
                     }
+
+                    console.log("access crm", locationInfo)
 
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,

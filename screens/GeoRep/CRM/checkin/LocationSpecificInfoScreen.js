@@ -96,7 +96,7 @@ const LocationSpecificInfoScreen = props => {
   useEffect(() => {
     isMout = true;
 
-    if (isCheckin == false) {
+    if (isCheckin == false && pageType != "access_crm") {
       if (props.navigation.canGoBack()) {
         if (isMout) {
           props.navigation.goBack();
