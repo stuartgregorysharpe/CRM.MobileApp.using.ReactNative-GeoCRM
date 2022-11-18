@@ -4,6 +4,7 @@ import {baseURL, Strings} from '../constants';
 import {getTokenData} from '../constants/Storage';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import UrlResource from './UrlResource';
+import {getFormQuestionData} from './form-questions-db-helper';
 
 export function find(postData) {
   return new Promise(function (resolve, reject) {
@@ -35,6 +36,7 @@ export function find(postData) {
         }
       })
       .catch(e => {
+        console.log('error', e);
         reject(e);
       });
   });
@@ -86,11 +88,11 @@ const fetchReturnProductsFromDB = async (business_unit_id, client_id) => {
   return res.rows ? res.rows : [];
 };
 
-const fetchPrimaryDeviceFromDB = async(location_id) => {
+const fetchPrimaryDeviceFromDB = async location_id => {
   const query = generatePrimaryDeviceQuery();
   const res = await ExecuteQuery(query, [location_id]);
   return res.rows ? res.rows : [];
-}
+};
 
 const fetchReasonsFromDB = async (
   business_unit_id,
@@ -317,10 +319,9 @@ const generateReturnProductQuery = () => {
 };
 
 const generatePrimaryDeviceQuery = () => {
-  var query  = `SELECT device_msisdn  FROM location_devices WHERE primary_device = 1 AND location_id = ?`;    
+  var query = `SELECT device_msisdn  FROM location_devices WHERE primary_device = 1 AND location_id = ?`;
   return query;
-}
-
+};
 
 const getFormQuestions = async (
   lists,
@@ -335,10 +336,12 @@ const getFormQuestions = async (
     var fieldData = '';
     if (postData.location_id != undefined) {
       if (question_tag != undefined && question_tag != '') {
-        if(question_tag === "msisdn"){
-          var primaryDeivce = await fetchPrimaryDeviceFromDB(postData.location_id);
-          fieldData = await getPrimaryDeviceData( primaryDeivce );                 
-        }else{
+        if (question_tag === 'msisdn') {
+          var primaryDeivce = await fetchPrimaryDeviceFromDB(
+            postData.location_id,
+          );
+          fieldData = await getPrimaryDeviceData(primaryDeivce);
+        } else {
           var fieldDataLists = await fetchFieldDetailsFromDB(
             client_id,
             business_unit_id,
@@ -346,7 +349,6 @@ const getFormQuestions = async (
           );
           fieldData = await getFieldData(fieldDataLists, postData);
         }
-        
       }
     }
 
@@ -491,9 +493,21 @@ const getFormQuestions = async (
         products: productsResult,
       });*/
     } else if (
-      questionType == 'sku_select' ||
-      questionType == 'sku_count' ||
       questionType == 'sku_shelf_share' ||
+      questionType == 'sku_count'
+    ) {
+      console.log('sku_count questionData start', bodyRes);
+      const questionData = await getFormQuestionData(
+        bodyRes,
+        business_unit_id,
+        client_id,
+        postData,
+        element,
+      );
+      console.log('sku_count questionData result', questionData);
+      tmp.push(questionData);
+    } else if (
+      questionType == 'sku_select' ||
       questionType == 'product_issues' ||
       questionType == 'format_price' ||
       questionType == 'brand_competitor_facings' ||
