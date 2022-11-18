@@ -1,39 +1,5 @@
 import {ExecuteQuery} from '../../sqlite/DBHelper';
 
-const fetchPlacementAreasFromDB = async (
-  business_unit_id,
-  client_id,
-  form_question_id,
-) => {
-  const query = `SELECT
-                      placement_type,
-                      area
-                  FROM forms_pos_placement_areas
-                  WHERE
-                      business_unit_id = ?
-                    AND
-                      client_id = ?
-                    AND 
-                      delete_status = 0
-                    AND
-                      form_question_id = ?
-                  ORDER BY placement_type,area`;
-  const res = await ExecuteQuery(query, [
-    business_unit_id,
-    client_id,
-    form_question_id,
-  ]);
-  const result = res.rows ? res.rows : [];
-  const resultList = [];
-  for (let i = 0; i < result; i++) {
-    const item = result.item(i);
-    resultList.push({
-      placement_type: item.placement_type,
-      area: item.area,
-    });
-  }
-  return resultList;
-};
 async function fetchExcludeCategories(locationId) {
   if (!locationId) return [];
   const query = `SELECT
@@ -58,6 +24,7 @@ function getCategories(questionBody) {
   ) {
     return segmentation_category.split(',');
   }
+  return [];
 }
 
 async function fetchCategories(
@@ -126,6 +93,7 @@ async function fetchCategories(
     query += ` AND c.category IN (${exclude_categories_comma_split})`;
   }
   query += ` GROUP BY ps.placement_segment,c.category`;
+  console.log('query', query);
   const res = await ExecuteQuery(query);
   const result = res.rows ? res.rows : [];
   const resultList = [];
@@ -214,10 +182,16 @@ async function getFormQuestionData(
   postData,
   questionBody,
 ) {
+  console.log('baseFormData', baseFormData);
+  console.log('questionBody', questionBody);
+  console.log('postData', postData);
+  console.log('business_unit_id', business_unit_id);
+  console.log('client_id', client_id);
   const excludeCategories = await fetchExcludeCategories(postData?.locationId);
   const placement_segment =
     questionBody?.segmentation_placement_segment?.split(',');
   const categories = getCategories(questionBody);
+  console.log('categories', categories);
   const categoryList = await fetchCategories(
     business_unit_id,
     client_id,
@@ -225,11 +199,12 @@ async function getFormQuestionData(
     categories,
     excludeCategories,
   );
+  const form_question_id = questionBody?.form_question_id;
   const brand = await fetchBrand(
     categoryList,
     business_unit_id,
     client_id,
-    questionBody?.form_question_id,
+    form_question_id,
   );
   const competitors = await fetchCompetitors(
     categoryList,
@@ -238,6 +213,7 @@ async function getFormQuestionData(
     form_question_id,
   );
 
+  console.log('competitors', competitors);
   return {
     ...baseFormData,
     categories: categoryList,
