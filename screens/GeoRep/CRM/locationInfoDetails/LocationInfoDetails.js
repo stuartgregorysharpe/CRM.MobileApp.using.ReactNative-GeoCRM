@@ -408,6 +408,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callCheckedIn = async () => {
+
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -423,6 +424,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       postData,
       'checkin',
       'location-info/check-in',
+      '',
+      ''
     )
       .then(async res => {
         if (props.onButtonAction) {

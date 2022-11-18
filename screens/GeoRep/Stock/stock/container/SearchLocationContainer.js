@@ -36,11 +36,12 @@ const SearchLocationContainer = props => {
     ) {
       props.onSubmit(stockType, item.location_id);
     } else {
+
       setLocationId(item.location_id);
+      
       let param = {
         location_id: item.location_id,
       };
-
       
       GetRequestLocationDevicesDAO.find(param).then((res) => {
         if (res.devices.length > 0) {

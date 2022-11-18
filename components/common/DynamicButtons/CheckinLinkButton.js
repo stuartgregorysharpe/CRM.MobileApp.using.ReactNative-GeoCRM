@@ -148,6 +148,8 @@ const CheckinLinkButton = props => {
       postData,
       'checkin',
       'location-info/check-in',
+      '',
+      ''
     )
       .then(async res => {
         setIsFeedback(false);
