@@ -5,13 +5,11 @@ import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
-import {getDistance, getPostParameter} from '../../../../constants/Helper';
-import {
-  checkFeatureIncludeParam,
+import {  
   getLocalData,
 } from '../../../../constants/Storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {CHECKIN, LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
+import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';

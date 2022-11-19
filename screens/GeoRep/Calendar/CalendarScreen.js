@@ -17,8 +17,7 @@ import Fonts from '../../../constants/Fonts';
 import {
   checkFeatureIncludeParam,
   getBaseUrl,
-  getToken,
-  storeLocalValue,
+  getToken,  
 } from '../../../constants/Storage';
 import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';

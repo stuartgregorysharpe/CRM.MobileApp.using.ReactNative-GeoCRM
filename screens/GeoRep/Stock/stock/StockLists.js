@@ -92,10 +92,6 @@ const StockLists = (props) => {
     return unsubscribe;
   }, [navigation]);
 
-  // const initializeLocationId = async () => {
-      
-  // }
-
   const initializeLocationId = useCallback( async() => {
     var locationId = await getLocalData("@specific_location_id");    
     if(locationId != null && locationId != undefined && locationId != ''){

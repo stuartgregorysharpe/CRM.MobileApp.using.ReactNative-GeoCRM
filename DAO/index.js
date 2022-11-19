@@ -15,6 +15,7 @@ import GetRequestStockUsersDAO from './stock/GetRequestStockUsers';
 import GetRequestFormSubmissionsDAO from './GetRequestFormSubmissions';
 import GetRequestLocationDevicesDAO from './locations/GetRequestLocationDevices';
 import GetRequestContentlibraryDAO from './GetRequestContentLibrary';
+import GetRequestCustomerSearchDAO from './locations/GetRequestCustomerSearch';
 
 export {
     LocationMapDAO, 
@@ -33,7 +34,8 @@ export {
     GetRequestStockUsersDAO,
     GetRequestFormSubmissionsDAO,
     GetRequestLocationDevicesDAO,
-    GetRequestContentlibraryDAO
+    GetRequestContentlibraryDAO,
+    GetRequestCustomerSearchDAO
 
 }
 
