@@ -12,7 +12,7 @@ export async function getFormQuestionData(
   const questionType = baseFormData.question_type;
   if (
     questionType == Constants.questionType.FORM_TYPE_SKU_COUNT ||
-    questionType == Constants.questionType.FORM_TYPE_SKU_SELECT
+    questionType == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE
   ) {
     return await SKUFormQuestionDBHelper.getFormQuestionData(
       baseFormData,

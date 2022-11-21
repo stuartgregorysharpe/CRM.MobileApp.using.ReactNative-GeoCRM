@@ -138,10 +138,11 @@ async function fetchCategories(
     placement_segment.length > 0 &&
     placement_segment[0] != ''
   ) {
-    query += ` GROUP BY c.category`;
-  } else {
     query += ` GROUP BY ps.placement_segment,c.category`;
+  } else {
+    query += ` GROUP BY c.category`;
   }
+  console.log('query', query);
   const res = await ExecuteQuery(query);
   const result = res.rows ? res.rows : [];
   const resultList = [];
@@ -149,6 +150,7 @@ async function fetchCategories(
     const item = result.item(i);
     resultList.push(item.category);
   }
+  console.log('resultList', JSON.stringify(resultList));
   return resultList;
 }
 async function fetchBrand(
@@ -230,17 +232,12 @@ async function getFormQuestionData(
   postData,
   questionBody,
 ) {
-  console.log('baseFormData', baseFormData);
-  console.log('questionBody', questionBody);
-  console.log('postData', postData);
-  console.log('business_unit_id', business_unit_id);
-  console.log('client_id', client_id);
   //await testQuery();
   const excludeCategories = await fetchExcludeCategories(postData?.locationId);
   const placement_segment =
     questionBody?.segmentation_placement_segment?.split(',');
   const categories = getCategories(questionBody);
-  console.log('categories', categories);
+
   const categoryList = await fetchCategories(
     business_unit_id,
     client_id,
@@ -261,8 +258,6 @@ async function getFormQuestionData(
     client_id,
     form_question_id,
   );
-
-  console.log('competitors', competitors);
   return {
     ...baseFormData,
     categories: categoryList,

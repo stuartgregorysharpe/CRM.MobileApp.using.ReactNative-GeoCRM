@@ -496,7 +496,6 @@ const getFormQuestions = async (
       questionType == 'sku_shelf_share' ||
       questionType == 'sku_count'
     ) {
-      console.log('sku_count questionData start', bodyRes);
       const questionData = await getFormQuestionData(
         bodyRes,
         business_unit_id,
@@ -504,7 +503,6 @@ const getFormQuestions = async (
         postData,
         element,
       );
-      console.log('sku_count questionData result', questionData);
       tmp.push(questionData);
     } else if (
       questionType == 'sku_select' ||
