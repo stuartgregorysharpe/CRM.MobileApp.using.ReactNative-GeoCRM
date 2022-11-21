@@ -11,6 +11,8 @@ import {
 } from '../../../../../actions/notification.action';
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
+import { GetRequestStockFieldDataDAO, PostRequestDAO } from '../../../../../DAO';
+import PostRequest from '../../../../../DAO/PostRequest';
 
 export default function AddStockContainer(props) {
   const dispatch = useDispatch();
@@ -29,58 +31,62 @@ export default function AddStockContainer(props) {
   }, []);
 
   const _callStockFieldData = () => {
-    getApiRequest('stockmodule/stock-field-data?action=add_stock', {})
-      .then(res => {
-        if (isMount) {
-          if (res.status === Strings.Success) {
-            setStockTypes(res.stock_types);
-            var types = [];
-            for (let value of Object.keys(res.stock_types)) {
-              types.push({value: value, label: value});
-            }
-            setDevicetypeLists(types);
-          }
-        }
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
-  };
 
+    GetRequestStockFieldDataDAO.find({action: 'add_stock'}).then((res) => {
+      if (isMount) {
+        if (res.status === Strings.Success) {
+          setStockTypes(res.stock_types);
+          var types = [];
+          for (let value of Object.keys(res.stock_types)) {
+            types.push({value: value, label: value});
+          }
+          setDevicetypeLists(types);
+        }
+      }
+    }).catch((e) => {
+      expireToken(dispatch, e);
+    });
+  };
+  
   const callAddStock = (type, data) => {
+
     setIsLoading(true);
     var userParam = getPostParameter(currentLocation);
-    data['user_local_data'] = userParam.user_local_data;
-    postApiRequest('stockmodule/add-stock', data)
-      .then(res => {
-        setIsLoading(false);
-        if (res.status === Strings.Success) {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.message,
-              buttonText: 'Ok',
-              buttonAction: async () => {
-                props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-                dispatch(clearNotification());
-              },
-            }),
-          );
-        } else {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.errors,
-              buttonText: 'Ok',
-            }),
-          );
-        }
-      })
-      .catch(e => {
-        setIsLoading(false);
-        console.log('error', e);
-        expireToken(dispatch, e);
-      });
+    data['user_local_data'] = userParam.user_local_data; 
+    var subTitle = type; 
+    if( type == Constants.stockType.DEVICE || type == Constants.stockType.CONSUMABLE){
+      subTitle = data.description;
+    }else{      
+      subTitle = data.sims.map(item => item.network).join(', ');
+    }    
+    PostRequestDAO.find(0, data, "add_stock", "stockmodule/add-stock" , type, subTitle ).then((res ) => {
+      setIsLoading(false);
+      if (res.status === Strings.Success) {
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: res.message,
+            buttonText: 'Ok',
+            buttonAction: async () => {
+              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+              dispatch(clearNotification());
+            },
+          }),
+        );
+      } else {
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: res.errors,
+            buttonText: 'Ok',
+          }),
+        );
+      }
+    }).catch((e) => {
+      setIsLoading(false);      
+      expireToken(dispatch, e);
+    });
+
   };
 
   return (

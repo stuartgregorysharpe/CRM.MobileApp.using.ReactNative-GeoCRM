@@ -40,7 +40,9 @@ import {updateCurrentLocation} from '../../../actions/google.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import LocationService from '../../../services/LocationService';
 
-export default function SalesPipelineScreen(props) {
+//export default function SalesPipelineScreen(props) {
+export const SalesPipelineScreen = props => {
+
   const dispatch = useDispatch();
   const navigation = props.navigation;
   const pipelineFilters = useSelector(state => state.selection.pipelineFilters);
@@ -373,7 +375,7 @@ export default function SalesPipelineScreen(props) {
 
   return (
     <Provider>
-      <View style={{flex: 1}}>
+      <View style={{minHeight:'100%'}}>
         {isShowCustomNavigationHeader && (
           <NavigationHeader
             showIcon={true}
@@ -514,12 +516,10 @@ export default function SalesPipelineScreen(props) {
   );
 }
 
-const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(
   parse({
     container: {
-      padding: 10,
-      flex: 1,
+      padding: 10,      
       backgroundColor: Colors.bgColor,
     },
 
