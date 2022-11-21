@@ -167,7 +167,7 @@ export const Notification = ({}) => {
 
 const styles = StyleSheet.create({
   notify: {
-    zIndex: 999999,
+    zIndex: 999999999999,
     padding: 20,
     paddingTop: 50,
     marginTop: Platform.OS === 'iOS' ? 20 : 0,

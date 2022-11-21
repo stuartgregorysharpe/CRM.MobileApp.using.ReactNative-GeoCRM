@@ -8,6 +8,7 @@ import { checkFeatureIncludeParam, getLocalData, storeLocalValue } from '../../c
 import { clearNotification, showNotification } from '../../actions/notification.action';
 import Strings from '../../constants/Strings';
 import Fonts from '../../constants/Fonts';
+import { Notification } from '../modal/Notification';
 
 
 export default function HeaderRightView({navigation}) {
@@ -63,6 +64,7 @@ export default function HeaderRightView({navigation}) {
 
   return (
     <View style={styles.headerRightView}>
+
       {canShowToggle &&
         <ToggleSwitch
           style={styles.toggleSwitch}

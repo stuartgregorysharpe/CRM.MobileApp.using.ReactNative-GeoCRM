@@ -28,8 +28,8 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const [totalTableCount, setTotalTableCount] = useState(0);
     const [syncedTableCount, setSyncedTableCount] = useState(0);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [syncedRecords, setSyncedRecords] = useState(0);    
-    const [isLoading, setIsLoading] = useState(false);        
+    const [syncedRecords, setSyncedRecords] = useState(0); 
+    const [isLoading, setIsLoading] = useState(false);
     const [currentBasket, setCurrentBasket] = useState("");
     const rotationAnimationRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
@@ -37,21 +37,21 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const dispatch = useDispatch();
 
     useImperativeHandle(ref, () => ({
-        startSync(message) {            
+        startSync(message) {
             isOneBasketSync = false;
             setBasketLists(getBaskets());
             syncTable(0 , message);
         },
-        expand() {            
-            initDataFromDB();                  
+        expand() {
+            initDataFromDB();
         }
     }));
 
-    useEffect(() => {        
+    useEffect(() => {
         setBasketLists(getBaskets());
     }, []);
 
-    useEffect(() =>{        
+    useEffect(() =>{
         if(basketLists != undefined && basketLists.length > 0){
             gBascketLists = basketLists;
         }
@@ -206,7 +206,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                     }
                 }
             }).catch((e) => {
-                console.log("sync-table-data api error", e);
+                console.log("sync-table-data api error", e);                
                 expireToken(dispatch, e);
             });
         }            

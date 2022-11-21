@@ -132,6 +132,7 @@ export default function StockSignatureView(props) {
     if (path != null) {
       RNFS.exists(path).then(res => {
         if (res) {
+          console.log(path, deviceType)
           onSubmit(path , deviceType);
         } else {
           dispatch(

@@ -6,8 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Dimensions,
-  ActivityIndicator,
+  Dimensions,  
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -28,7 +27,6 @@ import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputT
 import Images from '../../../../constants/Images';
 import {getJsonData, storeLocalValue} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
-
 import {getLocationInfo} from '../../../../actions/location.action';
 import {Notification} from '../../../../components/modal/Notification';
 import {
@@ -80,8 +78,7 @@ const LocationSpecificInfoScreen = props => {
   const isDisposition = features.includes('disposition_fields');
   let isMout = true;
 
-  useEffect(() => {
-
+  useEffect(() => {    
   },[]);
 
   useEffect(() => {
@@ -95,7 +92,6 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     isMout = true;
-
     if (isCheckin == false && pageType != "access_crm") {
       if (props.navigation.canGoBack()) {
         if (isMout) {
@@ -119,9 +115,8 @@ const LocationSpecificInfoScreen = props => {
     return unsubscribe;
   }, [navigationMain]);
 
-
-
   const getCheckInLocation = async() => {
+    console.log("focussed getCheckInLocation")
     var location = await getJsonData("@checkin_location");    
     if(location != null){
       if (locationInfoRef.current != undefined && locationInfoRef.current != null) {
@@ -138,6 +133,7 @@ const LocationSpecificInfoScreen = props => {
   }
 
   const initData = async () => {
+    console.log("location_id",location_id, pageType)
     if (pageType === 'checkin') {
       await storeLocalValue('@checkin', '1');
       if (locationInfo !== undefined && locationInfo.location_id != undefined) {
@@ -146,6 +142,9 @@ const LocationSpecificInfoScreen = props => {
           locationInfo.location_id,
         );
       }
+    }else if(pageType === 'access_crm'){
+        openLocationInfo(location_id != undefined ? location_id : locationId);
+        //getFormLists(location_id != undefined ? location_id : locationId);
     }
   };
 

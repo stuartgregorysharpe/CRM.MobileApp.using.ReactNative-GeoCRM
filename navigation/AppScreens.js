@@ -29,7 +29,7 @@ import Constants from '../constants/Constants';
 import UITestScreen from '../screens/GeoRep/UITestScreen';
 import {FormQuestions} from '../screens/GeoRep/Forms/questions/FormQuestions';
 import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSpecificInfoScreen';
-import FormsScreen from '../screens/GeoRep/Forms/FormsScreen';
+import { FormsScreen } from '../screens/GeoRep/Forms/FormsScreen';
 import SalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
 import DeviceInfo from 'react-native-device-info';

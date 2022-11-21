@@ -27,9 +27,8 @@ export default function StockSignatureContainer(props) {
   var msisdn = '';
   var received = '';
 
-  const onSubmit = ( signature, deviceType) => {
-    
-    if (received != '' && signature != null) {
+  const onSubmit = ( signature, deviceType) => {  
+    if (signature != null) {      
       setIsLoading(true);
       var postData = new FormData();
       var time_zone = RNLocalize.getTimeZone();
@@ -220,7 +219,9 @@ export default function StockSignatureContainer(props) {
   return (
     <View style={{alignSelf: 'stretch'}}>
       <StockSignatureView
-        onSubmit={onSubmit}
+        onSubmit={(path,deviceType) => {
+          onSubmit(path, deviceType)
+        }}
         onChangedReceivedBy={onChangedReceivedBy}
         onChangedSerial={onChangedSerial}
         onClose={onClose}
