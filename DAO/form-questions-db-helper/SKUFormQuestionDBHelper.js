@@ -90,10 +90,9 @@ async function fetchCategories(
       .map(item => `'${item}'`)
       .join(', ');
 
-    query += ` AND c.category IN (${exclude_categories_comma_split})`;
+    query += ` AND c.category NOT IN (${exclude_categories_comma_split})`;
   }
   query += ` GROUP BY ps.placement_segment,c.category`;
-  console.log('query', query);
   const res = await ExecuteQuery(query);
   const result = res.rows ? res.rows : [];
   const resultList = [];
