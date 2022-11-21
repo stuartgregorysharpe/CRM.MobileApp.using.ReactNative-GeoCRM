@@ -153,7 +153,7 @@ export default function StockSignatureView(props) {
         }),
       );
     }
-  },[path,deviceType,serial]);
+  },[path,deviceType,serial,receivedBy]);
 
   const renderDeviceView = () => {
     return (
@@ -222,12 +222,17 @@ export default function StockSignatureView(props) {
         returnKeyType={'done'}
         hasError={hasReceivedByError}
         onChangeText={text => {
-          onChangedReceivedBy(text);
+          if(props.onChangedReceivedBy){
+            console.log("exist props")
+            onChangedReceivedBy(text);
+          }
+          
           setReceivedBy(text);
           checkValidation();
           if (text && text != '') {
             setHasReceivedByError(false);
           }
+          console.log("text",text)
         }}
         style={{marginTop: 15}}
       />

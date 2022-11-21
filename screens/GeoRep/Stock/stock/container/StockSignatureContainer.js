@@ -109,6 +109,7 @@ export default function StockSignatureContainer(props) {
                   }),
                 );
               }).catch((e) => {
+                setIsLoading(false);
                 expireToken(dispatch, e);
                 dispatch(
                   showNotification({
@@ -211,6 +212,7 @@ export default function StockSignatureContainer(props) {
   };
 
   const onChangedReceivedBy = receivedBy => {
+    console.log("receivedBy",receivedBy)
     received = receivedBy;
   };
 
@@ -222,8 +224,12 @@ export default function StockSignatureContainer(props) {
         onSubmit={(path,deviceType) => {
           onSubmit(path, deviceType)
         }}
-        onChangedReceivedBy={onChangedReceivedBy}
-        onChangedSerial={onChangedSerial}
+        onChangedReceivedBy={(text) => {
+          onChangedReceivedBy(text)
+        }}
+        onChangedSerial={(text) => {
+          onChangedSerial(text)
+        }}
         onClose={onClose}
         isLoading={isLoading}
         {...props}
