@@ -494,7 +494,8 @@ const getFormQuestions = async (
       });*/
     } else if (
       questionType == 'sku_shelf_share' ||
-      questionType == 'sku_count'
+      questionType == 'sku_count' ||
+      questionType == 'sku_select'
     ) {
       const questionData = await getFormQuestionData(
         bodyRes,
@@ -503,9 +504,11 @@ const getFormQuestions = async (
         postData,
         element,
       );
+      if (questionType == 'sku_select') {
+        console.log('questionData', questionData);
+      }
       tmp.push(questionData);
     } else if (
-      questionType == 'sku_select' ||
       questionType == 'product_issues' ||
       questionType == 'format_price' ||
       questionType == 'brand_competitor_facings' ||
