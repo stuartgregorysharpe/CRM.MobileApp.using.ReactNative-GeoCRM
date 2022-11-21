@@ -28,7 +28,9 @@ export default function StockSignatureContainer(props) {
   var received = '';
 
   const onSubmit = ( signature, deviceType) => {  
-    if (signature != null) {      
+
+    if (signature != null) {    
+
       setIsLoading(true);
       var postData = new FormData();
       var time_zone = RNLocalize.getTimeZone();
@@ -38,9 +40,7 @@ export default function StockSignatureContainer(props) {
           if (res) {
             if (!signature.includes('file://')) {
               signature = 'file://' + signature;
-            }
-
-            console.log("signatureModalType",signatureModalType , deviceType)
+            }            
             if (signatureModalType == 'save') {
               props.onButtonAction({
                 type: Constants.actionType.ACTION_DONE,
