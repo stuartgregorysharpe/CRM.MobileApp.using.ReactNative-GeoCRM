@@ -103,8 +103,7 @@ const StockLists = (props) => {
   const callStockLists = () => {
     GetRequestStockListsDAO.find({})
       .then(res => {
-        if (isMount) {
-          console.log('res.stock_items', res.stock_items);
+        if (isMount) {          
           const _items = getItemsFromStockItems(res.stock_items);
           setItems(_items);
         }

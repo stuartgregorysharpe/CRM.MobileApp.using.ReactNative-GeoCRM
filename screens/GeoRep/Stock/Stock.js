@@ -39,10 +39,12 @@ const Stock = props => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    var screenProps = props.screenProps;
-    if (screenProps === undefined) {
+    var screenProps = props.screenProps;    
+    if (screenProps === undefined) {      
       screenProps = props.navigation;
     }
+
+
     if (screenProps) {
       screenProps.setOptions({
         headerTitle: () => {
@@ -98,19 +100,7 @@ const Stock = props => {
       <Notification />
 
       {/* marginBottom:50 */}
-      <View style={{flex: 1 , marginBottom: marginBottom }} 
-        onLayout={(event) => {
-          var {x, y, width, height} = event.nativeEvent.layout;
-          console.log("height" , height);
-          console.log("deivce height",  Dimensions.get("screen").height)
-          if(Dimensions.get("screen").height - height < 200) {
-            console.log("margin ====")
-            setMarginBottom(40)
-          }else{
-            setMarginBottom(0)
-          }
-        }}
-      >
+      <View style={{flex: 1 }}>
         {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
         {selectedTabIndex === 2 && <Movements></Movements>}
