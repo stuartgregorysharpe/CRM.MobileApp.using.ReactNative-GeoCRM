@@ -499,8 +499,7 @@ const getCustomFieldData = (lists) => {
 const getUserTypeId = (lists) => {
     var userTypeId = '';
     for(var i = 0; i < lists.length; i++){        
-        var element = lists.item(i);
-        console.log("xxxxxx" ,element)
+        var element = lists.item(i);    
         userTypeId = element.user_type_id;
     }
     return userTypeId;

@@ -4,12 +4,12 @@ import {baseURL, Strings} from '../constants';
 import {getTokenData} from '../constants/Storage';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import UrlResource from './UrlResource';
+import { value } from 'react-native-extended-stylesheet';
 
 export function find(postData) {
   return new Promise(function (resolve, reject) {
     checkConnectivity()
-      .then(async isConnected => {
-        console.log('isConnected', isConnected);
+      .then(async isConnected => {        
         if (isConnected) {
           getApiRequest(UrlResource.Form.FormQuestions, postData)
             .then(async res => {
@@ -21,17 +21,14 @@ export function find(postData) {
             });
         } else {
           var client_id = await getTokenData('client_id');
-          var business_unit_id = await getTokenData('business_unit_id');
-          console.log('client id', client_id);
-
+          var business_unit_id = await getTokenData('business_unit_id');          
           var lists = await fetchDataFromDB(postData);
           var questionsLists = await getFormQuestions(
             lists,
             client_id,
             business_unit_id,
             postData,
-          );
-          console.log("questionsLists",questionsLists)
+          );          
           resolve({status: Strings.Success, questions: questionsLists});
         }
       })
@@ -65,8 +62,11 @@ const fetchFieldDetailsFromDB = async (
 
 const fetchFieldValueFromDB = async (custom_master_field_id, location_id) => {
   const query = generateFieldValueQuery();
+  console.log("custom query",query , custom_master_field_id, location_id)
   const res = await ExecuteQuery(query, [custom_master_field_id, location_id]);
+  console.log("custom queryres",res)
   return res.rows ? res.rows : [];
+  
 };
 
 const fetchOptionsFromDB = async form_question_id => {
@@ -89,6 +89,13 @@ const fetchReturnProductsFromDB = async (business_unit_id, client_id) => {
 
 const fetchPrimaryDeviceFromDB = async(location_id) => {
   const query = generatePrimaryDeviceQuery();
+  const res = await ExecuteQuery(query, [location_id]);
+  return res.rows ? res.rows : [];
+}
+
+const fetchCoreFieldData = async(location_id) => {
+  const query = generateCoreFieldDataQuery();
+  console.log("ddd", query)
   const res = await ExecuteQuery(query, [location_id]);
   return res.rows ? res.rows : [];
 }
@@ -273,7 +280,7 @@ const generateFieldDataQuery = () => {
 };
 
 const generateFieldValueQuery = () => {
-  var query = `SELECT field_data FROM locations_custom_master_field_data WHERE custom_master_field_id = ? AND location_id = ? LIMIT 1`;
+  var query = `SELECT * FROM locations_custom_master_field_data WHERE custom_master_field_id = ? AND location_id = ? LIMIT 1`;
   return query;
 };
 
@@ -322,6 +329,11 @@ const generatePrimaryDeviceQuery = () => {
   return query;
 }
 
+const generateCoreFieldDataQuery = () => {
+  var query =  `SELECT  * FROM locations_core_master_data WHERE location_id = ? LIMIT 1`;
+  return query;
+}
+
 
 const getFormQuestions = async (
   lists,
@@ -331,29 +343,33 @@ const getFormQuestions = async (
 ) => {
 
   var tmp = [];
-  try{
+  
     for (var i = 0; i < lists.length; i++) {
 
-      var element = lists.item(i);
-     
+      var element = lists.item(i);     
+      console.log("main elements =>", element)
+
       const question_tag = element.question_tag;
       var fieldData = '';
       if (postData.location_id != undefined) {
         if (question_tag != undefined && question_tag != '') {
           if(question_tag === "msisdn"){
+
             var primaryDeivce = await fetchPrimaryDeviceFromDB(postData.location_id);
             fieldData = await getPrimaryDeviceData( primaryDeivce );
+
           }else{
             var fieldDataLists = await fetchFieldDetailsFromDB(
               client_id,
               business_unit_id,
               question_tag,
-            );
-            fieldData = await getFieldData(fieldDataLists, postData);
+            );      
+            fieldData = await getFieldData(fieldDataLists, postData);            
           }          
         }
       }
 
+    
       // Guide Info
       var guideInfoData = [];
       if (
@@ -518,61 +534,91 @@ const getFormQuestions = async (
         });
       }    
     }    
-  }catch(e){
-    console.log("form question error : ", e)
-  } 
+
   return tmp;
 };
 
 const getFieldData = async (lists, postData) => {
   var tmp = {};
   var value = '';
-  for (var i = 0; i < lists.length; i++) {
-    var element = lists.item(i);
-    if (element.core_field_name != null && element.core_field_name != '') {
-      if (
-        element.field_type == 'multiple' ||
-        element.field_type == 'multi_select'
+  try{
+    for (var i = 0; i < lists.length; i++) {
+      var element = lists.item(i);
+      console.log("elementx => ", element)
+      if (element.core_field_name != null && element.core_field_name != '') {        
+        var coreFiledData = await fetchCoreFieldData(postData.location_id );        
+        value = getCoreFieldValue(coreFiledData , element.field_type , element.core_field_name);
+   
+      }else if (
+        element.custom_master_field_id != null &&
+        element.custom_master_field_id != ''
       ) {
-        value = element.core_field_name.split(',');
-      } else if (
-        element.field_type == 'text' ||
-        element.field_type == 'numbers'
-      ) {
-        value = element.core_field_name;
+        var fieldValueLists = await fetchFieldValueFromDB(
+          element.custom_master_field_id,
+          postData.location_id,
+        );      
+        value = getFieldValue(fieldValueLists);
       }
+      
     }
-
-    if (
-      element.custom_master_field_id != null &&
-      element.custom_master_field_id != ''
-    ) {
-      var fieldValueLists = await fetchFieldValueFromDB(
-        element.custom_master_field_id,
-        postData.location_id,
-      );
-      value = getFieldValue(fieldValueLists);
-    }
+  }catch(e){
+    console.log('get field data error : ' , e);
   }
+  
   return value;
 };
 
 const getFieldValue = lists => {
   var value = '';
-  for (var i = 0; i < lists.length; i++) {
-    var element = lists.item(i);
-    if (
-      element.field_type == 'multiple' ||
-      element.field_type == 'multi_select'
-    ) {
-      value = element.field_data.split(',');
+  try{
+    for (var i = 0; i < lists.length; i++) {
+      var element = lists.item(i);    
+      if (
+        element.field_type == 'multiple' ||
+        element.field_type == 'multi_select'
+      ) {
+        value = element.field_data.split(',');
+      }
+      if (element.field_type == 'text' || element.field_type == 'numbers') {
+        value = element.field_data;
+      }
     }
-    if (element.field_type == 'text' || element.field_type == 'numbers') {
-      value = element.field_data;
-    }
+  }catch(e){
+    console.log("field value error: ",e)
   }
+  
   return value;
 };
+
+
+
+const getCoreFieldValue = (lists, fieldType, fieldName) => {
+  var value = '';
+  try{
+    for (var i = 0; i < lists.length; i++) {
+      var element = lists.item(i);
+      console.log("core element" , fieldType, fieldName)
+      if (
+        fieldType == 'multiple' ||
+        fieldType == 'multi_select' ||
+        fieldType == 'dropdown'
+      ) {
+        value = element[fieldName].split(',');
+      } else if (
+        fieldType == 'text' ||
+        fieldType == 'numbers'
+      ) {      
+        value = element[fieldName];      
+      }
+  
+    }
+  }catch(e){
+    console.log(" core filed value error : ", e)
+  }
+  
+  return value;
+};
+
 
 const getOptionData = lists => {
   var tmp = [];
