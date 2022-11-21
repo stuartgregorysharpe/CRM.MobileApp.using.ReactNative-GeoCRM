@@ -137,7 +137,7 @@ const fetchTouchpointsFromDB = async (
   ]);
   const result = res.rows ? res.rows : [];
   const resultList = [];
-  for (let i = 0; i < result; i++) {
+  for (let i = 0; i < result.length; i++) {
     const item = result.item(i);
     resultList.push(item.touchpoint);
   }
@@ -169,7 +169,7 @@ const fetchPlacementAreasFromDB = async (
   ]);
   const result = res.rows ? res.rows : [];
   const resultList = [];
-  for (let i = 0; i < result; i++) {
+  for (let i = 0; i < result.length; i++) {
     const item = result.item(i);
     resultList.push({
       placement_type: item.placement_type,
@@ -197,7 +197,7 @@ const fetchPOSProductsFromDB = async (business_unit_id, client_id) => {
   const res = await ExecuteQuery(query, [business_unit_id, client_id]);
   const result = res.rows ? res.rows : [];
   const resultList = [];
-  for (let i = 0; i < result; i++) {
+  for (let i = 0; i < result.length; i++) {
     const item = result.item(i);
     resultList.push({
       product_id: item.product_id,
