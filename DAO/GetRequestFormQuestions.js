@@ -504,9 +504,6 @@ const getFormQuestions = async (
         postData,
         element,
       );
-      if (questionType == 'sku_select') {
-        console.log('questionData', questionData);
-      }
       tmp.push(questionData);
     } else if (
       questionType == 'product_issues' ||
