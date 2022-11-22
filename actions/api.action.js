@@ -15,7 +15,6 @@ export const dummyApiRequest = async (route, param, response) => {
 axios.defaults.timeout = 15000;
 
 
-
 export const getApiRequest = async (route, param) => {
   var token = await getToken();
   var baseUrl = await getBaseUrl();

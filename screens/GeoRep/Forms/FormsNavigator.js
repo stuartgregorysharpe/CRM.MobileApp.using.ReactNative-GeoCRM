@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import FormsScreen from './FormsScreen';
+import { FormsScreen } from './FormsScreen';
 import { FormQuestions } from './questions/FormQuestions';
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +16,7 @@ export default function FormsNavigator(props) {
 
   return (
     <Stack.Navigator> 
+
       <Stack.Screen        
         name="Root"        
         options={{ header: () => null , headerShown: false}}>      

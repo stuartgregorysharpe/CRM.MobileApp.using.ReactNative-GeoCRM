@@ -27,9 +27,10 @@ export default function StockSignatureContainer(props) {
   var msisdn = '';
   var received = '';
 
-  const onSubmit = ( signature, deviceType) => {
-    
-    if (received != '' && signature != null) {
+  const onSubmit = ( signature, deviceType) => {  
+
+    if (signature != null) {    
+
       setIsLoading(true);
       var postData = new FormData();
       var time_zone = RNLocalize.getTimeZone();
@@ -39,9 +40,7 @@ export default function StockSignatureContainer(props) {
           if (res) {
             if (!signature.includes('file://')) {
               signature = 'file://' + signature;
-            }
-
-            console.log("signatureModalType",signatureModalType , deviceType)
+            }            
             if (signatureModalType == 'save') {
               props.onButtonAction({
                 type: Constants.actionType.ACTION_DONE,
@@ -110,6 +109,7 @@ export default function StockSignatureContainer(props) {
                   }),
                 );
               }).catch((e) => {
+                setIsLoading(false);
                 expireToken(dispatch, e);
                 dispatch(
                   showNotification({
@@ -212,6 +212,7 @@ export default function StockSignatureContainer(props) {
   };
 
   const onChangedReceivedBy = receivedBy => {
+    console.log("receivedBy",receivedBy)
     received = receivedBy;
   };
 
@@ -220,9 +221,15 @@ export default function StockSignatureContainer(props) {
   return (
     <View style={{alignSelf: 'stretch'}}>
       <StockSignatureView
-        onSubmit={onSubmit}
-        onChangedReceivedBy={onChangedReceivedBy}
-        onChangedSerial={onChangedSerial}
+        onSubmit={(path,deviceType) => {
+          onSubmit(path, deviceType)
+        }}
+        onChangedReceivedBy={(text) => {
+          onChangedReceivedBy(text)
+        }}
+        onChangedSerial={(text) => {
+          onChangedSerial(text)
+        }}
         onClose={onClose}
         isLoading={isLoading}
         {...props}

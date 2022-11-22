@@ -92,10 +92,6 @@ const StockLists = (props) => {
     return unsubscribe;
   }, [navigation]);
 
-  // const initializeLocationId = async () => {
-      
-  // }
-
   const initializeLocationId = useCallback( async() => {
     var locationId = await getLocalData("@specific_location_id");    
     if(locationId != null && locationId != undefined && locationId != ''){
@@ -107,8 +103,7 @@ const StockLists = (props) => {
   const callStockLists = () => {
     GetRequestStockListsDAO.find({})
       .then(res => {
-        if (isMount) {
-          console.log('res.stock_items', res.stock_items);
+        if (isMount) {          
           const _items = getItemsFromStockItems(res.stock_items);
           setItems(_items);
         }

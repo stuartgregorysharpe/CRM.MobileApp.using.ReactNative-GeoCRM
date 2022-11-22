@@ -1,13 +1,12 @@
 import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {getApiRequest} from '../../../../../actions/api.action';
 import SearchLocationView from '../components/SearchLocationView';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import {expireToken} from '../../../../../constants/Helper';
-import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
+import { GetRequestCustomerSearchDAO, GetRequestLocationDevicesDAO } from '../../../../../DAO';
 
 const SearchLocationContainer = props => {
 
@@ -48,11 +47,12 @@ const SearchLocationContainer = props => {
       }
       
     } else {
+
       setLocationId(item.location_id);
+      
       let param = {
         location_id: item.location_id,
       };
-
       
       GetRequestLocationDevicesDAO.find(param).then((res) => {
         if (res.devices.length > 0) {
@@ -109,18 +109,20 @@ const SearchLocationContainer = props => {
     let param = {
       search_text: key,
     };
-    getApiRequest('locations/customer-search', param)
-      .then(res => {
-        setLists(res.items);
-        if (key == '') {
-          setOriginLists(res.items);
-        }
-        setIsLoading(false);
-      })
-      .catch(e => {
-        setIsLoading(false);
-        expireToken(dispatch, e);
-      });
+
+
+    GetRequestCustomerSearchDAO.find(param).then((res) => {
+      
+      setLists(res.items);
+      if (key == '') {
+        setOriginLists(res.items);
+      }
+      setIsLoading(false);
+    }).catch((e) => {
+      setIsLoading(false);
+      expireToken(dispatch, e);
+    })
+     
   };
 
   return (

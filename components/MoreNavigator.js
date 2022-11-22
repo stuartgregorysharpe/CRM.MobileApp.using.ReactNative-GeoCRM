@@ -13,7 +13,6 @@ import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
-import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
 import CRMSalesPipelineScreen from '../screens/GeoCRM/SalesPipelineScreen';
@@ -37,6 +36,7 @@ import Stock from '../screens/GeoRep/Stock/Stock';
 import {checkConnectivity} from '../DAO/helper';
 import {showOfflineDialog} from '../constants/Helper';
 import {useDispatch} from 'react-redux';
+import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -211,8 +211,7 @@ export default function RepMoreScreen({navigation}) {
       case 'WellBeing':
         navigation.navigate('WellBeing');
         return;
-      case 'Stock':
-        console.log('stock navigate');
+      case 'Stock':        
         navigation.navigate('Stock');
         return;
 
@@ -301,7 +300,7 @@ export default function RepMoreScreen({navigation}) {
         componentListOne.includes('sales_pipeline') && (
           <Stack.Screen name="RepSalesPipeline" options={{header: () => null}}>
             {props => (
-              <RepSalesPipelineScreen {...props} screenProps={navigation} />
+              <SalesPipelineScreen {...props} screenProps={navigation} />
             )}
           </Stack.Screen>
         )}
