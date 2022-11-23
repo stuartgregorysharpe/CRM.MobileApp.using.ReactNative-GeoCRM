@@ -58,6 +58,7 @@ const SetupFieldView = (props) => {
 	}
 
 	const onCurrencyItemSelected = (item) => {		
+		console.log("d",item)
 		setSelectedCurrency(item);
 	}
 
@@ -156,9 +157,10 @@ const SetupFieldView = (props) => {
 					<DropdownSelection
 						title = "Currency Type"
 						selectedItem={selectedCurrency != null ? selectedCurrency.abbreviation + "(" + selectedCurrency.symbol +  ")" : ''}
+						selectedCurrency={selectedCurrency}
 						items={currency ? currency.options : []}
 					>
-						<CurrencyType 
+						<CurrencyType
 							selectedItem={selectedCurrency}
 							onItemSelected={onCurrencyItemSelected}
 							lists={currency ? currency.options : []}></CurrencyType>						

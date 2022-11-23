@@ -31,11 +31,11 @@ const CurrencyType = (props) => {
             </View>
             
             <View style={{flex:2}}>
-                <AppText title="Symbol" color={whiteLabel().mainText}></AppText>
+                <AppText title="Currency" color={whiteLabel().mainText}></AppText>
             </View>
 
             <View style={{flex:3}}>
-                <AppText title="Symbol" color={whiteLabel().mainText}></AppText>
+                <AppText title="Exchange Rate" color={whiteLabel().mainText}></AppText>
             </View>
         </View>
         <View style={{height:1, backgroundColor:whiteLabel().fieldBorder, marginTop:5}}></View>
@@ -76,7 +76,7 @@ export default CurrencyType
 
 const styles = StyleSheet.create({
     checkbox: {
-        marginRight:10,
+        marginRight:0,
         width: 25,
         height: 25,
         borderRadius: 15,

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native'
-import React , { useState } from 'react'
+import React , { useEffect, useState } from 'react'
 import { Colors, Fonts } from '../../../../constants'
 import { whiteLabel } from '../../../../constants/Colors'
 import { AppText } from '../../../../components/common/AppText'
@@ -8,8 +8,15 @@ import { boxShadow, style } from '../../../../constants/Styles'
 
 const DropdownSelection = (props) => {
 
-	const { title , items, selectedItem } = props;
-	const [ isExpanded, setIsExpanded] = useState(false)
+	const { title , items, selectedItem , selectedCurrency } = props;
+	const [ isExpanded, setIsExpanded] = useState(false);
+
+	useEffect(() => {
+		console.log("changed =>" , selectedCurrency)
+		if(selectedCurrency != undefined){
+			setIsExpanded(!isExpanded)
+		}
+	}, [selectedCurrency])
 
 	return (
 		
@@ -40,7 +47,7 @@ const DropdownSelection = (props) => {
 					
 					{
 						isExpanded && 
-						<View style={{marginTop:10,alignSelf:'stretch'}}>							
+						<View style={{marginTop:10,alignSelf:'stretch'}}>	
 							{props.children}
 						</View>						
 					}
