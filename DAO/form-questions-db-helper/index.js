@@ -1,4 +1,5 @@
 import {Constants} from '../../constants';
+import POSCaptureQuestionDBHelper from './POSCaptureQuestionDBHelper';
 import SKUFormQuestionDBHelper from './SKUFormQuestionDBHelper';
 import SKUSelectFormQuestionDBHelper from './SKUSelectFormQuestionDBHelper';
 
@@ -25,6 +26,15 @@ export async function getFormQuestionData(
   }
   if (questionType == Constants.questionType.FORM_TYPE_SKU_SELECT) {
     return await SKUSelectFormQuestionDBHelper.getFormQuestionData(
+      baseFormData,
+      business_unit_id,
+      client_id,
+      postData,
+      questionBody,
+    );
+  }
+  if (questionType == Constants.questionType.FORM_TYPE_POS_CAPTURE) {
+    return await POSCaptureQuestionDBHelper.getFormQuestionData(
       baseFormData,
       business_unit_id,
       client_id,

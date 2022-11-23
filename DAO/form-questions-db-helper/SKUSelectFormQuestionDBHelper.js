@@ -92,7 +92,6 @@ async function fetchProducts(
             GROUP BY psa.product_id
             ORDER BY psa.product_group, pcmd.product_name
             `;
-  console.log('query', query);
   const res = await ExecuteQuery(query);
   const result = res.rows ? res.rows : [];
   const resultList = [];
@@ -100,7 +99,6 @@ async function fetchProducts(
     const item = result.item(i);
     resultList.push({...item});
   }
-  console.log('resultList', JSON.stringify(resultList));
   return resultList;
 }
 async function getFormQuestionData(

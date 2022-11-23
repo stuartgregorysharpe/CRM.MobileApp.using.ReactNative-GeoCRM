@@ -27,42 +27,6 @@ function getCategories(questionBody) {
   return [];
 }
 
-async function testQuery() {
-  const query = `SELECT pcmfd.product_id,
-        pcmfd.field_data AS 'placement_segment'
-    FROM
-        products_custom_master_field_data AS pcmfd
-    LEFT JOIN products_custom_master_fields AS pcmf
-    ON
-        pcmfd.custom_master_field_id = pcmf.product_custom_master_field_id AND pcmf.field_tag = 'placement_segment'
-    WHERE
-        pcmf.client_id = 80 AND pcmf.business_unit_id = 4 AND pcmf.delete_status = 0`;
-
-  const res = await ExecuteQuery(query);
-  const result = res.rows ? res.rows : [];
-  const resultList = [];
-  for (let i = 0; i < result.length; i++) {
-    const item = result.item(i);
-    resultList.push({
-      product_id: item.product_id,
-      placement_segment: item.placement_segment,
-    });
-  }
-  console.log('TEST QUERY 1', JSON.stringify(resultList));
-  const query2 = `SELECT * FROM products_custom_master_fields`;
-
-  const res2 = await ExecuteQuery(query2);
-  const result2 = res2.rows ? res2.rows : [];
-  const resultList2 = [];
-  for (let i = 0; i < result2.length; i++) {
-    const item = result2.item(i);
-    resultList2.push({
-      ...item,
-    });
-  }
-  console.log('TEST QUERY 2', JSON.stringify(resultList2));
-}
-
 async function fetchCategories(
   business_unit_id,
   client_id,
@@ -142,7 +106,7 @@ async function fetchCategories(
   } else {
     query += ` GROUP BY c.category`;
   }
-  console.log('query', query);
+
   const res = await ExecuteQuery(query);
   const result = res.rows ? res.rows : [];
   const resultList = [];
@@ -150,7 +114,6 @@ async function fetchCategories(
     const item = result.item(i);
     resultList.push(item.category);
   }
-  console.log('resultList', JSON.stringify(resultList));
   return resultList;
 }
 async function fetchBrand(
