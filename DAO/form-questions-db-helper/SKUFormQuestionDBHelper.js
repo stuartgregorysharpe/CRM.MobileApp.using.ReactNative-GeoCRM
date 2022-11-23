@@ -233,7 +233,7 @@ async function getFormQuestionData(
   questionBody,
 ) {
   //await testQuery();
-  const excludeCategories = await fetchExcludeCategories(postData?.locationId);
+  const excludeCategories = await fetchExcludeCategories(postData?.location_id);
   const placement_segment =
     questionBody?.segmentation_placement_segment?.split(',');
   const categories = getCategories(questionBody);
