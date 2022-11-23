@@ -22,8 +22,9 @@ import {Constants, Strings} from '../../../constants';
 import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 import { LOCATION_CHECK_OUT_COMPULSORY } from '../../../actions/actionTypes';
+import { Notification } from '../../../components/modal/Notification';
 
-export default function FormsScreen(props) {
+export const FormsScreen = (props) => {
 
   const {navigationType} = props;
   const navigation = props.navigation;
@@ -270,7 +271,11 @@ export default function FormsScreen(props) {
 
   return (
     <Provider>
+
       <View style={styles.container}>
+
+        <Notification />
+
         {isShowCustomNavigationHeader && (
           <NavigationHeader
             showIcon={true}

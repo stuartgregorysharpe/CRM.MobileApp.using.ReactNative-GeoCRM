@@ -15,6 +15,7 @@ import {
 import {Constants} from '../../../../../constants';
 import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
+import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
 
 const SwopAtTraderContainer = props => {
   
@@ -30,8 +31,7 @@ const SwopAtTraderContainer = props => {
     let param = {
       location_id: locationId,
     };
-
-
+    
     GetRequestLocationDevicesDAO.find(param).then((res) => {
         if(isMount){                             
             setLists(res.devices);
@@ -41,16 +41,6 @@ const SwopAtTraderContainer = props => {
         expireToken(dispatch , e);
     });
     
-    // getApiRequest('locations/location-devices', param)
-    //   .then(res => {
-    //     if (isMount) {
-    //       setLists(res.devices);
-    //     }
-    //   })
-    //   .catch(e => {
-    //     console.log('location-devices api error:', e);
-    //     expireToken(dispatch, e);
-    //   });
     return () => {
       isMount = false;
     };

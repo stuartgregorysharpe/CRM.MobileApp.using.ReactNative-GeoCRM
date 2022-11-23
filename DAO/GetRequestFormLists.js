@@ -20,7 +20,7 @@ export function find(postData){
                 const user_type = await getTokenData("user_type");
                 const role = await getTokenData("role");                
                 let userTypeList = await fetchUserTypeIdFromDB(user_type);                
-                var userTypeId = getUserTypeId(userTypeList);
+                var userTypeId = getUserTypeId(userTypeList);                
                 
                 //var xxx = `SELECT form_name FROM forms WHERE form_id = 13`;                
                 // var xxx = `SELECT * FROM form_assignments WHERE delete_status = 0 AND form_id = 13`;                
@@ -498,9 +498,8 @@ const getCustomFieldData = (lists) => {
 
 const getUserTypeId = (lists) => {
     var userTypeId = '';
-    for(var i = 0; i < lists.length; i++){
-        console.log("xxxxxx" ,element)
-        var element = lists.item(i);
+    for(var i = 0; i < lists.length; i++){        
+        var element = lists.item(i);    
         userTypeId = element.user_type_id;
     }
     return userTypeId;

@@ -58,7 +58,7 @@ const getItemLabel = (locationName, address, label) => {
 };
 
 const getItemSubLabel = (locationName, address, subLabel, type) => {
-  if (subLabel != '') {
+  if (subLabel != null && subLabel != '') {
     return subLabel;
   }
   if (type == 'form_submission' || type == 'leadfields') {
@@ -108,7 +108,7 @@ export function saveOfflineSyncItems(
       var post_body = JSON.stringify(postData);
 
       console.log('typer', type);
-
+      console.log("post_body",post_body)
 
       var data = [
           generateKey(),  //indempotency_key, 

@@ -17,14 +17,9 @@ import {CHANGE_LIBRARY_CHILD_STATUS} from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
 import {getBaseUrl, getToken} from '../../../constants/Storage';
 import {
-  downloadPDF,
-  getContentLibrary,
+  downloadPDF,  
 } from '../../../actions/contentLibrary.action';
-import RNFS, {
-  DownloadFileOptions,
-  DocumentDirectoryPath,
-  downloadFile,
-} from 'react-native-fs';
+import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
@@ -32,6 +27,7 @@ import {expireToken} from '../../../constants/Helper';
 import {GetRequestContentlibraryDAO} from '../../../DAO';
 
 export default function ContentLibraryScreen(props) {
+  
   const dispatch = useDispatch();
   const [childList, setChildList] = useState({});
   const [libraryLists, setLibraryLists] = useState([]);
