@@ -68,7 +68,6 @@ const CurrencyType = (props) => {
         }
     </View>
 
-
   )
 }
 

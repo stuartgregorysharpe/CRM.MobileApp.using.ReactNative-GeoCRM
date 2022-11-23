@@ -30,9 +30,10 @@ const SaleType = (props) => {
 
 					<View style={{flex:1 , flexDirection:'row', justifyContent:'flex-end'}}>
 						{
-							transaction_types != null && transaction_types.options.map((item) => {
+							transaction_types != null && transaction_types.options.map((item, index) => {
 								return (
 									<Button title={item.type} 
+										key={index}
 										style={styles.buttonStyle}
 										selectedButtonStyle={styles.selectedButtonStyle}
 										textStyle={styles.textStyle}

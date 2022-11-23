@@ -7,17 +7,17 @@ import CCheckBox from '../../../../components/common/CCheckBox'
 
 const Warehouse = (props) => {
 
-    const { lists , selectedItem} = props;
-    
+    const { warehouse , selectedItem} = props;    
     const [updatedLists, setUpdatedLists] = useState([])
 
     useEffect(() => {
         let isMout = true;
-        setUpdatedLists([ {id: 0, label: 'All Warehouses'} , ...lists ])
+        const options = warehouse.options ? warehouse.options : [];
+        setUpdatedLists([ {id: 0, label: 'All Warehouses'} , ...options  ]);                
         return () => {
             isMout = false;
         };
-    }, [lists])
+    }, [warehouse])
 
     const onValueChange = (item , isChecked) => {
         if(props.onItemSelected)

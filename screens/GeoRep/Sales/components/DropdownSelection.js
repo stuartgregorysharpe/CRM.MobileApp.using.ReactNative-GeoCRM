@@ -11,10 +11,9 @@ const DropdownSelection = (props) => {
 	const { title , items, selectedItem , selectedCurrency } = props;
 	const [ isExpanded, setIsExpanded] = useState(false);
 
-	useEffect(() => {
-		console.log("changed =>" , selectedCurrency)
+	useEffect(() => {		
 		if(selectedCurrency != undefined){
-			setIsExpanded(!isExpanded)
+			setIsExpanded(false)
 		}
 	}, [selectedCurrency])
 

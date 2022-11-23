@@ -23,7 +23,7 @@ const SetupFieldView = (props) => {
 	const [selectedCurrency , setSelectedCurrency] = useState(null)
 	const [warehouseRequired, setWarehouseRequired] = useState(false)
 	const [selectedWarehouse, setSelectedWarehouse] = useState([])
-	const [transactionType, setTransactionType] = useState(null)
+	const [transactionType, setTransactionType] = useState(null)	
 	const isCheckin = useSelector(state => state.location.checkIn);
 
 	useEffect(() => {
@@ -37,9 +37,17 @@ const SetupFieldView = (props) => {
 			const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
 			setSelectedCurrency(defaultCurrency)
 		}
-	}, [currency])
+	}, [currency]);
 
-
+	useEffect(() => {
+		if( warehouse != undefined && warehouse.default_warehouse != ''){
+			const options = warehouse.options ?  warehouse.options : [];
+			const item = options.find(element => element.id === warehouse.default_warehouse);
+			if(item != undefined){
+				onWarehouseItemSelected(item, false);
+			}				
+		}
+	},[warehouse])
 
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
@@ -48,7 +56,8 @@ const SetupFieldView = (props) => {
 			setSelectedLocation(locInfo);
 	}
 
-	const onSubmit = (location, locationId) => {		
+	const onSearch = (location, locationId) => {		
+		
 		setIsSearchStart(false);
 		setSelectedLocation(location)
 	}
@@ -57,8 +66,7 @@ const SetupFieldView = (props) => {
 		setIsSearchStart(flag)
 	}
 
-	const onCurrencyItemSelected = (item) => {		
-		console.log("d",item)
+	const onCurrencyItemSelected = (item) => {				
 		setSelectedCurrency(item);
 	}
 
@@ -104,7 +112,7 @@ const SetupFieldView = (props) => {
 	}
 
 	const isValidate = () => {		
-		console.log("selectedLocation",transactionType)
+		
 		if(
 			selectedLocation != null &&
 			transactionType != null &&
@@ -118,7 +126,8 @@ const SetupFieldView = (props) => {
 
 	const onContinue = () => {
 		if(isValidate()){
-
+			console.log("trigger continue");
+			props.onContinue()
 		}
 	}
 
@@ -127,7 +136,7 @@ const SetupFieldView = (props) => {
 						
 			<SearchLocationContainer 
 				type="setup"
-				onSubmit={onSubmit} 
+				onSubmit={onSearch} 
 				onStartSearch={onStartSearch}
 				isSkipLocationIdCheck
 				style={[isSearchStart ? styles.bgColor : {} , {position:'absolute', zIndex:999, right:0, left:0  }]} //
@@ -176,7 +185,7 @@ const SetupFieldView = (props) => {
 							<Warehouse 
 								selectedItem={selectedWarehouse}
 								onItemSelected={onWarehouseItemSelected}
-								lists={warehouse ? warehouse.options : []}
+								warehouse={warehouse}								
 							/>
 						</DropdownSelection>
 					}

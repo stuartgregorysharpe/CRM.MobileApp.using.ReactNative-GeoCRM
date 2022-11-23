@@ -39,8 +39,10 @@ const SearchLocationContainer = props => {
       isSkipLocationIdCheck
     ) {
       if(type === "setup"){
-        props.onSubmit(item, item.location_id);
-        setLists([]);
+        if(props.onSubmit){
+          props.onSubmit(item, item.location_id);
+          setLists([]);          
+        }                
       }else{
         props.onSubmit(stockType, item.location_id);
       }

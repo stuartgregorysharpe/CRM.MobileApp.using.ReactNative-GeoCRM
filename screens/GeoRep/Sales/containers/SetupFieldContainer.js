@@ -5,6 +5,7 @@ import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
+import { Constants } from '../../../../constants';
 
 const  SetupFieldContainer = (props) => {
     
@@ -28,17 +29,25 @@ const  SetupFieldContainer = (props) => {
         
     }, []);
 
- 
 
+    const onContinue = () => {             
+        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: ''});
+    }
     
     return (
-        <View style={{alignSelf:'stretch' , flex:1 , marginHorizontal:10, marginBottom:10,  minHeight:300
+        <View style={{
+            alignSelf:'stretch' , 
+            flex:1 , 
+            marginHorizontal:10, 
+            marginBottom:10,  
+            minHeight:250
              
         }}>                  
             <SetupFieldView 
                 transaction_types={transaction_types} 
                 currency={currency}
                 warehouse={warehouse}  
+                onContinue={onContinue}
                 {...props} />
             
         </View>

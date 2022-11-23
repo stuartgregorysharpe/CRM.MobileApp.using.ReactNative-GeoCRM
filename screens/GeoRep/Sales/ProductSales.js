@@ -43,7 +43,9 @@ export default function ProductSales(props) {
 	});
 
 	const onSetupFieldModalClosed = ({ type, value}) => {
-
+		if(type === Constants.actionType.ACTION_CLOSE){
+			setupFieldModalRef.current.hideModal()
+		}
 	}
 
 	return (
