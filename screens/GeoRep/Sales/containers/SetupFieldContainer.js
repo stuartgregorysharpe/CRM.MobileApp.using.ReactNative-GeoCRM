@@ -1,5 +1,5 @@
 
-import { View } from 'react-native'
+import { View , BackHandler } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
@@ -23,16 +23,17 @@ const  SetupFieldContainer = (props) => {
             setCurrency(res.currency);
         }).catch((e) => {
             expireToken(dispatch, e);
-        })
+        });
 
-        return () =>{
-            isMount = false;
-        }
+        
     }, []);
+
+ 
 
     
     return (
-        <View style={{alignSelf:'stretch' , flex:1 , marginHorizontal:10, marginBottom:10         
+        <View style={{alignSelf:'stretch' , flex:1 , marginHorizontal:10, marginBottom:10,  minHeight:300
+             
         }}>                  
             <SetupFieldView 
                 transaction_types={transaction_types} 

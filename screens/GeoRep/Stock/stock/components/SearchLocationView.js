@@ -1,5 +1,5 @@
 
-import { View, FlatList } from 'react-native'
+import { View, FlatList , StyleSheet, ScrollView} from 'react-native'
 import React , { useState} from 'react'
 import SearchBox from '../../../../../components/SearchBar'
 import SearchLocationItem from './SearchLocationItem';
@@ -23,19 +23,24 @@ export default function SearchLocationView(props) {
     return (
         <View>      
             <SearchBox 
-                style={{marginHorizontal: type === 'setup' ? -10 : 0}}
+                style={type === 'setup' ? styles.setUpStyle : styles.normalStyle}
                 placeholder="Search Location Name..."
                 onSearch={(searchKey) => {
                     onSearch(searchKey);
                 }}
-            //isFilter={true}
+                //isFilter={true}
             >
-
             </SearchBox>
-
          
-            <View style={{flexDirection:'column', flex:1 , marginHorizontal: type === 'setup' ? -10 : 0, maxHeight: type != "setup" ? 250 : 350}}>
-                <FlatList                              
+            <View style={type === 'setup' ? styles.setUpStyleView : styles.normalStyleView}>
+                {/* <ScrollView>
+                    {
+                        lists.map((item, index) =>{
+                            return renderItems(item, index)
+                        })
+                    }
+                </ScrollView> */}
+                <FlatList               
                     ListHeaderComponent={()=>
                         <View></View>
                     }
@@ -46,10 +51,13 @@ export default function SearchLocationView(props) {
                         ({ item, index }) => renderItems(item, index)
                     }
                     keyExtractor={(item, index) => index.toString()}
-                />                
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                    }}
+
+                />
             </View>
-            
-            
+                
 
             {
                 type != "setup" &&
@@ -58,8 +66,27 @@ export default function SearchLocationView(props) {
                 </View>
             }
             
-
-
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    setUpStyle :{
+        marginHorizontal: -10,
+        marginTop:-10
+    },
+    normalStyle:{
+        marginHorizontal:0,
+    },
+    setUpStyleView :{
+        flexDirection:'column',         
+        marginHorizontal: -10,
+        maxHeight: 350,
+    },
+    normalStyleView:{
+        flexDirection:'column',         
+        marginHorizontal: 0,
+        maxHeight: 350,
+    }
+    
+})

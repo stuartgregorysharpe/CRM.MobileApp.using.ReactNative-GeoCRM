@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions ,ScrollView , TouchableOpacity} from 'react-native'
+import { View, Text, Image, Dimensions ,ScrollView , BackHandler, TouchableOpacity} from 'react-native'
 import React , { useEffect , useRef } from 'react'
 import Images from '../../../constants/Images';
 import { style } from '../../../constants/Styles';
@@ -12,7 +12,27 @@ export default function ProductSales(props) {
 
 	useEffect(() => {
 		setupFieldModalRef.current.showModal();
-	},[])
+		
+		// const backHandler = BackHandler.addEventListener('hardwareBackPress', () => handleBackButtonClick)
+		// return () => backHandler.remove()
+
+		// BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    
+        // return () =>{        
+        //     BackHandler.removeEventListener(
+        //         'hardwareBackPress',
+        //         handleBackButtonClick,
+        //     );
+        // }
+
+	},[]);
+
+	const handleBackButtonClick = () => {
+        console.log("back handle")
+        return false;
+    };
+
+
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {

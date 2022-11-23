@@ -8,7 +8,7 @@ const LocationInfo = (props) => {
 
     const { location } = props;
     return (
-        <View style={styles.container}>
+        <View style={[styles.container , props.style]}>
             <View>
                 <View style={{flexDirection:'row'}}>
                     <SvgIcon

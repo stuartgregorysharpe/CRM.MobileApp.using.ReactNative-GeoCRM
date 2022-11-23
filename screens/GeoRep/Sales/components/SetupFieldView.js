@@ -11,7 +11,7 @@ import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors } from '../../../../constants'
-
+import { ScrollView } from 'react-native-gesture-handler'
 const SetupFieldView = (props) => {
 
 	const { transaction_types, currency, warehouse} = props;
@@ -39,6 +39,8 @@ const SetupFieldView = (props) => {
 		}
 	}, [currency])
 
+
+
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
 		const  locInfo = await getLocationInfo(locationId);
@@ -52,7 +54,7 @@ const SetupFieldView = (props) => {
 	}
 
 	const onStartSearch = (flag) => {
-		setIsSearchStart(true)
+		setIsSearchStart(flag)
 	}
 
 	const onCurrencyItemSelected = (item) => {		
@@ -120,18 +122,21 @@ const SetupFieldView = (props) => {
 	}
 
 	return (
-		<View>
+		<View style={{marginTop:10}}>
 						
 			<SearchLocationContainer 
 				type="setup"
 				onSubmit={onSubmit} 
 				onStartSearch={onStartSearch}
 				isSkipLocationIdCheck
-				{...props} />
+				style={[isSearchStart ? styles.bgColor : {} , {position:'absolute', zIndex:999, right:0, left:0  }]} //
+			{...props} />
+			
+			<View style={{height:55}}></View>
 
 			{
 				selectedLocation  != null && !isSearchStart &&
-				<LocationInfo 
+				<LocationInfo 				
 					onClose={()=>{
 						setSelectedLocation(null)
 					}}
@@ -189,4 +194,9 @@ const SetupFieldView = (props) => {
 
 export default SetupFieldView
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+	bgColor:{
+		backgroundColor:Colors.whiteColor,		
+		borderRadius:5,
+	}
+})

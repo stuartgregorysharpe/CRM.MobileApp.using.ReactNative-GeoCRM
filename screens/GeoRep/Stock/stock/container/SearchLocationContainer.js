@@ -28,7 +28,6 @@ const SearchLocationContainer = props => {
     if (changedSearchKey != searchKey) {
       onSearch(changedSearchKey);
     }
-
     if(props.onStartSearch && lists.length > 0){
       props.onStartSearch(true);
     }
@@ -84,7 +83,7 @@ const SearchLocationContainer = props => {
   };
 
   const onSearch = key => {
-    changedSearchKey = key;  
+    changedSearchKey = key;
     if (key == '') {
       setLists(originLists);
     } else if (key.length > 1 && !isLoading) {
@@ -92,8 +91,8 @@ const SearchLocationContainer = props => {
       callSearch(key);
     }
 
-    if(props.onStartSearch ){
-      props.onStartSearch(true);
+    if(props.onStartSearch && key === '' ){
+      props.onStartSearch(false);
     }
 
   };
@@ -105,9 +104,12 @@ const SearchLocationContainer = props => {
     };
 
 
-    GetRequestCustomerSearchDAO.find(param).then((res) => {
-      
+    GetRequestCustomerSearchDAO.find(param).then((res) => {      
       setLists(res.items);
+      if(props.onStartSearch && res.items.length == 0  ){
+        props.onStartSearch(false);
+      }
+
       if (key == '') {
         setOriginLists(res.items);
       }
@@ -120,7 +122,7 @@ const SearchLocationContainer = props => {
   };
 
   return (
-    <View style={{alignSelf: 'stretch'}}>
+    <View style={[props.style ? props.style : {} , {alignSelf: 'stretch', }]}>
       <SearchLocationView
         lists={lists}
         onItemPressed={onItemPressed}
