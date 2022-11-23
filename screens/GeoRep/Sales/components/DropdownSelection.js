@@ -40,8 +40,7 @@ const DropdownSelection = (props) => {
 					
 					{
 						isExpanded && 
-						<View style={{marginTop:10,alignSelf:'stretch'}}>
-							
+						<View style={{marginTop:10,alignSelf:'stretch'}}>							
 							{props.children}
 						</View>						
 					}

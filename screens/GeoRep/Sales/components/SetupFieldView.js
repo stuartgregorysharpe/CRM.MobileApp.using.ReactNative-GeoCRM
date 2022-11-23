@@ -1,40 +1,52 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React , {useState ,useEffect} from 'react'
-import SearchBar from '../../../../components/SearchBar'
 import DropdownSelection from './DropdownSelection'
 import SaleType from './SaleType'
-import SearchLocationView from '../../Stock/stock/components/SearchLocationView'
 import SearchLocationContainer from '../../Stock/stock/container/SearchLocationContainer'
 import LocationInfo from './LocationInfo'
 import { useSelector } from 'react-redux'
 import { getLocalData } from '../../../../constants/Storage'
 import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
+import Warehouse from './Warehouse'
+import { AppText } from '../../../../components/common/AppText'
+import { Colors } from '../../../../constants'
 
 const SetupFieldView = (props) => {
 
 	const { transaction_types, currency, warehouse} = props;
+	const features = useSelector(
+		state => state.selection.payload.user_scopes.geo_rep.features,
+	);
 	const [isSearchStart, setIsSearchStart] = useState(false)
 	const [selectedLocation ,setSelectedLocation] = useState(null)
 	const [selectedCurrency , setSelectedCurrency] = useState(null)
+	const [warehouseRequired, setWarehouseRequired] = useState(false)
+	const [selectedWarehouse, setSelectedWarehouse] = useState([])
+	const [transactionType, setTransactionType] = useState(null)
 	const isCheckin = useSelector(state => state.location.checkIn);
-	
+
 	useEffect(() => {
 		if(isCheckin){
 			getCheckinLocationInfo();
 		}
 	}, [isCheckin])
 
+	useEffect(() => {
+		if(currency != undefined && currency.default_currency != ''){
+			const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
+			setSelectedCurrency(defaultCurrency)
+		}
+	}, [currency])
+
 	const getCheckinLocationInfo = async () => {
-		const  locationId = await getLocalData("@specific_location_id");
-		console.log("loca id", locationId)
+		const  locationId = await getLocalData("@specific_location_id");		
 		const  locInfo = await getLocationInfo(locationId);
 		if(locInfo.name != '')
 			setSelectedLocation(locInfo);
 	}
 
-	const onSubmit = (location, locationId) => {
-		console.log(location)
+	const onSubmit = (location, locationId) => {		
 		setIsSearchStart(false);
 		setSelectedLocation(location)
 	}
@@ -43,9 +55,68 @@ const SetupFieldView = (props) => {
 		setIsSearchStart(true)
 	}
 
-	const onCurrencyItemSelected = (item) => {
-		console.log("currenc" , item)
+	const onCurrencyItemSelected = (item) => {		
 		setSelectedCurrency(item);
+	}
+
+	const onWarehouseItemSelected = (item , isChecked) => {		
+		if(item.id === 0){
+			if(isChecked){
+				setSelectedWarehouse([])
+			}else{
+				setSelectedWarehouse([{id:0, label: 'all'} , ...warehouse.options]);
+			}
+		}else{
+			if(isChecked){
+				const tmp = selectedWarehouse.filter(element => element.id != item.id && element.id != 0);
+				setSelectedWarehouse(tmp)				
+			}else{
+				setSelectedWarehouse([...selectedWarehouse , item]);	
+			}	
+		}
+					
+	}
+
+	const onTransactionType = (type) => {
+		setTransactionType(type)
+	}
+
+	const onWarehouseRequired = (required) => {		
+		if(features.includes("product_multiple_warehouse")){
+			setWarehouseRequired(required === "1" ? true: false);
+		}		
+	}
+
+	const renderWarehouseTitle = () => {
+		const allSelected = selectedWarehouse.find(item => item.id == 0);
+		if(allSelected  != undefined){
+			return "ALL SELECTED"
+		}
+		if(selectedWarehouse.length == 1){
+			return selectedWarehouse[0].label;
+		}else if(selectedWarehouse.length > 1){
+			return selectedWarehouse.length + " SELECTED";
+		}
+		return "";
+	}
+
+	const isValidate = () => {		
+		console.log("selectedLocation",transactionType)
+		if(
+			selectedLocation != null &&
+			transactionType != null &&
+			selectedCurrency != null &&
+			( warehouseRequired && selectedWarehouse.length != 0 || !warehouseRequired )
+			){
+			return true;
+		}
+		return false;
+	}
+
+	const onContinue = () => {
+		if(isValidate()){
+
+		}
 	}
 
 	return (
@@ -59,7 +130,7 @@ const SetupFieldView = (props) => {
 				{...props} />
 
 			{
-				selectedLocation  != null && 
+				selectedLocation  != null && !isSearchStart &&
 				<LocationInfo 
 					onClose={()=>{
 						setSelectedLocation(null)
@@ -70,7 +141,12 @@ const SetupFieldView = (props) => {
 			{
 				!isSearchStart && 
 				<View>
-					<SaleType transaction_types={transaction_types} />
+
+					<SaleType 
+						transaction_types={transaction_types} 
+						onTransactionType={onTransactionType}
+						onWarehouseRequired={onWarehouseRequired}
+						/>
 
 					<DropdownSelection
 						title = "Currency Type"
@@ -79,17 +155,31 @@ const SetupFieldView = (props) => {
 					>
 						<CurrencyType 
 							selectedItem={selectedCurrency}
-							onItemSelected={onCurrencyItemSelected}							
+							onItemSelected={onCurrencyItemSelected}
 							lists={currency ? currency.options : []}></CurrencyType>						
 					</DropdownSelection>
+					
+					{
+						warehouseRequired &&
+						<DropdownSelection
+							title = "Warehouse"
+							selectedItem={renderWarehouseTitle()}
+							items={warehouse ? warehouse.options : []}
+						>
+							<Warehouse 
+								selectedItem={selectedWarehouse}
+								onItemSelected={onWarehouseItemSelected}
+								lists={warehouse ? warehouse.options : []}
+							/>
+						</DropdownSelection>
+					}
+					
 
-					<DropdownSelection
-						title = "Warehouse"
-						selectedItem="Cape Town Warehouse"
-						items={warehouse ? warehouse.options : []}
-					>
-
-					</DropdownSelection>
+					<View style={{alignItems:'center', paddingVertical:5}}>
+						<TouchableOpacity onPress={() => onContinue()}>
+							<AppText title="Continue" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
+						</TouchableOpacity>						
+					</View>
 
 				</View>
 			}

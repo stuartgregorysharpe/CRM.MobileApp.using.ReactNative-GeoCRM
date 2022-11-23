@@ -1,15 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors } from '../../../../constants'
 import { whiteLabel } from '../../../../constants/Colors'
-import { white } from 'react-native-paper/lib/typescript/styles/colors'
 import CCheckBox from '../../../../components/common/CCheckBox'
-import CCircleButton from '../../../../components/common/CCircleButton'
 
 const CurrencyType = (props) => {
 
     const { lists , selectedItem} = props;
+    
     const onValueChange = (item) => {
         if(props.onItemSelected)
             props.onItemSelected(item)
@@ -55,7 +54,7 @@ const CurrencyType = (props) => {
                             </View>
 
                             <View style={{flex:3 , flexDirection:'row' , alignItems:'center'}}>
-                                <AppText title={item.exchange_rate}  style={{flex:1}}></AppText>                                                                
+                                <AppText title={"1 : " + item.exchange_rate}  style={{flex:1}}></AppText>                                                                
                                 <CCheckBox value={getCheckedStatus(item)} style={styles.checkbox} onValueChange={() => {
                                     onValueChange(item);
                                 }} />

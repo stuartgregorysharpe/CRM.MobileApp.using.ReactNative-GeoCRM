@@ -73,18 +73,7 @@ const SearchLocationContainer = props => {
           }
 
       })
-      
-      // getApiRequest('locations/location-devices', param)
-      //   .then(res => {
-      //     if (res.devices.length > 0) {
-      //       props.onSubmit(stockType, item.location_id);
-      //     } else {
-      //     }
-      //   })
-      //   .catch(e => {
-      //     console.log('error', e);
-          
-      //   });
+            
     }
   };
 
@@ -102,6 +91,11 @@ const SearchLocationContainer = props => {
       searchKey = key;
       callSearch(key);
     }
+
+    if(props.onStartSearch ){
+      props.onStartSearch(true);
+    }
+
   };
 
   const callSearch = key => {

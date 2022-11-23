@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View , TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React , { useEffect, useState} from 'react'
 import { Colors, Fonts } from '../../../../constants'
 import { boxShadow, style } from '../../../../constants/Styles'
@@ -6,12 +6,17 @@ import { Button } from '../../../../components/shared/Button'
 
 const SaleType = (props) => {
 
-	const { transaction_types } = props;
+	const { transaction_types , onTransactionType , onWarehouseRequired } = props;
 	const [type , setType] = useState('');
 
 	useEffect(() => {
-		if(transaction_types != null){
+		if(transaction_types != null && transaction_types.default_type != ''){
 			setType(transaction_types.default_type);
+			const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
+			if(transactionType  != undefined){
+				onTransactionType(transactionType.type);
+				onWarehouseRequired(transactionType.warehouse_required);
+			}
 		}
 	}, [transaction_types]);
 
@@ -31,8 +36,11 @@ const SaleType = (props) => {
 										style={styles.buttonStyle}
 										selectedButtonStyle={styles.selectedButtonStyle}
 										textStyle={styles.textStyle}
-										onTaped={type === item.type} onClick={()=>{
+										onTaped={type === item.type} 
+										onClick={()=>{
 											setType(item.type);
+											onTransactionType(item.type);
+											onWarehouseRequired(item.warehouse_required);
 									}} />
 								)								
 							})

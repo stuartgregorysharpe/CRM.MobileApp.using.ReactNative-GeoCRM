@@ -1,7 +1,6 @@
 
-import { Dimensions, View } from 'react-native'
+import { View } from 'react-native'
 import React , { useState , useEffect } from 'react'
-import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
@@ -33,10 +32,13 @@ const  SetupFieldContainer = (props) => {
 
     
     return (
-        <View style={{alignSelf:'stretch' , flex:1 , marginHorizontal:10, marginBottom:10 
-        // , maxHeight: 500
+        <View style={{alignSelf:'stretch' , flex:1 , marginHorizontal:10, marginBottom:10         
         }}>                  
-            <SetupFieldView transaction_types={transaction_types} warehouse={warehouse} currency={currency} {...props} />
+            <SetupFieldView 
+                transaction_types={transaction_types} 
+                currency={currency}
+                warehouse={warehouse}  
+                {...props} />
             
         </View>
     )
