@@ -14,6 +14,7 @@ import {whiteLabel} from '../../constants/Colors';
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const {
+    backButtonDisabled,
     hideClose,
     hideClear,
     hideDivider,
@@ -59,7 +60,11 @@ const CModal = React.forwardRef((props, ref) => {
         animationType="fade"
         transparent
         visible={isVisible}
-        onRequestClose={onClose}>
+        onRequestClose={() =>{
+          if(!backButtonDisabled){
+            onClose()
+          }          
+        }}>
 
         <View
           style={[
