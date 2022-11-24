@@ -126,7 +126,6 @@ async function getFormQuestionData(
     categories,
   );
   const products = {};
-
   _products.forEach(product => {
     const item = {
       product_id: product.product_id,
@@ -137,7 +136,7 @@ async function getFormQuestionData(
     if (products[product.product_group]) {
       products[product.product_group].push(item);
     } else {
-      products[product.product_group] = [];
+      products[product.product_group] = [item];
     }
   });
   return {

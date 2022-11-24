@@ -82,7 +82,6 @@ const fetchPOSProductsFromDB = async (business_unit_id, client_id) => {
                 ORDER BY pt.product_type,pcmd.product_name`;
   const res = await ExecuteQuery(query, [client_id, business_unit_id]);
   const result = res.rows ? res.rows : [];
-  console.log('result', result);
   const resultList = [];
   for (let i = 0; i < result.length; i++) {
     const item = result.item(i);
@@ -103,22 +102,17 @@ async function getFormQuestionData(
   postData,
   questionBody,
 ) {
-  console.log('post capture getFormQuestionData', baseFormData);
-  console.log('baseFormData', baseFormData);
-  console.log('questionBody', questionBody);
   const pleacementAreas = {};
   const touchpoints = await fetchTouchpointsFromDB(
     business_unit_id,
     client_id,
     questionBody.form_question_id,
   );
-  console.log('touchpoints', touchpoints);
   const placementAreaResult = await fetchPlacementAreasFromDB(
     business_unit_id,
     client_id,
     questionBody.form_question_id,
   );
-  console.log('placementAreaResult', placementAreaResult);
   placementAreaResult.forEach(result => {
     if (pleacementAreas[result.placement_type]) {
       pleacementAreas[result.placement_type].push(result.area);
@@ -126,12 +120,10 @@ async function getFormQuestionData(
       pleacementAreas[result.placement_type] = [result.area];
     }
   });
-  console.log('pleacementAreas', pleacementAreas);
   const productsResult = await fetchPOSProductsFromDB(
     business_unit_id,
     client_id,
   );
-  console.log('productsResult', productsResult);
   return {
     ...baseFormData,
     touchpoints,
