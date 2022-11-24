@@ -25,7 +25,7 @@ import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
-import {getJsonData, storeLocalValue} from '../../../../constants/Storage';
+import {getJsonData, getLocalData, storeLocalValue} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import {getLocationInfo} from '../../../../actions/location.action';
 import {Notification} from '../../../../components/modal/Notification';
@@ -45,6 +45,7 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
 import { GetRequestFormListsDAO } from '../../../../DAO';
+import { cos } from 'react-native-reanimated';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -183,7 +184,8 @@ const LocationSpecificInfoScreen = props => {
 
   const onFeatureItemClicked = item => {
     if (item.title === 'Forms') {
-      navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
+       console.log("locationInfo",locationInfo.location_id)
+       navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
     if (item.link === 'customer_contacts') {
       customerContactModalRef.current.showModal();
@@ -270,12 +272,24 @@ const LocationSpecificInfoScreen = props => {
   const onCustomerContactModalClosed = ({type, value}) => {};
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
 
-  const getFormLists = (locationId) => {
-    console.log("form lists => " , locationId);
+  const getFormLists = async(locationId) => {
+   
     var param = {
       location_id: locationId
     }
+    if (isCheckin) {
+      const checkin_type_id = await getLocalData('@checkin_type_id');
+      const checkin_reason_id = await getLocalData('@checkin_reason_id');
+      if (checkin_type_id && checkin_reason_id != '') {
+        param.checkin_type_id = checkin_type_id;
+      }
+      if (checkin_reason_id && checkin_reason_id != '') {
+        param.checkin_reason_id = checkin_reason_id;
+      }
+    }
+    console.log("form lists => " , param);
     GetRequestFormListsDAO.find(param).then((res) => {
+      console.log("chke res", res)
       getCompulsoryForm(res.forms);
     }).catch((e) => {
 
@@ -286,12 +300,15 @@ const LocationSpecificInfoScreen = props => {
     var formLists = [...lists];
     const formIds = await getJsonData("@form_ids");
     var flag = false;
+    console.log(" formIds in specific ", JSON.stringify(formIds))
+
     formLists.forEach((element) => {
+      
       if(element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id)) ){        
         flag = true;
       }
     });
-    setIsFormCompulsory(flag);
+    setIsFormCompulsory(flag);    
     dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});  
   };
 

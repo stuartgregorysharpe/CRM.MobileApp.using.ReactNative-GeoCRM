@@ -375,14 +375,14 @@ const getData = async(lists) => {
 
         tmp.push(
             {
-                form_id: element.form_id,
+                form_id: element.form_id.toString(),
                 form_name : element.form_name,
                 form_type: element.form_type,
-                form_type_id: element.form_type_id,
+                form_type_id: element.form_type_id.toString(),
                 guide_info: guideInfoData,
-                question_count: countRes && countRes.length > 0 ? countRes.item(0).cnt : 0,
+                question_count: countRes && countRes.length > 0 ? countRes.item(0).cnt.toString() : "0",
                 compulsory: element.compulsory.toString(),
-                location_required: element.location_required
+                location_required: element.location_required.toString()
             }
         );            
     }

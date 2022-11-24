@@ -4,7 +4,7 @@ import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {getDateTime} from '../../../helpers/formatHelpers';
 import {useSelector, useDispatch} from 'react-redux';
 import {getJsonData, getLocalData, storeJsonData, storeLocalValue} from '../../../constants/Storage';
-import {CHECKIN} from '../../../actions/actionTypes';
+import {CHECKIN, LOCATION_CHECK_OUT_COMPULSORY} from '../../../actions/actionTypes';
 import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/CheckoutButton';
 import {PostRequestDAO} from '../../../DAO';
