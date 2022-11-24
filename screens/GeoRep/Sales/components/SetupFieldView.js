@@ -190,9 +190,14 @@ const SetupFieldView = (props) => {
 						</DropdownSelection>
 					}
 					
+					<View style={{height:1, backgroundColor:Colors.greyColor, marginHorizontal:-10, marginTop:10, marginBottom:10}}>
+					</View>
 
 					<View style={{alignItems:'center', paddingVertical:5}}>
-						<TouchableOpacity onPress={() => onContinue()}>
+						<TouchableOpacity 
+							style={{alignSelf:'stretch', alignItems:'center'}}
+							disabled={!isValidate()}
+							onPress={() => onContinue()}>
 							<AppText title="Continue" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
 						</TouchableOpacity>						
 					</View>
