@@ -125,9 +125,13 @@ const SetupFieldView = (props) => {
 	}
 
 	const onContinue = () => {
-		if(isValidate()){
-			console.log("trigger continue");
-			props.onContinue()
+		if(isValidate()){			
+			props.onContinue({
+				transaction_type: transactionType,
+				currency_id: selectedCurrency,
+				warehouse_id: selectedWarehouse,
+				location: selectedLocation
+			})
 		}
 	}
 

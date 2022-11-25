@@ -30,8 +30,8 @@ const  SetupFieldContainer = (props) => {
     }, []);
 
 
-    const onContinue = () => {             
-        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: ''});
+    const onContinue = (data) => {             
+        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
     
     return (
