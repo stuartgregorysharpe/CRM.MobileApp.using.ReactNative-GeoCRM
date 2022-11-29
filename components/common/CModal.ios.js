@@ -7,10 +7,11 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
-
+import KeyboardManager from 'react-native-keyboard-manager';
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const {
@@ -29,6 +30,9 @@ const CModal = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);
+
+      KeyboardManager.setEnable(false);
+
       if (props.onShowModal) {
         props.onShowModal(true);
       }
@@ -36,6 +40,7 @@ const CModal = React.forwardRef((props, ref) => {
 
     hideModal: () => {
       setIsVisible(false);
+      KeyboardManager.setEnable(true);
     },
   }));
 
@@ -44,6 +49,7 @@ const CModal = React.forwardRef((props, ref) => {
       props.onClose();
     }
     setIsVisible(false);
+    KeyboardManager.setEnable(true);
   };
 
   const onClear = () => {
@@ -51,6 +57,7 @@ const CModal = React.forwardRef((props, ref) => {
       props.onClear();
     }
     setIsVisible(false);
+    KeyboardManager.setEnable(true);
   };
 
   return (
@@ -80,7 +87,8 @@ const CModal = React.forwardRef((props, ref) => {
             />
           )}
 
-          <View
+          <KeyboardAvoidingView
+            behavior="padding"
             style={[
               isCenterModal && styles.modalContainer,
               isBottomModal && styles.bottomModalContainer,
@@ -145,7 +153,7 @@ const CModal = React.forwardRef((props, ref) => {
               )}
               {props.children}
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </View>
       </Modal>
     </View>
@@ -171,9 +179,13 @@ const styles = StyleSheet.create({
     zIndex: 500,
   },
   bottomModalDim: {
+    position: 'absolute',
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.35)',
-    flex: 1,
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
   },
   fullModalDim: {

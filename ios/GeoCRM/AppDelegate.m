@@ -5,7 +5,6 @@
 #import <React/RCTRootView.h>
 #import "RNBootSplash.h"
 #import <GoogleMaps/GoogleMaps.h>
-#import <IQKeyboardManager/IQKeyboardManager.h>
 
 
 #ifdef FB_SONARKIT_ENABLED
@@ -53,7 +52,6 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
   
-  [[IQKeyboardManager sharedManager] setEnable:YES];
   
   [GMSServices provideAPIKey:@"AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o"];
   
