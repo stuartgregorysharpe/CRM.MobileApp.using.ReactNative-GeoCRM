@@ -5,9 +5,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
-import {  
-  getLocalData,
-} from '../../../../constants/Storage';
+import {getLocalData} from '../../../../constants/Storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
@@ -16,12 +14,11 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
-
   const {navigation, item, current, tabIndex, onItemSelected} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
-  
+
   useEffect(() => {
     initData();
   }, []);
@@ -63,13 +60,15 @@ export function CalendarItem(props) {
   };
 
   const renderCheckOutButton = () => {
-    return <CheckOutViewContainer
-                type="calendar"
-                goBack={async res => {                  
-                  console.log("res", res)
-                }}
-              />
-  }
+    return (
+      <CheckOutViewContainer
+        type="calendar"
+        goBack={async res => {
+          console.log('res', res);
+        }}
+      />
+    );
+  };
 
   const renderStatusButton = () => {
     if (
@@ -80,6 +79,7 @@ export function CalendarItem(props) {
         <CheckinLinkButton
           title="Check In"
           locationId={item.location_id}
+          scheduleId={item.schedule_id}
           renderSubmitButton={onCheckIn => {
             return (
               <TouchableOpacity
@@ -139,7 +139,6 @@ export function CalendarItem(props) {
     );
   };
 
-  
   if (item != undefined && item.coordinates != undefined) {
     return (
       <View style={[styles.itemContainer, style.card]}>
@@ -161,10 +160,9 @@ export function CalendarItem(props) {
             {' '}
             {item.schedule_time}
           </Text>
-          {
-            item.checkin_state === 'checkin_current' ? renderCheckOutButton() : renderStatusButton()
-          }
-          
+          {item.checkin_state === 'checkin_current'
+            ? renderCheckOutButton()
+            : renderStatusButton()}
 
           {/* <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text> */}
         </View>

@@ -17,7 +17,7 @@ import Fonts from '../../../constants/Fonts';
 import {
   checkFeatureIncludeParam,
   getBaseUrl,
-  getToken,  
+  getToken,
 } from '../../../constants/Storage';
 import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';
@@ -41,6 +41,7 @@ import {Notification} from '../../../components/modal/Notification';
 
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
+import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 var selectedIndex = 2;
 
 var selectedIndex = 2;
@@ -114,13 +115,13 @@ export default function CalendarScreen(props) {
     var token = await getToken();
     if (base_url != null && token != null) {
       setIsLoading(true);
-      getCalendar(base_url, token, type)
+      GetRequestCalendarScheduleList.find({period: type})
         .then(res => {
-          console.log('res', res);
+          console.log('res', res.items);
           if (selectedIndex == 2 || selectedIndex == 0) {
-            setTodayList(res);
+            setTodayList(res.items);
           } else {
-            updateListForWeek(res);
+            updateListForWeek(res.items);
           }
           setIsLoading(false);
         })
