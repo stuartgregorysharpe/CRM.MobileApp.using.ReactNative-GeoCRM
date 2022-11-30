@@ -61,7 +61,7 @@ const fetchDataFromDB = async (
                   s.schedule_date,
                   CASE WHEN schedule_time IS NOT NULL AND schedule_time != "00:00:00" 
                   THEN 
-                    strftime(s.schedule_time, "%H:%i") || " - " || strftime(s.end_time, "%H:%i")
+                    (strftime(s.schedule_time, "%H:%i") || " - " || strftime(s.end_time, "%H:%i"))
                   ELSE "Today" END AS "schedule_time", 
                   lcmd.street_address,
                   lcmd.suburb, 
@@ -84,13 +84,13 @@ const fetchDataFromDB = async (
                 WHERE s.user_id = ${user_id}
                 AND s.client_id = ${client_id}`;
   if (postData['period'] == 'Today') {
-    query += ` AND s.schedule_date = CURRENT_DATE`;
+    query += ` AND s.schedule_date = date('now')`;
   }
   if (postData['period'] == 'last_week') {
-    query += ` AND s.schedule_date BETWEEN (CURRENT_DATE - INTERVAL 7 DAY) AND (CURRENT_DATE - INTERVAL 1 DAY)`;
+    query += ` AND s.schedule_date BETWEEN date('now', '-7 days') AND date('now', '-1 day')`;
   }
   if (postData['period'] == 'week_ahead') {
-    query += ` AND s.schedule_date BETWEEN (CURRENT_DATE + INTERVAL 1 DAY) AND (CURRENT_DATE + INTERVAL 7 DAY)`;
+    query += ` AND s.schedule_date BETWEEN date('now', '1 day') AND date('now', '7 days')`;
   }
   query += ` ORDER BY s.schedule_order ASC`;
   const res = await ExecuteQuery(query);
@@ -99,8 +99,9 @@ const fetchDataFromDB = async (
   const resultList = [];
   for (let i = 0; i < result.length; i++) {
     const item = result.item(i);
-    resultList.push(item.touchpoint);
+    resultList.push({...item});
   }
+  console.log('resultList', resultList);
   return resultList;
 };
 
@@ -144,10 +145,14 @@ const getScheduleList = (
     } else {
       item.checkin_state = schedule.checkin_state;
     }
+    item.coordinates = {
+      latitude: item.latitude,
+      longitude: item.longitude,
+    };
 
     calendarItems.push(item);
   });
-
+  console.log('calendarItems', calendarItems);
   return calendarItems;
 };
 
