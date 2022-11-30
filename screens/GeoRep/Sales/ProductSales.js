@@ -1,6 +1,5 @@
 import { View, Text, Image, Dimensions ,ScrollView , FlatList, TouchableOpacity} from 'react-native'
-import React , { useEffect , useRef , useState } from 'react'
-import Images from '../../../constants/Images';
+import React , { useEffect , useRef , useState , useCallback } from 'react'
 import { style } from '../../../constants/Styles';
 import SetupFieldModal from './modal/SetupFieldModal';
 import { Constants, Strings } from '../../../constants';
@@ -8,30 +7,20 @@ import ProductGroupModal from './modal/ProductGroupModal';
 import GetRequestProductsList from '../../../DAO/sales/GetRequestProductsList';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../constants/Helper';
-import ProductItem from '../../../components/shared/PosCapture/components/ProductItem';
 import ProductGroupItem from './components/items/ProductGroupItem';
+import ProductItem from './components/items/ProductItem';
+import ProductSalesContainer from './containers/ProductSalesContainer';
+import { getJsonData, storeJsonData } from '../../../constants/Storage';
+
 
 export default function ProductSales(props) {
 
-	const setupFieldModalRef = useRef(null);
-	const productGroupModalRef = useRef(null);
-	const navigation = props.navigation;
-	const [selectedGroupTitle , setSelectedGroupTitle] = useState("");
 	const [settings, setSettings] = useState(null);
 	const [items, setItems] = useState([]);
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		setupFieldModalRef.current.showModal();				
-	},[]);
-
-	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
-			setupFieldModalRef.current.showModal();
-		});    
-		return unsubscribe;
-	}, [navigation]);
-
+	const [isLoading, setIsLoading] = useState(false);
+	const [page, setPage] = useState(0);	
+	
+	const dispatch = useDispatch()	
 	useEffect(() => {
 		if (props.screenProps) {
 		props.screenProps.setOptions({
@@ -50,79 +39,77 @@ export default function ProductSales(props) {
 		});
 		}
 	});
+		
+	const getProductLists = async(data , search_text , pageNumber) => {
 
-	const onSetupFieldModalClosed = ({ type, value}) => {
-		if(type === Constants.actionType.ACTION_CLOSE){		
-			setupFieldModalRef.current.hideModal();			
-			getProductLists(value);
-		}
-	}
-		
-	const getProductLists = (data , search_text) => {
-		
-		const param = {
-			page_no: 1,
-			transaction_type: data.transaction_type,
-			currency_id: data.currency_id ? data.currency_id.id : '',
-			warehouse_id : data.warehouse_id ? data.warehouse_id[0].id : '',
-			search_text: search_text,
-			filters: ''			
-		}
-		GetRequestProductsList.find(param).then((res) => {
-			if(res.status == Strings.Success){
-				setSettings(res.settins);
-				setItems(res.items);
+		console.log("getProductLists ==== ")
+		if(data != undefined){
+			var postParam = {
+				page_no: 0,
+				transaction_type: data.transaction_type,
+				currency_id: data.currency_id ? data.currency_id.id : '',
+				warehouse_id : data.warehouse_id ? data.warehouse_id[0].id : '',			
+				filters: ''			
 			}
+			storeJsonData("@setup", postParam);			
+			getApiData('', 0);
+		}		
+	}
+
+	const getProductListsByFilter = async (data) => {
+		var paramData = await getJsonData("@setup");
+		paramData["filters"] = data;
+		storeJsonData("@setup", paramData);
+		getApiData('' , 0);
+	}
+
+	const getApiData = async (search_text, pageNumber) => {
+
+		setIsLoading(true);
+		var paramData = await getJsonData("@setup");		
+		paramData["page_no"] = pageNumber;
+		if(search_text != ''){
+			paramData["search_text"] = search_text;
+		}		
+		storeJsonData("@setup", paramData);
+
+		console.log("param => ",paramData)
+		GetRequestProductsList.find(paramData).then((res) => {
+			if(res.status == Strings.Success){				
+
+				setSettings(res.settings);				
+				if(pageNumber == 0){
+					setItems(res.items);
+				}else{
+					setItems([...items, ...res.items]);
+				}				
+				setPage(pageNumber + 1);
+				console.log("api response" , JSON.stringify(res));
+			}
+			setIsLoading(false)
 		}).catch((e) => {
 			expireToken(dispatch, e);
+			setIsLoading(false)
 		})
 	}
 
-	const renderItem = (item, index) => {
-		if(item.count  === 1){
-			return (
-				<ProductItem key={index} item={item} />
-			)
-		}
-		if(item.count > 1){
-			return (
-				<ProductGroupItem key={index} item={item} />
-			)
-		}
-	}
-
 	return (
-		<View style={{paddingTop:20}}>
+		<View style={{paddingTop:20, alignSelf:'stretch', flex:1}}>			
 
-			<SetupFieldModal 
-				title="Define Setup"
-				hideClear
-				backButtonDisabled={true}
-				closableWithOutsideTouch={false}
-				ref={setupFieldModalRef}
-				hideDivider={true}
-				modalType={Constants.modalType.MODAL_TYPE_CENTER}
-				onButtonAction={onSetupFieldModalClosed}
-			/>
-
-			<ProductGroupModal 
-				title={selectedGroupTitle}
-				hideClear
-				backButtonDisabled={true}
-				closableWithOutsideTouch={false}
-				ref={productGroupModalRef}
-				hideDivider={true}
-				modalType={Constants.modalType.MODAL_TYPE_CENTER}
-				onButtonAction={onSetupFieldModalClosed}
-			/>
-
-			<FlatList
-                    data={items}
-                    renderItem={({item, index}) => renderItem(item, index)}
-                    keyExtractor={(item, index) => index.toString()}
-                    extraData={this.props}
-                />
+			<ProductSalesContainer 
+				getProductLists={getProductLists}
+				getProductListsByFilter={getProductListsByFilter}
+				items={items}
+				settings={settings}
+				page={page}
+				isLoading={isLoading}
+				loadMoreData={(pageNumber , searchText) => {
+					console.log("load more api ", pageNumber, searchText)
+					getApiData( searchText , pageNumber);
+				}}
+				{...props}
+				/>
 			
 		</View>
 	)
-}
+}  

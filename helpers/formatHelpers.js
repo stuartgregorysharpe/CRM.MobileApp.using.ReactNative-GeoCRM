@@ -138,6 +138,17 @@ export const formattedNumber = num => {
   }
 };
 
+
+export const formattedPrice = num => {
+  
+  try {        
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  } catch (e) {
+    return num;
+  }
+};
+
+
 export const getConvertedDateTime = dateTime => {
   var currentTime = moment(dateTime, 'YYYY-MM-DD HH:mm:ss').format(
     'DD MMMM YYYY HH:mm',

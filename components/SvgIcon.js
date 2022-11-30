@@ -1237,6 +1237,31 @@ const Sim_Card_Alert_Icon = `<svg id="sim_card_alert_black_24dp" xmlns="http://w
   </g>
 </svg>
 `;
+
+const Special = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="42" viewBox="0 0 44 42">
+<path id="new_releases_FILL0_wght400_GRAD0_opsz48" d="M17.3,45l-3.8-6.5L5.95,36.95,6.8,29.6,2,24l4.8-5.55L5.95,11.1,13.5,9.55,17.3,3,24,6.1,30.7,3l3.85,6.55,7.5,1.55-.85,7.35L46,24l-4.8,5.6.85,7.35-7.5,1.55L30.7,45,24,41.9Zm1.35-3.95L24,38.8l5.5,2.25,3.35-5,5.85-1.5-.6-5.95L42.15,24,38.1,19.3l.6-5.95-5.85-1.4-3.45-5L24,9.2,18.5,6.95l-3.35,5L9.3,13.35l.6,5.95L5.85,24,9.9,28.6l-.6,6.05,5.85,1.4ZM24,24Zm-2.15,6.65L33.2,19.4l-2.25-2.05-9.1,9L17.1,21.4l-2.3,2.25Z" transform="translate(-2 -3)" fill="#dc143c"/>
+</svg>
+`;
+
+const Sales_Cart = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
+<defs>
+  <filter id="teal_circle" x="0" y="0" width="202.718" height="202.718" filterUnits="userSpaceOnUse">
+    <feOffset dy="3" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="6" result="blur"/>
+    <feFlood flood-opacity="0.239"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+</defs>
+<g id="Group_5642" data-name="Group 5642" transform="translate(18 15)">
+  <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
+    <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="#133c8b"/>
+  </g>
+  <path id="shopping_bag_FILL0_wght400_GRAD0_opsz48" d="M15.526,104.351a7.221,7.221,0,0,1-5.268-2.258A7.221,7.221,0,0,1,8,96.825V31.6a7.221,7.221,0,0,1,2.258-5.268,7.221,7.221,0,0,1,5.268-2.258h13.8V22.816A18.169,18.169,0,0,1,34.781,9.457,18.168,18.168,0,0,1,48.14,4,18.168,18.168,0,0,1,61.5,9.457a18.169,18.169,0,0,1,5.457,13.359V24.07h13.8A7.717,7.717,0,0,1,88.281,31.6V96.825a7.717,7.717,0,0,1-7.526,7.526Zm0-7.526H80.755V31.6h-13.8V42.886a3.764,3.764,0,1,1-7.526,0V31.6H36.851V42.886a3.764,3.764,0,1,1-7.526,0V31.6h-13.8ZM36.851,24.07H59.43V22.816A11.139,11.139,0,0,0,48.14,11.526a11.139,11.139,0,0,0-11.29,11.289ZM15.526,96.825v0Z" transform="translate(34.775 27.901)" fill="#f9f9f9"/>
+</g>
+</svg>
+`;
+
 export default ({
   icon,
   xml,
@@ -1900,5 +1925,14 @@ export default ({
     {icon == 'Camera_Icon' && (
       <SvgXml style={style} xml={Camera_Icon} width={width} height={height} />
     )}
+
+    {icon == 'Special' && (
+      <SvgXml style={style} xml={Special} width={width} height={height} />
+    )}
+
+    {icon == 'Sales_Cart' && (
+      <SvgXml style={style} xml={Sales_Cart} width={width} height={height} />
+    )}
+    
   </Fragment>
 );

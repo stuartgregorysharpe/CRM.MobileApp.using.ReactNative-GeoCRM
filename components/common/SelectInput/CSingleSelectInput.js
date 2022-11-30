@@ -93,6 +93,11 @@ const CSingleSelectInput = props => {
         renderItem={renderDropdownItem}
         isPressOption={isPressOption}
         ref={selectModalRef}
+        onClear={() => {
+          if(mode == "multi"){
+            selectModalRef.current.hideModal();
+          }
+        }}
       />
     </View>
   );

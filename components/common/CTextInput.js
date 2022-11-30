@@ -6,7 +6,7 @@ import {whiteLabel} from '../../constants/Colors';
 
 
 const CTextInput = props => {
-  const { cTextRef, dynamicFieldRef , index} = props;
+  const { multiline, cTextRef, dynamicFieldRef , index} = props;
   
 
   return (
@@ -21,7 +21,9 @@ const CTextInput = props => {
           }
         }}        
         disabled={props.disabled != undefined ? props.disabled : false}
-        mode="outlined"
+        mode="outlined"        
+        multiline={multiline != undefined ? multiline : false}
+        numberOfLines={5}
         outlineColor={
           props.hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder
         }
@@ -36,8 +38,10 @@ const CTextInput = props => {
             dynamicFieldRef.current != undefined &&
             index <= dynamicFieldRef.current.length - 2 &&
             dynamicFieldRef.current[index + 1] != null
-          ) {            
-            dynamicFieldRef.current[index + 1].focus();          
+          ) {
+            if(!multiline){
+              dynamicFieldRef.current[index + 1].focus();
+            }            
           }
           if(props.onSubmitEditing){
             props.onSubmitEditing();

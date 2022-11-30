@@ -51,7 +51,7 @@ const DynamicField = props => {
     );
   };
 
-  const renderText = () => {
+  const renderText = (type) => {
     return (
       <CTextInput
         label={field_label}
@@ -60,16 +60,41 @@ const DynamicField = props => {
         index={index}
         isRequired={is_required}
         value={value}
+        multiline={type ==  "text" ? false: true}
         hasError={hasError}
         disabled={disabled}
         pointerEvents={disabled ? 'none' : 'auto'}
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 5}}
+        style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+        textInputStyle={[ type == "text" ? {} : {height:80, paddingTop:0 , lineHeight: 20} ]}        
       />
     );
   };
+
+  const renderPrice = () => {
+    return (
+      <View>
+        <CTextInput
+          label={field_label}
+          key={index}
+          dynamicFieldRef={dynamicFieldRef}
+          index={index}
+          isRequired={is_required}
+          value={value}          
+          hasError={hasError}
+          disabled={disabled}
+          pointerEvents={disabled ? 'none' : 'auto'}
+          onChangeText={text => {
+            updateFormData(field_name, text);
+          }}
+          style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+        />
+      </View>
+    );
+  }
+
 
   const renderEmailText = () => {
     return (
@@ -91,7 +116,7 @@ const DynamicField = props => {
       />
     );
   };
-
+  
   const renderDropdown = (mode = 'single') => {
     return (
       <CSingleSelectInput
@@ -255,8 +280,17 @@ const DynamicField = props => {
   if (isHidden != undefined && isHidden == true) return null;
 
   if (field_type == 'text') {
-    return renderText();
+    return renderText("text");
   }
+
+  if(field_type == 'textarea'){
+    return renderText("textarea");
+  }
+
+  if(field_type == 'price'){
+    return renderPrice();
+  }
+
   if (field_type == 'email') {
     return renderEmailText();
   }

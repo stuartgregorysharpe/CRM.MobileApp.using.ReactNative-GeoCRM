@@ -52,6 +52,7 @@ const SetupFieldView = (props) => {
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
 		const  locInfo = await getLocationInfo(locationId);
+		console.log(locationId, locInfo)
 		if(locInfo.name != '')
 			setSelectedLocation(locInfo);
 	}

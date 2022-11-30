@@ -27,10 +27,11 @@ export const storeJsonData = async (type, value) => {
 };
 export const getJsonData = async type => {
   try {
-    const jsonValue = await AsyncStorage.getItem(type);
+    const jsonValue = await AsyncStorage.getItem(type);    
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
+    return null;
   }
 };
 

@@ -9,6 +9,7 @@ import Colors, {whiteLabel} from '../constants/Colors';
 const SearchBar = props => {
   const {
     isFilter,
+    isScan,
     animation,
     initVal,
     isLoading,
@@ -78,6 +79,15 @@ const SearchBar = props => {
         color={whiteLabel().inactiveIcon}
         icon={faSearch}
       />
+
+      {
+        isScan && (
+          <TouchableOpacity  
+            style={styles.scanImageButton}>
+            <SvgIcon icon={"Scan_Icon"} width="30px" height="30px" />
+          </TouchableOpacity>
+        )
+      }
       {isFilter && (
         <TouchableOpacity
           style={styles.filterImageButton}
@@ -146,6 +156,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 18,
     right: 20,
+    zIndex: 1,
+    elevation: 1,
+  },
+
+  scanImageButton: {
+    position: 'absolute',
+    top: 18,
+    right: 60,
     zIndex: 1,
     elevation: 1,
   },

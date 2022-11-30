@@ -9,7 +9,8 @@ import {
 import {Colors, Fonts, Values} from '../../../../constants';
 
 const NumberCounter = props => {
-  const {count} = props;
+
+  const {count , btnStyle  , btnTextStyle ,inputBoxStyle } = props;
   const step = props.step || 1;
   const fixed = props.fixed || 0;
   const onCount = isPlus => {
@@ -40,12 +41,12 @@ const NumberCounter = props => {
   return (
     <View style={[styles.container, props.style]}>
       <TouchableOpacity
-        style={styles.buttonStyle}
+        style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
         onPress={() => onCount(false)}>
-        <Text style={styles.buttonText}>{'-'}</Text>
+        <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'-'}</Text>
       </TouchableOpacity>
 
-      <View style={styles.boxContainer}>
+      <View style={[styles.boxContainer, inputBoxStyle ? inputBoxStyle : {}]}>
         <TextInput
           style={styles.textInput}
           value={count + ''}
@@ -64,9 +65,9 @@ const NumberCounter = props => {
         />
       </View>
       <TouchableOpacity
-        style={styles.buttonStyle}
+        style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
         onPress={() => onCount(true)}>
-        <Text style={styles.buttonText}>{'+'}</Text>
+        <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'+'}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     width: 40,
-    height: 40,
+    height: 40,    
     alignItems: 'center',
     justifyContent: 'center',
   },

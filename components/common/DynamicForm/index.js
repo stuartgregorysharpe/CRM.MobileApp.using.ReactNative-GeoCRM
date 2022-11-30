@@ -10,6 +10,7 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
 
 const DynamicForm = React.forwardRef((props, ref) => {
+  
   const {formData, formStructureData, isShowRequiredFromBegining} = props;
   const [errors, setErrors] = useState({});
   const dynamicFieldRef = useRef([]);

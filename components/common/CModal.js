@@ -50,8 +50,10 @@ const CModal = React.forwardRef((props, ref) => {
   const onClear = () => {
     if (props.onClear) {
       props.onClear();
+    }else{
+      setIsVisible(false);
     }
-    setIsVisible(false);
+    
   };
 
   return (

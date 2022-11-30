@@ -136,5 +136,9 @@ export default {
   deviceTypeLabel : {
     PRIMARY : 'Primary Device',
     ADDITIONAL : 'Additional Device'
+  },
+  productFilterType:{
+    PRODUCT_TYPE: 'product_type',
+    BRAND: 'brand'
   }
 };
