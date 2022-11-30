@@ -27,6 +27,7 @@ export function find(postData) {
             const offlineScheduleCheckins = await getJsonData(
               Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
             );
+            console.log('offlineScheduleCheckins', offlineScheduleCheckins);
             resolve({
               status: Strings.Success,
               items: getScheduleList(
@@ -83,7 +84,7 @@ const fetchDataFromDB = async (
                 ON s.schedule_id = ua.schedule_id
                 WHERE s.user_id = ${user_id}
                 AND s.client_id = ${client_id}`;
-  if (postData['period'] == 'Today') {
+  if (postData['period'].toLowerCase() == 'today') {
     query += ` AND s.schedule_date = date('now')`;
   }
   if (postData['period'] == 'last_week') {
@@ -93,6 +94,7 @@ const fetchDataFromDB = async (
     query += ` AND s.schedule_date BETWEEN date('now', '1 day') AND date('now', '7 days')`;
   }
   query += ` ORDER BY s.schedule_order ASC`;
+  console.log('calendar schedule', query);
   const res = await ExecuteQuery(query);
   const result = res.rows ? res.rows : [];
 

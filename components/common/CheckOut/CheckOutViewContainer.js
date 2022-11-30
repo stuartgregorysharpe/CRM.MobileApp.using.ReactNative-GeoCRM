@@ -101,7 +101,7 @@ export default function CheckOutViewContainer(props) {
           await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
           await storeJsonData('@form_ids', []);
           console.log(' pooo  ====== ');
-          dispatch({type: CHECKIN, payload: false});
+          dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
           if (type == 'specificInfo') {
             if (props.goBack) {

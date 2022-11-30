@@ -25,6 +25,7 @@ import {getDateTime} from '../../../helpers/formatHelpers';
 import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
 import {Notification} from '../../modal/Notification';
 import {CHECKIN} from '../../../actions/actionTypes';
+import {checkConnectivity} from '../../../DAO/helper';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -160,24 +161,32 @@ const CheckinLinkButton = props => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true});
+        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
         await storeLocalValue('@checkin', '1');
         await storeLocalValue('@specific_location_id', locationId);
         await storeLocalValue(
           Constants.storageKey.CHECKIN_SCHEDULE_ID,
           scheduleId,
         );
-        let offlineScheduleCheckins = await getJsonData(
-          Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
-        );
-        if (!offlineScheduleCheckins) {
-          offlineScheduleCheckins = [];
-        }
-        if (!offlineScheduleCheckins.includes(scheduleId)) {
-          offlineScheduleCheckins.push(scheduleId);
-        }
+        checkConnectivity().then(async isOnline => {
+          if (!isOnline) {
+            let offlineScheduleCheckins = await getJsonData(
+              Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
+            );
+            if (!offlineScheduleCheckins) {
+              offlineScheduleCheckins = [];
+            }
+            if (!offlineScheduleCheckins.includes(scheduleId)) {
+              offlineScheduleCheckins.push(scheduleId);
+            }
 
-        await storeJsonData(offlineScheduleCheckins);
+            await storeJsonData(
+              Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
+              offlineScheduleCheckins,
+            );
+          }
+        });
+
         navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
           locationId: locationId,
           page: 'checkin',

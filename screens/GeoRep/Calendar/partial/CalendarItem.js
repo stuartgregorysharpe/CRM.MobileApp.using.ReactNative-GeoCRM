@@ -14,11 +14,17 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
-  const {navigation, item, current, tabIndex, onItemSelected} = props;
+  const {navigation, current, tabIndex, onItemSelected} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
-
+  const checkinScheduleId = useSelector(
+    state => state.location.checkinScheduleId,
+  );
+  const item = {...props.item};
+  if (checkinScheduleId == item.schedule_id) {
+    item.checkin_state = 'checkin_current';
+  }
   useEffect(() => {
     initData();
   }, []);
