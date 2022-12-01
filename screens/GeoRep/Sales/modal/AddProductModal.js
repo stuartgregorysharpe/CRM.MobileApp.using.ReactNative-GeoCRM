@@ -10,6 +10,7 @@ const AddProductModal = React.forwardRef((props, ref) => {
     const { product } = props;
 
     const [title, setTitle] = useState('Add Product');
+    const [isClear, setIsClear] =  useState(false);
     
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -27,15 +28,19 @@ const AddProductModal = React.forwardRef((props, ref) => {
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
             closableWithOutsideTouch
          
-            onClear={ async() => {
-                
-                onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                
+            onClear={ async() => {                
+                //onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                
+                setIsClear(true)
             }}
             {...props}>
             <AddProductContainer    
                 onChangeTitle={(title)=>{
                     setTitle(title)
                 }}             
+                isClear={isClear}
+                updateClear={() => {
+                    setIsClear(false)
+                }}
                 {...props} />
         </CModal>        
     )

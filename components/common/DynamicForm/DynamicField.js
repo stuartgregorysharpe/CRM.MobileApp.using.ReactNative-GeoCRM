@@ -1,6 +1,7 @@
 import {RuleTester} from 'eslint';
 import React from 'react';
-import {View} from 'react-native';
+import {View , Text } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import DropdownText from '../../shared/DropdownText';
 import TakePhotoView from '../../shared/TakePhotoView';
 import {YesNoForm} from '../../shared/YesNoForm';
@@ -17,6 +18,7 @@ const DynamicField = props => {
     editable,
     items,
     value,
+    price_value,
     updateFormData,
     updateSecondFormData,
     hasError,
@@ -42,7 +44,7 @@ const DynamicField = props => {
         value={value}
         hasError={hasError}
         disabled={disabled}
-        keyboardType={'decimal-pad'}
+        keyboardType={'decimal-pad'}   
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
@@ -51,7 +53,7 @@ const DynamicField = props => {
     );
   };
 
-  const renderText = (type) => {
+  const renderText = () => {
     return (
       <CTextInput
         label={field_label}
@@ -59,39 +61,93 @@ const DynamicField = props => {
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
-        value={value}
-        multiline={type ==  "text" ? false: true}
+        value={value}        
         hasError={hasError}
         disabled={disabled}
-        pointerEvents={disabled ? 'none' : 'auto'}
+        pointerEvents={disabled ? 'none' : 'auto'}      
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
         style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
-        textInputStyle={[ type == "text" ? {} : {height:80, paddingTop:0 , lineHeight: 20} ]}        
+       // textInputStyle={[ type == "text" ? {} : { textAlignVertical: 'top', height:100, marginTop:0, paddingTop:0 , lineHeight: 20} ]}        
       />
     );
   };
 
-  const renderPrice = () => {
+  const renderTextarea = () =>{
     return (
-      <View>
-        <CTextInput
-          label={field_label}
-          key={index}
-          dynamicFieldRef={dynamicFieldRef}
-          index={index}
-          isRequired={is_required}
-          value={value}          
-          hasError={hasError}
-          disabled={disabled}
-          pointerEvents={disabled ? 'none' : 'auto'}
-          onChangeText={text => {
-            updateFormData(field_name, text);
-          }}
-          style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
-        />
+      <CTextInput
+        label={field_label}
+        key={index}
+        dynamicFieldRef={dynamicFieldRef}
+        index={index}
+        multiline={true}
+        isRequired={is_required}
+        value={value}        
+        hasError={hasError}
+        disabled={disabled}
+        pointerEvents={disabled ? 'none' : 'auto'}      
+        onChangeText={text => {
+          updateFormData(field_name, text);
+        }}
+        style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+        //textInputStyle={[ type == "text" ? {} : { textAlignVertical: 'top', height:100, marginTop:0, paddingTop:0 , lineHeight: 20} ]}        
+      />
+    );
+
+    // return <TextInput 
+    //     multiline
+    //     //numberOfLines={6}
+    //     style={{maxHeight:120 , borderRadius:5, borderWidth:1, borderColor:'#fff'}}
+    //   />
+  }
+
+  const renderPrice = () => {
+    
+    return (
+      <View style={{flexDirection:'row'}}>
+        <View style={{flex:3}}>
+          <CTextInput
+            label={field_label}
+            key={index}
+            dynamicFieldRef={dynamicFieldRef}
+            index={index}
+            isRequired={is_required}
+            value={value != undefined ? value.value : ''}          
+            keyboardType={'decimal-pad'}
+            hasError={hasError}
+            disabled={disabled}
+            pointerEvents={disabled ? 'none' : 'auto'}
+            onChangeText={text => {
+              updateFormData(field_name, {value: text , type: value.type});
+            }}
+            style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+          />
+        </View>
+        
+        <View style={{flex:2}}>
+          <CSingleSelectInput
+            key={index}
+            description={"Type"}
+            placeholder={''}
+            checkedValue={ value != undefined ? value.type : ''}
+            items={items}
+            mode={'single'}
+            hasError={hasError}
+            disabled={disabled}
+            isClickable={isClickable}
+            dropdownIcon="Up_Arrow"
+            onPress={() => {
+              
+            }}
+            onSelectItem={item => {
+              updateFormData(field_name, {value: value.value , type: item.value});
+            }}            
+            containerStyle={{ marginLeft:10, marginTop: isFirst ? 0 : 10}}
+          />
+        </View>
       </View>
+
     );
   }
 
@@ -116,7 +172,7 @@ const DynamicField = props => {
       />
     );
   };
-  
+     
   const renderDropdown = (mode = 'single') => {
     return (
       <CSingleSelectInput
@@ -228,6 +284,7 @@ const DynamicField = props => {
       <TakePhotoView
         key={index}
         isOptimize={true}
+        maxSize={props.maxSize != undefined ? props.maxSize : -1}
         onUpdatePhotos={photos => {
           updateFormData(field_name, photos);
         }}
@@ -280,11 +337,11 @@ const DynamicField = props => {
   if (isHidden != undefined && isHidden == true) return null;
 
   if (field_type == 'text') {
-    return renderText("text");
+    return renderText();
   }
 
   if(field_type == 'textarea'){
-    return renderText("textarea");
+    return renderTextarea();
   }
 
   if(field_type == 'price'){

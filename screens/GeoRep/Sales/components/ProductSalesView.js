@@ -6,10 +6,14 @@ import { useSelector } from 'react-redux';
 import SearchBar from '../../../../components/SearchBar';
 import { getJsonData } from '../../../../constants/Storage';
 import SvgIcon from '../../../../components/SvgIcon';
+import SettingView from './SettingView';
+import { AppText } from '../../../../components/common/AppText';
+import { style } from '../../../../constants/Styles';
+import { Colors } from '../../../../constants';
 
 const ProductSalesView = (props) => {
 
-    const { settings, lists , page , isLoading} = props;    
+    const { settings , selectedLocation , lists , page , isLoading ,cartCount} = props;    
     const productPriceLists = useSelector(
         state => state.sales.productPriceLists,
     );
@@ -94,8 +98,7 @@ const ProductSalesView = (props) => {
                 isFilter
                 haveFilter={haveFilter}
                 isScan
-                onSearch={(searchText) => {                    
-                    //setSearchKey(searchKey);
+                onSearch={(searchText) => {                                        
                     if(searchText != '' , searchText.length >=2){
                         loadMoreData(0, searchText);
                     }
@@ -106,6 +109,12 @@ const ProductSalesView = (props) => {
                         props.openFilter();
                     }
                 }}
+            />
+
+            <SettingView 
+                openSetup={props.openSetup}
+                openReorder={props.openReorder}
+                selectedLocation={selectedLocation}
             />
         
             <FlatList
@@ -136,9 +145,13 @@ const ProductSalesView = (props) => {
                     </TouchableOpacity>
                 }                
 
-                <TouchableOpacity>
-                    <SvgIcon icon="Sales_Cart" width="70px" height="70px" />
-                </TouchableOpacity>
+                {
+                    cartCount != undefined && cartCount != 0 &&
+                    <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} >
+                        <SvgIcon icon="Sales_Cart" width="70px" height="70px" />
+                        <AppText title={cartCount}  style={styles.cartNumberStyle} color={Colors.whiteColor}/>
+                    </TouchableOpacity>
+                }                
               
             </View>
             
@@ -149,4 +162,11 @@ const ProductSalesView = (props) => {
 
 export default ProductSalesView
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    cartNumberStyle : {        
+        position:'absolute',
+        fontSize:14,
+        alignItems:'center',
+        paddingTop:5
+    }
+})

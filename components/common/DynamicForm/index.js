@@ -10,7 +10,7 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
 
 const DynamicForm = React.forwardRef((props, ref) => {
-  
+
   const {formData, formStructureData, isShowRequiredFromBegining} = props;
   const [errors, setErrors] = useState({});
   const dynamicFieldRef = useRef([]);
@@ -76,8 +76,11 @@ const DynamicForm = React.forwardRef((props, ref) => {
     return valid;
   };
   const checkAllowedFieldType = fieldType => {
+
     const allowedFieldTypes = [
       'text',
+      'textarea',
+      'textarea',
       'email',
       'numbers',
       'dropdown',

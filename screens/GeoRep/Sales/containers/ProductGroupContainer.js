@@ -17,7 +17,7 @@ const  ProductGroupContainer = (props) => {
     return (
         <View style={{
             alignSelf:'stretch' ,             
-            marginHorizontal:10,
+            marginHorizontal:5,
             height:Dimensions.get("screen").height * 0.8            
         }}>
             <ProductGroupView 

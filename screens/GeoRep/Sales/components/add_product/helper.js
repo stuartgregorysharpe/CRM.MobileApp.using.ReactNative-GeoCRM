@@ -1,10 +1,16 @@
 export function getFormData  (renderForms) {
-    const dynamicFields = renderForms.map((field, index) => {
-        return {
-            [field.field_name] : ''
-        }
+
+    const tmpFormData = {};
+    renderForms.forEach(field => {
+      var value = '';
+      if ( field.field_type == 'price' && field.tax_types != undefined) {
+        value = {value: value , type: field.selected_tax_type};
+      }
+
+      tmpFormData[field.field_name] = value;
     });
-    return dynamicFields;
+   
+    return tmpFormData;
 }
 
 export function getFormStructureData (renderForms) {
@@ -18,11 +24,19 @@ export function getFormStructureData (renderForms) {
             field.tax_types.forEach(element => {
               items.push({label: element, value: element});
             });
+            value = {value: value , type: field.selected_tax_type};
           }
           field = {
             ...field,
-            items: items,            
+            items: items,
           };
+        }
+
+        if(field.field_type == 'take_photo'){
+          field = {
+            ...field,
+            maxSize: 1
+          }
         }
   
         return {

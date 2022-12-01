@@ -19,7 +19,7 @@ import { useDispatch } from 'react-redux';
 
 const TakePhotoView = props => {
 
-  const {photos, isOptimize , submissionType} = props;
+  const {photos, isOptimize , maxSize } = props;
   const dispatch = useDispatch()
   const [isPicker, setIsPicker] = useState(false);  
 
@@ -40,7 +40,9 @@ const TakePhotoView = props => {
   };
 
   const showSelectionDialog = () => {
-    setIsPicker(true);
+    if( maxSize == undefined || maxSize == -1  || photos.length < maxSize){
+      setIsPicker(true);
+    }    
   };
 
   const optimizeImage = (filePath, quality, index) => {
@@ -206,12 +208,7 @@ const TakePhotoView = props => {
           <TouchableOpacity
             style={[styles.imageContainer, {marginLeft: 10}]}
             onPress={() => {
-              if(submissionType == "edit"){                
-                showSelectionDialog();
-              }else{
-                showSelectionDialog();
-              }
-              
+              showSelectionDialog();            
             }}>
             <SvgIcon icon="Add_Image" />
           </TouchableOpacity>

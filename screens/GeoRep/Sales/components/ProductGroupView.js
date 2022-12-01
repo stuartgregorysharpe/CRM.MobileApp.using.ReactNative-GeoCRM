@@ -45,6 +45,11 @@ const ProductGroupView = (props) => {
                             props.geProductPrice(product_id , qty)
                         }
                     }}   
+                    openProductDetail={(item) => {
+                        if(props.openProductDetail){
+                            props.openProductDetail(item);
+                        }
+                    }}
                     item={item} 
                 />
             )

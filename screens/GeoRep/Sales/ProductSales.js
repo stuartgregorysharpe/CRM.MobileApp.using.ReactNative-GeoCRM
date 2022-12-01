@@ -49,9 +49,10 @@ export default function ProductSales(props) {
 				transaction_type: data.transaction_type,
 				currency_id: data.currency_id ? data.currency_id.id : '',
 				warehouse_id : data.warehouse_id ? data.warehouse_id[0].id : '',			
-				filters: ''			
+				filters: '',
+				location: data.location
 			}
-			storeJsonData("@setup", postParam);			
+			storeJsonData("@setup", postParam);		
 			getApiData('', 0);
 		}		
 	}
@@ -84,7 +85,7 @@ export default function ProductSales(props) {
 					setItems([...items, ...res.items]);
 				}				
 				setPage(pageNumber + 1);
-				console.log("api response" , JSON.stringify(res));
+				//console.log("api response" , JSON.stringify(res));
 			}
 			setIsLoading(false)
 		}).catch((e) => {

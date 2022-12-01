@@ -9,6 +9,8 @@ import { Constants, Strings } from '../../../../constants';
 import ProductFilterView from '../components/ProductFilterView';
 import AddProductView from '../components/add_product/AddProductView';
 import GetRequestAddProductFields from '../../../../DAO/sales/GetRequestAddProductFields';
+import { getTokenData } from '../../../../constants/Storage';
+import { getRandomNumber, getTimeStamp } from '../../../../helpers/formatHelpers';
 
 const  AddProductContainer = (props) => {
         
@@ -36,17 +38,29 @@ const  AddProductContainer = (props) => {
     }, []);
 
 
+    const onAdd = async(data) => {
+        const  user_id = await getTokenData("user_id");
+        const  add_product_id =  getTimeStamp() + user_id + getRandomNumber(4);
+        const  submitData = {
+            ...data,
+            add_product_id : add_product_id
+        }
+        console.log("submitData",submitData);
+        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});
+    }
     
-    return (
+     return (
         <View style={{
             alignSelf:'stretch' , 
             flex:1 , 
             marginHorizontal:10, 
-            marginBottom:10,              
+            marginBottom:10,     
+            paddingTop:10         
              
         }}>                  
             <AddProductView 
                 fields={fields}    
+                onAdd={onAdd}
                 {...props} />
             
         </View>

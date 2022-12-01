@@ -29,10 +29,10 @@ const ProductGroupItem = (props) => {
         >
         <View style={[styles.container, style.card , getBorderStatus() ? styles.redBorder : {} ]}>
             <View style={{flex:1}}>
-                <View style={[styles.subContainer, {marginBottom:5}]}>
+                <View style={[styles.subContainer, {marginBottom:5, flexDirection:'row', alignItems:'center'}]}>
                     <AppText title={title}  size="big" type="secondaryBold"/>
                     <View style={{flex:1, alignItems:'flex-end'}}>
-                        <SvgIcon icon={"Dropdown"} width="20" height="20" />
+                        <SvgIcon icon={"Bottom_Arrow"} width="25" height="25" />
                     </View>
                 </View>
 
@@ -70,7 +70,7 @@ const ProductGroupItem = (props) => {
                         }}
                         >
                         <View style={{flex:1, alignItems:'flex-end', paddingTop:5,}}>
-                            <AppText title={"+" + ( products.length - 3 ) +  " More"} />
+                            <AppText title={"+" + ( products.length - 3 ) +  " More"} color={whiteLabel().mainText} />
                         </View>
                     </TouchableOpacity>
                     
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     },
     redBorder :{
         borderWidth:1,
-        borderColor:Colors.redColor
+        borderColor:whiteLabel().mainText,
+        borderRadius:3
     }
 })

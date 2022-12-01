@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   scanImageButton: {
     position: 'absolute',
     top: 18,
-    right: 60,
+    right: 55,
     zIndex: 1,
     elevation: 1,
   },

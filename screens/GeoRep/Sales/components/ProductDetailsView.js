@@ -26,7 +26,7 @@ const ProductDetailsView = (props) => {
         try{
             var adjust = 0;
             var discount = 0;
-            if(adjustedPrice != '' && adjustedPrice.replace("R",'') != ''){
+            if(adjustedPrice != undefined && adjustedPrice != '' && adjustedPrice.replace("R",'') != ''){
                 adjust = parseFloat(adjustedPrice.replace("R",''));            
             }
             if(discountPrice != '' && discountPrice.replace("%",'') != ''){
@@ -49,9 +49,11 @@ const ProductDetailsView = (props) => {
     const initializeData = async() => {
         const finalPriceList = await getJsonData("@final_price");
         const data =  finalPriceList.find(item =>  item.product_id === product.product_id);
-        setAdjustedPrice(data.adjustedPrice);
-        setDiscountPrice(data.discountPrice);
-        setFinalPrice(data.final_price);
+        if(data != undefined){
+            setAdjustedPrice(data.adjustedPrice);
+            setDiscountPrice(data.discountPrice);
+            setFinalPrice(data.final_price);
+        }        
     }
 
     const onSave = () => {

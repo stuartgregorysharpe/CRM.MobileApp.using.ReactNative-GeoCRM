@@ -75,6 +75,7 @@ const CSingleSelectInput = props => {
         bgType={props.bgType}
         style={props.bgStyle}
         placeholderStyle={props.placeholderStyle}
+        dropdownIcon={props.dropdownIcon}
         showDescription={showDescription}
         description={description || placeholder}
         placeholder={placeholder}

@@ -13,6 +13,8 @@ import ProductFilterModal from '../modal/ProductFilterModal';
 import { getJsonData, storeJsonData } from '../../../../constants/Storage';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
+import { setProductPriceLists } from '../../../../actions/sales.action';
+import { showNotification } from '../../../../actions/notification.action';
 
 const  ProductSalesContainer = (props) => {
         
@@ -22,6 +24,7 @@ const  ProductSalesContainer = (props) => {
     );
 	const { items , settings } = props;
     const [selectedGroupTitle, setSelectedGroupTitle] = useState("");
+	const [selectedLocation , setSelectedLocation] =  useState(null);
 	const [products, setProducts] = useState([])
     const setupFieldModalRef = useRef(null)
     const productGroupModalRef = useRef(null);
@@ -31,6 +34,7 @@ const  ProductSalesContainer = (props) => {
 	const [lists, setLists] = useState(null);	
 	const [productDetailTitle, setProductDetailTitle] = useState("");
 	const [product, setProduct] = useState();
+	const [cartCount, setCartCount] = useState(0);
 	const dispatch = useDispatch()
 
 	//    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
@@ -73,12 +77,28 @@ const  ProductSalesContainer = (props) => {
 	//   -------------------------     END  ----------------------------------------------------------------
 
 
+	const updateProductPriceList = async(value) => {
+		var setupData = await getJsonData("@setup");
+		if(setupData != null && setupData != undefined  && setupData.location){			
+			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){
+				console.log("changed setup ", value)	
+				dispatch(setProductPriceLists([]));
+			}else{
+				console.log("no changes", setupData.transaction_type, value.transaction_type)
+			}
+		}else{
+			console.log("setup data", setupData)
+		}
+	}
+
 
     const onSetupFieldModalClosed = ({ type, value}) => {
 		if(type === Constants.actionType.ACTION_CLOSE){		
 			setupFieldModalRef.current.hideModal();			
-            if(props.getProductLists){
-                props.getProductLists(value);
+            if(props.getProductLists){		
+				setSelectedLocation(value.location.name);		
+				updateProductPriceList(value);
+                props.getProductLists(value);				
             }			
 		}
 	}
@@ -114,7 +134,10 @@ const  ProductSalesContainer = (props) => {
 	}
 
 	const onAddProductModalClosed = ({type , value}) => {
-		
+		if(type == Constants.actionType.ACTION_DONE){			
+			addProductModalRef.current.hideModal();
+			saveProducts(value);
+		}
 	}
 
 	const clearFilter = async() => {
@@ -134,6 +157,19 @@ const  ProductSalesContainer = (props) => {
 		finalPrices.push(value);	
 		storeJsonData("@final_price", finalPrices);
 	}
+
+	const saveProducts = async(value) =>{		
+		var lists = await getJsonData("@add_product");
+		var products = [];
+		if(lists != null && lists != undefined){			
+			products = lists.filter(item => item.add_product_id != value.add_product_id);
+		}
+		products.push(value);	
+		setCartCount(products.length);
+		console.log("add products", products);
+		storeJsonData("@add_product", products);
+	}
+
 
 	const onGroupItemClicked = (item) => {				
 		setSelectedGroupTitle(item.product_group);		
@@ -217,6 +253,13 @@ const  ProductSalesContainer = (props) => {
 		addProductModalRef.current.showModal();
 	}
 
+	const openSetup = () =>{
+		setupFieldModalRef.current.showModal();
+	}
+	const openReorder = () => {
+		dispatch(showNotification({type:Strings.Success , message: 'Feature not available yet' , buttonText: Strings.Ok}));
+	}
+
     return (
         <View style={{
             alignSelf:'stretch' , 
@@ -239,6 +282,7 @@ const  ProductSalesContainer = (props) => {
 				products={products}
 				settings={settings}
 				geProductPrice={geProductPrice}	
+				openProductDetail={openProductDetail}
 				backButtonDisabled={true}
 				closableWithOutsideTouch={false}
 				ref={productGroupModalRef}
@@ -271,10 +315,14 @@ const  ProductSalesContainer = (props) => {
 				onGroupItemClicked={onGroupItemClicked}
 				openProductDetail={openProductDetail}
 				openAddProductModal={openAddProductModal}
+				openSetup={openSetup}
+				openReorder={openReorder}
 				openFilter={() => {					
 					productFilterModalRef.current.showModal();
 				}}
 				lists={lists}
+				cartCount={cartCount}
+				selectedLocation={selectedLocation}
                 {...props} />
             
         </View>

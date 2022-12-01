@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import React , { useEffect ,useState} from 'react'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors } from '../../../../constants'
@@ -36,35 +36,35 @@ const Warehouse = (props) => {
         return flag;
     }
 
-  return (
-    <View style={{alignSelf:'stretch'}}>
-                
-        {
-            updatedLists.map((item , index) => {
-                return (
-                    <View key={index}>
-                        <View style={{flexDirection:'row', alignItems:'center' , paddingVertical:5 }}>                      
-
-                            <View style={{flex:3 , flexDirection:'row' , alignItems:'center'}}>
-                                <AppText title={item.label}  style={{flex:1}}></AppText>                                                                
-                                <CCheckBox value={getCheckedStatus(item)} 
-                                    style={styles.checkbox} 
-                                    onValueChange={() => {
-
-                                        onValueChange(item , getCheckedStatus(item));
-                                }} />
-                            </View>
-                        </View>
-                        <View style={{height:1, backgroundColor:Colors.lightGreyColor}} ></View>
-                    </View>
+    return (
+        <ScrollView style={{alignSelf:'stretch', maxHeight:230}}>
                     
-                )
-            })
-        }
-    </View>
+            {
+                updatedLists.map((item , index) => {
+                    return (
+                        <View key={index}>
+                            <View style={{flexDirection:'row', alignItems:'center' , paddingVertical:5 }}>                      
+
+                                <View style={{flex:3 , flexDirection:'row' , alignItems:'center'}}>
+                                    <AppText title={item.label}  style={{flex:1}}></AppText>                                                                
+                                    <CCheckBox value={getCheckedStatus(item)} 
+                                        style={styles.checkbox} 
+                                        onValueChange={() => {
+
+                                            onValueChange(item , getCheckedStatus(item));
+                                    }} />
+                                </View>
+                            </View>
+                            <View style={{height:1, backgroundColor:Colors.lightGreyColor}} ></View>
+                        </View>
+                        
+                    )
+                })
+            }
+        </ScrollView>
 
 
-  )
+    )
 }
 
 export default Warehouse

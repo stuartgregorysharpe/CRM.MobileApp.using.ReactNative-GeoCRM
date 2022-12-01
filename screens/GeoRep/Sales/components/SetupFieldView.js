@@ -11,7 +11,7 @@ import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors } from '../../../../constants'
-import { ScrollView } from 'react-native-gesture-handler'
+
 const SetupFieldView = (props) => {
 
 	const { transaction_types, currency, warehouse} = props;

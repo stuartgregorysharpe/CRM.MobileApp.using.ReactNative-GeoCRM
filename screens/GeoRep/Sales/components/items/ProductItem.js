@@ -113,8 +113,9 @@ const styles = StyleSheet.create({
         borderWidth:0
     },
     redBorder : {
-        borderColor: Colors.redColor,
-        borderWidth:1
+        borderColor: whiteLabel().mainText,
+        borderWidth:1,
+        borderRadius:3
     }
     
 })

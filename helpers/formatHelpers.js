@@ -195,3 +195,12 @@ export const parseDateFromString = dtString => {
   return dtString.match(/\d{4}([.\-/ ])\d{2}\1\d{2}/);
 
 }
+
+export const getRandomNumber = ( length ) => {
+  var max = 1;
+  for(let i = 0 ; i < length  ; i++){
+    max = max * 10;
+  }
+  var RandomNumber = Math.floor(Math.random() * max ) + 1 ;
+  return RandomNumber;
+}

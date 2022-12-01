@@ -1262,6 +1262,22 @@ const Sales_Cart = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://
 </svg>
 `;
 
+const Repeat = `<svg xmlns="http://www.w3.org/2000/svg" width="133" height="133" viewBox="0 0 133 133">
+<g id="Group_5645" data-name="Group 5645" transform="translate(-2847 -5599)">
+  <rect id="Rectangle_3166" data-name="Rectangle 3166" width="133" height="133" rx="9" transform="translate(2847 5599)" fill="#133c8b"/>
+  <g id="repeat_black_24dp" transform="translate(2869.771 5623.391)">
+    <path id="Path_3982" data-name="Path 3982" d="M17.036,19.545H52.127V30.073L66.163,16.036,52.127,2V12.527H10.018V33.582h7.018ZM52.127,54.636H17.036V44.109L3,58.145,17.036,72.182V61.654H59.145V40.6H52.127Z" transform="translate(7.527 5.018)" fill="#fff"/>
+  </g>
+</g>
+</svg>
+`;
+
+const Setting = `<svg xmlns="http://www.w3.org/2000/svg" width="56.802" height="56.802" viewBox="0 0 56.802 56.802">
+<path id="settings_FILL1_wght400_GRAD0_opsz48" d="M25.869,60.8l-1.42-8.946a19.025,19.025,0,0,1-2.84-1.349,19.514,19.514,0,0,1-2.627-1.775L10.6,52.565,4,40.921l7.668-5.609a8.441,8.441,0,0,1-.178-1.456q-.036-.817-.036-1.456t.036-1.456a8.441,8.441,0,0,1,.178-1.456L4,23.881l6.6-11.644,8.378,3.834A19.514,19.514,0,0,1,21.608,14.3a14.693,14.693,0,0,1,2.84-1.278L25.869,4H38.933l1.42,8.946a23.019,23.019,0,0,1,2.876,1.314A12.222,12.222,0,0,1,45.82,16.07L54.2,12.236l6.6,11.644-7.668,5.467a10,10,0,0,1,.177,1.527q.036.817.036,1.527t-.036,1.491a9.886,9.886,0,0,1-.177,1.491L60.8,40.921,54.2,52.565,45.82,48.731a23.555,23.555,0,0,1-2.592,1.811,12.373,12.373,0,0,1-2.876,1.314L38.933,60.8ZM32.4,41.631a9.212,9.212,0,0,0,9.23-9.23,9.212,9.212,0,0,0-9.23-9.23,9.212,9.212,0,0,0-9.23,9.23,9.212,9.212,0,0,0,9.23,9.23Z" transform="translate(-4 -4)" fill="#fff"/>
+</svg>
+`;
+
+
 export default ({
   icon,
   xml,
@@ -1933,6 +1949,15 @@ export default ({
     {icon == 'Sales_Cart' && (
       <SvgXml style={style} xml={Sales_Cart} width={width} height={height} />
     )}
+
+    {icon == 'Repeat' && (
+      <SvgXml style={style} xml={Repeat} width={width} height={height} />
+    )}
     
+    {icon == 'Setting' && (
+      <SvgXml style={style} xml={Setting} width={width} height={height} />
+    )}
+
+
   </Fragment>
 );

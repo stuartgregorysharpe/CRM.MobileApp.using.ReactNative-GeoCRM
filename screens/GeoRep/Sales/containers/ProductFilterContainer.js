@@ -23,7 +23,7 @@ const  ProductFilterContainer = (props) => {
     useEffect(() => {        
         GetRequestProductsFiltersDAO.find({}).then((res) => {            
             if(isMount){
-                if(res.status == Strings.Success){
+                if(res.status == Strings.Success && res.filters){
                     initializeData(res.filters , Constants.productFilterType.PRODUCT_TYPE)
                     initializeData(res.filters , Constants.productFilterType.BRAND)
                 }                
