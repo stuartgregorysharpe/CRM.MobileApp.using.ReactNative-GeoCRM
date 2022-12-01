@@ -31,10 +31,10 @@ const ProductSalesView = (props) => {
     }, [lists]);
     
     const checkFilter = async() => {
-        var param = await getJsonData("@setup");
+        var param = await getJsonData("@sale_product_parameter");
         var filters = param['filters'];
         var flag = false;        
-        if(filters != '' && filters.product_type  && filters.brands){
+        if(filters != '' && filters != undefined && filters.product_type  && filters.brands){
             if(filters.product_type.length > 0 || filters.brands.length > 0){                
                 flag = true;
             }

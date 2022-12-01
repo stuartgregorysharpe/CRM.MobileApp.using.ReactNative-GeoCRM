@@ -22,12 +22,14 @@ const  SetupFieldContainer = (props) => {
             setTransactinTypes(res.transaction_types);
             setWarehouse(res.warehouse);
             setCurrency(res.currency);
+            console.log("setup", JSON.stringify(res))
         }).catch((e) => {
             expireToken(dispatch, e);
         });
-
-        
+    
     }, []);
+
+ 
 
 
     const onContinue = (data) => {             

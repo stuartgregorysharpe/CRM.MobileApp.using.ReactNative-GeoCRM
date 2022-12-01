@@ -1,16 +1,13 @@
 
 import { View , BackHandler } from 'react-native'
 import React , { useState , useEffect } from 'react'
-import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestAddProductFieldsDAO, GetRequestProductsFiltersDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { Constants, Strings } from '../../../../constants';
-import ProductFilterView from '../components/ProductFilterView';
-import AddProductView from '../components/add_product/AddProductView';
-import GetRequestAddProductFields from '../../../../DAO/sales/GetRequestAddProductFields';
 import { getTokenData } from '../../../../constants/Storage';
 import { getRandomNumber, getTimeStamp } from '../../../../helpers/formatHelpers';
+import DynamicFormView from '../../../../components/common/DynamicFormView';
 
 const  AddProductContainer = (props) => {
         
@@ -18,7 +15,6 @@ const  AddProductContainer = (props) => {
     const [fields, setFields] = useState([])
     let isMount = true;
   
-
     useEffect(() => {        
         GetRequestAddProductFieldsDAO.find({}).then((res) => {            
             if(isMount){
@@ -58,7 +54,7 @@ const  AddProductContainer = (props) => {
             paddingTop:10         
              
         }}>                  
-            <AddProductView 
+            <DynamicFormView
                 fields={fields}    
                 onAdd={onAdd}
                 {...props} />

@@ -5,7 +5,7 @@ import SaleType from './SaleType'
 import SearchLocationContainer from '../../Stock/stock/container/SearchLocationContainer'
 import LocationInfo from './LocationInfo'
 import { useSelector } from 'react-redux'
-import { getLocalData } from '../../../../constants/Storage'
+import { getJsonData, getLocalData } from '../../../../constants/Storage'
 import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
@@ -20,10 +20,10 @@ const SetupFieldView = (props) => {
 	);
 	const [isSearchStart, setIsSearchStart] = useState(false)
 	const [selectedLocation ,setSelectedLocation] = useState(null)
+	const [selectedSaleType, setSelectedSaleType] = useState(null);
 	const [selectedCurrency , setSelectedCurrency] = useState(null)
 	const [warehouseRequired, setWarehouseRequired] = useState(false)
-	const [selectedWarehouse, setSelectedWarehouse] = useState([])
-	const [transactionType, setTransactionType] = useState(null)	
+	const [selectedWarehouse, setSelectedWarehouse] = useState([])	
 	const isCheckin = useSelector(state => state.location.checkIn);
 
 	useEffect(() => {
@@ -32,22 +32,21 @@ const SetupFieldView = (props) => {
 		}
 	}, [isCheckin])
 
-	useEffect(() => {
-		if(currency != undefined && currency.default_currency != ''){
-			const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
-			setSelectedCurrency(defaultCurrency)
-		}
-	}, [currency]);
+	useEffect(() => {		
+		initializeSetupData();
+	}, [ currency, warehouse,   transaction_types]);
+
+	// useEffect(() => {
+		
+	// }, [currency]);
+
+	// useEffect(() => {
+		
+	// },[warehouse])
 
 	useEffect(() => {
-		if( warehouse != undefined && warehouse.default_warehouse != ''){
-			const options = warehouse.options ?  warehouse.options : [];
-			const item = options.find(element => element.id === warehouse.default_warehouse);
-			if(item != undefined){
-				onWarehouseItemSelected(item, false);
-			}				
-		}
-	},[warehouse])
+		//initializeSetupData();
+	},[])
 
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
@@ -55,6 +54,38 @@ const SetupFieldView = (props) => {
 		console.log(locationId, locInfo)
 		if(locInfo.name != '')
 			setSelectedLocation(locInfo);
+	}
+
+	const initializeSetupData = async() => {
+
+		var data = await getJsonData("@setup");
+		if(data != null){
+			console.log("Data",data)
+			setSelectedSaleType(data.transaction_type);
+			setSelectedCurrency(data.currency_id);		
+		}else{
+			if(transaction_types != null && transaction_types.default_type != ''){
+				setSelectedSaleType(transaction_types.default_type);
+				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
+				if(transactionType  != undefined){				
+					onWarehouseRequired(transactionType.warehouse_required);
+				}
+			}
+			if(currency != undefined && currency.default_currency != ''){
+				const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
+				setSelectedCurrency(defaultCurrency);
+				
+			}
+	
+			if( warehouse != undefined && warehouse.default_warehouse != ''){
+				const options = warehouse.options ?  warehouse.options : [];
+				const item = options.find(element => element.id === warehouse.default_warehouse);
+				if(item != undefined){
+					onWarehouseItemSelected(item, false);
+				}				
+			}
+		}
+		
 	}
 
 	const onSearch = (location, locationId) => {		
@@ -85,12 +116,11 @@ const SetupFieldView = (props) => {
 			}else{
 				setSelectedWarehouse([...selectedWarehouse , item]);	
 			}	
-		}
-					
+		}					
 	}
 
-	const onTransactionType = (type) => {
-		setTransactionType(type)
+	const onSelectedSaleType =(type) => {
+		setSelectedSaleType(type);
 	}
 
 	const onWarehouseRequired = (required) => {		
@@ -116,7 +146,7 @@ const SetupFieldView = (props) => {
 		
 		if(
 			selectedLocation != null &&
-			transactionType != null &&
+			selectedSaleType != null &&
 			selectedCurrency != null &&
 			( warehouseRequired && selectedWarehouse.length != 0 || !warehouseRequired )
 			){
@@ -128,7 +158,7 @@ const SetupFieldView = (props) => {
 	const onContinue = () => {
 		if(isValidate()){			
 			props.onContinue({
-				transaction_type: transactionType,
+				transaction_type: selectedSaleType,
 				currency_id: selectedCurrency,
 				warehouse_id: selectedWarehouse,
 				location: selectedLocation
@@ -164,7 +194,9 @@ const SetupFieldView = (props) => {
 
 					<SaleType 
 						transaction_types={transaction_types} 
-						onTransactionType={onTransactionType}
+						selectedSaleType={selectedSaleType}
+						onSelectedSaleType={onSelectedSaleType}
+						
 						onWarehouseRequired={onWarehouseRequired}
 						/>
 

@@ -26,14 +26,16 @@ const ProductFilterView = (props) => {
     }, [isClearFilter]);
 
     const initializeData = async() => {
-        var params = await getJsonData("@setup");
-        var filters =  params['filters'];
-        if(filters.product_type){
-            setTypes(filters.product_type)
-        }
-        if(filters.brands){
-            setBrands(filters.brands)
-        }
+        var params = await getJsonData("@sale_product_parameter");
+        if(params != null){
+            var filters =  params['filters'];
+            if(filters.product_type){
+                setTypes(filters.product_type)
+            }
+            if(filters.brands){
+                setBrands(filters.brands)
+            }
+        }    
     }
  
     return (

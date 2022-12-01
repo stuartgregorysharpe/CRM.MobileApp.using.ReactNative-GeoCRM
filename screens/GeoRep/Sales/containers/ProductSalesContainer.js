@@ -89,6 +89,11 @@ const  ProductSalesContainer = (props) => {
 		}else{
 			console.log("setup data", setupData)
 		}
+
+		var addProductLists = await getJsonData("@add_product");
+		if(addProductLists != null && addProductLists != undefined)
+			setCartCount(addProductLists.length)
+
 	}
 
 
@@ -141,9 +146,9 @@ const  ProductSalesContainer = (props) => {
 	}
 
 	const clearFilter = async() => {
-		var param = await getJsonData("@setup");
+		var param = await getJsonData("@sale_product_parameter");
 		param['filters'] = '';
-		await storeJsonData("@setup" , param);
+		await storeJsonData("@sale_product_parameter" , param);
 	}
 
 	const saveFinalPrice = async(value) =>{
