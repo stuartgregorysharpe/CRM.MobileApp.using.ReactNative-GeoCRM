@@ -4,7 +4,7 @@ import BaseForm from '../BaseForm';
 import QuestionButton from '../QuestionButton';
 import SKUSelectFormModal from './modals/SKUSelectFormModal';
 import {getQuestionTitle} from './helper';
-import { Constants } from '../../../constants';
+import {Constants} from '../../../constants';
 const SKUSelect = props => {
   const {item, questionType, formIndex} = props;
 
@@ -13,8 +13,11 @@ const SKUSelect = props => {
   const onOpenSKUCountModal = () => {
     skuSelectFormModalRef.current.showModal();
   };
-  
-  const questionButtonType = item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : ''
+
+  const questionButtonType =
+    item.value != null && item.value != ''
+      ? Constants.questionButtonType.QUESTION_BUTTON_DONE
+      : '';
   const renderContent = () => {
     return (
       <QuestionButton
@@ -24,7 +27,7 @@ const SKUSelect = props => {
       />
     );
   };
-  
+
   return (
     <BaseForm
       item={item}
