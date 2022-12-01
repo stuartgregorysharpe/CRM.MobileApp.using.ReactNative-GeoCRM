@@ -152,7 +152,11 @@ const  ProductSalesContainer = (props) => {
 	}
 
 	const saveFinalPrice = async(value) =>{
-		console.log("final  price")
+
+		console.log("final  price" , value)
+		if(value != undefined){
+			updateProductPriceLists(value.product_id, value.final_price, value.qty , value.special);
+		}		
 		var lists = await getJsonData("@final_price");
 		var finalPrices = [];
 		if(lists != null && lists != undefined){
@@ -163,7 +167,7 @@ const  ProductSalesContainer = (props) => {
 		storeJsonData("@final_price", finalPrices);
 	}
 
-	const saveProducts = async(value) =>{		
+	const saveProducts = async(value) => {
 		var lists = await getJsonData("@add_product");
 		var products = [];
 		if(lists != null && lists != undefined){			

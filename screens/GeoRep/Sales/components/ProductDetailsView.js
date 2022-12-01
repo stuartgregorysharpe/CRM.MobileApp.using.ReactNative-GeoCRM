@@ -58,7 +58,15 @@ const ProductDetailsView = (props) => {
 
     const onSave = () => {
         if(props.onSaveProduct && finalPrice != 0){
-            props.onSaveProduct({product_id: product.product_id , adjustedPrice: adjustedPrice, discountPrice: discountPrice, final_price: finalPrice});
+            props.onSaveProduct(
+                {
+                    product_id: product.product_id , 
+                    adjustedPrice: adjustedPrice, 
+                    discountPrice: discountPrice, 
+                    final_price: finalPrice,
+                    qty: product.qty,
+                    special : product.special
+                });
         }
     }
 

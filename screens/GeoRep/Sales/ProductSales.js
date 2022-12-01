@@ -45,7 +45,7 @@ export default function ProductSales(props) {
 			page_no: 0,
 			transaction_type: data.transaction_type,
 			currency_id: data.currency_id ? data.currency_id.id : '',
-			warehouse_id : data.warehouse_id ? data.warehouse_id[0].id : '',			
+			warehouse_id : data.warehouse_id ? data.warehouse_id.map(item => item.id).join(',')  : '',			
 			filters: '',			
 		}
 		return postParam;
