@@ -10,9 +10,6 @@ import ProductFilterView from '../components/ProductFilterView';
 
 const  ProductFilterContainer = (props) => {
     
-    
-
-    const [filters , setFilters] = useState([]);
     const [typeLists , setTypeLists] = useState([]);
     const [brandLists , setBrandLists] = useState([]);
 

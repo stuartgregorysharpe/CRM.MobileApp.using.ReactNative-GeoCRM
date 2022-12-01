@@ -13,6 +13,7 @@ const NumberCounter = props => {
   const {count , btnStyle  , btnTextStyle ,inputBoxStyle } = props;
   const step = props.step || 1;
   const fixed = props.fixed || 0;
+
   const onCount = isPlus => {
     if (props.onCount) {
       if (isPlus) {
@@ -26,8 +27,14 @@ const NumberCounter = props => {
           props.onCount(nextCount.toFixed(fixed));
         }
       }
+
+      if(props.onChangeText){
+
+      }
+
     }
   };
+  
   const onChangeCount = count => {
     if (props.onCount) {
       if (count && Number(count) >= 0) {
@@ -38,11 +45,22 @@ const NumberCounter = props => {
       }
     }
   };
+
+  const onEditDone = (qty) => {
+    if(props.onEditDone){
+      props.onEditDone(qty);
+    }
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <TouchableOpacity
         style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
-        onPress={() => onCount(false)}>
+        onPress={() => {
+          onCount(false)
+          onEditDone(count - step > 0 ? count - step : 0);
+
+        }}>
         <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'-'}</Text>
       </TouchableOpacity>
 
@@ -54,19 +72,26 @@ const NumberCounter = props => {
             if (props.onCount) {
               props.onCount(text);
             }
+            if (props.onChangeText) {
+              props.onChangeText(text);
+            }
           }}
           onBlur={() => {
             onChangeCount(count);
+            onEditDone(count);
           }}
           onEndEditing={() => {
-            onChangeCount(count);
+            onChangeCount(count);         
           }}
           keyboardType={'number-pad'}
         />
       </View>
       <TouchableOpacity
         style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
-        onPress={() => onCount(true)}>
+        onPress={() => {
+          onCount(true);
+          onEditDone(count + step);
+        }}>
         <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'+'}</Text>
       </TouchableOpacity>
     </View>

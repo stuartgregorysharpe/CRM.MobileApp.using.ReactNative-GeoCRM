@@ -1,14 +1,10 @@
 import { View, Text, Image, Dimensions ,ScrollView , FlatList, TouchableOpacity} from 'react-native'
 import React , { useEffect , useRef , useState , useCallback } from 'react'
 import { style } from '../../../constants/Styles';
-import SetupFieldModal from './modal/SetupFieldModal';
 import { Constants, Strings } from '../../../constants';
-import ProductGroupModal from './modal/ProductGroupModal';
 import GetRequestProductsList from '../../../DAO/sales/GetRequestProductsList';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../constants/Helper';
-import ProductGroupItem from './components/items/ProductGroupItem';
-import ProductItem from './components/items/ProductItem';
 import ProductSalesContainer from './containers/ProductSalesContainer';
 import { getJsonData, storeJsonData } from '../../../constants/Storage';
 

@@ -23,7 +23,19 @@ const ProductItem = (props) => {
     const [qty, setQty] = useState(item.qty != undefined ? item.qty : 0);
 
     const onCount = (qty) => {        
+
         setQty(qty);        
+        // if(props.geProductPrice){    
+        //     props.geProductPrice( item.product_id, qty);
+        // }
+    }
+
+    const onChangeText = (qty) => {
+        setQty(qty);
+    }
+
+    const onEditDone = (qty) => {   
+        setQty(qty);       
         if(props.geProductPrice){    
             props.geProductPrice( item.product_id, qty);
         }
@@ -65,8 +77,11 @@ const ProductItem = (props) => {
                         inputBoxStyle={styles.inputBoxStyle}
                         style={{marginTop:0 , marginBottom:0}}
                         step={parseInt(item.qty_increments)}
-                        count={item.qty}  
-                        onCount={onCount}                    
+                        count={qty} 
+                        onCount={onCount}          
+                        //onChangeText={onChangeText}     
+                        fixed={1}     
+                        onEditDone={onEditDone}
                     />
 
                     <View style={{flex:1, flexDirection:'row' , alignItems:'center', justifyContent:'flex-end'}}>
