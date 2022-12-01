@@ -7,7 +7,12 @@ import {
   expireToken,
   getPostParameter,
 } from '../../../constants/Helper';
-import {getLocalData, storeLocalValue} from '../../../constants/Storage';
+import {
+  getJsonData,
+  getLocalData,
+  storeJsonData,
+  storeLocalValue,
+} from '../../../constants/Storage';
 import SelectionPicker from '../../modal/SelectionPicker';
 import {SubmitButton} from '../../shared/SubmitButton';
 import {
@@ -15,16 +20,17 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
-import {Strings} from '../../../constants';
+import {Constants, Strings} from '../../../constants';
 import {getDateTime} from '../../../helpers/formatHelpers';
 import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
 import {Notification} from '../../modal/Notification';
 import {CHECKIN} from '../../../actions/actionTypes';
+import {checkConnectivity} from '../../../DAO/helper';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {locationId, title} = props;
+  const {locationId, title, scheduleId} = props;
   if (!locationId) return null;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -149,15 +155,38 @@ const CheckinLinkButton = props => {
       'checkin',
       'location-info/check-in',
       '',
-      ''
+      '',
     )
       .then(async res => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true});
+        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
         await storeLocalValue('@checkin', '1');
         await storeLocalValue('@specific_location_id', locationId);
+        await storeLocalValue(
+          Constants.storageKey.CHECKIN_SCHEDULE_ID,
+          scheduleId,
+        );
+        checkConnectivity().then(async isOnline => {
+          if (!isOnline) {
+            let offlineScheduleCheckins = await getJsonData(
+              Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
+            );
+            if (!offlineScheduleCheckins) {
+              offlineScheduleCheckins = [];
+            }
+            if (!offlineScheduleCheckins.includes(scheduleId)) {
+              offlineScheduleCheckins.push(scheduleId);
+            }
+
+            await storeJsonData(
+              Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
+              offlineScheduleCheckins,
+            );
+          }
+        });
+
         navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
           locationId: locationId,
           page: 'checkin',

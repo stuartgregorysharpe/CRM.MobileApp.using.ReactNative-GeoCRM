@@ -17,7 +17,7 @@ import Fonts from '../../../constants/Fonts';
 import {
   checkFeatureIncludeParam,
   getBaseUrl,
-  getToken,  
+  getToken,
 } from '../../../constants/Storage';
 import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';
@@ -41,6 +41,7 @@ import {Notification} from '../../../components/modal/Notification';
 
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
+import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 var selectedIndex = 2;
 
 var selectedIndex = 2;
@@ -110,27 +111,24 @@ export default function CalendarScreen(props) {
   const loadList = async type => {
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
     setIsAdd(await checkFeatureIncludeParam('calendar_add'));
-    var base_url = await getBaseUrl();
-    var token = await getToken();
-    if (base_url != null && token != null) {
-      setIsLoading(true);
-      getCalendar(base_url, token, type)
-        .then(res => {
-          console.log('res', res);
-          if (selectedIndex == 2 || selectedIndex == 0) {
-            setTodayList(res);
-          } else {
-            updateListForWeek(res);
-          }
-          setIsLoading(false);
-        })
-        .catch(e => {
-          setLists([]);
-          setTodayList([]);
-          expireToken(dispatch, e);
-          setIsLoading(false);
-        });
-    }
+
+    setIsLoading(true);
+    GetRequestCalendarScheduleList.find({period: type})
+      .then(res => {
+        console.log('GetRequestCalendarScheduleList: res', res.items);
+        if (selectedIndex == 2 || selectedIndex == 0) {
+          setTodayList(res.items);
+        } else {
+          updateListForWeek(res.items);
+        }
+        setIsLoading(false);
+      })
+      .catch(e => {
+        setLists([]);
+        setTodayList([]);
+        expireToken(dispatch, e);
+        setIsLoading(false);
+      });
   };
 
   const updateListForWeek = res => {
@@ -212,21 +210,15 @@ export default function CalendarScreen(props) {
   };
 
   const onTabChanged = tabIndex => {
-    checkConnectivity().then(isConnected => {
-      if (isConnected) {
-        setTabIndex(tabIndex);
-        selectedIndex = tabIndex;
-        var weekName = 'last_week';
-        if (tabIndex == 2) {
-          weekName = 'today';
-        } else if (tabIndex == 3) {
-          weekName = 'week_ahead';
-        }
-        loadList(weekName);
-      } else {
-        showOfflineDialog(dispatch);
-      }
-    });
+    setTabIndex(tabIndex);
+    selectedIndex = tabIndex;
+    var weekName = 'last_week';
+    if (tabIndex == 2) {
+      weekName = 'today';
+    } else if (tabIndex == 3) {
+      weekName = 'week_ahead';
+    }
+    loadList(weekName);
   };
 
   const addLocationToCalendar = () => {
