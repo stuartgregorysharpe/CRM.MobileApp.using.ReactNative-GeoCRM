@@ -16,6 +16,7 @@ import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import ImageResizer from 'react-native-image-resizer';
 import { useDispatch } from 'react-redux';
+import { max } from 'moment';
 
 const TakePhotoView = props => {
 
@@ -205,13 +206,17 @@ const TakePhotoView = props => {
 
             })}
 
-          <TouchableOpacity
-            style={[styles.imageContainer, {marginLeft: 10}]}
-            onPress={() => {
-              showSelectionDialog();            
-            }}>
-            <SvgIcon icon="Add_Image" />
-          </TouchableOpacity>
+
+          {
+            maxSize == undefined || maxSize == -1  || photos.length < maxSize &&
+            <TouchableOpacity
+              style={[styles.imageContainer, {marginLeft: 10}]}
+              onPress={() => {
+                showSelectionDialog();            
+              }}>
+              <SvgIcon icon="Add_Image" />
+            </TouchableOpacity>
+          }          
 
         </ScrollView>
 
