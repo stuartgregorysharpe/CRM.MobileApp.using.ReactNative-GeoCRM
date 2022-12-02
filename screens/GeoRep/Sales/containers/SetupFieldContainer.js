@@ -21,8 +21,7 @@ const  SetupFieldContainer = (props) => {
         GetRequestSetupFieldDAO.find({}).then((res) => {            
             setTransactinTypes(res.transaction_types);
             setWarehouse(res.warehouse);
-            setCurrency(res.currency);
-            console.log("setup", JSON.stringify(res))
+            setCurrency(res.currency);            
         }).catch((e) => {
             expireToken(dispatch, e);
         });

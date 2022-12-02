@@ -1,6 +1,6 @@
 
 import { View , BackHandler } from 'react-native'
-import React , { useState , useEffect ,useRef , useCallback } from 'react'
+import React , { useState , useEffect ,useRef , useMemo, useCallback } from 'react'
 import ProductSalesView from '../components/ProductSalesView';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import ProductGroupModal from '../modal/ProductGroupModal';
@@ -22,6 +22,7 @@ const  ProductSalesContainer = (props) => {
         state => state.sales.productPriceLists,
     );
 	const { items , settings } = props;
+
     const [selectedGroupTitle, setSelectedGroupTitle] = useState("");
 	const [selectedLocation , setSelectedLocation] =  useState(null);
 	const [products, setProducts] = useState([])
@@ -30,12 +31,82 @@ const  ProductSalesContainer = (props) => {
 	const productFilterModalRef = useRef(null)
 	const productDetailsModalRef  = useRef(null)
 	const addProductModalRef = useRef(null)
-	const [lists, setLists] = useState(null);	
+
 	const [productDetailTitle, setProductDetailTitle] = useState("");
 	const [product, setProduct] = useState();
-	const [cartCount, setCartCount] = useState(0);
+	const [cartCount, setCartCount] = useState(0);	
 	const dispatch = useDispatch()
 
+	const getProducts = useCallback((products) => {	
+	//const getProducts = (products ) => {
+			var list = [];
+			if(products != undefined){
+				products.forEach(element => {
+
+					const product = productPriceLists.find(item => item != undefined && parseInt(item.product_id) == parseInt(element.product_id));
+					var newElement = {
+						...element
+					}
+					var price = element.price;
+					
+					console.log("p", product)
+					if(product != undefined){						
+						if( product.finalPrice  != undefined && product.finalPrice.final_price != undefined){
+							price = product.finalPrice.final_price;
+						}
+
+						list.push({
+							...newElement,																				     
+							price: price,
+							special : product.special,
+							qty:  product.qty
+						})
+					}else{
+						list.push({
+							...newElement,								
+							qty:  0
+						})
+					}
+				});
+			}        			
+			return list;	
+	//};
+	}, [productPriceLists]);
+
+
+	const lists = useMemo(() => {		
+		if(items != undefined && productPriceLists != undefined && items.length > 0){					
+			console.log("trigger use memor ==" );
+			var newList = [];
+			const tmp = [...items];
+			tmp.forEach((item) => {
+				const newItem = {...item};
+				const originProducts = [...newItem.products];   				
+				const products = getProducts(originProducts);
+				newItem.products =  [...products];
+				newList.push(newItem);
+			});
+			return newList;
+			// return items.map(item => {
+			// 	const newItem = {...item};
+			// 	const originProducts = [...newItem.products];   				
+			// 	const products = getProducts(originProducts);
+			// 	newItem.products =  products;
+			// 	return newItem;
+			// });
+		}		
+		return [];
+	}, [items, productPriceLists]);
+		
+	const groupList = useMemo(() => {
+		if(products != undefined && products.length > 0){	
+			const tpLists = [...products];						
+			const newProducts = getProducts(tpLists );
+			return newProducts;			
+		}		
+		return [];
+	}, [products, productPriceLists ]);
+		
 	//    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
     useEffect(() => { 
 		setupFieldModalRef.current.showModal();
@@ -51,19 +122,19 @@ const  ProductSalesContainer = (props) => {
 	//    ------------------------    END DEFINE SETUP MODAL   --------------------------
 
 	//    ------------------------    RERENDER PRODUCT LIST AND PRODUCT LIST IN GROUP BY PRICE AND QTY   --------------------------------
-	useEffect(() => {		
-		if(items.length > 0){
-			var tpLists = [...items];
-			tpLists.forEach(item => {
-				const originProducts = item.products;        
-				const products = getProducts(originProducts);
-				console.log("products => ",products)
-				item.products =  products;
-			});
-			setLists(tpLists);
-			updateProdoctsGroup()
-		}		
-	}, [items , productPriceLists]);
+	// useEffect(() => {		
+	// 	if(items.length > 0){
+	// 		console.log("item " , JSON.stringify(items))
+	// 		var tpLists = [...items];
+	// 		tpLists.forEach(item => {
+	// 			const originProducts = [...item.products];   
+	// 			const products = getProducts(originProducts);				
+	// 			item.products =  products;
+	// 		});
+	// 		setLists(tpLists);			
+	// 		updateProdoctsGroup()
+	// 	}		
+	// }, [items , productPriceLists]);
 
 	const updateProdoctsGroup = useCallback(
 		() => {						
@@ -87,8 +158,7 @@ const  ProductSalesContainer = (props) => {
 	const updateProductPriceList = async(value) => {
 		var setupData = await getJsonData("@setup");
 		if(setupData != null && setupData != undefined  && setupData.location){			
-			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){
-				console.log("changed setup ", value)	
+			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){				
 				dispatch(setProductPriceLists([]));
 				storeJsonData("@product_price" , []);
 			}else{
@@ -101,9 +171,7 @@ const  ProductSalesContainer = (props) => {
 		var addProductLists = await getJsonData("@add_product");
 		if(addProductLists != null && addProductLists != undefined)
 			setCartCount(addProductLists.length)
-
 	}
-
 
     const onSetupFieldModalClosed = ({ type, value}) => {
 		if(type === Constants.actionType.ACTION_CLOSE){		
@@ -127,7 +195,7 @@ const  ProductSalesContainer = (props) => {
 			productFilterModalRef.current.hideModal()
 		}
 		if(type === Constants.actionType.ACTION_DONE){
-			console.log("Value", value)
+			
 			productFilterModalRef.current.hideModal();
 			if(props.getProductListsByFilter){
                 props.getProductListsByFilter(value);
@@ -140,9 +208,12 @@ const  ProductSalesContainer = (props) => {
 
 	const onProductDetailsModalClosed = ({type , value}) => {
 		if(type === Constants.actionType.ACTION_DONE){
-			saveFinalPrice(value);	
+			saveFinalPrice(value , "done");
 			if(productDetailsModalRef.current)
 				productDetailsModalRef.current.hideModal()
+		}
+		if(type === Constants.actionType.ACTION_FORM_CLEAR){
+			saveFinalPrice(value , "clear");	
 		}
 	}
 
@@ -159,20 +230,8 @@ const  ProductSalesContainer = (props) => {
 		await storeJsonData("@sale_product_parameter" , param);
 	}
 
-	const saveFinalPrice = async(value) =>{
-
-		console.log("final  price" , value)
-		if(value != undefined){
-			updateProductPriceLists(value.product_id, value.final_price, value.qty , value.special);
-		}		
-		var lists = await getJsonData("@final_price");
-		var finalPrices = [];
-		if(lists != null && lists != undefined){
-			console.log("lists",lists)
-			finalPrices = lists.filter(item => item.product_id != value.product_id);
-		}
-		finalPrices.push(value);	
-		storeJsonData("@final_price", finalPrices);
+	const saveFinalPrice = async(value , type) => {		
+		updateProductPriceLists(value.product_id ,  value.price, value.qty , value.special , type === "done" ? value.finalPrice : 'clear' , value.product);
 	}
 
 	const saveProducts = async(value) => {
@@ -182,8 +241,7 @@ const  ProductSalesContainer = (props) => {
 			products = lists.filter(item => item.add_product_id != value.add_product_id);
 		}
 		products.push(value);	
-		setCartCount(products.length);
-		console.log("add products", products);
+		setCartCount(products.length);		
 		storeJsonData("@add_product", products);
 	}
 
@@ -193,85 +251,42 @@ const  ProductSalesContainer = (props) => {
 		const products = getProducts(item.products);		
 		setProducts(products);
 		productGroupModalRef.current.showModal()
-
 	}
-
-	const getProducts = useCallback((products) => {	
-		var lists = [];
-		if(products != undefined){
-			products.forEach(element => {            
-				const product = productPriceLists.find(item => item != undefined && parseInt(item.product_id) == parseInt(element.product_id));
-				if(product != undefined){                
-					element.price = product.price;     
-					element.special = product.special;					
-					lists.push({
-						...element,                    
-						qty:  product.qty
-					})
-				}else{
-					lists.push({
-						...element,                    
-						qty:  0
-					})
-				}
-			});
-		}
-        
-        return lists;	
-	}, [productPriceLists]);
-
-	const geProductPrice = (product_id, qty) => {
-		const param = {
-			product_id : product_id,
-			qty : qty
-		}
 	
-		GetRequestProductPriceDAO.find(param).then((res) => {
-			console.log(res)
-			if(res.status === Strings.Success){
-				console.log("price res", res)
+	const geProductPrice = (product, qty) => {
+
+		const param = {
+			product_id : product.product_id,
+			qty : qty
+		}		
+		GetRequestProductPriceDAO.find(param).then((res) => {			
+			if(res.status === Strings.Success){				
 				const price = res.price;             
 				const special = res.special;
-				updateProductPriceLists(product_id, price, qty , special);
+				updateProductPriceLists(product.product_id, price, qty , special , '' , product);
 			}
 		}).catch((e) => {
 			expireToken(dispatch, e);
 		})
 	}
 
-	const updateProductPriceLists = useCallback( async(product_id , price , qty , special) => {		
+	const updateProductPriceLists = useCallback( async(product_id , price , qty , special , finalPrice , product) => {			
+		const lists = [...productPriceLists];
+		var tmpList = lists.filter(item => parseInt(item.product_id) != parseInt(product_id));
+		var check = lists.find(item => parseInt(item.product_id) == parseInt(product_id));
 		
-		const finalPriceLists = await getJsonData("@final_price");
-		var newPrice = price;
-		if(finalPriceLists != null){
-			const finalPrice = finalPriceLists.find(item => item.product_id == product_id);
-			if(finalPrice != undefined){
-				newPrice = finalPrice.final_price;
-			}
-		}
-
-		var lists = [...productPriceLists];         
-        const check =  lists.find(item => parseInt(item.product_id) == parseInt(product_id) );        
-        if(check != undefined){
-			var tmp = [];
-			lists.forEach((item, index) => {
-				if(parseInt(item.product_id) == parseInt(product_id)){										
-					tmp.push({product_id: product_id , price: newPrice , qty: qty , special:special});
-				}else{
-					tmp.push(item);
-				}
-			});
-            lists = tmp;
-        }else{        
-            lists.push({product_id: product_id , price: newPrice , qty: qty , special: special});
-        }		
-		dispatch(setProductPriceLists(lists));
-		storeJsonData("@product_price" , lists);
-
-      }, [productPriceLists]);
+		if(check != undefined){
+			var tmpFinalPrice = finalPrice != '' && finalPrice != 'clear' ? finalPrice : check.finalPrice;
+			tmpList.push({product_id: product_id , price: price , qty: qty , special: special , finalPrice: finalPrice === 'clear' ? '' : tmpFinalPrice , product: product });
+		}else{
+			tmpList.push({product_id: product_id , price: price , qty: qty , special: special , finalPrice: finalPrice , product: product});
+		}	
+		dispatch(setProductPriceLists(tmpList));
+		storeJsonData("@product_price" , tmpList);       
+    }, [productPriceLists]);
 
 	const openProductDetail = (item) => {		
-		setProductDetailTitle(item.product_name);
+		setProductDetailTitle(item.product_name);		
 		setProduct(item);
 		if(productDetailsModalRef.current)
 			productDetailsModalRef.current.showModal();
@@ -307,7 +322,7 @@ const  ProductSalesContainer = (props) => {
 
 			<ProductGroupModal
 				title={selectedGroupTitle}
-				products={products}
+				products={groupList}
 				settings={settings}
 				geProductPrice={geProductPrice}	
 				openProductDetail={openProductDetail}

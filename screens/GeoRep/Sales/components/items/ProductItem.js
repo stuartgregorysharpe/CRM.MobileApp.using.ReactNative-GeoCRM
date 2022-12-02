@@ -27,6 +27,10 @@ const ProductItem = (props) => {
        if(productPriceLists.length == 0){
            setQty(0);
        }
+       var check = productPriceLists.find(element => element.product_id == item.product_id);              
+       if(check != undefined){
+           setQty(check.qty);
+       }
     }, [productPriceLists])
 
     const onCount = (qty) => {        
@@ -44,7 +48,7 @@ const ProductItem = (props) => {
     const onEditDone = (qty) => {   
         setQty(qty);       
         if(props.geProductPrice){    
-            props.geProductPrice( item.product_id, qty);
+            props.geProductPrice( item, qty);
         }
     }
 

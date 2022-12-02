@@ -56,7 +56,7 @@ const SetupFieldView = (props) => {
 
 		var data = await getJsonData("@setup");
 		if(data != null){
-			console.log("Data",data)
+			
 			setSelectedSaleType(data.transaction_type);
 			setSelectedCurrency(data.currency_id);	
 			setSelectedLocation(data.location);	

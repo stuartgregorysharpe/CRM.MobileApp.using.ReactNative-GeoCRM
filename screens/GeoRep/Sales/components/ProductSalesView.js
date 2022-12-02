@@ -125,7 +125,7 @@ const ProductSalesView = (props) => {
                 keyExtractor={(item, index) => index.toString()}
                 extraData={this.props}
                 onEndReached={() => {                    
-                    loadMoreData(pageNumber, '')
+                    //loadMoreData(pageNumber, '')
                 }}
                 onEndReachedThreshold={1}
             />
@@ -148,13 +148,13 @@ const ProductSalesView = (props) => {
                 }                
 
                 {
-                    cartCount != undefined && cartCount != 0 &&
+                    true  && ///cartCount != undefined && cartCount != 0
                     <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} >
                         <SvgIcon icon="Sales_Cart" width="70px" height="70px" />
                         <AppText title={cartCount}  style={styles.cartNumberStyle} color={Colors.whiteColor}/>
                     </TouchableOpacity>
-                }                
-              
+                }
+                              
             </View>
             
 

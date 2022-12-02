@@ -29,7 +29,7 @@ const ProductDetailsView = (props) => {
             if(adjustedPrice != undefined && adjustedPrice != '' && adjustedPrice.replace("R",'') != ''){
                 adjust = parseFloat(adjustedPrice.replace("R",''));            
             }
-            if(discountPrice != '' && discountPrice.replace("%",'') != ''){
+            if(discountPrice != undefined && discountPrice != '' && discountPrice.replace("%",'') != ''){
                 discount = parseFloat(discountPrice.replace("%",'')) / 100;
             }else{
                 setFinalPrice(adjust);
@@ -42,20 +42,21 @@ const ProductDetailsView = (props) => {
                 }                
             }            
         }catch(e){
-
+            console.log(e)
         }
     }, [adjustedPrice, discountPrice]);
 
     const initializeData = async() => {
-        const finalPriceList = await getJsonData("@final_price");
-        if(finalPriceList != null){
-            const data =  finalPriceList.find(item =>  item.product_id === product.product_id);
-            if(data != undefined){
-                setAdjustedPrice(data.adjustedPrice);
-                setDiscountPrice(data.discountPrice);
-                setFinalPrice(data.final_price);
-            }        
-        }        
+        const prodictPriceList = await getJsonData("@product_price");
+        if(prodictPriceList != null){
+            const data =  prodictPriceList.find(item =>  item.product_id === product.product_id);            
+            if( data != undefined && data.finalPrice != undefined){                                
+                setAdjustedPrice(data.finalPrice.adjustedPrice);
+                setDiscountPrice(data.finalPrice.discountPrice);
+                setFinalPrice(data.finalPrice.final_price);            
+            }
+        }
+        
     }
 
     const onSave = () => {
@@ -63,11 +64,15 @@ const ProductDetailsView = (props) => {
             props.onSaveProduct(
                 {
                     product_id: product.product_id , 
-                    adjustedPrice: adjustedPrice, 
-                    discountPrice: discountPrice, 
-                    final_price: finalPrice,
+                    price: product.price,
+                    finalPrice:{
+                        adjustedPrice: adjustedPrice, 
+                        discountPrice: discountPrice, 
+                        final_price: finalPrice,
+                    },
                     qty: product.qty,
-                    special : product.special
+                    special : product.special,
+                    product : product,
                 });
         }
     }

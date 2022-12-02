@@ -67,6 +67,8 @@ export default function ProductSales(props) {
 
 	const getApiData = async (search_text, pageNumber) => {
 
+		console.log("#####################");
+
 		setIsLoading(true);
 		var paramData = await getJsonData("@sale_product_parameter");				
 		if(paramData != null){				
