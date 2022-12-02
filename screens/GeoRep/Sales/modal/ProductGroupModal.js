@@ -5,6 +5,7 @@ import { Constants } from '../../../../constants';
 import ProductGroupContainer from '../containers/ProductGroupContainer';
 import { useSelector , useDispatch} from 'react-redux';
 import { setProductPriceLists } from '../../../../actions/sales.action';
+import { storeJsonData } from '../../../../constants/Storage';
 
 const ProductGroupModal = React.forwardRef((props, ref) => {
 
@@ -23,17 +24,15 @@ const ProductGroupModal = React.forwardRef((props, ref) => {
         }
     };
 
-    const onClearData = () => {
-        console.log("on clear darta called");
+    const onClearData = () => {        
         var productIds = [];
         products.forEach(element => {
             productIds.push(element.product_id);
-        });    
-        console.log("product Ids"  , productIds);
-        console.log("productPriceLists",productPriceLists)
-        const productLists = productPriceLists.filter(item => !productIds.includes(item.product_id));
-        console.log("productLists",productLists)
+        });         
+        const productLists = productPriceLists.filter(item => !productIds.includes(item.product_id));        
         dispatch(setProductPriceLists(productLists));
+        
+        storeJsonData("@product_price" , productLists);
     }
 
     return (        

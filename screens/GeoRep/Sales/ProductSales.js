@@ -58,9 +58,11 @@ export default function ProductSales(props) {
 
 	const getProductListsByFilter = async (data) => {
 		var paramData = await getJsonData("@sale_product_parameter");
-		paramData["filters"] = data;
-		await storeJsonData("@sale_product_parameter", paramData);		
-		getApiData('' , 0);
+		if(paramData != null){
+			paramData["filters"] = data;
+			await storeJsonData("@sale_product_parameter", paramData);		
+			getApiData('' , 0);
+		}		
 	}
 
 	const getApiData = async (search_text, pageNumber) => {
