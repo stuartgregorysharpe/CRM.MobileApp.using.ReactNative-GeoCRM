@@ -8,7 +8,6 @@ import { Constants, Strings } from '../../../../constants';
 import { useSelector , useDispatch } from 'react-redux';
 import { GetRequestProductPriceDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
-import { PRODUCT_PRICE_LISTS } from '../../../../actions/actionTypes';
 import ProductFilterModal from '../modal/ProductFilterModal';
 import { getJsonData, storeJsonData } from '../../../../constants/Storage';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
@@ -40,6 +39,7 @@ const  ProductSalesContainer = (props) => {
 	//    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
     useEffect(() => { 
 		setupFieldModalRef.current.showModal();
+		initializeProductLists();
 	},[]);
 
 	useEffect(() => {
@@ -77,6 +77,12 @@ const  ProductSalesContainer = (props) => {
 	)
 	//   -------------------------     END  ----------------------------------------------------------------
 
+	const initializeProductLists = async() => {
+		var productLists = await getJsonData("@product_price");
+		if(productLists != null){
+			dispatch(setProductPriceLists(productLists));
+		}
+	}
 
 	const updateProductPriceList = async(value) => {
 		var setupData = await getJsonData("@setup");
@@ -84,6 +90,7 @@ const  ProductSalesContainer = (props) => {
 			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){
 				console.log("changed setup ", value)	
 				dispatch(setProductPriceLists([]));
+				storeJsonData("@product_price" , []);
 			}else{
 				console.log("no changes", setupData.transaction_type, value.transaction_type)
 			}
@@ -257,9 +264,9 @@ const  ProductSalesContainer = (props) => {
             lists = tmp;
         }else{        
             lists.push({product_id: product_id , price: newPrice , qty: qty , special: special});
-        }
-		//dispatch({type: PRODUCT_PRICE_LISTS, payload: lists});
+        }		
 		dispatch(setProductPriceLists(lists));
+		storeJsonData("@product_price" , lists);
 
       }, [productPriceLists]);
 

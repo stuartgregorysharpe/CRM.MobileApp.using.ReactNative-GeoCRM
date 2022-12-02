@@ -6,10 +6,7 @@ import { whiteLabel } from '../../../../../constants/Colors'
 import NumberCounter from '../../../../../components/shared/SKUCount/components/NumberCounter'
 import { style } from '../../../../../constants/Styles'
 import FastImage from 'react-native-fast-image';
-import { GetRequestProductPriceDAO } from '../../../../../DAO';
 import { useSelector , useDispatch } from 'react-redux';
-import { setProductPriceLists } from '../../../../../actions/sales.action'
-import { expireToken } from '../../../../../constants/Helper'
 import { formattedPrice } from '../../../../../helpers/formatHelpers'
 import SvgIcon from '../../../../../components/SvgIcon'
 
