@@ -232,22 +232,33 @@ const  ProductSalesContainer = (props) => {
 	}
 
 	const updateProductPriceLists = useCallback( async(product_id , price , qty , special) => {		
+		
+		const finalPriceLists = await getJsonData("@final_price");
+		var newPrice = price;
+		if(finalPriceLists != null){
+			const finalPrice = finalPriceLists.find(item => item.product_id == product_id);
+			if(finalPrice != undefined){
+				newPrice = finalPrice.final_price;
+			}
+		}
+
 		var lists = [...productPriceLists];         
         const check =  lists.find(item => parseInt(item.product_id) == parseInt(product_id) );        
         if(check != undefined){
 			var tmp = [];
 			lists.forEach((item, index) => {
-				if(parseInt(item.product_id) == parseInt(product_id)){
-					tmp.push({product_id: product_id , price: price , qty: qty , special:special});
+				if(parseInt(item.product_id) == parseInt(product_id)){										
+					tmp.push({product_id: product_id , price: newPrice , qty: qty , special:special});
 				}else{
 					tmp.push(item);
 				}
 			});
             lists = tmp;
         }else{        
-            lists.push({product_id: product_id , price: price , qty: qty , special: special});
-        }		    	
-		dispatch({type: PRODUCT_PRICE_LISTS, payload: lists});
+            lists.push({product_id: product_id , price: newPrice , qty: qty , special: special});
+        }
+		//dispatch({type: PRODUCT_PRICE_LISTS, payload: lists});
+		dispatch(setProductPriceLists(lists));
 
       }, [productPriceLists]);
 

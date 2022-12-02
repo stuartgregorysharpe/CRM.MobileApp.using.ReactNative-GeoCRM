@@ -27,27 +27,14 @@ const SetupFieldView = (props) => {
 	const isCheckin = useSelector(state => state.location.checkIn);
 
 	useEffect(() => {
-		if(isCheckin){
-			getCheckinLocationInfo();
-		}
+		initializeLocation();
 	}, [isCheckin])
 
 	useEffect(() => {		
 		initializeSetupData();
 	}, [ currency, warehouse,   transaction_types]);
 
-	// useEffect(() => {
-		
-	// }, [currency]);
-
-	// useEffect(() => {
-		
-	// },[warehouse])
-
-	useEffect(() => {
-		//initializeSetupData();
-	},[])
-
+	
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
 		const  locInfo = await getLocationInfo(locationId);
@@ -56,13 +43,23 @@ const SetupFieldView = (props) => {
 			setSelectedLocation(locInfo);
 	}
 
+	const initializeLocation = async() => {
+		var data = await getJsonData("@setup");
+		if(data != null){
+			setSelectedLocation(data.location);	
+		}else if(isCheckin){
+			getCheckinLocationInfo();
+		}
+	}
+
 	const initializeSetupData = async() => {
 
 		var data = await getJsonData("@setup");
 		if(data != null){
 			console.log("Data",data)
 			setSelectedSaleType(data.transaction_type);
-			setSelectedCurrency(data.currency_id);		
+			setSelectedCurrency(data.currency_id);	
+			setSelectedLocation(data.location);	
 		}else{
 			if(transaction_types != null && transaction_types.default_type != ''){
 				setSelectedSaleType(transaction_types.default_type);

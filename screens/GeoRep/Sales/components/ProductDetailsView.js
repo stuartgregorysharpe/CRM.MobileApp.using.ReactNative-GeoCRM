@@ -48,11 +48,13 @@ const ProductDetailsView = (props) => {
 
     const initializeData = async() => {
         const finalPriceList = await getJsonData("@final_price");
-        const data =  finalPriceList.find(item =>  item.product_id === product.product_id);
-        if(data != undefined){
-            setAdjustedPrice(data.adjustedPrice);
-            setDiscountPrice(data.discountPrice);
-            setFinalPrice(data.final_price);
+        if(finalPriceList != null){
+            const data =  finalPriceList.find(item =>  item.product_id === product.product_id);
+            if(data != undefined){
+                setAdjustedPrice(data.adjustedPrice);
+                setDiscountPrice(data.discountPrice);
+                setFinalPrice(data.final_price);
+            }        
         }        
     }
 

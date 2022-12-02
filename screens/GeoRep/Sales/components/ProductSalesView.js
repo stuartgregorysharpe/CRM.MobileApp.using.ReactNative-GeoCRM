@@ -32,14 +32,16 @@ const ProductSalesView = (props) => {
     
     const checkFilter = async() => {
         var param = await getJsonData("@sale_product_parameter");
-        var filters = param['filters'];
-        var flag = false;        
-        if(filters != '' && filters != undefined && filters.product_type  && filters.brands){
-            if(filters.product_type.length > 0 || filters.brands.length > 0){                
-                flag = true;
+        if(param != null){
+            var filters = param['filters'];
+            var flag = false;        
+            if(filters != '' && filters != undefined && filters.product_type  && filters.brands){
+                if(filters.product_type.length > 0 || filters.brands.length > 0){                
+                    flag = true;
+                }
             }
-        }
-        setHaveFilter(flag);
+            setHaveFilter(flag);
+        }        
     }
  
     const renderItem = (item, index) => {
