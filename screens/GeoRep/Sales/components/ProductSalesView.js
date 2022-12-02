@@ -149,7 +149,9 @@ const ProductSalesView = (props) => {
 
                 {
                     true  && ///cartCount != undefined && cartCount != 0
-                    <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} >
+                    <TouchableOpacity 
+                        onPress={props.openCart}
+                        style={{alignItems:'center', justifyContent:'center'}} >
                         <SvgIcon icon="Sales_Cart" width="70px" height="70px" />
                         <AppText title={cartCount}  style={styles.cartNumberStyle} color={Colors.whiteColor}/>
                     </TouchableOpacity>

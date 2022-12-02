@@ -115,7 +115,7 @@ const  ProductSalesContainer = (props) => {
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {
-			setupFieldModalRef.current.showModal();
+			//setupFieldModalRef.current.showModal();
 		});    
 		return unsubscribe;
 	}, [navigation]);
@@ -303,6 +303,10 @@ const  ProductSalesContainer = (props) => {
 		dispatch(showNotification({type:Strings.Success , message: 'Feature not available yet' , buttonText: Strings.Ok}));
 	}
 
+	const openCart = () => {
+		navigation.navigate('CartScreen');
+	}
+
     return (
         <View style={{
             alignSelf:'stretch' , 
@@ -358,6 +362,7 @@ const  ProductSalesContainer = (props) => {
 				onGroupItemClicked={onGroupItemClicked}
 				openProductDetail={openProductDetail}
 				openAddProductModal={openAddProductModal}
+				openCart={openCart}
 				openSetup={openSetup}
 				openReorder={openReorder}
 				openFilter={() => {					

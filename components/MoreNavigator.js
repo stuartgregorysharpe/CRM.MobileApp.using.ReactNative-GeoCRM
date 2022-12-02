@@ -6,7 +6,7 @@ import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
-import ProductSalesScreen from '../screens/GeoRep/Sales/ProductSales';
+import ProductSalesScreen from '../screens/GeoRep/Sales/ProductSalesNavigator';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
@@ -125,6 +125,7 @@ export default function RepMoreScreen({navigation}) {
         return;
       case 'ProductSales':
         navigation.navigate('ProductSales');
+        
         return;
       case 'Notifications':
         navigation.navigate('Notifications');

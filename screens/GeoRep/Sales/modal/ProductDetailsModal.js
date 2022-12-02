@@ -46,5 +46,4 @@ const ProductDetailsModal = React.forwardRef((props, ref) => {
     )
 });
 
-
 export default ProductDetailsModal;
