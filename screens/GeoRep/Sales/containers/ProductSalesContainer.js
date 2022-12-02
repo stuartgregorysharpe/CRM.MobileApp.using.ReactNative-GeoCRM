@@ -57,6 +57,7 @@ const  ProductSalesContainer = (props) => {
 			tpLists.forEach(item => {
 				const originProducts = item.products;        
 				const products = getProducts(originProducts);
+				console.log("products => ",products)
 				item.products =  products;
 			});
 			setLists(tpLists);

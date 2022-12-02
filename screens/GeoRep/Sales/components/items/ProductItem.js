@@ -1,5 +1,5 @@
 import { StyleSheet, Image,  Text, View, TouchableOpacity } from 'react-native'
-import React , { useState ,useCallback } from 'react'
+import React , { useState ,useEffect } from 'react'
 import { AppText } from '../../../../../components/common/AppText'
 import { Colors, Strings } from '../../../../../constants'
 import { whiteLabel } from '../../../../../constants/Colors'
@@ -16,11 +16,21 @@ import SvgIcon from '../../../../../components/SvgIcon'
 
 const ProductItem = (props) => {
 
-    const {item , settings, productPriceLists} = props;
+    const {item , settings} = props;
+    const productPriceLists = useSelector(
+        state => state.sales.productPriceLists,
+    );
+
     if (!item) return null;
-    const dispatch = useDispatch()
- 
+    const dispatch = useDispatch() 
+
     const [qty, setQty] = useState(item.qty != undefined ? item.qty : 0);
+
+    useEffect(() => {
+       if(productPriceLists.length == 0){
+           setQty(0);
+       }
+    }, [productPriceLists])
 
     const onCount = (qty) => {        
 
