@@ -1,6 +1,6 @@
 import {StyleSheet, Platform, Dimensions} from 'react-native';
 import Fonts from './Fonts';
-import Colors, { whiteLabel} from './Colors';
+import Colors, {whiteLabel} from './Colors';
 
 export const boxShadow = StyleSheet.create({
   shadowColor: '#808080',
@@ -9,6 +9,12 @@ export const boxShadow = StyleSheet.create({
   elevation: 1,
 });
 
+export const cardShadow = StyleSheet.create({
+  shadowColor: '#808080',
+  shadowOffset: {width: 1, height: 1},
+  shadowOpacity: Platform.OS === 'android' ? 0.27 : 0.27,
+  shadowRadius: Platform.OS === 'android' ? 0.65 : 0.65,
+});
 export const grayBackground = StyleSheet.create({
   backgroundColor: '#27272778',
   position: 'absolute',
@@ -72,6 +78,7 @@ export const style = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 4,
     padding: 8,
+    elevation: 1,
   },
   card: {
     marginBottom: 10,
@@ -194,16 +201,15 @@ export const style = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
-  
-  checkBoxStyle:{
-    width:25,
-    height:25,
-    borderRadius:15,
-    alignItems:'center',
-    justifyContent:'center',
-    backgroundColor:whiteLabel().itemSelectedBackground,
-    borderWidth:1,
-    borderColor:whiteLabel().itemSelectedBackground
-},
 
+  checkBoxStyle: {
+    width: 25,
+    height: 25,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: whiteLabel().itemSelectedBackground,
+    borderWidth: 1,
+    borderColor: whiteLabel().itemSelectedBackground,
+  },
 });
