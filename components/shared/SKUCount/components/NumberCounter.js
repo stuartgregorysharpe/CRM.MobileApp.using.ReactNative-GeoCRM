@@ -58,7 +58,7 @@ const NumberCounter = props => {
         style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
         onPress={() => {
           onCount(false)
-          onEditDone(count - step > 0 ? count - step : 0);
+          onEditDone(Number(count) - Number(step) > 0 ? Number(count) - Number(step) : 0);
 
         }}>
         <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'-'}</Text>
@@ -90,7 +90,7 @@ const NumberCounter = props => {
         style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
         onPress={() => {
           onCount(true);
-          onEditDone(count + step);
+          onEditDone(Number(count) + Number(step));
         }}>
         <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'+'}</Text>
       </TouchableOpacity>
