@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: PRIMARY_COLOR,
-        height: 45,
+        // height: 45,
         zIndex: 1,
         borderRadius: 7
     },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: whiteLabel().actionFullButtonText,
         textAlign: 'center',
-        fontSize: 12
+        fontSize: 12,
     },
     dropdown: {
         position: 'absolute',
