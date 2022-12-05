@@ -7,7 +7,7 @@ import DynamicForm from '../DynamicForm';
 
 const DynamicFormView = (props) => {
 
-    const { fields , isClear} = props;
+    const { page ,  fields , isClear} = props;
     if(!fields) return null; 
 
     const addProductRef = useRef(null)
@@ -39,7 +39,7 @@ const DynamicFormView = (props) => {
 
     useEffect(() => {
         if(isClear){
-            setFormData(getFormData(fields));
+            setFormData(getFormData(fields , page));
             if(props.updateClear){
                 props.updateClear();
             }
@@ -47,12 +47,14 @@ const DynamicFormView = (props) => {
     }, [isClear])
 
     useEffect(() => {        
-        setFormData(getFormData(fields))
+        setFormData(getFormData(fields , page))
         setFormStructure(getFormStructureData(fields));
+        console.log("field data => " , getFormStructureData(fields))
 
     }, [fields])
 
     const onAdd = () => {
+        console.log("fomr data", formData)
         if(addProductRef.current.validateForm()){
             if(props.onAdd){                
                 props.onAdd(formData);
@@ -62,7 +64,6 @@ const DynamicFormView = (props) => {
 
     return (
         <ScrollView style={[hasTextInput ? {height : 300} : {} ]}>      
-
             
             <DynamicForm
                 ref={addProductRef}
@@ -73,7 +74,7 @@ const DynamicFormView = (props) => {
                 }}
             />
             
-            <SubmitButton title="Add" onSubmit={onAdd} />
+            <SubmitButton title="Add" onSubmit={onAdd} style={{marginTop:20}} />
 
         </ScrollView>
     )

@@ -14,7 +14,7 @@ import { Colors } from '../../../../constants'
 
 const SetupFieldView = (props) => {
 
-	const { transaction_types, currency, warehouse} = props;
+	const { isLoading,  transaction_types, currency, warehouse} = props;
 	const features = useSelector(
 		state => state.selection.payload.user_scopes.geo_rep.features,
 	);
@@ -142,6 +142,7 @@ const SetupFieldView = (props) => {
 	const isValidate = () => {		
 		
 		if(
+			!isLoading &&
 			selectedLocation != null &&
 			selectedSaleType != null &&
 			selectedCurrency != null &&

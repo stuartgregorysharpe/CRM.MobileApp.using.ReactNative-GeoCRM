@@ -46,8 +46,14 @@ export default function EmailInputView(props) {
   return (
     <TouchableOpacity
       activeOpacity={1}
-      style={styles.container}
+      style={[styles.container , props.style ? props.style : {} , props.isShowTitle != undefined && props.isShowTitle ? {marginTop:15} :{} ]}
       onPress={onPressContainer}>
+        
+      {
+        props.isShowTitle != undefined && props.isShowTitle && lists.length > 0 && 
+        <Text style={{position:'absolute', fontSize:13, top:-12 , paddingLeft:5, paddingRight:5, left:12,backgroundColor:Colors.bgColor , color:Colors.textGeyColor}} >{'Email Recipients'}</Text>
+      }
+      
       <View style={styles.subContainer}>
         {lists.length > 0 &&
           lists.map((item, index) => {

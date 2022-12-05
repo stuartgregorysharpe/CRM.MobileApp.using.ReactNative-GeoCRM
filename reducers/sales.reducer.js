@@ -1,8 +1,9 @@
-import { PRODUCT_PRICE_LISTS } from "../actions/actionTypes";
+import { PRODUCT_PRICE_LISTS, SALES_SETTING } from "../actions/actionTypes";
 
 
 const initialState = {
-  productPriceLists: []  
+  productPriceLists: [] ,
+  salesSetting: null
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -14,6 +15,12 @@ export default (state = initialState, action) => {
         productPriceLists: action.payload
       } 
   
+    case SALES_SETTING: 
+      return {
+        ...state,
+        salesSetting: action.payload
+      } 
+
     default:
       return state;
   }

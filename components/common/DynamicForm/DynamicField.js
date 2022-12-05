@@ -2,7 +2,10 @@ import {RuleTester} from 'eslint';
 import React from 'react';
 import {View , Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import { Constants } from '../../../constants';
 import DropdownText from '../../shared/DropdownText';
+import EmailPdf from '../../shared/EmailPdf';
+import EmailInputView from '../../shared/EmailPdf/EmailInputView';
 import TakePhotoView from '../../shared/TakePhotoView';
 import {YesNoForm} from '../../shared/YesNoForm';
 import CTextInput from '../CTextInput';
@@ -66,6 +69,8 @@ const DynamicField = props => {
         disabled={disabled}
         pointerEvents={disabled ? 'none' : 'auto'}      
         onChangeText={text => {
+          console.log("chagned data", field_name);
+          
           updateFormData(field_name, text);
         }}
         style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
@@ -191,7 +196,10 @@ const DynamicField = props => {
           }
         }}
         onSelectItem={item => {
-          if (mode === 'single') {
+
+          if(mode == "contact_email" || mode == "contact_select"){
+            onContactItemSelected(item);
+          }else if (mode === 'single') {
             updateFormData(field_name, item.value);
           } else if (mode === 'multi') {
             var isData = false;
@@ -210,7 +218,11 @@ const DynamicField = props => {
                 value.filter(element => element != item.value),
               );
             } else {
-              updateFormData(field_name, [...value, item.value]);
+              if(value != undefined && value != ''){
+                updateFormData(field_name, [...value, item.value]);
+              }else{
+                updateFormData(field_name, [item.value]);
+              }              
             }
           }
         }}
@@ -332,6 +344,54 @@ const DynamicField = props => {
     );
   };
 
+  const renderEmailInput = () => {
+    
+    return (
+      <EmailInputView 
+        isShowTitle
+        style={{marginTop:10}}
+        item={{
+          question_text: field_type,
+          value: value
+        }}
+        onItemAction={({type, value, item}) =>{          
+          if (type == Constants.actionType.ACTION_FORM_SUBMIT) {            
+            updateFormData(field_name, value);
+          }
+        }} />
+
+    );
+  }
+
+  
+  const onContactItemSelected = (item) =>{
+
+    var isData = false;
+    if (value != undefined && value != '' && value != null) {
+      var check = value.find(element => element === item.contact_id);
+      if (check != undefined) {
+        isData = true;
+      }
+    } else {
+      isData = false;
+    }
+
+    if (isData) {
+      updateFormData(
+        field_name,
+        value.filter(element => element != item.contact_id),
+      );
+    } else {
+      if(value != undefined){
+        updateFormData(field_name, [...value, item.contact_id]);
+      }else{
+        updateFormData(field_name, [item.contact_id]);
+      }
+      
+    }
+
+  }
+
   if (!field_type) return null;
 
   if (isHidden != undefined && isHidden == true) return null;
@@ -378,6 +438,22 @@ const DynamicField = props => {
 
   if (field_type == 'multi_select') {
     return renderDropdown('multi');
+  }
+
+  if(field_type == 'multiple') {
+    return renderDropdown('multi');
+  }
+
+  if(field_type == 'contact_email') {
+    return renderDropdown('contact_email');
+  }
+
+  if(field_type == 'contact_select') {
+    return renderDropdown('contact_select');
+  }
+
+  if(field_type == 'email_input') {
+    return renderEmailInput();
   }
 
   return null;

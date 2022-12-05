@@ -29,7 +29,7 @@ const ProductDetailsView = (props) => {
             if(adjustedPrice != undefined && adjustedPrice != '' && adjustedPrice.replace("R",'') != ''){
                 adjust = parseFloat(adjustedPrice.replace("R",''));            
             }
-            if(discountPrice != undefined && discountPrice != '' && discountPrice.replace("%",'') != ''){
+            if(discountPrice != undefined && discountPrice != '' && discountPrice.replace("%",'') != ''){                
                 discount = parseFloat(discountPrice.replace("%",'')) / 100;
             }else{
                 setFinalPrice(adjust);
@@ -77,9 +77,8 @@ const ProductDetailsView = (props) => {
         }
     }
 
-    const getSymbolPrice = (text) =>{
-        console.log(text, product.symbol)
-        if(text.includes(product.symbol)){
+    const getSymbolPrice = (text) =>{        
+        if( text != undefined && text.includes(product.symbol)){
             return text;
         }else{
             return product.symbol + text;
@@ -87,7 +86,7 @@ const ProductDetailsView = (props) => {
     }
 
     const getPercentagePrice = (text) => {
-        if(text.includes('%')){
+        if(text != undefined && text.includes('%')){
             return text;
         }else{
             return  text + "%";
@@ -147,7 +146,9 @@ const ProductDetailsView = (props) => {
                             console.log("on editing")
                         }}
                         onFocus={() => {
-                            setDiscountPrice(discountPrice.replace("%",''));
+                            if(discountPrice != undefined){
+                                setDiscountPrice(discountPrice.replace("%",''));
+                            }                            
                         }}
                         onEndEditing={() => {
                             

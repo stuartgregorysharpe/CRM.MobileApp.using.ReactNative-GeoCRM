@@ -1,13 +1,16 @@
-export function getFormData  (renderForms) {
-
+export function getFormData  (renderForms , page) {
     const tmpFormData = {};
     renderForms.forEach(field => {
       var value = '';
       if ( field.field_type == 'price' && field.tax_types != undefined) {
         value = {value: value , type: field.selected_tax_type};
       }
+      if(page == "add_product"){
+        tmpFormData[field.field_name] = value;
+      }else{
+        tmpFormData[field.field_id] = value;
+      }
 
-      tmpFormData[field.field_name] = value;
     });
    
     return tmpFormData;
@@ -18,18 +21,21 @@ export function getFormStructureData (renderForms) {
     const dynamicFields = renderForms.map((field, index) => {
 
         var value = '';
+        var items = [];
         if ( field.field_type == 'price' && field.tax_types != undefined) {
-          var items = [];
-          if (field.tax_types != undefined && field.tax_types != '') {
-            field.tax_types.forEach(element => {
-              items.push({label: element, value: element});
-            });
+          
+          if (field.tax_types != undefined && field.tax_types != '') {       
+            items = getDropdownItems(field.tax_types);
             value = {value: value , type: field.selected_tax_type};
-          }
-          field = {
-            ...field,
-            items: items,
-          };
+          }          
+        }
+
+        if ( ( field.field_type == 'multiple' || field.field_type == 'multi_select' ) && field.options != undefined) {
+          items = getDropdownItems(field.options);          
+        }
+        
+        if( field.field_type == 'contact_email' ){       
+          items = field.options;             
         }
 
         if(field.field_type == 'take_photo'){
@@ -39,15 +45,47 @@ export function getFormStructureData (renderForms) {
           }
         }
   
-        return {
-          ...field,
-          key: index,        
-          initial_value: '',
-          editable: true,
-          is_required: true,          
-          value: value,
-        };
+        if(items.length > 0){
+          field = {
+            ...field,
+            items: items,
+          };
+        }
+
+        if(field.field_name != undefined){
+          return {
+            ...field,
+            key: index,        
+            initial_value: '',        
+            editable: true,
+            is_required: true,          
+            value: value,
+          };
+        }else{
+          return {
+            ...field,
+            key: index,        
+            initial_value: '',        
+            editable: true,
+            is_required: true,          
+            value: value,
+            field_name : field.field_label
+          };
+        }
+        
     });
 
     return dynamicFields;
+}
+
+export function getDropdownItems (options) {
+  if(options != undefined && options instanceof Array){
+    
+    var items = [];
+    options.forEach(element => {
+      items.push({label: element, value: element});
+    });
+    return items;    
+  }
+  return [];
 }

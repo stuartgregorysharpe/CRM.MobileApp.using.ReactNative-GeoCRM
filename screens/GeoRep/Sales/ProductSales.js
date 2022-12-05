@@ -1,12 +1,13 @@
 import { View, Text, Image, Dimensions ,ScrollView , FlatList, TouchableOpacity} from 'react-native'
 import React , { useEffect , useRef , useState , useCallback } from 'react'
 import { style } from '../../../constants/Styles';
-import { Constants, Strings } from '../../../constants';
+import { Strings } from '../../../constants';
 import GetRequestProductsList from '../../../DAO/sales/GetRequestProductsList';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../constants/Helper';
 import ProductSalesContainer from './containers/ProductSalesContainer';
 import { getJsonData, storeJsonData } from '../../../constants/Storage';
+import { setSalesSetting } from '../../../actions/sales.action';
 
 
 export default function ProductSales(props) {
@@ -14,7 +15,7 @@ export default function ProductSales(props) {
 	const [settings, setSettings] = useState(null);
 	const [items, setItems] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [page, setPage] = useState(0);	
+	const [page, setPage] = useState(0);
 	
 	const dispatch = useDispatch()	
 	useEffect(() => {
@@ -67,8 +68,6 @@ export default function ProductSales(props) {
 
 	const getApiData = async (search_text, pageNumber) => {
 
-		console.log("#####################");
-
 		setIsLoading(true);
 		var paramData = await getJsonData("@sale_product_parameter");				
 		if(paramData != null){				
@@ -79,14 +78,14 @@ export default function ProductSales(props) {
 			storeJsonData("@sale_product_parameter", paramData);			
 			GetRequestProductsList.find(paramData).then((res) => {
 				if(res.status == Strings.Success){
-					setSettings(res.settings);				
+					setSettings(res.settings);
+					dispatch(setSalesSetting(res.settings));
 					if(pageNumber == 0){
 						setItems(res.items);
 					}else{
 						setItems([...items, ...res.items]);
 					}				
-					setPage(pageNumber + 1);
-					//console.log("api response" , JSON.stringify(res));
+					setPage(pageNumber + 1);					
 				}
 				setIsLoading(false)
 			}).catch((e) => {
