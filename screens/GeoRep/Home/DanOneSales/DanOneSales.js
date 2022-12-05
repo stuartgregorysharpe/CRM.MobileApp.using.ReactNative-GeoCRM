@@ -40,7 +40,6 @@ const DanOneSales = () => {
                 _onLoad(text)
             }}
                 onDropDown={(value) => {
-                    setSearchKeyword('');
                     setPeriod(value);
                     _onLoad(null, value);
                 }} />
