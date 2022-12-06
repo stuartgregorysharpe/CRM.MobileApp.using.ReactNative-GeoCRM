@@ -3,17 +3,20 @@ import React, {useState, useEffect} from 'react';
 import {FeatureCard} from './../../partial/FeatureCard';
 import {useSelector} from 'react-redux';
 import {Values} from '../../../../../constants';
-import { checkConnectivity } from '../../../../../DAO/helper';
-import { showOfflineDialog } from '../../../../../constants/Helper';
-import { useDispatch } from 'react-redux';
+import {checkConnectivity} from '../../../../../DAO/helper';
+import {showOfflineDialog} from '../../../../../constants/Helper';
+import {useDispatch} from 'react-redux';
 
 export default function FeaturedCardLists(props) {
-
-  const {onItemClicked , isFormCompulsory} = props;
+  const {onItemClicked, isFormCompulsory} = props;
   const [featureCards, setFeatureCards] = useState([]);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
-  );  
+  );
+  const custom_feature_names = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.custom_feature_names,
+  );
+  console.log('custom_feature_names', custom_feature_names);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export default function FeaturedCardLists(props) {
         action: 'View all information',
         link: 'customer_contacts',
         isOffline: false,
-        isFormCompulsory: false
+        isFormCompulsory: false,
       });
     }
 
@@ -65,7 +68,7 @@ export default function FeaturedCardLists(props) {
         action: 'Specific to this location',
         link: 'forms',
         isOffline: true,
-        isFormCompulsory: isFormCompulsory
+        isFormCompulsory: isFormCompulsory,
       });
     }
 
@@ -76,7 +79,7 @@ export default function FeaturedCardLists(props) {
         action: 'Activity tree',
         link: 'activity_comments',
         isOffline: false,
-        isFormCompulsory: false
+        isFormCompulsory: false,
       });
     }
 
@@ -87,8 +90,7 @@ export default function FeaturedCardLists(props) {
         action: 'View location pipeline',
         link: 'sales_pipeline',
         isOffline: false,
-        isFormCompulsory: false
-
+        isFormCompulsory: false,
       });
     }
 
@@ -99,7 +101,7 @@ export default function FeaturedCardLists(props) {
         action: 'Specific actions to be addressed',
         link: 'actions_items',
         isOffline: false,
-        isFormCompulsory: false
+        isFormCompulsory: false,
       });
     }
 
@@ -110,7 +112,7 @@ export default function FeaturedCardLists(props) {
         action: 'View allocated devices',
         link: 'devices',
         isOffline: true,
-        isFormCompulsory: false
+        isFormCompulsory: false,
       });
     }
 
@@ -121,19 +123,34 @@ export default function FeaturedCardLists(props) {
         action: 'View customer sales history',
         link: 'customer_sales',
         isOffline: false,
-        isFormCompulsory: false
+        isFormCompulsory: false,
       });
     }
 
     if (isShowTouchpoint) {
-      featureCards.push({
-        title: `Touchpoints`,
-        icon: 'Touchpoints',
-        action: 'View touchpoints history',
-        link: 'touchpoints',
-        isOffline: false,
-        isFormCompulsory: false
-      });
+      if (
+        custom_feature_names &&
+        custom_feature_names.includes('location_specific_touchpoints')
+      ) {
+        const title = custom_feature_names['location_specific_touchpoints'];
+        featureCards.push({
+          title: title,
+          icon: 'Touchpoints',
+          action: `View ${title} history`,
+          link: 'touchpoints',
+          isOffline: false,
+          isFormCompulsory: false,
+        });
+      } else {
+        featureCards.push({
+          title: `Touchpoints`,
+          icon: 'Touchpoints',
+          action: 'View touchpoints history',
+          link: 'touchpoints',
+          isOffline: false,
+          isFormCompulsory: false,
+        });
+      }
     }
 
     setFeatureCards([...featureCards]);
@@ -155,16 +172,13 @@ export default function FeaturedCardLists(props) {
               actionTitle={item.action}
               isFormCompulsory={item.isFormCompulsory}
               onAction={() => {
-
-                checkConnectivity().then((isConnected) => {
-                  if(isConnected || item.isOffline){
+                checkConnectivity().then(isConnected => {
+                  if (isConnected || item.isOffline) {
                     onItemClicked(item);
-                  }else{
-                    showOfflineDialog(dispatch)
+                  } else {
+                    showOfflineDialog(dispatch);
                   }
-                })
-                
-
+                });
               }}
             />
           </View>
