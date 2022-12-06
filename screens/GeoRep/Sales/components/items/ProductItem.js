@@ -52,6 +52,14 @@ const ProductItem = (props) => {
         }
     }
 
+    const renderPrice = () => {
+        if(item.finalPrice != 0){
+            return item.symbol + formattedPrice(parseFloat(item.finalPrice));
+        }else{
+            return item.symbol + formattedPrice(parseFloat(item.price));
+        }
+        
+    }
            
     return (
         <View style={[styles.container, style.card , item.qty > 0 ? styles.redBorder : {} ]}>
@@ -102,7 +110,7 @@ const ProductItem = (props) => {
                         }                    
                         <AppText 
                             style={[item.special == "1" ? {textDecorationLine: 'underline'} : {}]}
-                            title={item.symbol + formattedPrice(parseFloat(item.price))} size="medium" color={Colors.primaryColor}/>
+                            title={renderPrice()} size="medium" color={Colors.primaryColor}/>
                     </View>
                 </View>
             </View>

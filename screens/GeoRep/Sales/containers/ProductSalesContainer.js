@@ -44,26 +44,36 @@ const  ProductSalesContainer = (props) => {
 				products.forEach(element => {
 
 					const product = productPriceLists.find(item => item != undefined && parseInt(item.product_id) == parseInt(element.product_id));
+
 					var newElement = {
 						...element
 					}
-					var price = element.price;										
-					if(product != undefined){						
-						
-						if( product.finalPrice  != undefined && product.finalPrice.final_price != undefined){
-							price = product.finalPrice.final_price;
-						}else{
+					var price = element.price;		
+					if(element.product_id == "1"){
+						console.log("element" , element);				
+						console.log("product" , product);
+					}
+
+					if(product != undefined){		
+						var finalPrice = 0;				
+						if( product.finalPrice  != undefined && product.finalPrice != '' && product.finalPrice.final_price != undefined){
+							finalPrice = product.finalPrice.final_price;
+						}
+						if(product.price != undefined && product.price != '' &&  product.price != 0) {
 							price = product.price;
-						}						
+						}
+
 						list.push({
 							...newElement,																				     
 							price: price,
+							finalPrice: finalPrice,							
 							special : product.special,
 							qty:  product.qty
 						})
 					}else{
 						list.push({
-							...newElement,								
+							...newElement,	
+							finalPrice : 0,							
 							qty:  0
 						})
 					}
@@ -216,7 +226,22 @@ const  ProductSalesContainer = (props) => {
 	}
 
 	const saveFinalPrice = async(value , type) => {		
-		updateProductPriceLists(value.product_id ,  value.price, value.qty , value.special , type === "done" ? value.finalPrice : 'clear' , value.product);
+		console.log("save data", value);
+		var newProduct = {
+			...value.product			
+		}
+		if( type == "done" && value.finalPrice != undefined && value.finalPrice != '' && value.finalPrice.final_price != undefined){
+			newProduct = {
+				...value.product,
+				finalPrice: value.finalPrice.final_price
+			}
+		}else if(type != "done"){
+			newProduct = {
+				...value.product,
+				finalPrice: 0
+			}
+		}
+		updateProductPriceLists(value.product_id ,  value.price , value.qty , value.special , type === "done" ? value.finalPrice : 'clear' , newProduct);
 	}
 
 	const saveProducts = async(value) => {
@@ -245,11 +270,22 @@ const  ProductSalesContainer = (props) => {
 			qty : qty
 		}		
 		GetRequestProductPriceDAO.find(param).then((res) => {			
-			console.log(product.product_id, qty , res);
+			
 			if(res.status === Strings.Success){				
 				const price = res.price;             
 				const special = res.special;
-				updateProductPriceLists(product.product_id, price, qty , special , '' , product);
+				var check = productPriceLists.find(element => element.product_id == product.product_id);
+				var finalPrice = 0;
+				if(check != undefined && check.finalPrice != '' && check.finalPrice.final_price != ''){
+					finalPrice = check.finalPrice.final_price;
+				}
+				var updatedProduct = {
+					...product,
+					price: price,
+					special: special,
+					finalPrice: finalPrice
+				}
+				updateProductPriceLists(product.product_id, price, qty , special , '' , updatedProduct);
 			}
 		}).catch((e) => {
 			expireToken(dispatch, e);
@@ -258,16 +294,17 @@ const  ProductSalesContainer = (props) => {
 
 	const updateProductPriceLists = useCallback( async(product_id , price , qty , special , finalPrice , product) => {
 
-		const lists = [...productPriceLists];
+		const lists = [...productPriceLists];		
 		var tmpList = lists.filter(item => parseInt(item.product_id) != parseInt(product_id));
-		var check = lists.find(item => parseInt(item.product_id) == parseInt(product_id));
 		
+		var check = lists.find(item => parseInt(item.product_id) == parseInt(product_id));		
 		if(check != undefined){
 			var tmpFinalPrice = finalPrice != '' && finalPrice != 'clear' ? finalPrice : check.finalPrice;
 			tmpList.push({product_id: product_id , price: price , qty: qty , special: special , finalPrice: finalPrice === 'clear' ? '' : tmpFinalPrice , product: product });
 		}else{
 			tmpList.push({product_id: product_id , price: price , qty: qty , special: special , finalPrice: finalPrice , product: product});
-		}	
+		}
+		
 		dispatch(setProductPriceLists(tmpList));
 		storeJsonData("@product_price" , tmpList);       
     }, [productPriceLists]);
@@ -275,6 +312,7 @@ const  ProductSalesContainer = (props) => {
 	const openProductDetail = (item) => {		
 		setProductDetailTitle(item.product_name);		
 		setProduct(item);
+		console.log("set product item", item)
 		if(productDetailsModalRef.current)
 			productDetailsModalRef.current.showModal();
 	}
