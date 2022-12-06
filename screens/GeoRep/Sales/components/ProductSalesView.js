@@ -122,12 +122,13 @@ const ProductSalesView = (props) => {
             <FlatList
                 data={lists}
                 renderItem={({item, index}) => renderItem(item, index)}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item, index) => index.toString()}            
                 extraData={this.props}
                 onEndReached={() => {                    
                     loadMoreData(pageNumber, '')
                 }}
                 onEndReachedThreshold={1}
+                removeClippedSubviews={false}
             />
 
             <View
