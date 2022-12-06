@@ -1,11 +1,96 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+import {useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
+import {useSelector} from 'react-redux';
+import {Constants} from '../../../../constants';
+import {getJsonData, storeJsonData} from '../../../../constants/Storage';
+import {GetRequestProductPriceDAO} from '../../../../DAO';
 import CartView from '../components/CartView';
+import {
+  calculateCartStatistics,
+  getTotalCartProductList,
+  getWarehouseGroups,
+} from '../helpers';
+import SetupFieldModal from '../modal/SetupFieldModal';
 
 const CartContainer = props => {
+  const productPriceList = useSelector(state => state.sales.productPriceLists);
+  const [addProductList, setAddProductList] = useState([]);
+  const [defineSetup, setDefineSetup] = useState(null);
+  const [productList, setProductList] = useState([]);
+  const [productListTitle, setProductListTitle] = useState('');
+  const setupFieldModalRef = useRef(null);
+  const currency = defineSetup?.currency_id;
+  const taxRate = currency?.tax_rate;
+  const totalProductList = useMemo(
+    () => getTotalCartProductList(productPriceList, addProductList),
+    [productPriceList, addProductList],
+  );
+  const cartStatistics = useMemo(
+    () => calculateCartStatistics(totalProductList, taxRate),
+    [totalProductList, taxRate],
+  );
+  const wareHouseGroups = useMemo(
+    () => getWarehouseGroups(totalProductList),
+    [totalProductList],
+  );
+  useEffect(() => {
+    loadAddProductLists();
+    loadDefinedConfig();
+  }, []);
+  const loadAddProductLists = async () => {
+    const addProductList = await getJsonData('@add_product');
+    if (addProductList != null && addProductList != undefined)
+      setAddProductList(addProductList);
+  };
+
+  const loadDefinedConfig = async () => {
+    const defineData = await getJsonData('@setup');
+    if (defineData) {
+      setDefineSetup(defineData);
+      console.log('defineData', defineData);
+    }
+  };
+  const onSetupFieldModalClosed = async ({type, value}) => {
+    if (type === Constants.actionType.ACTION_CLOSE) {
+      setupFieldModalRef.current.hideModal();
+      storeJsonData('@setup', value);
+      loadDefinedConfig();
+    }
+  };
+  const openSetup = () => {
+    setupFieldModalRef.current.showModal();
+  };
+  const updateProductPrice = (product, qty) => {};
   return (
     <View style={[styles.container, props.style]}>
-      <CartView />
+      <CartView
+        defineSetup={defineSetup}
+        cartStatistics={cartStatistics}
+        wareHouseGroups={wareHouseGroups}
+        onPressSettings={openSetup}
+      />
+      <SetupFieldModal
+        title="Define Setup"
+        hideClear
+        backButtonDisabled={true}
+        closableWithOutsideTouch={false}
+        ref={setupFieldModalRef}
+        hideDivider={true}
+        modalType={Constants.modalType.MODAL_TYPE_CENTER}
+        onButtonAction={onSetupFieldModalClosed}
+      />
+      <ProductGroupModal
+        title={productListTitle}
+        products={productList}
+        settings={settings}
+        geProductPrice={updateProductPrice}
+        openProductDetail={openProductDetail}
+        backButtonDisabled={true}
+        closableWithOutsideTouch={false}
+        ref={productGroupModalRef}
+        onButtonAction={onProductGroupModalClosed}
+      />
     </View>
   );
 };

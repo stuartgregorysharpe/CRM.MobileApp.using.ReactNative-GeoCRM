@@ -8,15 +8,8 @@ import CartStatisticsView from './CartStatisticView';
 import CartWarehouseItemView from './CartWarehouseItemView';
 
 const CartView = props => {
-  const cartStatistics = {
-    itemCount: 2,
-    unitCount: 2,
-    discount: 200,
-    subTotal: 67798,
-    tax: 10169.7,
-    total: 77967.7,
-  };
-  const wareHouseGroups = [
+  const {cartStatistics, wareHouseGroups, defineSetup} = props;
+  /*const wareHouseGroups = [
     {
       warehouse_id: 1,
       title: 'Johannesburg Warehouse',
@@ -27,8 +20,9 @@ const CartView = props => {
       title: 'Johannesburg Warehouse 2',
       itemCount: 2,
     },
-  ];
-
+  ];*/
+  const location = defineSetup?.location;
+  const currency = defineSetup?.currency_id;
   const onWarehouseItemPress = item => {
     if (props.onWarehouseItemPress) {
       props.onWarehouseItemPress(item);
@@ -48,8 +42,9 @@ const CartView = props => {
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 1}}>
         <CartSettingsView
-          customerName="Best Deal Trading"
-          address="Century City Cape Town 7441, South Africa, Cape Town Western Cape, 7441, South Africa"
+          customerName={location?.name}
+          address={location?.address}
+          onPressSettings={props.onPressSettings}
           style={{margin: 8}}
         />
         <CartStatisticsView
