@@ -10,7 +10,7 @@ import {Colors, Fonts, Values} from '../../../../constants';
 
 const NumberCounter = props => {
 
-  const {count , btnStyle  , btnTextStyle ,inputBoxStyle } = props;
+  const {count , btnStyle  , btnTextStyle , inputBoxStyle , isClickable } = props;
   const step = props.step || 1;
   const fixed = props.fixed || 0;
 
@@ -47,9 +47,13 @@ const NumberCounter = props => {
   };
 
   const onEditDone = (qty) => {
-    if(props.onEditDone){
-      props.onEditDone(qty);
-    }
+    try{
+      if(props.onEditDone){        
+          props.onEditDone(qty.toFixed(fixed));      
+      }
+    }catch(e){
+      console.log("Error ", e)
+    }    
   }
 
   return (
@@ -57,9 +61,10 @@ const NumberCounter = props => {
       <TouchableOpacity
         style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
         onPress={() => {
-          onCount(false)
-          onEditDone(Number(count) - Number(step) > 0 ? Number(count) - Number(step) : 0);
-
+          if( (isClickable != undefined  && isClickable) || isClickable == undefined){
+            onCount(false)
+            onEditDone(Number(count) - Number(step) > 0 ? Number(count) - Number(step) : 0);
+          }        
         }}>
         <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'-'}</Text>
       </TouchableOpacity>
@@ -89,8 +94,11 @@ const NumberCounter = props => {
       <TouchableOpacity
         style={[styles.buttonStyle, btnStyle ? btnStyle : {}]}
         onPress={() => {
-          onCount(true);
-          onEditDone(Number(count) + Number(step));
+          if( (isClickable != undefined  && isClickable) || isClickable == undefined){
+            onCount(true);
+            onEditDone(Number(count) + Number(step));
+          }
+          
         }}>
         <Text style={[styles.buttonText, btnTextStyle ? btnTextStyle : {}]}>{'+'}</Text>
       </TouchableOpacity>

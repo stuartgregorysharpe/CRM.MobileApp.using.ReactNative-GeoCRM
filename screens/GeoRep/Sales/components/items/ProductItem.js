@@ -22,6 +22,7 @@ const ProductItem = (props) => {
     const dispatch = useDispatch() 
 
     const [qty, setQty] = useState(item.qty != undefined ? item.qty : 0);
+    const [isClickable, setIsClickable] = useState(true);
 
     useEffect(() => {
        if(productPriceLists.length == 0){
@@ -30,6 +31,7 @@ const ProductItem = (props) => {
        var check = productPriceLists.find(element => element.product_id == item.product_id);              
        if(check != undefined){
            setQty(check.qty);
+           setIsClickable(true);
        }
     }, [productPriceLists])
 
@@ -48,6 +50,7 @@ const ProductItem = (props) => {
     const onEditDone = (qty) => {   
         setQty(qty);       
         if(props.geProductPrice){    
+            setIsClickable(false);
             props.geProductPrice( item, qty);
         }
     }
@@ -99,6 +102,7 @@ const ProductItem = (props) => {
                         count={qty} 
                         onCount={onCount}          
                         //onChangeText={onChangeText}     
+                        isClickable={isClickable}
                         fixed={1}     
                         onEditDone={onEditDone}
                     />
