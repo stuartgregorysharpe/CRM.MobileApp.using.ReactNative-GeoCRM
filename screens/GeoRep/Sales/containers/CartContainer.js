@@ -11,10 +11,16 @@ import {
   getTotalCartProductList,
   getWarehouseGroups,
 } from '../helpers';
+import ProductGroupModal from '../modal/ProductGroupModal';
 import SetupFieldModal from '../modal/SetupFieldModal';
+import TransactionSubmitModal from '../modal/TransactionSubmitModal';
 
 const CartContainer = props => {
+
+  const transactionSubmitModalRef = useRef(null);
+
   const productPriceList = useSelector(state => state.sales.productPriceLists);
+  const settings = useSelector(state => state.sales.salesSettings);
   const [addProductList, setAddProductList] = useState([]);
   const [defineSetup, setDefineSetup] = useState(null);
   const [productList, setProductList] = useState([]);
@@ -62,6 +68,13 @@ const CartContainer = props => {
     setupFieldModalRef.current.showModal();
   };
   const updateProductPrice = (product, qty) => {};
+
+  const onTransactionSubmitModalClosed = ({ type, value}) => {
+    if(type == Constants.actionType.ACTION_DONE){
+      transactionSubmitModalRef.current.hideModal();
+    }
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <CartView
@@ -69,6 +82,11 @@ const CartContainer = props => {
         cartStatistics={cartStatistics}
         wareHouseGroups={wareHouseGroups}
         onPressSettings={openSetup}
+        onNext={() => {
+          if(transactionSubmitModalRef.current)
+            transactionSubmitModalRef.current.showModal();
+        }}
+
       />
       <SetupFieldModal
         title="Define Setup"
@@ -80,7 +98,9 @@ const CartContainer = props => {
         modalType={Constants.modalType.MODAL_TYPE_CENTER}
         onButtonAction={onSetupFieldModalClosed}
       />
-      <ProductGroupModal
+      
+
+      {/* <ProductGroupModal
         title={productListTitle}
         products={productList}
         settings={settings}
@@ -90,7 +110,15 @@ const CartContainer = props => {
         closableWithOutsideTouch={false}
         ref={productGroupModalRef}
         onButtonAction={onProductGroupModalClosed}
+      /> */}
+
+      
+      <TransactionSubmitModal         
+        hideClear
+        ref={transactionSubmitModalRef}
+        onButtonAction={onTransactionSubmitModalClosed}
       />
+
     </View>
   );
 };

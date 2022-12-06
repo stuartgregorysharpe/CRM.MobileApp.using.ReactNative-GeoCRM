@@ -9,16 +9,15 @@ const CartContainer = props => {
   const transactionSubmitModalRef = useRef(null);
 
   const onTransactionSubmitModalClosed = ({ type, value}) => {
-    if(type == Constants.actionType.ACTION_CLOSE){
-
+    if(type == Constants.actionType.ACTION_DONE){
+      transactionSubmitModalRef.current.hideModal();
     }
   }
   
   return (
     <View style={[styles.container, props.style]}>
 
-      <TransactionSubmitModal 
-        title="Order Details"
+      <TransactionSubmitModal         
         hideClear
         ref={transactionSubmitModalRef}
         onButtonAction={onTransactionSubmitModalClosed}

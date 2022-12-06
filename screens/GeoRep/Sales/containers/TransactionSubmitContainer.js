@@ -29,6 +29,9 @@ const  TransactionSubmitContainer = (props) => {
         var param = {};
         if(setup != null && setup.location && setup.transaction_type){
             
+            if(props.onChangeTitle)                    
+                props.onChangeTitle(setup.transaction_type + " Details");
+
             param = {
                 transaction_type : setup.transaction_type,
                 location_id : setup.location.location_id
@@ -36,10 +39,7 @@ const  TransactionSubmitContainer = (props) => {
 
             GetRequestTransactionSubmitFieldsDAO.find(param).then((res) => {            
                 if(isMount){
-                    if(res.status == Strings.Success){
-                        console.log("res", JSON.stringify(res))
-                        if(props.onChangeTitle)                    
-                            props.onChangeTitle(res.title);
+                    if(res.status == Strings.Success){                                                
                         setFields(res.fields);
                     }
                 }
@@ -57,7 +57,7 @@ const  TransactionSubmitContainer = (props) => {
             ...data,
             add_product_id : add_product_id
         }
-        console.log("submitData",submitData);
+        //console.log("submitData",submitData);
         props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});
     }
     

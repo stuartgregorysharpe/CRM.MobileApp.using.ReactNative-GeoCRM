@@ -90,10 +90,16 @@ const DynamicForm = React.forwardRef((props, ref) => {
       'yes_no',
       'dropdown_text',
       'multi_select',
+      'contact_email',
+      'contact_select',
+      'email_input',
+      'multiple',
+      'signature'
     ];
     if (!fieldType) return false;
     return allowedFieldTypes.includes(fieldType);
   };
+
   const _validateForm = () => {
     const requiredFields = [];
     formStructureData.forEach(fieldStructure => {

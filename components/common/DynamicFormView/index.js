@@ -59,6 +59,8 @@ const DynamicFormView = (props) => {
             if(props.onAdd){                
                 props.onAdd(formData);
             }
+        }else{
+            console.log("not validated");
         }
     }
 

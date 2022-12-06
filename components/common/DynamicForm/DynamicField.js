@@ -6,7 +6,9 @@ import { Constants } from '../../../constants';
 import DropdownText from '../../shared/DropdownText';
 import EmailPdf from '../../shared/EmailPdf';
 import EmailInputView from '../../shared/EmailPdf/EmailInputView';
+import SignatureSignView from '../../shared/SignatureSignView';
 import TakePhotoView from '../../shared/TakePhotoView';
+import { TextForm } from '../../shared/TextForm';
 import {YesNoForm} from '../../shared/YesNoForm';
 import CTextInput from '../CTextInput';
 import CDateTimePickerInput from '../SelectInput/CDateTimePickerInput';
@@ -14,6 +16,7 @@ import CSingleSelectInput from '../SelectInput/CSingleSelectInput';
 
 const DynamicField = props => {
   const {
+    field_id,
     field_name,
     field_label,
     field_type,
@@ -70,7 +73,6 @@ const DynamicField = props => {
         pointerEvents={disabled ? 'none' : 'auto'}      
         onChangeText={text => {
           console.log("chagned data", field_name);
-          
           updateFormData(field_name, text);
         }}
         style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
@@ -78,6 +80,26 @@ const DynamicField = props => {
       />
     );
   };
+
+  const renderTextForm = () => {
+    return (
+      <TextForm 
+        key={'text_question' + index}
+        onTextChanged={text => {
+          //onValueChangedSelectionView(key, index, text);
+          updateFormData(field_name, text);
+        }}
+        item={{
+          value: value, 
+          rule_compulsory: is_required ? '1' : '',
+          rule_editable: "1",
+          add_prefix:'R',
+          add_suffix: '%'
+        }}
+        type="text"
+      />
+    )
+  }
 
   const renderTextarea = () =>{
     return (
@@ -344,12 +366,13 @@ const DynamicField = props => {
     );
   };
 
-  const renderEmailInput = () => {
-    
+  const renderEmailInput = () => {    
     return (
       <EmailInputView 
         isShowTitle
         style={{marginTop:10}}
+        hasError={hasError}
+        isRequired={is_required}
         item={{
           question_text: field_type,
           value: value
@@ -359,10 +382,20 @@ const DynamicField = props => {
             updateFormData(field_name, value);
           }
         }} />
-
     );
   }
 
+  const renderSignature = () => {
+    return (
+      <SignatureSignView 
+        onOK={(signature) => {
+          if(signature != undefined){
+            updateFormData(field_name , signature);
+          }          
+        }}
+      />
+    )
+  }
   
   const onContactItemSelected = (item) =>{
 
@@ -398,6 +431,7 @@ const DynamicField = props => {
 
   if (field_type == 'text') {
     return renderText();
+    //return renderTextForm();
   }
 
   if(field_type == 'textarea'){
@@ -454,6 +488,10 @@ const DynamicField = props => {
 
   if(field_type == 'email_input') {
     return renderEmailInput();
+  }
+
+  if(field_type == 'signature') {
+    return renderSignature();
   }
 
   return null;

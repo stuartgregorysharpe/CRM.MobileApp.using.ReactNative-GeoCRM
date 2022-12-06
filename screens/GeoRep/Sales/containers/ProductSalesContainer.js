@@ -47,14 +47,14 @@ const  ProductSalesContainer = (props) => {
 					var newElement = {
 						...element
 					}
-					var price = element.price;
-					
-					console.log("p", product)
+					var price = element.price;										
 					if(product != undefined){						
+						
 						if( product.finalPrice  != undefined && product.finalPrice.final_price != undefined){
 							price = product.finalPrice.final_price;
-						}
-
+						}else{
+							price = product.price;
+						}						
 						list.push({
 							...newElement,																				     
 							price: price,
@@ -120,21 +120,6 @@ const  ProductSalesContainer = (props) => {
 		return unsubscribe;
 	}, [navigation]);
 	//    ------------------------    END DEFINE SETUP MODAL   --------------------------
-
-	//    ------------------------    RERENDER PRODUCT LIST AND PRODUCT LIST IN GROUP BY PRICE AND QTY   --------------------------------
-	// useEffect(() => {		
-	// 	if(items.length > 0){
-	// 		console.log("item " , JSON.stringify(items))
-	// 		var tpLists = [...items];
-	// 		tpLists.forEach(item => {
-	// 			const originProducts = [...item.products];   
-	// 			const products = getProducts(originProducts);				
-	// 			item.products =  products;
-	// 		});
-	// 		setLists(tpLists);			
-	// 		updateProdoctsGroup()
-	// 	}		
-	// }, [items , productPriceLists]);
 
 	const updateProdoctsGroup = useCallback(
 		() => {						
@@ -260,6 +245,7 @@ const  ProductSalesContainer = (props) => {
 			qty : qty
 		}		
 		GetRequestProductPriceDAO.find(param).then((res) => {			
+			console.log(product.product_id, qty , res);
 			if(res.status === Strings.Success){				
 				const price = res.price;             
 				const special = res.special;
@@ -270,7 +256,8 @@ const  ProductSalesContainer = (props) => {
 		})
 	}
 
-	const updateProductPriceLists = useCallback( async(product_id , price , qty , special , finalPrice , product) => {			
+	const updateProductPriceLists = useCallback( async(product_id , price , qty , special , finalPrice , product) => {
+
 		const lists = [...productPriceLists];
 		var tmpList = lists.filter(item => parseInt(item.product_id) != parseInt(product_id));
 		var check = lists.find(item => parseInt(item.product_id) == parseInt(product_id));

@@ -8,7 +8,7 @@ export function getFormData  (renderForms , page) {
       if(page == "add_product"){
         tmpFormData[field.field_name] = value;
       }else{
-        tmpFormData[field.field_id] = value;
+        tmpFormData[field.field_label] = value;
       }
 
     });
@@ -60,6 +60,7 @@ export function getFormStructureData (renderForms) {
             editable: true,
             is_required: true,          
             value: value,
+            isHidden: false
           };
         }else{
           return {
@@ -69,12 +70,14 @@ export function getFormStructureData (renderForms) {
             editable: true,
             is_required: true,          
             value: value,
-            field_name : field.field_label
+            isHidden: false,
+            field_name : field.field_label,
+            rule_characters: '<,10',
+            add_prefix: 'R',
+            add_suffix : '%'
           };
-        }
-        
+        }       
     });
-
     return dynamicFields;
 }
 

@@ -10,7 +10,7 @@ const TransactionSubmitModal = React.forwardRef((props, ref) => {
 
     const { product } = props;
 
-    const [title, setTitle] = useState('Add Product');
+    const [title, setTitle] = useState('Details');
     const [isClear, setIsClear] =  useState(false);
     
     const onButtonAction = data => {

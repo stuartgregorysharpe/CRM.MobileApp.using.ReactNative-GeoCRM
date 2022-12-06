@@ -6,8 +6,8 @@ import {whiteLabel} from '../../constants/Colors';
 
 
 const CTextInput = props => {
-  const { multiline, cTextRef, dynamicFieldRef , index} = props;
-  
+
+  const { multiline, cTextRef, dynamicFieldRef , index} = props;  
 
   return (
     <View style={[{alignSelf: 'stretch'}, props.style]}>

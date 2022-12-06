@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {checkRuleCharactersFormQuestion} from '../../screens/GeoRep/Forms/questions/helper';
 
 export const TextForm = ({item, type, onTouchStart, onTextChanged}) => {
+  
   const [text, setText] = useState(item.value ? item.value : '');
   const isShowInfoIcon =
     item.guide_info !== undefined && item.guide_info.length != 0;
