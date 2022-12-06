@@ -41,7 +41,7 @@ const DanOneSales = () => {
             }}
                 onDropDown={(value) => {
                     setPeriod(value);
-                    _onLoad(null, value);
+                    _onLoad(searchKeyword, value);
                 }} />
             <FlatList
                 style={{ flex: 1 }}

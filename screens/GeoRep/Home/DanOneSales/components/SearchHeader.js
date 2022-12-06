@@ -1,10 +1,12 @@
 import React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import SearchBar from "../../../../../components/SearchBar"
 import Dropdown from './DropDown';
 
-const SalesSearchHeader = ({ onSearch, initVal,onDropDown }) => {
-    const data = [
+const SalesSearchHeader = ({ onSearch, initVal, onDropDown }) => {
+    const [pickerData, setPickerData] = useState([
         {
             label: 'MTD',
             value: 'MTD'
@@ -17,7 +19,8 @@ const SalesSearchHeader = ({ onSearch, initVal,onDropDown }) => {
             value: 'YTD'
         }
 
-    ]
+    ])
+
     return (
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flex: 3 }}>
@@ -30,10 +33,12 @@ const SalesSearchHeader = ({ onSearch, initVal,onDropDown }) => {
                 />
 
             </View>
-            <View style={{ flex: 1,marginRight:10 }}>
-                <Dropdown data={data} onSelect={(item) => {
+            <View style={{ flex: 1, marginRight: 10 }}>
+                <Dropdown data={pickerData} onSelect={(item, data) => {
                     onDropDown(item.value)
-                }} label={'MTD'} />
+                    setPickerData(data);
+                }} label={'MTD'} 
+                initial={pickerData[0]}/>
 
             </View>
         </View>

@@ -11,10 +11,10 @@ import { AppText } from '../../../../../components/common/AppText';
 import SvgIcon from '../../../../../components/SvgIcon';
 import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
 
-const Dropdown = ({ label, data, onSelect }) => {
+const Dropdown = ({ label, data, onSelect, initial }) => {
     const DropdownButton = useRef();
     const [visible, setVisible] = useState(false);
-    const [selected, setSelected] = useState(undefined);
+    const [selected, setSelected] = useState(initial ? initial : undefined);
     const [dropdownTop, setDropdownTop] = useState(0);
     const [dropdownLeft, setDropdownLeft] = useState(0);
     const [dropdownWidth, setDropDownWidth] = useState(0);
@@ -25,26 +25,47 @@ const Dropdown = ({ label, data, onSelect }) => {
 
     const openDropdown = () => {
         DropdownButton.current.measure((_fx, _fy, w, h, px, py) => {
-            setDropdownTop(py + h - 20);
+            setDropdownTop(py - h);
             setDropdownLeft(px);
             setDropDownWidth(w);
         });
         setVisible(true);
     };
 
+    const itemMoveToTop = (selectedItem) => {
+        data = data.filter(item => item.value !== selectedItem.value);
+        data.unshift(selectedItem);
+    }
+
     const onItemPress = (item) => {
         setSelected(item);
-        onSelect(item);
+        itemMoveToTop(item);
+        onSelect(item, data);
         setVisible(false);
     };
 
-    const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.item} onPress={() => onItemPress(item)}>
+    const renderItem = ({ item, index }) => (
+        console.log(item),
+        <TouchableOpacity style={[styles.item, {
+            backgroundColor: selected && selected.value === item.value ? PRIMARY_COLOR : Colors.whiteColor,
+            borderRadius: index == 0 || index === data.length - 1 ? 4 : 0,
+            // borderTopLeftRadius:
+            borderBottomWidth: selected && selected.value === item.value ? 0 : 1,
+        }]}
+            onPress={() => onItemPress(item)}>
             <AppText
-                type="secondaryMedium"
+                type="secondaryBold"
                 title={item.label}
-                color={whiteLabel().mainText}
+                color={selected && selected.value === item.value ? Colors.whiteColor : whiteLabel().mainText}
                 style={{ fontSize: 12 }}></AppText>
+
+            {index == 0 ?
+                <SvgIcon
+                    color={whiteLabel().actionFullButtonIcon}
+                    icon={'Bottom_Arrow'}
+                    width="30"
+                    height="30"
+                /> : <View style={{ width: 30, height: 30 }}></View>}
         </TouchableOpacity>
     );
 
@@ -56,6 +77,7 @@ const Dropdown = ({ label, data, onSelect }) => {
                     onPress={() => setVisible(false)}>
                     <View style={[styles.dropdown, { top: dropdownTop, left: dropdownLeft, width: dropdownWidth }]}>
                         <FlatList
+                            style={{ borderRadius: 5, borderWidth: 1 }}
                             data={data}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
@@ -78,6 +100,7 @@ const Dropdown = ({ label, data, onSelect }) => {
                 title={(selected && selected.label) || label}
                 color={whiteLabel().mainText}
                 style={styles.buttonText}></AppText>
+
             <SvgIcon
                 color={whiteLabel().actionFullButtonIcon}
                 icon={'Bottom_Arrow'}
@@ -92,13 +115,12 @@ const styles = StyleSheet.create({
     button: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent:'center',
         backgroundColor: PRIMARY_COLOR,
-        // height: 45,
         zIndex: 1,
         borderRadius: 7
     },
     buttonText: {
-        flex: 1,
         color: whiteLabel().actionFullButtonText,
         textAlign: 'center',
         fontSize: 12,
@@ -117,12 +139,13 @@ const styles = StyleSheet.create({
     overlay: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#00000055'
+        backgroundColor: '#00000055',
     },
     item: {
-        paddingVertical: 10,
+        flexDirection: 'row',
+        height: 30,
+        justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 1, borderColor: PRIMARY_COLOR,
     },
 });
 

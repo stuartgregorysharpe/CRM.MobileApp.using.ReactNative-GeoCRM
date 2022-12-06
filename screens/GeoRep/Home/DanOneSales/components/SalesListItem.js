@@ -16,14 +16,14 @@ const SalesListItem = ({ data, index }) => {
             size="big"
             type="secondaryBold"
             title={data.customer}
-            style={{ fontSize: 12.5 }}></AppText>
+            style={{ fontSize: 12.5,marginRight:5 }}></AppText>
         </View>
-        <View style={{ flex: 2,alignSelf:'baseline' }}>
+        <View style={{ flex: 2,justifyContent:'center' }}>
           <AppText
             type="secondaryMedium"
             title={data.nsv}
             color={Colors.textColor}
-            style={styles.row_m_text}></AppText>
+            style={[styles.row_m_text,{justifyContent:'center'}]}></AppText>
         </View>
         <View style={{ flex: 2,alignItems:'center' }}>
           <AppText
