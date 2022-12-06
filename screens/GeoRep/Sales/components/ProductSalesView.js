@@ -92,11 +92,11 @@ const ProductSalesView = (props) => {
         },
         [isEndPageLoading, isLoading ],
     )
-            
+
     return (
         <View style={{alignSelf:'stretch',  flex:1}}>
 
-            <SearchBar 
+            <SearchBar
                 isFilter
                 haveFilter={haveFilter}
                 isScan
@@ -125,7 +125,7 @@ const ProductSalesView = (props) => {
                 keyExtractor={(item, index) => index.toString()}
                 extraData={this.props}
                 onEndReached={() => {                    
-                    //loadMoreData(pageNumber, '')
+                    loadMoreData(pageNumber, '')
                 }}
                 onEndReachedThreshold={1}
             />

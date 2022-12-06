@@ -2,11 +2,14 @@ import React, {useRef, useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Constants} from '../../../constants';
 import SelectInputView from './components/SelectInputView';
+import ContactEmailModal from './modals/ContactEmailModal';
 import SingleSelectModal from './modals/SingleSelectModal';
 
 const CSingleSelectInput = props => {
-  const {items, hideClear, mode} = props;
+
+  const { items, hideClear, mode} = props;
   const selectModalRef = useRef(null);
+  const contactEmailModalRef = useRef(null);
 
   const {
     placeholder,
@@ -18,13 +21,38 @@ const CSingleSelectInput = props => {
   } = props;
 
   const getTextFormCheckedValue = () => {
-    if (mode == 'single') {
+
+    if(mode == 'contact_email' || mode == 'contact_select'){
+      if(checkedValue != null && checkedValue != undefined ){
+        if(checkedValue instanceof Array && checkedValue.length == 1){          
+          var title = '';
+          console.log("checkedValue",checkedValue)
+          checkedValue.forEach((element, index) => {
+            if(items instanceof Array){
+              const foundItem = items.find(x => x.contact_id == element);
+              if(foundItem != undefined){
+                if(mode == 'contact_email'){
+                  title = foundItem.contact_email;
+                }else{
+                  title = foundItem.contact_name;
+                }
+              }          
+            }
+          });
+          return title;          
+        }else{
+          return checkedValue != null && checkedValue != undefined ? checkedValue.length + " Selected" : '';
+        }
+      }
+      return '';      
+    }else if (mode == 'single') {
       if (items) {
         const foundItem = items.find(x => x.value == checkedValue);
         if (foundItem) return foundItem.label;
       }
-    } else if (
+    } else if ( 
       mode == 'multi' &&
+      checkedValue != undefined &&
       checkedValue != '' &&
       checkedValue.length > 0
     ) {
@@ -45,12 +73,17 @@ const CSingleSelectInput = props => {
     }
     return '';
   };
+
   const _text = useMemo(() => getTextFormCheckedValue());
   const text = props.text ? props.text : _text;
   const showDescription = text != '' && text != null;
 
   const onOpenPicker = () => {
-    selectModalRef.current.showModal();
+    if(mode == "contact_email" || mode == "contact_select"){
+      contactEmailModalRef.current.showModal();
+    }else{
+      selectModalRef.current.showModal();
+    }    
   };
 
   const onEmpty = () => {
@@ -59,7 +92,7 @@ const CSingleSelectInput = props => {
 
   const onButtonAction = ({type, item}) => {
     if (type == Constants.actionType.ACTION_CHECK) {
-      if (props.onSelectItem) {
+      if (props.onSelectItem) {        
         props.onSelectItem(item);
       }
     }
@@ -69,8 +102,11 @@ const CSingleSelectInput = props => {
       }
     }
   };
+
+
   return (
     <View style={[styles.container, props.containerStyle]}>
+
       <SelectInputView
         bgType={props.bgType}
         style={props.bgStyle}
@@ -83,6 +119,24 @@ const CSingleSelectInput = props => {
         text={text}
         onPress={props.isClickable ? onEmpty : onOpenPicker}
       />
+
+      <ContactEmailModal         
+        items={items}
+        hideClear={hideClear}
+        modalTitle={placeholder}                
+        mode={mode}
+        checkedValue={checkedValue}
+        onButtonAction={onButtonAction}
+        renderItem={renderDropdownItem}
+        isPressOption={isPressOption}
+        ref={contactEmailModalRef}
+        onClear={() => {          
+          if(contactEmailModalRef.current){
+            contactEmailModalRef.current.hideModal();
+          }                      
+        }}
+      />
+
       <SingleSelectModal
         items={items}
         hideClear={hideClear}

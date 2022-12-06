@@ -163,8 +163,7 @@ const LocationSpecificInfoScreen = props => {
           if (locationInfoRef.current != undefined && locationInfoRef.current != null) {
             locationInfoRef.current.updateDispositionData(res);
           }
-          setLocationIfo(res);
-          console.log('DDD ==== ', res);
+          setLocationIfo(res);          
           setIsLoading(false);
         }
       })
