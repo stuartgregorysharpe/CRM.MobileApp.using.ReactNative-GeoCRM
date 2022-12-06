@@ -4,7 +4,6 @@ import { getFormData, getFormStructureData } from './helper';
 import { SubmitButton } from '../../shared/SubmitButton';
 import DynamicForm from '../DynamicForm';
 
-
 const DynamicFormView = (props) => {
 
     const { page ,  fields , isClear} = props;

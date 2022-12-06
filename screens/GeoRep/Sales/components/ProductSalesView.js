@@ -41,7 +41,7 @@ const ProductSalesView = (props) => {
                 }
             }
             setHaveFilter(flag);
-        }        
+        }
     }
  
     const renderItem = (item, index) => {

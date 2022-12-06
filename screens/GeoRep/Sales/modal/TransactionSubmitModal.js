@@ -2,16 +2,11 @@
 import React , { useState} from 'react'
 import CModal from '../../../../components/common/CModal';
 import { Constants } from '../../../../constants';
-import AddProductContainer from '../containers/AddProductContainer';
 import TransactionSubmitContainer from '../containers/TransactionSubmitContainer';
 
-
 const TransactionSubmitModal = React.forwardRef((props, ref) => {
-
-    const { product } = props;
-
-    const [title, setTitle] = useState('Details');
-    const [isClear, setIsClear] =  useState(false);
+    
+    const [title, setTitle] = useState('Details');    
     
     const onButtonAction = data => {
         if (props.onButtonAction) {
@@ -30,8 +25,7 @@ const TransactionSubmitModal = React.forwardRef((props, ref) => {
             closableWithOutsideTouch
          
             onClear={ async() => {                
-                onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                
-                //setIsClear(true)
+                onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });            
             }}            
             {...props}>
                 
@@ -40,9 +34,7 @@ const TransactionSubmitModal = React.forwardRef((props, ref) => {
                     setTitle(title)
                 }}             
                 isClear={isClear}
-                updateClear={() => {
-                    setIsClear(false)
-                }}
+                
                 {...props} />
         </CModal>        
     )
