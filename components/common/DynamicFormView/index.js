@@ -64,7 +64,7 @@ const DynamicFormView = (props) => {
     }
 
     return (
-        <ScrollView style={[hasTextInput ? {height : 300} : {} ]}>      
+        <ScrollView style={[ hasTextInput ? {height : 300} : {} ]}>      
             
             <DynamicForm
                 ref={addProductRef}

@@ -32,9 +32,7 @@ const TransactionSubmitModal = React.forwardRef((props, ref) => {
             <TransactionSubmitContainer
                 onChangeTitle={(title)=>{
                     setTitle(title)
-                }}             
-                isClear={isClear}
-                
+                }}                
                 {...props} />
         </CModal>        
     )

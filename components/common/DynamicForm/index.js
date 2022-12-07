@@ -76,6 +76,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
 
     setErrors(_errors);
     return valid;
+        
   };
   const checkAllowedFieldType = fieldType => {
 

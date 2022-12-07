@@ -29,7 +29,7 @@ const ContactsItem = (props) => {
             onValueChange();
         }}>
           
-        <View style={[style.card, boxShadow, isChecked ? {borderColor:'red', borderWidth:1 , borderRadius:3} : {} ]}>
+        <View style={[style.card, boxShadow, isChecked ? {borderColor:whiteLabel().mainText, borderWidth:1 , borderRadius:3} : {} ]}>
 
           <View style={{flexDirection: 'column', justifyContent: 'space-between'}}>
 
@@ -41,7 +41,7 @@ const ContactsItem = (props) => {
 
           <TouchableOpacity
               onPress={() => {
-                Linking.openURL(`tel:${item.contact_cell}`);
+                //Linking.openURL(`tel:${item.contact_cell}`);
               }}>
 
               <AppText  title={item.contact_cell} color={whiteLabel().headerBackground} style={{textDecorationLine: 'underline'}} />

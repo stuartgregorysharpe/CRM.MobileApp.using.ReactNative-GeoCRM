@@ -250,7 +250,8 @@ const DynamicField = props => {
             }
           }
         }}
-        containerStyle={{marginTop: isFirst ? 0 : 10}}
+        containerStyle={{marginTop: isFirst ? 4 : 10}}
+        
       />
     );
   };
