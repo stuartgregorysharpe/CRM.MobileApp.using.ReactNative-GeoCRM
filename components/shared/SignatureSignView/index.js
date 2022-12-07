@@ -8,7 +8,15 @@ import { whiteLabel } from '../../../constants/Colors';
 const SignatureSignView = (props) => {
 
     const { signature } = props;
-    const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
+    const imgWidth = 300;
+    const imgHeight = 180;
+
+    //const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
+
+    const map_style = `.m-signature-pad {box-shadow: none; border: none; } 
+              .m-signature-pad--body {border: none;}
+              .m-signature-pad--footer {display: none; margin: 0px;}`;
+
     const ref = useRef();
 
     
@@ -46,7 +54,7 @@ const SignatureSignView = (props) => {
         props.onOK(ref.current.readSignature()); 
     }
     return (
-        <View style={{height:180 , marginTop:15}}>
+        <View style={{marginTop:15}}>
 
             <View style={{flexDirection:'row', justifyContent:'center', marginBottom:5}}>
 
@@ -62,20 +70,25 @@ const SignatureSignView = (props) => {
 
             </View>
 
-            <SignatureScreen
-                ref={ref}
-                //androidHardwareAccelerationDisabled={false}
-                webStyle={map_style}
-                //dataURL={signature}
-                onEnd={handleEnd}
-                onOK={handleOK}
-                onEmpty={handleEmpty}
-                //imageType='image/png'
-                //onClear={handleClear}
-                onGetData={handleData}
-                // autoClear={true}
-                //descriptionText={text}
-            />
+            <View style={{alignSelf:'stretch', height:170, borderWidth:1, borderColor: Colors.greyColor}}>
+                <SignatureScreen
+                    ref={ref}
+                    //androidHardwareAccelerationDisabled={false}
+                    webStyle={map_style}
+                    //dataURL={signature}
+                    onEnd={handleEnd}
+                    onOK={handleOK}
+                    onEmpty={handleEmpty}
+                    //imageType='image/png'
+                    //onClear={handleClear}
+                    onGetData={handleData}
+                    bgHeight={170}
+                    overlayHeight={170}
+                    // autoClear={true}
+                    //descriptionText={text}
+                />
+            </View>
+            
         </View>
     )
 }
