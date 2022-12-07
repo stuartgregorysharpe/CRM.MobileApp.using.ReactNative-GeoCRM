@@ -121,7 +121,6 @@ const LocationSpecificInfoScreen = props => {
   }, [navigationMain]);
 
   const getCheckInLocation = async () => {
-    console.log('focussed getCheckInLocation');
     var location = await getJsonData('@checkin_location');
     if (location != null) {
       if (
@@ -141,7 +140,6 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const initData = async () => {
-    console.log('location_id', location_id, pageType);
     if (pageType === 'checkin') {
       await storeLocalValue('@checkin', '1');
       if (locationInfo !== undefined && locationInfo.location_id != undefined) {
@@ -157,7 +155,6 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const goBack = () => {
-    console.log('go back in specific info page');
     if (props.navigation.canGoBack()) {
       props.navigation.popToTop();
     }
@@ -175,7 +172,6 @@ const LocationSpecificInfoScreen = props => {
             locationInfoRef.current.updateDispositionData(res);
           }
           setLocationIfo(res);
-          console.log('DDD ==== ', res);
           setIsLoading(false);
         }
       })
@@ -194,7 +190,6 @@ const LocationSpecificInfoScreen = props => {
 
   const onFeatureItemClicked = item => {
     if (item.title === 'Forms') {
-      console.log('locationInfo', locationInfo.location_id);
       navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
     if (item.link === 'customer_contacts') {
@@ -296,10 +291,8 @@ const LocationSpecificInfoScreen = props => {
         param.checkin_reason_id = checkin_reason_id;
       }
     }
-    console.log('form lists => ', param);
     GetRequestFormListsDAO.find(param)
       .then(res => {
-        console.log('chke res', res);
         getCompulsoryForm(res.forms);
       })
       .catch(e => {});
@@ -309,7 +302,6 @@ const LocationSpecificInfoScreen = props => {
     var formLists = [...lists];
     const formIds = await getJsonData('@form_ids');
     var flag = false;
-    console.log(' formIds in specific ', JSON.stringify(formIds));
 
     formLists.forEach(element => {
       if (
