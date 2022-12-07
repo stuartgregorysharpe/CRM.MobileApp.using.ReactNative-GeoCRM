@@ -70,6 +70,7 @@ const  TransactionSubmitContainer = (props) => {
         }}>                  
             <DynamicFormView
                 page="transaction_submit"
+                buttonTitle={"Submit"}
                 fields={fields}    
                 onAdd={onAdd}
                 {...props} />

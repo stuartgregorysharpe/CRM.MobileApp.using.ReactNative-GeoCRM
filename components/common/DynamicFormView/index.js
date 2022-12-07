@@ -6,7 +6,7 @@ import DynamicForm from '../DynamicForm';
 
 const DynamicFormView = (props) => {
 
-    const { page ,  fields , isClear} = props;
+    const { page , buttonTitle,  fields , isClear} = props;
     if(!fields) return null; 
 
     const addProductRef = useRef(null)
@@ -75,7 +75,7 @@ const DynamicFormView = (props) => {
                 }}
             />
             
-            <SubmitButton title="Add" onSubmit={onAdd} style={{marginTop:20}} />
+            <SubmitButton title={buttonTitle} onSubmit={onAdd} style={{marginTop:20}} />
 
         </ScrollView>
     )

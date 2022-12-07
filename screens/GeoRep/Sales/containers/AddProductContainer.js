@@ -56,6 +56,7 @@ const  AddProductContainer = (props) => {
         }}>                  
             <DynamicFormView
                 page="add_product"
+                buttonTitle="Add"
                 fields={fields}    
                 onAdd={onAdd}
                 {...props} />
