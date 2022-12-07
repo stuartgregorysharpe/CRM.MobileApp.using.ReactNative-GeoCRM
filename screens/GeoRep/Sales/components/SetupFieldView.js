@@ -64,8 +64,7 @@ const SetupFieldView = (props) => {
 			if(data.transaction_type != ''){
 				onWarehouseRequired(data.transaction_type.warehouse_required);
 			}
-			if(data.warehouse_id != ''){
-				console.log("data.warehouse",data.warehouse_id)
+			if(data.warehouse_id != ''){				
 				setSelectedWarehouse(data.warehouse_id);
 			}
 
