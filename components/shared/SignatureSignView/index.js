@@ -30,12 +30,14 @@ const SignatureSignView = (props) => {
     const handleClear = () => {
         if(ref.current)
             ref.current.clearSignature();
+        if(props.onOK){
+            props.onOK('');
+        }
     }    
 
     const handleData = () => {
         if(ref.current){
             ref.current.readSignature();
-
         }        
     }
 
