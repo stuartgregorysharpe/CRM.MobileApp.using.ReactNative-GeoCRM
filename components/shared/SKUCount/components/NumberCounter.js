@@ -30,8 +30,7 @@ const NumberCounter = props => {
 
       if(props.onChangeText){
 
-      }
-      
+      }      
     }
   };
   

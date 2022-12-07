@@ -146,7 +146,9 @@ const DynamicField = props => {
             disabled={disabled}
             pointerEvents={disabled ? 'none' : 'auto'}
             onChangeText={text => {
-              updateFormData(field_name, {value: text , type: value.type});
+              
+              updateFormData(field_name, {value: text , type: value != undefined && value.type != undefined ? value.type : '' });
+                            
             }}
             style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
           />
@@ -318,6 +320,8 @@ const DynamicField = props => {
       <TakePhotoView
         key={index}
         isOptimize={true}
+        hasError={hasError}
+        isRequired={is_required}
         maxSize={props.maxSize != undefined ? props.maxSize : -1}
         onUpdatePhotos={photos => {
           updateFormData(field_name, photos);

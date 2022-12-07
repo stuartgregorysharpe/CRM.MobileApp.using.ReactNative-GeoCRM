@@ -20,7 +20,7 @@ import { max } from 'moment';
 
 const TakePhotoView = props => {
 
-  const {photos, isOptimize , maxSize } = props;
+  const {photos, isOptimize , maxSize , hasError } = props;
   const dispatch = useDispatch()
   const [isPicker, setIsPicker] = useState(false);  
 
@@ -39,9 +39,9 @@ const TakePhotoView = props => {
       onUpdatePhotos([path]);
     }
   };
-
+  
   const showSelectionDialog = () => {
-    if( maxSize == undefined || maxSize == -1  || photos.length < maxSize){
+    if( photos == undefined || maxSize == undefined || maxSize == -1  || photos.length < maxSize){
       setIsPicker(true);
     }    
   };
@@ -208,9 +208,9 @@ const TakePhotoView = props => {
 
 
           {
-            maxSize == undefined || maxSize == -1  || photos.length < maxSize &&
+            (photos == undefined || maxSize == undefined || maxSize == -1  || photos != undefined && photos.length < maxSize) &&
             <TouchableOpacity
-              style={[styles.imageContainer, {marginLeft: 10}]}
+              style={[styles.imageContainer, {marginLeft: 10} ,  hasError != undefined && hasError ? { borderColor: whiteLabel().endDayBackground } :{} ]}
               onPress={() => {
                 showSelectionDialog();            
               }}>

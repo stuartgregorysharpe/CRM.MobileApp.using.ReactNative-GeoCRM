@@ -61,9 +61,10 @@ const DynamicForm = React.forwardRef((props, ref) => {
     let valid = true;
     const data = _formData || formData;
     const _errors = {...errors};
+
     fieldNames.forEach(fieldName => {
       if (fieldName) {
-        if (data[fieldName] == '' || data[fieldName] == null) {
+        if (data[fieldName] == '' || data[fieldName] == null || (fieldName == 'price' && (data[fieldName].value == '' || data[fieldName].type == '')  ) ) {
           _errors[fieldName] = true;
           valid = false;
           console.log('Error fieldName', fieldName);
@@ -72,6 +73,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
         }
       }
     });
+
     setErrors(_errors);
     return valid;
   };
@@ -94,7 +96,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
       'contact_select',
       'email_input',
       'multiple',
-      'signature'
+      'signature',
+      'price'
     ];
     if (!fieldType) return false;
     return allowedFieldTypes.includes(fieldType);
