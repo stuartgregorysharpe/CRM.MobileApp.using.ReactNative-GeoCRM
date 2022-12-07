@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import {Images} from '../../../constants';
 import {style} from '../../../constants/Styles';
 import TouchpointContainer from './containers/TouchpointContainer';
@@ -23,7 +24,7 @@ export default function TouchpointScreen(props) {
       let title = 'Touchpoints';
       if (
         custom_feature_names &&
-        custom_feature_names.includes('location_specific_touchpoints')
+        custom_feature_names['location_specific_touchpoints']
       ) {
         title = custom_feature_names['location_specific_touchpoints'];
       }

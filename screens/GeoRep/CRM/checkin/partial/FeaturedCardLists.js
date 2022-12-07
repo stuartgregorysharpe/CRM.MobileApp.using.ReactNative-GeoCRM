@@ -17,6 +17,7 @@ export default function FeaturedCardLists(props) {
     state => state.selection.payload.user_scopes.geo_rep.custom_feature_names,
   );
   console.log('custom_feature_names', custom_feature_names);
+  console.log('features', features);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -130,7 +131,7 @@ export default function FeaturedCardLists(props) {
     if (isShowTouchpoint) {
       if (
         custom_feature_names &&
-        custom_feature_names.includes('location_specific_touchpoints')
+        custom_feature_names['location_specific_touchpoints']
       ) {
         const title = custom_feature_names['location_specific_touchpoints'];
         featureCards.push({
