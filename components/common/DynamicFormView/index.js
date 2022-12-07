@@ -47,7 +47,7 @@ const DynamicFormView = (props) => {
 
     useEffect(() => {        
         setFormData(getFormData(fields , page))
-        setFormStructure(getFormStructureData(fields));
+        setFormStructure(getFormStructureData(fields , page));
         console.log("field data => " , getFormStructureData(fields))
 
     }, [fields])

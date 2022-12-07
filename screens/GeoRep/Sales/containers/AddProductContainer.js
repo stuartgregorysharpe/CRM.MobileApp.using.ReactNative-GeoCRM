@@ -21,7 +21,7 @@ const  AddProductContainer = (props) => {
                 if(res.status == Strings.Success){
                     if(props.onChangeTitle)                    
                         props.onChangeTitle(res.title);
-                    setFields(res.fields);
+                    setFields(res.fields);                    
                 }
             }
         }).catch((e) => {
@@ -55,6 +55,7 @@ const  AddProductContainer = (props) => {
              
         }}>                  
             <DynamicFormView
+                page="add_product"
                 fields={fields}    
                 onAdd={onAdd}
                 {...props} />

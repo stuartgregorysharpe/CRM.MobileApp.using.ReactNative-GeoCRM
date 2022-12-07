@@ -29,7 +29,7 @@ const ContactsItem = (props) => {
             onValueChange();
         }}>
           
-        <View style={[style.card, boxShadow, isChecked ? {borderColor:whiteLabel().actionOutlineButtonBorder, borderWidth:1 , borderRadius:3} : {} ]}>
+        <View style={[style.card, boxShadow, isChecked ? {borderColor:whiteLabel().fieldBorder, borderWidth:1 , borderRadius:3} : {} ]}>
 
           <View style={{flexDirection: 'column', justifyContent: 'space-between'}}>
 

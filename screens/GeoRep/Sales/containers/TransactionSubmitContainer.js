@@ -38,7 +38,7 @@ const  TransactionSubmitContainer = (props) => {
 
             GetRequestTransactionSubmitFieldsDAO.find(param).then((res) => {            
                 if(isMount){
-                    if(res.status == Strings.Success){                                                
+                    if(res.status == Strings.Success){                               
                         setFields(res.fields);
                     }
                 }
@@ -69,6 +69,7 @@ const  TransactionSubmitContainer = (props) => {
              
         }}>                  
             <DynamicFormView
+                page="transaction_submit"
                 fields={fields}    
                 onAdd={onAdd}
                 {...props} />

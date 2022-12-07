@@ -16,7 +16,7 @@ export function getFormData  (renderForms , page) {
     return tmpFormData;
 }
 
-export function getFormStructureData (renderForms) {
+export function getFormStructureData (renderForms , page) {
 
     const dynamicFields = renderForms.map((field, index) => {
 
@@ -38,7 +38,7 @@ export function getFormStructureData (renderForms) {
           items = field.options;             
         }
 
-        if(field.field_type == 'take_photo'){
+        if( page == "add_product" && field.field_type == 'take_photo'){
           field = {
             ...field,
             maxSize: 1
