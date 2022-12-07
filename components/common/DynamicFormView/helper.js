@@ -27,14 +27,14 @@ export function getFormStructureData (renderForms , page) {
           if (field.tax_types != undefined && field.tax_types != '') {       
             items = getDropdownItems(field.tax_types);
             value = {value: value , type: field.selected_tax_type};
-          }          
+          }
         }
 
         if ( ( field.field_type == 'multiple' || field.field_type == 'multi_select' ) && field.options != undefined) {
           items = getDropdownItems(field.options);          
         }
         
-        if( field.field_type == 'contact_email' ){       
+        if( field.field_type == 'contact_email' || field.field_type == 'contact_select' ){       
           items = field.options;             
         }
 

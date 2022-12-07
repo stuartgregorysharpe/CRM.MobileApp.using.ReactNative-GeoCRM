@@ -7,7 +7,7 @@ import { whiteLabel } from '../../../constants/Colors';
 
 const SignatureSignView = (props) => {
 
-    const { signature } = props;
+    const { hasError, signature } = props;
     const imgWidth = 300;
     const imgHeight = 180;
 
@@ -70,7 +70,7 @@ const SignatureSignView = (props) => {
 
             </View>
 
-            <View style={{alignSelf:'stretch', height:170, borderWidth:1, borderColor: Colors.greyColor}}>
+            <View style={[styles.signatureContainer , hasError !=undefined && hasError ? {borderColor: whiteLabel().endDayBackground} : {} ]}>
                 <SignatureScreen
                     ref={ref}
                     //androidHardwareAccelerationDisabled={false}
@@ -107,4 +107,11 @@ const styles = StyleSheet.create({
         fontFamily: Fonts.secondaryRegular,
         color: Colors.redColor,
     },
+
+    signatureContainer :{
+        alignSelf:'stretch', 
+        height:170, 
+        borderWidth:1, 
+        borderColor: Colors.greyColor
+    }
 })

@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
   },
 
   subContainer: {
+    marginTop:5,
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'flex-start',

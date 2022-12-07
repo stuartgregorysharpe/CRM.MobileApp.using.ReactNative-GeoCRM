@@ -47,13 +47,12 @@ const DynamicFormView = (props) => {
 
     useEffect(() => {        
         setFormData(getFormData(fields , page))
-        setFormStructure(getFormStructureData(fields , page));
-        console.log("field data => " , getFormStructureData(fields))
+        setFormStructure(getFormStructureData(fields , page));    
 
     }, [fields])
 
     const onAdd = () => {
-        console.log("fomr data", formData)
+        
         if(addProductRef.current.validateForm()){
             if(props.onAdd){                
                 props.onAdd(formData);

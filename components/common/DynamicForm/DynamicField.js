@@ -393,6 +393,8 @@ const DynamicField = props => {
   const renderSignature = () => {
     return (
       <SignatureSignView 
+        hasError={hasError}
+        isRequired={is_required}
         onOK={(signature) => {
           if(signature != undefined){
             updateFormData(field_name , signature);

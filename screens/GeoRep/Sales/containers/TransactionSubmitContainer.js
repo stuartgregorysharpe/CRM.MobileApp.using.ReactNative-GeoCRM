@@ -40,6 +40,7 @@ const  TransactionSubmitContainer = (props) => {
                 if(isMount){
                     if(res.status == Strings.Success){                               
                         setFields(res.fields);
+                        console.log("api res", res.fields)
                     }
                 }
             }).catch((e) => {
