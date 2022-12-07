@@ -6,6 +6,7 @@ import { Constants } from '../../../constants';
 import DropdownText from '../../shared/DropdownText';
 import EmailPdf from '../../shared/EmailPdf';
 import EmailInputView from '../../shared/EmailPdf/EmailInputView';
+import Paragraph from '../../shared/Paragraph';
 import SignatureSignView from '../../shared/SignatureSignView';
 import TakePhotoView from '../../shared/TakePhotoView';
 import { TextForm } from '../../shared/TextForm';
@@ -403,6 +404,14 @@ const DynamicField = props => {
       />
     )
   }
+
+  const renderParagraph = () => {
+    return (
+      <Paragraph 
+        title={field_label}
+      />
+    )
+  }
   
   const onContactItemSelected = (item) =>{
 
@@ -499,6 +508,10 @@ const DynamicField = props => {
 
   if(field_type == 'signature') {
     return renderSignature();
+  }
+
+  if(field_type == 'paragraph'){
+    return renderParagraph();
   }
 
   return null;

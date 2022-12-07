@@ -59,11 +59,20 @@ const SetupFieldView = (props) => {
 			
 			setSelectedSaleType(data.transaction_type);
 			setSelectedCurrency(data.currency_id);	
-			setSelectedLocation(data.location);	
+			setSelectedLocation(data.location);
+			
+			if(data.transaction_type != ''){
+				onWarehouseRequired(data.transaction_type.warehouse_required);
+			}
+			if(data.warehouse_id != ''){
+				console.log("data.warehouse",data.warehouse_id)
+				setSelectedWarehouse(data.warehouse_id);
+			}
+
 		}else{
-			if(transaction_types != null && transaction_types.default_type != ''){
-				setSelectedSaleType(transaction_types.default_type);
+			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
+				setSelectedSaleType(transactionType);
 				if(transactionType  != undefined){				
 					onWarehouseRequired(transactionType.warehouse_required);
 				}
@@ -193,8 +202,7 @@ const SetupFieldView = (props) => {
 					<SaleType 
 						transaction_types={transaction_types} 
 						selectedSaleType={selectedSaleType}
-						onSelectedSaleType={onSelectedSaleType}
-						
+						onSelectedSaleType={onSelectedSaleType}						
 						onWarehouseRequired={onWarehouseRequired}
 						/>
 

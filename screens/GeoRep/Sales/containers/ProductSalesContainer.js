@@ -49,10 +49,10 @@ const  ProductSalesContainer = (props) => {
 						...element
 					}
 					var price = element.price;		
-					if(element.product_id == "1"){
-						console.log("element" , element);				
-						console.log("product" , product);
-					}
+					// if(element.product_id == "1"){
+					// 	console.log("element" , element);				
+					// 	console.log("product" , product);
+					// }
 
 					if(product != undefined){		
 						var finalPrice = 0;				
@@ -96,14 +96,7 @@ const  ProductSalesContainer = (props) => {
 				newItem.products =  [...products];
 				newList.push(newItem);
 			});
-			return newList;
-			// return items.map(item => {
-			// 	const newItem = {...item};
-			// 	const originProducts = [...newItem.products];   				
-			// 	const products = getProducts(originProducts);
-			// 	newItem.products =  products;
-			// 	return newItem;
-			// });
+			return newList;			
 		}		
 		return [];
 	}, [items, productPriceLists]);
@@ -150,7 +143,7 @@ const  ProductSalesContainer = (props) => {
 		}
 	}
 
-	const updateProductPriceList = async(value) => {
+	const configSetup = async(value) => {
 		var setupData = await getJsonData("@setup");
 		if(setupData != null && setupData != undefined  && setupData.location){			
 			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){				
@@ -161,19 +154,23 @@ const  ProductSalesContainer = (props) => {
 			}
 		}else{
 			console.log("setup data", setupData)
-		}
-
+		}	
+	}
+	
+	const configAddProductCount = async() => {
 		var addProductLists = await getJsonData("@add_product");
 		if(addProductLists != null && addProductLists != undefined)
 			setCartCount(addProductLists.length)
 	}
+
 
     const onSetupFieldModalClosed = ({ type, value}) => {
 		if(type === Constants.actionType.ACTION_CLOSE){		
 			setupFieldModalRef.current.hideModal();			
             if(props.getProductLists){		
 				setSelectedLocation(value.location.name);		
-				updateProductPriceList(value);
+				configSetup(value);
+				configAddProductCount();
                 props.getProductLists(value);				
             }			
 		}

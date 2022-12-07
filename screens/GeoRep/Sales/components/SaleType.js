@@ -25,9 +25,10 @@ const SaleType = (props) => {
 										style={styles.buttonStyle}
 										selectedButtonStyle={styles.selectedButtonStyle}
 										textStyle={styles.textStyle}
-										onTaped={selectedSaleType === item.type} 
+										onTaped={selectedSaleType.type === item.type} 
 										onClick={()=>{
-											onSelectedSaleType(item.type);											
+											console.log("item" , item)
+											onSelectedSaleType(item);							
 											onWarehouseRequired(item.warehouse_required);
 									}} />
 								)								

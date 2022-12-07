@@ -17,6 +17,7 @@ import TransactionSubmitModal from '../modal/TransactionSubmitModal';
 
 const CartContainer = props => {
 
+  const navigation = props.navigation;
   const transactionSubmitModalRef = useRef(null);
 
   const productPriceList = useSelector(state => state.sales.productPriceLists);
@@ -62,6 +63,10 @@ const CartContainer = props => {
       setupFieldModalRef.current.hideModal();
       storeJsonData('@setup', value);
       loadDefinedConfig();
+      console.log("value",value)
+      // if (navigation.canGoBack()) {
+      //   navigation.popToTop();      
+      // }
     }
   };
   const openSetup = () => {
@@ -77,6 +82,7 @@ const CartContainer = props => {
 
   return (
     <View style={[styles.container, props.style]}>
+
       <CartView
         defineSetup={defineSetup}
         cartStatistics={cartStatistics}
@@ -86,8 +92,8 @@ const CartContainer = props => {
           if(transactionSubmitModalRef.current)
             transactionSubmitModalRef.current.showModal();
         }}
-
       />
+
       <SetupFieldModal
         title="Define Setup"
         hideClear

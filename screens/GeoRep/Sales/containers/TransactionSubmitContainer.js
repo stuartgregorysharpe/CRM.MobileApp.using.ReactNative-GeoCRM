@@ -1,5 +1,5 @@
 
-import { View  } from 'react-native'
+import { Dimensions, View  } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import { GetRequestTransactionSubmitFieldsDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
@@ -66,7 +66,8 @@ const  TransactionSubmitContainer = (props) => {
             flex:1 , 
             marginHorizontal:10, 
             marginBottom:10,     
-            paddingTop:10         
+            paddingTop:10,
+            maxHeight: Dimensions.get("screen").height * 0.8
              
         }}>                  
             <DynamicFormView

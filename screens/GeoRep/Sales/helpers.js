@@ -1,3 +1,5 @@
+import { getJsonData } from "../../../constants/Storage";
+
 export function getTotalCartProductList(productPriceList, addProductList) {
   const totalCartProductList = [...productPriceList];
   addProductList.forEach(item => {
@@ -87,3 +89,21 @@ export function getWarehouseGroups(productList) {
 }
 
 export function updateProductPrice(dispatch, productPriceList, product, qty) {}
+
+
+export const configProductSetUp = async(value, callBack) => {
+  
+  var setupData = await getJsonData("@setup");
+		if(setupData != null && setupData != undefined  && setupData.location){			
+			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){				
+				callBack("continue");
+			}else{
+				console.log("no changes", setupData.transaction_type, value.transaction_type);
+        callBack("changed");
+			}
+		}else{
+			console.log("setup data", setupData)
+      callBack("no_data");
+		}	  
+}
+
