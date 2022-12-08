@@ -8,15 +8,17 @@ import {style as commonStyle} from '../../constants/Styles';
 const BaseForm = props => {
   const {item} = props;
   if (!item) return null;
-  onItemAction = type => {
+  const onItemAction = type => {
     if (props.onItemAction) {
       props.onItemAction({type, item});
     }
   };
-  const isQuesionAnswered =  item.value != null && item.value != ""
-  const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
-  
-  const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
+  const isQuesionAnswered = item.value != null && item.value != '';
+  const isCompulsory =
+    !isQuesionAnswered && item && item.rule_compulsory === '1';
+
+  const isShowInfoIcon =
+    item.guide_info !== undefined && item.guide_info.length != 0;
   return (
     <View
       style={[
@@ -30,14 +32,16 @@ const BaseForm = props => {
         <View style={{flex: 1, paddingHorizontal: 5}}>
           <Text style={styles.titleStyle}> {item.question_text} </Text>
         </View>
-        {
-          isShowInfoIcon && (
-            <TouchableOpacity
-              onPress={() => onItemAction(Constants.actionType.ACTION_INFO)}>
-              <Icon name={`info-outline`} size={25} color={whiteLabel().mainText} />
-            </TouchableOpacity>
-          )
-        }
+        {isShowInfoIcon && (
+          <TouchableOpacity
+            onPress={() => onItemAction(Constants.actionType.ACTION_INFO)}>
+            <Icon
+              name={`info-outline`}
+              size={25}
+              color={whiteLabel().mainText}
+            />
+          </TouchableOpacity>
+        )}
       </View>
       {props.children}
     </View>
