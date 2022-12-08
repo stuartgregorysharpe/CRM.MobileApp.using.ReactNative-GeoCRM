@@ -1,4 +1,4 @@
-import { getJsonData } from "../../../constants/Storage";
+import {getJsonData} from '../../../constants/Storage';
 
 export function getTotalCartProductList(productPriceList, addProductList) {
   const totalCartProductList = [...productPriceList];
@@ -21,7 +21,31 @@ export function getTotalCartProductList(productPriceList, addProductList) {
 
   return totalCartProductList;
 }
-
+export function getProductItemDataForRender(productItem) {
+  let finalPrice = 0;
+  let price = productItem.product.price;
+  if (
+    productItem.finalPrice != undefined &&
+    productItem.finalPrice != '' &&
+    productItem.finalPrice.final_price != undefined
+  ) {
+    finalPrice = productItem.finalPrice.final_price;
+  }
+  if (
+    productItem.price != undefined &&
+    productItem.price != '' &&
+    productItem.price != 0
+  ) {
+    price = productItem.price;
+  }
+  return {
+    ...productItem.product,
+    price,
+    finalPrice,
+    qty: productItem.qty,
+    special: productItem.special,
+  };
+}
 export function calculateDiscountAmount(productItem) {
   let discountPrice = 0;
   if (productItem && productItem.finalPrice && productItem.finalPrice != '') {
@@ -87,21 +111,30 @@ export function getWarehouseGroups(productList) {
   });
   return Object.values(groupsMap);
 }
+export function filterProducts(productList, params) {
+  if (!params) return productList;
+  return productList.filter(x => {
+    return (
+      !params?.warehouse_id || x?.product?.warehouse_id == params?.warehouse_id
+    );
+  });
+}
 
 export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 
-
-export const configProductSetUp = async(value, callBack) => {      
-    var setupData = await getJsonData("@setup");    
-		if(setupData != null && setupData != undefined  && setupData.location){			
-			if(setupData.location.name != value.location.name || setupData.transaction_type.type !=  value.transaction_type.type){				        
-				callBack("changed");        
-			}else{				
-        callBack("continue");
-			}
-		}else{
-			console.log("setup data", setupData)
-      callBack("no_data");
-		}	  
-}
-
+export const configProductSetUp = async (value, callBack) => {
+  var setupData = await getJsonData('@setup');
+  if (setupData != null && setupData != undefined && setupData.location) {
+    if (
+      setupData.location.name != value.location.name ||
+      setupData.transaction_type.type != value.transaction_type.type
+    ) {
+      callBack('changed');
+    } else {
+      callBack('continue');
+    }
+  } else {
+    console.log('setup data', setupData);
+    callBack('no_data');
+  }
+};
