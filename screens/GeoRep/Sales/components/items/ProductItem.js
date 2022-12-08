@@ -16,7 +16,9 @@ const ProductItem = props => {
   const dispatch = useDispatch();
 
   const [qty, setQty] = useState(item.qty != undefined ? item.qty : 0);
-
+  useEffect(() => {
+    setQty(item.qty);
+  }, [item]);
   const onCount = qty => {
     setQty(qty);
   };
@@ -28,7 +30,6 @@ const ProductItem = props => {
   const onEditDone = qty => {
     setQty(qty);
     if (props.geProductPrice) {
-      setIsClickable(false);
       props.geProductPrice(item, qty);
     }
   };
