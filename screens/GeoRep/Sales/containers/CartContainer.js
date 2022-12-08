@@ -79,7 +79,7 @@ const CartContainer = props => {
     }
   };
   const clearAddProductList = async () => {
-    removeLocalData('@add_product');
+    await removeLocalData('@add_product');
   };
 
   const loadDefinedConfig = async () => {
@@ -95,7 +95,10 @@ const CartContainer = props => {
         storeJsonData('@setup', value);
         if (type === 'changed') {
           dispatch(setProductPriceLists([]));
+          setAddProductList([]);
           await storeJsonData('@product_price', []);
+          await removeLocalData('@add_product');
+
           if (navigation.canGoBack()) {
             navigation.popToTop();
           }
@@ -284,6 +287,7 @@ const CartContainer = props => {
       setAddProductList([]);
       clearAddProductList();
     }
+    productGroupModalRef.current.hideModal();
   };
   return (
     <View style={[styles.container, props.style]}>
@@ -322,7 +326,7 @@ const CartContainer = props => {
         backButtonDisabled={true}
         closableWithOutsideTouch={false}
         ref={productGroupModalRef}
-        onClear={onClearProduct}
+        onClearData={onClearProduct}
         onButtonAction={onProductGroupModalClosed}
       />
       <ProductDetailsModal

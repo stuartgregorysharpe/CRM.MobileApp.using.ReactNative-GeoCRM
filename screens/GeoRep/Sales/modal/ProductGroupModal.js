@@ -21,8 +21,8 @@ const ProductGroupModal = React.forwardRef((props, ref) => {
   };
 
   const onClearData = () => {
-    if (props.onClear) {
-      props.onClear();
+    if (props.onClearData) {
+      props.onClearData();
     }
     var productIds = [];
     products.forEach(element => {

@@ -8,7 +8,11 @@ import {useSelector, useDispatch} from 'react-redux';
 import {GetRequestProductPriceDAO} from '../../../../DAO';
 import {expireToken} from '../../../../constants/Helper';
 import ProductFilterModal from '../modal/ProductFilterModal';
-import {getJsonData, storeJsonData} from '../../../../constants/Storage';
+import {
+  getJsonData,
+  removeLocalData,
+  storeJsonData,
+} from '../../../../constants/Storage';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
 import {setProductPriceLists} from '../../../../actions/sales.action';
@@ -170,6 +174,7 @@ const ProductSalesContainer = props => {
           if (type === 'changed') {
             dispatch(setProductPriceLists([]));
             storeJsonData('@product_price', []);
+            removeLocalData('@add_product');
           }
         });
         configAddProductCount();
