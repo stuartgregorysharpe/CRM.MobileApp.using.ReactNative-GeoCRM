@@ -12,7 +12,15 @@ import {style} from '../../../../constants/Styles';
 import {Colors} from '../../../../constants';
 
 const ProductSalesView = props => {
-  const {settings, selectedLocation, lists, page, isLoading, cartCount} = props;
+  const {
+    settings,
+    selectedLocation,
+    lists,
+    page,
+    isLoading,
+    cartCount,
+    isUpdatingProductPrice,
+  } = props;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const [isEndPageLoading, setIsEndPageLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -53,6 +61,7 @@ const ProductSalesView = props => {
         <ProductItem
           key={index}
           settings={settings}
+          isLoading={isUpdatingProductPrice}
           geProductPrice={(product_id, qty) => {
             if (props.geProductPrice) {
               props.geProductPrice(product_id, qty);

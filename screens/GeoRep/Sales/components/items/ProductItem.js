@@ -11,33 +11,14 @@ import {formattedPrice} from '../../../../../helpers/formatHelpers';
 import SvgIcon from '../../../../../components/SvgIcon';
 
 const ProductItem = props => {
-  const {item, settings} = props;
-  const productPriceLists = useSelector(state => state.sales.productPriceLists);
-
+  const {item, settings, isLoading} = props;
   if (!item) return null;
   const dispatch = useDispatch();
 
   const [qty, setQty] = useState(item.qty != undefined ? item.qty : 0);
-  const [isClickable, setIsClickable] = useState(true);
-
-  useEffect(() => {
-    if (productPriceLists.length == 0) {
-      setQty(0);
-    }
-    var check = productPriceLists.find(
-      element => element.product_id == item.product_id,
-    );
-    if (check != undefined) {
-      setQty(check.qty);
-      setIsClickable(true);
-    }
-  }, [productPriceLists]);
 
   const onCount = qty => {
     setQty(qty);
-    // if(props.geProductPrice){
-    //     props.geProductPrice( item.product_id, qty);
-    // }
   };
 
   const onChangeText = qty => {
@@ -93,16 +74,17 @@ const ProductItem = props => {
             </TouchableOpacity>
           )}
         </View>
-
-        <View style={{flexDirection: 'row', marginTop: 5}}>
-          <AppText
-            title={item.warehouse_name}
-            color={whiteLabel().subText}></AppText>
-          <AppText title="  |  " color={whiteLabel().subText}></AppText>
-          <AppText
-            title={'Stock: ' + item.soh}
-            color={whiteLabel().subText}></AppText>
-        </View>
+        {item.warehouse_name != undefined && (
+          <View style={{flexDirection: 'row', marginTop: 5}}>
+            <AppText
+              title={item.warehouse_name}
+              color={whiteLabel().subText}></AppText>
+            <AppText title="  |  " color={whiteLabel().subText}></AppText>
+            <AppText
+              title={'Stock: ' + item.soh}
+              color={whiteLabel().subText}></AppText>
+          </View>
+        )}
         <View
           style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
           <AppText
@@ -119,7 +101,7 @@ const ProductItem = props => {
             count={qty}
             onCount={onCount}
             //onChangeText={onChangeText}
-            isClickable={isClickable}
+            isClickable={!isLoading}
             fixed={1}
             onEditDone={onEditDone}
           />

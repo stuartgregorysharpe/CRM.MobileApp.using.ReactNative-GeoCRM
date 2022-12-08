@@ -1,22 +1,31 @@
 import {getJsonData} from '../../../constants/Storage';
 
-export function getTotalCartProductList(productPriceList, addProductList) {
+export function getTotalCartProductList(
+  productPriceList,
+  addProductList,
+  currency,
+) {
   const totalCartProductList = [...productPriceList];
+  const symbol = currency?.symbol || 'R';
+  console.log('addProductList', addProductList);
   addProductList.forEach(item => {
-    totalCartProductList.push({
-      price: item.price.value,
-      product_id: item.add_product_id,
-      qty: item.quantity,
-      product: {
-        ...item,
-        product_images: item.product_image,
-        product_id: item.add_product_id,
+    if (item && item.price) {
+      totalCartProductList.push({
         price: item.price.value,
+        product_id: item.add_product_id,
         qty: item.quantity,
-        qty_increments: 1,
-      },
-      isAddProduct: true,
-    });
+        product: {
+          ...item,
+          product_images: item.product_image,
+          product_id: item.add_product_id,
+          price: item.price.value,
+          qty: item.quantity,
+          qty_increments: 1,
+          symbol: symbol,
+        },
+        isAddProduct: true,
+      });
+    }
   });
 
   return totalCartProductList;
@@ -44,6 +53,7 @@ export function getProductItemDataForRender(productItem) {
     finalPrice,
     qty: productItem.qty,
     special: productItem.special,
+    isAddProduct: productItem.isAddProduct,
   };
 }
 export function calculateDiscountAmount(productItem) {

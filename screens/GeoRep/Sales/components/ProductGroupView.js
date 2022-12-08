@@ -5,7 +5,7 @@ import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import ProductItem from './items/ProductItem';
 
 const ProductGroupView = props => {
-  const {products, settings} = props;
+  const {products, settings, isUpdatingProductPrice} = props;
 
   const renderItem = (_item, index) => {
     let item = _item;
@@ -16,6 +16,7 @@ const ProductGroupView = props => {
       return (
         <ProductItem
           key={index}
+          isLoading={isUpdatingProductPrice}
           settings={settings}
           geProductPrice={(product_id, qty) => {
             if (props.geProductPrice) {

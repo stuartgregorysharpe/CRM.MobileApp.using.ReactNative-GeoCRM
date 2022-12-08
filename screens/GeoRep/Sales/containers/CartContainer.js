@@ -3,7 +3,11 @@ import {useMemo} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
 import {Constants, Strings} from '../../../../constants';
-import {getJsonData, storeJsonData} from '../../../../constants/Storage';
+import {
+  getJsonData,
+  removeLocalData,
+  storeJsonData,
+} from '../../../../constants/Storage';
 import {GetRequestProductPriceDAO} from '../../../../DAO';
 import CartView from '../components/CartView';
 import {
@@ -41,8 +45,8 @@ const CartContainer = props => {
   const currency = defineSetup?.currency_id;
   const taxRate = currency?.tax_rate;
   const totalProductList = useMemo(
-    () => getTotalCartProductList(productPriceList, addProductList),
-    [productPriceList, addProductList],
+    () => getTotalCartProductList(productPriceList, addProductList, currency),
+    [productPriceList, addProductList, currency],
   );
   const cartStatistics = useMemo(
     () => calculateCartStatistics(totalProductList, taxRate),
@@ -53,13 +57,14 @@ const CartContainer = props => {
     [totalProductList],
   );
   const warehouseProductList = useMemo(
-    () => filterProducts(productPriceList, {warehouse_id: selectedWarehouseId}),
-    [selectedWarehouseId, productPriceList],
+    () => filterProducts(totalProductList, {warehouse_id: selectedWarehouseId}),
+    [selectedWarehouseId, totalProductList],
   );
   const [productDetailTitle, setProductDetailTitle] = useState('');
   const [product, setProduct] = useState();
+  const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
 
-  console.log('CartContainer: settings', settings);
+  console.log('totalProductList', totalProductList);
   useEffect(() => {
     loadAddProductLists();
     loadDefinedConfig();
@@ -67,8 +72,14 @@ const CartContainer = props => {
 
   const loadAddProductLists = async () => {
     const addProductList = await getJsonData('@add_product');
-    if (addProductList != null && addProductList != undefined)
+    if (addProductList != null && addProductList != undefined) {
       setAddProductList(addProductList);
+    } else {
+      setAddProductList([]);
+    }
+  };
+  const clearAddProductList = async () => {
+    removeLocalData('@add_product');
   };
 
   const loadDefinedConfig = async () => {
@@ -114,8 +125,13 @@ const CartContainer = props => {
     setSelectedWarehouseId(item.warehouse_id);
     productGroupModalRef.current.showModal();
   };
-
-  const updateProductPrice = (product, qty) => {
+  const onTotalProductPress = () => {
+    setProductListTitle('All');
+    setSelectedWarehouseId(null);
+    productGroupModalRef.current.showModal();
+  };
+  const updateCapturedProductPrice = (product, qty) => {
+    setIsUpdatingProductPrice(true);
     const param = {
       product_id: product.product_id,
       qty: qty,
@@ -151,11 +167,22 @@ const CartContainer = props => {
             updatedProduct,
           );
         }
+        setIsUpdatingProductPrice(false);
       })
       .catch(e => {
         expireToken(dispatch, e);
+        setIsUpdatingProductPrice(false);
       });
   };
+
+  const updateProductPrice = (product, qty) => {
+    if (product?.isAddProduct) {
+      updateAddProductPrice(product, qty);
+    } else {
+      updateCapturedProductPrice(product, qty);
+    }
+  };
+  const updateAddProductPrice = (product, qty) => {};
   const updateProductPriceLists = useCallback(
     async (product_id, price, qty, special, finalPrice, product) => {
       const lists = [...productPriceList];
@@ -196,12 +223,20 @@ const CartContainer = props => {
     [productPriceList],
   );
 
-  const openProductDetail = item => {
+  const openCapturedProductDetail = item => {
     setProductDetailTitle(item.product_name);
     setProduct(item);
     console.log('set product item', item);
     if (productDetailsModalRef.current)
       productDetailsModalRef.current.showModal();
+  };
+  const openAddedProductDetail = item => {};
+  const openProductDetail = item => {
+    if (item.isAddProduct) {
+      openAddedProductDetail(item);
+    } else {
+      openCapturedProductDetail(item);
+    }
   };
   const onProductDetailsModalClosed = ({type, value}) => {
     if (type === Constants.actionType.ACTION_DONE) {
@@ -243,6 +278,13 @@ const CartContainer = props => {
       newProduct,
     );
   };
+  const onClearProduct = () => {
+    if (!selectedWarehouseId) {
+      //if opened all products
+      setAddProductList([]);
+      clearAddProductList();
+    }
+  };
   return (
     <View style={[styles.container, props.style]}>
       <CartView
@@ -255,6 +297,7 @@ const CartContainer = props => {
             transactionSubmitModalRef.current.showModal();
         }}
         onWarehouseItemPress={onWarehouseItemPress}
+        onTotalProductPress={onTotalProductPress}
       />
 
       <SetupFieldModal
@@ -275,9 +318,11 @@ const CartContainer = props => {
         getItemData={getProductItemDataForRender}
         geProductPrice={updateProductPrice}
         openProductDetail={openProductDetail}
+        isUpdatingProductPrice={isUpdatingProductPrice}
         backButtonDisabled={true}
         closableWithOutsideTouch={false}
         ref={productGroupModalRef}
+        onClear={onClearProduct}
         onButtonAction={onProductGroupModalClosed}
       />
       <ProductDetailsModal
