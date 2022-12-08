@@ -1,5 +1,7 @@
 import React, {useRef, useState, useEffect, useImperativeHandle} from 'react';
-import { SafeAreaView, View,
+import {
+  SafeAreaView,
+  View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -8,22 +10,21 @@ import { SafeAreaView, View,
 } from 'react-native';
 import {Provider} from 'react-native-paper';
 import {useSelector} from 'react-redux';
-import { style} from '../../../constants/Styles';
+import {style} from '../../../constants/Styles';
 import {Ticket} from './tabs/Ticket';
 import Faq from './tabs/Faq';
 import {showOfflineDialog, WHATS_APP_LINK} from '../../../constants/Helper';
 import TopThreeTab from '../../../components/common/TopThreeTab';
-import { SubmitButton } from '../../../components/shared/SubmitButton';
-import { checkConnectivity } from '../../../DAO/helper';
-import { useDispatch } from 'react-redux';
+import {SubmitButton} from '../../../components/shared/SubmitButton';
+import {checkConnectivity} from '../../../DAO/helper';
+import {useDispatch} from 'react-redux';
 
 export default function SupportScreen(props) {
-
-  const headers = ["Ticket" , "FAQ", "WhatsApp"];  
+  const headers = ['Ticket', 'FAQ', 'WhatsApp'];
   const crmStatus = useSelector(state => state.rep.crmSlideStatus);
   const [tabIndex, setTabIndex] = useState(1);
   const ticketRef = useRef();
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (props.screenProps) {
@@ -46,7 +47,7 @@ export default function SupportScreen(props) {
         });
       }
     }
-  });
+  }, []);
 
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)
@@ -55,8 +56,8 @@ export default function SupportScreen(props) {
       })
       .catch(() => {
         alert('Make sure WhatsApp installed on your device'); //<---Error
-    });
-  }
+      });
+  };
 
   return (
     <Provider>
@@ -67,40 +68,38 @@ export default function SupportScreen(props) {
             height: '100%',
             justifyContent: 'space-between',
           }}>
-            
-            <TopThreeTab headers={headers} tabIndex={tabIndex}  setTabIndex={(index) => {
-                if(index == 3){
-                  openWhatsApp();
-                }else{
-                  setTabIndex(index);
-                }                
+          <TopThreeTab
+            headers={headers}
+            tabIndex={tabIndex}
+            setTabIndex={index => {
+              if (index == 3) {
+                openWhatsApp();
+              } else {
+                setTabIndex(index);
+              }
             }}></TopThreeTab>
 
-        
-          <View style={{flexGrow: 1 , marginHorizontal:10}}>
+          <View style={{flexGrow: 1, marginHorizontal: 10}}>
             {tabIndex == 1 && <Ticket ref={ticketRef} />}
-            {tabIndex == 2 && <Faq />}        
+            {tabIndex == 2 && <Faq />}
           </View>
 
-          {
-            tabIndex == 1 &&
-            <SubmitButton style={{marginHorizontal:10}} title="Submit" onSubmit={() => {
-
-              checkConnectivity().then((isConnected) => {
-                if(isConnected){
-                  if(ticketRef.current){
-                    ticketRef.current.callPostSupport();
+          {tabIndex == 1 && (
+            <SubmitButton
+              style={{marginHorizontal: 10}}
+              title="Submit"
+              onSubmit={() => {
+                checkConnectivity().then(isConnected => {
+                  if (isConnected) {
+                    if (ticketRef.current) {
+                      ticketRef.current.callPostSupport();
+                    }
+                  } else {
+                    showOfflineDialog(dispatch);
                   }
-                }else{
-                  showOfflineDialog(dispatch)
-                }
-              })
-              
-              
-
-            }}></SubmitButton>
-          }
-
+                });
+              }}></SubmitButton>
+          )}
         </ScrollView>
       </SafeAreaView>
     </Provider>
@@ -109,7 +108,7 @@ export default function SupportScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'BG_COLOR',    
+    backgroundColor: 'BG_COLOR',
     paddingBottom: 50,
-  }, 
+  },
 });

@@ -49,7 +49,9 @@ const CartView = props => {
         />
         <CartStatisticsView
           data={cartStatistics}
+          currency={currency}
           style={{marginHorizontal: 8}}
+          onPress={onTotalProductPress}
         />
         {wareHouseGroups.map((wareHouse, index) => {
           return (
