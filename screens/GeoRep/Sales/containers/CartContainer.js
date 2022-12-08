@@ -290,6 +290,9 @@ const CartContainer = props => {
       <TransactionSubmitModal
         hideClear
         ref={transactionSubmitModalRef}
+        cartStatistics={cartStatistics}
+        productPriceList={productPriceList}
+        addProductList={addProductList}
         onButtonAction={onTransactionSubmitModalClosed}
       />
     </View>
