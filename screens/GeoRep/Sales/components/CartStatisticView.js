@@ -5,14 +5,20 @@ import SvgIcon from '../../../../components/SvgIcon';
 import {Fonts} from '../../../../constants';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
-import {formatCurrency} from '../../../../helpers/formatHelpers';
+import {
+  formatCurrency,
+  formattedNumber,
+  formattedPrice,
+} from '../../../../helpers/formatHelpers';
 
 const CartStatisticsView = props => {
+  const {currency} = props;
+  const symbol = currency?.symbol || 'R';
   const {itemCount, unitCount, discount, subTotal, tax, total} = props.data;
-  const discountCurrency = formatCurrency(discount);
-  const subTotalCurrency = formatCurrency(subTotal);
-  const taxCurrency = formatCurrency(tax);
-  const totalCurrency = formatCurrency(total);
+  const discountCurrency = symbol + formattedPrice(discount);
+  const subTotalCurrency = symbol + formattedPrice(subTotal);
+  const taxCurrency = symbol + formattedPrice(tax);
+  const totalCurrency = symbol + formattedPrice(total);
   return (
     <View style={[styles.container, style.cardContainer, props.style]}>
       <TouchableOpacity
@@ -95,7 +101,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: whiteLabel().inputText,
     fontFamily: Fonts.primaryBold,
-    width: 100,
+    width: 150,
     fontWeight: 'bold',
     textAlign: 'right',
   },
