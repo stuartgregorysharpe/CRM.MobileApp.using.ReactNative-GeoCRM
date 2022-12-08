@@ -38,15 +38,17 @@ export default function ProductSales(props) {
 	});
 
 	const getParamData = (data) => {
-		var postParam = {
-			page_no: 0,
-			transaction_type: data.transaction_type.type,
-			currency_id: data.currency_id ? data.currency_id.id : '',
-			warehouse_id : data.warehouse_id ? data.warehouse_id.map(item => item.id).join(',')  : '',			
-			filters: '',			
-		}
-		console.log("post param -> ", postParam)
-		return postParam;
+		if(data != null && data != undefined){
+			var postParam = {
+				page_no: 0,
+				transaction_type: data.transaction_type.type,
+				currency_id: data.currency_id ? data.currency_id.id : '',
+				warehouse_id : data.warehouse_id ? data.warehouse_id.map(item => item.id).join(',')  : '',			
+				filters: '',			
+			}		
+			return postParam;
+		}		
+		return {}
 	}
 		
 	const getProductLists = async(data , search_text , pageNumber) => {		

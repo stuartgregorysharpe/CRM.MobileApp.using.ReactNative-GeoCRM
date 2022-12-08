@@ -64,13 +64,13 @@ const CartContainer = props => {
   };
   const onSetupFieldModalClosed = async ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {            
-      configProductSetUp(value , (type) => {					
+      configProductSetUp(value , async(type) => {					
         storeJsonData('@setup', value);
         if(type === 'changed'){
           dispatch(setProductPriceLists([]));          
-          storeJsonData("@product_price" , []);
+          await storeJsonData("@product_price" , []);
           if (navigation.canGoBack()) {
-            navigation.popToTop();      
+            navigation.popToTop(); 
           }
         }else{
           loadDefinedConfig();

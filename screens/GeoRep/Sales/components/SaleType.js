@@ -25,7 +25,7 @@ const SaleType = (props) => {
 										style={styles.buttonStyle}
 										selectedButtonStyle={styles.selectedButtonStyle}
 										textStyle={styles.textStyle}
-										onTaped={selectedSaleType.type === item.type} 
+										onTaped={selectedSaleType != undefined && selectedSaleType.type === item.type} 
 										onClick={()=>{
 											console.log("item" , item)
 											onSelectedSaleType(item);							

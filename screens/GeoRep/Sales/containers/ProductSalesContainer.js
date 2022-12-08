@@ -131,14 +131,14 @@ const  ProductSalesContainer = (props) => {
 			props.getProductLists();
 		}		
 	}
-				
+
 	const initializeProductLists = async() => {
 		var productLists = await getJsonData("@product_price");
 		if(productLists != null){
 			dispatch(setProductPriceLists(productLists));
 		}
 	}
-
+	
 	const configAddProductCount = async() => {
 		var addProductLists = await getJsonData("@add_product");
 		if(addProductLists != null && addProductLists != undefined)

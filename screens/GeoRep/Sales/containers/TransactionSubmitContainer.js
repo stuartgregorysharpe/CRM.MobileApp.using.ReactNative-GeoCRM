@@ -8,11 +8,14 @@ import { Constants, Strings } from '../../../../constants';
 import { getJsonData, getTokenData } from '../../../../constants/Storage';
 import { getRandomNumber, getTimeStamp } from '../../../../helpers/formatHelpers';
 import DynamicFormView from '../../../../components/common/DynamicFormView';
+import { useSelector } from 'react-redux';
+import * as RNLocalize from 'react-native-localize';
 
 const  TransactionSubmitContainer = (props) => {
         
     const dispatch = useDispatch();
     const [fields, setFields] = useState([])
+    const currentLocation = useSelector(state => state.rep.currentLocation);
     let isMount = true;
   
     useEffect(() => {        
@@ -57,7 +60,48 @@ const  TransactionSubmitContainer = (props) => {
             ...data,
             add_product_id : add_product_id
         }        
-        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});
+        //props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});
+        
+        var res = await generatePostParam(data);
+        console.log("post data", res)
+    }
+
+    const generatePostParam =  async(data) => {        
+
+        try{
+            var transactionFields = [];        
+            Object.keys(data).forEach(key =>{
+                transactionFields.push({field_id: key , answer: data[key]});
+            });
+            var items = [];
+            var added_products = [];
+            const setupData = await getJsonData("@setup");
+            console.log("setupData" ,setupData)    
+            var time_zone = RNLocalize.getTimeZone();
+            var postJsonData = {
+                transaction_type : setupData.transaction_type.type,
+                location_id: setupData.location.location_id,
+                currency_id: setupData.currency_id.id,
+                cart:{
+                    items:items,
+                    added_products: added_products,
+                    totals: {
+                        discount : '',
+                        sub_total: '',
+                        tax: '',
+                        total: ''
+                    }
+                },
+                transaction_fields : transactionFields,
+                'user_local_data[time_zone]' : time_zone,
+                'user_local_data[latitude]' : currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0',
+                'user_local_data[longitude]' : currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0'
+            }
+            
+        }catch(e){
+            console.log(e)
+        }
+        return postJsonData;
     }
     
      return (

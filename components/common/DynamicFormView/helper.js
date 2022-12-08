@@ -8,7 +8,7 @@ export function getFormData  (renderForms , page) {
       if(page == "add_product"){
         tmpFormData[field.field_name] = value;
       }else{
-        tmpFormData[field.field_label] = value;
+        tmpFormData[field.field_id] = value;
       }
 
     });
@@ -71,7 +71,7 @@ export function getFormStructureData (renderForms , page) {
             is_required: true,          
             value: value,
             isHidden: false,
-            field_name : field.field_label,
+            field_name : field.field_id,
             rule_characters: '<,10',
             add_prefix: 'R',
             add_suffix : '%'
