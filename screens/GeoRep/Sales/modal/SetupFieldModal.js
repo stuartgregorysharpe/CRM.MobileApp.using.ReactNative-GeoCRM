@@ -1,10 +1,13 @@
 
-import React from 'react'
+import React , { useState } from 'react'
 import CModal from '../../../../components/common/CModal';
 import { Constants } from '../../../../constants';
 import SetupFieldContainer from '../containers/SetupFieldContainer';
 
 const SetupFieldModal = React.forwardRef((props, ref) => {
+    
+    const [isClear, setIsClear] = useState(false);
+    
     const onButtonAction = data => {
         if (props.onButtonAction) {
           props.onButtonAction(data);
@@ -14,16 +17,24 @@ const SetupFieldModal = React.forwardRef((props, ref) => {
         }
     };
 
+
     return (        
         <CModal
             ref={ref}            
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
             closableWithOutsideTouch
             onClear={() => {
-                onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
-            }}
+                //onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                            
+                setIsClear(true);
+            }}            
             {...props}>
-            <SetupFieldContainer {...props} />
+            <SetupFieldContainer 
+                isClear={isClear}
+                updateClear={(flag) => {
+                    console.log("flag", flag)
+                    setIsClear(flag)
+                }}
+                {...props} />
         </CModal>        
     )
 });

@@ -5,7 +5,7 @@ import SaleType from './SaleType'
 import SearchLocationContainer from '../../Stock/stock/container/SearchLocationContainer'
 import LocationInfo from './LocationInfo'
 import { useSelector } from 'react-redux'
-import { getJsonData, getLocalData } from '../../../../constants/Storage'
+import { getJsonData, getLocalData, storeJsonData } from '../../../../constants/Storage'
 import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
@@ -14,7 +14,7 @@ import { Colors } from '../../../../constants'
 
 const SetupFieldView = (props) => {
 
-	const { isLoading,  transaction_types, currency, warehouse} = props;
+	const { isClear, isLoading,  transaction_types, currency, warehouse} = props;
 	const features = useSelector(
 		state => state.selection.payload.user_scopes.geo_rep.features,
 	);
@@ -28,12 +28,27 @@ const SetupFieldView = (props) => {
 
 	useEffect(() => {
 		initializeLocation();
-	}, [isCheckin])
+	}, [isCheckin]);
+
+	useEffect(() => {
+		if(isClear){
+			clearSetup();
+			if(props.updateClear){
+				props.updateClear(false)
+			}
+		}
+	}, [isClear]);
 
 	useEffect(() => {		
 		initializeSetupData();
 	}, [ currency, warehouse,   transaction_types]);
 
+	const clearSetup = async() => {
+		console.log("clear upset")
+		storeJsonData("@setup", null);
+		initializeSetupData();
+		initializeLocation();
+	}
 	
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
@@ -86,7 +101,8 @@ const SetupFieldView = (props) => {
 				const options = warehouse.options ?  warehouse.options : [];
 				const item = options.find(element => element.id === warehouse.default_warehouse);
 				if(item != undefined){
-					onWarehouseItemSelected(item, false);
+					//onWarehouseItemSelected(item, false);
+					setSelectedWarehouse([item]);	
 				}				
 			}
 		}

@@ -257,7 +257,7 @@ const  ProductSalesContainer = (props) => {
 		const param = {
 			product_id : product.product_id,
 			qty : qty
-		}		
+		}
 		GetRequestProductPriceDAO.find(param).then((res) => {			
 			
 			if(res.status === Strings.Success){				
@@ -329,7 +329,7 @@ const  ProductSalesContainer = (props) => {
 
             <SetupFieldModal 
 				title="Define Setup"
-				hideClear
+				//hideClear
 				backButtonDisabled={true}
 				closableWithOutsideTouch={outsideTouch}
 				ref={setupFieldModalRef}
