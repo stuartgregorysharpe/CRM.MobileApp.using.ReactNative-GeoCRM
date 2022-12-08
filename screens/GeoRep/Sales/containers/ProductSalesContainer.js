@@ -14,6 +14,7 @@ import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
 import { setProductPriceLists } from '../../../../actions/sales.action';
 import { showNotification } from '../../../../actions/notification.action';
+import { configProductSetUp } from '../helpers';
 
 const  ProductSalesContainer = (props) => {
         
@@ -117,25 +118,20 @@ const  ProductSalesContainer = (props) => {
 	},[]);
 
 	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
+		const unsubscribe = navigation.addListener('focus', () => {			
 			//setupFieldModalRef.current.showModal();
+			refreshList();
 		});    
 		return unsubscribe;
-	}, [navigation]);
-	//    ------------------------    END DEFINE SETUP MODAL   --------------------------
+	}, [navigation]);	
 
-	const updateProdoctsGroup = useCallback(
-		() => {						
-			if(products.length > 0){				
-				const tpLists = [...products];						
-				const newProducts = getProducts(tpLists);				
-				setProducts(newProducts);
-			}
-		},
-		[products , productPriceLists ],
-	)
-	//   -------------------------     END  ----------------------------------------------------------------
-
+	const refreshList = async() => {
+		var productLists  = await getJsonData("@product_price");
+		if(productLists == null || productLists.length == 0){
+			props.getProductLists();
+		}		
+	}
+				
 	const initializeProductLists = async() => {
 		var productLists = await getJsonData("@product_price");
 		if(productLists != null){
@@ -143,20 +139,6 @@ const  ProductSalesContainer = (props) => {
 		}
 	}
 
-	const configSetup = async(value) => {
-		var setupData = await getJsonData("@setup");
-		if(setupData != null && setupData != undefined  && setupData.location){			
-			if(setupData.location.name != value.location.name || setupData.transaction_type !=  value.transaction_type){				
-				dispatch(setProductPriceLists([]));
-				storeJsonData("@product_price" , []);
-			}else{
-				console.log("no changes", setupData.transaction_type, value.transaction_type)
-			}
-		}else{
-			console.log("setup data", setupData)
-		}	
-	}
-	
 	const configAddProductCount = async() => {
 		var addProductLists = await getJsonData("@add_product");
 		if(addProductLists != null && addProductLists != undefined)
@@ -168,10 +150,15 @@ const  ProductSalesContainer = (props) => {
 		if(type === Constants.actionType.ACTION_CLOSE){		
 			setupFieldModalRef.current.hideModal();			
             if(props.getProductLists){		
-				setSelectedLocation(value.location.name);		
-				configSetup(value);
+				setSelectedLocation(value.location.name);					
+				configProductSetUp(value , (type) => {					
+					if(type === 'changed'){
+						dispatch(setProductPriceLists([]));
+						storeJsonData("@product_price" , []);
+					}
+				})					
 				configAddProductCount();
-                props.getProductLists(value);				
+                props.getProductLists(value);
             }			
 		}
 	}

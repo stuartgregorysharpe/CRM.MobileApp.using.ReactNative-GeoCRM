@@ -8,17 +8,21 @@ import {GetRequestProductPriceDAO} from '../../../../DAO';
 import CartView from '../components/CartView';
 import {
   calculateCartStatistics,
+  configProductSetUp,
   getTotalCartProductList,
   getWarehouseGroups,
 } from '../helpers';
 import ProductGroupModal from '../modal/ProductGroupModal';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import TransactionSubmitModal from '../modal/TransactionSubmitModal';
+import { useDispatch } from 'react-redux';
+import { setProductPriceLists } from '../../../../actions/sales.action';
 
 const CartContainer = props => {
 
   const navigation = props.navigation;
   const transactionSubmitModalRef = useRef(null);
+  const dispatch = useDispatch()
 
   const productPriceList = useSelector(state => state.sales.productPriceLists);
   const settings = useSelector(state => state.sales.salesSettings);
@@ -59,14 +63,20 @@ const CartContainer = props => {
     }
   };
   const onSetupFieldModalClosed = async ({type, value}) => {
-    if (type === Constants.actionType.ACTION_CLOSE) {
-      setupFieldModalRef.current.hideModal();
-      storeJsonData('@setup', value);
-      loadDefinedConfig();
-      console.log("value",value)
-      // if (navigation.canGoBack()) {
-      //   navigation.popToTop();      
-      // }
+    if (type === Constants.actionType.ACTION_CLOSE) {            
+      configProductSetUp(value , (type) => {					
+        storeJsonData('@setup', value);
+        if(type === 'changed'){
+          dispatch(setProductPriceLists([]));          
+          storeJsonData("@product_price" , []);
+          if (navigation.canGoBack()) {
+            navigation.popToTop();      
+          }
+        }else{
+          loadDefinedConfig();
+        }
+      });
+      setupFieldModalRef.current.hideModal();                        
     }
   };
   const openSetup = () => {

@@ -53,9 +53,9 @@ export default function ProductSales(props) {
 		if(data != undefined){			
 			storeJsonData("@setup", data);
 			const param = getParamData(data);
-			await storeJsonData("@sale_product_parameter", param);
-			getApiData('', 0);
+			await storeJsonData("@sale_product_parameter", param);			
 		}		
+		getApiData('', 0);
 	}
 
 	const getProductListsByFilter = async (data) => {

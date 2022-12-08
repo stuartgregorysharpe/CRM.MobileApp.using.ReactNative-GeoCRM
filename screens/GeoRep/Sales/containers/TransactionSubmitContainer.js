@@ -29,10 +29,10 @@ const  TransactionSubmitContainer = (props) => {
         if(setup != null && setup.location && setup.transaction_type){
             
             if(props.onChangeTitle)                    
-                props.onChangeTitle(setup.transaction_type + " Details");
+                props.onChangeTitle(setup.transaction_type.type + " Details");
 
             param = {
-                transaction_type : setup.transaction_type,
+                transaction_type : setup.transaction_type.type,
                 location_id : setup.location.location_id
             }
 
@@ -49,7 +49,7 @@ const  TransactionSubmitContainer = (props) => {
         }
 
     }
-
+    
     const onAdd = async(data) => {
         const  user_id = await getTokenData("user_id");
         const  add_product_id =  getTimeStamp() + user_id + getRandomNumber(4);
