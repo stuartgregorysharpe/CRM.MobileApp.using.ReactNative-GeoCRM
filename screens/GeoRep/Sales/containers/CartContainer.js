@@ -108,7 +108,7 @@ const CartContainer = props => {
         title="Define Setup"
         hideClear
         backButtonDisabled={true}
-        closableWithOutsideTouch={false}
+        closableWithOutsideTouch={true}
         ref={setupFieldModalRef}
         hideDivider={true}
         modalType={Constants.modalType.MODAL_TYPE_CENTER}

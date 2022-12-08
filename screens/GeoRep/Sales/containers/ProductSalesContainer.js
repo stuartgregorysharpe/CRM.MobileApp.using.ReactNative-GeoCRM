@@ -32,10 +32,10 @@ const  ProductSalesContainer = (props) => {
 	const productFilterModalRef = useRef(null)
 	const productDetailsModalRef  = useRef(null)
 	const addProductModalRef = useRef(null)
-
 	const [productDetailTitle, setProductDetailTitle] = useState("");
 	const [product, setProduct] = useState();
 	const [cartCount, setCartCount] = useState(0);	
+	const [outsideTouch, setOutsideTouch] = useState(false);
 	const dispatch = useDispatch()
 
 	const getProducts = useCallback((products) => {	
@@ -136,6 +136,8 @@ const  ProductSalesContainer = (props) => {
 		var productLists = await getJsonData("@product_price");
 		if(productLists != null){
 			dispatch(setProductPriceLists(productLists));
+			setOutsideTouch(true);
+			props.getProductLists();
 		}
 	}
 	
@@ -149,7 +151,7 @@ const  ProductSalesContainer = (props) => {
     const onSetupFieldModalClosed = ({ type, value}) => {
 		if(type === Constants.actionType.ACTION_CLOSE){		
 			setupFieldModalRef.current.hideModal();			
-            if(props.getProductLists){		
+            if(props.getProductLists){
 				setSelectedLocation(value.location.name);					
 				configProductSetUp(value , (type) => {					
 					if(type === 'changed'){
@@ -159,6 +161,9 @@ const  ProductSalesContainer = (props) => {
 				})					
 				configAddProductCount();
                 props.getProductLists(value);
+				if(value != undefined){
+					setOutsideTouch(true);
+				}
             }			
 		}
 	}
@@ -326,7 +331,7 @@ const  ProductSalesContainer = (props) => {
 				title="Define Setup"
 				hideClear
 				backButtonDisabled={true}
-				closableWithOutsideTouch={false}
+				closableWithOutsideTouch={outsideTouch}
 				ref={setupFieldModalRef}
 				hideDivider={true}
 				modalType={Constants.modalType.MODAL_TYPE_CENTER}
