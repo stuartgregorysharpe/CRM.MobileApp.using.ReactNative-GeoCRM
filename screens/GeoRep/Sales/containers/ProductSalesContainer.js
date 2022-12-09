@@ -454,7 +454,7 @@ const ProductSalesContainer = props => {
       <ProductFilterModal
         title="Filter your search"
         clearText="Clear Filters"
-        closableWithOutsideTouch={false}
+        closableWithOutsideTouch={true}
         ref={productFilterModalRef}
         onButtonAction={onProductFilterModalClosed}
       />
