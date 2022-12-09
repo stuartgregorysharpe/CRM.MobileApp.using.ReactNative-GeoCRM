@@ -100,6 +100,8 @@ export default {
     Customer: 'Customer',
     NSV: 'NSV',
     Vol: 'Vol(Tns)',
-    Return: 'Return %'
+    Return: 'Return %',
+    SalesMetrics:'Sales Metrics'
+
   }
 };

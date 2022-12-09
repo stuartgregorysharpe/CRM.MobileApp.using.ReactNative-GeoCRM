@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useDispatch } from "react-redux";
 import { getApiRequest } from "../../../../actions/api.action";
 import SearchBar from '../../../../components/SearchBar';
@@ -34,8 +34,9 @@ const DanOneSales = () => {
     };
 
     return (
+
         <View style={{ flex: 1, flexDirection: 'column' }}>
-            <SalesSearchHeader initVal={searchKeyword} onSearch={(text) => {
+            <SalesSearchHeader canShowSearch initVal={searchKeyword} onSearch={(text) => {
                 setSearchKeyword(text);
                 _onLoad(text)
             }}

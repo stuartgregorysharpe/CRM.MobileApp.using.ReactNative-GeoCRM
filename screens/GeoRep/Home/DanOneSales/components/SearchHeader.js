@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import SearchBar from "../../../../../components/SearchBar"
 import Dropdown from './DropDown';
 
-const SalesSearchHeader = ({ onSearch, initVal, onDropDown }) => {
+const SalesSearchHeader = ({ onSearch, initVal, onDropDown, canShowSearch }) => {
     const [pickerData, setPickerData] = useState([
         {
             label: 'MTD',
@@ -24,21 +24,22 @@ const SalesSearchHeader = ({ onSearch, initVal, onDropDown }) => {
     return (
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flex: 3 }}>
-                <SearchBar
-                    onSearch={(text) => {
-                        onSearch(text)
-                    }}
-                    initVal={initVal}
-                    isFilter={false}
-                />
+                {canShowSearch ?
+                    <SearchBar
+                        onSearch={(text) => {
+                            onSearch(text)
+                        }}
+                        initVal={initVal}
+                        isFilter={false}
+                    />:<View style={{ height: 45, margin: 10}}/>}
 
             </View>
             <View style={{ flex: 1, marginRight: 10 }}>
                 <Dropdown data={pickerData} onSelect={(item, data) => {
                     onDropDown(item.value)
                     setPickerData(data);
-                }} label={'MTD'} 
-                initial={pickerData[0]}/>
+                }} label={'MTD'}
+                    initial={pickerData[0]} />
 
             </View>
         </View>

@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Modal,
     View,
+    Dimensions,
 } from 'react-native';
 import { AppText } from '../../../../../components/common/AppText';
 import SvgIcon from '../../../../../components/SvgIcon';
@@ -25,7 +26,8 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
 
     const openDropdown = () => {
         DropdownButton.current.measure((_fx, _fy, w, h, px, py) => {
-            setDropdownTop(py - h);
+            console.log(px+" : ",py);
+            setDropdownTop(py-h);
             setDropdownLeft(px);
             setDropDownWidth(w);
         });
@@ -45,27 +47,28 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
     };
 
     const renderItem = ({ item, index }) => (
-        console.log(item),
-        <TouchableOpacity style={[styles.item, {
-            backgroundColor: selected && selected.value === item.value ? PRIMARY_COLOR : Colors.whiteColor,
-            borderRadius: index == 0 || index === data.length - 1 ? 4 : 0,
-            // borderTopLeftRadius:
-            borderBottomWidth: selected && selected.value === item.value ? 0 : 1,
-        }]}
+        <TouchableOpacity
             onPress={() => onItemPress(item)}>
-            <AppText
-                type="secondaryBold"
-                title={item.label}
-                color={selected && selected.value === item.value ? Colors.whiteColor : whiteLabel().mainText}
-                style={{ fontSize: 12 }}></AppText>
+            <View style={[styles.item, {
+                backgroundColor: selected && selected.value === item.value ? PRIMARY_COLOR : Colors.whiteColor,
+                borderColor: PRIMARY_COLOR,
+            }]}>
+                <AppText
+                    type="secondaryBold"
+                    title={item.label}
+                    color={selected && selected.value === item.value ? Colors.whiteColor : whiteLabel().mainText}
+                    style={{ fontSize: 12 }}></AppText>
 
-            {index == 0 ?
-                <SvgIcon
-                    color={whiteLabel().actionFullButtonIcon}
-                    icon={'Bottom_Arrow'}
-                    width="30"
-                    height="30"
-                /> : <View style={{ width: 30, height: 30 }}></View>}
+                {index == 0 ?
+                    <SvgIcon
+                        color={whiteLabel().actionFullButtonIcon}
+                        icon={'Bottom_Arrow'}
+                        width="30"
+                        height="30"
+                    /> : <View style={{ width: 30, height: 30 }}></View>}
+            </View>
+            <View style={{ height: index == 0 || index == data.length - 1 ? 0 : 1, backgroundColor: PRIMARY_COLOR }} />
+
         </TouchableOpacity>
     );
 
@@ -73,11 +76,14 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
         return (
             <Modal visible={visible} transparent animationType="none">
                 <TouchableOpacity
-                    style={styles.overlay}
+                    style={[styles.overlay]}
                     onPress={() => setVisible(false)}>
-                    <View style={[styles.dropdown, { top: dropdownTop, left: dropdownLeft, width: dropdownWidth }]}>
+                    <View style={[styles.dropdown, {
+                        top: dropdownTop, 
+                        left: dropdownLeft,
+                        width: dropdownWidth
+                    }]}>
                         <FlatList
-                            style={{ borderRadius: 5, borderWidth: 1 }}
                             data={data}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
@@ -95,18 +101,21 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
             onPress={toggleDropdown}
         >
             {renderDropdown()}
-            <AppText
-                type="secondaryBold"
-                title={(selected && selected.label) || label}
-                color={whiteLabel().mainText}
-                style={styles.buttonText}></AppText>
+            {!visible && <View style={styles.button}>
+                <AppText
+                    type="secondaryBold"
+                    title={(selected && selected.label) || label}
+                    color={whiteLabel().mainText}
+                    style={styles.buttonText}></AppText>
 
-            <SvgIcon
-                color={whiteLabel().actionFullButtonIcon}
-                icon={'Bottom_Arrow'}
-                width="30"
-                height="30"
-            />
+                <SvgIcon
+                    color={whiteLabel().actionFullButtonIcon}
+                    icon={'Bottom_Arrow'}
+                    width="30"
+                    height="30"
+                />
+            </View>}
+
         </TouchableOpacity>
     );
 };
@@ -115,7 +124,7 @@ const styles = StyleSheet.create({
     button: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         backgroundColor: PRIMARY_COLOR,
         zIndex: 1,
         borderRadius: 7
@@ -128,17 +137,13 @@ const styles = StyleSheet.create({
     dropdown: {
         position: 'absolute',
         backgroundColor: Colors.whiteColor,
-        shadowColor: Colors.blackColor,
-        shadowRadius: 4,
-        shadowOffset: { height: 4, width: 0 },
-        shadowOpacity: 0.5,
         borderWidth: 1,
         borderColor: PRIMARY_COLOR,
-        borderRadius: 7
+        borderRadius: 8
     },
     overlay: {
-        width: '100%',
-        height: '100%',
+        width: Dimensions.get('screen').width,
+        height: Dimensions.get('screen').height,
         backgroundColor: '#00000055',
     },
     item: {
@@ -146,6 +151,7 @@ const styles = StyleSheet.create({
         height: 30,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 7,
     },
 });
 
