@@ -52,9 +52,8 @@ const SignatureSignView = (props) => {
     const handleEnd = async () => {
         console.log("hande data end");        
         var signature = ref.current.readSignature();      
-        saveImage(signature);
+        saveImage(signature);                   
     }
-
     const saveImage = async(signature) => {
         if(signature  != null){
             var outputPath =
