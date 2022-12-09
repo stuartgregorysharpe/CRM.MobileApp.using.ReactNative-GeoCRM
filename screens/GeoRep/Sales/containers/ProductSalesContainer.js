@@ -445,7 +445,7 @@ const ProductSalesContainer = props => {
         geProductPrice={geProductPrice}
         openProductDetail={openProductDetail}
         backButtonDisabled={true}
-        closableWithOutsideTouch={false}
+        closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         isUpdatingProductPrice={isUpdatingProductPrice}
         onButtonAction={onProductGroupModalClosed}
