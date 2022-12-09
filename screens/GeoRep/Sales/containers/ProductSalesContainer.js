@@ -20,6 +20,7 @@ import {showNotification} from '../../../../actions/notification.action';
 import {configProductSetUp} from '../helpers';
 
 const ProductSalesContainer = props => {
+
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const {items, settings} = props;
@@ -55,12 +56,6 @@ const ProductSalesContainer = props => {
             ...element,
           };
           var price = element.price;
-
-          // if(element.product_id == "1"){
-          // 	console.log("element" , element);
-          // 	console.log("product" , product);
-          // }
-
           if (product != undefined) {
             var finalPrice = 0;
             if (
@@ -94,8 +89,7 @@ const ProductSalesContainer = props => {
           }
         });
       }
-      return list;
-      //};
+      return list;      
     },
     [productPriceLists],
   );
@@ -138,43 +132,44 @@ const ProductSalesContainer = props => {
   }, []);
 
   useEffect(() => {
-    configAddProductCount();
+    if(productPriceLists != null && productPriceLists.length > 0){
+      configAddProductCount(productPriceLists);
+    }    
   }, [productPriceLists])
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      //setupFieldModalRef.current.showModal();
+    const unsubscribe = navigation.addListener('focus', () => {      
       refreshList();
     });
     return unsubscribe;
   }, [navigation]);
 
   const refreshList = async () => {
-    var productLists = await getJsonData('@product_price');
-    var addProductList = await getJsonData('@add_product');
-    if ( (productLists == null || productLists.length == 0 ) && (addProductList == null || addProductList.length == 0) ) {
+    var storedProductPriceList = await getJsonData('@product_price');
+    var storedAddProductList = await getJsonData('@add_product');
+    if ( (storedProductPriceList == null || storedProductPriceList.length == 0 ) && (storedAddProductList == null || storedAddProductList.length == 0) ) {
       props.getProductLists();
     }
   };
 
   const initializeProductLists = async () => {
-    var productLists = await getJsonData('@product_price');
-    if (productLists != null) {
-      dispatch(setProductPriceLists(productLists));
+    const storedProductPriceList = await getJsonData('@product_price');
+    if (storedProductPriceList != null) {
+      dispatch(setProductPriceLists(storedProductPriceList));
       setOutsideTouch(true);
       props.getProductLists();
     }
-    configAddProductCount();
+    configAddProductCount(storedProductPriceList);
   };
 
-  const configAddProductCount = async () => {
-    var addProductLists = await getJsonData('@add_product');
+  const configAddProductCount = async (storedProductPriceList) => {
+    const addProductList = await getJsonData('@add_product');
     var count = 0;
-    if (addProductLists != null && addProductLists != undefined){
-      count = addProductLists.length;
+    if (addProductList != null && addProductList != undefined){
+      count = addProductList.length;
     }
-    if(productPriceLists != undefined && productPriceLists != null && productPriceLists.length > 0){
-      var tmpLists = productPriceLists.filter(item => parseInt(item.qty) > 0);
+    if(storedProductPriceList != undefined && storedProductPriceList != null && storedProductPriceList.length > 0){
+      const tmpLists = storedProductPriceList.filter(item => parseInt(item.qty) > 0);
       count += tmpLists.length;
     }
     setCartCount(count);
@@ -192,7 +187,7 @@ const ProductSalesContainer = props => {
             removeLocalData('@add_product');
           }
         });
-        configAddProductCount();
+        configAddProductCount(productPriceLists);
         props.getProductLists(value);
         if (value != undefined) {
           setOutsideTouch(true);
@@ -285,9 +280,9 @@ const ProductSalesContainer = props => {
         item => item.add_product_id != value.add_product_id,
       );
     }
-    products.push(value);
-    setCartCount(products.length);
+    products.push(value);    
     storeJsonData('@add_product', products);
+    configAddProductCount(productPriceLists);
   };
 
   const onGroupItemClicked = item => {
@@ -427,8 +422,7 @@ const ProductSalesContainer = props => {
         flex: 1,
       }}>
       <SetupFieldModal
-        title="Define Setup"
-        //hideClear
+        title="Define Setup"        
         backButtonDisabled={true}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}

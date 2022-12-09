@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View ,TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View ,TouchableOpacity, Platform } from 'react-native'
 import React , { useRef } from 'react'
 import SignatureScreen from "react-native-signature-canvas";
 import { Colors, Fonts, Values } from '../../../constants';
 import { AppText } from '../../common/AppText';
 import { whiteLabel } from '../../../constants/Colors';
+import RNFS from 'react-native-fs';
+import { generateKey } from '../../../constants/Utils';
 
 const SignatureSignView = (props) => {
 
@@ -21,9 +23,7 @@ const SignatureSignView = (props) => {
 
     
     const handleOK = (signature) => {                
-        if(props.onOK){
-            props.onOK(signature);
-        }
+        saveImage(signature);        
     };
     
     const handleEmpty = () => {
@@ -49,10 +49,34 @@ const SignatureSignView = (props) => {
         }        
     }
 
-    const handleEnd = () => {
-        console.log("hande data end");
-        props.onOK(ref.current.readSignature()); 
+    const handleEnd = async () => {
+        console.log("hande data end");        
+        var signature = ref.current.readSignature();      
+        saveImage(signature);
     }
+
+    const saveImage = async(signature) => {
+        if(signature  != null){
+            var outputPath =
+            Platform.OS === 'ios'
+            ? `${RNFS.DocumentDirectoryPath}`
+            : `${RNFS.ExternalDirectoryPath}`;
+            var filepath = outputPath + '/add_prodict_sign' + '-' + generateKey() + '.png';
+            var data = await RNFS.writeFile(
+                filepath,
+                signature.replace('data:image/png;base64,', ''),
+                'base64',
+            ).then(res => {
+                if (!filepath.includes('file://')) {
+                    filepath = 'file://' + filepath;
+                }            
+                props.onOK(filepath); 
+                return res;
+            });                        
+        }  
+    }
+
+
     return (
         <View style={{marginTop:15}}>
 

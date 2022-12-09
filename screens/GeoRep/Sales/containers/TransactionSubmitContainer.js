@@ -1,8 +1,8 @@
 
 import { Dimensions, View  } from 'react-native'
 import React , { useState , useEffect } from 'react'
-import { GetRequestTransactionSubmitFieldsDAO } from '../../../../DAO';
-import { expireToken } from '../../../../constants/Helper';
+import { GetRequestTransactionSubmitFieldsDAO, PostRequestDAO } from '../../../../DAO';
+import { expireToken, getFileFormat } from '../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { Constants, Strings } from '../../../../constants';
 import { getJsonData, getTokenData } from '../../../../constants/Storage';
@@ -13,6 +13,7 @@ import * as RNLocalize from 'react-native-localize';
 
 const  TransactionSubmitContainer = (props) => {
         
+    const { cartStatistics , productPriceList , addProductList} = props;
     const dispatch = useDispatch();
     const [fields, setFields] = useState([])
     const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -42,8 +43,7 @@ const  TransactionSubmitContainer = (props) => {
             GetRequestTransactionSubmitFieldsDAO.find(param).then((res) => {            
                 if(isMount){
                     if(res.status == Strings.Success){                               
-                        setFields(res.fields);
-                        console.log("api res", res.fields)
+                        setFields(res.fields);                        
                     }
                 }
             }).catch((e) => {
@@ -60,24 +60,30 @@ const  TransactionSubmitContainer = (props) => {
             ...data,
             add_product_id : add_product_id
         }        
-        //props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});
-        
-        var res = await generatePostParam(data);
-        console.log("post data", res)
+        //props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});        
+        var res = await generatePostParam(data);        
     }
 
     const generatePostParam =  async(data) => {        
 
         try{
             var transactionFields = [];        
+            var files = getAllFiles(addProductList, data);            
             Object.keys(data).forEach(key =>{
                 transactionFields.push({field_id: key , answer: data[key]});
             });
-            var items = [];
-            var added_products = [];
-            const setupData = await getJsonData("@setup");
-            console.log("setupData" ,setupData)    
+            var items = generateProductPricePostData(productPriceList);
+            var added_products = generateAddProductPostData(addProductList);
+            const setupData = await getJsonData("@setup");            
             var time_zone = RNLocalize.getTimeZone();
+
+            const totals = {
+                discount : cartStatistics.discount,
+                sub_total: cartStatistics.subTotal,
+                tax: cartStatistics.tax,
+                total: cartStatistics.total
+            }
+
             var postJsonData = {
                 transaction_type : setupData.transaction_type.type,
                 location_id: setupData.location.location_id,
@@ -85,23 +91,82 @@ const  TransactionSubmitContainer = (props) => {
                 cart:{
                     items:items,
                     added_products: added_products,
-                    totals: {
-                        discount : '',
-                        sub_total: '',
-                        tax: '',
-                        total: ''
-                    }
+                    totals: totals
                 },
                 transaction_fields : transactionFields,
                 'user_local_data[time_zone]' : time_zone,
                 'user_local_data[latitude]' : currentLocation && currentLocation.latitude != null ? currentLocation.latitude : '0',
                 'user_local_data[longitude]' : currentLocation && currentLocation.longitude != null ? currentLocation.longitude : '0'
             }
+
+            files.forEach((item) => {
+                postJsonData = {
+                    ...postJsonData,
+                    [item.key] : getFileFormat(item.value)
+                }
+            })
+
+            PostRequestDAO.find(0, postJsonData, "transaction-submit", "sales/transaction-submission", "", "").then((res) => {
+                console.log("response", res);
+            }).catch((e) => {
+                expireToken(dispatch, e);
+            })
+
             
         }catch(e){
             console.log(e)
         }
         return postJsonData;
+    }
+
+    const getAllFiles = (addProductList , formData ) => {
+        var tmpList = [];
+        addProductList.forEach((item) => {
+            if(item.product_image && item.product_image.length > 0){
+                tmpList.push({
+                    key: `productImages[${item.add_product_id}]`,
+                    value : item.product_image[0]
+                });
+            }            
+        });
+        fields.forEach((item) => {
+            if(item.field_type == 'signature' || item.field_type == 'take_photo'){
+                tmpList.push({
+                    key: `fieldPhotos[${item.field_id}]`,
+                    value: formData[item.field_id]
+                })
+            }
+        })
+        return tmpList;
+        
+    }
+
+    const generateProductPricePostData = (productPriceList) => {
+        var tmpList = [];
+        productPriceList.forEach((item) => {
+            tmpList.push({
+                product_id: item.product_id,
+                add_product_id: '',
+                price: parseFloat(item.product.finalPrice) != 0 ? item.product.finalPrice : item.product.price,
+                qty: item.qty
+            })
+        })
+        return tmpList;
+    }
+
+    const generateAddProductPostData = (addProductPriceList) => {
+        var tmpList = [];
+        addProductPriceList.forEach((item) => {
+            tmpList.push({                
+                add_product_id: item.add_product_id,
+                product_name: item.product_name,
+                product_type: item.product_type,
+                additional_details: item.additional_details,
+                quantity: item.quantity,
+                price: item.price.value,
+            })
+        })
+        return tmpList;
     }
     
      return (
