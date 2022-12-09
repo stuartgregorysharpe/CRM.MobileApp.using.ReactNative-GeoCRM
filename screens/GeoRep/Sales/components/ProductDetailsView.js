@@ -71,12 +71,13 @@ const ProductDetailsView = props => {
 
   const onSave = () => {
     if (props.onSaveProduct && finalPrice != 0) {
+      
       props.onSaveProduct({
         product_id: product.product_id,
         price: product.price,
         finalPrice: {          
-          adjustedPrice : adjustedPrice.replace(product?.symbol, ''),
-          adjustedTextPrice: adjustedPrice,
+          adjustedPrice : adjustedPrice != null && adjustedPrice != undefined ? adjustedPrice.replace(product?.symbol, '') : '',
+          adjustedTextPrice: adjustedPrice != null && adjustedPrice != undefined ? adjustedPrice : '',
           discountPrice: discountPrice,
           final_price: finalPrice,
         },
