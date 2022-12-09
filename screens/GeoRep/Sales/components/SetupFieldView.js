@@ -164,7 +164,8 @@ const SetupFieldView = (props) => {
 	}
 
 	const isValidate = () => {		
-		
+				
+		var flag = false;
 		if(
 			!isLoading &&
 			selectedLocation != null &&
@@ -172,9 +173,13 @@ const SetupFieldView = (props) => {
 			selectedCurrency != null &&
 			( warehouseRequired && selectedWarehouse.length != 0 || !warehouseRequired )
 			){
-			return true;
+				flag = true;			
 		}
-		return false;
+		
+		if(props.updateOutSideTouchStatus) {		
+			props.updateOutSideTouchStatus(flag);
+		}
+		return flag;
 	}
 
 	const onContinue = () => {

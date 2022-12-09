@@ -55,6 +55,7 @@ const ProductSalesContainer = props => {
             ...element,
           };
           var price = element.price;
+
           // if(element.product_id == "1"){
           // 	console.log("element" , element);
           // 	console.log("product" , product);
@@ -104,8 +105,7 @@ const ProductSalesContainer = props => {
       items != undefined &&
       productPriceLists != undefined &&
       items.length > 0
-    ) {
-      console.log('trigger use memor ==');
+    ) {      
       var newList = [];
       const tmp = [...items];
       tmp.forEach(item => {
@@ -115,6 +115,7 @@ const ProductSalesContainer = props => {
         newItem.products = [...products];
         newList.push(newItem);
       });
+      
       return newList;
     }
     return [];
@@ -124,6 +125,7 @@ const ProductSalesContainer = props => {
     if (products != undefined && products.length > 0) {
       const tpLists = [...products];
       const newProducts = getProducts(tpLists);
+      
       return newProducts;
     }
     return [];
@@ -136,6 +138,10 @@ const ProductSalesContainer = props => {
   }, []);
 
   useEffect(() => {
+    configAddProductCount();
+  }, [productPriceLists])
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       //setupFieldModalRef.current.showModal();
       refreshList();
@@ -145,7 +151,8 @@ const ProductSalesContainer = props => {
 
   const refreshList = async () => {
     var productLists = await getJsonData('@product_price');
-    if (productLists == null || productLists.length == 0) {
+    var addProductList = await getJsonData('@add_product');
+    if ( (productLists == null || productLists.length == 0 ) && (addProductList == null || addProductList.length == 0) ) {
       props.getProductLists();
     }
   };
@@ -157,12 +164,20 @@ const ProductSalesContainer = props => {
       setOutsideTouch(true);
       props.getProductLists();
     }
+    configAddProductCount();
   };
 
   const configAddProductCount = async () => {
     var addProductLists = await getJsonData('@add_product');
-    if (addProductLists != null && addProductLists != undefined)
-      setCartCount(addProductLists.length);
+    var count = 0;
+    if (addProductLists != null && addProductLists != undefined){
+      count = addProductLists.length;
+    }
+    if(productPriceLists != undefined && productPriceLists != null && productPriceLists.length > 0){
+      var tmpLists = productPriceLists.filter(item => parseInt(item.qty) > 0);
+      count += tmpLists.length;
+    }
+    setCartCount(count);
   };
 
   const onSetupFieldModalClosed = ({type, value}) => {
@@ -396,6 +411,15 @@ const ProductSalesContainer = props => {
     navigation.navigate('CartScreen');
   };
 
+  const updateOutSideTouchStatus = async(flag) => {    
+    var setup = await getJsonData("@setup");
+    if(setup == null){
+      setOutsideTouch(false);
+    }else{
+      setOutsideTouch(flag);
+    }    
+  }
+
   return (
     <View
       style={{
@@ -404,13 +428,14 @@ const ProductSalesContainer = props => {
       }}>
       <SetupFieldModal
         title="Define Setup"
-        hideClear
+        //hideClear
         backButtonDisabled={true}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}
         hideDivider={true}
         modalType={Constants.modalType.MODAL_TYPE_CENTER}
         onButtonAction={onSetupFieldModalClosed}
+        updateOutSideTouchStatus={updateOutSideTouchStatus}
       />
 
       <ProductGroupModal

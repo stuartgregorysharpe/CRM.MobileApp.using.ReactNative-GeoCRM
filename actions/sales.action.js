@@ -1,4 +1,4 @@
-import { PRODUCT_PRICE_LISTS, SALES_SETTING } from "./actionTypes";
+import { PRODUCT_PRICE_LISTS, SALES_SETTING, SALES_SETUP } from "./actionTypes";
 
 export const setProductPriceLists = (productPriceLists) => ({
   type: PRODUCT_PRICE_LISTS,
@@ -12,9 +12,16 @@ export const setSalesSetting = (salesSetting) => ({
 });
 
 
+export const setSalesSetUp = (salesSetUp) => ({
+  type : SALES_SETUP,
+  payload: salesSetUp
+});
+
+
 // dispatch({type: CHECKIN, payload: false});
 
 
 export const clearProductPriceLists = () => ({
   type: PRODUCT_PRICE_LISTS,
 });
+

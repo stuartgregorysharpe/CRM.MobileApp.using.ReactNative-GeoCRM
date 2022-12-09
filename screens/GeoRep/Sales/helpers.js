@@ -145,6 +145,6 @@ export const configProductSetUp = async (value, callBack) => {
     }
   } else {
     console.log('setup data', setupData);
-    callBack('no_data');
+    callBack('changed');
   }
 };

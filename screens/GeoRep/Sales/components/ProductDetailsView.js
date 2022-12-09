@@ -28,9 +28,9 @@ const ProductDetailsView = props => {
       if (
         adjustedPrice != undefined &&
         adjustedPrice != '' &&
-        adjustedPrice.replace('R', '') != ''
+        adjustedPrice.replace( product?.symbol , '') != ''
       ) {
-        adjust = parseFloat(adjustedPrice.replace('R', ''));
+        adjust = parseFloat(adjustedPrice.replace(product?.symbol, ''));
       }
       if (
         discountPrice != undefined &&
@@ -74,8 +74,9 @@ const ProductDetailsView = props => {
       props.onSaveProduct({
         product_id: product.product_id,
         price: product.price,
-        finalPrice: {
-          adjustedPrice: adjustedPrice,
+        finalPrice: {          
+          adjustedPrice : adjustedPrice.replace(product?.symbol, ''),
+          adjustedTextPrice: adjustedPrice,
           discountPrice: discountPrice,
           final_price: finalPrice,
         },
