@@ -27,7 +27,6 @@ import ProductDetailsModal from '../modal/ProductDetailsModal';
 import {useCallback} from 'react';
 
 const CartContainer = props => {
-
   const navigation = props.navigation;
   const transactionSubmitModalRef = useRef(null);
   const dispatch = useDispatch();
@@ -103,7 +102,6 @@ const CartContainer = props => {
           if (navigation.canGoBack()) {
             navigation.popToTop();
           }
-          
         } else {
           loadDefinedConfig();
         }
@@ -292,16 +290,15 @@ const CartContainer = props => {
     productGroupModalRef.current.hideModal();
   };
 
-  const updateOutSideTouchStatus = async(flag) => {    
-      var setup = await getJsonData("@setup");
-      console.log("setup", setup)
-      if(setup == null){
-        setOutSideTouch(false);
-      }else{
-        setOutSideTouch(flag);
-      }    
-  }
-
+  const updateOutSideTouchStatus = async flag => {
+    var setup = await getJsonData('@setup');
+    console.log('setup', setup);
+    if (setup == null) {
+      setOutSideTouch(false);
+    } else {
+      setOutSideTouch(flag);
+    }
+  };
 
   return (
     <View style={[styles.container, props.style]}>
@@ -319,7 +316,7 @@ const CartContainer = props => {
       />
 
       <SetupFieldModal
-        title="Define Setup"        
+        title="Define Setup"
         backButtonDisabled={true}
         closableWithOutsideTouch={outSideTouch}
         ref={setupFieldModalRef}

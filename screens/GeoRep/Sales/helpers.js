@@ -27,7 +27,7 @@ export function getTotalCartProductList(
       });
     }
   });
-
+  totalCartProductList.sort((a, b) => (a.product_id > b.product_id ? 1 : -1));
   return totalCartProductList;
 }
 export function getProductItemDataForRender(productItem) {
