@@ -25,6 +25,7 @@ import {useDispatch} from 'react-redux';
 import {setProductPriceLists} from '../../../../actions/sales.action';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import {useCallback} from 'react';
+import AddProductModal from '../modal/AddProductModal';
 
 const CartContainer = props => {
   const navigation = props.navigation;
@@ -38,7 +39,8 @@ const CartContainer = props => {
   const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
   const [productListTitle, setProductListTitle] = useState('');
   const [outSideTouch, setOutSideTouch] = useState(false);
-
+  const [selectedAddProduct, setSelectedAddProduct] = useState(null);
+  const addProductModalRef = useRef(null);
   const setupFieldModalRef = useRef(null);
   const productGroupModalRef = useRef(null);
   const productDetailsModalRef = useRef(null);
@@ -64,7 +66,6 @@ const CartContainer = props => {
   const [product, setProduct] = useState();
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
 
-  console.log('totalProductList', totalProductList);
   useEffect(() => {
     loadAddProductLists();
     loadDefinedConfig();
@@ -78,6 +79,7 @@ const CartContainer = props => {
       setAddProductList([]);
     }
   };
+
   const clearAddProductList = async () => {
     await removeLocalData('@add_product');
   };
@@ -86,7 +88,6 @@ const CartContainer = props => {
     const defineData = await getJsonData('@setup');
     if (defineData) {
       setDefineSetup(defineData);
-      console.log('defineData', defineData);
     }
   };
   const onSetupFieldModalClosed = async ({type, value}) => {
@@ -185,7 +186,27 @@ const CartContainer = props => {
       updateCapturedProductPrice(product, qty);
     }
   };
-  const updateAddProductPrice = (product, qty) => {};
+  const deleteAddProduct = product_id => {
+    const newAddProductList = addProductList.filter(
+      x => x.add_product_id != product_id,
+    );
+    setAddProductList(newAddProductList);
+  };
+  const updateAddProductPrice = (product, qty) => {
+    if (parseInt(qty) == 0) {
+      deleteAddProduct(product.product_id);
+      return;
+    }
+    const newAddProductList = [...addProductList];
+    const productIndex = newAddProductList.findIndex(
+      x => x.add_product_id == product.product_id,
+    );
+    if (productIndex >= 0) {
+      newAddProductList[productIndex].quantity = qty;
+    }
+    setAddProductList(newAddProductList);
+    storeJsonData('@add_product', newAddProductList);
+  };
   const updateProductPriceLists = useCallback(
     async (product_id, price, qty, special, finalPrice, product) => {
       const lists = [...productPriceList];
@@ -196,28 +217,30 @@ const CartContainer = props => {
       var check = lists.find(
         item => parseInt(item.product_id) == parseInt(product_id),
       );
-      if (check != undefined) {
-        var tmpFinalPrice =
-          finalPrice != '' && finalPrice != 'clear'
-            ? finalPrice
-            : check.finalPrice;
-        tmpList.push({
-          product_id: product_id,
-          price: price,
-          qty: qty,
-          special: special,
-          finalPrice: finalPrice === 'clear' ? '' : tmpFinalPrice,
-          product: product,
-        });
-      } else {
-        tmpList.push({
-          product_id: product_id,
-          price: price,
-          qty: qty,
-          special: special,
-          finalPrice: finalPrice,
-          product: product,
-        });
+      if (parseInt(qty) > 0) {
+        if (check != undefined) {
+          var tmpFinalPrice =
+            finalPrice != '' && finalPrice != 'clear'
+              ? finalPrice
+              : check.finalPrice;
+          tmpList.push({
+            product_id: product_id,
+            price: price,
+            qty: qty,
+            special: special,
+            finalPrice: finalPrice === 'clear' ? '' : tmpFinalPrice,
+            product: product,
+          });
+        } else {
+          tmpList.push({
+            product_id: product_id,
+            price: price,
+            qty: qty,
+            special: special,
+            finalPrice: finalPrice,
+            product: product,
+          });
+        }
       }
 
       dispatch(setProductPriceLists(tmpList));
@@ -229,11 +252,38 @@ const CartContainer = props => {
   const openCapturedProductDetail = item => {
     setProductDetailTitle(item.product_name);
     setProduct(item);
-    console.log('set product item', item);
     if (productDetailsModalRef.current)
       productDetailsModalRef.current.showModal();
   };
-  const openAddedProductDetail = item => {};
+  const openAddedProductDetail = item => {
+    const foundProduct = addProductList.find(
+      x => x.add_product_id == item.product_id,
+    );
+    const newProduct = {...foundProduct};
+    setSelectedAddProduct(newProduct);
+    addProductModalRef.current.showModal();
+  };
+  const onAddProductModalClosed = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_DONE) {
+      addProductModalRef.current.hideModal();
+      saveAddProduct(value);
+    }
+  };
+  const saveAddProduct = value => {
+    if (parseInt(qty) == 0) {
+      deleteAddProduct(value.add_product_id);
+      return;
+    }
+    const newAddProductList = [...addProductList];
+    const productIndex = newAddProductList.findIndex(
+      x => x.add_product_id == value.add_product_id,
+    );
+    if (productIndex >= 0) {
+      newAddProductList[productIndex] = {...value};
+    }
+    setAddProductList(newAddProductList);
+    storeJsonData('@add_product', newAddProductList);
+  };
   const openProductDetail = item => {
     if (item.isAddProduct) {
       openAddedProductDetail(item);
@@ -252,7 +302,6 @@ const CartContainer = props => {
     }
   };
   const saveFinalPrice = async (value, type) => {
-    console.log('save data', value);
     var newProduct = {
       ...value.product,
     };
@@ -292,7 +341,6 @@ const CartContainer = props => {
 
   const updateOutSideTouchStatus = async flag => {
     var setup = await getJsonData('@setup');
-    console.log('setup', setup);
     if (setup == null) {
       setOutSideTouch(false);
     } else {
@@ -354,6 +402,13 @@ const CartContainer = props => {
         productPriceList={productPriceList}
         addProductList={addProductList}
         onButtonAction={onTransactionSubmitModalClosed}
+      />
+      <AddProductModal
+        onButtonAction={onAddProductModalClosed}
+        ref={addProductModalRef}
+        value={selectedAddProduct}
+        isEdit={true}
+        buttonTitle="Update"
       />
     </View>
   );
