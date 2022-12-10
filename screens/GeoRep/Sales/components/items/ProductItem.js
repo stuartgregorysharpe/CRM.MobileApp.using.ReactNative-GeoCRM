@@ -7,7 +7,7 @@ import NumberCounter from '../../../../../components/shared/SKUCount/components/
 import {style} from '../../../../../constants/Styles';
 import FastImage from 'react-native-fast-image';
 import {useSelector, useDispatch} from 'react-redux';
-import {formattedPrice} from '../../../../../helpers/formatHelpers';
+import {formattedPrice, formattedPriceWithSpace} from '../../../../../helpers/formatHelpers';
 import SvgIcon from '../../../../../components/SvgIcon';
 
 const ProductItem = props => {
@@ -36,9 +36,9 @@ const ProductItem = props => {
 
   const renderPrice = () => {
     if (item.finalPrice != 0) {
-      return item.symbol + formattedPrice(parseFloat(item.finalPrice));
+      return item.symbol + formattedPriceWithSpace(parseFloat(item.finalPrice));
     } else {
-      return item.symbol + formattedPrice(parseFloat(item.price));
+      return item.symbol + formattedPriceWithSpace(parseFloat(item.price));
     }
   };
 

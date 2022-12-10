@@ -8,8 +8,10 @@ import {Colors} from '../../../../constants';
 import {text} from '@fortawesome/fontawesome-svg-core';
 import {whiteLabel} from '../../../../constants/Colors';
 import {getJsonData} from '../../../../constants/Storage';
+import { validateDecimal } from '../../../../helpers/validateHelper';
 
 const ProductDetailsView = props => {
+
   const {product, settings} = props;
   if (!product || !settings) return null;
 
@@ -36,7 +38,7 @@ const ProductDetailsView = props => {
         discountPrice != undefined &&
         discountPrice != '' &&
         discountPrice.replace('%', '') != ''
-      ) {
+      ) {    
         discount = parseFloat(discountPrice.replace('%', '')) / 100;
       } else {
         setFinalPrice(adjust);
@@ -100,7 +102,7 @@ const ProductDetailsView = props => {
     if (text != undefined && text.includes('%')) {
       return text;
     } else {
-      return text + '%';
+      return text != undefined && text != '' ? text + '%' : '';
     }
   };
 
@@ -132,7 +134,10 @@ const ProductDetailsView = props => {
             style={styles.textInput}
             value={adjustedPrice}
             onChangeText={text => {
-              setAdjustedPrice(getSymbolPrice(text));
+              var check = validateDecimal(text.replace(product.symbol,''));
+              if(check){                
+                setAdjustedPrice(getSymbolPrice(text));
+              }              
             }}
             onBlur={() => {}}
             onEndEditing={() => {}}
@@ -151,7 +156,10 @@ const ProductDetailsView = props => {
             style={styles.textInput}
             value={discountPrice}
             onChangeText={text => {
-              setDiscountPrice(text);
+              var check = validateDecimal(text);
+              if(check){
+                setDiscountPrice(text);
+              }              
             }}
             onBlur={() => {
               console.log('on editing');

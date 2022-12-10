@@ -137,6 +137,14 @@ export const formattedNumber = num => {
   }
 };
 
+export const formattedPriceWithSpace = num => {
+  try {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  } catch (e) {
+    return num;
+  }
+};
+
 export const formattedPrice = num => {
   try {
     return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
