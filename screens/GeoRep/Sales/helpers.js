@@ -85,8 +85,6 @@ export function calculateCartStatistics(productList, taxRate = 0) {
     totalUnitCount += quantity;
     totalDiscount += calculateDiscountAmount(product);
     const price = calculatePrice(product);
-    console.log('price', price);
-    console.log('item', product);
     subTotal += price * quantity;
   });
   tax = subTotal * taxRate;

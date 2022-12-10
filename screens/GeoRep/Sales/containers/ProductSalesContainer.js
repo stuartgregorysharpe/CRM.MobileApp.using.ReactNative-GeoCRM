@@ -20,7 +20,6 @@ import {showNotification} from '../../../../actions/notification.action';
 import {configProductSetUp} from '../helpers';
 
 const ProductSalesContainer = props => {
-
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const {items, settings} = props;
@@ -89,7 +88,7 @@ const ProductSalesContainer = props => {
           }
         });
       }
-      return list;      
+      return list;
     },
     [productPriceLists],
   );
@@ -99,7 +98,7 @@ const ProductSalesContainer = props => {
       items != undefined &&
       productPriceLists != undefined &&
       items.length > 0
-    ) {      
+    ) {
       var newList = [];
       const tmp = [...items];
       tmp.forEach(item => {
@@ -109,7 +108,7 @@ const ProductSalesContainer = props => {
         newItem.products = [...products];
         newList.push(newItem);
       });
-      
+
       return newList;
     }
     return [];
@@ -119,7 +118,7 @@ const ProductSalesContainer = props => {
     if (products != undefined && products.length > 0) {
       const tpLists = [...products];
       const newProducts = getProducts(tpLists);
-      
+
       return newProducts;
     }
     return [];
@@ -132,13 +131,13 @@ const ProductSalesContainer = props => {
   }, []);
 
   useEffect(() => {
-    if(productPriceLists != null && productPriceLists.length > 0){
+    if (productPriceLists != null && productPriceLists.length > 0) {
       configAddProductCount(productPriceLists);
-    }    
-  }, [productPriceLists])
+    }
+  }, [productPriceLists]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
+    const unsubscribe = navigation.addListener('focus', () => {
       refreshList();
     });
     return unsubscribe;
@@ -147,7 +146,10 @@ const ProductSalesContainer = props => {
   const refreshList = async () => {
     var storedProductPriceList = await getJsonData('@product_price');
     var storedAddProductList = await getJsonData('@add_product');
-    if ( (storedProductPriceList == null || storedProductPriceList.length == 0 ) && (storedAddProductList == null || storedAddProductList.length == 0) ) {
+    if (
+      (storedProductPriceList == null || storedProductPriceList.length == 0) &&
+      (storedAddProductList == null || storedAddProductList.length == 0)
+    ) {
       props.getProductLists();
     }
   };
@@ -162,14 +164,20 @@ const ProductSalesContainer = props => {
     configAddProductCount(storedProductPriceList);
   };
 
-  const configAddProductCount = async (storedProductPriceList) => {
+  const configAddProductCount = async storedProductPriceList => {
     const addProductList = await getJsonData('@add_product');
     var count = 0;
-    if (addProductList != null && addProductList != undefined){
+    if (addProductList != null && addProductList != undefined) {
       count = addProductList.length;
     }
-    if(storedProductPriceList != undefined && storedProductPriceList != null && storedProductPriceList.length > 0){
-      const tmpLists = storedProductPriceList.filter(item => parseInt(item.qty) > 0);
+    if (
+      storedProductPriceList != undefined &&
+      storedProductPriceList != null &&
+      storedProductPriceList.length > 0
+    ) {
+      const tmpLists = storedProductPriceList.filter(
+        item => parseInt(item.qty) > 0,
+      );
       count += tmpLists.length;
     }
     setCartCount(count);
@@ -280,7 +288,7 @@ const ProductSalesContainer = props => {
         item => item.add_product_id != value.add_product_id,
       );
     }
-    products.push(value);    
+    products.push(value);
     storeJsonData('@add_product', products);
     configAddProductCount(productPriceLists);
   };
@@ -406,14 +414,14 @@ const ProductSalesContainer = props => {
     navigation.navigate('CartScreen');
   };
 
-  const updateOutSideTouchStatus = async(flag) => {    
-    var setup = await getJsonData("@setup");
-    if(setup == null){
+  const updateOutSideTouchStatus = async flag => {
+    var setup = await getJsonData('@setup');
+    if (setup == null) {
       setOutsideTouch(false);
-    }else{
+    } else {
       setOutsideTouch(flag);
-    }    
-  }
+    }
+  };
 
   return (
     <View
@@ -422,7 +430,7 @@ const ProductSalesContainer = props => {
         flex: 1,
       }}>
       <SetupFieldModal
-        title="Define Setup"        
+        title="Define Setup"
         backButtonDisabled={true}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}
