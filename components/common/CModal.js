@@ -50,10 +50,9 @@ const CModal = React.forwardRef((props, ref) => {
   const onClear = () => {
     if (props.onClear) {
       props.onClear();
-    }else{
+    } else {
       setIsVisible(false);
     }
-    
   };
 
   return (
@@ -62,19 +61,17 @@ const CModal = React.forwardRef((props, ref) => {
         animationType="fade"
         transparent
         visible={isVisible}
-        onRequestClose={() =>{
-          if(!backButtonDisabled){
-            onClose()
-          }          
+        onRequestClose={() => {
+          if (!backButtonDisabled) {
+            onClose();
+          }
         }}>
-
         <View
           style={[
             isCenterModal && styles.dim,
             isBottomModal && styles.bottomModalDim,
             isFullModal && styles.fullModalDim,
           ]}>
-
           {closableWithOutsideTouch && (
             <TouchableOpacity
               activeOpacity={1}
@@ -95,8 +92,6 @@ const CModal = React.forwardRef((props, ref) => {
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
             ]}>
-
-
             <View style={styles.bodyContainer}>
               {!isFullModal && !hideDivider && (
                 <TouchableOpacity onPress={onClose}>
@@ -117,7 +112,11 @@ const CModal = React.forwardRef((props, ref) => {
               )}
 
               {(props.title || props.icon) && (
-                <View style={[styles.titleContainer, {marginTop: hideDivider ? 10: 5}]}>
+                <View
+                  style={[
+                    styles.titleContainer,
+                    {marginTop: hideDivider ? 10 : 5},
+                  ]}>
                   <View
                     style={{
                       flex: 1,
@@ -169,9 +168,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    
   },
-  
+
   modalContainer: {
     margin: 32,
     position: 'absolute',

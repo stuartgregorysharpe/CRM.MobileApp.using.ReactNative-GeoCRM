@@ -270,13 +270,18 @@ const CartContainer = props => {
     }
   };
   const saveAddProduct = value => {
-    if (parseInt(qty) == 0) {
+    if (parseInt(value.quantity) == 0) {
       deleteAddProduct(value.add_product_id);
       return;
     }
     const newAddProductList = [...addProductList];
     const productIndex = newAddProductList.findIndex(
       x => x.add_product_id == value.add_product_id,
+    );
+    console.log('productIndex', productIndex);
+    console.log(
+      'newAddProductList[productIndex]',
+      newAddProductList[productIndex],
     );
     if (productIndex >= 0) {
       newAddProductList[productIndex] = {...value};
@@ -383,7 +388,7 @@ const CartContainer = props => {
         openProductDetail={openProductDetail}
         isUpdatingProductPrice={isUpdatingProductPrice}
         backButtonDisabled={true}
-        closableWithOutsideTouch={false}
+        closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         onClearData={onClearProduct}
         onButtonAction={onProductGroupModalClosed}

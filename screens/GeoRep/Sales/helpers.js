@@ -5,7 +5,9 @@ export function getTotalCartProductList(
   addProductList,
   currency,
 ) {
-  const totalCartProductList = [...productPriceList];
+  const totalCartProductList = productPriceList.filter(
+    x => parseInt(x.qty) > 0,
+  );
   const symbol = currency?.symbol || 'R';
   console.log('addProductList', addProductList);
   addProductList.forEach(item => {
