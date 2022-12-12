@@ -49,6 +49,7 @@ const ProductGroupView = props => {
         data={products}
         renderItem={({item, index}) => renderItem(item, index)}
         keyExtractor={(item, index) => index.toString()}
+        removeClippedSubviews={false}
       />
 
       <SubmitButton title="Save" onSubmit={onSave} />
