@@ -38,7 +38,7 @@ const ProductGroupContainer = props => {
         alignSelf: 'stretch',
         marginHorizontal: 5,
         marginTop: 10,
-        height: isKeyboardVisible
+        maxHeight: isKeyboardVisible
           ? Values.deviceHeight * 0.5
           : Values.deviceHeight * 0.8,
       }}>
