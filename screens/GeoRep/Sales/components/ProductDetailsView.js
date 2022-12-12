@@ -1,14 +1,12 @@
 import {StyleSheet, Text, View, TextInput} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import ProductGroupItem from './items/ProductGroupItem';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
-import ProductItem from './items/ProductItem';
 import {AppText} from '../../../../components/common/AppText';
 import {Colors} from '../../../../constants';
-import {text} from '@fortawesome/fontawesome-svg-core';
 import {whiteLabel} from '../../../../constants/Colors';
 import {getJsonData} from '../../../../constants/Storage';
 import { validateDecimal } from '../../../../helpers/validateHelper';
+import { formattedPriceWithSpace } from '../../../../helpers/formatHelpers';
 
 const ProductDetailsView = props => {
 
@@ -118,7 +116,7 @@ const ProductDetailsView = props => {
         </View>
         <View style={{flex: 1}}>
           <AppText
-            title={product.symbol + product.price}
+            title={product.symbol + formattedPriceWithSpace(parseFloat(product.price))}
             color={whiteLabel().mainText}
           />
         </View>
@@ -183,7 +181,7 @@ const ProductDetailsView = props => {
         </View>
         <View style={{flex: 1}}>
           <AppText
-            title={product.symbol + finalPrice}
+            title={product.symbol + formattedPriceWithSpace(parseFloat(finalPrice))}
             color={whiteLabel().mainText}
           />
         </View>
