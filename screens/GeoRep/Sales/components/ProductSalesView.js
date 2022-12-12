@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity ,ActivityIndicator} from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
 import ProductItem from './items/ProductItem';
 import ProductGroupItem from './items/ProductGroupItem';
@@ -104,6 +104,22 @@ const ProductSalesView = props => {
     [isEndPageLoading, isLoading],
   );
 
+  renderFooter = () => {
+    if (!isEndPageLoading && isLoading) {
+      return (
+        <View style={styles.footer}>
+          <TouchableOpacity activeOpacity={0.9} style={styles.loadMoreBtn}>
+            <Text style={styles.btnText}>Loading</Text>
+            {isLoading ? (
+              <ActivityIndicator color="white" style={{marginLeft: 8}} />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return <View></View>;
+  };
+
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
       <SearchBar
@@ -136,8 +152,9 @@ const ProductSalesView = props => {
         onEndReached={() => {
           loadMoreData(pageNumber, '');
         }}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.5}
         removeClippedSubviews={false}
+        ListFooterComponent={renderFooter.bind(this)}
       />
 
       <View
@@ -178,5 +195,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignItems: 'center',
     paddingTop: 5,
+  },
+  footer: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 });

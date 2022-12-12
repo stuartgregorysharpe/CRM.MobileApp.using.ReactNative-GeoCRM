@@ -7,8 +7,9 @@ import CCheckBox from '../../../../components/common/CCheckBox'
 
 const Warehouse = (props) => {
 
-    const { warehouse , selectedItem} = props;    
+    const { warehouse , selectedItem} = props;        
     const [updatedLists, setUpdatedLists] = useState([])
+    if(!warehouse) return null;
 
     useEffect(() => {
         let isMout = true;
