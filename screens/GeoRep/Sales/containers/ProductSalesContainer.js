@@ -348,7 +348,7 @@ const ProductSalesContainer = props => {
             product.product_id,
             price,
             qty,
-            special,
+            finalPrice == 0 ? special : '0',
             '',
             updatedProduct,
           );
@@ -416,6 +416,7 @@ const ProductSalesContainer = props => {
   const openSetup = () => {
     setupFieldModalRef.current.showModal();
   };
+  
   const openReorder = () => {
     dispatch(
       showNotification({
