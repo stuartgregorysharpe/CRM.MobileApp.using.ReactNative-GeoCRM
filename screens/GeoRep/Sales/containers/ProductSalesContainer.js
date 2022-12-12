@@ -134,8 +134,8 @@ const ProductSalesContainer = props => {
   }, []);
 
   useEffect(() => {
-    if (productPriceLists != null && productPriceLists.length > 0) {
-      configAddProductCount(productPriceLists);
+    if (productPriceLists != null) {
+      configAddProductCount(productPriceLists);      
     }
   }, [productPriceLists]);
 
@@ -206,17 +206,17 @@ const ProductSalesContainer = props => {
         }
       }
     }else if(type == Constants.actionType.ACTION_DONE){
-		setupFieldModalRef.current.hideModal();
-		if(value.name === 'More'){
-			dispatch({type: SLIDE_STATUS, payload: false});			
-			if (visibleMore != '') {			
-				dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-			} else {
-				dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-            }
-		}else{			
-			navigation.navigate(value.name);
-		}
+		  setupFieldModalRef.current.hideModal();
+      if(value.name === 'More'){
+        dispatch({type: SLIDE_STATUS, payload: false});			
+        if (visibleMore != '') {			
+          dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+        } else {
+          dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+              }
+      }else{			
+        navigation.navigate(value.name);
+      }
     }
   };
 
