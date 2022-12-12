@@ -14,10 +14,12 @@ const CartSettingsView = props => {
     }
   };
   return (
-    <View style={[styles.container, cardShadow, props.style]}>
-      <TouchableOpacity style={styles.settingButton} onPress={onPressSettings}>
+    <TouchableOpacity
+      style={[styles.container, cardShadow, props.style]}
+      onPress={onPressSettings}>
+      <View style={styles.settingButton}>
         <SvgIcon icon="Setting" width="20" height="20" />
-      </TouchableOpacity>
+      </View>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <SvgIcon icon="Person_Sharp_White" width="12px" height="12px" />
         <Text style={styles.sectionText}>Customer Name</Text>
@@ -28,7 +30,7 @@ const CartSettingsView = props => {
         <Text style={styles.sectionText}>Address</Text>
       </View>
       <Text style={[styles.text, {marginTop: 5}]}>{address}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

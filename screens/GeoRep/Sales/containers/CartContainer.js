@@ -190,6 +190,7 @@ const CartContainer = props => {
     const newAddProductList = addProductList.filter(
       x => x.add_product_id != product_id,
     );
+    storeJsonData('@add_product', newAddProductList);
     setAddProductList(newAddProductList);
   };
   const updateAddProductPrice = (product, qty) => {
@@ -272,6 +273,7 @@ const CartContainer = props => {
   const saveAddProduct = value => {
     if (parseInt(value.quantity) == 0) {
       deleteAddProduct(value.add_product_id);
+
       return;
     }
     const newAddProductList = [...addProductList];

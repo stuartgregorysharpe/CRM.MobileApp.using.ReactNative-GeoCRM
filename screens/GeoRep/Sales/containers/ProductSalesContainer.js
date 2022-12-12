@@ -139,6 +139,7 @@ const ProductSalesContainer = props => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       refreshList();
+      configAddProductCount(productPriceLists);
     });
     return unsubscribe;
   }, [navigation]);
