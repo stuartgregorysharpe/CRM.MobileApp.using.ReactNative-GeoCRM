@@ -220,7 +220,7 @@ const DynamicField = props => {
             props.onPress();
           }
         }}
-        onSelectItem={item => {
+        onSelectItem={ item => {
 
           if(mode == "contact_email" || mode == "contact_select"){
             onContactItemSelected(item);

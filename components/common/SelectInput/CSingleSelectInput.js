@@ -41,7 +41,8 @@ const CSingleSelectInput = props => {
           });
           return title;          
         }else{
-          return checkedValue != null && checkedValue != undefined ? checkedValue.length + " Selected" : '';
+
+          return checkedValue != null && checkedValue != undefined  && checkedValue.length == 0 ? placeholder : checkedValue.length + " Selected";
         }
       }
       return '';      
@@ -154,6 +155,7 @@ const CSingleSelectInput = props => {
           }
         }}
       />
+      
     </View>
   );
 };
