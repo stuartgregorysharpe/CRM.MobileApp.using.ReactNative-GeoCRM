@@ -212,3 +212,16 @@ export const getRandomNumber = length => {
   var RandomNumber = Math.floor(Math.random() * max) + 1;
   return RandomNumber;
 };
+
+
+export function afterDecimal(num) {
+
+  if(num.toString() == ''){
+    return 0;
+  }
+
+  if (Number.isInteger(num)) {
+    return 0;
+  }
+  return  num.toString().split('.')[1] != undefined ? num.toString().split('.')[1].length : 0;
+}

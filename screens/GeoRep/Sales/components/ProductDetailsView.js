@@ -6,7 +6,7 @@ import {Colors} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
 import {getJsonData} from '../../../../constants/Storage';
 import { validateDecimal } from '../../../../helpers/validateHelper';
-import { formattedPriceWithSpace } from '../../../../helpers/formatHelpers';
+import { afterDecimal, formattedPriceWithSpace } from '../../../../helpers/formatHelpers';
 
 const ProductDetailsView = props => {
 
@@ -133,7 +133,8 @@ const ProductDetailsView = props => {
             value={adjustedPrice}
             onChangeText={text => {
               var check = validateDecimal(text.replace(product.symbol,''));
-              if(check){                
+              const length = afterDecimal(text.replace(product.symbol,''));
+              if(check && length <= 2){                
                 setAdjustedPrice(getSymbolPrice(text));
               }              
             }}
@@ -155,7 +156,8 @@ const ProductDetailsView = props => {
             value={discountPrice}
             onChangeText={text => {
               var check = validateDecimal(text);
-              if(check){
+              const length = afterDecimal(text);
+              if( (check && length <= 2 && parseFloat(text) <= 100) || text == '' ){
                 setDiscountPrice(text);
               }              
             }}
