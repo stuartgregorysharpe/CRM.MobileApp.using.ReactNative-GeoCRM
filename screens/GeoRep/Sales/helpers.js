@@ -89,7 +89,7 @@ export function calculateCartStatistics(productList, taxRate = 0) {
     const price = calculatePrice(product);
     subTotal += price * quantity;
   });
-  tax = subTotal * taxRate;
+  tax = subTotal * (taxRate / 100);
   const total = tax + subTotal;
   const cartStatistics = {
     itemCount: productList.length,
