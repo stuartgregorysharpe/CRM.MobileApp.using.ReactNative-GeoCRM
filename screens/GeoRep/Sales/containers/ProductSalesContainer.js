@@ -321,7 +321,7 @@ const ProductSalesContainer = props => {
     const param = {
       product_id: product.product_id,
       qty: qty,
-    };
+    };    
     GetRequestProductPriceDAO.find(param)
       .then(res => {
         if (res.status === Strings.Success) {
@@ -355,7 +355,7 @@ const ProductSalesContainer = props => {
         }
         setIsUpdatingProductPrice(false);
       })
-      .catch(e => {
+      .catch(e => {        
         expireToken(dispatch, e);
         setIsUpdatingProductPrice(false);
       });

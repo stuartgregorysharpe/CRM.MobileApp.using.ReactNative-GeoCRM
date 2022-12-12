@@ -29,6 +29,8 @@ const ProductItem = props => {
 
   const onEditDone = qty => {
     setQty(qty);
+    console.log("done",qty)
+    console.log("qty", qty, props)
     if (props.geProductPrice) {
       props.geProductPrice(item, qty);
     }
@@ -100,8 +102,7 @@ const ProductItem = props => {
             style={{marginTop: 0, marginBottom: 0}}
             step={parseInt(item.qty_increments)}
             count={qty}
-            onCount={onCount}
-            //onChangeText={onChangeText}
+            onCount={onCount}            
             isClickable={!isLoading}
             fixed={1}
             onEditDone={onEditDone}
