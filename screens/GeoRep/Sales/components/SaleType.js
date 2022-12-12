@@ -48,8 +48,7 @@ export default SaleType
 
 const styles = StyleSheet.create({
 
-	refreshBox: {
-		flex: 1,		
+	refreshBox: {		
 		alignSelf:'stretch',
 		flexDirection: 'row',
 		alignItems: 'center',

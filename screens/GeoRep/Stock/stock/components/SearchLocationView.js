@@ -21,7 +21,7 @@ export default function SearchLocationView(props) {
     }
     
     return (
-        <View>      
+        <View style={{alignSelf:'stretch'}}>
             <SearchBox 
                 style={type === 'setup' ? styles.setUpStyle : styles.normalStyle}
                 placeholder="Search Location Name..."
@@ -40,22 +40,27 @@ export default function SearchLocationView(props) {
                         })
                     }
                 </ScrollView> */}
-                <FlatList               
-                    ListHeaderComponent={()=>
-                        <View></View>
-                    }
-                    removeClippedSubviews={false}                
-                    initialNumToRender={10}
-                    data={lists}            
-                    renderItem={
-                        ({ item, index }) => renderItems(item, index)
-                    }
-                    keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                    }}
 
-                />
+                {
+                    lists != undefined && lists.length > 0 &&
+                    <FlatList               
+                        ListHeaderComponent={()=>
+                            <View></View>
+                        }
+                        removeClippedSubviews={false}                
+                        initialNumToRender={10}
+                        data={lists}            
+                        renderItem={
+                            ({ item, index }) => renderItems(item, index)
+                        }
+                        keyExtractor={(item, index) => index.toString()}
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                        }}
+
+                    />
+                }
+                
             </View>
                 
 
@@ -79,9 +84,9 @@ const styles = StyleSheet.create({
         marginHorizontal:0,
     },
     setUpStyleView :{
-        flexDirection:'column',         
-        marginHorizontal: -10,
-        maxHeight: 350,
+        //flexDirection:'column',         
+        // marginHorizontal: -10,
+        maxHeight: 380,
     },
     normalStyleView:{
         flexDirection:'column',         

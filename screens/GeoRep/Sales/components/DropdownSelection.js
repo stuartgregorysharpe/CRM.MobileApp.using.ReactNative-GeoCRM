@@ -65,8 +65,7 @@ export default DropdownSelection
 
 const styles = StyleSheet.create({
 
-	refreshBox: {
-		flex: 1,		
+	refreshBox: {		
 		alignSelf:'stretch',
 		flexDirection: 'column',
 		alignItems: 'center',

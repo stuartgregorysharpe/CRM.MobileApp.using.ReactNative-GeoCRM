@@ -194,17 +194,25 @@ const SetupFieldView = (props) => {
 	}
 
 	return (
-		<View style={{marginTop:10}}>
+		<View style={{
+			marginHorizontal:10,
+				marginTop:10, 
+				backgroundColor:'white' ,
+			 minHeight:250, 
+			 maxHeight:400, 
+			 padding:10,
+			 borderRadius:5 ,
+			 alignSelf:'stretch' }}>
 						
 			<SearchLocationContainer 
 				type="setup"
 				onSubmit={onSearch} 
 				onStartSearch={onStartSearch}
-				isSkipLocationIdCheck
-				style={[isSearchStart ? styles.bgColor : {} , {position:'absolute', zIndex:999, right:0, left:0  }]} //
+				isSkipLocationIdCheck				
+				style={[isSearchStart ? styles.bgColor : {}]} //
 			{...props} />
 			
-			<View style={{height:55}}></View>
+			{/* <View style={{height:55}}></View> */}
 
 			{
 				selectedLocation  != null && !isSearchStart &&
@@ -217,7 +225,7 @@ const SetupFieldView = (props) => {
 			
 			{
 				!isSearchStart && 
-				<View>
+				<View style={{alignSelf:'stretch'}}>
 
 					<SaleType 
 						transaction_types={transaction_types} 

@@ -18,10 +18,13 @@ import AddProductModal from '../modal/AddProductModal';
 import {setProductPriceLists} from '../../../../actions/sales.action';
 import {showNotification} from '../../../../actions/notification.action';
 import {configProductSetUp} from '../helpers';
+import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, SLIDE_STATUS } from '../../../../actions/actionTypes';
 
 const ProductSalesContainer = props => {
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
+  const visibleMore = useSelector(state => state.rep.visibleMore);
+
   const {items, settings} = props;
 
   const [selectedGroupTitle, setSelectedGroupTitle] = useState('');
@@ -202,6 +205,18 @@ const ProductSalesContainer = props => {
           setOutsideTouch(true);
         }
       }
+    }else if(type == Constants.actionType.ACTION_DONE){
+		setupFieldModalRef.current.hideModal();
+		if(value.name === 'More'){
+			dispatch({type: SLIDE_STATUS, payload: false});			
+			if (visibleMore != '') {			
+				dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+			} else {
+				dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+            }
+		}else{			
+			navigation.navigate(value.name);
+		}
     }
   };
 
@@ -430,13 +445,14 @@ const ProductSalesContainer = props => {
         alignSelf: 'stretch',
         flex: 1,
       }}>
+
       <SetupFieldModal
         title="Define Setup"
         backButtonDisabled={true}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}
         hideDivider={true}
-        modalType={Constants.modalType.MODAL_TYPE_CENTER}
+        modalType={Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM}
         onButtonAction={onSetupFieldModalClosed}
         updateOutSideTouchStatus={updateOutSideTouchStatus}
       />

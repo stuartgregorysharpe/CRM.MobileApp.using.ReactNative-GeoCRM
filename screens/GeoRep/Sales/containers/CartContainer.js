@@ -376,7 +376,7 @@ const CartContainer = props => {
         closableWithOutsideTouch={outSideTouch}
         ref={setupFieldModalRef}
         hideDivider={true}
-        modalType={Constants.modalType.MODAL_TYPE_CENTER}
+        modalType={Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM}
         onButtonAction={onSetupFieldModalClosed}
         updateOutSideTouchStatus={updateOutSideTouchStatus}
       />

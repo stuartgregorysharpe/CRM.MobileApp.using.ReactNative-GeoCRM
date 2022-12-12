@@ -124,7 +124,7 @@ const SearchLocationContainer = props => {
   };
 
   return (
-    <View style={[props.style ? props.style : {} , {alignSelf: 'stretch', }]}>
+    <View style={[props.style ? props.style : {} , {alignSelf: 'stretch' }]}>
       <SearchLocationView
         lists={lists}
         onItemPressed={onItemPressed}
