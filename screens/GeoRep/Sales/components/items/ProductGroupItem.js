@@ -65,14 +65,14 @@ const ProductGroupItem = (props) => {
                 
                 {
                     products.length > 3 &&
-                    <TouchableOpacity 
-                        onPress={() => {                            
-                        }}
-                        >
+                    // <TouchableOpacity 
+                    //     onPress={() => {                            
+                    //     }}
+                    //     >
                         <View style={{flex:1, alignItems:'flex-end', paddingTop:5,}}>
                             <AppText title={"+" + ( products.length - 3 ) +  " More"} color={whiteLabel().mainText} />
                         </View>
-                    </TouchableOpacity>
+                    // </TouchableOpacity>
                     
                 }
                 
