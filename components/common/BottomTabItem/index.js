@@ -7,7 +7,7 @@ import { whiteLabel } from '../../../constants/Colors'
 
 const BottomTabItem = ({item , onItemPressed}) => {
     if(!item) return null;
-    console.log("ite",item)
+    
   return (
     <TouchableOpacity 
         onPress={onItemPressed}

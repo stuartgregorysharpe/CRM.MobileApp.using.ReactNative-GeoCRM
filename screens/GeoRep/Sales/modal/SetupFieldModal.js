@@ -24,14 +24,13 @@ const SetupFieldModal = React.forwardRef((props, ref) => {
             modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
             closableWithOutsideTouch
             onClear={() => {
-                //onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                            
+                //onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                
                 setIsClear(true);
             }}            
             {...props}>
             <SetupFieldContainer 
-                isClear={isClear}
-                updateClear={(flag) => {
-                    console.log("flag", flag)
+                isClear={isClear}                
+                updateClear={(flag) => {                    
                     setIsClear(flag)
                 }}
                 {...props} />

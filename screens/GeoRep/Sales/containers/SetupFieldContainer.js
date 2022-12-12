@@ -13,11 +13,10 @@ import { whiteLabel } from '../../../../constants/Colors';
 import DeviceInfo from 'react-native-device-info';
 import { style } from '../../../../constants/Styles';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
-
-
 const BottomTab = createBottomTabNavigator();
-const  SetupFieldContainer = (props) => {
 
+
+const  SetupFieldContainer = (props) => {
     
     const [transaction_types , setTransactinTypes] = useState(null);
     const [warehouse , setWarehouse] = useState(null);
@@ -28,7 +27,7 @@ const  SetupFieldContainer = (props) => {
     const selectProject = useSelector(state => state.selection.selectProject);
     const [bottomTabs, setBottomTabs] = useState([]);
 
-    const dispatch = useDispatch()    
+    const dispatch = useDispatch() 
     let isMount = true;
 
     useEffect(() => {
@@ -55,9 +54,7 @@ const  SetupFieldContainer = (props) => {
     const onContinue = (data) => {             
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
-
-    
-    
+        
     return (
         <View style={{
             alignSelf:'stretch' , 
@@ -91,75 +88,7 @@ const  SetupFieldContainer = (props) => {
                                 key={index} item={item} />
                         )
                     })
-                }
-                
-            {/* <BottomTab.Navigator
-                screenOptions={{
-                    tabBarActiveTintColor: '#fff',
-                    tabBarHideOnKeyboard: true,
-                    headerTitleAlign: 'left',
-                    headerStyle: {
-                    backgroundColor: whiteLabel().headerBackground,
-                    height: getHeaderHeight(),
-                    },
-                    tabBarShowLabel: true,
-                    headerTitleStyle: style.headerTitle,
-                    tabBarIconStyle: {
-                    color: '#fff',
-                    },
-                    headerStatusBarHeight: getHeaderMargin(),
-                    tabBarStyle: {
-                    height: 50,
-                    paddingTop: 0,
-                    paddingBottom: Platform.OS == 'android' ? 4 : 0,
-                    },
-                }}>
-                {bottomTabs.map((element, index) => {
-                    return (
-                    <BottomTab.Screen
-                        key={index}
-                        name={element.name}
-                        component={element.router}
-                        options={{
-                        title: element.name,
-                        tabBarLabel: element.name,
-                        tabBarIcon: ({focused}) => (
-                            <Fragment>
-                            <SvgIcon
-                                icon={focused ? element.activeIcon : element.inActiveIcon}
-                                width="20px"
-                                height="20px"
-                            />
-                            </Fragment>
-                        ),
-
-                        headerRight: () => <HeaderRightView navigation={navigation} />,
-                        tabBarLabelStyle: {
-                            fontSize: 12,
-                            fontFamily: 'Gilroy-Medium',
-                        },
-                        tabBarActiveTintColor: whiteLabel().activeIcon,
-                        }}
-                        listeners={({navigation}) => ({
-                        tabPress: e => {
-                            if (element.name === 'More') {
-                            e.preventDefault();
-                            dispatch({type: SLIDE_STATUS, payload: false});
-                            console.log('revisible mo', visibleMore);
-                            if (visibleMore != '') {
-                                //navigation.navigate("More");
-                                dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                            } else {
-                                dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-                            }
-                            }
-                        },
-                        })}
-                    />
-                    );
-                })}
-                </BottomTab.Navigator> */}
-                
+                }                                            
             </View>
         </View>
     )

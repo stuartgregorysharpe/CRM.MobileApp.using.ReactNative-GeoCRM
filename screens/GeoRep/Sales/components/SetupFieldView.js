@@ -10,7 +10,8 @@ import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
-import { Colors } from '../../../../constants'
+import { Colors, Fonts, Values } from '../../../../constants'
+import { whiteLabel } from '../../../../constants/Colors'
 
 const SetupFieldView = (props) => {
 
@@ -64,6 +65,8 @@ const SetupFieldView = (props) => {
 			setSelectedLocation(data.location);	
 		}else if(isCheckin){
 			getCheckinLocationInfo();
+		}else{
+			setSelectedLocation(null)
 		}
 	}
 
@@ -193,17 +196,44 @@ const SetupFieldView = (props) => {
 		}
 	}
 
+	const onClear = () => {
+		console.log("cc" , props)
+		if (props.updateClear) {			
+		  props.updateClear(true);
+		}
+	};
+
 	return (
-		<View style={{
-			marginHorizontal:10,
-				marginTop:10, 
-				backgroundColor:'white' ,
-			 minHeight:250, 
-			 maxHeight:400, 
-			 padding:10,
-			 borderRadius:5 ,
-			 alignSelf:'stretch' }}>
-						
+		<View style={styles.container}>
+
+			<View
+                  style={[
+                    styles.titleContainer,
+                    {marginTop: 5},
+                  ]}>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 50,
+                      alignItems:
+                        props.headerType === 'center' ? 'center' : 'flex-start',
+                    }}>
+                    {props.title && (
+						<AppText title={props.title} size="big" type="secondaryBold" style={{marginBottom:5}} />                    
+                    )}
+                  </View>
+
+                  {true && (
+                    <TouchableOpacity
+                      style={styles.clearButtonContainer}
+                      onPress={onClear}>
+                      <Text style={styles.clearText}>
+                        {'Clear'}
+                      </Text>
+                    </TouchableOpacity>
+                  )}                  
+            </View>
+
 			<SearchLocationContainer 
 				type="setup"
 				onSubmit={onSearch} 
@@ -285,5 +315,35 @@ const styles = StyleSheet.create({
 	bgColor:{
 		backgroundColor:Colors.whiteColor,		
 		borderRadius:5,
-	}
+	},
+	container:{
+		marginHorizontal:10,
+		marginTop:10, 
+		backgroundColor:'white' ,
+		minHeight:250, 
+		maxHeight:400, 
+		padding:10,
+		borderRadius:5 ,
+		alignSelf:'stretch' 
+	},
+	titleContainer: {
+		flexDirection: 'row',
+		alignSelf: 'stretch',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginTop: 5,
+		paddingLeft: 5,
+		paddingRight: 15,
+		//paddingRight: 50,
+	},
+	titleIcon: {
+		width: 16,
+		height: 16,
+		marginRight: 8,
+	},
+	clearText: {
+		fontSize: Values.fontSize.small,
+		fontFamily: Fonts.secondaryRegular,
+		color: Colors.redColor,
+	},
 })
