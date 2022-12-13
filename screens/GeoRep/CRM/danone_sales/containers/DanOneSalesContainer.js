@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import CTabSelector from '../../../../../components/common/CTabSelector';
 import { boxShadow, style } from '../../../../../constants/Styles';
+import SalesCategoriesScreen from '../categories/SalesCategoriesScreen';
 import SalesOverallScreen from '../overall/SalesOverallScreen';
 
 const DanOneSalesContainer = props => {
@@ -32,6 +33,7 @@ const DanOneSalesContainer = props => {
                 />
             </View>
             {tabIndex === 0 && <SalesOverallScreen {...props} />}
+            {tabIndex === 1 && <SalesCategoriesScreen {...props} />}
         </View>
     );
 };

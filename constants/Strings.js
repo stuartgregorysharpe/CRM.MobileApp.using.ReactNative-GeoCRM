@@ -101,7 +101,9 @@ export default {
     NSV: 'NSV',
     Vol: 'Vol(Tns)',
     Return: 'Return %',
-    SalesMetrics:'Sales Metrics'
-
+    SalesMetrics:'Sales Metrics',
+    Category:'Category',
+    Returns_value:'Returns Value',
+    Returns_tns:'Returns (Tns)'
   }
 };

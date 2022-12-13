@@ -21,7 +21,7 @@
   "resolved" "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.17.0.tgz"
   "version" "7.17.0"
 
-"@babel/core@^7.0.0", "@babel/core@^7.0.0-0", "@babel/core@^7.1.0", "@babel/core@^7.1.6", "@babel/core@^7.12.3", "@babel/core@^7.14.0", "@babel/core@^7.16.0", "@babel/core@^7.4.0-0", "@babel/core@^7.7.2", "@babel/core@^7.8.0":
+"@babel/core@^7.1.0", "@babel/core@^7.1.6", "@babel/core@^7.12.3", "@babel/core@^7.14.0", "@babel/core@^7.16.0", "@babel/core@^7.7.2", "@babel/core@^7.8.0":
   "integrity" "sha512-/BBMw4EvjmyquN5O+t5eh0+YqB3XXJkYD2cjKpYtWOfFy4lQ4UozNSmxAcWT8r2XtZs0ewG+zrfsqeR15i1ajA=="
   "resolved" "https://registry.npmjs.org/@babel/core/-/core-7.17.5.tgz"
   "version" "7.17.5"
@@ -805,7 +805,7 @@
   "resolved" "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.3.0.tgz"
   "version" "0.3.0"
 
-"@fortawesome/fontawesome-svg-core@^1.2.36", "@fortawesome/fontawesome-svg-core@^1.2.4":
+"@fortawesome/fontawesome-svg-core@^1.2.36":
   "integrity" "sha512-UIL6crBWhjTNQcONt96ExjUnKt1D68foe3xjEensLDclqQ6YagwCRYVQdrp/hW0ALRp/5Fv/VKw+MqTUWYYvPg=="
   "resolved" "https://registry.npmjs.org/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.3.0.tgz"
   "version" "1.3.0"
@@ -1096,7 +1096,7 @@
     "pixelmatch" "^4.0.2"
     "tinycolor2" "^1.4.1"
 
-"@jimp/custom@^0.16.1", "@jimp/custom@>=0.3.5":
+"@jimp/custom@^0.16.1":
   "integrity" "sha512-DNUAHNSiUI/j9hmbatD6WN/EBIyeq4AO0frl5ETtt51VN1SvE4t4v83ZA/V6ikxEf3hxLju4tQ5Pc3zmZkN/3A=="
   "resolved" "https://registry.npmjs.org/@jimp/custom/-/custom-0.16.1.tgz"
   "version" "0.16.1"
@@ -1123,7 +1123,7 @@
     "@jimp/utils" "^0.16.1"
     "jpeg-js" "0.4.2"
 
-"@jimp/plugin-blit@^0.16.1", "@jimp/plugin-blit@>=0.3.5":
+"@jimp/plugin-blit@^0.16.1":
   "integrity" "sha512-fKFNARm32RoLSokJ8WZXHHH2CGzz6ire2n1Jh6u+XQLhk9TweT1DcLHIXwQMh8oR12KgjbgsMGvrMVlVknmOAg=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-blit/-/plugin-blit-0.16.1.tgz"
   "version" "0.16.1"
@@ -1131,7 +1131,7 @@
     "@babel/runtime" "^7.7.2"
     "@jimp/utils" "^0.16.1"
 
-"@jimp/plugin-blur@^0.16.1", "@jimp/plugin-blur@>=0.3.5":
+"@jimp/plugin-blur@^0.16.1":
   "integrity" "sha512-1WhuLGGj9MypFKRcPvmW45ht7nXkOKu+lg3n2VBzIB7r4kKNVchuI59bXaCYQumOLEqVK7JdB4glaDAbCQCLyw=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-blur/-/plugin-blur-0.16.1.tgz"
   "version" "0.16.1"
@@ -1147,7 +1147,7 @@
     "@babel/runtime" "^7.7.2"
     "@jimp/utils" "^0.16.1"
 
-"@jimp/plugin-color@^0.16.1", "@jimp/plugin-color@>=0.8.0":
+"@jimp/plugin-color@^0.16.1":
   "integrity" "sha512-9yQttBAO5SEFj7S6nJK54f+1BnuBG4c28q+iyzm1JjtnehjqMg6Ljw4gCSDCvoCQ3jBSYHN66pmwTV74SU1B7A=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-color/-/plugin-color-0.16.1.tgz"
   "version" "0.16.1"
@@ -1172,7 +1172,7 @@
     "@babel/runtime" "^7.7.2"
     "@jimp/utils" "^0.16.1"
 
-"@jimp/plugin-crop@^0.16.1", "@jimp/plugin-crop@>=0.3.5":
+"@jimp/plugin-crop@^0.16.1":
   "integrity" "sha512-UQdva9oQzCVadkyo3T5Tv2CUZbf0klm2cD4cWMlASuTOYgaGaFHhT9st+kmfvXjKL8q3STkBu/zUPV6PbuV3ew=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-crop/-/plugin-crop-0.16.1.tgz"
   "version" "0.16.1"
@@ -1253,7 +1253,7 @@
     "@jimp/utils" "^0.16.1"
     "load-bmfont" "^1.4.0"
 
-"@jimp/plugin-resize@^0.16.1", "@jimp/plugin-resize@>=0.3.5", "@jimp/plugin-resize@>=0.8.0":
+"@jimp/plugin-resize@^0.16.1":
   "integrity" "sha512-u4JBLdRI7dargC04p2Ha24kofQBk3vhaf0q8FwSYgnCRwxfvh2RxvhJZk9H7Q91JZp6wgjz/SjvEAYjGCEgAwQ=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-resize/-/plugin-resize-0.16.1.tgz"
   "version" "0.16.1"
@@ -1261,7 +1261,7 @@
     "@babel/runtime" "^7.7.2"
     "@jimp/utils" "^0.16.1"
 
-"@jimp/plugin-rotate@^0.16.1", "@jimp/plugin-rotate@>=0.3.5":
+"@jimp/plugin-rotate@^0.16.1":
   "integrity" "sha512-ZUU415gDQ0VjYutmVgAYYxC9Og9ixu2jAGMCU54mSMfuIlmohYfwARQmI7h4QB84M76c9hVLdONWjuo+rip/zg=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-rotate/-/plugin-rotate-0.16.1.tgz"
   "version" "0.16.1"
@@ -1269,7 +1269,7 @@
     "@babel/runtime" "^7.7.2"
     "@jimp/utils" "^0.16.1"
 
-"@jimp/plugin-scale@^0.16.1", "@jimp/plugin-scale@>=0.3.5":
+"@jimp/plugin-scale@^0.16.1":
   "integrity" "sha512-jM2QlgThIDIc4rcyughD5O7sOYezxdafg/2Xtd1csfK3z6fba3asxDwthqPZAgitrLgiKBDp6XfzC07Y/CefUw=="
   "resolved" "https://registry.npmjs.org/@jimp/plugin-scale/-/plugin-scale-0.16.1.tgz"
   "version" "0.16.1"
@@ -1379,6 +1379,7 @@
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
 "@mapbox/geo-viewport@^0.5.0":
+  "integrity" "sha512-GMypdCJv7Y4291rpKtnkON6M87n1O6Zxlof7j+IRyQl3ixHQF4dG3jX726j3+leNOuno8kY2NHSjz4fkQGZ7RA=="
   "resolved" "git+ssh://git@github.com/mapbox/geo-viewport.git#f114fdce4f4c889c2954277801e2b6f5942e2e30"
   "version" "0.5.0"
   dependencies:
@@ -1559,10 +1560,10 @@
     "sudo-prompt" "^9.0.0"
     "wcwidth" "^1.0.1"
 
-"@react-native-community/datetimepicker@>=3.0.0":
-  "integrity" "sha512-DsKmdthZIb1AfuvpPE0iOiw4iQLXUWY3mJEYpGe9iUJt7pOkNnqHk6D95wqg4wjZ2bEBLAPfvndoeWZAjAZKfw=="
-  "resolved" "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-5.1.0.tgz"
-  "version" "5.1.0"
+"@react-native-community/datetimepicker@^6.7.1":
+  "integrity" "sha512-NPW1YITG7N+3TsqXc4LZV3c5IEpTD5iX18r0bvFsHdIblo5qi0ykpeK3TffmMM5gbTjgKJ4DNVHOjLiWKxFUxw=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-6.7.1.tgz"
+  "version" "6.7.1"
   dependencies:
     "invariant" "^2.2.4"
 
@@ -1653,7 +1654,7 @@
     "@react-navigation/elements" "^1.3.1"
     "warn-once" "^0.1.0"
 
-"@react-navigation/native@^6.0.0", "@react-navigation/native@^6.0.6":
+"@react-navigation/native@^6.0.6":
   "integrity" "sha512-6022M3+Btok3xJC/49B88er3SRrlDAZ4FdmGndhEVvBcGSHWmscU2qKCwFd0RY6A0AGCVmdIlXudrfdcdRAkpQ=="
   "resolved" "https://registry.npmjs.org/@react-navigation/native/-/native-6.0.8.tgz"
   "version" "6.0.8"
@@ -1891,7 +1892,7 @@
     "eslint-scope" "^5.1.1"
     "eslint-utils" "^3.0.0"
 
-"@typescript-eslint/parser@^4.0.0", "@typescript-eslint/parser@^4.22.1":
+"@typescript-eslint/parser@^4.22.1":
   "integrity" "sha512-ZohdsbXadjGBSK0/r+d87X0SBmKzOq4/S5nzK6SBgJspFo9/CUDJ7hjayuze+JK7CZQLDMroqytp7pOcFKTxZA=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-4.33.0.tgz"
   "version" "4.33.0"
@@ -1983,15 +1984,15 @@
   "resolved" "https://registry.npmjs.org/acorn-walk/-/acorn-walk-7.2.0.tgz"
   "version" "7.2.0"
 
-"acorn@^6.0.0 || ^7.0.0 || ^8.0.0", "acorn@^8.2.4", "acorn@^8.7.0":
-  "integrity" "sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ=="
-  "resolved" "https://registry.npmjs.org/acorn/-/acorn-8.7.0.tgz"
-  "version" "8.7.0"
-
 "acorn@^7.1.1":
   "integrity" "sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A=="
   "resolved" "https://registry.npmjs.org/acorn/-/acorn-7.4.1.tgz"
   "version" "7.4.1"
+
+"acorn@^8.2.4", "acorn@^8.7.0":
+  "integrity" "sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ=="
+  "resolved" "https://registry.npmjs.org/acorn/-/acorn-8.7.0.tgz"
+  "version" "8.7.0"
 
 "agent-base@6":
   "integrity" "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="
@@ -3413,7 +3414,7 @@
   "resolved" "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz"
   "version" "3.3.0"
 
-"eslint@*", "eslint@^3 || ^4 || ^5 || ^6 || ^7 || ^8", "eslint@^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0", "eslint@^3.17.0 || ^4 || ^5 || ^6 || ^7", "eslint@^5.0.0 || ^6.0.0 || ^7.0.0", "eslint@^8.2.0", "eslint@>= 4.12.1", "eslint@>= 5.0.0", "eslint@>=2.0.0", "eslint@>=3.14.1", "eslint@>=4.19.1", "eslint@>=5", "eslint@>=7":
+"eslint@^8.2.0":
   "integrity" "sha512-tcI1D9lfVec+R4LE1mNDnzoJ/f71Kl/9Cv4nG47jOueCMBrCCKYXr4AUVS7go6mWYGFD4+EoN6+eXSrEbRzXVw=="
   "resolved" "https://registry.npmjs.org/eslint/-/eslint-8.10.0.tgz"
   "version" "8.10.0"
@@ -4796,7 +4797,7 @@
     "jest-regex-util" "^27.5.1"
     "jest-snapshot" "^27.5.1"
 
-"jest-resolve@*", "jest-resolve@^27.5.1":
+"jest-resolve@^27.5.1":
   "integrity" "sha512-FFDy8/9E6CV83IMbDpcjOhumAQPDyETnU2KZ1O98DwTnz8AOBsW/Xv3GySr1mOZdItLR+zDZ7I/UdTFbgSOVCw=="
   "resolved" "https://registry.npmjs.org/jest-resolve/-/jest-resolve-27.5.1.tgz"
   "version" "27.5.1"
@@ -6368,7 +6369,7 @@
   dependencies:
     "fast-diff" "^1.1.2"
 
-"prettier@^2.0.2", "prettier@>= 1.13.0":
+"prettier@^2.0.2":
   "integrity" "sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg=="
   "resolved" "https://registry.npmjs.org/prettier/-/prettier-2.5.1.tgz"
   "version" "2.5.1"
@@ -6506,7 +6507,7 @@
     "fs-extra" "^10.0.0"
     "jimp" "^0.16.1"
 
-"react-native-camera@^4.2.1", "react-native-camera@>=1.0.2":
+"react-native-camera@^4.2.1":
   "integrity" "sha512-+Vkql24PFYQfsPRznJCvPwJQfyzCnjlcww/iZ4Ej80bgivKjL9eU0IMQIXp4yi6XCrKi4voWXxIDPMupQZKeIQ=="
   "resolved" "https://registry.npmjs.org/react-native-camera/-/react-native-camera-4.2.1.tgz"
   "version" "4.2.1"
@@ -6601,7 +6602,7 @@
   "resolved" "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.0-beta.4.tgz"
   "version" "5.3.0-beta.4"
 
-"react-native-gesture-handler@*", "react-native-gesture-handler@^2.1.1", "react-native-gesture-handler@>= 1.0.0", "react-native-gesture-handler@>=1.10.0":
+"react-native-gesture-handler@^2.1.1":
   "integrity" "sha512-dgfx/fY61gLMWrGTcSlKTW7dhrzIGF+w3QwvkudBF1zssRlc+HxhkAhrma6d7DHXp1MfSbS6tYXrbpMPUZYW6A=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.3.0.tgz"
   "version" "2.3.0"
@@ -6695,7 +6696,7 @@
     "prop-types" "^15.5.10"
     "react-native-permissions" "^2.0.2"
 
-"react-native-reanimated@^2.10.0", "react-native-reanimated@>=2.0.0", "react-native-reanimated@>=2.2.0":
+"react-native-reanimated@^2.10.0":
   "integrity" "sha512-yUHyYVIegWWIza4+nVyS3CSmI/Mc8kLFVHw2c6gnSHaYhYA4LeEjH/jBkoMzHk9Xd0Ra3cwtjYKAMG8OTp6JVg=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-2.13.0.tgz"
   "version" "2.13.0"
@@ -6717,12 +6718,12 @@
     "normalize-svg-path" "^1.0.1"
     "parse-svg-path" "^0.1.2"
 
-"react-native-safe-area-context@^3.3.2", "react-native-safe-area-context@>= 3.0.0":
+"react-native-safe-area-context@^3.3.2":
   "integrity" "sha512-xfpVd0CiZR7oBhuwJ2HcZMehg5bjha1Ohu1XHpcT+9ykula0TgovH2BNU0R5Krzf/jBR1LMjR6VabxdlUjqxcA=="
   "resolved" "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-3.4.1.tgz"
   "version" "3.4.1"
 
-"react-native-screens@^3.9.0", "react-native-screens@>= 3.0.0":
+"react-native-screens@^3.9.0":
   "integrity" "sha512-xcrnuUs0qUrGpc2gOTDY4VgHHADQwp80mwR1prU/Q0JqbZN5W3koLhuOsT6FkSRKjR5t40l+4LcjhHdpqRB2HA=="
   "resolved" "https://registry.npmjs.org/react-native-screens/-/react-native-screens-3.13.1.tgz"
   "version" "3.13.1"
@@ -6740,7 +6741,7 @@
   "resolved" "https://registry.npmjs.org/react-native-sqlite-storage/-/react-native-sqlite-storage-6.0.1.tgz"
   "version" "6.0.1"
 
-"react-native-svg@^12.1.1", "react-native-svg@> 6.4.1", "react-native-svg@> 7.0":
+"react-native-svg@^12.1.1":
   "integrity" "sha512-ESG1g1j7/WLD7X3XRFTQHVv0r6DpbHNNcdusngAODIxG88wpTWUZkhcM3A2HJTb+BbXTFDamHv7FwtRKWQ/ALg=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-12.3.0.tgz"
   "version" "12.3.0"
@@ -6753,7 +6754,7 @@
   "resolved" "https://registry.npmjs.org/react-native-uuid/-/react-native-uuid-2.0.1.tgz"
   "version" "2.0.1"
 
-"react-native-vector-icons@*", "react-native-vector-icons@^9.0.0":
+"react-native-vector-icons@^9.0.0":
   "integrity" "sha512-2AHZ/h9d/+rC0odz+OwbGNlc1Lik/pHhSixn4HfC8RtQ8CxfSBZ6gg7bTLcZhdSvZN+ZEGi30Fj+ZnOSQy+smg=="
   "resolved" "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-9.1.0.tgz"
   "version" "9.1.0"
@@ -6761,12 +6762,12 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native-vision-camera@^2.14.1", "react-native-vision-camera@>=2.9.4":
+"react-native-vision-camera@^2.14.1":
   "integrity" "sha512-pkVj0r2nbZaj3+bB9CGPNistCUyoCgS2SmawzugrZs5oMlFWlgZYuJj+6s3Q98xTGgV/8/ST0njohB6soDi0VA=="
   "resolved" "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-2.15.2.tgz"
   "version" "2.15.2"
 
-"react-native-webview@^11.0.3", "react-native-webview@^11.15.1":
+"react-native-webview@^11.15.1":
   "integrity" "sha512-7Sac02xq11qFACJmSUuCnH0aUFtSWUvSRC09EZ2qwNXq4IvT05xlX6978nlKUXf2ljw/0qZIzqbKzuXnu6Wq8Q=="
   "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.17.2.tgz"
   "version" "11.17.2"
@@ -6774,7 +6775,7 @@
     "escape-string-regexp" "2.0.0"
     "invariant" "2.2.4"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@> 0.57", "react-native@>= 0.50.0", "react-native@>= 0.51", "react-native@>= 0.62", "react-native@>=0.14.0", "react-native@>=0.42.0", "react-native@>=0.47", "react-native@>=0.47.0", "react-native@>=0.47.1", "react-native@>=0.48.4", "react-native@>=0.50.0", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.59.5", "react-native@>=0.60.0", "react-native@>=0.63.3", "react-native@>=0.64.0", "react-native@>=0.65.0", "react-native@>=v0.40.0", "react-native@0.67.2":
+"react-native@0.67.2":
   "integrity" "sha512-grEtpOLLvtSg8Bivg0ffVRCjTkresqMt7Jdog/geF6VAYhb4RnLaaUCWvyrfyB9buf135FKnqg5BIuve/XQNXA=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.2.tgz"
   "version" "0.67.2"
@@ -6845,7 +6846,7 @@
     "react-shallow-renderer" "^16.13.1"
     "scheduler" "^0.20.2"
 
-"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.6 || ^17.0.0", "react@^17.0.0", "react@> 16.7.0", "react@>= 16.0 || < 18.0", "react@>= 16.x", "react@>=16.13.1", "react@>=16.3.0", "react@>=16.8.0", "react@>=16.8.6", "react@>16.8.3", "react@17.0.2":
+"react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -6891,7 +6892,7 @@
   "resolved" "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.4.1.tgz"
   "version" "2.4.1"
 
-"redux@^3.1.0 || ^4.0.0", "redux@^4", "redux@^4.0.0", "redux@^4.1.2":
+"redux@^4.0.0", "redux@^4.1.2":
   "integrity" "sha512-SH8PglcebESbd/shgf6mii6EIoRM0zrQyjcuQ+ojmfxjTtE0z9Y8pa62iA/OJ58qjP6j27uyW4kUF4jl/jd6sw=="
   "resolved" "https://registry.npmjs.org/redux/-/redux-4.1.2.tgz"
   "version" "4.1.2"

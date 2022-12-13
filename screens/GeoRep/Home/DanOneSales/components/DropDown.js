@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     FlatList,
     StyleSheet,
@@ -12,13 +12,32 @@ import { AppText } from '../../../../../components/common/AppText';
 import SvgIcon from '../../../../../components/SvgIcon';
 import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
 
-const Dropdown = ({ label, data, onSelect, initial }) => {
+const Dropdown = ({ label, onSelect, initial }) => {
     const DropdownButton = useRef();
     const [visible, setVisible] = useState(false);
-    const [selected, setSelected] = useState(initial ? initial : undefined);
+    const [selected, setSelected] = useState(undefined);
     const [dropdownTop, setDropdownTop] = useState(0);
     const [dropdownLeft, setDropdownLeft] = useState(0);
     const [dropdownWidth, setDropDownWidth] = useState(0);
+
+    const [pickerData, setPickerData] = useState([
+        {
+            label: 'MTD',
+            value: 'MTD'
+        },
+        {
+            label: 'QTD',
+            value: 'QTD'
+        }, {
+            label: 'YTD',
+            value: 'YTD'
+        }
+
+    ]);
+
+    useEffect(()=>{
+        setSelected(pickerData[0]);
+    },[]);
 
     const toggleDropdown = () => {
         visible ? setVisible(false) : openDropdown();
@@ -35,14 +54,15 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
     };
 
     const itemMoveToTop = (selectedItem) => {
-        data = data.filter(item => item.value !== selectedItem.value);
+        let data = pickerData.filter(item => item.value !== selectedItem.value);
         data.unshift(selectedItem);
+        setPickerData(data);
     }
 
     const onItemPress = (item) => {
         setSelected(item);
         itemMoveToTop(item);
-        onSelect(item, data);
+        onSelect(item);
         setVisible(false);
     };
 
@@ -67,7 +87,7 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
                         height="30"
                     /> : <View style={{ width: 30, height: 30 }}></View>}
             </View>
-            <View style={{ height: index == 0 || index == data.length - 1 ? 0 : 1, backgroundColor: PRIMARY_COLOR }} />
+            <View style={{ height: index == 0 || index == pickerData.length - 1 ? 0 : 1, backgroundColor: PRIMARY_COLOR }} />
 
         </TouchableOpacity>
     );
@@ -84,7 +104,7 @@ const Dropdown = ({ label, data, onSelect, initial }) => {
                         width: dropdownWidth
                     }]}>
                         <FlatList
-                            data={data}
+                            data={pickerData}
                             renderItem={renderItem}
                             keyExtractor={(item, index) => index.toString()}
                         />
