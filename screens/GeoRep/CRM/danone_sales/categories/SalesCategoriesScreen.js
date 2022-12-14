@@ -40,7 +40,7 @@ const SalesCategoriesScreen = (props) => {
     return (
         <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{ flex: 2, height: 45, margin: 10 }} />
+                <View style={{ flex: 2, height: 45}} />
                 <View style={{ flex: 1, marginHorizontal: 5 }}>
                     <Dropdown onSelect={(item) => {
                         setPeriod(item.value);
@@ -55,8 +55,8 @@ const SalesCategoriesScreen = (props) => {
                     <SvgIcon
                         color={whiteLabel().actionFullButtonIcon}
                         icon={toggle==='value'?'Sales_Value_Toggle_Icon':'Sales_Volume_Toggle_Icon'}
-                        width="85"
-                        height="50"
+                        width="90"
+                        height="45"
                         onPres={() => { setToggle('volume') }}
                     />
                 </TouchableOpacity>

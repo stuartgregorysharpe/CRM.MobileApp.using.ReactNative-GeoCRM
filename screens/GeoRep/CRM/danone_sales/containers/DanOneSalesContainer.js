@@ -15,21 +15,15 @@ const DanOneSalesContainer = props => {
 
     return (
         <View style={[styles.container, props.style]}>
-            <View style={{ marginTop: 10, marginHorizontal: 10 }}>
+            <View style={{ marginTop: 10, }}>
                 <CTabSelector
+                    hidePrevNext={true}
                     items={tabs}
                     selectedIndex={tabIndex}
                     onSelectTab={(item, index) => {
                         setTabIndex(index);
                     }}
-                    containerStyle={[
-                        boxShadow,
-                        {
-                            height: 40,
-                            backgroundColor: 'white',
-                            borderRadius: 4,
-                        },
-                    ]}
+                    containerStyle={{ height: 40, }}
                 />
             </View>
             {tabIndex === 0 && <SalesOverallScreen {...props} />}

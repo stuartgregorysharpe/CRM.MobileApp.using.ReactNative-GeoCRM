@@ -1250,6 +1250,8 @@ const Sales_Volume_Toggle_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width=
 </g>
 </svg>`;
 
+const Bottom_Arrow_White = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"> <path d="M24 30.75 12 18.75 14.15 16.6 24 26.5 33.85 16.65 36 18.8Z" fill="#fff"/></svg>`;
+
 export default ({
   icon,
   xml,
@@ -1920,6 +1922,10 @@ export default ({
 
     {icon == 'Sales_Volume_Toggle_Icon' && (
       <SvgXml style={style} xml={Sales_Volume_Toggle_Icon} width={width} height={height} />
+    )}
+
+    {icon == 'Bottom_Arrow_White' && (
+      <SvgXml style={style} xml={Bottom_Arrow_White} width={width} height={height} />
     )}
 
   </Fragment>

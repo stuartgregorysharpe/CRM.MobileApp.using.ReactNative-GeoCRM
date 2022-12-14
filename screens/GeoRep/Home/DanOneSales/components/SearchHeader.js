@@ -7,7 +7,8 @@ import Dropdown from './DropDown';
 
 const SalesSearchHeader = ({ onSearch, initVal, onDropDown, canShowSearch }) => {
     return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+        marginTop:-8 }}>
             <View style={{ flex: 3 }}>
                 {canShowSearch ?
                     <SearchBar

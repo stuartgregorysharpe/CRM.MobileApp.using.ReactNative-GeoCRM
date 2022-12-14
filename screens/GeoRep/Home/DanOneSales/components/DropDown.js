@@ -35,9 +35,9 @@ const Dropdown = ({ label, onSelect, initial }) => {
 
     ]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setSelected(pickerData[0]);
-    },[]);
+    }, []);
 
     const toggleDropdown = () => {
         visible ? setVisible(false) : openDropdown();
@@ -45,8 +45,8 @@ const Dropdown = ({ label, onSelect, initial }) => {
 
     const openDropdown = () => {
         DropdownButton.current.measure((_fx, _fy, w, h, px, py) => {
-            console.log(px+" : ",py);
-            setDropdownTop(py-h);
+            console.log(px + " : ", py);
+            setDropdownTop(py - h);
             setDropdownLeft(px);
             setDropDownWidth(w);
         });
@@ -74,15 +74,15 @@ const Dropdown = ({ label, onSelect, initial }) => {
                 borderColor: PRIMARY_COLOR,
             }]}>
                 <AppText
-                    type="secondaryBold"
+                    type="secondaryMedium"
                     title={item.label}
                     color={selected && selected.value === item.value ? Colors.whiteColor : whiteLabel().mainText}
-                    style={{ fontSize: 12 }}></AppText>
+                    style={{ fontSize: 12,flex:1,textAlign: 'center', }}></AppText>
 
                 {index == 0 ?
                     <SvgIcon
-                        color={whiteLabel().actionFullButtonIcon}
-                        icon={'Bottom_Arrow'}
+                        color={whiteLabel().mainText}
+                        icon={'Bottom_Arrow_White'}
                         width="30"
                         height="30"
                     /> : <View style={{ width: 30, height: 30 }}></View>}
@@ -99,7 +99,7 @@ const Dropdown = ({ label, onSelect, initial }) => {
                     style={[styles.overlay]}
                     onPress={() => setVisible(false)}>
                     <View style={[styles.dropdown, {
-                        top: dropdownTop, 
+                        top: dropdownTop,
                         left: dropdownLeft,
                         width: dropdownWidth
                     }]}>
@@ -120,22 +120,22 @@ const Dropdown = ({ label, onSelect, initial }) => {
             style={styles.button}
             onPress={toggleDropdown}
         >
-            {renderDropdown()}
+
             {!visible && <View style={styles.button}>
                 <AppText
-                    type="secondaryBold"
+                    type="secondaryMedium"
                     title={(selected && selected.label) || label}
                     color={whiteLabel().mainText}
                     style={styles.buttonText}></AppText>
 
                 <SvgIcon
-                    color={whiteLabel().actionFullButtonIcon}
-                    icon={'Bottom_Arrow'}
+                    color={whiteLabel().actionOutlineButtonText}
+                    icon={'Bottom_Arrow_White'}
                     width="30"
                     height="30"
                 />
             </View>}
-
+            {renderDropdown()}
         </TouchableOpacity>
     );
 };
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     button: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         backgroundColor: PRIMARY_COLOR,
         zIndex: 1,
         borderRadius: 7
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
         color: whiteLabel().actionFullButtonText,
         textAlign: 'center',
         fontSize: 12,
+        flex:1
     },
     dropdown: {
         position: 'absolute',
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     item: {
         flexDirection: 'row',
         height: 30,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 7,
     },
