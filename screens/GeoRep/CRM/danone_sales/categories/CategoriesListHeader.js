@@ -15,21 +15,21 @@ const CategoriesListHeader = ({ toggle = '' }) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                <View style={{ flex: 4,justifyContent:'center' }}>
+                <View style={{ flex: 4,justifyContent:'center', }}>
                     <AppText
                         type="secondaryMedium"
                         title={Strings.DanOnesSales.Category}
                         color={whiteLabel().mainText}
                         style={{ fontSize: 12,justifyContent:'center' }}></AppText>
                 </View>
-                <View style={{ flex: 2 }}>
+                <View style={{ flex: 2,marginHorizontal:2 }}>
                     <AppText
                         type="secondaryMedium"
                         title={toggle==='value'?Strings.DanOnesSales.NSV:Strings.DanOnesSales.Vol}
                         color={whiteLabel().mainText}
                         style={{ fontSize: 12, textAlign: 'center' }}></AppText>
                 </View>
-                <View style={{ flex: 2 }}>
+                <View style={{ flex: 2.1 }}>
                     <AppText
                         type="secondaryMedium"
                         title={toggle==='value'?Strings.DanOnesSales.Returns_value:Strings.DanOnesSales.Returns_tns}

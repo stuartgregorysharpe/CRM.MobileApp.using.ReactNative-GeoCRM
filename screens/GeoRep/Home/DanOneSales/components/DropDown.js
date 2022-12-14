@@ -131,8 +131,8 @@ const Dropdown = ({ label, onSelect, initial }) => {
                 <SvgIcon
                     color={whiteLabel().actionOutlineButtonText}
                     icon={'Bottom_Arrow_White'}
-                    width="30"
-                    height="30"
+                    width="27"
+                    height="27"
                 />
             </View>}
             {renderDropdown()}

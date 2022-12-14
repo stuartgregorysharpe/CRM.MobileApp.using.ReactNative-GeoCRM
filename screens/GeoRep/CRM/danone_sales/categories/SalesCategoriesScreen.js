@@ -24,7 +24,7 @@ const SalesCategoriesScreen = (props) => {
 
     const _onLoad = (selectedPeriod) => {
         let postData = {
-            location_id: props.locationId,
+            location_id:1404,// props.locationId,
             period: selectedPeriod ? selectedPeriod : period
         };
         console.log(postData);

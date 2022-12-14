@@ -25,7 +25,7 @@ const CategoryListItem = ({ data,toggle}) => {
             color={Colors.textColor}
             style={[styles.row_m_text]}></AppText>
         </View>
-        <View style={{ flex: 2,alignItems:'center' }}>
+        <View style={{ flex: 2.1,alignItems:'center' }}>
           <AppText
             type="secondaryMedium"
             title={toggle==='value'?data.returns_value:data.returns_tns}
