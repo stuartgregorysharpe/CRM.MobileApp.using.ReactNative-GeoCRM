@@ -10,7 +10,9 @@ const BrandFacing = props => {
   if (!item) return null;
   const modalRef = useRef(null);
   const questionButtonType =
-    item.value != null ? Constants.questionButtonType.QUESTION_BUTTON_DONE : '';
+    item.value != null && item.value != ''
+      ? Constants.questionButtonType.QUESTION_BUTTON_DONE
+      : '';
 
   const onOpenModal = () => {
     if (modalRef && modalRef.current) {

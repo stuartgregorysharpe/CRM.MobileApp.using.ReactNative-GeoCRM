@@ -5,7 +5,7 @@ import Colors from './Colors';
 import Values from './Values';
 import Strings from './Strings';
 
-export const offlineDBVersion = '1.5';
+export const offlineDBVersion = '1.6';
 export const baseURL = 'https://www.dev.georep.com'; // for dev and lint app
 
 //export const baseURL = "https://universal.georep.com"; // for geo rep app

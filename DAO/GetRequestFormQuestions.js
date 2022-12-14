@@ -4,12 +4,11 @@ import {baseURL, Strings} from '../constants';
 import {getTokenData} from '../constants/Storage';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import UrlResource from './UrlResource';
-import { value } from 'react-native-extended-stylesheet';
-
+import {getFormQuestionData} from './form-questions-db-helper';
 export function find(postData) {
   return new Promise(function (resolve, reject) {
     checkConnectivity()
-      .then(async isConnected => {        
+      .then(async isConnected => {
         if (isConnected) {
           getApiRequest(UrlResource.Form.FormQuestions, postData)
             .then(async res => {
@@ -21,14 +20,14 @@ export function find(postData) {
             });
         } else {
           var client_id = await getTokenData('client_id');
-          var business_unit_id = await getTokenData('business_unit_id');          
+          var business_unit_id = await getTokenData('business_unit_id');
           var lists = await fetchDataFromDB(postData);
           var questionsLists = await getFormQuestions(
             lists,
             client_id,
             business_unit_id,
             postData,
-          );          
+          );
           resolve({status: Strings.Success, questions: questionsLists});
         }
       })
@@ -62,11 +61,10 @@ const fetchFieldDetailsFromDB = async (
 
 const fetchFieldValueFromDB = async (custom_master_field_id, location_id) => {
   const query = generateFieldValueQuery();
-  console.log("custom query",query , custom_master_field_id, location_id)
+  console.log('custom query', query, custom_master_field_id, location_id);
   const res = await ExecuteQuery(query, [custom_master_field_id, location_id]);
-  console.log("custom queryres",res)
+  console.log('custom queryres', res);
   return res.rows ? res.rows : [];
-  
 };
 
 const fetchOptionsFromDB = async form_question_id => {
@@ -87,18 +85,18 @@ const fetchReturnProductsFromDB = async (business_unit_id, client_id) => {
   return res.rows ? res.rows : [];
 };
 
-const fetchPrimaryDeviceFromDB = async(location_id) => {
+const fetchPrimaryDeviceFromDB = async location_id => {
   const query = generatePrimaryDeviceQuery();
   const res = await ExecuteQuery(query, [location_id]);
   return res.rows ? res.rows : [];
-}
+};
 
-const fetchCoreFieldData = async(location_id) => {
+const fetchCoreFieldData = async location_id => {
   const query = generateCoreFieldDataQuery();
-  console.log("ddd", query)
+  console.log('ddd', query);
   const res = await ExecuteQuery(query, [location_id]);
   return res.rows ? res.rows : [];
-}
+};
 
 const fetchReasonsFromDB = async (
   business_unit_id,
@@ -118,102 +116,6 @@ const fetchReasonsFromDB = async (
     form_question_id,
   ]);
   return res.rows ? res.rows : [];
-};
-const fetchTouchpointsFromDB = async (
-  business_unit_id,
-  client_id,
-  form_question_id,
-) => {
-  const query = `SELECT
-                  touchpoint
-                  FROM forms_pos_touchpoints
-                  WHERE
-                    business_unit_id = ?
-                    AND
-                    client_id = ?
-                    AND 
-                    delete_status = 0
-                    AND
-                    form_question_id = ?
-                  ORDER BY touchpoint`;
-  const res = await ExecuteQuery(query, [
-    business_unit_id,
-    client_id,
-    form_question_id,
-  ]);
-  const result = res.rows ? res.rows : [];
-  const resultList = [];
-  for (let i = 0; i < result; i++) {
-    const item = result.item(i);
-    resultList.push(item.touchpoint);
-  }
-  return resultList;
-};
-
-const fetchPlacementAreasFromDB = async (
-  business_unit_id,
-  client_id,
-  form_question_id,
-) => {
-  const query = `SELECT
-                      placement_type,
-                      area
-                  FROM forms_pos_placement_areas
-                  WHERE
-                      business_unit_id = ?
-                    AND
-                      client_id = ?
-                    AND 
-                      delete_status = 0
-                    AND
-                      form_question_id = ?
-                  ORDER BY placement_type,area`;
-  const res = await ExecuteQuery(query, [
-    business_unit_id,
-    client_id,
-    form_question_id,
-  ]);
-  const result = res.rows ? res.rows : [];
-  const resultList = [];
-  for (let i = 0; i < result; i++) {
-    const item = result.item(i);
-    resultList.push({
-      placement_type: item.placement_type,
-      area: item.area,
-    });
-  }
-  return resultList;
-};
-
-const fetchPOSProductsFromDB = async (business_unit_id, client_id) => {
-  const query = `SELECT 
-                  pcmd.product_id,
-                  pcmd.brand,
-                  pt.product_type,
-                  pcmd.product_name,
-                  pcmd.barcode
-                FROM products_core_master_data as pcmd
-                LEFT JOIN product_type as pt
-                ON pcmd.product_type_id = pt.product_type_Id
-                WHERE pcmd.client_id = ?
-                AND pcmd.business_unit_id = ?
-                AND pcmd.delete_status = 0
-                AND pcmd.product_tag = "POS"
-                ORDER BY pt.product_type,pcmd.product_name`;
-  const res = await ExecuteQuery(query, [business_unit_id, client_id]);
-  const result = res.rows ? res.rows : [];
-  const resultList = [];
-  for (let i = 0; i < result; i++) {
-    const item = result.item(i);
-    resultList.push({
-      product_id: item.product_id,
-      brand: item.brand,
-      product_type: item.product_type,
-      product_name: item.product_name,
-      barcode: item.barcode,
-    });
-  }
-  return resultList;
 };
 
 const generateQuery = () => {
@@ -325,15 +227,14 @@ const generateReturnProductQuery = () => {
 };
 
 const generatePrimaryDeviceQuery = () => {
-  var query  = `SELECT device_msisdn  FROM location_devices WHERE primary_device = 1 AND location_id = ?`;    
+  var query = `SELECT device_msisdn  FROM location_devices WHERE primary_device = 1 AND location_id = ?`;
   return query;
-}
+};
 
 const generateCoreFieldDataQuery = () => {
-  var query =  `SELECT  * FROM locations_core_master_data WHERE location_id = ? LIMIT 1`;
+  var query = `SELECT  * FROM locations_core_master_data WHERE location_id = ? LIMIT 1`;
   return query;
-}
-
+};
 
 const getFormQuestions = async (
   lists,
@@ -341,199 +242,181 @@ const getFormQuestions = async (
   business_unit_id,
   postData,
 ) => {
-
   var tmp = [];
-  
-    for (var i = 0; i < lists.length; i++) {
 
-      var element = lists.item(i);     
-      console.log("main elements =>", element)
+  for (var i = 0; i < lists.length; i++) {
+    var element = lists.item(i);
+    console.log('main elements =>', element);
 
-      const question_tag = element.question_tag;
-      var fieldData = '';
-      if (postData.location_id != undefined) {
-        if (question_tag != undefined && question_tag != '') {
-          if(question_tag === "msisdn"){
-
-            var primaryDeivce = await fetchPrimaryDeviceFromDB(postData.location_id);
-            fieldData = await getPrimaryDeviceData( primaryDeivce );
-
-          }else{
-            var fieldDataLists = await fetchFieldDetailsFromDB(
-              client_id,
-              business_unit_id,
-              question_tag,
-            );      
-            fieldData = await getFieldData(fieldDataLists, postData);            
-          }          
-        }
-      }
-
-    
-      // Guide Info
-      var guideInfoData = [];
-      if (
-        element.guide_info_title != '' ||
-        element.guide_info_image != null ||
-        element.guide_info_text
-      ) {
-        var guideImagePath = '';
-        if (element.guide_info_image != '') {
-          guideImagePath =
-            baseURL +
-            `/common/assets/guide_info_images/` +
-            element.guide_info_image;
-        }
-        guideInfoData['title'] = element.guide_info_title;
-        guideInfoData['image'] = guideImagePath;
-        guideInfoData['text'] = element.guide_info_text;
-      }
-      // Get Options
-      var optionLists = await fetchOptionsFromDB(element.form_question_id);
-      var optionsData = getOptionData(optionLists);
-  
-      // Trigger Data
-      var trigger = [];
-      if (element.trigger_question_type != '') {
-        var triggerOptions = [];
-        var triggerFieldType = '';
-        var triggerAnswer = '';
-        if (
-          element.trigger_question_type == 'multiple' ||
-          element.trigger_question_type == 'multi_select'
-        ) {
-          triggerFieldType = 'dropdown';
-          triggerAnswer = element.trigger_question_answer.split(',');
-        } else if (element.trigger_question_type == 'numbers') {
-          triggerFieldType = 'numbers';
-          triggerAnswer = element.trigger_question_answer;
+    const question_tag = element.question_tag;
+    var fieldData = '';
+    if (postData.location_id != undefined) {
+      if (question_tag != undefined && question_tag != '') {
+        if (question_tag === 'msisdn') {
+          var primaryDeivce = await fetchPrimaryDeviceFromDB(
+            postData.location_id,
+          );
+          fieldData = await getPrimaryDeviceData(primaryDeivce);
         } else {
-          triggerFieldType = 'text';
-          triggerAnswer = element.trigger_question_answer;
+          var fieldDataLists = await fetchFieldDetailsFromDB(
+            client_id,
+            business_unit_id,
+            question_tag,
+          );
+          fieldData = await getFieldData(fieldDataLists, postData);
         }
-        trigger = {
-          question_id: element.trigger_question_id,
-          type: triggerFieldType,
-          condition: element.trigger_question_condition,
-          answer: triggerAnswer,
-        };
       }
-  
-      var bodyRes = {
-        form_question_id: element.form_question_id,
-        question_group: element.question_group,
-        question_group_id: element.question_group_id,
-        question_type: element.question_type,
-        question_text: element.question_text,
-        guide_info: guideInfoData,
-        rule_compulsory: element.rule_compulsory.toString(),
-        trigger: trigger,
-        value: fieldData,
-      };
-  
-      const questionType = element.question_type;
-      if (questionType == 'yes_no' || questionType == 'take_photo') {
-        var include_image = [];
-        if (element.include_image != '') {
-          include_image = element.include_image.split(',');
-        }
-        var optimize = element.optimize_image;
-        tmp.push({
-          ...bodyRes,
-          include_image: include_image,
-          optimize: '',
-          rule_characters: element.rule_characters,
-          rule_editable: element.rule_editable.toString(),
-          add_prefix: element.add_prefix,
-          add_suffix: element.add_suffix,
-          question_tag: element.question_tag,
-          options: optionsData,
-        });
-      } else if (questionType == 'email_pdf') {
-        tmp.push({...bodyRes});
-      } else if (questionType == 'products') {
-        var productLists = await fetchProductsFromDB(business_unit_id, client_id);
-        var productsResults = getProductsData(productLists);
-  
-        if (productsResults.length == 3) {
-          tmp.push({
-            ...bodyRes,
-            product_types: productsResults[1],
-            brands: productsResults[2],
-            products: productsResults[0],
-          });
-        }
-      } else if (questionType == 'returns') {
-        const returnProductLists = await fetchReturnProductsFromDB(
-          business_unit_id,
-          client_id,
-        );
-        const returnProductsResults = getProductsData(returnProductLists);
-        const reasonList = await fetchReasonsFromDB(
-          business_unit_id,
-          client_id,
-          element.form_question_id,
-        );
-        const reasons = getReasonData(reasonList);
-        if (returnProductsResults.length == 3) {
-          tmp.push({
-            ...bodyRes,
-            product_types: returnProductsResults[1],
-            brands: returnProductsResults[2],
-            products: returnProductsResults[0],
-            return_reasons: reasons,
-          });
-        }
-      } else if (questionType == 'pos_capture') {
-        /*const pleacementAreas = {};
-        const touchpoints = await fetchTouchpointsFromDB(
-          business_unit_id,
-          client_id,
-          element.form_question_id,
-        );
-        const placementAreaResult = await fetchPlacementAreasFromDB(
-          business_unit_id,
-          client_id,
-          element.form_question_id,
-        );
-  
-        placementAreaResult.forEach(result => {
-          pleacementAreas[result[placement_type]] = result[area];
-        });
-        const productsResult = await fetchPOSProductsFromDB(
-          business_unit_id,
-          client_id,
-        );
-        tmp.push({
-          ...bodyRes,
-          touchpoints: touchpoints,
-          placement_areas: pleacementAreas,
-          products: productsResult,
-        });*/
-      } else if (
-        questionType == 'sku_select' ||
-        questionType == 'sku_count' ||
-        questionType == 'sku_shelf_share' ||
-        questionType == 'product_issues' ||
-        questionType == 'format_price' ||
-        questionType == 'brand_competitor_facings' ||
-        questionType == 'fsu_campaign' ||
-        questionType == 'tiered_multiple_choice'
+    }
+
+    // Guide Info
+    var guideInfoData = [];
+    if (
+      element.guide_info_title != '' ||
+      element.guide_info_image != null ||
+      element.guide_info_text
+    ) {
+      var guideImagePath = '';
+      if (element.guide_info_image != '') {
+        guideImagePath =
+          baseURL +
+          `/common/assets/guide_info_images/` +
+          element.guide_info_image;
+      }
+      guideInfoData['title'] = element.guide_info_title;
+      guideInfoData['image'] = guideImagePath;
+      guideInfoData['text'] = element.guide_info_text;
+    }
+    // Get Options
+    var optionLists = await fetchOptionsFromDB(element.form_question_id);
+    var optionsData = getOptionData(optionLists);
+
+    // Trigger Data
+    var trigger = [];
+    if (element.trigger_question_type != '') {
+      var triggerOptions = [];
+      var triggerFieldType = '';
+      var triggerAnswer = '';
+      if (
+        element.trigger_question_type == 'multiple' ||
+        element.trigger_question_type == 'multi_select'
       ) {
+        triggerFieldType = 'dropdown';
+        triggerAnswer = element.trigger_question_answer.split(',');
+      } else if (element.trigger_question_type == 'numbers') {
+        triggerFieldType = 'numbers';
+        triggerAnswer = element.trigger_question_answer;
       } else {
+        triggerFieldType = 'text';
+        triggerAnswer = element.trigger_question_answer;
+      }
+      trigger = {
+        question_id: element.trigger_question_id,
+        type: triggerFieldType,
+        condition: element.trigger_question_condition,
+        answer: triggerAnswer,
+      };
+    }
+
+    var bodyRes = {
+      form_question_id: element.form_question_id,
+      question_group: element.question_group,
+      question_group_id: element.question_group_id,
+      question_type: element.question_type,
+      question_text: element.question_text,
+      guide_info: guideInfoData,
+      rule_compulsory: element.rule_compulsory.toString(),
+      trigger: trigger,
+      value: fieldData,
+    };
+
+    const questionType = element.question_type;
+    if (questionType == 'yes_no' || questionType == 'take_photo') {
+      var include_image = [];
+      if (element.include_image != '') {
+        include_image = element.include_image.split(',');
+      }
+      var optimize = element.optimize_image;
+      tmp.push({
+        ...bodyRes,
+        include_image: include_image,
+        optimize: '',
+        rule_characters: element.rule_characters,
+        rule_editable: element.rule_editable.toString(),
+        add_prefix: element.add_prefix,
+        add_suffix: element.add_suffix,
+        question_tag: element.question_tag,
+        options: optionsData,
+      });
+    } else if (questionType == 'email_pdf') {
+      tmp.push({...bodyRes});
+    } else if (questionType == 'products') {
+      var productLists = await fetchProductsFromDB(business_unit_id, client_id);
+      var productsResults = getProductsData(productLists);
+
+      if (productsResults.length == 3) {
         tmp.push({
           ...bodyRes,
-          include_image: [],
-          optimize: '0',
-          rule_characters: element.rule_characters,
-          rule_editable: element.rule_editable.toString(),
-          add_prefix: element.add_prefix,
-          add_suffix: element.add_suffix,
-          question_tag: element.question_tag,
-          options: optionsData,
+          product_types: productsResults[1],
+          brands: productsResults[2],
+          products: productsResults[0],
         });
-      }    
-    }    
+      }
+    } else if (questionType == 'returns') {
+      const returnProductLists = await fetchReturnProductsFromDB(
+        business_unit_id,
+        client_id,
+      );
+      const returnProductsResults = getProductsData(returnProductLists);
+      const reasonList = await fetchReasonsFromDB(
+        business_unit_id,
+        client_id,
+        element.form_question_id,
+      );
+      const reasons = getReasonData(reasonList);
+      if (returnProductsResults.length == 3) {
+        tmp.push({
+          ...bodyRes,
+          product_types: returnProductsResults[1],
+          brands: returnProductsResults[2],
+          products: returnProductsResults[0],
+          return_reasons: reasons,
+        });
+      }
+    } else if (
+      questionType == 'sku_shelf_share' ||
+      questionType == 'sku_count' ||
+      questionType == 'sku_select' ||
+      questionType == 'pos_capture'
+    ) {
+      const questionData = await getFormQuestionData(
+        bodyRes,
+        business_unit_id,
+        client_id,
+        postData,
+        element,
+      );
+      tmp.push(questionData);
+    } else if (
+      questionType == 'product_issues' ||
+      questionType == 'format_price' ||
+      questionType == 'brand_competitor_facings' ||
+      questionType == 'fsu_campaign' ||
+      questionType == 'tiered_multiple_choice'
+    ) {
+    } else {
+      tmp.push({
+        ...bodyRes,
+        include_image: [],
+        optimize: '0',
+        rule_characters: element.rule_characters,
+        rule_editable: element.rule_editable.toString(),
+        add_prefix: element.add_prefix,
+        add_suffix: element.add_suffix,
+        question_tag: element.question_tag,
+        options: optionsData,
+      });
+    }
+  }
 
   return tmp;
 };
@@ -541,38 +424,40 @@ const getFormQuestions = async (
 const getFieldData = async (lists, postData) => {
   var tmp = {};
   var value = '';
-  try{
+  try {
     for (var i = 0; i < lists.length; i++) {
       var element = lists.item(i);
-      console.log("elementx => ", element)
-      if (element.core_field_name != null && element.core_field_name != '') {        
-        var coreFiledData = await fetchCoreFieldData(postData.location_id );        
-        value = getCoreFieldValue(coreFiledData , element.field_type , element.core_field_name);
-   
-      }else if (
+      console.log('elementx => ', element);
+      if (element.core_field_name != null && element.core_field_name != '') {
+        var coreFiledData = await fetchCoreFieldData(postData.location_id);
+        value = getCoreFieldValue(
+          coreFiledData,
+          element.field_type,
+          element.core_field_name,
+        );
+      } else if (
         element.custom_master_field_id != null &&
         element.custom_master_field_id != ''
       ) {
         var fieldValueLists = await fetchFieldValueFromDB(
           element.custom_master_field_id,
           postData.location_id,
-        );      
+        );
         value = getFieldValue(fieldValueLists);
       }
-      
     }
-  }catch(e){
-    console.log('get field data error : ' , e);
+  } catch (e) {
+    console.log('get field data error : ', e);
   }
-  
+
   return value;
 };
 
 const getFieldValue = lists => {
   var value = '';
-  try{
+  try {
     for (var i = 0; i < lists.length; i++) {
-      var element = lists.item(i);    
+      var element = lists.item(i);
       if (
         element.field_type == 'multiple' ||
         element.field_type == 'multi_select'
@@ -583,42 +468,35 @@ const getFieldValue = lists => {
         value = element.field_data;
       }
     }
-  }catch(e){
-    console.log("field value error: ",e)
+  } catch (e) {
+    console.log('field value error: ', e);
   }
-  
+
   return value;
 };
 
-
-
 const getCoreFieldValue = (lists, fieldType, fieldName) => {
   var value = '';
-  try{
+  try {
     for (var i = 0; i < lists.length; i++) {
       var element = lists.item(i);
-      console.log("core element" , fieldType, fieldName)
+      console.log('core element', fieldType, fieldName);
       if (
         fieldType == 'multiple' ||
         fieldType == 'multi_select' ||
         fieldType == 'dropdown'
       ) {
         value = element[fieldName].split(',');
-      } else if (
-        fieldType == 'text' ||
-        fieldType == 'numbers'
-      ) {      
-        value = element[fieldName];      
+      } else if (fieldType == 'text' || fieldType == 'numbers') {
+        value = element[fieldName];
       }
-  
     }
-  }catch(e){
-    console.log(" core filed value error : ", e)
+  } catch (e) {
+    console.log(' core filed value error : ', e);
   }
-  
+
   return value;
 };
-
 
 const getOptionData = lists => {
   var tmp = [];
@@ -665,13 +543,13 @@ const getProductsData = lists => {
   return [productRes, product_types, brands];
 };
 
-const getPrimaryDeviceData = async(lists) => {
+const getPrimaryDeviceData = async lists => {
   for (var i = 0; i < lists.length; i++) {
-      var element = lists.item(i);      
-      return element.device_msisdn;
+    var element = lists.item(i);
+    return element.device_msisdn;
   }
   return '';
-}
+};
 
 export default {
   find,

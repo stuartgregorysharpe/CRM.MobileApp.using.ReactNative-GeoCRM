@@ -25,7 +25,11 @@ import DeviceInfo from 'react-native-device-info';
 import { LocationInfoInput } from '../locationInfoDetails/LocationInfoInput';
 import { LocationInfoInputTablet } from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
-import { getJsonData, storeLocalValue } from '../../../../constants/Storage';
+import {
+  getJsonData,
+  getLocalData,
+  storeLocalValue,
+} from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import { getLocationInfo } from '../../../../actions/location.action';
 import { Notification } from '../../../../components/modal/Notification';
@@ -38,17 +42,20 @@ import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import { useNavigation } from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/modal/DevicesModal';
-import { Constants, Strings } from '../../../../constants';
-import { CHECKIN, LOCATION_CHECK_OUT_COMPULSORY } from '../../../../actions/actionTypes';
+import {Constants, Strings} from '../../../../constants';
+import {
+  CHECKIN,
+  LOCATION_CHECK_OUT_COMPULSORY,
+} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import CustomerSaleHistoryModal from '../customer_sales';
-import { expireToken } from '../../../../constants/Helper';
-import { GetRequestFormListsDAO } from '../../../../DAO';
+import {expireToken} from '../../../../constants/Helper';
+import {GetRequestFormListsDAO} from '../../../../DAO';
+import {cos} from 'react-native-reanimated';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
 
 const LocationSpecificInfoScreen = props => {
-
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
@@ -80,8 +87,7 @@ const LocationSpecificInfoScreen = props => {
   const isDisposition = features.includes('disposition_fields');
   let isMout = true;
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     isMout = true;
@@ -94,7 +100,7 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     isMout = true;
-    if (isCheckin == false && pageType != "access_crm") {
+    if (isCheckin == false && pageType != 'access_crm') {
       if (props.navigation.canGoBack()) {
         if (isMout) {
           props.navigation.goBack();
@@ -107,7 +113,6 @@ const LocationSpecificInfoScreen = props => {
     return () => {
       isMout = false;
     };
-
   }, [isCheckin]);
 
   useEffect(() => {
@@ -118,10 +123,12 @@ const LocationSpecificInfoScreen = props => {
   }, [navigationMain]);
 
   const getCheckInLocation = async () => {
-    console.log("focussed getCheckInLocation")
-    var location = await getJsonData("@checkin_location");
+    var location = await getJsonData('@checkin_location');
     if (location != null) {
-      if (locationInfoRef.current != undefined && locationInfoRef.current != null) {
+      if (
+        locationInfoRef.current != undefined &&
+        locationInfoRef.current != null
+      ) {
         locationInfoRef.current.updateDispositionData(location);
       }
       setLocationIfo(location);
@@ -132,10 +139,9 @@ const LocationSpecificInfoScreen = props => {
         getFormLists(location_id);
       }
     }
-  }
+  };
 
   const initData = async () => {
-    console.log("location_id", location_id, pageType)
     if (pageType === 'checkin') {
       await storeLocalValue('@checkin', '1');
       if (locationInfo !== undefined && locationInfo.location_id != undefined) {
@@ -151,7 +157,6 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const goBack = () => {
-    console.log('go back in specific info page');
     if (props.navigation.canGoBack()) {
       props.navigation.popToTop();
     }
@@ -162,11 +167,13 @@ const LocationSpecificInfoScreen = props => {
     getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
         if (isMout) {
-          if (locationInfoRef.current != undefined && locationInfoRef.current != null) {
+          if (
+            locationInfoRef.current != undefined &&
+            locationInfoRef.current != null
+          ) {
             locationInfoRef.current.updateDispositionData(res);
           }
           setLocationIfo(res);
-          console.log('DDD ==== ', res);
           setIsLoading(false);
         }
       })
@@ -276,31 +283,44 @@ const LocationSpecificInfoScreen = props => {
   const onCustomerContactModalClosed = ({ type, value }) => { };
   const onCustomerSaleHistoryModalClosed = ({ type, value }) => { };
 
-  const getFormLists = (locationId) => {
-    console.log("form lists => ", locationId);
+  const getFormLists = async locationId => {
     var param = {
-      location_id: locationId
+      location_id: locationId,
+    };
+    if (isCheckin) {
+      const checkin_type_id = await getLocalData('@checkin_type_id');
+      const checkin_reason_id = await getLocalData('@checkin_reason_id');
+      if (checkin_type_id && checkin_reason_id != '') {
+        param.checkin_type_id = checkin_type_id;
+      }
+      if (checkin_reason_id && checkin_reason_id != '') {
+        param.checkin_reason_id = checkin_reason_id;
+      }
     }
-    GetRequestFormListsDAO.find(param).then((res) => {
-      getCompulsoryForm(res.forms);
-    }).catch((e) => {
+    GetRequestFormListsDAO.find(param)
+      .then(res => {
+        getCompulsoryForm(res.forms);
+      })
+      .catch(e => {});
+  };
 
-    })
-  }
-
-  const getCompulsoryForm = async (lists) => {
+  const getCompulsoryForm = async lists => {
     var formLists = [...lists];
-    const formIds = await getJsonData("@form_ids");
+    const formIds = await getJsonData('@form_ids');
     var flag = false;
-    formLists.forEach((element) => {
-      if (element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id))) {
+
+    formLists.forEach(element => {
+      if (
+        element.compulsory === '1' &&
+        (formIds == null ||
+          (formIds != null && !formIds.includes(element.form_id)))
+      ) {
         flag = true;
       }
     });
     setIsFormCompulsory(flag);
-    dispatch({ type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag });
+    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
   };
-
 
   return (
     <SafeAreaView style={{}}>
@@ -349,7 +369,13 @@ const LocationSpecificInfoScreen = props => {
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
-        locationId={location_id != undefined ? location_id : locationInfo != undefined ? locationInfo.location_id : 0}
+        locationId={
+          location_id != undefined
+            ? location_id
+            : locationInfo != undefined
+            ? locationInfo.location_id
+            : 0
+        }
         onButtonAction={onDevicesModalClosed}
       />
 
@@ -391,8 +417,6 @@ const LocationSpecificInfoScreen = props => {
       <ScrollView style={styles.container}>
         {locationInfo != undefined && (
           <View style={styles.headerBox}>
-
-
             <View
               style={{
                 flexDirection: 'row',
@@ -408,14 +432,16 @@ const LocationSpecificInfoScreen = props => {
                     height="14px"
                   />
                   <Text style={styles.subtitle}>
-
-                    {locationInfo.location_name != undefined && locationInfo.location_name.custom_field_name != undefined
+                    {locationInfo.location_name != undefined &&
+                    locationInfo.location_name.custom_field_name != undefined
                       ? locationInfo.location_name.custom_field_name
                       : ''}
                   </Text>
                 </View>
                 <Text style={styles.title}>
-                  {locationInfo.location_name != undefined ? locationInfo.location_name.value : ''}
+                  {locationInfo.location_name != undefined
+                    ? locationInfo.location_name.value
+                    : ''}
                 </Text>
               </View>
               <View style={styles.subtitleBox}>
@@ -454,8 +480,15 @@ const LocationSpecificInfoScreen = props => {
                       message: res.message,
                       buttonText: Strings.Ok,
                       buttonAction: async () => {
-                        dispatch({ type: CHECKIN, payload: false });
-                        dispatch({ type: LOCATION_CHECK_OUT_COMPULSORY, payload: true });
+                        dispatch({
+                          type: CHECKIN,
+                          payload: false,
+                          scheduleId: false,
+                        });
+                        dispatch({
+                          type: LOCATION_CHECK_OUT_COMPULSORY,
+                          payload: true,
+                        });
                         dispatch(clearNotification());
                         goBack();
                       },

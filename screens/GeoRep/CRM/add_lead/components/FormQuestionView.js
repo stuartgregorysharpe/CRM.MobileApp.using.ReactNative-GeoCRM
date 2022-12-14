@@ -65,7 +65,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const [isDateTimeView, setIsDateTimeView] = useState(false);
   const [isSign, setIsSign] = useState(false);
   const [isInfo, setIsInfo] = useState(false);
-  const [bubbleText, setBubleText] = useState('');
+  const [guideInfo, setGuideInfo] = useState('');
   const [signature, setSignature] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [isUploadFileView, setIsUploadFileView] = useState(false);
@@ -74,7 +74,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const formSubmitModalRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState(false);
-
   useImperativeHandle(
     ref,
     () => ({
@@ -120,8 +119,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
     updateFormQuestions(tmp);
   };
 
-  const _onTouchStart = (e, text) => {
-    setBubleText(text);
+  const _onTouchStart = (e, info) => {
+    setGuideInfo(info);
     setIsInfo(true);
   };
   const closeSignView = () => {
@@ -364,8 +363,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
           item={item}
           formIndex={index}
           onFormAction={({type, value, item}) => {
-            console.log('print', type);
-            console.log('print', value);
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
               onValueChangedSelectionView(key, index, value);
             }
@@ -522,7 +519,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
           fromIndex={index}
           onFormAction={({type, value, item}) => {
             if (type == Constants.actionType.ACTION_FORM_SUBMIT) {
-              console.log(' ==== ', item);
               onValueChangedSelectionView(key, index, value);
             }
             if (type == Constants.actionType.ACTION_INFO) {
@@ -545,7 +541,6 @@ export const FormQuestionView = forwardRef((props, ref) => {
               value != '' &&
               type == Constants.actionType.ACTION_FORM_SUBMIT
             ) {
-              console.log('multi select form', value);
               onValueChangedSelectionView(key, index, value);
             }
             if (type == Constants.actionType.ACTION_FORM_CLEAR) {
@@ -673,7 +668,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
 
       <GuideInfoView
         visible={isInfo}
-        info={bubbleText}
+        info={guideInfo}
         onModalClose={() => setIsInfo(false)}></GuideInfoView>
 
       <FormSubmitFeedbackModal

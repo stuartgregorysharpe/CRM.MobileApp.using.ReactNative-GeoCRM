@@ -129,12 +129,13 @@ export default {
     FEATURE_PRODUCT_CHANNELS: 'product_channels',
     FEATURE_OUTCOMES: 'outcomes',
   },
-  deviceType: [    
-    'Additional',
-    'Primary'
-  ],
-  deviceTypeLabel : {
-    PRIMARY : 'Primary Device',
-    ADDITIONAL : 'Additional Device'
-  }
+  deviceType: ['Additional', 'Primary'],
+  deviceTypeLabel: {
+    PRIMARY: 'Primary Device',
+    ADDITIONAL: 'Additional Device',
+  },
+  storageKey: {
+    CHECKIN_SCHEDULE_ID: '@checkin_schedule_id',
+    OFFLINE_SCHEDULE_CHECKINS: '@offline_schedule_checkins',
+  },
 };

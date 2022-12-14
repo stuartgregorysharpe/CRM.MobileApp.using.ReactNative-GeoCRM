@@ -22,6 +22,7 @@ import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../actions/notification.action';
 import ProductReturnSectionList from './ProductReturnSectionList';
 import ProductQrCaptureModal from '../modals/ProductQrCaptureModal';
+import {Notification} from '../../../modal/Notification';
 
 const ProductReturnFormView = React.forwardRef((props, ref) => {
   const {
@@ -285,6 +286,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
         products={products}
         onButtonAction={onCaptureAction}
       />
+      <Notification />
     </View>
   );
 });

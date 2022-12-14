@@ -24,9 +24,7 @@ target 'GeoCRM' do
 
   pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
-
-  pod 'IQKeyboardManager'
-  
+ 
   permissions_path = '../node_modules/react-native-permissions/ios'
   #pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera/Permission-Camera.podspec"

@@ -12,8 +12,8 @@ import {
   LOCATION_ID_CHANGED,
   LOCATION_LOOP_LISTS,
   CHANGE_POLYGONS,
-  CHECKIN  
-} from "../actions/actionTypes";
+  CHECKIN,
+} from '../actions/actionTypes';
 
 const initialState = {
   statusPinKeys: 'request',
@@ -28,89 +28,93 @@ const initialState = {
   locationSearchLists: [],
   locationInfo: {},
   locationLeadfields: {},
-  statusStageOutcomeUpdate:'init',
+  statusStageOutcomeUpdate: 'init',
   statusLocationInfoUpdate: 'init',
-  locationId:0,
-  loopLists:[],
+  locationId: 0,
+  loopLists: [],
   checkIn: false,
-}
+  checkinScheduleId: 0,
+};
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, action) => {
   switch (action.type) {
-    case CHECKIN: 
+    case CHECKIN:
       return {
         ...state,
-        checkIn: action.payload
-      }
+        checkIn: action.payload,
+        checkinScheduleId:
+          action.scheduleId !== undefined
+            ? action.scheduleId
+            : state.checkinScheduleId,
+      };
     case LOCATION_LOOP_LISTS:
       return {
         ...state,
-        loopLists: action.payload
-      }
+        loopLists: action.payload,
+      };
     case LOCATION_ID_CHANGED:
       return {
         ...state,
-        locationId: action.payload
-      }
+        locationId: action.payload,
+      };
     case STATUS_PIN_KEY:
       return {
         ...state,
-        statusPinKeys: action.payload
-      }
+        statusPinKeys: action.payload,
+      };
     case STATUS_LOCATION_MAP:
       return {
         ...state,
-        statusLocationMaps: action.payload
-      }
+        statusLocationMaps: action.payload,
+      };
     case STATUS_LOCATION_FILTERS:
       return {
         ...state,
-        statusLocationFilters: action.payload
-      }
+        statusLocationFilters: action.payload,
+      };
     case STATUS_LOCATION_SEARCH_LISTS:
       return {
         ...state,
-        statusLocationSearchLists: action.payload
-      }
+        statusLocationSearchLists: action.payload,
+      };
     case STATUS_LOCATION_INFO:
       return {
         ...state,
-        statusLocationInfo: action.payload
-      }
+        statusLocationInfo: action.payload,
+      };
     case CHANGE_PIN_KEY:
       return {
         ...state,
-        locationPins: action.payload
-      }
+        locationPins: action.payload,
+      };
     case CHANGE_LOCATION_MAP:
       return {
         ...state,
-        locationMaps: action.payload
-      }
+        locationMaps: action.payload,
+      };
     case CHANGE_POLYGONS:
       return {
         ...state,
-        polygons: action.payload
-      }
+        polygons: action.payload,
+      };
     case CHANGE_LOCATION_FILTERS:
       return {
         ...state,
-        locationFilters: action.payload
-      }
+        locationFilters: action.payload,
+      };
     case CHANGE_LOCATION_SEARCH_LISTS:
       return {
         ...state,
-        locationSearchLists: action.payload
-      }      
-   case STATUS_DISPOSITION_FIELDS_UPDATE:
+        locationSearchLists: action.payload,
+      };
+    case STATUS_DISPOSITION_FIELDS_UPDATE:
       return {
-         ...state,
-         statusLocationInfoUpdate: action.payload
-      }
+        ...state,
+        statusLocationInfoUpdate: action.payload,
+      };
 
-  
     default:
       return state;
   }
-}
+};
