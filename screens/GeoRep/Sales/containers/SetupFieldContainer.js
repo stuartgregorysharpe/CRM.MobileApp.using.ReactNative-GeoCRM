@@ -75,7 +75,7 @@ const  SetupFieldContainer = (props) => {
                 onContinue={onContinue}
                 {...props} />
             
-            <View style={{backgroundColor:'white', position:'absolute' ,bottom:0, width:'100%',height:50, flexDirection:'row'}}>
+            <View style={{backgroundColor:'white', position:'absolute' ,bottom:0, width:'100%', flexDirection:'row'}}>
 
                 {
                     bottomTabs.map((item, index) =>{

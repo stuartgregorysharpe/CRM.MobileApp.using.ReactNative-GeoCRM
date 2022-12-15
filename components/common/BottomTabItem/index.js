@@ -13,7 +13,7 @@ const BottomTabItem = ({item , onItemPressed}) => {
         onPress={onItemPressed}
         style={styles.container}>
         <SvgIcon icon={item.inActiveIcon} width='20' height='20' />
-        <AppText title={item.name} color={Colors.textGeyColor} ></AppText>
+        <AppText title={item.name} color={Colors.textGeyColor} style={{marginTop:5}} ></AppText>
     </TouchableOpacity>
   )
 }
@@ -24,6 +24,8 @@ const styles = StyleSheet.create({
     container: {
         flex:1, 
         justifyContent:'center', 
-        alignItems:'center'
+        alignItems:'center',
+        paddingTop:5,
+        paddingBottom:5,
     }
 })
