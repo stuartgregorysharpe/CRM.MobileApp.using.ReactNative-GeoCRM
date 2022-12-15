@@ -20,6 +20,7 @@ import {showNotification} from '../../../../actions/notification.action';
 import {configProductSetUp} from '../helpers';
 import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, SLIDE_STATUS } from '../../../../actions/actionTypes';
 
+
 const ProductSalesContainer = props => {
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
@@ -135,15 +136,14 @@ const ProductSalesContainer = props => {
 
   useEffect(() => {
     if (productPriceLists != null) {
-      configAddProductCount(productPriceLists);      
+      configAddProductCount(); 
     }
   }, [productPriceLists]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      
       refreshList();
-      configAddProductCount(productPriceLists);
+      //configAddProductCount();
     });
     return unsubscribe;
   }, [navigation]);
@@ -172,27 +172,30 @@ const ProductSalesContainer = props => {
       setOutsideTouch(true);
       props.getProductLists();
     }
-    configAddProductCount(storedProductPriceList);
+    configAddProductCount();
   };
 
-  const configAddProductCount = async storedProductPriceList => {
-    const addProductList = await getJsonData('@add_product');
+  const configAddProductCount = useCallback( async () => {
+
+    const addProductList = await getJsonData('@add_product');        
     var count = 0;
     if (addProductList != null && addProductList != undefined) {
       count = addProductList.length;
     }
     if (
-      storedProductPriceList != undefined &&
-      storedProductPriceList != null &&
-      storedProductPriceList.length > 0
+      productPriceLists != undefined &&
+      productPriceLists != null &&
+      productPriceLists.length > 0
     ) {
-      const tmpLists = storedProductPriceList.filter(
+      const tmpLists = productPriceLists.filter(
         item => parseInt(item.qty) > 0,
-      );
+      );      
       count += tmpLists.length;
     }
     setCartCount(count);
-  };
+
+  },[productPriceLists]);
+  
 
   const onSetupFieldModalClosed = ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
@@ -201,12 +204,13 @@ const ProductSalesContainer = props => {
         setSelectedLocation(value.location.name);
         configProductSetUp(value, type => {
           if (type === 'changed') {
-            dispatch(setProductPriceLists([]));
+            
             storeJsonData('@product_price', []);
             removeLocalData('@add_product');
+            dispatch(setProductPriceLists([]));
           }
         });
-        configAddProductCount(productPriceLists);
+        configAddProductCount();
         props.getProductLists(value);
         if (value != undefined) {
           setOutsideTouch(true);
@@ -313,7 +317,7 @@ const ProductSalesContainer = props => {
     }
     products.push(value);
     storeJsonData('@add_product', products);
-    configAddProductCount(productPriceLists);
+    configAddProductCount();
   };
 
   const onGroupItemClicked = item => {

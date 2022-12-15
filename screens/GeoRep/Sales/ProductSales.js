@@ -1,10 +1,7 @@
 import {
   View,
   Text,
-  Image,
-  Dimensions,
-  ScrollView,
-  FlatList,
+  
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useRef, useState, useCallback} from 'react';
@@ -82,9 +79,7 @@ export default function ProductSales(props) {
       if (search_text != '') {
         paramData['search_text'] = search_text;
       }
-      storeJsonData('@sale_product_parameter', paramData);
-      console.log('post parameter', paramData);
-
+      storeJsonData('@sale_product_parameter', paramData);      
       GetRequestProductsList.find(paramData)
         .then(res => {
           setIsLoading(false);

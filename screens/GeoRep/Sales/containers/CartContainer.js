@@ -98,11 +98,12 @@ const CartContainer = props => {
       configProductSetUp(value, async type => {
         storeJsonData('@setup', value);
         if (type === 'changed') {
+
+          await storeJsonData('@product_price', []);
+          await removeLocalData('@add_product');        
           dispatch(setProductPriceLists([]));
           setAddProductList([]);
-          await storeJsonData('@product_price', []);
-          await removeLocalData('@add_product');
-
+          
           if (navigation.canGoBack()) {
             navigation.popToTop();
           }

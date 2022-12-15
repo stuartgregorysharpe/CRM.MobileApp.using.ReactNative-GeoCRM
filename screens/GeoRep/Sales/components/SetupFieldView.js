@@ -57,8 +57,7 @@ const SetupFieldView = (props) => {
 		console.log(locationId, locInfo)
 		if(locInfo.name != ''){
 			setSelectedLocation({...locInfo , location_id: locationId});
-		}
-			
+		}			
 	}
 
 	const initializeLocation = async() => {
