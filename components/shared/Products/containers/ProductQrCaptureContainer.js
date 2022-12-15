@@ -28,13 +28,21 @@ const ProductQrCaptureContainer = props => {
   };
 
   return (
-    <ProductQrCaptureView
-      onButtonAction={onButtonAction}
-      totalItemCount={totalItemCount}
-      lastScanedQrCode={lastScanedQrCode}
-      products={props.products}
-    />
+    <View style={[styles.container, props.style]}>
+      <ProductQrCaptureView
+        onButtonAction={onButtonAction}
+        totalItemCount={totalItemCount}
+        lastScanedQrCode={lastScanedQrCode}
+        products={props.products}
+      />
+    </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
+});
 
 export default ProductQrCaptureContainer;

@@ -20,8 +20,8 @@ import {checkConnectivity} from '../../../DAO/helper';
 import {useDispatch} from 'react-redux';
 
 export default function SupportScreen(props) {
-  const headers = ['Ticket', 'FAQ', 'WhatsApp'];
-  const crmStatus = useSelector(state => state.rep.crmSlideStatus);
+
+  const headers = ['Ticket', 'FAQ', 'WhatsApp'];  
   const [tabIndex, setTabIndex] = useState(1);
   const ticketRef = useRef();
   const dispatch = useDispatch();
@@ -38,16 +38,9 @@ export default function SupportScreen(props) {
             </TouchableOpacity>
           );
         },
-      });
-      if (crmStatus) {
-        props.navigation.setOptions({
-          tabBarStyle: {
-            display: 'none',
-          },
-        });
-      }
+      });      
     }
-  }, []);
+  });
 
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)

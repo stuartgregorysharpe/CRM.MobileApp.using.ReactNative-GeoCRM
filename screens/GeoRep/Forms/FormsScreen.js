@@ -114,6 +114,7 @@ export const FormsScreen = (props) => {
     var formLists = [...lists];
     const formIds = await getJsonData("@form_ids");
     var flag = false;
+    console.log(" formIds in form screen ", JSON.stringify(formIds))
     formLists.forEach((element) => {
       if(element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id)) ){        
         flag = true;
@@ -178,6 +179,7 @@ export const FormsScreen = (props) => {
       }
     }
 
+    console.log("param data", param);
     GetRequestFormListsDAO.find(param)
       .then(res => {        
         if(isMount){

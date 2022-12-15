@@ -18,9 +18,9 @@ import {SubmitButton} from '../../../../components/shared/SubmitButton';
 import FastImage from 'react-native-fast-image';
 
 export const GuideInfoView = ({visible, info, onModalClose}) => {
-  const isShowTitle = info && info.title != undefined;
-  const isShowImage = info && info.image != undefined;
-  const isShowText = info && info.text != undefined;
+  const isShowTitle = info && info.title != undefined && info.title != '';
+  const isShowImage = info && info.image != undefined && info.image != '';
+  const isShowText = info && info.text != undefined && info.text != '';
 
   return (
     <Modal
@@ -53,7 +53,7 @@ export const GuideInfoView = ({visible, info, onModalClose}) => {
             )}
             {isShowText && (
               <Title style={{fontFamily: Fonts.primaryRegular, fontSize: 14}}>
-                {info.text} 
+                {info.text}
               </Title>
             )}
 

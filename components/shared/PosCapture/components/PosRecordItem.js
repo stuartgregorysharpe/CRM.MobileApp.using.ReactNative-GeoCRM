@@ -42,7 +42,7 @@ const PosRecordItem = props => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 40,
+    minHeight: 40,
     marginHorizontal: 8,
     borderBottomColor: whiteLabel().lineSeperator,
     borderBottomWidth: 1,

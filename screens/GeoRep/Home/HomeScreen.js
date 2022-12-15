@@ -15,6 +15,7 @@ import { clearNotification, showNotification } from '../../../actions/notificati
 import { Strings } from '../../../constants';
 import { getTime } from '../../../helpers/formatHelpers';
 import { Notification } from '../../../components/modal/Notification';
+import DanOneSales from './DanOneSales/DanOneSales';
 
 export default function HomeScreen(props) {
 
@@ -170,6 +171,7 @@ export default function HomeScreen(props) {
             
       {tabIndex === 'Main' && <MainPage {...props} ref={mainPageRef} > </MainPage>}
       {tabIndex === 'Actions' && <ActionItemsContainer />}
+      {tabIndex === 'Sales' && <DanOneSales />}
 
     </View>
   );

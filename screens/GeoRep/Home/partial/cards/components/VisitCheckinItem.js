@@ -28,6 +28,7 @@ export default function VisitCheckinItem({item}) {
         <CheckinLinkButton
           title="Check In"
           locationId={item.location_id}
+          scheduleId={item.scheduleId}
           renderSubmitButton={onCheckIn => {
             return (
               <TouchableOpacity

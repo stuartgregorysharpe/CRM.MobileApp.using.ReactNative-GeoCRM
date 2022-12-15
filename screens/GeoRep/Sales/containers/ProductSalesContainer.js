@@ -235,7 +235,7 @@ const ProductSalesContainer = props => {
       if (props.getProductListsByFilter) {
         props.getProductListsByFilter(value);
       }
-    }
+    }  
     if (type === Constants.actionType.ACTION_FORM_CLEAR) {
       clearFilter();
     }
