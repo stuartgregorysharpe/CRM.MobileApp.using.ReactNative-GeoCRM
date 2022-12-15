@@ -29,6 +29,7 @@ const CModal = React.forwardRef((props, ref) => {
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
   const isFullModal = _modalType == Constants.modalType.MODAL_TYPE_FULL;
   const isFullWithBottomModal = _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
+  
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);

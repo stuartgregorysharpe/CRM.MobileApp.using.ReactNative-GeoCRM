@@ -26,8 +26,10 @@ import {setProductPriceLists} from '../../../../actions/sales.action';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import {useCallback} from 'react';
 import AddProductModal from '../modal/AddProductModal';
+import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, SLIDE_STATUS } from '../../../../actions/actionTypes';
 
 const CartContainer = props => {
+
   const navigation = props.navigation;
   const transactionSubmitModalRef = useRef(null);
   const dispatch = useDispatch();
@@ -65,6 +67,7 @@ const CartContainer = props => {
   const [productDetailTitle, setProductDetailTitle] = useState('');
   const [product, setProduct] = useState();
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
+  const visibleMore = useSelector(state => state.rep.visibleMore);
 
   useEffect(() => {
     loadAddProductLists();
@@ -108,8 +111,22 @@ const CartContainer = props => {
         }
       });
       setupFieldModalRef.current.hideModal();
+    }else if(type == Constants.actionType.ACTION_DONE){
+		  setupFieldModalRef.current.hideModal();
+      if(value.name === 'More'){
+        dispatch({type: SLIDE_STATUS, payload: false});			
+        if (visibleMore != '') {			
+          dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+        } else {
+          dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+              }
+      }else{			
+        navigation.navigate(value.name);
+      }
     }
   };
+
+
   const openSetup = () => {
     setupFieldModalRef.current.showModal();
   };
@@ -371,7 +388,8 @@ const CartContainer = props => {
       />
 
       <SetupFieldModal
-        title="Define Setup"
+        title="Define Setup"        
+        hideClear
         backButtonDisabled={true}
         closableWithOutsideTouch={outSideTouch}
         ref={setupFieldModalRef}

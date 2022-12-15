@@ -141,6 +141,7 @@ const ProductSalesContainer = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      
       refreshList();
       configAddProductCount(productPriceLists);
     });
@@ -156,6 +157,12 @@ const ProductSalesContainer = props => {
     ) {
       props.getProductLists();
     }
+
+    var defineSetup = await getJsonData("@setup");
+    if(defineSetup == null){
+      setupFieldModalRef.current.showModal();
+    }
+
   };
 
   const initializeProductLists = async () => {
@@ -449,6 +456,7 @@ const ProductSalesContainer = props => {
 
       <SetupFieldModal
         title="Define Setup"
+        hideClear
         backButtonDisabled={true}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}
@@ -509,6 +517,8 @@ const ProductSalesContainer = props => {
         isUpdatingProductPrice={isUpdatingProductPrice}
         {...props}
       />
+
+
     </View>
   );
 };

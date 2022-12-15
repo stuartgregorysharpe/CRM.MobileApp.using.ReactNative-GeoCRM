@@ -87,6 +87,7 @@ export default function ProductSales(props) {
 
       GetRequestProductsList.find(paramData)
         .then(res => {
+          setIsLoading(false);
           if (res.status == Strings.Success) {
             setSettings(res.settings);
             dispatch(setSalesSetting(res.settings));
@@ -97,11 +98,11 @@ export default function ProductSales(props) {
             }
             setPage(pageNumber + 1);
           }
-          setIsLoading(false);
+          
         })
         .catch(e => {
-          expireToken(dispatch, e);
           setIsLoading(false);
+          expireToken(dispatch, e);          
         });
     }
   };
