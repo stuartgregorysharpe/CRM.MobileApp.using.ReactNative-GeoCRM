@@ -27,8 +27,7 @@ export function getBottomTabs (payload , selectProject) {
         activeIcon: 'Android_More_Horizontal',
         inActiveIcon: 'Android_More_Horizontal_Gray',
       },
-    ];
-    console.log("bottom tab", tmp)
+    ];    
     return tmp;
 
 }

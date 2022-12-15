@@ -9,8 +9,7 @@ export function find(postData){
     
         GetRequest.call("sales/setup-fields",  postData).then( async(res) => {
             
-            if(res.status == Strings.Success && res.isConnected){
-
+            if(res.status == Strings.Success && res.isConnected){                
                 resolve(res.data);
             }else if(res.status == Strings.Success && !res.isConnected){
                 

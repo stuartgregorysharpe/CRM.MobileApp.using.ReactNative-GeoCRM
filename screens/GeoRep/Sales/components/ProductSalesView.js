@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, FlatList, TouchableOpacity ,ActivityIndicator} from 'react-native';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback , useRef} from 'react';
 import ProductItem from './items/ProductItem';
 import ProductGroupItem from './items/ProductGroupItem';
 import {useSelector} from 'react-redux';
@@ -9,7 +9,8 @@ import SvgIcon from '../../../../components/SvgIcon';
 import SettingView from './SettingView';
 import {AppText} from '../../../../components/common/AppText';
 import {style} from '../../../../constants/Styles';
-import {Colors} from '../../../../constants';
+import {Colors, Constants} from '../../../../constants';
+import QRScanModal from '../../../../components/common/QRScanModal';
 
 const ProductSalesView = props => {
   const {
@@ -21,11 +22,13 @@ const ProductSalesView = props => {
     cartCount,
     isUpdatingProductPrice,
   } = props;
+
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const [isEndPageLoading, setIsEndPageLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
+  const barcodeScanModalRef = useRef(null);
 
   useEffect(() => {
     setPageNumber(page);
@@ -104,6 +107,15 @@ const ProductSalesView = props => {
     [isEndPageLoading, isLoading],
   );
 
+  const onScanAction = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CAPTURE) {
+      if (value) {
+        //const capturedItem = captureDeviceStockItem(items, value);      
+        loadMoreData(0, value);
+      }
+    }
+  } ;
+
   renderFooter = () => {
     if (!isEndPageLoading && isLoading) {
       return (
@@ -135,6 +147,9 @@ const ProductSalesView = props => {
           if (props.openFilter) {
             props.openFilter();
           }
+        }}
+        onScan={() =>{
+          barcodeScanModalRef.current.showModal();
         }}
       />
 
@@ -183,6 +198,17 @@ const ProductSalesView = props => {
           </TouchableOpacity>
         )}
       </View>
+
+      <QRScanModal
+        ref={barcodeScanModalRef}
+        isPartialDetect={true}
+        onButtonAction={onScanAction}
+        showClose={true}
+        onClose={() => {
+          barcodeScanModalRef.current.hideModal();
+        }}
+      />
+      
     </View>
   );
 };
