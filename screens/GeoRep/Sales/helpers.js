@@ -135,6 +135,8 @@ export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 export const configProductSetUp = async (value, callBack) => {
   var setupData = await getJsonData('@setup');
   if (setupData != null && setupData != undefined && setupData.location) {
+    console.log("setup ", setupData);
+    console.log("v", value)
     if (
       setupData.location.name != value.location.name ||
       setupData.transaction_type.type != value.transaction_type.type

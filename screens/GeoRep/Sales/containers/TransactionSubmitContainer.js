@@ -40,6 +40,7 @@ const  TransactionSubmitContainer = (props) => {
                 location_id : setup.location.location_id
             }
 
+            console.log("param", setup)
             GetRequestTransactionSubmitFieldsDAO.find(param).then((res) => {            
                 if(isMount){
                     if(res.status == Strings.Success){                               
