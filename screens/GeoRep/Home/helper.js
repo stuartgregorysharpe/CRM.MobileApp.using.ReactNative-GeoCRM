@@ -30,6 +30,10 @@ const getAllTabs = () => {
     {
       title: 'sales',
       slug: 'Sales'
+    },
+    {
+      title: 'Sales',
+      slug: 'danone_sales_dash'
     }
   ];
 }

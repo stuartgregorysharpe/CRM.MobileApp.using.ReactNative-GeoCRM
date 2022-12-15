@@ -32,7 +32,7 @@ export default {
   Added_Date: 'Added Date',
   Due_Date: 'Due Date',
   Search_Location: 'Search Location',
-  This_Function_Not_Available : 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
+  This_Function_Not_Available: 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
   Offline_Mode: 'You are now operating in Offline Mode',
   Online_Mode: 'You are now operating in Online Mode',
   Download_Image: 'Downloading Images ...',
@@ -45,7 +45,7 @@ export default {
     Check_In: 'Check In',
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
-    Complete_Compulsory_Form : 'Please complete the compulsory forms'
+    Complete_Compulsory_Form: 'Please complete the compulsory forms'
   },
 
   Log: {
@@ -80,7 +80,7 @@ export default {
     Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
     Successfully_Sell_To_Trader: 'Saved to Offline sync successfully',
     Primary_Additional: 'Primary/Additional'
-    
+
   },
 
   Forms: {
@@ -95,4 +95,15 @@ export default {
     Successfully_Form_Submit: 'Form  Submitted successfully!',
     Successfully_Device_Update: 'Device update added to offline sync menu successfully',
   },
+
+  DanOnesSales: {
+    Customer: 'Customer',
+    NSV: 'NSV',
+    Vol: 'Vol(Tns)',
+    Return: 'Return %',
+    SalesMetrics:'Sales Metrics',
+    Category:'Category',
+    Returns_value:'Returns Value',
+    Returns_tns:'Returns (Tns)'
+  }
 };

@@ -1,0 +1,34 @@
+[
+    {
+        "title":"INVOICE VALUE",
+        "key":"invoice_value"
+    },
+    {
+        "title":"NET SALES VALUE",
+        "key":"net_sales_value"
+    },
+    {
+        "title":"RETURNS VALUE",
+        "key":"returns_value"
+    },
+    {
+        "title":"SALES VOLUME (TNS)",
+        "key":"sales_volume"
+    },
+    {
+        "title":"SALES VOLUME TARGET (TNS)",
+        "key":"sales_volume_target_tns"
+    },
+    {
+        "title":"SALES VOLUME TARGET %",
+        "key":"sales_volume_target"
+    },
+    {
+        "title":"RETURNS VOLUME (TNS)",
+        "key":"returns_volume"
+    },
+    {
+        "title":"RETURNS %",
+        "key":"returns_percent"
+    }
+]

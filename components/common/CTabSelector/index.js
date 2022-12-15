@@ -93,16 +93,16 @@ export class CTabSelector extends Component {
     );
   };
   render() {
-    const {selectedIndex, items} = this.props;
+    const {selectedIndex, items,hidePrevNext} = this.props;
     const isShowNextButton = selectedIndex < items.length - 1;
     const isShowPrevButton = selectedIndex > 0;
     return (
       <View style={[styles.tabContainer, this.props.containerStyle]}>
-        {isShowPrevButton && this.renderPrevButton()}
+        {!hidePrevNext && isShowPrevButton && this.renderPrevButton()}
         <View style={{flex: 1, flexDirection: 'row'}}>
           {this.renderTabs(items)}
         </View>
-        {isShowNextButton && this.renderNextButton()}
+        {!hidePrevNext && isShowNextButton && this.renderNextButton()}
       </View>
     );
   }
