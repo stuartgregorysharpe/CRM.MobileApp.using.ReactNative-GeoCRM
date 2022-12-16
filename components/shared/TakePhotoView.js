@@ -19,7 +19,7 @@ import { useDispatch } from 'react-redux';
 
 const TakePhotoView = props => {
 
-  const {photos, isOptimize , submissionType} = props;
+  const {photos, isOptimize , submissionType , image_capture , image_gallery } = props;
   const dispatch = useDispatch()
   const [isPicker, setIsPicker] = useState(false);  
 
@@ -40,7 +40,23 @@ const TakePhotoView = props => {
   };
 
   const showSelectionDialog = () => {
-    setIsPicker(true);
+    if(image_capture != undefined && image_capture == "1" && image_gallery != undefined && image_gallery == "1"){
+      setIsPicker(true);
+    }
+
+    if(image_capture != undefined && image_capture == "1" && (image_gallery == undefined || image_gallery != "1" )){
+      launchImageLibrary();
+    }
+    
+    if( (image_capture == undefined || image_capture != "1" ) && image_gallery != undefined && image_gallery == "1"){
+      if (Platform.OS === 'android') {
+        requestCameraPermission();
+      } else {
+        launchCamera();
+      }
+    }
+    
+
   };
 
   const optimizeImage = (filePath, quality, index) => {

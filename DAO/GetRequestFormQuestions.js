@@ -149,7 +149,9 @@ const generateQuery = () => {
     `fq.trigger_question_answer, ` +
     `fq.trigger_question_condition, ` +
     `fqq.question_type as 'trigger_question_type', ` +
-    `fq.question_tag ` +
+    `fq.question_tag, ` +
+    `fq.image_capture, ` +
+    `fq.image_gallery ` +
     `FROM form_questions as fq ` +
     `LEFT JOIN form_question_groups as fqg ` +
     `ON fqg.question_group_id = fq.question_group_id ` +
@@ -263,6 +265,7 @@ const getFormQuestions = async (
             business_unit_id,
             question_tag,
           );
+
           fieldData = await getFieldData(fieldDataLists, postData);
         }
       }
@@ -346,6 +349,8 @@ const getFormQuestions = async (
         add_suffix: element.add_suffix,
         question_tag: element.question_tag,
         options: optionsData,
+        image_gallery: element.image_gallery.toString(),
+        image_capture: element.image_capture.toString()
       });
     } else if (questionType == 'email_pdf') {
       tmp.push({...bodyRes});
