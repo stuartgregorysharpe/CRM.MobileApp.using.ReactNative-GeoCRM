@@ -11,6 +11,7 @@ import {AppText} from '../../../../components/common/AppText';
 import {style} from '../../../../constants/Styles';
 import {Colors, Constants} from '../../../../constants';
 import QRScanModal from '../../../../components/common/QRScanModal';
+var currentSearchKey = '';
 
 const ProductSalesView = props => {
   const {
@@ -28,6 +29,8 @@ const ProductSalesView = props => {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [searchText, setSearchText] = useState("");
   const barcodeScanModalRef = useRef(null);
 
   useEffect(() => {
@@ -37,6 +40,13 @@ const ProductSalesView = props => {
   useEffect(() => {
     checkFilter();
   }, [lists]);
+
+  useEffect(() => {
+    if( !isLoading && searchText != currentSearchKey){
+      loadMoreData( 0 , searchText);
+      
+    }
+  }, [searchText, isLoading])
 
   const checkFilter = async () => {
     var param = await getJsonData('@sale_product_parameter');
@@ -100,6 +110,7 @@ const ProductSalesView = props => {
     (pageNumber, searchKey) => {
       if (isEndPageLoading === false && isLoading === false) {
         if (props.loadMoreData) {
+          currentSearchKey = searchKey;
           props.loadMoreData(pageNumber, searchKey);
         }
       }
@@ -111,7 +122,9 @@ const ProductSalesView = props => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
         //const capturedItem = captureDeviceStockItem(items, value);      
+        setSearchKey(value);
         loadMoreData(0, value);
+
       }
     }
   } ;
@@ -139,7 +152,10 @@ const ProductSalesView = props => {
         haveFilter={haveFilter}
         isScan
         onSearch={searchText => {
+          setSearchText(searchText);
           if ((searchText != '', searchText.length >= 2)) {
+            loadMoreData(0, searchText);
+          }else if(searchText == ''){
             loadMoreData(0, searchText);
           }
         }}
@@ -151,6 +167,7 @@ const ProductSalesView = props => {
         onScan={() =>{
           barcodeScanModalRef.current.showModal();
         }}
+        initVal={searchKey}
       />
 
       <SettingView

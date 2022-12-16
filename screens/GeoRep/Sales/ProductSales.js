@@ -76,10 +76,11 @@ export default function ProductSales(props) {
     var paramData = await getJsonData('@sale_product_parameter');
     if (paramData != null) {
       paramData['page_no'] = pageNumber;
-      if (search_text != '') {
+      if (search_text != undefined) {
         paramData['search_text'] = search_text;
       }
       storeJsonData('@sale_product_parameter', paramData);      
+      console.log("param", paramData)
       GetRequestProductsList.find(paramData)
         .then(res => {
           setIsLoading(false);

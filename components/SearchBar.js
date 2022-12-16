@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState ,useEffect} from 'react';
 import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +19,11 @@ const SearchBar = props => {
   } = props;
 
   const [text, setText] = useState(initVal);
+
+  useEffect(() => {
+    setText(initVal)
+  }, [initVal]);
+
   const onSearch = text => {
     if (props.onSearch) {
       props.onSearch(text);
