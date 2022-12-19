@@ -98,7 +98,7 @@ export function getQuestionTitle(questionType) {
   if (questionType == Constants.questionType.FORM_TYPE_SKU_COUNT) {
     return 'SKU Count';
   } else if (questionType == Constants.questionType.FORM_TYPE_SKU_SHELF_SHARE) {
-    return 'SKU Self Share';
+    return 'SKU Shelf Share';
   }
   return 'SKU Count';
 }
