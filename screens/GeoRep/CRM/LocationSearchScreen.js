@@ -52,7 +52,6 @@ var savedShowItem = 0;
 var specificLocationId = 0;
 
 export default function LocationSearchScreen(props) {
-	
   const navigation = props.navigation;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -277,7 +276,7 @@ export default function LocationSearchScreen(props) {
       });
   };
 
-  const goPreviousPage = () => {    
+  const goPreviousPage = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
       dispatch({type: SLIDE_STATUS, payload: false});
@@ -540,17 +539,15 @@ export default function LocationSearchScreen(props) {
           />
 
           <View>
-          
-            
-            <SelectLocationView 
-                features={features}
-                isLoading={isLoading}
-                isSelected={isSelected}
-                selectedLocationsForCalendar={selectedLocationsForCalendar}
-                goPreviousPage={goPreviousPage}
-                addToCalendar={() => {
-                  animation('addtocalendar');
-                }}
+            <SelectLocationView
+              features={features}
+              isLoading={isLoading}
+              isSelected={isSelected}
+              selectedLocationsForCalendar={selectedLocationsForCalendar}
+              goPreviousPage={goPreviousPage}
+              addToCalendar={() => {
+                animation('addtocalendar');
+              }}
             />
 
             {isLoading && (
@@ -616,8 +613,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 50,
     paddingBottom: 0,
-  },      
-    
+  },
+
   transitionView: {
     position: 'absolute',
     bottom: 0,

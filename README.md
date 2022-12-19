@@ -70,6 +70,5 @@ https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
    assembleRelease command will generate apk file in android/app/release(android/app/build) folder.
    and bundleRelease will generate aab file in android/app/release(android/app/build) folder.
 
-
 mat test account
 matthew@georep.com / Geo2022#

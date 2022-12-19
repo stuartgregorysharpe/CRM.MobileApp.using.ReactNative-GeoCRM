@@ -1,0 +1,49 @@
+[
+  {
+    "product_id": 1,
+    "price": 12,
+    "qty": 1,
+    "special": "0",
+    "product": {  
+      "product_id" : "2",
+      "product_name" : "MacBook Pro 14-inch M1 Pro 2021",
+      "warehouse_id" : "1",
+      "warehouse_name" : "Apple",
+      "soh" : "6",
+      "nappi_code" : "0013",
+      "barcode" : "68000324",
+      "sku_code" : "78932",
+      "symbol" : "R",
+      "price" : "45999.00",
+      "special" : "0",
+      "taxable" : "1",
+      "qty_increments" : "1",
+      "product_images": ["https:/xxx"]
+    }
+  },
+    {
+    "product_id": 2,
+    "price": 12,
+    "qty": 3,
+    "special": "0",
+    "product": {
+      "product_id" : "2",
+      "product_name" : "MacBook Pro 14-inch M1 Pro 2021",
+      "warehouse_id" : "1",
+      "warehouse_name" : "Apple",
+      "soh" : "6",
+      "nappi_code" : "0013",
+      "barcode" : "68000324",
+      "sku_code" : "78932",
+      "symbol" : "R",
+      "price" : "45999.00",
+      "special" : "0",
+      "taxable" : "1",
+      "qty_increments" : "1",
+      "product_images": ["https:/xxx"]
+    }
+  }
+]
+
+
+

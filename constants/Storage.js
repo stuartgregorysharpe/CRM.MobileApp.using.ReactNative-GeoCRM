@@ -31,9 +31,17 @@ export const getJsonData = async type => {
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
+    return null;
   }
 };
-
+export const removeLocalData = async type => {
+  try {
+    await AsyncStorage.removeItem(type);
+  } catch (e) {
+    // error reading value
+    return null;
+  }
+};
 export const setToken = async value => {
   try {
     await AsyncStorage.setItem('@token', String(value));
@@ -53,32 +61,30 @@ export const getToken = async () => {
   }
 };
 
-export const getTokenData = async (type) => {
+export const getTokenData = async type => {
   try {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     returnData = '';
-    if(type == "base_url"){
+    if (type == 'base_url') {
       returnData = data.user_scopes.geo_rep.base_url;
-    }else if(type == "client_id"){
+    } else if (type == 'client_id') {
       returnData = data.user_scopes.geo_rep.client_id;
-    }else if(type == "business_unit_id"){
+    } else if (type == 'business_unit_id') {
       returnData = data.user_scopes.geo_rep.business_unit_id;
-    }else if(type == "user_id"){
+    } else if (type == 'user_id') {
       returnData = data.user_scopes.geo_rep.user_id;
-    }else if( type == "user_type"){
+    } else if (type == 'user_type') {
       returnData = data.user_scopes.geo_rep.user_type;
-    }else if( type == "role"){
+    } else if (type == 'role') {
       returnData = data.user_scopes.geo_rep.role;
     }
     return returnData;
-    
   } catch (e) {
     console.log(e);
     return null;
   }
 };
-
 
 export const getBaseUrl = async () => {
   try {
@@ -119,7 +125,7 @@ export const getPolygonFillColorTransparency = async () => {
   try {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
-    var code = data.user_scopes.geo_rep.polygon_fillColor_transparency;    
+    var code = data.user_scopes.geo_rep.polygon_fillColor_transparency;
     if (code !== undefined) {
       return '' + parseFloat(code) * 100;
     } else {
@@ -135,7 +141,7 @@ export const getMapMinZoomLevel = async () => {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     var map_min_zoom_level = data.user_scopes.geo_rep.map_min_zoom_level;
-    
+
     if (map_min_zoom_level !== undefined) {
       return parseInt(map_min_zoom_level);
     } else {
@@ -151,7 +157,7 @@ export const checkFeatureIncludeParam = async param => {
     var token = await getToken();
     var data = token != null ? jwt_decode(token) : null;
     var features = data.user_scopes.geo_rep.features;
-    
+
     if (features !== undefined) {
       var res = features.includes(param);
       return res;

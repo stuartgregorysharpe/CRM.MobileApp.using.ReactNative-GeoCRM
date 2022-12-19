@@ -154,6 +154,17 @@ export default function FeaturedCardLists(props) {
       }
     }
 
+    if(features && features.includes('danone_sales_dash')){
+      featureCards.push({
+        title: `Danone Sales`,
+        icon: 'Sale',
+        action: 'View Customer Sales',
+        link: 'danone_sales',
+        isOffline: false,
+        isFormCompulsory: false
+      });
+    }
+
     setFeatureCards([...featureCards]);
   };
 

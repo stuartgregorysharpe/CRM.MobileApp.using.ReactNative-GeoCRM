@@ -8,6 +8,7 @@ import ActionItemsContainer from '../CRM/action_items/containers/ActionItemsCont
 import {generateTabs} from './helper';
 import {getSpeedTest} from '../../../services/DownloadService/TrackNetSpeed';
 import BackgroundTimer from 'react-native-background-timer';
+
 import {CHANGE_OFFLINE_STATUS} from '../../../actions/actionTypes';
 import {useDispatch} from 'react-redux';
 import {getLocalData, storeLocalValue} from '../../../constants/Storage';
@@ -19,6 +20,7 @@ import {Strings} from '../../../constants';
 import {getTime} from '../../../helpers/formatHelpers';
 import {Notification} from '../../../components/modal/Notification';
 import Orders from './Orders';
+import DanOneSales from './DanOneSales/DanOneSales';
 
 export default function HomeScreen(props) {
   const {route, navigation} = props;
@@ -193,7 +195,9 @@ export default function HomeScreen(props) {
         </MainPage>
       )}
       {tabIndex === 'Actions' && <ActionItemsContainer />}
+
       {tabIndex === 'Orders' && <Orders />}
+      {tabIndex === 'Sales' && <DanOneSales />}
     </View>
   );
 }

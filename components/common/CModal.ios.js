@@ -27,6 +27,8 @@ const CModal = React.forwardRef((props, ref) => {
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
   const isFullModal = _modalType == Constants.modalType.MODAL_TYPE_FULL;
+  const isFullWithBottomModal = _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
+
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);
@@ -72,6 +74,7 @@ const CModal = React.forwardRef((props, ref) => {
             isCenterModal && styles.dim,
             isBottomModal && styles.bottomModalDim,
             isFullModal && styles.fullModalDim,
+            isFullWithBottomModal && styles.fullWithBottomModalDim
           ]}>
           {closableWithOutsideTouch && (
             <TouchableOpacity
@@ -167,6 +170,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+
+  fullWithBottomModalDim: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    //height: Dimensions.get("screen").height - (Platform.OS === 'android' ? 120 : 120),
+    backgroundColor: 'rgba(0,0,0,0.35)',    
+  },
+
   modalContainer: {
     margin: 32,
     position: 'absolute',

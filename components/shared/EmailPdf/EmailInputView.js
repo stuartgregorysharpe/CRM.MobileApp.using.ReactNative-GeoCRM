@@ -12,7 +12,7 @@ import {whiteLabel} from '../../../constants/Colors';
 import {validateEmail} from '../../../helpers/validateHelper';
 
 export default function EmailInputView(props) {
-  const {item} = props;
+  const {item , hasError } = props;
   const [lists, setLists] = useState([]);
   const [email, setEmail] = useState(email);
   const textInputRef = useRef(null);
@@ -24,6 +24,7 @@ export default function EmailInputView(props) {
       setLists([]);
     }
   }, [item.value]);
+
   const onFinishEditing = () => {
     if (email != '' && email != undefined) {
       setLists([...lists, email]);
@@ -37,17 +38,46 @@ export default function EmailInputView(props) {
       }
     }
   };
+
   const onPressContainer = () => {
     if (textInputRef) {
       console.log('focus');
       textInputRef.current.focus();
     }
   };
+
   return (
     <TouchableOpacity
       activeOpacity={1}
-      style={styles.container}
+      style={[
+        styles.container , 
+        hasError != undefined && hasError ? {borderColor:'red'} : {},
+        props.style ? props.style : {} , 
+        props.isShowTitle != undefined && props.isShowTitle ? {marginTop:15} :{} ]}
       onPress={onPressContainer}>
+        
+      {
+        props.isShowTitle != undefined && props.isShowTitle && lists.length > 0 && 
+        <Text style={{position:'absolute', fontSize:13, top:-12 , paddingLeft:5, paddingRight:5, left:12,backgroundColor:Colors.bgColor , color:Colors.textGeyColor}} >{'Email Recipients'}</Text>
+      }
+      
+
+      {hasError != undefined && hasError && props.isRequired && (
+        <View style={{position: 'absolute', right: 0, top: 10}}>
+          <Text
+            style={[
+              {
+                color: whiteLabel().endDayBackground,
+                marginHorizontal: 10,                
+              },
+              props.errorTextStyle,
+            ]}>
+            (required)
+          </Text>
+        </View>
+      )}
+
+
       <View style={styles.subContainer}>
         {lists.length > 0 &&
           lists.map((item, index) => {
@@ -115,6 +145,7 @@ const styles = StyleSheet.create({
   },
 
   subContainer: {
+    marginTop:5,
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'flex-start',
