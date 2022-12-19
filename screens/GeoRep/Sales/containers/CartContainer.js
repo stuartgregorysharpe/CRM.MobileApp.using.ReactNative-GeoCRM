@@ -408,7 +408,7 @@ const CartContainer = props => {
         geProductPrice={updateProductPrice}
         openProductDetail={openProductDetail}
         isUpdatingProductPrice={isUpdatingProductPrice}
-        backButtonDisabled={true}
+        //backButtonDisabled={true}
         closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         onClearData={onClearProduct}

@@ -476,7 +476,7 @@ const ProductSalesContainer = props => {
         settings={settings}
         geProductPrice={geProductPrice}
         openProductDetail={openProductDetail}
-        backButtonDisabled={true}
+        //backButtonDisabled={true}
         closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         isUpdatingProductPrice={isUpdatingProductPrice}
