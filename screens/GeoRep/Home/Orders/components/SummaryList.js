@@ -7,6 +7,11 @@ import SummaryItem from './SummaryItem';
 
 const SummaryList = props => {
   const {items} = props;
+  const loadMoreData = () => {
+    if (props.loadMoreData) {
+      props.loadMoreData();
+    }
+  };
   const renderItem = (item, index) => {
     const isLast = index == items.length - 1;
     return (
@@ -37,6 +42,8 @@ const SummaryList = props => {
         renderItem={({item, index}) => renderItem(item, index)}
         keyExtractor={(item, index) => index.toString()}
         extraData={this.props}
+        onEndReached={loadMoreData}
+        onEndReachedThreshold={1}
       />
     </View>
   );
@@ -46,6 +53,7 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
     marginHorizontal: 8,
+    flex: 1,
   },
   title: {
     fontSize: Values.fontSize.small,

@@ -41,6 +41,7 @@ const Orders = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    flex: 1,
   },
 });
 
