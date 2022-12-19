@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useRef, useState, useCallback} from 'react';
@@ -14,14 +13,34 @@ import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
 import {setSalesSetting} from '../../../actions/sales.action';
 
+
 export default function ProductSales(props) {
+
   const [settings, setSettings] = useState(null);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
+  const navigation = props.navigation;
 
   const dispatch = useDispatch();
+  let isMount = true;
+
+
+  useEffect(() =>{
+    refreshHeader();
+    return () => {
+      isMount = false;
+    }
+  }, []);
+
   useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refreshHeader();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const refreshHeader = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
         headerTitle: () => {
@@ -35,7 +54,7 @@ export default function ProductSales(props) {
         },
       });
     }
-  });
+  }
 
   const getParamData = data => {
     if (data != null && data != undefined) {
@@ -72,6 +91,7 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
+
     setIsLoading(true);
     var paramData = await getJsonData('@sale_product_parameter');
     if (paramData != null) {
@@ -83,18 +103,19 @@ export default function ProductSales(props) {
       console.log("param", paramData)
       GetRequestProductsList.find(paramData)
         .then(res => {
-          setIsLoading(false);
-          if (res.status == Strings.Success) {
-            setSettings(res.settings);
-            dispatch(setSalesSetting(res.settings));
-            if (pageNumber == 0) {
-              setItems(res.items);
-            } else {
-              setItems([...items, ...res.items]);
+          if(isMount){
+            setIsLoading(false);
+            if (res.status == Strings.Success) {
+              setSettings(res.settings);
+              dispatch(setSalesSetting(res.settings));
+              if (pageNumber == 0) {
+                setItems(res.items);
+              } else {
+                setItems([...items, ...res.items]);
+              }
+              setPage(pageNumber + 1);
             }
-            setPage(pageNumber + 1);
-          }
-          
+          }                    
         })
         .catch(e => {
           setIsLoading(false);

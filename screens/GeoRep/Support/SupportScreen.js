@@ -40,7 +40,7 @@ export default function SupportScreen(props) {
         },
       });      
     }
-  });
+  },[]);
 
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)

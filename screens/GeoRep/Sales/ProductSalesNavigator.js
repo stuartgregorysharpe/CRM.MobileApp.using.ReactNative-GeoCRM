@@ -14,6 +14,7 @@ export default function ProductSalesNavigator(props) {
 
   return (
     <Stack.Navigator>
+
       <Stack.Screen name="Root" options={{header: () => null}}>
         {props => <ProductSales {...props} screenProps={screenProps} />}
       </Stack.Screen>
@@ -23,6 +24,7 @@ export default function ProductSalesNavigator(props) {
         options={{header: () => null, headerShown: false}}>
         {props => <CartScreen {...props} screenProps={screenProps} />}
       </Stack.Screen>
+      
     </Stack.Navigator>
   );
 }
