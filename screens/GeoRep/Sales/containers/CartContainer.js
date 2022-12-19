@@ -127,7 +127,6 @@ const CartContainer = props => {
     }
   };
 
-
   const openSetup = () => {
     setupFieldModalRef.current.showModal();
   };
@@ -137,11 +136,27 @@ const CartContainer = props => {
     }
   };
 
-  const onTransactionSubmitModalClosed = ({type, value}) => {
+  const onTransactionSubmitModalClosed = ({type, value}) => {   
     if (type == Constants.actionType.ACTION_DONE) {
-      transactionSubmitModalRef.current.hideModal();
+      clearCart();
+      setOutSideTouch(false);
+      transactionSubmitModalRef.current.hideModal();      
+      openSetup();
     }
   };
+
+  const clearCart = async() => {
+    
+    setAddProductList([]);
+    clearAddProductList();
+
+    await storeJsonData('@product_price' , []);
+    await storeJsonData('@add_product' , []);
+
+    await storeJsonData("@setup", null);
+    setDefineSetup(null);
+  }
+
   const onWarehouseItemPress = item => {
     setProductListTitle(item.title);
     setSelectedWarehouseId(item.warehouse_id);
@@ -404,8 +419,8 @@ const CartContainer = props => {
         title={productListTitle}
         products={warehouseProductList}
         settings={settings}
-        getItemData={getProductItemDataForRender}
-        geProductPrice={updateProductPrice}
+        getItemData={getProductItemDataForRender} 
+        geProductPrice={updateProductPrice}       
         openProductDetail={openProductDetail}
         isUpdatingProductPrice={isUpdatingProductPrice}
         //backButtonDisabled={true}

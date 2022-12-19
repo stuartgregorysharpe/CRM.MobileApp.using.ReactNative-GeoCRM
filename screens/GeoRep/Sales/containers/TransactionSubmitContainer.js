@@ -10,6 +10,7 @@ import { getRandomNumber, getTimeStamp } from '../../../../helpers/formatHelpers
 import DynamicFormView from '../../../../components/common/DynamicFormView';
 import { useSelector } from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
 
 const  TransactionSubmitContainer = (props) => {
         
@@ -107,8 +108,13 @@ const  TransactionSubmitContainer = (props) => {
                 }
             })
 
-            PostRequestDAO.find(0, postJsonData, "transaction-submit", "sales/transaction-submission", "", "").then((res) => {
-                console.log("response", res);
+            PostRequestDAO.find(0, postJsonData, "transaction-submit", "sales/transaction-submission", "", "").then((res) => {                                
+                dispatch(showNotification({type: Strings.Success , message: res.message , buttonText: 'Ok', buttonAction : () => {
+
+                    dispatch(clearNotification());
+                    props.onButtonAction({type: Constants.actionType.ACTION_DONE});
+
+                }}))
             }).catch((e) => {
                 expireToken(dispatch, e);
             })
