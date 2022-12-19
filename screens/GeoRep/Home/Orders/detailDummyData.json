@@ -1,0 +1,33 @@
+{
+    "status" : "success",
+    "order_number" : "123321656",
+    "products" : [
+        {
+            "product_id" : "1",
+            "product_name" : "Product Name 1",
+            "warehouse_name" : "Cape Town",
+            "sub_detail" : "Nappi: 567893456",
+            "price" : "R2 355.00",
+            "status" : "Delivered, Awaiting Response",
+            "status_color" : "#1FAC03"
+        },
+        {
+            "product_id" : "2",
+            "product_name" : "Product Name 2",
+            "warehouse_name" : "Cape Town",
+            "sub_detail" : "Nappi: 567893456",
+            "price" : "R1 355.00",
+            "status" : "Delivered, Awaiting Response",
+            "status_color" : "#1FAC03"
+        },
+        {
+            "product_id" : "3",
+            "product_name" : "Product Name 3",
+            "warehouse_name" : "Cape Town",
+            "sub_detail" : "Nappi: 567893456",
+            "price" : "R566.00",
+            "status" : "Delivered, Awaiting Response",
+            "status_color" : "#1FAC03"
+        }
+    ]
+}

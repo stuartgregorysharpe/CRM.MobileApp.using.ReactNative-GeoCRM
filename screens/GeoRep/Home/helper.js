@@ -1,35 +1,35 @@
-
-
-export const generateTabs = ( features) => {
-
-    var tabs = [];
-    var allTabs = getAllTabs();    
-    allTabs.forEach((element, index) => {        
-        if (element.slug === "main" || features.includes(element.slug)) {
-          tabs = [...tabs, {name: element.title, slug: element.slug,  id: index}];
-        }
-    });    
-    return tabs;        
-}
-
+export const generateTabs = features => {
+  var tabs = [];
+  var allTabs = getAllTabs();
+  allTabs.forEach((element, index) => {
+    if (element.slug === 'main' || features.includes(element.slug)) {
+      tabs = [...tabs, {name: element.title, slug: element.slug, id: index}];
+    }
+  });
+  return tabs;
+};
 
 const getAllTabs = () => {
   return [
     {
       title: 'Main',
-      slug: 'main'
+      slug: 'main',
     },
     {
       title: 'Actions',
-      slug: 'actions_items'
+      slug: 'actions_items',
     },
     {
       title: 'Leaderboard',
-      slug: 'leaderboard'
+      slug: 'leaderboard',
     },
     {
       title: 'sales',
-      slug: 'Sales'
-    }
+      slug: 'Sales',
+    },
+    {
+      title: 'Orders',
+      slug: 'dash_orders',
+    },
   ];
-}
+};
