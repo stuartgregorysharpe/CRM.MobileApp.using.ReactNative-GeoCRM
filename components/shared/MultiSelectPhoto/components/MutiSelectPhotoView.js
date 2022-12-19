@@ -9,11 +9,16 @@ import {Constants, Strings} from '../../../../constants';
 
 
 export default function MutiSelectPhotoView(props) {
+
   const {item , submissionType} = props;
   const [checkedLists, setCheckedLists] = useState([]);
   const [isPicker, setIsPicker] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
   const dispatch = useDispatch();  
+  const image_gallery = item.image_gallery;
+  const image_capture = item.image_capture;
+  const photoCameraPickDialogRef = useRef(null);
+  
 
   useEffect(() => {
     if (item.value != null && item.value != '') {
@@ -37,18 +42,26 @@ export default function MutiSelectPhotoView(props) {
             setCheckedLists([...checkedLists, {value: item, image: ''}]);
           }
         }}
-        onPickUpImage={item => {
-          setIsPicker(true);
-          setSelectedItem(item);
-          // if(submissionType == "edit"){
-          //   dispatch(showNotification({type: Strings.Success ,  message : 'Edit image not allowed' , buttonText: 'Ok' , buttonAction: () => {
-          //     dispatch(clearNotification())
-          //   }}))
-          // }else{
-          //   setIsPicker(true);
-          //   setSelectedItem(item);
-          // }
+        onPickUpImage={imageItem => {
           
+          setSelectedItem(imageItem);          
+
+          if(image_capture != undefined && image_capture == "1" && image_gallery != undefined && image_gallery == "1"){
+            setIsPicker(true);            
+          }
+      
+          if(image_capture != undefined && image_capture == "1" && (image_gallery == undefined || image_gallery != "1" )){
+            if(photoCameraPickDialogRef.current){
+              photoCameraPickDialogRef.current.openCamera();              
+            }                    
+          }
+          
+          if( (image_capture == undefined || image_capture != "1" ) && image_gallery != undefined && image_gallery == "1"){
+            if(photoCameraPickDialogRef.current){
+              photoCameraPickDialogRef.current.openGallery();              
+            }
+          }    
+
         }}
       />
     );
@@ -103,10 +116,11 @@ export default function MutiSelectPhotoView(props) {
       />
 
       <PhotoCameraPickerDialog
+        ref={photoCameraPickDialogRef}
         visible={isPicker}
         message={'Choose Image'}
         updateImageData={path => {
-          
+          console.log("updated ddd", path)
           const changedLists = [];
           checkedLists.forEach(item => {
             if (item.value != selectedItem) {

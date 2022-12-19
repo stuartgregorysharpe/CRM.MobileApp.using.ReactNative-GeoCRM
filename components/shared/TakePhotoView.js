@@ -45,15 +45,16 @@ const TakePhotoView = props => {
     }
 
     if(image_capture != undefined && image_capture == "1" && (image_gallery == undefined || image_gallery != "1" )){
-      launchImageLibrary();
-    }
-    
-    if( (image_capture == undefined || image_capture != "1" ) && image_gallery != undefined && image_gallery == "1"){
       if (Platform.OS === 'android') {
         requestCameraPermission();
       } else {
         launchCamera();
       }
+      
+    }
+    
+    if( (image_capture == undefined || image_capture != "1" ) && image_gallery != undefined && image_gallery == "1"){
+      launchImageLibrary();
     }
     
 
@@ -171,6 +172,11 @@ const TakePhotoView = props => {
 
   return (
     <View style={[styles.container, props.style]}>
+
+
+
+      
+
                   
       <PhotoCameraPickerDialog
         visible={isPicker}

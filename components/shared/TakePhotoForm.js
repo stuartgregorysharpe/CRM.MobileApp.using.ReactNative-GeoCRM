@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import TakePhotoView from './TakePhotoView';
 
 export default function TakePhotoForm({item, onPress, onTouchStart , submissionType}) {
+  
   const isOptimize = item.optimize && item.optimize === '1';
   const photos = item.value;
   const onUpdatePhotos = paths => {

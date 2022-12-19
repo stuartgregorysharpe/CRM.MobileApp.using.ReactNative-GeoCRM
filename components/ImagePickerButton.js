@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import PhotoCameraPickerDialog from './modal/PhotoCameraPickerDialog';
+
 import SvgIcon from './SvgIcon';
 import {Notification} from './modal/Notification';
+import PhotoCameraPickerDialog from './modal/PhotoCameraPickerDialog';
 
 const ImagePickerButton = props => {
   const [isPicker, setIsPicker] = useState(false);
@@ -30,6 +31,8 @@ const ImagePickerButton = props => {
   return (
     <>
       {renderButton()}
+
+      
       <PhotoCameraPickerDialog
         visible={isPicker}
         message={'Choose Image'}
