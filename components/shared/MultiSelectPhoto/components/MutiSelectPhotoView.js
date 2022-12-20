@@ -1,5 +1,5 @@
 import {View, FlatList} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef ,useCallback} from 'react';
 import OptionItem from './OptionItem';
 import PhotoCameraPickerDialog from '../../../modal/PhotoCameraPickerDialog';
 import {SubmitButton} from '../../SubmitButton';
@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 import {clearNotification, showNotification} from '../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../constants';
 
+var selectedOption = '';
 
 export default function MutiSelectPhotoView(props) {
 
@@ -27,6 +28,21 @@ export default function MutiSelectPhotoView(props) {
     }
   }, [item.value, item]);
 
+  const updateList = (path) => {
+
+    const changedLists = [];
+    
+    checkedLists.forEach(item => {
+      if (item.value != selectedOption) {
+        changedLists.push(item);              
+      }
+    });
+    changedLists.push({value: selectedOption, image: path});
+    setCheckedLists(changedLists);
+    
+  };
+
+
   const renderItem = (item, index) => {
     return (
       <OptionItem
@@ -44,7 +60,9 @@ export default function MutiSelectPhotoView(props) {
         }}
         onPickUpImage={imageItem => {
           
-          setSelectedItem(imageItem);          
+          console.log("selected item",imageItem)
+          setSelectedItem(imageItem);     
+          selectedOption = imageItem;     
 
           if(image_capture != undefined && image_capture == "1" && image_gallery != undefined && image_gallery == "1"){
             setIsPicker(true);            
@@ -121,14 +139,7 @@ export default function MutiSelectPhotoView(props) {
         message={'Choose Image'}
         updateImageData={path => {
           console.log("updated ddd", path)
-          const changedLists = [];
-          checkedLists.forEach(item => {
-            if (item.value != selectedItem) {
-              changedLists.push(item);              
-            }
-          });
-          changedLists.push({value: selectedItem, image: path});
-          setCheckedLists(changedLists);
+          updateList(path);
           setIsPicker(false);
         }}
         onModalClose={() => {
