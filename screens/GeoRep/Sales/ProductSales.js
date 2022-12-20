@@ -103,8 +103,9 @@ export default function ProductSales(props) {
       console.log("param", paramData)
       GetRequestProductsList.find(paramData)
         .then(res => {
-          if(isMount){
-            setIsLoading(false);
+          setIsLoading(false);
+          if(isMount){            
+            console.log("results", res.items.length);
             if (res.status == Strings.Success) {
               setSettings(res.settings);
               dispatch(setSalesSetting(res.settings));
