@@ -16,15 +16,20 @@ const HistoryItem = props => {
       props.onItemAction(data);
     }
   };
+
+  
   return (
     <TouchableOpacity
       style={[styles.container, style.cardContainer, props.style]}
       onPress={() => {
         onItemAction({type: Constants.actionType.ACTION_VIEW, item: item});
       }}>
+        
       <SvgIcon icon="Description_Black" width="20px" height="20px" />
-      <Text style={[styles.title, {marginLeft: 25}]}>{title}</Text>
-      <View style={{flex: 1}} />
+      <View style={{flex:1}}>
+        <Text style={[styles.title, {marginLeft: 10}]}>{title}</Text>
+      </View>
+      
       <CCircularProgress
         radius={18}
         activeStrokeWidth={6}
@@ -33,10 +38,11 @@ const HistoryItem = props => {
         value={overallScore}
         valueSuffix="%"
       />
+
       <Text
         style={[
           styles.description,
-          {marginRight: 12, marginLeft: 15, width: 100, textAlign: 'right'},
+          {marginRight: 12, marginLeft: 15, textAlign: 'right'},
         ]}>
         {date}
       </Text>
@@ -49,9 +55,10 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
     alignItems: 'center',
-    height: 54,
+    //height: 54,
     flexDirection: 'row',
     marginBottom: 10,
+    flex:1
   },
   title: {
     fontSize: 12,
