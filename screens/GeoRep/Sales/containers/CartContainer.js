@@ -150,6 +150,8 @@ const CartContainer = props => {
     setAddProductList([]);
     clearAddProductList();
 
+    dispatch(setProductPriceLists([]));
+    
     await storeJsonData('@product_price' , []);
     await storeJsonData('@add_product' , []);
 
