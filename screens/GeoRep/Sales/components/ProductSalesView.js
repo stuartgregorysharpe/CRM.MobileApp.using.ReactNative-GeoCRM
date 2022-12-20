@@ -153,6 +153,7 @@ const ProductSalesView = props => {
         isScan
         onSearch={searchText => {
           setSearchText(searchText);
+          console.log("search text " , searchText);
           if ((searchText != '', searchText.length >= 2)) {
             loadMoreData(0, searchText);
           }else if(searchText == ''){
@@ -182,7 +183,7 @@ const ProductSalesView = props => {
         keyExtractor={(item, index) => index.toString()}
         extraData={this.props}
         onEndReached={() => {
-          loadMoreData(pageNumber, '');
+          loadMoreData(pageNumber, searchText);
         }}
         onEndReachedThreshold={0.5}
         removeClippedSubviews={false}

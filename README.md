@@ -72,3 +72,6 @@ https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
 
 mat test account
 matthew@georep.com / Geo2022#
+
+#  Touch point app test account
+clinton@dan-edge.co.za / Test2021#

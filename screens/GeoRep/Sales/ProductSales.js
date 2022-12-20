@@ -97,8 +97,8 @@ export default function ProductSales(props) {
       console.log('param', paramData);
       GetRequestProductsList.find(paramData)
         .then(res => {
+          setIsLoading(false);
           if (isMount) {
-            setIsLoading(false);
             if (res.status == Strings.Success) {
               setSettings(res.settings);
               console.log('res.settgins', res.settings);

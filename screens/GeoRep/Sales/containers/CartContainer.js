@@ -142,6 +142,10 @@ const CartContainer = props => {
       setOutSideTouch(false);
       transactionSubmitModalRef.current.hideModal();      
       openSetup();
+      if (navigation.canGoBack()) {
+        navigation.popToTop();
+      }
+      
     }
   };
 
@@ -150,6 +154,8 @@ const CartContainer = props => {
     setAddProductList([]);
     clearAddProductList();
 
+    dispatch(setProductPriceLists([]));
+    
     await storeJsonData('@product_price' , []);
     await storeJsonData('@add_product' , []);
 
