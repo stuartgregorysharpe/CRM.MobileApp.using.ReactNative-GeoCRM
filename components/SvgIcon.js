@@ -1252,6 +1252,11 @@ const Sales_Volume_Toggle_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width=
 
 const Bottom_Arrow_White = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"> <path d="M24 30.75 12 18.75 14.15 16.6 24 26.5 33.85 16.65 36 18.8Z" fill="#fff"/></svg>`;
 
+const Sell_In_Icon = `<svg id="local_atm_black_24dp" xmlns="http://www.w3.org/2000/svg" width="43.07" height="43.07" viewBox="0 0 43.07 43.07">
+<path id="Path_4234" data-name="Path 4234" d="M0,0H43.07V43.07H0Z" fill="none"/>
+<path id="Path_4235" data-name="Path 4235" d="M18.151,27.329H21.74V25.535h1.795a1.8,1.8,0,0,0,1.795-1.795V18.357a1.8,1.8,0,0,0-1.795-1.795H18.151V14.767h7.178V11.178H21.74V9.384H18.151v1.795H16.357a1.8,1.8,0,0,0-1.795,1.795v5.384a1.8,1.8,0,0,0,1.795,1.795H21.74v1.795H14.562v3.589h3.589ZM34.3,4H5.589A3.562,3.562,0,0,0,2.018,7.589L2,29.124a3.577,3.577,0,0,0,3.589,3.589H34.3a3.577,3.577,0,0,0,3.589-3.589V7.589A3.577,3.577,0,0,0,34.3,4Zm0,25.124H5.589V7.589H34.3Z" transform="translate(1.589 3.178)" fill=${actionIconBackground}/>
+</svg>`
+
 export default ({
   icon,
   xml,
@@ -1926,6 +1931,10 @@ export default ({
 
     {icon == 'Bottom_Arrow_White' && (
       <SvgXml style={style} xml={Bottom_Arrow_White} width={width} height={height} />
+    )}
+
+    {icon == 'Sell_In_Icon' && (
+      <SvgXml style={style} xml={Sell_In_Icon} width={width} height={height} />
     )}
 
   </Fragment>

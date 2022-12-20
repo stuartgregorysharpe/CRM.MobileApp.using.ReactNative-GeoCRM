@@ -1,34 +1,35 @@
-import {View, Text, ScrollView, FlatList, Dimensions} from 'react-native';
-import React, {useState, useEffect, useRef ,forwardRef , useImperativeHandle} from 'react';
-import {SyncAll} from './../partial/SyncAll';
-import {SubmitButton} from '../../../../components/shared/SubmitButton';
+import { View, Text, ScrollView, FlatList, Dimensions } from 'react-native';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import { SyncAll } from './../partial/SyncAll';
+import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import IndicatorDotScroller from '../../../../components/common/IndicatorDotScroller';
 import Colors from '../../../../constants/Colors';
 import Visits from '../partial/cards/Visits';
-import {useSelector} from 'react-redux';
-import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
+import { useSelector } from 'react-redux';
+import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
-import {getLocalData, storeLocalValue} from '../../../../constants/Storage';
-import {expireToken, getPostParameter, showOfflineDialog} from '../../../../constants/Helper';
-import {Constants, Strings} from '../../../../constants';
+import { getLocalData, storeLocalValue } from '../../../../constants/Storage';
+import { expireToken, getPostParameter, showOfflineDialog } from '../../../../constants/Helper';
+import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
-import {updateCurrentLocation} from '../../../../actions/google.action';
-import {useDispatch} from 'react-redux';
-import {Notification} from '../../../../components/modal/Notification';
-import {showNotification} from '../../../../actions/notification.action';
-import {CHANGE_SYNC_START, CHECKIN} from '../../../../actions/actionTypes';
-import {initializeDB} from '../../../../services/SyncDatabaseService/SyncTable';
+import { updateCurrentLocation } from '../../../../actions/google.action';
+import { useDispatch } from 'react-redux';
+import { Notification } from '../../../../components/modal/Notification';
+import { showNotification } from '../../../../actions/notification.action';
+import { CHANGE_SYNC_START, CHECKIN } from '../../../../actions/actionTypes';
+import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import { checkConnectivity } from '../../../../DAO/helper';
 import { PostRequestDAO } from '../../../../DAO';
+import SellIn from '../partial/cards/SellIn';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
 
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
   const [startEndDayId, setStartEndDayId] = useState(0);
-  const [pages, setPages] = useState(['', '']);
+  const [pages, setPages] = useState(['', '', '']);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activityCard, setActivityCard] = useState(null);
   const [visitCard, setVisitCard] = useState(null);
@@ -44,13 +45,13 @@ export const MainPage = forwardRef((props, ref) => {
   const isCheckin = useSelector(state => state.location.checkIn);
   const navigation = props.navigation;
   const [isLoading, setIsLoading] = useState(false);
-  const [isScrollable , setIsScrollable] = useState(true);
+  const [isScrollable, setIsScrollable] = useState(true);
   const syncAllViewRef = useRef(null);
 
   useImperativeHandle(ref, () => ({
-    onlineSyncTable() {       
-      if(syncAllViewRef.current){               
-        syncAllViewRef.current.syncAllData();        
+    onlineSyncTable() {
+      if (syncAllViewRef.current) {
+        syncAllViewRef.current.syncAllData();
       }
     },
   }));
@@ -58,7 +59,7 @@ export const MainPage = forwardRef((props, ref) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       loadPage();
-      
+
     });
     return unsubscribe;
   }, [navigation]);
@@ -74,23 +75,23 @@ export const MainPage = forwardRef((props, ref) => {
   useEffect(() => {
     initializeDB().then(res => {
       console.log(' ----------------- initaliz db end ---------------- ');
-      dispatch({type: CHANGE_SYNC_START , payload: false });
-      if(syncAllViewRef.current){
+      dispatch({ type: CHANGE_SYNC_START, payload: false });
+      if (syncAllViewRef.current) {
         syncAllViewRef.current.refreshView();
       }
     });
     checkConnectivity().then((isConnected) => {
-        if(!isConnected){
-          setIsScrollable(false)
-        }
+      if (!isConnected) {
+        setIsScrollable(false)
+      }
     })
   }, []);
 
   useEffect(() => {
     console.log("changed offline status", offlineStatus)
-    if(offlineStatus){
+    if (offlineStatus) {
       setIsScrollable(false)
-    }else{
+    } else {
       setIsScrollable(true)
     }
   }, [offlineStatus]);
@@ -100,7 +101,7 @@ export const MainPage = forwardRef((props, ref) => {
   };
 
   const loadPage = () => {
-    
+
     if (currentLocation.latitude === undefined) {
       dispatch(updateCurrentLocation());
     }
@@ -114,52 +115,52 @@ export const MainPage = forwardRef((props, ref) => {
     if (isLoading == false) {
       setIsLoading(true);
 
-     
+
       checkConnectivity().then((isConnected) => {
-        if(isConnected){
+        if (isConnected) {
 
           getApiRequest('home/main-dashboard', param)
-          .then(async res => {
-            setIsLoading(false);
+            .then(async res => {
+              setIsLoading(false);
 
-            setVisitCard(res.items.visits_card);
-            setActivityCard(res.items.activity_card);
-            setCurrentCall(res.items.current_call);
-            setCheckinStatus(res.items.checkin_state);
-            if (res.items.checkin_state != '') {
-              await storeLocalValue('@checkin', '1');
-              await storeLocalValue(
-                '@specific_location_id',
-                res.items.checkin_state,
+              setVisitCard(res.items.visits_card);
+              setActivityCard(res.items.activity_card);
+              setCurrentCall(res.items.current_call);
+              setCheckinStatus(res.items.checkin_state);
+              if (res.items.checkin_state != '') {
+                await storeLocalValue('@checkin', '1');
+                await storeLocalValue(
+                  '@specific_location_id',
+                  res.items.checkin_state,
+                );
+                dispatch({ type: CHECKIN, payload: true });
+              } else {
+                await storeLocalValue('@checkin', '0');
+              }
+              setIsStart(
+                res.items.startEndDay_state ===
+                  Constants.homeStartEndType.START_MY_DAY
+                  ? true
+                  : false,
               );
-              dispatch({type: CHECKIN, payload: true});
-            } else {
-              await storeLocalValue('@checkin', '0');
-            }
-            setIsStart(
-              res.items.startEndDay_state ===
-                Constants.homeStartEndType.START_MY_DAY
-                ? true
-                : false,
-            );
-            await storeLocalValue(
-              'start_my_day',
-              res.items.startEndDay_state ===
-                Constants.homeStartEndType.START_MY_DAY
-                ? '1'
-                : '0',
-            );
-          })
-          .catch(e => {
-            setIsLoading(false);
-            expireToken(dispatch, e);
-          });
-          
+              await storeLocalValue(
+                'start_my_day',
+                res.items.startEndDay_state ===
+                  Constants.homeStartEndType.START_MY_DAY
+                  ? '1'
+                  : '0',
+              );
+            })
+            .catch(e => {
+              setIsLoading(false);
+              expireToken(dispatch, e);
+            });
+
         }
       });
 
 
-      
+
     }
     initData();
   };
@@ -179,10 +180,10 @@ export const MainPage = forwardRef((props, ref) => {
       user_local_data:
         userParam.user_local_data != undefined
           ? userParam.user_local_data
-          : {time_zone: '', latitude: 0, longitude: 0},
+          : { time_zone: '', latitude: 0, longitude: 0 },
     };
 
-    PostRequestDAO.find(0, postData, "start_end_day" , 'home/startEndDay', '' , '' , dispatch).then( async(res) => {
+    PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', dispatch).then(async (res) => {
       if (res.status === Strings.Success) {
         setStartEndDayId(res.startEndDay_id);
         await storeLocalValue('start_my_day', isStart ? '0' : '1');
@@ -190,15 +191,15 @@ export const MainPage = forwardRef((props, ref) => {
         if (features.includes('odometer_reading')) {
           odometerReadingModalRef.current.showModal();
         }
-      }else if(res.status === "NOIMPLEMENT"){
+      } else if (res.status === "NOIMPLEMENT") {
         showOfflineDialog(dispatch);
       }
     }).catch((e) => {
       expireToken(dispatch, e);
-    });   
+    });
   };
 
-  const onCaptureAction = async ({type, value}) => {
+  const onCaptureAction = async ({ type, value }) => {
     dispatch(
       showNotification({
         type: Strings.Success,
@@ -211,13 +212,13 @@ export const MainPage = forwardRef((props, ref) => {
   const renderCards = (item, index) => {
     if (index == 0) {
       return (
-        <View key={index} style={{marginRight: 1, width: pageWidth}}>
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           <Visits {...props} visitCard={visitCard} />
         </View>
       );
     } else if (index == 1) {
       return (
-        <View key={index} style={{marginRight: 1, width: pageWidth}}>
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {activityCard && (
             <ActivityCard activityCard={activityCard}></ActivityCard>
           )}
@@ -225,18 +226,20 @@ export const MainPage = forwardRef((props, ref) => {
       );
     } else if (index == 2) {
       return (
-        <View key={index} style={{marginRight: 1, width: pageWidth}}>
-          <Text>dd</Text>
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
+          {activityCard && (
+            <SellIn activityCard={activityCard}></SellIn>
+          )}
         </View>
       );
     }
   };
 
   return (
-    <ScrollView style={{flex: 1, marginHorizontal: 10}}>
+    <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
       <Notification></Notification>
 
-      <View style={{marginTop: 5}}>
+      <View style={{ marginTop: 5 }}>
         <SubmitButton
           bgStyle={{
             backgroundColor: isStart ? Colors.disabledColor : Colors.redColor,
@@ -248,7 +251,7 @@ export const MainPage = forwardRef((props, ref) => {
           }}></SubmitButton>
       </View>
 
-      <SyncAll  ref={syncAllViewRef} ></SyncAll>
+      <SyncAll ref={syncAllViewRef} ></SyncAll>
 
       {isCheckin && (
         <CheckOutViewContainer
@@ -270,12 +273,12 @@ export const MainPage = forwardRef((props, ref) => {
             setSelectedIndex(event.nativeEvent.contentOffset.x / pageWidth);
           }
         }}
-        renderItem={({item, index}) => renderCards(item, index)}
+        renderItem={({ item, index }) => renderCards(item, index)}
         keyExtractor={(item, index) => index.toString()}
       />
 
       <IndicatorDotScroller
-        total={2}
+        total={pages.length}
         selectedIndex={selectedIndex}></IndicatorDotScroller>
 
       <OdometerReadingModal
