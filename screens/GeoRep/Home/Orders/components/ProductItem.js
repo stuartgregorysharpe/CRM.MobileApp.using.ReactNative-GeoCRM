@@ -61,19 +61,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   title: {
+    fontSize: 14,
+    lineHeight: 15,
+    fontWeight: 'bold',
+    fontFamily: Fonts.primaryBold,
+    color: whiteLabel().inputText,
+  },
+  description: {
     fontSize: 12,
     lineHeight: 15,
     fontWeight: 'bold',
     fontFamily: Fonts.primaryBold,
-  },
-  description: {
-    fontSize: 10,
-    lineHeight: 15,
-    fontWeight: 'bold',
-    fontFamily: Fonts.primaryBold,
+    color: whiteLabel().helpText,
   },
   text: {
-    fontSize: 10,
+    fontSize: 12,
     lineHeight: 15,
     textAlign: 'right',
     color: whiteLabel().inputText,
