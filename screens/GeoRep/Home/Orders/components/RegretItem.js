@@ -14,13 +14,13 @@ const RegretItem = props => {
     }
   };
   return (
-    <View onPress={onPressSummary} style={[styles.container, props.style]}>
+    <View style={[styles.container, props.style]}>
       <View style={{flex: 1, justifyContent: 'center'}}>
         <Text
           style={styles.title}>{`# ${order_number} | ${product_name}`}</Text>
         <Text style={styles.description}>{location_name}</Text>
       </View>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={onPressSummary}>
         <Text style={styles.buttonTitle}>{'Re-Order'}</Text>
         <FontAwesomeIcon
           style={styles.submitButtonIcon}

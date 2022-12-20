@@ -7,6 +7,7 @@ import Regrets from './Regrets';
 import Summary from './Summary';
 
 const Orders = props => {
+  const {navigation} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -33,7 +34,7 @@ const Orders = props => {
         }}
       />
       {tabIndex === 0 && <Summary />}
-      {tabIndex === 1 && <Regrets />}
+      {tabIndex === 1 && <Regrets navigation={navigation} />}
     </View>
   );
 };

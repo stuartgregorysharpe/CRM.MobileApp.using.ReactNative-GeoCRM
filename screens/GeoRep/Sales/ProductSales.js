@@ -1,8 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {style} from '../../../constants/Styles';
 import {Strings} from '../../../constants';
@@ -13,24 +9,23 @@ import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
 import {setSalesSetting} from '../../../actions/sales.action';
 
-
 export default function ProductSales(props) {
-
   const [settings, setSettings] = useState(null);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const navigation = props.navigation;
+  const regret_item = props.route?.params?.regret_item;
+  console.log('regret_item', regret_item);
 
   const dispatch = useDispatch();
   let isMount = true;
 
-
-  useEffect(() =>{
+  useEffect(() => {
     refreshHeader();
     return () => {
       isMount = false;
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -54,7 +49,7 @@ export default function ProductSales(props) {
         },
       });
     }
-  }
+  };
 
   const getParamData = data => {
     if (data != null && data != undefined) {
@@ -91,7 +86,6 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
-
     setIsLoading(true);
     var paramData = await getJsonData('@sale_product_parameter');
     if (paramData != null) {
@@ -99,14 +93,15 @@ export default function ProductSales(props) {
       if (search_text != undefined) {
         paramData['search_text'] = search_text;
       }
-      storeJsonData('@sale_product_parameter', paramData);      
-      console.log("param", paramData)
+      storeJsonData('@sale_product_parameter', paramData);
+      console.log('param', paramData);
       GetRequestProductsList.find(paramData)
         .then(res => {
-          if(isMount){
+          if (isMount) {
             setIsLoading(false);
             if (res.status == Strings.Success) {
               setSettings(res.settings);
+              console.log('res.settgins', res.settings);
               dispatch(setSalesSetting(res.settings));
               if (pageNumber == 0) {
                 setItems(res.items);
@@ -115,11 +110,11 @@ export default function ProductSales(props) {
               }
               setPage(pageNumber + 1);
             }
-          }                    
+          }
         })
         .catch(e => {
           setIsLoading(false);
-          expireToken(dispatch, e);          
+          expireToken(dispatch, e);
         });
     }
   };

@@ -196,7 +196,7 @@ export default function HomeScreen(props) {
       )}
       {tabIndex === 'Actions' && <ActionItemsContainer />}
 
-      {tabIndex === 'Orders' && <Orders />}
+      {tabIndex === 'Orders' && <Orders navigation={navigation} />}
       {tabIndex === 'Sales' && <DanOneSales />}
     </View>
   );

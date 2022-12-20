@@ -36,7 +36,8 @@ import Stock from '../screens/GeoRep/Stock/Stock';
 import {checkConnectivity} from '../DAO/helper';
 import {showOfflineDialog} from '../constants/Helper';
 import {useDispatch} from 'react-redux';
-import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import {SalesPipelineScreen} from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import HomeNavigator from '../screens/GeoRep/Home/HomeNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -97,7 +98,6 @@ export default function RepMoreScreen({navigation}) {
   }, [visibleMore]);
 
   const ChangeScreen = key => {
-    
     if (offlineStatus && key === 'RepWebLinks') {
       showOfflineDialog(dispatch);
       return;
@@ -125,7 +125,7 @@ export default function RepMoreScreen({navigation}) {
         return;
       case 'ProductSales':
         navigation.navigate('ProductSales');
-        
+
         return;
       case 'Notifications':
         navigation.navigate('Notifications');
@@ -212,7 +212,7 @@ export default function RepMoreScreen({navigation}) {
       case 'WellBeing':
         navigation.navigate('WellBeing');
         return;
-      case 'Stock':        
+      case 'Stock':
         navigation.navigate('Stock');
         return;
 
@@ -227,7 +227,7 @@ export default function RepMoreScreen({navigation}) {
 
       {selectProject == 'geo_rep' && componentListOne.includes('home_geo') && (
         <Stack.Screen name="Home" options={{header: () => null}}>
-          {props => <HomeScreen {...props} screenProps={navigation} />}
+          {props => <HomeNavigator {...props} screenProps={navigation} />}
         </Stack.Screen>
       )}
       {selectProject == 'geo_rep' &&
