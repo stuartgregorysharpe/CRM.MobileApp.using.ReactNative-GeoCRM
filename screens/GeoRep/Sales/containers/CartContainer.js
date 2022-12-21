@@ -142,6 +142,7 @@ const CartContainer = props => {
       setOutSideTouch(false);
       transactionSubmitModalRef.current.hideModal();      
       openSetup();
+
       if (navigation.canGoBack()) {
         navigation.popToTop();
       }

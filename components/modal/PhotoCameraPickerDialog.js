@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { useImperativeHandle } from 'react';
 import {
   View,
   Modal,
@@ -13,8 +13,20 @@ import {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
 
-const PhotoCameraPickerDialog = props => {
+//const PhotoCameraPickerDialog = props => {
+const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
+
   const {visible, message, onGallery, onCamera, onModalClose} = props;
+  
+  useImperativeHandle(ref, () => ({
+    openCamera: () => {
+      launchCamera();
+    },
+    openGallery: () => {
+      launchImageLibrary();
+    },
+  }));
+
   const updateImageData = url => {
     if (props.updateImageData) {
       props.updateImageData(url);
@@ -159,7 +171,7 @@ const PhotoCameraPickerDialog = props => {
       </Modal>
     </TouchableWithoutFeedback>
   );
-};
+});
 
 const styles = StyleSheet.create({
   centeredView: {
