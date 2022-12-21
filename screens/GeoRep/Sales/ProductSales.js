@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {style} from '../../../constants/Styles';
 import {Colors, Strings} from '../../../constants';
 import GetRequestProductsList from '../../../DAO/sales/GetRequestProductsList';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {expireToken} from '../../../constants/Helper';
 import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
@@ -17,7 +17,7 @@ export default function ProductSales(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const navigation = props.navigation;
-  const regret_item = props.route?.params?.regret_item;
+  const regret_item = useSelector(state => state.sales.regret);
   console.log('regret_item', regret_item);
 
   const dispatch = useDispatch();

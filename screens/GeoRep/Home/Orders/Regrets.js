@@ -1,7 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {SHOW_MORE_COMPONENT} from '../../../../actions/actionTypes';
 import {getApiRequest} from '../../../../actions/api.action';
+import {setRegret} from '../../../../actions/sales.action';
 import RegretsList from './components/RegretsList';
 import regretDummyData from './regretDummyData.json';
 const PAGE_SIZE = 20;
@@ -11,7 +14,7 @@ const Regrets = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [lastPageSize, setLastPageSize] = useState(0);
-
+  const dispatch = useDispatch();
   const onLoadRegrets = _page => {
     if (isLoading) return false;
     setIsLoading(true);
@@ -34,10 +37,9 @@ const Regrets = props => {
       });
   };
   const onItemAction = item => {
-    navigation.navigate('Home', {
-      screen: 'ProductSales',
-      params: {regret_item: item},
-    });
+    navigation.navigate('More');
+    dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
+    dispatch(setRegret(item));
   };
   useEffect(() => {
     onLoadRegrets(0);
