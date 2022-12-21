@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     marginHorizontal: 8,
     marginBottom: 16,
+    maxHeight: Values.deviceHeight * 0.8,
   },
   title: {
     fontSize: Values.fontSize.small,

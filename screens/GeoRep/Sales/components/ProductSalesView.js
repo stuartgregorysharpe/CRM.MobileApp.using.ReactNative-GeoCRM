@@ -1,5 +1,12 @@
-import {StyleSheet, Text, View, FlatList, TouchableOpacity ,ActivityIndicator} from 'react-native';
-import React, {useEffect, useState, useCallback , useRef} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import ProductItem from './items/ProductItem';
 import ProductGroupItem from './items/ProductGroupItem';
 import {useSelector} from 'react-redux';
@@ -29,8 +36,7 @@ const ProductSalesView = props => {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
-  const [searchKey, setSearchKey] = useState("");
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const barcodeScanModalRef = useRef(null);
 
   useEffect(() => {
@@ -42,11 +48,15 @@ const ProductSalesView = props => {
   }, [lists]);
 
   useEffect(() => {
-    if( !isLoading && searchText != currentSearchKey){
-      loadMoreData( 0 , searchText);
-      
+    if (!isLoading && searchText != currentSearchKey) {
+      loadMoreData(0, searchText);
     }
-  }, [searchText, isLoading])
+  }, [searchText, isLoading]);
+  useEffect(() => {
+    if (props.regret_item) {
+      setSearchText(props.regret_item?.search_text);
+    }
+  }, [props.regret_item]);
 
   const checkFilter = async () => {
     var param = await getJsonData('@sale_product_parameter');
@@ -121,13 +131,12 @@ const ProductSalesView = props => {
   const onScanAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
-        //const capturedItem = captureDeviceStockItem(items, value);      
-        setSearchKey(value);
+        //const capturedItem = captureDeviceStockItem(items, value);
+        setSearchText(value);
         loadMoreData(0, value);
-
       }
     }
-  } ;
+  };
 
   renderFooter = () => {
     if (!isEndPageLoading && isLoading) {
@@ -153,10 +162,10 @@ const ProductSalesView = props => {
         isScan
         onSearch={searchText => {
           setSearchText(searchText);
-          console.log("search text " , searchText);
+          console.log('search text ', searchText);
           if ((searchText != '', searchText.length >= 2)) {
             loadMoreData(0, searchText);
-          }else if(searchText == ''){
+          } else if (searchText == '') {
             loadMoreData(0, searchText);
           }
         }}
@@ -165,10 +174,10 @@ const ProductSalesView = props => {
             props.openFilter();
           }
         }}
-        onScan={() =>{
+        onScan={() => {
           barcodeScanModalRef.current.showModal();
         }}
-        initVal={searchKey}
+        initVal={searchText}
       />
 
       <SettingView
@@ -226,7 +235,6 @@ const ProductSalesView = props => {
           barcodeScanModalRef.current.hideModal();
         }}
       />
-      
     </View>
   );
 };

@@ -8,6 +8,7 @@ import {expireToken} from '../../../constants/Helper';
 import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
 import {setSalesSetting} from '../../../actions/sales.action';
+import {getConfigFromRegret} from './helpers';
 
 export default function ProductSales(props) {
   const [settings, setSettings] = useState(null);
@@ -67,13 +68,13 @@ export default function ProductSales(props) {
     return {};
   };
 
-  const getProductLists = async (data, search_text, pageNumber) => {
+  const getProductLists = async (data, search_text = '', pageNumber) => {
     if (data != undefined) {
       storeJsonData('@setup', data);
       const param = getParamData(data);
       await storeJsonData('@sale_product_parameter', param);
     }
-    getApiData('', 0);
+    getApiData(search_text, 0);
   };
 
   const getProductListsByFilter = async data => {
@@ -101,7 +102,6 @@ export default function ProductSales(props) {
           if (isMount) {
             if (res.status == Strings.Success) {
               setSettings(res.settings);
-              console.log('res.settgins', res.settings);
               dispatch(setSalesSetting(res.settings));
               if (pageNumber == 0) {
                 setItems(res.items);
@@ -125,6 +125,7 @@ export default function ProductSales(props) {
         getProductLists={getProductLists}
         getProductListsByFilter={getProductListsByFilter}
         items={items}
+        regret_item={regret_item}
         settings={settings}
         page={page}
         isLoading={isLoading}
