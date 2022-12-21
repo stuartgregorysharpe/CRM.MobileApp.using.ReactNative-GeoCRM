@@ -106,11 +106,15 @@ export default function HomeScreen(props) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log('focus');
+      refreshHeader();
     });
     return unsubscribe;
   }, [navigation]);
 
   useEffect(() => {
+    refreshHeader();
+  }, [navigation]);
+  const refreshHeader = () => {
     var screenProps = props.screenProps;
     if (screenProps === undefined) {
       screenProps = props.navigation;
@@ -129,8 +133,7 @@ export default function HomeScreen(props) {
         },
       });
     }
-  });
-
+  };
   useEffect(() => {
     syncFun();
   }, [offlineStatus]);

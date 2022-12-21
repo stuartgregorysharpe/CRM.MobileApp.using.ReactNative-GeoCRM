@@ -1,7 +1,7 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {style} from '../../../constants/Styles';
-import {Strings} from '../../../constants';
+import {Colors, Strings} from '../../../constants';
 import GetRequestProductsList from '../../../DAO/sales/GetRequestProductsList';
 import {useDispatch} from 'react-redux';
 import {expireToken} from '../../../constants/Helper';
@@ -9,6 +9,7 @@ import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
 import {setSalesSetting} from '../../../actions/sales.action';
 import {getConfigFromRegret} from './helpers';
+import BackButtonHeader from '../../../components/Header/BackButtonHeader';
 
 export default function ProductSales(props) {
   const [settings, setSettings] = useState(null);
@@ -37,18 +38,34 @@ export default function ProductSales(props) {
   }, [navigation]);
 
   const refreshHeader = () => {
+    console.log('ProductSales refreshHeader', props.hasBack);
     if (props.screenProps) {
-      props.screenProps.setOptions({
-        headerTitle: () => {
-          return (
-            <TouchableOpacity onPress={() => {}}>
-              <View style={style.headerTitleContainerStyle}>
-                <Text style={style.headerTitle}>Sales</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        },
-      });
+      if (props.hasBack) {
+        props.screenProps.setOptions({
+          headerTitle: () => {
+            return (
+              <BackButtonHeader title={'Sales'} navigation={props.navigation} />
+            );
+          },
+          tabBarStyle: {
+            height: 50,
+            paddingBottom: Platform.OS == 'android' ? 5 : 0,
+            backgroundColor: Colors.whiteColor,
+          },
+        });
+      } else {
+        props.screenProps.setOptions({
+          headerTitle: () => {
+            return (
+              <TouchableOpacity onPress={() => {}}>
+                <View style={style.headerTitleContainerStyle}>
+                  <Text style={style.headerTitle}>Sales</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          },
+        });
+      }
     }
   };
 

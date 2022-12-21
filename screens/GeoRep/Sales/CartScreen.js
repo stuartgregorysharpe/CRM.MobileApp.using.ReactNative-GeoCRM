@@ -5,21 +5,18 @@ import {Colors} from '../../../constants';
 import CartContainer from './containers/CartContainer';
 
 const CartScreen = props => {
-
   const navigation = props.navigation;
 
   useEffect(() => {
     refreshHeader();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log("triggere")
       refreshHeader();
     });
     return unsubscribe;
   }, [navigation]);
-
 
   const canGoBack = props.screenProps?.canGoBack();
   const refreshHeader = () => {

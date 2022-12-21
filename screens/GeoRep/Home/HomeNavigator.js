@@ -27,13 +27,17 @@ export default function HomeNavigator(props) {
       <Stack.Screen
         name="ProductSales"
         options={{header: () => null, headerShown: false}}>
-        {props => <ProductSales {...props} screenProps={screenProps} />}
+        {props => (
+          <ProductSales {...props} screenProps={screenProps} hasBack={true} />
+        )}
       </Stack.Screen>
 
       <Stack.Screen
         name="CartScreen"
         options={{header: () => null, headerShown: false}}>
-        {props => <CartScreen {...props} screenProps={screenProps} />}
+        {props => (
+          <CartScreen {...props} screenProps={screenProps} hasBack={true} />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );
