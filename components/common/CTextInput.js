@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Platform} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Colors, Fonts} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
 
 
 const CTextInput = props => {
-  const { cTextRef, dynamicFieldRef , index} = props;
-  
+
+  const { multiline, cTextRef, dynamicFieldRef , index} = props;  
 
   return (
     <View style={[{alignSelf: 'stretch'}, props.style]}>
@@ -21,7 +21,10 @@ const CTextInput = props => {
           }
         }}        
         disabled={props.disabled != undefined ? props.disabled : false}
-        mode="outlined"
+        mode="outlined"        
+        multiline={multiline != undefined ? multiline : false}        
+        //numberOfLines={3}
+        autoGrow
         outlineColor={
           props.hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder
         }
@@ -29,15 +32,17 @@ const CTextInput = props => {
           props.hasError ? whiteLabel().endDayBackground : Colors.disabledColor
         }
         {...props}        
-        style={[styles.textInput, props.textInputStyle]}        
+        style={[ multiline ? styles.multilineTextInput : styles.textInput, props.textInputStyle]}        
         onSubmitEditing={() => {
           if (
             dynamicFieldRef != undefined &&
             dynamicFieldRef.current != undefined &&
             index <= dynamicFieldRef.current.length - 2 &&
             dynamicFieldRef.current[index + 1] != null
-          ) {            
-            dynamicFieldRef.current[index + 1].focus();          
+          ) {
+            if(!multiline){
+              dynamicFieldRef.current[index + 1].focus();
+            }            
           }
           if(props.onSubmitEditing){
             props.onSubmitEditing();
@@ -69,13 +74,19 @@ const CTextInput = props => {
 };
 
 const styles = StyleSheet.create({
-  textInput: {
-    height: 36,
+  textInput: {    
+    height:36,    
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: Colors.bgColor,
     fontFamily: Fonts.secondaryMedium,
   },
+  multilineTextInput :{
+    fontSize:14,    
+    backgroundColor: Colors.bgColor,
+    fontFamily: Fonts.secondaryMedium,
+    maxHeight:Platform.OS == 'android' ? 125 : 130
+  }
 });
 
 export default CTextInput;

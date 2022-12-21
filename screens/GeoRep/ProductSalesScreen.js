@@ -12,7 +12,7 @@ export default function ProductSalesScreen({screenProps}) {
   return (
     <SafeAreaView>
       <View>
-        <Text>ProductSalesScreen</Text>
+        <Text>ProductSalesScreenee</Text>
       </View>
     </SafeAreaView>
   )

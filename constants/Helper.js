@@ -103,8 +103,10 @@ export function getPageNameByLinker(selectedProject, linker) {
         linker: linker,
         name: 'Sales',
         router: ProductSales,
-        activeIcon: 'Shoping_Card',
-        inActiveIcon: 'Shoping_Card_Gray',
+        activeIcon: 'Sale',
+        inActiveIcon: 'Sale_Gray',
+        // activeIcon: 'Shoping_Card',
+        // inActiveIcon: 'Shoping_Card_Gray',
       };
     case 'notifications':
       return {

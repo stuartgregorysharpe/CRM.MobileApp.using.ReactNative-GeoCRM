@@ -100,9 +100,10 @@ export function diffFormat(startDate, endDate, type = 'days') {
   )}`;
 }
 
-export function formatCurrency(currency, currencyType) {
-  if (!currency) return '/';
-  return `£${currency}`;
+export function formatCurrency(currency) {
+  if (!currency) return '-';
+  const nCurrency = Number(currency).toFixed(2);
+  return `R${nCurrency}`;
 }
 
 export function formatNumber(count) {
@@ -128,11 +129,32 @@ export function formatPeriod(
   );
 }
 
-
-
 export const formattedNumber = num => {
   try {
     return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  } catch (e) {
+    return num;
+  }
+};
+
+export const formattedPriceWithSpace = num => {
+  try {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  } catch (e) {
+    return num;
+  }
+};
+
+export const formattedPrice = num => {
+  try {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  } catch (e) {
+    return num;
+  }
+};
+export const formattedSpacingPrice = num => {
+  try {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
   } catch (e) {
     return num;
   }
@@ -162,7 +184,6 @@ export const getTime = () => {
   return currentTime;
 };
 
-
 export const getBasketDateTime = () => {
   var currentTime = moment().format('DD MMM YYYY HH:mm');
   return currentTime;
@@ -180,7 +201,27 @@ export const getDateTimeFromBasketTime = dateTime => {
 };
 
 export const parseDateFromString = dtString => {
-    
   return dtString.match(/\d{4}([.\-/ ])\d{2}\1\d{2}/);
+};
 
+export const getRandomNumber = length => {
+  var max = 1;
+  for (let i = 0; i < length; i++) {
+    max = max * 10;
+  }
+  var RandomNumber = Math.floor(Math.random() * max) + 1;
+  return RandomNumber;
+};
+
+
+export function afterDecimal(num) {
+
+  if(num.toString() == ''){
+    return 0;
+  }
+
+  if (Number.isInteger(num)) {
+    return 0;
+  }
+  return  num.toString().split('.')[1] != undefined ? num.toString().split('.')[1].length : 0;
 }

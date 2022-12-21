@@ -27,17 +27,20 @@ import {
 } from './helper';
 import {deleteFormTable, insertTable} from '../../../../sqlite/FormDBHelper';
 import {getDBConnection} from '../../../../sqlite/DBHelper';
-import {getJsonData, getLocalData, storeJsonData} from '../../../../constants/Storage';
+import {
+  getJsonData,
+  getLocalData,
+  storeJsonData,
+} from '../../../../constants/Storage';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Constants, Strings} from '../../../../constants';
 import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
 import {generateKey} from '../../../../constants/Utils';
-import { Notification } from '../../../../components/modal/Notification';
+import {Notification} from '../../../../components/modal/Notification';
 var indempotencyKey;
 
 //export default function FormQuestions(props) {
-export const FormQuestions = (props) => {
-
+export const FormQuestions = props => {
   const form = props.route.params.data;
   const location_id = props.route.params.location_id;
   const pageType = props.route.params.pageType;
@@ -50,14 +53,14 @@ export const FormQuestions = (props) => {
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
   let isMount = true;
-  
+
   useEffect(() => {
     isMount = true;
     refreshHeader();
     loadFromDB(form.form_id);
     return () => {
-      isMount =false;
-    }
+      isMount = false;
+    };
   }, [form]);
 
   const loadFromDB = async formId => {
@@ -103,7 +106,6 @@ export const FormQuestions = (props) => {
           );
         },
         tabBarStyle: {
-          position: 'absolute',
           height: 50,
           paddingBottom: Platform.OS == 'android' ? 5 : 0,
           backgroundColor: Colors.whiteColor,
@@ -122,9 +124,9 @@ export const FormQuestions = (props) => {
 
     GetRequestFormQuestionsDAO.find(param)
       .then(res => {
-        if(isMount){
+        if (isMount) {
           groupByQuestions(res.questions);
-        }        
+        }
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -264,15 +266,14 @@ export const FormQuestions = (props) => {
       'form_submission',
       'forms/forms-submission',
       form.form_name,
-      ''
+      '',
     )
       .then(async res => {
-        
         loadingBarRef.current.hideModal();
-        console.log("respnose => ", res)
+        console.log('respnose => ', res);
 
         setTimeout(() => {
-          console.log("called time out")
+          console.log('called time out');
           dispatch(
             showNotification({
               type: 'success',
@@ -282,26 +283,25 @@ export const FormQuestions = (props) => {
                 const db = await getDBConnection();
                 if (db != null) await deleteFormTable(db, form.form_id);
                 clearAll();
-                const formIds = await getJsonData("@form_ids");
+                const formIds = await getJsonData('@form_ids');
                 var formIdLists = [];
-                if(formIds != null){                
-                  formIds.forEach((id) => {
-                    formIdLists.push(id)
-                  })                  
+                if (formIds != null) {
+                  formIds.forEach(id => {
+                    formIdLists.push(id);
+                  });
                   formIdLists.push(form.form_id);
-                  await storeJsonData("@form_ids", formIdLists)
-                }else{
-                  formIdLists.push(form.form_id)
-                  await storeJsonData("@form_ids", formIdLists);
+                  await storeJsonData('@form_ids', formIdLists);
+                } else {
+                  formIdLists.push(form.form_id);
+                  await storeJsonData('@form_ids', formIdLists);
                 }
-  
+
                 dispatch(clearNotification());
                 onOpenFormFeedbackModal(res);
               },
             }),
           );
-
-        }, 700 );        
+        }, 700);
       })
       .catch(e => {
         loadingBarRef.current.hideModal();
@@ -327,7 +327,6 @@ export const FormQuestions = (props) => {
 
   return (
     <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
-
       <Notification />
 
       <FormQuestionView

@@ -23,7 +23,6 @@ import {
   MAP_FILTERS,
 } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   getFilterData,

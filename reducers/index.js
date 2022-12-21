@@ -6,6 +6,7 @@ import rep from './rep.reducer';
 import location from './location.reducer';
 import pipeline from './pipeline.reducer';
 import notification from './notification.reducer';
+import sales from './sales.reducer';
 
 export default combineReducers({
   notification,  
@@ -13,5 +14,6 @@ export default combineReducers({
   selection,
   rep,
   location,
-  pipeline
+  pipeline,
+  sales
 });
