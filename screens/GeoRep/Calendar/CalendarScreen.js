@@ -108,12 +108,16 @@ export default function CalendarScreen(props) {
     return unsubscribe;
   }, [navigation]);
   console.log('isLoading', isLoading);
-  const loadList = async type => {
+  const loadList = async (type, isOptimize = false) => {
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
     setIsAdd(await checkFeatureIncludeParam('calendar_add'));
 
     setIsLoading(true);
-    GetRequestCalendarScheduleList.find({period: type})
+    const param = {period: type};
+    if (type == 'today' && isOptimize) {
+      param.optimize = 1;
+    }
+    GetRequestCalendarScheduleList.find(param)
       .then(res => {
         console.log('GetRequestCalendarScheduleList: res', res.items);
         if (selectedIndex == 2 || selectedIndex == 0) {
@@ -219,6 +223,9 @@ export default function CalendarScreen(props) {
       weekName = 'week_ahead';
     }
     loadList(weekName);
+  };
+  const onOptimize = () => {
+    loadList('today', true);
   };
 
   const addLocationToCalendar = () => {
@@ -349,14 +356,15 @@ export default function CalendarScreen(props) {
       </View>
 
       <View style={styles.plusButtonContainer}>
-        {isOptimize && (
+        {isOptimize && tabIndex == 2 && (
           <TouchableOpacity
             style={style.innerPlusButton}
             onPress={() => {
-              props.navigation.navigate('CRM', {
+              /*props.navigation.navigate('CRM', {
                 screen: 'LocationSearch',
                 params: {calendar_type: 'add'},
-              });
+              });*/
+              onOptimize();
             }}>
             <SvgIcon icon="Calendar_Optimize" width="70px" height="70px" />
           </TouchableOpacity>
