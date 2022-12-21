@@ -17,6 +17,7 @@ const OrderDetailModal = React.forwardRef((props, ref) => {
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       closableWithOutsideTouch
       hideClear
+      titleContainer={{marginBottom: 10}}
       customRightHeaderView={
         <TouchableOpacity style={styles.clearButtonContainer} onPress={onBack}>
           <Text style={styles.backText}>{'Back'}</Text>

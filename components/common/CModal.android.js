@@ -28,8 +28,9 @@ const CModal = React.forwardRef((props, ref) => {
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
   const isFullModal = _modalType == Constants.modalType.MODAL_TYPE_FULL;
-  const isFullWithBottomModal = _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
-  
+  const isFullWithBottomModal =
+    _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
+
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);
@@ -96,7 +97,7 @@ const CModal = React.forwardRef((props, ref) => {
               isCenterModal && styles.modalContainer,
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
-              isFullWithBottomModal && styles.fullWithBottomModalContainer
+              isFullWithBottomModal && styles.fullWithBottomModalContainer,
             ]}>
             <View style={styles.bodyContainer}>
               {!isFullModal && !hideDivider && (
@@ -122,6 +123,7 @@ const CModal = React.forwardRef((props, ref) => {
                   style={[
                     styles.titleContainer,
                     {marginTop: hideDivider ? 10 : 5},
+                    props.titleContainer,
                   ]}>
                   <View
                     style={{
@@ -209,9 +211,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     //height: Dimensions.get("screen").height - (Platform.OS === 'android' ? 120 : 120),
-    backgroundColor: 'rgba(0,0,0,0.35)',    
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
-
 
   bottomModalContainer: {
     position: 'absolute',
@@ -230,11 +231,11 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  fullWithBottomModalContainer:{
+  fullWithBottomModalContainer: {
     position: 'absolute',
-    alignSelf:'stretch',
+    alignSelf: 'stretch',
     width: '100%',
-    height: '100%',    
+    height: '100%',
   },
 
   title: {
