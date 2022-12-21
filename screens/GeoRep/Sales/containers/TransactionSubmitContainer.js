@@ -42,9 +42,6 @@ const TransactionSubmitContainer = props => {
         transaction_type: setup.transaction_type.type,
         location_id: setup.location.location_id,
       };
-      if (setup?.regret_id) {
-        param.regret_id = setup?.regret_id;
-      }
 
       console.log('param', setup);
       GetRequestTransactionSubmitFieldsDAO.find(param)
@@ -112,6 +109,10 @@ const TransactionSubmitContainer = props => {
             : '0',
       };
 
+      if (setupData.regret_id) {
+        postJsonData.regret_id = setupData.regret_id;
+      }
+      console.log('postJSONData', postJsonData);
       files.forEach(item => {
         postJsonData = {
           ...postJsonData,
