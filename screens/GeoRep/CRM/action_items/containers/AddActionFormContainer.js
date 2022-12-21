@@ -69,11 +69,7 @@ const AddActionFormContainer = props => {
         expireToken(dispatch , e);
       });
   };
-
-  console.log("formData",formData)
-  console.log("formStructure",formStructure)
   
-
   return (
     <View style={[styles.container, props.style]}>
       <DynamicForm

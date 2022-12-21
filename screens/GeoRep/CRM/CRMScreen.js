@@ -4,10 +4,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LocationScreen from './location/LocationScreen';
 import LocationSpecificInfoScreen from './checkin/LocationSpecificInfoScreen';
 import LocationSearchScreen from './LocationSearchScreen';
-import {checkFeatureIncludeParam} from '../../../constants/Storage';
 import {useSelector} from 'react-redux';
 import TouchpointScreen from '../Touchpoint/TouchpointScreen';
-import Stock from '../Stock/Stock';
 
 const Stack = createNativeStackNavigator();
 

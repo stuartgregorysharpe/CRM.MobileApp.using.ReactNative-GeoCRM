@@ -13,9 +13,14 @@ import GetRequestReturnListsDAO from './GetRequestReturnLists';
 import GetRequestStockFieldDataDAO from './stock/GetRequestStockFieldData';
 import GetRequestStockUsersDAO from './stock/GetRequestStockUsers';
 import GetRequestFormSubmissionsDAO from './GetRequestFormSubmissions';
+import GetRequestSetupFieldDAO from './sales/GetRequestSetupFields';
 import GetRequestLocationDevicesDAO from './locations/GetRequestLocationDevices';
 import GetRequestContentlibraryDAO from './GetRequestContentLibrary';
 import GetRequestCustomerSearchDAO from './locations/GetRequestCustomerSearch';
+import GetRequestProductPriceDAO from './sales/GetRequestProductPrice';
+import GetRequestProductsFiltersDAO from './sales/GetRequestProductsFilters';
+import GetRequestAddProductFieldsDAO from './sales/GetRequestAddProductFields';
+import GetRequestTransactionSubmitFieldsDAO from './sales/GetRequestTransactionSubmitFields';
 
 export {
     LocationMapDAO, 
@@ -33,9 +38,13 @@ export {
     GetRequestStockFieldDataDAO,
     GetRequestStockUsersDAO,
     GetRequestFormSubmissionsDAO,
+    GetRequestSetupFieldDAO,
     GetRequestLocationDevicesDAO,
     GetRequestContentlibraryDAO,
-    GetRequestCustomerSearchDAO
-
+    GetRequestCustomerSearchDAO,
+    GetRequestProductPriceDAO,
+    GetRequestProductsFiltersDAO,
+    GetRequestAddProductFieldsDAO,
+    GetRequestTransactionSubmitFieldsDAO
 }
 

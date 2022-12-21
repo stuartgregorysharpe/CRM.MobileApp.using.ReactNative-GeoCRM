@@ -9,7 +9,8 @@ import {expireToken} from '../../../../../constants/Helper';
 import { GetRequestCustomerSearchDAO, GetRequestLocationDevicesDAO } from '../../../../../DAO';
 
 const SearchLocationContainer = props => {
-  const {stockType, isSkipLocationIdCheck} = props;
+
+  const { type, stockType, isSkipLocationIdCheck} = props;
   const dispatch = useDispatch();
   const [lists, setLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
@@ -19,12 +20,16 @@ const SearchLocationContainer = props => {
   var changedSearchKey = '';
 
   useEffect(() => {
-    callSearch('');
+    if(type != 'setup')
+      callSearch('');
   }, []);
 
   useEffect(() => {
     if (changedSearchKey != searchKey) {
       onSearch(changedSearchKey);
+    }
+    if(props.onStartSearch && lists.length > 0){
+      props.onStartSearch(true);
     }
   }, [lists]);
 
@@ -33,7 +38,15 @@ const SearchLocationContainer = props => {
       stockType == Constants.stockDeviceType.SELL_TO_TRADER ||
       isSkipLocationIdCheck
     ) {
-      props.onSubmit(stockType, item.location_id);
+      if(type === "setup"){
+        if(props.onSubmit){
+          props.onSubmit(item, item.location_id);
+          setLists([]);          
+        }                
+      }else{
+        props.onSubmit(stockType, item.location_id);
+      }
+      
     } else {
 
       setLocationId(item.location_id);
@@ -61,18 +74,7 @@ const SearchLocationContainer = props => {
           }
 
       })
-      
-      // getApiRequest('locations/location-devices', param)
-      //   .then(res => {
-      //     if (res.devices.length > 0) {
-      //       props.onSubmit(stockType, item.location_id);
-      //     } else {
-      //     }
-      //   })
-      //   .catch(e => {
-      //     console.log('error', e);
-          
-      //   });
+            
     }
   };
 
@@ -84,13 +86,17 @@ const SearchLocationContainer = props => {
 
   const onSearch = key => {
     changedSearchKey = key;
-
     if (key == '') {
       setLists(originLists);
     } else if (key.length > 1 && !isLoading) {
       searchKey = key;
       callSearch(key);
     }
+
+    if(props.onStartSearch && key === '' ){
+      props.onStartSearch(false);
+    }
+
   };
 
   const callSearch = key => {
@@ -100,9 +106,12 @@ const SearchLocationContainer = props => {
     };
 
 
-    GetRequestCustomerSearchDAO.find(param).then((res) => {
-      
+    GetRequestCustomerSearchDAO.find(param).then((res) => {      
       setLists(res.items);
+      if(props.onStartSearch && res.items.length == 0  ){
+        props.onStartSearch(false);
+      }
+
       if (key == '') {
         setOriginLists(res.items);
       }
@@ -115,7 +124,7 @@ const SearchLocationContainer = props => {
   };
 
   return (
-    <View style={{alignSelf: 'stretch'}}>
+    <View style={[props.style ? props.style : {} , {alignSelf: 'stretch' }]}>
       <SearchLocationView
         lists={lists}
         onItemPressed={onItemPressed}

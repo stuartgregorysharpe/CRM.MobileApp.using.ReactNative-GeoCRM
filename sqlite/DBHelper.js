@@ -310,6 +310,46 @@ export const getInsertValues = async ( element ) => {
       return `(${body2})`;      
 }
 
+export async function getLocationInfo (locationId) {
+
+  if(locationId != 0){
+    var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`; 
+    var location_name = '';
+    var address = '';
+    var res = await ExecuteQuery(query, [locationId]);
+    if( res != undefined  && res.rows.length > 0){
+        location_name = res.rows.item(0).location_name;
+        address = getFullAddress(res.rows.item(0));
+    }else{
+        console.log("No Location ID", locationId)            
+    }
+    return {name: location_name , address:  address};
+  }
+
+}
+
+
+export function getFullAddress (element){
+
+  var address = element.street_address;
+  if(element.suburb != '' && element.suburb != undefined){
+      address = address + ", " + element.suburb;
+  }
+  if(element.city != '' && element.city != undefined){
+      address = address + ", " + element.city;
+  }
+  if(element.state != '' && element.state != undefined){
+      address = address + ", " + element.state;
+  }
+  if(element.country != '' && element.country != undefined){
+      address = address + ", " + element.country;
+  }
+  if(element.pincode != '' && element.pincode != undefined){
+      address = address + ", " + element.pincode;
+  }
+  return address;
+}
+
 
 
 
