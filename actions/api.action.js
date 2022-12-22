@@ -12,7 +12,7 @@ export const dummyApiRequest = async (route, param, response) => {
     }, 1000);
   });
 };
-axios.defaults.timeout = 15000;
+axios.defaults.timeout = 25000;
 
 
 export const getApiRequest = async (route, param) => {

@@ -241,7 +241,7 @@ export const handleRecords = async ( tableName, records) => {
           console.log("error occure", e);
         }
       }else{
-        console.log('No data to insert' , tableName);
+        console.log('No data to insert' , tableName , fields);
       }           
   }catch(e){
     console.log(e);
