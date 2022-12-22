@@ -167,7 +167,7 @@ const ProductSalesContainer = props => {
     }
 
     var defineSetup = await getJsonData('@setup');
-    if (defineSetup == null) {
+    if (defineSetup == null && !props.regret_item) {
       setupFieldModalRef.current.showModal();
     }
   };
@@ -205,12 +205,11 @@ const ProductSalesContainer = props => {
       storeJsonData('@product_price', []);
       removeLocalData('@add_product');
       dispatch(setProductPriceLists([]));
-      setupFromConfig(config, props.regret_item?.search_text);
       await storeJsonData('@setup', config);
+      setupFromConfig(config, props.regret_item?.search_text);
     }
   };
   const setupFromConfig = (config, searchText) => {
-    console.log('setupFromConfig', config);
     if (props.getProductLists) {
       setSelectedLocation(config.location.name);
       configProductSetUp(config, type => {
@@ -292,7 +291,6 @@ const ProductSalesContainer = props => {
   };
 
   const saveFinalPrice = async (value, type) => {
-    console.log('save data', value);
     var newProduct = {
       ...value.product,
     };
@@ -430,7 +428,6 @@ const ProductSalesContainer = props => {
   const openProductDetail = item => {
     setProductDetailTitle(item.product_name);
     setProduct(item);
-    console.log('set product item', item);
     if (productDetailsModalRef.current)
       productDetailsModalRef.current.showModal();
   };

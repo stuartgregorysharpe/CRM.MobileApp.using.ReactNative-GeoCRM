@@ -18,7 +18,6 @@ export default function ProductSales(props) {
   const [page, setPage] = useState(0);
   const navigation = props.navigation;
   const regret_item = useSelector(state => state.sales.regret);
-  console.log('regret_item', regret_item);
 
   const dispatch = useDispatch();
   let isMount = true;
@@ -38,7 +37,6 @@ export default function ProductSales(props) {
   }, [navigation]);
 
   const refreshHeader = () => {
-    console.log('ProductSales refreshHeader', props.hasBack);
     if (props.screenProps) {
       if (props.hasBack) {
         props.screenProps.setOptions({
@@ -112,7 +110,7 @@ export default function ProductSales(props) {
         paramData['search_text'] = search_text;
       }
       storeJsonData('@sale_product_parameter', paramData);
-      console.log('param', paramData);
+
       GetRequestProductsList.find(paramData)
         .then(res => {
           setIsLoading(false);
@@ -147,7 +145,6 @@ export default function ProductSales(props) {
         page={page}
         isLoading={isLoading}
         loadMoreData={(pageNumber, searchText) => {
-          console.log('load more api ', pageNumber, searchText);
           getApiData(searchText, pageNumber);
         }}
         {...props}
