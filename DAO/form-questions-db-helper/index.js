@@ -1,4 +1,5 @@
 import {Constants} from '../../constants';
+import FSUCampaignDBHelper from './FSUCampaignDBHelper';
 import POSCaptureQuestionDBHelper from './POSCaptureQuestionDBHelper';
 import SKUFormQuestionDBHelper from './SKUFormQuestionDBHelper';
 import SKUSelectFormQuestionDBHelper from './SKUSelectFormQuestionDBHelper';
@@ -33,6 +34,7 @@ export async function getFormQuestionData(
       questionBody,
     );
   }
+
   if (questionType == Constants.questionType.FORM_TYPE_POS_CAPTURE) {
     return await POSCaptureQuestionDBHelper.getFormQuestionData(
       baseFormData,
@@ -42,5 +44,18 @@ export async function getFormQuestionData(
       questionBody,
     );
   }
+
+  if (questionType == Constants.questionType.FORM_TYPE_FSU_CAMPAIGN) {
+    
+    return await FSUCampaignDBHelper.getFSUFormData(
+      baseFormData,
+      business_unit_id,
+      client_id,
+      postData,
+      questionBody,
+    );
+  }
+
+
   return {...baseFormData};
 }

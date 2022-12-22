@@ -58,6 +58,7 @@ const syncTableData = async (tables , key , pageNumber, basket) => {
     var tableName = tables[key];
     if(tableName != undefined){
         await getApiRequest(`database/sync-table-data?offline_db_version=${offlineDBVersion}&table=${tableName}&page=${pageNumber}` , {}).then( async(res) => {      
+            console.log("INSERT DATA : " , tableName , res.records.length);
             await handleRecords(tableName, res.records);        
             if(pageNumber + 1 < res.total_pages){
                 await syncTableData(tables , key, pageNumber + 1, basket);
