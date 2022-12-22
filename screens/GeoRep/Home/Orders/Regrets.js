@@ -37,9 +37,11 @@ const Regrets = props => {
       });
   };
   const onItemAction = item => {
-    navigation.navigate('More');
-    dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
     dispatch(setRegret(item));
+    setTimeout(() => {
+      navigation.navigate('More');
+      dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
+    }, 200);
   };
   useEffect(() => {
     onLoadRegrets(0);
