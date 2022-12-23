@@ -135,13 +135,15 @@ const ProductSalesContainer = props => {
   useEffect(() => {
     if (!props.regret_item) {
       setupFieldModalRef.current.showModal();
-    } else {
-      setupDefineSetupFromRegret();
     }
-
     initializeProductLists();
   }, []);
 
+  useEffect(() => {
+    if (props.regret_item) {
+      setupDefineSetupFromRegret();
+    }
+  }, [props.regret_item]);
   useEffect(() => {
     if (productPriceLists != null) {
       configAddProductCount();
@@ -199,18 +201,22 @@ const ProductSalesContainer = props => {
     setCartCount(count);
   }, [productPriceLists]);
   const setupDefineSetupFromRegret = async () => {
+    console.log('setupDefineSetupFromRegret');
     if (props.regret_item) {
+      console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
       const config = getConfigFromRegret(props.regret_item);
 
-      storeJsonData('@product_price', []);
-      removeLocalData('@add_product');
+      await storeJsonData('@product_price', []);
+      await removeLocalData('@add_product');
       dispatch(setProductPriceLists([]));
       await storeJsonData('@setup', config);
       setupFromConfig(config, props.regret_item?.search_text);
     }
   };
   const setupFromConfig = (config, searchText) => {
+    console.log('setupFromConfig: config', config);
     if (props.getProductLists) {
+      console.log('setupFromConfig: setSelectedLocation', config.location.name);
       setSelectedLocation(config.location.name);
       configProductSetUp(config, type => {
         if (type === 'changed') {
