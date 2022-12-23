@@ -27,7 +27,8 @@ const CModal = React.forwardRef((props, ref) => {
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
   const isFullModal = _modalType == Constants.modalType.MODAL_TYPE_FULL;
-  const isFullWithBottomModal = _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
+  const isFullWithBottomModal =
+    _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
 
   useImperativeHandle(ref, () => ({
     showModal: () => {
@@ -74,7 +75,7 @@ const CModal = React.forwardRef((props, ref) => {
             isCenterModal && styles.dim,
             isBottomModal && styles.bottomModalDim,
             isFullModal && styles.fullModalDim,
-            isFullWithBottomModal && styles.fullWithBottomModalDim
+            isFullWithBottomModal && styles.fullWithBottomModalDim,
           ]}>
           {closableWithOutsideTouch && (
             <TouchableOpacity
@@ -117,7 +118,12 @@ const CModal = React.forwardRef((props, ref) => {
               )}
 
               {(props.title || props.icon) && (
-                <View style={styles.titleContainer}>
+                <View
+                  style={[
+                    styles.titleContainer,
+                    {marginTop: hideDivider ? 10 : 5},
+                    props.titleContainer,
+                  ]}>
                   <View
                     style={{
                       flex: 1,
@@ -171,13 +177,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-
   fullWithBottomModalDim: {
     position: 'absolute',
     width: '100%',
     height: '100%',
     //height: Dimensions.get("screen").height - (Platform.OS === 'android' ? 120 : 120),
-    backgroundColor: 'rgba(0,0,0,0.35)',    
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
 
   modalContainer: {

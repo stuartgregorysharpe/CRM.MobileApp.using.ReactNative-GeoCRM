@@ -10,16 +10,24 @@ import {expireToken} from '../../../../constants/Helper';
 import ProductFilterModal from '../modal/ProductFilterModal';
 import {
   getJsonData,
+  getLocalData,
   removeLocalData,
   storeJsonData,
+  storeLocalValue,
 } from '../../../../constants/Storage';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
-import {setProductPriceLists} from '../../../../actions/sales.action';
+import {
+  setProductPriceLists,
+  setRegret,
+} from '../../../../actions/sales.action';
 import {showNotification} from '../../../../actions/notification.action';
-import {configProductSetUp} from '../helpers';
-import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, SLIDE_STATUS } from '../../../../actions/actionTypes';
-
+import {configProductSetUp, getConfigFromRegret} from '../helpers';
+import {
+  CHANGE_MORE_STATUS,
+  SHOW_MORE_COMPONENT,
+  SLIDE_STATUS,
+} from '../../../../actions/actionTypes';
 
 const ProductSalesContainer = props => {
   const navigation = props.navigation;
@@ -130,13 +138,27 @@ const ProductSalesContainer = props => {
 
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
   useEffect(() => {
-    setupFieldModalRef.current.showModal();
+    console.log('start: checkAndOpenSetup');
+    checkAndOpenSetup();
     initializeProductLists();
   }, []);
 
   useEffect(() => {
+    if (props.regret_item) {
+      setupDefineSetupFromRegret();
+    }
+  }, [props.regret_item]);
+  const checkAndOpenSetup = async () => {
+    const regretId = await getLocalData('@regret');
+    console.log('checkAndOpenSetup try');
+    if (!props.regret_item && !regretId && regretId != '') {
+      console.log('checkAndOpenSetup open modal');
+      setupFieldModalRef.current.showModal();
+    }
+  };
+  useEffect(() => {
     if (productPriceLists != null) {
-      configAddProductCount(); 
+      configAddProductCount();
     }
   }, [productPriceLists]);
 
@@ -158,11 +180,11 @@ const ProductSalesContainer = props => {
       props.getProductLists();
     }
 
-    var defineSetup = await getJsonData("@setup");
-    if(defineSetup == null){
-      setupFieldModalRef.current.showModal();
+    var defineSetup = await getJsonData('@setup');
+    if (defineSetup == null) {
+      console.log('refreshList: checkAndOpenSetup');
+      checkAndOpenSetup();
     }
-
   };
 
   const initializeProductLists = async () => {
@@ -175,9 +197,8 @@ const ProductSalesContainer = props => {
     configAddProductCount();
   };
 
-  const configAddProductCount = useCallback( async () => {
-
-    const addProductList = await getJsonData('@add_product');        
+  const configAddProductCount = useCallback(async () => {
+    const addProductList = await getJsonData('@add_product');
     var count = 0;
     if (addProductList != null && addProductList != undefined) {
       count = addProductList.length;
@@ -187,45 +208,59 @@ const ProductSalesContainer = props => {
       productPriceLists != null &&
       productPriceLists.length > 0
     ) {
-      const tmpLists = productPriceLists.filter(
-        item => parseInt(item.qty) > 0,
-      );      
+      const tmpLists = productPriceLists.filter(item => parseInt(item.qty) > 0);
       count += tmpLists.length;
     }
     setCartCount(count);
+  }, [productPriceLists]);
+  const setupDefineSetupFromRegret = async () => {
+    console.log('setupDefineSetupFromRegret');
+    if (props.regret_item) {
+      console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
+      const config = getConfigFromRegret(props.regret_item);
 
-  },[productPriceLists]);
-  
-
+      await storeJsonData('@product_price', []);
+      await removeLocalData('@add_product');
+      dispatch(setProductPriceLists([]));
+      await storeJsonData('@setup', config);
+      setupFromConfig(config, props.regret_item?.search_text);
+    }
+  };
+  const setupFromConfig = (config, searchText) => {
+    console.log('setupFromConfig: config', config);
+    if (props.getProductLists) {
+      console.log('setupFromConfig: setSelectedLocation', config.location.name);
+      setSelectedLocation(config.location.name);
+      configProductSetUp(config, type => {
+        if (type === 'changed') {
+          storeJsonData('@product_price', []);
+          removeLocalData('@add_product');
+          dispatch(setProductPriceLists([]));
+        }
+      });
+      configAddProductCount();
+      props.getProductLists(config, searchText);
+      if (config != undefined) {
+        setOutsideTouch(true);
+      }
+    }
+  };
   const onSetupFieldModalClosed = ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
       setupFieldModalRef.current.hideModal();
-      if (props.getProductLists) {
-        setSelectedLocation(value.location.name);
-        configProductSetUp(value, type => {
-          if (type === 'changed') {
-            
-            storeJsonData('@product_price', []);
-            removeLocalData('@add_product');
-            dispatch(setProductPriceLists([]));
-          }
-        });
-        configAddProductCount();
-        props.getProductLists(value);
-        if (value != undefined) {
-          setOutsideTouch(true);
-        }
-      }
-    }else if(type == Constants.actionType.ACTION_DONE){
-		  setupFieldModalRef.current.hideModal();
-      if(value.name === 'More'){
-        dispatch({type: SLIDE_STATUS, payload: false});			
-        if (visibleMore != '') {			
+      setupFromConfig(value);
+      storeLocalValue('@regret', '');
+      dispatch(setRegret(null));
+    } else if (type == Constants.actionType.ACTION_DONE) {
+      setupFieldModalRef.current.hideModal();
+      if (value.name === 'More') {
+        dispatch({type: SLIDE_STATUS, payload: false});
+        if (visibleMore != '') {
           dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
         } else {
           dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-              }
-      }else{			
+        }
+      } else {
         navigation.navigate(value.name);
       }
     }
@@ -246,7 +281,7 @@ const ProductSalesContainer = props => {
       if (props.getProductListsByFilter) {
         props.getProductListsByFilter(value);
       }
-    }  
+    }
     if (type === Constants.actionType.ACTION_FORM_CLEAR) {
       clearFilter();
     }
@@ -277,7 +312,6 @@ const ProductSalesContainer = props => {
   };
 
   const saveFinalPrice = async (value, type) => {
-    console.log('save data', value);
     var newProduct = {
       ...value.product,
     };
@@ -332,7 +366,7 @@ const ProductSalesContainer = props => {
     const param = {
       product_id: product.product_id,
       qty: qty,
-    };    
+    };
     GetRequestProductPriceDAO.find(param)
       .then(res => {
         if (res.status === Strings.Success) {
@@ -366,7 +400,7 @@ const ProductSalesContainer = props => {
         }
         setIsUpdatingProductPrice(false);
       })
-      .catch(e => {        
+      .catch(e => {
         expireToken(dispatch, e);
         setIsUpdatingProductPrice(false);
       });
@@ -415,7 +449,6 @@ const ProductSalesContainer = props => {
   const openProductDetail = item => {
     setProductDetailTitle(item.product_name);
     setProduct(item);
-    console.log('set product item', item);
     if (productDetailsModalRef.current)
       productDetailsModalRef.current.showModal();
   };
@@ -427,7 +460,7 @@ const ProductSalesContainer = props => {
   const openSetup = () => {
     setupFieldModalRef.current.showModal();
   };
-  
+
   const openReorder = () => {
     dispatch(
       showNotification({
@@ -457,7 +490,6 @@ const ProductSalesContainer = props => {
         alignSelf: 'stretch',
         flex: 1,
       }}>
-
       <SetupFieldModal
         title="Define Setup"
         hideClear
@@ -517,12 +549,11 @@ const ProductSalesContainer = props => {
         }}
         lists={lists}
         cartCount={cartCount}
+        regret_item={props.regret_item}
         selectedLocation={selectedLocation}
         isUpdatingProductPrice={isUpdatingProductPrice}
         {...props}
       />
-
-
     </View>
   );
 };

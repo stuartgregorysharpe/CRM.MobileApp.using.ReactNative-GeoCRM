@@ -8,7 +8,7 @@ export function getTotalCartProductList(
   const totalCartProductList = productPriceList.filter(
     x => parseInt(x.qty) > 0,
   );
-  const symbol = currency?.symbol || 'R';  
+  const symbol = currency?.symbol || 'R';
   addProductList.forEach(item => {
     if (item && item.price) {
       totalCartProductList.push({
@@ -134,8 +134,8 @@ export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 export const configProductSetUp = async (value, callBack) => {
   var setupData = await getJsonData('@setup');
   if (setupData != null && setupData != undefined && setupData.location) {
-    console.log("setup ", setupData);
-    console.log("v", value)
+    console.log('setup ', setupData);
+    console.log('v', value);
     if (
       setupData.location.name != value.location.name ||
       setupData.transaction_type.type != value.transaction_type.type
@@ -148,4 +148,32 @@ export const configProductSetUp = async (value, callBack) => {
     console.log('setup data', setupData);
     callBack('changed');
   }
+};
+
+export const getConfigFromRegret = regret => {
+  return {
+    currency_id: {
+      abbreviation: regret.abbreviation,
+      exchange_rate: regret.exchange_rate,
+      symbol: regret.symbol,
+      tax_rate: regret.tax_rate,
+      id: regret.currency_id,
+    },
+    location: {
+      address: regret.address,
+      name: regret.location_name,
+      location_id: regret.location_id,
+    },
+    transaction_type: {
+      type: 'Order',
+      warehouse_required: '1',
+    },
+    warehouse_id: [
+      {
+        id: '0',
+        label: 'all',
+      },
+    ],
+    regret_id: regret.regret_id,
+  };
 };

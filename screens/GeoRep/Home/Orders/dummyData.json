@@ -1,0 +1,33 @@
+{
+    "status": "success",
+    "orders": [
+        {
+            "order_id" : "1",
+            "order_number" : "123321656",
+            "location_name" : "3412 W Magnolia Blvd",
+            "status" : "Ordered",
+            "status_color" : "#1FAC03"
+        },
+        {
+            "order_id" : "2",
+            "order_number" : "123321656",
+            "location_name" : "3412 W Magnolia Blvd",
+            "status" : "Out of stock",
+            "status_color" : "#DC143CB8"
+        },
+        {
+            "order_id" : "3",
+            "order_number" : "123321656",
+            "location_name" : "3412 W Magnolia Blvd",
+            "status" : "Pending",
+            "status_color" : "#777777A6"
+        },
+        {
+            "order_id" : "4",
+            "order_number" : "123321656",
+            "location_name" : "3412 W Magnolia Blvd",
+            "status" : "Ordered",
+            "status_color" : "#1FAC03"
+        }
+    ]
+}
