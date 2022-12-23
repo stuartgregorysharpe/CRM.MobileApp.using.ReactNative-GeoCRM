@@ -10,8 +10,10 @@ import {expireToken} from '../../../../constants/Helper';
 import ProductFilterModal from '../modal/ProductFilterModal';
 import {
   getJsonData,
+  getLocalData,
   removeLocalData,
   storeJsonData,
+  storeLocalValue,
 } from '../../../../constants/Storage';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
@@ -144,6 +146,14 @@ const ProductSalesContainer = props => {
       setupDefineSetupFromRegret();
     }
   }, [props.regret_item]);
+  const checkAndOpenSetup = async () => {
+    const regretId = await getLocalData('@regret');
+    if (regretId) {
+      await storeLocalValue('@regret', '');
+    } else {
+      setupFieldModalRef.current.showModal();
+    }
+  };
   useEffect(() => {
     if (productPriceLists != null) {
       configAddProductCount();

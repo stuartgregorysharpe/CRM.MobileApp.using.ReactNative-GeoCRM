@@ -19,7 +19,7 @@ import {
   CHANGE_LIBRARY_CHILD_STATUS,
   CHANGE_LOGIN_STATUS,
 } from '../actions/actionTypes';
-import {setToken} from '../constants/Storage';
+import {setToken, storeLocalValue} from '../constants/Storage';
 import {setRegret} from '../actions/sales.action';
 
 const lists = {
@@ -346,6 +346,7 @@ export default function More() {
                       });
                       if (list.navigator == 'ProductSales') {
                         dispatch(setRegret(null));
+                        storeLocalValue('@regret', '');
                       }
                     }}>
                     <SvgIcon

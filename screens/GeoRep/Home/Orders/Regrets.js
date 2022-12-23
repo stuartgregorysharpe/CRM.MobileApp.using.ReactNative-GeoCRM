@@ -5,6 +5,7 @@ import {useDispatch} from 'react-redux';
 import {SHOW_MORE_COMPONENT} from '../../../../actions/actionTypes';
 import {getApiRequest} from '../../../../actions/api.action';
 import {setRegret} from '../../../../actions/sales.action';
+import {storeLocalValue} from '../../../../constants/Storage';
 import RegretsList from './components/RegretsList';
 import regretDummyData from './regretDummyData.json';
 const PAGE_SIZE = 20;
@@ -36,12 +37,11 @@ const Regrets = props => {
         setIsLoading(false);
       });
   };
-  const onItemAction = item => {
+  const onItemAction = async item => {
     dispatch(setRegret(item));
-    setTimeout(() => {
-      navigation.navigate('More');
-      dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
-    }, 200);
+    await storeLocalValue('@regret', item.regret_id);
+    navigation.navigate('More');
+    dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
   };
   useEffect(() => {
     onLoadRegrets(0);
