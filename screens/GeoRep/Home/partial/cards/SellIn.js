@@ -15,17 +15,17 @@ import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 
-const SellIn = ({ data }) => {
+const SellIn = (props) => {
     const [mth, setMth] = useState(null);
     const [meridian, setMeridian] = useState(null);
     const dispatch = useDispatch();
     useEffect(() => {
         loadData();
-    }, []);
+    }, [props.haveFilter]);
 
     const loadData = () => {
-        let postData = {
-        };
+        let postData = getFilters();
+        console.log(postData);
         getApiRequest('lindtdash/sellin', postData).then(response => {
             setMth(calculatePercentage('mth', response?.mth));
             setMeridian(calculatePercentage('meridian', response?.meridian));
@@ -34,10 +34,53 @@ const SellIn = ({ data }) => {
         })
     }
 
+    const getFilters = () => {
+        let filters = props.haveFilter;
+        let filterObject = {};
+        if (filters && filters.length > 0) {
+            let userFilter = filters.filter(x => x.type === 'User');
+            userFilter = Object.keys(userFilter).map(function (k) { return userFilter[k].id }).join(",");
+            if (userFilter) {
+                filterObject['users'] = userFilter;
+            }
+
+            let region = filters.filter(x => x.type === 'Region');
+            region = Object.keys(region).map(function (k) { return region[k].label }).join(",");
+
+            if (region) {
+                filterObject['regions'] = region;
+            }
+
+            let groupFilter = filters.filter(x => x.type === 'Channel');
+            groupFilter = Object.keys(groupFilter).map(function (k) { return groupFilter[k].label }).join(",");
+
+            if (groupFilter) {
+                filterObject['groups'] = groupFilter;
+            }
+
+            let mangerFilter = filters.filter(x => x.type === 'Manager');
+            mangerFilter = Object.keys(mangerFilter).map(function (k) { return mangerFilter[k].id }).join(",");
+
+            if (mangerFilter) {
+                filterObject['managers'] = mangerFilter;
+            }
+
+            return filterObject
+        }
+        return {};
+    }
+
     const calculatePercentage = (type, data) => {
         let actual = parseInt(data?.actual);
         let projected = parseInt(data?.projected);
         let target = parseInt(data?.target);
+
+        if (actual === 0 && projected === 0 && target === 0) {
+            data[`${type}_actual_percentage`] = 0;
+            data[`${type}_projected_percentage`] = 0;
+            data[`${type}_target_percentage`] = 0;
+            return data;
+        }
 
         if (actual > projected && actual > target) {
             data[`${type}_actual_percentage`] = 100;
@@ -105,8 +148,12 @@ const SellIn = ({ data }) => {
                 <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
                     <SvgIcon icon="Sell_In_Icon" width='15px' height='15px' />
                     <AppText size="medium" title="Value (Sell In)" type="secondaryBold" style={{ marginLeft: 5, flex: 1 }} color={PRIMARY_COLOR}></AppText>
-                    <TouchableOpacity onPress={() => console.log('clicked')} >
-                        <SvgIcon icon="Filter" width='25px' height='25px' style={{ marginHorizontal: 10 }}/>
+                    <TouchableOpacity onPress={() => props.onFilterPress()} >
+                        <SvgIcon icon="Filter" width='25px' height='25px' style={{ marginHorizontal: 10 }} />
+                        {props.haveFilter && props.haveFilter.length > 0 && (
+                            <View
+                                style={styles.filterIndicator}></View>
+                        )}
                     </TouchableOpacity>
 
                 </View>
@@ -122,6 +169,15 @@ const styles = StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 2
+    },
+    filterIndicator: {
+        width: 15,
+        height: 15,
+        backgroundColor: Colors.redColor,
+        borderRadius: 15,
+        position: 'absolute',
+        left: 5,
+        top: -5,
     }
 })
 

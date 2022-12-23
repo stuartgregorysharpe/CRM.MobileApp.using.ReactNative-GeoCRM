@@ -22,6 +22,7 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 import { checkConnectivity } from '../../../../DAO/helper';
 import { PostRequestDAO } from '../../../../DAO';
 import SellIn from '../partial/cards/SellIn';
+import CardsFilterModal from '../partial/components/CardsFilterModal';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
@@ -47,6 +48,8 @@ export const MainPage = forwardRef((props, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isScrollable, setIsScrollable] = useState(true);
   const syncAllViewRef = useRef(null);
+  const cardsFilterModal = useRef(null);
+  const [haveFilter,setHaveFilter] = useState(false);
 
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
@@ -228,7 +231,10 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {activityCard && (
-            <SellIn activityCard={activityCard}></SellIn>
+            <SellIn activityCard={activityCard} haveFilter={haveFilter}
+              onFilterPress={() => {
+                cardsFilterModal.current.showModal();
+              }}></SellIn>
           )}
         </View>
       );
@@ -289,6 +295,12 @@ export const MainPage = forwardRef((props, ref) => {
         currentLocation={currentLocation}
         onButtonAction={onCaptureAction}
       />
+      <CardsFilterModal ref={cardsFilterModal}
+        title={'Filter your search'}
+        clearText={'Clear Filters'} 
+        onButtonAction={(data)=>{
+          setHaveFilter(data);
+        }}/>
     </ScrollView>
   );
 });
