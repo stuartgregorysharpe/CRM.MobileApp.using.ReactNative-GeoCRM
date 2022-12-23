@@ -17,7 +17,10 @@ import {
 } from '../../../../constants/Storage';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
-import {setProductPriceLists} from '../../../../actions/sales.action';
+import {
+  setProductPriceLists,
+  setRegret,
+} from '../../../../actions/sales.action';
 import {showNotification} from '../../../../actions/notification.action';
 import {configProductSetUp, getConfigFromRegret} from '../helpers';
 import {
@@ -135,9 +138,8 @@ const ProductSalesContainer = props => {
 
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
   useEffect(() => {
-    if (!props.regret_item) {
-      setupFieldModalRef.current.showModal();
-    }
+    console.log('start: checkAndOpenSetup');
+    checkAndOpenSetup();
     initializeProductLists();
   }, []);
 
@@ -148,9 +150,9 @@ const ProductSalesContainer = props => {
   }, [props.regret_item]);
   const checkAndOpenSetup = async () => {
     const regretId = await getLocalData('@regret');
-    if (regretId) {
-      await storeLocalValue('@regret', '');
-    } else {
+    console.log('checkAndOpenSetup try');
+    if (!props.regret_item && !regretId && regretId != '') {
+      console.log('checkAndOpenSetup open modal');
       setupFieldModalRef.current.showModal();
     }
   };
@@ -179,8 +181,9 @@ const ProductSalesContainer = props => {
     }
 
     var defineSetup = await getJsonData('@setup');
-    if (defineSetup == null && !props.regret_item) {
-      setupFieldModalRef.current.showModal();
+    if (defineSetup == null) {
+      console.log('refreshList: checkAndOpenSetup');
+      checkAndOpenSetup();
     }
   };
 
@@ -246,6 +249,8 @@ const ProductSalesContainer = props => {
     if (type === Constants.actionType.ACTION_CLOSE) {
       setupFieldModalRef.current.hideModal();
       setupFromConfig(value);
+      storeLocalValue('@regret', '');
+      dispatch(setRegret(null));
     } else if (type == Constants.actionType.ACTION_DONE) {
       setupFieldModalRef.current.hideModal();
       if (value.name === 'More') {

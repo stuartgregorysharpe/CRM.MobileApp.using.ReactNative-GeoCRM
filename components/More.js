@@ -334,7 +334,11 @@ export default function More() {
                 {componentListOne.includes(list.navOrder) && (
                   <TouchableOpacity
                     style={styles.selectButton}
-                    onPress={() => {
+                    onPress={async () => {
+                      if (list.navigator == 'ProductSales') {
+                        await storeLocalValue('@regret', '');
+                        dispatch(setRegret(null));
+                      }
                       dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                       dispatch({
                         type: CHANGE_LIBRARY_CHILD_STATUS,
@@ -344,10 +348,6 @@ export default function More() {
                         type: SHOW_MORE_COMPONENT,
                         payload: list.navigator,
                       });
-                      if (list.navigator == 'ProductSales') {
-                        dispatch(setRegret(null));
-                        storeLocalValue('@regret', '');
-                      }
                     }}>
                     <SvgIcon
                       style={{marginRight: 8}}
