@@ -8,6 +8,7 @@ import CModal from '../../../../../components/common/CModal';
 import FilterButton from '../../../../../components/FilterButton';
 import { Constants, Fonts } from '../../../../../constants';
 import { BG_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import { isKeyExistInObject } from '../../../../../constants/Utils';
 import CardFilterOptionsModal from './CardFilterOptionsModal';
 
 const CardsFilterModal = React.forwardRef((props, ref) => {
@@ -25,10 +26,15 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
         getApiRequest('lindtdash/filters').then(response => {
             setIsLoading(false);
             let data = [];
-            data.push(response.filters.region);
-            data.push(response.filters.group);
-            data.push(response.filters.manager);
-            data.push(response.filters.user);
+            console.log(response.filters);
+            if (isKeyExistInObject(response.filters, 'region'))
+                data.push(response.filters.region);
+            if (isKeyExistInObject(response.filters, 'group'))
+                data.push(response.filters.group);
+            if (isKeyExistInObject(response.filters, 'manager'))
+                data.push(response.filters.manager);
+            if (isKeyExistInObject(response.filters, 'user'))
+                data.push(response.filters.user);
             setFilterOptions(data);
         }).catch(e => {
             setIsLoading(false);
@@ -71,7 +77,7 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
 
     const getSubTitle = (item) => {
         let data = selectedFilters.filter(x => x.type === item);
-        return data.length>0?`${data.length} Selected`:'';
+        return data.length > 0 ? `${data.length} Selected` : '';
     }
 
     return (

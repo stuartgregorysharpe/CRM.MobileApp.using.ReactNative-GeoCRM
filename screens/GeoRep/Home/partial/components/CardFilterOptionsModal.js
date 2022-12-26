@@ -9,12 +9,10 @@ import { boxShadow, style } from '../../../../../constants/Styles';
 const CardFilterOptionsModal = ({ modaVisible, onClose, filters, option, selectedType, fieldType, onValueChanged, title, clearTitle }) => {
 
     const getCheckedStatus = (item, type) => {
-        // console.log("getCheckedStatus:", filters);
         if (!filters || filters.length == 0) {
             return false;
         }
         let data = filters.filter(x => x.type === type);
-        // console.log(data);
         if(data!==undefined){
             return !data ? false : data.find(x => typeof x === 'object' && typeof item === 'object' ?
             (x.id === item.id) : x.label === item);
