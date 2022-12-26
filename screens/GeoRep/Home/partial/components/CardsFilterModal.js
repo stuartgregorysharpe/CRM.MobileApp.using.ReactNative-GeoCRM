@@ -90,7 +90,7 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
                 onButtonAction([]);
             }}
             {...props}>
-            <View style={{ alignSelf: 'stretch', flex: 1, marginHorizontal: 10, marginBottom: 10 }}>
+            <View style={{ alignSelf: 'stretch', flex: 1, marginHorizontal: 10, marginBottom: 10,marginTop:20 }}>
                 {filterOptions.map((option, key) => (
                     <FilterButton
                         text={`All ${option.label}s`}

@@ -296,7 +296,7 @@ export const MainPage = forwardRef((props, ref) => {
         onButtonAction={onCaptureAction}
       />
       <CardsFilterModal ref={cardsFilterModal}
-        title={'Filter your search'}
+        title={'Filters'}
         clearText={'Clear Filters'} 
         onButtonAction={(data)=>{
           setHaveFilter(data);
