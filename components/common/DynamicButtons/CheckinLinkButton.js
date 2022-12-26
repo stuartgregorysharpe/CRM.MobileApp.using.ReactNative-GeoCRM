@@ -26,6 +26,7 @@ import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
 import {Notification} from '../../modal/Notification';
 import {CHECKIN} from '../../../actions/actionTypes';
 import {checkConnectivity} from '../../../DAO/helper';
+import {getLocationInfo} from '../../../actions/location.action';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -77,7 +78,6 @@ const CheckinLinkButton = props => {
           setIsFeedback(false);
         }}
         onValueChanged={(item, index) => {
-          console.log('modalTypemodalType', modalType);
           if (modalType === 'feedback') {
             _callLocationFeedback(item);
             setIsFeedback(false);
@@ -186,12 +186,16 @@ const CheckinLinkButton = props => {
             );
           }
         });
-
-        navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          locationId: locationId,
-          page: 'checkin',
-        });
-        onFinishProcess();
+        getLocationInfo(locationId, currentLocation).then(
+          async locationInfo => {
+            await storeJsonData('@checkin_location', locationInfo);
+            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+              locationId: locationId,
+              page: 'checkin',
+            });
+            onFinishProcess();
+          },
+        );
       })
       .catch(e => {
         expireToken(dispatch, e);
