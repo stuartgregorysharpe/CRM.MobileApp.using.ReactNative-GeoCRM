@@ -42,6 +42,7 @@ import {Notification} from '../../../components/modal/Notification';
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
+import {formatDate} from '../../../helpers/formatHelpers';
 var selectedIndex = 2;
 
 var selectedIndex = 2;
@@ -116,7 +117,13 @@ export default function CalendarScreen(props) {
     const param = {period: type};
     if (type == 'today' && isOptimize) {
       param.optimize = 1;
+      param.current_time = moment().format('hh:mm:ss');
+      param.user_coordinates = {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+      };
     }
+    console.log('GetRequestCalendarScheduleList: param', param);
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
         console.log('GetRequestCalendarScheduleList: res', res.items);
