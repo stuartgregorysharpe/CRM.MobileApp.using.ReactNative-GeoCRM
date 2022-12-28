@@ -118,10 +118,8 @@ export default function CalendarScreen(props) {
     if (type == 'today' && isOptimize) {
       param.optimize = 1;
       param.current_time = moment().format('hh:mm:ss');
-      param.user_coordinates = {
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-      };
+      param["user_coordinates['latitude']"] = currentLocation.latitude;
+      param["user_coordinates['longitude']"] = currentLocation.longitude;
     }
     console.log('GetRequestCalendarScheduleList: param', param);
     GetRequestCalendarScheduleList.find(param)
