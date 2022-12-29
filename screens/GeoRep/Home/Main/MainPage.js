@@ -24,6 +24,7 @@ import { PostRequestDAO } from '../../../../DAO';
 import SellIn from '../partial/cards/SellIn';
 import CardsFilterModal from '../partial/components/CardsFilterModal';
 import SellOut from '../partial/cards/SellOut';
+import Mobility from '../partial/cards/Mobility';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
@@ -53,7 +54,8 @@ export const MainPage = forwardRef((props, ref) => {
   const [haveFilter, setHaveFilter] = useState(false);
 
   const [lindtdash_sellin, setSellInCard] = useState(false);
-  const [lindtdash_sellout, setSellOutCard] = useState(false)
+  const [lindtdash_sellout, setSellOutCard] = useState(false);
+  const [lindtdash_mobility, setMobilityCard] = useState(false);
 
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
@@ -182,6 +184,7 @@ export const MainPage = forwardRef((props, ref) => {
   const handleLindtCards = () => {
     let isSellIn = features.includes('lindtdash_sellin');
     let isSellOut = features.includes('lindtdash_sellout');
+    let isMobility = features.includes('lindtdash_mobility');
     let pageData = pages;
     if (isSellIn) {
       if (!pageData.find(x => x === 'sell_in'))
@@ -194,6 +197,13 @@ export const MainPage = forwardRef((props, ref) => {
         pageData.push('sell_out');
       setSellOutCard(isSellOut);
     }
+
+    if (isMobility) {
+      if (!pageData.find(x => x === 'mobility'))
+        pageData.push('mobility');
+      setMobilityCard(isMobility);
+    }
+
     console.log(pageData);
     setPages(pageData);
   }
@@ -266,6 +276,14 @@ export const MainPage = forwardRef((props, ref) => {
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellout &&
             <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+          }
+        </View>
+      );
+    } else if(item === 'mobility'){
+      return (
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
+          {lindtdash_mobility &&
+            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
           }
         </View>
       );

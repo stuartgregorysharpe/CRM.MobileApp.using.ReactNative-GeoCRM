@@ -4,10 +4,7 @@ import React from 'react'
 import { style } from '../../../../../constants/Styles'
 import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
-import ProgressBar from '../ProgressBar';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../../../../../constants/Colors';
-import Legend from '../../../../../components/common/Legend';
-import CircularProgress, { CircularProgressBase } from 'react-native-circular-progress-indicator';
+import Colors, { PRIMARY_COLOR, TEXT_COLOR } from '../../../../../constants/Colors';
 import CustomProgress from '../CustomProgress';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
@@ -25,7 +22,7 @@ const SellIn = (props) => {
 
     const loadData = () => {
         let postData = props.haveFilter ? props.haveFilter : {};
-        console.log(postData);
+        // console.log(postData);
         getApiRequest('lindtdash/sellin', postData).then(response => {
             setMth(calculatePercentage('mth', response?.mth));
             setMeridian(calculatePercentage('meridian', response?.meridian));

@@ -28,9 +28,9 @@ const SellOut = (props) => {
 
     const loadData = () => {
         let postData = props.haveFilter ? props.haveFilter : {};
-        console.log(postData);
+        // console.log(postData);
         getApiRequest('lindtdash/sellout', postData).then(response => {
-            console.log("sellout", response);
+            // console.log("sellout", response);
             setTabData(response.tabs);
         }).catch(e => {
             expireToken(dispatch, e);
