@@ -96,6 +96,5 @@ export function getFileName(path) {
 }
 
 export function isKeyExistInObject(object,key){
-  console.log(object);
   return object.hasOwnProperty(key);
 }

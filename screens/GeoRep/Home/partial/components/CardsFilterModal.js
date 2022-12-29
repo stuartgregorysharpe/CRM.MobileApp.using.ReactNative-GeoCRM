@@ -27,13 +27,14 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
             setIsLoading(false);
             let data = [];
             console.log(response.filters);
-            if (isKeyExistInObject(response.filters, 'region'))
+            if (isObjectValid(response, 'region'))
                 data.push(response.filters.region);
-            if (isKeyExistInObject(response.filters, 'group'))
+
+            if (isObjectValid(response, 'group'))
                 data.push(response.filters.group);
-            if (isKeyExistInObject(response.filters, 'manager'))
+            if (isObjectValid(response, 'manager'))
                 data.push(response.filters.manager);
-            if (isKeyExistInObject(response.filters, 'user'))
+            if (isObjectValid(response, 'user'))
                 data.push(response.filters.user);
             setFilterOptions(data);
         }).catch(e => {
@@ -41,14 +42,64 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
         });
     }
 
+    const isObjectValid = (response, key) => {
+        let hasKey = response.filters.hasOwnProperty(key);
+        console.log(response.filters[key]);
+        if (!hasKey)
+            return false;
+        if (typeof response.filters[key] !== 'object')
+            return false
+        if (response.filters[key] && response.filters[key].options.length > 0) {
+            return true;
+        } else {
+            return false
+        }
+    }
+
     const onButtonAction = data => {
         if (props.onButtonAction) {
-            props.onButtonAction(data);
+            props.onButtonAction(data ? getFilters(data) : null);
         }
         if (ref) {
             ref.current.hideModal();
         }
     };
+
+    const getFilters = (data) => {
+        let filters = data;
+        let filterObject = {};
+        if (filters && filters.length > 0) {
+            let userFilter = filters.filter(x => x.type === 'User');
+            userFilter = Object.keys(userFilter).map(function (k) { return userFilter[k].id }).join(",");
+            if (userFilter) {
+                filterObject['users'] = userFilter;
+            }
+
+            let region = filters.filter(x => x.type === 'Region');
+            region = Object.keys(region).map(function (k) { return region[k].label }).join(",");
+
+            if (region) {
+                filterObject['regions'] = region;
+            }
+
+            let groupFilter = filters.filter(x => x.type === 'Channel');
+            groupFilter = Object.keys(groupFilter).map(function (k) { return groupFilter[k].label }).join(",");
+
+            if (groupFilter) {
+                filterObject['groups'] = groupFilter;
+            }
+
+            let mangerFilter = filters.filter(x => x.type === 'Manager');
+            mangerFilter = Object.keys(mangerFilter).map(function (k) { return mangerFilter[k].id }).join(",");
+
+            if (mangerFilter) {
+                filterObject['managers'] = mangerFilter;
+            }
+
+            return filterObject
+        }
+        return null;
+    }
 
     const manageFilters = (item, status, type) => {
         let _filters = [...selectedFilters];
@@ -87,10 +138,12 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
             closableWithOutsideTouch
             onClear={() => {
                 setSelectedFilters([]);
-                onButtonAction([]);
+                onButtonAction(null);
             }}
+            title={'Filters'}
+            clearText={'Clear Filters'}
             {...props}>
-            <View style={{ alignSelf: 'stretch', flex: 1, marginHorizontal: 10, marginBottom: 10,marginTop:20 }}>
+            <View style={{ alignSelf: 'stretch', flex: 1, marginHorizontal: 10, marginBottom: 10, marginTop: 20 }}>
                 {filterOptions.map((option, key) => (
                     <FilterButton
                         text={`All ${option.label}s`}

@@ -24,7 +24,7 @@ const SellIn = (props) => {
     }, [props.haveFilter]);
 
     const loadData = () => {
-        let postData = getFilters();
+        let postData = props.haveFilter ? props.haveFilter : {};
         console.log(postData);
         getApiRequest('lindtdash/sellin', postData).then(response => {
             setMth(calculatePercentage('mth', response?.mth));
@@ -32,42 +32,6 @@ const SellIn = (props) => {
         }).catch(e => {
             expireToken(dispatch, e);
         })
-    }
-
-    const getFilters = () => {
-        let filters = props.haveFilter;
-        let filterObject = {};
-        if (filters && filters.length > 0) {
-            let userFilter = filters.filter(x => x.type === 'User');
-            userFilter = Object.keys(userFilter).map(function (k) { return userFilter[k].id }).join(",");
-            if (userFilter) {
-                filterObject['users'] = userFilter;
-            }
-
-            let region = filters.filter(x => x.type === 'Region');
-            region = Object.keys(region).map(function (k) { return region[k].label }).join(",");
-
-            if (region) {
-                filterObject['regions'] = region;
-            }
-
-            let groupFilter = filters.filter(x => x.type === 'Channel');
-            groupFilter = Object.keys(groupFilter).map(function (k) { return groupFilter[k].label }).join(",");
-
-            if (groupFilter) {
-                filterObject['groups'] = groupFilter;
-            }
-
-            let mangerFilter = filters.filter(x => x.type === 'Manager');
-            mangerFilter = Object.keys(mangerFilter).map(function (k) { return mangerFilter[k].id }).join(",");
-
-            if (mangerFilter) {
-                filterObject['managers'] = mangerFilter;
-            }
-
-            return filterObject
-        }
-        return {};
     }
 
     const calculatePercentage = (type, data) => {

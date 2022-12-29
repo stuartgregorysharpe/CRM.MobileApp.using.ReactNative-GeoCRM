@@ -23,6 +23,7 @@ import { checkConnectivity } from '../../../../DAO/helper';
 import { PostRequestDAO } from '../../../../DAO';
 import SellIn from '../partial/cards/SellIn';
 import CardsFilterModal from '../partial/components/CardsFilterModal';
+import SellOut from '../partial/cards/SellOut';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
@@ -30,7 +31,7 @@ export const MainPage = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
   const [startEndDayId, setStartEndDayId] = useState(0);
-  const [pages, setPages] = useState(['', '', '']);
+  const [pages, setPages] = useState(['visits', 'activity']);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activityCard, setActivityCard] = useState(null);
   const [visitCard, setVisitCard] = useState(null);
@@ -49,7 +50,10 @@ export const MainPage = forwardRef((props, ref) => {
   const [isScrollable, setIsScrollable] = useState(true);
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
-  const [haveFilter,setHaveFilter] = useState(false);
+  const [haveFilter, setHaveFilter] = useState(false);
+
+  const [lindtdash_sellin, setSellInCard] = useState(false);
+  const [lindtdash_sellout, setSellOutCard] = useState(false)
 
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
@@ -166,12 +170,33 @@ export const MainPage = forwardRef((props, ref) => {
 
     }
     initData();
+    handleLindtCards();
   };
 
   const initData = async () => {
     var startMyDay = await getLocalData('start_my_day');
     setIsStart(startMyDay === null || startMyDay === '1' ? true : false);
+
   };
+
+  const handleLindtCards = () => {
+    let isSellIn = features.includes('lindtdash_sellin');
+    let isSellOut = features.includes('lindtdash_sellout');
+    let pageData = pages;
+    if (isSellIn) {
+      if (!pageData.find(x => x === 'sell_in'))
+        pageData.push('sell_in');
+      setSellInCard(isSellOut);
+    }
+
+    if (isSellOut) {
+      if (!pageData.find(x => x === 'sell_out'))
+        pageData.push('sell_out');
+      setSellOutCard(isSellOut);
+    }
+    console.log(pageData);
+    setPages(pageData);
+  }
 
   const _callMyDay = () => {
 
@@ -213,13 +238,13 @@ export const MainPage = forwardRef((props, ref) => {
   };
 
   const renderCards = (item, index) => {
-    if (index == 0) {
+    if (item === 'visits') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           <Visits {...props} visitCard={visitCard} />
         </View>
       );
-    } else if (index == 1) {
+    } else if (item === 'activity') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {activityCard && (
@@ -227,15 +252,21 @@ export const MainPage = forwardRef((props, ref) => {
           )}
         </View>
       );
-    } else if (index == 2) {
+    } else if (item === 'sell_in') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
-          {activityCard && (
-            <SellIn activityCard={activityCard} haveFilter={haveFilter}
-              onFilterPress={() => {
-                cardsFilterModal.current.showModal();
-              }}></SellIn>
+          {lindtdash_sellin && (
+            <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
           )}
+        </View>
+      );
+    }
+    else if (item === 'sell_out') {
+      return (
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
+          {lindtdash_sellout &&
+            <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+          }
         </View>
       );
     }
@@ -296,11 +327,9 @@ export const MainPage = forwardRef((props, ref) => {
         onButtonAction={onCaptureAction}
       />
       <CardsFilterModal ref={cardsFilterModal}
-        title={'Filters'}
-        clearText={'Clear Filters'} 
-        onButtonAction={(data)=>{
+        onButtonAction={(data) => {
           setHaveFilter(data);
-        }}/>
+        }} />
     </ScrollView>
   );
 });
