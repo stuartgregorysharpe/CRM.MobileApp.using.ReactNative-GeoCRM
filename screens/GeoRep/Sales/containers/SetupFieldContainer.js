@@ -1,5 +1,5 @@
 
-import { View , Text, BackHandler } from 'react-native'
+import { View , Text, BackHandler, Dimensions, Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
@@ -59,6 +59,7 @@ const  SetupFieldContainer = (props) => {
         <View style={{
             alignSelf:'stretch' , 
             flex:1 , 
+            //height:Dimensions.get("screen").height, 
             flexDirection:'column',
             // marginHorizontal:10, 
             // marginBottom:10,  
@@ -75,7 +76,10 @@ const  SetupFieldContainer = (props) => {
                 onContinue={onContinue}
                 {...props} />
             
-            <View style={{backgroundColor:'white', position:'absolute' ,bottom:0, width:'100%', flexDirection:'row'}}>
+            <View style={{backgroundColor:'white', position:'absolute' ,bottom: 0, width:'100%', 
+                    flexDirection:'row' , 
+                    paddingBottom: Platform.OS == 'ios' ? 34: 0
+                }}>
 
                 {
                     bottomTabs.map((item, index) =>{

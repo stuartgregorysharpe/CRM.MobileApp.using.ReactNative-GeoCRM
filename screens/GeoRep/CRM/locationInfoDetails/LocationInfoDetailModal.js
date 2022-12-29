@@ -7,11 +7,14 @@ import {LocationInfoDetails} from './LocationInfoDetails';
 
 const LocationInfoDetailModal = React.forwardRef((props, ref) => {
   const onButtonAction = data => {
+
+    console.log("modal closed " , data)
+
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
     if (ref) {
-      ref.current.hideModal();
+      //ref.current.hideModal();
     }
   };
   return (
@@ -21,9 +24,12 @@ const LocationInfoDetailModal = React.forwardRef((props, ref) => {
       closableWithOutsideTouch
       hideClose
       onClear={() => {
+     
         onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
+
       }}
       onClose={() => {
+        console.log(" modal closed");
         onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }}
       {...props}>
