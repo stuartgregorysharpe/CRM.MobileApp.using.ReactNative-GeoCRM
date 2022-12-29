@@ -94,3 +94,7 @@ export function getFileName(path) {
     name: ext[0],
   };
 }
+
+export function isKeyExistInObject(object,key){
+  return object.hasOwnProperty(key);
+}
