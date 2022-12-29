@@ -1232,6 +1232,49 @@ const Sim_Card_Alert_Icon = `<svg id="sim_card_alert_black_24dp" xmlns="http://w
 </svg>
 `;
 
+
+const Special = `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="42" viewBox="0 0 44 42">
+<path id="new_releases_FILL0_wght400_GRAD0_opsz48" d="M17.3,45l-3.8-6.5L5.95,36.95,6.8,29.6,2,24l4.8-5.55L5.95,11.1,13.5,9.55,17.3,3,24,6.1,30.7,3l3.85,6.55,7.5,1.55-.85,7.35L46,24l-4.8,5.6.85,7.35-7.5,1.55L30.7,45,24,41.9Zm1.35-3.95L24,38.8l5.5,2.25,3.35-5,5.85-1.5-.6-5.95L42.15,24,38.1,19.3l.6-5.95-5.85-1.4-3.45-5L24,9.2,18.5,6.95l-3.35,5L9.3,13.35l.6,5.95L5.85,24,9.9,28.6l-.6,6.05,5.85,1.4ZM24,24Zm-2.15,6.65L33.2,19.4l-2.25-2.05-9.1,9L17.1,21.4l-2.3,2.25Z" transform="translate(-2 -3)" fill="#dc143c"/>
+</svg>
+`;
+
+const Sales_Cart = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.718" height="202.718" viewBox="0 0 202.718 202.718">
+<defs>
+  <filter id="teal_circle" x="0" y="0" width="202.718" height="202.718" filterUnits="userSpaceOnUse">
+    <feOffset dy="3" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="6" result="blur"/>
+    <feFlood flood-opacity="0.239"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+</defs>
+<g id="Group_5642" data-name="Group 5642" transform="translate(18 15)">
+  <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
+    <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="${actionIconBackground}"/>
+  </g>
+  <path id="shopping_bag_FILL0_wght400_GRAD0_opsz48" d="M15.526,104.351a7.221,7.221,0,0,1-5.268-2.258A7.221,7.221,0,0,1,8,96.825V31.6a7.221,7.221,0,0,1,2.258-5.268,7.221,7.221,0,0,1,5.268-2.258h13.8V22.816A18.169,18.169,0,0,1,34.781,9.457,18.168,18.168,0,0,1,48.14,4,18.168,18.168,0,0,1,61.5,9.457a18.169,18.169,0,0,1,5.457,13.359V24.07h13.8A7.717,7.717,0,0,1,88.281,31.6V96.825a7.717,7.717,0,0,1-7.526,7.526Zm0-7.526H80.755V31.6h-13.8V42.886a3.764,3.764,0,1,1-7.526,0V31.6H36.851V42.886a3.764,3.764,0,1,1-7.526,0V31.6h-13.8ZM36.851,24.07H59.43V22.816A11.139,11.139,0,0,0,48.14,11.526a11.139,11.139,0,0,0-11.29,11.289ZM15.526,96.825v0Z" transform="translate(34.775 27.901)" fill="#f9f9f9"/>
+</g>
+</svg>
+`;
+
+const Repeat = `<svg xmlns="http://www.w3.org/2000/svg" width="133" height="133" viewBox="0 0 133 133">
+<g id="Group_5645" data-name="Group 5645" transform="translate(-2847 -5599)">
+  <rect id="Rectangle_3166" data-name="Rectangle 3166" width="133" height="133" rx="9" transform="translate(2847 5599)" fill="${actionIconBackground}"/>
+  <g id="repeat_black_24dp" transform="translate(2869.771 5623.391)">
+    <path id="Path_3982" data-name="Path 3982" d="M17.036,19.545H52.127V30.073L66.163,16.036,52.127,2V12.527H10.018V33.582h7.018ZM52.127,54.636H17.036V44.109L3,58.145,17.036,72.182V61.654H59.145V40.6H52.127Z" transform="translate(7.527 5.018)" fill="#fff"/>
+  </g>
+</g>
+</svg>
+`;
+
+const Setting = `<svg xmlns="http://www.w3.org/2000/svg" width="56.802" height="56.802" viewBox="0 0 56.802 56.802">
+<path id="settings_FILL1_wght400_GRAD0_opsz48" d="M25.869,60.8l-1.42-8.946a19.025,19.025,0,0,1-2.84-1.349,19.514,19.514,0,0,1-2.627-1.775L10.6,52.565,4,40.921l7.668-5.609a8.441,8.441,0,0,1-.178-1.456q-.036-.817-.036-1.456t.036-1.456a8.441,8.441,0,0,1,.178-1.456L4,23.881l6.6-11.644,8.378,3.834A19.514,19.514,0,0,1,21.608,14.3a14.693,14.693,0,0,1,2.84-1.278L25.869,4H38.933l1.42,8.946a23.019,23.019,0,0,1,2.876,1.314A12.222,12.222,0,0,1,45.82,16.07L54.2,12.236l6.6,11.644-7.668,5.467a10,10,0,0,1,.177,1.527q.036.817.036,1.527t-.036,1.491a9.886,9.886,0,0,1-.177,1.491L60.8,40.921,54.2,52.565,45.82,48.731a23.555,23.555,0,0,1-2.592,1.811,12.373,12.373,0,0,1-2.876,1.314L38.933,60.8ZM32.4,41.631a9.212,9.212,0,0,0,9.23-9.23,9.212,9.212,0,0,0-9.23-9.23,9.212,9.212,0,0,0-9.23,9.23,9.212,9.212,0,0,0,9.23,9.23Z" transform="translate(-4 -4)" fill="#fff"/>
+</svg>
+`;
+
+const SaleStore = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path d="M42 22.05V39q0 1.2-.9 2.1-.9.9-2.1.9H8.95q-1.2 0-2.1-.9-.9-.9-.9-2.1V22.05q-1.4-1.2-1.85-2.95-.45-1.75.1-3.5l2.15-6.75q.4-1.35 1.4-2.1 1-.75 2.3-.75H37.7q1.4 0 2.45.775 1.05.775 1.45 2.075l2.2 6.75q.55 1.75.075 3.5Q43.4 20.85 42 22.05ZM28.5 20.5q1.45 0 2.45-.95 1-.95.8-2.3L30.5 9h-5v8.25q0 1.3.85 2.275.85.975 2.15.975Zm-9.35 0q1.4 0 2.375-.95.975-.95.975-2.3V9h-5l-1.25 8.25q-.2 1.3.7 2.275.9.975 2.2.975Zm-9.1 0q1.2 0 2.075-.825.875-.825 1.025-2.025L14.45 9h-5l-2.3 7.3q-.5 1.55.4 2.875t2.5 1.325Zm27.85 0q1.6 0 2.525-1.3.925-1.3.425-2.9L38.55 9h-5l1.3 8.65q.15 1.2 1.025 2.025.875.825 2.025.825ZM8.95 39H39V23.45q.05.05-.325.05H37.9q-1.25 0-2.375-.525T33.3 21.35q-.8 1-2 1.575t-2.65.575q-1.5 0-2.575-.425Q25 22.65 24 21.65q-.75.9-1.9 1.375t-2.6.475q-1.55 0-2.75-.55t-2.05-1.6q-1.2 1.05-2.35 1.6-1.15.55-2.3.55h-.675q-.325 0-.425-.05V39ZM39 39H8.95 39Z" fill="${actionIconBackground}"/></svg>`;
+const SaleStore_Gray = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path d="M42 22.05V39q0 1.2-.9 2.1-.9.9-2.1.9H8.95q-1.2 0-2.1-.9-.9-.9-.9-2.1V22.05q-1.4-1.2-1.85-2.95-.45-1.75.1-3.5l2.15-6.75q.4-1.35 1.4-2.1 1-.75 2.3-.75H37.7q1.4 0 2.45.775 1.05.775 1.45 2.075l2.2 6.75q.55 1.75.075 3.5Q43.4 20.85 42 22.05ZM28.5 20.5q1.45 0 2.45-.95 1-.95.8-2.3L30.5 9h-5v8.25q0 1.3.85 2.275.85.975 2.15.975Zm-9.35 0q1.4 0 2.375-.95.975-.95.975-2.3V9h-5l-1.25 8.25q-.2 1.3.7 2.275.9.975 2.2.975Zm-9.1 0q1.2 0 2.075-.825.875-.825 1.025-2.025L14.45 9h-5l-2.3 7.3q-.5 1.55.4 2.875t2.5 1.325Zm27.85 0q1.6 0 2.525-1.3.925-1.3.425-2.9L38.55 9h-5l1.3 8.65q.15 1.2 1.025 2.025.875.825 2.025.825ZM8.95 39H39V23.45q.05.05-.325.05H37.9q-1.25 0-2.375-.525T33.3 21.35q-.8 1-2 1.575t-2.65.575q-1.5 0-2.575-.425Q25 22.65 24 21.65q-.75.9-1.9 1.375t-2.6.475q-1.55 0-2.75-.55t-2.05-1.6q-1.2 1.05-2.35 1.6-1.15.55-2.3.55h-.675q-.325 0-.425-.05V39ZM39 39H8.95 39Z" fill="${navIconInActive}"/></svg>`;
+
 const Sales_Value_Toggle_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="283.84" height="85.336" viewBox="0 0 283.84 85.336">
 <g id="Group_6111" data-name="Group 6111" transform="translate(1148.25 589.336) rotate(180)">
   <path id="toggle" d="M191.172,7.875H-7.332A42.716,42.716,0,0,0-50,50.543,42.716,42.716,0,0,0-7.332,93.211h198.5a42.668,42.668,0,1,0,0-85.336Zm0,75.854a33.186,33.186,0,1,1,33.186-33.186,33.186,33.186,0,0,1-33.186,33.186Z" transform="translate(914.41 496.125)" fill="#9d9fa2"/>
@@ -1326,8 +1369,12 @@ export default ({
       <SvgXml style={style} xml={Form_inactive} width={width} height={height} />
     )}
     {icon == 'Sale' && (
-      <SvgXml style={style} xml={Sale} width={width} height={height} />
+      <SvgXml style={style} xml={SaleStore} width={width} height={height} />
     )}
+    {icon == 'Sale_Gray' && (
+      <SvgXml style={style} xml={SaleStore_Gray} width={width} height={height} />
+    )}
+    
     {icon == 'Sale_inactive' && (
       <SvgXml style={style} xml={Sale_inactive} width={width} height={height} />
     )}
@@ -1925,6 +1972,24 @@ export default ({
     {icon == 'Camera_Icon' && (
       <SvgXml style={style} xml={Camera_Icon} width={width} height={height} />
     )}
+
+
+    {icon == 'Special' && (
+      <SvgXml style={style} xml={Special} width={width} height={height} />
+    )}
+
+    {icon == 'Sales_Cart' && (
+      <SvgXml style={style} xml={Sales_Cart} width={width} height={height} />
+    )}
+
+    {icon == 'Repeat' && (
+      <SvgXml style={style} xml={Repeat} width={width} height={height} />
+    )}
+    
+    {icon == 'Setting' && (
+      <SvgXml style={style} xml={Setting} width={width} height={height} />
+    )}
+
 
     {icon == 'Sales_Value_Toggle_Icon' && (
       <SvgXml style={style} xml={Sales_Value_Toggle_Icon} width={width} height={height} />

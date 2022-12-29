@@ -31,10 +31,8 @@ export function find(postData){
 }
 
 const fetchDataFromDB = async(client_id, business_unit_id , searchText) => {    
-    const query = generateQuery(searchText);    
-    console.log("query => ", query)
-    const res = await ExecuteQuery(query, []);    
-    console.log("res => ", res)
+    const query = generateQuery(searchText);        
+    const res = await ExecuteQuery(query, []);        
     return res.rows ? res.rows : [];    
 }
 

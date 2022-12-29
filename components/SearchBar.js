@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState ,useEffect} from 'react';
 import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
@@ -9,14 +9,21 @@ import Colors, {whiteLabel} from '../constants/Colors';
 const SearchBar = props => {
   const {
     isFilter,
+    isScan,
     animation,
     initVal,
     isLoading,
     haveFilter,
+    placeholder,
     onSearchBoxPress,
   } = props;
 
   const [text, setText] = useState(initVal);
+
+  useEffect(() => {
+    setText(initVal)
+  }, [initVal]);
+
   const onSearch = text => {
     if (props.onSearch) {
       props.onSearch(text);
@@ -46,7 +53,7 @@ const SearchBar = props => {
           <View pointerEvents="none">
             <TextInput
               style={[styles.searchInput, boxShadow]}
-              placeholder="Search....."
+              placeholder={placeholder ? placeholder : "Search....."}
               placeholderTextColor={whiteLabel().helpText}
             />
           </View>
@@ -57,7 +64,7 @@ const SearchBar = props => {
       <TextInput
         style={[styles.searchInput, boxShadow]}
         placeholderTextColor={whiteLabel().helpText}
-        placeholder="Search....."
+        placeholder={placeholder ? placeholder : "Search....."}
         value={text}
         onChangeText={text => {
           setText(text);
@@ -77,6 +84,20 @@ const SearchBar = props => {
         color={whiteLabel().inactiveIcon}
         icon={faSearch}
       />
+
+      {
+        isScan && (
+          <TouchableOpacity  
+            onPress={() => {
+              if(props.onScan){
+                props.onScan();
+              }
+            }}
+            style={styles.scanImageButton}>
+            <SvgIcon icon={"Scan_Icon"} width="30px" height="30px" />
+          </TouchableOpacity>
+        )
+      }
       {isFilter && (
         <TouchableOpacity
           style={styles.filterImageButton}
@@ -145,6 +166,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 18,
     right: 20,
+    zIndex: 1,
+    elevation: 1,
+  },
+
+  scanImageButton: {
+    position: 'absolute',
+    top: 18,
+    right: 60,
     zIndex: 1,
     elevation: 1,
   },

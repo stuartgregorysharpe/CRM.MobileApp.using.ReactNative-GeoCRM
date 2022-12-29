@@ -37,3 +37,16 @@ export const validateNumber = num => {
     return true;
 };
 
+
+
+export const validateDecimal = (value) => {
+  
+  var validNumber = new RegExp(/^\d*\.?\d*$/); // for dot
+  //var validNumber = new RegExp(/^\d*\,?\d*$/); // for comma
+  if (validNumber.test(value)) {
+    return true;
+  } else {
+    return false;
+  }
+
+}

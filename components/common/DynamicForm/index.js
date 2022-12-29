@@ -10,6 +10,7 @@ import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
 
 const DynamicForm = React.forwardRef((props, ref) => {
+
   const {formData, formStructureData, isShowRequiredFromBegining} = props;
   const [errors, setErrors] = useState({});
   const dynamicFieldRef = useRef([]);
@@ -60,9 +61,10 @@ const DynamicForm = React.forwardRef((props, ref) => {
     let valid = true;
     const data = _formData || formData;
     const _errors = {...errors};
+
     fieldNames.forEach(fieldName => {
       if (fieldName) {
-        if (data[fieldName] == '' || data[fieldName] == null) {
+        if (data[fieldName] == '' || data[fieldName] == null || (fieldName == 'price' && (data[fieldName].value == '' || data[fieldName].type == '')  ) ) {
           _errors[fieldName] = true;
           valid = false;
           console.log('Error fieldName', fieldName);
@@ -71,12 +73,17 @@ const DynamicForm = React.forwardRef((props, ref) => {
         }
       }
     });
+
     setErrors(_errors);
     return valid;
+        
   };
   const checkAllowedFieldType = fieldType => {
+
     const allowedFieldTypes = [
       'text',
+      'textarea',
+      'textarea',
       'email',
       'numbers',
       'dropdown',
@@ -86,10 +93,17 @@ const DynamicForm = React.forwardRef((props, ref) => {
       'yes_no',
       'dropdown_text',
       'multi_select',
+      'contact_email',
+      'contact_select',
+      'email_input',
+      'multiple',
+      'signature',
+      'price'
     ];
     if (!fieldType) return false;
     return allowedFieldTypes.includes(fieldType);
   };
+
   const _validateForm = () => {
     const requiredFields = [];
     formStructureData.forEach(fieldStructure => {

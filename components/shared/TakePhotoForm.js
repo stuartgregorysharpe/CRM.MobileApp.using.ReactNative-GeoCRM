@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import TakePhotoView from './TakePhotoView';
 
 export default function TakePhotoForm({item, onPress, onTouchStart , submissionType}) {
+  
   const isOptimize = item.optimize && item.optimize === '1';
   const photos = item.value;
   const onUpdatePhotos = paths => {
@@ -15,7 +16,9 @@ export default function TakePhotoForm({item, onPress, onTouchStart , submissionT
   const isShowInfoIcon = item.guide_info !== undefined && item.guide_info.length != 0
   const isQuesionAnswered =  item.value != null &&  item.value != "" && item.value.length != 0
   const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
-    
+  const image_capture = item.image_capture ;
+  const image_gallery = item.image_gallery ;
+  console.log("photo item" , item)
   return (
     <View
       style={[
@@ -47,6 +50,8 @@ export default function TakePhotoForm({item, onPress, onTouchStart , submissionT
           onUpdatePhotos={onUpdatePhotos}
           isOptimize={isOptimize}
           photos={photos}
+          image_capture={image_capture}
+          image_gallery={image_gallery}
           submissionType={submissionType}
         />
       </View>

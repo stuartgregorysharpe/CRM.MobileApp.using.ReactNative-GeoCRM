@@ -1,0 +1,49 @@
+{
+    "status" : "success",
+    "regrets" : [
+        {
+            "regret_id" : "1",
+            "product_id" : "1",
+            "search_text" : "12345",
+            "order_number" : "123321656",
+            "product_name" : "Apple Watch",
+            "location_name" : "3412 W Magnolia Blvd",
+            "location_id" : "1",
+            "currency_id" : "1",
+            "tax_rate" : "15.00"
+        },
+        {
+            "regret_id" : "2",
+            "product_id" : "1",
+            "search_text" : "12345",
+            "order_number" : "123321656",
+            "product_name" : "Apple Watch",
+            "location_name" : "3412 W Magnolia Blvd",
+            "location_id" : "2",
+            "currency_id" : "1",
+            "tax_rate" : "15.00"
+        },
+        {
+            "regret_id" : "3",
+            "product_id" : "1",
+            "search_text" : "12345",
+            "order_number" : "123321656",
+            "product_name" : "Apple Watch",
+            "location_name" : "3412 W Magnolia Blvd",
+            "location_id" : "3",
+            "currency_id" : "1",
+            "tax_rate" : "15.00"
+        },
+        {
+            "regret_id" : "3",
+            "product_id" : "2",
+            "search_text" : "BAC-001",
+            "order_number" : "123321656",
+            "product_name" : "3M MICROPORE DRESSING TAPE - 12MMX10M",
+            "location_name" : "3412 W Magnolia Blvd",
+            "location_id" : "4",
+            "currency_id" : "1",
+            "tax_rate" : "15.00"
+        }
+    ]
+}

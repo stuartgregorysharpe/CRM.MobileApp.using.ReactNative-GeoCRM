@@ -19,6 +19,7 @@ export const SubmitButton = ({
   svgIcon,
   enabled,
   isLoading,
+  haveNextIcon = true
 }) => {
   return (
     <TouchableOpacity
@@ -41,7 +42,7 @@ export const SubmitButton = ({
         />
       )}
 
-      {!isLoading && svgIcon == undefined && (
+      { haveNextIcon && !isLoading && svgIcon == undefined && (
         <FontAwesomeIcon
           style={styles.submitButtonIcon}
           size={25}

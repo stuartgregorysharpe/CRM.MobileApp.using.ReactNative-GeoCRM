@@ -17,7 +17,7 @@ const HistoryList = props => {
     );
   };
   return (
-    <FlatList
+    <FlatList      
       data={items}
       renderItem={({item, index}) => renderItem(item, index)}
       keyExtractor={(item, index) => index.toString()}
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 10,
+    paddingTop:10
   },
 });
 

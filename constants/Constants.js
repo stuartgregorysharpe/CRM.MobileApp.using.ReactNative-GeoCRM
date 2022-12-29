@@ -106,6 +106,7 @@ export default {
     MODAL_TYPE_CENTER: 'MODAL_TYPE_CENTER',
     MODAL_TYPE_BOTTOM: 'MODAL_TYPE_BOTTOM',
     MODAL_TYPE_FULL: 'MODAL_TYPE_FULL',
+    MODAL_TYPE_FULL_WITH_BOTTOM : 'MODAL_TYPE_FULL_WITH_BOTTOM'
   },
   userType: {
     USER_TYPE_SUPER_ADMIN: 'Super Admin',
@@ -129,13 +130,23 @@ export default {
     FEATURE_PRODUCT_CHANNELS: 'product_channels',
     FEATURE_OUTCOMES: 'outcomes',
   },
-  deviceType: ['Additional', 'Primary'],
-  deviceTypeLabel: {
-    PRIMARY: 'Primary Device',
-    ADDITIONAL: 'Additional Device',
+
+  deviceType: [    
+    'Additional',
+    'Primary'
+  ],
+  deviceTypeLabel : {
+    PRIMARY : 'Primary Device',
+    ADDITIONAL : 'Additional Device'
   },
+  productFilterType:{
+    PRODUCT_TYPE: 'product_type',
+    BRAND: 'brand'
+  },
+  
   storageKey: {
     CHECKIN_SCHEDULE_ID: '@checkin_schedule_id',
     OFFLINE_SCHEDULE_CHECKINS: '@offline_schedule_checkins',
   },
+
 };

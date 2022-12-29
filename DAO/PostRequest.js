@@ -14,7 +14,11 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
 
         checkConnectivity().then( async (isConnected) => {
             if(isConnected){
-                if(type == "form_submission" || type === "leadfields" || type === "sell_to_trader"){                                                            
+                if( 
+                    type == "form_submission" || 
+                    type === "leadfields" || 
+                    type === "sell_to_trader"
+                ){ 
                     const submitFormData =  jsonToFormData(postData);
                     submitFormData.append("mode", "online");
                     postApiRequestMultipart(url, submitFormData)

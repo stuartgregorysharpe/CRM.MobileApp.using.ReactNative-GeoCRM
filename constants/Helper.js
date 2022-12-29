@@ -26,8 +26,11 @@ import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
 import AccessScreen from '../screens/GeoLife/AccessScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import ProductSales from '../screens/GeoRep/Sales/ProductSales';
+import ProductSalesNavigator from '../screens/GeoRep/Sales/ProductSalesNavigator';
+import HomeNavigator from '../screens/GeoRep/Home/HomeNavigator';
 
-export const WHATS_APP_LINK =  'https://wa.me/27608477174?text=Hi!%20I%20have%20a%20support%20request';
+export const WHATS_APP_LINK =
+  'https://wa.me/27608477174?text=Hi!%20I%20have%20a%20support%20request';
 // OLD LINK : 'https://api.whatsapp.com/send?l=en&text=Hi!%20I%20have%20a%20support%20request&phone=27608477174%22';
 
 export function getPageNameByLinker(selectedProject, linker) {
@@ -36,7 +39,7 @@ export function getPageNameByLinker(selectedProject, linker) {
       return {
         linker: linker,
         name: 'Home',
-        router: HomeScreen,
+        router: HomeNavigator,
         activeIcon: 'Home_Black',
         inActiveIcon: 'Home_Black_Gray',
       };
@@ -101,10 +104,12 @@ export function getPageNameByLinker(selectedProject, linker) {
     case 'product_sales':
       return {
         linker: linker,
-        name: 'Sales',
-        router: ProductSales,
-        activeIcon: 'Shoping_Card',
-        inActiveIcon: 'Shoping_Card_Gray',
+        name: 'ProductSales',
+        router: ProductSalesNavigator,
+        activeIcon: 'Sale',
+        inActiveIcon: 'Sale_Gray',
+        // activeIcon: 'Shoping_Card',
+        // inActiveIcon: 'Shoping_Card_Gray',
       };
     case 'notifications':
       return {
@@ -211,7 +216,6 @@ export function notifyMessage(title, msg) {
   ]);
 }
 
-
 export function selectPicker(
   title,
   description,
@@ -253,8 +257,6 @@ export function notifyMsg(dispatch, title) {
     }),
   );
 }
-
-
 
 export function getTwoDigit(value) {
   if (value <= 9) {
@@ -350,13 +352,12 @@ export function showOfflineDialog(dispatch) {
       type: Strings.Success,
       message: Strings.This_Function_Not_Available,
       buttonText: 'Ok',
-      buttonAction: () => {        
+      buttonAction: () => {
         dispatch(clearNotification());
       },
     }),
   );
 }
-
 
 export function getPostParameter(location) {
   var time_zone = RNLocalize.getTimeZone();
@@ -437,4 +438,3 @@ export function integerFieldValidator(numberText) {
   var numberRegex = /^\d*$/;
   return numberRegex.test(numberText);
 }
- 

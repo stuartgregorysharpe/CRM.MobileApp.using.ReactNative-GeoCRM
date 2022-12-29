@@ -6,7 +6,7 @@ import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
 import RepFormsScreen from '../screens/GeoRep/Forms/FormsNavigator';
 import RepContentLibraryScreen from '../screens/GeoRep/ContentLibrary/ContentLibraryScreen';
-import ProductSalesScreen from '../screens/GeoRep/ProductSalesScreen';
+import ProductSalesScreen from '../screens/GeoRep/Sales/ProductSalesNavigator';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
@@ -36,11 +36,13 @@ import Stock from '../screens/GeoRep/Stock/Stock';
 import {checkConnectivity} from '../DAO/helper';
 import {showOfflineDialog} from '../constants/Helper';
 import {useDispatch} from 'react-redux';
-import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import {SalesPipelineScreen} from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import HomeNavigator from '../screens/GeoRep/Home/HomeNavigator';
 
 const Stack = createNativeStackNavigator();
 
-export default function RepMoreScreen({navigation}) {
+export default function RepMoreScreen(props) {
+  const {navigation} = props;
   const payload = useSelector(state => state.selection.payload);
   const visibleMore = useSelector(state => state.rep.visibleMore);
   const selectProject = useSelector(state => state.selection.selectProject);
@@ -49,7 +51,8 @@ export default function RepMoreScreen({navigation}) {
   const [componentListThree, setComponentListThree] = useState([]);
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const dispatch = useDispatch();
-
+  const params = props.route?.params;
+  console.log('repmore screen', params);
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
       setComponentListOne([
@@ -91,13 +94,15 @@ export default function RepMoreScreen({navigation}) {
   useEffect(() => {
     if (navigation !== undefined && navigation != '' && navigation != {}) {
       setTimeout(() => {
-        ChangeScreen(visibleMore);
+        if (visibleMore != '' && visibleMore != undefined) {
+          ChangeScreen(visibleMore);
+        }
       }, 10);
     }
   }, [visibleMore]);
 
   const ChangeScreen = key => {
-    
+    console.log('change screen', key);
     if (offlineStatus && key === 'RepWebLinks') {
       showOfflineDialog(dispatch);
       return;
@@ -124,7 +129,8 @@ export default function RepMoreScreen({navigation}) {
         navigation.navigate('RepContentLibrary');
         return;
       case 'ProductSales':
-        navigation.navigate('ProductSales');
+        navigation.navigate('ProductSales', params);
+
         return;
       case 'Notifications':
         navigation.navigate('Notifications');
@@ -211,7 +217,7 @@ export default function RepMoreScreen({navigation}) {
       case 'WellBeing':
         navigation.navigate('WellBeing');
         return;
-      case 'Stock':        
+      case 'Stock':
         navigation.navigate('Stock');
         return;
 
@@ -226,7 +232,7 @@ export default function RepMoreScreen({navigation}) {
 
       {selectProject == 'geo_rep' && componentListOne.includes('home_geo') && (
         <Stack.Screen name="Home" options={{header: () => null}}>
-          {props => <HomeScreen {...props} screenProps={navigation} />}
+          {props => <HomeNavigator {...props} screenProps={navigation} />}
         </Stack.Screen>
       )}
       {selectProject == 'geo_rep' &&

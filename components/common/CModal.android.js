@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
@@ -14,6 +15,7 @@ import {whiteLabel} from '../../constants/Colors';
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const {
+    backButtonDisabled,
     hideClose,
     hideClear,
     hideDivider,
@@ -26,6 +28,9 @@ const CModal = React.forwardRef((props, ref) => {
   const isCenterModal = _modalType == Constants.modalType.MODAL_TYPE_CENTER;
   const isBottomModal = _modalType == Constants.modalType.MODAL_TYPE_BOTTOM;
   const isFullModal = _modalType == Constants.modalType.MODAL_TYPE_FULL;
+  const isFullWithBottomModal =
+    _modalType == Constants.modalType.MODAL_TYPE_FULL_WITH_BOTTOM;
+
   useImperativeHandle(ref, () => ({
     showModal: () => {
       setIsVisible(true);
@@ -50,8 +55,9 @@ const CModal = React.forwardRef((props, ref) => {
   const onClear = () => {
     if (props.onClear) {
       props.onClear();
+    } else {
+      setIsVisible(false);
     }
-    setIsVisible(false);
   };
 
   return (
@@ -60,12 +66,17 @@ const CModal = React.forwardRef((props, ref) => {
         animationType="fade"
         transparent
         visible={isVisible}
-        onRequestClose={onClose}>
+        onRequestClose={() => {
+          if (!backButtonDisabled) {
+            onClose();
+          }
+        }}>
         <View
           style={[
             isCenterModal && styles.dim,
             isBottomModal && styles.bottomModalDim,
             isFullModal && styles.fullModalDim,
+            isFullWithBottomModal && styles.fullWithBottomModalDim,
           ]}>
           {closableWithOutsideTouch && (
             <TouchableOpacity
@@ -86,6 +97,7 @@ const CModal = React.forwardRef((props, ref) => {
               isCenterModal && styles.modalContainer,
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
+              isFullWithBottomModal && styles.fullWithBottomModalContainer,
             ]}>
             <View style={styles.bodyContainer}>
               {!isFullModal && !hideDivider && (
@@ -107,7 +119,12 @@ const CModal = React.forwardRef((props, ref) => {
               )}
 
               {(props.title || props.icon) && (
-                <View style={styles.titleContainer}>
+                <View
+                  style={[
+                    styles.titleContainer,
+                    {marginTop: hideDivider ? 10 : 5},
+                    props.titleContainer,
+                  ]}>
                   <View
                     style={{
                       flex: 1,
@@ -160,6 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   modalContainer: {
     margin: 32,
     position: 'absolute',
@@ -168,7 +186,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     justifyContent: 'center',
     borderRadius: 8,
-    width: 300,
+    width: '90%',
     zIndex: 500,
   },
   bottomModalDim: {
@@ -187,6 +205,15 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: Colors.bgColor,
   },
+
+  fullWithBottomModalDim: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    //height: Dimensions.get("screen").height - (Platform.OS === 'android' ? 120 : 120),
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
+
   bottomModalContainer: {
     position: 'absolute',
     width: '100%',
@@ -203,6 +230,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+
+  fullWithBottomModalContainer: {
+    position: 'absolute',
+    alignSelf: 'stretch',
+    width: '100%',
+    height: '100%',
+  },
+
   title: {
     fontFamily: Fonts.secondaryBold,
     fontSize: Values.fontSize.medium,

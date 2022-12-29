@@ -16,10 +16,12 @@ import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import ImageResizer from 'react-native-image-resizer';
 import { useDispatch } from 'react-redux';
+import { max } from 'moment';
 
 const TakePhotoView = props => {
 
-  const {photos, isOptimize , submissionType} = props;
+  const {photos, isOptimize , submissionType , maxSize , hasError, image_capture , image_gallery } = props;
+
   const dispatch = useDispatch()
   const [isPicker, setIsPicker] = useState(false);  
 
@@ -38,9 +40,30 @@ const TakePhotoView = props => {
       onUpdatePhotos([path]);
     }
   };
-
+  
   const showSelectionDialog = () => {
-    setIsPicker(true);
+    
+    if( photos == undefined || maxSize == undefined || maxSize == -1  || photos.length < maxSize){
+      
+      if(image_capture != undefined && image_capture == "1" && image_gallery != undefined && image_gallery == "1"){
+        setIsPicker(true);
+      }
+  
+      if(image_capture != undefined && image_capture == "1" && (image_gallery == undefined || image_gallery != "1" )){
+        if (Platform.OS === 'android') {
+          requestCameraPermission();
+        } else {
+          launchCamera();
+        }
+        
+      }
+      
+      if( (image_capture == undefined || image_capture != "1" ) && image_gallery != undefined && image_gallery == "1"){
+        launchImageLibrary();
+      }
+
+    }
+
   };
 
   const optimizeImage = (filePath, quality, index) => {
@@ -155,6 +178,11 @@ const TakePhotoView = props => {
 
   return (
     <View style={[styles.container, props.style]}>
+
+
+
+      
+
                   
       <PhotoCameraPickerDialog
         visible={isPicker}
@@ -203,18 +231,17 @@ const TakePhotoView = props => {
 
             })}
 
-          <TouchableOpacity
-            style={[styles.imageContainer, {marginLeft: 10}]}
-            onPress={() => {
-              if(submissionType == "edit"){                
-                showSelectionDialog();
-              }else{
-                showSelectionDialog();
-              }
-              
-            }}>
-            <SvgIcon icon="Add_Image" />
-          </TouchableOpacity>
+
+          {
+            (photos == undefined || maxSize == undefined || maxSize == -1  || photos != undefined && photos.length < maxSize) &&
+            <TouchableOpacity
+              style={[styles.imageContainer, {marginLeft: 10} ,  hasError != undefined && hasError ? { borderColor: whiteLabel().endDayBackground } :{} ]}
+              onPress={() => {
+                showSelectionDialog();            
+              }}>
+              <SvgIcon icon="Add_Image" />
+            </TouchableOpacity>
+          }          
 
         </ScrollView>
 

@@ -12,6 +12,7 @@ export function find(postData) {
         if (isConnected) {
           getApiRequest(UrlResource.Form.FormQuestions, postData)
             .then(async res => {
+              console.log(res)
               resolve(res);
             })
             .catch(e => {
@@ -38,8 +39,7 @@ export function find(postData) {
 }
 
 const fetchDataFromDB = async postData => {
-  const query = generateQuery();
-  console.log('query =>', query);
+  const query = generateQuery();  
   const res = await ExecuteQuery(query, [postData.form_id]);
   console.log('res =>', res);
   return res.rows ? res.rows : [];
@@ -149,7 +149,9 @@ const generateQuery = () => {
     `fq.trigger_question_answer, ` +
     `fq.trigger_question_condition, ` +
     `fqq.question_type as 'trigger_question_type', ` +
-    `fq.question_tag ` +
+    `fq.question_tag, ` +
+    `fq.image_capture, ` +
+    `fq.image_gallery ` +
     `FROM form_questions as fq ` +
     `LEFT JOIN form_question_groups as fqg ` +
     `ON fqg.question_group_id = fq.question_group_id ` +
@@ -236,6 +238,7 @@ const generateCoreFieldDataQuery = () => {
   return query;
 };
 
+
 const getFormQuestions = async (
   lists,
   client_id,
@@ -246,7 +249,7 @@ const getFormQuestions = async (
 
   for (var i = 0; i < lists.length; i++) {
     var element = lists.item(i);
-    console.log('main elements =>', element);
+    //console.log('main elements =>', element);
 
     const question_tag = element.question_tag;
     var fieldData = '';
@@ -263,6 +266,7 @@ const getFormQuestions = async (
             business_unit_id,
             question_tag,
           );
+
           fieldData = await getFieldData(fieldDataLists, postData);
         }
       }
@@ -346,6 +350,8 @@ const getFormQuestions = async (
         add_suffix: element.add_suffix,
         question_tag: element.question_tag,
         options: optionsData,
+        image_gallery: element.image_gallery.toString(),
+        image_capture: element.image_capture.toString()
       });
     } else if (questionType == 'email_pdf') {
       tmp.push({...bodyRes});
@@ -386,8 +392,12 @@ const getFormQuestions = async (
       questionType == 'sku_shelf_share' ||
       questionType == 'sku_count' ||
       questionType == 'sku_select' ||
-      questionType == 'pos_capture'
+      questionType == 'pos_capture' ||
+      questionType == 'fsu_campaign'
     ) {
+      
+      console.log("Question Type ===> "  , questionType);
+
       const questionData = await getFormQuestionData(
         bodyRes,
         business_unit_id,
@@ -395,6 +405,7 @@ const getFormQuestions = async (
         postData,
         element,
       );
+      console.log("questionData => ",questionData)
       tmp.push(questionData);
     } else if (
       questionType == 'product_issues' ||
@@ -403,6 +414,7 @@ const getFormQuestions = async (
       questionType == 'fsu_campaign' ||
       questionType == 'tiered_multiple_choice'
     ) {
+
     } else {
       tmp.push({
         ...bodyRes,
