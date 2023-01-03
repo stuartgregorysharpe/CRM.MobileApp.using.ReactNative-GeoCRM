@@ -245,10 +245,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     var defineSetup = await getJsonData('@setup');
     if (defineSetup == null) {
       console.log('refreshList: checkAndOpenSetup');
-      checkAndOpenSetup();
+      checkAndOpenSetup();      
+    }else{
+      setSelectedLocation(defineSetup.location.name);
     }
   };
-
+   
   const initializeProductLists = async () => {
     const storedProductPriceList = await getJsonData('@product_price');
     if (storedProductPriceList != null) {
