@@ -432,6 +432,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     GetRequestProductPriceDAO.find(param)
       .then(res => {
         if (res.status === Strings.Success) {
+          console.log("res => ", res);
           const price = res.price;
           const special = res.special;
           var check = productPriceLists.find(
