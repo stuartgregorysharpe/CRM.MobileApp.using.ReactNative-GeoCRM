@@ -1310,6 +1310,14 @@ const Festival_Icon = `<svg id="visibility_black_24dp" xmlns="http://www.w3.org/
 <path id="Path_4204" data-name="Path 4204" d="M20.1,7.473a16.966,16.966,0,0,1,15.316,9.551,17.056,17.056,0,0,1-30.632,0A16.966,16.966,0,0,1,20.1,7.473M20.1,4A20.538,20.538,0,0,0,1,17.024a20.52,20.52,0,0,0,38.2,0A20.538,20.538,0,0,0,20.1,4Zm0,8.683a4.341,4.341,0,1,1-4.341,4.341A4.343,4.343,0,0,1,20.1,12.683m0-3.473a7.814,7.814,0,1,0,7.814,7.814A7.826,7.826,0,0,0,20.1,9.21Z" transform="translate(0.737 2.946)" fill=${actionIconBackground}/>
 </svg>`;
 
+const Tracking_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="31.364" height="41.445" viewBox="0 0 31.364 41.445">
+<g id="Group_4577" data-name="Group 4577" transform="translate(-954 -502.643)">
+  <path id="Path_4245" data-name="Path 4245" d="M969.275,506.887a10.58,10.58,0,0,1,10.609,10.926c0,4.583-3.65,9.907-10.609,15.531-6.959-5.624-10.609-10.969-10.609-15.531a10.58,10.58,0,0,1,10.609-10.926m0-4.244a14.783,14.783,0,0,0-14.851,15.17q0,9.93,14.851,20.9,14.864-10.947,14.851-20.9A14.783,14.783,0,0,0,969.275,502.643Z" transform="translate(0.407 0)" fill=${actionIconBackground}/>
+  <path id="Path_4246" data-name="Path 4246" d="M954,521.5h31.364v4.481H954Z" transform="translate(0 18.107)" fill=${actionIconBackground}/>
+  <path id="Path_4247" data-name="Path 4247" d="M962.736,522.325h3.136v-1.568h1.568a1.573,1.573,0,0,0,1.568-1.568v-4.7a1.573,1.573,0,0,0-1.568-1.568h-4.7v-1.568h6.273v-3.136h-3.136v-1.568h-3.136v1.568h-1.568a1.573,1.573,0,0,0-1.568,1.568v4.7a1.573,1.573,0,0,0,1.568,1.568h4.7v1.568H959.6v3.137h3.136Z" transform="translate(5.377 3.841)" fill=${actionIconBackground}/>
+</g>
+</svg>`
+
 export default ({
   icon,
   xml,
@@ -2018,6 +2026,10 @@ export default ({
 
     {icon == 'Festival_Icon' && (
       <SvgXml style={style} xml={Festival_Icon} width={width} height={height} />
+    )}
+
+    {icon == 'Tracking_Icon' && (
+      <SvgXml style={style} xml={Tracking_Icon} width={width} height={height} />
     )}
 
   </Fragment>
