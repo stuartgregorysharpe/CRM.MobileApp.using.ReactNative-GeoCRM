@@ -1305,6 +1305,11 @@ const Mobility_Icon = `<svg id="transfer_within_a_station_black_24dp" xmlns="htt
 <path id="Path_4250" data-name="Path 4250" d="M27.194,25.842V22.8l-4.329,4.347,4.329,4.347V28.45h9.58V25.842Zm5.251,7.39h-9.58v2.608h9.58v3.043l4.329-4.347-4.329-4.347ZM15.04,8.455a3.477,3.477,0,1,0-3.477-3.477A3.488,3.488,0,0,0,15.04,8.455ZM8.52,14.366,3.739,38.882H7.39l3.043-13.91,3.738,3.477V38.882h3.477V25.755l-3.564-3.564,1.043-5.216A12.132,12.132,0,0,0,24.6,21.5V18.018a8.914,8.914,0,0,1-7.563-4.26l-1.652-2.782a3.391,3.391,0,0,0-2.956-1.652,3.488,3.488,0,0,0-1.3.261L2,13.323V21.5H5.477V15.67l3.043-1.3" transform="translate(1.477 1.108)" fill=${actionIconBackground}/>
 </svg>`;
 
+const Festival_Icon = `<svg id="visibility_black_24dp" xmlns="http://www.w3.org/2000/svg" width="41.676" height="41.677" viewBox="0 0 41.676 41.677">
+<path id="Path_4203" data-name="Path 4203" d="M0,0H41.676V41.676H0Z" fill="none"/>
+<path id="Path_4204" data-name="Path 4204" d="M20.1,7.473a16.966,16.966,0,0,1,15.316,9.551,17.056,17.056,0,0,1-30.632,0A16.966,16.966,0,0,1,20.1,7.473M20.1,4A20.538,20.538,0,0,0,1,17.024a20.52,20.52,0,0,0,38.2,0A20.538,20.538,0,0,0,20.1,4Zm0,8.683a4.341,4.341,0,1,1-4.341,4.341A4.343,4.343,0,0,1,20.1,12.683m0-3.473a7.814,7.814,0,1,0,7.814,7.814A7.826,7.826,0,0,0,20.1,9.21Z" transform="translate(0.737 2.946)" fill=${actionIconBackground}/>
+</svg>`;
+
 export default ({
   icon,
   xml,
@@ -1374,7 +1379,7 @@ export default ({
     {icon == 'Sale_Gray' && (
       <SvgXml style={style} xml={SaleStore_Gray} width={width} height={height} />
     )}
-    
+
     {icon == 'Sale_inactive' && (
       <SvgXml style={style} xml={Sale_inactive} width={width} height={height} />
     )}
@@ -1985,7 +1990,7 @@ export default ({
     {icon == 'Repeat' && (
       <SvgXml style={style} xml={Repeat} width={width} height={height} />
     )}
-    
+
     {icon == 'Setting' && (
       <SvgXml style={style} xml={Setting} width={width} height={height} />
     )}
@@ -2009,6 +2014,10 @@ export default ({
 
     {icon == 'Mobility_Icon' && (
       <SvgXml style={style} xml={Mobility_Icon} width={width} height={height} />
+    )}
+
+    {icon == 'Festival_Icon' && (
+      <SvgXml style={style} xml={Festival_Icon} width={width} height={height} />
     )}
 
   </Fragment>

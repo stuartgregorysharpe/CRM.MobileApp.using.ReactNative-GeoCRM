@@ -25,6 +25,7 @@ import SellIn from '../partial/cards/SellIn';
 import CardsFilterModal from '../partial/components/CardsFilterModal';
 import SellOut from '../partial/cards/SellOut';
 import Mobility from '../partial/cards/Mobility';
+import Festivals from '../partial/cards/Festivals';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
@@ -56,6 +57,7 @@ export const MainPage = forwardRef((props, ref) => {
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
   const [lindtdash_mobility, setMobilityCard] = useState(false);
+  const [lindtdash_festival, setFestivalCard] = useState(false);
 
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
@@ -185,11 +187,12 @@ export const MainPage = forwardRef((props, ref) => {
     let isSellIn = features.includes('lindtdash_sellin');
     let isSellOut = features.includes('lindtdash_sellout');
     let isMobility = features.includes('lindtdash_mobility');
+    let isFestival = features.includes('lindtdash_festival');
     let pageData = pages;
     if (isSellIn) {
       if (!pageData.find(x => x === 'sell_in'))
         pageData.push('sell_in');
-      setSellInCard(isSellOut);
+      setSellInCard(isSellIn);
     }
 
     if (isSellOut) {
@@ -204,7 +207,12 @@ export const MainPage = forwardRef((props, ref) => {
       setMobilityCard(isMobility);
     }
 
-    console.log(pageData);
+    if (isFestival) {
+      if (!pageData.find(x => x === 'festival'))
+        pageData.push('festival');
+      setFestivalCard(isFestival);
+    }
+
     setPages(pageData);
   }
 
@@ -279,11 +287,19 @@ export const MainPage = forwardRef((props, ref) => {
           }
         </View>
       );
-    } else if(item === 'mobility'){
+    } else if (item === 'mobility') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_mobility &&
             <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+          }
+        </View>
+      );
+    } else if (item === 'festival') {
+      return (
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
+          {lindtdash_festival &&
+            <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
           }
         </View>
       );

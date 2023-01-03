@@ -75,4 +75,5 @@ export default {
   grey2: '#D8D8D8',
   yellowColor: '#FB9600',
   splitColor: '#70707045',
+  graph_grey:'#DDDDDE'
 };
