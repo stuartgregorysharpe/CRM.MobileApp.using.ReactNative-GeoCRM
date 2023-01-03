@@ -1,8 +1,7 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React from 'react'
-import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import Colors, {  whiteLabel } from '../../../../../constants/Colors';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
@@ -12,7 +11,7 @@ import { style } from '../../../../../constants/Styles';
 import LindtCardsTitleView from './partial/LindtCardsTitleView';
 
 const Tracking = (props) => {
-    const [mobilityData, setMobilityData] = useState([]);
+    const [trackingData, setTrackingData] = useState([]);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -24,7 +23,7 @@ const Tracking = (props) => {
         console.log(postData);
         getApiRequest('lindtdash/tracking', postData).then(response => {
             console.log("tracking", response);
-            setMobilityData(response.products);
+            setTrackingData(response.products);
         }).catch(e => {
             expireToken(dispatch, e);
         })
@@ -43,7 +42,7 @@ const Tracking = (props) => {
 
 
                 </View>
-                {mobilityData.map((x, i) => {
+                {trackingData.map((x, i) => {
                     return (
                         <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
                             <AppText style={{ flex: 2, paddingVertical: 5 }} title={x.label} type="secondaryBold"
