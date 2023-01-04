@@ -41,7 +41,11 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
-import {getLocalData, storeJsonData, storeLocalValue} from '../../../../constants/Storage';
+import {
+  getLocalData,
+  storeJsonData,
+  storeLocalValue,
+} from '../../../../constants/Storage';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {
   checkFeatureIncludeParamFromSession,
@@ -88,6 +92,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isFeedbackModal, setIsFeedback] = useState(false);
   const [feedbackOptions, setFeedbackOptions] = useState([]);
   const [isOutcomeUpdated, setIsOutcomeUpdated] = useState(outcomeVal);
@@ -408,7 +413,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _callCheckedIn = async () => {
-
+    if (isCheckingIn) {
+      return;
+    }
+    setIsCheckingIn(true);
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -425,7 +433,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       'checkin',
       'location-info/check-in',
       '',
-      ''
+      '',
     )
       .then(async res => {
         if (props.onButtonAction) {
@@ -434,13 +442,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true});        
+        dispatch({type: CHECKIN, payload: true});
         await storeLocalValue('@checkin', '1');
         await storeLocalValue(
           '@specific_location_id',
           locationInfo.location_id,
         );
-        await storeJsonData("@checkin_location", locationInfo);
+        await storeJsonData('@checkin_location', locationInfo);
+        setIsCheckingIn(false);
         props.navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: 'checkin',
@@ -448,12 +457,13 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       })
       .catch(e => {
         expireToken(dispatch, e);
+        setIsCheckingIn(false);
       });
   };
 
   const onClickCheckIn = async () => {
     //var isCheckin = await getLocalData('@checkin');
-    
+
     if (isCheckin) {
       dispatch(
         showNotification({
@@ -468,9 +478,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
             var specificLocationId = await getLocalData(
               '@specific_location_id',
-            );            
+            );
 
-            console.log("specificLocationId =>",specificLocationId)
+            console.log('specificLocationId =>', specificLocationId);
             props.navigation.navigate('LocationSpecificInfo', {
               locationId: specificLocationId,
               page: 'checkin',
@@ -697,7 +707,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 onPress={async () => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {
-
                     if (props.onButtonAction) {
                       props.onButtonAction({
                         type: Constants.actionType.ACTION_CLOSE,
@@ -705,7 +714,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                       });
                     }
 
-                    console.log("access crm", locationInfo)
+                    console.log('access crm', locationInfo);
 
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,
@@ -729,7 +738,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 style={[styles.checkInButton]}
                 onPress={async () => {
                   clickedAction = 'checkin';
-                  if (_canGoNextPrev()) {                    
+                  if (_canGoNextPrev()) {
                     onClickCheckIn();
                   }
                 }}>
