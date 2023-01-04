@@ -1,20 +1,14 @@
-
-import { View , Text, BackHandler, Dimensions, Platform } from 'react-native'
+import { View , Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
 import {  useSelector, useDispatch } from 'react-redux';
 import { Constants } from '../../../../constants';
-import { isLandscape } from 'react-native-device-info';
 import { getBottomTabs } from '../../../../components/helper';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { whiteLabel } from '../../../../constants/Colors';
-import DeviceInfo from 'react-native-device-info';
-import { style } from '../../../../constants/Styles';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
 const BottomTab = createBottomTabNavigator();
-
 
 const  SetupFieldContainer = (props) => {
     
@@ -54,7 +48,21 @@ const  SetupFieldContainer = (props) => {
     const onContinue = (data) => {             
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
-        
+    
+    const getPadding = () => {
+        if(Platform.OS == 'android'){
+            return 0;
+        }else{
+            const majorVersionIOS = parseInt(Platform.Version, 10);
+            if(majorVersionIOS == 7){
+                return 25
+            }else{
+                return 34;
+            }
+        }
+
+    }
+
     return (
         <View style={{
             alignSelf:'stretch' , 
@@ -76,9 +84,13 @@ const  SetupFieldContainer = (props) => {
                 onContinue={onContinue}
                 {...props} />
             
-            <View style={{backgroundColor:'white', position:'absolute' ,bottom: 0, width:'100%', 
+            <View style={{
+                    backgroundColor:'white', 
+                    position:'absolute' ,
+                    bottom:0, 
+                    width:'100%', 
                     flexDirection:'row' , 
-                    paddingBottom: Platform.OS == 'ios' ? 34: 0
+                    paddingBottom: getPadding()
                 }}>
 
                 {
