@@ -92,7 +92,7 @@ const Festivals = (props) => {
 
   const renderFestivalRow = (item, index) => {
     return (
-      <View style={{ marginHorizontal: 10 }}>
+      <View key={index} style={{ marginHorizontal: 10 }}>
         <TouchableOpacity onPress={() => {
           let data = [...festivalData];
 

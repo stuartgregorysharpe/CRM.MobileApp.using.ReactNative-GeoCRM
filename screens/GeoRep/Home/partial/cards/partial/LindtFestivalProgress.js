@@ -26,10 +26,6 @@ export default function LindtFestivalProgress({ steps, colors, height, titles, t
     };
 
     const additionalWidth = index => {
-
-        console.log("ffff",secondTextWidth);
-        var itemWidth = (width * steps[index]) / getTotal();
-
         if(steps[index]==100){
             return -8;
         }

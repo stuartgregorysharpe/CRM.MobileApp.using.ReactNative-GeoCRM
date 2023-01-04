@@ -45,7 +45,7 @@ const Tracking = (props) => {
                 </View>
                 {trackingData.map((x, i) => {
                     return (
-                        <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+                        <View key={i} style={{ flexDirection: 'row', marginHorizontal: 10 }}>
                             <AppText style={{ flex: 2, paddingVertical: 5 }} title={x.label} type="secondaryBold"
                                 color={Colors.textColor} />
                             <AppText style={{ flex: 1, paddingVertical: 5, marginLeft: 5 }}

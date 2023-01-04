@@ -40,7 +40,7 @@ const Mobility = (props) => {
                 </View>
                 {mobilityData.map((x, i) => {
                     return (
-                        <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+                        <View key={i} style={{ flexDirection: 'row', marginHorizontal: 10 }}>
                             <AppText style={{ flex: 2, paddingVertical: 3 }} title={x.label} type="secondaryBold" />
                             <View style={{ width: 2, backgroundColor: whiteLabel().inactiveTabText }} />
                             <AppText style={{ flex: 1, textAlign: 'center' }} title={`${x.sr}%`} type="secondaryBold" />

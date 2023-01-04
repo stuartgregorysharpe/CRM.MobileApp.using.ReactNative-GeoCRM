@@ -1318,6 +1318,11 @@ const Tracking_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width="31.364" he
 </g>
 </svg>`
 
+const Compliance_Icon = `<svg id="playlist_add_check_circle_black_24dp" xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46">
+<rect id="Rectangle_2630" data-name="Rectangle 2630" width="46" height="46" fill="none"/>
+<path id="Path_4248" data-name="Path 4248" d="M21.167,5.833A15.333,15.333,0,1,1,5.833,21.167,15.354,15.354,0,0,1,21.167,5.833Zm0-3.833A19.167,19.167,0,1,0,40.333,21.167,19.174,19.174,0,0,0,21.167,2ZM25,17.333H11.583v3.833H25Zm0-5.75H11.583v3.833H25ZM11.583,26.917h5.75V23.083h-5.75Zm23-3.048-2.7-2.7L25.1,27.952l-2.7-2.7-2.7,2.7,5.424,5.424Z" transform="translate(1.833 1.833)" fill=${actionIconBackground}/>
+</svg>`;
+
 export default ({
   icon,
   xml,
@@ -2030,6 +2035,10 @@ export default ({
 
     {icon == 'Tracking_Icon' && (
       <SvgXml style={style} xml={Tracking_Icon} width={width} height={height} />
+    )}
+
+    {icon == 'Compliance_Icon' && (
+      <SvgXml style={style} xml={Compliance_Icon} width={width} height={height} />
     )}
 
   </Fragment>

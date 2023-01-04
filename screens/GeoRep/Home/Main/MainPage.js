@@ -27,6 +27,7 @@ import SellOut from '../partial/cards/SellOut';
 import Mobility from '../partial/cards/Mobility';
 import Festivals from '../partial/cards/Festivals';
 import Tracking from '../partial/cards/Tracking';
+import Compliance from '../partial/cards/Compliance';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
@@ -60,6 +61,8 @@ export const MainPage = forwardRef((props, ref) => {
   const [lindtdash_mobility, setMobilityCard] = useState(false);
   const [lindtdash_festival, setFestivalCard] = useState(false);
   const [lindtdash_tracking, setTrackingCard] = useState(false);
+  const [lindtdash_compliance, setComplianceCard] = useState(false);
+  const [dotsPosition, setDotsPosition] = useState(0);
 
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
@@ -191,6 +194,7 @@ export const MainPage = forwardRef((props, ref) => {
     let isMobility = features.includes('lindtdash_mobility');
     let isFestival = features.includes('lindtdash_festival');
     let isTracking = features.includes('lindtdash_tracking');
+    let isCompliance = features.includes('lindtdash_compliance');
 
     let pageData = pages;
     if (isSellIn) {
@@ -217,15 +221,21 @@ export const MainPage = forwardRef((props, ref) => {
       setFestivalCard(isFestival);
     }
 
+    if (isCompliance) {
+      if (!pageData.find(x => x === 'compliance'))
+        pageData.push('compliance');
+      setComplianceCard(isFestival);
+    }
+
     if (isMobility) {
       if (!pageData.find(x => x === 'mobility'))
         pageData.push('mobility');
       setMobilityCard(isMobility);
     }
 
-    
 
-   
+
+
 
     setPages(pageData);
   }
@@ -322,6 +332,14 @@ export const MainPage = forwardRef((props, ref) => {
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_mobility &&
             <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+          }
+        </View>
+      );
+    } else if (item === 'compliance') {
+      return (
+        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
+          {lindtdash_compliance &&
+            <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
           }
         </View>
       );
