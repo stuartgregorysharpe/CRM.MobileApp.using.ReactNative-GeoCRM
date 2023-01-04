@@ -18,6 +18,7 @@ export default function ProductSales(props) {
   const [page, setPage] = useState(0);
   const navigation = props.navigation;
   const regret_item = useSelector(state => state.sales.regret);
+  const productSaleContainerRef = useRef(null);
 
   const dispatch = useDispatch();
   let isMount = true;
@@ -102,6 +103,7 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
+
     setIsLoading(true);
     var paramData = await getJsonData('@sale_product_parameter');
     if (paramData != null) {
@@ -118,10 +120,13 @@ export default function ProductSales(props) {
             if (res.status == Strings.Success) {
               setSettings(res.settings);
               dispatch(setSalesSetting(res.settings));
+              productSaleContainerRef.current.updateProductList(res.items, pageNumber);
               if (pageNumber == 0) {
-                setItems(res.items);
+                //setItems(getNewList(res.items));
+                //setItems(res.items);
               } else {
-                setItems([...items, ...res.items]);
+                //setItems(res.items);
+                //setItems([...items, getNewList(res.items)]);
               }
               setPage(pageNumber + 1);
             }
@@ -133,10 +138,23 @@ export default function ProductSales(props) {
         });
     }
   };
+  
+  // const getNewList = (items) => {
+  //   var newLists = [];
+  //   items.forEach((element) => {
+  //     newLists.push({
+  //       ...element,
+  //       finalPrice: 0,
+  //       qty: 0,
+  //     });
+  //   });
+  //   return newLists;        
+  // }
 
   return (
     <View style={{paddingTop: 20, alignSelf: 'stretch', flex: 1}}>
       <ProductSalesContainer
+        ref={productSaleContainerRef}
         getProductLists={getProductLists}
         getProductListsByFilter={getProductListsByFilter}
         items={items}

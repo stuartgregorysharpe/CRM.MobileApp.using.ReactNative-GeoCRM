@@ -1,5 +1,5 @@
 
-import { View , Text, BackHandler } from 'react-native'
+import { View , Text, BackHandler, PlatformColor, Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
@@ -54,7 +54,21 @@ const  SetupFieldContainer = (props) => {
     const onContinue = (data) => {             
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
-        
+    
+    const getPadding = () => {
+        if(Platform.OS == 'android'){
+            return 0;
+        }else{
+            const majorVersionIOS = parseInt(Platform.Version, 10);
+            if(majorVersionIOS == 7){
+                return 25
+            }else{
+                return 34;
+            }
+        }
+
+    }
+
     return (
         <View style={{
             alignSelf:'stretch' , 
@@ -75,7 +89,14 @@ const  SetupFieldContainer = (props) => {
                 onContinue={onContinue}
                 {...props} />
             
-            <View style={{backgroundColor:'white', position:'absolute' ,bottom:0, width:'100%', flexDirection:'row'}}>
+            <View style={{
+                    backgroundColor:'white', 
+                    position:'absolute' ,
+                    bottom:0, 
+                    width:'100%', 
+                    flexDirection:'row' , 
+                    paddingBottom: getPadding()
+                }}>
 
                 {
                     bottomTabs.map((item, index) =>{

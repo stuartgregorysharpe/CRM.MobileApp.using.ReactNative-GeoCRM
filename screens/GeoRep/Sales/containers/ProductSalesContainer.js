@@ -1,5 +1,5 @@
 import {View, BackHandler} from 'react-native';
-import React, {useState, useEffect, useRef, useMemo, useCallback} from 'react';
+import React, {useState, useEffect, useRef, useMemo, useCallback , useImperativeHandle , forwardRef} from 'react';
 import ProductSalesView from '../components/ProductSalesView';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import ProductGroupModal from '../modal/ProductGroupModal';
@@ -28,13 +28,16 @@ import {
   SHOW_MORE_COMPONENT,
   SLIDE_STATUS,
 } from '../../../../actions/actionTypes';
+import { getStockItemsFromItems } from '../../Stock/stock/helper';
 
-const ProductSalesContainer = props => {
+//const ProductSalesContainer = props => {
+export const ProductSalesContainer = forwardRef((props, ref) => {
+
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
-  const {items, settings} = props;
+  const { page , items, settings} = props;
 
   const [selectedGroupTitle, setSelectedGroupTitle] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -49,7 +52,39 @@ const ProductSalesContainer = props => {
   const [cartCount, setCartCount] = useState(0);
   const [outsideTouch, setOutsideTouch] = useState(false);
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
+  const [lists , setLists] = useState([]);
+
   const dispatch = useDispatch();
+
+  useImperativeHandle(ref, () => ({
+    updateProductList(items, page) {
+
+      var newList = [];
+      if (
+        items != undefined &&
+        productPriceLists != undefined &&
+        items.length > 0
+      ) {
+        
+        const tmp = [...items];
+        tmp.forEach(item => {
+          const newItem = {...item};
+          const originProducts = [...newItem.products];
+          const products = getProducts(originProducts);
+          newItem.products = [...products];
+          newList.push(newItem);
+        });      
+      }
+      console.log("page => ", page);      
+      if(page == 0){
+        setLists(newList);
+      }else{
+        setLists([...lists , ...newList]);
+      }    
+            
+    },
+  }));
+
 
   const getProducts = useCallback(
     products => {
@@ -105,26 +140,52 @@ const ProductSalesContainer = props => {
     [productPriceLists],
   );
 
-  const lists = useMemo(() => {
+  useEffect(() => {
+    var newList = [];
     if (
-      items != undefined &&
+      lists != undefined &&
       productPriceLists != undefined &&
-      items.length > 0
+      lists.length > 0
     ) {
-      var newList = [];
-      const tmp = [...items];
+      
+      const tmp = [...lists];
       tmp.forEach(item => {
         const newItem = {...item};
         const originProducts = [...newItem.products];
         const products = getProducts(originProducts);
         newItem.products = [...products];
         newList.push(newItem);
-      });
-
-      return newList;
+      });      
     }
-    return [];
-  }, [items, productPriceLists]);
+    setLists(newList);
+  }, [productPriceLists]);
+
+  // useEffect(() => {
+
+   
+    
+  // }, [items]);
+
+  // const lists = useMemo(() => {
+  //   if (
+  //     items != undefined &&
+  //     productPriceLists != undefined &&
+  //     items.length > 0
+  //   ) {
+  //     var newList = [];
+  //     const tmp = [...items];
+  //     tmp.forEach(item => {
+  //       const newItem = {...item};
+  //       const originProducts = [...newItem.products];
+  //       const products = getProducts(originProducts);
+  //       newItem.products = [...products];
+  //       newList.push(newItem);
+  //     });
+
+  //     return newList;
+  //   }
+  //   return [];
+  // }, [items, productPriceLists]);
 
   const groupList = useMemo(() => {
     if (products != undefined && products.length > 0) {
@@ -164,6 +225,7 @@ const ProductSalesContainer = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      console.log("focussed");
       refreshList();
       //configAddProductCount();
     });
@@ -177,7 +239,7 @@ const ProductSalesContainer = props => {
       (storedProductPriceList == null || storedProductPriceList.length == 0) &&
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
-      props.getProductLists();
+      props.getProductLists();      
     }
 
     var defineSetup = await getJsonData('@setup');
@@ -556,5 +618,6 @@ const ProductSalesContainer = props => {
       />
     </View>
   );
-};
+});
+
 export default ProductSalesContainer;
