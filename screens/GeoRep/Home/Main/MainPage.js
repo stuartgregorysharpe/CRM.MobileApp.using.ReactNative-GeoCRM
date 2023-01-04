@@ -205,10 +205,10 @@ export const MainPage = forwardRef((props, ref) => {
       setSellOutCard(isSellOut);
     }
 
-    if (isMobility) {
-      if (!pageData.find(x => x === 'mobility'))
-        pageData.push('mobility');
-      setMobilityCard(isMobility);
+    if (isTracking) {
+      if (!pageData.find(x => x === 'tracking'))
+        pageData.push('tracking');
+      setTrackingCard(isTracking);
     }
 
     if (isFestival) {
@@ -217,11 +217,15 @@ export const MainPage = forwardRef((props, ref) => {
       setFestivalCard(isFestival);
     }
 
-    if (isTracking) {
-      if (!pageData.find(x => x === 'tracking'))
-        pageData.push('tracking');
-      setTrackingCard(isTracking);
+    if (isMobility) {
+      if (!pageData.find(x => x === 'mobility'))
+        pageData.push('mobility');
+      setMobilityCard(isMobility);
     }
+
+    
+
+   
 
     setPages(pageData);
   }
@@ -297,11 +301,11 @@ export const MainPage = forwardRef((props, ref) => {
           }
         </View>
       );
-    } else if (item === 'mobility') {
+    } else if (item === 'tracking') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
-          {lindtdash_mobility &&
-            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+          {lindtdash_tracking &&
+            <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
           }
         </View>
       );
@@ -313,11 +317,11 @@ export const MainPage = forwardRef((props, ref) => {
           }
         </View>
       );
-    } else if (item === 'tracking') {
+    } else if (item === 'mobility') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
-          {lindtdash_tracking &&
-            <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+          {lindtdash_mobility &&
+            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
           }
         </View>
       );

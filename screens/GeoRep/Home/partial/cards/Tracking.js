@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, {  whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
@@ -34,28 +34,36 @@ const Tracking = (props) => {
             <View>
                 <View style={{ flexDirection: 'row', marginHorizontal: 10, marginTop: 10 }}>
                     <View style={{ flex: 2 }} />
-                    <AppText style={{ flex: 1, paddingVertical: 5,marginLeft:5 }} title="Actual" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    <AppText style={{ flex: 1, paddingVertical: 5, marginLeft: 5 }} title="Actual"
+                        type="secondaryBold" color={whiteLabel().inactiveTabText} />
                     <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                    <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }} title="Prev Wk" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }}
+                        title="Prev Wk" type="secondaryBold" color={whiteLabel().inactiveTabText} />
                     <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                    <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }} title="Lindt RSP" type="secondaryBold" color={whiteLabel().inactiveTabText} />
-
-
+                    <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }}
+                        title="Lindt RSP" type="secondaryBold" color={whiteLabel().inactiveTabText} />
                 </View>
                 {trackingData.map((x, i) => {
                     return (
                         <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
                             <AppText style={{ flex: 2, paddingVertical: 5 }} title={x.label} type="secondaryBold"
                                 color={Colors.textColor} />
-                            <AppText style={{ flex: 1, paddingVertical: 5,marginLeft:5 }} title={x.actual} type="secondaryBold"
+                            <AppText style={{ flex: 1, paddingVertical: 5, marginLeft: 5 }}
+                                title={x.actual} type="secondaryBold"
                                 color={Colors.textColor} />
                             <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                            <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }} title={x.prev_wk} type="secondaryBold"
-                                color={Colors.textColor} />
-                            <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                            <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }} title={x.rsp} type="secondaryBold"
-                                color={Colors.textColor} />
+                            <View style={{ flex: 1 }}>
+                                <AppText style={{ paddingVertical: 5, paddingHorizontal: 10 }}
+                                    title={x.prev_wk} type="secondaryBold"
+                                    color={Colors.textColor} />
+                            </View>
 
+                            <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
+                            <View style={{ flex: 1 }}>
+                                <AppText style={{  paddingVertical: 5,paddingHorizontal:6 }}
+                                    title={x.rsp} type="secondaryBold"
+                                    color={Colors.textColor} />
+                            </View>
 
                         </View>
                     )
