@@ -101,7 +101,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       dispatch(
         showNotification({
           type: 'success',
-          message: `Please input maximum ${props.item?.qty} for quantity to sell`,
+          message: Strings.Not_Enough_Stock,
           buttonText: Strings.Ok,
         }),
       );
