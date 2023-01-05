@@ -169,7 +169,7 @@ export default function ConsumableSellToStockSignatureView(props) {
     if (!item) return true;
     if (item.stock_type == Constants.stockType.CONSUMABLE) {
       if (Number(item.qty) < Number(quantity)) {
-        //setHasQuantityError(true);
+        setHasQuantityError(true);
         return false;
       }
     }
