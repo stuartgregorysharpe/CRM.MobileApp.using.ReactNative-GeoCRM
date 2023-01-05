@@ -7,10 +7,19 @@ import Fonts from '../../../../constants/Fonts';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import {getLocalData} from '../../../../constants/Storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
+import {
+  CHECKIN,
+  LOCATION_ID_CHANGED,
+  LOCATION_CHECK_OUT_COMPULSORY,
+} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../../actions/notification.action';
+import {Strings} from '../../../../constants';
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
@@ -70,7 +79,25 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         goBack={async res => {
-          console.log('res', res);
+          /*dispatch(
+            showNotification({
+              type: 'success',
+              message: res.message,
+              buttonText: Strings.Ok,
+              buttonAction: async () => {
+                dispatch({
+                  type: CHECKIN,
+                  payload: false,
+                  scheduleId: false,
+                });
+                dispatch({
+                  type: LOCATION_CHECK_OUT_COMPULSORY,
+                  payload: true,
+                });
+                dispatch(clearNotification());
+              },
+            }),
+          );*/
         }}
       />
     );
