@@ -60,7 +60,7 @@ const Warehouse = (props) => {
     
     return (
         <ScrollView         
-            style={{alignSelf:'stretch', maxHeight:180}}>                    
+            style={{alignSelf:'stretch',  maxHeight:updatedLists.length <= 3 ? 120 : 180}}>                    
             {
                 updatedLists.map((item , index) => {
                     return renderItem(item, index);

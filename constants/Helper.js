@@ -18,7 +18,6 @@ import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
 import CrmContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
-import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
@@ -126,15 +125,7 @@ export function getPageNameByLinker(selectedProject, linker) {
         router: RepMessagesScreen,
         activeIcon: 'Pipeline',
         inActiveIcon: 'Pipeline_Gray',
-      };
-    case 'offline_sync':
-      return {
-        linker: linker,
-        name: 'OfflineSync',
-        router: OfflineSyncScreen,
-        activeIcon: 'Pipeline',
-        inActiveIcon: 'Pipeline_Gray',
-      };
+      };    
     case 'recorded_sales':
       return {
         linker: linker,
