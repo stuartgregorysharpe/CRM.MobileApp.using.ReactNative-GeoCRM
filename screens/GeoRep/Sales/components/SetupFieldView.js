@@ -103,10 +103,12 @@ const SetupFieldView = (props) => {
 	
 			if( warehouse != undefined && warehouse.default_warehouse != ''){
 				const options = warehouse.options ?  warehouse.options : [];
-				const item = options.find(element => element.id === warehouse.default_warehouse);
-				if(item != undefined){
+				//default_warehouse
+				const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
+
+				if(items != undefined){
 					//onWarehouseItemSelected(item, false);
-					setSelectedWarehouse([item]);	
+					setSelectedWarehouse(items);	
 				}				
 			}
 		}

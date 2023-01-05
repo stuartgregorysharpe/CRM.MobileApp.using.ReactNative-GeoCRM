@@ -36,6 +36,7 @@ const  SetupFieldContainer = (props) => {
         setIsLoading(true);
         GetRequestSetupFieldDAO.find({}).then((res) => {            
             setTransactinTypes(res.transaction_types);
+            console.log("res.warehouse" , res.warehouse)
             setWarehouse(res.warehouse);
             setCurrency(res.currency);
             setIsLoading(false)
