@@ -396,8 +396,14 @@ const DynamicField = props => {
       <SignatureSignView 
         hasError={hasError}
         isRequired={is_required}
+        setScrollEnabled={(flag) => {
+          if(props.setScrollEnabled){
+            props.setScrollEnabled(flag);
+          } 
+        }}
         onOK={(signature) => {
           if(signature != undefined){
+            console.log("filed", field_name , signature);
             updateFormData(field_name , signature);
           }          
         }}

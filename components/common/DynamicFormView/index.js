@@ -12,6 +12,7 @@ const DynamicFormView = props => {
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
   const [hasTextInput, setKeyboardVisible] = useState(false);
+  const [scrollEnabled, setScrollViewEnabled] = useState(true);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -65,7 +66,8 @@ const DynamicFormView = props => {
   };
 
   return (
-    <ScrollView style={[hasTextInput ? {height: 300} : {}]}>
+    <ScrollView style={[hasTextInput ? {height: 300} : {}]} scrollEnabled={scrollEnabled}>
+
       <DynamicForm
         ref={addProductRef}
         formData={formData}
@@ -73,6 +75,11 @@ const DynamicFormView = props => {
         updateFormData={formData => {
           setFormData(formData);
         }}
+        
+        setScrollEnabled={(flag) => {
+          setScrollViewEnabled(flag);
+        }}
+
       />
 
       <SubmitButton

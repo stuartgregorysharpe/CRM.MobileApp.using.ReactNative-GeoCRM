@@ -103,10 +103,12 @@ const SetupFieldView = (props) => {
 	
 			if( warehouse != undefined && warehouse.default_warehouse != ''){
 				const options = warehouse.options ?  warehouse.options : [];
-				const item = options.find(element => element.id === warehouse.default_warehouse);
-				if(item != undefined){
+				//default_warehouse
+				const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
+
+				if(items != undefined){
 					//onWarehouseItemSelected(item, false);
-					setSelectedWarehouse([item]);	
+					setSelectedWarehouse(items);	
 				}				
 			}
 		}
@@ -205,7 +207,7 @@ const SetupFieldView = (props) => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container]}>
 
 			<View
                   style={[
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
 		marginTop:10, 
 		backgroundColor:'white' ,
 		minHeight:250, 
-		maxHeight:400, 
+		//maxHeight:400, 
 		padding:10,
 		borderRadius:5 ,
 		alignSelf:'stretch' 
