@@ -473,14 +473,6 @@ const Account_Circle = `
   </svg>
 `;
 
-const Cloud_Off = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.435" viewBox="0 0 70.435 70.435">
-    <g id="cloud_off_black_24dp" transform="translate(-0.001)">
-      <path id="Path_4396" data-name="Path 4396" d="M0,0H70.435V70.435H0Z" transform="translate(0.001)" fill="none"/>
-      <path id="Path_4397" data-name="Path 4397" d="M70.435,36.554A14.6,14.6,0,0,0,56.788,22,21.981,21.981,0,0,0,35.218,4.271,21.7,21.7,0,0,0,24.506,7.118l4.373,4.373a15.836,15.836,0,0,1,6.339-1.35A16.132,16.132,0,0,1,51.359,26.282v1.467h4.4A8.79,8.79,0,0,1,61.014,43.6l4.138,4.138A14.576,14.576,0,0,0,70.435,36.554ZM12.942,3.86,8.8,8l8.129,8.129H15.7a17.6,17.6,0,0,0,1.908,35.1H52.034L57.9,57.1l4.138-4.138Zm4.666,41.5a11.739,11.739,0,0,1,0-23.478h5.077L46.164,45.358Z" transform="translate(0.001 7.468)" fill="#133c8b"/>
-    </g>
-  </svg>
-`;
 
 const Support_Agent_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="71" height="70" viewBox="0 0 71 70">
@@ -1507,9 +1499,7 @@ export default ({
         height={height}
       />
     )}
-    {icon == 'Cloud_Off' && (
-      <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />
-    )}
+    
     {icon == 'Support_Agent' && (
       <SvgXml style={style} xml={Support_Agent} width={width} height={height} />
     )}
