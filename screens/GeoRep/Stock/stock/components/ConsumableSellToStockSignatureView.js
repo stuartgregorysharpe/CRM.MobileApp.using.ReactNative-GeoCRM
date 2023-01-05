@@ -168,8 +168,8 @@ export default function ConsumableSellToStockSignatureView(props) {
     const {item} = props;
     if (!item) return true;
     if (item.stock_type == Constants.stockType.CONSUMABLE) {
-      if (item.qty < quantity) {
-        setHasReceivedByError(true);
+      if (Number(item.qty) < Number(quantity)) {
+        //setHasQuantityError(true);
         return false;
       }
     }
