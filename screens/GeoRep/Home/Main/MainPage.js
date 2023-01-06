@@ -224,7 +224,7 @@ export const MainPage = forwardRef((props, ref) => {
     if (isCompliance) {
       if (!pageData.find(x => x.card === 'compliance'))
         pageData.push({ card: 'compliance', index: pages.length });
-      setComplianceCard(isFestival);
+      setComplianceCard(isCompliance);
     }
 
     if (isMobility) {
