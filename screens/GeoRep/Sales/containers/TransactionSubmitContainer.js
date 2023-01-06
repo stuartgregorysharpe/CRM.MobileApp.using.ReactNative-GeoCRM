@@ -18,6 +18,7 @@ import {
 } from '../../../../actions/notification.action';
 
 const TransactionSubmitContainer = props => {
+
   const {cartStatistics, productPriceList, addProductList} = props;
   const dispatch = useDispatch();
   const [fields, setFields] = useState([]);
@@ -48,6 +49,7 @@ const TransactionSubmitContainer = props => {
         .then(res => {
           if (isMount) {
             if (res.status == Strings.Success) {
+              console.log("response",res.fields)
               setFields(res.fields);
             }
           }
@@ -82,16 +84,19 @@ const TransactionSubmitContainer = props => {
       var time_zone = RNLocalize.getTimeZone();
 
       const totals = {
-        discount: cartStatistics.discount,
-        sub_total: cartStatistics.subTotal,
-        tax: cartStatistics.tax,
-        total: cartStatistics.total,
+        discount: (cartStatistics.discount.toFixed(2)).toString(),
+        sub_total: (cartStatistics.subTotal.toFixed(2)).toString(),
+        tax: (cartStatistics.tax.toFixed(2)).toString(),
+        total: (cartStatistics.total.toFixed(2)).toString(),
       };
 
       var postJsonData = {
         transaction_type: setupData.transaction_type.type,
         location_id: setupData.location.location_id,
         currency_id: setupData.currency_id.id,
+        // 'cart[items][add_product_id]' : items,
+        // 'cart[added_products]' : added_products,
+        // 'cart[totals]' : totals,
         cart: {
           items: items,
           added_products: added_products,
@@ -112,14 +117,23 @@ const TransactionSubmitContainer = props => {
       if (setupData.regret_id) {
         postJsonData.regret_id = setupData.regret_id;
       }
-      console.log('postJSONData', postJsonData);
+      
       files.forEach(item => {
-        postJsonData = {
-          ...postJsonData,
-          [item.key]: getFileFormat(item.value),
-        };
+        if(item.value instanceof Array){
+          item.value.forEach((fileName) => {
+            postJsonData = {
+              ...postJsonData,
+              [item.key]: getFileFormat(fileName),
+            };
+          });
+        }else{
+          postJsonData = {
+            ...postJsonData,
+            [item.key]: getFileFormat(item.value),
+          };
+        }        
       });
-
+      console.log('postJSONData1', JSON.stringify(postJsonData));
       PostRequestDAO.find(
         0,
         postJsonData,
@@ -212,11 +226,13 @@ const TransactionSubmitContainer = props => {
         paddingTop: 10,
         maxHeight: Dimensions.get('screen').height * 0.8,
       }}>
+
       <DynamicFormView
         page="transaction_submit"
         buttonTitle={'Submit'}
         fields={fields}
         onAdd={onAdd}
+        
         {...props}
       />
     </View>

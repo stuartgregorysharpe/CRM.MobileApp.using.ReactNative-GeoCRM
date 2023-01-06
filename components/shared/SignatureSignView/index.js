@@ -99,7 +99,7 @@ const SignatureSignView = (props) => {
                     //androidHardwareAccelerationDisabled={false}
                     webStyle={map_style}
                     //dataURL={signature}
-                    onEnd={handleEnd}
+                    
                     onOK={handleOK}
                     onEmpty={handleEmpty}
                     //imageType='image/png'
@@ -107,6 +107,17 @@ const SignatureSignView = (props) => {
                     onGetData={handleData}
                     bgHeight={170}
                     overlayHeight={170}
+                    onBegin={() => {
+                        if(props.setScrollEnabled){
+                            props.setScrollEnabled(false);
+                        }                        
+                    }}
+                    onEnd={() => {
+                        handleEnd();
+                        if(props.setScrollEnabled){
+                            props.setScrollEnabled(true)
+                        }
+                    }}
                     // autoClear={true}
                     //descriptionText={text}
                 />

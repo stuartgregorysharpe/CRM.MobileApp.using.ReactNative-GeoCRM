@@ -1,7 +1,7 @@
 import { postApiRequest, postApiRequestMultipart } from "../actions/api.action";
 import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./helper";
 import { Strings } from "../constants";
-import { jsonToFormData } from "../helpers/jsonHelper";
+import { jsonToFormData, jsonToFormDataWithSubKey } from "../helpers/jsonHelper";
 import { showOfflineDialog } from "../constants/Helper";
 
 export function find(locationId, postData , type, url , itemLabel , itemSubLabel){
@@ -17,10 +17,20 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                 if( 
                     type == "form_submission" || 
                     type === "leadfields" || 
-                    type === "sell_to_trader"
+                    type === "sell_to_trader" ||
+                    type === "transaction-submit"
                 ){ 
-                    const submitFormData =  jsonToFormData(postData);
+                                        
+                    var submitFormData;
+                    if(type === "transaction-submit"){
+                        console.log("submit form data started");
+                        submitFormData = jsonToFormDataWithSubKey(postData);
+                        console.log("submit form data", submitFormData);
+                    }else{
+                        submitFormData =  jsonToFormData(postData);
+                    }                    
                     submitFormData.append("mode", "online");
+                    console.log("submit form data", JSON.stringify(submitFormData));
                     postApiRequestMultipart(url, submitFormData)
                     .then(async res => {
                         resolve(res);

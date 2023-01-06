@@ -1,3 +1,4 @@
+
 import { View , Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
@@ -6,9 +7,10 @@ import { expireToken } from '../../../../constants/Helper';
 import {  useSelector, useDispatch } from 'react-redux';
 import { Constants } from '../../../../constants';
 import { getBottomTabs } from '../../../../components/helper';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
-const BottomTab = createBottomTabNavigator();
+import BottomTabItem from '../../../../components/common/BottomTabItem';
+import { getLocalData } from '../../../../constants/Storage';
+
 
 const  SetupFieldContainer = (props) => {
     
@@ -16,20 +18,38 @@ const  SetupFieldContainer = (props) => {
     const [warehouse , setWarehouse] = useState(null);
     const [currency , setCurrency] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [bottomTabs, setBottomTabs] = useState([]);
 
     const payload = useSelector(state => state.selection.payload);
     const selectProject = useSelector(state => state.selection.selectProject);
-    const [bottomTabs, setBottomTabs] = useState([]);
-
-    const dispatch = useDispatch() 
+    
+    const dispatch = useDispatch()
     let isMount = true;
 
     useEffect(() => {
-
         initBottomTab();
         setIsLoading(true);
-        GetRequestSetupFieldDAO.find({}).then((res) => {            
-            setTransactinTypes(res.transaction_types);
+        callDefineSetUp();
+        return () => {
+            isMount = false;
+        }
+    }, []);
+
+    const callDefineSetUp = async () => {
+        const location_id = await getLocalData("@specific_location_id");
+        callSetupFieldOptions(location_id);
+    }
+
+    const callSetupFieldOptions = (location_id) => {
+        var param = {};
+        if(location_id  != undefined && location_id != ''){
+            param = {
+                location_id: location_id
+            }
+        }        
+        GetRequestSetupFieldDAO.find(param).then((res) => {
+            console.log("res.warehouse", res.warehouse)
+            setTransactinTypes(res.transaction_types);            
             setWarehouse(res.warehouse);
             setCurrency(res.currency);
             setIsLoading(false)
@@ -37,8 +57,7 @@ const  SetupFieldContainer = (props) => {
             expireToken(dispatch, e);
             setIsLoading(false)
         });
-    
-    }, []);
+    }
 
     const initBottomTab = () => {
         const tabs = getBottomTabs(payload, selectProject);
@@ -47,6 +66,11 @@ const  SetupFieldContainer = (props) => {
  
     const onContinue = (data) => {             
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
+    }
+
+    const onChangeLocation = (location) => {        
+        if(location)
+            callSetupFieldOptions(location.location_id)
     }
     
     const getPadding = () => {
@@ -66,11 +90,10 @@ const  SetupFieldContainer = (props) => {
     return (
         <View style={{
             alignSelf:'stretch' , 
-            flex:1 , 
-            //height:Dimensions.get("screen").height, 
-            flexDirection:'column',
+            flex:1 ,            
             // marginHorizontal:10, 
             // marginBottom:10,  
+            flexDirection:'column',            
             alignItems:'center',
             justifyContent:'center',            
             minHeight:250
@@ -79,9 +102,10 @@ const  SetupFieldContainer = (props) => {
             <SetupFieldView 
                 transaction_types={transaction_types} 
                 currency={currency}
-                warehouse={warehouse}  
+                warehouse={warehouse}
                 isLoading={isLoading}
                 onContinue={onContinue}
+                onChangeLocation={onChangeLocation}
                 {...props} />
             
             <View style={{
@@ -101,7 +125,8 @@ const  SetupFieldContainer = (props) => {
                                     props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});
                                     
                                 }}
-                                key={index} item={item} />
+                                key={index} item={item} 
+                            />
                         )
                     })
                 }                                            
