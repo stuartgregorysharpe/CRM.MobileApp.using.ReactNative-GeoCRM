@@ -79,7 +79,7 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         goBack={async res => {
-          /*dispatch(
+          dispatch(
             showNotification({
               type: 'success',
               message: res.message,
@@ -97,7 +97,7 @@ export function CalendarItem(props) {
                 dispatch(clearNotification());
               },
             }),
-          );*/
+          );
         }}
       />
     );
