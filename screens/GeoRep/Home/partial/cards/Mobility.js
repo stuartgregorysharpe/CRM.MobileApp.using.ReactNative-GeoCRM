@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
 import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const Mobility = (props) => {
     const [mobilityData, setMobilityData] = useState([]);
@@ -60,6 +61,9 @@ const Mobility = (props) => {
                     title="Mobility" icon="Mobility_Icon" />
                 {renderBody()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount ? props.pageCount : 0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }

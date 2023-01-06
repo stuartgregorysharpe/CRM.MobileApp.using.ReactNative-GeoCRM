@@ -28,6 +28,7 @@ import Mobility from '../partial/cards/Mobility';
 import Festivals from '../partial/cards/Festivals';
 import Tracking from '../partial/cards/Tracking';
 import Compliance from '../partial/cards/Compliance';
+import PagerView from 'react-native-pager-view';
 
 //const MainPage = props => {
 export const MainPage = forwardRef((props, ref) => {
@@ -35,7 +36,7 @@ export const MainPage = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
   const [startEndDayId, setStartEndDayId] = useState(0);
-  const [pages, setPages] = useState(['visits', 'activity']);
+  const [pages, setPages] = useState([{ card: 'visits', index: 0 }, { card: 'activity', index: 1 }]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activityCard, setActivityCard] = useState(null);
   const [visitCard, setVisitCard] = useState(null);
@@ -62,7 +63,6 @@ export const MainPage = forwardRef((props, ref) => {
   const [lindtdash_festival, setFestivalCard] = useState(false);
   const [lindtdash_tracking, setTrackingCard] = useState(false);
   const [lindtdash_compliance, setComplianceCard] = useState(false);
-  const [dotsPosition, setDotsPosition] = useState(0);
 
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
@@ -198,44 +198,40 @@ export const MainPage = forwardRef((props, ref) => {
 
     let pageData = pages;
     if (isSellIn) {
-      if (!pageData.find(x => x === 'sell_in'))
-        pageData.push('sell_in');
+      if (!pageData.find(x => x.card === 'sell_in'))
+        pageData.push({ card: 'sell_in', index: pages.length });
       setSellInCard(isSellIn);
     }
 
     if (isSellOut) {
-      if (!pageData.find(x => x === 'sell_out'))
-        pageData.push('sell_out');
+      if (!pageData.find(x => x.card === 'sell_out'))
+        pageData.push({ card: 'sell_out', index: pages.length});
       setSellOutCard(isSellOut);
     }
 
     if (isTracking) {
-      if (!pageData.find(x => x === 'tracking'))
-        pageData.push('tracking');
+      if (!pageData.find(x => x.card === 'tracking'))
+        pageData.push({ card: 'tracking', index: pages.length });
       setTrackingCard(isTracking);
     }
 
     if (isFestival) {
-      if (!pageData.find(x => x === 'festival'))
-        pageData.push('festival');
+      if (!pageData.find(x => x.card === 'festival'))
+        pageData.push({ card: 'festival', index: pages.length });
       setFestivalCard(isFestival);
     }
 
     if (isCompliance) {
-      if (!pageData.find(x => x === 'compliance'))
-        pageData.push('compliance');
+      if (!pageData.find(x => x.card === 'compliance'))
+        pageData.push({ card: 'compliance', index: pages.length });
       setComplianceCard(isFestival);
     }
 
     if (isMobility) {
-      if (!pageData.find(x => x === 'mobility'))
-        pageData.push('mobility');
+      if (!pageData.find(x => x.card === 'mobility'))
+        pageData.push({ card: 'mobility', index: pages.length });
       setMobilityCard(isMobility);
     }
-
-
-
-
 
     setPages(pageData);
   }
@@ -280,66 +276,73 @@ export const MainPage = forwardRef((props, ref) => {
   };
 
   const renderCards = (item, index) => {
-    if (item === 'visits') {
+    if (item.card === 'visits') {
       return (
-        <View key={index} style={{ marginRight: 1, width: pageWidth }}>
-          <Visits {...props} visitCard={visitCard} />
+        <View collapsable={false} key={index} style={{ marginRight: 1, width: pageWidth }}>
+          <Visits {...props} visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
         </View>
       );
-    } else if (item === 'activity') {
+    } else if (item.card === 'activity') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {activityCard && (
-            <ActivityCard activityCard={activityCard}></ActivityCard>
+            <ActivityCard activityCard={activityCard} pageCount={pages.length} pageIndex={item.index}>
+            </ActivityCard>
           )}
         </View>
       );
-    } else if (item === 'sell_in') {
+    } else if (item.card === 'sell_in') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellin && (
-            <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+            <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+              pageCount={pages.length} pageIndex={item.index} />
           )}
         </View>
       );
     }
-    else if (item === 'sell_out') {
+    else if (item.card === 'sell_out') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellout &&
-            <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+            <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+              pageCount={pages.length} pageIndex={item.index} />
           }
         </View>
       );
-    } else if (item === 'tracking') {
+    } else if (item.card === 'tracking') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_tracking &&
-            <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+            <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+              pageCount={pages.length} pageIndex={item.index} />
           }
         </View>
       );
-    } else if (item === 'festival') {
+    } else if (item.card === 'festival') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_festival &&
-            <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+            <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+              pageCount={pages.length} pageIndex={item.index} />
           }
         </View>
       );
-    } else if (item === 'mobility') {
+    } else if (item.card === 'mobility') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_mobility &&
-            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+              pageCount={pages.length} pageIndex={item.index} />
           }
         </View>
       );
-    } else if (item === 'compliance') {
+    } else if (item.card === 'compliance') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_compliance &&
-            <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()} />
+            <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+              pageCount={pages.length} pageIndex={item.index} />
           }
         </View>
       );
@@ -380,17 +383,18 @@ export const MainPage = forwardRef((props, ref) => {
         showsHorizontalScrollIndicator={false}
         data={pages}
         onScroll={event => {
-          if (event.nativeEvent.contentOffset.x % pageWidth == 0) {
-            setSelectedIndex(event.nativeEvent.contentOffset.x / pageWidth);
+          if (Math.round(event.nativeEvent.contentOffset.x) % Math.round(pageWidth) < 10) {
+            let _index = Math.round(event.nativeEvent.contentOffset.x) / Math.round(pageWidth)
+            setSelectedIndex(Math.round(_index));
           }
         }}
         renderItem={({ item, index }) => renderCards(item, index)}
         keyExtractor={(item, index) => index.toString()}
       />
 
-      <IndicatorDotScroller
+      {/* <IndicatorDotScroller
         total={pages.length}
-        selectedIndex={selectedIndex}></IndicatorDotScroller>
+        selectedIndex={selectedIndex}></IndicatorDotScroller> */}
 
       <OdometerReadingModal
         ref={odometerReadingModalRef}

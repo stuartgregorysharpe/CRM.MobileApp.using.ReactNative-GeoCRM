@@ -12,11 +12,13 @@ import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const SellIn = (props) => {
     const [mth, setMth] = useState(null);
     const [meridian, setMeridian] = useState(null);
     const dispatch = useDispatch();
+
     useEffect(() => {
         loadData();
     }, [props.haveFilter]);
@@ -107,11 +109,14 @@ const SellIn = (props) => {
     return (
         <View style={{ marginTop: 10, flex: 1, flexDirection: 'column' }}>
             <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
-                <LindtCardsTitleView title="Value (Sell In)" onFilterPress={()=>props.onFilterPress()}
-                icon="Sell_In_Icon" haveFilter={props.haveFilter}/>
+                <LindtCardsTitleView title="Value (Sell In)" onFilterPress={() => props.onFilterPress()}
+                    icon="Sell_In_Icon" haveFilter={props.haveFilter} />
                 {renderMth()}
                 {renderMeridian()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount?props.pageCount:0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }

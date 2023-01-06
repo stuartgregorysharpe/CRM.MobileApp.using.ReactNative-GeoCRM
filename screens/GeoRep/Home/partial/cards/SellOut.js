@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
 import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const SellOut = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
@@ -128,10 +129,13 @@ const SellOut = (props) => {
             <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
                 <LindtCardsTitleView title="Value (Sell Out)" onFilterPress={() => props.onFilterPress()}
                     icon="Sell_In_Icon" haveFilter={props.haveFilter} />
-              
+
                 {renderTabs()}
                 {renderBody()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount ? props.pageCount : 0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }

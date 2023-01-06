@@ -14,12 +14,14 @@ import ProgressBar from '../ProgressBar';
 import SvgIcon from '../../../../../components/SvgIcon';
 import { formattedNumber, formattedPriceWithSpace } from '../../../../../helpers/formatHelpers';
 import LindtFestivalProgress from './partial/LindtFestivalProgress';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const Festivals = (props) => {
   const colors = [PRIMARY_COLOR, Colors.graph_grey];
   const [festivalData, setFestivalData] = useState([]);
   const [width, setWidth] = useState(0);
   const dispatch = useDispatch();
+
 
   useEffect(() => {
     loadData();
@@ -138,6 +140,9 @@ const Festivals = (props) => {
           return renderFestivalRow(x, i);
         })}
       </View>
+      <IndicatorDotScroller
+        total={props.pageCount ? props.pageCount : 0}
+        selectedIndex={props.pageIndex}></IndicatorDotScroller>
     </View>
   )
 }

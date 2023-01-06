@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
 import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const Tracking = (props) => {
     const [trackingData, setTrackingData] = useState([]);
@@ -60,7 +61,7 @@ const Tracking = (props) => {
 
                             <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
                             <View style={{ flex: 1 }}>
-                                <AppText style={{  paddingVertical: 5,paddingHorizontal:6 }}
+                                <AppText style={{ paddingVertical: 5, paddingHorizontal: 6 }}
                                     title={x.rsp} type="secondaryBold"
                                     color={Colors.textColor} />
                             </View>
@@ -81,6 +82,9 @@ const Tracking = (props) => {
                     title="Pricing Tracking" icon="Tracking_Icon" />
                 {renderBody()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount ? props.pageCount : 0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }

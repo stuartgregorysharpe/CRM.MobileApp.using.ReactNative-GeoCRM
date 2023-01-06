@@ -13,11 +13,13 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import LindtCardsTitleView from './partial/LindtCardsTitleView';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const Compliance = (props) => {
     const [complianceData, setComplianceData] = useState([]);
     const [graphData, setGraphData] = useState(null);
     const dispatch = useDispatch();
+
     useEffect(() => {
         loadData();
     }, [props.haveFilter]);
@@ -69,7 +71,6 @@ const Compliance = (props) => {
     }
 
     const renderItem = (item, index) => {
-        console.log(item);
         return (
             <View key={index} style={{
                 marginHorizontal: 10,
@@ -120,16 +121,16 @@ const Compliance = (props) => {
     const renderFooter = () => {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 10 }}>
-                <View style={{alignItems:'center'}}>
+                <View style={{ alignItems: 'center' }}>
                     {renderFooterHeading("Prev Week")}
                     {renderProgress(graphData.prev_wk, Dimensions.get('window').width * 0.1)}
                 </View>
 
-                <View style={{alignItems:'center'}}>
+                <View style={{ alignItems: 'center' }}>
                     {renderFooterHeading("Achieved")}
                     {renderProgress(graphData.achieved, Dimensions.get('window').width * 0.1)}
                 </View>
-                <View style={{alignItems:'center'}}>
+                <View style={{ alignItems: 'center' }}>
                     {renderFooterHeading("%Evolution")}
                     {renderProgress(graphData.evolution, Dimensions.get('window').width * 0.1)}
                 </View>
@@ -147,6 +148,9 @@ const Compliance = (props) => {
                 })}
                 {graphData && renderFooter()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount ? props.pageCount : 0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }
