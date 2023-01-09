@@ -174,49 +174,57 @@ const CartContainer = props => {
     setSelectedWarehouseId(null);
     productGroupModalRef.current.showModal();
   };
-  const updateCapturedProductPrice = (product, qty) => {
-    setIsUpdatingProductPrice(true);
-    const param = {
-      product_id: product.product_id,
-      qty: qty,
-    };
-    GetRequestProductPriceDAO.find(param)
-      .then(res => {
-        if (res.status === Strings.Success) {
-          const price = res.price;
-          const special = res.special;
-          var check = productPriceList.find(
-            element => element.product_id == product.product_id,
-          );
-          var finalPrice = 0;
-          if (
-            check != undefined &&
-            check.finalPrice != '' &&
-            check.finalPrice.final_price != ''
-          ) {
-            finalPrice = check.finalPrice.final_price;
+  const updateCapturedProductPrice = async(product, qty) => {
+
+    var defineSetup = await getJsonData('@setup');
+    if (defineSetup != null) {     
+
+      setIsUpdatingProductPrice(true);
+      const param = {
+        product_id: product.product_id,
+        qty: qty,
+        location_id: defineSetup.location.location_id
+      };      
+      GetRequestProductPriceDAO.find(param)
+        .then(res => {
+          if (res.status === Strings.Success) {
+            const price = res.price;
+            const special = res.special;
+            var check = productPriceList.find(
+              element => element.product_id == product.product_id,
+            );
+            var finalPrice = 0;
+            if (
+              check != undefined &&
+              check.finalPrice != '' &&
+              check.finalPrice.final_price != ''
+            ) {
+              finalPrice = check.finalPrice.final_price;
+            }
+            var updatedProduct = {
+              ...product,
+              price: price,
+              special: special,
+              finalPrice: finalPrice,
+            };
+            updateProductPriceLists(
+              product.product_id,
+              price,
+              qty,
+              special,
+              '',
+              updatedProduct,
+            );
           }
-          var updatedProduct = {
-            ...product,
-            price: price,
-            special: special,
-            finalPrice: finalPrice,
-          };
-          updateProductPriceLists(
-            product.product_id,
-            price,
-            qty,
-            special,
-            '',
-            updatedProduct,
-          );
-        }
-        setIsUpdatingProductPrice(false);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-        setIsUpdatingProductPrice(false);
-      });
+          setIsUpdatingProductPrice(false);
+        })
+        .catch(e => {
+          expireToken(dispatch, e);
+          setIsUpdatingProductPrice(false);
+        });
+    }
+
+
   };
 
   const updateProductPrice = (product, qty) => {

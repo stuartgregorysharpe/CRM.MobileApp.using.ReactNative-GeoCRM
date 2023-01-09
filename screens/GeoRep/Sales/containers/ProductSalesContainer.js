@@ -224,8 +224,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [productPriceLists]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log("focussed");
+    const unsubscribe = navigation.addListener('focus', () => {      
       refreshList();
       //configAddProductCount();
     });
@@ -425,50 +424,59 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     productGroupModalRef.current.showModal();
   };
 
-  const geProductPrice = (product, qty) => {
-    setIsUpdatingProductPrice(true);
-    const param = {
-      product_id: product.product_id,
-      qty: qty,
-    };
-    GetRequestProductPriceDAO.find(param)
-      .then(res => {
-        if (res.status === Strings.Success) {
-          console.log("res => ", res);
-          const price = res.price;
-          const special = res.special;
-          var check = productPriceLists.find(
-            element => element.product_id == product.product_id,
-          );
-          var finalPrice = 0;
-          if (
-            check != undefined &&
-            check.finalPrice != '' &&
-            check.finalPrice.final_price != ''
-          ) {
-            finalPrice = check.finalPrice.final_price;
+  const geProductPrice = async(product, qty) => {
+    var defineSetup = await getJsonData('@setup');
+    if (defineSetup != null) {      
+      setIsUpdatingProductPrice(true);
+      const param = {
+        product_id: product.product_id,
+        qty: qty,
+        location_id: defineSetup.location.location_id
+      };
+      console.log("param",param)
+      GetRequestProductPriceDAO.find(param)
+        .then(res => {
+          if (res.status === Strings.Success) {
+            console.log("res => ", res);
+            const price = res.price;
+            const special = res.special;
+            var check = productPriceLists.find(
+              element => element.product_id == product.product_id,
+            );
+            var finalPrice = 0;
+            if (
+              check != undefined &&
+              check.finalPrice != '' &&
+              check.finalPrice.final_price != ''
+            ) {
+              finalPrice = check.finalPrice.final_price;
+            }
+            var updatedProduct = {
+              ...product,
+              price: price,
+              special: special,
+              finalPrice: finalPrice,
+            };
+            updateProductPriceLists(
+              product.product_id,
+              price,
+              qty,
+              finalPrice == 0 ? special : '0',
+              '',
+              updatedProduct,
+            );
           }
-          var updatedProduct = {
-            ...product,
-            price: price,
-            special: special,
-            finalPrice: finalPrice,
-          };
-          updateProductPriceLists(
-            product.product_id,
-            price,
-            qty,
-            finalPrice == 0 ? special : '0',
-            '',
-            updatedProduct,
-          );
-        }
-        setIsUpdatingProductPrice(false);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-        setIsUpdatingProductPrice(false);
-      });
+          setIsUpdatingProductPrice(false);
+        })
+        .catch(e => {
+          expireToken(dispatch, e);
+          setIsUpdatingProductPrice(false);
+        });
+              
+      }else{
+        console.log(" There is no Define Setup");
+      }
+      
   };
 
   const updateProductPriceLists = useCallback(
