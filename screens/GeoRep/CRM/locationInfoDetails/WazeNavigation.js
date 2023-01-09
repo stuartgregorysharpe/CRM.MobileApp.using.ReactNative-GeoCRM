@@ -1,27 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState , useRef} from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
+  View,  
   StyleSheet,
   Linking,
-  Platform,
-  Image,
+  Platform,  
 } from 'react-native';
 import {parseCoordinate} from '../../../../actions/google.action';
-import SvgIcon from '../../../../components/SvgIcon';
-import {whiteLabel} from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {checkFeatureIncludeParam} from '../../../../constants/Storage';
 import {style} from '../../../../constants/Styles';
 import { useDispatch } from 'react-redux';
-import { checkConnectivity } from '../../../../DAO/helper';
-import { showOfflineDialog } from '../../../../constants/Helper';
 import NavigationButton from '../../../../components/common/NavigationButton';
 import { useSelector } from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import { showNotification } from '../../../../actions/notification.action';
 import { Strings } from '../../../../constants';
+import ViewRouteModal from './ViewRouteModal';
 
 export default function WazeNavigation(props) {
 
@@ -34,6 +28,9 @@ export default function WazeNavigation(props) {
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
   const navigationMain = useNavigation();
+  const viewRouteModalRef = useRef(null)
+  const currentLocation = useSelector(state => state.rep.currentLocation);
+  const [coordinates , setCoordinates] = useState([]);
 
   useEffect(() => {
     if(features != undefined){
@@ -61,8 +58,7 @@ export default function WazeNavigation(props) {
           image:  'Location_Arrow',    
           type : 'svg'
         })
-      }
-      console.log("features",navigationList)
+      }      
       setNavigations(navigationList);
       if(navigationList.length > 0){
         setVisible(true);
@@ -147,25 +143,33 @@ export default function WazeNavigation(props) {
     }
   }
 
-  const openViewRoute = async() => {
+
+  const openViewRoute = async() => {    
     
     try {
-      var wazeLocation = location;
-      if(location.latitude === '' || location.latitude == undefined){
-        var parseLocation = await parseCoordinate(address);
-        wazeLocation = parseLocation;
-      }
-      const label = address;
-      console.log("open view route")
-      navigationMain.navigate('DeeplinkViewRouteMap' , {location:wazeLocation });
-      if(props.onCloseModal){
-        props.onCloseModal();
-      }
+
+        var wazeLocation = location;
+        if(location.latitude === '' || location.latitude == undefined){
+          var parseLocation = await parseCoordinate(address);
+          wazeLocation = parseLocation;
+        }
+        const label = address;
+		if(wazeLocation != undefined && currentLocation != undefined){
+            var locations = [];
+            locations.push({latitude : currentLocation.latitude, longitude : currentLocation.longitude});
+            locations.push({latitude : parseFloat(wazeLocation.latitude), longitude : parseFloat(wazeLocation.longitude)});            
+            setCoordinates(locations);
+			viewRouteModalRef.current.showModal();
+        }	
+
+        //navigationMain.navigate('DeeplinkViewRouteMap' , {location:wazeLocation });		
+        // if(props.onCloseModal){
+        //   props.onCloseModal();
+        // }
+
     } catch (e) {
     
-    }
-  
-    //navigationMain.navigate('DeeplinkStock');
+    }   
   }
 
   return (
@@ -182,8 +186,21 @@ export default function WazeNavigation(props) {
               paddingTop: 0,
             },
           ]}>
-                      
+
+			<ViewRouteModal 
+			  ref={viewRouteModalRef}
+			  coordinates={coordinates}
+			  currentLocation={currentLocation}
+			  region={{
+				  latitude: currentLocation.latitude,
+				  longitude: currentLocation.longitude,
+				  zoomEnabled : true
+			  }}
+			/>
+
           <View style={{flexDirection:'row'}}>
+
+		  
 
             {
               navigations.map((item , index) => {

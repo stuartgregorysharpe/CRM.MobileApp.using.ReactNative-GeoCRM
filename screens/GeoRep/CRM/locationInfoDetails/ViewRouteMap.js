@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import DirectionMap from '../../../../services/Map/DirectionMap';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 
-
 const ViewRouteMap = (props) => {
 
-const isShowCustomNavigationHeader = props.isDeeplink != undefined;
+    const isShowCustomNavigationHeader = props.isDeeplink != undefined;
     const [destination, setDestinationLocation] = useState(props.route.params.location);
     const currentLocation = useSelector(state => state.rep.currentLocation);
 
@@ -26,40 +25,37 @@ const isShowCustomNavigationHeader = props.isDeeplink != undefined;
             var locations = [];
             locations.push({latitude : currentLocation.latitude, longitude : currentLocation.longitude});
             locations.push({latitude : parseFloat(destination.latitude), longitude : parseFloat(destination.longitude)});            
-            setCoordinates(locations);
-            console.log("route coodinates" , locations);
+            setCoordinates(locations);            
         }
     }, [])
 
+    return (
+        <View>
+        
+            {isShowCustomNavigationHeader && (
+                            
+                <NavigationHeader
+                    showIcon={true}
+                    title={'View Route'}
+                    onBackPressed={() => {
+                        props.navigation.goBack();
+                    }}
+                />
+            )}
 
-  return (
-    <View>
-      
-        {isShowCustomNavigationHeader && (
-                        
-            <NavigationHeader
-
-                showIcon={true}
-                title={'View Route'}
-                onBackPressed={() => {
-                    props.navigation.goBack();
+            <DirectionMap 
+                coordinates={coordinates}
+                currentLocation={currentLocation}
+                region={{
+                    latitude: currentLocation.latitude,
+                    longitude: currentLocation.longitude,
+                    zoomEnabled : true
                 }}
             />
-        )}
-
-
-        <DirectionMap 
-            coordinates={coordinates}
-            currentLocation={currentLocation}
-            region={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-                zoomEnabled : true
-            }}
-        />
-        
-    </View>
-  )
+            
+        </View>
+    )
+    
 }
 
 export default ViewRouteMap

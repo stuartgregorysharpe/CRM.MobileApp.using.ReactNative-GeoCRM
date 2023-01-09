@@ -20,7 +20,7 @@ const GmsDirectionMap = props => {
   const LATITUDE_DELTA = 0.0922;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-  console.log("currentLocation => ",currentLocation  ,LONGITUDE_DELTA)
+  console.log("currentLocation => ",currentLocation  ,LONGITUDE_DELTA , coordinates)
   
   const [initialRegion , setInitialRegion] = useState({
     latitude: currentLocation.latitude,
@@ -43,7 +43,7 @@ const GmsDirectionMap = props => {
     <MapView 
             initialRegion={initialRegion}
             region={region}
-            style={{height: Dimensions.get("screen").height - 50}}
+            style={{height: Dimensions.get("screen").height - 50, width: Dimensions.get("screen").width}}
             provider={PROVIDER_GOOGLE} 
             showsUserLocation={true}
             followUserLocation={true}

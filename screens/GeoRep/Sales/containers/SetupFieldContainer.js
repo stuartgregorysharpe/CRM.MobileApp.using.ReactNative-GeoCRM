@@ -8,9 +8,7 @@ import {  useSelector, useDispatch } from 'react-redux';
 import { Constants } from '../../../../constants';
 import { getBottomTabs } from '../../../../components/helper';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
-import BottomTabItem from '../../../../components/common/BottomTabItem';
 import { getLocalData } from '../../../../constants/Storage';
-
 
 const  SetupFieldContainer = (props) => {
     
@@ -91,8 +89,6 @@ const  SetupFieldContainer = (props) => {
         <View style={{
             alignSelf:'stretch' , 
             flex:1 ,            
-            // marginHorizontal:10, 
-            // marginBottom:10,  
             flexDirection:'column',            
             alignItems:'center',
             justifyContent:'center',            
