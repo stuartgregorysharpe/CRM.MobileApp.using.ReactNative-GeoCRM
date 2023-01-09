@@ -12,14 +12,17 @@ import {getConfigFromRegret} from './helpers';
 import BackButtonHeader from '../../../components/Header/BackButtonHeader';
 
 export default function ProductSales(props) {
+  
+  const navigation = props.navigation;
+
   const [settings, setSettings] = useState(null);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const navigation = props.navigation;
+  const [isEndPage, setIsEndPage] = useState(false);
+
   const regret_item = useSelector(state => state.sales.regret);
   const productSaleContainerRef = useRef(null);
-
   const dispatch = useDispatch();
   let isMount = true;
 
@@ -104,39 +107,46 @@ export default function ProductSales(props) {
 
   const getApiData = async (search_text, pageNumber) => {
 
-    setIsLoading(true);
-    var paramData = await getJsonData('@sale_product_parameter');
-    if (paramData != null) {
-      paramData['page_no'] = pageNumber;
-      if (search_text != undefined) {
-        paramData['search_text'] = search_text;
-      }
-      storeJsonData('@sale_product_parameter', paramData);
-
-      GetRequestProductsList.find(paramData)
-        .then(res => {
-          setIsLoading(false);
-          if (isMount) {
-            if (res.status == Strings.Success) {
-              setSettings(res.settings);
-              dispatch(setSalesSetting(res.settings));
-              productSaleContainerRef.current.updateProductList(res.items, pageNumber);
-              if (pageNumber == 0) {
-                //setItems(getNewList(res.items));
-                //setItems(res.items);
-              } else {
-                //setItems(res.items);
-                //setItems([...items, getNewList(res.items)]);
+    if(!isLoading && !isEndPage){
+      setIsLoading(true);    
+      var paramData = await getJsonData('@sale_product_parameter');
+      if (paramData != null) {
+        paramData['page_no'] = pageNumber;
+        if (search_text != undefined) {
+          paramData['search_text'] = search_text;
+        }
+        storeJsonData('@sale_product_parameter', paramData);
+  
+        GetRequestProductsList.find(paramData)
+          .then(res => {
+            setIsLoading(false);
+            if (isMount) {
+              if (res.status == Strings.Success) {
+                console.log("res => ", res)
+                setSettings(res.settings);
+                dispatch(setSalesSetting(res.settings));
+                productSaleContainerRef.current.updateProductList(res.items, pageNumber);
+                if(res.items.length == 0){
+                  setIsEndPage(true);
+                }
+                if (pageNumber == 0) {
+                  //setItems(getNewList(res.items));
+                  //setItems(res.items);
+                } else {
+                  //setItems(res.items);
+                  //setItems([...items, getNewList(res.items)]);
+                }
+                setPage(pageNumber + 1);
               }
-              setPage(pageNumber + 1);
             }
-          }
-        })
-        .catch(e => {
-          setIsLoading(false);
-          expireToken(dispatch, e);
-        });
+          })
+          .catch(e => {
+            setIsLoading(false);
+            expireToken(dispatch, e);
+          });
+      }
     }
+    
   };
   
   // const getNewList = (items) => {

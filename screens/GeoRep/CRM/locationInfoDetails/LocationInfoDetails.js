@@ -678,6 +678,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
             {locationInfo !== undefined && (
               <WazeNavigation
+                onCloseModal={() => {
+                  if (props.onButtonAction) {
+                    props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+                  }
+                }}
                 location={locationInfo.coordinates}
                 address={locationInfo.address}></WazeNavigation>
             )}

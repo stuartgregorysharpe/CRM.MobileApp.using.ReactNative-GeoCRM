@@ -88,7 +88,7 @@ const  SetupFieldContainer = (props) => {
     return (
         <View style={{
             alignSelf:'stretch' , 
-            flex:1 , 
+            flex:1 ,            
             flexDirection:'column',            
             alignItems:'center',
             justifyContent:'center',            
@@ -121,7 +121,8 @@ const  SetupFieldContainer = (props) => {
                                     props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});
                                     
                                 }}
-                                key={index} item={item} />
+                                key={index} item={item} 
+                            />
                         )
                     })
                 }                                            
