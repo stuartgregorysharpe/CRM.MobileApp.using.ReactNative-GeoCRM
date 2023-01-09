@@ -40,11 +40,11 @@ const SetupFieldView = (props) => {
 		}
 	}, [isClear]);
 
-	useEffect(() => {		
-		initializeSetupData();
+	useEffect(() => {				
+		initializeSetupData(currency, warehouse , transaction_types);
 	}, [ currency, warehouse,   transaction_types]);
 
-	const clearSetup = async() => {		
+	const clearSetup = async() => {
 		storeJsonData("@setup", null);
 		initializeSetupData();
 		initializeLocation();
@@ -60,33 +60,21 @@ const SetupFieldView = (props) => {
 
 	const initializeLocation = async() => {
 		var data = await getJsonData("@setup");
+		console.logg("initaillize ", JSON.stringify(data))
 		if(data != null){
 			setSelectedLocation(data.location);
 		}else if(isCheckin){
+			
 			getCheckinLocationInfo();
 		}else{
 			setSelectedLocation(null)
 		}
 	}
 
-	const initializeSetupData = async() => {
-
-		var data = await getJsonData("@setup");
+	const initializeSetupData = async(currency, warehouse , transaction_types) => {
+		return;
 		
-		if(data != null){
-			
-			setSelectedSaleType(data.transaction_type);
-			setSelectedCurrency(data.currency_id);	
-			setSelectedLocation(data.location);
-			
-			if(data.transaction_type != ''){
-				onWarehouseRequired(data.transaction_type.warehouse_required);
-			}
-			if(data.warehouse_id != ''){				
-				setSelectedWarehouse(data.warehouse_id);
-			}
-
-		}else{
+		if(currency != undefined && currency != null && warehouse != null && transaction_types != null){
 			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
 				setSelectedSaleType(transactionType);
@@ -96,10 +84,9 @@ const SetupFieldView = (props) => {
 			}
 			if(currency != undefined && currency.default_currency){
 				const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
-				setSelectedCurrency(defaultCurrency);
-				
+				setSelectedCurrency(defaultCurrency);				
 			}
-	
+
 			if( warehouse != undefined && warehouse.default_warehouse ){
 				const options = warehouse.options ?  warehouse.options : [];			
 				const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
@@ -108,8 +95,29 @@ const SetupFieldView = (props) => {
 					setSelectedWarehouse(items);	
 				}
 			}
+			console.log("ok......")
+		}else{
+			var data = await getJsonData("@setup");
+			if(data != null){				
+				setSelectedSaleType(data.transaction_type);
+				setSelectedCurrency(data.currency_id);	
+				if(selectedLocation == null){
+					setSelectedLocation(data.location);
+				}
+				if(data.transaction_type != ''){
+					onWarehouseRequired(data.transaction_type.warehouse_required);
+				}
+				if(data.warehouse_id != ''){			
+					console.log("data.wharehouseid" , data.warehouse_id);	
+					setSelectedWarehouse(data.warehouse_id);
+				}else{
+					console.log("clean data");
+					setSelectedWarehouse([]);
+				}	
+				console.log("ok......")
+			}			
 		}
-		
+				
 	}
 
 	const onSearch = (location, locationId) => {		
@@ -238,9 +246,9 @@ const SetupFieldView = (props) => {
 
 			<SearchLocationContainer 
 				type="setup"
-				onSubmit={onSearch} 
+				onSubmit={onSearch}
 				onStartSearch={onStartSearch}
-				isSkipLocationIdCheck				
+				isSkipLocationIdCheck
 				style={[isSearchStart ? styles.bgColor : {}]} //
 			{...props} />
 			

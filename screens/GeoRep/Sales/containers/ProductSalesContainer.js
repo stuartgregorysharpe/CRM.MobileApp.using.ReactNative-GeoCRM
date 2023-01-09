@@ -261,7 +261,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const configAddProductCount = useCallback(async () => {
-    const addProductList = await getJsonData('@add_product');
+    const addProductList = await getJsonData('@add_product');    
     var count = 0;
     if (addProductList != null && addProductList != undefined) {
       count = addProductList.length;
@@ -425,15 +425,17 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const geProductPrice = async(product, qty) => {
+
     var defineSetup = await getJsonData('@setup');
-    if (defineSetup != null) {      
+    if (defineSetup != null) {
+      //defineSetup.location.location_id
       setIsUpdatingProductPrice(true);
       const param = {
         product_id: product.product_id,
         qty: qty,
         location_id: defineSetup.location.location_id
       };
-      console.log("param",param)
+      
       GetRequestProductPriceDAO.find(param)
         .then(res => {
           if (res.status === Strings.Success) {

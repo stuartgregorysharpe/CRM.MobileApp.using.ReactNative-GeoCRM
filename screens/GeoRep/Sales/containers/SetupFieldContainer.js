@@ -8,7 +8,7 @@ import {  useSelector, useDispatch } from 'react-redux';
 import { Constants } from '../../../../constants';
 import { getBottomTabs } from '../../../../components/helper';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
-import { getLocalData } from '../../../../constants/Storage';
+import { getJsonData, getLocalData } from '../../../../constants/Storage';
 
 const  SetupFieldContainer = (props) => {
     
@@ -17,6 +17,7 @@ const  SetupFieldContainer = (props) => {
     const [currency , setCurrency] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [bottomTabs, setBottomTabs] = useState([]);
+    
 
     const payload = useSelector(state => state.selection.payload);
     const selectProject = useSelector(state => state.selection.selectProject);
@@ -33,21 +34,31 @@ const  SetupFieldContainer = (props) => {
         }
     }, []);
 
-    const callDefineSetUp = async () => {
-        const location_id = await getLocalData("@specific_location_id");
-        callSetupFieldOptions(location_id);
+    const callDefineSetUp = async () => {                
+        var defineSetup = await getJsonData('@setup');
+        if(defineSetup != null ){
+            console.log("defineSetup ->" ,defineSetup.location)
+            if(defineSetup.location != undefined && defineSetup.location.location_id){
+                console.log("defineSetup.location.location_id", defineSetup.location.location_id)
+                callSetupFieldOptions( defineSetup.location.location_id );
+            }
+        }else{
+            const location_id = await getLocalData("@specific_location_id");
+            callSetupFieldOptions( location_id );
+        }
     }
 
     const callSetupFieldOptions = (location_id) => {
-        var param = {};
+        var param = {};        
         if(location_id  != undefined && location_id != ''){
             param = {
                 location_id: location_id
             }
-        }        
+        }  
+        console.log("param =>", param)      
         GetRequestSetupFieldDAO.find(param).then((res) => {
             console.log("res.warehouse", res.warehouse)
-            setTransactinTypes(res.transaction_types);            
+            setTransactinTypes(res.transaction_types);
             setWarehouse(res.warehouse);
             setCurrency(res.currency);
             setIsLoading(false)
