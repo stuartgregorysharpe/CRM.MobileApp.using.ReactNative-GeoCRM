@@ -88,6 +88,10 @@ export default function ProductSales(props) {
   };
 
   const getProductLists = async (data, search_text = '', pageNumber) => {
+    console.log("get product lists", data, search_text, pageNumber)
+    if( pageNumber != undefined && pageNumber == 0){
+      setIsEndPage(false);
+    }
     if (data != undefined) {
       storeJsonData('@setup', data);
       const param = getParamData(data);
@@ -110,9 +114,13 @@ export default function ProductSales(props) {
     if(search_text != undefined && search_text != ''){
       setIsEndPage(false);
     }
-    
-    if(!isLoading && !isEndPage){
-      setIsLoading(true);    
+    console.log("getApiData", isLoading, isEndPage);
+
+    if(!isLoading && ( !isEndPage || pageNumber == 0) ){
+      if(pageNumber == 0){
+        setIsEndPage(false);
+      }
+      setIsLoading(true);
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
         paramData['page_no'] = pageNumber;
@@ -120,7 +128,6 @@ export default function ProductSales(props) {
           paramData['search_text'] = search_text;
         }
         storeJsonData('@sale_product_parameter', paramData);
-  
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);

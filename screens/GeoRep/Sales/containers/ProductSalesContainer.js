@@ -273,7 +273,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         }
       });
       configAddProductCount();
-      props.getProductLists(config, searchText);
+      props.getProductLists(config, searchText , 0);
       if (config != undefined) {
         setOutsideTouch(true);
       }
@@ -287,7 +287,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setupFromConfig(value);
       storeLocalValue('@regret', '');
       dispatch(setRegret(null));
-      //props.getProductLists();
+    
 
     } else if (type == Constants.actionType.ACTION_DONE) {
 
