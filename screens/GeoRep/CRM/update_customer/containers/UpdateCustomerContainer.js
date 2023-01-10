@@ -21,10 +21,12 @@ export default function UpdateCustomerContainer(props) {
   const selectDeviceModalRef = useRef(null);
   const [isCurrentLocation, setIsCurrentLocation] = useState('0');
   const [customMasterFields, setCustomMasterFields] = useState({});
+
+  const [originCustomMasterFields, setOriginCustomMasterFields] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   var location_name_updated = '0';
   var address_updated = '0';
-  const [originCustomMasterFields, setOriginCustomMasterFields] = useState([]);
 
   var isMount = true;
   useEffect(() => {
@@ -51,6 +53,10 @@ export default function UpdateCustomerContainer(props) {
   };
 
   const onAdd = () => {
+    if (isLoading) {
+      return false;
+    }
+    setIsLoading(true);
     checkChangedStatus();
     var userParam = getPostParameter(currentLocation);
     var custom_master_post_data = [];
@@ -98,6 +104,7 @@ export default function UpdateCustomerContainer(props) {
     postApiRequest('locations-info/location-info-update', postData)
       .then(res => {
         console.log('locations-info/location-info-update: success', res);
+        setIsLoading(false);
         dispatch(
           showNotification({
             type: 'success',
@@ -112,6 +119,7 @@ export default function UpdateCustomerContainer(props) {
       })
       .catch(e => {
         expireToken(dispatch, e);
+        setIsLoading(false);
       });
   };
 
@@ -158,6 +166,7 @@ export default function UpdateCustomerContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
+      <Notification />
       <UpdateCustomerView
         onButtonAction={onButtonAction}
         leadForms={leadForms}
@@ -175,8 +184,8 @@ export default function UpdateCustomerContainer(props) {
         }}
         title={'Update'}
         onSubmit={onAdd}
+        isLoading={isLoading}
       />
-      <Notification />
     </View>
   );
 }
