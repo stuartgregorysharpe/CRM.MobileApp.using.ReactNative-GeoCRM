@@ -114,12 +114,12 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
         field_name: field.custom_master_field_id,
         initial_value: field.value,
         editable: field.rule_editable,
-        is_required: field.rule_compulsory === '1',
+        is_required:
+          field.rule_compulsory === '1' || field.rule_compulsory === 1,
         field_label: field.field_name,
         value: value,
       };
     });
-    console.log('customMasterFields: dynamicFields', dynamicFields);
 
     if (type == 'first') {
       setFormStructure1(dynamicFields);
@@ -164,17 +164,12 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
         key={key + 100}
         onPress={async () => {
           if (currentLocation) {
-            console.log(
-              'renderUseCurrentLocation: currentLocation',
-              currentLocation,
-            );
             var leadForms = addValueToLeadForm(formData1, updatedLeadForm);
             leadForms = addValueToLeadForm(formData2, leadForms);
             var masterFields = await reverseGeocoding(
               currentLocation,
               leadForms,
             );
-            console.log('renderUseCurrentLocation: masterFields', masterFields);
             if (masterFields.length > 0) {
               initData(masterFields, 'first');
               initData(masterFields, 'second');
