@@ -42,14 +42,12 @@ const TransactionSubmitContainer = props => {
       param = {
         transaction_type: setup.transaction_type.type,
         location_id: setup.location.location_id,
-      };
-
-      console.log('param', setup);
+      };      
       GetRequestTransactionSubmitFieldsDAO.find(param)
         .then(res => {
           if (isMount) {
-            if (res.status == Strings.Success) {
-              console.log("response",res.fields)
+            if (res.status == Strings.Success) {              
+              console.log("res.fields",res.fields)
               setFields(res.fields);
             }
           }
@@ -60,23 +58,25 @@ const TransactionSubmitContainer = props => {
     }
   };
 
-  const onAdd = async data => {
-    const user_id = await getTokenData('user_id');
-    const add_product_id = getTimeStamp() + user_id + getRandomNumber(4);
-    const submitData = {
-      ...data,
-      add_product_id: add_product_id,
-    };
-    //props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: submitData});
+  const onAdd = async data => {    
     var res = await generatePostParam(data);
   };
 
   const generatePostParam = async data => {
+
     try {
       var transactionFields = [];
       var files = getAllFiles(addProductList, data);
+      console.log("post data=>" , data);
       Object.keys(data).forEach(key => {
-        transactionFields.push({field_id: key, answer: data[key]});
+        const field = fields.find(item => item.field_id == key);
+        if(field != undefined){
+          if(field.field_type == 'signature' || field.field_type == 'take_photo' ){
+            transactionFields.push({field_id: key});
+          }else{
+            transactionFields.push({field_id: key, answer: data[key]});
+          }          
+        }        
       });
       var items = generateProductPricePostData(productPriceList);
       var added_products = generateAddProductPostData(addProductList);
@@ -93,10 +93,7 @@ const TransactionSubmitContainer = props => {
       var postJsonData = {
         transaction_type: setupData.transaction_type.type,
         location_id: setupData.location.location_id,
-        currency_id: setupData.currency_id.id,
-        // 'cart[items][add_product_id]' : items,
-        // 'cart[added_products]' : added_products,
-        // 'cart[totals]' : totals,
+        currency_id: setupData.currency_id.id,        
         cart: {
           items: items,
           added_products: added_products,
@@ -119,14 +116,7 @@ const TransactionSubmitContainer = props => {
       }
       
       files.forEach(item => {
-        if(item.value instanceof Array){
-
-          //var fileBody =  getFileFormatList(item.value);
-          // postJsonData = {
-          //   ...postJsonData,
-          //   [item.key]: fileBody,
-          // };
-          
+        if(item.value instanceof Array){          
           item.value.forEach((fileName, index) => {
             //[item.key]       
               postJsonData = {
@@ -142,10 +132,7 @@ const TransactionSubmitContainer = props => {
           };
         }        
       });
-
-      // console.log('postJSONData1', JSON.stringify(postJsonData));
-      // console.log('postJSONData2', JSON.stringify(files));
-
+      
       PostRequestDAO.find(
         0,
         postJsonData,

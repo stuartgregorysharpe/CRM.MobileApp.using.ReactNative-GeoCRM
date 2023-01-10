@@ -28,9 +28,7 @@ import {
   SHOW_MORE_COMPONENT,
   SLIDE_STATUS,
 } from '../../../../actions/actionTypes';
-import { getStockItemsFromItems } from '../../Stock/stock/helper';
 
-//const ProductSalesContainer = props => {
 export const ProductSalesContainer = forwardRef((props, ref) => {
 
   const navigation = props.navigation;
@@ -75,7 +73,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
           newList.push(newItem);
         });      
       }
-      console.log("page => ", page);      
+      console.log("page => ", page);
       if(page == 0){
         setLists(newList);
       }else{
@@ -160,33 +158,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     setLists(newList);
   }, [productPriceLists]);
 
-  // useEffect(() => {
-
-   
-    
-  // }, [items]);
-
-  // const lists = useMemo(() => {
-  //   if (
-  //     items != undefined &&
-  //     productPriceLists != undefined &&
-  //     items.length > 0
-  //   ) {
-  //     var newList = [];
-  //     const tmp = [...items];
-  //     tmp.forEach(item => {
-  //       const newItem = {...item};
-  //       const originProducts = [...newItem.products];
-  //       const products = getProducts(originProducts);
-  //       newItem.products = [...products];
-  //       newList.push(newItem);
-  //     });
-
-  //     return newList;
-  //   }
-  //   return [];
-  // }, [items, productPriceLists]);
-
   const groupList = useMemo(() => {
     if (products != undefined && products.length > 0) {
       const tpLists = [...products];
@@ -238,7 +209,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       (storedProductPriceList == null || storedProductPriceList.length == 0) &&
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
-      props.getProductLists();      
+      props.getProductLists();
     }
 
     var defineSetup = await getJsonData('@setup');
@@ -295,7 +266,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       console.log('setupFromConfig: setSelectedLocation', config.location.name);
       setSelectedLocation(config.location.name);
       configProductSetUp(config, type => {
-        if (type === 'changed') {
+        if (type == 'changed') {
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
@@ -309,12 +280,17 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
   };
   const onSetupFieldModalClosed = ({type, value}) => {
-    if (type === Constants.actionType.ACTION_CLOSE) {
+    
+    if (type === Constants.actionType.ACTION_CLOSE) {      
+
       setupFieldModalRef.current.hideModal();
       setupFromConfig(value);
       storeLocalValue('@regret', '');
       dispatch(setRegret(null));
+      //props.getProductLists();
+
     } else if (type == Constants.actionType.ACTION_DONE) {
+
       setupFieldModalRef.current.hideModal();
       if (value.name === 'More') {
         dispatch({type: SLIDE_STATUS, payload: false});

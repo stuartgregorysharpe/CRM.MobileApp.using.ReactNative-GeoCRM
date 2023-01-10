@@ -18,7 +18,6 @@ const  SetupFieldContainer = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [bottomTabs, setBottomTabs] = useState([]);
     
-
     const payload = useSelector(state => state.selection.payload);
     const selectProject = useSelector(state => state.selection.selectProject);
     

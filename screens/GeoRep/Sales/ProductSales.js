@@ -126,7 +126,7 @@ export default function ProductSales(props) {
             setIsLoading(false);
             if (isMount) {
               if (res.status == Strings.Success) {
-                console.log("Product List => ", res.items.length)
+                console.log("Product Lists => ", res.items.length)
                 setSettings(res.settings);
                 dispatch(setSalesSetting(res.settings));
                 productSaleContainerRef.current.updateProductList(res.items, pageNumber);
