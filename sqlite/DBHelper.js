@@ -1,5 +1,6 @@
 
 import { openDatabase } from 'react-native-sqlite-storage';
+import { getJsonData } from '../constants/Storage';
 
 var db = null;
 export const getDBConnection = async () => {
@@ -321,13 +322,13 @@ export async function getLocationInfo (locationId) {
         location_name = res.rows.item(0).location_name;
         address = getFullAddress(res.rows.item(0));
     }else{
-        console.log("No Location ID", locationId)            
+        const checkinLocation =  await getJsonData("@checkin_location");
+        if(checkinLocation != null)
+          return checkinLocation;
     }
     return {name: location_name , address:  address};
   }
-
 }
-
 
 export function getFullAddress (element){
 

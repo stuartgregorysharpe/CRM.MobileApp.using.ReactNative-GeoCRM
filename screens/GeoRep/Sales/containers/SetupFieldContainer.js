@@ -1,4 +1,3 @@
-
 import { View , Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
@@ -34,10 +33,8 @@ const  SetupFieldContainer = (props) => {
 
     const callDefineSetUp = async () => {                
         var defineSetup = await getJsonData('@setup');
-        if(defineSetup != null ){
-            console.log("defineSetup ->" ,defineSetup.location)
+        if(defineSetup != null ){            
             if(defineSetup.location != undefined && defineSetup.location.location_id){
-                console.log("defineSetup.location.location_id", defineSetup.location.location_id)
                 callSetupFieldOptions( defineSetup.location.location_id );
             }
         }else{
@@ -94,7 +91,6 @@ const  SetupFieldContainer = (props) => {
                 return 34;
             }
         }
-
     }
 
     return (

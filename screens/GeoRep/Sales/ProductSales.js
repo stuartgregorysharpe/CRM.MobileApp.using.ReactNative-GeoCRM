@@ -110,14 +110,9 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
-
-    if(search_text != undefined && search_text != ''){
-      setIsEndPage(false);
-    }
+   
     console.log("getApiData", isLoading, isEndPage);
-
-    if(!isLoading && ( !isEndPage || pageNumber == 0) ){
-      
+    if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
         if(pageNumber == 0){
