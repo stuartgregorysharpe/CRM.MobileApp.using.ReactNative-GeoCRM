@@ -33,7 +33,9 @@ const SetupFieldView = (props) => {
 
 	useEffect(() => {
 		if(isClear){
-			clearSetup();
+			if(!isLoading){
+				clearSetup();
+			}			
 			if(props.updateClear){
 				props.updateClear(false)
 			}
@@ -45,14 +47,21 @@ const SetupFieldView = (props) => {
 	}, [ currency, warehouse,   transaction_types]);
 
 	const clearSetup = async() => {		
+		console.log("clear tirger")
 		storeJsonData("@setup", null);
 		initializeSetupData(null, null, null);
 		initializeLocation();
+		if(props.onChangeLocation){
+			const  locationId = await getLocalData("@specific_location_id");		
+			const  locInfo = await getLocationInfo(locationId);
+			const location = {...locInfo , location_id: locationId}
+			props.onChangeLocation(location);
+		}		
 	}
 	
 	const getCheckinLocationInfo = async () => {
 		const  locationId = await getLocalData("@specific_location_id");		
-		const  locInfo = await getLocationInfo(locationId);
+		const  locInfo = await getLocationInfo(locationId);		
 		if(locInfo.name != ''){
 			setSelectedLocation({...locInfo , location_id: locationId});
 		}			
