@@ -117,17 +117,19 @@ export default function ProductSales(props) {
     console.log("getApiData", isLoading, isEndPage);
 
     if(!isLoading && ( !isEndPage || pageNumber == 0) ){
-      if(pageNumber == 0){
-        setIsEndPage(false);
-      }
-      setIsLoading(true);
+      
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
+        if(pageNumber == 0){
+          setIsEndPage(false);
+        }
+        setIsLoading(true);        
         paramData['page_no'] = pageNumber;
         if (search_text != undefined) {
           paramData['search_text'] = search_text;
         }
         storeJsonData('@sale_product_parameter', paramData);
+        console.log("product list param => ", paramData);
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);

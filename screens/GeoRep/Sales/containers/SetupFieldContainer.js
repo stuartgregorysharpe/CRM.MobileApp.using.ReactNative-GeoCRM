@@ -25,8 +25,7 @@ const  SetupFieldContainer = (props) => {
     let isMount = true;
 
     useEffect(() => {
-        initBottomTab();
-        setIsLoading(true);
+        initBottomTab();        
         callDefineSetUp();
         return () => {
             isMount = false;
@@ -48,23 +47,26 @@ const  SetupFieldContainer = (props) => {
     }
 
     const callSetupFieldOptions = (location_id) => {
-        var param = {};        
-        if(location_id  != undefined && location_id != ''){
-            param = {
-                location_id: location_id
-            }
-        }  
-        console.log("param =>", param)      
-        GetRequestSetupFieldDAO.find(param).then((res) => {
-            console.log("res.warehouse", res.warehouse)
-            setTransactinTypes(res.transaction_types);
-            setWarehouse(res.warehouse);
-            setCurrency(res.currency);
-            setIsLoading(false)
-        }).catch((e) => {
-            expireToken(dispatch, e);
-            setIsLoading(false)
-        });
+        if(!isLoading){
+            setIsLoading(true);
+            var param = {};        
+            if(location_id  != undefined && location_id != ''){
+                param = {
+                    location_id: location_id
+                }
+            }  
+            console.log("setup-fields param =>", param)      
+            GetRequestSetupFieldDAO.find(param).then((res) => {
+                console.log("res.warehouse", res.warehouse)
+                setTransactinTypes(res.transaction_types);
+                setWarehouse(res.warehouse);
+                setCurrency(res.currency);
+                setIsLoading(false)
+            }).catch((e) => {
+                expireToken(dispatch, e);
+                setIsLoading(false)
+            });
+        }        
     }
 
     const initBottomTab = () => {
