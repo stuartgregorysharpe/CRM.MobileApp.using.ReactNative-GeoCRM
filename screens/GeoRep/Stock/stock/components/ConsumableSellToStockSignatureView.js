@@ -13,11 +13,11 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import RNFS from 'react-native-fs';
 import {AppText} from '../../../../../components/common/AppText';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
-import {Fonts, Strings, Values} from '../../../../../constants';
+import {Constants, Fonts, Strings, Values} from '../../../../../constants';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 import {useDispatch} from 'react-redux';
-import { generateKey } from '../../../../../constants/Utils';
+import {generateKey} from '../../../../../constants/Utils';
 
 export default function ConsumableSellToStockSignatureView(props) {
   const dispatch = useDispatch();
@@ -69,7 +69,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       Platform.OS === 'ios'
         ? `${RNFS.DocumentDirectoryPath}`
         : `${RNFS.ExternalDirectoryPath}`;
-    const filepath = outputPath + '/sign-' + generateKey()  +  '.png';
+    const filepath = outputPath + '/sign-' + generateKey() + '.png';
     await RNFS.writeFile(
       filepath,
       signature.replace('data:image/png;base64,', ''),
@@ -91,10 +91,22 @@ export default function ConsumableSellToStockSignatureView(props) {
   };
   const handleEnd = () => {
     validateForm();
+    //validateQuantity();
     handleConfirm();
   };
 
-  const onFileSubmit = () => {
+  const onFormSubmit = () => {
+    let isValidQuantity = validateQuantity();
+    if (!isValidQuantity) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.Not_Enough_Stock,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
     let isValidForm = validateForm();
 
     if (!isValidForm) {
@@ -152,6 +164,17 @@ export default function ConsumableSellToStockSignatureView(props) {
     signatureScreenRef.current.clearSignature();
   };
   const handleClear = () => {};
+  const validateQuantity = () => {
+    const {item} = props;
+    if (!item) return true;
+    if (item.stock_type == Constants.stockType.CONSUMABLE) {
+      if (Number(item.qty) < Number(quantity)) {
+        setHasQuantityError(true);
+        return false;
+      }
+    }
+    return true;
+  };
   const validateForm = () => {
     let isValid = true;
     if (!receivedBy || receivedBy == '') {
@@ -267,7 +290,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       <SubmitButton
         title="Submit"
         style={{marginTop: 10}}
-        onSubmit={onFileSubmit}
+        onSubmit={onFormSubmit}
         isLoading={props.isLoading}>
         {' '}
       </SubmitButton>
