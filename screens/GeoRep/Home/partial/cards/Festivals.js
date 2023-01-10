@@ -19,7 +19,7 @@ import IndicatorDotScroller from '../../../../../components/common/IndicatorDotS
 const Festivals = (props) => {
   const colors = [PRIMARY_COLOR, Colors.graph_grey];
   const [festivalData, setFestivalData] = useState([]);
-  const [width, setWidth] = useState(0);
+  const [clientName,setClientName] = useState('');
   const dispatch = useDispatch();
 
 
@@ -31,8 +31,8 @@ const Festivals = (props) => {
     let postData = props.haveFilter ? props.haveFilter : {};
     console.log(postData);
     getApiRequest('lindtdash/festival', postData).then(response => {
-      console.log("festival", JSON.stringify(response));
       let data = response.festivals;
+      setClientName(response?.client_name);
       data.map((x, i) => {
         x.isExpanded = false
         return x
@@ -139,6 +139,20 @@ const Festivals = (props) => {
         {festivalData && festivalData.map((x, i) => {
           return renderFestivalRow(x, i);
         })}
+        <View style={{ flexDirection: 'row',justifyContent:'space-evenly',marginTop:10 }}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ width: 15, height: 15, borderRadius: 3, backgroundColor: PRIMARY_COLOR }} />
+            <AppText title={clientName} type="secondaryBold"
+              style={{ marginLeft: 5 }} color={Colors.textColor}></AppText>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ width: 15, height: 15, borderRadius: 3, backgroundColor: Colors.disabledColor }} />
+            <AppText title={'Variance'} type="secondaryBold"
+              style={{ marginLeft: 5 }} color={Colors.textColor}></AppText>
+          </View>
+
+
+        </View>
       </View>
       <IndicatorDotScroller
         total={props.pageCount ? props.pageCount : 0}
