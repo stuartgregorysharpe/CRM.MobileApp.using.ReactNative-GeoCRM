@@ -68,10 +68,14 @@ const CartContainer = props => {
   const [product, setProduct] = useState();
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
   const visibleMore = useSelector(state => state.rep.visibleMore);
+  let isMout = true;
 
   useEffect(() => {
     loadAddProductLists();
     loadDefinedConfig();
+    return () => {
+      isMout = false;
+    }
   }, []);
 
   const loadAddProductLists = async () => {
@@ -142,7 +146,6 @@ const CartContainer = props => {
       setOutSideTouch(false);
       transactionSubmitModalRef.current.hideModal();      
       openSetup();
-
       if (navigation.canGoBack()) {
         navigation.popToTop();
       }

@@ -183,12 +183,7 @@ const TakePhotoView = props => {
 
   return (
     <View style={[styles.container, props.style]}>
-
-
-
-      
-
-                  
+                      
       <PhotoCameraPickerDialog
         visible={isPicker}
         message={'Choose Image'}

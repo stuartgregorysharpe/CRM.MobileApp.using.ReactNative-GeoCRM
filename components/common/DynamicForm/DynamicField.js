@@ -222,7 +222,7 @@ const DynamicField = props => {
         }}
         onSelectItem={ item => {
 
-          if(mode == "contact_email" || mode == "contact_select"){
+          if(mode == "contact_email" || mode == "contact_select"){            
             onContactItemSelected(item);
           }else if (mode === 'single') {
             updateFormData(field_name, item.value);
@@ -431,6 +431,7 @@ const DynamicField = props => {
       isData = false;
     }
 
+    console.log("is data", isData)
     if (isData) {
       updateFormData(
         field_name,
@@ -438,6 +439,7 @@ const DynamicField = props => {
       );
     } else {
       if(value != undefined){
+        console.log("is value", value , field_name ,item.contact_id)
         updateFormData(field_name, [...value, item.contact_id]);
       }else{
         updateFormData(field_name, [item.contact_id]);

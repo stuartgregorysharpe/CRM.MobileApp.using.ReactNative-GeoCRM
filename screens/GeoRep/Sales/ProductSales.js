@@ -107,6 +107,10 @@ export default function ProductSales(props) {
 
   const getApiData = async (search_text, pageNumber) => {
 
+    if(search_text != undefined && search_text != ''){
+      setIsEndPage(false);
+    }
+    
     if(!isLoading && !isEndPage){
       setIsLoading(true);    
       var paramData = await getJsonData('@sale_product_parameter');
@@ -122,7 +126,7 @@ export default function ProductSales(props) {
             setIsLoading(false);
             if (isMount) {
               if (res.status == Strings.Success) {
-                console.log("res => ", res)
+                console.log("Product List => ", res.items.length)
                 setSettings(res.settings);
                 dispatch(setSalesSetting(res.settings));
                 productSaleContainerRef.current.updateProductList(res.items, pageNumber);

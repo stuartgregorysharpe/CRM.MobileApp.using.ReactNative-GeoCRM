@@ -420,6 +420,31 @@ export function getFileFormat(path) {
   };
 }
 
+
+export function getFileFormatList(paths) {
+
+  var uris = [];
+  var types = [];
+  var names = [];
+  paths.forEach((path) => {
+    const words = path.split('/');
+    const ext = words[words.length - 1].split('.');    
+    uris.push(path);
+    types.push('image/' + ext[1]);
+    names.push(words[words.length - 1]);
+  });
+
+  return {
+    uri: uris,
+    type: types,
+    name: names,
+  };
+
+
+}
+
+
+
 export function numberFieldValidator(numberText) {
   var numberRegex = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
   return numberRegex.test(numberText);

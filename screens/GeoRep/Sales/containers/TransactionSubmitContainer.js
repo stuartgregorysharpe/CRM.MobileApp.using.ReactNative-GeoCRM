@@ -4,7 +4,7 @@ import {
   GetRequestTransactionSubmitFieldsDAO,
   PostRequestDAO,
 } from '../../../../DAO';
-import {expireToken, getFileFormat} from '../../../../constants/Helper';
+import {expireToken, getFileFormat, getFileFormatList} from '../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
 import {Constants, Strings} from '../../../../constants';
 import {getJsonData, getTokenData} from '../../../../constants/Storage';
@@ -120,12 +120,21 @@ const TransactionSubmitContainer = props => {
       
       files.forEach(item => {
         if(item.value instanceof Array){
-          item.value.forEach((fileName) => {
-            postJsonData = {
-              ...postJsonData,
-              [item.key]: getFileFormat(fileName),
-            };
+
+          //var fileBody =  getFileFormatList(item.value);
+          // postJsonData = {
+          //   ...postJsonData,
+          //   [item.key]: fileBody,
+          // };
+          
+          item.value.forEach((fileName, index) => {
+            //[item.key]       
+              postJsonData = {
+                 ...postJsonData,
+                 [`${item.key}${`[${index}]`}`]: getFileFormat(fileName),
+              };
           });
+
         }else{
           postJsonData = {
             ...postJsonData,
@@ -133,7 +142,10 @@ const TransactionSubmitContainer = props => {
           };
         }        
       });
-      console.log('postJSONData1', JSON.stringify(postJsonData));
+
+      // console.log('postJSONData1', JSON.stringify(postJsonData));
+      // console.log('postJSONData2', JSON.stringify(files));
+
       PostRequestDAO.find(
         0,
         postJsonData,
@@ -175,12 +187,18 @@ const TransactionSubmitContainer = props => {
       }
     });
     fields.forEach(item => {
-      if (item.field_type == 'signature' || item.field_type == 'take_photo') {
+      if (item.field_type == 'signature') {        
+        tmpList.push({
+          key: `signatures[${item.field_id}]`,
+          value: formData[item.field_id],
+        });
+      }else if (item.field_type == 'take_photo'){
         tmpList.push({
           key: `fieldPhotos[${item.field_id}]`,
           value: formData[item.field_id],
         });
       }
+
     });
     return tmpList;
   };
