@@ -11,6 +11,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {expireToken, getPostParameter} from '../../../../../constants/Helper';
+import {Notification} from '../../../../../components/modal/Notification';
 
 export default function UpdateCustomerContainer(props) {
   const {locationId} = props;
@@ -175,6 +176,7 @@ export default function UpdateCustomerContainer(props) {
         title={'Update'}
         onSubmit={onAdd}
       />
+      <Notification />
     </View>
   );
 }
