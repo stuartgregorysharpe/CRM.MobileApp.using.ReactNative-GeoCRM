@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React , { useEffect, useState} from 'react'
+import React from 'react'
 import { Colors, Fonts } from '../../../../constants'
 import { boxShadow, style } from '../../../../constants/Styles'
 import { Button } from '../../../../components/shared/Button'
@@ -16,7 +16,7 @@ const SaleType = (props) => {
 
 					<Text style={styles.shadowBoxText}>{'Sale Type'}</Text>
 
-					<View style={{flex:1 , flexDirection:'row', justifyContent:'flex-end'}}>
+					<View style={{flex:1 , paddingLeft:10, flexDirection:'row', justifyContent:'flex-start'}}>
 						{
 							transaction_types != null && transaction_types.options.map((item, index) => {
 								return (
@@ -26,14 +26,14 @@ const SaleType = (props) => {
 										selectedButtonStyle={styles.selectedButtonStyle}
 										textStyle={styles.textStyle}
 										onTaped={selectedSaleType != undefined && selectedSaleType.type === item.type} 
-										onClick={()=>{
-											console.log("item" , item)
+										onClick={()=>{											
 											onSelectedSaleType(item);							
 											onWarehouseRequired(item.warehouse_required);
 									}} />
 								)								
 							})
-						}												
+						}			
+																
 
 					</View>
 					

@@ -12,6 +12,7 @@ export default function DevicePriorityModalContainer(props) {
         
     const dispatch = useDispatch()
     const { device } = props;
+    if(!device) return null;
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = (isPrimary) => {
