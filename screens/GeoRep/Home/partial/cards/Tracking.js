@@ -38,29 +38,38 @@ const Tracking = (props) => {
                     <AppText style={{ flex: 1, paddingVertical: 5, marginLeft: 5 }} title="Actual"
                         type="secondaryBold" color={whiteLabel().inactiveTabText} />
                     <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                    <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }}
-                        title="Prev Wk" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    <View style={{ flex: 1.1 }}>
+                        <AppText style={{ paddingVertical: 5, paddingHorizontal: 10 }}
+                            title="Prev Wk" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    </View>
+
                     <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                    <AppText style={{ flex: 1, textAlign: 'center', paddingVertical: 5 }}
-                        title="Lindt RSP" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    <View style={{ flex: 1.1 }}>
+                        <AppText style={{ paddingVertical: 5, paddingHorizontal: 6 }}
+                            title="Lindt RSP" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    </View>
                 </View>
                 {trackingData.map((x, i) => {
                     return (
                         <View key={i} style={{ flexDirection: 'row', marginHorizontal: 10 }}>
-                            <AppText style={{ flex: 2, paddingVertical: 5 }} title={x.label} type="secondaryBold"
-                                color={Colors.textColor} />
+                            <View style={{ flex: 2 }}>
+                                <AppText style={{ paddingVertical: 5,paddingRight:5 }} title={x.label}
+                                    type="secondaryBold"
+                                    color={Colors.textColor} />
+                            </View>
+
                             <AppText style={{ flex: 1, paddingVertical: 5, marginLeft: 5 }}
                                 title={x.actual} type="secondaryBold"
                                 color={Colors.textColor} />
                             <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                            <View style={{ flex: 1 }}>
+                            <View style={{ flex: 1.1 }}>
                                 <AppText style={{ paddingVertical: 5, paddingHorizontal: 10 }}
                                     title={x.prev_wk} type="secondaryBold"
                                     color={Colors.textColor} />
                             </View>
 
                             <View style={{ width: 1, backgroundColor: whiteLabel().inactiveTabText }} />
-                            <View style={{ flex: 1 }}>
+                            <View style={{ flex: 1.1 }}>
                                 <AppText style={{ paddingVertical: 5, paddingHorizontal: 6 }}
                                     title={x.rsp} type="secondaryBold"
                                     color={Colors.textColor} />
