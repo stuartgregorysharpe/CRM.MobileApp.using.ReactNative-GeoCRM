@@ -311,22 +311,30 @@ export const getInsertValues = async ( element ) => {
       return `(${body2})`;      
 }
 
-export async function getLocationInfo (locationId) {
+export async function getLocationInfoFromLocal (locationId) {
 
   if(locationId != 0){
     var query = `SELECT * FROM locations_core_master_data WHERE location_id = ?`; 
     var location_name = '';
     var address = '';
-    var res = await ExecuteQuery(query, [locationId]);
-    if( res != undefined  && res.rows.length > 0){
-        location_name = res.rows.item(0).location_name;
-        address = getFullAddress(res.rows.item(0));
-    }else{
-        const checkinLocation =  await getJsonData("@checkin_location");
-        if(checkinLocation != null)
-          return checkinLocation;
+    try{
+
+      var res = await ExecuteQuery(query, [locationId]);
+      if( res != null && res != undefined  && res.rows.length > 0){
+          location_name = res.rows.item(0).location_name;
+          address = getFullAddress(res.rows.item(0));
+      }else{
+          const checkinLocation =  await getJsonData("@checkin_location");
+          if(checkinLocation != null){
+            return {name: checkinLocation.location_name.value, address: checkinLocation.address, location_id: locationId};
+          }            
+      }      
+    }catch(e){
+      console.log(" excute error :", e);
     }
+    
     return {name: location_name , address:  address};
+
   }
 }
 

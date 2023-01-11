@@ -6,12 +6,12 @@ import SearchLocationContainer from '../../Stock/stock/container/SearchLocationC
 import LocationInfo from './LocationInfo'
 import { useSelector } from 'react-redux'
 import { getJsonData, getLocalData, storeJsonData } from '../../../../constants/Storage'
-import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors, Fonts, Values } from '../../../../constants'
-import { cos } from 'react-native-reanimated'
+import { getLocationInfo } from '../../../../actions/location.action'
+import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
 
 const SetupFieldView = (props) => {
 
@@ -53,18 +53,29 @@ const SetupFieldView = (props) => {
 		initializeLocation();
 		if(props.onChangeLocation){
 			const  locationId = await getLocalData("@specific_location_id");		
-			const  locInfo = await getLocationInfo(locationId);
+			const  locInfo = await getLocationInfoFromLocal(locationId);
 			const location = {...locInfo , location_id: locationId}
 			props.onChangeLocation(location);
 		}		
 	}
 	
 	const getCheckinLocationInfo = async () => {
+
 		const  locationId = await getLocalData("@specific_location_id");		
-		const  locInfo = await getLocationInfo(locationId);		
+		const  locInfo = await getLocationInfoFromLocal(locationId);
 		if(locInfo.name != ''){
 			setSelectedLocation({...locInfo , location_id: locationId});
-		}			
+		}else{
+			// get location info from online api call.
+			getLocationInfo(locationId).then( async(res) => {
+				console.log(" location info api =>" , res)
+				await storeJsonData("@checkin_location", res);
+				var location = {name: res.location_name.value , address: res.address , location_id: locationId};
+				setSelectedLocation(location);
+			}).catch((e) => {
+	
+			});
+		}
 	}
 	
 	const initializeLocation = async() => {
