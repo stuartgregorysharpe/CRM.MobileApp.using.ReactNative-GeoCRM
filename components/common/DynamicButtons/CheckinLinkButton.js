@@ -43,6 +43,7 @@ const CheckinLinkButton = props => {
   const [checkinTypes, setCheckInTypes] = useState([]);
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   var checkin_type_id = '';
   var reason_id = '';
@@ -139,6 +140,7 @@ const CheckinLinkButton = props => {
   };
 
   const _callCheckedIn = async () => {
+    if (isLoading) return false;
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -148,7 +150,7 @@ const CheckinLinkButton = props => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
-
+    setIsLoading(true);
     PostRequestDAO.find(
       locationId,
       postData,
@@ -186,7 +188,7 @@ const CheckinLinkButton = props => {
             );
           }
         });
-
+        setIsLoading(false);
         navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
           locationId: locationId,
           page: 'checkin',
@@ -194,6 +196,7 @@ const CheckinLinkButton = props => {
         onFinishProcess();
       })
       .catch(e => {
+        setIsLoading(false);
         expireToken(dispatch, e);
       });
   };

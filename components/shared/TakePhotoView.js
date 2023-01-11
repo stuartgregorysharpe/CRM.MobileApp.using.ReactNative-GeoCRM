@@ -42,10 +42,15 @@ const TakePhotoView = props => {
   };
   
   const showSelectionDialog = () => {
+
+ 
     
-    if( photos == undefined || maxSize == undefined || maxSize == -1  || photos.length < maxSize){
-      
-      if(image_capture != undefined && image_capture == "1" && image_gallery != undefined && image_gallery == "1"){
+    if( photos == '' || photos == undefined || maxSize == undefined || maxSize == -1  || photos.length < maxSize){
+                  
+      if( 
+        (image_capture != undefined && image_capture == "1" && image_gallery != undefined && image_gallery == "1") ||
+        (image_capture == undefined && image_gallery == undefined)
+        ){
         setIsPicker(true);
       }
   

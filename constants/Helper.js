@@ -18,7 +18,6 @@ import LifeContentLibraryScreen from '../screens/GeoLife/ContentLibraryScreen';
 import CrmContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
-import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
@@ -27,7 +26,6 @@ import AccessScreen from '../screens/GeoLife/AccessScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import ProductSales from '../screens/GeoRep/Sales/ProductSales';
 import ProductSalesNavigator from '../screens/GeoRep/Sales/ProductSalesNavigator';
-import HomeNavigator from '../screens/GeoRep/Home/HomeNavigator';
 
 export const WHATS_APP_LINK =
   'https://wa.me/27608477174?text=Hi!%20I%20have%20a%20support%20request';
@@ -39,7 +37,7 @@ export function getPageNameByLinker(selectedProject, linker) {
       return {
         linker: linker,
         name: 'Home',
-        router: HomeNavigator,
+        router: HomeScreen,
         activeIcon: 'Home_Black',
         inActiveIcon: 'Home_Black_Gray',
       };
@@ -126,15 +124,7 @@ export function getPageNameByLinker(selectedProject, linker) {
         router: RepMessagesScreen,
         activeIcon: 'Pipeline',
         inActiveIcon: 'Pipeline_Gray',
-      };
-    case 'offline_sync':
-      return {
-        linker: linker,
-        name: 'OfflineSync',
-        router: OfflineSyncScreen,
-        activeIcon: 'Pipeline',
-        inActiveIcon: 'Pipeline_Gray',
-      };
+      };    
     case 'recorded_sales':
       return {
         linker: linker,

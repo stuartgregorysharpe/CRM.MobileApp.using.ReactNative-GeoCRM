@@ -22,7 +22,10 @@ const CustomerSaleHistoryModal = React.forwardRef((props, ref) => {
         onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
       }}
       {...props}>
-      <CustomerSalesHistoryContainer {...props} />
+      <CustomerSalesHistoryContainer
+        {...props}
+        onButtonAction={onButtonAction}
+      />
     </CModal>
   );
 });

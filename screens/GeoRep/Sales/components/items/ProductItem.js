@@ -23,14 +23,8 @@ const ProductItem = props => {
     setQty(qty);
   };
 
-  const onChangeText = qty => {
-    setQty(qty);
-  };
-
   const onEditDone = qty => {
     setQty(qty);
-    console.log("done",qty)
-    console.log("qty", qty, props)
     if (props.geProductPrice) {
       props.geProductPrice(item, qty);
     }

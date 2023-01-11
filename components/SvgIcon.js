@@ -473,14 +473,6 @@ const Account_Circle = `
   </svg>
 `;
 
-const Cloud_Off = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.435" viewBox="0 0 70.435 70.435">
-    <g id="cloud_off_black_24dp" transform="translate(-0.001)">
-      <path id="Path_4396" data-name="Path 4396" d="M0,0H70.435V70.435H0Z" transform="translate(0.001)" fill="none"/>
-      <path id="Path_4397" data-name="Path 4397" d="M70.435,36.554A14.6,14.6,0,0,0,56.788,22,21.981,21.981,0,0,0,35.218,4.271,21.7,21.7,0,0,0,24.506,7.118l4.373,4.373a15.836,15.836,0,0,1,6.339-1.35A16.132,16.132,0,0,1,51.359,26.282v1.467h4.4A8.79,8.79,0,0,1,61.014,43.6l4.138,4.138A14.576,14.576,0,0,0,70.435,36.554ZM12.942,3.86,8.8,8l8.129,8.129H15.7a17.6,17.6,0,0,0,1.908,35.1H52.034L57.9,57.1l4.138-4.138Zm4.666,41.5a11.739,11.739,0,0,1,0-23.478h5.077L46.164,45.358Z" transform="translate(0.001 7.468)" fill="#133c8b"/>
-    </g>
-  </svg>
-`;
 
 const Support_Agent_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="71" height="70" viewBox="0 0 71 70">
@@ -1293,7 +1285,12 @@ const Sales_Volume_Toggle_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width=
 </g>
 </svg>`;
 
+
 const Bottom_Arrow_White = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"> <path d="M24 30.75 12 18.75 14.15 16.6 24 26.5 33.85 16.65 36 18.8Z" fill="#fff"/></svg>`;
+
+
+const Google_Map_Icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232597 333333" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd"><path d="M151444 5419C140355 1916 128560 0 116311 0 80573 0 48591 16155 27269 41534l54942 46222 69232-82338z" fill="#1a73e8"/><path d="M27244 41534C10257 61747 0 87832 0 116286c0 21876 4360 39594 11517 55472l70669-84002-54942-46222z" fill="#ea4335"/><path d="M116311 71828c24573 0 44483 19910 44483 44483 0 10938-3957 20969-10509 28706 0 0 35133-41786 69232-82313-14089-27093-38510-47936-68048-57286L82186 87756c8166-9753 20415-15928 34125-15928z" fill="#4285f4"/><path d="M116311 160769c-24573 0-44483-19910-44483-44483 0-10863 3906-20818 10358-28555l-70669 84027c12072 26791 32159 48289 52851 75381l85891-102122c-8141 9628-20339 15752-33948 15752z" fill="#fbbc04"/><path d="M148571 275014c38787-60663 84026-88210 84026-158728 0-19331-4738-37552-13080-53581L64393 247140c6578 8620 13206 17793 19683 27900 23590 36444 17037 58294 32260 58294 15172 0 8644-21876 32235-58320z" fill="#34a853"/></svg>`;
+
 
 const Sell_In_Icon = `<svg id="local_atm_black_24dp" xmlns="http://www.w3.org/2000/svg" width="43.07" height="43.07" viewBox="0 0 43.07 43.07">
 <path id="Path_4234" data-name="Path 4234" d="M0,0H43.07V43.07H0Z" fill="none"/>
@@ -1322,6 +1319,7 @@ const Compliance_Icon = `<svg id="playlist_add_check_circle_black_24dp" xmlns="h
 <rect id="Rectangle_2630" data-name="Rectangle 2630" width="46" height="46" fill="none"/>
 <path id="Path_4248" data-name="Path 4248" d="M21.167,5.833A15.333,15.333,0,1,1,5.833,21.167,15.354,15.354,0,0,1,21.167,5.833Zm0-3.833A19.167,19.167,0,1,0,40.333,21.167,19.174,19.174,0,0,0,21.167,2ZM25,17.333H11.583v3.833H25Zm0-5.75H11.583v3.833H25ZM11.583,26.917h5.75V23.083h-5.75Zm23-3.048-2.7-2.7L25.1,27.952l-2.7-2.7-2.7,2.7,5.424,5.424Z" transform="translate(1.833 1.833)" fill=${actionIconBackground}/>
 </svg>`;
+
 
 export default ({
   icon,
@@ -1525,9 +1523,7 @@ export default ({
         height={height}
       />
     )}
-    {icon == 'Cloud_Off' && (
-      <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />
-    )}
+    
     {icon == 'Support_Agent' && (
       <SvgXml style={style} xml={Support_Agent} width={width} height={height} />
     )}
@@ -2019,6 +2015,11 @@ export default ({
 
     {icon == 'Bottom_Arrow_White' && (
       <SvgXml style={style} xml={Bottom_Arrow_White} width={width} height={height} />
+    )}
+
+
+    {icon == 'Google_Map_Icon' && (
+      <SvgXml style={style} xml={Google_Map_Icon} width={width} height={height} />
     )}
 
     {icon == 'Sell_In_Icon' && (

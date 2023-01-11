@@ -21,7 +21,7 @@ const SetupFieldModal = React.forwardRef((props, ref) => {
     return (        
         <CModal
             ref={ref}            
-            modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+            //modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
             closableWithOutsideTouch
             onClear={() => {
                 //onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                
