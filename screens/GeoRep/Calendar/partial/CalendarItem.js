@@ -79,6 +79,9 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         goBack={async res => {
+          if (props.onRefresh) {
+            props.onRefresh();
+          }
           dispatch(
             showNotification({
               type: 'success',
