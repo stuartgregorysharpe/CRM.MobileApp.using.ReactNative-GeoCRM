@@ -110,8 +110,7 @@ const Compliance = (props) => {
                 activeStrokeColor={whiteLabel().graphs.primary}
                 progressFormatter={(value) => {
                     'worklet';
-                      
-                    return value; // 2 decimal places
+                    return value;
                   }}
             />
         )
