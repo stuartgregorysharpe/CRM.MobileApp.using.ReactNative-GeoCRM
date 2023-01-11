@@ -78,6 +78,21 @@ const CartContainer = props => {
     }
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      refreshList();      
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const refreshList = async () => {  
+    var defineSetup = await getJsonData('@setup');
+    console.log("defineSetup",defineSetup)
+    if (defineSetup == null) {      
+      openSetup();
+    }
+  };
+
   const loadAddProductLists = async () => {
     const addProductList = await getJsonData('@add_product');
     if (addProductList != null && addProductList != undefined) {
@@ -100,6 +115,7 @@ const CartContainer = props => {
   const onSetupFieldModalClosed = async ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
       configProductSetUp(value, async type => {
+        console.log("store setup data", value);
         storeJsonData('@setup', value);
         if (type === 'changed') {
 

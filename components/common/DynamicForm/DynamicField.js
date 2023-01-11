@@ -390,7 +390,7 @@ const DynamicField = props => {
         }} />
     );
   }
-
+    
   const renderSignature = () => {
     return (
       <SignatureSignView 
@@ -499,7 +499,7 @@ const DynamicField = props => {
   }
 
   if(field_type == 'multiple') {
-    return renderDropdown('multi');
+    return renderDropdown('single');
   }
 
   if(field_type == 'contact_email') {

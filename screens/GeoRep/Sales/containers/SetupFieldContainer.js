@@ -33,12 +33,14 @@ const  SetupFieldContainer = (props) => {
 
     const callDefineSetUp = async () => {                
         var defineSetup = await getJsonData('@setup');
+        console.log("defineSetup =>", defineSetup);
         if(defineSetup != null ){            
             if(defineSetup.location != undefined && defineSetup.location.location_id){
                 callSetupFieldOptions( defineSetup.location.location_id );
             }
         }else{
             const location_id = await getLocalData("@specific_location_id");
+            console.log(" call location_id",location_id)
             callSetupFieldOptions( location_id );
         }
     }

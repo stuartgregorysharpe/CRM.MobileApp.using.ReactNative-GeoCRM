@@ -168,7 +168,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [products, productPriceLists]);
 
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
-  
+
   useEffect(() => {
     console.log('start: checkAndOpenSetup');
     checkAndOpenSetup();
@@ -202,14 +202,13 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const refreshList = async () => {
     var storedProductPriceList = await getJsonData('@product_price');
     var storedAddProductList = await getJsonData('@add_product');
+    var defineSetup = await getJsonData('@setup');
     if (
       (storedProductPriceList == null || storedProductPriceList.length == 0) &&
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
-      props.getProductLists();
+      props.getProductLists(defineSetup , '' , 0);
     }
-
-    var defineSetup = await getJsonData('@setup');
     if (defineSetup == null) {
       console.log('refreshList: checkAndOpenSetup');
       checkAndOpenSetup();      
