@@ -1,4 +1,4 @@
-import {View, BackHandler} from 'react-native';
+import {View} from 'react-native';
 import React, {useState, useEffect, useRef, useMemo, useCallback , useImperativeHandle , forwardRef} from 'react';
 import ProductSalesView from '../components/ProductSalesView';
 import SetupFieldModal from '../modal/SetupFieldModal';
@@ -85,8 +85,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
 
   const getProducts = useCallback(
-    products => {
-      //const getProducts = (products ) => {
+    products => {      
       var list = [];
       if (products != undefined) {
         products.forEach(element => {
@@ -169,6 +168,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [products, productPriceLists]);
 
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
+  
   useEffect(() => {
     console.log('start: checkAndOpenSetup');
     checkAndOpenSetup();
@@ -181,10 +181,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
   }, [props.regret_item]);
   const checkAndOpenSetup = async () => {
-    const regretId = await getLocalData('@regret');
-    console.log('checkAndOpenSetup try');
-    if (!props.regret_item && !regretId && regretId != '') {
-      console.log('checkAndOpenSetup open modal');
+    const regretId = await getLocalData('@regret');    
+    if (!props.regret_item && !regretId && regretId != '') {      
       setupFieldModalRef.current.showModal();
     }
   };
@@ -196,8 +194,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {      
-      refreshList();
-      //configAddProductCount();
+      refreshList();      
     });
     return unsubscribe;
   }, [navigation]);
@@ -404,7 +401,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
     var defineSetup = await getJsonData('@setup');
     if (defineSetup != null) {
-      //defineSetup.location.location_id
+      
       setIsUpdatingProductPrice(true);
       const param = {
         product_id: product.product_id,
@@ -558,8 +555,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         products={groupList}
         settings={settings}
         geProductPrice={geProductPrice}
-        openProductDetail={openProductDetail}
-        //backButtonDisabled={true}
+        openProductDetail={openProductDetail}        
         closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         isUpdatingProductPrice={isUpdatingProductPrice}
