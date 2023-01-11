@@ -154,6 +154,7 @@ const CSingleSelectInput = props => {
             selectModalRef.current.hideModal();
           }else{
             props.onClear();
+            selectModalRef.current.hideModal();
           }
         }}
       />
