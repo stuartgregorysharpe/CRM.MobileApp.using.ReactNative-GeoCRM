@@ -26,7 +26,7 @@ const ProductItem = props => {
         }
       }}>
       <Text style={styles.text}>{product_type}</Text>
-      <Text style={styles.text}>{product_name}</Text>
+      <Text style={[styles.text]}>{product_name}</Text>
       <Text style={[styles.text, {marginLeft: 16}]}>{brand}</Text>
     </TouchableOpacity>
   );
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 40,
+    minHeight: 40,
   },
 
   text: {
