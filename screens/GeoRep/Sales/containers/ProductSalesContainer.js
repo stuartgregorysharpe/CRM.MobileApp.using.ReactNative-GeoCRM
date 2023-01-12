@@ -297,18 +297,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       console.log("action done =----", visibleMore)
       setupFieldModalRef.current.hideModal();
       if (value?.name === 'More') {
-
-        dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-        if (visibleMore != '') {
-          //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-        }
-
-        //dispatch({type: SLIDE_STATUS, payload: false});
-        //if (visibleMore != '') {
-          //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-        //} else {
-        //dispatch({type: CHANGE_MORE_STATUS, payload: 0});  
-        //}
+        dispatch({type: CHANGE_MORE_STATUS, payload: 0});        
       } else {
         navigation.navigate(value.name);
       }

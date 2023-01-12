@@ -165,9 +165,7 @@ export default function FormQuestionContainer(props) {
       var form_answers = [];
       form_answers = getFormQuestionData(formQuestions);
       var files = [];
-      files = getFormQuestionFile(formQuestions);
-
-      console.log(" post files ========= " , files)
+      files = getFormQuestionFile(formQuestions);      
       props.onButtonAction({
         type: Constants.actionType.ACTION_DONE,
         value: {form_answers: form_answers, files: files, form: form},

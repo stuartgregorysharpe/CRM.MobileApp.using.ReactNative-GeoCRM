@@ -61,15 +61,12 @@ export default function HeaderRightView({navigation}) {
   };
 
   const setOnlineOffline = async () => {
-    var isOnline = await getLocalData('@online');
-
-    console.log('initialize setOnlineOffline ==== ', isOnline);
+    var isOnline = await getLocalData('@online');    
     if (isOnline === '1' || isOnline === undefined) {
       setToggleSwitch(true);
       dispatch({type: CHANGE_OFFLINE_STATUS, payload: false});
     } else {
-      setToggleSwitch(false);
-      console.log('initialize setOnlineOffline ==== ', isOnline);
+      setToggleSwitch(false);  
       dispatch({type: CHANGE_OFFLINE_STATUS, payload: true});
       await storeJsonData(Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS, []);
     }
