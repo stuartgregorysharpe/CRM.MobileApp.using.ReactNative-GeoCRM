@@ -21,6 +21,7 @@ import {
 } from '../actions/actionTypes';
 import {setToken, storeLocalValue} from '../constants/Storage';
 import {setRegret} from '../actions/sales.action';
+import {useNavigation} from '@react-navigation/native';
 
 const lists = {
   0: [
@@ -231,6 +232,8 @@ const lists = {
 };
 
 export default function More() {
+
+
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
@@ -239,6 +242,7 @@ export default function More() {
   const [componentListOne, setComponentListOne] = useState([]);
   const [componentListTwo, setComponentListTwo] = useState([]);
   const [componentListThree, setComponentListThree] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
@@ -334,15 +338,21 @@ export default function More() {
                         await storeLocalValue('@regret', '');
                         dispatch(setRegret(null));
                       }
+                      console.log("clicked" , list.navigator);
                       dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                       dispatch({
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
                       });
+
                       dispatch({
                         type: SHOW_MORE_COMPONENT,
                         payload: list.navigator,
                       });
+
+                      //console.log("navigation",navigation)
+                      //navigation.navigate(list.navigator);
+
                     }}>
                     <SvgIcon
                       style={{marginRight: 8}}
@@ -399,10 +409,14 @@ export default function More() {
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
                       });
+
                       dispatch({
                         type: SHOW_MORE_COMPONENT,
                         payload: list.navigator,
                       });
+
+                      console.log("navigation",navigation)
+                      //navigation.navigate(list.navigator);
                     }}>
                     <SvgIcon
                       style={{marginRight: 8}}

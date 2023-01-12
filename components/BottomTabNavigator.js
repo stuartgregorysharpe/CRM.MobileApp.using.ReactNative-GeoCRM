@@ -70,10 +70,11 @@ export default function RepBottomTabNavigator({navigation}) {
   };
 
   useEffect(() => {
+    
     if (visibleMore != '') {
       navigation.navigate('More');
       setTimeout(() => {
-        dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+        //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
       });
     }
   }, [visibleMore]);
@@ -166,14 +167,20 @@ export default function RepBottomTabNavigator({navigation}) {
               tabPress: e => {
                 if (element.name === 'More') {
                   e.preventDefault();
-                  dispatch({type: SLIDE_STATUS, payload: false});
+
+                  //dispatch({type: SLIDE_STATUS, payload: false});
                   console.log('revisible mo', visibleMore);
-                  if (visibleMore != '') {
-                    //navigation.navigate("More");
-                    dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                  } else {
-                    dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-                  }
+                  dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+
+                  // if (visibleMore != '') {
+                  //   //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  // } else {
+                  //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+                  // }
+
+                }else{
+                  console.log("bottom tab clicked")
+                  dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                 }
               },
             })}

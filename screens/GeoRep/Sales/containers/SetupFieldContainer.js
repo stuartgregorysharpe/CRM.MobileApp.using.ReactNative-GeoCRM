@@ -8,6 +8,7 @@ import { Constants } from '../../../../constants';
 import { getBottomTabs } from '../../../../components/helper';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
 import { getJsonData, getLocalData } from '../../../../constants/Storage';
+import { SHOW_MORE_COMPONENT } from '../../../../actions/actionTypes';
 
 const  SetupFieldContainer = (props) => {
     
@@ -32,15 +33,13 @@ const  SetupFieldContainer = (props) => {
     }, []);
 
     const callDefineSetUp = async () => {                
-        var defineSetup = await getJsonData('@setup');
-        console.log("defineSetup =>", defineSetup);
+        var defineSetup = await getJsonData('@setup');        
         if(defineSetup != null ){            
             if(defineSetup.location != undefined && defineSetup.location.location_id){
                 callSetupFieldOptions( defineSetup.location.location_id );
             }
         }else{
-            const location_id = await getLocalData("@specific_location_id");
-            console.log(" call location_id",location_id)
+            const location_id = await getLocalData("@specific_location_id");            
             callSetupFieldOptions( location_id );
         }
     }
@@ -127,9 +126,11 @@ const  SetupFieldContainer = (props) => {
                     bottomTabs.map((item, index) =>{
                         return (
                             <BottomTabItem  
-                                onItemPressed={() => {                                    
-                                    props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});
-                                    
+                                onItemPressed={() => {                 
+                                    if(item?.name != 'More') {
+                                        dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                                    }                                    
+                                    props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
                                 }}
                                 key={index} item={item} 
                             />

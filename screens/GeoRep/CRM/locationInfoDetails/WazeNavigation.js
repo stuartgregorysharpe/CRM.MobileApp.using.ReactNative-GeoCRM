@@ -181,6 +181,7 @@ export default function WazeNavigation(props) {
 
 			<ViewRouteModal 
 				title='View Route'
+				hideClear
 			  	ref={viewRouteModalRef}
 			  	coordinates={coordinates}
 			  	currentLocation={currentLocation}

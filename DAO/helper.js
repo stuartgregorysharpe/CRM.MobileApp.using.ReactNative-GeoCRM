@@ -12,7 +12,7 @@ export function checkConnectivity(){
     return new Promise( async function(resolve, reject) {   
 
         var isOnline = await getLocalData("@online");        
-        console.log("isOnline",isOnline)
+        
         if(isOnline === "0"){
             resolve(false);
         }else{
