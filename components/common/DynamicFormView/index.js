@@ -5,7 +5,7 @@ import {SubmitButton} from '../../shared/SubmitButton';
 import DynamicForm from '../DynamicForm';
 
 const DynamicFormView = props => {
-  const {page, buttonTitle, fields, isClear} = props;
+  const {page, buttonTitle, fields, isClear, isLoading} = props;
   if (!fields) return null;
 
   const addProductRef = useRef(null);
@@ -66,8 +66,9 @@ const DynamicFormView = props => {
   };
 
   return (
-    <ScrollView style={[hasTextInput ? {height: 300} : {}]} scrollEnabled={scrollEnabled}>
-
+    <ScrollView
+      style={[hasTextInput ? {height: 300} : {}]}
+      scrollEnabled={scrollEnabled}>
       <DynamicForm
         ref={addProductRef}
         formData={formData}
@@ -75,17 +76,16 @@ const DynamicFormView = props => {
         updateFormData={formData => {
           setFormData(formData);
         }}
-        
-        setScrollEnabled={(flag) => {
+        setScrollEnabled={flag => {
           setScrollViewEnabled(flag);
         }}
-
       />
 
       <SubmitButton
         title={buttonTitle}
         onSubmit={onAdd}
         style={{marginTop: 20}}
+        isLoading={isLoading}
       />
     </ScrollView>
   );
