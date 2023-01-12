@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import DirectionMap from '../../../../services/Map/DirectionMap';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 
-const ViewRouteMap = (props) => {
+const ViewRouteMap = (props) => { // We need to remove this page , check it out later.
 
     const isShowCustomNavigationHeader = props.isDeeplink != undefined;
     const [destination, setDestinationLocation] = useState(props.route.params.location);

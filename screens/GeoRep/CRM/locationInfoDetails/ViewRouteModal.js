@@ -1,9 +1,8 @@
 import React from 'react';
-import {Dimensions, ScrollView , View} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import CModal from '../../../../components/common/CModal';
-import {Constants, Values} from '../../../../constants';
+import {Constants} from '../../../../constants';
 import DirectionMap from '../../../../services/Map/DirectionMap';
-import {LocationInfoDetails} from './LocationInfoDetails';
 
 const ViewRouteModal = React.forwardRef((props, ref) => {
 
@@ -25,8 +24,7 @@ const ViewRouteModal = React.forwardRef((props, ref) => {
 		onClear={() => {     
 			onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
 		}}
-		onClose={() => {
-			console.log(" modal closed");
+		onClose={() => {			
 			onButtonAction({type: Constants.actionType.ACTION_CLOSE});
 		}}
 		{...props}>
