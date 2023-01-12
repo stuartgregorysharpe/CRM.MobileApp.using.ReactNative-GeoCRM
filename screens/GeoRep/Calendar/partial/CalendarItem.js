@@ -77,71 +77,49 @@ export function CalendarItem(props) {
   };
 
   const renderStatusButton = () => {
-    if (
-      item.checkin_state === 'checkin_required' ||
-      item.checkin_state === 'checkin_completed'
-    ) {
-      return (
-        <CheckinLinkButton
-          title="Check In"
-          locationId={item.location_id}
-          scheduleId={item.schedule_id}
-          renderSubmitButton={onCheckIn => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  onCheckIn();
-                }}
-                style={[
-                  styles.itemButton,
-                  {backgroundColor: getButtonColor(item.checkin_state)},
-                ]}>
+    return (
+      <CheckinLinkButton
+        title="Check In"
+        locationId={item.location_id}
+        scheduleId={item.schedule_id}
+        renderSubmitButton={onCheckIn => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                onCheckIn();
+              }}
+              style={[
+                styles.itemButton,
+                {backgroundColor: getButtonColor(item.checkin_state)},
+              ]}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                }}>
                 <Text style={styles.itemButtonText}>
-                  {' '}
-                  {getButtonText(item.checkin_state)}{' '}
+                  {getButtonText(item.checkin_state)}
                 </Text>
+              </View>
+              {item.checkin_state === 'checkin_completed' ? (
                 <FontAwesomeIcon
                   style={styles.itemButtonIcon}
                   size={16}
                   color={whiteLabel().actionFullButtonIcon}
                   icon={faCheckCircle}
                 />
-              </TouchableOpacity>
-            );
-          }}
-        />
-      );
-    }
-    return (
-      <TouchableOpacity
-        style={[
-          styles.itemButton,
-          {backgroundColor: getButtonColor(item.checkin_state)},
-        ]}
-        onPress={() => {
-          if (checkOpenReplaceCheckin()) {
-            dispatch({
-              type: LOCATION_ID_CHANGED,
-              payload: {value: item.location_id, type: tabIndex},
-            });
-            navigation.navigate('CRM', {
-              screen: 'LocationSearch',
-              params: {location_id: item.location_id},
-            });
-            onItemSelected();
-          }
-        }}>
-        <Text style={styles.itemButtonText}>
-          {' '}
-          {getButtonText(item.checkin_state)}{' '}
-        </Text>
-        <FontAwesomeIcon
-          style={styles.itemButtonIcon}
-          size={16}
-          color={whiteLabel().actionFullButtonIcon}
-          icon={faCheckCircle}
-        />
-      </TouchableOpacity>
+              ) : (
+                <SvgIcon
+                  style={styles.itemButtonIcon}
+                  icon="Angle_Left"
+                  width="14px"
+                  height="14px"
+                />
+              )}
+            </TouchableOpacity>
+          );
+        }}
+      />
     );
   };
 
@@ -181,8 +159,8 @@ export function CalendarItem(props) {
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 10,
     borderRadius: 4,
     backgroundColor: Colors.whiteColor,
@@ -190,10 +168,11 @@ const styles = StyleSheet.create({
     borderColor: whiteLabel().fieldBorder,
   },
   itemLeft: {
-    width: '60%',
+    flex: 1,
   },
   itemRight: {
-    width: '35%',
+    width: 100,
+    marginLeft: 16,
   },
 
   itemTitleBox: {
@@ -215,6 +194,8 @@ const styles = StyleSheet.create({
     maxHeight: 36,
   },
   itemButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     position: 'relative',
     justifyContent: 'center',
     padding: 4,
@@ -228,8 +209,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
   },
-  itemButtonIcon: {
-    position: 'absolute',
-    right: 8,
-  },
+  itemButtonIcon: {},
 });
