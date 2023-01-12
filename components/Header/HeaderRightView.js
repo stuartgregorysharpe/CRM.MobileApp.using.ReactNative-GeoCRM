@@ -122,22 +122,33 @@ const styles = StyleSheet.create({
   },
 
   headerRightView: {
+    flex:1,    
     flexDirection: 'row',
     marginRight: 12,
-    marginBottom: 20,
-    marginTop: 20,
+    alignItems:'center',
+    //paddingTop:10,
+    justifyContent:'center',
+    // alignContent:'center',
+    // textAlign:'center',
+    // backgroundColor:'red'
+    // marginBottom: 10,
+    // marginTop: 20,
   },
 
   toggleSwitch: {
     marginRight: 12,
     flexDirection: 'row',
-    alignItems: 'center',
+    //height:24,    
+    //alignItems: 'center',
   },
 
   toggleSwitchLabel: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: Fonts.secondaryMedium,
+    alignContent:'center',
+    justifyContent:'center',
+    alignItems:'center'
   },
 
   headerAvatar: {
@@ -145,8 +156,8 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderWidth: 2,
     paddingTop: Platform.OS == 'ios' ? 2 : 0,
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     borderRadius: 20,
   },
 

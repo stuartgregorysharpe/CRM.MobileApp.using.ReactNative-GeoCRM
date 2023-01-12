@@ -146,6 +146,7 @@ export default function RepBottomTabNavigator({navigation}) {
             options={{
               title: element.name,
               tabBarLabel: element.name,
+              
               tabBarIcon: ({focused}) => (
                 <Fragment>
                   <SvgIcon
@@ -155,11 +156,14 @@ export default function RepBottomTabNavigator({navigation}) {
                   />
                 </Fragment>
               ),
-
-              headerRight: () => <HeaderRightView navigation={navigation} />,
+              headerStyle: {
+                height: 70, // Specify the height of your custom header
+                backgroundColor:whiteLabel().actionFullButtonBackground
+              },
+              headerRight: () => <HeaderRightView navigation={navigation} />,              
               tabBarLabelStyle: {
                 fontSize: 12,
-                fontFamily: 'Gilroy-Medium',
+                fontFamily: 'Gilroy-Medium',                
               },
               tabBarActiveTintColor: whiteLabel().activeIcon,
             }}
