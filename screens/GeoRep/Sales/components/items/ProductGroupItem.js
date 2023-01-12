@@ -47,9 +47,9 @@ const ProductGroupItem = (props) => {
                                         </View>
                                         
                                         <View style={{flex:2, flexDirection:'row'}}>
-                                            <AppText title={element.warehouse_name} size="medium" color={whiteLabel().subText}/>
-                                            <AppText title="  |  " size="medium" color={whiteLabel().subText}/>
-                                            <AppText title={"Stock : " + element.soh} size="medium" color={whiteLabel().subText}/>
+                                            <AppText title={element.warehouse_name + ' | ' + "Stock : " + element.soh} size="medium" color={whiteLabel().subText}/>
+                                            {/* <AppText title="  |  " size="medium" color={whiteLabel().subText}/>
+                                            <AppText title={"Stock : " + element.soh} size="medium" color={whiteLabel().subText}/> */}
                                         </View>                                        
                                     </View>
                                     {

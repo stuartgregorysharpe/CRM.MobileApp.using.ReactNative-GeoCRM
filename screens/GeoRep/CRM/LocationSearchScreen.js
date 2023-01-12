@@ -333,8 +333,7 @@ export default function LocationSearchScreen(props) {
   const openLocationInfo = async location_id => {
       animation('locationInfo');      
       getLocationInfo(Number(location_id), currentLocation)
-      .then(res => {
-        console.log('location info', res);
+      .then(res => {        
         setLocationInfo(res);        
       })
       .catch(e => {        
