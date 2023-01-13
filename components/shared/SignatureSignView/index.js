@@ -54,6 +54,7 @@ const SignatureSignView = (props) => {
         var signature = ref.current.readSignature();      
         saveImage(signature);                   
     }
+    
     const saveImage = async(signature) => {
         if(signature  != null){
             var outputPath =

@@ -6,12 +6,12 @@ import SearchLocationContainer from '../../Stock/stock/container/SearchLocationC
 import LocationInfo from './LocationInfo'
 import { useSelector } from 'react-redux'
 import { getJsonData, getLocalData, storeJsonData } from '../../../../constants/Storage'
-import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors, Fonts, Values } from '../../../../constants'
-import { cos } from 'react-native-reanimated'
+import { getLocationInfo } from '../../../../actions/location.action'
+import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
 
 const SetupFieldView = (props) => {
 
@@ -33,7 +33,9 @@ const SetupFieldView = (props) => {
 
 	useEffect(() => {
 		if(isClear){
-			clearSetup();
+			if(!isLoading){
+				clearSetup();
+			}			
 			if(props.updateClear){
 				props.updateClear(false)
 			}
@@ -41,23 +43,41 @@ const SetupFieldView = (props) => {
 	}, [isClear]);
 
 	useEffect(() => {		
-		initializeSetupData();
+		initializeSetupData(currency, warehouse,   transaction_types);
 	}, [ currency, warehouse,   transaction_types]);
 
 	const clearSetup = async() => {		
+		console.log("clear tirger")
 		storeJsonData("@setup", null);
-		initializeSetupData();
+		initializeSetupData(null, null, null);
 		initializeLocation();
+		if(props.onChangeLocation){
+			const  locationId = await getLocalData("@specific_location_id");		
+			const  locInfo = await getLocationInfoFromLocal(locationId);
+			const location = {...locInfo , location_id: locationId}
+			props.onChangeLocation(location);
+		}		
 	}
 	
 	const getCheckinLocationInfo = async () => {
+
 		const  locationId = await getLocalData("@specific_location_id");		
-		const  locInfo = await getLocationInfo(locationId);		
+		const  locInfo = await getLocationInfoFromLocal(locationId);
 		if(locInfo.name != ''){
 			setSelectedLocation({...locInfo , location_id: locationId});
-		}			
+		}else{
+			// get location info from online api call.
+			getLocationInfo(locationId).then( async(res) => {
+				console.log(" location info api =>" , res)
+				await storeJsonData("@checkin_location", res);
+				var location = {name: res.location_name.value , address: res.address , location_id: locationId};
+				setSelectedLocation(location);
+			}).catch((e) => {
+	
+			});
+		}
 	}
-
+	
 	const initializeLocation = async() => {
 		var data = await getJsonData("@setup");
 		if(data != null){
@@ -69,24 +89,9 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const initializeSetupData = async() => {
+	const initializeSetupData = async(currency, warehouse,   transaction_types) => {
 
-		var data = await getJsonData("@setup");
-		
-		if(data != null){
-			
-			setSelectedSaleType(data.transaction_type);
-			setSelectedCurrency(data.currency_id);	
-			setSelectedLocation(data.location);
-			
-			if(data.transaction_type != ''){
-				onWarehouseRequired(data.transaction_type.warehouse_required);
-			}
-			if(data.warehouse_id != ''){				
-				setSelectedWarehouse(data.warehouse_id);
-			}
-
-		}else{
+		if(currency != null && warehouse != null &&   transaction_types != null){
 			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
 				setSelectedSaleType(transactionType);
@@ -108,7 +113,24 @@ const SetupFieldView = (props) => {
 					setSelectedWarehouse(items);	
 				}
 			}
+		}else{
+			var data = await getJsonData("@setup");
+		
+			if(data != null){				
+				setSelectedSaleType(data.transaction_type);
+				setSelectedCurrency(data.currency_id);	
+				setSelectedLocation(data.location);
+				
+				if(data.transaction_type != ''){
+					onWarehouseRequired(data.transaction_type.warehouse_required);
+				}
+				if(data.warehouse_id != ''){				
+					setSelectedWarehouse(data.warehouse_id);
+				}	
+			}
 		}
+
+		
 		
 	}
 
