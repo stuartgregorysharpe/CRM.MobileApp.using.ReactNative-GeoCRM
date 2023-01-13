@@ -11,11 +11,14 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
+import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const SellIn = (props) => {
     const [mth, setMth] = useState(null);
     const [meridian, setMeridian] = useState(null);
     const dispatch = useDispatch();
+
     useEffect(() => {
         loadData();
     }, [props.haveFilter]);
@@ -106,21 +109,14 @@ const SellIn = (props) => {
     return (
         <View style={{ marginTop: 10, flex: 1, flexDirection: 'column' }}>
             <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
-                <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
-                    <SvgIcon icon="Sell_In_Icon" width='15px' height='15px' />
-                    <AppText size="medium" title="Value (Sell In)" type="secondaryBold" style={{ marginLeft: 5, flex: 1 }} color={PRIMARY_COLOR}></AppText>
-                    <TouchableOpacity onPress={() => props.onFilterPress()} >
-                        <SvgIcon icon="Filter" width='25px' height='25px' style={{ marginHorizontal: 10 }} />
-                        {props.haveFilter && props.haveFilter.length > 0 && (
-                            <View
-                                style={styles.filterIndicator}></View>
-                        )}
-                    </TouchableOpacity>
-
-                </View>
+                <LindtCardsTitleView title="Value (Sell In)" onFilterPress={() => props.onFilterPress()}
+                    icon="Sell_In_Icon" haveFilter={props.haveFilter} />
                 {renderMth()}
                 {renderMeridian()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount?props.pageCount:0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }
@@ -131,15 +127,6 @@ const styles = StyleSheet.create({
         height: 12,
         borderRadius: 2
     },
-    filterIndicator: {
-        width: 15,
-        height: 15,
-        backgroundColor: Colors.redColor,
-        borderRadius: 15,
-        position: 'absolute',
-        left: 5,
-        top: -5,
-    }
 })
 
 export default SellIn;
