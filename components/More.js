@@ -1,5 +1,5 @@
-import React, {Fragment, useEffect, useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   SafeAreaView,
   ScrollView,
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import SvgIcon from './SvgIcon';
-import {BG_COLOR, TEXT_COLOR, whiteLabel} from '../constants/Colors';
+import { BG_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
 import {
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
@@ -19,8 +19,9 @@ import {
   CHANGE_LIBRARY_CHILD_STATUS,
   CHANGE_LOGIN_STATUS,
 } from '../actions/actionTypes';
-import {setToken, storeLocalValue} from '../constants/Storage';
-import {setRegret} from '../actions/sales.action';
+import { setToken, storeLocalValue } from '../constants/Storage';
+import { setRegret } from '../actions/sales.action';
+import { deviceTokenPostApi } from '../actions/auth.action';
 
 const lists = {
   0: [
@@ -282,13 +283,19 @@ export default function More() {
     }
   }, [payload]);
 
+  const clearDeviceToken = async () => {
+    let postData = {
+      firebase_id: "",
+    };
+    await deviceTokenPostApi(postData);
+  }
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
         <View style={styles.avatarBox}>
           <TouchableOpacity
             style={styles.closeButton}
-            onPress={() => dispatch({type: CHANGE_MORE_STATUS, payload: 1})}>
+            onPress={() => dispatch({ type: CHANGE_MORE_STATUS, payload: 1 })}>
             <SvgIcon icon="Close" width="20px" height="20px" />
           </TouchableOpacity>
 
@@ -301,9 +308,9 @@ export default function More() {
             </Text>
           </View>
 
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <Text style={styles.boldText}>{userInfo.user_name}</Text>
-            <Text style={[styles.text, {marginTop: 10}]}>
+            <Text style={[styles.text, { marginTop: 10 }]}>
               {userInfo.user_email}
             </Text>
             <Text style={styles.text}>+{userInfo.user_cell}</Text>
@@ -313,13 +320,13 @@ export default function More() {
           <TouchableOpacity
             style={styles.selectButton}
             onPress={() => {
-              dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+              dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
               setTimeout(() => {
-                dispatch({type: CHANGE_PROFILE_STATUS, payload: 0});
+                dispatch({ type: CHANGE_PROFILE_STATUS, payload: 0 });
               });
             }}>
             <SvgIcon
-              style={{marginRight: 8}}
+              style={{ marginRight: 8 }}
               icon="Account_Circle"
               width="22px"
               height="22px"
@@ -339,7 +346,7 @@ export default function More() {
                         await storeLocalValue('@regret', '');
                         dispatch(setRegret(null));
                       }
-                      dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+                      dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
                       dispatch({
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
@@ -350,7 +357,7 @@ export default function More() {
                       });
                     }}>
                     <SvgIcon
-                      style={{marginRight: 8}}
+                      style={{ marginRight: 8 }}
                       icon={list.icon}
                       width="22px"
                       height="22px"
@@ -369,7 +376,7 @@ export default function More() {
                   <TouchableOpacity
                     style={styles.selectButton}
                     onPress={() => {
-                      dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+                      dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
                       dispatch({
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
@@ -380,7 +387,7 @@ export default function More() {
                       });
                     }}>
                     <SvgIcon
-                      style={{marginRight: 8}}
+                      style={{ marginRight: 8 }}
                       icon={list.icon}
                       width="22px"
                       height="22px"
@@ -399,7 +406,7 @@ export default function More() {
                   <TouchableOpacity
                     style={styles.selectButton}
                     onPress={() => {
-                      dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+                      dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
                       dispatch({
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
@@ -410,7 +417,7 @@ export default function More() {
                       });
                     }}>
                     <SvgIcon
-                      style={{marginRight: 8}}
+                      style={{ marginRight: 8 }}
                       icon={list.icon}
                       width="22px"
                       height="22px"
@@ -425,12 +432,12 @@ export default function More() {
           <TouchableOpacity
             style={styles.selectButton}
             onPress={() => {
-              dispatch({type: CHANGE_MORE_STATUS, payload: 1});
-              dispatch({type: CHANGE_LIBRARY_CHILD_STATUS, payload: false});
-              dispatch({type: SHOW_MORE_COMPONENT, payload: 'RepSupport'});
+              dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
+              dispatch({ type: CHANGE_LIBRARY_CHILD_STATUS, payload: false });
+              dispatch({ type: SHOW_MORE_COMPONENT, payload: 'RepSupport' });
             }}>
             <SvgIcon
-              style={{marginRight: 8}}
+              style={{ marginRight: 8 }}
               icon="Support_Agent"
               width="22px"
               height="22px"
@@ -442,7 +449,8 @@ export default function More() {
           <TouchableOpacity
             style={styles.selectButton}
             onPress={() => {
-              dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
+              // clearDeviceToken();
+              dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
               setToken(null);
             }}>
             <Text style={styles.selectName}>Logout</Text>

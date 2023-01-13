@@ -101,9 +101,10 @@ export default {
     NSV: 'NSV',
     Vol: 'Vol(Tns)',
     Return: 'Return %',
-    SalesMetrics:'Sales Metrics',
-    Category:'Category',
-    Returns_value:'Returns Value',
-    Returns_tns:'Returns (Tns)'
-  }
+    SalesMetrics: 'Sales Metrics',
+    Category: 'Category',
+    Returns_value: 'Returns Value',
+    Returns_tns: 'Returns (Tns)'
+  },
+  FIREBASE_KEY: 'AAAAzZz92j8:APA91bEoURnFx5UEb-Y_nfk3gapj3kYNGQ67an9RxAhAWJhJLDVqSqN90kA7JMlMbkdnqtUezBeXxgdMqbwLqJhfHhEh5ed6z3H6wp31FI-jWhA7Tp9p6T3fjk0d2nR07CW37PpE64gJ'
 };

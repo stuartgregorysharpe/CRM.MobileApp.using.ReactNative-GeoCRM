@@ -1,5 +1,5 @@
-import React, {useEffect, useRef , useState} from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, { useEffect, useRef, useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   SafeAreaView,
   StatusBar,
@@ -9,14 +9,14 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import SignInScreen from '../screens/SignInScreen';
 import BottomTabNavigator from '../components/BottomTabNavigator';
 import Profile from '../components/Profile';
 import More from '../components/More';
-import {whiteLabel} from '../constants/Colors';
-import {grayBackground} from '../constants/Styles';
+import { whiteLabel } from '../constants/Colors';
+import { grayBackground } from '../constants/Styles';
 import {
   SLIDE_STATUS,
   CHANGE_PROFILE_STATUS,
@@ -27,10 +27,10 @@ import WebViewScreen from '../screens/GeoRep/WebLinks/WebViewScreen';
 import Config from '../constants/Config';
 import Constants from '../constants/Constants';
 import UITestScreen from '../screens/GeoRep/UITestScreen';
-import {FormQuestions} from '../screens/GeoRep/Forms/questions/FormQuestions';
+import { FormQuestions } from '../screens/GeoRep/Forms/questions/FormQuestions';
 import LocationSpecificInfoScreen from '../screens/GeoRep/CRM/checkin/LocationSpecificInfoScreen';
 import { FormsScreen } from '../screens/GeoRep/Forms/FormsScreen';
-import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import { SalesPipelineScreen } from '../screens/GeoRep/pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
 import DeviceInfo from 'react-native-device-info';
 import { getLocalData, setToken, storeLocalValue } from '../constants/Storage';
@@ -49,10 +49,10 @@ export default function AppScreens() {
 
     checkAppVersion();
 
-    dispatch({type: SLIDE_STATUS, payload: false});
-    dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
-    dispatch({type: CHANGE_MORE_STATUS, payload: 1});
-    
+    dispatch({ type: SLIDE_STATUS, payload: false });
+    dispatch({ type: CHANGE_PROFILE_STATUS, payload: 1 });
+    dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
+
   }, []);
 
   useEffect(() => {
@@ -88,13 +88,13 @@ export default function AppScreens() {
     var versionNumber = DeviceInfo.getBuildNumber();
     var currentVersionCode = await getLocalData("@versionCode");
     var currentVersionNumber = await getLocalData("@versionNumber");
-    
-    if(versionCode != currentVersionCode || versionNumber != currentVersionNumber){    
+
+    if (versionCode != currentVersionCode || versionNumber != currentVersionNumber) {
       console.log("version u pdated", currentVersionNumber);
-        await storeLocalValue("@versionCode", versionCode);
-        await storeLocalValue("@versionNumber", versionNumber);
-        //setIsVersionUpdated(true);
-        dispatch({type: CHANGE_LOGIN_STATUS, payload: "logout"});
+      await storeLocalValue("@versionCode", versionCode);
+      await storeLocalValue("@versionNumber", versionNumber);
+      //setIsVersionUpdated(true);
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "logout" });
     }
   }
 
@@ -118,14 +118,14 @@ export default function AppScreens() {
     ],
     extrapolate: 'clamp',
   });
-  
+
   if (Config.DEBUG_MODE == Constants.debugMode.DEBUG_UI_SCREEN) {
     return <UITestScreen />;
   }
 
   if (loginStatus != 'success') {
     return <SignInScreen />;
-  }  
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -134,8 +134,8 @@ export default function AppScreens() {
           activeOpacity={1}
           style={grayBackground}
           onPress={() => {
-            dispatch({type: CHANGE_PROFILE_STATUS, payload: 1});
-            dispatch({type: CHANGE_MORE_STATUS, payload: 1});
+            dispatch({ type: CHANGE_PROFILE_STATUS, payload: 1 });
+            dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
           }}></TouchableOpacity>
       )}
 
@@ -143,7 +143,7 @@ export default function AppScreens() {
         ref={profileRef}
         style={[
           styles.transitionView,
-          {transform: [{translateX: profileTranslateX}], left: 0},
+          { transform: [{ translateX: profileTranslateX }], left: 0 },
         ]}>
         <Profile />
       </Animated.View>
@@ -152,7 +152,7 @@ export default function AppScreens() {
         ref={moreRef}
         style={[
           styles.transitionView,
-          {transform: [{translateX: moreTranslateX}], right: 0},
+          { transform: [{ translateX: moreTranslateX }], right: 0 },
         ]}>
         <More />
       </Animated.View>
@@ -163,51 +163,51 @@ export default function AppScreens() {
         cardStyle={{
           opacity: 1,
         }}
-        screenOptions={({navigation}) => {
+        screenOptions={({ navigation }) => {
           return {
             detachPreviousScreen: !navigation.isFocused(),
           };
         }}>
-          
+
         <Stack.Screen
           name="Root"
           component={BottomTabNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
 
         <Stack.Screen
           name="WebViewScreen"
           component={WebViewScreen}
-          navigationOptions={{headerShown: false}}
-          options={{header: () => false}}>
+          navigationOptions={{ headerShown: false }}
+          options={{ header: () => false }}>
           {/* {props => <WebViewScreen {...props} />} */}
         </Stack.Screen>
 
         <Stack.Screen
           name="DeeplinkFormQuestionsScreen"
-          options={{header: () => false}}>
+          options={{ header: () => false }}>
           {props => <FormQuestions {...props} />}
         </Stack.Screen>
 
         <Stack.Screen
           name="DeeplinkLocationSpecificInfoScreen"
-          options={{header: () => false}}>
+          options={{ header: () => false }}>
           {props => <LocationSpecificInfoScreen {...props} />}
         </Stack.Screen>
-        
-        <Stack.Screen name="DeeplinkRepForms" options={{header: () => null}}>
+
+        <Stack.Screen name="DeeplinkRepForms" options={{ header: () => null }}>
           {props => <FormsScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
 
-        <Stack.Screen 
-          name="DeeplinkRepSalesPipelineScreen" 
-          options={{header: () => false}}>
+        <Stack.Screen
+          name="DeeplinkRepSalesPipelineScreen"
+          options={{ header: () => false }}>
           {props => <SalesPipelineScreen {...props} isDeeplink={true} />}
         </Stack.Screen>
 
-        <Stack.Screen 
-          name="DeeplinkStock" 
-          options={{header: () => false}}>
+        <Stack.Screen
+          name="DeeplinkStock"
+          options={{ header: () => false }}>
           {props => <Stock {...props} isDeeplink={true} />}
         </Stack.Screen>
 

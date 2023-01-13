@@ -1,9 +1,9 @@
 import axios from 'axios';
 import uuid from 'react-native-uuid';
-import {Strings} from '../constants';
-import {getBaseUrl, getToken} from '../constants/Storage';
-import {generateKey} from '../constants/Utils';
-import {convertStringToByteArray} from '../services/DownloadService/TrackNetSpeed';
+import { Strings } from '../constants';
+import { getBaseUrl, getToken } from '../constants/Storage';
+import { generateKey } from '../constants/Utils';
+import { convertStringToByteArray } from '../services/DownloadService/TrackNetSpeed';
 
 export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
