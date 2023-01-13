@@ -118,6 +118,7 @@ const ProductSalesView = props => {
 
   const loadMoreData = useCallback(
     (pageNumber, searchKey) => {
+      console.log("isLoading", isLoading)
       if (isEndPageLoading === false && isLoading === false) {
         if (props.loadMoreData) {
           currentSearchKey = searchKey;

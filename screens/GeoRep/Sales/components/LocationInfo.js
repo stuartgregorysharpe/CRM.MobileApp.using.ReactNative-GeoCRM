@@ -33,6 +33,7 @@ const LocationInfo = (props) => {
                         />                  
                     <AppText title="Address" color={'white'} style={{marginLeft:5}} type="secondaryRegular" ></AppText>
                 </View>
+                
                 <AppText title={location.address} color={'white'}  type="secondaryBold" style={{marginTop:5}} ></AppText>
 
                 <TouchableOpacity style={{position:'absolute', right:0}}
@@ -41,7 +42,7 @@ const LocationInfo = (props) => {
                             props.onClose();
                     }}
                 >
-                <SvgIcon                  
+                <SvgIcon
                     icon="Close"
                     width="20"
                     height="20"
