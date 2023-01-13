@@ -176,6 +176,8 @@ export const FormsScreen = props => {
     if (locationIdSpecific != null && isCheckin) {
       const checkin_type_id = await getLocalData('@checkin_type_id');
       const checkin_reason_id = await getLocalData('@checkin_reason_id');
+      console.log('checkin_type_id', checkin_type_id);
+      console.log('checkin_reason_id', checkin_reason_id);
       if (checkin_type_id && checkin_reason_id != '') {
         param.checkin_type_id = checkin_type_id;
       }
@@ -183,8 +185,6 @@ export const FormsScreen = props => {
         param.checkin_reason_id = checkin_reason_id;
       }
     }
-
-    console.log('param data', param);
     GetRequestFormListsDAO.find(param)
       .then(res => {
         if (isMount) {
