@@ -153,12 +153,7 @@ export default function WazeNavigation(props) {
             setCoordinates(locations);
 			viewRouteModalRef.current.showModal();
         }	
-
-        //navigationMain.navigate('DeeplinkViewRouteMap' , {location:wazeLocation });		
-        // if(props.onCloseModal){
-        //   props.onCloseModal();
-        // }
-
+        
     } catch (e) {
     
     }   

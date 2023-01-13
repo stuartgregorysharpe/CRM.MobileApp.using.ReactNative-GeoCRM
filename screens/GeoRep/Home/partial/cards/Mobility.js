@@ -1,4 +1,3 @@
-
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import SvgIcon from '../../../../../components/SvgIcon'
@@ -10,6 +9,8 @@ import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
+import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const Mobility = (props) => {
     const [mobilityData, setMobilityData] = useState([]);
@@ -33,17 +34,17 @@ const Mobility = (props) => {
     const renderBody = () => {
         return (
             <View>
-                <View style={{ flexDirection: 'row',marginHorizontal:10,marginTop:10 }}>
-                    <AppText style={{ flex: 2,paddingVertical:5 }} title="Previous Week Mon - Fri" type="secondaryBold" color={whiteLabel().inactiveTabText}/>
+                <View style={{ flexDirection: 'row', marginHorizontal: 10, marginTop: 10 }}>
+                    <AppText style={{ flex: 2, paddingVertical: 5 }} title="Previous Week Mon - Fri" type="secondaryBold" color={whiteLabel().inactiveTabText} />
                     <View style={{ width: 2, backgroundColor: whiteLabel().inactiveTabText }} />
-                    <AppText style={{ flex: 1,textAlign:'center' }} title="Actual SR" type="secondaryBold" color={whiteLabel().inactiveTabText} />
+                    <AppText style={{ flex: 1, textAlign: 'center' }} title="Actual SR" type="secondaryBold" color={whiteLabel().inactiveTabText} />
                 </View>
                 {mobilityData.map((x, i) => {
                     return (
-                        <View key={i} style={{ flexDirection: 'row',marginHorizontal:10 }}>
-                            <AppText style={{ flex: 2,paddingVertical:3 }} title={x.label} type="secondaryBold" />
+                        <View key={i} style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+                            <AppText style={{ flex: 2, paddingVertical: 3 }} title={x.label} type="secondaryBold" />
                             <View style={{ width: 2, backgroundColor: whiteLabel().inactiveTabText }} />
-                            <AppText style={{ flex: 1,textAlign:'center' }} title={`${x.sr}%`} type="secondaryBold" />
+                            <AppText style={{ flex: 1, textAlign: 'center' }} title={`${x.sr}%`} type="secondaryBold" />
                         </View>
                     )
                 })}
@@ -52,29 +53,17 @@ const Mobility = (props) => {
         )
     }
 
-    const renderTitleContainer = () => {
-        return (
-            <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
-                <SvgIcon icon="Mobility_Icon" width='15px' height='15px' />
-                <AppText size="medium" title="Mobility" type="secondaryBold" style={{ marginLeft: 5, flex: 1 }} color={PRIMARY_COLOR}></AppText>
-                <TouchableOpacity onPress={() => props.onFilterPress()}>
-                    <SvgIcon icon="Filter" width='25px' height='25px' style={{ marginHorizontal: 10 }} />
-                    {props.haveFilter && props.haveFilter.length > 0 && (
-                        <View
-                            style={styles.filterIndicator}></View>
-                    )}
-                </TouchableOpacity>
-
-            </View>
-        )
-    }
-
     return (
         <View style={{ marginTop: 10, flex: 1 }}>
             <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
-                {renderTitleContainer()}
+                <LindtCardsTitleView haveFilter={props.haveFilter}
+                    onFilterPress={() => { props.onFilterPress() }}
+                    title="Mobility" icon="Mobility_Icon" />
                 {renderBody()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount ? props.pageCount : 0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }
@@ -88,15 +77,6 @@ const styles = StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 2
-    },
-    filterIndicator: {
-        width: 15,
-        height: 15,
-        backgroundColor: Colors.redColor,
-        borderRadius: 15,
-        position: 'absolute',
-        left: 5,
-        top: -5,
     },
 })
 

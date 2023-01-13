@@ -33,6 +33,7 @@ export default function CheckOutViewContainer(props) {
   const locationCheckOutCompulsory = useSelector(
     state => state.rep.locationCheckOutCompulsory,
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigationMain = useNavigation();
 
@@ -53,7 +54,9 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory]);
 
   const _callCheckOut = () => {
-    console.log('locationCheckOutCompulsory', locationCheckOutCompulsory);
+    if (isLoading) {
+      return;
+    }
     if (locationCheckOutCompulsory) {
       dispatch(
         showNotification({
@@ -75,6 +78,7 @@ export default function CheckOutViewContainer(props) {
         }),
       );
     } else {
+      setIsLoading(true);
       var userParam = getPostParameter(currentLocation);
       var currentTime = getDateTime();
 
@@ -100,15 +104,15 @@ export default function CheckOutViewContainer(props) {
           await storeLocalValue('@specific_location_id', '');
           await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
           await storeJsonData('@form_ids', []);
-          await storeJsonData('@setup', null);          
+          await storeJsonData('@setup', null);                   
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-          if (type == 'specificInfo') {
+          if (type == 'specificInfo' || type == 'calendar') {
             if (props.goBack) {
               props.goBack(res);
             }
-          } else {
           }
+          setIsLoading(false);
         })
         .catch(e => {
           console.log('checkout error:', e);
