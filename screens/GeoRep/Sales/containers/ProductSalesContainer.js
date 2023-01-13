@@ -1,5 +1,5 @@
-import {View, BackHandler} from 'react-native';
-import React, {useState, useEffect, useRef, useMemo, useCallback} from 'react';
+import {View} from 'react-native';
+import React, {useState, useEffect, useRef, useMemo, useCallback , useImperativeHandle , forwardRef} from 'react';
 import ProductSalesView from '../components/ProductSalesView';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import ProductGroupModal from '../modal/ProductGroupModal';
@@ -29,12 +29,13 @@ import {
   SLIDE_STATUS,
 } from '../../../../actions/actionTypes';
 
-const ProductSalesContainer = props => {
+export const ProductSalesContainer = forwardRef((props, ref) => {
+
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
-  const {items, settings} = props;
+  const { page , items, settings} = props;
 
   const [selectedGroupTitle, setSelectedGroupTitle] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -49,11 +50,42 @@ const ProductSalesContainer = props => {
   const [cartCount, setCartCount] = useState(0);
   const [outsideTouch, setOutsideTouch] = useState(false);
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
+  const [lists , setLists] = useState([]);
+
   const dispatch = useDispatch();
 
+  useImperativeHandle(ref, () => ({
+    updateProductList(items, page) {
+
+      var newList = [];
+      if (
+        items != undefined &&
+        productPriceLists != undefined &&
+        items.length > 0
+      ) {
+        
+        const tmp = [...items];
+        tmp.forEach(item => {
+          const newItem = {...item};
+          const originProducts = [...newItem.products];
+          const products = getProducts(originProducts);
+          newItem.products = [...products];
+          newList.push(newItem);
+        });      
+      }
+      console.log("page => ", page);
+      if(page == 0){
+        setLists(newList);
+      }else{
+        setLists([...lists , ...newList]);
+      }    
+            
+    },
+  }));
+
+
   const getProducts = useCallback(
-    products => {
-      //const getProducts = (products ) => {
+    products => {      
       var list = [];
       if (products != undefined) {
         products.forEach(element => {
@@ -105,26 +137,25 @@ const ProductSalesContainer = props => {
     [productPriceLists],
   );
 
-  const lists = useMemo(() => {
+  useEffect(() => {
+    var newList = [];
     if (
-      items != undefined &&
+      lists != undefined &&
       productPriceLists != undefined &&
-      items.length > 0
+      lists.length > 0
     ) {
-      var newList = [];
-      const tmp = [...items];
+      
+      const tmp = [...lists];
       tmp.forEach(item => {
         const newItem = {...item};
         const originProducts = [...newItem.products];
         const products = getProducts(originProducts);
         newItem.products = [...products];
         newList.push(newItem);
-      });
-
-      return newList;
+      });      
     }
-    return [];
-  }, [items, productPriceLists]);
+    setLists(newList);
+  }, [productPriceLists]);
 
   const groupList = useMemo(() => {
     if (products != undefined && products.length > 0) {
@@ -137,6 +168,7 @@ const ProductSalesContainer = props => {
   }, [products, productPriceLists]);
 
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
+
   useEffect(() => {
     console.log('start: checkAndOpenSetup');
     checkAndOpenSetup();
@@ -149,10 +181,8 @@ const ProductSalesContainer = props => {
     }
   }, [props.regret_item]);
   const checkAndOpenSetup = async () => {
-    const regretId = await getLocalData('@regret');
-    console.log('checkAndOpenSetup try');
-    if (!props.regret_item && !regretId && regretId != '') {
-      console.log('checkAndOpenSetup open modal');
+    const regretId = await getLocalData('@regret');    
+    if (!props.regret_item && !regretId && regretId != '') {      
       setupFieldModalRef.current.showModal();
     }
   };
@@ -163,9 +193,8 @@ const ProductSalesContainer = props => {
   }, [productPriceLists]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      refreshList();
-      //configAddProductCount();
+    const unsubscribe = navigation.addListener('focus', () => {      
+      refreshList();      
     });
     return unsubscribe;
   }, [navigation]);
@@ -173,20 +202,21 @@ const ProductSalesContainer = props => {
   const refreshList = async () => {
     var storedProductPriceList = await getJsonData('@product_price');
     var storedAddProductList = await getJsonData('@add_product');
+    var defineSetup = await getJsonData('@setup');
     if (
       (storedProductPriceList == null || storedProductPriceList.length == 0) &&
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
-      props.getProductLists();
+      props.getProductLists(defineSetup , '' , 0);
     }
-
-    var defineSetup = await getJsonData('@setup');
     if (defineSetup == null) {
       console.log('refreshList: checkAndOpenSetup');
-      checkAndOpenSetup();
+      checkAndOpenSetup();      
+    }else{
+      setSelectedLocation(defineSetup.location.name);
     }
   };
-
+   
   const initializeProductLists = async () => {
     const storedProductPriceList = await getJsonData('@product_price');
     if (storedProductPriceList != null) {
@@ -198,7 +228,7 @@ const ProductSalesContainer = props => {
   };
 
   const configAddProductCount = useCallback(async () => {
-    const addProductList = await getJsonData('@add_product');
+    const addProductList = await getJsonData('@add_product');    
     var count = 0;
     if (addProductList != null && addProductList != undefined) {
       count = addProductList.length;
@@ -232,26 +262,31 @@ const ProductSalesContainer = props => {
       console.log('setupFromConfig: setSelectedLocation', config.location.name);
       setSelectedLocation(config.location.name);
       configProductSetUp(config, type => {
-        if (type === 'changed') {
+        if (type == 'changed') {
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
         }
       });
       configAddProductCount();
-      props.getProductLists(config, searchText);
+      props.getProductLists(config, searchText , 0);
       if (config != undefined) {
         setOutsideTouch(true);
       }
     }
   };
   const onSetupFieldModalClosed = ({type, value}) => {
-    if (type === Constants.actionType.ACTION_CLOSE) {
+    
+    if (type === Constants.actionType.ACTION_CLOSE) {      
+
       setupFieldModalRef.current.hideModal();
       setupFromConfig(value);
       storeLocalValue('@regret', '');
       dispatch(setRegret(null));
+    
+
     } else if (type == Constants.actionType.ACTION_DONE) {
+
       setupFieldModalRef.current.hideModal();
       if (value.name === 'More') {
         dispatch({type: SLIDE_STATUS, payload: false});
@@ -361,49 +396,61 @@ const ProductSalesContainer = props => {
     productGroupModalRef.current.showModal();
   };
 
-  const geProductPrice = (product, qty) => {
-    setIsUpdatingProductPrice(true);
-    const param = {
-      product_id: product.product_id,
-      qty: qty,
-    };
-    GetRequestProductPriceDAO.find(param)
-      .then(res => {
-        if (res.status === Strings.Success) {
-          const price = res.price;
-          const special = res.special;
-          var check = productPriceLists.find(
-            element => element.product_id == product.product_id,
-          );
-          var finalPrice = 0;
-          if (
-            check != undefined &&
-            check.finalPrice != '' &&
-            check.finalPrice.final_price != ''
-          ) {
-            finalPrice = check.finalPrice.final_price;
+  const geProductPrice = async(product, qty) => {
+
+    var defineSetup = await getJsonData('@setup');
+    if (defineSetup != null) {
+      
+      setIsUpdatingProductPrice(true);
+      const param = {
+        product_id: product.product_id,
+        qty: qty,
+        location_id: defineSetup.location.location_id
+      };
+      
+      GetRequestProductPriceDAO.find(param)
+        .then(res => {
+          if (res.status === Strings.Success) {
+            console.log("res => ", res);
+            const price = res.price;
+            const special = res.special;
+            var check = productPriceLists.find(
+              element => element.product_id == product.product_id,
+            );
+            var finalPrice = 0;
+            if (
+              check != undefined &&
+              check.finalPrice != '' &&
+              check.finalPrice.final_price != ''
+            ) {
+              finalPrice = check.finalPrice.final_price;
+            }
+            var updatedProduct = {
+              ...product,
+              price: price,
+              special: special,
+              finalPrice: finalPrice,
+            };
+            updateProductPriceLists(
+              product.product_id,
+              price,
+              qty,
+              finalPrice == 0 ? special : '0',
+              '',
+              updatedProduct,
+            );
           }
-          var updatedProduct = {
-            ...product,
-            price: price,
-            special: special,
-            finalPrice: finalPrice,
-          };
-          updateProductPriceLists(
-            product.product_id,
-            price,
-            qty,
-            finalPrice == 0 ? special : '0',
-            '',
-            updatedProduct,
-          );
-        }
-        setIsUpdatingProductPrice(false);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-        setIsUpdatingProductPrice(false);
-      });
+          setIsUpdatingProductPrice(false);
+        })
+        .catch(e => {
+          expireToken(dispatch, e);
+          setIsUpdatingProductPrice(false);
+        });
+              
+      }else{
+        console.log(" There is no Define Setup");
+      }
+      
   };
 
   const updateProductPriceLists = useCallback(
@@ -507,8 +554,7 @@ const ProductSalesContainer = props => {
         products={groupList}
         settings={settings}
         geProductPrice={geProductPrice}
-        openProductDetail={openProductDetail}
-        //backButtonDisabled={true}
+        openProductDetail={openProductDetail}        
         closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         isUpdatingProductPrice={isUpdatingProductPrice}
@@ -556,5 +602,6 @@ const ProductSalesContainer = props => {
       />
     </View>
   );
-};
+});
+
 export default ProductSalesContainer;

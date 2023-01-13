@@ -1,13 +1,14 @@
 import {ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CustomerSalesHistoryView from '../components/CustomerSalesHistoryView';
-import {Values} from '../../../../../constants';
+import {Constants, Values} from '../../../../../constants';
 import {getApiRequest} from '../../../../../actions/api.action';
-import { useDispatch } from 'react-redux';
-import { expireToken } from '../../../../../constants/Helper';
+import {useDispatch} from 'react-redux';
+import {expireToken} from '../../../../../constants/Helper';
+import {Notification} from '../../../../../components/modal/Notification';
+import {showNotification} from '../../../../../actions/notification.action';
 
 export default function CustomerSalesHistoryContainer(props) {
-
   const {locationId} = props;
   const [sections, setSections] = useState([]);
   const [totalTurnOver, setTotalTurnOver] = useState(null);
@@ -28,10 +29,26 @@ export default function CustomerSalesHistoryContainer(props) {
       })
       .catch(e => {
         console.log('customer-sales-history-v2 error: ', e);
-        expireToken(dispatch, e);
+        if (e == 'error') {
+          if (props.onButtonAction) {
+            props.onButtonAction({
+              type: Constants.actionType.ACTION_CLOSE,
+            });
+          }
+          dispatch(
+            showNotification({
+              type: 'success',
+              message:
+                'No Device allocated, please allocate a device to view sales history',
+              buttonText: 'Ok',
+            }),
+          );
+        } else {
+          expireToken(dispatch, e);
+        }
       });
   };
-  
+
   return (
     <View
       style={[{alignSelf: 'stretch', flex: 1, marginBottom: 30}, props.style]}>
@@ -42,6 +59,7 @@ export default function CustomerSalesHistoryContainer(props) {
           {...props}
         />
       </ScrollView>
+      <Notification />
     </View>
   );
 }

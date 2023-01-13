@@ -6,6 +6,7 @@ import {
   Platform,
   Text,
   TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -58,11 +59,19 @@ export const Notification = ({}) => {
   const cancelButtonStyle = notification.cancelButtonAction
     ? styles.button
     : styles.cancelButton;
+  const onClose = () => {
+    if (notification?.cancelable) {
+      dispatch(clearNotification());
+    }
+  };
   return (
     <Modal
       animationType="fade"
       visible={notification.visible}
-      onBackdropPress={() => dispatch(clearNotification())}
+      onBackdropPress={() => onClose()}
+      onRequestClose={() => {
+        onClose();
+      }}
       transparent={true}>
       <View
         style={[
@@ -72,12 +81,22 @@ export const Notification = ({}) => {
               Platform.OS === 'android' ? '#00000025' : '#00000065',
           },
         ]}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={onClose}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        />
         <View style={styles.modalView}>
-          {
-            notification.title != undefined &&
+          {notification.title != undefined && (
             <Text style={styles.title}>{notification.title}</Text>
-          }
-          
+          )}
+
           <Text style={styles.message}>{notification.message}</Text>
           <View style={styles.divider}></View>
 
@@ -248,8 +267,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: Fonts.secondaryBold,
     fontSize: 16,
-    color: Colors.primaryColor,    
-    paddingTop:15
+    color: Colors.primaryColor,
+    paddingTop: 15,
   },
 
   message: {

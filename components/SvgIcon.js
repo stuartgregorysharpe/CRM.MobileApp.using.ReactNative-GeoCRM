@@ -473,14 +473,6 @@ const Account_Circle = `
   </svg>
 `;
 
-const Cloud_Off = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="70.435" height="70.435" viewBox="0 0 70.435 70.435">
-    <g id="cloud_off_black_24dp" transform="translate(-0.001)">
-      <path id="Path_4396" data-name="Path 4396" d="M0,0H70.435V70.435H0Z" transform="translate(0.001)" fill="none"/>
-      <path id="Path_4397" data-name="Path 4397" d="M70.435,36.554A14.6,14.6,0,0,0,56.788,22,21.981,21.981,0,0,0,35.218,4.271,21.7,21.7,0,0,0,24.506,7.118l4.373,4.373a15.836,15.836,0,0,1,6.339-1.35A16.132,16.132,0,0,1,51.359,26.282v1.467h4.4A8.79,8.79,0,0,1,61.014,43.6l4.138,4.138A14.576,14.576,0,0,0,70.435,36.554ZM12.942,3.86,8.8,8l8.129,8.129H15.7a17.6,17.6,0,0,0,1.908,35.1H52.034L57.9,57.1l4.138-4.138Zm4.666,41.5a11.739,11.739,0,0,1,0-23.478h5.077L46.164,45.358Z" transform="translate(0.001 7.468)" fill="#133c8b"/>
-    </g>
-  </svg>
-`;
 
 const Support_Agent_Gray = `
   <svg xmlns="http://www.w3.org/2000/svg" width="71" height="70" viewBox="0 0 71 70">
@@ -682,7 +674,7 @@ const Calendar_Optimize = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="
   <g id="Group_4806" data-name="Group 4806">
     <g id="Round_Btn_Default_Dark" data-name="Round Btn Default Dark" transform="translate(899.084 2063)">
       <g transform="matrix(1, 0, 0, 1, -18, -15)" filter="url(#teal_circle)">
-        <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill="#133c8b"/>
+        <path id="teal_circle-2" data-name="teal circle" d="M83.359,0A83.359,83.359,0,1,1,0,83.359,83.359,83.359,0,0,1,83.359,0Z" transform="translate(18 15)" fill=${actionIconBackground}/>
       </g>
       <g id="Group_332" data-name="Group 332" transform="translate(0.001)" opacity="0.12">
         <path id="gradient_border_2" data-name="gradient border 2" d="M3486.358,960.488a81.87,81.87,0,1,1-81.871,81.87,81.87,81.87,0,0,1,81.871-81.87m0-1.489a83.359,83.359,0,1,0,83.359,83.359A83.359,83.359,0,0,0,3486.358,959Z" transform="translate(-3403 -959)" fill="url(#linear-gradient)"/>
@@ -1293,7 +1285,22 @@ const Sales_Volume_Toggle_Icon = `<svg xmlns="http://www.w3.org/2000/svg" width=
 </g>
 </svg>`;
 
+
 const Bottom_Arrow_White = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"> <path d="M24 30.75 12 18.75 14.15 16.6 24 26.5 33.85 16.65 36 18.8Z" fill="#fff"/></svg>`;
+
+
+const Google_Map_Icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232597 333333" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd"><path d="M151444 5419C140355 1916 128560 0 116311 0 80573 0 48591 16155 27269 41534l54942 46222 69232-82338z" fill="#1a73e8"/><path d="M27244 41534C10257 61747 0 87832 0 116286c0 21876 4360 39594 11517 55472l70669-84002-54942-46222z" fill="#ea4335"/><path d="M116311 71828c24573 0 44483 19910 44483 44483 0 10938-3957 20969-10509 28706 0 0 35133-41786 69232-82313-14089-27093-38510-47936-68048-57286L82186 87756c8166-9753 20415-15928 34125-15928z" fill="#4285f4"/><path d="M116311 160769c-24573 0-44483-19910-44483-44483 0-10863 3906-20818 10358-28555l-70669 84027c12072 26791 32159 48289 52851 75381l85891-102122c-8141 9628-20339 15752-33948 15752z" fill="#fbbc04"/><path d="M148571 275014c38787-60663 84026-88210 84026-158728 0-19331-4738-37552-13080-53581L64393 247140c6578 8620 13206 17793 19683 27900 23590 36444 17037 58294 32260 58294 15172 0 8644-21876 32235-58320z" fill="#34a853"/></svg>`;
+
+
+const Sell_In_Icon = `<svg id="local_atm_black_24dp" xmlns="http://www.w3.org/2000/svg" width="43.07" height="43.07" viewBox="0 0 43.07 43.07">
+<path id="Path_4234" data-name="Path 4234" d="M0,0H43.07V43.07H0Z" fill="none"/>
+<path id="Path_4235" data-name="Path 4235" d="M18.151,27.329H21.74V25.535h1.795a1.8,1.8,0,0,0,1.795-1.795V18.357a1.8,1.8,0,0,0-1.795-1.795H18.151V14.767h7.178V11.178H21.74V9.384H18.151v1.795H16.357a1.8,1.8,0,0,0-1.795,1.795v5.384a1.8,1.8,0,0,0,1.795,1.795H21.74v1.795H14.562v3.589h3.589ZM34.3,4H5.589A3.562,3.562,0,0,0,2.018,7.589L2,29.124a3.577,3.577,0,0,0,3.589,3.589H34.3a3.577,3.577,0,0,0,3.589-3.589V7.589A3.577,3.577,0,0,0,34.3,4Zm0,25.124H5.589V7.589H34.3Z" transform="translate(1.589 3.178)" fill=${actionIconBackground}/>
+</svg>`;
+
+const Mobility_Icon = `<svg id="transfer_within_a_station_black_24dp" xmlns="http://www.w3.org/2000/svg" width="41.729" height="41.729" viewBox="0 0 41.729 41.729">
+<path id="Path_4249" data-name="Path 4249" d="M0,0H41.729V41.729H0Z" fill="none"/>
+<path id="Path_4250" data-name="Path 4250" d="M27.194,25.842V22.8l-4.329,4.347,4.329,4.347V28.45h9.58V25.842Zm5.251,7.39h-9.58v2.608h9.58v3.043l4.329-4.347-4.329-4.347ZM15.04,8.455a3.477,3.477,0,1,0-3.477-3.477A3.488,3.488,0,0,0,15.04,8.455ZM8.52,14.366,3.739,38.882H7.39l3.043-13.91,3.738,3.477V38.882h3.477V25.755l-3.564-3.564,1.043-5.216A12.132,12.132,0,0,0,24.6,21.5V18.018a8.914,8.914,0,0,1-7.563-4.26l-1.652-2.782a3.391,3.391,0,0,0-2.956-1.652,3.488,3.488,0,0,0-1.3.261L2,13.323V21.5H5.477V15.67l3.043-1.3" transform="translate(1.477 1.108)" fill=${actionIconBackground}/>
+</svg>`;
 
 
 export default ({
@@ -1498,9 +1505,7 @@ export default ({
         height={height}
       />
     )}
-    {icon == 'Cloud_Off' && (
-      <SvgXml style={style} xml={Cloud_Off} width={width} height={height} />
-    )}
+    
     {icon == 'Support_Agent' && (
       <SvgXml style={style} xml={Support_Agent} width={width} height={height} />
     )}
@@ -1992,6 +1997,19 @@ export default ({
 
     {icon == 'Bottom_Arrow_White' && (
       <SvgXml style={style} xml={Bottom_Arrow_White} width={width} height={height} />
+    )}
+
+
+    {icon == 'Google_Map_Icon' && (
+      <SvgXml style={style} xml={Google_Map_Icon} width={width} height={height} />
+    )}
+
+    {icon == 'Sell_In_Icon' && (
+      <SvgXml style={style} xml={Sell_In_Icon} width={width} height={height} />
+    )}
+
+    {icon == 'Mobility_Icon' && (
+      <SvgXml style={style} xml={Mobility_Icon} width={width} height={height} />
     )}
 
   </Fragment>

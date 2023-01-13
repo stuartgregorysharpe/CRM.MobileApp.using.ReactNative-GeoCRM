@@ -67,7 +67,7 @@ function getCurrentPosition(successCallback, failureCallback, options = {}) {
 const getGeocoding = async (latitude, longitude) => {
   return new Promise(function (resolve, reject) {
     console.log(
-      'url',
+      'url getGeocoding',
       `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`,
     );
     axios
@@ -90,7 +90,7 @@ const getCoordinate = async address => {
   return new Promise(function (resolve, reject) {
     //
     console.log(
-      'url',
+      'url ===',
       `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`,
     );
     axios
@@ -200,7 +200,7 @@ async function reverseGeocoding(currentLocation, customMasterFields) {
       return [];
     });
 }
-async function parseCoordinate(address) {
+async function parseCoordinate(address) {  
   return await getCoordinate(address)
     .then(res => {
       console.log('parse coo', res);

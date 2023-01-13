@@ -5,11 +5,10 @@ import React , {useEffect, useState} from 'react'
 import Colors, { whiteLabel } from '../../constants/Colors'
 
 export default function IndicatorDotScroller({total, selectedIndex}) {    
-
     const [indicatorLists, setIndicatorLists] = useState([]);
     useEffect(() =>{
         initLists(total);
-    },[]);
+    },[total]);
     
     const initLists = (n) => {
         var tmp = [];

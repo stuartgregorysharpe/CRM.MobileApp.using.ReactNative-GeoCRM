@@ -61,6 +61,7 @@ export default function LocationSearchScreen(props) {
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
+  
   const [orderLists, setOrderLists] = useState([]);
   const [originLists, setOriginLists] = useState([]);
   const [showItem, setShowItem] = useState(savedShowItem);
@@ -110,7 +111,7 @@ export default function LocationSearchScreen(props) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('location search focussed');
+      console.log('location search focussed' , savedShowItem);
       if (savedShowItem == 2) {
         console.log('showItem cc', savedShowItem);
         refreshHeader();
@@ -312,7 +313,10 @@ export default function LocationSearchScreen(props) {
         return;
       case 'locationInfo':
         if (locationInfoModalRef.current) {
+          console.log("location info open");
           locationInfoModalRef.current.showModal();
+        }else{
+          console.log("location info closed");
         }
         return;
       case 'addtocalendar':
@@ -327,15 +331,15 @@ export default function LocationSearchScreen(props) {
   };
 
   const openLocationInfo = async location_id => {
-    animation('locationInfo');
-    getLocationInfo(Number(location_id), currentLocation)
-      .then(res => {
-        console.log('location info', res);
-        setLocationInfo(res);
+      animation('locationInfo');      
+      getLocationInfo(Number(location_id), currentLocation)
+      .then(res => {        
+        setLocationInfo(res);        
       })
-      .catch(e => {
+      .catch(e => {        
         expireToken(dispatch, e);
-      });
+      });        
+
   };
 
   const renderLocation = (item, index) => {
@@ -370,9 +374,7 @@ export default function LocationSearchScreen(props) {
               type: SELECTED_LOCATIONS_FOR_CALENDAR,
               payload: selectedItems,
             });
-          } else {
-            //hideBottomBar();
-            console.log('location id', item.location_id);
+          } else {            
             openLocationInfo(item.location_id);
           }
         }}></LocationItem>
@@ -416,7 +418,10 @@ export default function LocationSearchScreen(props) {
   };
 
   const detailModalClosed = ({type, value}) => {
+
+    console.log("detail modal closed", type , value);    
     if (type == Constants.actionType.ACTION_CLOSE) {
+      locationInfoModalRef.current.hideModal();
       if (value === 'access_crm') {
         navigation.navigate('LocationSpecificInfo', {
           //locationId:locationInfo.location_id,

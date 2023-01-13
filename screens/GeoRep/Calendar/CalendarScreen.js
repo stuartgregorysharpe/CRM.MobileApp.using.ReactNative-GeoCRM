@@ -15,9 +15,7 @@ import {boxShadow, style} from '../../../constants/Styles';
 import {BG_COLOR} from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import {
-  checkFeatureIncludeParam,
-  getBaseUrl,
-  getToken,
+  checkFeatureIncludeParam,  
 } from '../../../constants/Storage';
 import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';
@@ -38,15 +36,14 @@ import {
   showOfflineDialog,
 } from '../../../constants/Helper';
 import {Notification} from '../../../components/modal/Notification';
-
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 var selectedIndex = 2;
 
-var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
+  
   const dispatch = useDispatch();
   const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -116,7 +113,11 @@ export default function CalendarScreen(props) {
     const param = {period: type};
     if (type == 'today' && isOptimize) {
       param.optimize = 1;
+      param.current_time = moment().format('hh:mm:ss');
+      param.user_coordinates_latitude = currentLocation.latitude;
+      param.user_coordinates_longitude = currentLocation.longitude;
     }
+    console.log('GetRequestCalendarScheduleList: param', param);
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
         console.log('GetRequestCalendarScheduleList: res', res.items);
@@ -135,7 +136,7 @@ export default function CalendarScreen(props) {
       });
   };
 
-  const updateListForWeek = res => {
+  const updateListForWeek = res => {    
     let schedules = [];
     schedules = res;
     let schedule_dates = [];
@@ -144,10 +145,10 @@ export default function CalendarScreen(props) {
       if (!date) {
         schedule_dates.push(item.schedule_date);
       }
-    });
-
+    });    
+    let sorted_schedule_dates = schedule_dates.sort((a, b) => new Date(b) - new Date(a));    
     let sectionList = [];
-    schedule_dates.forEach(item => {
+    sorted_schedule_dates.forEach(item => {
       let data = schedules.filter(schedule => schedule.schedule_date === item);
       sectionList.push({
         title: item,

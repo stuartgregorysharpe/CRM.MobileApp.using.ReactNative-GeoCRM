@@ -29,10 +29,10 @@ const SettingView = (props) => {
                                 width="12px"
                                 height="12px"
                             />
-                            <AppText title="Customer Name" color={Colors.whiteColor} style={{marginLeft:5}} type="secondaryRegular"/> 
+                            {/* <AppText title="Customer Name" color={Colors.whiteColor} style={{marginLeft:5}} type="secondaryRegular"/>  */}
+                            <AppText title={selectedLocation} color={Colors.whiteColor} size="medium" style={{ marginLeft:10}} type="secondaryMedium"/>
                         </View>
-
-                        <AppText title={selectedLocation} color={Colors.whiteColor} size="medium" style={{marginTop:0}} type="secondaryMedium"/>
+                        
                     </View>
                     <SvgIcon icon="Setting" width="20" height="20" />
                 </TouchableOpacity>

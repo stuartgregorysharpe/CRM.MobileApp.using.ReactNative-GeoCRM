@@ -185,9 +185,6 @@ export const FormsScreen = props => {
         param.checkin_reason_id = checkin_reason_id;
       }
     }
-    console.log('locationIdSpecific', locationIdSpecific);
-    console.log('isCheckin', isCheckin);
-    console.log('param data', param);
     GetRequestFormListsDAO.find(param)
       .then(res => {
         if (isMount) {
@@ -215,7 +212,7 @@ export const FormsScreen = props => {
       formFilterModalRef.current.hideModal();
     }
     if (type == Constants.actionType.ACTION_FORM_CLEAR) {
-      setFilters(null);
+      initFilter();
       _callFormLists(null);
     }
   };

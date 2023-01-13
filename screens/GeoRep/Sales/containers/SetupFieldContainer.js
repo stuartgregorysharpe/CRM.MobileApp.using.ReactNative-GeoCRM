@@ -1,20 +1,13 @@
-
-import { View , Text, BackHandler } from 'react-native'
+import { View , Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
 import {  useSelector, useDispatch } from 'react-redux';
 import { Constants } from '../../../../constants';
-import { isLandscape } from 'react-native-device-info';
 import { getBottomTabs } from '../../../../components/helper';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { whiteLabel } from '../../../../constants/Colors';
-import DeviceInfo from 'react-native-device-info';
-import { style } from '../../../../constants/Styles';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
-const BottomTab = createBottomTabNavigator();
-
+import { getJsonData, getLocalData } from '../../../../constants/Storage';
 
 const  SetupFieldContainer = (props) => {
     
@@ -22,29 +15,58 @@ const  SetupFieldContainer = (props) => {
     const [warehouse , setWarehouse] = useState(null);
     const [currency , setCurrency] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [bottomTabs, setBottomTabs] = useState([]);
+    
     const payload = useSelector(state => state.selection.payload);
     const selectProject = useSelector(state => state.selection.selectProject);
-    const [bottomTabs, setBottomTabs] = useState([]);
-
-    const dispatch = useDispatch() 
+    
+    const dispatch = useDispatch()
     let isMount = true;
 
     useEffect(() => {
-
-        initBottomTab();
-        setIsLoading(true);
-        GetRequestSetupFieldDAO.find({}).then((res) => {            
-            setTransactinTypes(res.transaction_types);
-            setWarehouse(res.warehouse);
-            setCurrency(res.currency);
-            setIsLoading(false)
-        }).catch((e) => {
-            expireToken(dispatch, e);
-            setIsLoading(false)
-        });
-    
+        initBottomTab();        
+        callDefineSetUp();
+        return () => {
+            isMount = false;
+        }
     }, []);
+
+    const callDefineSetUp = async () => {                
+        var defineSetup = await getJsonData('@setup');
+        console.log("defineSetup =>", defineSetup);
+        if(defineSetup != null ){            
+            if(defineSetup.location != undefined && defineSetup.location.location_id){
+                callSetupFieldOptions( defineSetup.location.location_id );
+            }
+        }else{
+            const location_id = await getLocalData("@specific_location_id");
+            console.log(" call location_id",location_id)
+            callSetupFieldOptions( location_id );
+        }
+    }
+
+    const callSetupFieldOptions = (location_id) => {
+        if(!isLoading){
+            setIsLoading(true);
+            var param = {};        
+            if(location_id  != undefined && location_id != ''){
+                param = {
+                    location_id: location_id
+                }
+            }  
+            console.log("setup-fields param =>", param)      
+            GetRequestSetupFieldDAO.find(param).then((res) => {
+                console.log("res.warehouse", res.warehouse)
+                setTransactinTypes(res.transaction_types);
+                setWarehouse(res.warehouse);
+                setCurrency(res.currency);
+                setIsLoading(false)
+            }).catch((e) => {
+                expireToken(dispatch, e);
+                setIsLoading(false)
+            });
+        }        
+    }
 
     const initBottomTab = () => {
         const tabs = getBottomTabs(payload, selectProject);
@@ -54,14 +76,30 @@ const  SetupFieldContainer = (props) => {
     const onContinue = (data) => {             
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
-        
+
+    const onChangeLocation = (location) => {        
+        if(location)
+            callSetupFieldOptions(location.location_id)
+    }
+    
+    const getPadding = () => {
+        if(Platform.OS == 'android'){
+            return 0;
+        }else{
+            const majorVersionIOS = parseInt(Platform.Version, 10);
+            if(majorVersionIOS == 7){
+                return 25
+            }else{
+                return 34;
+            }
+        }
+    }
+
     return (
         <View style={{
             alignSelf:'stretch' , 
-            flex:1 , 
-            flexDirection:'column',
-            // marginHorizontal:10, 
-            // marginBottom:10,  
+            flex:1 ,            
+            flexDirection:'column',            
             alignItems:'center',
             justifyContent:'center',            
             minHeight:250
@@ -70,12 +108,20 @@ const  SetupFieldContainer = (props) => {
             <SetupFieldView 
                 transaction_types={transaction_types} 
                 currency={currency}
-                warehouse={warehouse}  
+                warehouse={warehouse}
                 isLoading={isLoading}
                 onContinue={onContinue}
+                onChangeLocation={onChangeLocation}
                 {...props} />
             
-            <View style={{backgroundColor:'white', position:'absolute' ,bottom:0, width:'100%', flexDirection:'row'}}>
+            <View style={{
+                    backgroundColor:'white', 
+                    position:'absolute' ,
+                    bottom:0, 
+                    width:'100%', 
+                    flexDirection:'row' , 
+                    paddingBottom: getPadding()
+                }}>
 
                 {
                     bottomTabs.map((item, index) =>{
@@ -85,7 +131,8 @@ const  SetupFieldContainer = (props) => {
                                     props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});
                                     
                                 }}
-                                key={index} item={item} />
+                                key={index} item={item} 
+                            />
                         )
                     })
                 }                                            

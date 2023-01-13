@@ -8,6 +8,7 @@ export const showNotification = ({
   buttonAction,
   cancelButtonText,
   cancelButtonAction,
+  cancelable,
 }) => ({
   type: 'SHOW_NOTIFICATION',
   payload: {
@@ -27,6 +28,7 @@ export const showNotification = ({
       typeof cancelButtonAction != 'undefined' ? cancelButtonAction : false,
     cancelButtonText:
       typeof cancelButtonText != 'undefined' ? cancelButtonText : false,
+    cancelable: typeof cancelable != 'undefined' ? cancelable : false,
   },
 });
 

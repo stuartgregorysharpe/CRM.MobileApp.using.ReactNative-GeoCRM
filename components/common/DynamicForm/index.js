@@ -144,6 +144,11 @@ const DynamicForm = React.forwardRef((props, ref) => {
               }}
               index={index}
               dynamicFieldRef={dynamicFieldRef}
+              setScrollEnabled={(flag) => {
+                if(props.setScrollEnabled){
+                  props.setScrollEnabled(flag);
+                } 
+              }}
             />
           </TouchableOpacity>
         );
@@ -162,6 +167,11 @@ const DynamicForm = React.forwardRef((props, ref) => {
           isFirst={index == 0}
           index={index}
           dynamicFieldRef={dynamicFieldRef}
+          setScrollEnabled={(flag) => {
+            if(props.setScrollEnabled){
+              props.setScrollEnabled(flag);
+            } 
+          }}
         />
       );
     });
