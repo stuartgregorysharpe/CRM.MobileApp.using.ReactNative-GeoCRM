@@ -2,12 +2,15 @@ import {View} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import SimDetailsView from '../../components/sim/SimDetailsView';
 import SearchLocationModal from '../../modal/SearchLocationModal';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Constants, Strings} from '../../../../../../constants';
 import {getLocalData} from '../../../../../../constants/Storage';
+import {Notification} from '../../../../../../components/modal/Notification';
+import {showNotification} from '../../../../../../actions/notification.action';
 
 export default function SimDetailsContainer(props) {
   const {items} = props;
+  const dispatch = useDispatch();
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
   const [stockType, setStockType] = useState(
@@ -26,6 +29,16 @@ export default function SimDetailsContainer(props) {
   };
 
   const onSellToTrader = () => {
+    if (!items || items.length == 0) {
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: Strings.No_Sims_Selected,
+          buttonText: Strings.Ok,
+        }),
+      );
+      return;
+    }
     if (isCheckin) {
       props.openSignature({
         stockType: Constants.stockDeviceType.SELL_TO_TRADER,
@@ -58,7 +71,6 @@ export default function SimDetailsContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
-
       <SimDetailsView
         onSellToTrader={onSellToTrader}
         onTransfer={onTransfer}
@@ -71,7 +83,7 @@ export default function SimDetailsContainer(props) {
         stockType={stockType}
         onButtonAction={onSearchLocationModalClosed}
       />
-
+      <Notification />
     </View>
   );
 }
