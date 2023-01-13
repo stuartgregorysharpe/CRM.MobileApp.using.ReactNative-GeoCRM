@@ -11,7 +11,6 @@ import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
 import RepSupportScreen from '../screens/GeoRep/Support/SupportScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
-import OfflineSyncScreen from '../screens/GeoRep/OfflineSyncScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
 import CRMContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import CRMLocationsScreen from '../screens/GeoCRM/CRMLocationsScreen';
@@ -232,7 +231,7 @@ export default function RepMoreScreen(props) {
 
       {selectProject == 'geo_rep' && componentListOne.includes('home_geo') && (
         <Stack.Screen name="Home" options={{ header: () => null }}>
-          {props => <HomeNavigator {...props} screenProps={navigation} />}
+          {props => <HomeScreen {...props} screenProps={navigation} />}
         </Stack.Screen>
       )}
       {selectProject == 'geo_rep' &&
@@ -289,11 +288,7 @@ export default function RepMoreScreen(props) {
           {props => <RepMessagesScreen {...props} screenProps={navigation} />}
         </Stack.Screen>
       )}
-      {selectProject == 'geo_rep' && componentListOne.includes('offline_sync') && (
-        <Stack.Screen name="OfflineSync" options={{ header: () => null }}>
-          {props => <OfflineSyncScreen {...props} screenProps={navigation} />}
-        </Stack.Screen>
-      )}
+
       {selectProject == 'geo_rep' &&
         componentListOne.includes('recorded_sales') && (
           <Stack.Screen name="RecordedSales" options={{ header: () => null }}>

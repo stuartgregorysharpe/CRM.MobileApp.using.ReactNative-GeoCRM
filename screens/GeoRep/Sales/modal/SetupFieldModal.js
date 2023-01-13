@@ -5,7 +5,7 @@ import { Constants } from '../../../../constants';
 import SetupFieldContainer from '../containers/SetupFieldContainer';
 
 const SetupFieldModal = React.forwardRef((props, ref) => {
-    
+        
     const [isClear, setIsClear] = useState(false);
     
     const onButtonAction = data => {
@@ -21,7 +21,7 @@ const SetupFieldModal = React.forwardRef((props, ref) => {
     return (        
         <CModal
             ref={ref}            
-            modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
+            //modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
             closableWithOutsideTouch
             onClear={() => {
                 //onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });                

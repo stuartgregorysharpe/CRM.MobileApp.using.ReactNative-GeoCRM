@@ -51,7 +51,12 @@ const syncItemTypeApi = async(items, index , callBack , totalValue) =>{
         try{
 
             var apiRes = {};
-            if(item.item_type == "form_submission" || item.item_type == "leadfields" || item.item_type == "sell_to_trader" ){  
+            if(
+                item.item_type == "form_submission" || 
+                item.item_type == "leadfields" || 
+                item.item_type == "sell_to_trader" ||
+                item.item_type == "transaction-submit"
+            ){  
                 console.log("item.post_body" ,item.post_body)
                 var body = jsonToFormData(JSON.parse(item.post_body));
                 body.append("mode", "offline");

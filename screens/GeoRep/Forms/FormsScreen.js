@@ -5,13 +5,17 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  TouchableOpacity,  
+  TouchableOpacity,
 } from 'react-native';
 import SearchBar from '../../../components/SearchBar';
 import {FormListItem} from './partial/FormListItem';
 import {Provider} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import {getFilterData, getJsonData, getLocalData} from '../../../constants/Storage';
+import {
+  getFilterData,
+  getJsonData,
+  getLocalData,
+} from '../../../constants/Storage';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {GuideInfoView} from './partial/GuideInfoView';
@@ -21,11 +25,10 @@ import FormFilterModal from './modal/FormFilterModal';
 import {Constants, Strings} from '../../../constants';
 import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
-import { LOCATION_CHECK_OUT_COMPULSORY } from '../../../actions/actionTypes';
-import { Notification } from '../../../components/modal/Notification';
+import {LOCATION_CHECK_OUT_COMPULSORY} from '../../../actions/actionTypes';
+import {Notification} from '../../../components/modal/Notification';
 
-export const FormsScreen = (props) => {
-
+export const FormsScreen = props => {
   const {navigationType} = props;
   const navigation = props.navigation;
   const [originalFormLists, setOriginalFormLists] = useState([]);
@@ -38,8 +41,8 @@ export const FormsScreen = (props) => {
   const formFilterModalRef = useRef(null);
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
-  const [formIds, setFormIds] = useState([])
-  
+  const [formIds, setFormIds] = useState([]);
+
   const dispatch = useDispatch();
 
   const locationIdSpecific = props.route.params
@@ -87,7 +90,7 @@ export const FormsScreen = (props) => {
     initializeFormIds();
     return () => {
       isMount = false;
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -98,31 +101,33 @@ export const FormsScreen = (props) => {
     return unsubscribe;
   }, [navigation]);
 
-  const initializeFormIds = async() => {
-    var formIds = await getJsonData("@form_ids");
+  const initializeFormIds = async () => {
+    var formIds = await getJsonData('@form_ids');
     var formIdLists = [];
-    if(formIds != null){
-      formIds.forEach((id) => {
-        formIdLists.push(id)
-      })
-    }    
+    if (formIds != null) {
+      formIds.forEach(id => {
+        formIdLists.push(id);
+      });
+    }
     setFormIds(formIdLists);
-
-  }
-
-  const getCompulsoryForm = async (lists) => {
-    var formLists = [...lists];
-    const formIds = await getJsonData("@form_ids");
-    var flag = false;
-    console.log(" formIds in form screen ", JSON.stringify(formIds))
-    formLists.forEach((element) => {
-      if(element.compulsory === "1" && (formIds == null || formIds != null && !formIds.includes(element.form_id)) ){        
-        flag = true;
-      }
-    });    
-    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
   };
 
+  const getCompulsoryForm = async lists => {
+    var formLists = [...lists];
+    const formIds = await getJsonData('@form_ids');
+    var flag = false;
+    console.log(' formIds in form screen ', JSON.stringify(formIds));
+    formLists.forEach(element => {
+      if (
+        element.compulsory === '1' &&
+        (formIds == null ||
+          (formIds != null && !formIds.includes(element.form_id)))
+      ) {
+        flag = true;
+      }
+    });
+    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
+  };
 
   const initFilter = async () => {
     var savedFilters = await getFilterData('@form_filter');
@@ -171,6 +176,8 @@ export const FormsScreen = (props) => {
     if (locationIdSpecific != null && isCheckin) {
       const checkin_type_id = await getLocalData('@checkin_type_id');
       const checkin_reason_id = await getLocalData('@checkin_reason_id');
+      console.log('checkin_type_id', checkin_type_id);
+      console.log('checkin_reason_id', checkin_reason_id);
       if (checkin_type_id && checkin_reason_id != '') {
         param.checkin_type_id = checkin_type_id;
       }
@@ -178,20 +185,17 @@ export const FormsScreen = (props) => {
         param.checkin_reason_id = checkin_reason_id;
       }
     }
-
-    console.log("param data", param);
     GetRequestFormListsDAO.find(param)
-      .then(res => {        
-        if(isMount){
+      .then(res => {
+        if (isMount) {
           setFormLists(res.forms);
           setOriginalFormLists(res.forms);
           getCompulsoryForm(res.forms);
-        }        
-    })
-    .catch(e => {
-      expireToken(dispatch, e);
-    });
-    
+        }
+      })
+      .catch(e => {
+        expireToken(dispatch, e);
+      });
   };
 
   const _onTouchStart = (e, text) => {
@@ -208,7 +212,7 @@ export const FormsScreen = (props) => {
       formFilterModalRef.current.hideModal();
     }
     if (type == Constants.actionType.ACTION_FORM_CLEAR) {
-      setFilters(null);
+      initFilter();
       _callFormLists(null);
     }
   };
@@ -259,7 +263,7 @@ export const FormsScreen = (props) => {
         <View>
           <FormListItem
             key={index}
-            item={item}            
+            item={item}
             isSubmitted={formIds.includes(item.form_id)}
             onItemPress={() => {
               onFormItemPress(item);
@@ -273,9 +277,7 @@ export const FormsScreen = (props) => {
 
   return (
     <Provider>
-
       <View style={styles.container}>
-
         <Notification />
 
         {isShowCustomNavigationHeader && (
@@ -329,11 +331,10 @@ export const FormsScreen = (props) => {
           onButtonAction={onSearchLocation}
           isSkipLocationIdCheck={true}
         />
-
       </View>
     </Provider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

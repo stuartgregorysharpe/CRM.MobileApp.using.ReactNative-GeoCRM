@@ -6,12 +6,12 @@ import SearchLocationContainer from '../../Stock/stock/container/SearchLocationC
 import LocationInfo from './LocationInfo'
 import { useSelector } from 'react-redux'
 import { getJsonData, getLocalData, storeJsonData } from '../../../../constants/Storage'
-import { getLocationInfo } from '../../../../sqlite/DBHelper'
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
 import { Colors, Fonts, Values } from '../../../../constants'
-import { whiteLabel } from '../../../../constants/Colors'
+import { getLocationInfo } from '../../../../actions/location.action'
+import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
 
 const SetupFieldView = (props) => {
 
@@ -21,7 +21,7 @@ const SetupFieldView = (props) => {
 	);
 	const [isSearchStart, setIsSearchStart] = useState(false)
 	const [selectedLocation ,setSelectedLocation] = useState(null)
-	const [selectedSaleType, setSelectedSaleType] = useState(null);
+	const [selectedSaleType, setSelectedSaleType] = useState(null)
 	const [selectedCurrency , setSelectedCurrency] = useState(null)
 	const [warehouseRequired, setWarehouseRequired] = useState(false)
 	const [selectedWarehouse, setSelectedWarehouse] = useState([])	
@@ -33,7 +33,9 @@ const SetupFieldView = (props) => {
 
 	useEffect(() => {
 		if(isClear){
-			clearSetup();
+			if(!isLoading){
+				clearSetup();
+			}			
 			if(props.updateClear){
 				props.updateClear(false)
 			}
@@ -41,29 +43,45 @@ const SetupFieldView = (props) => {
 	}, [isClear]);
 
 	useEffect(() => {		
-		initializeSetupData();
+		initializeSetupData(currency, warehouse,   transaction_types);
 	}, [ currency, warehouse,   transaction_types]);
 
-	const clearSetup = async() => {
-		console.log("clear upset")
+	const clearSetup = async() => {		
+		console.log("clear tirger")
 		storeJsonData("@setup", null);
-		initializeSetupData();
+		initializeSetupData(null, null, null);
 		initializeLocation();
+		if(props.onChangeLocation){
+			const  locationId = await getLocalData("@specific_location_id");		
+			const  locInfo = await getLocationInfoFromLocal(locationId);
+			const location = {...locInfo , location_id: locationId}
+			props.onChangeLocation(location);
+		}		
 	}
 	
 	const getCheckinLocationInfo = async () => {
+
 		const  locationId = await getLocalData("@specific_location_id");		
-		const  locInfo = await getLocationInfo(locationId);
-		console.log(locationId, locInfo)
+		const  locInfo = await getLocationInfoFromLocal(locationId);
 		if(locInfo.name != ''){
 			setSelectedLocation({...locInfo , location_id: locationId});
-		}			
+		}else{
+			// get location info from online api call.
+			getLocationInfo(locationId).then( async(res) => {
+				console.log(" location info api =>" , res)
+				await storeJsonData("@checkin_location", res);
+				var location = {name: res.location_name.value , address: res.address , location_id: locationId};
+				setSelectedLocation(location);
+			}).catch((e) => {
+	
+			});
+		}
 	}
-
+	
 	const initializeLocation = async() => {
 		var data = await getJsonData("@setup");
 		if(data != null){
-			setSelectedLocation(data.location);	
+			setSelectedLocation(data.location);
 		}else if(isCheckin){
 			getCheckinLocationInfo();
 		}else{
@@ -71,23 +89,9 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const initializeSetupData = async() => {
+	const initializeSetupData = async(currency, warehouse,   transaction_types) => {
 
-		var data = await getJsonData("@setup");
-		if(data != null){
-			
-			setSelectedSaleType(data.transaction_type);
-			setSelectedCurrency(data.currency_id);	
-			setSelectedLocation(data.location);
-			
-			if(data.transaction_type != ''){
-				onWarehouseRequired(data.transaction_type.warehouse_required);
-			}
-			if(data.warehouse_id != ''){				
-				setSelectedWarehouse(data.warehouse_id);
-			}
-
-		}else{
+		if(currency != null && warehouse != null &&   transaction_types != null){
 			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
 				setSelectedSaleType(transactionType);
@@ -95,28 +99,48 @@ const SetupFieldView = (props) => {
 					onWarehouseRequired(transactionType.warehouse_required);
 				}
 			}
-			if(currency != undefined && currency.default_currency != ''){
+			if(currency != undefined && currency.default_currency){
 				const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
 				setSelectedCurrency(defaultCurrency);
 				
 			}
 	
-			if( warehouse != undefined && warehouse.default_warehouse != ''){
-				const options = warehouse.options ?  warehouse.options : [];
-				const item = options.find(element => element.id === warehouse.default_warehouse);
-				if(item != undefined){
+			if( warehouse != undefined && warehouse.default_warehouse ){
+				const options = warehouse.options ?  warehouse.options : [];			
+				const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
+				if(items != undefined){
 					//onWarehouseItemSelected(item, false);
-					setSelectedWarehouse([item]);	
-				}				
+					setSelectedWarehouse(items);	
+				}
+			}
+		}else{
+			var data = await getJsonData("@setup");
+		
+			if(data != null){				
+				setSelectedSaleType(data.transaction_type);
+				setSelectedCurrency(data.currency_id);	
+				setSelectedLocation(data.location);
+				
+				if(data.transaction_type != ''){
+					onWarehouseRequired(data.transaction_type.warehouse_required);
+				}
+				if(data.warehouse_id != ''){				
+					setSelectedWarehouse(data.warehouse_id);
+				}	
 			}
 		}
+
+		
 		
 	}
 
 	const onSearch = (location, locationId) => {		
 		
 		setIsSearchStart(false);
-		setSelectedLocation(location)
+		setSelectedLocation(location);
+		if(props.onChangeLocation){
+			props.onChangeLocation(location);
+		}
 	}
 
 	const onStartSearch = (flag) => {
@@ -197,15 +221,14 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const onClear = () => {
-		console.log("cc" , props)
+	const onClear = () => {		
 		if (props.updateClear) {			
 		  props.updateClear(true);
 		}
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container]}>
 
 			<View
                   style={[
@@ -322,7 +345,7 @@ const styles = StyleSheet.create({
 		marginTop:10, 
 		backgroundColor:'white' ,
 		minHeight:250, 
-		maxHeight:400, 
+		//maxHeight:400, 
 		padding:10,
 		borderRadius:5 ,
 		alignSelf:'stretch' 
@@ -334,8 +357,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		marginTop: 5,
 		paddingLeft: 5,
-		paddingRight: 15,
-		//paddingRight: 50,
+		paddingRight: 15,		
 	},
 	titleIcon: {
 		width: 16,

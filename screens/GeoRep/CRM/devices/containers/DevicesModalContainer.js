@@ -3,23 +3,21 @@ import { View } from 'react-native'
 import React , {useEffect, useState , useRef} from 'react'
 import DevicesModalView from '../components/DevicesModalView';
 import { Constants } from '../../../../../constants';
-import { getApiRequest } from '../../../../../actions/api.action';
 import { useNavigation } from '@react-navigation/native';
 import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
-import GetRequestLocationDevices from '../../../../../DAO/locations/GetRequestLocationDevices';
 import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
-import { getDevice } from 'react-native-device-info';
+let isMount = true;
 
 export default function DevicesModalContainer(props) {
     
     const { locationId } = props;
-    const  [lists, setLists] = useState([])
+    if( !locationId) return null;
+
+    const  [lists, setLists] = useState([]);
     const navigationMain = useNavigation();
-
     const dispatch = useDispatch()
-    let isMount = true;
-
+    
     useEffect(() => {
         
         getDeviceLists();
@@ -30,7 +28,7 @@ export default function DevicesModalContainer(props) {
 
     const getDeviceLists = () => {
         let param = {
-            location_id: locationId,
+            location_id: locationId
         };                
                 
         GetRequestLocationDevicesDAO.find(param).then((res) => {

@@ -173,3 +173,45 @@ export const postApiRequestMultipart = async (
       });
   });
 };
+
+
+
+export const postHmsMapRequest = async (route, postData, key) => {
+
+  var token = await getToken();  
+  var url = route;
+  
+  return new Promise(function (resolve, reject) {
+
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',      
+      'key': key        
+    };
+
+    axios
+      .post(url, postData, {
+        headers: headers        
+      })
+      .then(res => {
+        if (res.data && res.data.status === Strings.Success) {
+          resolve(res.data);
+        } else {
+          resolve(res.data);
+        }
+      })
+      .catch(err => {
+        console.log(JSON.stringify(err))
+        const error = err.response;
+        if (
+          error.status === 401 &&
+          error.config &&
+          !error.config.__isRetryRequest
+        ) {
+          reject('expired');
+        } else {
+          reject(err);
+        }
+      });
+  });
+};

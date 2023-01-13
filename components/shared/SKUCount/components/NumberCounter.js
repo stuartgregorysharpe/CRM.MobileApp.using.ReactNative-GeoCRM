@@ -47,8 +47,13 @@ const NumberCounter = props => {
 
   const onEditDone = (qty) => {
     try{      
-      if(props.onEditDone){        
-          props.onEditDone(parseFloat(qty).toFixed(fixed));      
+      if(props.onEditDone){ 
+          if(parseFloat(qty) > 0){
+            props.onEditDone(parseFloat(qty).toFixed(fixed));      
+          }else{
+            props.onEditDone(0);      
+          }
+          
       }
     }catch(e){
       console.log("on edit done error: ", e)

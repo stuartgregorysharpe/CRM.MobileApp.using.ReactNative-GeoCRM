@@ -79,12 +79,7 @@ const lists = {
       navigator: 'RepMessages',
       navOrder: 'messages',
     },
-    {
-      icon: 'Cloud_Off',
-      name: 'Offline Sync Items',
-      navigator: 'OfflineSync',
-      navOrder: 'offline_sync',
-    },
+    
     {
       icon: 'Account_Circle',
       name: 'Recorded Sales',

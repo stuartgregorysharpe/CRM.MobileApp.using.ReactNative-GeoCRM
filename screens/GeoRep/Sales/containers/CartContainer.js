@@ -68,11 +68,30 @@ const CartContainer = props => {
   const [product, setProduct] = useState();
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
   const visibleMore = useSelector(state => state.rep.visibleMore);
+  let isMout = true;
 
   useEffect(() => {
     loadAddProductLists();
     loadDefinedConfig();
+    return () => {
+      isMout = false;
+    }
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      refreshList();      
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const refreshList = async () => {  
+    var defineSetup = await getJsonData('@setup');
+    console.log("defineSetup",defineSetup)
+    if (defineSetup == null) {      
+      openSetup();
+    }
+  };
 
   const loadAddProductLists = async () => {
     const addProductList = await getJsonData('@add_product');
@@ -96,6 +115,7 @@ const CartContainer = props => {
   const onSetupFieldModalClosed = async ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
       configProductSetUp(value, async type => {
+        console.log("store setup data", value);
         storeJsonData('@setup', value);
         if (type === 'changed') {
 
@@ -142,7 +162,6 @@ const CartContainer = props => {
       setOutSideTouch(false);
       transactionSubmitModalRef.current.hideModal();      
       openSetup();
-
       if (navigation.canGoBack()) {
         navigation.popToTop();
       }
@@ -174,49 +193,57 @@ const CartContainer = props => {
     setSelectedWarehouseId(null);
     productGroupModalRef.current.showModal();
   };
-  const updateCapturedProductPrice = (product, qty) => {
-    setIsUpdatingProductPrice(true);
-    const param = {
-      product_id: product.product_id,
-      qty: qty,
-    };
-    GetRequestProductPriceDAO.find(param)
-      .then(res => {
-        if (res.status === Strings.Success) {
-          const price = res.price;
-          const special = res.special;
-          var check = productPriceList.find(
-            element => element.product_id == product.product_id,
-          );
-          var finalPrice = 0;
-          if (
-            check != undefined &&
-            check.finalPrice != '' &&
-            check.finalPrice.final_price != ''
-          ) {
-            finalPrice = check.finalPrice.final_price;
+  const updateCapturedProductPrice = async(product, qty) => {
+
+    var defineSetup = await getJsonData('@setup');
+    if (defineSetup != null) {     
+
+      setIsUpdatingProductPrice(true);
+      const param = {
+        product_id: product.product_id,
+        qty: qty,
+        location_id: defineSetup.location.location_id
+      };      
+      GetRequestProductPriceDAO.find(param)
+        .then(res => {
+          if (res.status === Strings.Success) {
+            const price = res.price;
+            const special = res.special;
+            var check = productPriceList.find(
+              element => element.product_id == product.product_id,
+            );
+            var finalPrice = 0;
+            if (
+              check != undefined &&
+              check.finalPrice != '' &&
+              check.finalPrice.final_price != ''
+            ) {
+              finalPrice = check.finalPrice.final_price;
+            }
+            var updatedProduct = {
+              ...product,
+              price: price,
+              special: special,
+              finalPrice: finalPrice,
+            };
+            updateProductPriceLists(
+              product.product_id,
+              price,
+              qty,
+              special,
+              '',
+              updatedProduct,
+            );
           }
-          var updatedProduct = {
-            ...product,
-            price: price,
-            special: special,
-            finalPrice: finalPrice,
-          };
-          updateProductPriceLists(
-            product.product_id,
-            price,
-            qty,
-            special,
-            '',
-            updatedProduct,
-          );
-        }
-        setIsUpdatingProductPrice(false);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-        setIsUpdatingProductPrice(false);
-      });
+          setIsUpdatingProductPrice(false);
+        })
+        .catch(e => {
+          expireToken(dispatch, e);
+          setIsUpdatingProductPrice(false);
+        });
+    }
+
+
   };
 
   const updateProductPrice = (product, qty) => {

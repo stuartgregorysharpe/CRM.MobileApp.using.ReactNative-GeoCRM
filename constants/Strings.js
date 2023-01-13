@@ -32,20 +32,24 @@ export default {
   Added_Date: 'Added Date',
   Due_Date: 'Due Date',
   Search_Location: 'Search Location',
-  This_Function_Not_Available: 'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
+  This_Function_Not_Available:
+    'This function is not available in Offline mode, please ensure connectivity and switch back to Online mode to use this function.',
   Offline_Mode: 'You are now operating in Offline Mode',
   Online_Mode: 'You are now operating in Online Mode',
   Download_Image: 'Downloading Images ...',
   Continue: 'Continue',
-  Offline_Mode_Message: 'Due to loss of connectivity, services have automatically switched to Offline mode.',
-  Online_Mode_Message: 'Connectivity has been restored and all services have automatically switched back to Online mode.',
-
+  Offline_Mode_Message:
+    'Due to loss of connectivity, services have automatically switched to Offline mode.',
+  Online_Mode_Message:
+    'Connectivity has been restored and all services have automatically switched back to Online mode.',
+  No_Sims_Selected: 'No SIMs selected',
+  Not_Enough_Stock: 'Not enough stock',
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
-    Complete_Compulsory_Form: 'Please complete the compulsory forms'
+    Complete_Compulsory_Form: 'Please complete the compulsory forms',
   },
 
   Log: {
@@ -79,8 +83,7 @@ export default {
     Select_Scan_Type: 'Select Scan Type',
     Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
     Successfully_Sell_To_Trader: 'Saved to Offline sync successfully',
-    Primary_Additional: 'Primary/Additional'
-
+    Primary_Additional: 'Primary/Additional',
   },
 
   Forms: {
@@ -93,7 +96,8 @@ export default {
     Successfully_Checkin: 'Checkin Successfully!',
     Successfully_Feedback: 'Feedback Successfully!',
     Successfully_Form_Submit: 'Form  Submitted successfully!',
-    Successfully_Device_Update: 'Device update added to offline sync menu successfully',
+    Successfully_Device_Update:
+      'Device update added to offline sync menu successfully',
   },
 
   DanOnesSales: {
@@ -104,7 +108,6 @@ export default {
     SalesMetrics: 'Sales Metrics',
     Category: 'Category',
     Returns_value: 'Returns Value',
-    Returns_tns: 'Returns (Tns)'
+    Returns_tns: 'Returns (Tns)',
   },
-  FIREBASE_KEY: 'AAAAzZz92j8:APA91bEoURnFx5UEb-Y_nfk3gapj3kYNGQ67an9RxAhAWJhJLDVqSqN90kA7JMlMbkdnqtUezBeXxgdMqbwLqJhfHhEh5ed6z3H6wp31FI-jWhA7Tp9p6T3fjk0d2nR07CW37PpE64gJ'
 };
