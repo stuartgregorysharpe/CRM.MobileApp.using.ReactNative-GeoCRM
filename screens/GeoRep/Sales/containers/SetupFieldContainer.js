@@ -1,4 +1,3 @@
-
 import { View , Platform } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
@@ -8,7 +7,7 @@ import {  useSelector, useDispatch } from 'react-redux';
 import { Constants } from '../../../../constants';
 import { getBottomTabs } from '../../../../components/helper';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
-import { getLocalData } from '../../../../constants/Storage';
+import { getJsonData, getLocalData } from '../../../../constants/Storage';
 
 const  SetupFieldContainer = (props) => {
     
@@ -17,7 +16,7 @@ const  SetupFieldContainer = (props) => {
     const [currency , setCurrency] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [bottomTabs, setBottomTabs] = useState([]);
-
+    
     const payload = useSelector(state => state.selection.payload);
     const selectProject = useSelector(state => state.selection.selectProject);
     
@@ -25,36 +24,48 @@ const  SetupFieldContainer = (props) => {
     let isMount = true;
 
     useEffect(() => {
-        initBottomTab();
-        setIsLoading(true);
+        initBottomTab();        
         callDefineSetUp();
         return () => {
             isMount = false;
         }
     }, []);
 
-    const callDefineSetUp = async () => {
-        const location_id = await getLocalData("@specific_location_id");
-        callSetupFieldOptions(location_id);
+    const callDefineSetUp = async () => {                
+        var defineSetup = await getJsonData('@setup');
+        console.log("defineSetup =>", defineSetup);
+        if(defineSetup != null ){            
+            if(defineSetup.location != undefined && defineSetup.location.location_id){
+                callSetupFieldOptions( defineSetup.location.location_id );
+            }
+        }else{
+            const location_id = await getLocalData("@specific_location_id");
+            console.log(" call location_id",location_id)
+            callSetupFieldOptions( location_id );
+        }
     }
 
     const callSetupFieldOptions = (location_id) => {
-        var param = {};
-        if(location_id  != undefined && location_id != ''){
-            param = {
-                location_id: location_id
-            }
+        if(!isLoading){
+            setIsLoading(true);
+            var param = {};        
+            if(location_id  != undefined && location_id != ''){
+                param = {
+                    location_id: location_id
+                }
+            }  
+            console.log("setup-fields param =>", param)      
+            GetRequestSetupFieldDAO.find(param).then((res) => {
+                console.log("res.warehouse", res.warehouse)
+                setTransactinTypes(res.transaction_types);
+                setWarehouse(res.warehouse);
+                setCurrency(res.currency);
+                setIsLoading(false)
+            }).catch((e) => {
+                expireToken(dispatch, e);
+                setIsLoading(false)
+            });
         }        
-        GetRequestSetupFieldDAO.find(param).then((res) => {
-            console.log("res.warehouse", res.warehouse)
-            setTransactinTypes(res.transaction_types);            
-            setWarehouse(res.warehouse);
-            setCurrency(res.currency);
-            setIsLoading(false)
-        }).catch((e) => {
-            expireToken(dispatch, e);
-            setIsLoading(false)
-        });
     }
 
     const initBottomTab = () => {
@@ -82,13 +93,12 @@ const  SetupFieldContainer = (props) => {
                 return 34;
             }
         }
-
     }
 
     return (
         <View style={{
             alignSelf:'stretch' , 
-            flex:1 , 
+            flex:1 ,            
             flexDirection:'column',            
             alignItems:'center',
             justifyContent:'center',            
@@ -121,7 +131,8 @@ const  SetupFieldContainer = (props) => {
                                     props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});
                                     
                                 }}
-                                key={index} item={item} />
+                                key={index} item={item} 
+                            />
                         )
                     })
                 }                                            

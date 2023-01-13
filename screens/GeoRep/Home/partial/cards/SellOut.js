@@ -43,7 +43,9 @@ const SellOut = (props) => {
             <View style={{ marginVertical: 10, marginHorizontal: 25, flexDirection: 'row', justifyContent: 'space-between' }}>
                 {tabs.map((x, i) => {
                     return (
-                        <TouchableOpacity onPress={() => {
+                        <TouchableOpacity 
+                        key={i}
+                        onPress={() => {
                             setTabIndex(i);
                         }}>
                             <AppText size="medium" title={x.title}

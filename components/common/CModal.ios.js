@@ -99,6 +99,7 @@ const CModal = React.forwardRef((props, ref) => {
               isBottomModal && styles.bottomModalContainer,
               isFullModal && styles.fullModalContainer,
               isFullWithBottomModal && styles.fullWithBottomModalContainer,
+
             ]}>
             <View style={styles.bodyContainer}>
               {!isFullModal && !hideDivider && (
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  
+
   title: {
     fontFamily: Fonts.secondaryBold,
     fontSize: Values.fontSize.medium,

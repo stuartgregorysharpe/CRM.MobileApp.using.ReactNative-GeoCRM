@@ -11,6 +11,7 @@ const initialState = {
   buttonAction: false,
   cancelButtonText: false,
   cancelButtonAction: false,
+  cancelable: false,
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -29,6 +30,7 @@ export default (state = initialState, action) => {
         buttonAction: action.payload.buttonAction,
         cancelButtonText: action.payload.cancelButtonText,
         cancelButtonAction: action.payload.cancelButtonAction,
+        cancelable: action.payload.cancelable,
       };
 
     case 'CLEAR_NOTIFICATION':

@@ -100,7 +100,8 @@ export default function CheckOutViewContainer(props) {
           await storeLocalValue('@specific_location_id', '');
           await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
           await storeJsonData('@form_ids', []);
-          console.log(' pooo  ====== ');
+          await storeJsonData('@setup', null);
+          console.log(' pooo  ====== ' , specificLocationId);
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
           if (type == 'specificInfo') {

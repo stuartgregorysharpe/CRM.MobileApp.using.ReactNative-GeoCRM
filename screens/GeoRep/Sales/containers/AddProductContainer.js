@@ -1,8 +1,7 @@
-import {View, BackHandler} from 'react-native';
+import {View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {
-  GetRequestAddProductFieldsDAO,
-  GetRequestProductsFiltersDAO,
+  GetRequestAddProductFieldsDAO,  
 } from '../../../../DAO';
 import {expireToken} from '../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
@@ -12,6 +11,7 @@ import {getRandomNumber, getTimeStamp} from '../../../../helpers/formatHelpers';
 import DynamicFormView from '../../../../components/common/DynamicFormView';
 
 const AddProductContainer = props => {
+
   const dispatch = useDispatch();
   const [fields, setFields] = useState([]);
   let isMount = true;
@@ -46,8 +46,7 @@ const AddProductContainer = props => {
       submitData.add_product_id = add_product_id;
     } else {
       submitData.add_product_id = value?.add_product_id;
-    }
-    console.log('submitData', submitData);
+    }    
     props.onButtonAction({
       type: Constants.actionType.ACTION_DONE,
       value: submitData,

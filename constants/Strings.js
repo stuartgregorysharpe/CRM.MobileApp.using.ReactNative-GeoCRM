@@ -43,6 +43,7 @@ export default {
   Online_Mode_Message:
     'Connectivity has been restored and all services have automatically switched back to Online mode.',
   No_Sims_Selected: 'No SIMs selected',
+  Not_Enough_Stock: 'Not enough stock',
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',

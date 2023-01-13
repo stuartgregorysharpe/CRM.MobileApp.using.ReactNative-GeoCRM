@@ -22,15 +22,15 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                 ){ 
                                         
                     var submitFormData;
-                    if(type === "transaction-submit"){
-                        console.log("submit form data started");
-                        submitFormData = jsonToFormDataWithSubKey(postData);
-                        console.log("submit form data", submitFormData);
+                    if(type === "transaction-submit"){                        
+                        submitFormData = jsonToFormDataWithSubKey(postData);                        
                     }else{
                         submitFormData =  jsonToFormData(postData);
                     }                    
                     submitFormData.append("mode", "online");
+                    
                     console.log("submit form data", JSON.stringify(submitFormData));
+
                     postApiRequestMultipart(url, submitFormData)
                     .then(async res => {
                         resolve(res);

@@ -26,7 +26,6 @@ import AccessScreen from '../screens/GeoLife/AccessScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import ProductSales from '../screens/GeoRep/Sales/ProductSales';
 import ProductSalesNavigator from '../screens/GeoRep/Sales/ProductSalesNavigator';
-import HomeNavigator from '../screens/GeoRep/Home/HomeNavigator';
 
 export const WHATS_APP_LINK =
   'https://wa.me/27608477174?text=Hi!%20I%20have%20a%20support%20request';
@@ -38,7 +37,7 @@ export function getPageNameByLinker(selectedProject, linker) {
       return {
         linker: linker,
         name: 'Home',
-        router: HomeNavigator,
+        router: HomeScreen,
         activeIcon: 'Home_Black',
         inActiveIcon: 'Home_Black_Gray',
       };
@@ -419,6 +418,31 @@ export function getFileFormat(path) {
     name: words[words.length - 1],
   };
 }
+
+
+export function getFileFormatList(paths) {
+
+  var uris = [];
+  var types = [];
+  var names = [];
+  paths.forEach((path) => {
+    const words = path.split('/');
+    const ext = words[words.length - 1].split('.');    
+    uris.push(path);
+    types.push('image/' + ext[1]);
+    names.push(words[words.length - 1]);
+  });
+
+  return {
+    uri: uris,
+    type: types,
+    name: names,
+  };
+
+
+}
+
+
 
 export function numberFieldValidator(numberText) {
   var numberRegex = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
