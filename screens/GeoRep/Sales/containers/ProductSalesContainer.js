@@ -183,14 +183,15 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   useEffect(() => {    
     console.log("show more screen", showMoreScreen  , visibleMore)
     //navigation.getState().routeNames[1] == 'CartScreen' &&
-    if(showMoreScreen === 1 &&  visibleMore == 'ProductSales'){          
-      checkAndOpenSetup();
+    if(showMoreScreen === 1 &&  visibleMore == 'ProductSales'){   
+      refreshList();
+      //checkAndOpenSetup();
     }
   }, [showMoreScreen , visibleMore]);
 
   const checkAndOpenSetup = async () => {
     const regretId = await getLocalData('@regret');    
-    if (!props.regret_item && !regretId && regretId != '') {      
+    if (!props.regret_item && !regretId && regretId != '') {
       setupFieldModalRef.current.showModal();
     }
   };
