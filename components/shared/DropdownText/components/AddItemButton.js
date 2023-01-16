@@ -3,7 +3,7 @@ import React from 'react'
 import SvgIcon from '../../../SvgIcon';
 import { AppText } from '../../../common/AppText';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
-import { Values } from '../../../../constants';
+import { Strings, Values } from '../../../../constants';
 
 const AddItemButton = (props) => {
 
@@ -20,7 +20,7 @@ const AddItemButton = (props) => {
             
             {
                 hasError &&
-                <Text style={{color:whiteLabel().endDayBackground, fontSize:12, marginLeft:5, marginTop:3}} >{'Supplier need to be filled'}</Text>                
+                <Text style={{color:whiteLabel().endDayBackground, fontSize:12, marginLeft:5, marginTop:3}} >{Strings.CRM.Supplier_Compulsory}</Text>                
             }
             
         </View>

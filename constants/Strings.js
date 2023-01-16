@@ -50,6 +50,7 @@ export default {
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
+    Supplier_Compulsory: 'Supplier need to be filled',
   },
 
   Log: {

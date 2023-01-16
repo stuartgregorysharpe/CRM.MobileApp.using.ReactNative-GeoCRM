@@ -80,7 +80,7 @@ const DropdownTextView = (props) => {
                 })
             }
             
-            <AddItemButton title={item.field_label} hasError={props.hasError} onPress={addItem} />
+            <AddItemButton title={item.field_label} hasError={props.hasError != undefined ? props.hasError : false} onPress={addItem} />
             
             <SingleSelectModal
                 items={presetOptions}
