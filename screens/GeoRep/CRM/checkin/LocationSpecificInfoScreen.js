@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -8,22 +8,22 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {
   setWidthBreakpoints,
   parse,
 } from 'react-native-extended-stylesheet-breakpoints';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import Colors, { whiteLabel } from '../../../../constants/Colors';
-import { style } from '../../../../constants/Styles';
+import Colors, {whiteLabel} from '../../../../constants/Colors';
+import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
-import { breakPoint } from '../../../../constants/Breakpoint';
+import {breakPoint} from '../../../../constants/Breakpoint';
 import Fonts from '../../../../constants/Fonts';
-import { grayBackground } from '../../../../constants/Styles';
+import {grayBackground} from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
-import { LocationInfoInput } from '../locationInfoDetails/LocationInfoInput';
-import { LocationInfoInputTablet } from '../locationInfoDetails/LocationInfoInputTablet';
+import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
+import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
 import {
   getJsonData,
@@ -31,15 +31,15 @@ import {
   storeLocalValue,
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
-import { getLocationInfo } from '../../../../actions/location.action';
-import { Notification } from '../../../../components/modal/Notification';
+import {getLocationInfo} from '../../../../actions/location.action';
+import {Notification} from '../../../../components/modal/Notification';
 import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/modal/DevicesModal';
 import {Constants, Strings} from '../../../../constants';
@@ -75,7 +75,7 @@ const LocationSpecificInfoScreen = props => {
   const [isFormCompulsory, setIsFormCompulsory] = useState(true);
   const [isDanOneSales, setIsDanOneSales] = useState(false);
   const navigationMain = useNavigation();
-  const showLoopSlider = () => { };
+  const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
   const isCheckin = useSelector(state => state.location.checkIn);
   const locationId = locationInfo ? locationInfo.location_id : location_id;
@@ -192,7 +192,7 @@ const LocationSpecificInfoScreen = props => {
 
   const onFeatureItemClicked = item => {
     if (item.title === 'Forms') {
-      navigationMain.navigate('DeeplinkRepForms', { locationInfo: locationInfo });
+      navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
     }
     if (item.link === 'customer_contacts') {
       customerContactModalRef.current.showModal();
@@ -247,7 +247,7 @@ const LocationSpecificInfoScreen = props => {
               <View style={style.headerTitleContainerStyle}>
                 <Image
                   resizeMethod="resize"
-                  style={{ width: 15, height: 20, marginRight: 5 }}
+                  style={{width: 15, height: 20, marginRight: 5}}
                   source={Images.backIcon}
                 />
                 <Text style={style.headerTitle}>CRM</Text>
@@ -274,14 +274,14 @@ const LocationSpecificInfoScreen = props => {
     }
   };
 
-  const onDevicesModalClosed = ({ type, value }) => {
+  const onDevicesModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       devicesModalRef.current.hideModal();
     }
   };
 
-  const onCustomerContactModalClosed = ({ type, value }) => { };
-  const onCustomerSaleHistoryModalClosed = ({ type, value }) => { };
+  const onCustomerContactModalClosed = ({type, value}) => {};
+  const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
 
   const getFormLists = async locationId => {
     var param = {
@@ -390,7 +390,7 @@ const LocationSpecificInfoScreen = props => {
         <TouchableOpacity
           activeOpacity={1}
           style={grayBackground}
-          onPress={() => { }}></TouchableOpacity>
+          onPress={() => {}}></TouchableOpacity>
       )}
       {subSlideStatus && (
         <View
@@ -398,11 +398,11 @@ const LocationSpecificInfoScreen = props => {
             styles.transitionView,
             showItem == 0
               ? {
-                transform: [
-                  { translateY: Dimensions.get('window').height + 100 },
-                ],
-              }
-              : { transform: [{ translateY: 0 }] },
+                  transform: [
+                    {translateY: Dimensions.get('window').height + 100},
+                  ],
+                }
+              : {transform: [{translateY: 0}]},
           ]}>
           <RefreshSlider location_id={locationInfo.location_id} />
         </View>
@@ -503,11 +503,11 @@ const LocationSpecificInfoScreen = props => {
           </View>
         )}
 
-        <View style={[styles.innerContainer, { marginBottom: -14 }]}>
+        <View style={[styles.innerContainer, {marginBottom: -14}]}>
           <View style={[styles.cardBox]}>
             {locationInfo !== undefined &&
-              locationInfo.address !== '' &&
-              DeviceInfo.isTablet() ? (
+            locationInfo.address !== '' &&
+            DeviceInfo.isTablet() ? (
               <LocationInfoInputTablet
                 ref={locationInfoRef}
                 infoInput={locationInfo}
@@ -528,12 +528,12 @@ const LocationSpecificInfoScreen = props => {
         <FeaturedCardLists
           isFormCompulsory={isFormCompulsory}
           onItemClicked={onFeatureItemClicked}></FeaturedCardLists>
-        <View style={{ height: 60 }}></View>
+        <View style={{height: 60}}></View>
       </ScrollView>
 
       {isDisposition && (
         <TouchableOpacity
-          style={[style.plusButton, { marginBottom: 70 }]}
+          style={[style.plusButton, {marginBottom: 70}]}
           onPress={() => setStatusSubmit(!statusSubmit)}>
           <SvgIcon icon="DISPOSITION_POST" width="70px" height="70px" />
         </TouchableOpacity>
