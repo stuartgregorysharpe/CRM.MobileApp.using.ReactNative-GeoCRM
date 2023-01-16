@@ -29,6 +29,7 @@ const DynamicField = props => {
     updateFormData,
     updateSecondFormData,
     hasError,
+    errorText,
     isFirst,
     index,
     dynamicFieldRef,
@@ -50,6 +51,7 @@ const DynamicField = props => {
         isRequired={is_required}
         value={value}
         hasError={hasError}
+        errorText={errorText}
         disabled={disabled}
         keyboardType={'decimal-pad'}   
         onChangeText={text => {

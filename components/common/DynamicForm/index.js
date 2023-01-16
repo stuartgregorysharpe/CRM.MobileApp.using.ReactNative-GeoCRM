@@ -8,6 +8,7 @@ import React, {
 
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
+import { checkRuleCharactersAddLead } from './helper';
 
 const DynamicForm = React.forwardRef((props, ref) => {
 
@@ -62,6 +63,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     const data = _formData || formData;
     const _errors = {...errors};
 
+
     fieldNames.forEach(fieldName => {
       if (fieldName) {
         if (data[fieldName] == '' || data[fieldName] == null || (fieldName == 'price' && (data[fieldName].value == '' || data[fieldName].type == '')  ) ) {
@@ -69,15 +71,31 @@ const DynamicForm = React.forwardRef((props, ref) => {
           valid = false;
           console.log('Error fieldName', fieldName);
         } else {
-          _errors[fieldName] = false;
+          const item = formStructureData.find(element => element.custom_master_field_id == fieldName);
+          if(item != undefined){
+            console.log("add lead item => " , item , data[fieldName] );
+            const error = checkRuleCharactersAddLead(item, data[fieldName]);            
+            console.log("error =>", error)
+            if(error){
+              _errors[fieldName] = true; 
+              _errors[fieldName] = {status: true, errorText: error};
+            }else{
+              _errors[fieldName] = false;
+            }
+          }else{
+            _errors[fieldName] = false;
+          }
+          
         }
       }
     });
 
+    // check rule character       
     setErrors(_errors);
-    return valid;
-        
+    console.log("_errors" ,_errors)
+    return valid;        
   };
+
   const checkAllowedFieldType = fieldType => {
 
     const allowedFieldTypes = [
@@ -135,8 +153,9 @@ const DynamicForm = React.forwardRef((props, ref) => {
               key={index + 'field'}
               updateFormData={updateFormData}
               updateSecondFormData={updateSecondFormData}
-              value={formData[fieldStructure.field_name]}
-              hasError={errors[fieldStructure.field_name]}
+              value={formData[fieldStructure.field_name]}              
+              hasError={ errors[fieldStructure.field_name] != undefined ? errors[fieldStructure.field_name].status : errors[fieldStructure.field_name]}
+              errorText={errors[fieldStructure.field_name] ? errors[fieldStructure.field_name].errorText : null}
               isFirst={index == 0}
               isClickable={fieldStructure.isClickable}
               onPress={() => {
@@ -163,7 +182,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
           updateFormData={updateFormData}
           updateSecondFormData={updateSecondFormData}
           value={formData[fieldStructure.field_name]}
-          hasError={errors[fieldStructure.field_name]}
+          hasError={ errors[fieldStructure.field_name] != undefined ? errors[fieldStructure.field_name].status : errors[fieldStructure.field_name]}
+          errorText={errors[fieldStructure.field_name] ? errors[fieldStructure.field_name].errorText : null}
           isFirst={index == 0}
           index={index}
           dynamicFieldRef={dynamicFieldRef}
