@@ -120,24 +120,23 @@ const styles = StyleSheet.create({
     backgroundColor: whiteLabel().headerBackground,
   },
 
-  headerRightView: {
+  headerRightView: {    
     flex:1,    
     flexDirection: 'row',
     marginRight: 12,
-    alignItems:'flex-end',
+    alignItems:'center',
     //marginBottom:10,
     //paddingTop:24,
-    marginBottom:5,
+    paddingTop:10,    
     justifyContent:'center',
-    // alignContent:'center',
+    alignContent:'center',
     // textAlign:'center',
     // backgroundColor:'red'
     // marginBottom: 10,
     // marginTop: 20,
   },
 
-  toggleSwitch: {
-    marginBottom:5,
+  toggleSwitch: {    
     marginRight: 12,
     flexDirection: 'row',
     //height:24,    

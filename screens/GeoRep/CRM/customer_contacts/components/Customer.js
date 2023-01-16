@@ -7,7 +7,8 @@ import { postApiRequest } from '../../../../../actions/api.action';
 import {useSelector, useDispatch} from 'react-redux';
 import AlertDialog from '../../../../../components/modal/AlertDialog';
 import UpdateCustomerModal from '../../update_customer';
-import { Constants } from '../../../../../constants';
+import { Constants, Strings } from '../../../../../constants';
+import { showNotification } from '../../../../../actions/notification.action';
 
 export default function Customer(props) {
 
@@ -83,7 +84,21 @@ export default function Customer(props) {
                 }                
             }            
         }  
-        
+                
+        if (actionFormRef) {
+          if (!actionFormRef.current.validateForm()) {
+            dispatch(
+              showNotification({
+                type: 'success',
+                message: Strings.Complete_Required_Fields,
+                buttonText: Strings.Ok,
+              }),
+            );
+            return;
+          }
+        }
+
+
         var userParam = getPostParameter(currentLocation);
         let postData = {
             location_id: locationId, //
@@ -91,8 +106,7 @@ export default function Customer(props) {
             user_local_data: userParam.user_local_data,
         };
 
-        postApiRequest("locations/location-fields", postData).then((res) => {      
-            console.log("Succes", res);                  
+        postApiRequest("locations/location-fields", postData).then((res) => {                   
             //dispatch(showNotification({type:'success' , message: "res.message" , buttonText: 'Ok'}));
             setMessage(res.message)
             setIsSuccess(true)
@@ -128,25 +142,21 @@ export default function Customer(props) {
     return (        
         <ScrollView>
             <View style={{marginBottom:60}}>
-                   
+                                 
                 <DynamicForm
                     ref={actionFormRef}
                     formData={formData}
                     formStructureData={formStructure}
                     isClickable={true}
-                    onPress={(item) =>{
-                      console.log("onPress");
-                      console.log("show modal");
+                    onPress={(item) =>{                      
                       if( item != undefined && item.editable == "0"){
                         updateCustomerModalRef.current.showModal();
-                      }                      
-                      
-                      console.log("show modal");
+                      }                                                                  
                     }}
-                    updateFormData={formData => {
-                        console.log("form data" , formData)
+                    updateFormData={formData => {                        
                         setFormData(formData);                        
                     }}
+                    style={{marginTop:5}}
                 />
                 
                 <AlertDialog

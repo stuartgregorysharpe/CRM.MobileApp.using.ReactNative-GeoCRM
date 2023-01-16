@@ -2,6 +2,9 @@
 
 export function checkRuleCharactersAddLead(formQuestionItem , inputtedValue) {
   
+
+  //console.log("formQuestionItem => rule" ,formQuestionItem)
+
     const rule_characters = formQuestionItem.rule_characters;
     if (!rule_characters || rule_characters == '') return null;
     let errorMessage = null;
@@ -36,25 +39,23 @@ export function checkRuleCharactersAddLead(formQuestionItem , inputtedValue) {
             ) {
               errorMessage = `${questionText} must have more than ${characterLength} characters`;
               hasError = true;
-            }else if( value  &&  isNaN(value) == false ){                
-                if(Number(value) <= characterLength){
-                    hasError  = true;
-                }
-            }
-          } else if (operator == '<') {                        
+            }  
+          } else if (operator == '<') {
             if (
               value &&
               typeof value == 'string' &&
               value.length >= characterLength
             ) {
               errorMessage = `${questionText} must have less than ${characterLength} characters`;              
-              hasError = true;              
-            }else if( value  &&  isNaN(value) == false ){                
-                if(Number(value) >= characterLength){
-                    hasError  = true;
-                    errorMessage = `${questionText} must have less than ${characterLength} characters`;              
-                }                
+              hasError = true;
             }
+
+            // else if( value  &&  isNaN(value) == false && formQuestionItem.field_type == 'numbers' ){                
+            //     if(Number(value) >= characterLength){
+            //         hasError  = true;
+            //         errorMessage = `${questionText} must have less than ${characterLength} characters`;              
+            //     }                
+            // }
 
           }
         }

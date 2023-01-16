@@ -39,6 +39,7 @@ const DynamicField = props => {
     isClickable,
     isHidden,
     input_label,
+    rule_compulsory
   } = props;
 
   const disabled = editable && editable == '0';
@@ -47,7 +48,7 @@ const DynamicField = props => {
     return (
       <CTextInput
         label={field_label}
-        key={index}
+        key={index}        
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
@@ -85,7 +86,7 @@ const DynamicField = props => {
           console.log("chagned data", field_name);
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+        style={{marginTop: isFirst ? 0 : 10 , paddingTop:0}}
        // textInputStyle={[ type == "text" ? {} : { textAlignVertical: 'top', height:100, marginTop:0, paddingTop:0 , lineHeight: 20} ]}        
       />
     );
@@ -373,6 +374,8 @@ const DynamicField = props => {
           input_label: input_label,
         }}
         options={preset_options}
+        hasError={hasError}
+        errorText={errorText}
         style={{marginHorizontal: 0}}
         onFormAction={({type, value}) => {
           updateFormData(field_name, value);

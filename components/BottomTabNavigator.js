@@ -1,7 +1,8 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { StatusBar } from 'react-native';
 import React, {Fragment, useState, useEffect} from 'react';
 import {View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector } from 'react-redux';
 import MoreNavigator from './MoreNavigator';
 import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
@@ -93,6 +94,15 @@ export default function RepBottomTabNavigator({navigation}) {
 
   const getHeaderHeight = () => {
 
+    console.log("StatusBar.currentHeight", StatusBar.currentHeight);
+
+    var currentHeight = 0;
+    if (Platform.OS == 'ios') {
+      currentHeight = 20;
+    }else{
+      currentHeight = StatusBar.currentHeight > 0 ? StatusBar.currentHeight : 24
+    }
+
     if (Platform.OS == 'ios') {
       if (DeviceInfo.isTablet()) {
         return 82;
@@ -106,9 +116,9 @@ export default function RepBottomTabNavigator({navigation}) {
       }
       
       if (DeviceInfo.isTablet()) {
-        return 82;
+        return currentHeight + 62;
       } else {
-        return 74;
+        return currentHeight + 40;
       }
     }
 

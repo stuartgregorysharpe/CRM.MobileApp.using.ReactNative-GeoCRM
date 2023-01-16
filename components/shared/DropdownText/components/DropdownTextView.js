@@ -73,14 +73,14 @@ const DropdownTextView = (props) => {
                             title={item.field_label} 
                             index={index + 1} 
                             input_label={item.input_label} 
-                            item={element} 
+                            item={element}
                             onChange={onChange} 
                         />
                     )
                 })
             }
-
-            <AddItemButton title={item.field_label} onPress={addItem} />
+            
+            <AddItemButton title={item.field_label} hasError={props.hasError} onPress={addItem} />
             
             <SingleSelectModal
                 items={presetOptions}

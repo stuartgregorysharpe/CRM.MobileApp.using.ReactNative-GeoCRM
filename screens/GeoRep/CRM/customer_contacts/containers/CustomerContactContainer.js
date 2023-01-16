@@ -30,6 +30,7 @@ export default function CustomerContactContainer(props) {
     const getCustomerInfo = () => {
         var params = {location_id: locationId}; //
         getApiRequest("locations/location-fields", params).then((res) =>{            
+            console.log('res.custom_master_fields' , res.custom_master_fields)
             setLocationFields(res.custom_master_fields);              
         }).catch((e) =>{
             expireToken(dispatch , e);
