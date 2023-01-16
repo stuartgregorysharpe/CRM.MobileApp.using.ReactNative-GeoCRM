@@ -29,7 +29,7 @@ const ViewRouteModal = React.forwardRef((props, ref) => {
 		}}
 		{...props}>
 		
-		<View style={{flex:1, height:Dimensions.get("screen").height * 0.81}}>
+		<View style={{flex:1, marginTop:10, height:Dimensions.get("screen").height * 0.8}}>
 			<DirectionMap
 				{...props}			
 				isModal={true}

@@ -19,7 +19,6 @@ import {
 } from '../../actions/notification.action';
 import Strings from '../../constants/Strings';
 import Fonts from '../../constants/Fonts';
-import {Notification} from '../modal/Notification';
 import {Constants} from '../../constants';
 
 export default function HeaderRightView({navigation}) {
