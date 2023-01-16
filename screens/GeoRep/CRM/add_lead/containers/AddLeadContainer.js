@@ -52,8 +52,7 @@ export default function AddLeadContainer(props) {
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateFormList = lists => {
-    console.log('lists', lists);
+  const validateFormList = lists => {    
     let isValid = true;
     lists.forEach(item => {
       if (item.compulsory == '1') {

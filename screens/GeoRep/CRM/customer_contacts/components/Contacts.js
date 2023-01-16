@@ -21,6 +21,9 @@ export default function Contacts(props) {
       <TouchableOpacity
         onPress={() => {          
           setPageType("update");
+          
+          console.log("contact info item", item);
+
           setContactInfo(item);
           if(addContactModalRef.current){
             addContactModalRef.current.showModal();

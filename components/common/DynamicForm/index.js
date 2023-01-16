@@ -36,7 +36,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     if (props.updateFormData) {
       const _formData = {...formData};
       _formData[fieldName] = value;
-      props.updateFormData(_formData);
+      props.updateFormData(_formData , fieldName );
       if (fieldName) {
         checkFormFieldValid([fieldName], _formData);
       }
@@ -91,8 +91,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     });
 
     // check rule character       
-    setErrors(_errors);
-    console.log("_errors" ,_errors)
+    setErrors(_errors);    
     return valid;        
   };
 
@@ -156,6 +155,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
               value={formData[fieldStructure.field_name]}              
               hasError={ errors[fieldStructure.field_name] != undefined ? errors[fieldStructure.field_name].status : errors[fieldStructure.field_name]}
               errorText={errors[fieldStructure.field_name] ? errors[fieldStructure.field_name].errorText : null}
+              add_prefix={fieldStructure.add_prefix}
+              add_suffix={fieldStructure.add_suffix}
               isFirst={index == 0}
               isClickable={fieldStructure.isClickable}
               onPress={() => {
@@ -175,6 +176,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     }
 
     return formStructureData.map((fieldStructure, index) => {
+      console.log("fieldStructure => ",fieldStructure.add_suffix)
       return (
         <DynamicField
           {...fieldStructure}
@@ -184,6 +186,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
           value={formData[fieldStructure.field_name]}
           hasError={ errors[fieldStructure.field_name] != undefined ? errors[fieldStructure.field_name].status : errors[fieldStructure.field_name]}
           errorText={errors[fieldStructure.field_name] ? errors[fieldStructure.field_name].errorText : null}
+          add_prefix={fieldStructure.add_prefix}
+          add_suffix={fieldStructure.add_suffix}
           isFirst={index == 0}
           index={index}
           dynamicFieldRef={dynamicFieldRef}

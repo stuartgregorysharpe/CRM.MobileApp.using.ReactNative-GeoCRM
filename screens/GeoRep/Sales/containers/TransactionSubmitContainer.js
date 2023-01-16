@@ -236,8 +236,9 @@ const TransactionSubmitContainer = props => {
         page="transaction_submit"
         buttonTitle={'Submit'}
         fields={fields}
-        onAdd={onAdd}
-        
+        onAdd={onAdd}        
+      
+
         {...props}
       />
     </View>

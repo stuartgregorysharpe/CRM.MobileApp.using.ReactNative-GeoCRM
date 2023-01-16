@@ -30,6 +30,8 @@ const DynamicField = props => {
     updateSecondFormData,
     hasError,
     errorText,
+    add_prefix,
+    add_suffix,
     isFirst,
     index,
     dynamicFieldRef,
@@ -52,6 +54,8 @@ const DynamicField = props => {
         value={value}
         hasError={hasError}
         errorText={errorText}
+        add_prefix={add_prefix}
+        add_suffix={add_suffix} 
         disabled={disabled}
         keyboardType={'decimal-pad'}   
         onChangeText={text => {
@@ -70,8 +74,11 @@ const DynamicField = props => {
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
-        value={value}        
+        value={value}
+        add_prefix={add_prefix}
+        add_suffix={add_suffix}        
         hasError={hasError}
+        errorText={errorText}
         disabled={disabled}
         pointerEvents={disabled ? 'none' : 'auto'}      
         onChangeText={text => {
@@ -441,7 +448,7 @@ const DynamicField = props => {
       );
     } else {
       if(value != undefined){
-        console.log("is value", value , field_name ,item.contact_id)
+        console.log("is value", field_name , value , field_name ,item.contact_id)
         updateFormData(field_name, [...value, item.contact_id]);
       }else{
         updateFormData(field_name, [item.contact_id]);

@@ -124,8 +124,10 @@ const styles = StyleSheet.create({
     flex:1,    
     flexDirection: 'row',
     marginRight: 12,
-    alignItems:'center',
-    paddingTop:10,
+    alignItems:'flex-end',
+    //marginBottom:10,
+    //paddingTop:24,
+    marginBottom:5,
     justifyContent:'center',
     // alignContent:'center',
     // textAlign:'center',
@@ -135,6 +137,7 @@ const styles = StyleSheet.create({
   },
 
   toggleSwitch: {
+    marginBottom:5,
     marginRight: 12,
     flexDirection: 'row',
     //height:24,    

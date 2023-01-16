@@ -73,6 +73,8 @@ const DynamicFormView = props => {
         formData={formData}
         formStructureData={formStructure}
         updateFormData={formData => {
+          console.log("form dat => ", formData);
+          console.log("form formStructure => ", formStructure);
           setFormData(formData);
         }}
         

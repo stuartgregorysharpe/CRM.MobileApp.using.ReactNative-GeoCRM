@@ -29,13 +29,13 @@ export default function RepBottomTabNavigator({navigation}) {
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
   const [bottomTabs, setBottomTabs] = useState([]);
-  const [isSumsung, setIsSumsung] = useState(false);
+  const [isSamsung, setIsSamsung] = useState(false);
 
 
   useEffect(() => {
     DeviceInfo.getDeviceName().then((deviceName) => {
-      if(deviceName.toLowerCase().includes("sumsung")){
-        setIsSumsung(true);
+      if(deviceName.toLowerCase().includes("samsung")){
+        setIsSamsung(true);
       }
       console.log("deviceName ==== " ,deviceName)
     });
@@ -101,7 +101,7 @@ export default function RepBottomTabNavigator({navigation}) {
       }
     } else {
       
-      if(isSumsung){
+      if(isSamsung){
         return 80;
       }
       

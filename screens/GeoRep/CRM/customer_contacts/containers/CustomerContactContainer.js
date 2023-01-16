@@ -48,6 +48,7 @@ export default function CustomerContactContainer(props) {
     const changePage = (nativeEvent) => {
         setTabIndex(nativeEvent.position);
     }
+    
     const prepareContactsList = res => {        
         let data = [];
         data = res;
