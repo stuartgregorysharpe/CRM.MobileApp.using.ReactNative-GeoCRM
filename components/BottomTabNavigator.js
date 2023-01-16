@@ -19,6 +19,7 @@ import {Constants} from '../constants';
 import {getPageNameByLinker} from '../constants/Helper';
 import { getBottomTabs } from './helper';
 
+
 const BottomTab = createBottomTabNavigator();
 
 export default function RepBottomTabNavigator({navigation}) {
@@ -28,6 +29,17 @@ export default function RepBottomTabNavigator({navigation}) {
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
   const [bottomTabs, setBottomTabs] = useState([]);
+  const [isSumsung, setIsSumsung] = useState(false);
+
+
+  useEffect(() => {
+    DeviceInfo.getDeviceName().then((deviceName) => {
+      if(deviceName.toLowerCase().includes("sumsung")){
+        setIsSumsung(true);
+      }
+      console.log("deviceName ==== " ,deviceName)
+    });
+  },[]);
 
   useEffect(() => {
     initBottomTab();
@@ -80,6 +92,7 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   const getHeaderHeight = () => {
+
     if (Platform.OS == 'ios') {
       if (DeviceInfo.isTablet()) {
         return 82;
@@ -87,12 +100,18 @@ export default function RepBottomTabNavigator({navigation}) {
         return 62;
       }
     } else {
+      
+      if(isSumsung){
+        return 80;
+      }
+      
       if (DeviceInfo.isTablet()) {
         return 82;
       } else {
         return 74;
       }
     }
+
   };
 
   const getHeaderMargin = () => {
@@ -103,6 +122,7 @@ export default function RepBottomTabNavigator({navigation}) {
         return 0;
       }
     } else {
+      
       if (DeviceInfo.isTablet()) {
         return 22;
       } else {
@@ -156,8 +176,8 @@ export default function RepBottomTabNavigator({navigation}) {
                   />
                 </Fragment>
               ),
-              headerStyle: {
-                height: 70, // Specify the height of your custom header
+              headerStyle: {                
+                height: getHeaderHeight(), // Specify the height of your custom header
                 backgroundColor:whiteLabel().actionFullButtonBackground
               },
               headerRight: () => <HeaderRightView navigation={navigation} />,              
