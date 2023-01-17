@@ -1,11 +1,12 @@
-import {View, BackHandler, Dimensions, Keyboard} from 'react-native';
+import {View, Keyboard} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {Constants, Values} from '../../../../constants';
 import ProductGroupView from '../components/ProductGroupView';
 
 const ProductGroupContainer = props => {
-  useEffect(() => {}, []);
+  
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -19,12 +20,12 @@ const ProductGroupContainer = props => {
         setKeyboardVisible(false); // or some other action
       },
     );
-
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
   }, []);
+  
   const onSaveProduct = data => {
     props.onButtonAction({
       type: Constants.actionType.ACTION_CLOSE,

@@ -10,6 +10,8 @@ import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
+import LindtCardsTitleView from './partial/LindtCardsTitleView';
+import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const SellOut = (props) => {
     const [tabIndex, setTabIndex] = useState(0);
@@ -43,7 +45,9 @@ const SellOut = (props) => {
             <View style={{ marginVertical: 10, marginHorizontal: 25, flexDirection: 'row', justifyContent: 'space-between' }}>
                 {tabs.map((x, i) => {
                     return (
-                        <TouchableOpacity onPress={() => {
+                        <TouchableOpacity 
+                        key={i}
+                        onPress={() => {
                             setTabIndex(i);
                         }}>
                             <AppText size="medium" title={x.title}
@@ -67,11 +71,11 @@ const SellOut = (props) => {
 
     const renderBody = () => {
         return (
-            <View style={{marginVertical:10}}>
+            <View style={{ marginVertical: 10 }}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1 }} />
                     <AppText title={`Total ${tabData ? tabData[tabs[tabIndex].title].lindt_segment_text : ''}`}
-                        style={{ flex: 1, textAlign: 'center', paddingBottom: 15,paddingHorizontal:2 }}
+                        style={{ flex: 1, textAlign: 'center', paddingBottom: 15, paddingHorizontal: 2 }}
                         type={"secondaryBold"}
                         color={whiteLabel().inactiveTabText}>
                     </AppText>
@@ -89,7 +93,7 @@ const SellOut = (props) => {
                         color={Colors.textColor}>
                     </AppText>
                     <AppText title={`${tabData ? tabData[tabs[tabIndex].title][tabs[tabIndex].title.toLowerCase() + '_market_share'] : '0%'}`}
-                        style={{ flex: 1, textAlign: 'center',paddingHorizontal:2  }}
+                        style={{ flex: 1, textAlign: 'center', paddingHorizontal: 2 }}
                         type={"secondaryBold"}
                         color={Colors.textColor}>
                     </AppText>
@@ -107,7 +111,7 @@ const SellOut = (props) => {
                         color={Colors.textColor}>
                     </AppText>
                     <AppText title={`${tabData ? tabData[tabs[tabIndex].title][tabs[tabIndex].title.toLowerCase() + '_value_growth'] : '0%'}`}
-                        style={{ flex: 1, textAlign: 'center', paddingVertical: 10,paddingHorizontal:2 }}
+                        style={{ flex: 1, textAlign: 'center', paddingVertical: 10, paddingHorizontal: 2 }}
                         type={"secondaryBold"}
                         color={Colors.textColor}>
                     </AppText>
@@ -122,30 +126,18 @@ const SellOut = (props) => {
         )
     }
 
-    const renderTitleContainer = () => {
-        return (
-            <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
-                <SvgIcon icon="Sell_In_Icon" width='15px' height='15px' />
-                <AppText size="medium" title="Value (Sell Out)" type="secondaryBold" style={{ marginLeft: 5, flex: 1 }} color={PRIMARY_COLOR}></AppText>
-                <TouchableOpacity onPress={() => props.onFilterPress()} >
-                    <SvgIcon icon="Filter" width='25px' height='25px' style={{ marginHorizontal: 10 }} />
-                    {props.haveFilter && props.haveFilter.length > 0 && (
-                        <View
-                            style={styles.filterIndicator}></View>
-                    )}
-                </TouchableOpacity>
-
-            </View>
-        )
-    }
-
     return (
         <View style={{ marginTop: 10, flex: 1 }}>
             <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
-                {renderTitleContainer()}
+                <LindtCardsTitleView title="Value (Sell Out)" onFilterPress={() => props.onFilterPress()}
+                    icon="Sell_In_Icon" haveFilter={props.haveFilter} />
+
                 {renderTabs()}
                 {renderBody()}
             </View>
+            <IndicatorDotScroller
+                total={props.pageCount ? props.pageCount : 0}
+                selectedIndex={props.pageIndex}></IndicatorDotScroller>
         </View>
     )
 }
@@ -159,15 +151,6 @@ const styles = StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 2
-    },
-    filterIndicator: {
-        width: 15,
-        height: 15,
-        backgroundColor: Colors.redColor,
-        borderRadius: 15,
-        position: 'absolute',
-        left: 5,
-        top: -5,
     },
     bottomBar: {
         height: 2,

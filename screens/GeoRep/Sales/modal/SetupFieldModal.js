@@ -5,7 +5,7 @@ import { Constants } from '../../../../constants';
 import SetupFieldContainer from '../containers/SetupFieldContainer';
 
 const SetupFieldModal = React.forwardRef((props, ref) => {
-    
+        
     const [isClear, setIsClear] = useState(false);
     
     const onButtonAction = data => {

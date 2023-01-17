@@ -26,6 +26,7 @@ import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
 import {Notification} from '../../modal/Notification';
 import {CHECKIN} from '../../../actions/actionTypes';
 import {checkConnectivity} from '../../../DAO/helper';
+import {getLocationInfo} from '../../../actions/location.action';
 
 const CheckinLinkButton = props => {
   const navigation = useNavigation();
@@ -69,16 +70,13 @@ const CheckinLinkButton = props => {
             checkinTypes.forEach((item, index) => {
               options.push(item.checkin_type);
             });
-            console.log('feedback, checkin', originFeedbackData);
             setFeedbackOptions(originFeedbackData);
           } else {
-            console.log(' feedbackd ', originFeedbackData);
             setFeedbackOptions(originFeedbackData);
           }
           setIsFeedback(false);
         }}
         onValueChanged={(item, index) => {
-          console.log('modalTypemodalType', modalType);
           if (modalType === 'feedback') {
             _callLocationFeedback(item);
             setIsFeedback(false);
@@ -150,6 +148,7 @@ const CheckinLinkButton = props => {
       reason_id: reason_id, //Selected reason_id, if was requested
       user_local_data: userParam.user_local_data,
     };
+
     setIsLoading(true);
     PostRequestDAO.find(
       locationId,
@@ -170,6 +169,9 @@ const CheckinLinkButton = props => {
           Constants.storageKey.CHECKIN_SCHEDULE_ID,
           scheduleId,
         );
+        await storeLocalValue('@checkin_type_id', checkin_type_id);
+        await storeLocalValue('@checkin_reason_id', reason_id);
+
         checkConnectivity().then(async isOnline => {
           if (!isOnline) {
             let offlineScheduleCheckins = await getJsonData(
@@ -189,11 +191,16 @@ const CheckinLinkButton = props => {
           }
         });
         setIsLoading(false);
-        navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          locationId: locationId,
-          page: 'checkin',
-        });
-        onFinishProcess();
+        getLocationInfo(locationId, currentLocation).then(
+          async locationInfo => {
+            await storeJsonData('@checkin_location', locationInfo);
+            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+              locationId: locationId,
+              page: 'checkin',
+            });
+            onFinishProcess();
+          },
+        );
       })
       .catch(e => {
         setIsLoading(false);

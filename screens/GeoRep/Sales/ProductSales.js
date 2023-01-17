@@ -88,6 +88,10 @@ export default function ProductSales(props) {
   };
 
   const getProductLists = async (data, search_text = '', pageNumber) => {
+    console.log("get product lists", data, search_text, pageNumber)
+    if( pageNumber != undefined && pageNumber == 0){
+      setIsEndPage(false);
+    }
     if (data != undefined) {
       storeJsonData('@setup', data);
       const param = getParamData(data);
@@ -106,23 +110,27 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
-
-    if(!isLoading && !isEndPage){
-      setIsLoading(true);    
+   
+    console.log("getApiData", isLoading, isEndPage);
+    if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
+        if(pageNumber == 0){
+          setIsEndPage(false);
+        }
+        setIsLoading(true);        
         paramData['page_no'] = pageNumber;
         if (search_text != undefined) {
           paramData['search_text'] = search_text;
         }
         storeJsonData('@sale_product_parameter', paramData);
-  
+        console.log("product list param => ", paramData);
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);
             if (isMount) {
               if (res.status == Strings.Success) {
-                console.log("res => ", res)
+                console.log("Product Lists => ", res.items.length)
                 setSettings(res.settings);
                 dispatch(setSalesSetting(res.settings));
                 productSaleContainerRef.current.updateProductList(res.items, pageNumber);

@@ -4,7 +4,6 @@ import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
 import DevicesModalContainer from '../containers/DevicesModalContainer';
 
-
 const DevicesModal = React.forwardRef((props, ref) => {
 
     const onButtonAction = data => {

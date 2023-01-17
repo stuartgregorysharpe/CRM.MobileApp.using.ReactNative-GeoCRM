@@ -1,7 +1,6 @@
 
-import { View , BackHandler } from 'react-native'
+import { View  } from 'react-native'
 import React , { useState , useEffect } from 'react'
-import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestProductsFiltersDAO } from '../../../../DAO';
 import { expireToken } from '../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
@@ -13,10 +12,9 @@ const  ProductFilterContainer = (props) => {
     const [typeLists , setTypeLists] = useState([]);
     const [brandLists , setBrandLists] = useState([]);
 
-    const dispatch = useDispatch()    
+    const dispatch = useDispatch()
     let isMount = true;
   
-
     useEffect(() => {        
         GetRequestProductsFiltersDAO.find({}).then((res) => {            
             if(isMount){

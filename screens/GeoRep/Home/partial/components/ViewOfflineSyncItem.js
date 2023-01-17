@@ -45,9 +45,11 @@ const ViewOfflineSyncItem = props => {
   };
 
   const openModal = () => {
-    if (offlineSyncModalRef.current) {
-      offlineSyncModalRef.current.showModal();
-    }
+    setTimeout(() => {
+      if (offlineSyncModalRef.current) {
+        offlineSyncModalRef.current.showModal();
+      }
+    }, 400);
   };
 
   return (
