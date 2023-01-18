@@ -5,7 +5,7 @@ import {
   Text,
   Platform,
   ToastAndroid,
-  AlertIOS,
+  Alert,
 } from 'react-native';
 import {Colors, Fonts} from '../../../../constants';
 import {whiteLabel} from '../../../../constants/Colors';
@@ -33,7 +33,7 @@ const LastScanResultView = props => {
         if (Platform.OS === 'android') {
           ToastAndroid.show('Product not found', ToastAndroid.SHORT);
         } else {
-          AlertIOS.alert('Product not found');
+          Alert.alert('Product not found');
         }
       }
     }

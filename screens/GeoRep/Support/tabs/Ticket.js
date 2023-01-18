@@ -13,7 +13,7 @@ import {
   Text,
   Platform,
   ToastAndroid,
-  AlertIOS,
+  Alert,
 } from 'react-native';
 import Fonts from '../../../../constants/Fonts';
 import {Modal, Portal, TextInput} from 'react-native-paper';
@@ -35,7 +35,7 @@ import {
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {Notification} from '../../../../components/modal/Notification';
 import {useDispatch, useSelector} from 'react-redux';
-import { generateKey } from '../../../../constants/Utils';
+import {generateKey} from '../../../../constants/Utils';
 
 export const Ticket = forwardRef((props, ref) => {
   const dispatch = useDispatch();
