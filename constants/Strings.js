@@ -67,6 +67,10 @@ export default {
     Weekly: 'Weekly Visits',
   },
 
+  Calendar: {
+    Added_Calendar_Successfully : 'Added to Calendar successfully'
+  },
+
   Stock: {
     Add_Stock: 'Add Stock',
     ICCID_Not_Found: 'ICCID not found in stock',
@@ -111,4 +115,5 @@ export default {
     Returns_value: 'Returns Value',
     Returns_tns: 'Returns (Tns)',
   },
+  
 };
