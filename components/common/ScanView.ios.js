@@ -1,15 +1,23 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
   Platform,
   SafeAreaView,
   TouchableOpacity,
+  Vibration,
 } from 'react-native';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import {Colors, Constants, Values} from '../../constants';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {useCameraDevices, useFrameProcessor} from 'react-native-vision-camera';
+import {Camera} from 'react-native-vision-camera';
+import {
+  useScanBarcodes,
+  BarcodeFormat,
+  scanBarcodes,
+} from 'vision-camera-code-scanner';
+
 import SvgIcon from '../SvgIcon';
+import {runOnJS} from 'react-native-reanimated';
 
 const REGION_HEIGHT = 120;
 const REGION_WIDTH = Values.deviceWidth - 80;
@@ -17,61 +25,145 @@ const REGION_POSITION_TOP = (Values.deviceHeight * 0.6 - 120) / 2;
 const REGION_POSITION_LEFT = 40;
 const WINDOW_WIDTH = Values.deviceWidth;
 const WINDOW_HEIGHT = Values.deviceHeight;
-
 const ScanView = props => {
-  const [barcode, setBarcode] = useState(null);
+  const [hasPermission, setHasPermission] = React.useState(false);
+  const devices = useCameraDevices();
+  const device = devices.back;
   const [isPartialDetect, setIsPartialDetect] = useState(props.isPartialDetect);
-  useEffect(() => {
-    //requestPermission();
-    const interval = setInterval(() => {
-      setBarcode(null);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
+  const isFullCamera = props.renderLastScanResultView ? false : true;
+  const [barcodes, setBarcodes] = useState([]);
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    const detectedBarcodes = scanBarcodes(frame, [BarcodeFormat.ALL_FORMATS], {
+      checkInverted: true,
+    });
+    console.log('frame', frame);
 
-  const requestPermission = () => {
-    if (Platform.OS == 'ios') {
-      check(PERMISSIONS.IOS.CAMERA)
-        .then(result => {
-          switch (result) {
-            case RESULTS.UNAVAILABLE:
-              console.log(
-                'This feature is not available (on this device / in this context)',
-              );
-              break;
-            case RESULTS.DENIED:
-              request(PERMISSIONS.IOS.CAMERA);
-              break;
-            case RESULTS.LIMITED:
-              console.log(
-                'The permission is limited: some actions are possible',
-              );
-              break;
-            case RESULTS.GRANTED:
-              console.log('The permission is granted');
-              break;
-            case RESULTS.BLOCKED:
-              console.log(
-                'The permission is denied and not requestable anymore',
-              );
-              break;
-          }
-        })
-        .catch(error => {
-          console.log(error);
+    const xRatio = frame.width / WINDOW_WIDTH;
+    const yRatio = frame.height / WINDOW_HEIGHT;
+
+    const ratio = WINDOW_WIDTH / frame.width;
+
+    const barcodes = [];
+    if (detectedBarcodes.length > 0) {
+      detectedBarcodes.forEach(barcode => {
+        const cornerPoints = barcode.cornerPoints;
+
+        const resultPoints = cornerPoints.map(corner => {
+          return {
+            x: parseFloat(corner.x) * ratio,
+            y: parseFloat(corner.y) * ratio,
+          };
         });
-    }
-  };
-  const onSuccess = e => {
-    setBarcode(e);
-    checkAndCapture(e);
 
-    //onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: data});
+        barcodes.push({
+          ...barcode,
+          cornerPoints: resultPoints,
+        });
+      });
+    }
+    runOnJS(setBarcodes)(barcodes);
+  }, []);
+  React.useEffect(() => {
+    onRequestPermission();
+  }, []);
+  const onRequestPermission = async () => {
+    const status = await Camera.requestCameraPermission();
+    setHasPermission(status === 'authorized');
+  };
+
+  React.useEffect(() => {
+    if (barcodes) {
+      let isChecked = false;
+      barcodes.forEach(barcode => {
+        isChecked = checkAndCapture(barcode);
+      });
+      if (isChecked) {
+        Vibration.vibrate();
+      }
+    }
+  }, [barcodes]);
+  const checkAndCapture = barcode => {
+    let isChecked = false;
+    if (validateBarcode(barcode)) {
+      isChecked = true;
+      onButtonAction({
+        type: Constants.actionType.ACTION_CAPTURE,
+        value: barcode.rawValue,
+      });
+    }
+    return isChecked;
+  };
+  const validateBarcode = barcode => {
+    const cornerPoints = getPointsInView(barcode.cornerPoints);
+    if (!isPartialDetect) {
+      return true;
+    }
+    const topLeft = {x: REGION_POSITION_LEFT, y: REGION_POSITION_TOP};
+    const bottomRight = {
+      x: Values.deviceWidth - REGION_POSITION_LEFT,
+      y: REGION_POSITION_TOP + REGION_HEIGHT,
+    };
+    let isValid = true;
+    cornerPoints.forEach(point => {
+      const isPointInRegion =
+        point.x >= topLeft.x &&
+        point.y >= topLeft.y &&
+        point.x <= bottomRight.x &&
+        point.y <= bottomRight.y;
+      if (!isPointInRegion) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  };
+  const getPointsInView = cornerPoints => {
+    return cornerPoints.map(point => {
+      return {
+        x: point.x,
+        y: point.y,
+      };
+    });
+  };
+  const renderBoundingBoxes = () => {
+    if (!isPartialDetect) return null;
+    const pointViews = [];
+    barcodes.map((barcode, index) => {
+      const cornerPoints = getPointsInView(barcode.cornerPoints);
+      const isValid = validateBarcode(barcode);
+      cornerPoints.forEach(point => {
+        pointViews.push(
+          <View
+            key={'point' + pointViews.length}
+            style={{
+              borderRadius: 4,
+              backgroundColor: isValid ? 'red' : 'gray',
+              width: 8,
+              height: 8,
+              left: point.x,
+              top: point.y,
+              position: 'absolute',
+            }}></View>,
+        );
+      });
+    });
+    return pointViews;
   };
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
+  };
+  const renderSwitchPartialButton = () => {
+    return (
+      <TouchableOpacity
+        style={styles.switchButton}
+        onPress={() => {
+          setIsPartialDetect(!isPartialDetect);
+        }}>
+        <SvgIcon icon="Sync" width="50" height="50" />
+      </TouchableOpacity>
+    );
   };
   const renderCloseButton = () => {
     if (props.showClose) {
@@ -107,8 +199,8 @@ const ScanView = props => {
           />
           <View
             style={{
-              width: 70,
-              height: 80,
+              width: 80,
+              height: 70,
             }}
           />
           <View
@@ -140,8 +232,8 @@ const ScanView = props => {
           />
           <View
             style={{
-              width: 70,
-              height: 80,
+              width: 80,
+              height: 70,
             }}
           />
           <View
@@ -156,81 +248,6 @@ const ScanView = props => {
         </View>
       </View>
     );
-  };
-  const validateBarcode = barcode => {
-    if (!isPartialDetect) {
-      return true;
-    }
-    const boundingBox = getBoundingBox(barcode.bounds);
-
-    const topLeft = {x: REGION_POSITION_LEFT, y: REGION_POSITION_TOP};
-    const bottomRight = {
-      x: Values.deviceWidth - REGION_POSITION_LEFT,
-      y: REGION_POSITION_TOP + REGION_HEIGHT,
-    };
-    if (
-      boundingBox.origin.x >= topLeft.x &&
-      boundingBox.origin.y >= topLeft.y &&
-      boundingBox.origin.x + boundingBox.size.width <= bottomRight.x &&
-      boundingBox.origin.y + boundingBox.size.height <= bottomRight.y
-    ) {
-      return true;
-    }
-    return false;
-  };
-  const getBoundingBox = boundingBox => {
-    return {
-      size: {
-        height: Number(boundingBox.size.height),
-        width: Number(boundingBox.size.width),
-      },
-      origin: {
-        x: Number(boundingBox.origin.x),
-        y: Number(boundingBox.origin.y),
-      },
-    };
-  };
-  const renderSwitchPartialButton = () => {
-    return (
-      <TouchableOpacity
-        style={styles.switchButton}
-        onPress={() => {
-          setIsPartialDetect(!isPartialDetect);
-        }}>
-        <SvgIcon icon="Sync" width="50" height="50" />
-      </TouchableOpacity>
-    );
-  };
-  const renderBoundingBoxes = () => {
-    if (!isPartialDetect) return null;
-    if (!barcode) return null;
-
-    const boundingBox = getBoundingBox(barcode.bounds);
-    const isValid = validateBarcode(barcode);
-    return (
-      <View
-        key={'boudingBox'}
-        style={{
-          borderWidth: 2,
-          borderColor: isValid ? 'red' : 'gray',
-          height: boundingBox.size.height,
-          width: boundingBox.size.width,
-          left: boundingBox.origin.x,
-          top: boundingBox.origin.y,
-          position: 'absolute',
-        }}></View>
-    );
-  };
-  const checkAndCapture = barcode => {
-    let isChecked = false;
-    if (validateBarcode(barcode)) {
-      isChecked = true;
-      onButtonAction({
-        type: Constants.actionType.ACTION_CAPTURE,
-        value: barcode.data,
-      });
-    }
-    return isChecked;
   };
   const renderPartialCustomerMarker = () => {
     const centerSpacing = Values.deviceWidth - 160;
@@ -305,30 +322,52 @@ const ScanView = props => {
     return null;
   };
   return (
-    <SafeAreaView style={[styles.container, props.style]}>
-      <QRCodeScanner
-        onRead={onSuccess}
-        reactivate={true}
-        showMarker
-        customMarker={<View />}
-        cameraStyle={{height: '100%'}}
-        topViewStyle={{position: 'absolute'}}
-        bottomViewStyle={{position: 'absolute'}}
-      />
-      <View style={styles.detectLayer}>
-        {/*renderSwitchPartialButton()*/}
+    <View style={[styles.container, props.style]}>
+      <View
+        style={
+          isPartialDetect
+            ? {
+                width: Values.deviceWidth,
+                height: (Values.deviceWidth * 1920) / 1080,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+              }
+            : {
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: Values.deviceWidth,
+                height: Values.deviceHeight,
+              }
+        }>
+        {device != null && hasPermission && (
+          <Camera
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={true}
+            frameProcessor={frameProcessor}
+            frameProcessorFps={5}
+          />
+        )}
         {renderCustomerMarker()}
-        {renderBoundingBoxes()}
+        <View style={styles.detectLayer}>{renderBoundingBoxes()}</View>
       </View>
+
       {renderLastScanResultView()}
 
+      {/*renderSwitchPartialButton()*/}
       {renderCloseButton()}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    alignSelf: 'stretch',
+    justifyContent: 'flex-end',
     flex: 1,
   },
   regionCameraMarker: {
@@ -342,24 +381,23 @@ const styles = StyleSheet.create({
     width: 230,
     height: 230,
   },
+
   closeButton: {
     position: 'absolute',
     top: 40,
     right: 24,
   },
-  detectLayer: {
-    width: '100%',
-    height: '100%',
-    top: Values.statusBarHeight,
-    left: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   switchButton: {
     position: 'absolute',
     top: 35,
     left: 24,
+  },
+  detectLayer: {
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
+    position: 'absolute',
   },
 });
 

@@ -326,13 +326,20 @@ const ScanView = props => {
         style={
           isPartialDetect
             ? {
-                width: Values.deviceWidth,
-                height: (Values.deviceWidth * 640) / 480,
+                width: WINDOW_WIDTH,
+                height: (WINDOW_WIDTH * 640) / 480,
+                position: 'absolute',
+                top: 0,
+                left: 0,
               }
             : {
-                flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: Values.deviceWidth,
+                height: Values.deviceHeight,
               }
         }>
         {device != null && hasPermission && (
@@ -358,6 +365,7 @@ const ScanView = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    justifyContent: 'flex-end',
     flex: 1,
   },
   regionCameraMarker: {
