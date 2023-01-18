@@ -21,24 +21,26 @@ const ProductList = props => {
   return (
     <View style={[styles.container, props.style]}>
       <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          height: 40,
-          marginHorizontal: 8,
-          marginBottom: 8,
-        }}>
-        <Text style={[styles.title, {flex: 1}]}>Category</Text>
-        <Text style={[styles.title, {flex: 1}]}>Product</Text>
-        <Text style={[styles.title, {flex: 1}]}>Brand</Text>
-      </View>
-      <View
         style={[
           boxShadow,
           {alignSelf: 'stretch', backgroundColor: 'white', borderRadius: 4},
         ]}>
         <FlatList
           data={items}
+          ListHeaderComponent={() => (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                height: 40,
+                marginHorizontal: 8,
+                marginBottom: 8,
+              }}>
+              <Text style={[styles.title, {flex: 1}]}>Category</Text>
+              <Text style={[styles.title, {flex: 1}]}>Product</Text>
+              <Text style={[styles.title, {flex: 1}]}>Brand</Text>
+            </View>
+          )}
           renderItem={({item, index}) => renderItem(item, index)}
           keyExtractor={(item, index) => index.toString()}
           extraData={this.props}
