@@ -82,6 +82,8 @@ const TransactionSubmitContainer = props => {
             field.field_type == 'take_photo'
           ) {
             transactionFields.push({field_id: key});
+          } else if (field.field_type == 'multiple') {
+            transactionFields.push({field_id: key, answer: [data[key]]});
           } else {
             transactionFields.push({field_id: key, answer: data[key]});
           }
