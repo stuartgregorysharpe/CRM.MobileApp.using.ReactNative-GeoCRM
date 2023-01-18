@@ -187,7 +187,6 @@ const DynamicField = props => {
           />
         </View>
       </View>
-
     );
   }
 
@@ -208,7 +207,7 @@ const DynamicField = props => {
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 5}}
+        style={{marginTop: isFirst ? 0 : 10}}
       />
     );
   };
@@ -451,7 +450,7 @@ const DynamicField = props => {
       );
     } else {
       if(value != undefined){
-        console.log("is value", field_name , value , field_name ,item.contact_id)
+        console.log("is value", field_name , value , field_name ,item.contact_id , item)
         updateFormData(field_name, [...value, item.contact_id]);
       }else{
         updateFormData(field_name, [item.contact_id]);

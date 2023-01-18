@@ -21,26 +21,41 @@ import {useDispatch} from 'react-redux';
 
 export default function SupportScreen(props) {
 
+  const navigation = props.navigation;
   const headers = ['Ticket', 'FAQ', 'WhatsApp'];  
   const [tabIndex, setTabIndex] = useState(1);
   const ticketRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    refreshHeader();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refreshHeader();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const refreshHeader = () => {
     if (props.screenProps) {
-      props.screenProps.setOptions({
-        headerTitle: () => {
-          return (
-            <TouchableOpacity onPress={() => {}}>
-              <View style={style.headerTitleContainerStyle}>
-                <Text style={style.headerTitle}>Support</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        },
-      });      
+      setTimeout(() => {
+        props.screenProps.setOptions({
+          headerTitle: () => {
+            return (
+              <TouchableOpacity onPress={() => {}}>
+                <View style={style.headerTitleContainerStyle}>
+                  <Text style={style.headerTitle}>Support</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          },
+        });      
+      }, 500)
+      
     }
-  });
+  }
 
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)

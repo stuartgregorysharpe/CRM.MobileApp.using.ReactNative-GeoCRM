@@ -27,7 +27,7 @@ export default function AddContactModalContainer(props) {
         if (pageType === 'update' && contactInfo != undefined) {            
             postData = {...postData , contact_id: contactInfo.contact_id};
         }
-        
+        console.log("post data" ,postData)
         postApiRequest("locations/add-edit-contacts", postData).then((res) => {
             console.log("res", res)
             if(res.status == Strings.Success){

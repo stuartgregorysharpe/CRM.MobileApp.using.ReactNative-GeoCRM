@@ -59,6 +59,7 @@ const TransactionSubmitContainer = props => {
   };
 
   const onAdd = async data => {    
+    console.log("add data", data)
     var res = await generatePostParam(data);
   };
 
@@ -228,7 +229,7 @@ const TransactionSubmitContainer = props => {
         flex: 1,
         marginHorizontal: 10,
         marginBottom: 10,
-        paddingTop: 10,
+        paddingTop: 0,
         maxHeight: Dimensions.get('screen').height * 0.8,
       }}>
 
@@ -236,9 +237,12 @@ const TransactionSubmitContainer = props => {
         page="transaction_submit"
         buttonTitle={'Submit'}
         fields={fields}
-        onAdd={onAdd}        
-      
-
+        close={() => {
+          console.log("triggered");
+          props.onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
+        }}
+        onAdd={onAdd}      
+        style={{marginTop:5}}
         {...props}
       />
     </View>
