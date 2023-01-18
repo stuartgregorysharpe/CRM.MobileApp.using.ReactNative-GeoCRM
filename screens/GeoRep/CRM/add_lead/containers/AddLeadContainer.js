@@ -152,6 +152,7 @@ export default function AddLeadContainer(props) {
 
     if (addLeadViewRef) {
       const isValidForm = await addLeadViewRef.current.validateForm();
+      console.log("isValidForm",isValidForm)
       if (!isValidForm) isValid = false;
     }
 
@@ -161,6 +162,9 @@ export default function AddLeadContainer(props) {
   
   const onAdd = async () => {
     const isFormValid = await validateForm();
+    console.log("valiidate form", isFormValid);
+    return ;
+
     if (!isFormValid) {
       dispatch(
         showNotification({

@@ -2,7 +2,7 @@ import { View, ScrollView , StyleSheet} from 'react-native'
 import React , {useRef , useState , useEffect} from 'react'
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import { getPostParameter } from '../../../../../constants/Helper';
+import { expireToken, getPostParameter } from '../../../../../constants/Helper';
 import { postApiRequest } from '../../../../../actions/api.action';
 import {useSelector, useDispatch} from 'react-redux';
 import AlertDialog from '../../../../../components/modal/AlertDialog';
@@ -19,6 +19,7 @@ export default function Customer(props) {
     const currentLocation = useSelector(state => state.rep.currentLocation);
     const dispatch = useDispatch();
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState("")
     const updateCustomerModalRef = useRef(null);
         
@@ -73,6 +74,10 @@ export default function Customer(props) {
 
     const onSubmit = async() =>{
         
+        if(isLoading) return;
+
+        
+
         var fields = [];
         for(let key of Object.keys(formData)){
             if(formData[key] != undefined && formData[key] != ''){
@@ -99,6 +104,8 @@ export default function Customer(props) {
         }
 
 
+        setIsLoading(true);
+
         var userParam = getPostParameter(currentLocation);
         let postData = {
             location_id: locationId, //
@@ -108,11 +115,13 @@ export default function Customer(props) {
 
         postApiRequest("locations/location-fields", postData).then((res) => {                   
             //dispatch(showNotification({type:'success' , message: "res.message" , buttonText: 'Ok'}));
-            setMessage(res.message)
-            setIsSuccess(true)
+            setMessage(res.message);
+            setIsSuccess(true);
+            setIsLoading(false);
             
         }).catch((e)=> {
-            console.log("E",e)
+            expireToken(dispatch, e);
+            setIsLoading(false);
         })
     }
 
@@ -172,7 +181,9 @@ export default function Customer(props) {
                   title="Update"
                   onButtonAction={onModalClosed}
                 />                                    
-                <SubmitButton style={{marginTop:10, marginHorizontal:10}} onSubmit={onSubmit} title="Update" />
+                <SubmitButton 
+                  isLoading={isLoading}
+                  style={{marginTop:10, marginHorizontal:10}} onSubmit={onSubmit} title="Update" />
 
             </View>
         </ScrollView>

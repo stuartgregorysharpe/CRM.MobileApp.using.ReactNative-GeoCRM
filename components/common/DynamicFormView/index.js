@@ -109,8 +109,7 @@ const DynamicFormView = props => {
         type: Strings.Success,
         message: 'Selected contact does not have a valid email, please update',
         buttonText: 'Okay',
-        cancelButtonText: 'Update ',
-        // buttonAction: closeModal(),
+        cancelButtonText: 'Add Contact',        
         cancelButtonAction: () => {
           closeModal();
           getContactsInfo(contact_id);
@@ -159,17 +158,16 @@ const DynamicFormView = props => {
             const contactIds = formData[filedName];                 
             if(data != undefined && data.field_type == 'contact_email' ){              
               const options = data?.items.filter(element => contactIds.includes(element.contact_id) );              
-              if(options  != undefined){                
-                options.forEach(option => {                  
-                  if(option != undefined &&  ( option.contact_email == '' || option?.contact_email?.includes("@") )  ){                    
-                    confirmModal(option.contact_id);
-                    //getContactsInfo(option.contact_id);
+              if(options  != undefined){
+                options.forEach(option => {
+                  if(option != undefined &&  ( option.contact_email == '' )  ){ // ||  !option?.contact_email?.includes("@") 
+                    confirmModal(option.contact_id);                    
                     return;
-                  } 
+                  }
                 });
               }
             }
-          }          
+          }
           setFormData(formData);
         }}
         

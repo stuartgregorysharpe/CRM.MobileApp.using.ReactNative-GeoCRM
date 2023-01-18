@@ -9,8 +9,7 @@ const CTextInput = props => {
 
   const { multiline, cTextRef, dynamicFieldRef , index , add_prefix, add_suffix} = props;  
 
-  const hasError = props.hasError;
-  console.log("add", add_prefix, add_suffix , hasError)
+  const hasError = props.hasError;  
 
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;

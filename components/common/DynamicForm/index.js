@@ -74,19 +74,17 @@ const DynamicForm = React.forwardRef((props, ref) => {
           console.log('Error fieldName', fieldName);
         } else {
           const item = formStructureData.find(element => element.custom_master_field_id == fieldName);
-          if(item != undefined){
-            //console.log("add lead item => " , item , data[fieldName] );
+          if(item != undefined){            
             const error = checkRuleCharactersAddLead(item, data[fieldName]);            
-            console.log("error =>", error)
             if(error){
               _errors[fieldName] = true; 
               _errors[fieldName] = {status: true, errorText: error};
-            }else{
-              console.log("false", fieldName)
-              _errors[fieldName] = false;
+              valid = false;
+            }else{              
+              _errors[fieldName] = false;              
             }
           }else{
-            _errors[fieldName] = false;
+            _errors[fieldName] = false;            
           }
           
         }
@@ -181,7 +179,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     }
 
     return formStructureData.map((fieldStructure, index) => {
-      console.log("fieldStructure => ",fieldStructure.add_suffix)
+      
       return (
         <DynamicField
           {...fieldStructure}

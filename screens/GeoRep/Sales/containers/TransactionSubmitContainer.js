@@ -58,8 +58,7 @@ const TransactionSubmitContainer = props => {
     }
   };
 
-  const onAdd = async data => {    
-    console.log("add data", data)
+  const onAdd = async data => {        
     var res = await generatePostParam(data);
   };
 
