@@ -163,7 +163,6 @@ export default function AddLeadContainer(props) {
   const onAdd = async () => {
     const isFormValid = await validateForm();
     console.log("valiidate form", isFormValid);
-    return ;
 
     if (!isFormValid) {
       dispatch(

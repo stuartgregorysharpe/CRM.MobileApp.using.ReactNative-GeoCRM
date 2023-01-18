@@ -123,15 +123,18 @@ const DynamicForm = React.forwardRef((props, ref) => {
   };
 
   const _validateForm = () => {
-    const requiredFields = [];
+    const requiredFields = [];    
     formStructureData.forEach(fieldStructure => {
       const isAlowedField = checkAllowedFieldType(fieldStructure.field_type);
+
+      console.log("ok" , fieldStructure.is_required, fieldStructure.isHidden , isAlowedField , fieldStructure.rule_compulsory)
       if (
-        (fieldStructure.rule_compulsory != undefined && fieldStructure.rule_compulsory == '1') &&
+        (fieldStructure.rule_compulsory == undefined || (fieldStructure.rule_compulsory != undefined && fieldStructure.rule_compulsory == '1') )  &&
         fieldStructure.is_required &&
-        fieldStructure.isHidden !== true &&
+        fieldStructure.isHidden != true &&
         isAlowedField
       ) {
+        
         requiredFields.push(fieldStructure.field_name);
       }
     });
@@ -141,13 +144,16 @@ const DynamicForm = React.forwardRef((props, ref) => {
   };
 
   const renderFields = () => {
+
     if (props.isClickable) {
       return formStructureData.map((fieldStructure, index) => {
         return (
           <TouchableOpacity
             key={'form' + index}
             onPress={() => {
-              props.onPress(fieldStructure);
+              if(props.onPress){
+                props.onPress(fieldStructure);
+              }              
             }}>
             <DynamicField
               {...fieldStructure}
@@ -163,7 +169,10 @@ const DynamicForm = React.forwardRef((props, ref) => {
               isFirst={index == 0}
               isClickable={fieldStructure.isClickable}
               onPress={() => {
-                props.onPress();
+                console.log("trig")
+                if(props.onPress){
+                  props.onPress(fieldStructure);
+                }                
               }}
               index={index}
               dynamicFieldRef={dynamicFieldRef}
@@ -199,6 +208,11 @@ const DynamicForm = React.forwardRef((props, ref) => {
             if(props.setScrollEnabled){
               props.setScrollEnabled(flag);
             } 
+          }}
+          onPress={() => {
+            if(props.onPress){
+              props.onPress(fieldStructure);
+            }                
           }}
         />
       );

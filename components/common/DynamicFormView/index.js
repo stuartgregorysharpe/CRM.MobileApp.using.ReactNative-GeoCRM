@@ -10,9 +10,12 @@ import { Constants, Strings } from '../../../constants';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../actions/notification.action';
 
+var canSubmitEmailContact = true;
+var canSubmitEmailSelect = true;
+
 const DynamicFormView = props => {
 
-  const {page, buttonTitle, fields, isClear , style} = props;
+  const {page, buttonTitle, fields, isClear , isLoading, style} = props;
   if (!fields) return null;
 
   const addProductRef = useRef(null);
@@ -21,10 +24,11 @@ const DynamicFormView = props => {
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
   const [hasTextInput, setKeyboardVisible] = useState(false);
-  const [scrollEnabled, setScrollViewEnabled] = useState(true);
-  const pageType = 'update';
+  const [scrollEnabled, setScrollViewEnabled] = useState(true);  
   const [locationId, setLocationId] = useState(0);
   const [contactInfo, setContactInfo] = useState({});
+  const [canSubmit, setCanSubmit] = useState(true);
+  const [pageType, setPageType] = useState('update');
 
   const dispatch = useDispatch();
 
@@ -67,7 +71,6 @@ const DynamicFormView = props => {
     } else {
       setFormData(props.value);
     }
-
     setFormStructure(getFormStructureData(fields, page));
   }, [fields]);
 
@@ -82,19 +85,31 @@ const DynamicFormView = props => {
 		}
 	}
 
-
   const onAdd = () => {
-    if (addProductRef.current.validateForm()) {
-      if (props.onAdd) {
-        props.onAdd(formData);
-      }
-    } else {
-      console.log('not validated');
+
+    if(canSubmitEmailContact && canSubmitEmailSelect){
+      console.log("setFormData",formData)
+      if (addProductRef.current.validateForm()) {
+        console.log("addProductRef.current.validateForm()" , addProductRef.current.validateForm())
+        if (props.onAdd) {
+          props.onAdd(formData);
+        }
+      } else {
+        console.log('submission not validated');
+      }  
+    }else{
+      console.log("can not submit");
     }
   };
 
   const addContactModalClosed = ({type, value}) => {
-    if(type === Constants.actionType.ACTION_CLOSE){  
+    if(type == Constants.actionType.ACTION_DONE){    
+      setCanSubmit(true);
+      addContactModalRef.current.hideModal();
+      if(props.close){
+        props.close();
+      }
+    }else if(type === Constants.actionType.ACTION_CLOSE){  
       addContactModalRef.current.hideModal();
       if(props.close){
         props.close();
@@ -102,17 +117,30 @@ const DynamicFormView = props => {
     }
   }
 
-  const confirmModal = (contact_id) => {
-    
+  const confirmModal = (contact_id , modalType) => {
+
+    var buttonText = 'Add Contact';
+    var message = 'There are currently no contacts linked, please add a contact';
+    if(modalType == 'update'){
+      buttonText = 'Update Contact';
+      message = 'Selected contact does not have a valid email, please update';
+    }
+
     dispatch(
       showNotification({
         type: Strings.Success,
-        message: 'Selected contact does not have a valid email, please update',
+        message: message,
         buttonText: 'Okay',
-        cancelButtonText: 'Add Contact',        
+        cancelButtonText: buttonText,        
         cancelButtonAction: () => {
-          closeModal();
-          getContactsInfo(contact_id);
+          closeModal();                    
+          if(modalType == 'add'){
+            setPageType('add');
+            addContactModalRef.current.showModal();
+          }else{
+            setPageType('update');
+            getContactsInfo(contact_id);
+          }          
         }, 
         cancelable: false  
       }),
@@ -121,8 +149,7 @@ const DynamicFormView = props => {
   }
 
 
-  const getContactsInfo = (contact_id) => {
-    console.log("cancel ")
+  const getContactsInfo = (contact_id) => {    
     var params = {location_id: locationId};    
     getApiRequest("locations/location-contacts" , params).then((res) => {
       console.log("res", res , contact_id);
@@ -130,16 +157,50 @@ const DynamicFormView = props => {
         if(contact != undefined){
           setContactInfo(contact);
           addContactModalRef.current.showModal();
-        }
-        //prepareContactsList(res.contacts);
+        }        
     }).catch((e) => {
         expireToken(dispatch , e);
     })
   }
 
-  const closeModal = () => {
-    console.log("clear")
+  const closeModal = () => {    
     dispatch(clearNotification());
+  }
+
+  const handleUpdatedData = (data , contactIds) => {
+    if(data != undefined && ( data.field_type == 'contact_email' || data.field_type == 'contact_select' ) ){
+      handleContactEmail(data, contactIds);
+    }
+  }
+
+  const handleContactEmail = (data , contactIds) => {
+    const options = data?.items.filter(element => contactIds.includes(element.contact_id) );              
+    if(options  != undefined){
+      var flag = true;
+      options.forEach(option => {
+        if(option != undefined &&  ( option?.contact_email?.trim() == '' )  ){ // ||  !option?.contact_email?.includes("@") 
+          console.log("Can submit", false)
+          confirmModal(option.contact_id , 'update' );
+          setCanSubmit(false);
+          if(data.field_type == 'contact_email'){
+            canSubmitEmailContact = false;
+          }else if(data.field_type == 'contact_select'){
+            canSubmitEmailSelect = false;
+          }
+          flag = false;
+          return;
+        }
+      });
+      if(flag){
+        console.log("Can submit", true)
+        setCanSubmit(true);
+        if(data.field_type == 'contact_email'){
+          canSubmitEmailContact = true;
+        }else if(data.field_type == 'contact_select'){
+          canSubmitEmailSelect = true;
+        }
+      }      
+    }
   }
 
 
@@ -151,26 +212,21 @@ const DynamicFormView = props => {
         style={{paddingTop:5}}
         ref={addProductRef}
         formData={formData}
-        formStructureData={formStructure}
-        updateFormData={ (formData , filedName) => {          
+        formStructureData={formStructure}        
+        updateFormData={ (formData , filedName) => {   
           if(filedName  != undefined){
             const data = formStructure.find(element => element.field_name == filedName);
-            const contactIds = formData[filedName];                 
-            if(data != undefined && data.field_type == 'contact_email' ){              
-              const options = data?.items.filter(element => contactIds.includes(element.contact_id) );              
-              if(options  != undefined){
-                options.forEach(option => {
-                  if(option != undefined &&  ( option.contact_email == '' )  ){ // ||  !option?.contact_email?.includes("@") 
-                    confirmModal(option.contact_id);                    
-                    return;
-                  }
-                });
-              }
-            }
+            const contactIds = formData[filedName];
+            handleUpdatedData(data , contactIds);
           }
           setFormData(formData);
         }}
-        
+        onPress={(data) => {
+          console.log("press",data);
+          if(data.field_type == 'contact_email' || data.field_type == 'contact_select'){
+            confirmModal(0, 'add');
+          }
+        }}
         setScrollEnabled={(flag) => {
           setScrollViewEnabled(flag);
         }}
@@ -178,6 +234,7 @@ const DynamicFormView = props => {
 
       <SubmitButton
         title={buttonTitle}
+        isLoading={isLoading}
         onSubmit={onAdd}
         style={{marginTop: 20}}
       />
@@ -186,7 +243,7 @@ const DynamicFormView = props => {
       <AddContactModal
         ref={addContactModalRef}
         title= {pageType == 'add' ? 'Add Contact' : 'Update Contact'}
-        pageType={pageType}
+        pageType={pageType}        
         locationId={locationId}
         contactInfo={contactInfo}
         onButtonAction={addContactModalClosed}

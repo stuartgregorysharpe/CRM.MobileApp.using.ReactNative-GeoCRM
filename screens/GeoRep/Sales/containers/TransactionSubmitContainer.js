@@ -22,6 +22,8 @@ const TransactionSubmitContainer = props => {
   const {cartStatistics, productPriceList, addProductList} = props;
   const dispatch = useDispatch();
   const [fields, setFields] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
   let isMount = true;
 
@@ -133,30 +135,36 @@ const TransactionSubmitContainer = props => {
         }        
       });
       
-      PostRequestDAO.find(
-        0,
-        postJsonData,
-        'transaction-submit',
-        'sales/transaction-submission',
-        '',
-        '',
-      )
-        .then(res => {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.message,
-              buttonText: 'Ok',
-              buttonAction: () => {
-                dispatch(clearNotification());
-                props.onButtonAction({type: Constants.actionType.ACTION_DONE});
-              },
-            }),
-          );
-        })
-        .catch(e => {
-          expireToken(dispatch, e);
-        });
+      if(!isLoading){
+        setIsLoading(true);
+        PostRequestDAO.find(
+          0,
+          postJsonData,
+          'transaction-submit',
+          'sales/transaction-submission',
+          '',
+          '',
+        )
+          .then(res => {
+            setIsLoading(false);
+            dispatch(
+              showNotification({
+                type: Strings.Success,
+                message: res.message,
+                buttonText: 'Ok',
+                buttonAction: () => {
+                  dispatch(clearNotification());
+                  props.onButtonAction({type: Constants.actionType.ACTION_DONE});
+                },
+              }),
+            );
+          })
+          .catch(e => {
+            setIsLoading(false);
+            expireToken(dispatch, e);
+          });
+      }
+      
     } catch (e) {
       console.log(e);
     }
@@ -236,8 +244,8 @@ const TransactionSubmitContainer = props => {
         page="transaction_submit"
         buttonTitle={'Submit'}
         fields={fields}
-        close={() => {
-          console.log("triggered");
+        isLoading={isLoading}
+        close={() => {          
           props.onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
         }}
         onAdd={onAdd}      

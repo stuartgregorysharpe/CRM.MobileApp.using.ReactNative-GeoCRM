@@ -213,6 +213,7 @@ const DynamicField = props => {
   };
      
   const renderDropdown = (mode = 'single') => {
+    
     return (
       <CSingleSelectInput
         key={index}
@@ -225,8 +226,10 @@ const DynamicField = props => {
         isClickable={isClickable}
         mode={mode}
         onPress={() => {
-          if (isClickable) {
-            props.onPress();
+          if (isClickable) {            
+            if(props.onPress){              
+              props.onPress();
+            }
           }
         }}
         onSelectItem={ item => {

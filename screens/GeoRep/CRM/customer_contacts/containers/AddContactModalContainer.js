@@ -33,9 +33,8 @@ export default function AddContactModalContainer(props) {
             if(res.status == Strings.Success){
                 dispatch(showNotification({type:'success' ,message: res.message, buttonText:'Ok' }));
                 if(props.onButtonAction){
-                    props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
-                }
-                
+                    props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: null});
+                }                
             }
         }).catch((e) => {
             console.log(Strings.Log.Post_Api_Error, e);
@@ -45,7 +44,7 @@ export default function AddContactModalContainer(props) {
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
-            <AddContactModalView            
+            <AddContactModalView
                 onButtonAction={addData}
                 handleSubmit={handleSubmit}     
                 {...props}
