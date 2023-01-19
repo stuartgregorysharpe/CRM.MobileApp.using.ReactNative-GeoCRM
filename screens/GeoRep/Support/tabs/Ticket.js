@@ -7,18 +7,14 @@ import React, {
 } from 'react';
 import {
   View,
-  StyleSheet,
-  ScrollView,
+  StyleSheet,  
   TouchableOpacity,
-  Text,
-  Platform,
-  ToastAndroid,
-  AlertIOS,
+  Text,  
 } from 'react-native';
 import Fonts from '../../../../constants/Fonts';
-import {Modal, Portal, TextInput} from 'react-native-paper';
+import { Modal, Portal, TextInput} from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, {BG_COLOR, whiteLabel} from '../../../../constants/Colors';
+import Colors, { whiteLabel} from '../../../../constants/Colors';
 import {getBaseUrl, getToken, getUserData} from '../../../../constants/Storage';
 import {
   getSupportIssues,
@@ -263,14 +259,14 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     fontFamily: Fonts.secondaryMedium,
     marginBottom: 8,
   },
   textArea: {
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     fontFamily: Fonts.secondaryMedium,
     marginBottom: 20,
   },
@@ -301,7 +297,7 @@ const styles = StyleSheet.create({
   },
 
   pickerItemBox: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 10,
   },
 

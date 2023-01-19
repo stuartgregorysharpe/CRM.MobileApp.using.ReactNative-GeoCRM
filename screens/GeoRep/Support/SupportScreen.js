@@ -18,6 +18,8 @@ import TopThreeTab from '../../../components/common/TopThreeTab';
 import {SubmitButton} from '../../../components/shared/SubmitButton';
 import {checkConnectivity} from '../../../DAO/helper';
 import {useDispatch} from 'react-redux';
+import { Colors } from '../../../constants';
+
 
 export default function SupportScreen(props) {
 
@@ -116,7 +118,7 @@ export default function SupportScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'BG_COLOR',
+    backgroundColor: Colors.bgColor,
     paddingBottom: 50,
   },
 });

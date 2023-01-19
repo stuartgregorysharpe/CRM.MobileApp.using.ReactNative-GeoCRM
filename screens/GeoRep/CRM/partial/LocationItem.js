@@ -2,21 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity , Text } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { BG_COLOR, TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { style } from '../../../../constants/Styles';
 
 export function LocationItem ({isSelected, item, isChecked, onItemClicked }) {
 
-    //const [isChecked, setIsChecked] = useState(false);
-    // useEffect(() => {   
-    //   //if(isSelected){
-    //     setIsChecked(false);
-    //   //}    
-    // }, [isSelected]);
-
     return (
-      <TouchableOpacity style={[styles.resultItem , {backgroundColor: isSelected && isChecked ? whiteLabel().itemSelectedBackground : BG_COLOR  }]} onPress={() => {
+      <TouchableOpacity style={[styles.resultItem , {backgroundColor: isSelected && isChecked ? whiteLabel().itemSelectedBackground : Colors.bgColor  }]} onPress={() => {
           if(isSelected){
             //setIsChecked(!isChecked);            
             item.checked = !isChecked;

@@ -7,7 +7,7 @@ import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 import SvgIcon from '../../components/SvgIcon';
 import { boxShadow } from '../../constants/Styles';
-import { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import { PRIMARY_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import Colors from '../constants/Colors';
 
@@ -166,7 +166,7 @@ export default function SupportScreen({navigation, screenProps}) {
 const styles = StyleSheet.create({
   container: {
     minHeight: '100%',
-    backgroundColor: 'BG_COLOR',
+    backgroundColor: Colors.bgColor,
     padding: 10,
   },
   tabContainer: {
@@ -194,14 +194,14 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 8
   },
   textArea: {
     fontSize: 14,
     lineHeight: 30,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 20,
   },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     right: 10
   },
   pickerItemBox: {
-    backgroundColor: BG_COLOR, 
+    backgroundColor: Colors.bgColor, 
     padding: 10
   },
   pickerItem: {

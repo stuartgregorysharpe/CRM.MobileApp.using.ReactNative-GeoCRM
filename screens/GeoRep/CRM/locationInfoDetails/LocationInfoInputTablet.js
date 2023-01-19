@@ -20,8 +20,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {  
-  TEXT_COLOR,
-  BG_COLOR,
+  TEXT_COLOR,  
   BLUE_COLOR,
   GREEN_COLOR,
   whiteLabel,
@@ -482,7 +481,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
                       }
                       style={styles.textInput}
                       label={
-                        <Text style={{backgroundColor: BG_COLOR}}>
+                        <Text style={{backgroundColor: Colors.bgColor}}>
                           {field.field_name}
                         </Text>
                       }
@@ -717,7 +716,7 @@ const styles = EStyleSheet.create({
     paddingBottom: 8,
   },
   pickerContent: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 20,

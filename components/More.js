@@ -7,11 +7,10 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Image,
 } from 'react-native';
 
 import SvgIcon from './SvgIcon';
-import {BG_COLOR, TEXT_COLOR, whiteLabel} from '../constants/Colors';
+import Colors, { whiteLabel} from '../constants/Colors';
 import {
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
@@ -468,7 +467,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     marginLeft: 'auto',
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 12,
     paddingTop: 70,
     borderWidth: 1,
@@ -505,13 +504,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   boldText: {
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontSize: 17,
     fontFamily: 'Gilroy-Bold',
   },
   text: {
     fontSize: 14,
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 2,
   },
@@ -533,6 +532,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     fontSize: 14,
     fontFamily: 'Gilroy-Medium',
-    color: TEXT_COLOR,
+    color: Colors.textColor,
   },
 });
