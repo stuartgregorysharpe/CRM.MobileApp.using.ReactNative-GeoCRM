@@ -248,6 +248,9 @@ const TransactionSubmitContainer = props => {
         close={() => {          
           props.onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
         }}
+        refreshFields = {() => {
+          getTransactinSubmit();
+        }}
         onAdd={onAdd}      
         style={{marginTop:5}}
         {...props}

@@ -85,21 +85,19 @@ const DynamicFormView = props => {
 		}
 	}
 
-  const onAdd = () => {
-
-    if(canSubmitEmailContact && canSubmitEmailSelect){
-      console.log("setFormData",formData)
-      if (addProductRef.current.validateForm()) {
-        console.log("addProductRef.current.validateForm()" , addProductRef.current.validateForm())
-        if (props.onAdd) {
-          props.onAdd(formData);
-        }
+  const onAdd = () => {    
+      if (addProductRef.current.validateForm()) {        
+        if(canSubmitEmailContact && canSubmitEmailSelect){      
+          if (props.onAdd) {
+            props.onAdd(formData);
+          }
+        }else{
+          console.log('can not submit');
+        }        
       } else {
         console.log('submission not validated');
       }  
-    }else{
-      console.log("can not submit");
-    }
+    
   };
 
   const addContactModalClosed = ({type, value}) => {
@@ -145,12 +143,12 @@ const DynamicFormView = props => {
         cancelable: false  
       }),
     );
-
   }
 
 
   const getContactsInfo = (contact_id) => {    
     var params = {location_id: locationId};    
+    console.log(params)
     getApiRequest("locations/location-contacts" , params).then((res) => {
       console.log("res", res , contact_id);
         const contact = res?.contacts.find(element =>  parseInt(element.contact_id) == parseInt(contact_id));
@@ -159,6 +157,7 @@ const DynamicFormView = props => {
           addContactModalRef.current.showModal();
         }        
     }).catch((e) => {
+      console.log(e);
         expireToken(dispatch , e);
     })
   }
@@ -168,7 +167,7 @@ const DynamicFormView = props => {
   }
 
   const handleUpdatedData = (data , contactIds) => {
-    if(data != undefined && ( data.field_type == 'contact_email' || data.field_type == 'contact_select' ) ){
+    if(data != undefined && ( data.field_type == 'contact_email' ) ){ // || data.field_type == 'contact_select'
       handleContactEmail(data, contactIds);
     }
   }
@@ -217,9 +216,15 @@ const DynamicFormView = props => {
           if(filedName  != undefined){
             const data = formStructure.find(element => element.field_name == filedName);
             const contactIds = formData[filedName];
-            handleUpdatedData(data , contactIds);
+            //handleUpdatedData(data , contactIds);
           }
           setFormData(formData);
+        }}
+        onNoData={(item) => {
+          console.log("on no data", item);
+          if(item?.contact_email?.trim() == ''){
+            confirmModal(item.contact_id , 'update' );
+          }
         }}
         onPress={(data) => {
           console.log("press",data);
@@ -227,6 +232,7 @@ const DynamicFormView = props => {
             confirmModal(0, 'add');
           }
         }}
+
         setScrollEnabled={(flag) => {
           setScrollViewEnabled(flag);
         }}

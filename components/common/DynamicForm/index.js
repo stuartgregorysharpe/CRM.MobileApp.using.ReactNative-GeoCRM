@@ -181,6 +181,12 @@ const DynamicForm = React.forwardRef((props, ref) => {
                   props.setScrollEnabled(flag);
                 } 
               }}
+              onNoData={(item) => {
+                if(props.onNoData){
+                  props.onNoData(item);
+                }
+              }}
+              
             />
           </TouchableOpacity>
         );
@@ -213,6 +219,11 @@ const DynamicForm = React.forwardRef((props, ref) => {
             if(props.onPress){
               props.onPress(fieldStructure);
             }                
+          }}
+          onNoData={(item) => {
+            if(props.onNoData){
+              props.onNoData(item);
+            }
           }}
         />
       );
