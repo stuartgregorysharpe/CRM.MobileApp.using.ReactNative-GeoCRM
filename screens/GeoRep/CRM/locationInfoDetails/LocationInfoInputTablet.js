@@ -20,8 +20,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {  
-  TEXT_COLOR,  
-  BLUE_COLOR,
+  TEXT_COLOR,    
   GREEN_COLOR,
   whiteLabel,
 } from '../../../../constants/Colors';
@@ -588,7 +587,7 @@ const styles = EStyleSheet.create({
 
   selectedStageBox: {
     padding: 8,
-    backgroundColor: BLUE_COLOR,
+    backgroundColor: Colors.blueColor,
     shadowColor: '#00000014',
     shadowOffset: {width: 1, height: 1},
     shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,
@@ -631,9 +630,7 @@ const styles = EStyleSheet.create({
     padding: 8,
     marginLeft: '2%',
     marginRight: '2%',
-    marginTop: 10,
-    //flex-basis: 100%;
-    //flex: 1
+    marginTop: 10,  
   },
 
   selectedOutcomesColumn: {
@@ -643,13 +640,11 @@ const styles = EStyleSheet.create({
     borderRadius: 3,
     borderWidth: 1,
     borderColor: '#eee',
-    backgroundColor: BLUE_COLOR,
+    backgroundColor: Colors.blueColor,
     padding: 8,
     marginLeft: '2%',
     marginRight: '2%',
-    marginTop: 10,
-    //flex-basis: 100%;
-    //flex: 1
+    marginTop: 10,    
   },
 
   refreshBox: {
