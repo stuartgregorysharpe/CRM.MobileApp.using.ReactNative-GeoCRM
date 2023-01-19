@@ -176,7 +176,9 @@ export default function FormQuestionContainer(props) {
   return (
     <View style={{alignSelf: 'stretch', flex: 1, marginBottom: 0}}>
       
-      <LoadingBar ref={loadingBarRef} description={Strings.Download_Image} />
+      <LoadingBar 
+      backButtonDisabled={true}
+      ref={loadingBarRef} description={Strings.Download_Image} />
 
       
 

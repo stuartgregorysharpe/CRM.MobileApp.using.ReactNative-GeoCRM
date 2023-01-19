@@ -102,7 +102,9 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
     <ScrollView style={styles.refreshSliderContainer}>
 
       <Notification />
-      <LoadingBar ref={loadingBarRef} />      
+      <LoadingBar 
+        backButtonDisabled={true}
+        ref={loadingBarRef} />      
 
       {showDivider && (
         <TouchableOpacity

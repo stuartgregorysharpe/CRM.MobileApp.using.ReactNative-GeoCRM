@@ -25,7 +25,7 @@ export default function AddContactModalView(props) {
             }
         }
     }
-        
+            
     return (
         <View>                    
             <ContactFields ref={contactFieldsRef} contactInfo={contactInfo} getFormData={getFormData} />            
