@@ -8,7 +8,6 @@ import React, {
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   ScrollView,
   Keyboard,
@@ -17,11 +16,8 @@ import {TextInput} from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {useSelector, useDispatch} from 'react-redux';
-import uuid from 'react-native-uuid';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, {  
-  TEXT_COLOR,    
-  GREEN_COLOR,
+import Colors, {    
   whiteLabel,
 } from '../../../../constants/Colors';
 import CustomPicker from '../../../../components/modal/CustomPicker';
@@ -30,7 +26,6 @@ import {
   postDispositionFields,
 } from '../../../../actions/location.action';
 import CustomLoading from '../../../../components/CustomLoading';
-import Images from '../../../../constants/Images';
 import {
   CHANGE_DISPOSITION_INFO,
   LOCATION_CONFIRM_MODAL_VISIBLE,
@@ -569,14 +564,14 @@ const styles = EStyleSheet.create({
 
   stageTitle: {
     fontSize: 18,
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: Fonts.secondaryBold,
     marginBottom: 8,
   },
 
   stageBox: {
     padding: 8,
-    backgroundColor: GREEN_COLOR,
+    backgroundColor: Colors.greenColor,
     shadowColor: '#00000014',
     shadowOffset: {width: 1, height: 1},
     shadowOpacity: Platform.OS == 'ios' ? 1 : 0.5,
@@ -609,7 +604,7 @@ const styles = EStyleSheet.create({
 
   stageText: {
     fontSize: 13,
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: Fonts.secondaryMedium,
   },
 
@@ -695,7 +690,7 @@ const styles = EStyleSheet.create({
   boldText: {
     fontSize: 18,
     fontFamily: 'Gilroy-Bold',
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     marginBottom: 8,
     paddingLeft: 10,
   },

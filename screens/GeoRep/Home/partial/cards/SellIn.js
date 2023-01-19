@@ -2,9 +2,8 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { style } from '../../../../../constants/Styles'
-import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR } from '../../../../../constants/Colors';
+import Colors, { PRIMARY_COLOR } from '../../../../../constants/Colors';
 import CustomProgress from '../CustomProgress';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
@@ -15,6 +14,7 @@ import LindtCardsTitleView from './partial/LindtCardsTitleView';
 import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const SellIn = (props) => {
+    
     const [mth, setMth] = useState(null);
     const [meridian, setMeridian] = useState(null);
     const dispatch = useDispatch();
@@ -67,7 +67,7 @@ const SellIn = (props) => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <AppText size="medium" title={title}
                     type="secondaryBold" style={{ flex: 1, textAlign: 'right' }}
-                    color={TEXT_COLOR}></AppText>
+                    color={Colors.textColor}></AppText>
                 <View style={{ flex: 3, marginHorizontal: 10 }}>
                     <CustomProgress color={color} count={value} percentage={percentage ? parseInt(percentage) : 0} height={12} ></CustomProgress>
                 </View>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity , Text } from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { TEXT_COLOR, whiteLabel } from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import { style } from '../../../../constants/Styles';
 
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 14,
         fontFamily: Fonts.secondaryMedium,
-        color: TEXT_COLOR,
+        color: Colors.textColor,
         marginBottom: 4
       },
       text: {

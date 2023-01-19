@@ -1,6 +1,4 @@
 export const PRIMARY_COLOR = '#133C8B';
-export const TEXT_COLOR = '#23282D';
-export const GREEN_COLOR = '#b7e2bb';
 
 export const whiteLabel = () => {
   return {
