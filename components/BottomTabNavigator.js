@@ -112,13 +112,13 @@ export default function RepBottomTabNavigator({navigation}) {
     } else {
       
       if(isSamsung){
-        return 80;
+        return 60;
       }
       
       if (DeviceInfo.isTablet()) {
         return currentHeight + 62;
       } else {
-        return currentHeight + 40;
+        return currentHeight + 52;
       }
     }
 

@@ -48,7 +48,7 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
         item.schedule_order = (index + 1).toString();
         item.schedule_date = datetime;
       });
-      callApi(selectedItems);
+      callApi(selectedItems , 'schedule_date');
     }
   };
 
@@ -64,11 +64,14 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
     }
   }
 
-  const callApi = schedules => {
+  const callApi = (schedules , type) => {
 
     if(!isLoading){
       setIsLoading(true);
-      showProgressingBar();
+      if(type == 'today'){
+        showProgressingBar();
+      }
+      
       var userParam = getPostParameter(currentLocation);
       let postData = {
         schedules: schedules,
@@ -79,13 +82,17 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
           setStartEndTimePicker(false);
           setMessage(Strings.Calendar.Added_Calendar_Successfully);
           setIsConfirmModal(true);
-          hideProgressingBar();
+          if(type == 'today'){
+            hideProgressingBar();
+          }          
           setIsLoading(false);
       }).catch((error) => {
           expireToken(dispatch, error);
           setMessage(error.toString());
           setIsConfirmModal(true);
-          hideProgressingBar();
+          if(type == 'today'){
+            hideProgressingBar();
+          }          
           setIsLoading(false);
       });  
     }
@@ -138,7 +145,7 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
                 item.schedule_order = (index + 1).toString();
                 item.schedule_date = 'Today';
               });              
-              callApi(selectedItems);
+              callApi(selectedItems , "today");
             }
           }
         }}
@@ -163,6 +170,7 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
             : 'Please Select date and time:'
         }
         visible={isStartEndTimePicker}
+        isLoading={isLoading}
         onModalClose={() => setStartEndTimePicker(false)}
         mode={dateTimeType}
         close={(startDate, endDate, startTime, endTime) => {
@@ -178,10 +186,11 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
             item.schedule_time = startTime;
             item.schedule_end_time = endTime;
           });
-          callApi(selectedItems);
+          callApi(selectedItems , "today_time");
         }}></DateStartEndTimePickerView>
 
       <DatetimePickerView
+        isLoading={isLoading}
         visible={isDateTimePickerVisible}
         value={''}
         onModalClose={() => {

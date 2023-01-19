@@ -27,6 +27,13 @@ export default function Customer(props) {
         initData(locationFields);
     }, [locationFields])
 
+    useEffect(() => {
+      if(formData){
+        if (actionFormRef) 
+          actionFormRef.current.validateForm();
+      }
+    }, [formData]);
+
     const initData = (leadForms) => {
 
         var renderForms  = leadForms; // leadForms.filter((item , index) => index != 0); 
@@ -72,12 +79,11 @@ export default function Customer(props) {
         setFormStructure(dynamicFields);
     }
 
+
+
     const onSubmit = async() =>{
         
-        if(isLoading) return;
-
-        
-
+        if(isLoading) return;        
         var fields = [];
         for(let key of Object.keys(formData)){
             if(formData[key] != undefined && formData[key] != ''){
