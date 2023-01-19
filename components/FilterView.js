@@ -11,7 +11,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import Colors, {BG_COLOR, whiteLabel} from '../constants/Colors';
+import Colors, { whiteLabel} from '../constants/Colors';
 import {
   MAP_FILTERS,
   PIPELINE_SEARCH_FILTERS,
@@ -599,7 +599,7 @@ export default function FilterView({navigation, page, onClose, isModal}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 10,
     alignSelf: 'stretch',
   },

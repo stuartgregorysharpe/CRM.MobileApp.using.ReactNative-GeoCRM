@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   Text,
@@ -7,24 +7,23 @@ import {
   TouchableOpacity,
   SectionList,
 } from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
-import Colors, {whiteLabel} from '../../../constants/Colors';
-import {boxShadow, style} from '../../../constants/Styles';
-import {BG_COLOR} from '../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../constants/Colors';
+import { boxShadow, style} from '../../../constants/Styles';
 import Fonts from '../../../constants/Fonts';
 import {
   checkFeatureIncludeParam,  
 } from '../../../constants/Storage';
-import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
-import {useSelector, useDispatch, connect} from 'react-redux';
-import {CalendarItem} from './partial/CalendarItem';
+import { updateCalendar} from '../../../actions/calendar.action';
+import { useSelector, useDispatch, connect} from 'react-redux';
+import { CalendarItem} from './partial/CalendarItem';
 import DraggableFlatList, {
   ScaleDecorator,
   useOnCellActiveAnimation,
 } from 'react-native-draggable-flatlist';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
   IS_CALENDAR_SELECTION,
   LOCATION_LOOP_LISTS,
@@ -196,7 +195,7 @@ export default function CalendarScreen(props) {
           disabled={isActive}
           style={[
             isActive ? {} : {marginTop: 10},
-            {backgroundColor: isActive ? '#eee' : BG_COLOR},
+            {backgroundColor: isActive ? '#eee' : Colors.bgColor},
           ]}>
           <CalendarItem
             onItemSelected={() => {
@@ -395,7 +394,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     minHeight: '100%',
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
   },
   tabContainer: {
     flexDirection: 'row',
