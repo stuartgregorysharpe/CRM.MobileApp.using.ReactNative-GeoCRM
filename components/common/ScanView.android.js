@@ -316,7 +316,11 @@ const ScanView = props => {
   };
   const renderLastScanResultView = () => {
     if (props.renderLastScanResultView) {
-      return props.renderLastScanResultView();
+      return (
+        <View style={{alignSelf: 'stretch', backgroundColor: Colors.bgColor}}>
+          {props.renderLastScanResultView()}
+        </View>
+      );
     }
     return null;
   };

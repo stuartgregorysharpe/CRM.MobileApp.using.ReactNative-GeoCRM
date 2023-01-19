@@ -317,7 +317,16 @@ const ScanView = props => {
   };
   const renderLastScanResultView = () => {
     if (props.renderLastScanResultView) {
-      return props.renderLastScanResultView();
+      return (
+        <View
+          style={{
+            alignSelf: 'stretch',
+            backgroundColor: Colors.bgColor,
+            justifyContent: 'center',
+          }}>
+          {props.renderLastScanResultView()}
+        </View>
+      );
     }
     return null;
   };
@@ -355,7 +364,6 @@ const ScanView = props => {
         {renderCustomerMarker()}
         <View style={styles.detectLayer}>{renderBoundingBoxes()}</View>
       </View>
-
       {renderLastScanResultView()}
 
       {/*renderSwitchPartialButton()*/}
@@ -367,8 +375,8 @@ const ScanView = props => {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    justifyContent: 'flex-end',
     flex: 1,
+    justifyContent: 'flex-end',
   },
   regionCameraMarker: {
     width: Values.deviceWidth - 80,
