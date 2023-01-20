@@ -128,10 +128,10 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
       }
       if (
         searchKey != '' &&
-        !item.label.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.barcode.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.product_code.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.product_type.toLowerCase().includes(searchKey.toLowerCase())
+        !item.label?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !item.barcode?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !item.product_code?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !item.product_type?.toLowerCase().includes(searchKey.toLowerCase())
       ) {
         flag = false;
       }
