@@ -9,7 +9,7 @@ import Divider from '../../components/Divider';
 import SvgIcon from '../../components/SvgIcon';
 import GrayBackground from '../../components/GrayBackground';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
-import Colors, { PRIMARY_COLOR } from '../../constants/Colors';
+import Colors, {  } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 const lists = [
@@ -218,9 +218,9 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
+    borderColor: Colors.primaryColor,
     borderRadius: 7,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: Colors.primaryColor
   },
   submitButtonText: {
     color: '#fff',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   textField: {
     backgroundColor: '#fff',
     borderRadius: 7,
-    borderColor: PRIMARY_COLOR,
+    borderColor: Colors.primaryColor,
     borderWidth: 1,
     paddingLeft: 8,
     paddingRight: 8,
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderColor: PRIMARY_COLOR,
+    borderColor: Colors.primaryColor,
     borderWidth: 1,
     width: 140,
     padding: 4,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   downloadText: {
     fontSize: 13,
     fontFamily: Fonts.primaryMedium,
-    color: PRIMARY_COLOR
+    color: Colors.primaryColor
   },
   description: {
     fontSize: 14,

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-
 import React from 'react'
 import { style } from '../../../../../constants/Styles'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import CustomProgress from '../CustomProgress';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
@@ -84,7 +84,7 @@ const Compliance = (props) => {
                     color={Colors.disabledColor}></AppText>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }}>
                     <View style={{ flex: 1 }}>
-                        {renderBar('Actual', PRIMARY_COLOR, item?.actual, getActualPercentage(item))}
+                        {renderBar('Actual', Colors.primaryColor, item?.actual, getActualPercentage(item))}
                         {renderBar('Target', Colors.lightBlueColor, item?.target, getTargetPercentage(item))}
                     </View>
                     <View>

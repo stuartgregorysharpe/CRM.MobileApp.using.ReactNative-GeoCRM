@@ -1,9 +1,8 @@
 
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
@@ -52,7 +51,7 @@ const SellOut = (props) => {
                         }}>
                             <AppText size="medium" title={x.title}
                                 type={tabIndex === i ? "secondaryBold" : "secondaryMedium"}
-                                color={tabIndex === i ? PRIMARY_COLOR : whiteLabel().inactiveTabText}>
+                                color={tabIndex === i ? Colors.primaryColor : whiteLabel().inactiveTabText}>
                             </AppText>
                             <View
                                 style={[
