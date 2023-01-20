@@ -18,7 +18,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 
 import Divider from './Divider';
-import {PRIMARY_COLOR, BG_COLOR} from '../constants/Colors';
+import {PRIMARY_COLOR } from '../constants/Colors';
 import {breakPoint} from '../constants/Breakpoint';
 import {SLIDE_STATUS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
@@ -217,7 +217,7 @@ const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(
   parse({
     container: {
-      backgroundColor: 'BG_COLOR',
+      backgroundColor: Colors.bgColor,
       zIndex: 100,
       elevation: 100,
     },
@@ -236,7 +236,7 @@ const styles = EStyleSheet.create(
       fontSize: 14,
       lineHeight: 30,
       height: 40,
-      backgroundColor: BG_COLOR,
+      backgroundColor: Colors.bgColor,
       fontFamily: Fonts.secondaryMedium,
       marginBottom: 8,
     },

@@ -49,6 +49,7 @@ export const getApiRequest = async (route, param) => {
         }
       })
       .catch(err => {
+        console.log('get api request error => ', err);
         console.log(url, err);
         console.log(err?.response?.data);
         const error = err.response;
@@ -94,7 +95,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
         }
       })
       .catch(err => {
-        console.log('postApiRequest -- error', err);
+        console.log('postApiRequest error =>', err.response);
         const error = err.response;
         if (
           error.status === 401 &&

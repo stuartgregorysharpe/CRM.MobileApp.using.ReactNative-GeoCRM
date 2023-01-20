@@ -7,15 +7,22 @@ const ContactFields = React.forwardRef((props, ref) => {
     
     const { contactInfo } = props;
 
+    console.log("contactInfo",contactInfo)
     const actionFormRef = useRef();    
     const [formData, setFormData] = useState(getFormData(contactInfo));
     const [formStructure, setFormStructure] = useState(getFormStructureData());
     
     useEffect(() => {
         var isMount = true;        
+
+        if( formData != undefined && props.getFormData){
+            props.getFormData(formData);
+        }
+
         return () => {
             isMount = false;
         };
+        
     }, [])
 
     useImperativeHandle(ref, () => ({
@@ -27,10 +34,11 @@ const ContactFields = React.forwardRef((props, ref) => {
     const validate = () => {
         return actionFormRef.current.validateForm();
     }
-        
+            
     return (        
         <View >                                                                 
             <DynamicForm
+                style={{marginTop:10}}
                 ref={actionFormRef}
                 formData={formData}                
                 formStructureData={formStructure}

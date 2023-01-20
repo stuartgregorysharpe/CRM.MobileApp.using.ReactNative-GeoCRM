@@ -63,7 +63,8 @@ const TransactionSubmitContainer = props => {
     }
   };
 
-  const onAdd = async data => {
+
+  const onAdd = async data => {        
     var res = await generatePostParam(data);
   };
 
@@ -142,33 +143,39 @@ const TransactionSubmitContainer = props => {
           };
         }
       });
-      setIsLoading(true);
-      PostRequestDAO.find(
-        0,
-        postJsonData,
-        'transaction-submit',
-        'sales/transaction-submission',
-        '',
-        '',
-      )
-        .then(res => {
-          setIsLoading(false);
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.message,
-              buttonText: 'Ok',
-              buttonAction: () => {
-                dispatch(clearNotification());
-                props.onButtonAction({type: Constants.actionType.ACTION_DONE});
-              },
-            }),
-          );
-        })
-        .catch(e => {
-          setIsLoading(false);
-          expireToken(dispatch, e);
-        });
+
+      
+      if(!isLoading){
+        setIsLoading(true);
+        PostRequestDAO.find(
+          0,
+          postJsonData,
+          'transaction-submit',
+          'sales/transaction-submission',
+          '',
+          '',
+        )
+          .then(res => {
+            setIsLoading(false);
+            dispatch(
+              showNotification({
+                type: Strings.Success,
+                message: res.message,
+                buttonText: 'Ok',
+                buttonAction: () => {
+                  dispatch(clearNotification());
+                  props.onButtonAction({type: Constants.actionType.ACTION_DONE});
+                },
+              }),
+            );
+          })
+          .catch(e => {
+            setIsLoading(false);
+            expireToken(dispatch, e);
+          });
+      }
+      
+
     } catch (e) {
       console.log(e);
     }
@@ -239,14 +246,22 @@ const TransactionSubmitContainer = props => {
         flex: 1,
         marginHorizontal: 10,
         marginBottom: 10,
-        paddingTop: 10,
+        paddingTop: 0,
         maxHeight: Dimensions.get('screen').height * 0.8,
       }}>
       <DynamicFormView
         page="transaction_submit"
         buttonTitle={'Submit'}
         fields={fields}
-        onAdd={onAdd}
+        isLoading={isLoading}
+        close={() => {          
+          props.onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
+        }}
+        refreshFields = {() => {
+          getTransactinSubmit();
+        }}
+        onAdd={onAdd}      
+        style={{marginTop:5}}
         {...props}
         isLoading={isLoading}
       />

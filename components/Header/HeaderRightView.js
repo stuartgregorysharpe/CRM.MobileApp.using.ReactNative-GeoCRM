@@ -19,7 +19,6 @@ import {
 } from '../../actions/notification.action';
 import Strings from '../../constants/Strings';
 import Fonts from '../../constants/Fonts';
-import {Notification} from '../modal/Notification';
 import {Constants} from '../../constants';
 
 export default function HeaderRightView({navigation}) {
@@ -61,15 +60,12 @@ export default function HeaderRightView({navigation}) {
   };
 
   const setOnlineOffline = async () => {
-    var isOnline = await getLocalData('@online');
-
-    console.log('initialize setOnlineOffline ==== ', isOnline);
+    var isOnline = await getLocalData('@online');    
     if (isOnline === '1' || isOnline === undefined) {
       setToggleSwitch(true);
       dispatch({type: CHANGE_OFFLINE_STATUS, payload: false});
     } else {
-      setToggleSwitch(false);
-      console.log('initialize setOnlineOffline ==== ', isOnline);
+      setToggleSwitch(false);  
       dispatch({type: CHANGE_OFFLINE_STATUS, payload: true});
       await storeJsonData(Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS, []);
     }
@@ -124,23 +120,36 @@ const styles = StyleSheet.create({
     backgroundColor: whiteLabel().headerBackground,
   },
 
-  headerRightView: {
+  headerRightView: {    
+    flex:1,    
     flexDirection: 'row',
     marginRight: 12,
-    marginBottom: 20,
-    marginTop: 20,
+    alignItems:'center',
+    //marginBottom:10,
+    //paddingTop:24,
+    paddingTop:10,    
+    justifyContent:'center',
+    alignContent:'center',
+    // textAlign:'center',
+    // backgroundColor:'red'
+    // marginBottom: 10,
+    // marginTop: 20,
   },
 
-  toggleSwitch: {
+  toggleSwitch: {    
     marginRight: 12,
     flexDirection: 'row',
-    alignItems: 'center',
+    //height:24,    
+    //alignItems: 'center',
   },
 
   toggleSwitchLabel: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: Fonts.secondaryMedium,
+    alignContent:'center',
+    justifyContent:'center',
+    alignItems:'center'
   },
 
   headerAvatar: {
@@ -148,8 +157,8 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderWidth: 2,
     paddingTop: Platform.OS == 'ios' ? 2 : 0,
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     borderRadius: 20,
   },
 

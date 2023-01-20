@@ -34,9 +34,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const visibleMore = useSelector(state => state.rep.visibleMore);
-
+  const showMoreScreen = useSelector(state => state.rep.showMoreScreen);
   const { page , items, settings} = props;
-
   const [selectedGroupTitle, setSelectedGroupTitle] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [products, setProducts] = useState([]);
@@ -180,9 +179,19 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setupDefineSetupFromRegret();
     }
   }, [props.regret_item]);
+
+  useEffect(() => {    
+    console.log("show more screen", showMoreScreen  , visibleMore)
+    //navigation.getState().routeNames[1] == 'CartScreen' &&
+    if(showMoreScreen === 1 &&  visibleMore == 'ProductSales'){   
+      refreshList();
+      //checkAndOpenSetup();
+    }
+  }, [showMoreScreen , visibleMore]);
+
   const checkAndOpenSetup = async () => {
     const regretId = await getLocalData('@regret');    
-    if (!props.regret_item && !regretId && regretId != '') {      
+    if (!props.regret_item && !regretId && regretId != '') {
       setupFieldModalRef.current.showModal();
     }
   };
@@ -286,15 +295,10 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     
 
     } else if (type == Constants.actionType.ACTION_DONE) {
-
+      console.log("action done =----", visibleMore)
       setupFieldModalRef.current.hideModal();
-      if (value.name === 'More') {
-        dispatch({type: SLIDE_STATUS, payload: false});
-        if (visibleMore != '') {
-          dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-        } else {
-          dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-        }
+      if (value?.name === 'More') {
+        dispatch({type: CHANGE_MORE_STATUS, payload: 0});        
       } else {
         navigation.navigate(value.name);
       }
