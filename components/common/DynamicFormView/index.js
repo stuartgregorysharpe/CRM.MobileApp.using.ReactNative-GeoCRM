@@ -16,6 +16,7 @@ var canSubmitEmailSelect = true;
 const DynamicFormView = props => {
 
   const {page, buttonTitle, fields, isClear , isLoading, style} = props;
+  
   if (!fields) return null;
 
   const addProductRef = useRef(null);
@@ -204,8 +205,10 @@ const DynamicFormView = props => {
 
 
   return (
-
-    <ScrollView style={[hasTextInput ? {height: 300} : {} , style]} scrollEnabled={scrollEnabled}>
+    
+    <ScrollView
+      style={[hasTextInput ? {height: 300} : {}]}
+      scrollEnabled={scrollEnabled}>
 
       <DynamicForm
         style={{paddingTop:5}}
@@ -231,9 +234,8 @@ const DynamicFormView = props => {
           if(data.field_type == 'contact_email' || data.field_type == 'contact_select'){
             confirmModal(0, 'add');
           }
-        }}
-
-        setScrollEnabled={(flag) => {
+        }}        
+        setScrollEnabled={flag => {
           setScrollViewEnabled(flag);
         }}
       />
@@ -243,6 +245,7 @@ const DynamicFormView = props => {
         isLoading={isLoading}
         onSubmit={onAdd}
         style={{marginTop: 20}}
+        isLoading={isLoading}
       />
 
       
