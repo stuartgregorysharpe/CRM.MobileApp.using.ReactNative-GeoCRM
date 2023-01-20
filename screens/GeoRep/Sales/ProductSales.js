@@ -87,12 +87,17 @@ export default function ProductSales(props) {
     return {};
   };
 
+  const clearProducts = () => {      
+    if(productSaleContainerRef)
+      productSaleContainerRef.current.showPlaceHolder();    
+  }
+
   const getProductLists = async (data, search_text = '', pageNumber) => {
     console.log("get product lists", data, search_text, pageNumber)
     if( pageNumber != undefined && pageNumber == 0){
       setIsEndPage(false);
     }
-    if (data != undefined) {
+    if (data != undefined  && data != null) {
       storeJsonData('@setup', data);
       const param = getParamData(data);
       await storeJsonData('@sale_product_parameter', param);
@@ -117,6 +122,7 @@ export default function ProductSales(props) {
       if (paramData != null) {
         if(pageNumber == 0){
           setIsEndPage(false);
+          clearProducts();
         }
         setIsLoading(true);        
         paramData['page_no'] = pageNumber;
@@ -125,6 +131,7 @@ export default function ProductSales(props) {
         }
         storeJsonData('@sale_product_parameter', paramData);
         console.log("product list param => ", paramData);
+        
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);
@@ -173,6 +180,7 @@ export default function ProductSales(props) {
     <View style={{paddingTop: 20, alignSelf: 'stretch', flex: 1}}>
       <ProductSalesContainer
         ref={productSaleContainerRef}
+        clearProducts={clearProducts}
         getProductLists={getProductLists}
         getProductListsByFilter={getProductListsByFilter}
         items={items}

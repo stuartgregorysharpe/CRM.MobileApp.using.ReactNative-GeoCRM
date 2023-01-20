@@ -77,9 +77,13 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         setLists(newList);
       }else{
         setLists([...lists , ...newList]);
-      }    
-            
+      }                
     },
+
+    showPlaceHolder() {
+      setLists([]);
+    },
+
   }));
 
 
@@ -301,6 +305,11 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         dispatch({type: CHANGE_MORE_STATUS, payload: 0});        
       } else {
         navigation.navigate(value.name);
+      }
+    }else if( type === Constants.actionType.ACTION_FORM_CLEAR){
+      setLists([]);
+      if(props.clearProducts){
+        props.clearProducts();
       }
     }
   };
@@ -541,9 +550,10 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         alignSelf: 'stretch',
         flex: 1,
       }}>
+        
       <SetupFieldModal
         title="Define Setup"
-        hideClear
+        //hideClear
         backButtonDisabled={true}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}

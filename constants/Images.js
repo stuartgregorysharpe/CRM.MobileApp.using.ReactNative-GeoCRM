@@ -10,4 +10,5 @@ export default {
   maskGroup: require('../assets/images/mask_group.png'),
   chrom: require('../assets/images/chrome.png'),
   sync: require('../assets/images/sync.png'),
+  productSalePlaceholder: require('../assets/images/product_sale_placeholder.png')
 };

@@ -124,7 +124,7 @@ export default function FilterView({navigation, page, onClose, isModal}) {
       filters.customs !== undefined
     ) {
       if (locationFilters[key].filter_label === 'Pipeline') {
-        console.log('----', filters);
+        
         if (filters.pipeline) {
           var data = [...filters.pipeline];
           if (data.length != 0) {

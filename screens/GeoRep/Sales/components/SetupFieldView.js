@@ -49,6 +49,7 @@ const SetupFieldView = (props) => {
 	const clearSetup = async() => {		
 		console.log("clear tirger")
 		storeJsonData("@setup", null);
+		storeJsonData("@sale_product_parameter" , null);		
 		initializeSetupData(null, null, null);
 		initializeLocation();
 		if(props.onChangeLocation){
@@ -179,16 +180,25 @@ const SetupFieldView = (props) => {
 	}
 
 	const renderWarehouseTitle = () => {
-		const allSelected = selectedWarehouse.find(item => item.id == 0);
-		if(allSelected  != undefined){
-			return "ALL SELECTED"
-		}
-		if(selectedWarehouse.length == 1){
-			return selectedWarehouse[0].label;
-		}else if(selectedWarehouse.length > 1){
-			return selectedWarehouse.length + " SELECTED";
-		}
+		if(warehouse && warehouse?.options?.length > 0){
+			const allSelected = selectedWarehouse.find(item => item.id == 0);
+			if(allSelected  != undefined){
+				return "ALL SELECTED"
+			}
+			if(selectedWarehouse.length == 1){
+				return selectedWarehouse[0].label;
+			}else if(selectedWarehouse.length > 1){
+				return selectedWarehouse.length + " SELECTED";
+			}
+		}		
 		return "";
+	}
+
+	const renderCurrencyTitle = () => {
+		if(currency && currency?.options?.length > 0){
+			return selectedCurrency != null ? selectedCurrency.abbreviation + "(" + selectedCurrency.symbol +  ")" : '';
+		}
+		return "";		
 	}
 
 	const isValidate = () => {		
@@ -199,7 +209,8 @@ const SetupFieldView = (props) => {
 			selectedLocation != null &&
 			selectedSaleType != null &&
 			selectedCurrency != null &&
-			( warehouseRequired && selectedWarehouse.length != 0 || !warehouseRequired )
+			( currency && currency?.options?.length > 0) &&			
+			( warehouseRequired && selectedWarehouse.length != 0 && (warehouse && warehouse?.options?.length > 0 ) || !warehouseRequired )
 			){
 				flag = true;			
 		}
@@ -290,7 +301,7 @@ const SetupFieldView = (props) => {
 
 					<DropdownSelection
 						title = "Currency Type"
-						selectedItem={selectedCurrency != null ? selectedCurrency.abbreviation + "(" + selectedCurrency.symbol +  ")" : ''}
+						selectedItem={renderCurrencyTitle()}
 						selectedCurrency={selectedCurrency}
 						items={currency ? currency.options : []}
 					>
