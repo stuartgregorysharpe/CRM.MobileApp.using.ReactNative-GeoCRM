@@ -16,22 +16,10 @@ const ProductQrCaptureView = props => {
 
   return (
     <ScanView
-      onButtonAction={props.onButtonAction}
-      renderLastScanResultView={() => {
-        return (
-          <LastScanResultView
-            totalItemCount={totalItemCount}
-            lastScanedQrCode={lastScanedQrCode}
-            style={{marginBottom: 0}}
-            products={props.products}
-            onSubmit={value =>
-              onButtonAction({
-                type: Constants.actionType.ACTION_DONE,
-                value: value,
-              })
-            }
-          />
-        );
+      onButtonAction={onButtonAction}
+      showClose
+      onClose={() => {
+        onButtonAction({type: Constants.actionType.ACTION_CLOSE});
       }}
     />
   );
