@@ -164,8 +164,9 @@ const CartContainer = props => {
       openSetup();
       if (navigation.canGoBack()) {
         navigation.popToTop();
-      }
-      
+      }      
+    }else if( type == Constants.actionType.ACTION_FORM_CLEAR){
+      transactionSubmitModalRef.current.hideModal();
     }
   };
 

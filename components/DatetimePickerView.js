@@ -10,7 +10,7 @@ import { SubmitButton } from './shared/SubmitButton';
 import { style } from '../constants/Styles';
 import { TimePicker } from './TimePicker';
 
-export const DatetimePickerView = ({ visible , onModalClose, onClear, close , value , mode}) => {
+export const DatetimePickerView = ({ isLoading, visible , onModalClose, onClear, close , value , mode}) => {
 
     const [items, setItems]  =  useState([]);    
     const [options, setOptions] = useState([]);
@@ -89,7 +89,9 @@ export const DatetimePickerView = ({ visible , onModalClose, onClear, close , va
 
 
                                 <View style={{ marginBottom:10, width:Dimensions.get('window').width * 0.94 }}>
-                                    <SubmitButton onSubmit={ () => {                    
+                                    <SubmitButton 
+                                        isLoading={isLoading}
+                                        onSubmit={ () => {                    
                                             close(date , startTime);
                                         } } title="Submit"  ></SubmitButton>
                                 </View>

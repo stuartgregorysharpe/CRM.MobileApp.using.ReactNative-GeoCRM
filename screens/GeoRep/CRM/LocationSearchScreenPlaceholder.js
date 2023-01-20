@@ -1,7 +1,7 @@
 
 import React, {} from 'react';
 import { View , StyleSheet} from 'react-native';
-import { BG_COLOR } from '../../../constants/Colors';
+import Colors, { } from '../../../constants/Colors';
 import { style } from '../../../constants/Styles';
 
 export default function LocationSearchScreenPlaceholder({}){    
@@ -11,7 +11,7 @@ export default function LocationSearchScreenPlaceholder({}){
             {
                 urArray.map((prop, key) => {                
                     return (
-                        <View style={[styles.resultItem , {backgroundColor: BG_COLOR }]} key={key} >
+                        <View style={[styles.resultItem , {backgroundColor: Colors.bgColor }]} key={key} >
                             <View style={{ flex:1 }}>                                
                                 <View style={{flexDirection:'row'}}>
                                     <View style={[style.grey_bar,{width:'50%'}]}></View>

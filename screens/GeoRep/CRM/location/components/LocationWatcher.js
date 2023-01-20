@@ -22,8 +22,7 @@ const LocationWatcher = props => {
       if (
         appState.current.match(/inactive|background/) &&
         nextAppState === 'active'
-      ) {
-        console.log('Activate location ========');
+      ) {        
         initLocationWatch();
       }
       if (

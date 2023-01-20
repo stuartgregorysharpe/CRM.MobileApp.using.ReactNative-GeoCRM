@@ -1,6 +1,7 @@
 import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import axios from 'axios';
+import { GOOGLE_API_KEY } from '../../constants';
 async function requestPermissions() {
   if (Platform.OS === 'ios') {
     const auth = await Geolocation.requestAuthorization('whenInUse');
@@ -68,11 +69,11 @@ const getGeocoding = async (latitude, longitude) => {
   return new Promise(function (resolve, reject) {
     console.log(
       'url getGeocoding',
-      `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`,
+      `https://maps.googleapis.com/maps/api/geocode/json?result_type=street_address&latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`,
     );
     axios
       .get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`,
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`,
         {
           headers: {},
         },
@@ -91,11 +92,11 @@ const getCoordinate = async address => {
     //
     console.log(
       'url ===',
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`,
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_API_KEY}`,
     );
     axios
       .get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw`,
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_API_KEY}`,
         {
           headers: {},
         },

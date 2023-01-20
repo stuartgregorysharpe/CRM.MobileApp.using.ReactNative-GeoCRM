@@ -23,8 +23,7 @@ export default function MutiSelectPhotoView(props) {
 
   useEffect(() => {
     if (item.value != null && item.value != '') {
-      setCheckedLists(item.value);
-      console.log("checkedLists ====xx ", item.value)
+      setCheckedLists(item.value);      
     }
   }, [item.value, item]);
 

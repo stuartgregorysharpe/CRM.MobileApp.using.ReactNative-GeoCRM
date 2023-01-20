@@ -53,7 +53,7 @@ export default function UploadFileView({
       Platform.OS === 'ios'
         ? `${RNFS.DocumentDirectoryPath}`
         : `${RNFS.ExternalDirectoryPath}`;
-    console.log('compress quality ====', quality);
+    
     var width_height = 800;
     if (item.optimize && item.optimize === '1') {
       width_height = 500;

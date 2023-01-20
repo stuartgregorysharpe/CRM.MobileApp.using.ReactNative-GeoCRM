@@ -29,6 +29,9 @@ const DynamicField = props => {
     updateFormData,
     updateSecondFormData,
     hasError,
+    errorText,
+    add_prefix,
+    add_suffix,
     isFirst,
     index,
     dynamicFieldRef,
@@ -36,6 +39,7 @@ const DynamicField = props => {
     isClickable,
     isHidden,
     input_label,
+    rule_compulsory
   } = props;
 
   const disabled = editable && editable == '0';
@@ -44,12 +48,15 @@ const DynamicField = props => {
     return (
       <CTextInput
         label={field_label}
-        key={index}
+        key={index}        
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
         value={value}
         hasError={hasError}
+        errorText={errorText}
+        add_prefix={add_prefix}
+        add_suffix={add_suffix} 
         disabled={disabled}
         keyboardType={'decimal-pad'}   
         onChangeText={text => {
@@ -68,15 +75,18 @@ const DynamicField = props => {
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
-        value={value}        
+        value={value}
+        add_prefix={add_prefix}
+        add_suffix={add_suffix}        
         hasError={hasError}
+        errorText={errorText}
         disabled={disabled}
         pointerEvents={disabled ? 'none' : 'auto'}      
         onChangeText={text => {
           console.log("chagned data", field_name);
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+        style={{marginTop: isFirst ? 0 : 10 , paddingTop:0}}
        // textInputStyle={[ type == "text" ? {} : { textAlignVertical: 'top', height:100, marginTop:0, paddingTop:0 , lineHeight: 20} ]}        
       />
     );
@@ -177,7 +187,6 @@ const DynamicField = props => {
           />
         </View>
       </View>
-
     );
   }
 
@@ -198,12 +207,13 @@ const DynamicField = props => {
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 5}}
+        style={{marginTop: isFirst ? 0 : 10}}
       />
     );
   };
      
   const renderDropdown = (mode = 'single') => {
+    
     return (
       <CSingleSelectInput
         key={index}
@@ -216,14 +226,16 @@ const DynamicField = props => {
         isClickable={isClickable}
         mode={mode}
         onPress={() => {
-          if (isClickable) {
-            props.onPress();
+          if (isClickable) {            
+            if(props.onPress){              
+              props.onPress();
+            }
           }
         }}
         onSelectItem={ item => {
 
           if(mode == "contact_email" || mode == "contact_select"){            
-            onContactItemSelected(item);
+            onContactItemSelected(item , mode);
           }else if (mode === 'single') {
             updateFormData(field_name, item.value);
           } else if (mode === 'multi') {
@@ -364,6 +376,8 @@ const DynamicField = props => {
           input_label: input_label,
         }}
         options={preset_options}
+        hasError={hasError}
+        errorText={errorText}
         style={{marginHorizontal: 0}}
         onFormAction={({type, value}) => {
           updateFormData(field_name, value);
@@ -419,7 +433,7 @@ const DynamicField = props => {
     )
   }
   
-  const onContactItemSelected = (item) =>{
+  const onContactItemSelected = (item , mode) =>{
 
     var isData = false;
     if (value != undefined && value != '' && value != null) {
@@ -438,8 +452,14 @@ const DynamicField = props => {
         value.filter(element => element != item.contact_id),
       );
     } else {
+      if(mode == 'contact_email' && item?.contact_email?.trim() == ''){
+        if(props.onNoData){
+          props.onNoData(item);
+        }
+        return;
+      }
       if(value != undefined){
-        console.log("is value", value , field_name ,item.contact_id)
+        console.log("is value", field_name , value , field_name ,item.contact_id , item)
         updateFormData(field_name, [...value, item.contact_id]);
       }else{
         updateFormData(field_name, [item.contact_id]);

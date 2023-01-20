@@ -204,9 +204,10 @@ const ProductSalesView = props => {
         style={{
           flexDirection: 'row',
           position: 'absolute',
-          bottom: 10,
+          bottom: 20,
           right: 10,
         }}>
+
         {settings != undefined && settings?.allow_add_product === '1' && (
           <TouchableOpacity onPress={props.openAddProductModal}>
             <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />

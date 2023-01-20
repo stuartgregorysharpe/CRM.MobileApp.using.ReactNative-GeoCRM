@@ -341,7 +341,9 @@ export const FormQuestions = props => {
         onSubmit={_onSubmit}
       />
 
-      <LoadingBar ref={loadingBarRef} />
+      <LoadingBar 
+        backButtonDisabled={true}
+        ref={loadingBarRef} />
     </View>
   );
 };

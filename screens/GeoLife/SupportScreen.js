@@ -9,7 +9,7 @@ import Divider from '../../components/Divider';
 import SvgIcon from '../../components/SvgIcon';
 import GrayBackground from '../../components/GrayBackground';
 import { SLIDE_STATUS } from '../../actions/actionTypes';
-import Colors, { PRIMARY_COLOR, BG_COLOR } from '../../constants/Colors';
+import Colors, { PRIMARY_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 const lists = [
@@ -186,7 +186,7 @@ export default function SupportScreen({navigation, screenProps}) {
 const styles = StyleSheet.create({
   container: {
     minHeight: '100%',
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 10
   },
   transitionView: {
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     elevation: 2,
     zIndex: 2,
     padding: 10,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   pickerItemBox: {
-    backgroundColor: BG_COLOR, 
+    backgroundColor: Colors.bgColor, 
     padding: 10
   },
   pickerItem: {

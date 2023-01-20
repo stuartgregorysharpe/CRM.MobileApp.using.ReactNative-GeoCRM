@@ -21,6 +21,7 @@ export function getFormStructureData (renderForms , page) {
     const dynamicFields = renderForms.map((field, index) => {
 
         var value = '';
+        var isClickable = false;
         var items = [];
         if ( field.field_type == 'price' && field.tax_types != undefined) {
           
@@ -34,8 +35,13 @@ export function getFormStructureData (renderForms , page) {
           items = getDropdownItems(field.options);          
         }
         
-        if( field.field_type == 'contact_email' || field.field_type == 'contact_select' ){       
-          items = field.options;             
+        if( field.field_type == 'contact_email' || field.field_type == 'contact_select' ){     
+
+          items = field.options;       
+          if(items == undefined || items.length == 0){
+            isClickable = true;
+          }
+          //isClickable = true;          
         }
 
         if( page == "add_product" && field.field_type == 'take_photo'){
@@ -60,7 +66,8 @@ export function getFormStructureData (renderForms , page) {
             editable: true,
             is_required: true,          
             value: value,
-            isHidden: false
+            isHidden: false,
+            isClickable: isClickable
           };
         }else{
           return {
@@ -74,7 +81,8 @@ export function getFormStructureData (renderForms , page) {
             field_name : field.field_id,
             rule_characters: '<,10',
             add_prefix: 'R',
-            add_suffix : '%'
+            add_suffix : '%',
+            isClickable: isClickable
           };
         }       
     });

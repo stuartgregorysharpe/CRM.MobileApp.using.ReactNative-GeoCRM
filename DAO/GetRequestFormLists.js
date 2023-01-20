@@ -22,13 +22,6 @@ export function find(postData){
                 let userTypeList = await fetchUserTypeIdFromDB(user_type);                
                 var userTypeId = getUserTypeId(userTypeList);                
                 
-                //var xxx = `SELECT form_name FROM forms WHERE form_id = 13`;                
-                // var xxx = `SELECT * FROM form_assignments WHERE delete_status = 0 AND form_id = 13`;                
-                // const ress = await ExecuteQuery(xxx, []);
-                // var bb =  ress.rows ? ress.rows : [];  
-                // console.log(" ============="  , JSON.stringify(bb))                
-
-
                 if(client_id && business_unit_id){
 
                     let assignmentLists = await fetchAssignmentDataFromDB(client_id, business_unit_id);                    
