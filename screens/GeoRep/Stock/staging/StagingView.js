@@ -3,9 +3,9 @@ import {View, StyleSheet} from 'react-native';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import SearchBar from '../../../../components/SearchBar';
 import {SubmitButton} from '../../../../components/shared/SubmitButton';
-import {Constants} from '../../../../constants';
-import { showOfflineDialog } from '../../../../constants/Helper';
-import { checkConnectivity } from '../../../../DAO/helper';
+import {Constants, Strings} from '../../../../constants';
+import {showOfflineDialog} from '../../../../constants/Helper';
+import {checkConnectivity} from '../../../../DAO/helper';
 import ShipmentScanResultView from './components/ShipmentScanResultView';
 import StagingShipmentList from './components/StagingShipmentList';
 import {
@@ -14,10 +14,11 @@ import {
   getShipmentsFromItems,
 } from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {showNotification} from '../../../../actions/notification.action';
+import {Notification} from '../../../../components/modal/Notification';
 
 const StagingView = props => {
-
   const [keyword, setKeyword] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
   const [viewListItems, setViewListItems] = useState([]);
@@ -29,21 +30,21 @@ const StagingView = props => {
     () => filterItems(props.items, keyword),
     [props.items, keyword],
   );
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const shipments = useMemo(() => getShipmentsFromItems(items), [items]);
   const onCapture = () => {
-    checkConnectivity().then((isConnected) => {
-      if(isConnected){
+    checkConnectivity().then(isConnected => {
+      if (isConnected) {
         if (captureModalRef && captureModalRef.current) {
           captureModalRef.current.showModal();
         }
-      }else{
-        showOfflineDialog(dispatch)
+      } else {
+        showOfflineDialog(dispatch);
       }
-    })    
+    });
   };
-  
+
   const onCaptureAction = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       const capturedItems = filterItemsByBarcode(props.items, value);
@@ -57,6 +58,18 @@ const StagingView = props => {
         });
         setSelectedItems(_selectedItems);
         console.log('_selectedItems', selectedItems);
+      } else {
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: 'Barcode not found in staging',
+            buttonText: 'Ok',
+            buttonAction: () => {
+              onLoad();
+              dispatch(clearNotification());
+            },
+          }),
+        );
       }
       setLastScannedQrCode(value);
     }
@@ -105,17 +118,17 @@ const StagingView = props => {
   };
 
   const onAccept = items => {
-    checkConnectivity().then((isConnected) => {
-      if(isConnected){
+    checkConnectivity().then(isConnected => {
+      if (isConnected) {
         if (!items) return;
         if (props.onAccept) {
           props.onAccept(items);
         }
         onResetSelection();
-      }else{
+      } else {
         showOfflineDialog(dispatch);
       }
-    })    
+    });
   };
 
   const onResetSelection = () => {
@@ -180,16 +193,15 @@ const StagingView = props => {
       <SubmitButton
         title={'Accept All'}
         onSubmit={() => {
-
-          checkConnectivity().then((isConnected) => {
-            if(isConnected){
+          checkConnectivity().then(isConnected => {
+            if (isConnected) {
               if (props.onAccept) {
                 props.onAccept(items);
               }
-            }else{
-              showOfflineDialog(dispatch)
+            } else {
+              showOfflineDialog(dispatch);
             }
-          })          
+          });
         }}
         style={styles.submitButton}
       />
@@ -200,6 +212,7 @@ const StagingView = props => {
         onAccept={onAccept}
         onItemAction={onListViewItemAction}
       />
+      <Notification />
     </View>
   );
 };

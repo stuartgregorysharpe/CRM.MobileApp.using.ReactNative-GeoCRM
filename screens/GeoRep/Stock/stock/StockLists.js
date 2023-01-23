@@ -271,8 +271,7 @@ const StockLists = props => {
           }
         });
         setSelectedItems(_selectedItems);
-      } else if (type == Constants.actionType.ACTION_INPUT_BARCODE) {
-        console.log('show notification');
+      } else {
         dispatch(
           showNotification({
             type: Strings.Success,
