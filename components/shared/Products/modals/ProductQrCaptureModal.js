@@ -11,7 +11,8 @@ const ProductQrCaptureModal = React.forwardRef((props, ref) => {
     }
     if (
       data.type == Constants.actionType.ACTION_CLOSE ||
-      data.type == Constants.actionType.ACTION_DONE
+      data.type == Constants.actionType.ACTION_DONE ||
+      data.type == Constants.actionType.ACTION_CAPTURE
     ) {
       if (ref) {
         ref.current.hideModal();
