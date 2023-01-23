@@ -24,10 +24,8 @@ const Compliance = (props) => {
     }, [props.haveFilter]);
 
     const loadData = () => {
-        let postData = props.haveFilter ? props.haveFilter : {};
-        // console.log(postData);
-        getApiRequest('lindtdash/compliance', postData).then(response => {
-            console.log(response);
+        let postData = props.haveFilter ? props.haveFilter : {};    
+        getApiRequest('lindtdash/compliance', postData).then(response => {            
             setComplianceData(response.items);
             setGraphData(response.graphs);
         }).catch(e => {
@@ -95,8 +93,7 @@ const Compliance = (props) => {
         )
     }
 
-    const renderProgress = (percent, size) => {
-        console.log(percent);
+    const renderProgress = (percent, size) => {        
         return (
             <CircularProgress
                 radius={size ? size : Dimensions.get('window').width * 0.08}

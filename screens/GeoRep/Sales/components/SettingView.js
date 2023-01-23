@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React , {useState , useEffect} from 'react'
 import SvgIcon from '../../../../components/SvgIcon'
 import { AppText } from '../../../../components/common/AppText'
@@ -8,9 +8,8 @@ import { getJsonData } from '../../../../constants/Storage'
 
 const SettingView = (props) => {    
 
-    const { selectedLocation } = props;
+    const { isInitializeView,  selectedLocation } = props;
     
-
     return (
         
             <View style={{flexDirection:'row' , marginHorizontal:10, marginBottom:10}}>
@@ -21,7 +20,7 @@ const SettingView = (props) => {
                             props.openSetup();
                         }
                     }}
-                    style={styles.titleContainer}>
+                    style={[styles.titleContainer, {backgroundColor : isInitializeView ? Colors.skeletonColor : whiteLabel().headerBackground }]}>
                     <View style={{flexDirection:'column', flex:1}}>
                         <View style={{flexDirection:'row', alignItems:'center'}}>
                             <SvgIcon 
@@ -30,7 +29,16 @@ const SettingView = (props) => {
                                 height="12px"
                             />
                             {/* <AppText title="Customer Name" color={Colors.whiteColor} style={{marginLeft:5}} type="secondaryRegular"/>  */}
-                            <AppText title={selectedLocation} color={Colors.whiteColor} size="medium" style={{ marginLeft:10}} type="secondaryMedium"/>
+                            {
+                                isInitializeView && 
+                                <View style={styles.placeholderStyle}>
+                                </View>
+                            }
+                            {
+                                !isInitializeView &&
+                                <AppText title={selectedLocation} color={Colors.whiteColor} size="medium" style={{ marginLeft:10}} type="secondaryMedium"/>
+                            }
+                            
                         </View>
                         
                     </View>
@@ -44,10 +52,13 @@ const SettingView = (props) => {
                         }
                     }}
                     >
-                    <SvgIcon icon="Repeat" width="42" height="42" />
+                    {
+                        isInitializeView ? <SvgIcon icon="Inactive_Repeat" width="42" height="42" /> : <SvgIcon icon="Repeat" width="42" height="42" />
+                    }
+
                 </TouchableOpacity>
-            </View>
-        
+
+            </View>        
     )
 }
 
@@ -67,6 +78,13 @@ const styles = StyleSheet.create({
         //justifyContent:'center', 
         //alignContent:'center',
         alignItems:'center',        
-        paddingRight:10
+        paddingRight:10,        
+    },
+    placeholderStyle:{
+        marginLeft: 10,
+        width: Dimensions.get("screen").width/3,
+        height: 14,
+        borderRadius: 10,
+        backgroundColor: 'white'
     }
 })

@@ -39,11 +39,21 @@ const ProductSalesView = props => {
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [isInitializeView, setIsInitializeView] = useState(false);
   const barcodeScanModalRef = useRef(null);
+  
 
   useEffect(() => {
     setPageNumber(page);
   }, [page]);
+
+  useEffect(() => {
+	if(isLoading && lists.length == 0){
+		setIsInitializeView(true);
+	}else{
+		setIsInitializeView(false);
+	}
+  },[isLoading , lists]);
 
   useEffect(() => {
     checkFilter();
@@ -159,65 +169,63 @@ const ProductSalesView = props => {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
-
-      {
-        lists.length == 0 &&
-        <Image 
-          source={Images.productSalePlaceholder}
-          style={styles.placeholderStyle}
-          resizeMode="stretch"
-        />
-      }
-
-      {
-        lists.length > 0 &&
-        <View style={{marginTop:-10}}>
-          <SearchBar            
-            isFilter
-            haveFilter={haveFilter}
-            isScan
-            onSearch={searchText => {
-              setSearchText(searchText);
-              console.log('search text ', searchText);
-              if ((searchText != '', searchText.length >= 2)) {
-                loadMoreData(0, searchText);
-              } else if (searchText == '') {
-                loadMoreData(0, searchText);
-              }
-            }}
-            onSuffixButtonPress={() => {
-              if (props.openFilter) {
-                props.openFilter();
-              }
-            }}
-            onScan={() => {
-              barcodeScanModalRef.current.showModal();
-            }}
-            initVal={searchText}
-          />
-
-          <SettingView
-            openSetup={props.openSetup}
-            openReorder={props.openReorder}
-            selectedLocation={selectedLocation}
-          />
-
-          <FlatList
-            data={lists}
-            renderItem={({item, index}) => renderItem(item, index)}
-            keyExtractor={(item, index) => index.toString()}
-            extraData={this.props}
-            onEndReached={() => {
-              loadMoreData(pageNumber, searchText);
-            }}
-            onEndReachedThreshold={0.5}
-            removeClippedSubviews={false}
-            ListFooterComponent={renderFooter.bind(this)}
-          />
-
       
-        </View>        
-      }
+      <View style={{marginTop:-10}}>
+        <SearchBar            
+          isFilter
+          haveFilter={haveFilter}
+          isScan
+          onSearch={searchText => {
+            setSearchText(searchText);
+            console.log('search text ', searchText);
+            if ((searchText != '', searchText.length >= 2)) {
+              loadMoreData(0, searchText);
+            } else if (searchText == '') {
+              loadMoreData(0, searchText);
+            }
+          }}
+          onSuffixButtonPress={() => {
+            if (props.openFilter) {
+              props.openFilter();
+            }
+          }}
+          onScan={() => {
+            barcodeScanModalRef.current.showModal();
+          }}
+          initVal={searchText}
+          isLoading={isInitializeView}
+        />
+
+        <SettingView
+          openSetup={props.openSetup}
+          openReorder={props.openReorder}
+          selectedLocation={selectedLocation}
+		  isInitializeView={isInitializeView}
+        />
+
+ 		{
+			lists.length == 0 &&
+			<Image 
+			source={Images.productSalePlaceholder}
+			style={styles.placeholderStyle}
+			resizeMode="stretch"
+			/>
+		}
+
+		<FlatList
+          data={lists}
+          renderItem={({item, index}) => renderItem(item, index)}
+          keyExtractor={(item, index) => index.toString()}
+          extraData={this.props}
+          onEndReached={() => {
+            loadMoreData(pageNumber, searchText);
+          }}
+          onEndReachedThreshold={0.5}
+          removeClippedSubviews={false}
+          ListFooterComponent={renderFooter.bind(this)}
+        />       
+
+      </View>
 
 
       <View     
@@ -228,17 +236,17 @@ const ProductSalesView = props => {
           right: 10,
         }}>
 
-        { lists.length > 0 && settings != undefined && settings?.allow_add_product === '1' && (
+        { (settings != undefined && settings?.allow_add_product === '1') || (isInitializeView && settings == undefined) && (
           <TouchableOpacity onPress={props.openAddProductModal}>
-            <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
+            <SvgIcon icon={isInitializeView ? 'Round_Btn_Default_Dark_Gray' : 'Round_Btn_Default_Dark' }  width="70px" height="70px" />
           </TouchableOpacity>
         )}
 
-        {lists.length > 0 && ( ///cartCount != undefined && cartCount != 0
+        {true && ( ///cartCount != undefined && cartCount != 0
           <TouchableOpacity
             onPress={props.openCart}
             style={{alignItems: 'center', justifyContent: 'center'}}>
-            <SvgIcon icon="Sales_Cart" width="70px" height="70px" />
+            <SvgIcon icon={isInitializeView ? 'Sales_Cart_Gray' : 'Sales_Cart' }   width="70px" height="70px" />
             <AppText
               title={cartCount}
               style={styles.cartNumberStyle}
@@ -280,6 +288,6 @@ const styles = StyleSheet.create({
   },
   placeholderStyle:{
     width: Dimensions.get("screen").width,
-    height:  Dimensions.get("screen").height - 160
+    height:  450
   }
 });
