@@ -225,17 +225,15 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     if (defineSetup == null) {
       console.log('refreshList: checkAndOpenSetup');
       checkAndOpenSetup();      
-    }else{
-
-      // if regrit 
-      setSelectedLocation(defineSetup.location.name);
-      //setCartCount(0);
+    }else{      
+      setSelectedLocation(defineSetup.location.name);  
     }
   };
    
   const initializeProductLists = async () => {
     const storedProductPriceList = await getJsonData('@product_price');
-    if (storedProductPriceList != null) {
+    console.log("storedProductPriceList ==",storedProductPriceList)
+    if (storedProductPriceList != null && storedProductPriceList.length > 0) {
       dispatch(setProductPriceLists(storedProductPriceList));
       setOutsideTouch(true);
       props.getProductLists();
@@ -312,7 +310,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         navigation.navigate(value.name);
       }
     }else if( type === Constants.actionType.ACTION_FORM_CLEAR){
-      setLists([]);
+      
+      setSelectedLocation(null);
       if(props.clearProducts){
         props.clearProducts();
       }
@@ -542,7 +541,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
   const updateOutSideTouchStatus = async flag => {
     
-    var setup = await getJsonData('@setup');  
+    var setup = await getJsonData('@setup');      
     if (setup == null) {
       setOutsideTouch(false);
     } else {
@@ -559,7 +558,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         
       <SetupFieldModal
         title="Define Setup"
-        //hideClear
+        hideClear
         backButtonDisabled={!outsideTouch}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}

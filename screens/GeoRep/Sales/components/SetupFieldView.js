@@ -51,7 +51,9 @@ const SetupFieldView = (props) => {
 
 	useEffect(() => {
 		if(selectedSaleType != null && selectedCurrency != null && selectedWarehouse != null && selectedLocation != null){
-			getChangedStatus();
+			if(selectedWarehouse.length > 0){
+				getChangedStatus();
+			}						
 		}		
 	}, [selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation]);
 
@@ -144,8 +146,7 @@ const SetupFieldView = (props) => {
 		
 	}
 
-	const onSearch = (location, locationId) => {		
-		
+	const onSearch = (location, locationId) => {			
 		setIsSearchStart(false);
 		setSelectedLocation(location);
 		if(props.onChangeLocation){
@@ -248,30 +249,35 @@ const SetupFieldView = (props) => {
 	const onClear = () => {		
 		if (props.updateClear) {			
 		  props.updateClear(true);
+		  setIsDiscard(false);
 		}
 	};
 
 	const getChangedStatus = useCallback(
-		() => {			
-			const value = {
-				transaction_type: selectedSaleType,
-				currency_id: selectedCurrency,
-				warehouse_id: selectedWarehouse,
-				location: selectedLocation
-			};
+		async () => {
 			
-			onCheckProductSetupChanged( value, async type => {			
-				if(props.updateOutSideTouchStatus) {
-					console.log("changed status", type);
-					if (type === 'changed') {						
-						props.updateOutSideTouchStatus(false);	
-						setIsDiscard(true);				
-					} else {			  
-						props.updateOutSideTouchStatus(true);
-						setIsDiscard(false);
-					}
-				}			
-			});			
+			var setupData = await getJsonData("@setup");
+			if(setupData != null){
+				const value = {
+					transaction_type: selectedSaleType,
+					currency_id: selectedCurrency,
+					warehouse_id: selectedWarehouse,
+					location: selectedLocation
+				};
+
+				onCheckProductSetupChanged( value, async type => {			
+					if(props.updateOutSideTouchStatus) {
+						console.log("changed status", type);
+						if (type === 'changed') {						
+							props.updateOutSideTouchStatus(false);	
+							setIsDiscard(true);				
+						} else {			  
+							props.updateOutSideTouchStatus(true);
+							setIsDiscard(false);
+						}
+					}			
+				});	
+			}					
 		},
 		[selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation],
 	)
@@ -401,6 +407,7 @@ const SetupFieldView = (props) => {
 							</View>
 							<TouchableOpacity 
 								style={{alignSelf:'stretch', alignItems:'center' , flex:1}}							
+								disabled={!isValidate()}
 								onPress={() => onContinue()}>
 								<AppText title="Update" size="big" color={ Colors.primaryColor }></AppText>	
 							</TouchableOpacity>		

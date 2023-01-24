@@ -152,11 +152,11 @@ export const configProductSetUp = async (value, callBack) => {
 
 export const onCheckProductSetupChanged = async (value, callBack) => {
   var setupData = await getJsonData('@setup');
-  
+  console.log("setup data ==>" , setupData);
+    console.log("value", value);
   if (value && setupData != null && setupData != undefined && setupData.location && setupData.transaction_type && setupData.warehouse_id && setupData.currency_id) {        
 
-    console.log("setup data ==>" , setupData.warehouse_id);
-    console.log("value", value.warehouse_id);
+    
 
     if (
       setupData.location.name != value.location.name ||

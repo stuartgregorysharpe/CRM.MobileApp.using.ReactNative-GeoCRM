@@ -29,13 +29,13 @@ const ProductSalesView = props => {
     lists,
     page,
     isLoading,
+    isEndPage,
     cartCount,
     isUpdatingProductPrice,
   } = props;
 
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
-  const [isEndPageLoading, setIsEndPageLoading] = useState(false);
-  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [isEndPageLoading, setIsEndPageLoading] = useState(false);  
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -43,17 +43,14 @@ const ProductSalesView = props => {
   const barcodeScanModalRef = useRef(null);
   
 
+  
   useEffect(() => {
     setPageNumber(page);
   }, [page]);
 
-  useEffect(() => {
-	if(isLoading ){
-		setIsInitializeView(true);
-	}else{
-		setIsInitializeView(false);
-	}
-  },[isLoading , lists]);
+  useEffect(() => {    
+    configPlaceholder(isLoading , selectedLocation)
+  },[isLoading , selectedLocation]);
 
   useEffect(() => {
     checkFilter();
@@ -69,6 +66,15 @@ const ProductSalesView = props => {
       setSearchText(props.regret_item?.search_text);
     }
   }, [props.regret_item]);
+
+  const configPlaceholder = async(isLoading , selectedLocation) => {
+    const setupData = await getJsonData("@setup");
+    if(  setupData == null || selectedLocation == null){
+      setIsInitializeView(true);
+    }else{
+      setIsInitializeView(false);
+    }
+  }
 
   const checkFilter = async () => {
     var param = await getJsonData('@sale_product_parameter');
@@ -203,11 +209,11 @@ const ProductSalesView = props => {
           openSetup={props.openSetup}
           openReorder={props.openReorder}
           selectedLocation={selectedLocation}
-		  isInitializeView={isInitializeView}
+		      isInitializeView={isInitializeView}
         />
 
  		{
-			isLoading &&
+			isInitializeView &&
 			<Image 
 			source={Images.productSalePlaceholder}
 			style={styles.placeholderStyle}

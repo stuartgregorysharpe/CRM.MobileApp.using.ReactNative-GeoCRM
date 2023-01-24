@@ -93,6 +93,7 @@ export default function ProductSales(props) {
   }
 
   const getProductLists = async (data, search_text = '', pageNumber) => {
+
     console.log("get product lists", data, search_text, pageNumber)
     if( pageNumber != undefined && pageNumber == 0){
       setIsEndPage(false);
@@ -118,6 +119,7 @@ export default function ProductSales(props) {
    
     console.log("getApiData", isLoading, isEndPage , search_text , pageNumber);
     if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
+      
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
         if(pageNumber == 0){
@@ -195,6 +197,7 @@ export default function ProductSales(props) {
         settings={settings}
         page={page}
         isLoading={isLoading}
+        isEndPage={isEndPage}
         loadMoreData={(pageNumber, searchText) => {
           getApiData(searchText, pageNumber);
         }}
