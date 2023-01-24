@@ -382,15 +382,7 @@ PODS:
     - glog
   - react-native-background-timer (2.4.1):
     - React-Core
-  - react-native-camera (4.2.1):
-    - React-Core
-    - react-native-camera/RCT (= 4.2.1)
-    - react-native-camera/RN (= 4.2.1)
-  - react-native-camera/RCT (4.2.1):
-    - React-Core
-  - react-native-camera/RN (4.2.1):
-    - React-Core
-  - react-native-document-picker (8.1.0):
+  - react-native-document-picker (8.1.2):
     - React-Core
   - react-native-geolocation-service (5.3.0-beta.4):
     - React
@@ -398,23 +390,23 @@ PODS:
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
     - React-Core
-  - react-native-image-picker (4.7.0):
+  - react-native-image-picker (4.7.3):
     - React-Core
   - react-native-image-resizer (1.4.5):
     - React-Core
   - react-native-maps (0.29.4):
     - React-Core
-  - react-native-netinfo (9.3.0):
+  - react-native-netinfo (9.3.6):
     - React-Core
-  - react-native-pager-view (5.4.15):
+  - react-native-pager-view (5.4.25):
     - React-Core
   - react-native-progress-view (1.3.2):
     - React-Core
-  - react-native-safe-area-context (3.3.2):
+  - react-native-safe-area-context (3.4.1):
     - React-Core
   - react-native-sqlite-storage (6.0.1):
     - React-Core
-  - react-native-webview (11.16.0):
+  - react-native-webview (11.17.2):
     - React-Core
   - React-perflogger (0.67.2)
   - React-RCTActionSheet (0.67.2):
@@ -485,11 +477,11 @@ PODS:
     - IQKeyboardManagerSwift (= 6.5.4)
     - React-Core
     - React-RCTText
-  - RNBootSplash (3.2.6):
+  - RNBootSplash (3.2.7):
     - React-Core
   - RNCAsyncStorage (1.16.1):
     - React-Core
-  - RNCCheckbox (0.5.9):
+  - RNCCheckbox (0.5.12):
     - React-Core
   - RNDateTimePicker (6.7.1):
     - React-Core
@@ -503,13 +495,13 @@ PODS:
     - React-Core
   - RNFS (2.19.0):
     - React-Core
-  - RNGestureHandler (2.1.1):
+  - RNGestureHandler (2.3.0):
     - React-Core
   - RNLocalize (2.2.1):
     - React-Core
   - RNPermissions (3.6.1):
     - React-Core
-  - RNReanimated (2.10.0):
+  - RNReanimated (2.13.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -536,12 +528,12 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.10.0):
+  - RNScreens (3.13.1):
     - React-Core
     - React-RCTImage
-  - RNSVG (12.1.1):
-    - React
-  - RNVectorIcons (9.0.0):
+  - RNSVG (12.3.0):
+    - React-Core
+  - RNVectorIcons (9.1.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -552,7 +544,7 @@ PODS:
   - vision-camera-code-scanner (0.2.0):
     - GoogleMLKit/BarcodeScanning
     - React-Core
-  - VisionCamera (2.14.1):
+  - VisionCamera (2.15.2):
     - React
     - React-callinvoker
     - React-Core
@@ -609,7 +601,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
-  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
@@ -732,8 +723,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-background-timer:
     :path: "../node_modules/react-native-background-timer"
-  react-native-camera:
-    :path: "../node_modules/react-native-camera"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-geolocation-service:
@@ -873,19 +862,18 @@ SPEC CHECKSUMS:
   React-jsinspector: 595f76eba2176ebd8817a1fffd47b84fbdab9383
   React-logger: 23de8ea0f44fa00ee77e96060273225607fd4d78
   react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
-  react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
-  react-native-document-picker: 5663fe4bcdb646200683a41790464d2793307ac8
+  react-native-document-picker: f5ec1a712ca2a975c233117f044817bb8393cad4
   react-native-geolocation-service: c0efb872258ed9240f1003a70fca9e9757e5c785
   react-native-google-maps: 34517207071d54f3bc23c68752bbec0217bfc79e
-  react-native-image-picker: 4b090b73077c3a71b91fddc739a594feebd00184
+  react-native-image-picker: 4e6008ad8c2321622affa2c85432a5ebd02d480c
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-maps: a421fe6aeb74279597c4ea9598f25796108e2d89
-  react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
-  react-native-pager-view: b1914469643f40042e65d78cbf3d3dfebd6fb0d9
+  react-native-netinfo: f80db8cac2151405633324cb645c60af098ee461
+  react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
   react-native-progress-view: 4d3bbe6a099ba027b1fedb1548c2c87f74249b70
-  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
+  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-sqlite-storage: f6d515e1c446d1e6d026aa5352908a25d4de3261
-  react-native-webview: 28a8636d97ee641f2ee8f20492d7a6c269c1d703
+  react-native-webview: 380c1a03ec94b7ed764dac8db1e7c9952d08c93a
   React-perflogger: 3c9bb7372493e49036f07a82c44c8cf65cbe88db
   React-RCTActionSheet: 052606483045a408693aa7e864410b4a052f541a
   React-RCTAnimation: 08d4cac13222bb1348c687a0158dfd3b577cdb63
@@ -899,28 +887,28 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 2450b43df7ffe8e805a0b3dcb2abd4282f1f1836
   ReactCommon: d98c6c96b567f9b3a15f9fd4cc302c1eda8e3cf2
   ReactNativeKeyboardManager: f82a63e0982254fb0f6a17ba327fac575a46f1e9
-  RNBootSplash: 51eef7e143faeab63f81ddbb7c1de38b8fba66ed
+  RNBootSplash: f31eba8f6d496e2029859e06e5582cac4607256d
   RNCAsyncStorage: b49b4e38a1548d03b74b30e558a1d18465b94be7
-  RNCCheckbox: 6369808337432cdbd5025d62ceced2480b4c51df
+  RNCCheckbox: ed1b4ca295475b41e7251ebae046360a703b6eb5
   RNDateTimePicker: 0530a73a6f3a1a85814cbde0802736993b9e675e
   RNDeviceInfo: aad3c663b25752a52bf8fce93f2354001dd185aa
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
   RNFS: fc610f78fdf8bfc89a9e5cc2f898519f4dba1002
-  RNGestureHandler: e1ad51d31a580755079d5124d3ab66f0fcaa8311
+  RNGestureHandler: 77d59828d40838c9fabb76a12d2d0a80c006906f
   RNLocalize: cbcb55d0e19c78086ea4eea20e03fe8000bbbced
   RNPermissions: dcdb7b99796bbeda6975a6e79ad519c41b251b1c
-  RNReanimated: c38d82b0e910e2478439686c58c02bac6e4232e9
-  RNScreens: 03ba504f8c98607ad1f07808e71040e0afa335ec
-  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
-  RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
+  RNReanimated: 42b5b57609de75e270722e27d2b94ade03c49931
+  RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
+  RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
+  RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   vision-camera-code-scanner: dda884a7f3ec8243a2a6d6489b91860648371bca
-  VisionCamera: 32167f3c59a38eafadd82eed665496da508657a7
+  VisionCamera: 0a783d2174070dd3c62b19005c3df5e93eb55738
   Yoga: 9b6696970c3289e8dea34b3eda93f23e61fb8121
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 7fcc9c7c4c5e9dbed9ae82adbc216e1ca69f3a0c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

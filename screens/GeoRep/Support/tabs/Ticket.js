@@ -5,22 +5,17 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  View,
-  StyleSheet,  
-  TouchableOpacity,
-  Text,  
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import Fonts from '../../../../constants/Fonts';
-import { Modal, Portal, TextInput} from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
-import Colors, { whiteLabel} from '../../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {getBaseUrl, getToken, getUserData} from '../../../../constants/Storage';
 import {
   getSupportIssues,
   postSupportEmail,
 } from '../../../../actions/support.action';
-import uuid from 'react-native-uuid';
+
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import {
@@ -31,7 +26,7 @@ import {
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {Notification} from '../../../../components/modal/Notification';
 import {useDispatch, useSelector} from 'react-redux';
-import { generateKey } from '../../../../constants/Utils';
+import {generateKey} from '../../../../constants/Utils';
 
 export const Ticket = forwardRef((props, ref) => {
   const dispatch = useDispatch();
