@@ -48,7 +48,7 @@ const ProductSalesView = props => {
   }, [page]);
 
   useEffect(() => {
-	if(lists.length == 0){
+	if(isLoading ){
 		setIsInitializeView(true);
 	}else{
 		setIsInitializeView(false);
@@ -207,7 +207,7 @@ const ProductSalesView = props => {
         />
 
  		{
-			lists.length == 0 &&
+			isLoading &&
 			<Image 
 			source={Images.productSalePlaceholder}
 			style={styles.placeholderStyle}
@@ -227,9 +227,7 @@ const ProductSalesView = props => {
           removeClippedSubviews={false}
           ListFooterComponent={renderFooter.bind(this)}
         />       
-
       </View>
-
 
       <View     
         style={{

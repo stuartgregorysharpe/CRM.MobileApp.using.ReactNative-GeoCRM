@@ -226,7 +226,10 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       console.log('refreshList: checkAndOpenSetup');
       checkAndOpenSetup();      
     }else{
+
+      // if regrit 
       setSelectedLocation(defineSetup.location.name);
+      //setCartCount(0);
     }
   };
    
@@ -256,7 +259,9 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
     setCartCount(count);
   }, [productPriceLists]);
+
   const setupDefineSetupFromRegret = async () => {
+    
     console.log('setupDefineSetupFromRegret');
     if (props.regret_item) {
       console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
