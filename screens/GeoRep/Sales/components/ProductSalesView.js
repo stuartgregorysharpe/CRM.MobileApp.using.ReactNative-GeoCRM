@@ -39,7 +39,7 @@ const ProductSalesView = props => {
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [isInitializeView, setIsInitializeView] = useState(false);
+  const [isInitializeView, setIsInitializeView] = useState(true);
   const barcodeScanModalRef = useRef(null);
   
 
@@ -48,7 +48,7 @@ const ProductSalesView = props => {
   }, [page]);
 
   useEffect(() => {
-	if(isLoading && lists.length == 0){
+	if(lists.length == 0){
 		setIsInitializeView(true);
 	}else{
 		setIsInitializeView(false);
@@ -176,21 +176,24 @@ const ProductSalesView = props => {
           haveFilter={haveFilter}
           isScan
           onSearch={searchText => {
-            setSearchText(searchText);
-            console.log('search text ', searchText);
-            if ((searchText != '', searchText.length >= 2)) {
-              loadMoreData(0, searchText);
-            } else if (searchText == '') {
-              loadMoreData(0, searchText);
-            }
+            if(!isInitializeView){
+              setSearchText(searchText);
+              console.log('search text ', searchText);
+              if ((searchText != '', searchText.length >= 2)) {
+                loadMoreData(0, searchText);
+              } else if (searchText == '') {
+                loadMoreData(0, searchText);
+              }
+            }            
           }}
           onSuffixButtonPress={() => {
-            if (props.openFilter) {
+            if (props.openFilter && !isInitializeView) {
               props.openFilter();
             }
           }}
           onScan={() => {
-            barcodeScanModalRef.current.showModal();
+            if(!isInitializeView)
+              barcodeScanModalRef.current.showModal();
           }}
           initVal={searchText}
           isLoading={isInitializeView}
@@ -236,7 +239,7 @@ const ProductSalesView = props => {
           right: 10,
         }}>
 
-        { (settings != undefined && settings?.allow_add_product === '1') || (isInitializeView && settings == undefined) && (
+        { (settings != undefined && settings?.allow_add_product === '1') || (isInitializeView && settings == null) && (
           <TouchableOpacity onPress={props.openAddProductModal}>
             <SvgIcon icon={isInitializeView ? 'Round_Btn_Default_Dark_Gray' : 'Round_Btn_Default_Dark' }  width="70px" height="70px" />
           </TouchableOpacity>

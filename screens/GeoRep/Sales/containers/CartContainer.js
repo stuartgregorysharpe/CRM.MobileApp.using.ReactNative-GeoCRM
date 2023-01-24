@@ -114,23 +114,23 @@ const CartContainer = props => {
   };
   const onSetupFieldModalClosed = async ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
-      configProductSetUp(value, async type => {
-        console.log("store setup data", value);
-        storeJsonData('@setup', value);
-        if (type === 'changed') {
-
-          await storeJsonData('@product_price', []);
-          await removeLocalData('@add_product');        
-          dispatch(setProductPriceLists([]));
-          setAddProductList([]);
-          
-          if (navigation.canGoBack()) {
-            navigation.popToTop();
+      if(value != null){
+        configProductSetUp(value, async type => {
+          console.log("store setup data", value);
+          storeJsonData('@setup', value);
+          if (type === 'changed') {
+            await storeJsonData('@product_price', []);
+            await removeLocalData('@add_product');        
+            dispatch(setProductPriceLists([]));
+            setAddProductList([]);          
+            if (navigation.canGoBack()) {
+              navigation.popToTop();
+            }
+          } else {
+            loadDefinedConfig();
           }
-        } else {
-          loadDefinedConfig();
-        }
-      });
+        });
+      }      
       setupFieldModalRef.current.hideModal();
     }else if(type == Constants.actionType.ACTION_DONE){
 		  setupFieldModalRef.current.hideModal();
@@ -414,13 +414,14 @@ const CartContainer = props => {
     productGroupModalRef.current.hideModal();
   };
 
-  const updateOutSideTouchStatus = async flag => {
+  const updateOutSideTouchStatus = async flag => {    
     var setup = await getJsonData('@setup');
     if (setup == null) {
       setOutSideTouch(false);
     } else {
       setOutSideTouch(flag);
     }
+    
   };
 
   return (
@@ -441,7 +442,7 @@ const CartContainer = props => {
       <SetupFieldModal
         title="Define Setup"        
         hideClear
-        backButtonDisabled={true}
+        backButtonDisabled={!outSideTouch}
         closableWithOutsideTouch={outSideTouch}
         ref={setupFieldModalRef}
         hideDivider={true}

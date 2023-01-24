@@ -291,13 +291,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const onSetupFieldModalClosed = ({type, value}) => {
     
     if (type === Constants.actionType.ACTION_CLOSE) {      
-
       setupFieldModalRef.current.hideModal();
-      setupFromConfig(value);
-      storeLocalValue('@regret', '');
-      dispatch(setRegret(null));
-    
-
+      if(value != null){
+        setupFromConfig(value);
+        storeLocalValue('@regret', '');
+        dispatch(setRegret(null));
+      }
     } else if (type == Constants.actionType.ACTION_DONE) {
       console.log("action done =----", visibleMore)
       setupFieldModalRef.current.hideModal();
@@ -536,7 +535,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const updateOutSideTouchStatus = async flag => {
-    var setup = await getJsonData('@setup');
+    
+    var setup = await getJsonData('@setup');  
     if (setup == null) {
       setOutsideTouch(false);
     } else {
@@ -554,7 +554,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       <SetupFieldModal
         title="Define Setup"
         //hideClear
-        backButtonDisabled={true}
+        backButtonDisabled={!outsideTouch}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}
         hideDivider={true}

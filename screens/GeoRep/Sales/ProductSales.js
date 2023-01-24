@@ -116,7 +116,7 @@ export default function ProductSales(props) {
 
   const getApiData = async (search_text, pageNumber) => {
    
-    console.log("getApiData", isLoading, isEndPage);
+    console.log("getApiData", isLoading, isEndPage , search_text , pageNumber);
     if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
@@ -159,7 +159,12 @@ export default function ProductSales(props) {
             setIsLoading(false);
             expireToken(dispatch, e);
           });
+      }else{
+        console.log("paramData",paramData);
+        clearProducts();
       }
+    }else{
+      console.log("api not called");
     }
     
   };

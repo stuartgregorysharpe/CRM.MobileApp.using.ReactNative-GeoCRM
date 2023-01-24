@@ -96,6 +96,10 @@ export default {
     Clear_Filters: 'Clear Filters',
   },
 
+  ProductSales: {
+    Click_Update: 'Please click update to action any changes mode, please note this will reset your cart.'
+  },
+
   PostRequestResponse: {
     Successfully_Checkout: 'Checkout Successfully!',
     Successfully_Checkin: 'Checkin Successfully!',

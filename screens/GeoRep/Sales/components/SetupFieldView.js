@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React , {useState ,useEffect} from 'react'
+import React , {useState ,useEffect , useCallback } from 'react'
 import DropdownSelection from './DropdownSelection'
 import SaleType from './SaleType'
 import SearchLocationContainer from '../../Stock/stock/container/SearchLocationContainer'
@@ -9,9 +9,11 @@ import { getJsonData, getLocalData, storeJsonData } from '../../../../constants/
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
-import { Colors, Fonts, Values } from '../../../../constants'
+import { Colors, Fonts, Strings, Values } from '../../../../constants'
 import { getLocationInfo } from '../../../../actions/location.action'
 import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
+import { configProductSetUp, onCheckProductSetupChanged } from '../helpers'
+import { getStateFromPath } from '@react-navigation/native'
 
 const SetupFieldView = (props) => {
 
@@ -24,7 +26,8 @@ const SetupFieldView = (props) => {
 	const [selectedSaleType, setSelectedSaleType] = useState(null)
 	const [selectedCurrency , setSelectedCurrency] = useState(null)
 	const [warehouseRequired, setWarehouseRequired] = useState(false)
-	const [selectedWarehouse, setSelectedWarehouse] = useState([])	
+	const [selectedWarehouse, setSelectedWarehouse] = useState([])
+	const [isDiscard, setIsDiscard] = useState(false);	
 	const isCheckin = useSelector(state => state.location.checkIn);
 
 	useEffect(() => {
@@ -46,7 +49,13 @@ const SetupFieldView = (props) => {
 		initializeSetupData(currency, warehouse,   transaction_types);
 	}, [ currency, warehouse,   transaction_types]);
 
-	const clearSetup = async() => {		
+	useEffect(() => {
+		if(selectedSaleType != null && selectedCurrency != null && selectedWarehouse != null && selectedLocation != null){
+			getChangedStatus();
+		}		
+	}, [selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation]);
+
+	const clearSetup = async() => {
 		console.log("clear tirger")
 		storeJsonData("@setup", null);
 		storeJsonData("@sale_product_parameter" , null);		
@@ -150,6 +159,7 @@ const SetupFieldView = (props) => {
 
 	const onCurrencyItemSelected = (item) => {				
 		setSelectedCurrency(item);
+		
 	}
 
 	const onWarehouseItemSelected = (item , isChecked) => {		
@@ -165,12 +175,14 @@ const SetupFieldView = (props) => {
 				setSelectedWarehouse(tmp)				
 			}else{
 				setSelectedWarehouse([...selectedWarehouse , item]);	
-			}	
-		}					
+			}
+		}
+		
 	}
 
 	const onSelectedSaleType =(type) => {
 		setSelectedSaleType(type);
+		
 	}
 
 	const onWarehouseRequired = (required) => {		
@@ -215,9 +227,10 @@ const SetupFieldView = (props) => {
 				flag = true;			
 		}
 		
-		if(props.updateOutSideTouchStatus) {		
-			props.updateOutSideTouchStatus(flag);
-		}
+		// if(props.updateOutSideTouchStatus) {	
+		// 	props.updateOutSideTouchStatus(flag);
+		// }
+
 		return flag;
 	}
 
@@ -237,6 +250,32 @@ const SetupFieldView = (props) => {
 		  props.updateClear(true);
 		}
 	};
+
+	const getChangedStatus = useCallback(
+		() => {			
+			const value = {
+				transaction_type: selectedSaleType,
+				currency_id: selectedCurrency,
+				warehouse_id: selectedWarehouse,
+				location: selectedLocation
+			};
+			
+			onCheckProductSetupChanged( value, async type => {			
+				if(props.updateOutSideTouchStatus) {
+					console.log("changed status", type);
+					if (type === 'changed') {						
+						props.updateOutSideTouchStatus(false);	
+						setIsDiscard(true);				
+					} else {			  
+						props.updateOutSideTouchStatus(true);
+						setIsDiscard(false);
+					}
+				}			
+			});			
+		},
+		[selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation],
+	)
+
 
 	return (
 		<View style={[styles.container]}>
@@ -325,18 +364,48 @@ const SetupFieldView = (props) => {
 							/>
 						</DropdownSelection>
 					}
+
+					{
+						isDiscard && <AppText title={Strings.ProductSales.Click_Update} color={Colors.redColor} style={{textAlign:'center', marginHorizontal:20}}></AppText>	
+					}					
 					
 					<View style={{height:1, backgroundColor:Colors.greyColor, marginHorizontal:-10, marginTop:10, marginBottom:10}}>
 					</View>
 
-					<View style={{alignItems:'center', paddingVertical:5}}>
-						<TouchableOpacity 
-							style={{alignSelf:'stretch', alignItems:'center'}}
-							disabled={!isValidate()}
-							onPress={() => onContinue()}>
-							<AppText title="Continue" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
-						</TouchableOpacity>						
-					</View>
+					{
+						!isDiscard &&
+						<View style={{alignItems:'center', paddingVertical:5}}>
+							<TouchableOpacity 
+								style={{alignSelf:'stretch', alignItems:'center'}}
+								disabled={!isValidate()}
+								onPress={() => onContinue()}>
+								<AppText title="Continue" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
+							</TouchableOpacity>						
+						</View>
+					}
+					
+
+					{
+						isDiscard && 
+						<View style={{alignItems:'center' , flexDirection:'row' , justifyContent:'center', }}>
+							<TouchableOpacity 
+								style={{alignSelf:'stretch', alignItems:'center', flex:1}}							
+								onPress={() => {
+									if(props.onClose){
+										props.onClose();
+									}
+								}}>
+								<AppText title="Discard" size="big" color={Colors.redColor}></AppText>	
+							</TouchableOpacity>		
+							<View style={{ backgroundColor:Colors.greyColor, width : 1 , marginVertical:-10 , alignSelf:'stretch'}}>
+							</View>
+							<TouchableOpacity 
+								style={{alignSelf:'stretch', alignItems:'center' , flex:1}}							
+								onPress={() => onContinue()}>
+								<AppText title="Update" size="big" color={ Colors.primaryColor }></AppText>	
+							</TouchableOpacity>		
+						</View>
+					}					
 
 				</View>
 			}

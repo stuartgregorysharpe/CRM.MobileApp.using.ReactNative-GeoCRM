@@ -133,7 +133,7 @@ export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 
 export const configProductSetUp = async (value, callBack) => {
   var setupData = await getJsonData('@setup');
-  if (setupData != null && setupData != undefined && setupData.location) {        
+  if (setupData != null && setupData != undefined && setupData.location && setupData.transaction_type) {        
     if (
       setupData.location.name != value.location.name ||
       setupData.transaction_type.type != value.transaction_type.type
@@ -149,6 +149,33 @@ export const configProductSetUp = async (value, callBack) => {
     callBack('changed');
   }
 };
+
+export const onCheckProductSetupChanged = async (value, callBack) => {
+  var setupData = await getJsonData('@setup');
+  
+  if (value && setupData != null && setupData != undefined && setupData.location && setupData.transaction_type && setupData.warehouse_id && setupData.currency_id) {        
+
+    console.log("setup data ==>" , setupData.warehouse_id);
+    console.log("value", value.warehouse_id);
+
+    if (
+      setupData.location.name != value.location.name ||
+      setupData.transaction_type.type != value.transaction_type.type || 
+      setupData.currency_id.id != value.currency_id.id || 
+      setupData.warehouse_id.length != value.warehouse_id.length
+    ) {      
+
+      callBack('changed');
+
+    } else {      
+      callBack('continue');
+    }
+  } else {    
+    callBack('changed');
+  }
+
+}
+
 
 export const getConfigFromRegret = regret => {
   return {

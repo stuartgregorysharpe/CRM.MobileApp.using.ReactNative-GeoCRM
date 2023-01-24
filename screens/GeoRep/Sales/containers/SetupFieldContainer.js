@@ -76,6 +76,10 @@ const  SetupFieldContainer = (props) => {
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
 
+    const onClose = () => {
+        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
+    }
+
     const onChangeLocation = (location) => {        
         if(location)
             callSetupFieldOptions(location.location_id)
@@ -110,6 +114,7 @@ const  SetupFieldContainer = (props) => {
                 warehouse={warehouse}
                 isLoading={isLoading}
                 onContinue={onContinue}
+                onClose={onClose}
                 onChangeLocation={onChangeLocation}
                 {...props} />
             
@@ -141,4 +146,5 @@ const  SetupFieldContainer = (props) => {
         </View>
     )
 }
+
 export default SetupFieldContainer;
