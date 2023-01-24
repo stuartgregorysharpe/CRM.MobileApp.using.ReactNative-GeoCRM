@@ -68,7 +68,7 @@ export default {
   },
 
   Calendar: {
-    Added_Calendar_Successfully : 'Added to Calendar successfully'
+    Added_Calendar_Successfully: 'Added to Calendar successfully',
   },
 
   Stock: {
@@ -89,6 +89,7 @@ export default {
     Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
     Successfully_Sell_To_Trader: 'Saved to Offline sync successfully',
     Primary_Additional: 'Primary/Additional',
+    Submit: 'Submit',
   },
 
   Forms: {
@@ -115,5 +116,4 @@ export default {
     Returns_value: 'Returns Value',
     Returns_tns: 'Returns (Tns)',
   },
-  
 };
