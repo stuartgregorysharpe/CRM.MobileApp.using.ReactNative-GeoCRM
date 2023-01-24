@@ -15,7 +15,10 @@ import {
 } from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../actions/notification.action';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../../actions/notification.action';
 import {Notification} from '../../../../components/modal/Notification';
 
 const StagingView = props => {
@@ -57,7 +60,6 @@ const StagingView = props => {
           }
         });
         setSelectedItems(_selectedItems);
-        console.log('_selectedItems', selectedItems);
       } else {
         dispatch(
           showNotification({
@@ -65,7 +67,6 @@ const StagingView = props => {
             message: 'Barcode not found in staging',
             buttonText: 'Ok',
             buttonAction: () => {
-              onLoad();
               dispatch(clearNotification());
             },
           }),
