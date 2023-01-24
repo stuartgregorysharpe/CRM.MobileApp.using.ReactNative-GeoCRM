@@ -131,24 +131,6 @@ export function filterProducts(productList, params) {
 
 export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 
-export const configProductSetUp = async (value, callBack) => {
-  var setupData = await getJsonData('@setup');
-  if (setupData != null && setupData != undefined && setupData.location && setupData.transaction_type) {        
-    if (
-      setupData.location.name != value.location.name ||
-      setupData.transaction_type.type != value.transaction_type.type
-    ) {
-      console.log('config changed');
-      callBack('changed');
-    } else {
-      console.log('config continue');
-      callBack('continue');
-    }
-  } else {
-    console.log('config changed with null');
-    callBack('changed');
-  }
-};
 
 export const onCheckProductSetupChanged = async (value, callBack) => {
   var setupData = await getJsonData('@setup');

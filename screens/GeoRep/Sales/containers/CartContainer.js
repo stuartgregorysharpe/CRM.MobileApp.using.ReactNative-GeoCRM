@@ -11,8 +11,7 @@ import {
 import {GetRequestProductPriceDAO} from '../../../../DAO';
 import CartView from '../components/CartView';
 import {
-  calculateCartStatistics,
-  configProductSetUp,
+  calculateCartStatistics,  
   filterProducts,
   getProductItemDataForRender,
   getTotalCartProductList,

@@ -21,12 +21,10 @@ import {
   setProductPriceLists,
   setRegret,
 } from '../../../../actions/sales.action';
-import {showNotification} from '../../../../actions/notification.action';
-import {configProductSetUp, getConfigFromRegret, onCheckProductSetupChanged} from '../helpers';
+import { showNotification} from '../../../../actions/notification.action';
+import { getConfigFromRegret, onCheckProductSetupChanged} from '../helpers';
 import {
-  CHANGE_MORE_STATUS,
-  SHOW_MORE_COMPONENT,
-  SLIDE_STATUS,
+  CHANGE_MORE_STATUS,  
 } from '../../../../actions/actionTypes';
 
 export const ProductSalesContainer = forwardRef((props, ref) => {

@@ -12,8 +12,7 @@ import { AppText } from '../../../../components/common/AppText'
 import { Colors, Fonts, Strings, Values } from '../../../../constants'
 import { getLocationInfo } from '../../../../actions/location.action'
 import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
-import { configProductSetUp, onCheckProductSetupChanged } from '../helpers'
-import { getStateFromPath } from '@react-navigation/native'
+import { onCheckProductSetupChanged } from '../helpers'
 
 const SetupFieldView = (props) => {
 
