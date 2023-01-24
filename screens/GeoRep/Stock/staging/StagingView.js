@@ -191,6 +191,7 @@ const StagingView = props => {
         style={{flex: 1}}
         onItemAction={onItemAction}
       />
+      {/*
       <SubmitButton
         title={'Accept All'}
         onSubmit={() => {
@@ -206,6 +207,8 @@ const StagingView = props => {
         }}
         style={styles.submitButton}
       />
+      */}
+
       <ScanningListViewModal
         ref={scanningListViewModalRef}
         title={`Items: ${viewListItems.length}`}
