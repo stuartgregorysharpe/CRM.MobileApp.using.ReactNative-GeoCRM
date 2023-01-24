@@ -17,6 +17,7 @@ import {
   getProductItemDataForRender,
   getTotalCartProductList,
   getWarehouseGroups,
+  onCheckProductSetupChanged,
 } from '../helpers';
 import ProductGroupModal from '../modal/ProductGroupModal';
 import SetupFieldModal from '../modal/SetupFieldModal';
@@ -114,8 +115,8 @@ const CartContainer = props => {
   };
   const onSetupFieldModalClosed = async ({type, value}) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
-      if(value != null){
-        configProductSetUp(value, async type => {
+      if(value != null){        
+        onCheckProductSetupChanged(value, async type => {
           console.log("store setup data", value);
           storeJsonData('@setup', value);
           if (type === 'changed') {

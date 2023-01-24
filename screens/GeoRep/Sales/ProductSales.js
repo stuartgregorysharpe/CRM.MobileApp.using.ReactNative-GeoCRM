@@ -135,6 +135,7 @@ export default function ProductSales(props) {
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);
+            console.log("is loading => ", false);
             if (isMount) {
               if (res.status == Strings.Success) {
                 console.log("Product Lists => ", res.items.length)
@@ -158,7 +159,8 @@ export default function ProductSales(props) {
           .catch(e => {
             setIsLoading(false);
             expireToken(dispatch, e);
-          });
+        });
+
       }else{
         console.log("paramData",paramData);
         clearProducts();

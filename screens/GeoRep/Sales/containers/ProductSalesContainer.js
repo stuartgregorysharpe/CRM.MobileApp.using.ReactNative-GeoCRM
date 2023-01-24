@@ -22,7 +22,7 @@ import {
   setRegret,
 } from '../../../../actions/sales.action';
 import {showNotification} from '../../../../actions/notification.action';
-import {configProductSetUp, getConfigFromRegret} from '../helpers';
+import {configProductSetUp, getConfigFromRegret, onCheckProductSetupChanged} from '../helpers';
 import {
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
@@ -274,7 +274,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     if (props.getProductLists) {
       console.log('setupFromConfig: setSelectedLocation', config.location.name);
       setSelectedLocation(config.location.name);
-      configProductSetUp(config, type => {
+      
+      onCheckProductSetupChanged(config, type => {
         if (type == 'changed') {
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
