@@ -1408,6 +1408,51 @@ const Compliance_Icon = `<svg id="playlist_add_check_circle_black_24dp" xmlns="h
 <path id="Path_4248" data-name="Path 4248" d="M21.167,5.833A15.333,15.333,0,1,1,5.833,21.167,15.354,15.354,0,0,1,21.167,5.833Zm0-3.833A19.167,19.167,0,1,0,40.333,21.167,19.174,19.174,0,0,0,21.167,2ZM25,17.333H11.583v3.833H25Zm0-5.75H11.583v3.833H25ZM11.583,26.917h5.75V23.083h-5.75Zm23-3.048-2.7-2.7L25.1,27.952l-2.7-2.7-2.7,2.7,5.424,5.424Z" transform="translate(1.833 1.833)" fill=${actionIconBackground}/>
 </svg>`;
 
+const Product_Sales_Item = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1155" height="369" viewBox="0 0 1155 369">
+<defs>
+  <filter id="Rectangle_1645" x="0" y="0" width="1155" height="369" filterUnits="userSpaceOnUse">
+    <feOffset dy="5" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="7.5" result="blur"/>
+    <feFlood flood-opacity="0.078"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+</defs>
+<g id="Group_5665" data-name="Group 5665" transform="translate(-7.5 -651.5)">
+  <g transform="matrix(1, 0, 0, 1, 7.5, 651.5)" filter="url(#Rectangle_1645)">
+    <rect id="Rectangle_1645-2" data-name="Rectangle 1645" width="1110" height="324" rx="7" transform="translate(22.5 17.5)" fill="#fff"/>
+  </g>
+  <text id="Location_Information_CRM_" data-name="Location Information (CRM)" transform="translate(553.999 925)" fill="#9d9fa2" font-size="42" font-family="Gilroy-Medium, Gilroy ☞" font-weight="500"><tspan x="-13.23" y="0">0</tspan></text>
+  <rect id="Rectangle_1648" data-name="Rectangle 1648" width="52" height="53" rx="3" transform="translate(458.999 883)" fill="#b8b8b8"/>
+  <path id="minus" d="M25.043,19.318H0V16.031H25.043Z" transform="translate(472.018 893.688)" fill="#fff"/>
+  <rect id="Rectangle_1649" data-name="Rectangle 1649" width="52" height="53" rx="3" transform="translate(596.999 883)" fill="#b8b8b8"/>
+  <path id="minus-2" data-name="minus" d="M29.973,20.242H0V16.031H29.973Z" transform="translate(608.438 891.777)" fill="#fff"/>
+  <path id="minus-3" data-name="minus" d="M29.973,4.211H0V0H29.973Z" transform="translate(621.319 924.9) rotate(-90)" fill="#fff"/>
+  <path id="angle-down" d="M40.574,14.51a1.274,1.274,0,0,1-.4.927L21.4,34.211a1.268,1.268,0,0,1-1.854,0L.769,15.436a1.268,1.268,0,0,1,0-1.854l2.014-2.014a1.268,1.268,0,0,1,1.854,0L20.47,27.4,36.3,11.569a1.268,1.268,0,0,1,1.854,0l2.014,2.014A1.274,1.274,0,0,1,40.574,14.51Z" transform="translate(1030.445 726.454)" fill="#9d9fa2"/>
+  <g id="Group_5655" data-name="Group 5655" transform="translate(-704.833 521.596)">
+    <g id="Rectangle_2268" data-name="Rectangle 2268" transform="translate(763.617 178.545)" fill="none" stroke="#c1c1c1" stroke-width="4">
+      <rect width="268.919" height="267.994" rx="7" stroke="none"/>
+      <rect x="2" y="2" width="264.919" height="263.994" rx="5" fill="none"/>
+    </g>
+    <g id="Group_4817" data-name="Group 4817" transform="translate(805.229 218.845)">
+      <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(0 0)">
+        <path id="Path_4180" data-name="Path 4180" d="M0,0H187.394V187.394H0Z" transform="translate(0 0)" fill="rgba(0,0,0,0)"/>
+        <path id="Path_4181" data-name="Path 4181" d="M17.616,17.616H72.273V2H17.616A15.662,15.662,0,0,0,2,17.616V72.273H17.616ZM64.465,87.889,33.232,126.93h93.7L103.505,95.7l-15.85,21.16Zm54.657-35.136a11.712,11.712,0,1,0-11.712,11.712A11.7,11.7,0,0,0,119.121,52.753ZM142.546,2H87.889V17.616h54.657V72.273h15.616V17.616A15.662,15.662,0,0,0,142.546,2Zm0,140.546H87.889v15.616h54.657a15.662,15.662,0,0,0,15.616-15.616V87.889H142.546ZM17.616,87.889H2v54.657a15.662,15.662,0,0,0,15.616,15.616H72.273V142.546H17.616Z" transform="translate(13.616 13.616)" fill="#c1c1c1"/>
+      </g>
+    </g>
+    <g id="Path_5365" data-name="Path 5365" transform="translate(763.616 178.545)" fill="none">
+      <path d="M6.486,0H262.432a6.486,6.486,0,0,1,6.486,6.486V261.508a6.486,6.486,0,0,1-6.486,6.486H6.486A6.486,6.486,0,0,1,0,261.508V6.486A6.486,6.486,0,0,1,6.486,0Z" stroke="none"/>
+      <path d="M 6.486297607421875 4 C 5.115325927734375 4 3.999969482421875 5.1153564453125 3.999969482421875 6.486297607421875 L 3.999969482421875 261.5080871582031 C 3.999969482421875 262.8790283203125 5.115325927734375 263.994384765625 6.486297607421875 263.994384765625 L 262.4322509765625 263.994384765625 C 263.80322265625 263.994384765625 264.9185485839844 262.8790283203125 264.9185485839844 261.5080871582031 L 264.9185485839844 6.486297607421875 C 264.9185485839844 5.1153564453125 263.80322265625 4 262.4322509765625 4 L 6.486297607421875 4 M 6.486297607421875 0 L 262.4322509765625 0 C 266.0145568847656 0 268.9185485839844 2.90399169921875 268.9185485839844 6.486297607421875 L 268.9185485839844 261.5080871582031 C 268.9185485839844 265.09033203125 266.0145568847656 267.994384765625 262.4322509765625 267.994384765625 L 6.486297607421875 267.994384765625 C 2.904022216796875 267.994384765625 -3.0517578125e-05 265.09033203125 -3.0517578125e-05 261.5080871582031 L -3.0517578125e-05 6.486297607421875 C -3.0517578125e-05 2.90399169921875 2.904022216796875 0 6.486297607421875 0 Z" stroke="none" fill="#c1c1c1"/>
+    </g>
+  </g>
+  <rect id="Rectangle_3173" data-name="Rectangle 3173" width="253" height="39" rx="19.5" transform="translate(846.966 890.927)" fill="#c1c1c1"/>
+  <rect id="Rectangle_3170" data-name="Rectangle 3170" width="104" height="25" rx="12.5" transform="translate(362.966 813.75)" fill="#c1c1c1"/>
+  <rect id="Rectangle_3172" data-name="Rectangle 3172" width="68" height="25" rx="12.5" transform="translate(357.966 899.75)" fill="#c1c1c1"/>
+  <rect id="Rectangle_3171" data-name="Rectangle 3171" width="186" height="25" rx="12.5" transform="translate(533 813.75)" fill="#c1c1c1"/>
+  <rect id="Rectangle_3174" data-name="Rectangle 3174" width="253" height="39" rx="19.5" transform="translate(362.966 730.5)" fill="#c1c1c1"/>
+</g>
+</svg>
+`;
 
 export default ({
   icon,
@@ -2152,6 +2197,8 @@ export default ({
     {icon == 'Compliance_Icon' && (
       <SvgXml style={style} xml={Compliance_Icon} width={width} height={height} />
     )}
-
+  {icon == 'Product_Sales_Item' && (
+      <SvgXml style={style} xml={Product_Sales_Item} width={width} height={height} />
+    )}
   </Fragment>
 );

@@ -93,8 +93,7 @@ export default function ProductSales(props) {
   }
 
   const getProductLists = async (data, search_text = '', pageNumber) => {
-
-    console.log("get product lists", data, search_text, pageNumber)
+    console.log("call get product list api");
     if( pageNumber != undefined && pageNumber == 0){
       setIsEndPage(false);
     }
@@ -127,6 +126,7 @@ export default function ProductSales(props) {
           clearProducts();
         }
         setIsLoading(true);        
+        console.log("is loading ... true");
         paramData['page_no'] = pageNumber;
         if (search_text != undefined) {
           paramData['search_text'] = search_text;

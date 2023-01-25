@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React , {useState ,useEffect , useCallback } from 'react'
+import React , {useState ,useEffect , useCallback , useImperativeHandle, forwardRef } from 'react'
 import DropdownSelection from './DropdownSelection'
 import SaleType from './SaleType'
 import SearchLocationContainer from '../../Stock/stock/container/SearchLocationContainer'
@@ -14,9 +14,10 @@ import { getLocationInfo } from '../../../../actions/location.action'
 import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
 import { onCheckProductSetupChanged } from '../helpers'
 
-const SetupFieldView = (props) => {
+//const SetupFieldView = (props) => {
+export const SetupFieldView = forwardRef((props, ref) => {	
 
-	const { isClear, isLoading,  transaction_types, currency, warehouse} = props;
+	const { isClear, isLoading,  transaction_types, currency, warehouse ,apiCallType} = props;
 	const features = useSelector(
 		state => state.selection.payload.user_scopes.geo_rep.features,
 	);
@@ -29,6 +30,16 @@ const SetupFieldView = (props) => {
 	const [isDiscard, setIsDiscard] = useState(false);	
 	const isCheckin = useSelector(state => state.location.checkIn);
 
+	useImperativeHandle(ref, () => ({
+		updateSetupData(type) {
+			if(type == 'load'){
+				initializeSetupDataFromStorage();
+			}else{
+				intializeSetupDataFromApi( currency , warehouse, transaction_types );
+			}
+		},				
+	}));
+	  
 	useEffect(() => {
 		initializeLocation();
 	}, [isCheckin]);
@@ -43,25 +54,27 @@ const SetupFieldView = (props) => {
 			}
 		}
 	}, [isClear]);
-
-	useEffect(() => {		
-		initializeSetupData(currency, warehouse,   transaction_types);
-	}, [ currency, warehouse,   transaction_types]);
+	
 
 	useEffect(() => {
 		if(selectedSaleType != null && selectedCurrency != null && selectedWarehouse != null && selectedLocation != null){
-			if(selectedWarehouse.length > 0){
+			if(selectedWarehouse.length > 0 ){
 				getChangedStatus();
 			}						
 		}		
 	}, [selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation]);
 
 	const clearSetup = async() => {
-		console.log("clear tirger")
-		storeJsonData("@setup", null);
-		storeJsonData("@sale_product_parameter" , null);		
-		initializeSetupData(null, null, null);
-		initializeLocation();
+
+		//storeJsonData("@setup", null);
+		//storeJsonData("@sale_product_parameter" , null);		
+		//initializeSetupData(null, null, null);
+		if(isCheckin){
+			getCheckinLocationInfo();
+		}else{
+			setSelectedLocation(null)
+		}
+		//initializeLocation();
 		if(props.onChangeLocation){
 			const  locationId = await getLocalData("@specific_location_id");		
 			const  locInfo = await getLocationInfoFromLocal(locationId);
@@ -100,8 +113,23 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const initializeSetupData = async(currency, warehouse,   transaction_types) => {
+	const initializeSetupDataFromStorage = async() => {
+		var data = await getJsonData("@setup");
+		if(data != null){				
+			setSelectedSaleType(data.transaction_type);
+			setSelectedCurrency(data.currency_id);	
+			setSelectedLocation(data.location);
+			
+			if(data.transaction_type != ''){
+				onWarehouseRequired(data.transaction_type.warehouse_required);
+			}
+			if(data.warehouse_id != ''){							
+				setSelectedWarehouse(data.warehouse_id);
+			}	
+		}
+	}
 
+	const intializeSetupDataFromApi = async(currency, warehouse,   transaction_types) => {
 		if(currency != null && warehouse != null &&   transaction_types != null){
 			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
@@ -119,29 +147,56 @@ const SetupFieldView = (props) => {
 			if( warehouse != undefined && warehouse.default_warehouse ){
 				const options = warehouse.options ?  warehouse.options : [];			
 				const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
-				if(items != undefined){
-					//onWarehouseItemSelected(item, false);
+				if(items != undefined){					
+					console.log("warhouse froma api")
 					setSelectedWarehouse(items);	
 				}
 			}
-		}else{
-			var data = await getJsonData("@setup");
-		
-			if(data != null){				
-				setSelectedSaleType(data.transaction_type);
-				setSelectedCurrency(data.currency_id);	
-				setSelectedLocation(data.location);
-				
-				if(data.transaction_type != ''){
-					onWarehouseRequired(data.transaction_type.warehouse_required);
-				}
-				if(data.warehouse_id != ''){				
-					setSelectedWarehouse(data.warehouse_id);
-				}	
-			}
-		}
+		}		
+	}
 
+	const initializeSetupData = async(currency, warehouse,   transaction_types) => {
+
+		var data = await getJsonData("@setup");
+		if(data != null){			
+			setSelectedSaleType(data.transaction_type);
+			setSelectedCurrency(data.currency_id);	
+			setSelectedLocation(data.location);
+			
+			if(data.transaction_type != ''){
+				onWarehouseRequired(data.transaction_type.warehouse_required);
+			}
+			if(data.warehouse_id != ''){			
+				console.log("warhouse from local")	
+				setSelectedWarehouse(data.warehouse_id);
+			}	
+		}else{
+			if(currency != null && warehouse != null &&   transaction_types != null){
+				if(transaction_types != null && transaction_types.default_type != ''){				
+					const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
+					setSelectedSaleType(transactionType);
+					if(transactionType  != undefined){				
+						onWarehouseRequired(transactionType.warehouse_required);
+					}
+				}
+				if(currency != undefined && currency.default_currency){
+					const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
+					setSelectedCurrency(defaultCurrency);
+					
+				}
 		
+				if( warehouse != undefined && warehouse.default_warehouse ){
+					const options = warehouse.options ?  warehouse.options : [];			
+					const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
+					if(items != undefined){					
+						console.log("warhouse froma api")
+						setSelectedWarehouse(items);	
+					}
+				}
+			}else{
+				
+			}
+		}			
 		
 	}
 
@@ -245,10 +300,9 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const onClear = () => {		
-		if (props.updateClear) {			
+	const onClear = () => {
+		if (props.updateClear) {
 		  props.updateClear(true);
-		  setIsDiscard(false);
 		}
 	};
 
@@ -267,7 +321,8 @@ const SetupFieldView = (props) => {
 				onCheckProductSetupChanged( value, async type => {			
 					if(props.updateOutSideTouchStatus) {
 						console.log("changed status", type);
-						if (type === 'changed') {						
+
+						if (type.includes('changed')) {						
 							props.updateOutSideTouchStatus(false);	
 							setIsDiscard(true);				
 						} else {			  
@@ -408,7 +463,7 @@ const SetupFieldView = (props) => {
 								style={{alignSelf:'stretch', alignItems:'center' , flex:1}}							
 								disabled={!isValidate()}
 								onPress={() => onContinue()}>
-								<AppText title="Update" size="big" color={ Colors.primaryColor }></AppText>	
+								<AppText title="Update" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
 							</TouchableOpacity>		
 						</View>
 					}					
@@ -417,7 +472,7 @@ const SetupFieldView = (props) => {
 			}
 		</View>
 	)
-}
+});
 
 export default SetupFieldView
 

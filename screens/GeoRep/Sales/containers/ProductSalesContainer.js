@@ -219,6 +219,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
       props.getProductLists(defineSetup , '' , 0);
+      console.log("trigger product list")
     }
     if (defineSetup == null) {
       console.log('refreshList: checkAndOpenSetup');
@@ -270,14 +271,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setupFromConfig(config, props.regret_item?.search_text);
     }
   };
-  const setupFromConfig = (config, searchText) => {
-    console.log('setupFromConfig: config', config);
-    if (props.getProductLists) {
-      console.log('setupFromConfig: setSelectedLocation', config.location.name);
-      setSelectedLocation(config.location.name);
-      
+
+  const setupFromConfig = (config, searchText) => {    
+    if (props.getProductLists) {      
+      setSelectedLocation(config.location.name);      
       onCheckProductSetupChanged(config, type => {
-        if (type == 'changed') {
+        if (type.includes('changed')) {
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
@@ -307,12 +306,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       } else {
         navigation.navigate(value.name);
       }
-    }else if( type === Constants.actionType.ACTION_FORM_CLEAR){
+    }else if( type === Constants.actionType.ACTION_FORM_CLEAR){      
+      //setSelectedLocation(null);
+      // if(props.clearProducts){
+      //   props.clearProducts();
+      // }
       
-      setSelectedLocation(null);
-      if(props.clearProducts){
-        props.clearProducts();
-      }
     }
   };
 

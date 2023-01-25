@@ -116,16 +116,15 @@ const CartContainer = props => {
     if (type === Constants.actionType.ACTION_CLOSE) {
       if(value != null){        
         onCheckProductSetupChanged(value, async type => {
-          console.log("store setup data", value);
           storeJsonData('@setup', value);
-          if (type === 'changed') {
+          if (type.includes('changed')) {
             await storeJsonData('@product_price', []);
-            await removeLocalData('@add_product');        
+            await removeLocalData('@add_product');
             dispatch(setProductPriceLists([]));
-            setAddProductList([]);          
+            setAddProductList([]);
             if (navigation.canGoBack()) {
               navigation.popToTop();
-            }
+            }          
           } else {
             loadDefinedConfig();
           }

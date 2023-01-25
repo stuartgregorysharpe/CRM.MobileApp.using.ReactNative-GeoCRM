@@ -20,6 +20,7 @@ import {AppText} from '../../../../components/common/AppText';
 import {style} from '../../../../constants/Styles';
 import {Colors, Constants, Images} from '../../../../constants';
 import QRScanModal from '../../../../components/common/QRScanModal';
+import ProductSalesPlaceholder from './ProductSalesPlaceholder';
 var currentSearchKey = '';
 
 const ProductSalesView = props => {
@@ -214,11 +215,13 @@ const ProductSalesView = props => {
 
  		{
 			isInitializeView &&
-			<Image 
-			source={Images.productSalePlaceholder}
-			style={styles.placeholderStyle}
-			resizeMode="stretch"
-			/>
+      <ProductSalesPlaceholder />
+
+			// <Image 
+			// source={Images.productSalePlaceholder}
+			// style={styles.placeholderStyle}
+			// resizeMode="stretch"
+			// />
 		}
 
 		<FlatList
