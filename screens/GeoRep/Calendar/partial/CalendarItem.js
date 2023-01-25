@@ -44,7 +44,7 @@ export function CalendarItem(props) {
       if (checkin_state === 'checkin_required') {
         return whiteLabel().actionFullButtonBackground;
       } else if (checkin_state === 'checkin_completed') {
-        return '#eee';
+        return '#9D9FA2';
       } else if (checkin_state === 'checkin_current') {
         return Colors.selectedRedColor;
       }
