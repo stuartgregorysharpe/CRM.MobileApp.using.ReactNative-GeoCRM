@@ -1,3 +1,5 @@
+
+
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, Platform , TextInput} from 'react-native';
 //import {TextInput} from 'react-native-paper';
@@ -10,6 +12,7 @@ const CTextInput = props => {
   const { multiline, cTextRef, dynamicFieldRef , index , add_prefix, add_suffix} = props;  
 
   const hasError = props.hasError;  
+  const [value, setValue] = useState('');
 
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
@@ -23,7 +26,7 @@ const CTextInput = props => {
   }
 
   return (
-    <View style={{flex:1}}>
+    <View style={{alignSelf:'stretch', marginTop:5}}>
       <View style={[{
           alignSelf: 'stretch' ,        
           borderColor: hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder }, 
@@ -38,7 +41,7 @@ const CTextInput = props => {
         )}
 
         {
-          props.label && props.label != '' &&
+          props.label && props.label != '' && value.trim() != '' &&
           renderTopDescription(props.label)
         }
 
@@ -52,6 +55,7 @@ const CTextInput = props => {
               cTextRef.current = element;
             }
           }}        
+          placeholder={props.label}
           disabled={props.disabled != undefined ? props.disabled : false}
           //mode="outlined"
           multiline={multiline != undefined ? multiline : false}        
@@ -65,7 +69,11 @@ const CTextInput = props => {
           }
           {...props}        
           style={[ multiline ? styles.multilineTextInput : styles.textInput, props.textInputStyle , {marginLeft : getPrefixPadding()} ]}                  
+          // onChangeText={(text) => {
+          //   //setValue(text);
+          // }}
           onSubmitEditing={() => {
+            setValue('submit');
             if (
               dynamicFieldRef != undefined &&
               dynamicFieldRef.current != undefined &&
@@ -78,6 +86,7 @@ const CTextInput = props => {
             }
             if(props.onSubmitEditing){
               props.onSubmitEditing();
+              
             }
           }}
         />
@@ -174,3 +183,4 @@ const styles = StyleSheet.create({
 });
 
 export default CTextInput;
+
