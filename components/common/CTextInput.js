@@ -1,5 +1,3 @@
-
-
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, Platform , TextInput} from 'react-native';
 //import {TextInput} from 'react-native-paper';
@@ -41,7 +39,7 @@ const CTextInput = props => {
         )}
 
         {
-          props.label && props.label != '' && value.trim() != '' &&
+          props.label && props.label != '' &&  props.value != '' &&
           renderTopDescription(props.label)
         }
 
@@ -68,12 +66,9 @@ const CTextInput = props => {
             props.hasError ? whiteLabel().endDayBackground : Colors.disabledColor
           }
           {...props}        
-          style={[ multiline ? styles.multilineTextInput : styles.textInput, props.textInputStyle , {marginLeft : getPrefixPadding()} ]}                  
-          // onChangeText={(text) => {
-          //   //setValue(text);
-          // }}
-          onSubmitEditing={() => {
-            setValue('submit');
+          style={[ multiline ? styles.multilineTextInput : styles.textInput, props.textInputStyle , {marginLeft : getPrefixPadding()} ]}        
+          value={props.value}
+          onSubmitEditing={() => {            
             if (
               dynamicFieldRef != undefined &&
               dynamicFieldRef.current != undefined &&
@@ -139,7 +134,7 @@ const styles = StyleSheet.create({
 
   textInput: {
     alignSelf:'stretch',    
-    height:35,
+    height:30,
     fontSize: 14,
     paddingTop:0,
     paddingBottom:0,
@@ -183,4 +178,6 @@ const styles = StyleSheet.create({
 });
 
 export default CTextInput;
+
+
 

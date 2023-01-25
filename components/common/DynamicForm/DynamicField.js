@@ -62,7 +62,7 @@ const DynamicField = props => {
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 10}}
+        style={{marginTop: isFirst ? 0 : 5}}
       />
     );
   };
@@ -86,7 +86,7 @@ const DynamicField = props => {
           console.log("chagned data", field_name);
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 10 , paddingTop:0}}
+        style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
        // textInputStyle={[ type == "text" ? {} : { textAlignVertical: 'top', height:100, marginTop:0, paddingTop:0 , lineHeight: 20} ]}        
       />
     );
@@ -207,11 +207,12 @@ const DynamicField = props => {
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 10}}
+        style={{marginTop: isFirst ? 0 : 5}}
       />
     );
   };
-     
+  
+  
   const renderDropdown = (mode = 'single') => {
     
     return (
@@ -306,7 +307,7 @@ const DynamicField = props => {
             onChangeText={text => {
               updateSecondFormData(field_name, value.value, text);
             }}
-            style={{marginTop: 10}}
+            style={{marginTop: 5}}
           />
         )}
       </View>
@@ -349,18 +350,20 @@ const DynamicField = props => {
 
   const renderYesNoView = () => {
     return (
-      <YesNoForm
-        onTakeImage={async (images, type) => {}}
-        onPress={(value, type) => {
-          updateFormData(field_name, value);
-        }}
-        key={index}
-        item={{
-          question_text: field_label,
-          include_image: [],
-          rule_compulsory: is_required ? '1' : '',
-          value: value,
-        }}></YesNoForm>
+      <View style={{marginTop:5}}>
+        <YesNoForm        
+          onTakeImage={async (images, type) => {}}
+          onPress={(value, type) => {
+            updateFormData(field_name, value);
+          }}
+          key={index}
+          item={{
+            question_text: field_label,
+            include_image: [],
+            rule_compulsory: is_required ? '1' : '',
+            value: value,
+          }}></YesNoForm>
+      </View>      
     );
   };
 
