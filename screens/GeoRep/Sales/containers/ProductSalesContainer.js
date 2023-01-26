@@ -263,11 +263,11 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     if (props.regret_item) {
       console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
       const config = getConfigFromRegret(props.regret_item);
-
       await storeJsonData('@product_price', []);
       await removeLocalData('@add_product');
       dispatch(setProductPriceLists([]));
       await storeJsonData('@setup', config);
+      setCartCount(0);
       setupFromConfig(config, props.regret_item?.search_text);
     }
   };
@@ -310,8 +310,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       //setSelectedLocation(null);
       // if(props.clearProducts){
       //   props.clearProducts();
-      // }
-      
+      // }      
     }
   };
 

@@ -13,6 +13,7 @@ import CartView from '../components/CartView';
 import {
   calculateCartStatistics,  
   filterProducts,
+  getConfigFromRegret,
   getProductItemDataForRender,
   getTotalCartProductList,
   getWarehouseGroups,
@@ -34,6 +35,7 @@ const CartContainer = props => {
   const transactionSubmitModalRef = useRef(null);
   const dispatch = useDispatch();
 
+  const regret_item = useSelector(state => state.sales.regret);
   const productPriceList = useSelector(state => state.sales.productPriceLists);
   const settings = useSelector(state => state.sales.salesSetting);
   const [addProductList, setAddProductList] = useState([]);
@@ -79,11 +81,49 @@ const CartContainer = props => {
   }, []);
 
   useEffect(() => {
+    if (regret_item) {
+      setupDefineSetupFromRegret();
+    }
+  }, [regret_item]);
+
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {      
       refreshList();      
     });
     return unsubscribe;
   }, [navigation]);
+
+
+  const setupDefineSetupFromRegret = async () => {        
+    if (regret_item) {      
+      const config = getConfigFromRegret(regret_item);      
+      await storeJsonData('@product_price', []);
+      await removeLocalData('@add_product');
+      dispatch(setProductPriceLists([]));
+      await storeJsonData('@setup', config);
+      setDefineSetup(config);
+      setupFromConfig(config, regret_item?.search_text);
+    }
+  };
+
+
+  const setupFromConfig = (config, searchText) => {            
+      //setSelectedLocation(config.location.name);  
+      // onCheckProductSetupChanged(config, type => {
+      //   if (type.includes('changed')) {
+      //     storeJsonData('@product_price', []);
+      //     removeLocalData('@add_product');
+      //     dispatch(setProductPriceLists([]));
+      //   }
+      // });
+      // configAddProductCount();      
+      // if (config != undefined) {
+      //   setOutsideTouch(true);
+      // }
+    
+  };
+
 
   const refreshList = async () => {  
     var defineSetup = await getJsonData('@setup');
