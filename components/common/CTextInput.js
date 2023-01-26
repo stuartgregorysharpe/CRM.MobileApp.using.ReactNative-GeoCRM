@@ -7,12 +7,9 @@ import {whiteLabel} from '../../constants/Colors';
 
 const CTextInput = props => {
 
-  const { multiline, cTextRef, dynamicFieldRef , index , add_prefix, add_suffix} = props;  
-
+  const { multiline, cTextRef, dynamicFieldRef , index , add_prefix, add_suffix , isClickable} = props;  
   const hasError = props.hasError;  
   
-  console.log("p-------" , props.value);
-
 
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
@@ -23,6 +20,16 @@ const CTextInput = props => {
       return 8 * add_prefix.length;
     }
     return 0;
+  }
+
+  const getDisableStatus = () => {
+    if(isClickable != undefined && isClickable){
+      return false;
+    }  
+    if(props.disabled != undefined){
+      return !props.disabled;
+    }
+    return true;
   }
 
   return (
@@ -56,7 +63,7 @@ const CTextInput = props => {
             }
           }}        
           placeholder={props.label}
-          disabled={props.disabled != undefined ? props.disabled : false}
+          editable={getDisableStatus()}
           //mode="outlined"
           multiline={multiline != undefined ? multiline : false}        
           //numberOfLines={3}
