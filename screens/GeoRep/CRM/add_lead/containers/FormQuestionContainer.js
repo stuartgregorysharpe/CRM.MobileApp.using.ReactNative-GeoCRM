@@ -12,15 +12,14 @@ import {
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {GetRequestFormQuestionsDAO} from '../../../../../DAO';
-import { downloadFormQuestionImages } from '../../../../../services/DownloadService/ImageDownload';
+import {downloadFormQuestionImages} from '../../../../../services/DownloadService/ImageDownload';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 export default function FormQuestionContainer(props) {
-
   const {form, leadForms, customMasterFields, selectedLists} = props;
 
   const [formQuestions, setQuestions] = useState([]);
-  const loadingBarRef = useRef(null)
+  const loadingBarRef = useRef(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -57,11 +56,13 @@ export default function FormQuestionContainer(props) {
     }
     if (selectedLists != undefined) {
       if (questionTag === 'msisdn') {
-        var primaryDevice = selectedLists.find(element => element.primary_device === '1');
-        if(primaryDevice != undefined){
+        var primaryDevice = selectedLists.find(
+          element => element.primary_device === '1',
+        );
+        if (primaryDevice != undefined) {
           return primaryDevice.msisdn;
         }
-        return '';        
+        return '';
       }
     }
     return value;
@@ -114,7 +115,6 @@ export default function FormQuestionContainer(props) {
       }
     });
     updateFormQuestionsForDownloading(newData);
-  
   };
 
   const isInNewData = (data, value) => {
@@ -123,28 +123,29 @@ export default function FormQuestionContainer(props) {
       : false;
   };
 
-  const updateFormQuestionsForDownloading = async(formQuestions) => {
+  const updateFormQuestionsForDownloading = async formQuestions => {
     var res = filterTriggeredQuestions(formQuestions);
     if (res != undefined) {
-      // start downlod service 
+      // start downlod service
       console.log('newData == ', JSON.stringify(res));
       loadingBarRef.current.showModal();
       var newFormQuestions = await downloadFormQuestionImages(res);
-      if(newFormQuestions != undefined){
-        //console.log("new form questions " , JSON.stringify(newFormQuestions));
+      setTimeout(() => {
+        loadingBarRef.current.hideModal();
+      }, 500);
+
+      if (newFormQuestions != undefined) {
         setQuestions(newFormQuestions);
       }
-      loadingBarRef.current.hideModal();
-      // end download        
-    }        
+    }
   };
 
-  const updateFormQuestions = (formQuestions) =>{
+  const updateFormQuestions = formQuestions => {
     var res = filterTriggeredQuestions(formQuestions);
     if (res != undefined) {
-      setQuestions(res)
+      setQuestions(res);
     }
-  }
+  };
 
   const onBackPressed = () => {
     props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
@@ -165,7 +166,7 @@ export default function FormQuestionContainer(props) {
       var form_answers = [];
       form_answers = getFormQuestionData(formQuestions);
       var files = [];
-      files = getFormQuestionFile(formQuestions);      
+      files = getFormQuestionFile(formQuestions);
       props.onButtonAction({
         type: Constants.actionType.ACTION_DONE,
         value: {form_answers: form_answers, files: files, form: form},
@@ -175,12 +176,11 @@ export default function FormQuestionContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1, marginBottom: 0}}>
-      
-      <LoadingBar 
-      backButtonDisabled={true}
-      ref={loadingBarRef} description={Strings.Download_Image} />
-
-      
+      <LoadingBar
+        backButtonDisabled={true}
+        ref={loadingBarRef}
+        description={Strings.Download_Image}
+      />
 
       <FormQuestionView
         formQuestions={formQuestions}
