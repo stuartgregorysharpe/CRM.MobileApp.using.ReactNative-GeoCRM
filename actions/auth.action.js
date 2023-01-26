@@ -56,6 +56,7 @@ export const deviceTokenPostApi = async (postBody, indempotencyKey) => {
     'Indempotency-Key':
       indempotencyKey != undefined ? indempotencyKey : generateKey(),
   };
+  console.log("Firebase url", `${baseURL}/authentication_api/users/firebase-id-update`);
   return new Promise(function (resolve, reject) {
     axios
       .post(`${baseURL}/authentication_api/users/firebase-id-update`, postBody, {

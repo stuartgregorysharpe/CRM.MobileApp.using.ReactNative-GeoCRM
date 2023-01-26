@@ -15,8 +15,11 @@ import { getDBConnection } from './sqlite/DBHelper';
 import { createTable } from './sqlite/FormDBHelper';
 import { createBascketLastSync } from './sqlite/BascketLastSyncsHelper';
 import KeyboardManager from 'react-native-keyboard-manager';
-import { firebase } from '@react-native-firebase/messaging';
-import { Button, Modal, Text, View } from 'react-native';
+import { firebase, FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import { AppState, Button, Modal, Text, View } from 'react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
+import { setContentFeedData } from './reducers/feed.reducer';
+import { SET_CONTENT_FEED_DATA } from './actions/actionTypes';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setEnableDebugging(false);
@@ -42,20 +45,38 @@ EStyleSheet.build({
 
 export default function App() {
   const [isShowModal, setShowModal] = useState(false);
+  const appState = React.useRef(AppState.currentState);
   useEffect(() => {
     firebasePushNotifications();
     initializeDB();
+    getAppStatus();
   }, []);
 
+  const getAppStatus = () => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        console.log('App has come to the foreground!');
+      }
+      appState.current = nextAppState;
+      console.log('AppState', appState.current);
+      clearAllNotifications();
+
+    });
+    return () => {
+      subscription.remove();
+    };
+  }
+  const clearAllNotifications = async () => {
+    await notifee.cancelAllNotifications();
+    await notifee.setBadgeCount(0);
+  }
   const firebasePushNotifications = () => {
     firebase.messaging().onMessage(async (remoteMessage) => {
-      console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
-      // setShowModal(true);
+      displayForegroundNotification(remoteMessage);
+      store.dispatch({ type: SET_CONTENT_FEED_DATA, payload: true })
     });
-
     firebase.messaging().onNotificationOpenedApp((remoteMessage) => {
       console.log("onNotificationOpenedApp: ", JSON.stringify(remoteMessage));
-      // setShowModal(true);
     });
 
     firebase.messaging()
@@ -68,6 +89,21 @@ export default function App() {
           );
         }
       });
+
+  }
+  const displayForegroundNotification = async (messageData) => {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH,
+    });
+    await notifee.displayNotification({
+      title: messageData.data.title,
+      body: messageData.data.body,
+      android: {
+        channelId
+      },
+    });
   }
   const initializeDB = async () => {
     const db = await getDBConnection();

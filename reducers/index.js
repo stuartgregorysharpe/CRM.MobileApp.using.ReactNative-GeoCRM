@@ -7,13 +7,14 @@ import location from './location.reducer';
 import pipeline from './pipeline.reducer';
 import notification from './notification.reducer';
 import sales from './sales.reducer';
-
+import feed from './feed.reducer';
 export default combineReducers({
-  notification,  
+  notification,
   auth,
   selection,
   rep,
   location,
   pipeline,
-  sales
+  sales,
+  feed
 });

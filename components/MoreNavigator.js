@@ -32,12 +32,9 @@ import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
-import { checkConnectivity } from '../DAO/helper';
 import { showOfflineDialog } from '../constants/Helper';
 import { useDispatch } from 'react-redux';
 import { SalesPipelineScreen } from '../screens/GeoRep/pipeline/SalesPipelineScreen';
-import HomeNavigator from '../screens/GeoRep/Home/HomeNavigator';
-
 const Stack = createNativeStackNavigator();
 
 export default function RepMoreScreen(props) {

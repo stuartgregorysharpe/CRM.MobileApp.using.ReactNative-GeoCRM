@@ -5,10 +5,10 @@ import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import IndicatorDotScroller from '../../../../components/common/IndicatorDotScroller';
 import Colors from '../../../../constants/Colors';
 import Visits from '../partial/cards/Visits';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
-import { getLocalData, storeLocalValue } from '../../../../constants/Storage';
+import { getLocalData, getUserData, getUserId, storeLocalValue } from '../../../../constants/Storage';
 import { expireToken, getPostParameter, showOfflineDialog } from '../../../../constants/Helper';
 import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
@@ -16,7 +16,7 @@ import { updateCurrentLocation } from '../../../../actions/google.action';
 import { useDispatch } from 'react-redux';
 import { Notification } from '../../../../components/modal/Notification';
 import { showNotification } from '../../../../actions/notification.action';
-import { CHANGE_SYNC_START, CHECKIN } from '../../../../actions/actionTypes';
+import { CHANGE_SYNC_START, CHECKIN, SET_CONTENT_FEED_DATA } from '../../../../actions/actionTypes';
 import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import { checkConnectivity } from '../../../../DAO/helper';
@@ -29,9 +29,13 @@ import Festivals from '../partial/cards/Festivals';
 import Tracking from '../partial/cards/Tracking';
 import Compliance from '../partial/cards/Compliance';
 import PagerView from 'react-native-pager-view';
+import TwoRowContent from '../../../../components/modal/content_type_modals/TwoRowContentFeed';
+import { getContentFeeds, updateContentFeed_post } from '../../../../actions/contentLibrary.action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //const MainPage = props => {
-export const MainPage = forwardRef((props, ref) => {
+
+const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
@@ -63,7 +67,14 @@ export const MainPage = forwardRef((props, ref) => {
   const [lindtdash_festival, setFestivalCard] = useState(false);
   const [lindtdash_tracking, setTrackingCard] = useState(false);
   const [lindtdash_compliance, setComplianceCard] = useState(false);
-
+  const [contentFeedData, setContentFeedData] = useState([]);
+  const dataUpdated = useSelector(state => state.feed.content_feed_data);
+  useEffect(() => {
+    console.log("DATA updated@2222222", dataUpdated);
+    if (dataUpdated) {
+      loadContentFeedData();
+    }
+  }, [dataUpdated]);
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
       if (syncAllViewRef.current) {
@@ -80,8 +91,8 @@ export const MainPage = forwardRef((props, ref) => {
     return unsubscribe;
   }, [navigation]);
 
-
   useEffect(() => {
+    console.log("hello notifications main");
     loadPage();
     if (!isCheckin) {
       cleanLocationId();
@@ -100,9 +111,39 @@ export const MainPage = forwardRef((props, ref) => {
       if (!isConnected) {
         setIsScrollable(false)
       }
-    })
+    });
+    loadContentFeedData();
   }, []);
 
+  const loadContentFeedData = async () => {
+    dispatch({ type: SET_CONTENT_FEED_DATA, payload: false });
+    var user_id = await getUserId();
+    var userData = await getUserData();
+    let params = `?app=1&user_id=${userData.universal_user_id}`; //`?user_id=${user_id}&app=1&role=${userData.role}&manager=&region=`;
+    getContentFeeds(params).then((response) => {
+      // console.log("res", response);
+      if (response) {
+        setContentFeedData(response);
+      }
+    }).catch((error) => {
+      console.log("Error", JSON.stringify(error));
+    })
+  }
+  const updateContentFeed = async (item_id) => {
+    var userData = await getUserData();
+    let params = {
+      engagement_close_user_id: userData.universal_user_id
+    };
+    updateContentFeed_post(params, item_id).then((res) => {
+      console.log("content feed update res", res);
+      if (res) {
+        loadContentFeedData();
+      }
+
+    }).catch((error) => {
+      console.log("content feed update error", error);
+    })
+  }
   useEffect(() => {
     console.log("changed offline status", offlineStatus)
     if (offlineStatus) {
@@ -205,7 +246,7 @@ export const MainPage = forwardRef((props, ref) => {
 
     if (isSellOut) {
       if (!pageData.find(x => x.card === 'sell_out'))
-        pageData.push({ card: 'sell_out', index: pages.length});
+        pageData.push({ card: 'sell_out', index: pages.length });
       setSellOutCard(isSellOut);
     }
 
@@ -279,24 +320,35 @@ export const MainPage = forwardRef((props, ref) => {
     if (item.card === 'visits') {
       return (
         <View collapsable={false} key={index} style={{ marginRight: 1, width: pageWidth }}>
-          <Visits {...props} visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
+          <View>
+            <Visits {...props} visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
+            <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+              item={item} onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+          </View>
         </View>
       );
     } else if (item.card === 'activity') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {activityCard && (
-            <ActivityCard activityCard={activityCard} pageCount={pages.length} pageIndex={item.index}>
-            </ActivityCard>
+            <View>
+              <ActivityCard activityCard={activityCard} pageCount={pages.length} pageIndex={item.index}>
+              </ActivityCard>
+              {/* <TwoRowContent /> */}
+            </View>
           )}
+
         </View>
       );
     } else if (item.card === 'sell_in') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellin && (
-            <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              {/* <TwoRowContent /> */}
+            </View>
           )}
         </View>
       );
@@ -305,8 +357,11 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellout &&
-            <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              {/* <TwoRowContent /> */}
+            </View>
           }
         </View>
       );
@@ -314,8 +369,11 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_tracking &&
-            <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              {/* <TwoRowContent /> */}
+            </View>
           }
         </View>
       );
@@ -323,8 +381,11 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_festival &&
-            <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              {/* <TwoRowContent /> */}
+            </View>
           }
         </View>
       );
@@ -332,8 +393,11 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_mobility &&
-            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              {/* <TwoRowContent /> */}
+            </View>
           }
         </View>
       );
@@ -341,8 +405,11 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_compliance &&
-            <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              {/* <TwoRowContent /> */}
+            </View>
           }
         </View>
       );
@@ -411,5 +478,12 @@ export const MainPage = forwardRef((props, ref) => {
     </ScrollView>
   );
 });
+const mapStateToProps = state => {
+  console.log("content_feed_data", state.feed.content_feed_data);
+  return {
+    content_feed_data: state.feed.content_feed_data
+  }
+};
+export default connect(mapStateToProps)(MainPage);
 
 //export default MainPage;
