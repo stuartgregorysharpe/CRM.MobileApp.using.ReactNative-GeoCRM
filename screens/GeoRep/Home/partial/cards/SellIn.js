@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { style } from '../../../../../constants/Styles'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR } from '../../../../../constants/Colors';
+import Colors from '../../../../../constants/Colors';
 import CustomProgress from '../CustomProgress';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
@@ -84,7 +84,7 @@ const SellIn = (props) => {
                         type="secondaryBold" style={{ flex: 3 }}
                         color={Colors.disabledColor}></AppText>
                 </View>
-                {mth && renderBar('Actual', PRIMARY_COLOR, mth?.actual, mth?.mth_actual_percentage)}
+                {mth && renderBar('Actual', Colors.primaryColor, mth?.actual, mth?.mth_actual_percentage)}
                 {mth && renderBar('Projected', Colors.lightBlueColor, mth?.projected, mth?.mth_projected_percentage)}
                 {mth && renderBar('Target', Colors.redColor, mth?.target, mth?.mth_target_percentage)}
             </View>
@@ -100,7 +100,7 @@ const SellIn = (props) => {
                         type="secondaryBold" style={{ flex: 3 }}
                         color={Colors.disabledColor}></AppText>
                 </View>
-                {meridian && renderBar('Actual', PRIMARY_COLOR, meridian?.actual, meridian?.meridian_actual_percentage)}
+                {meridian && renderBar('Actual', Colors.primaryColor, meridian?.actual, meridian?.meridian_actual_percentage)}
                 {meridian && renderBar('Projected', Colors.lightBlueColor, meridian?.projected, meridian?.meridian_projected_percentage)}
                 {meridian && renderBar('Target', Colors.redColor, meridian?.target, meridian?.meridian_target_percentage)}
             </View>

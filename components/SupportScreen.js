@@ -4,10 +4,8 @@ import { Modal, Portal, Provider, TextInput } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
-
 import SvgIcon from '../../components/SvgIcon';
 import { boxShadow } from '../../constants/Styles';
-import { PRIMARY_COLOR } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import Colors from '../constants/Colors';
 
@@ -38,7 +36,7 @@ const Ticket = () => {
             style={styles.textInput}
             label="Email"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={email}
             onChangeText={text => setEmail(text)}
@@ -55,7 +53,7 @@ const Ticket = () => {
             style={styles.textInput}
             label={picker == '' ? "Select Issue" : picker}
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
           />
           <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
@@ -64,7 +62,7 @@ const Ticket = () => {
       <TextInput
         style={styles.textArea}
         mode="outlined"
-        outlineColor={PRIMARY_COLOR}
+        outlineColor={Colors.primaryColor}
         activeOutlineColor={Colors.disabledColor}
         placeholder="Issue details can be entered here..."
         multiline={true}
@@ -184,9 +182,9 @@ const styles = StyleSheet.create({
     color: Colors.disabledColor
   },
   tabActiveText: {
-    color: PRIMARY_COLOR,
+    color: Colors.primaryColor,
     fontFamily: 'Gilroy-Bold',
-    borderBottomColor: PRIMARY_COLOR,
+    borderBottomColor: Colors.primaryColor,
     borderBottomWidth: 2,
     paddingBottom: 2,
   },
@@ -215,9 +213,9 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
+    borderColor: Colors.primaryColor,
     borderRadius: 7,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: Colors.primaryColor
   },
   submitButtonText: {
     color: '#fff',
@@ -245,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderColor: PRIMARY_COLOR,
+    borderColor: Colors.primaryColor,
     borderWidth: 1,
     width: 140,
     padding: 4,
@@ -257,7 +255,7 @@ const styles = StyleSheet.create({
   downloadText: {
     fontSize: 13,
     fontFamily: Fonts.primaryMedium,
-    color: PRIMARY_COLOR
+    color: Colors.primaryColor
   },
   pickerIcon: {
     position: 'absolute',

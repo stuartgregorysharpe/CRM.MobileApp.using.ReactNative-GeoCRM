@@ -113,7 +113,7 @@ export default function SignIn() {
           res.success &&
           res.success.message === 'User authenticated successfully'
         ) {
-          console.log("dd---" , res)
+          
           var filters = await getFilterData('@filter');          
           getDynamicPins(res.success.access_token)
             .then(async mapPins => {

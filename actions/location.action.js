@@ -44,8 +44,7 @@ export const getLocationFilters = () => (dispatch, getState) => {
       }
     })
     .catch(err => {
-      dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});
-      console.log(err);
+      dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});      
     });
 };
 
@@ -170,8 +169,7 @@ export const postReloop = async postData => {
         if (res.data == undefined) {
           resolve('');
           return;
-        }
-        console.log(res.data);
+        }        
         if (res.data.status == 'success') {
           resolve(res.data.message);
         } else {
@@ -179,8 +177,7 @@ export const postReloop = async postData => {
         }
       })
       .catch(err => {
-        const error = err.response;
-        console.log(error);
+        const error = err.response;        
         if (
           error.status === 401 &&
           error.config &&
@@ -211,8 +208,7 @@ export const postLocationImage = async postData => {
         if (res.data == undefined) {
           resolve('');
           return;
-        }
-        console.log(res.data);
+        }        
         if (res.data.status == 'success') {
           resolve(res.data.message);
         } else {

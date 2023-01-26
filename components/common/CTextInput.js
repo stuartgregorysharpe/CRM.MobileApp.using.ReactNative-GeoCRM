@@ -7,9 +7,9 @@ import {whiteLabel} from '../../constants/Colors';
 
 const CTextInput = props => {
 
-  const { multiline, cTextRef, dynamicFieldRef , index , add_prefix, add_suffix} = props;  
-
+  const { multiline, cTextRef, dynamicFieldRef , index , add_prefix, add_suffix , isClickable} = props;  
   const hasError = props.hasError;  
+  
 
   const renderTopDescription = descriptionText => {
     return <Text style={styles.descriptionText}>{descriptionText}</Text>;
@@ -22,8 +22,18 @@ const CTextInput = props => {
     return 0;
   }
 
+  const getDisableStatus = () => {
+    if(isClickable != undefined && isClickable){
+      return false;
+    }  
+    if(props.disabled != undefined){
+      return !props.disabled;
+    }
+    return true;
+  }
+
   return (
-    <View style={{flex:1}}>
+    <View style={{alignSelf:'stretch', marginTop:5}}>
       <View style={[{
           alignSelf: 'stretch' ,        
           borderColor: hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder }, 
@@ -38,7 +48,7 @@ const CTextInput = props => {
         )}
 
         {
-          props.label && props.label != '' &&
+          props.label && props.label != '' &&  props.value != undefined && props.value != '' &&
           renderTopDescription(props.label)
         }
 
@@ -52,7 +62,8 @@ const CTextInput = props => {
               cTextRef.current = element;
             }
           }}        
-          disabled={props.disabled != undefined ? props.disabled : false}
+          placeholder={props.label}
+          editable={getDisableStatus()}
           //mode="outlined"
           multiline={multiline != undefined ? multiline : false}        
           //numberOfLines={3}
@@ -64,8 +75,9 @@ const CTextInput = props => {
             props.hasError ? whiteLabel().endDayBackground : Colors.disabledColor
           }
           {...props}        
-          style={[ multiline ? styles.multilineTextInput : styles.textInput, props.textInputStyle , {marginLeft : getPrefixPadding()} ]}                  
-          onSubmitEditing={() => {
+          style={[ multiline ? styles.multilineTextInput : styles.textInput, props.textInputStyle , {marginLeft : getPrefixPadding()} ]}        
+          value={props.value}
+          onSubmitEditing={() => {            
             if (
               dynamicFieldRef != undefined &&
               dynamicFieldRef.current != undefined &&
@@ -78,6 +90,7 @@ const CTextInput = props => {
             }
             if(props.onSubmitEditing){
               props.onSubmitEditing();
+              
             }
           }}
         />
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
 
   textInput: {
     alignSelf:'stretch',    
-    height:35,
+    height:30,
     fontSize: 14,
     paddingTop:0,
     paddingBottom:0,
@@ -174,3 +187,6 @@ const styles = StyleSheet.create({
 });
 
 export default CTextInput;
+
+
+
