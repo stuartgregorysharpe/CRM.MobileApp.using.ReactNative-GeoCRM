@@ -373,7 +373,8 @@ export const SetupFieldView = forwardRef((props, ref) => {
 				onSubmit={onSearch} 
 				onStartSearch={onStartSearch}
 				isSkipLocationIdCheck				
-				style={[isSearchStart ? styles.bgColor : {}]} //
+				//style={ styles.bgColor}
+				//style={[isSearchStart ? styles.bgColor : {}]} 
 			{...props} />
 			
 			{/* <View style={{height:55}}></View> */}
