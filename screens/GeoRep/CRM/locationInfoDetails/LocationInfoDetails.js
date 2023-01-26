@@ -5,8 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Text,
+import {  
   View,
   TouchableOpacity,
   Keyboard,
@@ -16,8 +15,6 @@ import {
   BackHandler,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import {grayBackground, style} from '../../../../constants/Styles';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -61,11 +58,11 @@ import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings, Values} from '../../../../constants';
 import {getDateTime} from '../../../../helpers/formatHelpers';
 import {
-  LocationCheckinTypeDAO,
-  PostLocationCheckinTypesDAO,
+  LocationCheckinTypeDAO,  
   PostRequestDAO,
 } from '../../../../DAO';
 import LocationInfo from './LocationInfo';
+import AccessCRMCheckInView from './components/AccessCRMCheckInView';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -75,6 +72,7 @@ var reason_id = '';
 var clickedAction = '';
 
 export const LocationInfoDetails = forwardRef((props, ref) => {
+  
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.locInfo);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -704,12 +702,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
       {features &&
         (features.includes('access_crm') || features.includes('checkin')) &&
-        !keyboardStatus && (
-          <View style={styles.nextButtonBar}>
-            {features && features.includes('access_crm') && (
-              <TouchableOpacity
-                style={[styles.nextButton, styles.accessButton]}
-                onPress={async () => {
+        !keyboardStatus && (          
+            <AccessCRMCheckInView 
+              features={features}
+              onAccessCRM={() => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {
                     if (props.onButtonAction) {
@@ -717,47 +713,22 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                         type: Constants.actionType.ACTION_CLOSE,
                         value: 'access_crm',
                       });
-                    }
-
-                    console.log('access crm', locationInfo);
-
+                    }                    
                     props.navigation.navigate('LocationSpecificInfo', {
                       data: locationInfo,
                       page: 'access_crm',
                     });
                   }
-                }}>
-                <Text style={styles.nextButtonText}>
-                  {Strings.CRM.Access_CRM}
-                </Text>
-                <FontAwesomeIcon
-                  size={22}
-                  color={whiteLabel().actionOutlineButtonText}
-                  icon={faAngleDoubleRight}
-                />
-              </TouchableOpacity>
-            )}
+              }}
 
-            {features && features.includes('checkin') && (
-              <TouchableOpacity
-                style={[styles.checkInButton]}
-                onPress={async () => {
+              onCheckIn={() => {
                   clickedAction = 'checkin';
                   if (_canGoNextPrev()) {
                     onClickCheckIn();
                   }
-                }}>
-                <Text style={[styles.checkInButtonText]}>
-                  {Strings.CRM.Check_In}
-                </Text>
-                <FontAwesomeIcon
-                  size={22}
-                  color={whiteLabel().actionFullButtonIcon}
-                  icon={faAngleDoubleRight}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+              }}
+            />
+
         )}
 
       {isDisposition && (
@@ -774,6 +745,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     </View>
   );
 });
+
 
 const styles = StyleSheet.create({
   container: {
@@ -797,58 +769,7 @@ const styles = StyleSheet.create({
   addressText: {
     flex: 1,
   },
-
-  nextButtonBar: {
-    position: 'absolute',
-    bottom: Platform.OS == 'android' ? 0 : 25,
-    backgroundColor: '#FFF',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: DeviceInfo.isTablet() ? 20 : 15,
-    paddingLeft: DeviceInfo.isTablet() ? 20 : 15,
-    paddingRight: DeviceInfo.isTablet() ? 20 : 15,
-    width: Dimensions.get('screen').width,
-    paddingBottom: DeviceInfo.isTablet() ? 20 : 5,
-    borderColor: 'rgba(0, 0, 0, 0.2)',
-    borderTopWidth: 0.5,
-  },
-
-  nextButton: {
-    width: '47%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderWidth: 1,
-    borderColor: whiteLabel().actionOutlineButtonBorder,
-    borderRadius: 7,
-  },
-  nextButtonText: {
-    color: whiteLabel().actionOutlineButtonText,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryBold,
-  },
-  checkInButton: {
-    width: '47%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderWidth: 1,
-    borderRadius: 7,
-    backgroundColor: whiteLabel().actionFullButtonBackground,
-  },
-
-  checkInButtonText: {
-    color: whiteLabel().actionFullButtonText,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryBold,
-  },
-
+      
   transitionView: {
     position: 'absolute',
     bottom: 0,

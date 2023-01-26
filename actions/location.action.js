@@ -76,8 +76,7 @@ export const getLocationInfo = async (location_id, currentLocation) => {
       resolve(res);
     }).catch((e) => {
       reject(e);
-    });
-      
+    });      
   });
 };
 

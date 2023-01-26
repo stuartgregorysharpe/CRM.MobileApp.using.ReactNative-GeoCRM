@@ -25,7 +25,7 @@ import {
   postStageOutcomUpdate,
   postDispositionFields,
 } from '../../../../actions/location.action';
-import CustomLoading from '../../../../components/CustomLoading';
+
 import {
   CHANGE_DISPOSITION_INFO,
   LOCATION_CONFIRM_MODAL_VISIBLE,
@@ -537,15 +537,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
       {outComesModal()}
       {confirmModal()}
 
-      {/* visible={statusStageOutcomeUpdate=='request' */}
-      {
-        <CustomLoading
-          closeOnTouchOutside={false}
-          onCompleted={() => {}}
-          message="Updating please wait."
-          visible={isLoading}
-        />
-      }
+      
     </View>
   );
 });

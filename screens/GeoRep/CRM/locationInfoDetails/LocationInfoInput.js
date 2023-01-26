@@ -24,7 +24,6 @@ import {
   postStageOutcomUpdate,
   postDispositionFields,
 } from '../../../../actions/location.action';
-import CustomLoading from '../../../../components/CustomLoading';
 import {
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SLIDE_STATUS,
@@ -34,6 +33,11 @@ import {
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
+import { Notification } from '../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+
+var selected_outcome_id = '';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
 
@@ -142,34 +146,42 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   }, [locationInfo]);
 
   useEffect(() => {
-    if (isLoading) {
-      updateOutcomes();
+    if(!outComeModalVisible && selected_outcome_id != ''){
+      updateOutcomes(selected_outcome_id);
     }
-  }, [isLoading]);
+  }, [outComeModalVisible]);
 
-  const updateOutcomes = () => {
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: locationInfo.location_id,
-      stage_id: selectedStageId,
-      outcome_id: selectedOutcomeId,
-      campaign_id: 1,
-      user_local_data: userParam.user_local_data,
-    };
+  const updateOutcomes = (outcome_id) => {
+  
+    if(!isLoading){
+            
+      setIsLoading(true);
+      dispatch(showNotification({type:'loading'}));
+      var userParam = getPostParameter(currentLocation);
+      let postData = {
+        location_id: locationInfo.location_id,
+        stage_id: selectedStageId,
+        outcome_id: outcome_id,
+        campaign_id: 1,
+        user_local_data: userParam.user_local_data,
+      };
 
-    postStageOutcomUpdate(postData)
-      .then(res => {
-        props.onOutcome(true);
-        setTimeout(() => {
+      postStageOutcomUpdate(postData)
+        .then(res => {
+          props.onOutcome(true);
+          selected_outcome_id = '';
+          dispatch(clearNotification());
+          setIsLoading(false);                    
+        })
+        .catch(e => {
           setIsLoading(false);
-        }, 500);
-      })
-      .catch(e => {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-        expireToken(dispatch, e);
+          dispatch(clearNotification());
+          expireToken(dispatch, e);
       });
+      
+    }
+    
+
   };
 
   const handleSubmit = () => {
@@ -404,9 +416,13 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           var outcome_id = selectedOutcomes.find(
             element => element.outcome_name === item,
           ).outcome_id;
-          setSelectedOutComeId(outcome_id);
-          setOutComeModalVisible(false);
-          setIsLoading(true);          
+
+          if(outcome_id != undefined){
+            selected_outcome_id = outcome_id;
+            setSelectedOutComeId(outcome_id);
+            setOutComeModalVisible(false);
+          }
+          
         }}></SelectionPicker>
     );
   };
@@ -414,6 +430,10 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   
   return (
     <View style={styles.container}>
+      
+      <Notification />
+      <LoadingProgressBar />
+
       <AlertDialog
         visible={isSuccess}
         message={message}
@@ -577,14 +597,6 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       {locationInfo !== undefined && locationInfo.outcomes && outComesModal()}
       {confirmModal()}
 
-      {
-        <CustomLoading
-          closeOnTouchOutside={false}
-          message="Updating please wait."
-          onCompleted={() => {}}
-          visible={isLoading}
-        />
-      }
     </View>
   );
 });

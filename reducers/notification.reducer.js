@@ -25,7 +25,8 @@ export default (state = initialState, action) => {
         message: action.payload.message,
         options: action.payload.options,
         autoHide: action.payload.autoHide,
-        visible: true,
+        notificationVisible: action.payload.type != 'loading' ? true : false,
+        loadingBarVisible: action.payload.type == 'loading' ? true : false,
         buttonText: action.payload.buttonText,
         buttonAction: action.payload.buttonAction,
         cancelButtonText: action.payload.cancelButtonText,
@@ -41,7 +42,8 @@ export default (state = initialState, action) => {
         message: null,
         options: null,
         autoHide: true,
-        visible: false,
+        notificationVisible: false,
+        loadingBarVisible : false
       };
     default:
       return state;
