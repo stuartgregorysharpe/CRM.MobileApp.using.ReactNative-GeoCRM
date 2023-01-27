@@ -28,8 +28,7 @@ export const getPipelineFilters = (campaign_id = '') => (dispatch, getState) => 
       }
     })
     .catch((err) => {
-      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });
-      console.log(err);
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: "failure" });      
     })
 }
 

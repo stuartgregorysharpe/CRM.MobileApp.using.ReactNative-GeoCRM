@@ -54,8 +54,7 @@ export default function SupportScreen(props) {
             );
           },
         });      
-      }, 500)
-      
+      }, 0)      
     }
   }
 

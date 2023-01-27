@@ -162,7 +162,7 @@ export default function Customer(props) {
                     ref={actionFormRef}
                     formData={formData}
                     formStructureData={formStructure}
-                    isClickable={true}
+                    //isClickable={true}
                     onPress={(item) =>{                      
                       if( item != undefined && item.editable == "0"){
                         updateCustomerModalRef.current.showModal();

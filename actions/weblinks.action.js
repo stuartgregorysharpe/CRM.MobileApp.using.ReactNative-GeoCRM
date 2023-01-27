@@ -19,7 +19,7 @@ export const getWebLinks = async(token, params) => {
           if (res.data == undefined) {            
             resolve([]);
           }
-          console.log(res.data);
+          
           if(res.data.status == "success"){
             resolve(res.data.weblinks);
           }else{

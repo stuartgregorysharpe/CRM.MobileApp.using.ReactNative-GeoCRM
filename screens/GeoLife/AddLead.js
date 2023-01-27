@@ -3,8 +3,7 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
-  Dimensions,
+  TouchableOpacity,  
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -13,12 +12,9 @@ import {
   parse,
 } from 'react-native-extended-stylesheet-breakpoints';
 import {TextInput, Button, Title} from 'react-native-paper';
-
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
-
 import Divider from './Divider';
-import {PRIMARY_COLOR } from '../constants/Colors';
 import {breakPoint} from '../constants/Breakpoint';
 import {SLIDE_STATUS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
@@ -90,7 +86,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Customer Name"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={customerName}
             onChangeText={text => setCustomerName(text)}
@@ -110,7 +106,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Address"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={address}
             onChangeText={text => setAddress(text)}
@@ -126,7 +122,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Primary Contact Person"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={contactPerson}
             onChangeText={text => setContactPerson(text)}
@@ -142,7 +138,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Primary Contact Email"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={contactEmail}
             onChangeText={text => setContactEmail(text)}
@@ -158,7 +154,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Primary Contact Mobile"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={contactMobile}
             onChangeText={text => setContactMobile(text)}
@@ -174,7 +170,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Location Type"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={locationType}
             onChangeText={text => setLocationType(text)}
@@ -190,7 +186,7 @@ export default function AddLead({screenProps}) {
             style={styles.textInput}
             label="Group"
             mode="outlined"
-            outlineColor={PRIMARY_COLOR}
+            outlineColor={Colors.primaryColor}
             activeOutlineColor={Colors.disabledColor}
             value={group}
             onChangeText={text => getGroup(text)}
@@ -245,10 +241,10 @@ const styles = EStyleSheet.create(
       marginBottom: 8,
     },
     linkBoxText: {
-      color: PRIMARY_COLOR,
+      color: Colors.primaryColor,
       fontFamily: Fonts.secondaryMedium,
       textDecorationLine: 'underline',
-      textDecorationColor: PRIMARY_COLOR,
+      textDecorationColor: Colors.primaryColor,
       textAlign: 'center',
     },
     accuracyText: {
@@ -268,9 +264,9 @@ const styles = EStyleSheet.create(
       paddingRight: 20,
       marginBottom: 10,
       borderWidth: 1,
-      borderColor: PRIMARY_COLOR,
+      borderColor: Colors.primaryColor,
       borderRadius: 7,
-      backgroundColor: PRIMARY_COLOR,
+      backgroundColor: Colors.primaryColor,
     },
     addButtonText: {
       color: '#fff',

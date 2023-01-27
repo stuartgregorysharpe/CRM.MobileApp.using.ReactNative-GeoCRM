@@ -2,13 +2,13 @@ import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { AppText } from "../../../../../../components/common/AppText";
 import SvgIcon from "../../../../../../components/SvgIcon";
-import Colors, { PRIMARY_COLOR } from "../../../../../../constants/Colors";
+import Colors from "../../../../../../constants/Colors";
 
 export default function LindtCardsTitleView({ title, onFilterPress, icon, haveFilter }) {
     return (
         <View style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>
             <SvgIcon icon={icon} width='15px' height='15px' />
-            <AppText size="medium" title={title} type="secondaryBold" style={{ marginLeft: 5, flex: 1 }} color={PRIMARY_COLOR}></AppText>
+            <AppText size="medium" title={title} type="secondaryBold" style={{ marginLeft: 5, flex: 1 }} color={Colors.primaryColor}></AppText>
             <TouchableOpacity onPress={onFilterPress}>
                 <SvgIcon icon="Filter" width='25px' height='25px' style={{ marginHorizontal: 10 }} />
                 {haveFilter && (

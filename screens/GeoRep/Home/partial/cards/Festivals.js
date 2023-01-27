@@ -2,7 +2,7 @@
 import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { expireToken } from '../../../../../constants/Helper';
@@ -17,7 +17,7 @@ import LindtFestivalProgress from './partial/LindtFestivalProgress';
 import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 
 const Festivals = (props) => {
-  const colors = [PRIMARY_COLOR, Colors.graph_grey];
+  const colors = [Colors.primaryColor, Colors.graph_grey];
   const [festivalData, setFestivalData] = useState([]);
   const [clientName,setClientName] = useState('');
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const Festivals = (props) => {
         <View style={{ marginVertical: 5, borderWidth: 1, borderRadius: 5, borderColor: Colors.disabledColor }}>
           <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center' }}>
             <AppText title="Meridian" type="secondaryBold"
-              style={{ marginLeft: 5, flex: 0.8, textAlign: 'right' }} color={PRIMARY_COLOR}></AppText>
+              style={{ marginLeft: 5, flex: 0.8, textAlign: 'right' }} color={Colors.primaryColor}></AppText>
             <View style={{ flex: 2.2 }}>
               <View style={{ marginLeft: 10, }}>
                 <LindtFestivalProgress colors={colors} steps={[getTotalPercentage(item.meridian.total, item.meridian.target),
@@ -75,7 +75,7 @@ const Festivals = (props) => {
           </View>
           <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center' }}>
             <AppText title="SE" type="secondaryBold"
-              style={{ marginLeft: 5, flex: 0.8, textAlign: 'right' }} color={PRIMARY_COLOR}></AppText>
+              style={{ marginLeft: 5, flex: 0.8, textAlign: 'right' }} color={Colors.primaryColor}></AppText>
             <View style={{ flex: 2.2 }}>
               <View style={{ marginLeft: 10 }}>
                 <LindtFestivalProgress colors={colors} steps={[getTotalPercentage(item.se.total, item.se.target),
@@ -103,7 +103,7 @@ const Festivals = (props) => {
         }}>
           <View style={{ marginTop: 10, flexDirection: 'row', }}>
             <AppText title={item.festival_name} type="secondaryBold"
-              style={{ marginLeft: 5, flex: 1 }} color={PRIMARY_COLOR}></AppText>
+              style={{ marginLeft: 5, flex: 1 }} color={Colors.primaryColor}></AppText>
             <View style={{ flex: 2 }}>
               <View style={{ marginLeft: 10, width: '100%' }}>
                 <LindtFestivalProgress colors={colors} steps={[getTotalPercentage(item.total, item.target),
@@ -114,7 +114,7 @@ const Festivals = (props) => {
             </View>
             <View style={{ flex: 0.8, alignItems: 'center' }}>
               <AppText title="Target" type="secondaryMedium"
-                style={{ marginLeft: 5, fontSize: 11 }} color={PRIMARY_COLOR}></AppText>
+                style={{ marginLeft: 5, fontSize: 11 }} color={Colors.primaryColor}></AppText>
               <AppText title={formattedNumber(parseInt(item.target))} type="secondaryBold"
                 style={{ marginLeft: 5, fontSize: 11 }} color={Colors.textColor}></AppText>
             </View>
@@ -141,7 +141,7 @@ const Festivals = (props) => {
         })}
         <View style={{ flexDirection: 'row',justifyContent:'space-evenly',marginTop:10 }}>
           <View style={{ flexDirection: 'row' }}>
-            <View style={{ width: 15, height: 15, borderRadius: 3, backgroundColor: PRIMARY_COLOR }} />
+            <View style={{ width: 15, height: 15, borderRadius: 3, backgroundColor: Colors.primaryColor }} />
             <AppText title={clientName} type="secondaryBold"
               style={{ marginLeft: 5 }} color={Colors.textColor}></AppText>
           </View>

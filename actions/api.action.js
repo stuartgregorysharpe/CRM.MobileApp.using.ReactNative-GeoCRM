@@ -149,8 +149,7 @@ export const postApiRequestMultipart = async (
         resolve(0);
       })
       .catch(err => {
-        //console.log('api error: ', JSON.stringify(err));
-        console.log('----', err, url, postData, token, indempotencyKey);
+        //console.log('api error: ', JSON.stringify(err));        
         const error = err.response;
         if (
           error != undefined &&
@@ -168,7 +167,7 @@ export const postApiRequestMultipart = async (
         ) {
           reject('expired');
         } else {
-          console.log('Error---', err);
+          console.log('Error => ', err);
           reject(err != undefined ? err : 'Undfined Error');
         }
       });

@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
     FlatList,
-    StyleSheet,
-    Text,
+    StyleSheet,    
     TouchableOpacity,
     Modal,
     View,
@@ -10,9 +9,10 @@ import {
 } from 'react-native';
 import { AppText } from '../../../../../components/common/AppText';
 import SvgIcon from '../../../../../components/SvgIcon';
-import Colors, { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 
 const Dropdown = ({ label, onSelect, initial }) => {
+    
     const DropdownButton = useRef();
     const [visible, setVisible] = useState(false);
     const [selected, setSelected] = useState(undefined);
@@ -70,8 +70,8 @@ const Dropdown = ({ label, onSelect, initial }) => {
         <TouchableOpacity
             onPress={() => onItemPress(item)}>
             <View style={[styles.item, {
-                backgroundColor: selected && selected.value === item.value ? PRIMARY_COLOR : Colors.whiteColor,
-                borderColor: PRIMARY_COLOR,
+                backgroundColor: selected && selected.value === item.value ? Colors.primaryColor : Colors.whiteColor,
+                borderColor: Colors.primaryColor,
             }]}>
                 <AppText
                     type="secondaryMedium"
@@ -87,7 +87,7 @@ const Dropdown = ({ label, onSelect, initial }) => {
                         height="30"
                     /> : <View style={{ width: 30, height: 30 }}></View>}
             </View>
-            <View style={{ height: index == 0 || index == pickerData.length - 1 ? 0 : 1, backgroundColor: PRIMARY_COLOR }} />
+            <View style={{ height: index == 0 || index == pickerData.length - 1 ? 0 : 1, backgroundColor: Colors.primaryColor }} />
 
         </TouchableOpacity>
     );
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         // justifyContent: 'center',
-        backgroundColor: PRIMARY_COLOR,
+        backgroundColor: Colors.primaryColor,
         zIndex: 1,
         borderRadius: 7
     },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: Colors.whiteColor,
         borderWidth: 1,
-        borderColor: PRIMARY_COLOR,
+        borderColor: Colors.primaryColor,
         borderRadius: 8
     },
     overlay: {
