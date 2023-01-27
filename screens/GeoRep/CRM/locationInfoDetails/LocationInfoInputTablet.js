@@ -21,11 +21,9 @@ import Colors, {
   whiteLabel,
 } from '../../../../constants/Colors';
 import CustomPicker from '../../../../components/modal/CustomPicker';
-import {
-  postStageOutcomUpdate,
+import {  
   postDispositionFields,
 } from '../../../../actions/location.action';
-
 import {
   CHANGE_DISPOSITION_INFO,
   LOCATION_CONFIRM_MODAL_VISIBLE,
@@ -37,6 +35,11 @@ import {
 import Fonts from '../../../../constants/Fonts';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import { PostRequestDAO } from '../../../../DAO';
+import { generateKey } from '../../../../constants/Utils';
+
+var selected_outcome_id = '';
+var stage_outcome_indempotency = '';
 
 export const LocationInfoInputTablet = forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -140,35 +143,47 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
   }, [dispositionFiledUpdated]);
 
   useEffect(() => {
-    if (isLoading) {
-      updateOutcomes();
+    if(!outComeModalVisible && selected_outcome_id != ''){
+      updateOutcomes(selected_outcome_id);
     }
-  }, [isLoading]);
+  }, [outComeModalVisible]);
 
-  const updateOutcomes = () => {
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: locationInfo.location_id,
-      stage_id: selectedStageId,
-      outcome_id: selectedOutcomeId,
-      campaign_id: 1,
-      user_local_data: userParam.user_local_data,
-    };
-
-    postStageOutcomUpdate(postData)
-      .then(res => {
+ 
+  const updateOutcomes = (outcome_id) => {
+      
+    if(!isLoading){
+            
+      setIsLoading(true);
+      dispatch(showNotification({type:'loading'}));
+      var userParam = getPostParameter(currentLocation);
+      let postData = {
+        location_id: locationInfo.location_id,
+        stage_id: selectedStageId,
+        outcome_id: outcome_id,
+        campaign_id: 1,
+        user_local_data: userParam.user_local_data,
+      };
+      
+      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' ,stage_outcome_indempotency).then((res) => {
+        console.log("response => ", res)
+        if(res.status == Strings.Success){
+          stage_outcome_indempotency = generateKey();
+        } 
         props.onOutcome(true);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      })
-      .catch(e => {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-        expireToken(dispatch, e)
-      });
+        selected_outcome_id = '';
+        dispatch(clearNotification());
+        setIsLoading(false);
+
+      }).catch((e) => {
+        setIsLoading(false);
+        dispatch(clearNotification());
+        expireToken(dispatch, e);
+
+      });      
+    }
+
   };
+
 
   const handleSubmit = () => {
     var userParam = getPostParameter(currentLocation);
@@ -352,9 +367,10 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
             style={[styles.pickerItem]}
             key={key}
             onPress={() => {
-              setSelectedOutComeId(outcome.outcome_id);
+              selected_outcome_id = outcome.outcome_id;
+              setSelectedOutComeId(outcome.outcome_id);              
               setOutComeModalVisible(!outComeModalVisible);
-              setIsLoading(true);
+              //setIsLoading(true);
             }}>
             <Text style={styles.pickerItemText}>{outcome.outcome_name}</Text>
             {outcome.outcome_id == selectedOutcomeId && (

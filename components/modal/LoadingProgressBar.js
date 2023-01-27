@@ -10,13 +10,11 @@ const LoadingProgressBar = () => {
 	const dispatch = useDispatch();
 	const loadingBarRef = useRef(null);
 
-	useEffect(() => {
-		console.log("notification",notification)
+	useEffect(() => {		
 		if (notification.loadingBarVisible && notification.loadingBarVisible == true && notification.type == 'loading') {
 			if (notification.autoHide === true)
 				setTimeout(() => dispatch(clearNotification()), 2000);
-			if(loadingBarRef.current){
-				console.log("trigger  times");
+			if(loadingBarRef.current){				
 				loadingBarRef.current.showModal();
 			}	
 		}else{

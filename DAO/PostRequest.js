@@ -4,10 +4,11 @@ import { Strings } from "../constants";
 import { jsonToFormData, jsonToFormDataWithSubKey } from "../helpers/jsonHelper";
 import { showOfflineDialog } from "../constants/Helper";
 
-export function find(locationId, postData , type, url , itemLabel , itemSubLabel){
+export function find(locationId, postData , type, url , itemLabel , itemSubLabel , indempotency = null){
   
     const nonImplementedApis = [
-        "start_end_day"
+        "start_end_day",
+        "update-stage-outcome"
     ];
 
   return new Promise(function(resolve, reject) {
@@ -30,7 +31,7 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                     
                     console.log("submit form data", JSON.stringify(submitFormData));
 
-                    postApiRequestMultipart(url, submitFormData)
+                    postApiRequestMultipart(url, submitFormData , indempotency)
                     .then(async res => {
                         resolve(res);
                     })
@@ -39,7 +40,7 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                         reject(e);
                     });
                 }else{
-                    postApiRequest(url, {...postData, mode: 'online' })
+                    postApiRequest(url, {...postData, mode: 'online' } , indempotency)
                     .then(async res => {                    
                         resolve(res);
                     })

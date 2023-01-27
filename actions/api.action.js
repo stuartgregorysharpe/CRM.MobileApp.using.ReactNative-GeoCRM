@@ -81,7 +81,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,
       'Indempotency-Key':
-        indempotencyKey != undefined ? indempotencyKey : generateKey(),
+      indempotencyKey != null && indempotencyKey != undefined ? indempotencyKey : generateKey(),
     };
     axios
       .post(url, postData, {
@@ -128,7 +128,7 @@ export const postApiRequestMultipart = async (
   return new Promise(function (resolve, reject) {
     console.log('myforms', JSON.stringify(postData));
     //headers:{"Accept":"application/json, text/plain, /","Content-Type": "multipart/form-data"}
-    const key = indempotencyKey != undefined ? indempotencyKey : generateKey();
+    const key =  indempotencyKey != null && indempotencyKey != undefined ? indempotencyKey : generateKey();
 
     axios
       .post(url, postData, {

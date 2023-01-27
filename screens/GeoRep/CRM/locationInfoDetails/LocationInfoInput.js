@@ -21,7 +21,6 @@ import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {breakPoint} from '../../../../constants/Breakpoint';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import {
-  postStageOutcomUpdate,
   postDispositionFields,
 } from '../../../../actions/location.action';
 import {
@@ -36,8 +35,12 @@ import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import { Notification } from '../../../../components/modal/Notification';
 import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import { PostRequestDAO } from '../../../../DAO';
+import { Strings } from '../../../../constants';
+import { generateKey } from '../../../../constants/Utils';
 
 var selected_outcome_id = '';
+var stage_outcome_indempotency = '';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
 
@@ -119,6 +122,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   );
 
   useEffect(() => {
+    stage_outcome_indempotency = generateKey();
     dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
     dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: null});
   }, []);
@@ -151,10 +155,8 @@ export const LocationInfoInput = forwardRef((props, ref) => {
     }
   }, [outComeModalVisible]);
 
-  const updateOutcomes = (outcome_id) => {
-  
-    if(!isLoading){
-            
+  const updateOutcomes = (outcome_id) => {      
+    if(!isLoading){            
       setIsLoading(true);
       dispatch(showNotification({type:'loading'}));
       var userParam = getPostParameter(currentLocation);
@@ -166,21 +168,22 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         user_local_data: userParam.user_local_data,
       };
 
-      postStageOutcomUpdate(postData)
-        .then(res => {
-          props.onOutcome(true);
-          selected_outcome_id = '';
-          dispatch(clearNotification());
-          setIsLoading(false);                    
-        })
-        .catch(e => {
-          setIsLoading(false);
-          dispatch(clearNotification());
-          expireToken(dispatch, e);
-      });
-      
+      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' , stage_outcome_indempotency).then((res) => {        
+        if(res.status == Strings.Success){
+          stage_outcome_indempotency = generateKey();
+        } 
+        props.onOutcome(true);
+        selected_outcome_id = '';
+        dispatch(clearNotification());
+        setIsLoading(false);
+
+      }).catch((e) => {
+        setIsLoading(false);
+        dispatch(clearNotification());
+        expireToken(dispatch, e);
+
+      });      
     }
-    
 
   };
 

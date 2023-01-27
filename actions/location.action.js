@@ -80,41 +80,6 @@ export const getLocationInfo = async (location_id, currentLocation) => {
   });
 };
 
-export const postStageOutcomUpdate = async postData => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-
-  console.log(postData);
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/location-info/updateStageOutcome`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': generateKey(),
-        },
-      })
-      .then(res => {
-        console.log('Resonse', res.data);
-        if (res.data == undefined) {
-          resolve(0);
-          return;
-        }
-        resolve(1);
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
 
 export const postDispositionFields = async postData => {
   var base_url = await getBaseUrl();
