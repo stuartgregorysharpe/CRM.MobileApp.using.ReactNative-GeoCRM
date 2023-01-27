@@ -11,25 +11,25 @@ const LoadingProgressBar = () => {
 	const loadingBarRef = useRef(null);
 
 	useEffect(() => {		
+		
 		if (notification.loadingBarVisible && notification.loadingBarVisible == true && notification.type == 'loading') {
-			if (notification.autoHide === true)
-				setTimeout(() => dispatch(clearNotification()), 2000);
+						
 			if(loadingBarRef.current){				
 				loadingBarRef.current.showModal();
 			}	
-		}else{
-			if(loadingBarRef.current){				
+		}else {
+			if(loadingBarRef.current){
 				loadingBarRef.current.hideModal();
-			}	
+			}
 		}
-	}, [notification]);
+	}, [notification.loadingBarVisible]);
 
   return (
-    <View>
-        <LoadingBar 
-			ref={loadingBarRef}
-		/>
-    </View>
+	<LoadingBar 
+		backButtonDisabled={true}			 
+		closableWithOutsideTouch={false}
+		ref={loadingBarRef}
+	/>
   )
 }
 

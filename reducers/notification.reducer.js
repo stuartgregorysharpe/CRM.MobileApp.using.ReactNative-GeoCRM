@@ -1,3 +1,4 @@
+import { stat } from 'react-native-fs';
 import {CHANGE_LOGIN_STATUS, CHANGE_USER_INFO} from '../actions/actionTypes';
 
 const initialState = {
@@ -6,6 +7,8 @@ const initialState = {
   message: null,
   options: null,
   visible: false,
+  notificationVisible: false,
+  loadingBarVisible: false,
   autoHide: true,
   buttonText: false,
   buttonAction: false,
@@ -17,6 +20,15 @@ const initialState = {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, action) => {
   switch (action.type) {
+
+    case 'SHOW_LOADING_BAR':
+      return {
+        ...state,
+        type: action.payload.type,
+        title: action.payload.title,
+        loadingBarVisible: true,
+      };
+
     case 'SHOW_NOTIFICATION':
       return {
         ...state,
@@ -25,8 +37,7 @@ export default (state = initialState, action) => {
         message: action.payload.message,
         options: action.payload.options,
         autoHide: action.payload.autoHide,
-        notificationVisible: action.payload.type != 'loading' ? true : false,
-        loadingBarVisible: action.payload.type == 'loading' ? true : false,
+        notificationVisible: action.payload.type != 'loading' ? true : false,        
         buttonText: action.payload.buttonText,
         buttonAction: action.payload.buttonAction,
         cancelButtonText: action.payload.cancelButtonText,
@@ -42,9 +53,16 @@ export default (state = initialState, action) => {
         message: null,
         options: null,
         autoHide: true,
-        notificationVisible: false,
-        loadingBarVisible : false
+        notificationVisible: false,        
       };
+
+    case 'CLEAR_LOADING_BAR':
+      return {
+        ...state,
+        type: null,
+        title: null,
+        loadingBarVisible: false
+      }
     default:
       return state;
   }

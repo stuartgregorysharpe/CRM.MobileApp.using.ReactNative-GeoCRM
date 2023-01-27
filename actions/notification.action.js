@@ -35,3 +35,18 @@ export const showNotification = ({
 export const clearNotification = () => ({
   type: 'CLEAR_NOTIFICATION',
 });
+
+export const showLoadingBar = ({
+  type,
+  title
+}) => ({
+  type: 'SHOW_LOADING_BAR',
+  payload: {
+    type: type || null,
+    title: title || null,
+  }
+});
+
+export const clearLoadingBar = () => ({
+  type: 'CLEAR_LOADING_BAR',
+});
