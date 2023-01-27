@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   itemButton: {
     position: 'relative',
     justifyContent: 'center',
+    flexDirection: 'row',
     padding: 4,
     marginTop: 4,
     marginBottom: 4,
