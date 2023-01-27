@@ -22,10 +22,11 @@ export const Notification = ({}) => {
 
   useEffect(() => {
     if (notification.notificationVisible) {
+      
       if (notification.autoHide === true)
         setTimeout(() => dispatch(clearNotification()), 2000);
     }
-  }, [notification]);
+  }, [notification.notificationVisible]);
 
   const containerStyle = useMemo(
     () =>

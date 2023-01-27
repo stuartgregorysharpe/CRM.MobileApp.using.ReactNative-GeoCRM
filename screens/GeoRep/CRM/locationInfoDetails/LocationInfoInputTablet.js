@@ -186,6 +186,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
 
 
   const handleSubmit = () => {
+    
     var userParam = getPostParameter(currentLocation);
     let postData = {
       location_id: locationInfo.location_id,
@@ -201,16 +202,16 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
       });
     });
 
-    postDispositionFields(postData)
-      .then(res => {
-        setMessage(res);
-        setIsSuccess(true);
-      })
-      .catch(error => {
-        setMessage(error);
-        setIsSuccess(true);
-        expireToken(dispatch, error);
-      });
+     PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency).then((res) => {
+      console.log("response ->" , res);
+      if(res.status == Strings.Success){              
+        dispatch(showNotification({type: Strings.Success , message: res.message, buttonText: Strings.Ok }));
+      }      
+    }).catch((e) => {
+      dispatch(showNotification({type: Strings.Success , message: e.response, buttonText: Strings.Ok}));
+      expireToken(dispatch, e);
+    });
+ 
   };
 
   const handleChangeText = (text, field, key) => {

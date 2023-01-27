@@ -507,8 +507,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
   return (
     <View style={[styles.container, {flex: 1}]}>
+      
       {showFeedbackDropDownModal()}
-      <Notification />
+      
+      {/* <Notification /> */}
 
       <AlertDialog
         visible={isSuccess}
