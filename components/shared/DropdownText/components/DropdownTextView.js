@@ -73,19 +73,19 @@ const DropdownTextView = (props) => {
                             title={item.field_label} 
                             index={index + 1} 
                             input_label={item.input_label} 
-                            item={element} 
+                            item={element}
                             onChange={onChange} 
                         />
                     )
                 })
             }
-
-            <AddItemButton title={item.field_label} onPress={addItem} />
+            
+            <AddItemButton title={item.field_label} hasError={props.hasError != undefined ? props.hasError : false} onPress={addItem} />
             
             <SingleSelectModal
                 items={presetOptions}
                 mode={'single'}
-                modalTitle={'Select ' + item.question_text}
+                modalTitle={'Select d' + item.question_text}
                 checkedValue={''}
                 onButtonAction={onButtonAction}
                 ref={selectModalRef}

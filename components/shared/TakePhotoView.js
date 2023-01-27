@@ -31,8 +31,7 @@ const TakePhotoView = props => {
     }
   };
 
-  const updateImageData = path => {
-    console.log("update image =======" , photos , path)
+  const updateImageData = path => {    
     setIsPicker(false);
     if (photos && photos !== null) {
       onUpdatePhotos([...photos, path]);

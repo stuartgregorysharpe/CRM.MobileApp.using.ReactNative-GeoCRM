@@ -19,11 +19,10 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                     type === "leadfields" || 
                     type === "sell_to_trader" ||
                     type === "transaction-submit"
-                ){ 
-                                        
+                ){                                        
                     var submitFormData;
                     if(type === "transaction-submit"){                        
-                        submitFormData = jsonToFormDataWithSubKey(postData);                        
+                        submitFormData = jsonToFormDataWithSubKey(postData);
                     }else{
                         submitFormData =  jsonToFormData(postData);
                     }                    

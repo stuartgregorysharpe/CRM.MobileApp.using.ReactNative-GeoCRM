@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import Searchbar from '../../components/SearchBar';
 import Card from '../../screens/GeoRep/ContentLibrary/partial/Card';
-import { BG_COLOR } from '../../constants/Colors';
+import Colors, { } from '../../constants/Colors';
 import { CHANGE_LIBRARY_CHILD_STATUS } from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 
@@ -157,7 +157,7 @@ export default function ContentLibraryScreen({screenProps}) {
 const styles = StyleSheet.create({
   container: {
     minHeight: '100%',
-    backgroundColor: BG_COLOR
+    backgroundColor: Colors.bgColor
   },
   innerContainer: {
     padding: 10

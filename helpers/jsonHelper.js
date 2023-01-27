@@ -28,7 +28,12 @@ function buildFormDataWithSubKey(formData, data, parentKey) {
 
     try{
 
-      if (  ( parentKey == null || ( !parentKey.includes("fieldPhotos") && !parentKey.includes("signatures") )  ) &&  data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File)) {
+      if (  ( parentKey == null || ( !parentKey.includes("fieldPhotos") && !parentKey.includes("signatures") )  ) 
+      &&  data 
+      && typeof data === 'object' 
+      && !(data instanceof Date) 
+      && !(data instanceof File)) {
+        
         Object.keys(data).forEach(key => {
           console.log( "=> ", key , data[key]);
           buildFormDataWithSubKey(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);

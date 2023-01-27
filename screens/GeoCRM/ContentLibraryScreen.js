@@ -3,7 +3,8 @@ import { SafeAreaView, View, StyleSheet, ScrollView } from 'react-native';
 
 import Searchbar from '../../components/SearchBar';
 import Card from '../../screens/GeoRep/ContentLibrary/partial/Card';
-import { BG_COLOR } from '../../constants/Colors';
+import Colors , { } from '../../constants/Colors';
+
 
 const lists = [
   {
@@ -68,7 +69,7 @@ export default function ContentLibraryScreen({screenProps}) {
 const styles = StyleSheet.create({
   container: {
     minHeight: '100%',
-    backgroundColor: BG_COLOR
+    backgroundColor: Colors.bgColor
   },
   innerContainer: {
     padding: 10

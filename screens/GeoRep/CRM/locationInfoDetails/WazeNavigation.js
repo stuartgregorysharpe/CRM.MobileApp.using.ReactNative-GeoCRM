@@ -67,9 +67,6 @@ export default function WazeNavigation(props) {
     }
   }, [features]);
 
-  const checkVisible = async () => {
-    setVisible(await checkFeatureIncludeParam('navigation_waze'));
-  };
 
   const openWaze = async() => {
 
@@ -120,26 +117,21 @@ export default function WazeNavigation(props) {
   }
 
   const openGoogle = async() => {
-
-    var wazeByAddress = await checkFeatureIncludeParam(
-      'waze_by_address',
-    );
-
+    
     try {
-      var wazeLocation = location;
-      if(location.latitude == '' || location.latitude == undefined){
-        var parseLocation = await parseCoordinate(address);
-        wazeLocation = parseLocation;
-      }
-      const label = address;
-      const url = Platform.select({
-        ios: "maps:" + wazeLocation.latitude + "," + wazeLocation.longitude + "?q=" + label,
-        android: "geo:" + wazeLocation.latitude + "," + wazeLocation.longitude + "?q=" + label
-      });
-      Linking.openURL(url);      
+		var wazeLocation = location;
+		if(location.latitude == '' || location.latitude == undefined){
+			var parseLocation = await parseCoordinate(address);
+			wazeLocation = parseLocation;
+		}
+		const label = address;
+		const url = Platform.select({
+			ios: "maps:" + wazeLocation.latitude + "," + wazeLocation.longitude + "?q=" + label,
+			android: "geo:" + wazeLocation.latitude + "," + wazeLocation.longitude + "?q=" + label
+		});
+		Linking.openURL(url);      
     } catch (e) {
-      dispatch(showNotification({type: Strings.Success, message:'Google Maps is not available/installed on this device', buttonText: Strings.Ok}));
-      //Google Maps is not available/installed on this device    
+      	dispatch(showNotification({type: Strings.Success, message:'Google Maps is not available/installed on this device', buttonText: Strings.Ok}));      
     }
   }
 
@@ -147,12 +139,12 @@ export default function WazeNavigation(props) {
   const openViewRoute = async() => {    
     
     try {
-
         var wazeLocation = location;
         if(location.latitude === '' || location.latitude == undefined){
           var parseLocation = await parseCoordinate(address);
           wazeLocation = parseLocation;
         }
+
         const label = address;
 		if(wazeLocation != undefined && currentLocation != undefined){
             var locations = [];
@@ -161,12 +153,7 @@ export default function WazeNavigation(props) {
             setCoordinates(locations);
 			viewRouteModalRef.current.showModal();
         }	
-
-        //navigationMain.navigate('DeeplinkViewRouteMap' , {location:wazeLocation });		
-        // if(props.onCloseModal){
-        //   props.onCloseModal();
-        // }
-
+        
     } catch (e) {
     
     }   
@@ -188,14 +175,16 @@ export default function WazeNavigation(props) {
           ]}>
 
 			<ViewRouteModal 
-			  ref={viewRouteModalRef}
-			  coordinates={coordinates}
-			  currentLocation={currentLocation}
-			  region={{
-				  latitude: currentLocation.latitude,
-				  longitude: currentLocation.longitude,
-				  zoomEnabled : true
-			  }}
+				title='View Route'
+				hideClear
+			  	ref={viewRouteModalRef}
+			  	coordinates={coordinates}
+			  	currentLocation={currentLocation}
+				region={{
+					latitude: currentLocation.latitude,
+					longitude: currentLocation.longitude,
+					zoomEnabled : true
+				}}
 			/>
 
           <View style={{flexDirection:'row'}}>

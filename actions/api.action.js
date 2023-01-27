@@ -49,6 +49,7 @@ export const getApiRequest = async (route, param) => {
         }
       })
       .catch(err => {
+        console.log('get api request error => ', err);
         console.log(url, err);
         console.log(err?.response?.data);
         const error = err.response;
@@ -94,7 +95,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
         }
       })
       .catch(err => {
-        console.log('postApiRequest -- error', err);
+        console.log('postApiRequest error =>', err.response);
         const error = err.response;
         if (
           error.status === 401 &&
@@ -148,8 +149,7 @@ export const postApiRequestMultipart = async (
         resolve(0);
       })
       .catch(err => {
-        //console.log('api error: ', JSON.stringify(err));
-        console.log('----', err, url, postData, token, indempotencyKey);
+        //console.log('api error: ', JSON.stringify(err));        
         const error = err.response;
         if (
           error != undefined &&
@@ -167,7 +167,7 @@ export const postApiRequestMultipart = async (
         ) {
           reject('expired');
         } else {
-          console.log('Error---', err);
+          console.log('Error => ', err);
           reject(err != undefined ? err : 'Undfined Error');
         }
       });

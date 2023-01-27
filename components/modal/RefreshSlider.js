@@ -15,7 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
 import Colors, {  
-  BG_COLOR,
+  
 } from '../../constants/Colors';
 import {breakPoint} from '../../constants/Breakpoint';
 import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../actions/actionTypes';
@@ -162,7 +162,7 @@ const perWidth = setWidthBreakpoints(breakPoint);
 const styles = EStyleSheet.create(
   parse({
     refreshSliderContainer: {
-      backgroundColor: BG_COLOR,
+      backgroundColor: Colors.bgColor,
     },
     sliderHeader: {
       flexDirection: 'row',

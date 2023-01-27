@@ -1,9 +1,6 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Colors, Fonts} from '../../../../constants';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {whiteLabel} from '../../../../constants/Colors';
-import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import SvgIcon from '../../../../components/SvgIcon';
 
 const CalendarCheckOutButton = props => {
@@ -39,8 +36,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 4,
     borderRadius: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   itemButtonText: {
     fontSize: 14,

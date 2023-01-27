@@ -18,29 +18,45 @@ import TopThreeTab from '../../../components/common/TopThreeTab';
 import {SubmitButton} from '../../../components/shared/SubmitButton';
 import {checkConnectivity} from '../../../DAO/helper';
 import {useDispatch} from 'react-redux';
+import { Colors } from '../../../constants';
+
 
 export default function SupportScreen(props) {
 
+  const navigation = props.navigation;
   const headers = ['Ticket', 'FAQ', 'WhatsApp'];  
   const [tabIndex, setTabIndex] = useState(1);
   const ticketRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    refreshHeader();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      refreshHeader();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const refreshHeader = () => {
     if (props.screenProps) {
-      props.screenProps.setOptions({
-        headerTitle: () => {
-          return (
-            <TouchableOpacity onPress={() => {}}>
-              <View style={style.headerTitleContainerStyle}>
-                <Text style={style.headerTitle}>Support</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        },
-      });      
+      setTimeout(() => {
+        props.screenProps.setOptions({
+          headerTitle: () => {
+            return (
+              <TouchableOpacity onPress={() => {}}>
+                <View style={style.headerTitleContainerStyle}>
+                  <Text style={style.headerTitle}>Support</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          },
+        });      
+      }, 0)      
     }
-  },[]);
+  }
 
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)
@@ -101,7 +117,7 @@ export default function SupportScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'BG_COLOR',
+    backgroundColor: Colors.bgColor,
     paddingBottom: 50,
   },
 });

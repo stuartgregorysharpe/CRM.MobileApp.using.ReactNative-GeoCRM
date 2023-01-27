@@ -1,5 +1,5 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
@@ -7,14 +7,23 @@ import Fonts from '../../../../constants/Fonts';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
 import {getLocalData} from '../../../../constants/Storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {LOCATION_ID_CHANGED} from '../../../../actions/actionTypes';
+import {
+  CHECKIN,
+  LOCATION_ID_CHANGED,
+  LOCATION_CHECK_OUT_COMPULSORY,
+} from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
+import {
+  clearNotification,
+  showNotification,
+} from '../../../../actions/notification.action';
+import {Strings} from '../../../../constants';
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
-  const {navigation, current, tabIndex, onItemSelected} = props;
+  const {navigation, tabIndex, onItemSelected} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -25,6 +34,8 @@ export function CalendarItem(props) {
   if (checkinScheduleId == item.schedule_id) {
     item.checkin_state = 'checkin_current';
   }
+  const dispatch = useDispatch();
+
   useEffect(() => {
     initData();
   }, []);
@@ -36,7 +47,7 @@ export function CalendarItem(props) {
   const checkOpenReplaceCheckin = () => {
     return features != null && features.includes('open_replace_checkin');
   };
-  const dispatch = useDispatch();
+
   const getButtonColor = checkin_state => {
     if (checkOpenReplaceCheckin()) {
       return whiteLabel().actionFullButtonBackground;
@@ -70,56 +81,113 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         goBack={async res => {
-          console.log('res', res);
+          if (props.onRefresh) {
+            props.onRefresh();
+          }
+          dispatch(
+            showNotification({
+              type: Strings.Success,
+              message: res.message,
+              buttonText: Strings.Ok,
+              buttonAction: async () => {
+                dispatch({
+                  type: CHECKIN,
+                  payload: false,
+                  scheduleId: false,
+                });
+                dispatch({
+                  type: LOCATION_CHECK_OUT_COMPULSORY,
+                  payload: true,
+                });
+                dispatch(clearNotification());
+              },
+            }),
+          );
         }}
       />
     );
   };
 
   const renderStatusButton = () => {
+    if (
+      item.checkin_state === 'checkin_required' ||
+      item.checkin_state === 'checkin_completed'
+    ) {
+      return (
+        <CheckinLinkButton
+          title="Check In"
+          locationId={item.location_id}
+          scheduleId={item.schedule_id}
+          renderSubmitButton={onCheckIn => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  onCheckIn();
+                }}
+                style={[
+                  styles.itemButton,
+                  {backgroundColor: getButtonColor(item.checkin_state)},
+                ]}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={styles.itemButtonText}>
+                    {getButtonText(item.checkin_state)}
+                  </Text>
+                </View>
+                {item.checkin_state === 'checkin_completed' ? (
+                  <FontAwesomeIcon
+                    style={styles.itemButtonIcon}
+                    size={16}
+                    color={whiteLabel().actionFullButtonIcon}
+                    icon={faCheckCircle}
+                  />
+                ) : (
+                  <SvgIcon
+                    style={styles.itemButtonIcon}
+                    icon="Angle_Left"
+                    width="14px"
+                    height="14px"
+                  />
+                )}
+              </TouchableOpacity>
+            );
+          }}
+        />
+      );
+    }
     return (
-      <CheckinLinkButton
-        title="Check In"
-        locationId={item.location_id}
-        scheduleId={item.schedule_id}
-        renderSubmitButton={onCheckIn => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                onCheckIn();
-              }}
-              style={[
-                styles.itemButton,
-                {backgroundColor: getButtonColor(item.checkin_state)},
-              ]}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                }}>
-                <Text style={styles.itemButtonText}>
-                  {getButtonText(item.checkin_state)}
-                </Text>
-              </View>
-              {item.checkin_state === 'checkin_completed' ? (
-                <FontAwesomeIcon
-                  style={styles.itemButtonIcon}
-                  size={16}
-                  color={whiteLabel().actionFullButtonIcon}
-                  icon={faCheckCircle}
-                />
-              ) : (
-                <SvgIcon
-                  style={styles.itemButtonIcon}
-                  icon="Angle_Left"
-                  width="14px"
-                  height="14px"
-                />
-              )}
-            </TouchableOpacity>
-          );
-        }}
-      />
+      <TouchableOpacity
+        style={[
+          styles.itemButton,
+          {backgroundColor: getButtonColor(item.checkin_state)},
+        ]}
+        onPress={() => {
+          if (checkOpenReplaceCheckin()) {
+            dispatch({
+              type: LOCATION_ID_CHANGED,
+              payload: {value: item.location_id, type: tabIndex},
+            });
+            navigation.navigate('CRM', {
+              screen: 'LocationSearch',
+              params: {location_id: item.location_id},
+            });
+            onItemSelected();
+          }
+        }}>
+        <Text style={styles.itemButtonText}>
+          {' '}
+          {getButtonText(item.checkin_state)}{' '}
+        </Text>
+        <FontAwesomeIcon
+          style={styles.itemButtonIcon}
+          size={16}
+          color={whiteLabel().actionFullButtonIcon}
+          icon={faCheckCircle}
+        />
+      </TouchableOpacity>
     );
   };
 
@@ -147,8 +215,6 @@ export function CalendarItem(props) {
           {item.checkin_state === 'checkin_current'
             ? renderCheckOutButton()
             : renderStatusButton()}
-
-          {/* <Text style={[styles.itemText, {textAlign: 'center'}]}>{getDistance(item.coordinates, current).toFixed(2)}km</Text> */}
         </View>
       </View>
     );

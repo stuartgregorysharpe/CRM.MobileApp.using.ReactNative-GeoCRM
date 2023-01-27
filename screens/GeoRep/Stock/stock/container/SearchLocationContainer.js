@@ -17,7 +17,7 @@ const SearchLocationContainer = props => {
   const [locationId, setLocationId] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   var searchKey = '';
-  var changedSearchKey = '';
+  var changedSearchKey = '';  
 
   useEffect(() => {
     if(type != 'setup')
@@ -104,7 +104,6 @@ const SearchLocationContainer = props => {
     let param = {
       search_text: key,
     };
-
 
     GetRequestCustomerSearchDAO.find(param).then((res) => {      
       setLists(res.items);

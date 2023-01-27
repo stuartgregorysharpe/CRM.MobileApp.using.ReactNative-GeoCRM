@@ -76,6 +76,5 @@ export default function SimDetailsView(props) {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
-    height: 275,
   },
 });

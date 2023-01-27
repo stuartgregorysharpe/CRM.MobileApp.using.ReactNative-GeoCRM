@@ -7,8 +7,7 @@ import { getApiRequest } from '../../../../../actions/api.action';
 import CModal from '../../../../../components/common/CModal';
 import FilterButton from '../../../../../components/FilterButton';
 import { Constants, Fonts } from '../../../../../constants';
-import { BG_COLOR, whiteLabel } from '../../../../../constants/Colors';
-import { isKeyExistInObject } from '../../../../../constants/Utils';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import CardFilterOptionsModal from './CardFilterOptionsModal';
 
 const CardsFilterModal = React.forwardRef((props, ref) => {
@@ -197,7 +196,7 @@ const CardsFilterModal = React.forwardRef((props, ref) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: BG_COLOR,
+        backgroundColor: Colors.bgColor,
         padding: 10,
         alignSelf: 'stretch',
     },

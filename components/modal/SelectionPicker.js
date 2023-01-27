@@ -1,6 +1,6 @@
 import React , {useState} from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet, ScrollView ,TouchableOpacity, Text, Dimensions } from 'react-native';
-import Colors, { BG_COLOR, whiteLabel } from '../../constants/Colors';
+import Colors, { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { boxShadow, style } from '../../constants/Styles';
 import Divider from '../Divider';

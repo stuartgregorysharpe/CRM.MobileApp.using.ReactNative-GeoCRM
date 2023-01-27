@@ -1,26 +1,48 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
+  StyleSheet,  
   Image,
   Dimensions,
   Modal,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
-import {Title} from 'react-native-paper';
+import { Title } from 'react-native-paper';
 import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Divider from '../../../../components/Divider';
-import {style} from '../../../../constants/Styles';
-import {SubmitButton} from '../../../../components/shared/SubmitButton';
+import { style } from '../../../../constants/Styles';
+import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import FastImage from 'react-native-fast-image';
 
-export const GuideInfoView = ({visible, info, onModalClose}) => {
+export const GuideInfoView = ({ visible, info, onModalClose }) => {
+  
   const isShowTitle = info && info.title != undefined && info.title != '';
   const isShowImage = info && info.image != undefined && info.image != '';
   const isShowText = info && info.text != undefined && info.text != '';
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [imageHeight, setImageHeight] = useState(undefined);
+
+  useEffect(() => {
+    getImageHeight();
+  }, []);
+
+  const getImageHeight = () => {
+    setIsLoading(true);
+    Image.getSize(info.image, (width, height) => {
+      const screenWidth = Dimensions.get('window').width * 0.8;
+      const scaleFactor = width / screenWidth;
+      const requiredImageHeight = height / scaleFactor;
+      setImageHeight(requiredImageHeight);
+      setIsLoading(false);
+    }, (error) => {
+      setIsLoading(false);
+      console.log(error);
+    });
+  }
 
   return (
     <Modal
@@ -31,28 +53,29 @@ export const GuideInfoView = ({visible, info, onModalClose}) => {
       <TouchableWithoutFeedback onPress={onModalClose}>
         <View style={style.centeredView}>
           <View style={style.modalView}>
-            <TouchableOpacity style={{padding: 6}}>
+            <TouchableOpacity style={{ padding: 6 }}>
               <Divider></Divider>
             </TouchableOpacity>
 
             {isShowTitle && (
               <View style={styles.sliderHeader}>
-                <Title style={{fontFamily: Fonts.primaryBold}}>
+                <Title style={{ fontFamily: Fonts.primaryBold }}>
                   {info.title}
                 </Title>
               </View>
             )}
 
-            {isShowImage && (
-              <View style={{alignItems: 'center'}}>
+            {!isLoading && isShowImage && (
+              <View style={{ alignItems: 'center' }}>
                 <FastImage
-                  style={styles.imageContainer}
-                  source={{uri: info.image}}
+                  style={[styles.imageContainer, { height: imageHeight ? imageHeight : 300 }]}
+                  source={{ uri: info.image }}
                 />
               </View>
             )}
+            {isLoading && <ActivityIndicator size={'small'} color={Colors.primaryColor} />}
             {isShowText && (
-              <Title style={{fontFamily: Fonts.primaryRegular, fontSize: 14}}>
+              <Title style={{ fontFamily: Fonts.primaryRegular, fontSize: 14 }}>
                 {info.text}
               </Title>
             )}
@@ -87,6 +110,5 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '80%',
-    height: 300,
   },
 });

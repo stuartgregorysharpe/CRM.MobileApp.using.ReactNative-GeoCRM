@@ -1,7 +1,8 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { StatusBar } from 'react-native';
 import React, {Fragment, useState, useEffect} from 'react';
 import {View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector } from 'react-redux';
 import MoreNavigator from './MoreNavigator';
 import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
@@ -19,6 +20,7 @@ import {Constants} from '../constants';
 import {getPageNameByLinker} from '../constants/Helper';
 import { getBottomTabs } from './helper';
 
+
 const BottomTab = createBottomTabNavigator();
 
 export default function RepBottomTabNavigator({navigation}) {
@@ -28,6 +30,17 @@ export default function RepBottomTabNavigator({navigation}) {
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
   const [bottomTabs, setBottomTabs] = useState([]);
+  const [isSamsung, setIsSamsung] = useState(false);
+
+
+  useEffect(() => {
+    DeviceInfo.getDeviceName().then((deviceName) => {
+      if(deviceName.toLowerCase().includes("samsung")){
+        setIsSamsung(true);
+      }
+      console.log("deviceName ==== " ,deviceName)
+    });
+  },[]);
 
   useEffect(() => {
     initBottomTab();
@@ -70,15 +83,26 @@ export default function RepBottomTabNavigator({navigation}) {
   };
 
   useEffect(() => {
+    
     if (visibleMore != '') {
       navigation.navigate('More');
       setTimeout(() => {
-        dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+        //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
       });
     }
   }, [visibleMore]);
 
   const getHeaderHeight = () => {
+
+    console.log("StatusBar.currentHeight", StatusBar.currentHeight);
+
+    var currentHeight = 0;
+    if (Platform.OS == 'ios') {
+      currentHeight = 20;
+    }else{
+      currentHeight = StatusBar.currentHeight > 0 ? StatusBar.currentHeight : 24
+    }
+
     if (Platform.OS == 'ios') {
       if (DeviceInfo.isTablet()) {
         return 82;
@@ -86,12 +110,18 @@ export default function RepBottomTabNavigator({navigation}) {
         return 62;
       }
     } else {
+      
+      if(isSamsung){
+        return 60;
+      }
+      
       if (DeviceInfo.isTablet()) {
-        return 82;
+        return currentHeight + 62;
       } else {
-        return 74;
+        return currentHeight + 52;
       }
     }
+
   };
 
   const getHeaderMargin = () => {
@@ -102,6 +132,7 @@ export default function RepBottomTabNavigator({navigation}) {
         return 0;
       }
     } else {
+      
       if (DeviceInfo.isTablet()) {
         return 22;
       } else {
@@ -145,6 +176,7 @@ export default function RepBottomTabNavigator({navigation}) {
             options={{
               title: element.name,
               tabBarLabel: element.name,
+              
               tabBarIcon: ({focused}) => (
                 <Fragment>
                   <SvgIcon
@@ -154,11 +186,14 @@ export default function RepBottomTabNavigator({navigation}) {
                   />
                 </Fragment>
               ),
-
-              headerRight: () => <HeaderRightView navigation={navigation} />,
+              headerStyle: {                
+                height: getHeaderHeight(), // Specify the height of your custom header
+                backgroundColor:whiteLabel().actionFullButtonBackground
+              },
+              headerRight: () => <HeaderRightView navigation={navigation} />,              
               tabBarLabelStyle: {
                 fontSize: 12,
-                fontFamily: 'Gilroy-Medium',
+                fontFamily: 'Gilroy-Medium',                
               },
               tabBarActiveTintColor: whiteLabel().activeIcon,
             }}
@@ -166,14 +201,20 @@ export default function RepBottomTabNavigator({navigation}) {
               tabPress: e => {
                 if (element.name === 'More') {
                   e.preventDefault();
-                  dispatch({type: SLIDE_STATUS, payload: false});
+
+                  //dispatch({type: SLIDE_STATUS, payload: false});
                   console.log('revisible mo', visibleMore);
-                  if (visibleMore != '') {
-                    //navigation.navigate("More");
-                    dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                  } else {
-                    dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-                  }
+                  dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+
+                  // if (visibleMore != '') {
+                  //   //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  // } else {
+                  //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+                  // }
+
+                }else{
+                  console.log("bottom tab clicked")
+                  dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                 }
               },
             })}
