@@ -8,7 +8,7 @@ import Visits from '../partial/cards/Visits';
 import { useSelector } from 'react-redux';
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
-import { getLocalData, storeLocalValue } from '../../../../constants/Storage';
+import { getJsonData, getLocalData, storeLocalValue } from '../../../../constants/Storage';
 import { expireToken, getPostParameter, showOfflineDialog } from '../../../../constants/Helper';
 import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
@@ -132,12 +132,13 @@ export const MainPage = forwardRef((props, ref) => {
       setIsLoading(true);
 
 
-      checkConnectivity().then((isConnected) => {
+      checkConnectivity().then(async(isConnected) => {
         if (isConnected) {
 
           getApiRequest('home/main-dashboard', param)
             .then(async res => {
               setIsLoading(false);
+              console.log("MAIN: ", JSON.stringify(res));
 
               setVisitCard(res.items.visits_card);
               setActivityCard(res.items.activity_card);
@@ -172,6 +173,15 @@ export const MainPage = forwardRef((props, ref) => {
               expireToken(dispatch, e);
             });
 
+        } else {
+          setIsLoading(false);
+          if(isCheckin){
+            var location = await getJsonData('@checkin_location');
+            if (location != null) {
+              setCurrentCall(location.current_call);
+            }
+          }
+          
         }
       });
 
@@ -205,7 +215,7 @@ export const MainPage = forwardRef((props, ref) => {
 
     if (isSellOut) {
       if (!pageData.find(x => x.card === 'sell_out'))
-        pageData.push({ card: 'sell_out', index: pages.length});
+        pageData.push({ card: 'sell_out', index: pages.length });
       setSellOutCard(isSellOut);
     }
 

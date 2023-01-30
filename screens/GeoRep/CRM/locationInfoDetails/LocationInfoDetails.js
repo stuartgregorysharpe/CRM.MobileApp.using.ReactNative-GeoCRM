@@ -15,15 +15,15 @@ import {
   StyleSheet,
   BackHandler,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
-import {grayBackground, style} from '../../../../constants/Styles';
+import { useSelector, useDispatch } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { grayBackground, style } from '../../../../constants/Styles';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../../components/SvgIcon';
-import {LocationInfoInput} from './LocationInfoInput';
+import { LocationInfoInput } from './LocationInfoInput';
 import Divider from '../../../../components/Divider';
-import Colors, {whiteLabel} from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import {
   SLIDE_STATUS,
   LOCATION_CONFIRM_MODAL_VISIBLE,
@@ -31,14 +31,14 @@ import {
   LOCATION_ID_CHANGED,
   CHECKIN,
 } from '../../../../actions/actionTypes';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DeviceInfo from 'react-native-device-info';
-import {LocationInfoInputTablet} from './LocationInfoInputTablet';
+import { LocationInfoInputTablet } from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import RNFS from 'react-native-fs';
-import {postLocationImage} from '../../../../actions/location.action';
+import { postLocationImage } from '../../../../actions/location.action';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import {NextPrev} from '../partial/NextPrev';
+import { NextPrev } from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import {
@@ -52,14 +52,14 @@ import {
   expireToken,
   getPostParameter,
 } from '../../../../constants/Helper';
-import {Notification} from '../../../../components/modal/Notification';
+import { Notification } from '../../../../components/modal/Notification';
 import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
-import {Constants, Strings, Values} from '../../../../constants';
-import {getDateTime} from '../../../../helpers/formatHelpers';
+import { Constants, Strings, Values } from '../../../../constants';
+import { getDateTime } from '../../../../helpers/formatHelpers';
 import {
   LocationCheckinTypeDAO,
   PostLocationCheckinTypesDAO,
@@ -209,11 +209,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       console.log(tapType);
       if (tapType === 'back') {
         props.animation('search-page');
-        dispatch({type: SLIDE_STATUS, payload: false});
+        dispatch({ type: SLIDE_STATUS, payload: false });
       } else if (tapType === 'top') {
         props.clostDetailsPopup();
-        dispatch({type: SLIDE_STATUS, payload: false});
-        dispatch({type: LOCATION_ID_CHANGED, payload: {value: 0, type: 0}});
+        dispatch({ type: SLIDE_STATUS, payload: false });
+        dispatch({ type: LOCATION_ID_CHANGED, payload: { value: 0, type: 0 } });
       } else if ('access_crm') {
       }
     }
@@ -230,7 +230,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
   const showLoopSlider = () => {
     setShowItem('loop');
-    dispatch({type: SUB_SLIDE_STATUS, payload: true});
+    dispatch({ type: SUB_SLIDE_STATUS, payload: true });
   };
 
   const onPathUpdated = path => {
@@ -437,19 +437,26 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     )
       .then(async res => {
         if (props.onButtonAction) {
-          props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+          props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
         }
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true});
+        // dispatch({ type: CHECKIN, payload: true });
         await storeLocalValue('@checkin', '1');
         await storeLocalValue(
           '@specific_location_id',
           locationInfo.location_id,
         );
-        await storeJsonData('@checkin_location', locationInfo);
+
+        let checkInDetails = locationInfo;
+        checkInDetails.current_call = {
+          "checkin_time": postData.checkin_time,
+          "location_name": checkInDetails.location_name.value
+        };
+        await storeJsonData('@checkin_location', checkInDetails);
         setIsCheckingIn(false);
+        dispatch({ type: CHECKIN, payload: true });
         props.navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: 'checkin',
@@ -473,7 +480,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           buttonAction: async () => {
             dispatch(clearNotification());
             if (props.onButtonAction) {
-              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+              props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
             }
 
             var specificLocationId = await getLocalData(
@@ -497,7 +504,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     }
   };
 
-  const onUpdateCustomerModalClosed = ({type, value}) => {
+  const onUpdateCustomerModalClosed = ({ type, value }) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       if (props.refreshLocationInfo) {
         props.refreshLocationInfo(locationInfo.location_id);
@@ -508,7 +515,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   return (
-    <View style={[styles.container, {flex: 1}]}>
+    <View style={[styles.container, { flex: 1 }]}>
       {showFeedbackDropDownModal()}
       <Notification />
 
@@ -534,7 +541,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           activeOpacity={1}
           style={grayBackground}
           onPress={() =>
-            dispatch({type: SUB_SLIDE_STATUS, payload: false})
+            dispatch({ type: SUB_SLIDE_STATUS, payload: false })
           }></TouchableOpacity>
       )}
 
@@ -544,11 +551,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             styles.transitionView,
             showItem == 'refresh'
               ? {
-                  transform: [
-                    {translateY: Dimensions.get('window').height + 100},
-                  ],
-                }
-              : {transform: [{translateY: 0}]},
+                transform: [
+                  { translateY: Dimensions.get('window').height + 100 },
+                ],
+              }
+              : { transform: [{ translateY: 0 }] },
           ]}>
           <RefreshSlider location_id={locationInfo.location_id} />
         </View>
@@ -568,13 +575,13 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       )}
       {showDivider && (
         <TouchableOpacity
-          style={{padding: 6}}
+          style={{ padding: 6 }}
           onPress={() => {
             if (statusDispositionInfo) {
-              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({ type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true });
               return;
             }
-            dispatch({type: SLIDE_STATUS, payload: false});
+            dispatch({ type: SLIDE_STATUS, payload: false });
           }}>
           <Divider />
         </TouchableOpacity>
@@ -590,13 +597,13 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           keyboardStatus
             ? {}
             : {
-                marginBottom:
-                  features &&
+              marginBottom:
+                features &&
                   (features.includes('access_crm') ||
                     features.includes('checkin'))
-                    ? 50
-                    : 0,
-              },
+                  ? 50
+                  : 0,
+            },
         ]}>
         {isLoading &&
           (locationInfo === undefined ||
@@ -658,10 +665,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 </NextPrev>
               )}
 
-            <View style={{padding: 10}}>
+            <View style={{ padding: 10 }}>
               {locationInfo !== undefined &&
-              locationInfo.address !== '' &&
-              DeviceInfo.isTablet() ? (
+                locationInfo.address !== '' &&
+                DeviceInfo.isTablet() ? (
                 <LocationInfoInputTablet
                   onOutcome={value => {
                     setIsOutcomeUpdated(value);
@@ -690,14 +697,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               <WazeNavigation
                 onCloseModal={() => {
                   if (props.onButtonAction) {
-                    props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+                    props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
                   }
                 }}
                 location={locationInfo.coordinates}
                 address={locationInfo.address}></WazeNavigation>
             )}
 
-            <View style={{height: 50}}></View>
+            <View style={{ height: 50 }}></View>
           </View>
         )}
       </KeyboardAwareScrollView>
@@ -762,7 +769,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
       {isDisposition && (
         <TouchableOpacity
-          style={[style.plusButton, {marginBottom: 80}]}
+          style={[style.plusButton, { marginBottom: 80 }]}
           onPress={() => {
             if (!subSlideStatus) {
               locationInfoRef.current.postDispositionData();
