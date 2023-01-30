@@ -36,9 +36,13 @@ export default function CheckOutViewContainer(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigationMain = useNavigation();
+  let isMount = true;
 
   useEffect(() => {
     initData();
+    return () => {
+      isMount = false;
+    }
   }, []);
 
   useEffect(() => {
@@ -98,6 +102,7 @@ export default function CheckOutViewContainer(props) {
       )
         .then(async res => {
           console.log('RES : ', res);
+          setIsLoading(false);
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -107,12 +112,19 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@setup', null);                   
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-          if (type == 'specificInfo' || type == 'calendar') {
-            if (props.goBack) {
-              props.goBack(res);
+
+          if(isMount){
+            if (type == 'specificInfo' || type == 'calendar') {
+              if (props.goBack) {
+                props.goBack(res);
+              }
             }
           }
-          setIsLoading(false);
+                    
+          if(props.onCallback){
+            props.onCallback();
+          }
+          
         })
         .catch(e => {
           console.log('checkout error:', e);

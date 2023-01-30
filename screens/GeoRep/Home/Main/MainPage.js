@@ -73,16 +73,17 @@ export const MainPage = forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadPage();
-
-    });
-    return unsubscribe;
-  }, [navigation]);
-
+    loadPage();
+  }, []);
 
   useEffect(() => {
-    loadPage();
+    const unsubscribe = navigation.addListener('focus', () => {      
+      loadPage();
+    });
+    return unsubscribe;
+  }, [navigation]);  
+
+  useEffect(() => {    
     if (!isCheckin) {
       cleanLocationId();
     }
@@ -174,8 +175,6 @@ export const MainPage = forwardRef((props, ref) => {
 
         }
       });
-
-
 
     }
     initData();

@@ -5,10 +5,13 @@ import { whiteLabel } from '../../../../../constants/Colors';
 import { Fonts, Strings } from '../../../../../constants';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
+import CheckinLinkButton from '../../../../../components/common/DynamicButtons/CheckinLinkButton';
 
 const AccessCRMCheckInView = (props) => {
 
-    const { features } = props;    
+    const { features , location_id } = props;
+    if( location_id == undefined ) return null;
+            
 
   return (    
       <View style={styles.nextButtonBar}>
@@ -32,22 +35,36 @@ const AccessCRMCheckInView = (props) => {
             )}
 
             {features && features.includes('checkin') && (
-              <TouchableOpacity
-                style={[styles.checkInButton]}
-                onPress={async () => {
+                <CheckinLinkButton
+                  title="Check In"
+                  locationId={location_id}        
+                  onCallback={() => {
                     if(props.onCheckIn){
+                      console.log("triger on callback");
                         props.onCheckIn();
-                    }                
-                }}>
-                <Text style={[styles.checkInButtonText]}>
-                  {Strings.CRM.Check_In}
-                </Text>
-                <FontAwesomeIcon
-                  size={22}
-                  color={whiteLabel().actionFullButtonIcon}
-                  icon={faAngleDoubleRight}
+                    }
+                  }}     
+                  renderSubmitButton={onCheckIn => {
+                    return (
+                      <TouchableOpacity
+                        style={[styles.checkInButton]}
+                        onPress={async () => {
+                            onCheckIn();                                          
+                        }}>
+                        <Text style={[styles.checkInButtonText]}>
+                          {Strings.CRM.Check_In}
+                        </Text>
+                        <FontAwesomeIcon
+                          size={22}
+                          color={whiteLabel().actionFullButtonIcon}
+                          icon={faAngleDoubleRight}
+                        />
+                      </TouchableOpacity>
+                    );
+                  }}
                 />
-              </TouchableOpacity>
+                
+              
             )}
         </View>
     
