@@ -12,6 +12,7 @@ export const dummyApiRequest = async (route, param, response) => {
     }, 1000);
   });
 };
+
 axios.defaults.timeout = 25000;
 
 export const getApiRequest = async (route, param) => {
@@ -67,9 +68,12 @@ export const getApiRequest = async (route, param) => {
 };
 
 export const postApiRequest = async (route, postData, indempotencyKey) => {
+
+  axios.defaults.timeout = 15000;
+
   var token = await getToken();
   var baseUrl = await getBaseUrl();
-
+  
   var url = `${baseUrl}/${route}`;
   if (route.includes('local_api_old')) {
     url = route;
@@ -97,15 +101,20 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
       .catch(err => {
         console.log('postApiRequest error =>', err.response);
         const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
+        if(error != undefined){
+          if (
+            error.status === 401 &&
+            error.config &&
+            !error.config.__isRetryRequest
+          ) {
+            reject('expired');
+          } else {
+            reject(err);
+          }
+        }else{
+          reject('timeout');
         }
+        
       });
   });
 };
@@ -115,6 +124,9 @@ export const postApiRequestMultipart = async (
   postData,
   indempotencyKey,
 ) => {
+
+  axios.defaults.timeout = 25000;
+
   var token = await getToken();
   var baseUrl = await getBaseUrl();
 

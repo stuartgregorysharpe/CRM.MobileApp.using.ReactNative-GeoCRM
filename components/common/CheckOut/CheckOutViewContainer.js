@@ -17,14 +17,18 @@ import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/CheckoutButton';
 import {PostRequestDAO} from '../../../DAO';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../actions/notification.action';
 import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/partial/CalendarCheckOutButton';
+import { generateKey } from '../../../constants/Utils';
 
 var specificLocationId;
+var check_out_indempotency = '';
 
 export default function CheckOutViewContainer(props) {
   const {type, currentCall} = props;
@@ -51,6 +55,7 @@ export default function CheckOutViewContainer(props) {
 
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');
+    check_out_indempotency = generateKey();
   };
 
   const checkOutLocation = useCallback(() => {
@@ -82,7 +87,10 @@ export default function CheckOutViewContainer(props) {
         }),
       );
     } else {
+
       setIsLoading(true);
+      dispatch(showLoadingBar({type: 'loading'}));
+
       var userParam = getPostParameter(currentLocation);
       var currentTime = getDateTime();
 
@@ -99,10 +107,12 @@ export default function CheckOutViewContainer(props) {
         'location-info/check-out',
         '',
         '',
+        check_out_indempotency
       )
         .then(async res => {
           console.log('RES : ', res);
           setIsLoading(false);
+          dispatch(clearLoadingBar());
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -112,7 +122,7 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@setup', null);                   
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-
+          
           if(isMount){
             if (type == 'specificInfo' || type == 'calendar') {
               if (props.goBack) {
@@ -128,6 +138,7 @@ export default function CheckOutViewContainer(props) {
         })
         .catch(e => {
           console.log('checkout error:', e);
+          dispatch(clearLoadingBar());
           expireToken(dispatch, e);
         });
     }

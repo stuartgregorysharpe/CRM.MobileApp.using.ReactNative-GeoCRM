@@ -38,6 +38,7 @@ import {Notification} from '../../../components/modal/Notification';
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
+import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 var selectedIndex = 2;
 
 
@@ -244,6 +245,7 @@ export default function CalendarScreen(props) {
     <SafeAreaView>
       <View style={styles.container}>
         <Notification></Notification>
+        <LoadingProgressBar/>
         <View style={[styles.tabContainer, boxShadow]}>
           <TouchableOpacity
             style={styles.tabItem}
