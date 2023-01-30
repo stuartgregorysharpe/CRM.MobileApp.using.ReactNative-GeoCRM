@@ -8,7 +8,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import AlertDialog from '../../../../../components/modal/AlertDialog';
 import UpdateCustomerModal from '../../update_customer';
 import { Constants, Strings } from '../../../../../constants';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../../actions/notification.action';
 
 export default function Customer(props) {
 
@@ -62,8 +62,8 @@ export default function Customer(props) {
               items: items
             }      
           }
-          var editable = disableField(field) ? "0" : "1";
-          console.log(field.core_field_name, editable)
+
+          var editable = disableField(field) ? "0" : "1";          
           return {
             ...field,
             key:index,
@@ -83,7 +83,8 @@ export default function Customer(props) {
 
     const onSubmit = async() =>{
         
-        if(isLoading) return;        
+        if(isLoading) return;
+
         var fields = [];
         for(let key of Object.keys(formData)){
             if(formData[key] != undefined && formData[key] != ''){
@@ -111,23 +112,26 @@ export default function Customer(props) {
 
 
         setIsLoading(true);
+        dispatch(showLoadingBar({'type' : 'loading'}));
 
         var userParam = getPostParameter(currentLocation);
         let postData = {
-            location_id: locationId, //
+            location_id: locationId,
             fields: fields,
             user_local_data: userParam.user_local_data,
         };
 
         postApiRequest("locations/location-fields", postData).then((res) => {                   
-            //dispatch(showNotification({type:'success' , message: "res.message" , buttonText: 'Ok'}));
+            
             setMessage(res.message);
             setIsSuccess(true);
             setIsLoading(false);
+            dispatch(clearLoadingBar());
             
         }).catch((e)=> {
             expireToken(dispatch, e);
             setIsLoading(false);
+            dispatch(clearLoadingBar());
         })
     }
 
@@ -186,9 +190,9 @@ export default function Customer(props) {
                   locationId={locationId}
                   title="Update"
                   onButtonAction={onModalClosed}
-                />                                    
-                <SubmitButton 
-                  isLoading={isLoading}
+                />
+
+                <SubmitButton
                   style={{marginTop:10, marginHorizontal:10}} onSubmit={onSubmit} title="Update" />
 
             </View>
