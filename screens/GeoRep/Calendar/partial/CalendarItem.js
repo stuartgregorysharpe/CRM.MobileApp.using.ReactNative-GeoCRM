@@ -1,30 +1,29 @@
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useEffect } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import React, {useEffect} from 'react';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
-import { getLocalData } from '../../../../constants/Storage';
-import { useDispatch, useSelector } from 'react-redux';
+import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
+import {getLocalData} from '../../../../constants/Storage';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   CHECKIN,
   LOCATION_ID_CHANGED,
   LOCATION_CHECK_OUT_COMPULSORY,
 } from '../../../../actions/actionTypes';
-import { style } from '../../../../constants/Styles';
+import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import {
   clearNotification,
   showNotification,
 } from '../../../../actions/notification.action';
-import { Strings } from '../../../../constants';
+import {Strings} from '../../../../constants';
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
-
-  const { navigation, tabIndex, onItemSelected } = props;
+  const {navigation, tabIndex, onItemSelected} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -48,7 +47,7 @@ export function CalendarItem(props) {
   const checkOpenReplaceCheckin = () => {
     return features != null && features.includes('open_replace_checkin');
   };
-  
+
   const getButtonColor = checkin_state => {
     if (checkOpenReplaceCheckin()) {
       return whiteLabel().actionFullButtonBackground;
@@ -56,7 +55,7 @@ export function CalendarItem(props) {
       if (checkin_state === 'checkin_required') {
         return whiteLabel().actionFullButtonBackground;
       } else if (checkin_state === 'checkin_completed') {
-        return '#eee';
+        return Colors.disabledColor;
       } else if (checkin_state === 'checkin_current') {
         return Colors.selectedRedColor;
       }
@@ -129,23 +128,36 @@ export function CalendarItem(props) {
                   styles.itemButton,
                   {backgroundColor: getButtonColor(item.checkin_state)},
                 ]}>
-                <Text style={styles.itemButtonText}>
-                  {' '}
-                  {getButtonText(item.checkin_state)}{' '}
-                </Text>
-                <FontAwesomeIcon
-                  style={styles.itemButtonIcon}
-                  size={16}
-                  color={whiteLabel().actionFullButtonIcon}
-                  icon={faCheckCircle}
-                />
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={styles.itemButtonText}>
+                    {getButtonText(item.checkin_state)}
+                  </Text>
+                </View>
+                {item.checkin_state === 'checkin_completed' ? (
+                  <FontAwesomeIcon
+                    style={styles.itemButtonIcon}
+                    size={16}
+                    color={whiteLabel().actionFullButtonIcon}
+                    icon={faCheckCircle}
+                  />
+                ) : (
+                  <SvgIcon
+                    style={styles.itemButtonIcon}
+                    icon="Angle_Left"
+                    width="14px"
+                    height="14px"
+                  />
+                )}
               </TouchableOpacity>
             );
           }}
         />
       );
     }
-
     return (
       <TouchableOpacity
         style={[
@@ -202,7 +214,7 @@ export function CalendarItem(props) {
           </Text>
           {item.checkin_state === 'checkin_current'
             ? renderCheckOutButton()
-            : renderStatusButton()}          
+            : renderStatusButton()}
         </View>
       </View>
     );
@@ -213,8 +225,8 @@ export function CalendarItem(props) {
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 10,
     borderRadius: 4,
     backgroundColor: Colors.whiteColor,
@@ -222,10 +234,11 @@ const styles = StyleSheet.create({
     borderColor: whiteLabel().fieldBorder,
   },
   itemLeft: {
-    width: '60%',
+    flex: 1,
   },
   itemRight: {
-    width: '35%',
+    width: 100,
+    marginLeft: 16,
   },
 
   itemTitleBox: {
@@ -247,6 +260,8 @@ const styles = StyleSheet.create({
     maxHeight: 36,
   },
   itemButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     position: 'relative',
     justifyContent: 'center',
     padding: 4,
@@ -260,8 +275,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
   },
-  itemButtonIcon: {
-    position: 'absolute',
-    right: 8,
-  },
+  itemButtonIcon: {},
 });
