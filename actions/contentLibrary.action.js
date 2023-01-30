@@ -96,8 +96,7 @@ export const updateContentFeed_post = async (params, id) => {
   var token = await getToken();
   return new Promise(function (resolve, reject) {
     axios
-      .get(`${baseURL}/local_api_phase_2/ContentFeed/update/${id}`, {
-        params: params,
+      .put(`${baseURL}/local_api_phase_2/ContentFeed/update/${id}`, params, {
         headers: {
           Authorization: 'token ' + token,
           "Content-Type": "application/json",

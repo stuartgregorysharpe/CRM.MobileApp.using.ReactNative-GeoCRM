@@ -2,7 +2,11 @@ import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from
 import React, { useState } from "react";
 import { Colors } from "../../../constants";
 import { AppText } from "../../common/AppText";
-const TwoRowContent = ({ item, onClose }) => {
+import SvgIcon from "../../SvgIcon";
+import { whiteLabel } from "../../../constants/Colors";
+
+const actionIconBackground = whiteLabel().clickButtonBackground;
+const TwoRowContent = ({ item, onClose, onImageClick }) => {
 
     return (
         <View style={{
@@ -11,26 +15,25 @@ const TwoRowContent = ({ item, onClose }) => {
             borderRadius: 5,
             marginVertical: 10,
         }}>
-
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Image source={require('../../../assets/images/info_png.png')}
+                        <View pointerEvents="none">
+                            <SvgIcon icon={item.icon}
+                                height={20}
+                                width={20} />
+                        </View>
+                        <AppText title={item.headertitle}
                             style={{
-                                height: 20,
-                                width: 20
-                            }} />
-                        <AppText title={item.card_headline}
-                            style={{
-                                color: Colors.primaryColor,
+                                color: actionIconBackground,//item.maincolor,
                                 fontSize: 15,
                                 marginHorizontal: 5
                             }}
                             type={'big'}
                         />
                     </View>
-                    <View style={{ flex: 1 }}>
-                        <AppText title={item.card_name}
+                    <View style={{ flex: 1, marginVertical: 5 }}>
+                        <AppText title={item.title}
                             style={{
                                 fontSize: 14,
                                 color: Colors.blackColor,
@@ -38,23 +41,25 @@ const TwoRowContent = ({ item, onClose }) => {
                             }}
                             type={'big'}
                         />
-                        <AppText title={item.card_sub_text}
+                        <AppText title={item.subtitle}
                             style={{
                                 fontSize: 12,
-                                color: Colors.blackColor
+                                color: "#60626B",
                             }}
                             type={'big'}
                         />
                     </View>
                 </View>
-                {(item.card_type === "6" && item.card_image) ? <Image source={{ uri: item.card_image }}
-                    style={{
-                        height: 80,
-                        width: 80,
-                        borderRadius: 10,
-                        overlayColor: 'white',
-                    }}
-                    resizeMode="cover" /> : <></>}
+                {(item.card_type === "6" && item.notificationImage) ? <TouchableOpacity onPress={onImageClick}>
+                    <Image source={{ uri: item.notificationImage }}
+                        style={{
+                            height: 80,
+                            width: 80,
+                            borderRadius: 10,
+                            overlayColor: 'white',
+                        }}
+                        resizeMode="cover" />
+                </TouchableOpacity> : <></>}
 
             </View>
 
