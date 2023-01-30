@@ -20,7 +20,6 @@ import Colors, {
 import {breakPoint} from '../../constants/Breakpoint';
 import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
-import {postReloop} from '../../actions/location.action';
 import {
   expireToken,
   getPostParameter, 

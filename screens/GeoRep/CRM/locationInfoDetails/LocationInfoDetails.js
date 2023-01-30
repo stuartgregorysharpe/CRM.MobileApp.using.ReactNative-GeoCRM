@@ -25,44 +25,36 @@ import {
   SLIDE_STATUS,
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SUB_SLIDE_STATUS,
-  LOCATION_ID_CHANGED,
-  CHECKIN,
+  LOCATION_ID_CHANGED,  
 } from '../../../../actions/actionTypes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import RNFS from 'react-native-fs';
-import {postLocationImage} from '../../../../actions/location.action';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import {
-  getLocalData,
-  storeJsonData,
-  storeLocalValue,
-} from '../../../../constants/Storage';
-import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import {
   checkFeatureIncludeParamFromSession,
   expireToken,
   getPostParameter,
 } from '../../../../constants/Helper';
-import {Notification} from '../../../../components/modal/Notification';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings, Values} from '../../../../constants';
-import {getDateTime} from '../../../../helpers/formatHelpers';
-import {
-  LocationCheckinTypeDAO,  
+import {  
   PostRequestDAO,
 } from '../../../../DAO';
 import LocationInfo from './LocationInfo';
 import AccessCRMCheckInView from './components/AccessCRMCheckInView';
+import { generateKey } from '../../../../constants/Utils';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -70,6 +62,8 @@ var isFeedbackLocInfoOutcome = false;
 var checkin_type_id = '';
 var reason_id = '';
 var clickedAction = '';
+var location_image_indempotency = '';
+
 
 export const LocationInfoDetails = forwardRef((props, ref) => {
   
@@ -104,6 +98,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const isDisposition = features.includes('disposition_fields');
   const updateCustomerModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
+  const [isUpdateImage, setIsUpdateImage] = useState(false);
+  
 
   useImperativeHandle(
     ref,
@@ -162,7 +158,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   }, [props.locInfo]);
 
   useEffect(() => {
+
     outcomeVal = false;
+    location_image_indempotency = generateKey();
     initData();
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
@@ -237,6 +235,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const updateLocationImage = async path => {
+
     var data = await RNFS.readFile(path, 'base64').then(res => {
       return res;
     });
@@ -247,82 +246,93 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       location_image: data,
       user_local_data: userParam.user_local_data,
     };
-    postLocationImage(postData)
-      .then(res => {
-        setMessage(res);
+
+    if(!isUpdateImage){
+
+      setIsUpdateImage(true)
+      dispatch(showLoadingBar({'type' : 'loading'}));
+
+      PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency ).then((res) => {      
+        setMessage(res.message);
         setIsSuccess(true);
-      })
-      .catch(e => {
+        setIsUpdateImage(false);
+        dispatch(clearLoadingBar());
+      }).catch((error) => {
         setMessage('Upload File Failed');
         setIsSuccess(true);
         expireToken(dispatch, e);
-      });
+        setIsUpdateImage(false);
+        dispatch(clearLoadingBar());
+      })    
+
+    }
+        
   };
 
   const openCustomerInfo = async () => {
     updateCustomerModalRef.current.showModal();
   };
 
-  const _callLocationFeedback = item => {
-    var userParam = getPostParameter(locationInfo.coordinates);
-    let postData = {
-      location_id: locationInfo.location_id,
-      feedback: [
-        {
-          feedback_loc_info_outcome: item,
-        },
-      ],
-      user_local_data: userParam.user_local_data,
-    };
+  // const _callLocationFeedback = item => {
+  //   var userParam = getPostParameter(locationInfo.coordinates);
+  //   let postData = {
+  //     location_id: locationInfo.location_id,
+  //     feedback: [
+  //       {
+  //         feedback_loc_info_outcome: item,
+  //       },
+  //     ],
+  //     user_local_data: userParam.user_local_data,
+  //   };
 
-    PostRequestDAO.find(
-      locationInfo.location_id,
-      postData,
-      'location-feedback',
-      'locations-info/location-feedback',
-    )
-      .then(res => {
-        setIsOutcomeUpdated(true);
-        outcomeVal = true;
+  //   PostRequestDAO.find(
+  //     locationInfo.location_id,
+  //     postData,
+  //     'location-feedback',
+  //     'locations-info/location-feedback',
+  //   )
+  //     .then(res => {
+  //       setIsOutcomeUpdated(true);
+  //       outcomeVal = true;
 
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: res.message,
-            buttonText: Strings.Ok,
-            buttonAction: async () => {
-              if (clickedAction === 'top') {
-                checkFeedbackAndClose('top');
-              } else if (clickedAction === 'back') {
-                checkFeedbackAndClose('back');
-              } else if (clickedAction === 'access_crm') {
-                if (props.onButtonAction) {
-                  props.onButtonAction({
-                    type: Constants.actionType.ACTION_CLOSE,
-                    value: 'access_crm',
-                  });
-                }
-              } else if (clickedAction === 'checkin') {
-                //onClickCheckIn();
-              } else if (clickedAction === 'prev') {
-                if (nextPrevRef.current != undefined) {
-                  nextPrevRef.current.onClickPrev();
-                }
-              } else if (clickedAction === 'next') {
-                if (nextPrevRef.current != undefined) {
-                  nextPrevRef.current.onClickNext();
-                }
-              }
-              dispatch(clearNotification());
-            },
-          }),
-        );
-      })
-      .catch(e => {
-        console.log('Error : ', e);
-        expireToken(dispatch, e);
-      });
-  };
+  //       dispatch(
+  //         showNotification({
+  //           type: Strings.Success,
+  //           message: res.message,
+  //           buttonText: Strings.Ok,
+  //           buttonAction: async () => {
+  //             if (clickedAction === 'top') {
+  //               checkFeedbackAndClose('top');
+  //             } else if (clickedAction === 'back') {
+  //               checkFeedbackAndClose('back');
+  //             } else if (clickedAction === 'access_crm') {
+  //               if (props.onButtonAction) {
+  //                 props.onButtonAction({
+  //                   type: Constants.actionType.ACTION_CLOSE,
+  //                   value: 'access_crm',
+  //                 });
+  //               }
+  //             } else if (clickedAction === 'checkin') {
+  //               //onClickCheckIn();
+  //             } else if (clickedAction === 'prev') {
+  //               if (nextPrevRef.current != undefined) {
+  //                 nextPrevRef.current.onClickPrev();
+  //               }
+  //             } else if (clickedAction === 'next') {
+  //               if (nextPrevRef.current != undefined) {
+  //                 nextPrevRef.current.onClickNext();
+  //               }
+  //             }
+  //             dispatch(clearNotification());
+  //           },
+  //         }),
+  //       );
+  //     })
+  //     .catch(e => {
+  //       console.log('Error : ', e);
+  //       expireToken(dispatch, e);
+  //     });
+  // };
 
   const openSpecificInfoPage = (page_type) => {
     if (props.onButtonAction) {
