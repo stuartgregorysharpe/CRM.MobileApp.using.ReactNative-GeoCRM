@@ -8,7 +8,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
   
     const nonImplementedApis = [
         "start_end_day",
-        "update-stage-outcome"
+        "update-stage-outcome",
+        "reloop"
     ];
 
   return new Promise(function(resolve, reject) {

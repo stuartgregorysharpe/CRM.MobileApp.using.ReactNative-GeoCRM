@@ -116,6 +116,7 @@ export const postDispositionFields = async postData => {
 };
 
 export const postReloop = async postData => {
+  
   var base_url = await getBaseUrl();
   var token = await getToken();
   console.log('URL ', `${base_url}/location-info/reloop`);
