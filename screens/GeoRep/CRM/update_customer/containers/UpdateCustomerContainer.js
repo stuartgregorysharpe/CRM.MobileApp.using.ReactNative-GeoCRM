@@ -7,13 +7,16 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../../actions/notification.action';
 import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 
 export default function UpdateCustomerContainer(props) {
+
   const {locationId} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [leadForms, setLeadForms] = useState([]);
@@ -21,14 +24,14 @@ export default function UpdateCustomerContainer(props) {
   const selectDeviceModalRef = useRef(null);
   const [isCurrentLocation, setIsCurrentLocation] = useState('0');
   const [customMasterFields, setCustomMasterFields] = useState({});
-
   const [originCustomMasterFields, setOriginCustomMasterFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+
   var location_name_updated = '0';
   var address_updated = '0';
-
   var isMount = true;
+  
   useEffect(() => {
     getCustomMasterFields();
     return () => {
@@ -57,6 +60,7 @@ export default function UpdateCustomerContainer(props) {
       return false;
     }
     setIsLoading(true);
+    dispatch(showLoadingBar({'type': 'loading'}));
     checkChangedStatus();
     var userParam = getPostParameter(currentLocation);
     var custom_master_post_data = [];
@@ -105,9 +109,10 @@ export default function UpdateCustomerContainer(props) {
       .then(res => {
         console.log('locations-info/location-info-update: success', res);
         setIsLoading(false);
+        dispatch(clearLoadingBar());
         dispatch(
           showNotification({
-            type: 'success',
+            type: 'success', 
             message: res.message,
             buttonText: 'Ok',
             buttonAction: () => {
@@ -120,7 +125,9 @@ export default function UpdateCustomerContainer(props) {
       .catch(e => {
         expireToken(dispatch, e);
         setIsLoading(false);
-      });
+        dispatch(clearLoadingBar());
+    });
+
   };
 
   const checkChangedStatus = () => {
@@ -183,8 +190,7 @@ export default function UpdateCustomerContainer(props) {
           marginBottom: Platform.OS == 'android' ? 10 : 30,
         }}
         title={'Update'}
-        onSubmit={onAdd}
-        isLoading={isLoading}
+        onSubmit={onAdd}        
       />
     </View>
   );
