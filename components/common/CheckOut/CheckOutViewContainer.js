@@ -15,7 +15,7 @@ import {
 } from '../../../actions/actionTypes';
 import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/CheckoutButton';
-import {PostRequestDAO} from '../../../DAO';
+import { PostRequestDAO } from '../../../DAO';
 import {
   clearLoadingBar,
   clearNotification,

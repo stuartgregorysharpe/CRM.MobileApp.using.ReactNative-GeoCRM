@@ -9,7 +9,7 @@ import CheckinLinkButton from '../../../../../components/common/DynamicButtons/C
 
 const AccessCRMCheckInView = (props) => {
 
-    const { features , location_id } = props;
+    const { features , location_id , canCheckin } = props;
     if( location_id == undefined ) return null;
             
 
@@ -49,7 +49,9 @@ const AccessCRMCheckInView = (props) => {
                       <TouchableOpacity
                         style={[styles.checkInButton]}
                         onPress={async () => {
-                            onCheckIn();                                          
+                            if(canCheckin){
+                              onCheckIn();
+                            }                            
                         }}>
                         <Text style={[styles.checkInButtonText]}>
                           {Strings.CRM.Check_In}

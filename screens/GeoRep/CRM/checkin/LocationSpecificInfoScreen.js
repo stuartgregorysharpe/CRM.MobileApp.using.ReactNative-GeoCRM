@@ -54,6 +54,7 @@ import {expireToken} from '../../../../constants/Helper';
 import {GetRequestFormListsDAO} from '../../../../DAO';
 import {cos} from 'react-native-reanimated';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -336,7 +337,9 @@ const LocationSpecificInfoScreen = props => {
           }}
         />
       )}
+      
       <Notification />
+      <LoadingProgressBar />
 
       {locationInfo != undefined && (
         <ActivityComments

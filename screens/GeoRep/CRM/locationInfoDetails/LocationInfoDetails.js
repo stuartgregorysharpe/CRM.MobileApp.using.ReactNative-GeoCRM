@@ -55,6 +55,7 @@ import {
 import LocationInfo from './LocationInfo';
 import AccessCRMCheckInView from './components/AccessCRMCheckInView';
 import { generateKey } from '../../../../constants/Utils';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -99,7 +100,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const updateCustomerModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
   const [isUpdateImage, setIsUpdateImage] = useState(false);
-  
+  const [isCallFeedback, setIsCallFeedback] = useState(false); 
 
   useImperativeHandle(
     ref,
@@ -273,66 +274,79 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     updateCustomerModalRef.current.showModal();
   };
 
-  // const _callLocationFeedback = item => {
-  //   var userParam = getPostParameter(locationInfo.coordinates);
-  //   let postData = {
-  //     location_id: locationInfo.location_id,
-  //     feedback: [
-  //       {
-  //         feedback_loc_info_outcome: item,
-  //       },
-  //     ],
-  //     user_local_data: userParam.user_local_data,
-  //   };
 
-  //   PostRequestDAO.find(
-  //     locationInfo.location_id,
-  //     postData,
-  //     'location-feedback',
-  //     'locations-info/location-feedback',
-  //   )
-  //     .then(res => {
-  //       setIsOutcomeUpdated(true);
-  //       outcomeVal = true;
+  const _callLocationFeedback = item => {
 
-  //       dispatch(
-  //         showNotification({
-  //           type: Strings.Success,
-  //           message: res.message,
-  //           buttonText: Strings.Ok,
-  //           buttonAction: async () => {
-  //             if (clickedAction === 'top') {
-  //               checkFeedbackAndClose('top');
-  //             } else if (clickedAction === 'back') {
-  //               checkFeedbackAndClose('back');
-  //             } else if (clickedAction === 'access_crm') {
-  //               if (props.onButtonAction) {
-  //                 props.onButtonAction({
-  //                   type: Constants.actionType.ACTION_CLOSE,
-  //                   value: 'access_crm',
-  //                 });
-  //               }
-  //             } else if (clickedAction === 'checkin') {
-  //               //onClickCheckIn();
-  //             } else if (clickedAction === 'prev') {
-  //               if (nextPrevRef.current != undefined) {
-  //                 nextPrevRef.current.onClickPrev();
-  //               }
-  //             } else if (clickedAction === 'next') {
-  //               if (nextPrevRef.current != undefined) {
-  //                 nextPrevRef.current.onClickNext();
-  //               }
-  //             }
-  //             dispatch(clearNotification());
-  //           },
-  //         }),
-  //       );
-  //     })
-  //     .catch(e => {
-  //       console.log('Error : ', e);
-  //       expireToken(dispatch, e);
-  //     });
-  // };
+    if(isCallFeedback){
+      return;
+    }
+
+    var userParam = getPostParameter(locationInfo.coordinates);
+    let postData = {
+      location_id: locationInfo.location_id,
+      feedback: [
+        {
+          feedback_loc_info_outcome: item,
+        },
+      ],
+      user_local_data: userParam.user_local_data,
+    };
+
+    setIsCallFeedback(true);
+    dispatch(showLoadingBar({'type' : 'loading'}));
+    PostRequestDAO.find(
+      locationInfo.location_id,
+      postData,
+      'location-feedback',
+      'locations-info/location-feedback',
+    )
+      .then(res => {
+        setIsOutcomeUpdated(true);
+        setIsCallFeedback(false);
+        dispatch(clearLoadingBar());
+        outcomeVal = true;
+
+        dispatch(
+          showNotification({
+            type: Strings.Success,
+            message: res.message,
+            buttonText: Strings.Ok,
+            buttonAction: async () => {
+              if (clickedAction === 'top') {
+                checkFeedbackAndClose('top');
+              } else if (clickedAction === 'back') {
+                checkFeedbackAndClose('back');
+              } else if (clickedAction === 'access_crm') {
+                if (props.onButtonAction) {
+                  props.onButtonAction({
+                    type: Constants.actionType.ACTION_CLOSE,
+                    value: 'access_crm',
+                  });
+                }
+              } else if (clickedAction === 'checkin') {
+                //onClickCheckIn();
+              } else if (clickedAction === 'prev') {
+                if (nextPrevRef.current != undefined) {
+                  nextPrevRef.current.onClickPrev();
+                }
+              } else if (clickedAction === 'next') {
+                if (nextPrevRef.current != undefined) {
+                  nextPrevRef.current.onClickNext();
+                }
+              }
+              dispatch(clearNotification());
+            },
+          }),
+        );
+      })
+      .catch(e => {
+        console.log('Error : ', e);
+        setIsCallFeedback(false);
+        dispatch(clearLoadingBar());
+        expireToken(dispatch, e);
+
+      });
+  };
 
   const openSpecificInfoPage = (page_type) => {
     if (props.onButtonAction) {
@@ -348,70 +362,71 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
   }
 
-  // const showFeedbackDropDownModal = () => {
-  //   return (
-  //     <SelectionPicker
-  //       title={modalTitle}
-  //       clearTitle={'Close'}
-  //       mode={'single'}
-  //       value={[]}
-  //       visible={isFeedbackModal}
-  //       options={feedbackOptions}
-  //       onModalClose={() => {
-  //         if (modalType === 'checkin_reason') {
-  //           var options = [];
-  //           checkinTypes.forEach((item, index) => {
-  //             options.push(item.checkin_type);
-  //           });
-  //           setFeedbackOptions(originFeedbackData);
-  //         } else {
-  //           setFeedbackOptions(originFeedbackData);
-  //         }
-  //         setIsFeedback(false);
-  //       }}
-  //       onValueChanged={async (item, index) => {
-  //         if (modalType === 'feedback') {
-  //           _callLocationFeedback(item);
-  //           setIsFeedback(false);
-  //         } else if (modalType === 'checkin_type') {
-  //           var checkinType = checkinTypes.find(
-  //             element => element.checkin_type === item,
-  //           );
-  //           if (
-  //             checkinType != undefined &&
-  //             checkinType.checkin_reasons.length > 0
-  //           ) {
-  //             checkin_type_id = checkinType.checkin_type_id;
-  //             var options = [];
-  //             checkinType.checkin_reasons.forEach((item, index) => {
-  //               options.push(item.reason);
-  //             });
-  //             setModalType('checkin_reason');
-  //             setModalTitle('Check In Reasons');
-  //             setFeedbackOptions(options);
-  //             setCheckInReason(checkinType.checkin_reasons);
-  //             await storeLocalValue('@checkin_type_id', checkin_type_id);
-  //           } else {
-  //             setIsFeedback(false);
-  //             //_callCheckedIn();
-  //           }
-  //         } else if (modalType === 'checkin_reason') {
-  //           console.log('check in reasons', checkinReason);
-  //           var chk = checkinReason.find(element => element.reason === item);
-  //           if (chk && chk.reason_id) {
-  //             reason_id = checkinReason.find(
-  //               element => element.reason === item,
-  //             ).reason_id;
-  //             console.log('Save reason id', reason_id);
-  //             await storeLocalValue('@checkin_reason_id', reason_id);
-  //             //_callCheckedIn();
-  //           } else {
-  //             setModalType('feedback');
-  //           }
-  //         }
-  //       }}></SelectionPicker>
-  //   );
-  // };
+  const showFeedbackDropDownModal = () => {
+    return (
+      
+      <SelectionPicker
+        title={modalTitle}
+        clearTitle={'Close'}
+        mode={'single'}
+        value={[]}
+        visible={isFeedbackModal}
+        options={feedbackOptions}
+        onModalClose={() => {
+          if (modalType === 'checkin_reason') {
+            var options = [];
+            checkinTypes.forEach((item, index) => {
+              options.push(item.checkin_type);
+            });
+            setFeedbackOptions(originFeedbackData);
+          } else {
+            setFeedbackOptions(originFeedbackData);
+          }
+          setIsFeedback(false);
+        }}
+        onValueChanged={async (item, index) => {
+          if (modalType === 'feedback') {
+            _callLocationFeedback(item);
+            setIsFeedback(false);
+          } else if (modalType === 'checkin_type') {
+            var checkinType = checkinTypes.find(
+              element => element.checkin_type === item,
+            );
+            if (
+              checkinType != undefined &&
+              checkinType.checkin_reasons.length > 0
+            ) {
+              checkin_type_id = checkinType.checkin_type_id;
+              var options = [];
+              checkinType.checkin_reasons.forEach((item, index) => {
+                options.push(item.reason);
+              });
+              setModalType('checkin_reason');
+              setModalTitle('Check In Reasons');
+              setFeedbackOptions(options);
+              setCheckInReason(checkinType.checkin_reasons);
+              await storeLocalValue('@checkin_type_id', checkin_type_id);
+            } else {
+              setIsFeedback(false);
+              //_callCheckedIn();
+            }
+          } else if (modalType === 'checkin_reason') {
+            console.log('check in reasons', checkinReason);
+            var chk = checkinReason.find(element => element.reason === item);
+            if (chk && chk.reason_id) {
+              reason_id = checkinReason.find(
+                element => element.reason === item,
+              ).reason_id;
+              console.log('Save reason id', reason_id);
+              await storeLocalValue('@checkin_reason_id', reason_id);
+              //_callCheckedIn();
+            } else {
+              setModalType('feedback');
+            }
+          }
+        }}></SelectionPicker>
+    );
+  };
 
   // const _callCheckInTypes = async () => {
   //   setIsFeedback(true);
@@ -531,7 +546,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   return (
     <View style={[styles.container, {flex: 1}]}>
       
-      {/* {showFeedbackDropDownModal()} */}
+      {showFeedbackDropDownModal()}
       
       {/* <Notification /> */}
 
@@ -732,6 +747,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             <AccessCRMCheckInView 
               features={features}
               location_id={locationInfo?.location_id}
+              canCheckin={_canGoNextPrev}
               onAccessCRM={() => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {
