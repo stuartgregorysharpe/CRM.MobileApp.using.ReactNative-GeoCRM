@@ -28,7 +28,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                         submitFormData = jsonToFormDataWithSubKey(postData);
                     }else{
                         submitFormData =  jsonToFormData(postData);
-                    }                    
+                    }
+                    
                     submitFormData.append("mode", "online");
                     
                     console.log("submit form data", JSON.stringify(submitFormData));
