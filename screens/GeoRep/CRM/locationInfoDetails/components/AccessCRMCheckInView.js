@@ -12,6 +12,7 @@ const AccessCRMCheckInView = (props) => {
     const { features , location_id , canCheckin } = props;
     if( location_id == undefined ) return null;
             
+    console.log("canCheckin" ,canCheckin)
 
   return (    
       <View style={styles.nextButtonBar}>
@@ -49,7 +50,7 @@ const AccessCRMCheckInView = (props) => {
                       <TouchableOpacity
                         style={[styles.checkInButton]}
                         onPress={async () => {
-                            if(canCheckin){
+                            if(canCheckin()){
                               onCheckIn();
                             }                            
                         }}>

@@ -5,7 +5,7 @@ import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 
 export default function AddContactModalView(props) {
 
-    const { isLoading, pageType , contactInfo } = props;
+    const { pageType , contactInfo } = props;
 
     console.log("page tpye", pageType)
     const [formData, setFormData] = useState({});
@@ -29,8 +29,7 @@ export default function AddContactModalView(props) {
     return (
         <View>                    
             <ContactFields ref={contactFieldsRef} contactInfo={contactInfo} getFormData={getFormData} />            
-            <SubmitButton 
-                isLoading={isLoading}
+            <SubmitButton                 
                 title={pageType === 'add' ? 'Add' : 'Update'} 
                 onSubmit={handleSubmit} style={{marginHorizontal:10, marginVertical:10}} />          
         </View>
