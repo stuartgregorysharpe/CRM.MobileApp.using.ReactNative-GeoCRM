@@ -69,7 +69,7 @@
     "react-native-screens": "^3.9.0",
     "react-native-signature-canvas": "^4.2.1",
     "react-native-sqlite-storage": "^6.0.1",
-    "react-native-svg": "^12.1.1",
+    "react-native-svg": "13.7.0",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.0.0",
     "react-native-vision-camera": "2.14.1",
