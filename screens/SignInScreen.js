@@ -41,7 +41,7 @@ import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
 import { expireToken } from '../constants/Helper';
 import { postApiRequest } from '../actions/api.action';
 import { firebase } from '@react-native-firebase/messaging';
-
+import messaging from '@react-native-firebase/messaging';
 export default function SignIn() {
 
   const loginStatus = useSelector(state => state.auth.loginStatus);
@@ -62,6 +62,16 @@ export default function SignIn() {
     initData();
   }, [loginStatus]);
 
+  useEffect(() => {
+    requestNotificationPermission()
+  }, [])
+  const requestNotificationPermission = async () => {
+    const authorizationStatus = await messaging().requestPermission();
+  
+    if (authorizationStatus) {
+      console.log('Permission status:', authorizationStatus);
+    }
+  }
   const initData = () => {
     createOfflineSyncItemTable();
   }

@@ -30,7 +30,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [FIRApp configure];
+
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
@@ -65,7 +65,7 @@ static void InitializeFlipper(UIApplication *application) {
       NSLog (@"%@: %@", fontFamily, fontNames);
   }
   
-  
+  [FIRApp configure];
   
   return YES;
 }
@@ -78,5 +78,6 @@ static void InitializeFlipper(UIApplication *application) {
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
+
 
 @end
