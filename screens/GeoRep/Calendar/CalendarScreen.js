@@ -40,6 +40,7 @@ import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
+  
   const dispatch = useDispatch();
   const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
