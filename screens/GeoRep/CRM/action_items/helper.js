@@ -77,7 +77,7 @@ export function getUpdateActionItemPostValue(
     postData.user_local_data = userParam.user_local_data;
   }
   if (locationId) {
-    postData.location_id = locationId;
+    postData.location_id = locationId.toString();
   }
   if (postData.action_image) {
     const actionImages = postData.action_image.filter(x => {

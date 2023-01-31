@@ -69,7 +69,6 @@ export const getApiRequest = async (route, param) => {
 
 export const postApiRequest = async (route, postData, indempotencyKey) => {
 
-
   var token = await getToken();
   var baseUrl = await getBaseUrl();
   
@@ -100,7 +99,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
       })
       .catch(err => {
         
-        if(error != undefined){
+        if(err != undefined){
           
           console.log('postApiRequest error =>', err.response);
           const error = err.response;
@@ -127,9 +126,7 @@ export const postApiRequestMultipart = async (
   postData,
   indempotencyKey,
 ) => {
-
-  axios.defaults.timeout = 25000;
-
+  
   var token = await getToken();
   var baseUrl = await getBaseUrl();
 

@@ -5,6 +5,7 @@ import {
   getApiRequest,  
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
+import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
 import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import {Constants, Strings} from '../../../../../constants';
@@ -64,7 +65,10 @@ const UpdateActionFormContainer = props => {
 
   const onSubmit = () => {
     if (!actionFormRef.current.validateForm()) return;
+    if (isLoading) return;
+    
     setIsLoading(true);
+    
     const submitValueData = getUpdateActionItemPostValue(
       formData,
       locationId,
@@ -82,12 +86,14 @@ const UpdateActionFormContainer = props => {
         submitFormData.append(`action_image[${index}]`, file);
       });
     }
+    dispatch(showLoadingBar({'type' : 'loading'}));
     postApiRequestMultipart('actionsitems/action-item-details', submitFormData)
       .then(res => {
         if (res.status === Strings.Success) {
           notifyMsg(dispatch, 'Action Item Updated Successfully');
         }
         setIsLoading(false);
+        dispatch(clearLoadingBar());
         if (props.onButtonAction) {
           props.onButtonAction({
             type: Constants.actionType.ACTION_FORM_SUBMIT,
@@ -97,6 +103,7 @@ const UpdateActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
+        dispatch(clearLoadingBar());
         expireToken(dispatch, e);
       });
   };

@@ -11,7 +11,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
         "start_end_day",
         "update-stage-outcome",
         "reloop",
-        "add-edit-contacts"
+        "add-edit-contacts",
+        "action-item-details"
     ];
 
   return new Promise(function(resolve, reject) {
