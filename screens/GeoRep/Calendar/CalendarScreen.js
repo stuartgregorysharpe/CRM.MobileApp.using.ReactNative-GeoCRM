@@ -37,6 +37,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
+import { clearLoadingBar, showLoadingBar } from '../../../actions/notification.action';
 var selectedIndex = 2;
 
 export default function CalendarScreen(props) {
@@ -51,6 +52,7 @@ export default function CalendarScreen(props) {
   const [isOptimize, setIsOptimize] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -101,7 +103,9 @@ export default function CalendarScreen(props) {
     });
     return unsubscribe;
   }, [navigation]);
-  console.log('isLoading', isLoading);
+  
+
+
   const loadList = async (type, isOptimize = false) => {
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
     setIsAdd(await checkFeatureIncludeParam('calendar_add'));
@@ -159,16 +163,27 @@ export default function CalendarScreen(props) {
   };
 
   const updateTodayLocationLists = async data => {
+
     var userParam = getPostParameter(currentLocation);
     var postData = {
       schedules: data,
       user_local_data: userParam.user_local_data,
     };
-    updateCalendar(postData)
-      .then(res => {})
-      .catch(e => {
-        expireToken(dispatch, e);
+
+    if(!isUpdating && !isLoading){
+      setIsUpdating(true);
+      dispatch(showLoadingBar({'type' : 'loading'}));
+      updateCalendar(postData)
+        .then(res => {
+          setIsUpdating(false);
+          dispatch(clearLoadingBar());
+        })
+        .catch(e => {
+          setIsUpdating(false);
+          dispatch(clearLoadingBar());
+          expireToken(dispatch, e);
       });
+    }    
   };
 
   const renderCalendarItem = (item, index, tabIndex) => {
@@ -289,20 +304,7 @@ export default function CalendarScreen(props) {
           </TouchableOpacity>
         </View>
 
-        {false && (
-          <TouchableOpacity
-            style={styles.startButton}
-            onPress={() => console.log('pressed')}>
-            <Text style={[styles.startButtonText]}>Start My Day</Text>
-            <FontAwesomeIcon
-              style={styles.startButtonIcon}
-              size={25}
-              color="#fff"
-              icon={faAngleDoubleRight}
-            />
-          </TouchableOpacity>
-        )}
-
+       
         <View style={{flex: 1}}>
           {(tabIndex == 1 || tabIndex == 3) && (
             <SectionList
@@ -360,11 +362,7 @@ export default function CalendarScreen(props) {
         {isOptimize && tabIndex == 2 && (
           <TouchableOpacity
             style={style.innerPlusButton}
-            onPress={() => {
-              /*props.navigation.navigate('CRM', {
-                screen: 'LocationSearch',
-                params: {calendar_type: 'add'},
-              });*/
+            onPress={() => {              
               onOptimize();
             }}>
             <SvgIcon icon="Calendar_Optimize" width="70px" height="70px" />
@@ -418,28 +416,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     paddingBottom: 2,
   },
-  startButton: {
-    position: 'relative',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
-    marginBottom: 10,
-    borderRadius: 7,
-    backgroundColor: Colors.disabledColor,
-    marginBottom: 16,
-  },
-  startButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontFamily: Fonts.primaryRegular,
-  },
-  startButtonIcon: {
-    position: 'absolute',
-    right: 10,
-  },
+  
   plusButtonContainer: {
     position: 'absolute',
     flexDirection: 'row',
