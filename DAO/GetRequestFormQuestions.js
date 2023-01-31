@@ -426,6 +426,8 @@ const getFormQuestions = async (
         add_suffix: element.add_suffix,
         question_tag: element.question_tag,
         options: optionsData,
+        image_gallery: element.image_gallery.toString(),
+        image_capture: element.image_capture.toString()
       });
     }
   }

@@ -321,6 +321,7 @@ function checkTextTriggerCondition(condition, answer, value) {
 }
 
 export function checkRuleCharactersFormQuestion(formQuestionItem) {
+  
   const rule_characters = formQuestionItem.rule_characters;
   if (!rule_characters || rule_characters == '') return null;
   let errorMessage = null;

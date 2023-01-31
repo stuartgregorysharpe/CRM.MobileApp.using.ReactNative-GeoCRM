@@ -165,9 +165,7 @@ export default function FormQuestionContainer(props) {
       var form_answers = [];
       form_answers = getFormQuestionData(formQuestions);
       var files = [];
-      files = getFormQuestionFile(formQuestions);
-
-      console.log(" post files ========= " , files)
+      files = getFormQuestionFile(formQuestions);      
       props.onButtonAction({
         type: Constants.actionType.ACTION_DONE,
         value: {form_answers: form_answers, files: files, form: form},
@@ -178,7 +176,9 @@ export default function FormQuestionContainer(props) {
   return (
     <View style={{alignSelf: 'stretch', flex: 1, marginBottom: 0}}>
       
-      <LoadingBar ref={loadingBarRef} description={Strings.Download_Image} />
+      <LoadingBar 
+      backButtonDisabled={true}
+      ref={loadingBarRef} description={Strings.Download_Image} />
 
       
 

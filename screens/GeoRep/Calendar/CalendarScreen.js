@@ -12,12 +12,9 @@ import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
-import {BG_COLOR} from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
-import {
-  checkFeatureIncludeParam,  
-} from '../../../constants/Storage';
-import {getCalendar, updateCalendar} from '../../../actions/calendar.action';
+import {checkFeatureIncludeParam} from '../../../constants/Storage';
+import {updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch, connect} from 'react-redux';
 import {CalendarItem} from './partial/CalendarItem';
 import DraggableFlatList, {
@@ -41,9 +38,7 @@ import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 var selectedIndex = 2;
 
-
 export default function CalendarScreen(props) {
-  
   const dispatch = useDispatch();
   const navigation = props.navigation;
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -136,7 +131,7 @@ export default function CalendarScreen(props) {
       });
   };
 
-  const updateListForWeek = res => {    
+  const updateListForWeek = res => {
     let schedules = [];
     schedules = res;
     let schedule_dates = [];
@@ -145,8 +140,10 @@ export default function CalendarScreen(props) {
       if (!date) {
         schedule_dates.push(item.schedule_date);
       }
-    });    
-    let sorted_schedule_dates = schedule_dates.sort((a, b) => new Date(b) - new Date(a));    
+    });
+    let sorted_schedule_dates = schedule_dates.sort(
+      (a, b) => new Date(a) - new Date(b),
+    );
     let sectionList = [];
     sorted_schedule_dates.forEach(item => {
       let data = schedules.filter(schedule => schedule.schedule_date === item);
@@ -196,7 +193,7 @@ export default function CalendarScreen(props) {
           disabled={isActive}
           style={[
             isActive ? {} : {marginTop: 10},
-            {backgroundColor: isActive ? '#eee' : BG_COLOR},
+            {backgroundColor: isActive ? '#eee' : Colors.bgColor},
           ]}>
           <CalendarItem
             onItemSelected={() => {
@@ -395,7 +392,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     minHeight: '100%',
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
   },
   tabContainer: {
     flexDirection: 'row',

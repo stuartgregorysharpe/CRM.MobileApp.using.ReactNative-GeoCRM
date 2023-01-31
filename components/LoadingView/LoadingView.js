@@ -2,7 +2,7 @@
   
   import React from 'react';
   import { View, SafeAreaView, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text} from 'react-native';
-import { BG_COLOR } from '../../constants/Colors';
+import Colors from '../../constants/Colors';
 import Skeleton from '../Skeleton';
       
     export default  function LoadingView ({ visible }){
@@ -24,7 +24,7 @@ import Skeleton from '../Skeleton';
   const styles = StyleSheet.create({
     container:{
         flex:1,        
-        backgroundColor:BG_COLOR,
+        backgroundColor:Colors.bgColor,
         position:'absolute',
         top:0,
         bottom:0,

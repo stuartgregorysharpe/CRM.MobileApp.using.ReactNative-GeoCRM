@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React , {useState ,useEffect} from 'react'
+import React , {useState ,useEffect , useCallback , useImperativeHandle, forwardRef } from 'react'
 import DropdownSelection from './DropdownSelection'
 import SaleType from './SaleType'
 import SearchLocationContainer from '../../Stock/stock/container/SearchLocationContainer'
@@ -9,13 +9,15 @@ import { getJsonData, getLocalData, storeJsonData } from '../../../../constants/
 import CurrencyType from './CurrencyType'
 import Warehouse from './Warehouse'
 import { AppText } from '../../../../components/common/AppText'
-import { Colors, Fonts, Values } from '../../../../constants'
+import { Colors, Fonts, Strings, Values } from '../../../../constants'
 import { getLocationInfo } from '../../../../actions/location.action'
 import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
+import { onCheckProductSetupChanged } from '../helpers'
 
-const SetupFieldView = (props) => {
+//const SetupFieldView = (props) => {
+export const SetupFieldView = forwardRef((props, ref) => {	
 
-	const { isClear, isLoading,  transaction_types, currency, warehouse} = props;
+	const { isClear, isLoading,  transaction_types, currency, warehouse ,apiCallType} = props;
 	const features = useSelector(
 		state => state.selection.payload.user_scopes.geo_rep.features,
 	);
@@ -24,9 +26,20 @@ const SetupFieldView = (props) => {
 	const [selectedSaleType, setSelectedSaleType] = useState(null)
 	const [selectedCurrency , setSelectedCurrency] = useState(null)
 	const [warehouseRequired, setWarehouseRequired] = useState(false)
-	const [selectedWarehouse, setSelectedWarehouse] = useState([])	
+	const [selectedWarehouse, setSelectedWarehouse] = useState([])
+	const [isDiscard, setIsDiscard] = useState(false);	
 	const isCheckin = useSelector(state => state.location.checkIn);
 
+	useImperativeHandle(ref, () => ({
+		updateSetupData(type) {
+			if(type == 'load'){
+				initializeSetupDataFromStorage();
+			}else{
+				intializeSetupDataFromApi( currency , warehouse, transaction_types );
+			}
+		},				
+	}));
+	  
 	useEffect(() => {
 		initializeLocation();
 	}, [isCheckin]);
@@ -41,16 +54,27 @@ const SetupFieldView = (props) => {
 			}
 		}
 	}, [isClear]);
+	
 
-	useEffect(() => {		
-		initializeSetupData(currency, warehouse,   transaction_types);
-	}, [ currency, warehouse,   transaction_types]);
+	useEffect(() => {
+		if(selectedSaleType != null && selectedCurrency != null && selectedWarehouse != null && selectedLocation != null){
+			if(selectedWarehouse.length > 0 ){
+				getChangedStatus();
+			}						
+		}		
+	}, [selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation]);
 
-	const clearSetup = async() => {		
-		console.log("clear tirger")
-		storeJsonData("@setup", null);
-		initializeSetupData(null, null, null);
-		initializeLocation();
+	const clearSetup = async() => {
+
+		//storeJsonData("@setup", null);
+		//storeJsonData("@sale_product_parameter" , null);		
+		//initializeSetupData(null, null, null);
+		if(isCheckin){
+			getCheckinLocationInfo();
+		}else{
+			setSelectedLocation(null)
+		}
+		//initializeLocation();
 		if(props.onChangeLocation){
 			const  locationId = await getLocalData("@specific_location_id");		
 			const  locInfo = await getLocationInfoFromLocal(locationId);
@@ -89,8 +113,23 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const initializeSetupData = async(currency, warehouse,   transaction_types) => {
+	const initializeSetupDataFromStorage = async() => {
+		var data = await getJsonData("@setup");
+		if(data != null){				
+			setSelectedSaleType(data.transaction_type);
+			setSelectedCurrency(data.currency_id);	
+			setSelectedLocation(data.location);
+			
+			if(data.transaction_type != ''){
+				onWarehouseRequired(data.transaction_type.warehouse_required);
+			}
+			if(data.warehouse_id != ''){							
+				setSelectedWarehouse(data.warehouse_id);
+			}	
+		}
+	}
 
+	const intializeSetupDataFromApi = async(currency, warehouse,   transaction_types) => {
 		if(currency != null && warehouse != null &&   transaction_types != null){
 			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
@@ -108,34 +147,60 @@ const SetupFieldView = (props) => {
 			if( warehouse != undefined && warehouse.default_warehouse ){
 				const options = warehouse.options ?  warehouse.options : [];			
 				const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
-				if(items != undefined){
-					//onWarehouseItemSelected(item, false);
+				if(items != undefined){					
+					console.log("warhouse froma api")
 					setSelectedWarehouse(items);	
 				}
 			}
-		}else{
-			var data = await getJsonData("@setup");
-		
-			if(data != null){				
-				setSelectedSaleType(data.transaction_type);
-				setSelectedCurrency(data.currency_id);	
-				setSelectedLocation(data.location);
-				
-				if(data.transaction_type != ''){
-					onWarehouseRequired(data.transaction_type.warehouse_required);
-				}
-				if(data.warehouse_id != ''){				
-					setSelectedWarehouse(data.warehouse_id);
-				}	
-			}
-		}
+		}		
+	}
 
+	const initializeSetupData = async(currency, warehouse,   transaction_types) => {
+
+		var data = await getJsonData("@setup");
+		if(data != null){			
+			setSelectedSaleType(data.transaction_type);
+			setSelectedCurrency(data.currency_id);	
+			setSelectedLocation(data.location);
+			
+			if(data.transaction_type != ''){
+				onWarehouseRequired(data.transaction_type.warehouse_required);
+			}
+			if(data.warehouse_id != ''){			
+				console.log("warhouse from local")	
+				setSelectedWarehouse(data.warehouse_id);
+			}	
+		}else{
+			if(currency != null && warehouse != null &&   transaction_types != null){
+				if(transaction_types != null && transaction_types.default_type != ''){				
+					const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
+					setSelectedSaleType(transactionType);
+					if(transactionType  != undefined){				
+						onWarehouseRequired(transactionType.warehouse_required);
+					}
+				}
+				if(currency != undefined && currency.default_currency){
+					const defaultCurrency = currency.options.find(item =>  item.id === currency.default_currency);
+					setSelectedCurrency(defaultCurrency);
+					
+				}
 		
+				if( warehouse != undefined && warehouse.default_warehouse ){
+					const options = warehouse.options ?  warehouse.options : [];			
+					const items = options.filter(element => warehouse.default_warehouse.includes(element.id));
+					if(items != undefined){					
+						console.log("warhouse froma api")
+						setSelectedWarehouse(items);	
+					}
+				}
+			}else{
+				
+			}
+		}			
 		
 	}
 
-	const onSearch = (location, locationId) => {		
-		
+	const onSearch = (location, locationId) => {			
 		setIsSearchStart(false);
 		setSelectedLocation(location);
 		if(props.onChangeLocation){
@@ -149,6 +214,7 @@ const SetupFieldView = (props) => {
 
 	const onCurrencyItemSelected = (item) => {				
 		setSelectedCurrency(item);
+		
 	}
 
 	const onWarehouseItemSelected = (item , isChecked) => {		
@@ -164,12 +230,14 @@ const SetupFieldView = (props) => {
 				setSelectedWarehouse(tmp)				
 			}else{
 				setSelectedWarehouse([...selectedWarehouse , item]);	
-			}	
-		}					
+			}
+		}
+		
 	}
 
 	const onSelectedSaleType =(type) => {
 		setSelectedSaleType(type);
+		
 	}
 
 	const onWarehouseRequired = (required) => {		
@@ -179,16 +247,25 @@ const SetupFieldView = (props) => {
 	}
 
 	const renderWarehouseTitle = () => {
-		const allSelected = selectedWarehouse.find(item => item.id == 0);
-		if(allSelected  != undefined){
-			return "ALL SELECTED"
-		}
-		if(selectedWarehouse.length == 1){
-			return selectedWarehouse[0].label;
-		}else if(selectedWarehouse.length > 1){
-			return selectedWarehouse.length + " SELECTED";
-		}
+		if(warehouse && warehouse?.options?.length > 0){
+			const allSelected = selectedWarehouse.find(item => item.id == 0);
+			if(allSelected  != undefined){
+				return "ALL SELECTED"
+			}
+			if(selectedWarehouse.length == 1){
+				return selectedWarehouse[0].label;
+			}else if(selectedWarehouse.length > 1){
+				return selectedWarehouse.length + " SELECTED";
+			}
+		}		
 		return "";
+	}
+
+	const renderCurrencyTitle = () => {
+		if(currency && currency?.options?.length > 0){
+			return selectedCurrency != null ? selectedCurrency.abbreviation + "(" + selectedCurrency.symbol +  ")" : '';
+		}
+		return "";		
 	}
 
 	const isValidate = () => {		
@@ -199,14 +276,16 @@ const SetupFieldView = (props) => {
 			selectedLocation != null &&
 			selectedSaleType != null &&
 			selectedCurrency != null &&
-			( warehouseRequired && selectedWarehouse.length != 0 || !warehouseRequired )
+			( currency && currency?.options?.length > 0) &&			
+			( warehouseRequired && selectedWarehouse.length != 0 && (warehouse && warehouse?.options?.length > 0 ) || !warehouseRequired )
 			){
 				flag = true;			
 		}
 		
-		if(props.updateOutSideTouchStatus) {		
-			props.updateOutSideTouchStatus(flag);
-		}
+		// if(props.updateOutSideTouchStatus) {	
+		// 	props.updateOutSideTouchStatus(flag);
+		// }
+
 		return flag;
 	}
 
@@ -221,11 +300,42 @@ const SetupFieldView = (props) => {
 		}
 	}
 
-	const onClear = () => {		
-		if (props.updateClear) {			
+	const onClear = () => {
+		if (props.updateClear) {
 		  props.updateClear(true);
 		}
 	};
+
+	const getChangedStatus = useCallback(
+		async () => {
+			
+			var setupData = await getJsonData("@setup");
+			if(setupData != null){
+				const value = {
+					transaction_type: selectedSaleType,
+					currency_id: selectedCurrency,
+					warehouse_id: selectedWarehouse,
+					location: selectedLocation
+				};
+
+				onCheckProductSetupChanged( value, async type => {			
+					if(props.updateOutSideTouchStatus) {
+						console.log("changed status", type);
+
+						if (type.includes('changed')) {						
+							props.updateOutSideTouchStatus(false);	
+							setIsDiscard(true);				
+						} else {			  
+							props.updateOutSideTouchStatus(true);
+							setIsDiscard(false);
+						}
+					}			
+				});	
+			}					
+		},
+		[selectedSaleType, selectedCurrency ,selectedWarehouse , selectedLocation],
+	)
+
 
 	return (
 		<View style={[styles.container]}>
@@ -263,7 +373,8 @@ const SetupFieldView = (props) => {
 				onSubmit={onSearch} 
 				onStartSearch={onStartSearch}
 				isSkipLocationIdCheck				
-				style={[isSearchStart ? styles.bgColor : {}]} //
+				//style={ styles.bgColor}
+				//style={[isSearchStart ? styles.bgColor : {}]} 
 			{...props} />
 			
 			{/* <View style={{height:55}}></View> */}
@@ -290,7 +401,7 @@ const SetupFieldView = (props) => {
 
 					<DropdownSelection
 						title = "Currency Type"
-						selectedItem={selectedCurrency != null ? selectedCurrency.abbreviation + "(" + selectedCurrency.symbol +  ")" : ''}
+						selectedItem={renderCurrencyTitle()}
 						selectedCurrency={selectedCurrency}
 						items={currency ? currency.options : []}
 					>
@@ -314,24 +425,55 @@ const SetupFieldView = (props) => {
 							/>
 						</DropdownSelection>
 					}
+
+					{
+						isDiscard && <AppText title={Strings.ProductSales.Click_Update} color={Colors.redColor} style={{textAlign:'center', marginHorizontal:20}}></AppText>	
+					}					
 					
 					<View style={{height:1, backgroundColor:Colors.greyColor, marginHorizontal:-10, marginTop:10, marginBottom:10}}>
 					</View>
 
-					<View style={{alignItems:'center', paddingVertical:5}}>
-						<TouchableOpacity 
-							style={{alignSelf:'stretch', alignItems:'center'}}
-							disabled={!isValidate()}
-							onPress={() => onContinue()}>
-							<AppText title="Continue" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
-						</TouchableOpacity>						
-					</View>
+					{
+						!isDiscard &&
+						<View style={{alignItems:'center', paddingVertical:5}}>
+							<TouchableOpacity 
+								style={{alignSelf:'stretch', alignItems:'center'}}
+								disabled={!isValidate()}
+								onPress={() => onContinue()}>
+								<AppText title="Continue" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
+							</TouchableOpacity>						
+						</View>
+					}
+					
+
+					{
+						isDiscard && 
+						<View style={{alignItems:'center' , flexDirection:'row' , justifyContent:'center', }}>
+							<TouchableOpacity 
+								style={{alignSelf:'stretch', alignItems:'center', flex:1}}							
+								onPress={() => {
+									if(props.onClose){
+										props.onClose();
+									}
+								}}>
+								<AppText title="Discard" size="big" color={Colors.redColor}></AppText>	
+							</TouchableOpacity>		
+							<View style={{ backgroundColor:Colors.greyColor, width : 1 , marginVertical:-10 , alignSelf:'stretch'}}>
+							</View>
+							<TouchableOpacity 
+								style={{alignSelf:'stretch', alignItems:'center' , flex:1}}							
+								disabled={!isValidate()}
+								onPress={() => onContinue()}>
+								<AppText title="Update" size="big" color={!isValidate() ? Colors.disabledColor : Colors.primaryColor}></AppText>	
+							</TouchableOpacity>		
+						</View>
+					}					
 
 				</View>
 			}
 		</View>
 	)
-}
+});
 
 export default SetupFieldView
 

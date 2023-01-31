@@ -16,6 +16,8 @@ const AddLeadView = React.forwardRef((props, ref) => {
     onPrimaryContactFields,
     isValidOtherForms,
   } = props;
+
+  console.log("customMasterFields",leadForms )
   const customMasterFieldsFormRef = useRef(null);
   const primaryContactFieldsRef = useRef(null);
   useImperativeHandle(
@@ -51,6 +53,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
       <View style={{}}>
         <AddLeadMap />
         <View style={{padding: 5}}>
+          
           <CustomMasterFields
             ref={customMasterFieldsFormRef}
             leadForms={leadForms}

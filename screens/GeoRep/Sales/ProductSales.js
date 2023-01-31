@@ -87,12 +87,17 @@ export default function ProductSales(props) {
     return {};
   };
 
+  const clearProducts = () => {      
+    if(productSaleContainerRef)
+      productSaleContainerRef.current.showPlaceHolder();    
+  }
+
   const getProductLists = async (data, search_text = '', pageNumber) => {
-    console.log("get product lists", data, search_text, pageNumber)
+    console.log("call get product list api");
     if( pageNumber != undefined && pageNumber == 0){
       setIsEndPage(false);
     }
-    if (data != undefined) {
+    if (data != undefined  && data != null) {
       storeJsonData('@setup', data);
       const param = getParamData(data);
       await storeJsonData('@sale_product_parameter', param);
@@ -111,23 +116,28 @@ export default function ProductSales(props) {
 
   const getApiData = async (search_text, pageNumber) => {
    
-    console.log("getApiData", isLoading, isEndPage);
+    console.log("getApiData", isLoading, isEndPage , search_text , pageNumber);
     if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
+      
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
         if(pageNumber == 0){
           setIsEndPage(false);
+          clearProducts();
         }
         setIsLoading(true);        
+        console.log("is loading ... true");
         paramData['page_no'] = pageNumber;
         if (search_text != undefined) {
           paramData['search_text'] = search_text;
         }
         storeJsonData('@sale_product_parameter', paramData);
         console.log("product list param => ", paramData);
+        
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);
+            console.log("is loading => ", false);
             if (isMount) {
               if (res.status == Strings.Success) {
                 console.log("Product Lists => ", res.items.length)
@@ -151,8 +161,14 @@ export default function ProductSales(props) {
           .catch(e => {
             setIsLoading(false);
             expireToken(dispatch, e);
-          });
+        });
+
+      }else{
+        console.log("paramData",paramData);
+        clearProducts();
       }
+    }else{
+      console.log("api not called");
     }
     
   };
@@ -173,6 +189,7 @@ export default function ProductSales(props) {
     <View style={{paddingTop: 20, alignSelf: 'stretch', flex: 1}}>
       <ProductSalesContainer
         ref={productSaleContainerRef}
+        clearProducts={clearProducts}
         getProductLists={getProductLists}
         getProductListsByFilter={getProductListsByFilter}
         items={items}
@@ -180,6 +197,7 @@ export default function ProductSales(props) {
         settings={settings}
         page={page}
         isLoading={isLoading}
+        isEndPage={isEndPage}
         loadMoreData={(pageNumber, searchText) => {
           getApiData(searchText, pageNumber);
         }}

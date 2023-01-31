@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
+  StyleSheet,  
   Image,
   Dimensions,
   Modal,
@@ -11,7 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Title } from 'react-native-paper';
-import Colors, { PRIMARY_COLOR } from '../../../../constants/Colors';
+import Colors from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import Divider from '../../../../components/Divider';
 import { style } from '../../../../constants/Styles';
@@ -19,6 +18,7 @@ import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import FastImage from 'react-native-fast-image';
 
 export const GuideInfoView = ({ visible, info, onModalClose }) => {
+  
   const isShowTitle = info && info.title != undefined && info.title != '';
   const isShowImage = info && info.image != undefined && info.image != '';
   const isShowText = info && info.text != undefined && info.text != '';
@@ -73,7 +73,7 @@ export const GuideInfoView = ({ visible, info, onModalClose }) => {
                 />
               </View>
             )}
-            {isLoading && <ActivityIndicator size={'small'} color={PRIMARY_COLOR} />}
+            {isLoading && <ActivityIndicator size={'small'} color={Colors.primaryColor} />}
             {isShowText && (
               <Title style={{ fontFamily: Fonts.primaryRegular, fontSize: 14 }}>
                 {info.text}

@@ -6,7 +6,7 @@ import {
   Keyboard,
   ToastAndroid,
   Platform,
-  AlertIOS,
+  Alert,
   TouchableOpacity,
 } from 'react-native';
 import React, {useRef, useState, useEffect, useImperativeHandle} from 'react';
@@ -65,6 +65,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
   }, [item, brand, type, searchKey]);
 
   const onCaptureAction = ({type, value}) => {
+    console.log('capture action', value);
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (
         questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES &&
@@ -80,16 +81,18 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
       } else {
         var tmp = item.products.find(element => element.barcode == value);
         if (tmp != null && tmp != undefined) {
+          console.log('capture item', tmp);
           if (questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES) {
             tmp = {...tmp, productReturn};
+            setSelectedProductIds([...selectedProductIds, tmp.product_id]);
+            props.changedSelectedProducts(tmp, 'add');
           }
-          setSelectedProductIds([...selectedProductIds, tmp.product_id]);
-          props.changedSelectedProducts(tmp, 'add');
+          setSearchKey(value);
         } else if (value != previousCode) {
           if (Platform.OS === 'android') {
             ToastAndroid.show('Product not found', ToastAndroid.SHORT);
           } else {
-            AlertIOS.alert('Product not found');
+            Alert.alert('Product not found');
           }
         }
         previousCode = value;
@@ -117,7 +120,6 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
   };
 
   const filterProduct = () => {
-    console.log('origin length', item.products.length);
     var tmp = item.products.filter(item => {
       var flag = true;
       if (brand != '' && item.brand != brand) {
@@ -128,16 +130,15 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
       }
       if (
         searchKey != '' &&
-        !item.label.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.barcode.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.product_code.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.product_type.toLowerCase().includes(searchKey.toLowerCase())
+        !item.label?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !item.barcode?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !item.product_code?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !item.product_type?.toLowerCase().includes(searchKey.toLowerCase())
       ) {
         flag = false;
       }
       return flag;
     });
-    console.log('filter length', tmp.length);
     setProducts(tmp);
   };
 
@@ -182,6 +183,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
       <SearchBar
         isFilter
         onSearch={onSearch}
+        initVal={searchKey}
         suffixButtonIcon="Scan_Icon"
         onSuffixButtonPress={onCapture}
       />

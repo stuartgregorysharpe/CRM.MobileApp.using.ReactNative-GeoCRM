@@ -50,6 +50,7 @@ export default {
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
+    Supplier_Compulsory: 'Supplier need to be filled',
   },
 
   Log: {
@@ -64,6 +65,10 @@ export default {
   Home_Visit_Tabs: {
     Today: 'Today Visits',
     Weekly: 'Weekly Visits',
+  },
+
+  Calendar: {
+    Added_Calendar_Successfully: 'Added to Calendar successfully',
   },
 
   Stock: {
@@ -84,11 +89,16 @@ export default {
     Successfully_Stock_Submit: 'Stock added to offline sync menu successfully',
     Successfully_Sell_To_Trader: 'Saved to Offline sync successfully',
     Primary_Additional: 'Primary/Additional',
+    Submit: 'Submit',
   },
 
   Forms: {
     Filter_Your_Search: 'Filter your search',
     Clear_Filters: 'Clear Filters',
+  },
+
+  ProductSales: {
+    Click_Update: 'Please click update to action any changes mode, please note this will reset your cart.'
   },
 
   PostRequestResponse: {

@@ -23,7 +23,7 @@ import {
 } from '../../../../../DAO';
 import {getTokenData} from '../../../../../constants/Storage';
 import {getTimeStamp} from '../../../../../helpers/formatHelpers';
-import {getFormSubmissionPostJsonData} from '../../../Forms/questions/helper';
+import {getFormSubmissionPostJsonData, validateFormQuestionData} from '../../../Forms/questions/helper';
 import {
   getAddLeadLocationName,
   getAddLeadStreetAddress,
@@ -52,8 +52,7 @@ export default function AddLeadContainer(props) {
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateFormList = lists => {
-    console.log('lists', lists);
+  const validateFormList = lists => {    
     let isValid = true;
     lists.forEach(item => {
       if (item.compulsory == '1') {
@@ -92,7 +91,8 @@ export default function AddLeadContainer(props) {
           props.changeTitle(res.component_title);
         }
         if (isMount) {
-          setLeadForms(res.custom_master_fields);
+          console.log("res.custom_master_fields => ", res.custom_master_fields)
+          setLeadForms(res.custom_master_fields);      
           setAccuracyUnit(res.accuracy_distance_measure);
         }
       })
@@ -125,7 +125,7 @@ export default function AddLeadContainer(props) {
 
     GetRequestFormListsDAO.find(param)
       .then(res => {
-        updateFormLists(res.forms);
+        updateFormLists(res.forms);        
       })
       .catch(e => {
         console.log('formlists api error:', e);
@@ -152,6 +152,7 @@ export default function AddLeadContainer(props) {
 
     if (addLeadViewRef) {
       const isValidForm = await addLeadViewRef.current.validateForm();
+      console.log("isValidForm",isValidForm)
       if (!isValidForm) isValid = false;
     }
 
@@ -161,6 +162,8 @@ export default function AddLeadContainer(props) {
   
   const onAdd = async () => {
     const isFormValid = await validateForm();
+    console.log("valiidate form", isFormValid);
+
     if (!isFormValid) {
       dispatch(
         showNotification({
@@ -184,6 +187,7 @@ export default function AddLeadContainer(props) {
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;
+
     const postDataJson = await getLeadFieldsPostJsonData(
       isCurrentLocation,
       currentLocation,
@@ -197,8 +201,7 @@ export default function AddLeadContainer(props) {
       leadForms,
       customMasterFields,
     );
-
-    console.log("post data ====== " , postDataJson)
+    
     PostRequestDAO.find(
       0,
       postDataJson,
