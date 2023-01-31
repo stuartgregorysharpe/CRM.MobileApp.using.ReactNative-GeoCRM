@@ -37,17 +37,7 @@ export default function ReturnDeviceDetailContainer(props) {
         console.log("location device api error: " , e);
         expireToken(dispatch , e);
     })
-    
-    // getApiRequest('locations/location-devices', param)
-    //   .then(res => {
-    //     if (isMount) {
-    //       setLists(res.devices);
-    //     }
-    //   })
-    //   .catch(e => {
-    //     console.log('e', e);
-    //     expireToken(dispatch, e);
-    //   });
+  
     return () => {
       isMount = false;
     };

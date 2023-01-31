@@ -4,21 +4,29 @@ import React , {useEffect, useState , useRef} from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
-import { GetRequestLocationDevicesDAO, PostRequestDAO } from '../../../../../DAO';
+import { PostRequestDAO } from '../../../../../DAO';
 import DevicePriorityModalView from '../components/DevicePriorityModalView';
-import { clearNotification, showNotification } from '../../../../../actions/notification.action';
+import { clearLoadingBar, clearNotification, showLoadingBar, showNotification } from '../../../../../actions/notification.action';
+import { generateKey } from '../../../../../constants/Utils';
+
+var device_update_indempotency = '';
 
 export default function DevicePriorityModalContainer(props) {
-        
+            
     const dispatch = useDispatch()
     const { device } = props;
     if(!device) return null;
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        device_update_indempotency = generateKey();
+    }, []);
+
     const onSubmit = (isPrimary) => {
         
         if(!isLoading){
-            setIsLoading(true)
+            setIsLoading(true);
+            dispatch(showLoadingBar({'type' : 'loading'}));
             var postData = {
                 location_device_id: device.location_device_id,
                 primary_device: isPrimary? "1" : "0"
@@ -30,16 +38,20 @@ export default function DevicePriorityModalContainer(props) {
                     "device_update", 
                     "device/update", 
                     device.description, 
-                    device.msisdn + "("  + primaryText  +  ")" ).then((res) => {
+                    device.msisdn + "("  + primaryText  +  ")" ,
+                    device_update_indempotency
+                    ).then((res) => {
 
-                        setIsLoading(false)
+                        setIsLoading(false);
+                        dispatch(clearLoadingBar());
                         dispatch((showNotification({type:Strings.Success , message : res.message, buttonText: Strings.Ok , buttonAction : () => {
                             props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
                             dispatch(clearNotification());
                         }})));
 
             }).catch((e) => {
-                setIsLoading(false)
+                setIsLoading(false);
+                dispatch(clearLoadingBar());
                 expireToken(dispatch, e);
             })
             
@@ -49,8 +61,7 @@ export default function DevicePriorityModalContainer(props) {
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
             <DevicePriorityModalView                 
-                onSubmit={onSubmit}
-                isLoading={isLoading}
+                onSubmit={onSubmit}                
                 {...props}
             />
         </View>
