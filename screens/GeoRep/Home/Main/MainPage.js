@@ -138,8 +138,6 @@ export const MainPage = forwardRef((props, ref) => {
           getApiRequest('home/main-dashboard', param)
             .then(async res => {
               setIsLoading(false);
-              console.log("MAIN: ", JSON.stringify(res));
-
               setVisitCard(res.items.visits_card);
               setActivityCard(res.items.activity_card);
               setCurrentCall(res.items.current_call);
@@ -175,8 +173,14 @@ export const MainPage = forwardRef((props, ref) => {
 
         } else {
           setIsLoading(false);
-          if(isCheckin){
+          let checkInStatus = await getLocalData('@checkin');
+          dispatch({ type: CHECKIN, payload: checkInStatus==='1'?true:false });
+          if(checkInStatus === '1'){
             var location = await getJsonData('@checkin_location');
+            await storeLocalValue(
+              '@specific_location_id',
+              location.location_id,
+            );
             if (location != null) {
               setCurrentCall(location.current_call);
             }
