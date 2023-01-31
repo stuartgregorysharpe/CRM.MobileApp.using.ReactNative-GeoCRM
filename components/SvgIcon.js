@@ -1520,6 +1520,165 @@ const Product_Sales_Item = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink=
 </g>
 </svg>
 `;
+const svgMap = {
+  Round_Btn_Default_Dark: Round_Btn_Default_Dark,
+  Round_Btn_Default_Dark_Gray: Round_Btn_Default_Dark_Gray,
+  DISPOSITION_POST: DISPOSITION_POST,
+  Drop_Down: Drop_Down,
+  Person_Sharp: Person_Sharp,
+  Person_Sharp_White: Person_Sharp_White,
+  Camera: Camera,
+  ChatBoxes: ChatBoxes,
+  Exclamation_Triangle_Fill: Exclamation_Triangle_Fill,
+  Form: Form,
+  Form_inactive: Form_inactive,
+  SaleStore: SaleStore,
+  SaleStore_Gray: SaleStore_Gray,
+  Sale_inactive: Sale_inactive,
+  Geo: Geo,
+  Location_Arrow_White: Location_Arrow_White,
+  Filter: Filter,
+  Filter_GRAY, Filter_GRAY,
+  Location_Arrow: Location_Arrow,
+  Location_Arrow_Gray: Location_Arrow_Gray,
+  Home_Black_Gray: Home_Black_Gray,
+  Home_Black, Home_Black,
+  Android_More_Horizontal: Android_More_Horizontal,
+  Android_More_Horizontal_Gray: Android_More_Horizontal_Gray,
+  Calendar_Event_Fill_Gray: Calendar_Event_Fill_Gray,
+  Calendar_Event_Fill: Calendar_Event_Fill,
+  Pipeline_Gray: Pipeline_Gray,
+  Pipeline: Pipeline,
+  Travel_Explore_Gray: Travel_Explore_Gray,
+  Travel_Explore: Travel_Explore,
+  Ballot_Gray: Ballot_Gray,
+  Ballot: Ballot,
+  Insert_Invitation: Insert_Invitation,
+  Green_Star: Green_Star,
+  Check: Check,
+  Close: Close,
+  Support_Agent: Support_Agent,
+  Account_Circle: Account_Circle,
+  Support_Agent_Gray: Support_Agent_Gray,
+  Angle_Left: Angle_Left,
+  Description: Description,
+  Wallpaper: Wallpaper,
+  Video_Library: Video_Library,
+  Path: Path,
+  Contact_Mail: Contact_Mail,
+  WhatsApp: WhatsApp,
+  Quiz: Quiz,
+  File_Download: File_Download,
+  Right_Arrow: Right_Arrow,
+  Item_Selected: Item_Selected,
+  Calendar_Optimize: Calendar_Optimize,
+  Arrow_Right: Arrow_Right,
+  Add_Image: Add_Image,
+  Arrow_Left_Btn: Arrow_Left,
+  Arrow_Left_Btn_alt:Arrow_Left_alt,
+  Arrow_Right_Btn: Arrow_Right_Button,
+  Arrow_Right_Btn_alt: Arrow_Right_Button_alt,
+  GPS_LOCATION: GPS_LOCATION,
+  Add_Image_Gray: Add_Image_Gray,
+  Roop_Gray: Roop_Gray,
+  Forms_Red_Compulsory: Forms_Red_Compulsory,
+  Forms_Green_Done: Forms_Green_Done,
+  Re_loop: Re_loop,
+  Logout: Logout,
+  Faq: Faq,
+  Signature_Btn_Right_Arrow: Signature_Btn_Right_Arrow,
+  Question_Btn_Done: Question_Btn_Done,
+  Question_Calendar: Question_Calendar,
+  Angle_Left_form: Angle_Left_form,
+  Person_Sharp_feature_card: Person_Sharp_feature_card,
+  Form_feature_card: Form_feature_card,
+  Sales_Pipeline_feature_Card: Sales_Pipeline_feature_Card,
+  Arrow_feature_Card: Arrow_feature_Card,
+  Yes_No_Button_Check: Yes_No_Button_Check,
+  Calendar_Previous: Calendar_Previous,
+  Calendar_Next: Calendar_Next,
+  Time_Up: Time_Up,
+  Time_Down: Time_Down,
+  Activity_Comments: Activity_Comments,
+  File: File,
+  File_Upload: File_Upload,
+  Check_Circle: Check_Circle,
+  Sync: Sync,
+  Colored_Sync: Colored_Sync,
+  Bottom_Arrow: Bottom_Arrow,
+  Up_Arrow: Up_Arrow,
+  Profile_Done: Profile_Done,
+  Hour_Glass: Hour_Glass,
+  Activity: Activity,
+  Activity_Items: Activity_Items,
+  Stock: Stock,
+  Stock_Gray: Stock_Gray,
+  Add_Stock: Add_Stock,
+  Chevron_Back: Chevron_Back,
+  Slider_Arrow_Right: Slider_Arrow_Right,
+  Slider_Arrow_Left: Slider_Arrow_Left,
+  Scan_Icon: Scan_Icon,
+  Scan_Icon_Gray: Scan_Icon_Gray,
+  Action_Item: Action_Item,
+  Customer_Sales: Customer_Sales,
+  Drop_Up: Drop_Up,
+  Shoping_Card: Shoping_Card,
+  Shoping_Card_Gray: Shoping_Card_Gray,
+  Access: Access,
+  Access_Gray: Access_Gray,
+  Business_Directory: Business_Directory,
+  Business_Directory_Gray: Business_Directory_Gray,
+  Avatar_Placeholder: Avatar_Placeholder,
+  Description_Black: Description_Black,
+  DoubleArrow: DoubleArrow,
+  DoubleArrowWhite: DoubleArrowWhite,
+  QR_SCAN: QR_SCAN,
+  Check_List: Check_List,
+  Check_List_Active: Check_List_Active,
+  DELETE: DELETE,
+  DEVICES: DEVICES,
+  Touchpoints: Touchpoints,
+  Image_Capture: Image_Capture,
+  Image_Capture_Disable: Image_Capture_Disable,
+  Pluse_Icon: Pluse_Icon,
+  Cow_Green_Group_Icon: Cow_Green_Group_Icon,
+  Price_Rise_Icon: Price_Rise_Icon,
+  Price_Fall_Icon: Price_Fall_Icon,
+  Sim_Card_Alert_Icon: Sim_Card_Alert_Icon,
+  Camera_Icon: Camera_Icon,
+  Special: Special,
+  Sales_Cart: Sales_Cart,
+  Sales_Cart_Gray: Sales_Cart_Gray,
+  Repeat: Repeat,
+  Inactive_Repeat: Inactive_Repeat,
+  Setting: Setting,
+  Sales_Value_Toggle_Icon: Sales_Value_Toggle_Icon,
+  Sales_Volume_Toggle_Icon: Sales_Volume_Toggle_Icon,
+  Bottom_Arrow_White: Bottom_Arrow_White,
+  Google_Map_Icon: Google_Map_Icon,
+  Sell_In_Icon: Sell_In_Icon,
+  Mobility_Icon: Mobility_Icon,
+  Festival_Icon: Festival_Icon,
+  Tracking_Icon: Tracking_Icon,
+  Compliance_Icon: Compliance_Icon,
+  Product_Sales_Item: Product_Sales_Item,
+  Bi: Bi,
+  Birthday: Birthday,
+  Career: Career,
+  Danger: Danger,
+  Fraud: Fraud,
+  Health_Safety: Health_Safety,
+  Info: Info,
+  Learning: Learning,
+  Marketing: Marketing,
+  News: News,
+  Notify: Notify,
+  Office: Office,
+  Sales: Sales,
+  Shield_Fail: Shield_Fail,
+  Star: Star,
+  Survey: Survey
+}
 
 export default ({
   icon,
@@ -1528,818 +1687,21 @@ export default ({
   width = '100%',
   height = '100%',
   style = {},
-}) => (
-  <Fragment>
-    {xml != null && xml != undefined && (
-      <SvgXml style={style} xml={xml} width={width} height={height} />
-    )}
-
-    {icon == 'Round_Btn_Default_Dark' && (
-      <SvgXml
-        style={style}
-        xml={Round_Btn_Default_Dark}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Round_Btn_Default_Dark_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Round_Btn_Default_Dark_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-
-
-
-
-
-    {icon == 'DISPOSITION_POST' && (
-      <SvgXml
-        style={style}
-        xml={DISPOSITION_POST}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Drop_Down' && (
-      <SvgXml style={style} xml={Drop_Down} width={width} height={height} />
-    )}
-    {icon == 'Person_Sharp' && (
-      <SvgXml style={style} xml={Person_Sharp} width={width} height={height} />
-    )}
-    {icon == 'Person_Sharp_White' && (
-      <SvgXml
-        style={style}
-        xml={Person_Sharp_White}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Camera' && (
-      <SvgXml style={style} xml={Camera} width={width} height={height} />
-    )}
-    {icon == 'ChatBoxes' && (
-      <SvgXml style={style} xml={ChatBoxes} width={width} height={height} />
-    )}
-    {icon == 'Exclamation_Triangle_Fill' && (
-      <SvgXml
-        style={style}
-        xml={Exclamation_Triangle_Fill}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Form' && (
-      <SvgXml style={style} xml={Form} width={width} height={height} />
-    )}
-    {icon == 'Form_inactive' && (
-      <SvgXml style={style} xml={Form_inactive} width={width} height={height} />
-    )}
-    {icon == 'Sale' && (
-      <SvgXml style={style} xml={SaleStore} width={width} height={height} />
-    )}
-    {icon == 'Sale_Gray' && (
-      <SvgXml style={style} xml={SaleStore_Gray} width={width} height={height} />
-    )}
-
-    {icon == 'Sale_inactive' && (
-      <SvgXml style={style} xml={Sale_inactive} width={width} height={height} />
-    )}
-    {icon == 'Geo' && (
-      <SvgXml style={style} xml={Geo} width={width} height={height} />
-    )}
-    {icon == 'Location_Arrow_White' && (
-      <SvgXml
-        style={style}
-        xml={Location_Arrow_White}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Filter' && (
-      <SvgXml style={style} xml={Filter} width={width} height={height} />
-    )}
-    {icon == 'Filter_GRAY' && (
-      <SvgXml style={style} xml={Filter_GRAY} width={width} height={height} />
-    )}
-    {icon == 'Location_Arrow' && (
-      <SvgXml
-        style={style}
-        xml={Location_Arrow}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Location_Arrow_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Location_Arrow_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Home_Black_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Home_Black_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Home_Black' && (
-      <SvgXml style={style} xml={Home_Black} width={width} height={height} />
-    )}
-    {icon == 'Android_More_Horizontal' && (
-      <SvgXml
-        style={style}
-        xml={Android_More_Horizontal}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Android_More_Horizontal_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Android_More_Horizontal_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Calendar_Event_Fill_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Calendar_Event_Fill_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Calendar_Event_Fill' && (
-      <SvgXml
-        style={style}
-        xml={Calendar_Event_Fill}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Pipeline_Gray' && (
-      <SvgXml style={style} xml={Pipeline_Gray} width={width} height={height} />
-    )}
-    {icon == 'Pipeline' && (
-      <SvgXml style={style} xml={Pipeline} width={width} height={height} />
-    )}
-    {icon == 'Travel_Explore_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Travel_Explore_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Travel_Explore' && (
-      <SvgXml
-        style={style}
-        xml={Travel_Explore}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Ballot_Gray' && (
-      <SvgXml style={style} xml={Ballot_Gray} width={width} height={height} />
-    )}
-    {icon == 'Ballot' && (
-      <SvgXml style={style} xml={Ballot} width={width} height={height} />
-    )}
-    {icon == 'Insert_Invitation' && (
-      <SvgXml
-        style={style}
-        xml={Insert_Invitation}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Green_Star' && (
-      <SvgXml style={style} xml={Green_Star} width={width} height={height} />
-    )}
-    {icon == 'Check' && (
-      <SvgXml style={style} xml={Check} width={width} height={height} />
-    )}
-    {icon == 'Close' && (
-      <SvgXml style={style} xml={Close} width={width} height={height} />
-    )}
-    {icon == 'Account_Circle' && (
-      <SvgXml
-        style={style}
-        xml={Account_Circle}
-        width={width}
-        height={height}
-      />
-    )}
-
-    {icon == 'Support_Agent' && (
-      <SvgXml style={style} xml={Support_Agent} width={width} height={height} />
-    )}
-    {icon == 'Support_Agent_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Support_Agent_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Angle_Left' && (
-      <SvgXml style={style} xml={Angle_Left} width={width} height={height} />
-    )}
-    {icon == 'Description' && (
-      <SvgXml style={style} xml={Description} width={width} height={height} />
-    )}
-    {icon == 'Wallpaper' && (
-      <SvgXml style={style} xml={Wallpaper} width={width} height={height} />
-    )}
-    {icon == 'Video_Library' && (
-      <SvgXml style={style} xml={Video_Library} width={width} height={height} />
-    )}
-    {icon == 'Path' && (
-      <SvgXml style={style} xml={Path} width={width} height={height} />
-    )}
-    {icon == 'Contact_Mail' && (
-      <SvgXml style={style} xml={Contact_Mail} width={width} height={height} />
-    )}
-    {icon == 'WhatsApp' && (
-      <SvgXml style={style} xml={WhatsApp} width={width} height={height} />
-    )}
-    {icon == 'Quiz' && (
-      <SvgXml style={style} xml={Quiz} width={width} height={height} />
-    )}
-    {icon == 'File_Download' && (
-      <SvgXml style={style} xml={File_Download} width={width} height={height} />
-    )}
-    {icon == 'Right_Arrow' && (
-      <SvgXml style={style} xml={Right_Arrow} width={width} height={height} />
-    )}
-    {icon == 'Item_Selected' && (
-      <SvgXml style={style} xml={Item_Selected} width={width} height={height} />
-    )}
-    {icon == 'Calendar_Optimize' && (
-      <SvgXml
-        style={style}
-        xml={Calendar_Optimize}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Arrow_Right' && (
-      <SvgXml style={style} xml={Arrow_Right} width={width} height={height} />
-    )}
-    {icon == 'Add_Image' && (
-      <SvgXml style={style} xml={Add_Image} width={width} height={height} />
-    )}
-    {icon == 'Arrow_Left_Btn' && (
-      <SvgXml style={style} xml={Arrow_Left} width={width} height={height} />
-    )}
-    {icon == 'Arrow_Left_Btn_alt' && (
-      <SvgXml
-        style={style}
-        xml={Arrow_Left_alt}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Arrow_Right_Btn' && (
-      <SvgXml
-        style={style}
-        xml={Arrow_Right_Button}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Arrow_Right_Btn_alt' && (
-      <SvgXml
-        style={style}
-        xml={Arrow_Right_Button_alt}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'GPS_LOCATION' && (
-      <SvgXml style={style} xml={GPS_LOCATION} width={width} height={height} />
-    )}
-    {icon == 'Add_Image_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Add_Image_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Roop_Gray' && (
-      <SvgXml style={style} xml={Roop_Gray} width={width} height={height} />
-    )}
-    {icon == 'Forms_Red_Compulsory' && (
-      <SvgXml
-        style={style}
-        xml={Forms_Red_Compulsory}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Forms_Green_Done' && (
-      <SvgXml
-        style={style}
-        xml={Forms_Green_Done}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Re_loop' && (
-      <SvgXml style={style} xml={Re_loop} width={width} height={height} />
-    )}
-    {icon == 'Logout' && (
-      <SvgXml style={style} xml={Logout} width={width} height={height} />
-    )}
-    {icon == 'Faq' && (
-      <SvgXml style={style} xml={Faq} width={width} height={height} />
-    )}
-    {icon == 'Signature_Btn_Right_Arrow' && (
-      <SvgXml
-        style={style}
-        xml={Signature_Btn_Right_Arrow}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Question_Btn_Done' && (
-      <SvgXml
-        style={style}
-        xml={Question_Btn_Done}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Question_Calendar' && (
-      <SvgXml
-        style={style}
-        xml={Question_Calendar}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Angle_Left_form' && (
-      <SvgXml
-        style={style}
-        xml={Angle_Left_form}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Person_Sharp_feature_card' && (
-      <SvgXml
-        style={style}
-        xml={Person_Sharp_feature_card}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Form_feature_card' && (
-      <SvgXml
-        style={style}
-        xml={Form_feature_card}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Sales_Pipeline_feature_Card' && (
-      <SvgXml
-        style={style}
-        xml={Sales_Pipeline_feature_Card}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Arrow_feature_Card' && (
-      <SvgXml
-        style={style}
-        xml={Arrow_feature_Card}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Yes_No_Button_Check' && (
-      <SvgXml
-        style={style}
-        xml={Yes_No_Button_Check}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Calendar_Previous' && (
-      <SvgXml
-        style={style}
-        xml={Calendar_Previous}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Calendar_Next' && (
-      <SvgXml style={style} xml={Calendar_Next} width={width} height={height} />
-    )}
-    {icon == 'Time_Up' && (
-      <SvgXml style={style} xml={Time_Up} width={width} height={height} />
-    )}
-    {icon == 'Time_Down' && (
-      <SvgXml style={style} xml={Time_Down} width={width} height={height} />
-    )}
-    {icon == 'Activity_Comments' && (
-      <SvgXml
-        style={style}
-        xml={Activity_Comments}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'File' && (
-      <SvgXml style={style} xml={File} width={width} height={height} />
-    )}
-    {icon == 'File_Upload' && (
-      <SvgXml style={style} xml={File_Upload} width={width} height={height} />
-    )}
-    {icon == 'Check_Circle' && (
-      <SvgXml style={style} xml={Check_Circle} width={width} height={height} />
-    )}
-    {icon == 'Sync' && (
-      <SvgXml
-        fill={color != undefined ? color : '#fff'}
-        style={[style, { color: '#000' }]}
-        xml={Sync}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Colored_Sync' && (
-      <SvgXml style={style} xml={Colored_Sync} width={width} height={height} />
-    )}
-
-    {icon == 'Bottom_Arrow' && (
-      <SvgXml style={style} xml={Bottom_Arrow} width={width} height={height} />
-    )}
-    {icon == 'Up_Arrow' && (
-      <SvgXml style={style} xml={Up_Arrow} width={width} height={height} />
-    )}
-    {icon == 'Profile_Done' && (
-      <SvgXml style={style} xml={Profile_Done} width={width} height={height} />
-    )}
-    {icon == 'Hour_Glass' && (
-      <SvgXml style={style} xml={Hour_Glass} width={width} height={height} />
-    )}
-    {icon == 'Activity' && (
-      <SvgXml style={style} xml={Activity} width={width} height={height} />
-    )}
-    {icon == 'Activity_Items' && (
-      <SvgXml
-        style={style}
-        xml={Activity_Items}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Stock' && (
-      <SvgXml style={style} xml={Stock} width={width} height={height} />
-    )}
-    {icon == 'Stock_Gray' && (
-      <SvgXml style={style} xml={Stock_Gray} width={width} height={height} />
-    )}
-    {icon == 'Add_Stock' && (
-      <SvgXml style={style} xml={Add_Stock} width={width} height={height} />
-    )}
-    {icon == 'Chevron_Back' && (
-      <SvgXml style={style} xml={Chevron_Back} width={width} height={height} />
-    )}
-    {icon == 'Slider_Arrow_Right' && (
-      <SvgXml
-        style={style}
-        xml={Slider_Arrow_Right}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Slider_Arrow_Left' && (
-      <SvgXml
-        style={style}
-        xml={Slider_Arrow_Left}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Scan_Icon' && (
-      <SvgXml style={style} xml={Scan_Icon} width={width} height={height} />
-    )}
-    {icon == 'Scan_Icon_Gray' && (
-      <SvgXml style={style} xml={Scan_Icon_Gray} width={width} height={height} />
-    )}
-
-    {icon == 'Action_Item' && (
-      <SvgXml style={style} xml={Action_Item} width={width} height={height} />
-    )}
-    {icon == 'Customer_Sales' && (
-      <SvgXml
-        style={style}
-        xml={Customer_Sales}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Drop_Up' && (
-      <SvgXml style={style} xml={Drop_Up} width={width} height={height} />
-    )}
-
-    {icon == 'Shoping_Card' && (
-      <SvgXml style={style} xml={Shoping_Card} width={width} height={height} />
-    )}
-    {icon == 'Shoping_Card_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Shoping_Card_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Access' && (
-      <SvgXml style={style} xml={Access} width={width} height={height} />
-    )}
-    {icon == 'Access_Gray' && (
-      <SvgXml style={style} xml={Access_Gray} width={width} height={height} />
-    )}
-    {icon == 'Business_Directory' && (
-      <SvgXml
-        style={style}
-        xml={Business_Directory}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Business_Directory_Gray' && (
-      <SvgXml
-        style={style}
-        xml={Business_Directory_Gray}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Avatar_Placeholder' && (
-      <SvgXml
-        style={style}
-        xml={Avatar_Placeholder}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Description_Black' && (
-      <SvgXml
-        style={style}
-        xml={Description_Black}
-        width={width}
-        height={height}
-      />
-    )}
-
-    {icon == 'DoubleArrow' && (
-      <SvgXml
-        style={style}
-        xml={DoubleArrow}
-        width={width}
-        height={height}
-        fill={color != undefined ? color : '#fff'}
-      />
-    )}
-    {icon == 'DoubleArrowWhite' && (
-      <SvgXml
-        style={style}
-        xml={DoubleArrowWhite}
-        width={width}
-        height={height}
-        fill={color != undefined ? color : '#fff'}
-      />
-    )}
-    {icon == 'QR_SCAN' && (
-      <SvgXml style={style} xml={QR_SCAN} width={width} height={height} />
-    )}
-    {icon == 'Check_List' && (
-      <SvgXml
-        style={style}
-        fill={color != undefined ? color : '#000'}
-        xml={Check_List}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Check_List_Active' && (
-      <SvgXml
-        style={style}
-        xml={Check_List_Active}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'DELETE' && (
-      <SvgXml style={style} xml={DELETE} width={width} height={height} />
-    )}
-    {icon == 'DEVICES' && (
-      <SvgXml style={style} xml={DEVICES} width={width} height={height} />
-    )}
-    {icon == 'Touchpoints' && (
-      <SvgXml style={style} xml={Touchpoints} width={width} height={height} />
-    )}
-
-    {icon == 'Image_Capture' && (
-      <SvgXml style={style} xml={Image_Capture} width={width} height={height} />
-    )}
-
-    {icon == 'Image_Capture_Disable' && (
-      <SvgXml
-        style={style}
-        xml={Image_Capture_Disable}
-        width={width}
-        height={height}
-      />
-    )}
-
-    {icon == 'Pluse_Icon' && (
-      <SvgXml style={style} xml={Pluse_Icon} width={width} height={height} />
-    )}
-    {icon == 'Cow_Green_Group_Icon' && (
-      <SvgXml
-        style={style}
-        xml={Cow_Green_Group_Icon}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Price_Rise_Icon' && (
-      <SvgXml
-        style={style}
-        xml={Price_Rise_Icon}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Price_Fall_Icon' && (
-      <SvgXml
-        style={style}
-        xml={Price_Fall_Icon}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Sim_Card_Alert_Icon' && (
-      <SvgXml
-        style={style}
-        xml={Sim_Card_Alert_Icon}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Camera_Icon' && (
-      <SvgXml style={style} xml={Camera_Icon} width={width} height={height} />
-    )}
-
-
-    {icon == 'Special' && (
-      <SvgXml style={style} xml={Special} width={width} height={height} />
-    )}
-
-    {icon == 'Sales_Cart' && (
-      <SvgXml style={style} xml={Sales_Cart} width={width} height={height} />
-    )}
-    {icon == 'Sales_Cart_Gray' && (
-      <SvgXml style={style} xml={Sales_Cart_Gray} width={width} height={height} />
-    )}
-
-
-    {icon == 'Repeat' && (
-      <SvgXml style={style} xml={Repeat} width={width} height={height} />
-    )}
-    {icon == 'Inactive_Repeat' && (
-      <SvgXml style={style} xml={Inactive_Repeat} width={width} height={height} />
-    )}
-
-    {icon == 'Setting' && (
-      <SvgXml style={style} xml={Setting} width={width} height={height} />
-    )}
-
-
-    {icon == 'Sales_Value_Toggle_Icon' && (
-      <SvgXml style={style} xml={Sales_Value_Toggle_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Sales_Volume_Toggle_Icon' && (
-      <SvgXml style={style} xml={Sales_Volume_Toggle_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Bottom_Arrow_White' && (
-      <SvgXml style={style} xml={Bottom_Arrow_White} width={width} height={height} />
-    )}
-
-
-    {icon == 'Google_Map_Icon' && (
-      <SvgXml style={style} xml={Google_Map_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Sell_In_Icon' && (
-      <SvgXml style={style} xml={Sell_In_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Mobility_Icon' && (
-      <SvgXml style={style} xml={Mobility_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Festival_Icon' && (
-      <SvgXml style={style} xml={Festival_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Tracking_Icon' && (
-      <SvgXml style={style} xml={Tracking_Icon} width={width} height={height} />
-    )}
-
-    {icon == 'Compliance_Icon' && (
-      <SvgXml style={style} xml={Compliance_Icon} width={width} height={height} />
-    )}
-    {icon == 'Product_Sales_Item' && (
-      <SvgXml style={style} xml={Product_Sales_Item} width={width} height={height} />
-    )}    {icon == 'Bi' && (
-      <SvgXml
-        style={style}
-        xml={Bi}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Birthday' && (
-      <SvgXml
-        style={style}
-        xml={Birthday}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Career' && (
-      <SvgXml style={style} xml={Career} width={width} height={height} />
-    )}
-    {icon == 'Danger' && (
-      <SvgXml style={style} xml={Danger} width={width} height={height} />
-    )}
-    {icon == 'Fraud' && (
-      <SvgXml
-        style={style}
-        xml={Fraud}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Health_Safety' && (
-      <SvgXml style={style} xml={Health_Safety} width={width} height={height} />
-    )}
-    {icon == 'Info' && (
-      <SvgXml style={style} xml={Info} width={width} height={height} />
-    )}
-    {icon == 'Learning' && (
-      <SvgXml
-        style={style}
-        xml={Learning}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Marketing' && (
-      <SvgXml style={style} xml={Marketing} width={width} height={height} />
-    )}
-    {icon == 'News' && (
-      <SvgXml style={style} xml={News} width={width} height={height} />
-    )}
-    {icon == 'Notify' && (
-      <SvgXml style={style} xml={Notify} width={width} height={height} />
-    )}
-    {icon == 'Office' && (
-      <SvgXml style={style} xml={Office} width={width} height={height} />
-    )}
-
-    {icon == 'Sales' && (
-      <SvgXml style={style} xml={Sales} width={width} height={height} />
-    )}
-    {icon == 'Shield_Fail' && (
-      <SvgXml style={style} xml={Shield_Fail} width={width} height={height} />
-    )}
-    {icon == 'Star' && (
-      <SvgXml
-        style={style}
-        xml={Star}
-        width={width}
-        height={height}
-      />
-    )}
-    {icon == 'Survey' && (
-      <SvgXml style={style} xml={Survey} width={width} height={height} />
-    )}
-
-  </Fragment>
-);
+}) => {
+  let xmlData = Round_Btn_Default_Dark
+  if (xml != null && xml != undefined) {
+    xmlData = xml
+  }
+  if (icon && svgMap[icon]) {
+    xmlData = svgMap[icon]
+  }
+  return (<Fragment>
+        <SvgXml
+          style={style}
+          xml={xmlData}
+          width={width}
+          height={height}
+        />
+  </Fragment>)
+  
+}
