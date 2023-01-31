@@ -2,9 +2,11 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import ProductItem from './items/ProductItem';
@@ -16,8 +18,9 @@ import SvgIcon from '../../../../components/SvgIcon';
 import SettingView from './SettingView';
 import {AppText} from '../../../../components/common/AppText';
 import {style} from '../../../../constants/Styles';
-import {Colors, Constants} from '../../../../constants';
+import {Colors, Constants, Images} from '../../../../constants';
 import QRScanModal from '../../../../components/common/QRScanModal';
+import ProductSalesPlaceholder from './ProductSalesPlaceholder';
 var currentSearchKey = '';
 
 const ProductSalesView = props => {
@@ -27,21 +30,28 @@ const ProductSalesView = props => {
     lists,
     page,
     isLoading,
+    isEndPage,
     cartCount,
     isUpdatingProductPrice,
   } = props;
 
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
-  const [isEndPageLoading, setIsEndPageLoading] = useState(false);
-  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [isEndPageLoading, setIsEndPageLoading] = useState(false);  
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [isInitializeView, setIsInitializeView] = useState(true);
   const barcodeScanModalRef = useRef(null);
+  
 
+  
   useEffect(() => {
     setPageNumber(page);
   }, [page]);
+
+  useEffect(() => {    
+    configPlaceholder(isLoading , selectedLocation)
+  },[isLoading , selectedLocation]);
 
   useEffect(() => {
     checkFilter();
@@ -57,6 +67,15 @@ const ProductSalesView = props => {
       setSearchText(props.regret_item?.search_text);
     }
   }, [props.regret_item]);
+
+  const configPlaceholder = async(isLoading , selectedLocation) => {
+    const setupData = await getJsonData("@setup");
+    if(  setupData == null || selectedLocation == null){
+      setIsInitializeView(true);
+    }else{
+      setIsInitializeView(false);
+    }
+  }
 
   const checkFilter = async () => {
     var param = await getJsonData('@sale_product_parameter');
@@ -152,64 +171,84 @@ const ProductSalesView = props => {
         </View>
       );
     }
-    return <View></View>;
+    return <View style={{height:100}}></View>;
   };
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
-      <SearchBar
-        isFilter
-        haveFilter={haveFilter}
-        isScan
-        onSearch={searchText => {
-          setSearchText(searchText);
-          console.log('search text ', searchText);
-          if ((searchText != '', searchText.length >= 2)) {
-            loadMoreData(0, searchText);
-          } else if (searchText == '') {
-            loadMoreData(0, searchText);
-          }
-        }}
-        onSuffixButtonPress={() => {
-          if (props.openFilter) {
-            props.openFilter();
-          }
-        }}
-        onScan={() => {
-          barcodeScanModalRef.current.showModal();
-        }}
-        initVal={searchText}
-      />
+      
+      <View style={{marginTop:-10}}>
+        <SearchBar            
+          isFilter
+          haveFilter={haveFilter}
+          isScan
+          onSearch={searchText => {
+            if(!isInitializeView){
+              setSearchText(searchText);
+              console.log('search text ', searchText);
+              if ((searchText != '', searchText.length >= 2)) {
+                loadMoreData(0, searchText);
+              } else if (searchText == '') {
+                loadMoreData(0, searchText);
+              }
+            }            
+          }}
+          onSuffixButtonPress={() => {
+            if (props.openFilter && !isInitializeView) {
+              props.openFilter();
+            }
+          }}
+          onScan={() => {
+            if(!isInitializeView)
+              barcodeScanModalRef.current.showModal();
+          }}
+          initVal={searchText}
+          isLoading={isInitializeView}
+        />
 
-      <SettingView
-        openSetup={props.openSetup}
-        openReorder={props.openReorder}
-        selectedLocation={selectedLocation}
-      />
+        <SettingView
+          openSetup={props.openSetup}
+          openReorder={props.openReorder}
+          selectedLocation={selectedLocation}
+		      isInitializeView={isInitializeView}
+        />
 
-      <FlatList
-        data={lists}
-        renderItem={({item, index}) => renderItem(item, index)}
-        keyExtractor={(item, index) => index.toString()}
-        extraData={this.props}
-        onEndReached={() => {
-          loadMoreData(pageNumber, searchText);
-        }}
-        onEndReachedThreshold={0.5}
-        removeClippedSubviews={false}
-        ListFooterComponent={renderFooter.bind(this)}
-      />
+ 		{
+			isInitializeView &&
+      <ProductSalesPlaceholder />
 
-      <View
+			// <Image 
+			// source={Images.productSalePlaceholder}
+			// style={styles.placeholderStyle}
+			// resizeMode="stretch"
+			// />
+		}
+
+		<FlatList
+          data={lists}
+          renderItem={({item, index}) => renderItem(item, index)}
+          keyExtractor={(item, index) => index.toString()}
+          extraData={this.props}
+          onEndReached={() => {
+            loadMoreData(pageNumber, searchText);
+          }}
+          onEndReachedThreshold={0.5}
+          removeClippedSubviews={false}
+          ListFooterComponent={renderFooter.bind(this)}
+        />       
+      </View>
+
+      <View     
         style={{
           flexDirection: 'row',
           position: 'absolute',
-          bottom: 10,
+          bottom: 20,
           right: 10,
         }}>
-        {settings != undefined && settings?.allow_add_product === '1' && (
+
+        { (settings != undefined && settings?.allow_add_product === '1') || (isInitializeView && settings == null) && (
           <TouchableOpacity onPress={props.openAddProductModal}>
-            <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
+            <SvgIcon icon={isInitializeView ? 'Round_Btn_Default_Dark_Gray' : 'Round_Btn_Default_Dark' }  width="70px" height="70px" />
           </TouchableOpacity>
         )}
 
@@ -217,7 +256,7 @@ const ProductSalesView = props => {
           <TouchableOpacity
             onPress={props.openCart}
             style={{alignItems: 'center', justifyContent: 'center'}}>
-            <SvgIcon icon="Sales_Cart" width="70px" height="70px" />
+            <SvgIcon icon={isInitializeView ? 'Sales_Cart_Gray' : 'Sales_Cart' }   width="70px" height="70px" />
             <AppText
               title={cartCount}
               style={styles.cartNumberStyle}
@@ -226,6 +265,7 @@ const ProductSalesView = props => {
           </TouchableOpacity>
         )}
       </View>
+
 
       <QRScanModal
         ref={barcodeScanModalRef}
@@ -254,5 +294,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    marginBottom:100
   },
+  placeholderStyle:{
+    width: Dimensions.get("screen").width,
+    height:  450
+  }
 });

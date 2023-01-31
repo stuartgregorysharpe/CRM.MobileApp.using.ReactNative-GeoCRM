@@ -2,9 +2,8 @@
 import { View, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native'
 import React from 'react'
 import { style } from '../../../../../constants/Styles'
-import SvgIcon from '../../../../../components/SvgIcon'
 import { AppText } from '../../../../../components/common/AppText';
-import Colors, { PRIMARY_COLOR, TEXT_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import CustomProgress from '../CustomProgress';
 import { useEffect } from 'react';
 import { getApiRequest } from '../../../../../actions/api.action';
@@ -25,10 +24,8 @@ const Compliance = (props) => {
     }, [props.haveFilter]);
 
     const loadData = () => {
-        let postData = props.haveFilter ? props.haveFilter : {};
-        // console.log(postData);
-        getApiRequest('lindtdash/compliance', postData).then(response => {
-            console.log(response);
+        let postData = props.haveFilter ? props.haveFilter : {};    
+        getApiRequest('lindtdash/compliance', postData).then(response => {            
             setComplianceData(response.items);
             setGraphData(response.graphs);
         }).catch(e => {
@@ -41,7 +38,7 @@ const Compliance = (props) => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <AppText size="medium" title={title}
                     type="secondaryBold" style={{ flex: 1, textAlign: 'right' }}
-                    color={TEXT_COLOR}></AppText>
+                    color={Colors.textColor}></AppText>
                 <View style={{ flex: 3, marginHorizontal: 10 }}>
                     <CustomProgress color={color} count={value} percentage={percentage ? parseInt(percentage) : 0} height={12} ></CustomProgress>
                 </View>
@@ -85,7 +82,7 @@ const Compliance = (props) => {
                     color={Colors.disabledColor}></AppText>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10 }}>
                     <View style={{ flex: 1 }}>
-                        {renderBar('Actual', PRIMARY_COLOR, item?.actual, getActualPercentage(item))}
+                        {renderBar('Actual', Colors.primaryColor, item?.actual, getActualPercentage(item))}
                         {renderBar('Target', Colors.lightBlueColor, item?.target, getTargetPercentage(item))}
                     </View>
                     <View>
@@ -96,8 +93,7 @@ const Compliance = (props) => {
         )
     }
 
-    const renderProgress = (percent, size) => {
-        console.log(percent);
+    const renderProgress = (percent, size) => {        
         return (
             <CircularProgress
                 radius={size ? size : Dimensions.get('window').width * 0.08}

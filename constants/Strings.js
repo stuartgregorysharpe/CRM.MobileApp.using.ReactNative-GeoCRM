@@ -50,6 +50,7 @@ export default {
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
+    Supplier_Compulsory: 'Supplier need to be filled',
   },
 
   Log: {
@@ -64,6 +65,10 @@ export default {
   Home_Visit_Tabs: {
     Today: 'Today Visits',
     Weekly: 'Weekly Visits',
+  },
+
+  Calendar: {
+    Added_Calendar_Successfully : 'Added to Calendar successfully'
   },
 
   Stock: {
@@ -91,6 +96,10 @@ export default {
     Clear_Filters: 'Clear Filters',
   },
 
+  ProductSales: {
+    Click_Update: 'Please click update to action any changes mode, please note this will reset your cart.'
+  },
+
   PostRequestResponse: {
     Successfully_Checkout: 'Checkout Successfully!',
     Successfully_Checkin: 'Checkin Successfully!',
@@ -110,4 +119,5 @@ export default {
     Returns_value: 'Returns Value',
     Returns_tns: 'Returns (Tns)',
   },
+  
 };

@@ -9,7 +9,6 @@ const DropdownText = (props) => {
     const {item, questionType, onChange} = props;
     const isCompleted = item.completed_data != false && item.completed_data != null;
 
-    console.log("ite", item)
     const renderContent = formCompleted => {
         if (formCompleted) {
           return <Text>completed</Text>

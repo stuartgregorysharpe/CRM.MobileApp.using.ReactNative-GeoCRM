@@ -94,7 +94,12 @@ const SearchBar = props => {
               }
             }}
             style={styles.scanImageButton}>
-            <SvgIcon icon={"Scan_Icon"} width="30px" height="30px" />
+              {
+                !isLoading && <SvgIcon icon={"Scan_Icon"} width="30px" height="30px" />
+              }
+			        {
+                isLoading && <SvgIcon icon={"Scan_Icon_Gray"} width="30px" height="30px" />
+              }            
           </TouchableOpacity>
         )
       }

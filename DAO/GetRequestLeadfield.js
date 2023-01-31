@@ -61,8 +61,7 @@ const getData = async (lists, commonTitle) => {
       var dropdownTextOptions = [];
 
       if (element.preset_field == 1) {
-        const query = getPresetOptionQuery(element.custom_master_field_id);
-        console.log('QUERY    ===== ', query, element.custom_master_field_id);
+        const query = getPresetOptionQuery(element.custom_master_field_id);        
         const res = await ExecuteQuery(query, []);
         var _lists = res.rows ? res.rows : [];
         presetOptions = getPresetOptionData(_lists);

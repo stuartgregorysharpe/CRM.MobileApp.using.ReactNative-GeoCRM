@@ -64,6 +64,7 @@ export const Notification = ({}) => {
       dispatch(clearNotification());
     }
   };
+  
   return (
     <Modal
       animationType="fade"
@@ -118,6 +119,7 @@ export const Notification = ({}) => {
               <Text style={styles.button}>{notification.buttonText}</Text>
             </TouchableHighlight>
           )}
+          
           {notification.cancelButtonText && (
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
               <TouchableHighlight
@@ -281,13 +283,13 @@ const styles = StyleSheet.create({
 
   button: {
     fontFamily: Fonts.secondaryBold,
-    fontSize: 18,
+    fontSize: 16,
     color: whiteLabel().mainText,
     padding: 10,
   },
   cancelButton: {
     fontFamily: Fonts.secondaryBold,
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.disabledColor,
     padding: 10,
   },

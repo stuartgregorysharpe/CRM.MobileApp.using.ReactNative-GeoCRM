@@ -1,6 +1,6 @@
 import { View, Animated } from 'react-native';
 import React, { useRef, useState, useEffect } from 'react';
-import Colors, { TEXT_COLOR } from '../../../../constants/Colors';
+import Colors, { } from '../../../../constants/Colors';
 import { AppText } from '../../../../components/common/AppText';
 
 export default function CustomProgress({ count, color, height, percentage }) {
@@ -12,18 +12,7 @@ export default function CustomProgress({ count, color, height, percentage }) {
     useEffect(() => {
         reactive2.setValue(0);
     }, [count, width]);
-
-    const getTotal = () => {
-        var sum = 100;
-        // steps.forEach(element => {
-        //     sum = sum + element;
-        // });
-        // if (sum == 0) {
-        //     return 1;
-        // }
-        return sum;
-    };
-
+  
     return (
         <View
             onLayout={e => {
@@ -52,7 +41,7 @@ export default function CustomProgress({ count, color, height, percentage }) {
                 const newWidth = e.nativeEvent.layout.width;
                 setTextWidth(newWidth);
             }}>
-                <AppText type="secondaryBold" color={TEXT_COLOR} title={count} style={{ fontSize: 12,marginHorizontal:5 }}></AppText>
+                <AppText type="secondaryBold" color={Colors.textColor} title={count} style={{ fontSize: 12,marginHorizontal:5 }}></AppText>
             </View>
 
         </View>

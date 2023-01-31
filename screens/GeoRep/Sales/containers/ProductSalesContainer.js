@@ -21,12 +21,10 @@ import {
   setProductPriceLists,
   setRegret,
 } from '../../../../actions/sales.action';
-import {showNotification} from '../../../../actions/notification.action';
-import {configProductSetUp, getConfigFromRegret} from '../helpers';
+import { showNotification} from '../../../../actions/notification.action';
+import { getConfigFromRegret, onCheckProductSetupChanged} from '../helpers';
 import {
-  CHANGE_MORE_STATUS,
-  SHOW_MORE_COMPONENT,
-  SLIDE_STATUS,
+  CHANGE_MORE_STATUS,  
 } from '../../../../actions/actionTypes';
 
 export const ProductSalesContainer = forwardRef((props, ref) => {
@@ -34,9 +32,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const navigation = props.navigation;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const visibleMore = useSelector(state => state.rep.visibleMore);
-
+  const showMoreScreen = useSelector(state => state.rep.showMoreScreen);
   const { page , items, settings} = props;
-
   const [selectedGroupTitle, setSelectedGroupTitle] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [products, setProducts] = useState([]);
@@ -78,9 +75,13 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         setLists(newList);
       }else{
         setLists([...lists , ...newList]);
-      }    
-            
+      }                
     },
+
+    showPlaceHolder() {
+      setLists([]);
+    },
+
   }));
 
 
@@ -180,9 +181,19 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setupDefineSetupFromRegret();
     }
   }, [props.regret_item]);
+
+  useEffect(() => {    
+    console.log("show more screen", showMoreScreen  , visibleMore)
+    //navigation.getState().routeNames[1] == 'CartScreen' &&
+    if(showMoreScreen === 1 &&  visibleMore == 'ProductSales'){   
+      refreshList();
+      //checkAndOpenSetup();
+    }
+  }, [showMoreScreen , visibleMore]);
+
   const checkAndOpenSetup = async () => {
     const regretId = await getLocalData('@regret');    
-    if (!props.regret_item && !regretId && regretId != '') {      
+    if (!props.regret_item && !regretId && regretId != '') {
       setupFieldModalRef.current.showModal();
     }
   };
@@ -208,18 +219,20 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
       props.getProductLists(defineSetup , '' , 0);
+      console.log("trigger product list")
     }
     if (defineSetup == null) {
       console.log('refreshList: checkAndOpenSetup');
       checkAndOpenSetup();      
-    }else{
-      setSelectedLocation(defineSetup.location.name);
+    }else{      
+      setSelectedLocation(defineSetup.location.name);  
     }
   };
    
   const initializeProductLists = async () => {
     const storedProductPriceList = await getJsonData('@product_price');
-    if (storedProductPriceList != null) {
+    console.log("storedProductPriceList ==",storedProductPriceList)
+    if (storedProductPriceList != null && storedProductPriceList.length > 0) {
       dispatch(setProductPriceLists(storedProductPriceList));
       setOutsideTouch(true);
       props.getProductLists();
@@ -243,26 +256,27 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
     setCartCount(count);
   }, [productPriceLists]);
+
   const setupDefineSetupFromRegret = async () => {
+    
     console.log('setupDefineSetupFromRegret');
     if (props.regret_item) {
       console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
       const config = getConfigFromRegret(props.regret_item);
-
       await storeJsonData('@product_price', []);
       await removeLocalData('@add_product');
       dispatch(setProductPriceLists([]));
       await storeJsonData('@setup', config);
+      setCartCount(0);
       setupFromConfig(config, props.regret_item?.search_text);
     }
   };
-  const setupFromConfig = (config, searchText) => {
-    console.log('setupFromConfig: config', config);
-    if (props.getProductLists) {
-      console.log('setupFromConfig: setSelectedLocation', config.location.name);
-      setSelectedLocation(config.location.name);
-      configProductSetUp(config, type => {
-        if (type == 'changed') {
+
+  const setupFromConfig = (config, searchText) => {    
+    if (props.getProductLists) {      
+      setSelectedLocation(config.location.name);      
+      onCheckProductSetupChanged(config, type => {
+        if (type.includes('changed')) {
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
@@ -278,26 +292,25 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const onSetupFieldModalClosed = ({type, value}) => {
     
     if (type === Constants.actionType.ACTION_CLOSE) {      
-
       setupFieldModalRef.current.hideModal();
-      setupFromConfig(value);
-      storeLocalValue('@regret', '');
-      dispatch(setRegret(null));
-    
-
+      if(value != null){
+        setupFromConfig(value);
+        storeLocalValue('@regret', '');
+        dispatch(setRegret(null));
+      }
     } else if (type == Constants.actionType.ACTION_DONE) {
-
+      console.log("action done =----", visibleMore)
       setupFieldModalRef.current.hideModal();
-      if (value.name === 'More') {
-        dispatch({type: SLIDE_STATUS, payload: false});
-        if (visibleMore != '') {
-          dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-        } else {
-          dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-        }
+      if (value?.name === 'More') {
+        dispatch({type: CHANGE_MORE_STATUS, payload: 0});        
       } else {
         navigation.navigate(value.name);
       }
+    }else if( type === Constants.actionType.ACTION_FORM_CLEAR){      
+      //setSelectedLocation(null);
+      // if(props.clearProducts){
+      //   props.clearProducts();
+      // }      
     }
   };
 
@@ -523,7 +536,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const updateOutSideTouchStatus = async flag => {
-    var setup = await getJsonData('@setup');
+    
+    var setup = await getJsonData('@setup');      
     if (setup == null) {
       setOutsideTouch(false);
     } else {
@@ -537,10 +551,11 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         alignSelf: 'stretch',
         flex: 1,
       }}>
+        
       <SetupFieldModal
         title="Define Setup"
         hideClear
-        backButtonDisabled={true}
+        backButtonDisabled={!outsideTouch}
         closableWithOutsideTouch={outsideTouch}
         ref={setupFieldModalRef}
         hideDivider={true}

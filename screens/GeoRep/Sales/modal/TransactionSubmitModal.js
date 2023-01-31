@@ -25,7 +25,7 @@ const TransactionSubmitModal = React.forwardRef((props, ref) => {
             closableWithOutsideTouch
          
             onClear={ async() => {                
-                onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });            
+                onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}            
             {...props}>
                 

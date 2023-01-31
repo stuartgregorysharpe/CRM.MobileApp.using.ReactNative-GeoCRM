@@ -7,11 +7,10 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Image,
 } from 'react-native';
 
 import SvgIcon from './SvgIcon';
-import { BG_COLOR, TEXT_COLOR, whiteLabel } from '../constants/Colors';
+import Colors, { whiteLabel } from '../constants/Colors';
 import {
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
@@ -21,6 +20,7 @@ import {
 } from '../actions/actionTypes';
 import { setToken, storeLocalValue } from '../constants/Storage';
 import { setRegret } from '../actions/sales.action';
+import { useNavigation } from '@react-navigation/native';
 import { deviceTokenPostApi } from '../actions/auth.action';
 
 const lists = {
@@ -79,7 +79,7 @@ const lists = {
       navigator: 'RepMessages',
       navOrder: 'messages',
     },
-    
+
     {
       icon: 'Account_Circle',
       name: 'Recorded Sales',
@@ -232,6 +232,8 @@ const lists = {
 };
 
 export default function More() {
+
+
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
@@ -240,6 +242,7 @@ export default function More() {
   const [componentListOne, setComponentListOne] = useState([]);
   const [componentListTwo, setComponentListTwo] = useState([]);
   const [componentListThree, setComponentListThree] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
@@ -341,15 +344,21 @@ export default function More() {
                         await storeLocalValue('@regret', '');
                         dispatch(setRegret(null));
                       }
+                      console.log("clicked", list.navigator);
                       dispatch({ type: CHANGE_MORE_STATUS, payload: 1 });
                       dispatch({
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
                       });
+
                       dispatch({
                         type: SHOW_MORE_COMPONENT,
                         payload: list.navigator,
                       });
+
+                      //console.log("navigation",navigation)
+                      //navigation.navigate(list.navigator);
+
                     }}>
                     <SvgIcon
                       style={{ marginRight: 8 }}
@@ -406,6 +415,7 @@ export default function More() {
                         type: CHANGE_LIBRARY_CHILD_STATUS,
                         payload: false,
                       });
+
                       dispatch({
                         type: SHOW_MORE_COMPONENT,
                         payload: list.navigator,
@@ -462,7 +472,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     marginLeft: 'auto',
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     padding: 12,
     paddingTop: 70,
     borderWidth: 1,
@@ -499,13 +509,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   boldText: {
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontSize: 17,
     fontFamily: 'Gilroy-Bold',
   },
   text: {
     fontSize: 14,
-    color: TEXT_COLOR,
+    color: Colors.textColor,
     fontFamily: 'Gilroy-Medium',
     marginBottom: 2,
   },
@@ -527,6 +537,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     fontSize: 14,
     fontFamily: 'Gilroy-Medium',
-    color: TEXT_COLOR,
+    color: Colors.textColor,
   },
 });

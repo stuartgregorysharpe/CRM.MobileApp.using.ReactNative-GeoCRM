@@ -12,8 +12,7 @@ import {
 import {Notification} from '../../../../../../components/modal/Notification';
 
 export default function DeviceView(props) {
-
-  const { errors } = props;
+  const {errors} = props;
 
   const [details, setDetails] = useState('');
   const [code, setCode] = useState('');
@@ -51,12 +50,12 @@ export default function DeviceView(props) {
   };
 
   const validateError = () => {
-    console.log("validate error" ,errors)
-    if( errors != undefined && errors['imei'] != undefined  && !codeDisabled){
+    console.log('validate error', errors);
+    if (errors != undefined && errors['imei'] != undefined && !codeDisabled) {
       return errors['imei'];
     }
     return false;
-  }
+  };
 
   return (
     <View style={{alignSelf: 'stretch'}}>
@@ -72,8 +71,14 @@ export default function DeviceView(props) {
         style={{marginTop: 15}}
       />*/}
 
-      <View style={{marginTop: 15, flexDirection: 'row', alignItems: 'center'}}>
-        <TouchableOpacity style={{flex: 1}} onPress={() => popDialog()}>
+      <View
+        style={{
+          marginTop: 15,
+          flexDirection: 'row',
+          alignItems: 'center',
+          alignSelf: 'stretch',
+        }}>
+        <View style={{flex: 1, position: 'relative'}}>
           <CTextInput
             label="Input IMEI"
             value={code}
@@ -81,13 +86,26 @@ export default function DeviceView(props) {
             returnKeyType={'done'}
             isRequired={true}
             disabled={codeDisabled}
-            hasError={validateError()}            
+            hasError={validateError()}
             onChangeText={text => {
               setCode(text);
               onDataChanged(details, text);
             }}
           />
-        </TouchableOpacity>
+          {codeDisabled && (
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+              }}
+              onPress={() => {
+                popDialog();
+              }}></TouchableOpacity>
+          )}
+        </View>
         <SubmitButton
           onSubmit={() => {
             qrScanModalRef.current.showModal();

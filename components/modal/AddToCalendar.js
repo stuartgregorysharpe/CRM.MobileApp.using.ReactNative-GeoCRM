@@ -1,32 +1,33 @@
-import React, {useState} from 'react';
+import React, { useState , useRef } from 'react';
 import {
   View,
   TouchableOpacity,
-  ScrollView,
-  Dimensions,
+  ScrollView,  
   Text,
 } from 'react-native';
 import {Title} from 'react-native-paper';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
+import {  
   parse,
 } from 'react-native-extended-stylesheet-breakpoints';
 import {useDispatch, useSelector} from 'react-redux';
 import Divider from '../Divider';
 import FilterButton from '../FilterButton';
 import Colors from '../../constants/Colors';
-import {breakPoint} from '../../constants/Breakpoint';
 import {SLIDE_STATUS} from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
 import AlertDialog from './AlertDialog';
-import {addCalendar} from '../../actions/calendar.action';
 import {DateStartEndTimePickerView} from '../DateStartEndTimePickerView';
 import {DatetimePickerView} from '../DatetimePickerView';
 import {expireToken, getPostParameter} from '../../constants/Helper';
 import {Notification} from './Notification';
+import { postApiRequest } from '../../actions/api.action';
+import { generateKey } from '../../constants/Utils';
+import LoadingBar from '../LoadingView/loading_bar';
+import { Strings } from '../../constants';
 
 export default function AddToCalendar({selectedItems, onClose, isModal}) {
+
   const dispatch = useDispatch();
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -35,46 +36,76 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
   const [dateTimeType, setDateTimeType] = useState('date');
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  
+  const loadingBarRef = useRef(null);
   const showDivider = isModal != true;
-  console.log('isModal', isModal);
-  const handleScheduleDate = date => {
-    let datetime = date;
-    let time = '';
-    //datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
-    //time =  String(date.getHours()) + ":" + String(date.getMinutes());
-    //setIsDateTimePickerVisible(false);
+  const indempotencyKey = generateKey();
+
+  const handleScheduleDate = date => {    
+    let datetime = date;    
     if (selectedItems != undefined) {
       selectedItems.forEach((item, index) => {
         item.schedule_order = (index + 1).toString();
         item.schedule_date = datetime;
       });
-      callApi(selectedItems);
+      callApi(selectedItems , 'schedule_date');
     }
   };
-  
-  const callApi = schedules => {
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      schedules: schedules,
-      user_local_data: userParam.user_local_data,
-    };
-    addCalendar(postData)
-      .then(res => {
-        setStartEndTimePicker(false);
-        setMessage(res);
-        setIsConfirmModal(true);
-      })
-      .catch(error => {
-        console.log(error);
-        expireToken(dispatch, error);
-        setMessage(error.toString());
-        setIsConfirmModal(true);
-      });
+
+  const showProgressingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+
+  const hideProgressingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
+
+  const callApi = (schedules , type) => {
+
+    if(!isLoading){
+      setIsLoading(true);
+      if(type == 'today'){
+        showProgressingBar();
+      }
+      
+      var userParam = getPostParameter(currentLocation);
+      let postData = {
+        schedules: schedules,
+        user_local_data: userParam.user_local_data,
+      };  
+ 
+      postApiRequest('calenderadd', postData, indempotencyKey).then((res) => {                      
+          setStartEndTimePicker(false);
+          setMessage(Strings.Calendar.Added_Calendar_Successfully);
+          setIsConfirmModal(true);
+          if(type == 'today'){
+            hideProgressingBar();
+          }          
+          setIsLoading(false);
+      }).catch((error) => {
+          expireToken(dispatch, error);
+          setMessage(error.toString());
+          setIsConfirmModal(true);
+          if(type == 'today'){
+            hideProgressingBar();
+          }          
+          setIsLoading(false);
+      });  
+    }
   };
 
   return (
     <ScrollView style={styles.refreshSliderContainer}>
+
       <Notification />
+      <LoadingBar 
+        backButtonDisabled={true}
+        ref={loadingBarRef} />      
+
       {showDivider && (
         <TouchableOpacity
           style={{padding: 6}}
@@ -115,8 +146,8 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
               selectedItems.forEach((item, index) => {
                 item.schedule_order = (index + 1).toString();
                 item.schedule_date = 'Today';
-              });
-              callApi(selectedItems);
+              });              
+              callApi(selectedItems , "today");
             }
           }
         }}
@@ -141,6 +172,7 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
             : 'Please Select date and time:'
         }
         visible={isStartEndTimePicker}
+        isLoading={isLoading}
         onModalClose={() => setStartEndTimePicker(false)}
         mode={dateTimeType}
         close={(startDate, endDate, startTime, endTime) => {
@@ -156,10 +188,11 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
             item.schedule_time = startTime;
             item.schedule_end_time = endTime;
           });
-          callApi(selectedItems);
+          callApi(selectedItems , "today_time");
         }}></DateStartEndTimePickerView>
 
       <DatetimePickerView
+        isLoading={isLoading}
         visible={isDateTimePickerVisible}
         value={''}
         onModalClose={() => {
@@ -170,14 +203,7 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
             handleScheduleDate(date.replace('/', '-').replace('/', '-'));
           }
           setIsDateTimePickerVisible(false);
-        }}></DatetimePickerView>
-
-      {/* <DateTimePickerModal
-        isVisible={isDateTimePickerVisible}
-        mode={dateTimeType}
-        onConfirm={handleScheduleDate}
-        onCancel={() => {setIsDateTimePickerVisible(false)}}
-      /> */}
+        }}></DatetimePickerView>      
 
       <AlertDialog
         visible={isConfirmModal}
@@ -191,8 +217,6 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
     </ScrollView>
   );
 }
-
-const perWidth = setWidthBreakpoints(breakPoint);
 
 const styles = EStyleSheet.create(
   parse({

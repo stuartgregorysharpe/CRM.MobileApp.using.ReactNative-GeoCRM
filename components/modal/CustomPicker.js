@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Modal, TouchableWithoutFeedback, StyleSheet, ScrollView } from 'react-native';
-import { BG_COLOR } from '../../constants/Colors';
 
 const CustomPicker = ({ visible, onModalClose, renderItems }) => {
     return (

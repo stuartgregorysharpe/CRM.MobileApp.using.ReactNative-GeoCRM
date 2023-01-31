@@ -174,7 +174,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
               initData(masterFields, 'first');
               initData(masterFields, 'second');
               useGeoLocation();
-              validateForm();
+              _validateForm();
             }
           }
         }}>

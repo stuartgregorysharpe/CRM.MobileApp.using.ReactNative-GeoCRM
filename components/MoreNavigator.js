@@ -48,7 +48,7 @@ export default function RepMoreScreen(props) {
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const dispatch = useDispatch();
   const params = props.route?.params;
-  console.log('repmore screen', params);
+  
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
       setComponentListOne([

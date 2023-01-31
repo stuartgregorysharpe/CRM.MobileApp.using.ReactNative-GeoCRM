@@ -8,6 +8,7 @@ import React, {
 
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import DynamicField from './DynamicField';
+import { checkRuleCharactersAddLead } from './helper';
 
 const DynamicForm = React.forwardRef((props, ref) => {
 
@@ -35,7 +36,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     if (props.updateFormData) {
       const _formData = {...formData};
       _formData[fieldName] = value;
-      props.updateFormData(_formData);
+      props.updateFormData(_formData , fieldName );
       if (fieldName) {
         checkFormFieldValid([fieldName], _formData);
       }
@@ -62,6 +63,9 @@ const DynamicForm = React.forwardRef((props, ref) => {
     const data = _formData || formData;
     const _errors = {...errors};
 
+    console.log("field names", fieldNames);
+    console.log("form data", _formData);
+
     fieldNames.forEach(fieldName => {
       if (fieldName) {
         if (data[fieldName] == '' || data[fieldName] == null || (fieldName == 'price' && (data[fieldName].value == '' || data[fieldName].type == '')  ) ) {
@@ -69,15 +73,29 @@ const DynamicForm = React.forwardRef((props, ref) => {
           valid = false;
           console.log('Error fieldName', fieldName);
         } else {
-          _errors[fieldName] = false;
+          const item = formStructureData.find(element => element.custom_master_field_id == fieldName);
+          if(item != undefined){            
+            const error = checkRuleCharactersAddLead(item, data[fieldName]);            
+            if(error){
+              _errors[fieldName] = true; 
+              _errors[fieldName] = {status: true, errorText: error};
+              valid = false;
+            }else{              
+              _errors[fieldName] = false;              
+            }
+          }else{
+            _errors[fieldName] = false;            
+          }
+          
         }
       }
     });
 
-    setErrors(_errors);
-    return valid;
-        
+    // check rule character       
+    setErrors(_errors);    
+    return valid;        
   };
+
   const checkAllowedFieldType = fieldType => {
 
     const allowedFieldTypes = [
@@ -105,14 +123,18 @@ const DynamicForm = React.forwardRef((props, ref) => {
   };
 
   const _validateForm = () => {
-    const requiredFields = [];
+    const requiredFields = [];    
     formStructureData.forEach(fieldStructure => {
       const isAlowedField = checkAllowedFieldType(fieldStructure.field_type);
+
+      console.log("ok" , fieldStructure.is_required, fieldStructure.isHidden , isAlowedField , fieldStructure.rule_compulsory)
       if (
+        (fieldStructure.rule_compulsory == undefined || (fieldStructure.rule_compulsory != undefined && fieldStructure.rule_compulsory == '1') )  &&
         fieldStructure.is_required &&
-        fieldStructure.isHidden !== true &&
+        fieldStructure.isHidden != true &&
         isAlowedField
       ) {
+        
         requiredFields.push(fieldStructure.field_name);
       }
     });
@@ -122,25 +144,35 @@ const DynamicForm = React.forwardRef((props, ref) => {
   };
 
   const renderFields = () => {
+
     if (props.isClickable) {
       return formStructureData.map((fieldStructure, index) => {
         return (
           <TouchableOpacity
             key={'form' + index}
             onPress={() => {
-              props.onPress(fieldStructure);
+              if(props.onPress){
+                props.onPress(fieldStructure);
+              }              
             }}>
             <DynamicField
               {...fieldStructure}
               key={index + 'field'}
               updateFormData={updateFormData}
               updateSecondFormData={updateSecondFormData}
-              value={formData[fieldStructure.field_name]}
-              hasError={errors[fieldStructure.field_name]}
+              value={formData[fieldStructure.field_name]}              
+              hasError={ errors[fieldStructure.field_name] != undefined && errors[fieldStructure.field_name].status != undefined ? errors[fieldStructure.field_name].status : errors[fieldStructure.field_name]}
+              errorText={errors[fieldStructure.field_name] ? errors[fieldStructure.field_name].errorText : null}
+              add_prefix={fieldStructure.add_prefix}
+              add_suffix={fieldStructure.add_suffix}
+              rule_compulsory={fieldStructure.rule_compulsory}
               isFirst={index == 0}
               isClickable={fieldStructure.isClickable}
               onPress={() => {
-                props.onPress();
+                console.log("trig")
+                if(props.onPress){
+                  props.onPress(fieldStructure);
+                }                
               }}
               index={index}
               dynamicFieldRef={dynamicFieldRef}
@@ -149,6 +181,12 @@ const DynamicForm = React.forwardRef((props, ref) => {
                   props.setScrollEnabled(flag);
                 } 
               }}
+              onNoData={(item) => {
+                if(props.onNoData){
+                  props.onNoData(item);
+                }
+              }}
+              
             />
           </TouchableOpacity>
         );
@@ -156,6 +194,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     }
 
     return formStructureData.map((fieldStructure, index) => {
+      
       return (
         <DynamicField
           {...fieldStructure}
@@ -163,7 +202,11 @@ const DynamicForm = React.forwardRef((props, ref) => {
           updateFormData={updateFormData}
           updateSecondFormData={updateSecondFormData}
           value={formData[fieldStructure.field_name]}
-          hasError={errors[fieldStructure.field_name]}
+          hasError={ errors[fieldStructure.field_name] != undefined && errors[fieldStructure.field_name].status != undefined ? errors[fieldStructure.field_name].status : errors[fieldStructure.field_name]}
+          errorText={errors[fieldStructure.field_name] ? errors[fieldStructure.field_name].errorText : null}
+          add_prefix={fieldStructure.add_prefix}
+          add_suffix={fieldStructure.add_suffix}
+          rule_compulsory={fieldStructure.rule_compulsory}
           isFirst={index == 0}
           index={index}
           dynamicFieldRef={dynamicFieldRef}
@@ -171,6 +214,16 @@ const DynamicForm = React.forwardRef((props, ref) => {
             if(props.setScrollEnabled){
               props.setScrollEnabled(flag);
             } 
+          }}
+          onPress={() => {
+            if(props.onPress){
+              props.onPress(fieldStructure);
+            }                
+          }}
+          onNoData={(item) => {
+            if(props.onNoData){
+              props.onNoData(item);
+            }
           }}
         />
       );

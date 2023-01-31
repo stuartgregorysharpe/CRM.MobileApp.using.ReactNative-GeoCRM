@@ -34,7 +34,6 @@ import { SalesPipelineScreen } from '../screens/GeoRep/pipeline/SalesPipelineScr
 import Stock from '../screens/GeoRep/Stock/Stock';
 import DeviceInfo from 'react-native-device-info';
 import { getLocalData, setToken, storeLocalValue } from '../constants/Storage';
-import ViewRouteMap from '../screens/GeoRep/CRM/locationInfoDetails/ViewRouteMap';
 
 const Stack = createNativeStackNavigator();
 
@@ -211,15 +210,7 @@ export default function AppScreens() {
           options={{ header: () => false }}>
           {props => <Stock {...props} isDeeplink={true} />}
         </Stack.Screen>
-
-
-        <Stack.Screen 
-          name="DeeplinkViewRouteMap" 
-          options={{header: () => false}}>
-          {props => <ViewRouteMap {...props} isDeeplink={true} />}
-        </Stack.Screen>
-
-
+        
       </Stack.Navigator>
     </SafeAreaView>
   );

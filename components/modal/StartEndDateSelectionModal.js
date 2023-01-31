@@ -8,8 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {Modal, Title} from 'react-native-paper';
-import Colors, {
-  BG_COLOR,  
+import Colors, {  
   whiteLabel,
 } from '../../constants/Colors';
 import {notifyMessage} from '../../constants/Helper';
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
   pickerContent: {
     height: Dimensions.get('window').height * 0.4,
     margin: 20,
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     paddingTop: 20,
     paddingBottom: 10,
     paddingLeft: 20,

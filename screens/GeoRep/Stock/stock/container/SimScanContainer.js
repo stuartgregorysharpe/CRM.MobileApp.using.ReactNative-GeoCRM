@@ -6,8 +6,7 @@ import SimScanView from '../components/SimScanView';
 
 export default function SimScanContainer(props) {
     
-    const addData = (value) => {
-        console.log("add data" , value)
+    const addData = (value) => {        
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
 

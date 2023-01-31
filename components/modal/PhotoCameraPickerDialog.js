@@ -1,4 +1,4 @@
-import React , { useImperativeHandle } from 'react';
+import React, { useImperativeHandle } from 'react';
 import {
   View,
   Modal,
@@ -9,18 +9,23 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
-import {whiteLabel} from '../../constants/Colors';
+import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
 
 //const PhotoCameraPickerDialog = props => {
 const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
 
-  const {visible, message, onGallery, onCamera, onModalClose} = props;
-  
+  const { visible, message, onGallery, onCamera, onModalClose } = props;
+
   useImperativeHandle(ref, () => ({
     openCamera: () => {
-      launchCamera();
+      if (Platform.OS === 'android') {
+        requestCameraPermission();
+      } else {
+        launchCamera();
+      }
+
     },
     openGallery: () => {
       launchImageLibrary();
@@ -125,7 +130,7 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
               <Text style={styles.title}>{message}</Text>
               <View style={styles.divider}></View>
 
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <TouchableHighlight
                   underlayColor="#DDDDDD"
                   style={{

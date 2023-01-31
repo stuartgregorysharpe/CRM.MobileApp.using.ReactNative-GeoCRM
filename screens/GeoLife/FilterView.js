@@ -3,11 +3,9 @@ import { View, TouchableOpacity, StyleSheet, ScrollView, Text } from 'react-nati
 import CheckBox from '@react-native-community/checkbox';
 import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-
 import Divider from './Divider';
 import FilterButton from './FilterButton';
 import Skeleton from './Skeleton';
-import { BG_COLOR } from '../constants/Colors';
 import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import Colors from '../../constants/Colors';
@@ -117,7 +115,7 @@ export default function FilterView({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: BG_COLOR
+    backgroundColor: Colors.bgColor
   },
   sliderHeader: {
     flexDirection: 'row',
@@ -126,7 +124,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   pickerContent: {
-    backgroundColor: BG_COLOR,
+    backgroundColor: Colors.bgColor,
     paddingTop: 10,
     paddingBottom:10,
     paddingLeft: 20,

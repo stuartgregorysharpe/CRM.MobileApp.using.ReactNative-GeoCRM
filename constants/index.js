@@ -7,6 +7,7 @@ import Strings from './Strings';
 
 export const offlineDBVersion = '1.7';
 
+export const GOOGLE_API_KEY = 'AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw';
 export const GOOGLE_MAPS_APIKEY = 'AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o';
 export const HMS_MAP_API_KEY = 'DAEDAGHkUviEKZSSPGUFsp86yKwQT2SrExG+RiXoI9vpkS13W+fDxNRZp63u1/95Uyqgoa3RBb9qbeJrHfBB2oazR1hmx8KRc1anbA==';
 

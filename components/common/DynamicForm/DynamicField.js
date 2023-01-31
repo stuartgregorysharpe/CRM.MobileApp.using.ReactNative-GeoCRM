@@ -1,6 +1,6 @@
 import {RuleTester} from 'eslint';
 import React from 'react';
-import {View , Text } from 'react-native';
+import {View , Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { Constants } from '../../../constants';
 import DropdownText from '../../shared/DropdownText';
@@ -29,6 +29,9 @@ const DynamicField = props => {
     updateFormData,
     updateSecondFormData,
     hasError,
+    errorText,
+    add_prefix,
+    add_suffix,
     isFirst,
     index,
     dynamicFieldRef,
@@ -36,6 +39,7 @@ const DynamicField = props => {
     isClickable,
     isHidden,
     input_label,
+    rule_compulsory
   } = props;
 
   const disabled = editable && editable == '0';
@@ -44,23 +48,60 @@ const DynamicField = props => {
     return (
       <CTextInput
         label={field_label}
-        key={index}
+        key={index}        
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
         value={value}
         hasError={hasError}
+        errorText={errorText}
+        add_prefix={add_prefix}
+        add_suffix={add_suffix} 
         disabled={disabled}
         keyboardType={'decimal-pad'}   
         onChangeText={text => {
           updateFormData(field_name, text);
         }}
-        style={{marginTop: isFirst ? 0 : 10}}
+        style={{marginTop: isFirst ? 0 : 5}}
       />
     );
   };
 
   const renderText = () => {
+
+    if(isClickable){
+      console.log("render clickable view");
+      return <TouchableOpacity 
+        onPress={() => {
+          if(props.onPress){
+            props.onPress();
+          }
+        }}
+      >
+        <CTextInput
+            label={field_label}
+            key={index}
+            dynamicFieldRef={dynamicFieldRef}
+            index={index}
+            isRequired={is_required}
+            value={value}
+            add_prefix={add_prefix}
+            add_suffix={add_suffix}        
+            hasError={hasError}
+            errorText={errorText}
+            disabled={disabled}
+            pointerEvents={disabled ? 'none' : 'auto'}
+            isClickable={isClickable}            
+            onChangeText={text => {
+              console.log("chagned data", field_name);
+              updateFormData(field_name, text);
+            }}
+            style={{marginTop: isFirst ? 0 : 5 , paddingTop:0}}
+          // textInputStyle={[ type == "text" ? {} : { textAlignVertical: 'top', height:100, marginTop:0, paddingTop:0 , lineHeight: 20} ]}        
+          />
+      </TouchableOpacity>
+    }
+    
     return (
       <CTextInput
         label={field_label}
@@ -68,10 +109,15 @@ const DynamicField = props => {
         dynamicFieldRef={dynamicFieldRef}
         index={index}
         isRequired={is_required}
-        value={value}        
+        value={value}
+        add_prefix={add_prefix}
+        add_suffix={add_suffix}        
         hasError={hasError}
+        errorText={errorText}
         disabled={disabled}
-        pointerEvents={disabled ? 'none' : 'auto'}      
+        pointerEvents={disabled ? 'none' : 'auto'}
+        isClickable={isClickable}
+        
         onChangeText={text => {
           console.log("chagned data", field_name);
           updateFormData(field_name, text);
@@ -177,7 +223,6 @@ const DynamicField = props => {
           />
         </View>
       </View>
-
     );
   }
 
@@ -202,8 +247,10 @@ const DynamicField = props => {
       />
     );
   };
-     
+  
+  
   const renderDropdown = (mode = 'single') => {
+    
     return (
       <CSingleSelectInput
         key={index}
@@ -216,14 +263,16 @@ const DynamicField = props => {
         isClickable={isClickable}
         mode={mode}
         onPress={() => {
-          if (isClickable) {
-            props.onPress();
+          if (isClickable) {            
+            if(props.onPress){              
+              props.onPress();
+            }
           }
         }}
         onSelectItem={ item => {
 
           if(mode == "contact_email" || mode == "contact_select"){            
-            onContactItemSelected(item);
+            onContactItemSelected(item , mode);
           }else if (mode === 'single') {
             updateFormData(field_name, item.value);
           } else if (mode === 'multi') {
@@ -294,7 +343,7 @@ const DynamicField = props => {
             onChangeText={text => {
               updateSecondFormData(field_name, value.value, text);
             }}
-            style={{marginTop: 10}}
+            style={{marginTop: 5}}
           />
         )}
       </View>
@@ -337,18 +386,20 @@ const DynamicField = props => {
 
   const renderYesNoView = () => {
     return (
-      <YesNoForm
-        onTakeImage={async (images, type) => {}}
-        onPress={(value, type) => {
-          updateFormData(field_name, value);
-        }}
-        key={index}
-        item={{
-          question_text: field_label,
-          include_image: [],
-          rule_compulsory: is_required ? '1' : '',
-          value: value,
-        }}></YesNoForm>
+      <View style={{marginTop:5}}>
+        <YesNoForm        
+          onTakeImage={async (images, type) => {}}
+          onPress={(value, type) => {
+            updateFormData(field_name, value);
+          }}
+          key={index}
+          item={{
+            question_text: field_label,
+            include_image: [],
+            rule_compulsory: is_required ? '1' : '',
+            value: value,
+          }}></YesNoForm>
+      </View>      
     );
   };
 
@@ -364,6 +415,8 @@ const DynamicField = props => {
           input_label: input_label,
         }}
         options={preset_options}
+        hasError={hasError}
+        errorText={errorText}
         style={{marginHorizontal: 0}}
         onFormAction={({type, value}) => {
           updateFormData(field_name, value);
@@ -419,7 +472,7 @@ const DynamicField = props => {
     )
   }
   
-  const onContactItemSelected = (item) =>{
+  const onContactItemSelected = (item , mode) =>{
 
     var isData = false;
     if (value != undefined && value != '' && value != null) {
@@ -438,8 +491,14 @@ const DynamicField = props => {
         value.filter(element => element != item.contact_id),
       );
     } else {
+      if(mode == 'contact_email' && item?.contact_email?.trim() == ''){
+        if(props.onNoData){
+          props.onNoData(item);
+        }
+        return;
+      }
       if(value != undefined){
-        console.log("is value", value , field_name ,item.contact_id)
+        console.log("is value", field_name , value , field_name ,item.contact_id , item)
         updateFormData(field_name, [...value, item.contact_id]);
       }else{
         updateFormData(field_name, [item.contact_id]);

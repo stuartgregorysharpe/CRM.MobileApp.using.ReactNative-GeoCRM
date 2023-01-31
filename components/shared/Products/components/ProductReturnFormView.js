@@ -6,7 +6,7 @@ import {
   Keyboard,
   ToastAndroid,
   Platform,
-  AlertIOS,
+  Alert,
   TouchableOpacity,
 } from 'react-native';
 import React, {useRef, useState, useEffect, useImperativeHandle} from 'react';
@@ -89,7 +89,7 @@ const ProductReturnFormView = React.forwardRef((props, ref) => {
           if (Platform.OS === 'android') {
             ToastAndroid.show('Product not found', ToastAndroid.SHORT);
           } else {
-            AlertIOS.alert('Product not found');
+            Alert.alert('Product not found');
           }
         }
         previousCode = value;

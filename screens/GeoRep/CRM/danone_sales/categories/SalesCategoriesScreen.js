@@ -5,7 +5,7 @@ import ToggleSwitch from 'toggle-switch-react-native';
 import { getApiRequest } from "../../../../../actions/api.action";
 import SvgIcon from '../../../../../components/SvgIcon';
 import { Colors, Fonts } from '../../../../../constants';
-import { PRIMARY_COLOR, whiteLabel } from '../../../../../constants/Colors';
+import { whiteLabel } from '../../../../../constants/Colors';
 import { expireToken } from '../../../../../constants/Helper';
 import Dropdown from '../../../Home/DanOneSales/components/DropDown';
 import CategoriesListHeader from './CategoriesListHeader';
