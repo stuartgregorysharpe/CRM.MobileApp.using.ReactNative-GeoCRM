@@ -254,6 +254,8 @@ export default function AddLeadContainer(props) {
         'forms/forms-submission',
         form.form_name,
         locationName,
+        null,
+        dispatch        
       )
         .then(async res => {
           if (res.status === Strings.Success) {

@@ -55,9 +55,9 @@ export const getApiRequest = async (route, param) => {
         console.log(err?.response?.data);
         const error = err.response;
         if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
+          error?.status === 401 &&
+          error?.config &&
+          !error?.config?.__isRetryRequest
         ) {
           reject('expired');
         } else {
@@ -69,7 +69,6 @@ export const getApiRequest = async (route, param) => {
 
 export const postApiRequest = async (route, postData, indempotencyKey) => {
 
-  axios.defaults.timeout = 15000;
 
   var token = await getToken();
   var baseUrl = await getBaseUrl();
@@ -89,6 +88,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
     };
     axios
       .post(url, postData, {
+        timeout: 15000,
         headers: headers,
       })
       .then(res => {
@@ -99,9 +99,12 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
         }
       })
       .catch(err => {
-        console.log('postApiRequest error =>', err.response);
-        const error = err.response;
+        
         if(error != undefined){
+          
+          console.log('postApiRequest error =>', err.response);
+          const error = err.response;
+
           if (
             error.status === 401 &&
             error.config &&
@@ -151,7 +154,7 @@ export const postApiRequestMultipart = async (
           Authorization: 'Bearer ' + token,
           'Indempotency-Key': key,
         },
-        timeout: 30000,
+        timeout: 25000,
       })
       .then(res => {
         console.log('res', res.data);

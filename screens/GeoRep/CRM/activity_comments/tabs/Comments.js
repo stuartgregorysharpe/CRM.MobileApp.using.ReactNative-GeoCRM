@@ -73,9 +73,10 @@ export default function Comments(props) {
 	}
 
 	const editFormQuestion = async (form_answers, files) => {			
-		console.log("files ", files);
+		
 		const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
-		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name , '' ).then( async(res) => {									
+		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' 
+		, form.form_name , '' , null , dispatch ).then( async(res) => {									
 			if(res.status === Strings.Success){
 				dispatch(showNotification({type: Strings.Success , message: res.message , buttonText:'Ok', buttonAction:() => {					
 					setPage(0)

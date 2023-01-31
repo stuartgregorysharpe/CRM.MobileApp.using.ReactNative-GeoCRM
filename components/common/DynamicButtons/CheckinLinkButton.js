@@ -15,10 +15,8 @@ import {
 } from '../../../constants/Storage';
 import SelectionPicker from '../../modal/SelectionPicker';
 import {SubmitButton} from '../../shared/SubmitButton';
-import {
-  clearLoadingBar,
-  clearNotification,
-  showLoadingBar,
+import {  
+  clearNotification,  
   showNotification,
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
@@ -148,9 +146,7 @@ const CheckinLinkButton = props => {
 
     if (isLoading) {     
       return false;
-    }
-
-    dispatch(showLoadingBar({type: 'loading'}));
+    }    
 
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
@@ -170,7 +166,8 @@ const CheckinLinkButton = props => {
       'location-info/check-in',
       '',
       '',
-      checkin_indempotency
+      checkin_indempotency,
+      dispatch
     )
       .then(async res => {
         checkin_indempotency = generateKey();
@@ -208,8 +205,7 @@ const CheckinLinkButton = props => {
         setIsLoading(false);
        
 
-        if(props.onCallback){
-          dispatch(clearLoadingBar());
+        if(props.onCallback){          
           props.onCallback();
         }else{
           getLocationInfo(locationId, currentLocation).then(
@@ -218,8 +214,7 @@ const CheckinLinkButton = props => {
               navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
                 locationId: locationId,
                 page: 'checkin',
-              });
-              dispatch(clearLoadingBar());
+              });              
               onFinishProcess();
             },
           );
@@ -227,7 +222,7 @@ const CheckinLinkButton = props => {
       })
       .catch(e => {
         setIsLoading(false);
-        dispatch(clearLoadingBar());
+        
         expireToken(dispatch, e);
       });
   };

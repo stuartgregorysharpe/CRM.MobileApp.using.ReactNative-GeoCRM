@@ -241,7 +241,7 @@ export const FormQuestions = props => {
       );
       return;
     }
-    loadingBarRef.current.showModal();
+    //loadingBarRef.current.showModal();
 
     var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
@@ -267,9 +267,11 @@ export const FormQuestions = props => {
       'forms/forms-submission',
       form.form_name,
       '',
+      null,
+      dispatch
     )
       .then(async res => {
-        loadingBarRef.current.hideModal();
+        //loadingBarRef.current.hideModal();
         console.log('respnose => ', res);
 
         setTimeout(() => {
@@ -304,7 +306,7 @@ export const FormQuestions = props => {
         }, 700);
       })
       .catch(e => {
-        loadingBarRef.current.hideModal();
+        //loadingBarRef.current.hideModal();
         expireToken(dispatch, e);
       });
   };

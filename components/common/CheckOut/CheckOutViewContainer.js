@@ -63,6 +63,7 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory]);
 
   const _callCheckOut = () => {
+
     if (isLoading) {
       return;
     }
@@ -72,12 +73,7 @@ export default function CheckOutViewContainer(props) {
           type: Strings.Success,
           message: Strings.CRM.Complete_Compulsory_Form,
           buttonText: Strings.Ok,
-          buttonAction: async () => {
-            // if(type == 'home'){
-            // }else if(type == "specificInfo"){
-            // }else if(type == "calendar"){
-            // }
-
+          buttonAction: async () => {            
             const location = await getJsonData('@checkin_location');
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: location,
@@ -88,8 +84,7 @@ export default function CheckOutViewContainer(props) {
       );
     } else {
 
-      setIsLoading(true);
-      dispatch(showLoadingBar({type: 'loading'}));
+      setIsLoading(true);      
 
       var userParam = getPostParameter(currentLocation);
       var currentTime = getDateTime();
@@ -107,12 +102,12 @@ export default function CheckOutViewContainer(props) {
         'location-info/check-out',
         '',
         '',
-        check_out_indempotency
+        check_out_indempotency,
+        dispatch
       )
         .then(async res => {
           console.log('RES : ', res);
-          setIsLoading(false);
-          dispatch(clearLoadingBar());
+          setIsLoading(false);        
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -137,8 +132,7 @@ export default function CheckOutViewContainer(props) {
           
         })
         .catch(e => {
-          console.log('checkout error:', e);
-          dispatch(clearLoadingBar());
+          console.log('checkout error:', e);          
           expireToken(dispatch, e);
         });
     }
