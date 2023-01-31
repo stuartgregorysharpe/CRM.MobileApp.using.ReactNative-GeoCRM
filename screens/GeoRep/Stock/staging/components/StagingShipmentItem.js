@@ -37,12 +37,15 @@ const StagingShipmentItem = props => {
           paddingRight: 4,
           flex: 1,
         }}>
+        {/*
         <AcceptButton
           onPress={() => {
             onItemAction(Constants.actionType.ACTION_ACCEPT);
           }}
           style={{marginRight: 10}}
         />
+         */}
+
         <TouchableOpacity
           onPress={() => {
             onItemAction(Constants.actionType.ACTION_VIEW);

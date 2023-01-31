@@ -16,7 +16,6 @@ import {Notification} from '../../../../../components/modal/Notification';
 var previousText = Constants.msisdnPrefix;
 
 const SwopAtTraderView = props => {
-
   const {item, lists, onReturnDevice, onReason, onPhotos, onSwop} = props;
   const dispatch = useDispatch();
   const [reason, setReason] = useState('');
@@ -26,13 +25,13 @@ const SwopAtTraderView = props => {
     {value: 'Used', label: 'Used'},
   ]);
   const [msisdn, setMsisdn] = useState(Constants.msisdnPrefix);
-  const [photos, setPhotos] = useState([]);  
+  const [photos, setPhotos] = useState([]);
   const [device, setDevice] = useState(null);
-  const [deviceType , setDeviceType] = useState(null)
+  const [deviceType, setDeviceType] = useState(null);
   const [hasMsisdnError, setHasMsisdnError] = useState(false);
   const [hasSelectDeviceError, setHasSelectDeviceError] = useState(false);
   const [hasReasonError, setHasReasonError] = useState(false);
-  const [hasDeviceTypeError , setHasDeviceTypeError] =  useState(false);
+  const [hasDeviceTypeError, setHasDeviceTypeError] = useState(false);
 
   const checkEnabled = (device, reason, photos) => {
     if (
@@ -40,8 +39,8 @@ const SwopAtTraderView = props => {
       device != null &&
       reason != '' &&
       photos.length > 0
-    ) {      
-    } else {      
+    ) {
+    } else {
     }
   };
 
@@ -159,23 +158,32 @@ const SwopAtTraderView = props => {
       />
 
       <CSingleSelectInput
-            description={Strings.Stock.Primary_Additional}
-            placeholder={Strings.Stock.Primary_Additional}
-            placeholderStyle={{color:Colors.textGeyColor}}
-            mode="single"
-            checkedValue={deviceType}
-            items={[{label: Constants.deviceTypeLabel.PRIMARY , value: Constants.deviceTypeLabel.PRIMARY} , {label:Constants.deviceTypeLabel.ADDITIONAL , value: Constants.deviceTypeLabel.ADDITIONAL}]}
-            hasError={hasDeviceTypeError}
-            disabled={false}
-            onSelectItem={item => {
-              setDeviceType(item.value);
-            }}
-            containerStyle={{marginTop: 15}}
-          />
+        description={Strings.Stock.Primary_Additional}
+        placeholder={Strings.Stock.Primary_Additional}
+        placeholderStyle={{color: Colors.textGeyColor}}
+        mode="single"
+        checkedValue={deviceType}
+        items={[
+          {
+            label: Constants.deviceTypeLabel.PRIMARY,
+            value: Constants.deviceTypeLabel.PRIMARY,
+          },
+          {
+            label: Constants.deviceTypeLabel.ADDITIONAL,
+            value: Constants.deviceTypeLabel.ADDITIONAL,
+          },
+        ]}
+        hasError={hasDeviceTypeError}
+        disabled={false}
+        onSelectItem={item => {
+          setDeviceType(item.value);
+        }}
+        containerStyle={{marginTop: 15}}
+      />
 
       {
         <SubmitButton
-          title={Strings.Stock.Add_Stock}
+          title={Strings.Stock.Submit}
           style={{marginTop: 10, marginBottom: 30}}
           isLoading={props.isLoading}
           onSubmit={() => {
@@ -189,20 +197,26 @@ const SwopAtTraderView = props => {
             if (reason == '') {
               setHasReasonError(true);
             }
-            if(deviceType == null || deviceType == ''){
+            if (deviceType == null || deviceType == '') {
               setHasDeviceTypeError(true);
             }
 
-            console.log("device type => " , deviceType);
-            
-            if (device != null && reason != '' && isMsisdnValid && deviceType != null && deviceType != '') {
+            console.log('device type => ', deviceType);
+
+            if (
+              device != null &&
+              reason != '' &&
+              isMsisdnValid &&
+              deviceType != null &&
+              deviceType != ''
+            ) {
               onSwop({
                 item,
                 device,
                 reason,
                 photos,
                 msisdn,
-				        deviceType
+                deviceType,
               });
             } else {
               dispatch(
