@@ -12,9 +12,9 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
-import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
+import { PostRequestDAO } from '../../../../../DAO';
 
 export default function StockSignatureContainer(props) {
 
@@ -30,6 +30,8 @@ export default function StockSignatureContainer(props) {
   const onSubmit = ( signature, deviceType) => {  
 
     if (signature != null) {    
+
+      if(isLoading) return;
 
       setIsLoading(true);
       var postData = new FormData();
@@ -93,8 +95,9 @@ export default function StockSignatureContainer(props) {
               }
               var networks = selectedCodes.map(item => item.network).join(',');
 
-              PostRequest.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
-              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks ).then((res) => {
+              PostRequestDAO.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
+              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , null, dispatch ).then((res) => {
+                setIsLoading(false);
                 dispatch(
                   showNotification({
                     type: Strings.Success,
@@ -231,7 +234,7 @@ export default function StockSignatureContainer(props) {
           onChangedSerial(text)
         }}
         onClose={onClose}
-        isLoading={isLoading}
+        
         {...props}
       />
       <Notification />

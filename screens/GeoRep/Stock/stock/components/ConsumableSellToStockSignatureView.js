@@ -290,8 +290,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       <SubmitButton
         title="Submit"
         style={{marginTop: 10}}
-        onSubmit={onFormSubmit}
-        isLoading={props.isLoading}>
+        onSubmit={onFormSubmit}>
         {' '}
       </SubmitButton>
     </View>
