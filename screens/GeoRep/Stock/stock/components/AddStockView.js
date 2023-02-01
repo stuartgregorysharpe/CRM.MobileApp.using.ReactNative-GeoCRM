@@ -296,8 +296,7 @@ export default function AddStockView(props) {
       <SubmitButton
         onSubmit={() => {
           onSubmit();
-        }}
-        isLoading={props.isLoading ? props.isLoading : false}
+        }}        
         title={Strings.Stock.Add_Stock}
         style={{marginTop: 20}}></SubmitButton>
       <Notification />

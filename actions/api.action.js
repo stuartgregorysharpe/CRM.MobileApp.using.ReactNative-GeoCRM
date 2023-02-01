@@ -13,7 +13,7 @@ export const dummyApiRequest = async (route, param, response) => {
   });
 };
 
-axios.defaults.timeout = 25000;
+axios.defaults.timeout = 15000;
 
 export const getApiRequest = async (route, param) => {
   var token = await getToken();
@@ -50,19 +50,22 @@ export const getApiRequest = async (route, param) => {
         }
       })
       .catch(err => {
-        console.log('get api request error => ', err);
-        console.log(url, err);
-        console.log(err?.response?.data);
-        const error = err.response;
-        if (
-          error?.status === 401 &&
-          error?.config &&
-          !error?.config?.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject('error');
+        console.log('get api request error => ', err);        
+        if(err != undefined){
+          const error = err.response;
+          if (
+            error?.status === 401 &&
+            error?.config &&
+            !error?.config?.__isRetryRequest
+          ) {
+            reject('expired');
+          } else {            
+            reject('error');
+          }
+        }else{
+          reject('timeout');
         }
+        
       });
   });
 };
@@ -122,7 +125,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
         }else{
           reject('timeout');
         }
-        
+
       });
   });
 };

@@ -26,7 +26,7 @@ const LoadingProgressBar = () => {
 
   return (
 	<LoadingBar 
-		backButtonDisabled={true}			 
+		backButtonDisabled={true}
 		closableWithOutsideTouch={false}
 		ref={loadingBarRef}
 	/>
