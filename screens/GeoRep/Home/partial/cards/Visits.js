@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
 import SvgIcon from '../../../../../components/SvgIcon';
@@ -12,6 +12,7 @@ import { showOfflineDialog } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 import { useEffect } from 'react';
+import TwoRowContent from '../../../../../components/modal/content_type_modals/TwoRowContentFeed';
 
 const Visits = ({ visitCard, pageCount, pageIndex }) => {
   const [tabIndex, setTabIndex] = useState(0);

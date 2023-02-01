@@ -1,30 +1,30 @@
-import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import ScrollTab from '../../../components/common/ScrollTab';
-import {style} from '../../../constants/Styles';
-import {MainPage} from './Main/MainPage';
-import {useSelector} from 'react-redux';
+import { style } from '../../../constants/Styles';
+import MainPage from './Main/MainPage';
+import { useSelector } from 'react-redux';
 import ActionItemsContainer from '../CRM/action_items/containers/ActionItemsContainer';
-import {generateTabs} from './helper';
-import {getSpeedTest} from '../../../services/DownloadService/TrackNetSpeed';
+import { generateTabs } from './helper';
+import { getSpeedTest } from '../../../services/DownloadService/TrackNetSpeed';
 import BackgroundTimer from 'react-native-background-timer';
 
-import {CHANGE_OFFLINE_STATUS} from '../../../actions/actionTypes';
-import {useDispatch} from 'react-redux';
-import {getLocalData, storeLocalValue} from '../../../constants/Storage';
+import { CHANGE_OFFLINE_STATUS } from '../../../actions/actionTypes';
+import { useDispatch } from 'react-redux';
+import { getLocalData, storeLocalValue } from '../../../constants/Storage';
 import {
   clearNotification,
   showNotification,
 } from '../../../actions/notification.action';
-import {Strings} from '../../../constants';
-import {getTime} from '../../../helpers/formatHelpers';
-import {Notification} from '../../../components/modal/Notification';
+import { Strings } from '../../../constants';
+import { getTime } from '../../../helpers/formatHelpers';
+import { Notification } from '../../../components/modal/Notification';
 import Orders from './Orders';
 import DanOneSales from './DanOneSales/DanOneSales';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 
 export default function HomeScreen(props) {
-  const {route, navigation} = props;
+  const { route, navigation } = props;
   const [tabIndex, setTabIndex] = useState('Main');
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
@@ -77,9 +77,9 @@ export default function HomeScreen(props) {
                       message: Strings.Online_Mode_Message,
                       buttonText: Strings.Ok,
                       buttonAction: async () => {
-                        navigation.navigate('Home', {sync: true});
+                        navigation.navigate('Home', { sync: true });
                         await storeLocalValue('@online', '1');
-                        dispatch({type: CHANGE_OFFLINE_STATUS, payload: false});
+                        dispatch({ type: CHANGE_OFFLINE_STATUS, payload: false });
                         dispatch(clearNotification());
                         dispatch(clearNotification());
                       },
@@ -125,7 +125,7 @@ export default function HomeScreen(props) {
       screenProps.setOptions({
         headerTitle: () => {
           return (
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { }}>
               <View style={style.headerTitleContainerStyle}>
                 <Text style={style.headerTitle}>Home</Text>
               </View>
@@ -141,7 +141,7 @@ export default function HomeScreen(props) {
 
   const syncFun = async () => {
     if (route.params != undefined) {
-      const {sync} = route.params;
+      const { sync } = route.params;
       if (sync) {
         // start sync when online
         var isOnline = await getLocalData('@online');
@@ -167,7 +167,7 @@ export default function HomeScreen(props) {
     if (dispatch === null || dispatch === undefined) {
       dispatch = useDispatch();
     }
-    dispatch({type: CHANGE_OFFLINE_STATUS, payload: true});
+    dispatch({ type: CHANGE_OFFLINE_STATUS, payload: true });
     var time = getTime();
     dispatch(
       showNotification({
@@ -180,11 +180,11 @@ export default function HomeScreen(props) {
   };
 
   return (
-    <View style={{flex: 1, marginTop: 10}}>
+    <View style={{ flex: 1, marginTop: 10 }}>
       <Notification />
       <LoadingProgressBar />      
 
-      <View style={{marginHorizontal: 10}}>
+      <View style={{ marginHorizontal: 10 }}>
         <ScrollTab
           tabs={tabs}
           selectedTab={selectedTab}
