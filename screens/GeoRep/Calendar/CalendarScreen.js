@@ -68,7 +68,7 @@ export default function CalendarScreen(props) {
         },
       });
     }
-  });
+  },[]);
 
   useEffect(() => {
     onRefresh();

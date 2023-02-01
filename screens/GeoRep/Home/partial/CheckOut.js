@@ -21,7 +21,7 @@ export default function CheckOut(props) {
         </View>
         <View style={{flexDirection:'row' , alignItems:'center' , }}>
           <SvgIcon icon="Hour_Glass" width='15' height='15' style={{marginRight:5}} />   
-          <AppText title={currentCall != "" ? currentCall.checkin_time : "1h 23min 23sec"}  color="white"></AppText>          
+          <AppText title={currentCall != "" ? currentCall?.checkin_time : "1h 23min 23sec"}  color="white"></AppText>          
           <SvgIcon icon="Bottom_Arrow" width='20px' height='20px' />
         </View>
       </View>
@@ -31,7 +31,7 @@ export default function CheckOut(props) {
             <SvgIcon icon="Location_Arrow" width='15px' height='15px' />
         </View>
         <View style={{flex:1, marginTop:10 , marginBottom:10 , paddingTop:7, paddingBottom:7}}>
-          <AppText title={currentCall != "" ? currentCall.location_name : 'Spar Century City Cape town df'}           
+          <AppText title={currentCall != "" ? currentCall?.location_name : 'Spar Century City Cape town df'}           
             size="medium" type="secondaryBold" color={whiteLabel().mainText} ></AppText>
                     
         </View>
