@@ -9,7 +9,9 @@ import * as RNLocalize from 'react-native-localize';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Constants} from '../../../../../constants';
@@ -48,6 +50,8 @@ const SwopAtTraderContainer = props => {
 
   const onSwop = data => {
     const {reason, photos, device} = data;
+    if(isLoading) return;
+
     setIsLoading(true);
     var postData = new FormData();
     postData.append('stock_type', Constants.stockType.DEVICE);
@@ -79,9 +83,11 @@ const SwopAtTraderContainer = props => {
         ? currentLocation.longitude
         : '0',
     );    
+    dispatch(showLoadingBar({'type' : 'loading'}));
     postApiRequestMultipart('stockmodule/swop-at-trader', postData)
       .then(res => {
         setIsLoading(false);
+        dispatch(clearLoadingBar());
         dispatch(
           showNotification({
             type: 'success',
@@ -96,6 +102,7 @@ const SwopAtTraderContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
+        dispatch(clearLoadingBar());
         expireToken(dispatch, e);
       });
   };
@@ -106,7 +113,7 @@ const SwopAtTraderContainer = props => {
         onSwop={onSwop}
         lists={lists}
         {...props}
-        isLoading={isLoading}
+
       />
       <Notification />
     </View>

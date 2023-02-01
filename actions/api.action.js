@@ -160,7 +160,7 @@ export const postApiRequestMultipart = async (
           Authorization: 'Bearer ' + token,
           'Indempotency-Key': key,
         },
-        timeout: 25000,
+        timeout: 15000,
       })
       .then(res => {
         console.log('res', res.data);
