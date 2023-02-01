@@ -102,17 +102,23 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
         if(err != undefined){
           
           console.log('postApiRequest error =>', err.response);
-          const error = err.response;
-
-          if (
-            error.status === 401 &&
-            error.config &&
-            !error.config.__isRetryRequest
-          ) {
-            reject('expired');
-          } else {
-            reject(err);
+          if(err?.response != undefined){
+            const error = err.response;
+            if (
+              error.status === 401 &&
+              error.config &&
+              !error.config.__isRetryRequest
+            ) {
+              reject('expired');
+            } else {
+              reject(err);
+            }
+            
+          }else{
+            console.log("error", JSON.stringify(err));
+            reject('timeout');
           }
+          
         }else{
           reject('timeout');
         }

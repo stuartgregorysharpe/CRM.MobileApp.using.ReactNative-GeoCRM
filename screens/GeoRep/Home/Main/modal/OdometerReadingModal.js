@@ -27,6 +27,7 @@ import {Notification} from '../../../../../components/modal/Notification';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../../../constants/Helper';
 import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
+import { sub } from 'react-native-reanimated';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
@@ -71,6 +72,8 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
 
   const _callOdometer = () => {
 
+   
+
     let hasError = false;
     if (imageRequired && image === null) {
       message = Strings.Please_Take_Photo;
@@ -81,6 +84,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       message = Strings.Home.Input_End_Reading;
       hasError = true;
       setIsEndRequired(true);
+     
       return;
     }
 
@@ -88,8 +92,12 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       message = Strings.Home.Input_Start_Reading;
       hasError = true;
       setIsStartRequired(true);
+    
       return;
     }
+
+
+
     if (hasError) return;
     
     var postData = new FormData();
@@ -123,6 +131,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         : '0',
     );
 
+  
     if(isSubmit){
       return ;
     }
@@ -243,14 +252,15 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
             keyboardType={'number-pad'}
             returnKeyType={'done'}
             hasError={!isStart && isStartRequired}
-            right={
-              isStartRequired ? null : (
-                <TextInput.Affix
-                  textStyle={{marginTop: 8}}
-                  text={distanceMeasure}
-                />
-              )
-            }
+            add_suffix={isStartRequired ? '' : distanceMeasure}     
+            // right={
+            //   isStartRequired ? null : (
+            //     <TextInput.Affix
+            //       textStyle={{marginTop: 8}}
+            //       text={distanceMeasure}
+            //     />
+            //   )
+            // }
             isRequired={true}
             onChangeText={text => {
               setStart(text);
@@ -267,16 +277,17 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
               keyboardType={'number-pad'}
               returnKeyType={'done'}
               style={{marginTop: 10}}
-              hasError={isEndRequired}
-              right={
-                isEndRequired ? null : (
-                  <TextInput.Affix
-                    textStyle={{marginTop: 8}}
-                    text={distanceMeasure}
-                  />
-                )
-              }
-              isRequired
+              hasError={ isEndRequired }
+              add_suffix={ isEndRequired ? '' : distanceMeasure }
+              // right={
+              //   isEndRequired ? null : (
+              //     <TextInput.Affix
+              //       textStyle={{marginTop: 8}}
+              //       text={distanceMeasure}
+              //     />
+              //   )
+              // }
+              //isRequired={true}
               onChangeText={text => {
                 setEnd(text);
                 setIsEndRequired(false);

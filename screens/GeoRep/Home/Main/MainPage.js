@@ -56,6 +56,7 @@ export const MainPage = forwardRef((props, ref) => {
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
   const [haveFilter, setHaveFilter] = useState(false);
+  
 
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
@@ -248,20 +249,29 @@ export const MainPage = forwardRef((props, ref) => {
           : { time_zone: '', latitude: 0, longitude: 0 },
     };
 
-    PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', dispatch).then(async (res) => {
-      if (res.status === Strings.Success) {
-        setStartEndDayId(res.startEndDay_id);
-        await storeLocalValue('start_my_day', isStart ? '0' : '1');
-        setIsStart(!isStart);
-        if (features.includes('odometer_reading')) {
-          odometerReadingModalRef.current.showModal();
+    if(!isLoading){
+      setIsLoading(true)
+      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {    
+        setIsLoading(false);
+        console.log("Respnose => ", res)
+        if(res.status == Strings.Success){
+          setStartEndDayId(res.startEndDay_id);
+          await storeLocalValue('start_my_day', isStart ? '0' : '1');
+          setIsStart(!isStart);
+          if(features.includes('odometer_reading')) {
+            odometerReadingModalRef.current.showModal();
+          }else if (res.status == "NOIMPLEMENT") {
+            showOfflineDialog(dispatch);
+          }
         }
-      } else if (res.status === "NOIMPLEMENT") {
-        showOfflineDialog(dispatch);
-      }
-    }).catch((e) => {
-      expireToken(dispatch, e);
-    });
+        
+      }).catch((e) => {
+        setIsLoading(false);
+        expireToken(dispatch, e);
+      });
+
+    }    
+
   };
 
   const onCaptureAction = async ({ type, value }) => {
