@@ -26,6 +26,7 @@ import * as RNLocalize from 'react-native-localize';
 import {Notification} from '../../../../../components/modal/Notification';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../../../constants/Helper';
+import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
@@ -39,11 +40,13 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const [imageRequired, setImageRequired] = useState(false);
   const [isStartRequired, setIsStartRequired] = useState(false);
   const [isEndRequired, setIsEndRequired] = useState(false);
+  const [isSubmit , setIsSubmit] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     _callGetOdometer();
+
   }, []);
 
   const onButtonAction = data => {
@@ -67,6 +70,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   };
 
   const _callOdometer = () => {
+
     let hasError = false;
     if (imageRequired && image === null) {
       message = Strings.Please_Take_Photo;
@@ -119,6 +123,13 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         : '0',
     );
 
+    if(isSubmit){
+      return ;
+    }
+
+    setIsSubmit(true);
+    dispatch(showLoadingBar({'type' :  'loading'}));
+
     postApiRequestMultipart('home/odometer', postData)
       .then(res => {
         if (res.status === Strings.Success) {
@@ -128,10 +139,14 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
             value: res.message,
           });
         }
+        setIsSubmit(false);
+        dispatch(clearLoadingBar());
       })
       .catch(error => {
         console.log('home/odometer post api error:', error);
-        expireToken(dispatch, e)
+        setIsSubmit(false);
+        dispatch(clearLoadingBar());
+        expireToken(dispatch, e);        
       });
   };
 
