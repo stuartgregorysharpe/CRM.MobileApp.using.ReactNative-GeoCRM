@@ -5,7 +5,7 @@
 #import <React/RCTRootView.h>
 #import "RNBootSplash.h"
 #import <GoogleMaps/GoogleMaps.h>
-
+#import <Firebase.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -30,6 +30,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
@@ -64,7 +65,7 @@ static void InitializeFlipper(UIApplication *application) {
       NSLog (@"%@: %@", fontFamily, fontNames);
   }
   
-  
+  [FIRApp configure];
   
   return YES;
 }
@@ -77,5 +78,6 @@ static void InitializeFlipper(UIApplication *application) {
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
+
 
 @end

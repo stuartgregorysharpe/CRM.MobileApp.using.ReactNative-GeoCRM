@@ -1,13 +1,13 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 
-import {CHANGE_LOGIN_STATUS} from '../actions/actionTypes';
+import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 import {
   clearNotification,
   showNotification,
 } from '../actions/notification.action';
-import {setToken} from './Storage';
+import { setToken } from './Storage';
 import * as RNLocalize from 'react-native-localize';
-import {Constants, Strings} from '.';
+import { Constants, Strings } from '.';
 import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import RepWebLinksScreen from '../screens/GeoRep/WebLinks/WebLinksScreen';
@@ -231,7 +231,7 @@ export function selectPicker(
         },
       },
     ],
-    {cancelable: true},
+    { cancelable: true },
   );
 }
 
@@ -277,9 +277,9 @@ export function getDistance(prelatlng, currentlatlng) {
     3963 *
     Math.acos(
       Math.sin(prevLatInRad) * Math.sin(latInRad) +
-        Math.cos(prevLatInRad) *
-          Math.cos(latInRad) *
-          Math.cos(longInRad - prevLongInRad),
+      Math.cos(prevLatInRad) *
+      Math.cos(latInRad) *
+      Math.cos(longInRad - prevLongInRad),
     )
   );
 }
@@ -325,7 +325,7 @@ export function expireToken(dispatch, e) {
         buttonAction: () => {
           if (e === 'expired') {
             setToken(null);
-            dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
+            dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
           }
           dispatch(clearNotification());
         },
