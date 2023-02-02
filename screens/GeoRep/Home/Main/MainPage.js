@@ -83,9 +83,9 @@ const MainPage = forwardRef((props, ref) => {
     },
   }));
 
-  useEffect(() => {
-    loadPage();
-  }, []);
+  // useEffect(() => {
+  //   loadPage();
+  // }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {      

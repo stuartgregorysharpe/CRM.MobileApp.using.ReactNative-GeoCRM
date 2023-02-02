@@ -52,15 +52,19 @@ export const getApiRequest = async (route, param) => {
       .catch(err => {
         console.log('get api request error => ', err);        
         if(err != undefined){
-          const error = err.response;
-          if (
+          const error = err.response;          
+          if (            
             error?.status === 401 &&
             error?.config &&
             !error?.config?.__isRetryRequest
           ) {
             reject('expired');
-          } else {            
-            reject('error');
+          } else if(err?.message?.includes('Network Error')) {
+            reject('network_error');
+          } else if(err?.message?.includes('timeout')) {
+            reject('timeout');
+          }else{
+            reject('err');
           }
         }else{
           reject('timeout');
@@ -102,8 +106,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
       })
       .catch(err => {
         
-        if(err != undefined){
-          
+        if(err != undefined){          
           console.log('postApiRequest error =>', err.response);
           if(err?.response != undefined){
             const error = err.response;
@@ -113,19 +116,21 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
               !error.config.__isRetryRequest
             ) {
               reject('expired');
-            } else {
+            } else if(err?.message?.includes('Network Error')) {
+              reject('network_error');
+            } else if(err?.message?.includes('timeout')) {
+              reject('timeout');
+            }else{
               reject(err);
-            }
-            
+            }            
           }else{
             console.log("error", JSON.stringify(err));
             reject('timeout');
-          }
-          
+          }          
         }else{
           reject('timeout');
         }
-
+        
       });
   });
 };
@@ -187,8 +192,11 @@ export const postApiRequestMultipart = async (
           !error.config.__isRetryRequest
         ) {
           reject('expired');
-        } else {
-          console.log('Error => ', err);
+        } else if(err?.message?.includes('Network Error')) {
+          reject('network_error');          
+        } else if(err?.message?.includes('timeout')) {
+          reject('timeout');
+        }else{
           reject(err != undefined ? err : 'Undfined Error');
         }
       });
@@ -230,6 +238,10 @@ export const postHmsMapRequest = async (route, postData, key) => {
           !error.config.__isRetryRequest
         ) {
           reject('expired');
+        } else if(err?.message?.includes('Network Error')) {
+          reject('network_error');
+        } else if(err?.message?.includes('timeout')) {
+          reject('timeout');
         } else {
           reject(err);
         }
