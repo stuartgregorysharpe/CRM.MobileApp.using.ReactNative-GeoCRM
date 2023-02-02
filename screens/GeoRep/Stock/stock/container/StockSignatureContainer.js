@@ -8,7 +8,9 @@ import {Constants, Strings} from '../../../../../constants';
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
@@ -150,12 +152,14 @@ export default function StockSignatureContainer(props) {
                 props.stockItemIds.forEach((item, index) => {
                   postData.append(`stock_item_ids[${index}]`, item);
                 });
+                dispatch(showLoadingBar({'type' : 'loading'}));
                 postApiRequestMultipart(
                   'stockmodule/return-to-warehouse',
                   postData,
                 )
                   .then(res => {
                     setIsLoading(false);
+                    dispatch(clearLoadingBar());
                     dispatch(
                       showNotification({
                         type: Strings.Success,
@@ -171,19 +175,9 @@ export default function StockSignatureContainer(props) {
                     );
                   })
                   .catch(e => {
-                    setIsLoading(false);  
-                    console.log('error', e);
-                    if (e === 'expired') {
-                      expireToken(dispatch, e);
-                    } else {
-                      dispatch(
-                        showNotification({
-                          type: Strings.Success,
-                          message: 'Error',
-                          buttonText: 'Ok',
-                        }),
-                      );
-                    }
+                    setIsLoading(false);
+                    dispatch(clearLoadingBar());                    
+                    expireToken(dispatch, e);                  
                   });
               } else {
                 setIsLoading(false);

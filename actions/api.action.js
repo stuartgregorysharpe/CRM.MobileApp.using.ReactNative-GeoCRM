@@ -94,7 +94,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
     };
     axios
       .post(url, postData, {
-        timeout: 15000,
+        timeout: 1000,
         headers: headers,
       })
       .then(res => {
@@ -165,7 +165,7 @@ export const postApiRequestMultipart = async (
           Authorization: 'Bearer ' + token,
           'Indempotency-Key': key,
         },
-        timeout: 15000,
+        timeout: 1000,
       })
       .then(res => {
         console.log('res', res.data);

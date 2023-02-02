@@ -259,8 +259,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         setIsUpdateImage(false);
         dispatch(clearLoadingBar());
       }).catch((error) => {
-        setMessage('Upload File Failed');
-        setIsSuccess(true);
+        //setMessage('Upload File Failed');
+        //setIsSuccess(true);
+        
         expireToken(dispatch, e);
         setIsUpdateImage(false);
         dispatch(clearLoadingBar());
