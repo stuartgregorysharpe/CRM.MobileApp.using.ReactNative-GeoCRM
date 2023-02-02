@@ -1,7 +1,6 @@
 import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
-  getApiRequest,
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
 import * as RNLocalize from 'react-native-localize';
@@ -9,26 +8,30 @@ import {useSelector} from 'react-redux';
 import ReturnDeviceDetailView from '../components/ReturnDeviceDetailView';
 import {useDispatch} from 'react-redux';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../../actions/notification.action';
-import {Constants} from '../../../../../constants';
+import {Constants, Strings} from '../../../../../constants';
 import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
 
 export default function ReturnDeviceDetailContainer(props) {
-  const {locationId} = props;
-  const [lists, setLists] = useState([]);
 
-  const dispatch = useDispatch();
+  const { locationId } = props;
+
+  const [lists, setLists] = useState([]);  
+  const [isLoading, setIsLoading] = useState(false);
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMount = true;
     let param = {
       location_id: locationId,
-    };
-  
+    };  
     GetRequestLocationDevicesDAO.find(param).then((res) => {
         if(isMount){                             
             setLists(res.devices);
@@ -36,14 +39,16 @@ export default function ReturnDeviceDetailContainer(props) {
     }).catch((e) => {
         console.log("location device api error: " , e);
         expireToken(dispatch , e);
-    })
-  
+    });
     return () => {
       isMount = false;
     };
   }, []);
 
   const onReturnStock = data => {
+    
+    if(isLoading) return;
+
     const {device, reason, photos} = data;
     var postData = new FormData();
     postData.append('stock_type', 'Device');
@@ -74,14 +79,19 @@ export default function ReturnDeviceDetailContainer(props) {
         : '0',
     );
 
+    setIsLoading(true);
+    dispatch(showLoadingBar({'type' : 'loading'}));
+
     postApiRequestMultipart('stockmodule/return-device', postData)
       .then(res => {
+        setIsLoading(false);
+        dispatch(clearLoadingBar());
         if (res.status == 'success') {
           dispatch(
             showNotification({
-              type: 'success',
+              type: Strings.Success,
               message: res.message,
-              buttonText: 'Ok',
+              buttonText: Strings.Ok,
               buttonAction: async () => {
                 props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
                 dispatch(clearNotification());
@@ -90,8 +100,9 @@ export default function ReturnDeviceDetailContainer(props) {
           );
         }
       })
-      .catch(e => {
-        console.log('e', e);
+      .catch(e => {        
+        setIsLoading(false);
+        dispatch(clearLoadingBar());
         expireToken(dispatch, e);
       });
   };
