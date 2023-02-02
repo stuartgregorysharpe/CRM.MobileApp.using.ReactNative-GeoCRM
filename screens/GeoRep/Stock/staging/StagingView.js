@@ -36,6 +36,7 @@ const StagingView = props => {
   const dispatch = useDispatch();
 
   const shipments = useMemo(() => getShipmentsFromItems(items), [items]);
+  
   const onCapture = () => {
     checkConnectivity().then(isConnected => {
       if (isConnected) {

@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
   SectionList,
 } from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
@@ -38,7 +36,9 @@ import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 import { clearLoadingBar, showLoadingBar } from '../../../actions/notification.action';
+
 var selectedIndex = 2;
+let isMount = true;
 
 export default function CalendarScreen(props) {
   
@@ -73,6 +73,11 @@ export default function CalendarScreen(props) {
       });
     }
   });
+  useEffect(() => {
+    return () => {
+      isMount = false;
+    }
+  }, []);
 
   useEffect(() => {
     onRefresh();
@@ -107,6 +112,8 @@ export default function CalendarScreen(props) {
 
 
   const loadList = async (type, isOptimize = false) => {
+
+
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
     setIsAdd(await checkFeatureIncludeParam('calendar_add'));
 
@@ -121,13 +128,14 @@ export default function CalendarScreen(props) {
     console.log('GetRequestCalendarScheduleList: param', param);
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
-        console.log('GetRequestCalendarScheduleList: res', res.items);
-        if (selectedIndex == 2 || selectedIndex == 0) {
-          setTodayList(res.items);
-        } else {
-          updateListForWeek(res.items);
-        }
-        setIsLoading(false);
+        if(isMount){
+          if (selectedIndex == 2 || selectedIndex == 0) {
+            setTodayList(res.items);
+          } else {
+            updateListForWeek(res.items);
+          }
+          setIsLoading(false);
+        }                
       })
       .catch(e => {
         setLists([]);

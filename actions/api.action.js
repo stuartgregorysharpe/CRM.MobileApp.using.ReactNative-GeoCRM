@@ -9,7 +9,7 @@ export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
     setTimeout(() => {
       resolve(response);
-    }, 1000);
+    }, 1111);
   });
 };
 
@@ -94,7 +94,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
     };
     axios
       .post(url, postData, {
-        timeout: 1000,
+        timeout: 15000,
         headers: headers,
       })
       .then(res => {
@@ -123,8 +123,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
             }else{
               reject(err);
             }            
-          }else{
-            console.log("error", JSON.stringify(err));
+          }else{            
             reject('timeout');
           }          
         }else{
@@ -152,8 +151,8 @@ export const postApiRequestMultipart = async (
   console.log(' multipart postApiRequest -- url', url);
 
   return new Promise(function (resolve, reject) {
-    console.log('myforms', JSON.stringify(postData));
-    //headers:{"Accept":"application/json, text/plain, /","Content-Type": "multipart/form-data"}
+    
+    console.log('myforms', JSON.stringify(postData));    
     const key =  indempotencyKey != null && indempotencyKey != undefined ? indempotencyKey : generateKey();
 
     axios
@@ -165,7 +164,7 @@ export const postApiRequestMultipart = async (
           Authorization: 'Bearer ' + token,
           'Indempotency-Key': key,
         },
-        timeout: 1000,
+        timeout: 15000,
       })
       .then(res => {
         console.log('res', res.data);

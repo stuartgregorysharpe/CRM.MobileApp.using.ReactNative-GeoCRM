@@ -13,7 +13,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
         "reloop",
         "add-edit-contacts",
         "action-item-details",
-        "transfer"
+        "transfer",
+        "staging-accept"
     ];
 
   return new Promise(function(resolve, reject) {

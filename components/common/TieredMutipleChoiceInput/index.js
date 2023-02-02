@@ -16,9 +16,8 @@ export default function TieredMultipleChoiceInput(props) {
     onItemSelected,
     renderDropdownItem,
   } = props;
-  const [isShown, setIsShown] = useState(false);
-
-  //console.log("selectedItem",selectedItem)
+  
+  const [isShown, setIsShown] = useState(false);  
   useEffect(() => {
     let isMount = true;
     if (isMount && lists.length == 0) {

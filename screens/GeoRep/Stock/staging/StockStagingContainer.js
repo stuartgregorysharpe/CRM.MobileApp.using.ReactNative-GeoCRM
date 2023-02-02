@@ -9,6 +9,9 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import { PostRequestDAO } from '../../../../DAO';
+
+
 const StockStagingContainer = props => {
 
   const [items, setItems] = useState([]);
@@ -18,6 +21,7 @@ const StockStagingContainer = props => {
   let isMount = true;
 
   useEffect(() => {
+    isMount = true;
     onLoad();
     return () => {
       isMount = false;
@@ -27,59 +31,61 @@ const StockStagingContainer = props => {
   const onLoad = () => {
     setIsLoading(true);
     getApiRequest('stockmodule/staging')
-      .then(data => {
-        if(isMount){
-          setIsLoading(false);
-          const _items = getItemsFromShipments(data.shipments);
-          setItems(_items);
-        }        
+      .then(data => {      
+          if(isMount){
+            setIsLoading(false);
+            const _items = getItemsFromShipments(data.shipments);
+            setItems(_items);   
+          }               
       })
       .catch(e => {
         if(isMount){
           setIsLoading(false);
-        }
-        expireToken(dispatch , e);
+          expireToken(dispatch , e);
+        }        
       });
   };
 
+
   const onAccept = items => {    
     
+    if(isLoading) return;
     const userParam = getPostParameter(currentLocation);
     setIsLoading(true);
-    postApiRequest('stockmodule/staging-accept', {
+
+    const postData = {
       iccids: items.map(item => item.iccid),
       user_local_data: userParam.user_local_data,
-    })
-      .then(res => {
-        console.log('res', res);
-        setIsLoading(false);
-        if (res.status === Strings.Success) {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: 'Sim items moved to current stock successfully',
-              buttonText: 'Ok',
-              buttonAction: () => {
-                onLoad();
-                dispatch(clearNotification());
-              },
-            }),
-          );
-        } else {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.errors,
-              buttonText: 'Ok',
-            }),
-          );
-        }
-      })
-      .catch(e => {
-        setIsLoading(false);
-        console.log('error', e);
-        expireToken(dispatch,e)
-      });
+    };
+
+    PostRequestDAO.find(0, postData , 'staging-accept' , 'stockmodule/staging-accept' , '' , '', null, dispatch ).then((res) => {
+      setIsLoading(false);
+      var message = '';
+      if (res.status === Strings.Success) {
+        message = 'Sim items moved to current stock successfully';        
+      } else {
+        message = res.errors;        
+      }
+      dispatch(
+        showNotification({
+          type: Strings.Success,
+          message: message,
+          buttonText: Strings.Ok,
+          buttonAction: () => {
+            if (res.status === Strings.Success) {
+              onLoad();
+            }            
+            dispatch(clearNotification());
+          },
+        }),
+      );
+    }).catch((e) => {
+      setIsLoading(false);      
+      expireToken(dispatch,e)
+    });
+
+
+   
   };
   return (
     <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />

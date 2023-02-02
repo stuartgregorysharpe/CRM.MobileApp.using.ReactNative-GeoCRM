@@ -29,6 +29,7 @@ import { generateKey } from '../../../constants/Utils';
 
 var specificLocationId;
 var check_out_indempotency = '';
+let isMount = true;
 
 export default function CheckOutViewContainer(props) {
   const {type, currentCall} = props;
@@ -40,7 +41,7 @@ export default function CheckOutViewContainer(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigationMain = useNavigation();
-  let isMount = true;
+  
 
   useEffect(() => {
     initData();

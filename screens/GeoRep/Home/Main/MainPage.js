@@ -774,7 +774,7 @@ const MainPage = forwardRef((props, ref) => {
   );
 });
 const mapStateToProps = state => {
-  console.log("content_feed_data", state.feed.content_feed_data);
+  
   return {
     content_feed_data: state.feed.content_feed_data
   }
