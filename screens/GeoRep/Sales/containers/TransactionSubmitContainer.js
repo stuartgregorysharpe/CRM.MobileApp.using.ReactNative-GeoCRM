@@ -6,13 +6,11 @@ import {
 } from '../../../../DAO';
 import {
   expireToken,
-  getFileFormat,
-  getFileFormatList,
+  getFileFormat,  
 } from '../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
 import {Constants, Strings} from '../../../../constants';
-import {getJsonData, getTokenData} from '../../../../constants/Storage';
-import {getRandomNumber, getTimeStamp} from '../../../../helpers/formatHelpers';
+import { getJsonData } from '../../../../constants/Storage';
 import DynamicFormView from '../../../../components/common/DynamicFormView';
 import {useSelector} from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
@@ -154,6 +152,8 @@ const TransactionSubmitContainer = props => {
           'sales/transaction-submission',
           '',
           '',
+          null,
+          dispatch
         )
           .then(res => {
             setIsLoading(false);
@@ -252,8 +252,7 @@ const TransactionSubmitContainer = props => {
       <DynamicFormView
         page="transaction_submit"
         buttonTitle={'Submit'}
-        fields={fields}
-        isLoading={isLoading}
+        fields={fields}      
         close={() => {          
           props.onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
         }}
@@ -262,8 +261,7 @@ const TransactionSubmitContainer = props => {
         }}
         onAdd={onAdd}      
         style={{marginTop:5}}
-        {...props}
-        isLoading={isLoading}
+        {...props}        
       />
       <Notification />
     </View>

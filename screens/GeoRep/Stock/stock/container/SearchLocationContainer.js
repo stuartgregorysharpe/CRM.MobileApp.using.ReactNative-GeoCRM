@@ -106,6 +106,7 @@ const SearchLocationContainer = props => {
     };
 
     GetRequestCustomerSearchDAO.find(param).then((res) => {      
+      console.log("response item length => ", res.items.length);
       setLists(res.items);
       if(props.onStartSearch && res.items.length == 0  ){
         props.onStartSearch(false);
