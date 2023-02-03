@@ -505,9 +505,7 @@ const MainPage = forwardRef((props, ref) => {
 
     if(!isLoading){
       setIsLoading(true)
-      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {    
-        setIsLoading(false);
-        console.log("Respnose => ", res)
+      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {        
         if(res.status == Strings.Success){
           setStartEndDayId(res.startEndDay_id);
           await storeLocalValue('start_my_day', isStart ? '0' : '1');
@@ -518,7 +516,7 @@ const MainPage = forwardRef((props, ref) => {
             showOfflineDialog(dispatch);
           }
         }
-        
+        setIsLoading(false);
       }).catch((e) => {
         setIsLoading(false);
         expireToken(dispatch, e);

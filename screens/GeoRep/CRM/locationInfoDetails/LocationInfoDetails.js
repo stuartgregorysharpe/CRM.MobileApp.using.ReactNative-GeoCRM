@@ -250,21 +250,14 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
     if(!isUpdateImage){
 
-      setIsUpdateImage(true)
-      dispatch(showLoadingBar({'type' : 'loading'}));
-
-      PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency ).then((res) => {      
+      setIsUpdateImage(true)      
+      PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency , dispatch ).then((res) => {      
         setMessage(res.message);
         setIsSuccess(true);
-        setIsUpdateImage(false);
-        dispatch(clearLoadingBar());
-      }).catch((error) => {
-        //setMessage('Upload File Failed');
-        //setIsSuccess(true);
-        
-        expireToken(dispatch, e);
-        setIsUpdateImage(false);
-        dispatch(clearLoadingBar());
+        setIsUpdateImage(false);        
+      }).catch((error) => {        
+        expireToken(dispatch, error);
+        setIsUpdateImage(false);        
       })    
 
     }
@@ -294,17 +287,20 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     };
 
     setIsCallFeedback(true);
-    dispatch(showLoadingBar({'type' : 'loading'}));
+    
     PostRequestDAO.find(
       locationInfo.location_id,
       postData,
       'location-feedback',
       'locations-info/location-feedback',
+      '',
+      '',
+      null,
+      dispatch
     )
       .then(res => {
         setIsOutcomeUpdated(true);
-        setIsCallFeedback(false);
-        dispatch(clearLoadingBar());
+        setIsCallFeedback(false);        
         outcomeVal = true;
 
         dispatch(
@@ -341,9 +337,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         );
       })
       .catch(e => {
-        console.log('Error : ', e);
-        setIsCallFeedback(false);
-        dispatch(clearLoadingBar());
+        console.log('location-feedback Api error : ', e);
+        setIsCallFeedback(false);        
         expireToken(dispatch, e);
 
       });

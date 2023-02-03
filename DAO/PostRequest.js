@@ -39,10 +39,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                         submitFormData =  jsonToFormData(postData);
                     }
                     
-                    submitFormData.append("mode", "online");
-                    
+                    submitFormData.append("mode", "online");                    
                     console.log("submit form data", JSON.stringify(submitFormData));
-
                     postApiRequestMultipart(url, submitFormData , indempotency)
                     .then(async res => {
                         if(dispatch != undefined && dispatch != null){

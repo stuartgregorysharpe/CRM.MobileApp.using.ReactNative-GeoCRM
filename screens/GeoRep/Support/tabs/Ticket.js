@@ -111,16 +111,13 @@ export const Ticket = forwardRef((props, ref) => {
       };
 
       setIsSubmit(true);
-      dispatch(showLoadingBar({'type' : 'loading'}));
+      
 
-      PostRequestDAO.find(0 , params, 'supportmail' , 'supportmail', '' , '' , ticket_indempotency ).then((res) => {        
-        dispatch(clearLoadingBar());
-        setIsSubmit(false);
-        console.log("respnose",res)
+      PostRequestDAO.find(0 , params, 'supportmail' , 'supportmail', '' , '' , ticket_indempotency  , dispatch ).then((res) => {                        
         dispatch(showNotification({type : Strings.Success , message: res.message , buttonText: Strings.Ok}));
-      }).catch((e) => {
         setIsSubmit(false);
-        dispatch(clearLoadingBar());
+      }).catch((e) => {
+        setIsSubmit(false);        
         expireToken(dispatch, e);
       });
   

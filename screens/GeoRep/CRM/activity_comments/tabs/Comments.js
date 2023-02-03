@@ -45,7 +45,7 @@ export default function Comments(props) {
 			const postData = {
 				location_id : location_id,
 				page_nr: pageNumber
-			}		
+			}			
 			GetRequestFormSubmissionsDAO.find(postData).then((res) => {		
 				if(isMount){
 					if(res.status == Strings.Success){
@@ -83,13 +83,12 @@ export default function Comments(props) {
 					getFormSubmissions(0);					
 					dispatch(clearNotification());
 				}}));
-			}				
+			}
 		}).catch((e) => {
-			console.log(e);		
-			expireToken(dispatch, e);		
+			console.log(e);
+			expireToken(dispatch, e);
 		})
 	}
-
 
   	const onFormQuestionModalClosed = ({type, value}) => {
 		if (type == Constants.actionType.ACTION_CLOSE) {

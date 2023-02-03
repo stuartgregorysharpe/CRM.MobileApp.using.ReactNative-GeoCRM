@@ -273,9 +273,8 @@ export const FormQuestions = props => {
       .then(async res => {
         //loadingBarRef.current.hideModal();
         console.log('respnose => ', res);
-
-        setTimeout(() => {
-          console.log('called time out');
+        // setTimeout(() => {
+        //   console.log('called time out');
           dispatch(
             showNotification({
               type: 'success',
@@ -303,7 +302,8 @@ export const FormQuestions = props => {
               },
             }),
           );
-        }, 700);
+        //}, 700);
+
       })
       .catch(e => {
         //loadingBarRef.current.hideModal();

@@ -373,13 +373,9 @@ export default function AddSalesPipeline({
       return;
     }
 
-    setIsSubmit(true);
-    dispatch(showLoadingBar({'type' : 'loading'}));
-
+    setIsSubmit(true);    
     PostRequestDAO.find(0, params , 'pipeline/pipeline-add-edit-opportunity' , 'pipeline/pipeline-add-edit-opportunity',
-    '' , '' ).then((res) => {
-      dispatch(clearLoadingBar());
-      setIsSubmit(false);
+    '' , '' , null , dispatch).then((res) => {            
       dispatch(
         showNotification({
           type: 'success',
@@ -391,8 +387,8 @@ export default function AddSalesPipeline({
           },
         }),
       );
-    }).catch((error) => {
-      dispatch(clearLoadingBar());
+      setIsSubmit(false);
+    }).catch((error) => {      
       setIsSubmit(false);
       if(error === 'expired'){
         expireToken(dispatch, error)

@@ -184,6 +184,7 @@ export default function AddLeadContainer(props) {
       );
       return;
     }
+    
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;

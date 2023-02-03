@@ -26,7 +26,7 @@ export default function DevicePriorityModalContainer(props) {
         
         if(!isLoading){
             setIsLoading(true);
-            dispatch(showLoadingBar({'type' : 'loading'}));
+            
             var postData = {
                 location_device_id: device.location_device_id,
                 primary_device: isPrimary? "1" : "0"
@@ -39,19 +39,18 @@ export default function DevicePriorityModalContainer(props) {
                     "device/update", 
                     device.description, 
                     device.msisdn + "("  + primaryText  +  ")" ,
-                    device_update_indempotency
+                    device_update_indempotency,
+                    dispatch
                     ).then((res) => {
-
-                        setIsLoading(false);
-                        dispatch(clearLoadingBar());
+                        
+                        setIsLoading(false);                        
                         dispatch((showNotification({type:Strings.Success , message : res.message, buttonText: Strings.Ok , buttonAction : () => {
                             props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: 0});
                             dispatch(clearNotification());
                         }})));
 
             }).catch((e) => {
-                setIsLoading(false);
-                dispatch(clearLoadingBar());
+                setIsLoading(false);                
                 expireToken(dispatch, e);
             })
             

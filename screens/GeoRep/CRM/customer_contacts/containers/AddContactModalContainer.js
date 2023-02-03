@@ -33,7 +33,7 @@ export default function AddContactModalContainer(props) {
         
         if(!isLoading){
             setIsLoading(true);
-            dispatch(showLoadingBar({'type' : 'loading'}));
+            
             var userParam = getPostParameter(currentLocation);
             var postData = {...formData , location_id: locationId, user_local_data: userParam.user_local_data};
             if (pageType === 'update' && contactInfo != undefined) {            
@@ -41,10 +41,9 @@ export default function AddContactModalContainer(props) {
             }
             console.log("post data" ,postData);
 
-            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency).then((res) => {
-                console.log("res", res)
-                setIsLoading(false);
-                dispatch(clearLoadingBar());
+            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , dispatch).then((res) => {
+                
+                setIsLoading(false);                
                 if(res.status == Strings.Success){
                     dispatch(showNotification({type:'success' ,message: res.message, buttonText:'Ok' }));
                     if(props.onButtonAction){
@@ -53,8 +52,7 @@ export default function AddContactModalContainer(props) {
                 }
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
-                setIsLoading(false);
-                dispatch(clearLoadingBar());
+                setIsLoading(false);                
                 expireToken(dispatch, e);
             })
  

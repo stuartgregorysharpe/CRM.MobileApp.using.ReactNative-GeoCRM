@@ -66,19 +66,16 @@ export default function RefreshSlider({location_id, onClose}) {
   const callReloop = (postData) => {
 
     if(!isLoading){
-      setIsLoading(true);
-      dispatch(showLoadingBar({'type' : 'loading'}));
-      PostRequestDAO.find(0, postData , 'reloop' , 'location-info/reloop' , '' , '' , reloop_indempotency ).then((res) => {        
+      setIsLoading(true);      
+      PostRequestDAO.find(0, postData , 'reloop' , 'location-info/reloop' , '' , '' , reloop_indempotency , dispatch).then((res) => {        
         setMessage(res.message);
         setIsConfirmModal(true);
-        setIsLoading(false);
-        dispatch(clearLoadingBar());
+        setIsLoading(false);        
       }).catch((error) => {
         setMessage('Failed');
         setIsConfirmModal(true);
         expireToken(dispatch, error);
-        setIsLoading(false);
-        dispatch(clearLoadingBar());
+        setIsLoading(false);        
       });
     }
     

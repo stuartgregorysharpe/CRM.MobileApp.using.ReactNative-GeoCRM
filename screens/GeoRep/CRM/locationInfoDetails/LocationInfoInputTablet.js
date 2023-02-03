@@ -40,6 +40,7 @@ import { generateKey } from '../../../../constants/Utils';
 
 var selected_outcome_id = '';
 var stage_outcome_indempotency = '';
+var disposition_fields_idempotency = '';
 
 export const LocationInfoInputTablet = forwardRef((props, ref) => {
   const dispatch = useDispatch();
@@ -153,8 +154,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
       
     if(!isLoading){
             
-      setIsLoading(true);
-      dispatch(showNotification({type:'loading'}));
+      setIsLoading(true);      
       var userParam = getPostParameter(currentLocation);
       let postData = {
         location_id: locationInfo.location_id,
@@ -164,19 +164,16 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
         user_local_data: userParam.user_local_data,
       };
       
-      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' ,stage_outcome_indempotency).then((res) => {
+      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' ,stage_outcome_indempotency , dispatch).then((res) => {
         console.log("response => ", res)
         if(res.status == Strings.Success){
           stage_outcome_indempotency = generateKey();
         } 
         props.onOutcome(true);
-        selected_outcome_id = '';
-        dispatch(clearNotification());
+        selected_outcome_id = '';      
         setIsLoading(false);
-
       }).catch((e) => {
-        setIsLoading(false);
-        dispatch(clearNotification());
+        setIsLoading(false);        
         expireToken(dispatch, e);
 
       });      
@@ -202,9 +199,9 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
       });
     });
 
-     PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency).then((res) => {
+     PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency, dispatch ).then((res) => {
       console.log("response ->" , res);
-      if(res.status == Strings.Success){              
+      if(res.status == Strings.Success){
         dispatch(showNotification({type: Strings.Success , message: res.message, buttonText: Strings.Ok }));
       }      
     }).catch((e) => {

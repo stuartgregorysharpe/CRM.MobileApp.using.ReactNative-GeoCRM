@@ -157,8 +157,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
 
   const updateOutcomes = (outcome_id) => {      
     if(!isLoading){            
-      setIsLoading(true);
-      dispatch(showLoadingBar({type:'loading'}));
+      setIsLoading(true);      
       var userParam = getPostParameter(currentLocation);
       let postData = {
         location_id: locationInfo.location_id,
@@ -168,25 +167,18 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         user_local_data: userParam.user_local_data,
       };
 
-      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' , stage_outcome_indempotency).then((res) => {        
+      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' , stage_outcome_indempotency , dispatch).then((res) => {        
         console.log("response =>" , res);
         if(res.status == Strings.Success){
           stage_outcome_indempotency = generateKey();
         } 
         props.onOutcome(true);
-        selected_outcome_id = '';
-        dispatch(clearLoadingBar());
-        setIsLoading(false);
-
-        setTimeout(() => {
-          //dispatch(showNotification({type: 'success', message:'dasdf', buttonText:Strings.Ok}));
-        } , 200)
+        selected_outcome_id = '';        
+        setIsLoading(false);        
 
       }).catch((e) => {
-        setIsLoading(false);
-        dispatch(clearLoadingBar());
+        setIsLoading(false);        
         expireToken(dispatch, e);
-
       });      
     }
 
@@ -194,11 +186,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
 
   const handleSubmit = () => {
 
-    if(!isLoading){
-
-      
-      dispatch(showLoadingBar({type: 'loading'}));
-
+    if(!isLoading){            
       var userParam = getPostParameter(currentLocation);
       let postData = {
         location_id: locationInfo.location_id,
@@ -215,17 +203,15 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       });
 
       setIsLoading(true);
-      PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency).then((res) => {
-        setIsLoading(false);
-        dispatch(clearLoadingBar());
+      PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency , dispatch).then((res) => {        
         if(res.status == Strings.Success){
           disposition_fields_idempotency = generateKey();
           dispatch(showNotification({type: Strings.Success , message: res.message, buttonText: Strings.Ok }));
         }
-      }).catch((e) => {
         setIsLoading(false);
-        dispatch(clearLoadingBar());
+      }).catch((e) => {        
         dispatch(showNotification({type: Strings.Success , message: e.response, buttonText: Strings.Ok}));
+        setIsLoading(false);
         expireToken(dispatch, e);
       });
     }
