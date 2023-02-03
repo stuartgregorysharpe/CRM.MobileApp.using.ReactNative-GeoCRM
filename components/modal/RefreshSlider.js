@@ -49,7 +49,7 @@ export default function RefreshSlider({location_id, onClose}) {
   const handleScheduleDate = (date, time) => {
 
     let datetime = date;    
-    setIsDateTimePickerVisible(false);
+    
     var userParam = getPostParameter(currentLocation);
     let postData = {
       location_id: location_id,
@@ -60,6 +60,7 @@ export default function RefreshSlider({location_id, onClose}) {
     };
     
     callReloop(postData);
+    setIsDateTimePickerVisible(false);
 
   };
 
@@ -136,7 +137,12 @@ export default function RefreshSlider({location_id, onClose}) {
 
       <FilterButton
         text="Schedule Date"
-        onPress={() => setIsDateTimePickerVisible(true)}
+        onPress={() => {
+          if(!isLoading){
+            setIsDateTimePickerVisible(true)
+          }
+          
+        }}
       />
 
       {/* <DateTimePickerModal
