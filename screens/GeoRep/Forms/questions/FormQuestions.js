@@ -48,8 +48,9 @@ export const FormQuestions = props => {
   const [formQuestions, setFormQuestions] = useState([]);
   const [isDateTimeView, setIsDateTimeView] = useState(false);
   const [isSign, setIsSign] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const formQuestionViewRef = useRef();
-  const loadingBarRef = useRef();
+  
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
   let isMount = true;
@@ -228,6 +229,9 @@ export const FormQuestions = props => {
       indempotencyKey = generateKey();
     }
 
+    if(isLoading) return;
+    
+
     saveDb(formQuestions, indempotencyKey);
     var error = true;
     error = validateFormQuestionData(formQuestions);
@@ -241,7 +245,7 @@ export const FormQuestions = props => {
       );
       return;
     }
-    //loadingBarRef.current.showModal();
+    
 
     var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
@@ -260,6 +264,8 @@ export const FormQuestions = props => {
       files,
     );
 
+    setIsLoading(true);
+
     PostRequestDAO.find(
       locationId,
       postDataJson,
@@ -271,7 +277,7 @@ export const FormQuestions = props => {
       dispatch
     )
       .then(async res => {
-        //loadingBarRef.current.hideModal();
+        
         console.log('respnose => ', res);
         // setTimeout(() => {
         //   console.log('called time out');
@@ -304,9 +310,10 @@ export const FormQuestions = props => {
           );
         //}, 700);
 
+        setIsLoading(false);
       })
       .catch(e => {
-        //loadingBarRef.current.hideModal();
+        setIsLoading(false);
         expireToken(dispatch, e);
       });
   };
@@ -342,10 +349,7 @@ export const FormQuestions = props => {
         onBackPressed={onBackPressed}
         onSubmit={_onSubmit}
       />
-
-      <LoadingBar 
-        backButtonDisabled={true}
-        ref={loadingBarRef} />
+      
     </View>
   );
 };
