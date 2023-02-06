@@ -27,7 +27,7 @@ import {Notification} from '../../../../../components/modal/Notification';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../../../constants/Helper';
 import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
-import { sub } from 'react-native-reanimated';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
@@ -47,7 +47,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     _callGetOdometer();
-
   }, []);
 
   const onButtonAction = data => {
@@ -71,9 +70,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   };
 
   const _callOdometer = () => {
-
    
-
     let hasError = false;
     if (imageRequired && image === null) {
       message = Strings.Please_Take_Photo;
@@ -95,8 +92,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
     
       return;
     }
-
-
 
     if (hasError) return;
     
@@ -130,7 +125,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         ? currentLocation.longitude
         : '0',
     );
-
   
     if(isSubmit){
       return ;
@@ -244,6 +238,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       {...props}>
       <View style={styles.container}>
         <Notification></Notification>
+        <LoadingProgressBar/>
         <View style={styles.inputContainer}>
           <CTextInput
             label={Strings.Home.Start_Reading}

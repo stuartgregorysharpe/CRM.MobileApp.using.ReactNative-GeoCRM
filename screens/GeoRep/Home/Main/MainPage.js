@@ -30,6 +30,7 @@ import Compliance from '../partial/cards/Compliance';
 import TwoRowContent from '../../../../components/modal/content_type_modals/TwoRowContentFeed';
 import { getContentFeeds, updateContentFeed_post } from '../../../../actions/contentLibrary.action';
 import CustomImageDialog from '../../../../components/modal/content_type_modals/CustomImageDialog';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 
 //const MainPage = props => {
@@ -703,6 +704,7 @@ const MainPage = forwardRef((props, ref) => {
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
       <Notification></Notification>
+      <LoadingProgressBar/>
 
       <View style={{ marginTop: 5 }}>
         <SubmitButton

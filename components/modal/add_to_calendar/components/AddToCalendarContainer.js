@@ -12,6 +12,7 @@ import { expireToken, getPostParameter } from '../../../../constants/Helper';
 import { PostRequestDAO } from '../../../../DAO';
 import { Notification } from '../../Notification';
 import AlertDialog from '../../AlertDialog';
+import LoadingProgressBar from '../../LoadingProgressBar';
 
 var indempotencyKey = '';
 
@@ -48,7 +49,7 @@ const AddToCalendarContainer = (props) => {
     const callApi = (schedules) => {
         
         if(!isLoading){
-            setStartEndTimePicker(false);
+            
             setIsLoading(true);                 
             var userParam = getPostParameter(currentLocation);
             let postData = {
@@ -71,6 +72,8 @@ const AddToCalendarContainer = (props) => {
 
   return (
     <View style={styles.refreshSliderContainer}>
+        
+        <LoadingProgressBar/>
         
         <AlertDialog
           visible={isConfirmModal}
@@ -126,6 +129,7 @@ const AddToCalendarContainer = (props) => {
         onModalClose={() => setStartEndTimePicker(false)}
         mode={dateTimeType}
         close={(startDate, endDate, startTime, endTime) => {
+          setStartEndTimePicker(false);
           selectedItems.forEach((item, index) => {
             item.schedule_order = (index + 1).toString();
             if (dateTimeType === 'time') {

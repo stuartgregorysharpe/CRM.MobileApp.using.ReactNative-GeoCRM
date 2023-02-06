@@ -271,7 +271,7 @@ export default function CalendarScreen(props) {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        {/* <Notification></Notification> */}
+        <Notification></Notification>
         <LoadingProgressBar/>
         <View style={[styles.tabContainer, boxShadow]}>
           <TouchableOpacity
