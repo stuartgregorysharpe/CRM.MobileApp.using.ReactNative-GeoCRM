@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect ,  useState} from 'react';
 import {useSelector} from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
 import ConsumableSellToStockSignatureView from '../components/ConsumableSellToStockSignatureView';
@@ -16,6 +16,8 @@ import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
+var sell_to_trader_indempotency = '';
+
 export default function ConsumableSellToTraderSignatureContainer(props) {
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -25,6 +27,10 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [reference, setReference] = useState('');
+
+  useEffect(() => {
+    sell_to_trader_indempotency = generateKey();
+  }, []);
 
   const onItemPressed = item => {};
 
@@ -66,7 +72,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
             }
                       
             PostRequest.find(0, postData, "sell_to_trader" , "stockmodule/sell-to-trader", 
-            Constants.stockType.CONSUMABLE , props.item.description , null, dispatch ).then((res) => {
+            Constants.stockType.CONSUMABLE , props.item.description , sell_to_trader_indempotency, dispatch ).then((res) => {
               setIsLoading(false);
               dispatch(
                 showNotification({

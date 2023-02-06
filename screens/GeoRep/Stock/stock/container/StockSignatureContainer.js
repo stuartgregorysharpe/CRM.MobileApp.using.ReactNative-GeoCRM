@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect,  useState} from 'react';
 import StockSignatureView from '../components/StockSignatureView';
 import {postApiRequestMultipart} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
@@ -19,6 +19,9 @@ import { generateKey } from '../../../../../constants/Utils';
 import { PostRequestDAO } from '../../../../../DAO';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
+var sell_to_trader_indempotency = '';
+
+
 export default function StockSignatureContainer(props) {
 
   const {item, selectedCodes, signatureModalType} = props;
@@ -29,6 +32,10 @@ export default function StockSignatureContainer(props) {
 
   var msisdn = '';
   var received = '';
+
+  useEffect(() => {
+    sell_to_trader_indempotency = generateKey();
+  }, []);
 
   const onSubmit = ( signature, deviceType) => {  
 
@@ -99,7 +106,7 @@ export default function StockSignatureContainer(props) {
               var networks = selectedCodes.map(item => item.network).join(',');
 
               PostRequestDAO.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
-              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , null, dispatch ).then((res) => {
+              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , sell_to_trader_indempotency , dispatch ).then((res) => {
                 setIsLoading(false);
                 dispatch(
                   showNotification({
