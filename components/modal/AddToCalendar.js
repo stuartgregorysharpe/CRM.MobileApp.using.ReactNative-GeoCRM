@@ -24,7 +24,7 @@ import {Notification} from './Notification';
 import { postApiRequest } from '../../actions/api.action';
 import { generateKey } from '../../constants/Utils';
 import { Strings } from '../../constants';
-import { clearLoadingBar, showLoadingBar } from '../../actions/notification.action';
+import { clearLoadingBar, showLoadingBar, showNotification } from '../../actions/notification.action';
 import LoadingProgressBar from './LoadingProgressBar';
 
 export default function AddToCalendar({selectedItems, onClose, isModal}) {
@@ -69,7 +69,8 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
           dispatch(clearLoadingBar());
           setStartEndTimePicker(false);
           setMessage(Strings.Calendar.Added_Calendar_Successfully);
-          setIsConfirmModal(true);          
+          setIsConfirmModal(true);
+          
           setIsLoading(false);
       }).catch((error) => {
           expireToken(dispatch, error);
@@ -84,8 +85,8 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
   return (
     <ScrollView style={styles.refreshSliderContainer}>
 
-      <Notification />
-      <LoadingProgressBar />      
+      {/* <Notification />
+      <LoadingProgressBar />       */}
 
       {showDivider && (
         <TouchableOpacity

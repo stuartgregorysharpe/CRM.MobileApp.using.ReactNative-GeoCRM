@@ -74,6 +74,7 @@ export default function CalendarScreen(props) {
     }
   });
   useEffect(() => {
+    isMount = true;
     return () => {
       isMount = false;
     }
@@ -82,6 +83,7 @@ export default function CalendarScreen(props) {
   useEffect(() => {
     onRefresh();
   }, [isFocused]);
+
   const onRefresh = () => {
     if (selectedIndex === 1) {
       if (lists.length === 0) {
@@ -113,7 +115,8 @@ export default function CalendarScreen(props) {
 
   const loadList = async (type, isOptimize = false) => {
 
-
+    if(isLoading) return;
+    
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
     setIsAdd(await checkFeatureIncludeParam('calendar_add'));
 
@@ -125,7 +128,9 @@ export default function CalendarScreen(props) {
       param.user_coordinates_latitude = currentLocation.latitude;
       param.user_coordinates_longitude = currentLocation.longitude;
     }
+
     console.log('GetRequestCalendarScheduleList: param', param);
+    
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
         if(isMount){
@@ -266,7 +271,7 @@ export default function CalendarScreen(props) {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <Notification></Notification>
+        {/* <Notification></Notification> */}
         <LoadingProgressBar/>
         <View style={[styles.tabContainer, boxShadow]}>
           <TouchableOpacity

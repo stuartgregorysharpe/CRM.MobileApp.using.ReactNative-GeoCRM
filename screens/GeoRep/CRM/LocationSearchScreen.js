@@ -45,6 +45,9 @@ import {LocationSearchDAO} from '../../../DAO';
 import LocationInfoDetailModal from './locationInfoDetails/LocationInfoDetailModal';
 import SelectLocationView from './partial/SelectLocationView';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
+import AddToCalendarContainer from '../../../components/modal/add_to_calendar/components/AddToCalendarContainer';
+import AddToCalendarModal from '../../../components/modal/add_to_calendar';
+import { showNotification } from '../../../actions/notification.action';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -91,6 +94,7 @@ export default function LocationSearchScreen(props) {
   const [isCheckin, setIsCheckin] = useState(false);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
+  const addToCalendarModalRef = useRef(null);
 
   useEffect(() => {
     initData();
@@ -233,6 +237,7 @@ export default function LocationSearchScreen(props) {
         display: 'none',
       },
     });
+
   };
 
   const showBottomBar = () => {
@@ -320,8 +325,11 @@ export default function LocationSearchScreen(props) {
           console.log("location info closed");
         }
         return;
-      case 'addtocalendar':
-        setShowItem(3);
+      case 'addtocalendar':        
+        if(addToCalendarModalRef.current){
+          addToCalendarModalRef.current.showModal();
+        }
+        //setShowItem(3);
         savedShowItem = 3;
         return;
       default:
@@ -419,8 +427,7 @@ export default function LocationSearchScreen(props) {
   };
 
   const detailModalClosed = ({type, value}) => {
-
-    console.log("detail modal closed", type , value);    
+  
     if (type == Constants.actionType.ACTION_CLOSE) {
       locationInfoModalRef.current.hideModal();
       if (value === 'access_crm') {
@@ -432,6 +439,19 @@ export default function LocationSearchScreen(props) {
       }
     }
   };
+
+  const onAddToCalendarClosed = ({ type, value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      addToCalendarModalRef.current.hideModal();      
+    }else if(type == Constants.actionType.ACTION_DONE) {
+      addToCalendarModalRef.current.hideModal();
+      setShowItem(0);
+      dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+      dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
+      getSearchData(originLists, '', 'search');   
+    }
+  }
+  
 
   return (
     <Provider>
@@ -477,29 +497,36 @@ export default function LocationSearchScreen(props) {
           </View>
         )}
 
-        {showItem == 3 && (
-          <View
-            style={[
-              styles.transitionView,
-              showItem == 0
-                ? {
-                    transform: [
-                      {translateY: Dimensions.get('window').height + 100},
-                    ],
-                  }
-                : {transform: [{translateY: 0}]},
-            ]}>
-            <AddToCalendar
-              selectedItems={selectedLocationsForCalendar}
-              onClose={() => {
-                dispatch({type: SLIDE_STATUS, payload: false});
-                setShowItem(0);
-                dispatch({type: IS_CALENDAR_SELECTION, payload: false});
-                dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
-                getSearchData(originLists, '', 'search');
-              }}></AddToCalendar>
-          </View>
-        )}
+
+        <AddToCalendarModal 
+          selectedItems={selectedLocationsForCalendar}
+          ref={addToCalendarModalRef}                    
+          onButtonAction={onAddToCalendarClosed}          
+        />
+
+        {/* {showItem == 3 && (
+            <View
+              style={[
+                styles.transitionView,
+                showItem == 0
+                  ? {
+                      transform: [
+                        {translateY: Dimensions.get('window').height + 100},
+                      ],
+                    }
+                  : {transform: [{translateY: 0}]},
+              ]}>
+              <AddToCalendar
+                selectedItems={selectedLocationsForCalendar}
+                onClose={() => {
+                  dispatch({type: SLIDE_STATUS, payload: false});
+                  setShowItem(0);
+                  dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+                  dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
+                  getSearchData(originLists, '', 'search');
+                }}></AddToCalendar>
+            </View>
+        )} */}
 
         <AddLeadModal
           title="Add Lead"

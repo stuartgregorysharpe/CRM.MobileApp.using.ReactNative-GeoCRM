@@ -14,7 +14,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
         "add-edit-contacts",
         "action-item-details",
         "transfer",
-        "staging-accept"
+        "staging-accept",
+        "calenderadd"
     ];
 
   return new Promise(function(resolve, reject) {

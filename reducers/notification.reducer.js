@@ -37,7 +37,7 @@ export default (state = initialState, action) => {
         message: action.payload.message,
         options: action.payload.options,
         autoHide: action.payload.autoHide,
-        notificationVisible: action.payload.type != 'loading' ? true : false,        
+        notificationVisible: true,        
         buttonText: action.payload.buttonText,
         buttonAction: action.payload.buttonAction,
         cancelButtonText: action.payload.cancelButtonText,
