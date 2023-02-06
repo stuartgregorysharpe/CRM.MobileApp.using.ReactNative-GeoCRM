@@ -17,6 +17,7 @@ import {Notification} from '../../../../../components/modal/Notification';
 import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
 import { PostRequestDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function StockSignatureContainer(props) {
 
@@ -232,6 +233,7 @@ export default function StockSignatureContainer(props) {
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

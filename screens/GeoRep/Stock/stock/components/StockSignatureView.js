@@ -11,6 +11,7 @@ import {generateKey} from '../../../../../constants/Utils';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 var previousText = Constants.msisdnPrefix;
 
@@ -265,7 +266,10 @@ export default function StockSignatureView(props) {
         onSubmit={onFileSubmit}>
         {' '}
       </SubmitButton>
+      
       <Notification />
+      <LoadingProgressBar/>
+      
     </View>
   );
 }

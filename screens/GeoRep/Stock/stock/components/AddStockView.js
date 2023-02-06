@@ -13,6 +13,7 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 var vodacom = [];
 
@@ -299,7 +300,10 @@ export default function AddStockView(props) {
         }}        
         title={Strings.Stock.Add_Stock}
         style={{marginTop: 20}}></SubmitButton>
+
       <Notification />
+      <LoadingProgressBar />
+
     </View>
   );
 }

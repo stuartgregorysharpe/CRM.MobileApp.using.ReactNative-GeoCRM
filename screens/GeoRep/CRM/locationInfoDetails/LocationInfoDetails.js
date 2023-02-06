@@ -300,6 +300,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       dispatch
     )
       .then(res => {
+
         setIsOutcomeUpdated(true);
         setIsCallFeedback(false);        
         outcomeVal = true;
@@ -310,6 +311,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             message: res.message,
             buttonText: Strings.Ok,
             buttonAction: async () => {
+              console.log("clickedAction",clickedAction)
               if (clickedAction === 'top') {
                 checkFeedbackAndClose('top');
               } else if (clickedAction === 'back') {
@@ -545,7 +547,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       {showFeedbackDropDownModal()}
       
       {/* <Notification /> */}
-      <LoadingProgressBar/>      
+      {/* <LoadingProgressBar/>       */}
 
       <AlertDialog
         visible={isSuccess}

@@ -7,6 +7,7 @@ import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import {expireToken} from '../../../../../constants/Helper';
 import { GetRequestCustomerSearchDAO, GetRequestLocationDevicesDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 const SearchLocationContainer = props => {
 
@@ -133,6 +134,7 @@ const SearchLocationContainer = props => {
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 };

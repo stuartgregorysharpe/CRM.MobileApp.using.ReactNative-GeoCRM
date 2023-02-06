@@ -14,6 +14,7 @@ import {Notification} from '../../../../../components/modal/Notification';
 import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function ConsumableSellToTraderSignatureContainer(props) {
 
@@ -135,6 +136,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

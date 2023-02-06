@@ -32,6 +32,7 @@ import StockListFilterModal from './modal/StockListFilterModal';
 import {GetRequestStockListsDAO} from '../../../../DAO';
 import {getLocalData} from '../../../../constants/Storage';
 import {expireToken} from '../../../../constants/Helper';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 let isMount = true;
 
@@ -448,7 +449,10 @@ const StockLists = props => {
           }
         }}
       />
+
       <Notification />
+      <LoadingProgressBar />
+
     </View>
   );
 };

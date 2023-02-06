@@ -12,6 +12,7 @@ import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
 import {GetRequestStockFieldDataDAO, PostRequestDAO} from '../../../../../DAO';
 import { generateKey } from '../../../../../constants/Utils';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 var add_stock_indempotency = '';
 
@@ -116,6 +117,7 @@ export default function AddStockContainer(props) {
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

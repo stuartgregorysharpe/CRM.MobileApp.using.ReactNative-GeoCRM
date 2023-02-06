@@ -18,6 +18,7 @@ import {Constants} from '../../../../../constants';
 import {expireToken, getFileFormat} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 import { GetRequestLocationDevicesDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 const SwopAtTraderContainer = props => {
   
@@ -116,6 +117,7 @@ const SwopAtTraderContainer = props => {
 
       />
       <Notification />
+      <LoadingProgressBar/>
     </View>
   );
 };

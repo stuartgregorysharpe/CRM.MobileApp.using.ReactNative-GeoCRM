@@ -268,6 +268,8 @@ const TransactionSubmitContainer = props => {
         {...props}        
       />
       <Notification />
+      <LoadingProgressBar />
+      
     </View>
   );
 };

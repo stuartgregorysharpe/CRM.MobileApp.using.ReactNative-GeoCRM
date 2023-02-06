@@ -10,6 +10,7 @@ import {
   showNotification,
 } from '../../../../../../actions/notification.action';
 import {Notification} from '../../../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../../../components/modal/LoadingProgressBar';
 
 export default function DeviceView(props) {
   const {errors} = props;
@@ -125,6 +126,7 @@ export default function DeviceView(props) {
         }}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

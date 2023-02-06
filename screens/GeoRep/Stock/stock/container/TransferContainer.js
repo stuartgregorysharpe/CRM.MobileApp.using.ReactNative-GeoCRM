@@ -12,6 +12,7 @@ import {
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 import { GetRequestStockUsersDAO, PostRequestDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function TransferContainer(props) {
 
@@ -118,6 +119,7 @@ export default function TransferContainer(props) {
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }
