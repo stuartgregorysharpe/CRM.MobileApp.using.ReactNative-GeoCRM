@@ -28,7 +28,6 @@ import AlertDialog from './AlertDialog';
 import {DatetimePickerView} from '../DatetimePickerView';
 import { PostRequestDAO } from '../../DAO';
 import { generateKey } from '../../constants/Utils';
-import { clearLoadingBar, showLoadingBar } from '../../actions/notification.action';
 
 var reloop_indempotency = '';
 
@@ -76,10 +75,9 @@ export default function RefreshSlider({location_id, onClose}) {
         setMessage('Failed');
         setIsConfirmModal(true);
         expireToken(dispatch, error);
-        setIsLoading(false);        
+        setIsLoading(false);
       });
-    }
-    
+    }    
   }  
 
   return (

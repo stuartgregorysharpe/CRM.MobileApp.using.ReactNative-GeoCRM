@@ -37,6 +37,7 @@ import {Constants, Strings} from '../../../../constants';
 import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
 import {generateKey} from '../../../../constants/Utils';
 import {Notification} from '../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 var indempotencyKey;
 
 //export default function FormQuestions(props) {
@@ -337,6 +338,7 @@ export const FormQuestions = props => {
   return (
     <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
       <Notification />
+      <LoadingProgressBar/>
 
       <FormQuestionView
         ref={formQuestionViewRef}

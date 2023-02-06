@@ -44,6 +44,7 @@ import {Constants} from '../../../constants';
 import {LocationSearchDAO} from '../../../DAO';
 import LocationInfoDetailModal from './locationInfoDetails/LocationInfoDetailModal';
 import SelectLocationView from './partial/SelectLocationView';
+import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -436,6 +437,7 @@ export default function LocationSearchScreen(props) {
     <Provider>
       <SafeAreaView style={{flex: 1}}>
         <Notification />
+        <LoadingProgressBar/>
         <AlertDialog
           visible={isCreated}
           message={message}

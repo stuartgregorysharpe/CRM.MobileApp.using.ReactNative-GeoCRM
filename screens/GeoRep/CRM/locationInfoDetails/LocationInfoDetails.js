@@ -56,6 +56,7 @@ import LocationInfo from './LocationInfo';
 import AccessCRMCheckInView from './components/AccessCRMCheckInView';
 import { generateKey } from '../../../../constants/Utils';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -534,7 +535,6 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       if (props.refreshLocationInfo) {
         props.refreshLocationInfo(locationInfo.location_id);
       }
-
       updateCustomerModalRef.current.hideModal();
     }
   };
@@ -545,6 +545,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       {showFeedbackDropDownModal()}
       
       {/* <Notification /> */}
+      <LoadingProgressBar/>      
 
       <AlertDialog
         visible={isSuccess}

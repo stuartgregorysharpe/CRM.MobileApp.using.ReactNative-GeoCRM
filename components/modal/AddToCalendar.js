@@ -58,12 +58,12 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
 
     if(!isLoading){
       setIsLoading(true);
-      dispatch(showLoadingBar({'type' : 'loading'}));      
+      dispatch(showLoadingBar({'type' : 'loading'}));
       var userParam = getPostParameter(currentLocation);
       let postData = {
         schedules: schedules,
         user_local_data: userParam.user_local_data,
-      };  
+      };
  
       postApiRequest('calenderadd', postData, indempotencyKey).then((res) => {                      
           dispatch(clearLoadingBar());
@@ -141,7 +141,9 @@ export default function AddToCalendar({selectedItems, onClose, isModal}) {
             setDateTimeType('datetime');
             setStartEndTimePicker(true);
           } else {
-            setIsDateTimePickerVisible(true);
+            if(!isLoading){
+              setIsDateTimePickerVisible(true);
+            }
           }
         }}
       />

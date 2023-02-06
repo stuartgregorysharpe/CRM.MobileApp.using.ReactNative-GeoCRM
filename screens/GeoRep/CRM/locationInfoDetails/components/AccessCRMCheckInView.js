@@ -79,7 +79,7 @@ export default AccessCRMCheckInView
 const styles = StyleSheet.create({
     nextButtonBar: {
         position: 'absolute',
-        bottom: Platform.OS == 'android' ? 0 : 25,
+        bottom: Platform.OS == 'android' ? 0 : 0,
         backgroundColor: '#FFF',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         paddingLeft: DeviceInfo.isTablet() ? 20 : 15,
         paddingRight: DeviceInfo.isTablet() ? 20 : 15,
         width: Dimensions.get('screen').width,
-        paddingBottom: DeviceInfo.isTablet() ? 20 : 5,
+        paddingBottom: Platform.OS == 'android' ? 0 : 30,
         borderColor: 'rgba(0, 0, 0, 0.2)',
         borderTopWidth: 0.5,
     },

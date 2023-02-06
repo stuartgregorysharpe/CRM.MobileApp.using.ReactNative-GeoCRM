@@ -14,6 +14,8 @@ import {
 } from '../../../../../actions/notification.action';
 import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
+import LoadingBarContainer from '../../../../../components/LoadingView/loading_bar/container/LoadingBarContainer';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function UpdateCustomerContainer(props) {
 
@@ -173,7 +175,10 @@ export default function UpdateCustomerContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
+      
       <Notification />
+      <LoadingProgressBar />
+
       <UpdateCustomerView
         onButtonAction={onButtonAction}
         leadForms={leadForms}

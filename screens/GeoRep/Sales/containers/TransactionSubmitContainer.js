@@ -19,6 +19,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import {Notification} from '../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 const TransactionSubmitContainer = props => {
   const {cartStatistics, productPriceList, addProductList} = props;
@@ -249,6 +250,9 @@ const TransactionSubmitContainer = props => {
         paddingTop: 0,
         maxHeight: Dimensions.get('screen').height * 0.8,
       }}>
+
+      <LoadingProgressBar/>
+
       <DynamicFormView
         page="transaction_submit"
         buttonTitle={'Submit'}

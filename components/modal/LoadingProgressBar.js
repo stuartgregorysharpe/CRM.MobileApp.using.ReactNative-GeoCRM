@@ -11,7 +11,6 @@ const LoadingProgressBar = () => {
 	const loadingBarRef = useRef(null);
 
 	useEffect(() => {		
-		
 		if (notification.loadingBarVisible && notification.loadingBarVisible == true && notification.type == 'loading') {
 						
 			if(loadingBarRef.current){				
