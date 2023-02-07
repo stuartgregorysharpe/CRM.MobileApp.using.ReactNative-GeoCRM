@@ -90,15 +90,18 @@ const LocationSpecificInfoScreen = props => {
   const isDisposition = features.includes('disposition_fields');
   let isMout = true;
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
     isMout = true;
-    refreshHeader();
-    initData();
     return () => {
       isMout = false;
     };
+  }, []);
+
+  useEffect(() => {
+    
+    refreshHeader();
+    initData();
+    
   }, [location_id]);
 
   useEffect(() => {
@@ -126,7 +129,7 @@ const LocationSpecificInfoScreen = props => {
   }, [navigation]);
 
   const getCheckInLocation = async () => {
-    
+    console.log("location id ===>", location_id)
     var location = await getJsonData('@checkin_location');
     if (location != null) {
       if (
@@ -135,10 +138,14 @@ const LocationSpecificInfoScreen = props => {
       ) {
         locationInfoRef.current.updateDispositionData(location);
       }
+
+      console.log("res",location)
+
       setLocationIfo(location);
       getFormLists(location.location_id);
     } else {
       if (location_id !== undefined) {
+        console.log("triddd")
         openLocationInfo(location_id);
         getFormLists(location_id);
       }
@@ -167,9 +174,11 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const openLocationInfo = async location_id => {
+
     setIsLoading(true);
     getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
+        console.log("isMout",isMout)
         if (isMout) {
           if (
             locationInfoRef.current != undefined &&
@@ -177,6 +186,7 @@ const LocationSpecificInfoScreen = props => {
           ) {
             locationInfoRef.current.updateDispositionData(res);
           }
+          
           setLocationIfo(res);
           setIsLoading(false);
         }
