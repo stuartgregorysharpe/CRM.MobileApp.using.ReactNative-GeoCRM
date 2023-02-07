@@ -117,10 +117,12 @@ export default function CalendarScreen(props) {
 
     if(isLoading) return;
     
+    setIsLoading(true);
+    
     setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
     setIsAdd(await checkFeatureIncludeParam('calendar_add'));
 
-    setIsLoading(true);
+    
     const param = {period: type};
     if (type == 'today' && isOptimize) {
       param.optimize = 1;

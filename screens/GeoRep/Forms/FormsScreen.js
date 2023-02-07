@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef , useCallback } from 'react';
 import {
   Text,
   View,
@@ -29,7 +29,7 @@ import {LOCATION_CHECK_OUT_COMPULSORY} from '../../../actions/actionTypes';
 import {Notification} from '../../../components/modal/Notification';
 
 export const FormsScreen = props => {
-  const {navigationType} = props;
+  
   const navigation = props.navigation;
   const [originalFormLists, setOriginalFormLists] = useState([]);
   const [formLists, setFormLists] = useState([]);
@@ -42,6 +42,8 @@ export const FormsScreen = props => {
   const searchLocationModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
   const [formIds, setFormIds] = useState([]);
+
+
 
   const dispatch = useDispatch();
 
@@ -85,7 +87,7 @@ export const FormsScreen = props => {
 
   useEffect(() => {
     isMount = true;
-    _callFormLists(null);
+    //_callFormLists(null);
     initFilter();
     initializeFormIds();
     return () => {
@@ -162,29 +164,38 @@ export const FormsScreen = props => {
     setFormLists(tmp);
   };
 
-  const _callFormLists = async filters => {
+  const _callFormLists =  useCallback(
+    async(filters) => {
+      
     if (filters === null) {
       filters = await getFilterData('@form_filter');
     }
     var form_type_id = filters.form_type.map(item => item).join(',');
+    var location_id = locationIdSpecific != null ? locationIdSpecific.location_id : '';
+    if(location_id == '' && isCheckin){
+      location_id  = await getLocalData('@specific_location_id');
+    }
+
     let param = {
       form_type_id: form_type_id,
-      location_id:
-        locationIdSpecific != null ? locationIdSpecific.location_id : '',
+      location_id:location_id        
     };
 
-    if (locationIdSpecific != null && isCheckin) {
+    if (isCheckin) {
       const checkin_type_id = await getLocalData('@checkin_type_id');
       const checkin_reason_id = await getLocalData('@checkin_reason_id');
+
       console.log('checkin_type_id', checkin_type_id);
       console.log('checkin_reason_id', checkin_reason_id);
+
       if (checkin_type_id && checkin_reason_id != '') {
         param.checkin_type_id = checkin_type_id;
       }
       if (checkin_reason_id && checkin_reason_id != '') {
         param.checkin_reason_id = checkin_reason_id;
       }
-    }
+    }    
+    
     GetRequestFormListsDAO.find(param)
       .then(res => {
         if (isMount) {
@@ -196,7 +207,11 @@ export const FormsScreen = props => {
       .catch(e => {
         expireToken(dispatch, e);
       });
-  };
+    },
+    [isCheckin],
+  )
+
+
 
   const _onTouchStart = (e, text) => {
     setBubbleText(text);
