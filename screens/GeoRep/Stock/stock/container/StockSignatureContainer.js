@@ -20,7 +20,7 @@ import { PostRequestDAO } from '../../../../../DAO';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 var sell_to_trader_indempotency = '';
-
+var return_to_warehouse_indempotency = '';
 
 export default function StockSignatureContainer(props) {
 
@@ -35,6 +35,7 @@ export default function StockSignatureContainer(props) {
 
   useEffect(() => {
     sell_to_trader_indempotency = generateKey();
+    return_to_warehouse_indempotency = generateKey();
   }, []);
 
   const onSubmit = ( signature, deviceType) => {  
@@ -140,8 +141,7 @@ export default function StockSignatureContainer(props) {
                 type: 'image/png',
                 name: 'sign.png',
               });
-              postData.append('received_by', received);
-              
+              postData.append('received_by', received);            
               postData.append('user_local_data[time_zone]', time_zone);
               postData.append(
                 'user_local_data[latitude]',
@@ -164,6 +164,7 @@ export default function StockSignatureContainer(props) {
                 postApiRequestMultipart(
                   'stockmodule/return-to-warehouse',
                   postData,
+                  return_to_warehouse_indempotency 
                 )
                   .then(res => {
                     setIsLoading(false);
@@ -209,7 +210,8 @@ export default function StockSignatureContainer(props) {
           console.log('error', error);
           setIsLoading(false);
         });
-    }
+      }
+
   };
 
   const onChangedSerial = serial => {
