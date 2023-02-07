@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect , useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,11 +14,12 @@ import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import {expireToken, getPostParameter, notifyMsg} from '../../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
-import {Notification} from '../../../../../components/modal/Notification';
 import Fonts from '../../../../../constants/Fonts';
 import {useSelector} from 'react-redux';
 import LoadMore from './partial/LoadMore';
-import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
+import AlertDialog from '../../../../../components/modal/AlertDialog';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
+import { Strings } from '../../../../../constants';
 
 export default function Activity(props) {
 
@@ -31,12 +32,16 @@ export default function Activity(props) {
   const [isSubmit, setIsSubmit] = useState(false);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [title, setTitle] = useState('');
+  const loadingBarRef = useRef(null);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+  const [message, setMessage] = useState('');
 
   const dispatch = useDispatch();
 
   let isMount = true;
 
   useEffect(() => {
+    isMount = true;
     loadHistory(page);
     return () => {
       isMount = false;
@@ -72,8 +77,8 @@ export default function Activity(props) {
   const submitComment = () => {
 
     if(!isLoading &&  !isSubmit){
-      setIsSubmit(true);
-      dispatch(showLoadingBar({'type' : 'loading'}));
+      setIsSubmit(true);      
+      loadingBarRef.current.showModal();
       var userParam = getPostParameter(currentLocation);
       let postData = {
         location_id: location_id,
@@ -83,16 +88,18 @@ export default function Activity(props) {
   
       postApiRequest('locations/location-add-comment', postData)
         .then(res => {
-          if (res.status === 'success') {
+          if (res.status === Strings.Success) {
             setComment('');
-            notifyMsg(dispatch, 'Success');
+            setMessage("Success");
+            setIsConfirmModal(true);
           }
           setIsSubmit(false);
-          dispatch(clearLoadingBar());
+          loadHistory(0);                    
+          loadingBarRef.current.hideModal();
         })
         .catch(e => {
           setIsSubmit(false);
-          dispatch(clearLoadingBar());
+          loadingBarRef.current.hideModal();
           expireToken(dispatch ,e);
       });
 
@@ -126,7 +133,18 @@ export default function Activity(props) {
 
   return (
     <View style={styles.container}>
-      <Notification />
+                  
+      <AlertDialog
+          visible={isConfirmModal}
+          message={message}
+          onModalClose={() => {
+            setIsConfirmModal(false)
+          }}></AlertDialog>
+
+      <LoadingBar 
+        backButtonDisabled={true}
+        ref={loadingBarRef}  />
+
       <View style={{marginTop: 5, marginBottom: 10}}>
         <AppText size="medium" type="secondaryMedium" title={title}></AppText>
       </View>
