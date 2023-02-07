@@ -34,6 +34,7 @@ import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar'
 
 
 //const MainPage = props => {
+
 const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
@@ -773,12 +774,5 @@ const MainPage = forwardRef((props, ref) => {
     </ScrollView>
   );
 });
-const mapStateToProps = state => {
-  
-  return {
-    content_feed_data: state.feed.content_feed_data
-  }
-};
-export default connect(mapStateToProps)(MainPage);
 
-//export default MainPage;
+export default MainPage;
