@@ -10,6 +10,7 @@ import {Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import {showNotification} from '../../../../../actions/notification.action';
 import {useDispatch} from 'react-redux';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function ReturnDeviceDetailView(props) {
   const {lists, onReturnStock} = props;
@@ -96,7 +97,11 @@ export default function ReturnDeviceDetailView(props) {
             return;
           }
         }}></SubmitButton>
+
+
       <Notification />
+      <LoadingProgressBar />
+
     </ScrollView>
   );
 }

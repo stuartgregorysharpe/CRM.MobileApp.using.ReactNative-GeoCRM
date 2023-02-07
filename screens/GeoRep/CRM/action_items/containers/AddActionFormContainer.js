@@ -6,6 +6,7 @@ import DynamicForm from '../../../../../components/common/DynamicForm';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import {Constants} from '../../../../../constants';
 import {expireToken, notifyMsg} from '../../../../../constants/Helper';
+import { PostRequestDAO } from '../../../../../DAO';
 import {
   constructAddActionFormStructure,
   getAddActionItemPostValue,
@@ -44,6 +45,7 @@ const AddActionFormContainer = props => {
   const onSubmit = () => {
 
     if (!actionFormRef.current.validateForm()) return;
+    if (isLoading) return ;
 
     setIsLoading(true);
     const submitValueData = getAddActionItemPostValue(
@@ -51,23 +53,24 @@ const AddActionFormContainer = props => {
       locationId,
       currentLocation,
     );
-    postApiRequest('actionsitems/action-item-details', submitValueData)
-      .then(res => {
-        if (res.status === 'success') {
-          notifyMsg(dispatch, 'Action Item Added Successfully');
-        }
-        setIsLoading(false);
-        if (props.onButtonAction) {
-          props.onButtonAction({
-            type: Constants.actionType.ACTION_FORM_SUBMIT,
-            value: submitValueData,
-          });
-        }
-      })
-      .catch(e => {
-        setIsLoading(false);
-        expireToken(dispatch , e);
-      });
+
+    PostRequestDAO.find(0, submitValueData , 'action-item-details' , 'actionsitems/action-item-details' ,
+    '' , ''  , null , dispatch).then((res) => {
+      if (res.status === 'success') {
+        notifyMsg(dispatch, 'Action Item Added Successfully');
+      }
+      setIsLoading(false);
+      if (props.onButtonAction) {
+        props.onButtonAction({
+          type: Constants.actionType.ACTION_FORM_SUBMIT,
+          value: submitValueData,
+        });
+      }
+    }).catch((e) => {
+      setIsLoading(false);
+      expireToken(dispatch , e);
+    });
+
   };
   
   return (
@@ -83,8 +86,7 @@ const AddActionFormContainer = props => {
       <SubmitButton
         onSubmit={() => {
           onSubmit();
-        }}
-        isLoading={isLoading}
+        }}        
         title={'Add Action Item'}
         style={{marginTop: 16, marginHorizontal: 10, marginBottom: 16}}
       />

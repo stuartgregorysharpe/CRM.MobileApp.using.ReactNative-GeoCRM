@@ -15,8 +15,8 @@ import {
 } from '../../../constants/Storage';
 import SelectionPicker from '../../modal/SelectionPicker';
 import {SubmitButton} from '../../shared/SubmitButton';
-import {
-  clearNotification,
+import {  
+  clearNotification,  
   showNotification,
 } from '../../../actions/notification.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
@@ -27,8 +27,12 @@ import {Notification} from '../../modal/Notification';
 import {CHECKIN} from '../../../actions/actionTypes';
 import {checkConnectivity} from '../../../DAO/helper';
 import {getLocationInfo} from '../../../actions/location.action';
+import { generateKey } from '../../../constants/Utils';
+
+var checkin_indempotency = '';
 
 const CheckinLinkButton = props => {
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {locationId, title, scheduleId} = props;
@@ -52,6 +56,7 @@ const CheckinLinkButton = props => {
     initData();
   }, []);
   const initData = () => {
+    checkin_indempotency = generateKey();
     dispatch(updateCurrentLocation());
   };
   const showFeedbackDropDownModal = () => {
@@ -138,7 +143,11 @@ const CheckinLinkButton = props => {
   };
 
   const _callCheckedIn = async () => {
-    if (isLoading) return false;
+
+    if (isLoading) {     
+      return false;
+    }    
+
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -157,8 +166,11 @@ const CheckinLinkButton = props => {
       'location-info/check-in',
       '',
       '',
+      checkin_indempotency,
+      dispatch
     )
       .then(async res => {
+        checkin_indempotency = generateKey();
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
@@ -189,24 +201,32 @@ const CheckinLinkButton = props => {
               offlineScheduleCheckins,
             );
           }
-        });
+        });        
         setIsLoading(false);
-        getLocationInfo(locationId, currentLocation).then(
-          async locationInfo => {
-            await storeJsonData('@checkin_location', locationInfo);
-            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-              locationId: locationId,
-              page: 'checkin',
-            });
-            onFinishProcess();
-          },
-        );
+       
+
+        if(props.onCallback){          
+          props.onCallback();
+        }else{
+          getLocationInfo(locationId, currentLocation).then(
+            async locationInfo => {
+              await storeJsonData('@checkin_location', locationInfo);
+              navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+                locationId: locationId,
+                page: 'checkin',
+              });              
+              onFinishProcess();
+            },
+          );
+        }       
       })
       .catch(e => {
         setIsLoading(false);
+        
         expireToken(dispatch, e);
       });
   };
+  
   const onFinishProcess = () => {
     if (props.onFinishProcess) {
       props.onFinishProcess();
@@ -237,6 +257,9 @@ const CheckinLinkButton = props => {
         'checkin_types',
       );
       console.log('isCheckinTypes', isCheckinTypes);
+
+
+
       if (isCheckinTypes) {
         _callCheckInTypes();
       } else {

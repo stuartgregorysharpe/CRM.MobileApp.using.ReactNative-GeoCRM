@@ -44,8 +44,7 @@ export default function TransferView(props) {
 
       <SubmitButton
         title={'Transfer'}
-        style={{marginTop: 20, marginBottom: 30}}
-        isLoading={props.isLoading}
+        style={{marginTop: 20, marginBottom: 30}}        
         onSubmit={onTrader}></SubmitButton>
     </ScrollView>
   );

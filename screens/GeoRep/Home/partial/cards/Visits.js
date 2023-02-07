@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
 import { useEffect } from 'react';
 import TwoRowContent from '../../../../../components/modal/content_type_modals/TwoRowContentFeed';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 const Visits = ({ visitCard, pageCount, pageIndex }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -25,6 +26,10 @@ const Visits = ({ visitCard, pageCount, pageIndex }) => {
 
   return (
     <View style={{ marginTop: 10, flex: 1, flexDirection: 'column' }}>
+
+      <LoadingProgressBar/>
+
+      
       <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
         <View
           style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>

@@ -23,10 +23,8 @@ const LocationInfoDetailModal = React.forwardRef((props, ref) => {
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       closableWithOutsideTouch
       hideClose
-      onClear={() => {
-     
+      onClear={() => {     
         onButtonAction({type: Constants.actionType.ACTION_FORM_CLEAR});
-
       }}
       onClose={() => {
         console.log(" modal closed");

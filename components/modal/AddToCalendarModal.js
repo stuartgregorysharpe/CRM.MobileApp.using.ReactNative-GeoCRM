@@ -4,6 +4,7 @@ import CModal from '../common/CModal';
 import AddToCalendarContainer from './AddToCalendarContainer';
 
 const AddToCalendarModal = React.forwardRef((props, ref) => {
+
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
@@ -12,6 +13,7 @@ const AddToCalendarModal = React.forwardRef((props, ref) => {
       ref.current.hideModal();
     }
   };
+  
   return (
     <CModal
       ref={ref}

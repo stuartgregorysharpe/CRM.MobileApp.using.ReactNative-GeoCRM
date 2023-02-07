@@ -1,13 +1,16 @@
 
 import { View } from 'react-native'
-import React , { useState } from 'react'
+import React , { useState , useEffect } from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import AddContactModalView from '../components/AddContactModalView';
 import { expireToken, getPostParameter } from '../../../../../constants/Helper';
 import { useSelector } from 'react-redux';
-import { postApiRequest } from '../../../../../actions/api.action';
 import { useDispatch } from 'react-redux';
-import { showNotification } from '../../../../../actions/notification.action';
+import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../../actions/notification.action';
+import { PostRequestDAO } from '../../../../../DAO';
+import { generateKey } from '../../../../../constants/Utils';
+
+var add_edit_indempotency = '';
 
 export default function AddContactModalContainer(props) {
     
@@ -17,6 +20,11 @@ export default function AddContactModalContainer(props) {
 
     const currentLocation = useSelector(state => state.rep.currentLocation);    
 
+    useEffect(() => {
+        add_edit_indempotency = generateKey();
+    }, []);
+
+
     const addData = (value) => {        
         props.onButtonAction({type: Constants.actionType.ACTION_CAPTURE, value: value});
     }
@@ -25,15 +33,17 @@ export default function AddContactModalContainer(props) {
         
         if(!isLoading){
             setIsLoading(true);
+            
             var userParam = getPostParameter(currentLocation);
             var postData = {...formData , location_id: locationId, user_local_data: userParam.user_local_data};
             if (pageType === 'update' && contactInfo != undefined) {            
                 postData = {...postData , contact_id: contactInfo.contact_id};
             }
-            console.log("post data" ,postData)
-            postApiRequest("locations/add-edit-contacts", postData).then((res) => {
-                console.log("res", res)
-                setIsLoading(false)
+            console.log("post data" ,postData);
+
+            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , dispatch).then((res) => {
+                
+                setIsLoading(false);                
                 if(res.status == Strings.Success){
                     dispatch(showNotification({type:'success' ,message: res.message, buttonText:'Ok' }));
                     if(props.onButtonAction){
@@ -42,17 +52,17 @@ export default function AddContactModalContainer(props) {
                 }
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
-                setIsLoading(false)
+                setIsLoading(false);                
                 expireToken(dispatch, e);
-            })    
+            })
+ 
         }
             
     }
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
-            <AddContactModalView
-                isLoading={isLoading}
+            <AddContactModalView                
                 onButtonAction={addData}
                 handleSubmit={handleSubmit}     
                 {...props}

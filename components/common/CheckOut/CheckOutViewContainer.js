@@ -15,16 +15,21 @@ import {
 } from '../../../actions/actionTypes';
 import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/CheckoutButton';
-import {PostRequestDAO} from '../../../DAO';
+import { PostRequestDAO } from '../../../DAO';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../actions/notification.action';
 import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/partial/CalendarCheckOutButton';
+import { generateKey } from '../../../constants/Utils';
 
 var specificLocationId;
+var check_out_indempotency = '';
+let isMount = true;
 
 export default function CheckOutViewContainer(props) {
   const {type, currentCall} = props;
@@ -36,9 +41,13 @@ export default function CheckOutViewContainer(props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigationMain = useNavigation();
+  
 
   useEffect(() => {
     initData();
+    return () => {
+      isMount = false;
+    }
   }, []);
 
   useEffect(() => {
@@ -47,6 +56,7 @@ export default function CheckOutViewContainer(props) {
 
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');
+    check_out_indempotency = generateKey();
   };
 
   const checkOutLocation = useCallback(() => {
@@ -54,6 +64,7 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory]);
 
   const _callCheckOut = () => {
+
     if (isLoading) {
       return;
     }
@@ -63,12 +74,7 @@ export default function CheckOutViewContainer(props) {
           type: Strings.Success,
           message: Strings.CRM.Complete_Compulsory_Form,
           buttonText: Strings.Ok,
-          buttonAction: async () => {
-            // if(type == 'home'){
-            // }else if(type == "specificInfo"){
-            // }else if(type == "calendar"){
-            // }
-
+          buttonAction: async () => {            
             const location = await getJsonData('@checkin_location');
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: location,
@@ -78,7 +84,9 @@ export default function CheckOutViewContainer(props) {
         }),
       );
     } else {
-      setIsLoading(true);
+
+      setIsLoading(true);      
+
       var userParam = getPostParameter(currentLocation);
       var currentTime = getDateTime();
 
@@ -95,9 +103,12 @@ export default function CheckOutViewContainer(props) {
         'location-info/check-out',
         '',
         '',
+        check_out_indempotency,
+        dispatch
       )
         .then(async res => {
           console.log('RES : ', res);
+          setIsLoading(false);        
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -107,15 +118,22 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@setup', null);                   
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-          if (type == 'specificInfo' || type == 'calendar') {
-            if (props.goBack) {
-              props.goBack(res);
+          
+          if(isMount){
+            if (type == 'specificInfo' || type == 'calendar') {
+              if (props.goBack) {
+                props.goBack(res);
+              }
             }
           }
-          setIsLoading(false);
+                    
+          if(props.onCallback){
+            props.onCallback();
+          }
+          
         })
         .catch(e => {
-          console.log('checkout error:', e);
+          console.log('checkout error:', e);          
           expireToken(dispatch, e);
         });
     }

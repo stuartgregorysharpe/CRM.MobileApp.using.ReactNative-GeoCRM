@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect,  useState} from 'react';
 import StockSignatureView from '../components/StockSignatureView';
 import {postApiRequestMultipart} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
@@ -8,13 +8,19 @@ import {Constants, Strings} from '../../../../../constants';
 import RNFS from 'react-native-fs';
 import {useDispatch} from 'react-redux';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
-import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
+import { PostRequestDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+
+var sell_to_trader_indempotency = '';
+var return_to_warehouse_indempotency = '';
 
 export default function StockSignatureContainer(props) {
 
@@ -27,9 +33,16 @@ export default function StockSignatureContainer(props) {
   var msisdn = '';
   var received = '';
 
+  useEffect(() => {
+    sell_to_trader_indempotency = generateKey();
+    return_to_warehouse_indempotency = generateKey();
+  }, []);
+
   const onSubmit = ( signature, deviceType) => {  
 
     if (signature != null) {    
+
+      if(isLoading) return;
 
       setIsLoading(true);
       var postData = new FormData();
@@ -93,8 +106,9 @@ export default function StockSignatureContainer(props) {
               }
               var networks = selectedCodes.map(item => item.network).join(',');
 
-              PostRequest.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
-              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks ).then((res) => {
+              PostRequestDAO.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
+              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , sell_to_trader_indempotency , dispatch ).then((res) => {
+                setIsLoading(false);
                 dispatch(
                   showNotification({
                     type: Strings.Success,
@@ -127,8 +141,7 @@ export default function StockSignatureContainer(props) {
                 type: 'image/png',
                 name: 'sign.png',
               });
-              postData.append('received_by', received);
-              
+              postData.append('received_by', received);            
               postData.append('user_local_data[time_zone]', time_zone);
               postData.append(
                 'user_local_data[latitude]',
@@ -147,12 +160,15 @@ export default function StockSignatureContainer(props) {
                 props.stockItemIds.forEach((item, index) => {
                   postData.append(`stock_item_ids[${index}]`, item);
                 });
+                dispatch(showLoadingBar({'type' : 'loading'}));
                 postApiRequestMultipart(
                   'stockmodule/return-to-warehouse',
                   postData,
+                  return_to_warehouse_indempotency 
                 )
                   .then(res => {
                     setIsLoading(false);
+                    dispatch(clearLoadingBar());
                     dispatch(
                       showNotification({
                         type: Strings.Success,
@@ -168,19 +184,9 @@ export default function StockSignatureContainer(props) {
                     );
                   })
                   .catch(e => {
-                    setIsLoading(false);  
-                    console.log('error', e);
-                    if (e === 'expired') {
-                      expireToken(dispatch, e);
-                    } else {
-                      dispatch(
-                        showNotification({
-                          type: Strings.Success,
-                          message: 'Error',
-                          buttonText: 'Ok',
-                        }),
-                      );
-                    }
+                    setIsLoading(false);
+                    dispatch(clearLoadingBar());                    
+                    expireToken(dispatch, e);                  
                   });
               } else {
                 setIsLoading(false);
@@ -204,7 +210,8 @@ export default function StockSignatureContainer(props) {
           console.log('error', error);
           setIsLoading(false);
         });
-    }
+      }
+
   };
 
   const onChangedSerial = serial => {
@@ -231,10 +238,11 @@ export default function StockSignatureContainer(props) {
           onChangedSerial(text)
         }}
         onClose={onClose}
-        isLoading={isLoading}
+        
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

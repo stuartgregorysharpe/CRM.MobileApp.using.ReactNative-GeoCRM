@@ -18,6 +18,7 @@ import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
 import {useDispatch} from 'react-redux';
 import {generateKey} from '../../../../../constants/Utils';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function ConsumableSellToStockSignatureView(props) {
   const dispatch = useDispatch();
@@ -197,7 +198,10 @@ export default function ConsumableSellToStockSignatureView(props) {
   };
   return (
     <View style={[styles.container, {height: getHeight()}]}>
+
       <Notification />
+      <LoadingProgressBar />
+
       <CTextInput
         label={'Received By'}
         value={receivedBy}
@@ -290,8 +294,7 @@ export default function ConsumableSellToStockSignatureView(props) {
       <SubmitButton
         title="Submit"
         style={{marginTop: 10}}
-        onSubmit={onFormSubmit}
-        isLoading={props.isLoading}>
+        onSubmit={onFormSubmit}>
         {' '}
       </SubmitButton>
     </View>
