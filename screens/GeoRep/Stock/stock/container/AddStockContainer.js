@@ -1,7 +1,6 @@
 import {View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AddStockView from '../components/AddStockView';
-import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {Constants, Strings} from '../../../../../constants';
 import {useSelector} from 'react-redux';
 import {expireToken, getPostParameter} from '../../../../../constants/Helper';
@@ -12,9 +11,13 @@ import {
 import {useDispatch} from 'react-redux';
 import {Notification} from '../../../../../components/modal/Notification';
 import {GetRequestStockFieldDataDAO, PostRequestDAO} from '../../../../../DAO';
-import PostRequest from '../../../../../DAO/PostRequest';
+import { generateKey } from '../../../../../constants/Utils';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+
+var add_stock_indempotency = '';
 
 export default function AddStockContainer(props) {
+
   const dispatch = useDispatch();
   const [deviceTypeLists, setDevicetypeLists] = useState([]);
   const [stockTypes, setStockTypes] = useState({});
@@ -25,6 +28,7 @@ export default function AddStockContainer(props) {
 
   useEffect(() => {
     _callStockFieldData();
+    add_stock_indempotency  = generateKey();
     return () => {
       isMount = false;
     };
@@ -51,6 +55,7 @@ export default function AddStockContainer(props) {
   };
 
   const callAddStock = (type, data) => {
+    if(isLoading) return;
     setIsLoading(true);
     var userParam = getPostParameter(currentLocation);
     data['user_local_data'] = userParam.user_local_data;
@@ -70,6 +75,8 @@ export default function AddStockContainer(props) {
       'stockmodule/add-stock',
       type,
       subTitle,
+      add_stock_indempotency,
+      dispatch
     )
       .then(res => {
         setIsLoading(false);
@@ -106,11 +113,11 @@ export default function AddStockContainer(props) {
       <AddStockView
         callAddStock={callAddStock}
         stockTypes={stockTypes}
-        deviceTypeLists={deviceTypeLists}
-        isLoading={isLoading}
+        deviceTypeLists={deviceTypeLists}        
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

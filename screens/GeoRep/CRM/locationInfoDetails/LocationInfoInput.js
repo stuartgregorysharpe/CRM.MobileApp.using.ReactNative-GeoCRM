@@ -21,10 +21,8 @@ import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {breakPoint} from '../../../../constants/Breakpoint';
 import CustomPicker from '../../../../components/modal/CustomPicker';
 import {
-  postStageOutcomUpdate,
   postDispositionFields,
 } from '../../../../actions/location.action';
-import CustomLoading from '../../../../components/CustomLoading';
 import {
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SLIDE_STATUS,
@@ -34,6 +32,16 @@ import {
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
+import { clearLoadingBar, clearNotification, showLoadingBar, showNotification } from '../../../../actions/notification.action';
+import { Notification } from '../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import { PostRequestDAO } from '../../../../DAO';
+import { Strings } from '../../../../constants';
+import { generateKey } from '../../../../constants/Utils';
+
+var selected_outcome_id = '';
+var stage_outcome_indempotency = '';
+var disposition_fields_idempotency = '';
 
 export const LocationInfoInput = forwardRef((props, ref) => {
 
@@ -68,16 +76,14 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   var stages =
     locationInfo !== undefined && locationInfo.stages
       ? locationInfo.stages.find(
-          xxx => xxx.stage_id == locationInfo.current_stage_id,
+          stage => stage.stage_id == locationInfo.current_stage_id,
         )
       : false;
   const [selectedStageId, setSelectedStageId] = useState(
     stages ? stages.stage_id : 0,
   );
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  
   const [options, setOptions] = useState([]);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -115,6 +121,8 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   );
 
   useEffect(() => {
+    stage_outcome_indempotency = generateKey();
+    disposition_fields_idempotency = generateKey();
     dispatch({type: CHANGE_LOCATION_ACTION, payload: null});
     dispatch({type: CHANGE_BOTTOM_TAB_ACTION, payload: null});
   }, []);
@@ -142,62 +150,73 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   }, [locationInfo]);
 
   useEffect(() => {
-    if (isLoading) {
-      updateOutcomes();
+    if(!outComeModalVisible && selected_outcome_id != ''){
+      updateOutcomes(selected_outcome_id);
     }
-  }, [isLoading]);
+  }, [outComeModalVisible]);
 
-  const updateOutcomes = () => {
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: locationInfo.location_id,
-      stage_id: selectedStageId,
-      outcome_id: selectedOutcomeId,
-      campaign_id: 1,
-      user_local_data: userParam.user_local_data,
-    };
+  const updateOutcomes = (outcome_id) => {      
+    if(!isLoading){            
+      setIsLoading(true);      
+      var userParam = getPostParameter(currentLocation);
+      let postData = {
+        location_id: locationInfo.location_id,
+        stage_id: selectedStageId,
+        outcome_id: outcome_id,
+        campaign_id: 1,
+        user_local_data: userParam.user_local_data,
+      };
 
-    postStageOutcomUpdate(postData)
-      .then(res => {
+      PostRequestDAO.find(0, postData, 'update-stage-outcome' , 'location-info/updateStageOutcome', '', '' , stage_outcome_indempotency , dispatch).then((res) => {        
+        console.log("response =>" , res);
+        if(res.status == Strings.Success){
+          stage_outcome_indempotency = generateKey();
+        } 
         props.onOutcome(true);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-      })
-      .catch(e => {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
+        selected_outcome_id = '';        
+        setIsLoading(false);        
+
+      }).catch((e) => {
+        setIsLoading(false);        
         expireToken(dispatch, e);
-      });
+      });      
+    }
+
   };
 
   const handleSubmit = () => {
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: locationInfo.location_id,
-      campaign_id: 1,
-      disposition_fields: [],
-      user_local_data: userParam.user_local_data,
-    };
 
-    locationInfo.disposition_fields.forEach((item, key) => {
-      postData.disposition_fields.push({
-        disposition_field_id: item.disposition_field_id,
-        value: dispositionValue[key] !== undefined ? dispositionValue[key] : '',
+    if(!isLoading){            
+      var userParam = getPostParameter(currentLocation);
+      let postData = {
+        location_id: locationInfo.location_id,
+        campaign_id: 1,
+        disposition_fields: [],
+        user_local_data: userParam.user_local_data,
+      };
+  
+      locationInfo.disposition_fields.forEach((item, key) => {
+        postData.disposition_fields.push({
+          disposition_field_id: item.disposition_field_id,
+          value: dispositionValue[key] !== undefined ? dispositionValue[key] : '',
+        });
       });
-    });
 
-    postDispositionFields(postData)
-      .then(res => {
-        setMessage(res);
-        setIsSuccess(true);
-      })
-      .catch(error => {
-        setMessage(error);
-        setIsSuccess(true);
-        expireToken(dispatch, error);
+      setIsLoading(true);
+      PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency , dispatch).then((res) => {        
+        if(res.status == Strings.Success){
+          disposition_fields_idempotency = generateKey();
+          dispatch(showNotification({type: Strings.Success , message: res.message, buttonText: Strings.Ok }));
+        }
+        setIsLoading(false);
+      }).catch((e) => {        
+        dispatch(showNotification({type: Strings.Success , message: e.response, buttonText: Strings.Ok}));
+        setIsLoading(false);
+        expireToken(dispatch, e);
       });
+    }
+    
+
   };
 
   const handleChangeText = (text, field, key) => {
@@ -404,9 +423,13 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           var outcome_id = selectedOutcomes.find(
             element => element.outcome_name === item,
           ).outcome_id;
-          setSelectedOutComeId(outcome_id);
-          setOutComeModalVisible(false);
-          setIsLoading(true);          
+
+          if(outcome_id != undefined){
+            selected_outcome_id = outcome_id;
+            setSelectedOutComeId(outcome_id);
+            setOutComeModalVisible(false);
+          }
+          
         }}></SelectionPicker>
     );
   };
@@ -414,13 +437,8 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   
   return (
     <View style={styles.container}>
-      <AlertDialog
-        visible={isSuccess}
-        message={message}
-        onModalClose={() => {
-          setIsSuccess(false);
-        }}></AlertDialog>
-
+   
+      <LoadingProgressBar />
 
       {locationInfo !== undefined && locationInfo.address !== '' && isDisposition && (
         <View style={styles.refreshBox}>
@@ -577,14 +595,6 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       {locationInfo !== undefined && locationInfo.outcomes && outComesModal()}
       {confirmModal()}
 
-      {
-        <CustomLoading
-          closeOnTouchOutside={false}
-          message="Updating please wait."
-          onCompleted={() => {}}
-          visible={isLoading}
-        />
-      }
     </View>
   );
 });

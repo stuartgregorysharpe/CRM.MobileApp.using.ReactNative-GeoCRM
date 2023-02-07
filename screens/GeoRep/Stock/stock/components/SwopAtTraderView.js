@@ -13,6 +13,7 @@ import {validateMsisdn} from '../../../../../helpers/validateHelper';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 var previousText = Constants.msisdnPrefix;
 
 const SwopAtTraderView = props => {
@@ -184,8 +185,7 @@ const SwopAtTraderView = props => {
       {
         <SubmitButton
           title={Strings.Stock.Submit}
-          style={{marginTop: 10, marginBottom: 30}}
-          isLoading={props.isLoading}
+          style={{marginTop: 10, marginBottom: 30}}        
           onSubmit={() => {
             const isMsisdnValid = validateMsisdn(msisdn);
             if (!isMsisdnValid) {
@@ -231,6 +231,7 @@ const SwopAtTraderView = props => {
           }}></SubmitButton>
       }
       <Notification />
+      <LoadingProgressBar />
     </ScrollView>
   );
 };

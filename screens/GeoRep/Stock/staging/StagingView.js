@@ -20,6 +20,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import {Notification} from '../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 const StagingView = props => {
   const [keyword, setKeyword] = useState('');
@@ -36,6 +37,7 @@ const StagingView = props => {
   const dispatch = useDispatch();
 
   const shipments = useMemo(() => getShipmentsFromItems(items), [items]);
+  
   const onCapture = () => {
     checkConnectivity().then(isConnected => {
       if (isConnected) {
@@ -216,7 +218,10 @@ const StagingView = props => {
         onAccept={onAccept}
         onItemAction={onListViewItemAction}
       />
+
       <Notification />
+      <LoadingProgressBar />
+
     </View>
   );
 };

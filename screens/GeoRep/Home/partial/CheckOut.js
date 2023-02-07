@@ -31,7 +31,7 @@ export default function CheckOut(props) {
             <SvgIcon icon="Location_Arrow" width='15px' height='15px' />
         </View>
         <View style={{flex:1, marginTop:10 , marginBottom:10 , paddingTop:7, paddingBottom:7}}>
-          <AppText title={currentCall != "" ? currentCall.location_name : 'Spar Century City Cape town df'}           
+          <AppText title={currentCall != "" ? currentCall.location_name : 'Spar Century City Cape town'}           
             size="medium" type="secondaryBold" color={whiteLabel().mainText} ></AppText>
                     
         </View>

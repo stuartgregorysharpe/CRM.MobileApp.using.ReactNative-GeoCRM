@@ -43,6 +43,7 @@ import TieredMultipleChoice from '../../../../../components/shared/TieredMultipl
 import BrandFacing from '../../../../../components/shared/BrandFacing';
 import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 import PosCapture from '../../../../../components/shared/PosCapture';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
@@ -568,6 +569,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
       )}
 
       <Notification></Notification>
+      <LoadingProgressBar/>
 
       <DatetimePickerView
         visible={isDateTimeView}

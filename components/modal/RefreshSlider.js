@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect ,  useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -20,13 +20,16 @@ import Colors, {
 import {breakPoint} from '../../constants/Breakpoint';
 import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../actions/actionTypes';
 import Fonts from '../../constants/Fonts';
-import {postReloop} from '../../actions/location.action';
 import {
   expireToken,
-  getPostParameter,  
+  getPostParameter, 
 } from '../../constants/Helper';
 import AlertDialog from './AlertDialog';
 import {DatetimePickerView} from '../DatetimePickerView';
+import { PostRequestDAO } from '../../DAO';
+import { generateKey } from '../../constants/Utils';
+
+var reloop_indempotency = '';
 
 export default function RefreshSlider({location_id, onClose}) {
   
@@ -36,33 +39,46 @@ export default function RefreshSlider({location_id, onClose}) {
   const [dateTimeType, setDateTimeType] = useState('datetime');
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    reloop_indempotency = generateKey();
+  }, []);
 
   const handleScheduleDate = (date, time) => {
-    let datetime = date;
-    // let time = "";
-    // datetime = String(date.getFullYear()) + "-" + getTwoDigit(date.getMonth() + 1) + "-" + String(date.getDate());
-    // time =  String(date.getHours()) + ":" + String(date.getMinutes());
-    setIsDateTimePickerVisible(false);
+
+    let datetime = date;    
+    
     var userParam = getPostParameter(currentLocation);
-    let postDate = {
+    let postData = {
       location_id: location_id,
       day_option: 'another_date',
       selected_date: datetime,
       selected_time: time,
       user_local_data: userParam.user_local_data,
     };
+    
+    callReloop(postData);
+    setIsDateTimePickerVisible(false);
 
-    postReloop(postDate)
-      .then(res => {
-        setMessage(res);
+  };
+
+  const callReloop = (postData) => {
+
+    if(!isLoading){
+      setIsLoading(true);      
+      PostRequestDAO.find(0, postData , 'reloop' , 'location-info/reloop' , '' , '' , reloop_indempotency , dispatch).then((res) => {        
+        setMessage(res.message);
         setIsConfirmModal(true);
-      })
-      .catch(error => {
+        setIsLoading(false);        
+      }).catch((error) => {
         setMessage('Failed');
         setIsConfirmModal(true);
-        expireToken(dispatch, error)
+        expireToken(dispatch, error);
+        setIsLoading(false);
       });
-  };
+    }    
+  }  
 
   return (
     <ScrollView style={styles.refreshSliderContainer}>
@@ -112,23 +128,19 @@ export default function RefreshSlider({location_id, onClose}) {
             user_local_data: userParam.user_local_data,
           };
 
-          postReloop(postDate)
-            .then(res => {
-              console.log(res);
-              setMessage(res);
-              setIsConfirmModal(true);
-            })
-            .catch(error => {
-              setMessage('Failed');
-              setIsConfirmModal(true);
-              expireToken(dispatch, error)
-            });
+          callReloop(postDate);
+
         }}
       />
 
       <FilterButton
         text="Schedule Date"
-        onPress={() => setIsDateTimePickerVisible(true)}
+        onPress={() => {
+          if(!isLoading){
+            setIsDateTimePickerVisible(true)
+          }
+          
+        }}
       />
 
       {/* <DateTimePickerModal

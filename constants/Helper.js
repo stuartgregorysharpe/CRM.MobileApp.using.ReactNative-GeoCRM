@@ -316,7 +316,11 @@ export function expireToken(dispatch, e) {
   var message = '';
   if (e === 'expired') {
     console.log('token EXPIRED !!!!!');
-    message = 'Access has expired, please login again';
+    message = 'Access has expired, please login again';    
+  } else if(e === 'timeout'){
+    message = 'Submission timed out, Please try again or contact support';
+  }
+  if (e === 'expired' || e == 'timeout') {
     dispatch(
       showNotification({
         type: 'success',
@@ -325,15 +329,14 @@ export function expireToken(dispatch, e) {
         buttonAction: () => {
           if (e === 'expired') {
             setToken(null);
-            dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
+            dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
           }
           dispatch(clearNotification());
         },
       }),
     );
-  } else {
-    message = 'Submission timed out, Please try again or contact support';
-  }
+  }  
+  
 }
 
 export function showOfflineDialog(dispatch) {

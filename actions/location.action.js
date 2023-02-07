@@ -76,46 +76,10 @@ export const getLocationInfo = async (location_id, currentLocation) => {
       resolve(res);
     }).catch((e) => {
       reject(e);
-    });
-      
+    });      
   });
 };
 
-export const postStageOutcomUpdate = async postData => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-
-  console.log(postData);
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/location-info/updateStageOutcome`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': generateKey(),
-        },
-      })
-      .then(res => {
-        console.log('Resonse', res.data);
-        if (res.data == undefined) {
-          resolve(0);
-          return;
-        }
-        resolve(1);
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
 
 export const postDispositionFields = async postData => {
   var base_url = await getBaseUrl();
@@ -151,82 +115,4 @@ export const postDispositionFields = async postData => {
   });
 };
 
-export const postReloop = async postData => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  console.log('URL ', `${base_url}/location-info/reloop`);
-  console.log('Param ', postData);
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/location-info/reloop`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': generateKey(),
-        },
-      })
-      .then(res => {
-        console.log('res', res);
-        if (res.data == undefined) {
-          resolve('');
-          return;
-        }        
-        if (res.data.status == 'success') {
-          resolve(res.data.message);
-        } else {
-          resolve('');
-        }
-      })
-      .catch(err => {
-        const error = err.response;        
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
-
-export const postLocationImage = async postData => {
-  var base_url = await getBaseUrl();
-  var token = await getToken();
-  console.log('URL ', `${base_url}/locations/location-image`);
-  console.log('Param ', postData);
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`${base_url}/locations/location-image`, postData, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Indempotency-Key': generateKey(),
-        },
-      })
-      .then(res => {
-        if (res.data == undefined) {
-          resolve('');
-          return;
-        }        
-        if (res.data.status == 'success') {
-          resolve(res.data.message);
-        } else {
-          resolve('');
-        }
-      })
-      .catch(err => {
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
-        }
-      });
-  });
-};
 

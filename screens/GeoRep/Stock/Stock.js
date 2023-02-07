@@ -12,6 +12,7 @@ import {Notification} from '../../../components/modal/Notification';
 import { checkConnectivity } from '../../../DAO/helper';
 import { showOfflineDialog } from '../../../constants/Helper';
 import { useDispatch } from 'react-redux';
+import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 
 const Stock = props => {
 
@@ -98,9 +99,11 @@ const Stock = props => {
       />
 
       <Notification />
+      <LoadingProgressBar />
 
       {/* marginBottom:50 */}
       <View style={{flex: 1 }}>
+
         {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
         {selectedTabIndex === 2 && <Movements></Movements>}

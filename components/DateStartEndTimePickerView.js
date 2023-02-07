@@ -19,7 +19,7 @@ import {TimePicker} from './TimePicker';
 import {getTwoDigit} from '../constants/Helper';
 
 export const DateStartEndTimePickerView = props => {
-  const { isLoading, visible, mode, onModalClose, close, value, title} = props;
+  const { visible, mode, onModalClose, close, value, title} = props;
 
   const [items, setItems] = useState([]);
   const [options, setOptions] = useState([]);
@@ -171,8 +171,7 @@ export const DateStartEndTimePickerView = props => {
                   marginTop: 10,
                   width: Dimensions.get('window').width * 0.94,
                 }}>
-                <SubmitButton
-                  isLoading={isLoading}
+                <SubmitButton                  
                   onSubmit={() => {
                     close(startDate, endDate, startTime, endTime);
                   }}

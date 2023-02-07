@@ -3,17 +3,30 @@ import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./h
 import { Strings } from "../constants";
 import { jsonToFormData, jsonToFormDataWithSubKey } from "../helpers/jsonHelper";
 import { showOfflineDialog } from "../constants/Helper";
+import { clearLoadingBar, showLoadingBar } from "../actions/notification.action";
 
-export function find(locationId, postData , type, url , itemLabel , itemSubLabel){
+export function find(locationId, postData , type, url , itemLabel , itemSubLabel , indempotency = null , dispatch ){
   
     const nonImplementedApis = [
-        "start_end_day"
+        "start_end_day",
+        "update-stage-outcome",
+        "reloop",
+        "add-edit-contacts",
+        "action-item-details",
+        "transfer",
+        "staging-accept",
+        "calenderadd"
     ];
 
   return new Promise(function(resolve, reject) {
 
         checkConnectivity().then( async (isConnected) => {
             if(isConnected){
+
+                if(dispatch != undefined && dispatch != null){
+                    dispatch(showLoadingBar({'type' : 'loading'}));
+                }
+
                 if( 
                     type == "form_submission" || 
                     type === "leadfields" || 
@@ -25,25 +38,36 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                         submitFormData = jsonToFormDataWithSubKey(postData);
                     }else{
                         submitFormData =  jsonToFormData(postData);
-                    }                    
-                    submitFormData.append("mode", "online");
+                    }
                     
+                    submitFormData.append("mode", "online");                    
                     console.log("submit form data", JSON.stringify(submitFormData));
-
-                    postApiRequestMultipart(url, submitFormData)
+                    postApiRequestMultipart(url, submitFormData , indempotency)
                     .then(async res => {
+                        if(dispatch != undefined && dispatch != null){
+                            dispatch(clearLoadingBar());
+                        }
                         resolve(res);
                     })
                     .catch(e => {
                         console.log( url + "api error: ",e)
+                        if(dispatch != undefined && dispatch != null){
+                            dispatch(clearLoadingBar());
+                        }
                         reject(e);
                     });
                 }else{
-                    postApiRequest(url, {...postData, mode: 'online' })
+                    postApiRequest(url, {...postData, mode: 'online' } , indempotency)
                     .then(async res => {                    
+                        if(dispatch != undefined && dispatch != null){
+                            dispatch(clearLoadingBar());
+                        }
                         resolve(res);
                     })
                     .catch(e => {
+                        if(dispatch != undefined && dispatch != null){
+                            dispatch(clearLoadingBar());
+                        }
                         console.log("Error",e)
                         reject(e);
                     });

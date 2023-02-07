@@ -7,6 +7,7 @@ import {Colors, Strings} from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 import Divider from '../../../../../components/Divider';
 import {Notification} from '../../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function ShipmentScanResultView(props) {
   const {items, title} = props;
@@ -61,9 +62,11 @@ export default function ShipmentScanResultView(props) {
       </TouchableOpacity>
 
       <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center'}}>
+
         <View style={{flex: 1}}>
           <AppText size="big" type="secondaryMedium" title={_title}></AppText>
         </View>
+        
         <CCircleButton
           onClick={onViewList}
           style={{marginLeft: 10}}
@@ -95,7 +98,10 @@ export default function ShipmentScanResultView(props) {
         }}
         style={{marginTop: 20, marginBottom: 20}}
       />
+      
       <Notification />
+      <LoadingProgressBar />
+
       {renderActionButtons()}
     </View>
   );

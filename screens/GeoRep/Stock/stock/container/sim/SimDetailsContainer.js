@@ -7,6 +7,7 @@ import {Constants, Strings} from '../../../../../../constants';
 import {getLocalData} from '../../../../../../constants/Storage';
 import {Notification} from '../../../../../../components/modal/Notification';
 import {showNotification} from '../../../../../../actions/notification.action';
+import LoadingProgressBar from '../../../../../../components/modal/LoadingProgressBar';
 
 export default function SimDetailsContainer(props) {
   const {items} = props;
@@ -84,6 +85,7 @@ export default function SimDetailsContainer(props) {
         onButtonAction={onSearchLocationModalClosed}
       />
       <Notification />
+      <LoadingProgressBar/>
     </View>
   );
 }
