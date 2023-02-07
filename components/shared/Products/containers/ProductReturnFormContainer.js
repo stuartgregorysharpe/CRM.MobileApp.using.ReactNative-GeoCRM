@@ -6,6 +6,8 @@ import SvgIcon from '../../../SvgIcon';
 import {Constants} from '../../../../constants';
 import ProductReturnFormView from '../components/ProductReturnFormView';
 
+let isMount = true;
+
 const ProductReturnFormContainer = React.forwardRef((props, ref) => {
   const {questionType, item} = props;
   const [brandLists, setBrandLists] = useState([]);

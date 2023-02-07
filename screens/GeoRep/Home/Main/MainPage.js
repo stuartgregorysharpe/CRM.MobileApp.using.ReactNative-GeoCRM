@@ -2,7 +2,6 @@ import { View, Text, ScrollView, FlatList, Dimensions } from 'react-native';
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { SyncAll } from './../partial/SyncAll';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
-import IndicatorDotScroller from '../../../../components/common/IndicatorDotScroller';
 import Colors from '../../../../constants/Colors';
 import Visits from '../partial/cards/Visits';
 import { connect, useSelector } from 'react-redux';
@@ -28,13 +27,13 @@ import Mobility from '../partial/cards/Mobility';
 import Festivals from '../partial/cards/Festivals';
 import Tracking from '../partial/cards/Tracking';
 import Compliance from '../partial/cards/Compliance';
-import PagerView from 'react-native-pager-view';
 import TwoRowContent from '../../../../components/modal/content_type_modals/TwoRowContentFeed';
 import { getContentFeeds, updateContentFeed_post } from '../../../../actions/contentLibrary.action';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomImageDialog from '../../../../components/modal/content_type_modals/CustomImageDialog';
-//const MainPage = props => {
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
+
+//const MainPage = props => {
 const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
@@ -60,6 +59,7 @@ const MainPage = forwardRef((props, ref) => {
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
   const [haveFilter, setHaveFilter] = useState(false);
+  
 
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
@@ -84,13 +84,16 @@ const MainPage = forwardRef((props, ref) => {
     },
   }));
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadPage();
+  // useEffect(() => {
+  //   loadPage();
+  // }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      loadPage();
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation]);  
 
   useEffect(() => {
     console.log("hello notifications main");
@@ -429,8 +432,6 @@ const MainPage = forwardRef((props, ref) => {
         }
       });
 
-
-
     }
     initData();
     handleLindtCards();
@@ -503,20 +504,27 @@ const MainPage = forwardRef((props, ref) => {
           : { time_zone: '', latitude: 0, longitude: 0 },
     };
 
-    PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', dispatch).then(async (res) => {
-      if (res.status === Strings.Success) {
-        setStartEndDayId(res.startEndDay_id);
-        await storeLocalValue('start_my_day', isStart ? '0' : '1');
-        setIsStart(!isStart);
-        if (features.includes('odometer_reading')) {
-          odometerReadingModalRef.current.showModal();
+    if(!isLoading){
+      setIsLoading(true)
+      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {        
+        if(res.status == Strings.Success){
+          setStartEndDayId(res.startEndDay_id);
+          await storeLocalValue('start_my_day', isStart ? '0' : '1');
+          setIsStart(!isStart);
+          if(features.includes('odometer_reading')) {
+            odometerReadingModalRef.current.showModal();
+          }else if (res.status == "NOIMPLEMENT") {
+            showOfflineDialog(dispatch);
+          }
         }
-      } else if (res.status === "NOIMPLEMENT") {
-        showOfflineDialog(dispatch);
-      }
-    }).catch((e) => {
-      expireToken(dispatch, e);
-    });
+        setIsLoading(false);
+      }).catch((e) => {
+        setIsLoading(false);
+        expireToken(dispatch, e);
+      });
+
+    }    
+
   };
 
   const onCaptureAction = async ({ type, value }) => {
@@ -696,6 +704,7 @@ const MainPage = forwardRef((props, ref) => {
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
       <Notification></Notification>
+      <LoadingProgressBar/>
 
       <View style={{ marginTop: 5 }}>
         <SubmitButton
@@ -765,7 +774,7 @@ const MainPage = forwardRef((props, ref) => {
   );
 });
 const mapStateToProps = state => {
-  console.log("content_feed_data", state.feed.content_feed_data);
+  
   return {
     content_feed_data: state.feed.content_feed_data
   }

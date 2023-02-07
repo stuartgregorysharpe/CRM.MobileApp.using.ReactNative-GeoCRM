@@ -184,6 +184,7 @@ export default function AddLeadContainer(props) {
       );
       return;
     }
+    
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;
@@ -237,6 +238,7 @@ export default function AddLeadContainer(props) {
     apiRes,
     locationName,
   ) => {
+    
     if (index <= formSubmissions.length - 1) {
       var formSubmission = formSubmissions[index];
       var {form, form_answers, files} = formSubmission;
@@ -254,6 +256,8 @@ export default function AddLeadContainer(props) {
         'forms/forms-submission',
         form.form_name,
         locationName,
+        null,
+        dispatch        
       )
         .then(async res => {
           if (res.status === Strings.Success) {

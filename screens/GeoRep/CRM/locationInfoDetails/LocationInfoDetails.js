@@ -5,8 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Text,
+import {  
   View,
   TouchableOpacity,
   Keyboard,
@@ -16,8 +15,6 @@ import {
   BackHandler,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 import {grayBackground, style} from '../../../../constants/Styles';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -28,44 +25,38 @@ import {
   SLIDE_STATUS,
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SUB_SLIDE_STATUS,
-  LOCATION_ID_CHANGED,
-  CHECKIN,
+  LOCATION_ID_CHANGED,  
 } from '../../../../actions/actionTypes';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DeviceInfo from 'react-native-device-info';
 import {LocationInfoInputTablet} from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import RNFS from 'react-native-fs';
-import {postLocationImage} from '../../../../actions/location.action';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import {NextPrev} from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import {
-  getLocalData,
-  storeJsonData,
-  storeLocalValue,
-} from '../../../../constants/Storage';
-import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import {
   checkFeatureIncludeParamFromSession,
   expireToken,
   getPostParameter,
 } from '../../../../constants/Helper';
-import {Notification} from '../../../../components/modal/Notification';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../../actions/notification.action';
 import UpdateCustomerModal from '../update_customer';
 import {Constants, Strings, Values} from '../../../../constants';
-import {getDateTime} from '../../../../helpers/formatHelpers';
-import {
-  LocationCheckinTypeDAO,
-  PostLocationCheckinTypesDAO,
+import {  
   PostRequestDAO,
 } from '../../../../DAO';
 import LocationInfo from './LocationInfo';
+import AccessCRMCheckInView from './components/AccessCRMCheckInView';
+import { generateKey } from '../../../../constants/Utils';
+import SelectionPicker from '../../../../components/modal/SelectionPicker';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -73,8 +64,11 @@ var isFeedbackLocInfoOutcome = false;
 var checkin_type_id = '';
 var reason_id = '';
 var clickedAction = '';
+var location_image_indempotency = '';
+
 
 export const LocationInfoDetails = forwardRef((props, ref) => {
+  
   const dispatch = useDispatch();
   const [locationInfo, setLocationInfo] = useState(props.locInfo);
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -106,6 +100,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const isDisposition = features.includes('disposition_fields');
   const updateCustomerModalRef = useRef(null);
   const isCheckin = useSelector(state => state.location.checkIn);
+  const [isUpdateImage, setIsUpdateImage] = useState(false);
+  const [isCallFeedback, setIsCallFeedback] = useState(false); 
 
   useImperativeHandle(
     ref,
@@ -164,7 +160,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   }, [props.locInfo]);
 
   useEffect(() => {
+
     outcomeVal = false;
+    location_image_indempotency = generateKey();
     initData();
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
@@ -239,6 +237,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const updateLocationImage = async path => {
+
     var data = await RNFS.readFile(path, 'base64').then(res => {
       return res;
     });
@@ -249,23 +248,34 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       location_image: data,
       user_local_data: userParam.user_local_data,
     };
-    postLocationImage(postData)
-      .then(res => {
-        setMessage(res);
+
+    if(!isUpdateImage){
+
+      setIsUpdateImage(true)      
+      PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency , dispatch ).then((res) => {      
+        setMessage(res.message);
         setIsSuccess(true);
-      })
-      .catch(e => {
-        setMessage('Upload File Failed');
-        setIsSuccess(true);
-        expireToken(dispatch, e);
-      });
+        setIsUpdateImage(false);        
+      }).catch((error) => {        
+        expireToken(dispatch, error);
+        setIsUpdateImage(false);        
+      })    
+
+    }
+        
   };
 
   const openCustomerInfo = async () => {
     updateCustomerModalRef.current.showModal();
   };
 
+
   const _callLocationFeedback = item => {
+
+    if(isCallFeedback){
+      return;
+    }
+
     var userParam = getPostParameter(locationInfo.coordinates);
     let postData = {
       location_id: locationInfo.location_id,
@@ -277,14 +287,22 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       user_local_data: userParam.user_local_data,
     };
 
+    setIsCallFeedback(true);
+    
     PostRequestDAO.find(
       locationInfo.location_id,
       postData,
       'location-feedback',
       'locations-info/location-feedback',
+      '',
+      '',
+      null,
+      dispatch
     )
       .then(res => {
+
         setIsOutcomeUpdated(true);
+        setIsCallFeedback(false);        
         outcomeVal = true;
 
         dispatch(
@@ -293,6 +311,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             message: res.message,
             buttonText: Strings.Ok,
             buttonAction: async () => {
+              console.log("clickedAction",clickedAction)
               if (clickedAction === 'top') {
                 checkFeedbackAndClose('top');
               } else if (clickedAction === 'back') {
@@ -305,7 +324,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                   });
                 }
               } else if (clickedAction === 'checkin') {
-                onClickCheckIn();
+                //onClickCheckIn();
               } else if (clickedAction === 'prev') {
                 if (nextPrevRef.current != undefined) {
                   nextPrevRef.current.onClickPrev();
@@ -321,13 +340,30 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         );
       })
       .catch(e => {
-        console.log('Error : ', e);
+        console.log('location-feedback Api error : ', e);
+        setIsCallFeedback(false);        
         expireToken(dispatch, e);
+
       });
   };
 
+  const openSpecificInfoPage = (page_type) => {
+    if (props.onButtonAction) {
+      props.onButtonAction({
+        type: Constants.actionType.ACTION_CLOSE,
+        value: page_type,
+      });
+    }                    
+    props.navigation.navigate('LocationSpecificInfo', {
+      data: locationInfo,
+      page: page_type,
+    });
+
+  }
+
   const showFeedbackDropDownModal = () => {
     return (
+      
       <SelectionPicker
         title={modalTitle}
         clearTitle={'Close'}
@@ -371,7 +407,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               await storeLocalValue('@checkin_type_id', checkin_type_id);
             } else {
               setIsFeedback(false);
-              _callCheckedIn();
+              //_callCheckedIn();
             }
           } else if (modalType === 'checkin_reason') {
             console.log('check in reasons', checkinReason);
@@ -382,7 +418,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               ).reason_id;
               console.log('Save reason id', reason_id);
               await storeLocalValue('@checkin_reason_id', reason_id);
-              _callCheckedIn();
+              //_callCheckedIn();
             } else {
               setModalType('feedback');
             }
@@ -391,126 +427,127 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     );
   };
 
-  const _callCheckInTypes = async () => {
-    setIsFeedback(true);
-    setModalTitle('Check In Types');
-    setModalType('checkin_type');
-    setFeedbackOptions([]);
+  // const _callCheckInTypes = async () => {
+  //   setIsFeedback(true);
+  //   setModalTitle('Check In Types');
+  //   setModalType('checkin_type');
+  //   setFeedbackOptions([]);
 
-    LocationCheckinTypeDAO.find(features)
-      .then(res => {
-        var options = [];
-        res.forEach((item, index) => {
-          options.push(item.checkin_type);
-        });
-        setFeedbackOptions(options);
-        setCheckInTypes(res);
-        console.log('check type', res);
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
-  };
+  //   LocationCheckinTypeDAO.find(features)
+  //     .then(res => {
+  //       var options = [];
+  //       res.forEach((item, index) => {
+  //         options.push(item.checkin_type);
+  //       });
+  //       setFeedbackOptions(options);
+  //       setCheckInTypes(res);
+  //       console.log('check type', res);
+  //     })
+  //     .catch(e => {
+  //       expireToken(dispatch, e);
+  //     });
+  // };
 
-  const _callCheckedIn = async () => {
-    if (isCheckingIn) {
-      return;
-    }
-    setIsCheckingIn(true);
-    var currentTime = getDateTime();
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: locationInfo.location_id,
-      checkin_time: currentTime,
-      checkin_type_id: checkin_type_id, //Selected checkin_type_id, if was requested
-      reason_id: reason_id, //Selected reason_id, if was requested
-      user_local_data: userParam.user_local_data,
-    };
+  // const _callCheckedIn = async () => {
+  //   if (isCheckingIn) {
+  //     return;
+  //   }
+  //   setIsCheckingIn(true);
+  //   var currentTime = getDateTime();
+  //   var userParam = getPostParameter(currentLocation);
+  //   let postData = {
+  //     location_id: locationInfo.location_id,
+  //     checkin_time: currentTime,
+  //     checkin_type_id: checkin_type_id, //Selected checkin_type_id, if was requested
+  //     reason_id: reason_id, //Selected reason_id, if was requested
+  //     user_local_data: userParam.user_local_data,
+  //   };
 
-    PostRequestDAO.find(
-      locationInfo.location_id,
-      postData,
-      'checkin',
-      'location-info/check-in',
-      '',
-      '',
-    )
-      .then(async res => {
-        if (props.onButtonAction) {
-          props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-        }
-        setIsFeedback(false);
-        setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true});
-        await storeLocalValue('@checkin', '1');
-        await storeLocalValue(
-          '@specific_location_id',
-          locationInfo.location_id,
-        );
-        await storeJsonData('@checkin_location', locationInfo);
-        setIsCheckingIn(false);
-        props.navigation.navigate('LocationSpecificInfo', {
-          data: locationInfo,
-          page: 'checkin',
-        });
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-        setIsCheckingIn(false);
-      });
-  };
+  //   PostRequestDAO.find(
+  //     locationInfo.location_id,
+  //     postData,
+  //     'checkin',
+  //     'location-info/check-in',
+  //     '',
+  //     '',
+  //   )
+  //     .then(async res => {
+  //       if (props.onButtonAction) {
+  //         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+  //       }
+  //       setIsFeedback(false);
+  //       setFeedbackOptions(originFeedbackData);
+  //       setModalType('feedback');
+  //       dispatch({type: CHECKIN, payload: true});
+  //       await storeLocalValue('@checkin', '1');
+  //       await storeLocalValue(
+  //         '@specific_location_id',
+  //         locationInfo.location_id,
+  //       );
+  //       await storeJsonData('@checkin_location', locationInfo);
+  //       setIsCheckingIn(false);
+  //       props.navigation.navigate('LocationSpecificInfo', {
+  //         data: locationInfo,
+  //         page: 'checkin',
+  //       });
+  //     })
+  //     .catch(e => {
+  //       expireToken(dispatch, e);
+  //       setIsCheckingIn(false);
+  //     });
+  // };
 
-  const onClickCheckIn = async () => {
-    //var isCheckin = await getLocalData('@checkin');
+  // const onClickCheckIn = async () => {
+  //   //var isCheckin = await getLocalData('@checkin');
+  //   if (isCheckin) {
+  //     dispatch(
+  //       showNotification({
+  //         type: Strings.Success,
+  //         message: Strings.You_Are_Currenly_Checkedin,
+  //         buttonText: 'Continue',
+  //         buttonAction: async () => {
+  //           dispatch(clearNotification());
+  //           if (props.onButtonAction) {
+  //             props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+  //           }
 
-    if (isCheckin) {
-      dispatch(
-        showNotification({
-          type: Strings.Success,
-          message: Strings.You_Are_Currenly_Checkedin,
-          buttonText: 'Continue',
-          buttonAction: async () => {
-            dispatch(clearNotification());
-            if (props.onButtonAction) {
-              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-            }
+  //           var specificLocationId = await getLocalData(
+  //             '@specific_location_id',
+  //           );
 
-            var specificLocationId = await getLocalData(
-              '@specific_location_id',
-            );
-
-            console.log('specificLocationId =>', specificLocationId);
-            props.navigation.navigate('LocationSpecificInfo', {
-              locationId: specificLocationId,
-              page: 'checkin',
-            });
-          },
-        }),
-      );
-    } else {
-      if (isCheckinTypes) {
-        _callCheckInTypes();
-      } else {
-        _callCheckedIn();
-      }
-    }
-  };
+  //           console.log('specificLocationId =>', specificLocationId);
+  //           props.navigation.navigate('LocationSpecificInfo', {
+  //             locationId: specificLocationId,
+  //             page: 'checkin',
+  //           });
+  //         },
+  //       }),
+  //     );
+  //   } else {
+  //     if (isCheckinTypes) {
+  //       _callCheckInTypes();
+  //     } else {
+  //       _callCheckedIn();
+  //     }
+  //   }
+  // };
 
   const onUpdateCustomerModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       if (props.refreshLocationInfo) {
         props.refreshLocationInfo(locationInfo.location_id);
       }
-
       updateCustomerModalRef.current.hideModal();
     }
   };
 
   return (
     <View style={[styles.container, {flex: 1}]}>
+      
       {showFeedbackDropDownModal()}
-      <Notification />
+      
+      {/* <Notification /> */}
+      {/* <LoadingProgressBar/>       */}
 
       <AlertDialog
         visible={isSuccess}
@@ -594,7 +631,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                   features &&
                   (features.includes('access_crm') ||
                     features.includes('checkin'))
-                    ? 50
+                    ? 0
                     : 0,
               },
         ]}>
@@ -688,6 +725,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
             {locationInfo !== undefined && (
               <WazeNavigation
+                
                 onCloseModal={() => {
                   if (props.onButtonAction) {
                     props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
@@ -697,67 +735,32 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 address={locationInfo.address}></WazeNavigation>
             )}
 
-            <View style={{height: 50}}></View>
+            <View style={{height: 100}}></View>
           </View>
         )}
       </KeyboardAwareScrollView>
 
       {features &&
         (features.includes('access_crm') || features.includes('checkin')) &&
-        !keyboardStatus && (
-          <View style={styles.nextButtonBar}>
-            {features && features.includes('access_crm') && (
-              <TouchableOpacity
-                style={[styles.nextButton, styles.accessButton]}
-                onPress={async () => {
+        !keyboardStatus && (          
+            <AccessCRMCheckInView 
+              features={features}
+              location_id={locationInfo?.location_id}
+              canCheckin={_canGoNextPrev}
+              onAccessCRM={() => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {
-                    if (props.onButtonAction) {
-                      props.onButtonAction({
-                        type: Constants.actionType.ACTION_CLOSE,
-                        value: 'access_crm',
-                      });
-                    }
-
-                    console.log('access crm', locationInfo);
-
-                    props.navigation.navigate('LocationSpecificInfo', {
-                      data: locationInfo,
-                      page: 'access_crm',
-                    });
+                    openSpecificInfoPage('access_crm');                    
                   }
-                }}>
-                <Text style={styles.nextButtonText}>
-                  {Strings.CRM.Access_CRM}
-                </Text>
-                <FontAwesomeIcon
-                  size={22}
-                  color={whiteLabel().actionOutlineButtonText}
-                  icon={faAngleDoubleRight}
-                />
-              </TouchableOpacity>
-            )}
+              }}
 
-            {features && features.includes('checkin') && (
-              <TouchableOpacity
-                style={[styles.checkInButton]}
-                onPress={async () => {
-                  clickedAction = 'checkin';
-                  if (_canGoNextPrev()) {
-                    onClickCheckIn();
-                  }
-                }}>
-                <Text style={[styles.checkInButtonText]}>
-                  {Strings.CRM.Check_In}
-                </Text>
-                <FontAwesomeIcon
-                  size={22}
-                  color={whiteLabel().actionFullButtonIcon}
-                  icon={faAngleDoubleRight}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+              onCheckIn={() => {
+                  clickedAction = 'checkin';                  
+                  setIsCheckingIn(false);
+                  openSpecificInfoPage('checkin');                  
+              }}
+            />
+
         )}
 
       {isDisposition && (
@@ -774,6 +777,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     </View>
   );
 });
+
 
 const styles = StyleSheet.create({
   container: {
@@ -797,58 +801,7 @@ const styles = StyleSheet.create({
   addressText: {
     flex: 1,
   },
-
-  nextButtonBar: {
-    position: 'absolute',
-    bottom: Platform.OS == 'android' ? 0 : 25,
-    backgroundColor: '#FFF',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: DeviceInfo.isTablet() ? 20 : 15,
-    paddingLeft: DeviceInfo.isTablet() ? 20 : 15,
-    paddingRight: DeviceInfo.isTablet() ? 20 : 15,
-    width: Dimensions.get('screen').width,
-    paddingBottom: DeviceInfo.isTablet() ? 20 : 5,
-    borderColor: 'rgba(0, 0, 0, 0.2)',
-    borderTopWidth: 0.5,
-  },
-
-  nextButton: {
-    width: '47%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderWidth: 1,
-    borderColor: whiteLabel().actionOutlineButtonBorder,
-    borderRadius: 7,
-  },
-  nextButtonText: {
-    color: whiteLabel().actionOutlineButtonText,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryBold,
-  },
-  checkInButton: {
-    width: '47%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderWidth: 1,
-    borderRadius: 7,
-    backgroundColor: whiteLabel().actionFullButtonBackground,
-  },
-
-  checkInButtonText: {
-    color: whiteLabel().actionFullButtonText,
-    fontSize: 15,
-    fontFamily: Fonts.secondaryBold,
-  },
-
+      
   transitionView: {
     position: 'absolute',
     bottom: 0,

@@ -1,19 +1,15 @@
-import { View, Text , FlatList, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import { AppText } from '../../../../../components/common/AppText';
 import  Colors, { whiteLabel } from '../../../../../constants/Colors';
 import CardView from '../../../../../components/common/CardView';
-import SvgIcon from '../../../../../components/SvgIcon';
-import { style } from '../../../../../constants/Styles';
 import { ScrollView } from 'react-native-gesture-handler';
-import Constants from '../../../../../constants/Constants';
 import DevicePriorityItem from '../../../../../components/items/DevicePriorityItem';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 
-
 export default function DevicePriorityModalView(props) {
 
-    const { device ,isLoading } = props;
+    const { device } = props;
 
     const [isPrimary, setIsPrimary] = useState(false);
 
@@ -21,8 +17,8 @@ export default function DevicePriorityModalView(props) {
         setIsPrimary(device.primary_device === "1" ? true: false);
     }, [device])
 
-
     const renderItem = (item, index) => {
+
         return (        
             <TouchableOpacity key={index} onPress={() =>{
             // onItemSelected(item)
@@ -79,8 +75,7 @@ export default function DevicePriorityModalView(props) {
 
                 <DevicePriorityItem title="Additional" isPrimary={!isPrimary} onUpdate={onUpdate}/>
 
-                <SubmitButton
-                    isLoading={isLoading}
+                <SubmitButton                    
                     title="Save" onSubmit={() => {
                         onSubmit();
                 }}  style={{marginTop:10, marginBottom:20}}/>

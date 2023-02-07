@@ -16,8 +16,7 @@ export default function FeaturedCardLists(props) {
   const custom_feature_names = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.custom_feature_names,
   );
-  console.log('custom_feature_names', custom_feature_names);
-  console.log('features', features);
+  
   const dispatch = useDispatch();
 
   useEffect(() => {

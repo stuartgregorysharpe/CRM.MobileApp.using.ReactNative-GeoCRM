@@ -9,10 +9,11 @@ export const dummyApiRequest = async (route, param, response) => {
   return new Promise(function (resolve, reject) {
     setTimeout(() => {
       resolve(response);
-    }, 1000);
+    }, 1111);
   });
 };
-axios.defaults.timeout = 25000;
+
+axios.defaults.timeout = 15000;
 
 export const getApiRequest = async (route, param) => {
   var token = await getToken();
@@ -49,27 +50,35 @@ export const getApiRequest = async (route, param) => {
         }
       })
       .catch(err => {
-        console.log('get api request error => ', err);
-        console.log(url, err);
-        console.log(err?.response?.data);
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject('error');
+        console.log('get api request error => ', err);        
+        if(err != undefined){
+          const error = err.response;          
+          if (            
+            error?.status === 401 &&
+            error?.config &&
+            !error?.config?.__isRetryRequest
+          ) {
+            reject('expired');
+          } else if(err?.message?.includes('Network Error')) {
+            reject('network_error');
+          } else if(err?.message?.includes('timeout')) {
+            reject('timeout');
+          }else{
+            reject('err');
+          }
+        }else{
+          reject('timeout');
         }
+        
       });
   });
 };
 
 export const postApiRequest = async (route, postData, indempotencyKey) => {
+
   var token = await getToken();
   var baseUrl = await getBaseUrl();
-
+  
   var url = `${baseUrl}/${route}`;
   if (route.includes('local_api_old')) {
     url = route;
@@ -81,10 +90,11 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,
       'Indempotency-Key':
-        indempotencyKey != undefined ? indempotencyKey : generateKey(),
+      indempotencyKey != null && indempotencyKey != undefined ? indempotencyKey : generateKey(),
     };
     axios
       .post(url, postData, {
+        timeout: 15000,
         headers: headers,
       })
       .then(res => {
@@ -95,17 +105,31 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
         }
       })
       .catch(err => {
-        console.log('postApiRequest error =>', err.response);
-        const error = err.response;
-        if (
-          error.status === 401 &&
-          error.config &&
-          !error.config.__isRetryRequest
-        ) {
-          reject('expired');
-        } else {
-          reject(err);
+        
+        if(err != undefined){          
+          console.log('postApiRequest error =>', err.response);
+          if(err?.response != undefined){
+            const error = err.response;
+            if (
+              error.status === 401 &&
+              error.config &&
+              !error.config.__isRetryRequest
+            ) {
+              reject('expired');
+            } else if(err?.message?.includes('Network Error')) {
+              reject('network_error');
+            } else if(err?.message?.includes('timeout')) {
+              reject('timeout');
+            }else{
+              reject(err);
+            }            
+          }else{            
+            reject('timeout');
+          }          
+        }else{
+          reject('timeout');
         }
+        
       });
   });
 };
@@ -115,6 +139,7 @@ export const postApiRequestMultipart = async (
   postData,
   indempotencyKey,
 ) => {
+  
   var token = await getToken();
   var baseUrl = await getBaseUrl();
 
@@ -126,9 +151,9 @@ export const postApiRequestMultipart = async (
   console.log(' multipart postApiRequest -- url', url);
 
   return new Promise(function (resolve, reject) {
-    console.log('myforms', JSON.stringify(postData));
-    //headers:{"Accept":"application/json, text/plain, /","Content-Type": "multipart/form-data"}
-    const key = indempotencyKey != undefined ? indempotencyKey : generateKey();
+    
+    console.log('myforms', JSON.stringify(postData));    
+    const key =  indempotencyKey != null && indempotencyKey != undefined ? indempotencyKey : generateKey();
 
     axios
       .post(url, postData, {
@@ -139,7 +164,7 @@ export const postApiRequestMultipart = async (
           Authorization: 'Bearer ' + token,
           'Indempotency-Key': key,
         },
-        timeout: 30000,
+        timeout: 15000,
       })
       .then(res => {
         console.log('res', res.data);
@@ -166,8 +191,11 @@ export const postApiRequestMultipart = async (
           !error.config.__isRetryRequest
         ) {
           reject('expired');
-        } else {
-          console.log('Error => ', err);
+        } else if(err?.message?.includes('Network Error')) {
+          reject('network_error');          
+        } else if(err?.message?.includes('timeout')) {
+          reject('timeout');
+        }else{
           reject(err != undefined ? err : 'Undfined Error');
         }
       });
@@ -209,6 +237,10 @@ export const postHmsMapRequest = async (route, postData, key) => {
           !error.config.__isRetryRequest
         ) {
           reject('expired');
+        } else if(err?.message?.includes('Network Error')) {
+          reject('network_error');
+        } else if(err?.message?.includes('timeout')) {
+          reject('timeout');
         } else {
           reject(err);
         }

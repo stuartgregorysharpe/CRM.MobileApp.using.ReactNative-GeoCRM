@@ -11,7 +11,8 @@ import {
   showNotification,
 } from '../../../../../actions/notification.action';
 import {Notification} from '../../../../../components/modal/Notification';
-import { GetRequestStockUsersDAO } from '../../../../../DAO';
+import { GetRequestStockUsersDAO, PostRequestDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function TransferContainer(props) {
 
@@ -76,36 +77,36 @@ export default function TransferContainer(props) {
         return;
       }
     }
+    if(isLoading) return;
     setIsLoading(true);
-    postApiRequest('stockmodule/transfer', postData)      
-      .then(res => {
-        setIsLoading(false);        
+    PostRequestDAO.find(0 ,  postData , 'transfer' , 'stockmodule/transfer' , '' , '' , null , dispatch).then((res) => {
+      setIsLoading(false);        
+      dispatch(
+        showNotification({
+          type: Strings.Success,
+          message: res.message,
+          buttonText: 'Ok',
+          buttonAction: async () => {
+            props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+            dispatch(clearNotification());
+          },
+        }),
+      );
+    }).catch((e) => {
+      setIsLoading(false);
+      if (e === 'expired') {
+        expireToken(dispatch, e);
+      } else {
         dispatch(
           showNotification({
             type: Strings.Success,
-            message: res.message,
+            message: 'Error',
             buttonText: 'Ok',
-            buttonAction: async () => {
-              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-              dispatch(clearNotification());
-            },
           }),
         );
-      })
-      .catch(e => {
-        setIsLoading(false);
-        if (e === 'expired') {
-          expireToken(dispatch, e);
-        } else {
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: 'Error',
-              buttonText: 'Ok',
-            }),
-          );
-        }
-      });
+      }
+    });
+    
   };
 
   return (
@@ -114,11 +115,11 @@ export default function TransferContainer(props) {
         onItemSelected={onItemSelected}
         onTrader={onTrader}
         onChangedQuantity={onChangedQuantity}
-        lists={lists}
-        isLoading={isLoading}
+        lists={lists}        
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }

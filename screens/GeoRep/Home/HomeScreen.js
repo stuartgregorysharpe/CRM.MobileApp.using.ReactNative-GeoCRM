@@ -21,6 +21,7 @@ import { getTime } from '../../../helpers/formatHelpers';
 import { Notification } from '../../../components/modal/Notification';
 import Orders from './Orders';
 import DanOneSales from './DanOneSales/DanOneSales';
+import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 
 export default function HomeScreen(props) {
   const { route, navigation } = props;
@@ -181,6 +182,7 @@ export default function HomeScreen(props) {
   return (
     <View style={{ flex: 1, marginTop: 10 }}>
       <Notification />
+      <LoadingProgressBar />      
 
       <View style={{ marginHorizontal: 10 }}>
         <ScrollTab

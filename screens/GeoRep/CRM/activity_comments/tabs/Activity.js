@@ -18,6 +18,7 @@ import {Notification} from '../../../../../components/modal/Notification';
 import Fonts from '../../../../../constants/Fonts';
 import {useSelector} from 'react-redux';
 import LoadMore from './partial/LoadMore';
+import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
 
 export default function Activity(props) {
 
@@ -27,6 +28,7 @@ export default function Activity(props) {
   const [comment, setComment] = useState('');
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);  
+  const [isSubmit, setIsSubmit] = useState(false);
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [title, setTitle] = useState('');
 
@@ -68,27 +70,33 @@ export default function Activity(props) {
   };
 
   const submitComment = () => {
-    setIsLoading(true);
-    var userParam = getPostParameter(currentLocation);
-    let postData = {
-      location_id: location_id,
-      comment: comment,
-      user_local_data: userParam.user_local_data,
-    };
 
-    postApiRequest('locations/location-add-comment', postData)
-      .then(res => {
-        if (res.status === 'success') {
-          setComment('');
-          notifyMsg(dispatch, 'Success');
-        }
-        setIsLoading(false);
-      })
-      .catch(e => {
-        setIsLoading(false);
-        expireToken(dispatch ,e);
-    });
-    
+    if(!isLoading &&  !isSubmit){
+      setIsSubmit(true);
+      dispatch(showLoadingBar({'type' : 'loading'}));
+      var userParam = getPostParameter(currentLocation);
+      let postData = {
+        location_id: location_id,
+        comment: comment,
+        user_local_data: userParam.user_local_data,
+      };
+  
+      postApiRequest('locations/location-add-comment', postData)
+        .then(res => {
+          if (res.status === 'success') {
+            setComment('');
+            notifyMsg(dispatch, 'Success');
+          }
+          setIsSubmit(false);
+          dispatch(clearLoadingBar());
+        })
+        .catch(e => {
+          setIsSubmit(false);
+          dispatch(clearLoadingBar());
+          expireToken(dispatch ,e);
+      });
+
+    }        
   };
 
   const renderSeparator = () => (

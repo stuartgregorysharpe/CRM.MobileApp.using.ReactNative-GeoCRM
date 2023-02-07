@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect ,  useState} from 'react';
 import {useSelector} from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
 import ConsumableSellToStockSignatureView from '../components/ConsumableSellToStockSignatureView';
@@ -14,6 +14,9 @@ import {Notification} from '../../../../../components/modal/Notification';
 import PostRequest from '../../../../../DAO/PostRequest';
 import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+
+var sell_to_trader_indempotency = '';
 
 export default function ConsumableSellToTraderSignatureContainer(props) {
 
@@ -25,12 +28,17 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
   const [price, setPrice] = useState('');
   const [reference, setReference] = useState('');
 
+  useEffect(() => {
+    sell_to_trader_indempotency = generateKey();
+  }, []);
+
   const onItemPressed = item => {};
 
   const onSubmit = signature => {
     if (price != '' && quantity != '' && reference != '' && received != '') {
       
       var postData = {};
+      if(isLoading) return;
       setIsLoading(true);
       
       RNFS.exists(signature)
@@ -63,7 +71,9 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
               : '0'
             }
                       
-            PostRequest.find(0, postData, "sell_to_trader" , "stockmodule/sell-to-trader", Constants.stockType.CONSUMABLE , props.item.description ).then((res) => {
+            PostRequest.find(0, postData, "sell_to_trader" , "stockmodule/sell-to-trader", 
+            Constants.stockType.CONSUMABLE , props.item.description , sell_to_trader_indempotency, dispatch ).then((res) => {
+              setIsLoading(false);
               dispatch(
                 showNotification({
                   type: Strings.Success,
@@ -78,6 +88,7 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
                 }),
               );
             }).catch((e) => {
+              setIsLoading(false);
               expireToken(dispatch, e);
               dispatch(
                 showNotification({
@@ -125,13 +136,13 @@ export default function ConsumableSellToTraderSignatureContainer(props) {
         onChangedReceivedBy={onChangedReceivedBy}
         onChangedQuantity={onChangedQuantity}
         onChangedPrice={onChangedPrice}
-        onChangedReference={onChangedReference}
-        isLoading={isLoading}
+        onChangedReference={onChangedReference}        
         receivedBy={received}
         reference={reference}
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 }
