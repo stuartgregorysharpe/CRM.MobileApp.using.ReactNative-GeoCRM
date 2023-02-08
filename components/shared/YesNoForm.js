@@ -144,7 +144,6 @@ export const YesNoForm = ({
   };
 
   const isRequiredImage = isIncludeImage(isYes ? 'Yes' : 'No');
-  const isHavingImage = haveImage();
   const isQuesionAnswered = isRequiredImage
     ? haveImage()
     : item != undefined && item.value != null && item.value != '';
