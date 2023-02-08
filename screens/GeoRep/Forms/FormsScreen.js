@@ -195,6 +195,7 @@ export const FormsScreen = props => {
         param.checkin_reason_id = checkin_reason_id;
       }
     }    
+    console.log("param ", param);
     
     GetRequestFormListsDAO.find(param)
       .then(res => {

@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect , useRef } from 'react';
 import {StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -28,8 +28,11 @@ import {CHECKIN} from '../../../actions/actionTypes';
 import {checkConnectivity} from '../../../DAO/helper';
 import {getLocationInfo} from '../../../actions/location.action';
 import { generateKey } from '../../../constants/Utils';
+import LoadingBar from '../../LoadingView/loading_bar';
 
 var checkin_indempotency = '';
+var checkin_type_id = '';
+var reason_id = '';
 
 const CheckinLinkButton = props => {
 
@@ -49,16 +52,17 @@ const CheckinLinkButton = props => {
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const loadingBarRef = useRef(null)
 
-  var checkin_type_id = '';
-  var reason_id = '';
   useEffect(() => {
     initData();
   }, []);
+
   const initData = () => {
     checkin_indempotency = generateKey();
     dispatch(updateCurrentLocation());
   };
+
   const showFeedbackDropDownModal = () => {
     return (
       <SelectionPicker
@@ -86,9 +90,11 @@ const CheckinLinkButton = props => {
             _callLocationFeedback(item);
             setIsFeedback(false);
           } else if (modalType === 'checkin_type') {
+
             var checkinType = checkinTypes.find(
               element => element.checkin_type === item,
             );
+            console.log("checkinType",checkinType , item)
             if (
               checkinType != undefined &&
               checkinType.checkin_reasons.length > 0
@@ -103,6 +109,7 @@ const CheckinLinkButton = props => {
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
             } else {
+              checkin_type_id = checkinType.checkin_type_id;
               setIsFeedback(false);
               _callCheckedIn();
             }
@@ -158,7 +165,11 @@ const CheckinLinkButton = props => {
       user_local_data: userParam.user_local_data,
     };
 
+    console.log("post data =>" , postData);
+
     setIsLoading(true);
+    loadingBarRef.current.showModal();
+
     PostRequestDAO.find(
       locationId,
       postData,
@@ -167,9 +178,10 @@ const CheckinLinkButton = props => {
       '',
       '',
       checkin_indempotency,
-      dispatch
+      null
     )
       .then(async res => {
+        loadingBarRef.current.hideModal();
         checkin_indempotency = generateKey();
         setIsFeedback(false);
         setFeedbackOptions(originFeedbackData);
@@ -183,6 +195,9 @@ const CheckinLinkButton = props => {
         );
         await storeLocalValue('@checkin_type_id', checkin_type_id);
         await storeLocalValue('@checkin_reason_id', reason_id);
+
+        checkin_type_id = '';
+        reason_id = '';
 
         checkConnectivity().then(async isOnline => {
           if (!isOnline) {
@@ -204,25 +219,31 @@ const CheckinLinkButton = props => {
         });        
         setIsLoading(false);
        
-
         if(props.onCallback){          
           props.onCallback();
         }else{
-          getLocationInfo(locationId, currentLocation).then(
-            async locationInfo => {
-              await storeJsonData('@checkin_location', locationInfo);
-              navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-                locationId: locationId,
-                page: 'checkin',
-              });              
-              onFinishProcess();
-            },
-          );
+          navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+            locationId: locationId,
+            page: 'checkin',
+          });              
+          onFinishProcess();
+
+          // getLocationInfo(locationId, currentLocation).then(
+          //   async locationInfo => {
+          //     await storeJsonData('@checkin_location', locationInfo);
+          //     navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+          //       locationId: locationId,
+          //       page: 'checkin',
+          //     });              
+          //     onFinishProcess();
+          //   },
+          // );
+
         }       
       })
       .catch(e => {
-        setIsLoading(false);
-        
+        loadingBarRef.current.hideModal();
+        setIsLoading(false);        
         expireToken(dispatch, e);
       });
   };
@@ -293,6 +314,11 @@ const CheckinLinkButton = props => {
       {showFeedbackDropDownModal()}
       {renderSubmitButton()}
       <Notification />
+      
+      <LoadingBar 
+        ref={loadingBarRef}
+      />
+
     </>
   );
 };

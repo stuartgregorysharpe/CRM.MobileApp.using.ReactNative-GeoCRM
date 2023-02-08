@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback , useRef} from 'react';
 import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {getDateTime} from '../../../helpers/formatHelpers';
 import {useSelector, useDispatch} from 'react-redux';
@@ -26,6 +26,7 @@ import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/partial/CalendarCheckOutButton';
 import { generateKey } from '../../../constants/Utils';
+import LoadingBar from '../../LoadingView/loading_bar';
 
 var specificLocationId;
 var check_out_indempotency = '';
@@ -39,11 +40,11 @@ export default function CheckOutViewContainer(props) {
     state => state.rep.locationCheckOutCompulsory,
   );
   const [isLoading, setIsLoading] = useState(false);
-
+  const loadingBarRef = useRef(null);
   const navigationMain = useNavigation();
   
-
   useEffect(() => {
+    isMount = true;
     initData();
     return () => {
       isMount = false;
@@ -68,6 +69,7 @@ export default function CheckOutViewContainer(props) {
     if (isLoading) {
       return;
     }
+
     if (locationCheckOutCompulsory) {
       dispatch(
         showNotification({
@@ -85,7 +87,8 @@ export default function CheckOutViewContainer(props) {
       );
     } else {
 
-      setIsLoading(true);      
+      setIsLoading(true); 
+      loadingBarRef.current.showModal();  
 
       var userParam = getPostParameter(currentLocation);
       var currentTime = getDateTime();
@@ -104,11 +107,13 @@ export default function CheckOutViewContainer(props) {
         '',
         '',
         check_out_indempotency,
-        dispatch
+        null
       )
         .then(async res => {
           console.log('RES : ', res);
-          setIsLoading(false);        
+          if(loadingBarRef.current)
+            loadingBarRef.current.hideModal();
+
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -120,6 +125,7 @@ export default function CheckOutViewContainer(props) {
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
           
+
           if(isMount){
             if (type == 'specificInfo' || type == 'calendar') {
               if (props.goBack) {
@@ -132,9 +138,15 @@ export default function CheckOutViewContainer(props) {
             props.onCallback();
           }
           
+          setIsLoading(false);
+          
         })
         .catch(e => {
-          console.log('checkout error:', e);          
+          console.log('checkout error:', e);
+          if(loadingBarRef.current)
+            loadingBarRef.current.hideModal();
+          setIsLoading(false);
+          
           expireToken(dispatch, e);
         });
     }
@@ -156,6 +168,10 @@ export default function CheckOutViewContainer(props) {
       {type == 'calendar' && (
         <CalendarCheckOutButton _callCheckOut={checkOutLocation} />
       )}
+
+      <LoadingBar 
+        ref={loadingBarRef}
+      />
     </View>
   );
 }

@@ -6,11 +6,8 @@ import {useSelector} from 'react-redux';
 import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
 import {GetRequestStockFieldDataDAO, PostRequestDAO} from '../../../../../DAO';
-import { generateKey } from '../../../../../constants/Utils';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 import AlertDialog from '../../../../../components/modal/AlertDialog';
-
-var add_stock_indempotency = '';
 
 export default function AddStockContainer(props) {
 
@@ -23,21 +20,25 @@ export default function AddStockContainer(props) {
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('success');
   const loadingBarRef = useRef(null);
+  
 
   let isMount = true;
 
   useEffect(() => {
-    _callStockFieldData();
-    add_stock_indempotency  = generateKey();
+    isMount = true;    
+    _callStockFieldData();        
     return () => {
       isMount = false;
     };
   }, []);
 
   const _callStockFieldData = () => {
+    if(isLoading) return;
+    setIsLoading(true);
     GetRequestStockFieldDataDAO.find({action: 'add_stock'})
-      .then(res => {
+      .then(res => {        
         if (isMount) {
+          setIsLoading(false);
           if (res.status === Strings.Success) {
             setStockTypes(res.stock_types);
             var types = [];
@@ -50,6 +51,7 @@ export default function AddStockContainer(props) {
         }
       })
       .catch(e => {
+        setIsLoading(false);
         expireToken(dispatch, e);
       });
   };
@@ -57,6 +59,8 @@ export default function AddStockContainer(props) {
   const callAddStock = (type, data) => {
     if(isLoading) return;
     setIsLoading(true);
+    loadingBarRef.current.showModal();
+
     var userParam = getPostParameter(currentLocation);
     data['user_local_data'] = userParam.user_local_data;
     var subTitle = type;
@@ -68,7 +72,7 @@ export default function AddStockContainer(props) {
     } else {
       subTitle = data.sims.map(item => item.network).join(', ');
     }
-    loadingBarRef.current.showModal();
+    
     PostRequestDAO.find(
       0,
       data,
@@ -76,7 +80,7 @@ export default function AddStockContainer(props) {
       'stockmodule/add-stock',
       type,
       subTitle,
-      add_stock_indempotency      
+      null      
     )
       .then(res => {
         setIsLoading(false);
