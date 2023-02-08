@@ -51,14 +51,9 @@ export default function AddContactModalContainer(props) {
                 setIsLoading(false);
                 loadingBarRef.current.hideModal();
                 if(res.status == Strings.Success){
-
                     setMessage(res.message);
                     setIsConfirmModal(true);
-
-                    if(props.onButtonAction){
-                        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
-                    }                
-                }
+                }                
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
                 setIsLoading(false);
@@ -79,6 +74,9 @@ export default function AddContactModalContainer(props) {
                 message={message}
                 onModalClose={() => {
                     setIsConfirmModal(false);
+                    if(props.onButtonAction){
+                        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
+                    }                                    
                 }}
             />
 
