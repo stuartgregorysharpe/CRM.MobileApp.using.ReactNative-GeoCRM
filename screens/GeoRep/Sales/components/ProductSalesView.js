@@ -159,17 +159,22 @@ const ProductSalesView = props => {
   };
 
   renderFooter = () => {
+    console.log("page", page, pageNumber);
     if (!isEndPageLoading && isLoading) {
-      return (
-        <View style={styles.footer}>
-          <TouchableOpacity activeOpacity={0.9} style={styles.loadMoreBtn}>
-            <Text style={styles.btnText}>Loading</Text>
-            {isLoading ? (
-              <ActivityIndicator color="white" style={{marginLeft: 8}} />
-            ) : null}
-          </TouchableOpacity>
-        </View>
-      );
+      if(page == 0 && pageNumber == 0){
+        return <ProductSalesPlaceholder />
+      }else{
+        return (
+          <View style={styles.footer}>
+            <TouchableOpacity activeOpacity={0.9} style={styles.loadMoreBtn}>
+              <Text style={styles.btnText}>Loading</Text>
+              {isLoading ? (
+                <ActivityIndicator color="white" style={{marginLeft: 8}} />
+              ) : null}
+            </TouchableOpacity>
+          </View>
+        );
+      }    
     }
     return <View style={{height:100}}></View>;
   };
