@@ -84,7 +84,7 @@ export async function getFormSubmissionPostJsonData(
           : '0',
     };
     form_answers.forEach(item => {
-      if (item.key && item.value && item.value != null && item.valuel != '') {
+      if (item.key && item.value && item.value != null && item.value != '') {
         var itemKey = item.key;
         var itemValue = item.value;
         postDataJson = {

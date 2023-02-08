@@ -119,18 +119,12 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submiss
       return false;
     }
     
-    const isRequiredImage = isIncludeImage("Yes") || isIncludeImage("No");
+    const isRequiredImage = isIncludeImage(item.value.toLowerCase() === 'yes' ? "Yes": "No" );
     const isQuesionAnswered = isRequiredImage ? item && haveImage() : item != undefined && item.value != null && item.value != ""
     const isCompulsory = !isQuesionAnswered && item && item.rule_compulsory === '1';
-    
-
-    useEffect(() => {
-      // if(isRequiredImage){
-      //   setIsYes(isIncludeImage("Yes"));
-      // }else{        
-      // }
-      setIsYes(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
       
+    useEffect(() => {
+      setIsYes(item.value !== null && item.value !== "" && item.value.toLowerCase() == 'yes' ? true:false);
     },[]);
 
     const getMarginLeft = () => {
@@ -230,10 +224,8 @@ export const YesNoForm = ({item , onTouchStart , onPress , onTakeImage , submiss
                           } }>
                             <SvgIcon icon="Add_Image" />   
                         </TouchableOpacity>
-                    }
-                                        
+                    }       
                 </View>
-                
             </View>
         </View>
     );
