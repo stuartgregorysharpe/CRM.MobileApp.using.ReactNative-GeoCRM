@@ -84,7 +84,7 @@ export async function getFormSubmissionPostJsonData(
           : '0',
     };
     form_answers.forEach(item => {
-      if (item.key && item.value && item.value != null && item.valuel != '') {
+      if (item.key && item.value && item.value != null && item.value != '') {
         var itemKey = item.key;
         var itemValue = item.value;
         postDataJson = {
@@ -321,7 +321,6 @@ function checkTextTriggerCondition(condition, answer, value) {
 }
 
 export function checkRuleCharactersFormQuestion(formQuestionItem) {
-  
   const rule_characters = formQuestionItem.rule_characters;
   if (!rule_characters || rule_characters == '') return null;
   let errorMessage = null;
@@ -371,6 +370,29 @@ export function checkRuleCharactersFormQuestion(formQuestionItem) {
   console.log('errorMessage', errorMessage);
   return errorMessage;
 }
+export function checkYesNoValidate(item) {
+  if (!item) return false;
+  if (item.value === null || item.value === '' || item.value === undefined)
+    return false;
+
+  if (
+    item.value.toLowerCase() == 'no' &&
+    item.include_image?.includes('No') &&
+    (item.no_image == null || item.no_image == '' || item.no_image == undefined)
+  ) {
+    return false;
+  }
+  if (
+    item.value.toLowerCase() == 'yes' &&
+    item.include_image?.includes('Yes') &&
+    (item.yes_image == null ||
+      item.yes_image == '' ||
+      item.yes_image == undefined)
+  ) {
+    return false;
+  }
+  return true;
+}
 export function validateFormQuestionData(formQuestions) {
   let error = null;
   formQuestions.forEach(element => {
@@ -381,8 +403,15 @@ export function validateFormQuestionData(formQuestions) {
         (item.value === null || item.value === '' || item.value === undefined)
       ) {
         error = Strings.Complete_Compulsory_Questions;
+      } else if (
+        item.question_type === 'yes_no' &&
+        item.isHidden == false &&
+        item.rule_compulsory === '1'
+      ) {
+        if (!checkYesNoValidate(item)) {
+          error = Strings.Complete_Compulsory_Questions;
+        }
       } else {
-        console.log('item', item);
         if (
           item.isHidden == false &&
           item.rule_characters &&
