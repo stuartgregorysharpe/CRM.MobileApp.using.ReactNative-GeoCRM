@@ -210,7 +210,12 @@ const CheckinLinkButton = props => {
         }else{
           getLocationInfo(locationId, currentLocation).then(
             async locationInfo => {
-              await storeJsonData('@checkin_location', locationInfo);
+            let checkInDetails = locationInfo;
+            checkInDetails.current_call = {
+              "checkin_time": postData.checkin_time,
+              "location_name": checkInDetails.location_name.value
+            };
+              await storeJsonData('@checkin_location', checkInDetails);
               navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
                 locationId: locationId,
                 page: 'checkin',
