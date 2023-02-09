@@ -353,8 +353,9 @@ const getData = async(lists) => {
 
         var element = lists.item(i);
         var guideInfoPath = '';
-        var guideInfoData = {};
+        let guideInfoData = [];
         if(element.guide_info_image || element.guide_info_title || element.guide_info_text){
+            guideInfoData = {};
             if(element.guide_info_image){
                 guideInfoPath = baseURL + "/guide_info_images/" + element.guide_info_image
             }            
