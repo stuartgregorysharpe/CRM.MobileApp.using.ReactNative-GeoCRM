@@ -222,6 +222,7 @@ const CheckinLinkButton = props => {
         if(props.onCallback){          
           props.onCallback();
         }else{
+
           navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
             locationId: locationId,
             page: 'checkin',
@@ -238,6 +239,24 @@ const CheckinLinkButton = props => {
           //     onFinishProcess();
           //   },
           // );
+
+          // getLocationInfo(locationId, currentLocation).then(
+          //   async locationInfo => {
+          //   let checkInDetails = locationInfo;
+          //   checkInDetails.current_call = {
+          //     "checkin_time": postData.checkin_time,
+          //     "location_name": checkInDetails.location_name.value
+          //   };
+          //     await storeJsonData('@checkin_location', checkInDetails);
+          //     navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+          //       locationId: locationId,
+          //       page: 'checkin',
+          //     });              
+          //     onFinishProcess();
+          //   },
+          // );
+
+
 
         }       
       })

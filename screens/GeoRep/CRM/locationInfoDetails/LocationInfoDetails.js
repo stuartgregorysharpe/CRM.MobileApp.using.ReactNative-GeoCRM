@@ -18,22 +18,22 @@ import {useSelector, useDispatch} from 'react-redux';
 import {grayBackground, style} from '../../../../constants/Styles';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import SvgIcon from '../../../../components/SvgIcon';
-import {LocationInfoInput} from './LocationInfoInput';
+import { LocationInfoInput } from './LocationInfoInput';
 import Divider from '../../../../components/Divider';
-import Colors, {whiteLabel} from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import {
   SLIDE_STATUS,
   LOCATION_CONFIRM_MODAL_VISIBLE,
   SUB_SLIDE_STATUS,
   LOCATION_ID_CHANGED,  
 } from '../../../../actions/actionTypes';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DeviceInfo from 'react-native-device-info';
-import {LocationInfoInputTablet} from './LocationInfoInputTablet';
+import { LocationInfoInputTablet } from './LocationInfoInputTablet';
 import Fonts from '../../../../constants/Fonts';
 import RNFS from 'react-native-fs';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import {NextPrev} from '../partial/NextPrev';
+import { NextPrev } from '../partial/NextPrev';
 import WazeNavigation from './WazeNavigation';
 import LocationInfoPlaceHolder from './LocationInfoPlaceHolder';
 import {
@@ -207,11 +207,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       console.log(tapType);
       if (tapType === 'back') {
         props.animation('search-page');
-        dispatch({type: SLIDE_STATUS, payload: false});
+        dispatch({ type: SLIDE_STATUS, payload: false });
       } else if (tapType === 'top') {
         props.clostDetailsPopup();
-        dispatch({type: SLIDE_STATUS, payload: false});
-        dispatch({type: LOCATION_ID_CHANGED, payload: {value: 0, type: 0}});
+        dispatch({ type: SLIDE_STATUS, payload: false });
+        dispatch({ type: LOCATION_ID_CHANGED, payload: { value: 0, type: 0 } });
       } else if ('access_crm') {
       }
     }
@@ -228,7 +228,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
   const showLoopSlider = () => {
     setShowItem('loop');
-    dispatch({type: SUB_SLIDE_STATUS, payload: true});
+    dispatch({ type: SUB_SLIDE_STATUS, payload: true });
   };
 
   const onPathUpdated = path => {
@@ -532,7 +532,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   //   }
   // };
 
-  const onUpdateCustomerModalClosed = ({type, value}) => {
+  const onUpdateCustomerModalClosed = ({ type, value }) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       if (props.refreshLocationInfo) {
         props.refreshLocationInfo(locationInfo.location_id);
@@ -571,7 +571,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           activeOpacity={1}
           style={grayBackground}
           onPress={() =>
-            dispatch({type: SUB_SLIDE_STATUS, payload: false})
+            dispatch({ type: SUB_SLIDE_STATUS, payload: false })
           }></TouchableOpacity>
       )}
 
@@ -581,11 +581,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             styles.transitionView,
             showItem == 'refresh'
               ? {
-                  transform: [
-                    {translateY: Dimensions.get('window').height + 100},
-                  ],
-                }
-              : {transform: [{translateY: 0}]},
+                transform: [
+                  { translateY: Dimensions.get('window').height + 100 },
+                ],
+              }
+              : { transform: [{ translateY: 0 }] },
           ]}>
           <RefreshSlider location_id={locationInfo.location_id} />
         </View>
@@ -605,13 +605,13 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       )}
       {showDivider && (
         <TouchableOpacity
-          style={{padding: 6}}
+          style={{ padding: 6 }}
           onPress={() => {
             if (statusDispositionInfo) {
-              dispatch({type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true});
+              dispatch({ type: LOCATION_CONFIRM_MODAL_VISIBLE, payload: true });
               return;
             }
-            dispatch({type: SLIDE_STATUS, payload: false});
+            dispatch({ type: SLIDE_STATUS, payload: false });
           }}>
           <Divider />
         </TouchableOpacity>
@@ -627,8 +627,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           keyboardStatus
             ? {}
             : {
-                marginBottom:
-                  features &&
+              marginBottom:
+                features &&
                   (features.includes('access_crm') ||
                     features.includes('checkin'))
                     ? 0
@@ -695,10 +695,10 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 </NextPrev>
               )}
 
-            <View style={{padding: 10}}>
+            <View style={{ padding: 10 }}>
               {locationInfo !== undefined &&
-              locationInfo.address !== '' &&
-              DeviceInfo.isTablet() ? (
+                locationInfo.address !== '' &&
+                DeviceInfo.isTablet() ? (
                 <LocationInfoInputTablet
                   onOutcome={value => {
                     setIsOutcomeUpdated(value);
@@ -728,7 +728,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 
                 onCloseModal={() => {
                   if (props.onButtonAction) {
-                    props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+                    props.onButtonAction({ type: Constants.actionType.ACTION_CLOSE });
                   }
                 }}
                 location={locationInfo.coordinates}
@@ -765,7 +765,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
 
       {isDisposition && (
         <TouchableOpacity
-          style={[style.plusButton, {marginBottom: 80}]}
+          style={[style.plusButton, { marginBottom: 80 }]}
           onPress={() => {
             if (!subSlideStatus) {
               locationInfoRef.current.postDispositionData();

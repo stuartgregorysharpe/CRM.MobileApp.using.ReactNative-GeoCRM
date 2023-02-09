@@ -7,7 +7,7 @@ import Visits from '../partial/cards/Visits';
 import { connect, useSelector } from 'react-redux';
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
-import { getLocalData, getUserData, getUserId, storeLocalValue } from '../../../../constants/Storage';
+import { getJsonData, getLocalData, getUserData, getUserId, storeLocalValue } from '../../../../constants/Storage';
 import { expireToken, getPostParameter, showOfflineDialog } from '../../../../constants/Helper';
 import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
@@ -390,13 +390,12 @@ const MainPage = forwardRef((props, ref) => {
       setIsLoading(true);
 
 
-      checkConnectivity().then((isConnected) => {
+      checkConnectivity().then(async(isConnected) => {
         if (isConnected) {
 
           getApiRequest('home/main-dashboard', param)
             .then(async res => {
               setIsLoading(false);
-
               setVisitCard(res.items.visits_card);
               setActivityCard(res.items.activity_card);
               setCurrentCall(res.items.current_call);
@@ -430,6 +429,21 @@ const MainPage = forwardRef((props, ref) => {
               expireToken(dispatch, e);
             });
 
+        } else {
+          setIsLoading(false);
+          let checkInStatus = await getLocalData('@checkin');
+          dispatch({ type: CHECKIN, payload: checkInStatus==='1'?true:false });
+          if(checkInStatus === '1'){
+            var location = await getJsonData('@checkin_location');
+            await storeLocalValue(
+              '@specific_location_id',
+              location.location_id,
+            );
+            if (location != null) {
+              setCurrentCall(location.current_call);
+            }
+          }
+          
         }
       });
 
