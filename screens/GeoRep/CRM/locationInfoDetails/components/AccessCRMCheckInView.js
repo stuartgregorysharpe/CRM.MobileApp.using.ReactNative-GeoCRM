@@ -44,7 +44,12 @@ const AccessCRMCheckInView = (props) => {
                       console.log("triger on callback");
                         props.onCheckIn();
                     }
-                  }}     
+                  }}
+                  onFinishProcess={() => {
+                    if(props.onFinishProcess){
+                      props.onFinishProcess();
+                    }
+                  }}
                   renderSubmitButton={onCheckIn => {
                     return (
                       <TouchableOpacity

@@ -759,6 +759,16 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                   setIsCheckingIn(false);
                   openSpecificInfoPage('checkin');                  
               }}
+
+              onFinishProcess={() => {
+                if (props.onButtonAction) {
+                  props.onButtonAction({
+                    type: Constants.actionType.ACTION_CLOSE,
+                    value: 'checkin',
+                  });
+                }
+              }}
+              
             />
 
         )}

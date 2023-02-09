@@ -29,6 +29,7 @@ import {checkConnectivity} from '../../../DAO/helper';
 import {getLocationInfo} from '../../../actions/location.action';
 import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
+import AlertDialog from '../../modal/AlertDialog';
 
 var checkin_indempotency = '';
 var checkin_type_id = '';
@@ -52,6 +53,8 @@ const CheckinLinkButton = props => {
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [message, setMessage] = useState('');
   const loadingBarRef = useRef(null)
 
   useEffect(() => {
@@ -223,11 +226,11 @@ const CheckinLinkButton = props => {
           props.onCallback();
         }else{
 
-          navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-            locationId: locationId,
-            page: 'checkin',
-          });              
-          onFinishProcess();
+          // navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+          //   locationId: locationId,
+          //   page: 'checkin',
+          // });              
+          // onFinishProcess();
 
           // getLocationInfo(locationId, currentLocation).then(
           //   async locationInfo => {
@@ -240,23 +243,21 @@ const CheckinLinkButton = props => {
           //   },
           // );
 
-          // getLocationInfo(locationId, currentLocation).then(
-          //   async locationInfo => {
-          //   let checkInDetails = locationInfo;
-          //   checkInDetails.current_call = {
-          //     "checkin_time": postData.checkin_time,
-          //     "location_name": checkInDetails.location_name.value
-          //   };
-          //     await storeJsonData('@checkin_location', checkInDetails);
-          //     navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          //       locationId: locationId,
-          //       page: 'checkin',
-          //     });              
-          //     onFinishProcess();
-          //   },
-          // );
-
-
+          getLocationInfo(locationId, currentLocation).then(
+            async locationInfo => {
+            let checkInDetails = locationInfo;
+            checkInDetails.current_call = {
+              "checkin_time": postData.checkin_time,
+              "location_name": checkInDetails.location_name.value
+            };
+              await storeJsonData('@checkin_location', checkInDetails);
+              navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+                locationId: locationId,
+                page: 'checkin',
+              });              
+              onFinishProcess();
+            },
+          );
 
         }       
       })
@@ -274,23 +275,11 @@ const CheckinLinkButton = props => {
   };
 
   const onCheckIn = async () => {
+
     var isCheckin = await getLocalData('@checkin');
     if (isCheckin === '1') {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: Strings.You_Are_Currenly_Checkedin,
-          buttonText: 'Continue',
-          buttonAction: async () => {
-            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-              locationId: locationId,
-              page: 'checkin',
-            });
-            dispatch(clearNotification());
-            onFinishProcess();
-          },
-        }),
-      );
+      setMessage(Strings.You_Are_Currenly_Checkedin);
+      setIsConfirmModal(true);      
     } else {
       const isCheckinTypes = checkFeatureIncludeParamFromSession(
         features,
@@ -317,24 +306,35 @@ const CheckinLinkButton = props => {
         onSubmit={() => {
           if (props.onPress) {
             props.onPress();
-          }
-          /*navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-            locationId: locationId,
-            pageType: 'checkin',
-          });*/
+          }          
           onCheckIn();
         }}
         style={props.style}
       />
     );
   };
+  
   return (
     <>
       {showFeedbackDropDownModal()}
       {renderSubmitButton()}
-      <Notification />
+
+      <AlertDialog 
+        visible={isConfirmModal}
+        message={message}
+        buttonText={'Continue'}
+        onModalClose={() => {
+          setIsConfirmModal(false);
+          onFinishProcess();
+          navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+              page: 'checkin',
+          });
+        }}
+      />
+      
       
       <LoadingBar 
+        backButtonDisabled={true}
         ref={loadingBarRef}
       />
 

@@ -114,7 +114,7 @@ const LocationSpecificInfoScreen = props => {
       }
     }
     if (isCheckin) {
-      //getCheckInLocation();
+      getCheckInLocation();
     }
     return () => {
       isMout = false;
@@ -129,8 +129,9 @@ const LocationSpecificInfoScreen = props => {
   }, [navigation]);
 
   const getCheckInLocation = async () => {
-    console.log("location id ===>", location_id)
+    
     var location = await getJsonData('@checkin_location');
+    console.log("location id ===>", location_id );
     if (location != null) {
       if (
         locationInfoRef.current != undefined &&
@@ -139,15 +140,16 @@ const LocationSpecificInfoScreen = props => {
         locationInfoRef.current.updateDispositionData(location);
       }
 
-      console.log("res",location)
-
       setLocationIfo(location);
       getFormLists(location.location_id);
     } else {
-      if (location_id !== undefined) {
-        console.log("triddd")
-        openLocationInfo(location_id);
-        getFormLists(location_id);
+      var locId = location_id;
+      if(location_id == '' || location_id == undefined){
+        locId  = await getLocalData("@specific_location_id");
+      }
+      if (locId !== undefined) {        
+        openLocationInfo(locId);
+        getFormLists(locId);
       }
     }
   };

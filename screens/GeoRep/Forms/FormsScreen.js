@@ -44,7 +44,6 @@ export const FormsScreen = props => {
   const [formIds, setFormIds] = useState([]);
 
 
-
   const dispatch = useDispatch();
 
   const locationIdSpecific = props.route.params
@@ -171,17 +170,14 @@ export const FormsScreen = props => {
       filters = await getFilterData('@form_filter');
     }
     var form_type_id = filters.form_type.map(item => item).join(',');
-    var location_id = locationIdSpecific != null ? locationIdSpecific.location_id : '';
-    if(location_id == '' && isCheckin){
-      location_id  = await getLocalData('@specific_location_id');
-    }
+    var location_id = locationIdSpecific != null ? locationIdSpecific.location_id : '';    
 
     let param = {
       form_type_id: form_type_id,
       location_id:location_id        
     };
 
-    if (isCheckin) {
+    if ( locationIdSpecific != null  && isCheckin) {
       const checkin_type_id = await getLocalData('@checkin_type_id');
       const checkin_reason_id = await getLocalData('@checkin_reason_id');
 

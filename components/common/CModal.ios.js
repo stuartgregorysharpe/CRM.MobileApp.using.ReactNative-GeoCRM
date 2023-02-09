@@ -12,6 +12,8 @@ import {
 import {Colors, Constants, Fonts, Images, Values} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
 import KeyboardManager from 'react-native-keyboard-manager';
+
+
 const CModal = React.forwardRef((props, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const {
