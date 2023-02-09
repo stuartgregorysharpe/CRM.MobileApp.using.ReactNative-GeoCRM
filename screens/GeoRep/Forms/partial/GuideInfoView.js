@@ -28,7 +28,7 @@ export const GuideInfoView = ({ visible, info, onModalClose }) => {
 
   useEffect(() => {
     getImageHeight();
-  }, []);
+  }, [info]);
 
   const getImageHeight = () => {
     setIsLoading(true);
