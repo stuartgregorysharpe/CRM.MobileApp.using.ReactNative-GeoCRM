@@ -15,6 +15,7 @@ import {Button} from './Button';
 import SvgIcon from '../SvgIcon';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import * as ImagePicker from 'react-native-image-picker';
+import {checkYesNoValidate} from '../../screens/GeoRep/Forms/questions/helper';
 
 export const YesNoForm = ({
   item,
@@ -144,11 +145,8 @@ export const YesNoForm = ({
   };
 
   const isRequiredImage = isIncludeImage(isYes ? 'Yes' : 'No');
-  const isQuesionAnswered = isRequiredImage
-    ? haveImage()
-    : item != undefined && item.value != null && item.value != '';
-  const isCompulsory =
-    !isQuesionAnswered && item && item.rule_compulsory === '1';
+
+  const isCompulsory = !checkYesNoValidate(item);
 
   const getMarginLeft = () => {
     if (!isRequiredImage) {
