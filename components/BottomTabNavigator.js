@@ -182,7 +182,7 @@ export default function RepBottomTabNavigator({navigation}) {
               ),
               headerStyle: {
                 height: getHeaderHeight(), // Specify the height of your custom header
-                backgroundColor: whiteLabel().actionFullButtonBackground,
+                backgroundColor:whiteLabel().headerBackground
               },
               headerRight: () => <HeaderRightView navigation={navigation} />,
               tabBarLabelStyle: {
