@@ -21,8 +21,9 @@ const LoadingBar = React.forwardRef((props, ref) => {
             ref={ref}
             hideClear={true}            
             hideDivider={true}
-            modalType={Constants.modalType.MODAL_TYPE_CENTER}                    
-            closableWithOutsideTouch={false}
+            modalType={Constants.modalType.MODAL_TYPE_CENTER}
+            backButtonDisabled={true}
+            closableWithOutsideTouch={false}            
             onClear={() => {
                 onButtonAction({ type: Constants.actionType.ACTION_FORM_CLEAR });
             }}

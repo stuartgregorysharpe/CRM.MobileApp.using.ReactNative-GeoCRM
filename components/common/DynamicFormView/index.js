@@ -9,13 +9,14 @@ import { getApiRequest } from '../../../actions/api.action';
 import { Constants, Strings } from '../../../constants';
 import { useDispatch } from 'react-redux';
 import { clearNotification, showNotification } from '../../../actions/notification.action';
+import { expireToken } from '../../../constants/Helper';
 
 var canSubmitEmailContact = true;
 var canSubmitEmailSelect = true;
 
 const DynamicFormView = props => {
 
-  const {page, buttonTitle, fields, isClear , isLoading, style} = props;
+  const {page, buttonTitle, fields, isClear , style} = props;
   
   if (!fields) return null;
 
@@ -157,8 +158,7 @@ const DynamicFormView = props => {
           setContactInfo(contact);
           addContactModalRef.current.showModal();
         }        
-    }).catch((e) => {
-      console.log(e);
+    }).catch((e) => {              
         expireToken(dispatch , e);
     })
   }
@@ -241,11 +241,9 @@ const DynamicFormView = props => {
       />
 
       <SubmitButton
-        title={buttonTitle}
-        isLoading={isLoading}
+        title={buttonTitle}        
         onSubmit={onAdd}
-        style={{marginTop: 20}}
-        isLoading={isLoading}
+        style={{marginTop: 20}}        
       />
 
       

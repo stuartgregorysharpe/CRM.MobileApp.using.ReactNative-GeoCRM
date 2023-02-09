@@ -54,8 +54,11 @@ import {expireToken} from '../../../../constants/Helper';
 import {GetRequestFormListsDAO} from '../../../../DAO';
 import {cos} from 'react-native-reanimated';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 
 const LocationSpecificInfoScreen = props => {
+
+  const navigation = props.navigation;
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
@@ -108,7 +111,7 @@ const LocationSpecificInfoScreen = props => {
       }
     }
     if (isCheckin) {
-      getCheckInLocation();
+      //getCheckInLocation();
     }
     return () => {
       isMout = false;
@@ -116,13 +119,14 @@ const LocationSpecificInfoScreen = props => {
   }, [isCheckin]);
 
   useEffect(() => {
-    const unsubscribe = navigationMain.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', () => {      
       getCheckInLocation();
     });
     return unsubscribe;
-  }, [navigationMain]);
+  }, [navigation]);
 
   const getCheckInLocation = async () => {
+    
     var location = await getJsonData('@checkin_location');
     if (location != null) {
       if (
@@ -333,7 +337,9 @@ const LocationSpecificInfoScreen = props => {
           }}
         />
       )}
+      
       <Notification />
+      <LoadingProgressBar />
 
       {locationInfo != undefined && (
         <ActivityComments
@@ -479,16 +485,7 @@ const LocationSpecificInfoScreen = props => {
                       type: 'success',
                       message: res.message,
                       buttonText: Strings.Ok,
-                      buttonAction: async () => {
-                        dispatch({
-                          type: CHECKIN,
-                          payload: false,
-                          scheduleId: false,
-                        });
-                        dispatch({
-                          type: LOCATION_CHECK_OUT_COMPULSORY,
-                          payload: true,
-                        });
+                      buttonAction: async () => {                                                
                         dispatch(clearNotification());
                         goBack();
                       },

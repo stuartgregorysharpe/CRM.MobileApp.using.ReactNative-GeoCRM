@@ -39,6 +39,7 @@ import {getApiRequest} from '../../../actions/api.action';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import LocationService from '../../../services/LocationService';
+import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 
 //export default function SalesPipelineScreen(props) {
 export const SalesPipelineScreen = props => {
@@ -387,6 +388,8 @@ export const SalesPipelineScreen = props => {
         )}
 
         <Notification></Notification>
+        <LoadingProgressBar />
+        
         {canAddPipeline && (
           <AddSalesPipeline
             props={props}

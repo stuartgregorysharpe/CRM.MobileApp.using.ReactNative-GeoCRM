@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useMemo} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   View,
@@ -32,18 +32,24 @@ import {Notification} from '../../../components/modal/Notification';
 import {getApiRequest} from '../../../actions/api.action';
 import {DatetimePickerView} from '../../../components/DatetimePickerView';
 import {
+  clearLoadingBar,
   clearNotification,
+  showLoadingBar,
   showNotification,
 } from '../../../actions/notification.action';
 import CustomInput from '../../../components/common/CustomInput';
 import {Constants, Strings} from '../../../constants';
 import CSingleSelectInput from '../../../components/common/SelectInput/CSingleSelectInput';
 import {style} from '../../../constants/Styles';
-import SelectInputView from '../../../components/common/SelectInput/components/SelectInputView';
 import ProductChannelTieredModal from './modals/ProductChannelTieredModal';
+import { PostRequestDAO } from '../../../DAO';
+import { generateKey } from '../../../constants/Utils';
+import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 
 var selected_location_id = 0;
 var selected_dispositio_id = 0;
+var pipeline_indempotency = '';
+
 export default function AddSalesPipeline({
   location_id,
   onClose,
@@ -51,6 +57,7 @@ export default function AddSalesPipeline({
   opportunity_id,
   locationName,
 }) {
+
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +99,7 @@ export default function AddSalesPipeline({
   const [datePickerMode, setDatePickerMode] = useState('date');
   const [selectedProductChannel, setSelectedProductChannel] = useState(null);
   const [currentChannels, setCurrentChannels] = useState([]);
-
+  const [isSubmit, setIsSubmit] = useState(false);
   const productChannelTiredModalRef = useRef(null);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -115,7 +122,7 @@ export default function AddSalesPipeline({
   }, [searchCustomer]);
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true);    
   }, []);
 
   useEffect(() => {
@@ -244,6 +251,7 @@ export default function AddSalesPipeline({
   };
 
   const handleSubmit = () => {
+
     var canSubmit = true;
     console.log('locationName', locationName);
     if (
@@ -361,35 +369,41 @@ export default function AddSalesPipeline({
       params['opportunity_value'] = opportunityValue;
     }
 
-    console.log('PARAM', params);
-    postAddOpportunityFields(params)
-      .then(res => {
+    if(isSubmit){
+      return;
+    }
+
+    setIsSubmit(true);    
+    PostRequestDAO.find(0, params , 'pipeline/pipeline-add-edit-opportunity' , 'pipeline/pipeline-add-edit-opportunity',
+    '' , '' , null , dispatch).then((res) => {            
+      dispatch(
+        showNotification({
+          type: 'success',
+          message: 'Opportunity added sucessfully',
+          buttonText: Strings.Ok,
+          buttonAction: async () => {
+            onClose();
+            dispatch(clearNotification());
+          },
+        }),
+      );
+      setIsSubmit(false);
+    }).catch((error) => {      
+      setIsSubmit(false);
+      if(error === 'expired'){
+        expireToken(dispatch, error)
+      }else{
         dispatch(
           showNotification({
             type: 'success',
-            message: 'Opportunity added sucessfully',
+            message: 'Failed',
             buttonText: Strings.Ok,
-            buttonAction: async () => {
-              onClose();
-              dispatch(clearNotification());
-            },
           }),
         );
-      })
-      .catch(error => {
-        if(error === 'expired'){
-          expireToken(dispatch, error)
-        }else{
-          dispatch(
-            showNotification({
-              type: 'success',
-              message: 'Failed',
-              buttonText: Strings.Ok,
-            }),
-          );
-        }
-        
-      });
+      }
+    });
+
+
   };
 
   const getLocationCustomers = async text => {
@@ -1054,6 +1068,7 @@ export default function AddSalesPipeline({
     <Animated.View>
       <ScrollView style={[styles.container]}>
         <Notification></Notification>
+        <LoadingProgressBar/>
 
         <DatetimePickerView
           visible={isDateTimePickerVisible}

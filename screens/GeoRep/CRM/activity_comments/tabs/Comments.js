@@ -45,7 +45,7 @@ export default function Comments(props) {
 			const postData = {
 				location_id : location_id,
 				page_nr: pageNumber
-			}		
+			}			
 			GetRequestFormSubmissionsDAO.find(postData).then((res) => {		
 				if(isMount){
 					if(res.status == Strings.Success){
@@ -73,22 +73,22 @@ export default function Comments(props) {
 	}
 
 	const editFormQuestion = async (form_answers, files) => {			
-		console.log("files ", files);
+		
 		const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
-		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' , form.form_name , '' ).then( async(res) => {									
+		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' 
+		, form.form_name , '' , null , dispatch ).then( async(res) => {									
 			if(res.status === Strings.Success){
 				dispatch(showNotification({type: Strings.Success , message: res.message , buttonText:'Ok', buttonAction:() => {					
 					setPage(0)
 					getFormSubmissions(0);					
 					dispatch(clearNotification());
 				}}));
-			}				
+			}
 		}).catch((e) => {
-			console.log(e);		
-			expireToken(dispatch, e);		
+			console.log(e);
+			expireToken(dispatch, e);
 		})
 	}
-
 
   	const onFormQuestionModalClosed = ({type, value}) => {
 		if (type == Constants.actionType.ACTION_CLOSE) {

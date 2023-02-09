@@ -2,13 +2,12 @@ import { View, Text, ScrollView, FlatList, Dimensions } from 'react-native';
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { SyncAll } from './../partial/SyncAll';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
-import IndicatorDotScroller from '../../../../components/common/IndicatorDotScroller';
 import Colors from '../../../../constants/Colors';
 import Visits from '../partial/cards/Visits';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
-import { getJsonData, getLocalData, storeLocalValue } from '../../../../constants/Storage';
+import { getJsonData, getLocalData, getUserData, getUserId, storeLocalValue } from '../../../../constants/Storage';
 import { expireToken, getPostParameter, showOfflineDialog } from '../../../../constants/Helper';
 import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
@@ -16,7 +15,7 @@ import { updateCurrentLocation } from '../../../../actions/google.action';
 import { useDispatch } from 'react-redux';
 import { Notification } from '../../../../components/modal/Notification';
 import { showNotification } from '../../../../actions/notification.action';
-import { CHANGE_SYNC_START, CHECKIN } from '../../../../actions/actionTypes';
+import { CHANGE_SYNC_START, CHECKIN, SET_CONTENT_FEED_DATA } from '../../../../actions/actionTypes';
 import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import { checkConnectivity } from '../../../../DAO/helper';
@@ -28,10 +27,14 @@ import Mobility from '../partial/cards/Mobility';
 import Festivals from '../partial/cards/Festivals';
 import Tracking from '../partial/cards/Tracking';
 import Compliance from '../partial/cards/Compliance';
-import PagerView from 'react-native-pager-view';
+import TwoRowContent from '../../../../components/modal/content_type_modals/TwoRowContentFeed';
+import { getContentFeeds, updateContentFeed_post } from '../../../../actions/contentLibrary.action';
+import CustomImageDialog from '../../../../components/modal/content_type_modals/CustomImageDialog';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+
 
 //const MainPage = props => {
-export const MainPage = forwardRef((props, ref) => {
+const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
@@ -56,6 +59,7 @@ export const MainPage = forwardRef((props, ref) => {
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
   const [haveFilter, setHaveFilter] = useState(false);
+  
 
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
@@ -63,7 +67,15 @@ export const MainPage = forwardRef((props, ref) => {
   const [lindtdash_festival, setFestivalCard] = useState(false);
   const [lindtdash_tracking, setTrackingCard] = useState(false);
   const [lindtdash_compliance, setComplianceCard] = useState(false);
-
+  const [contentFeedData, setContentFeedData] = useState([]);
+  const dataUpdated = useSelector(state => state.feed.content_feed_data);
+  const [isFeedImageVisible, setImageVisible] = useState(false);
+  const [feedData, setFeedData] = useState(null);
+  useEffect(() => {
+    if (dataUpdated) {
+      loadContentFeedData();
+    }
+  }, [dataUpdated]);
   useImperativeHandle(ref, () => ({
     onlineSyncTable() {
       if (syncAllViewRef.current) {
@@ -72,16 +84,19 @@ export const MainPage = forwardRef((props, ref) => {
     },
   }));
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadPage();
+  // useEffect(() => {
+  //   loadPage();
+  // }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      loadPage();
     });
     return unsubscribe;
-  }, [navigation]);
-
+  }, [navigation]);  
 
   useEffect(() => {
+    console.log("hello notifications main");
     loadPage();
     if (!isCheckin) {
       cleanLocationId();
@@ -100,9 +115,251 @@ export const MainPage = forwardRef((props, ref) => {
       if (!isConnected) {
         setIsScrollable(false)
       }
-    })
+    });
+    loadContentFeedData();
   }, []);
 
+  const loadContentFeedData = async () => {
+    dispatch({ type: SET_CONTENT_FEED_DATA, payload: false });
+    var user_id = await getUserId();
+    var userData = await getUserData();
+    let params = `?app=1&user_id=${userData.universal_user_id}`; //`?user_id=${user_id}&app=1&role=${userData.role}&manager=&region=`;
+    getContentFeeds(params).then((responseJson) => {
+      let modifiedList = [];
+      if (responseJson) {
+        for (let i = 0; i < responseJson.length; i++) {
+          let contenticon = null;
+          let contentcolor = "#FF8900";
+          let contentsubcolor = "#CFF3EA";
+          let maincolor = "#CFF3EA"
+          let contentSubList = [];
+          let serveyList = [];
+          if (responseJson[i].content_type == 1) {
+            /** Flash Club */
+            contenticon = 'Shield_Fail';
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#8BD41F"
+          }
+          else if (responseJson[i].content_type == 2) {
+            /** News */
+            contenticon = "News"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#00C193"
+          }
+          else if (responseJson[i].content_type == 3) {
+            /** Information */
+            contenticon = "Info"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#0097F7"
+          }
+          else if (responseJson[i].content_type == 4) {
+            /** Fraud Warning */
+            contenticon = "Fraud"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#FF002C"
+          }
+          else if (responseJson[i].content_type == 5) {
+            /** Learning */
+            contenticon = "Learning"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#F6267D"
+          }
+          else if (responseJson[i].content_type == 6) {
+            /** Rewards */
+            contenticon = "Star"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#5756E9"
+          }
+          else if (responseJson[i].content_type == 7) {
+            /** Health & Saftey */
+            contenticon = "HealthySafety";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#00C193"
+          }
+          else if (responseJson[i].content_type == 8) {
+            /** System Information */
+            contenticon = "Danger"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#F54949"
+          }
+          else if (responseJson[i].content_type == 9) {
+            /** BI */
+            contenticon = "Bi"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#FF8900"
+          }
+          else if (responseJson[i].content_type == 10) {
+            /** Marketing */
+            contenticon = "Marketing"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#00C193"
+          }
+          else if (responseJson[i].content_type == 11) {
+            /** Sales */
+            contenticon = "Sales";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#0052B0"
+          }
+          else if (responseJson[i].content_type == 12) {
+            /** Office */
+            contenticon = "Office";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#FF8900";
+          }
+          else if (responseJson[i].content_type == 13) {
+            /** Careers */
+            contenticon = "Careers";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#9231FC"
+          }
+          else if (responseJson[i].content_type == 14) {
+            /** Birthday */
+            contenticon = "Birhday";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#0052B0"
+            contentSubList = this.state.birthDayList
+
+          }
+          else if (responseJson[i].content_type == 15) {
+            /** Fire */
+            contenticon = "Health_Safety"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#0097F7"
+          }
+          else if (responseJson[i].content_type == 16) {
+            /** Standard Notification */
+            contenticon = "Notify";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#CFF3EA"
+            if (contentcolor == "blue") {
+              contentsubcolor = "#CFECFD"
+            }
+            else if (contentcolor == "red") {
+              contentsubcolor = "#FFE6EA"
+            }
+            else if (contentcolor == "orange") {
+              contentsubcolor = "#FFD400"
+            }
+            else if (contentcolor == "green") {
+              contentsubcolor = "#CFF3EA"
+            }
+          }
+          else if (responseJson[i].content_type == 17) {
+            /** None */
+            contenticon = "Notify";
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#CFF3EA"
+          }
+          else if (responseJson[i].content_type == 18) {
+            /** Quick Survey */
+            contenticon = "Survey"
+            contentcolor = responseJson[i].card_severity.toLowerCase();
+            maincolor = "#8BD41F"
+            if (responseJson[i].survey_details.question_type == "DropDown") {
+              for (let s = 0; s < responseJson[i].survey_details.answer_options.length; s++) {
+                if (responseJson[i].survey_details.answer_options[s] != "") {
+                  serveyList.push({
+                    id: s,
+                    date: responseJson[i].survey_details.answer_options[s],
+                    isActive: false
+                  })
+                }
+              }
+            }
+            else {
+              serveyList = this.state.gpstrackerratingList
+            }
+          }
+          modifiedList.push({
+            content_feed_id: responseJson[i].content_feed_id,
+            headertitle: responseJson[i].card_name,
+            icon: contenticon,
+            title: responseJson[i].card_headline,
+            subtitle: responseJson[i].card_sub_text,
+            subtitleIcon: null,
+            color: contentcolor,
+            notificationImage: responseJson[i].card_image,
+            day: "test",
+            answer: "",
+            isActive: isUserAvailable(responseJson[i].user_engagement_acknowledge) ? true : false,
+            card_type: responseJson[i].card_type,
+            card_action: responseJson[i].card_action,
+            content_type: responseJson[i].content_type,
+            action_text: responseJson[i].action_text,
+            action_type_id: responseJson[i].action_type_details.action_type_id,
+            card_sub_text: responseJson[i].card_sub_text,
+            date_created: responseJson[i].date_created,
+            start_date: responseJson[i].start_date,
+            createdAt: null,
+            subcolor: contentsubcolor,
+            subList: contentSubList,
+            maincolor: maincolor,
+            active: responseJson[i].active,
+            survey_details: responseJson[i].survey_details,
+            serveyList: serveyList,
+            card_interaction: responseJson[i].card_interaction[0],
+            landing_header: responseJson[i].landing_header,
+            landing_text: responseJson[i].landing_text,
+            landing_image: responseJson[i].landing_image,
+            landing_action: responseJson[i].landing_action,
+            app_link: responseJson[i].app_link,
+            download_file: responseJson[i].download_file,
+            web_link: responseJson[i].web_link,
+            user_engagement_info: responseJson[i].user_engagement_info,
+            user_engagement_close: responseJson[i].user_engagement_close,
+            user_engagement_acknowledge: responseJson[i].user_engagement_acknowledge,
+            user_engagement_action: responseJson[i].user_engagement_action,
+            user_engagement_survey: responseJson[i].user_engagement_survey,
+            user_engagement_like: responseJson[i].user_engagement_like,
+            user_engagement_hunt: responseJson[i].user_engagement_hunt,
+            card_info_heading: responseJson[i].card_info_heading,
+            card_info_text: responseJson[i].card_info_text,
+            card_info_image: responseJson[i].card_info_image,
+            survey_id: responseJson[i].survey_id,
+            istooltipvisible: false,
+            isShowMore: false,
+            video_url: responseJson[i].video,
+            like: responseJson[i].like,
+            content_feed_type: responseJson[i].action_type_details.action_type,
+            gif: responseJson[i].gif,
+            huntImage: responseJson[i].hunt_image,
+            huntValue: responseJson[i].hunt
+          })
+        }
+        console.log("modifired data", modifiedList.length);
+        setContentFeedData(modifiedList);
+      }
+    }).catch((error) => {
+      console.log("Error", error);
+    })
+  }
+
+  const isUserAvailable = async (item) => {
+    var userData = await getUserData();
+    let value = item.find(item => item === userData.universal_user_id);
+    if (value == userData.universal_user_id) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  };
+  const updateContentFeed = async (item_id) => {
+    var userData = await getUserData();
+    let params = JSON.stringify({
+      engagement_close_user_id: userData.universal_user_id
+    });
+    console.log("item id", item_id);
+    updateContentFeed_post(params, item_id).then((res) => {
+      console.log("content feed update res", res);
+      if (res) {
+        loadContentFeedData();
+      }
+
+    }).catch((error) => {
+      console.log("content feed update error", error);
+    })
+  }
   useEffect(() => {
     console.log("changed offline status", offlineStatus)
     if (offlineStatus) {
@@ -189,8 +446,6 @@ export const MainPage = forwardRef((props, ref) => {
         }
       });
 
-
-
     }
     initData();
     handleLindtCards();
@@ -263,20 +518,27 @@ export const MainPage = forwardRef((props, ref) => {
           : { time_zone: '', latitude: 0, longitude: 0 },
     };
 
-    PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', dispatch).then(async (res) => {
-      if (res.status === Strings.Success) {
-        setStartEndDayId(res.startEndDay_id);
-        await storeLocalValue('start_my_day', isStart ? '0' : '1');
-        setIsStart(!isStart);
-        if (features.includes('odometer_reading')) {
-          odometerReadingModalRef.current.showModal();
+    if(!isLoading){
+      setIsLoading(true)
+      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {        
+        if(res.status == Strings.Success){
+          setStartEndDayId(res.startEndDay_id);
+          await storeLocalValue('start_my_day', isStart ? '0' : '1');
+          setIsStart(!isStart);
+          if(features.includes('odometer_reading')) {
+            odometerReadingModalRef.current.showModal();
+          }else if (res.status == "NOIMPLEMENT") {
+            showOfflineDialog(dispatch);
+          }
         }
-      } else if (res.status === "NOIMPLEMENT") {
-        showOfflineDialog(dispatch);
-      }
-    }).catch((e) => {
-      expireToken(dispatch, e);
-    });
+        setIsLoading(false);
+      }).catch((e) => {
+        setIsLoading(false);
+        expireToken(dispatch, e);
+      });
+
+    }    
+
   };
 
   const onCaptureAction = async ({ type, value }) => {
@@ -293,24 +555,58 @@ export const MainPage = forwardRef((props, ref) => {
     if (item.card === 'visits') {
       return (
         <View collapsable={false} key={index} style={{ marginRight: 1, width: pageWidth }}>
-          <Visits {...props} visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
+          <View>
+            <Visits {...props} visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
+            <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+              item={item}
+              onImageClick={() => {
+                if (item.app_link == null || item.app_link == "") {
+                  setFeedData(item);
+                  setImageVisible(true);
+                }
+
+              }}
+              onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+          </View>
         </View>
       );
     } else if (item.card === 'activity') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {activityCard && (
-            <ActivityCard activityCard={activityCard} pageCount={pages.length} pageIndex={item.index}>
-            </ActivityCard>
+            <View>
+              <ActivityCard activityCard={activityCard} pageCount={pages.length} pageIndex={item.index}>
+              </ActivityCard>
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }} onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+            </View>
           )}
+
         </View>
       );
     } else if (item.card === 'sell_in') {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellin && (
-            <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <SellIn haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }}
+                onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+            </View>
           )}
         </View>
       );
@@ -319,8 +615,19 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_sellout &&
-            <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <SellOut haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }}
+                onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+            </View>
           }
         </View>
       );
@@ -328,8 +635,19 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_tracking &&
-            <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Tracking haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }}
+                onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+            </View>
           }
         </View>
       );
@@ -337,8 +655,19 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_festival &&
-            <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Festivals haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }}
+                onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+            </View>
           }
         </View>
       );
@@ -346,8 +675,19 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_mobility &&
-            <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Mobility haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }}
+                onClose={() => updateContentFeed(item.content_feed_id)} />))}</View>
+            </View>
           }
         </View>
       );
@@ -355,8 +695,20 @@ export const MainPage = forwardRef((props, ref) => {
       return (
         <View key={index} style={{ marginRight: 1, width: pageWidth }}>
           {lindtdash_compliance &&
-            <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
-              pageCount={pages.length} pageIndex={item.index} />
+            <View>
+              <Compliance haveFilter={haveFilter} onFilterPress={() => cardsFilterModal.current.showModal()}
+                pageCount={pages.length} pageIndex={item.index} />
+              <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
+                item={item}
+                onClose={() => updateContentFeed(item.content_feed_id)}
+                onImageClick={() => {
+                  if (item.app_link == null || item.app_link == "") {
+                    setFeedData(item);
+                    setImageVisible(true);
+                  }
+                }}
+              />))}</View>
+            </View>
           }
         </View>
       );
@@ -366,6 +718,7 @@ export const MainPage = forwardRef((props, ref) => {
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
       <Notification></Notification>
+      <LoadingProgressBar/>
 
       <View style={{ marginTop: 5 }}>
         <SubmitButton
@@ -422,8 +775,24 @@ export const MainPage = forwardRef((props, ref) => {
         onButtonAction={(data) => {
           setHaveFilter(data);
         }} />
+      {isFeedImageVisible && <CustomImageDialog
+        visible={isFeedImageVisible}
+        data={feedData}
+        onControlDialogVisible={() => {
+          setFeedData(null);
+          setImageVisible(!isFeedImageVisible)
+        }}
+      />}
+
     </ScrollView>
   );
 });
+const mapStateToProps = state => {
+  
+  return {
+    content_feed_data: state.feed.content_feed_data
+  }
+};
+export default connect(mapStateToProps)(MainPage);
 
 //export default MainPage;

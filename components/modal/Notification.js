@@ -21,11 +21,12 @@ export const Notification = ({}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (notification.visible) {
+    if (notification.notificationVisible) {
+      
       if (notification.autoHide === true)
         setTimeout(() => dispatch(clearNotification()), 2000);
     }
-  }, [notification]);
+  }, [notification.notificationVisible]);
 
   const containerStyle = useMemo(
     () =>
@@ -68,7 +69,7 @@ export const Notification = ({}) => {
   return (
     <Modal
       animationType="fade"
-      visible={notification.visible}
+      visible={notification.notificationVisible}
       onBackdropPress={() => onClose()}
       onRequestClose={() => {
         onClose();

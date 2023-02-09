@@ -29,10 +29,12 @@ import {
 import {Notification} from '../../../../components/modal/Notification';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import StockListFilterModal from './modal/StockListFilterModal';
-
 import {GetRequestStockListsDAO} from '../../../../DAO';
 import {getLocalData} from '../../../../constants/Storage';
 import {expireToken} from '../../../../constants/Helper';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+
+let isMount = true;
 
 const StockLists = props => {
   const navigation = props.navigation;
@@ -71,11 +73,12 @@ const StockLists = props => {
   );
 
   const dispatch = useDispatch();
-  let isMount = true;
+  
 
   useEffect(() => {
+    isMount = true;
     callStockLists();
-    initializeLocationId();
+    initializeLocationId();    
     return () => {
       isMount = false;
     };
@@ -83,7 +86,7 @@ const StockLists = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      callStockLists();
+      //callStockLists();
       initializeLocationId();
     });
     return unsubscribe;
@@ -98,11 +101,11 @@ const StockLists = props => {
 
   const callStockLists = () => {
     GetRequestStockListsDAO.find({})
-      .then(res => {
-        if (isMount) {
+      .then(res => {     
+        if(isMount){
           const _items = getItemsFromStockItems(res.stock_items);
-          setItems(_items);
-        }
+          setItems(_items);        
+        }           
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -446,7 +449,10 @@ const StockLists = props => {
           }
         }}
       />
+
       <Notification />
+      <LoadingProgressBar />
+
     </View>
   );
 };

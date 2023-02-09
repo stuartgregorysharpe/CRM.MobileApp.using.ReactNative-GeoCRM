@@ -1,8 +1,8 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { StatusBar } from 'react-native';
+import {StatusBar} from 'react-native';
 import React, {Fragment, useState, useEffect} from 'react';
 import {View} from 'react-native';
-import {useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import MoreNavigator from './MoreNavigator';
 import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
@@ -18,8 +18,7 @@ import HeaderRightView from './Header/HeaderRightView';
 import {style} from '../constants/Styles';
 import {Constants} from '../constants';
 import {getPageNameByLinker} from '../constants/Helper';
-import { getBottomTabs } from './helper';
-
+import {getBottomTabs} from './helper';
 
 const BottomTab = createBottomTabNavigator();
 
@@ -32,15 +31,14 @@ export default function RepBottomTabNavigator({navigation}) {
   const [bottomTabs, setBottomTabs] = useState([]);
   const [isSamsung, setIsSamsung] = useState(false);
 
-
   useEffect(() => {
-    DeviceInfo.getDeviceName().then((deviceName) => {
-      if(deviceName.toLowerCase().includes("samsung")){
+    DeviceInfo.getDeviceName().then(deviceName => {
+      if (deviceName.toLowerCase().includes('samsung')) {
         setIsSamsung(true);
       }
-      console.log("deviceName ==== " ,deviceName)
+      console.log('deviceName ==== ', deviceName);
     });
-  },[]);
+  }, []);
 
   useEffect(() => {
     initBottomTab();
@@ -83,9 +81,8 @@ export default function RepBottomTabNavigator({navigation}) {
   };
 
   useEffect(() => {
-    
     if (visibleMore != '') {
-      navigation.navigate('More');
+      navigation.navigate('More', {screen: visibleMore});
       setTimeout(() => {
         //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
       });
@@ -93,14 +90,14 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   const getHeaderHeight = () => {
-
-    console.log("StatusBar.currentHeight", StatusBar.currentHeight);
+    console.log('StatusBar.currentHeight', StatusBar.currentHeight);
 
     var currentHeight = 0;
     if (Platform.OS == 'ios') {
       currentHeight = 20;
-    }else{
-      currentHeight = StatusBar.currentHeight > 0 ? StatusBar.currentHeight : 24
+    } else {
+      currentHeight =
+        StatusBar.currentHeight > 0 ? StatusBar.currentHeight : 24;
     }
 
     if (Platform.OS == 'ios') {
@@ -110,18 +107,16 @@ export default function RepBottomTabNavigator({navigation}) {
         return 62;
       }
     } else {
-      
-      if(isSamsung){
+      if (isSamsung) {
         return 60;
       }
-      
+
       if (DeviceInfo.isTablet()) {
         return currentHeight + 62;
       } else {
         return currentHeight + 52;
       }
     }
-
   };
 
   const getHeaderMargin = () => {
@@ -132,7 +127,6 @@ export default function RepBottomTabNavigator({navigation}) {
         return 0;
       }
     } else {
-      
       if (DeviceInfo.isTablet()) {
         return 22;
       } else {
@@ -144,7 +138,7 @@ export default function RepBottomTabNavigator({navigation}) {
   if (bottomTabs.length == 0) {
     return <View></View>;
   }
-  
+
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -176,7 +170,7 @@ export default function RepBottomTabNavigator({navigation}) {
             options={{
               title: element.name,
               tabBarLabel: element.name,
-              
+
               tabBarIcon: ({focused}) => (
                 <Fragment>
                   <SvgIcon
@@ -186,14 +180,14 @@ export default function RepBottomTabNavigator({navigation}) {
                   />
                 </Fragment>
               ),
-              headerStyle: {                
+              headerStyle: {
                 height: getHeaderHeight(), // Specify the height of your custom header
-                backgroundColor:whiteLabel().actionFullButtonBackground
+                backgroundColor:whiteLabel().headerBackground
               },
-              headerRight: () => <HeaderRightView navigation={navigation} />,              
+              headerRight: () => <HeaderRightView navigation={navigation} />,
               tabBarLabelStyle: {
                 fontSize: 12,
-                fontFamily: 'Gilroy-Medium',                
+                fontFamily: 'Gilroy-Medium',
               },
               tabBarActiveTintColor: whiteLabel().activeIcon,
             }}
@@ -211,9 +205,8 @@ export default function RepBottomTabNavigator({navigation}) {
                   // } else {
                   //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
                   // }
-
-                }else{
-                  console.log("bottom tab clicked")
+                } else {
+                  console.log('bottom tab clicked');
                   dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                 }
               },

@@ -7,6 +7,7 @@ import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
 import {expireToken} from '../../../../../constants/Helper';
 import { GetRequestCustomerSearchDAO, GetRequestLocationDevicesDAO } from '../../../../../DAO';
+import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 const SearchLocationContainer = props => {
 
@@ -106,6 +107,7 @@ const SearchLocationContainer = props => {
     };
 
     GetRequestCustomerSearchDAO.find(param).then((res) => {      
+      console.log("response item length => ", res.items.length);
       setLists(res.items);
       if(props.onStartSearch && res.items.length == 0  ){
         props.onStartSearch(false);
@@ -132,6 +134,7 @@ const SearchLocationContainer = props => {
         {...props}
       />
       <Notification />
+      <LoadingProgressBar />
     </View>
   );
 };

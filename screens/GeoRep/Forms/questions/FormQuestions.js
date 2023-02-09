@@ -37,6 +37,7 @@ import {Constants, Strings} from '../../../../constants';
 import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
 import {generateKey} from '../../../../constants/Utils';
 import {Notification} from '../../../../components/modal/Notification';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 var indempotencyKey;
 
 //export default function FormQuestions(props) {
@@ -48,8 +49,9 @@ export const FormQuestions = props => {
   const [formQuestions, setFormQuestions] = useState([]);
   const [isDateTimeView, setIsDateTimeView] = useState(false);
   const [isSign, setIsSign] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const formQuestionViewRef = useRef();
-  const loadingBarRef = useRef();
+  
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
   let isMount = true;
@@ -228,6 +230,9 @@ export const FormQuestions = props => {
       indempotencyKey = generateKey();
     }
 
+    if(isLoading) return;
+    
+
     saveDb(formQuestions, indempotencyKey);
     var error = true;
     error = validateFormQuestionData(formQuestions);
@@ -241,7 +246,7 @@ export const FormQuestions = props => {
       );
       return;
     }
-    loadingBarRef.current.showModal();
+    
 
     var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
@@ -260,6 +265,8 @@ export const FormQuestions = props => {
       files,
     );
 
+    setIsLoading(true);
+
     PostRequestDAO.find(
       locationId,
       postDataJson,
@@ -267,13 +274,14 @@ export const FormQuestions = props => {
       'forms/forms-submission',
       form.form_name,
       '',
+      null,
+      dispatch
     )
       .then(async res => {
-        loadingBarRef.current.hideModal();
+        
         console.log('respnose => ', res);
-
-        setTimeout(() => {
-          console.log('called time out');
+        // setTimeout(() => {
+        //   console.log('called time out');
           dispatch(
             showNotification({
               type: 'success',
@@ -301,10 +309,12 @@ export const FormQuestions = props => {
               },
             }),
           );
-        }, 700);
+        //}, 700);
+
+        setIsLoading(false);
       })
       .catch(e => {
-        loadingBarRef.current.hideModal();
+        setIsLoading(false);
         expireToken(dispatch, e);
       });
   };
@@ -328,6 +338,7 @@ export const FormQuestions = props => {
   return (
     <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
       <Notification />
+      <LoadingProgressBar/>
 
       <FormQuestionView
         ref={formQuestionViewRef}
@@ -340,10 +351,7 @@ export const FormQuestions = props => {
         onBackPressed={onBackPressed}
         onSubmit={_onSubmit}
       />
-
-      <LoadingBar 
-        backButtonDisabled={true}
-        ref={loadingBarRef} />
+      
     </View>
   );
 };

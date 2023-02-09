@@ -12,8 +12,7 @@ import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {getBaseUrl, getToken, getUserData} from '../../../../constants/Storage';
 import {
-  getSupportIssues,
-  postSupportEmail,
+  getSupportIssues,  
 } from '../../../../actions/support.action';
 
 import * as ImagePicker from 'react-native-image-picker';
@@ -27,8 +26,15 @@ import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {Notification} from '../../../../components/modal/Notification';
 import {useDispatch, useSelector} from 'react-redux';
 import {generateKey} from '../../../../constants/Utils';
+import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import { PostRequestDAO } from '../../../../DAO';
+import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../actions/notification.action';
+import { Strings } from '../../../../constants';
+
+var ticket_indempotency = '';
 
 export const Ticket = forwardRef((props, ref) => {
+
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const emailRef = useRef();
@@ -41,6 +47,7 @@ export const Ticket = forwardRef((props, ref) => {
   const [issue, setIssue] = useState('');
   const [issueDetails, setIssueDetails] = useState('');
   const [issueImage, setIssueImage] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
 
   useImperativeHandle(ref, () => ({
     callPostSupport() {
@@ -51,13 +58,9 @@ export const Ticket = forwardRef((props, ref) => {
   useEffect(() => {
     initView();
     loadSupportItems();
+    ticket_indempotency = generateKey();
   }, []);
-
-  const selectItem = text => {
-    setModalVisible(false);
-    setIssue(text);
-  };
-
+  
   const initView = async () => {
     var userData = await getUserData();
     if (userData) {
@@ -84,6 +87,12 @@ export const Ticket = forwardRef((props, ref) => {
   };
 
   const postdata = async () => {
+    
+    if(isSubmit){
+      return;
+    }
+
+    console.log("issue", issue, issueDetails)
     if (issue != '' && issueDetails != '') {
       var userParam = getPostParameter(currentLocation);
       let params = {
@@ -101,17 +110,17 @@ export const Ticket = forwardRef((props, ref) => {
         user_local_data: userParam.user_local_data,
       };
 
-      postSupportEmail(params)
-        .then(res => {
-          if (res.status == 'success') {
-            notifyMessage('Success', '');
-          } else {
-            notifyMessage('Failed', '');
-          }
-        })
-        .catch(e => {
-          expireToken(dispatch, e);
-        });
+      setIsSubmit(true);
+      
+
+      PostRequestDAO.find(0 , params, 'supportmail' , 'supportmail', '' , '' , ticket_indempotency  , dispatch ).then((res) => {                        
+        dispatch(showNotification({type : Strings.Success , message: res.message , buttonText: Strings.Ok}));
+        setIsSubmit(false);
+      }).catch((e) => {
+        setIsSubmit(false);        
+        expireToken(dispatch, e);
+      });
+  
     }
   };
 
@@ -142,14 +151,16 @@ export const Ticket = forwardRef((props, ref) => {
   const convertBase64 = async path => {
     var data = await RNFS.readFile(path, 'base64').then(res => {
       return res;
-    });
-    console.log('base 64', data);
+    });    
     setIssueImage(data);
   };
 
   return (
     <View>
+      
       <Notification></Notification>
+      <LoadingProgressBar />
+
       <Text style={styles.description}>
         Please fill in the above fields and upload any relevant screenshots that
         could help identify the problem your experiencing.
@@ -228,16 +239,7 @@ export const Ticket = forwardRef((props, ref) => {
         onValueChanged={(item, index) => {
           setIssue(item);
           setModalVisible(false);
-        }}></SelectionPicker>
-      {/* <Portal>
-          <Modal visible={modaVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={styles.pickerItemBox}>
-            {supportIssues.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.pickerItem} onPress={selectItem.bind(null, item)}>
-                <Text style={styles.pickerItemText}>{item}</Text>
-                </TouchableOpacity>
-            ))}
-          </Modal>
-        </Portal> */}
+        }}></SelectionPicker>      
     </View>
   );
 });

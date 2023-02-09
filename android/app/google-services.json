@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "883102177855",
+    "project_id": "geoverse",
+    "storage_bucket": "geoverse.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:883102177855:android:949548fc4dbff35dec768a",
+        "android_client_info": {
+          "package_name": "com.geoverse_app_rn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "883102177855-7tnqj34eh7ifh85in3uldn4lqk6t6sbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXmGnJNCfdxzSBfXPc95-r7ZJcyML0N0k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "883102177855-7tnqj34eh7ifh85in3uldn4lqk6t6sbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

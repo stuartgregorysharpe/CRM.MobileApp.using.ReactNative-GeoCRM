@@ -23,6 +23,7 @@ export default function Movements() {
     var isMount = true;
 
     useEffect(() =>{
+        isMount = true;
         loadMoreData();
         return () => {
           isMount = false;
