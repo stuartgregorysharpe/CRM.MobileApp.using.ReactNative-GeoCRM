@@ -60,26 +60,26 @@ export function getFormStructureData() {
             field_name: 'additional_number',
             initial_value: '',
             editable: "1",
-            is_required: true,
+            is_required: false,
             field_label: 'Additional Number',
             value: ''
         },
         {
-            key:5,
-            field_type: 'dropdown',
+            key:6,
+            field_type: 'multiple',
             field_name: 'primary_contact',
             initial_value: '',
             editable: "1",
             is_required: true,
-            field_label: 'Primary/Secondary Contacts',
+            field_label: 'Primary/Additional',
             value: '',
-            options: [
+            items: [
                 {
                     label: 'Primary',
                     value: '1'
                 },
                 {
-                    label: 'Secondary',
+                    label: 'Additional',
                     value: '0'
                 }
             ]

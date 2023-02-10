@@ -87,16 +87,17 @@ const MainPage = forwardRef((props, ref) => {
   //   loadPage();
   // }, []);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
-      loadPage();
-    });
-    return unsubscribe;
-  }, [navigation]);  
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {      
+  //     console.log("focussfasdfasdfasdfsdf")
+  //     loadPage();
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);  
 
   useEffect(() => {
     console.log("hello notifications main");
-    //loadPage();
+    loadPage();
     if (!isCheckin) {
       cleanLocationId();
     }

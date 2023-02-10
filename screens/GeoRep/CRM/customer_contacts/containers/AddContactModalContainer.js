@@ -47,6 +47,7 @@ export default function AddContactModalContainer(props) {
             if (pageType === 'update' && contactInfo != undefined) {            
                 postData = {...postData , contact_id: contactInfo.contact_id};
             }            
+            
             loadingBarRef.current.showModal();
             PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {                
                 loadingBarRef.current.hideModal();
