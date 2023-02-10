@@ -19,6 +19,7 @@ export default function ReturnDeviceDetailView(props) {
   const [reasonLists, setReasonLists] = useState([
     {value: 'Damaged', label: 'Damaged'},
     {value: 'Device Cleanup', label: 'Device Cleanup'},
+    {value: 'Discontinued', label: 'Discontinued'},    
     {value: 'Faulty', label: 'Faulty'},
     {value: 'Used', label: 'Used'},
   ]);
