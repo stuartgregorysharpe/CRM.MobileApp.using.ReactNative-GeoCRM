@@ -61,6 +61,13 @@ const CheckinLinkButton = props => {
     initData();
   }, []);
 
+  useEffect(() => {
+    if(isLoading &&  !isFeedbackModal){
+      if(loadingBarRef.current)
+        loadingBarRef.current.showModal();
+    }
+  }, [isLoading , isFeedbackModal ]);
+
   const initData = () => {
     checkin_indempotency = generateKey();
     dispatch(updateCurrentLocation());
@@ -169,9 +176,8 @@ const CheckinLinkButton = props => {
     };
 
     console.log("post data =>" , postData);
-
     setIsLoading(true);
-    loadingBarRef.current.showModal();
+    //loadingBarRef.current.showModal();
 
     PostRequestDAO.find(
       locationId,
@@ -337,6 +343,7 @@ const CheckinLinkButton = props => {
         backButtonDisabled={true}
         ref={loadingBarRef}
       />
+
 
     </>
   );

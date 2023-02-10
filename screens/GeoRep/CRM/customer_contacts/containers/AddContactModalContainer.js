@@ -1,6 +1,6 @@
 
 import { View } from 'react-native'
-import React , { useState , useEffect , useRef } from 'react'
+import React , { useState , useEffect , useRef , Keyboard } from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import AddContactModalView from '../components/AddContactModalView';
 import { expireToken, getPostParameter } from '../../../../../constants/Helper';
@@ -23,7 +23,7 @@ export default function AddContactModalContainer(props) {
     const loadingBarRef = useRef(null);
 
     const dispatch = useDispatch();
-
+    
     const currentLocation = useSelector(state => state.rep.currentLocation);    
 
     useEffect(() => {
@@ -37,6 +37,8 @@ export default function AddContactModalContainer(props) {
     
     const handleSubmit = (formData) => {
         
+        Keyboard.dismiss();
+
         if(!isLoading){
             setIsLoading(true);
             
