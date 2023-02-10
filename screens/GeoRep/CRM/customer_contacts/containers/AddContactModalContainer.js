@@ -37,7 +37,7 @@ export default function AddContactModalContainer(props) {
     
     const handleSubmit = (formData) => {
         
-        Keyboard.dismiss();
+        //Keyboard.dismiss();
 
         if(!isLoading){
             setIsLoading(true);
@@ -48,18 +48,17 @@ export default function AddContactModalContainer(props) {
                 postData = {...postData , contact_id: contactInfo.contact_id};
             }            
             loadingBarRef.current.showModal();
-            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {
-                
-                setIsLoading(false);
+            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {                
                 loadingBarRef.current.hideModal();
+                setIsLoading(false);
                 if(res.status == Strings.Success){
                     setMessage(res.message);
                     setIsConfirmModal(true);
                 }                
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
-                setIsLoading(false);
                 loadingBarRef.current.hideModal();  
+                setIsLoading(false);                
                 expireToken(dispatch, e);
             })
  

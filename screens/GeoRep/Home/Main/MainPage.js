@@ -13,8 +13,6 @@ import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
 import { updateCurrentLocation } from '../../../../actions/google.action';
 import { useDispatch } from 'react-redux';
-import { Notification } from '../../../../components/modal/Notification';
-import { showNotification } from '../../../../actions/notification.action';
 import { CHANGE_SYNC_START, CHECKIN, SET_CONTENT_FEED_DATA } from '../../../../actions/actionTypes';
 import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
@@ -30,8 +28,7 @@ import Compliance from '../partial/cards/Compliance';
 import TwoRowContent from '../../../../components/modal/content_type_modals/TwoRowContentFeed';
 import { getContentFeeds, updateContentFeed_post } from '../../../../actions/contentLibrary.action';
 import CustomImageDialog from '../../../../components/modal/content_type_modals/CustomImageDialog';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
-
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
 //const MainPage = props => {
 
@@ -59,9 +56,7 @@ const MainPage = forwardRef((props, ref) => {
   const [isScrollable, setIsScrollable] = useState(true);
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
-  const [haveFilter, setHaveFilter] = useState(false);
-  
-
+  const [haveFilter, setHaveFilter] = useState(false);  
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
   const [lindtdash_mobility, setMobilityCard] = useState(false);
@@ -72,6 +67,9 @@ const MainPage = forwardRef((props, ref) => {
   const dataUpdated = useSelector(state => state.feed.content_feed_data);
   const [isFeedImageVisible, setImageVisible] = useState(false);
   const [feedData, setFeedData] = useState(null);
+  const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [message, setMessage] = useState('');
+ 
   useEffect(() => {
     if (dataUpdated) {
       loadContentFeedData();
@@ -543,13 +541,8 @@ const MainPage = forwardRef((props, ref) => {
   };
 
   const onCaptureAction = async ({ type, value }) => {
-    dispatch(
-      showNotification({
-        type: Strings.Success,
-        message: value,
-        buttonText: Strings.Ok,
-      }),
-    );
+    setMessage(value);
+    setIsConfirmModal(true);
   };
 
   const renderCards = (item, index) => {
@@ -718,8 +711,14 @@ const MainPage = forwardRef((props, ref) => {
 
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
-      <Notification></Notification>
-      <LoadingProgressBar/>
+
+      <AlertDialog 
+        visible={isConfirmModal}
+        message={message}
+        onModalClose={() => {
+          setIsConfirmModal(false);          
+        }}
+      />
 
       <View style={{ marginTop: 5 }}>
         <SubmitButton

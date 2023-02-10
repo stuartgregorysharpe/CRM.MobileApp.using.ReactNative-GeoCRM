@@ -133,6 +133,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
 
     postApiRequestMultipart('home/odometer', postData)
       .then(res => {
+        loadingBarRef.current.hideModal();
         if (res.status === Strings.Success) {
           setImage(null);
           onButtonAction({
@@ -141,12 +142,12 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
           });
         }
         setIsSubmit(false);
-        loadingBarRef.current.hideModal();
+        
       })
       .catch(error => {
         console.log('home/odometer post api error:', error);
-        setIsSubmit(false);
         loadingBarRef.current.hideModal();
+        setIsSubmit(false);      
         expireToken(dispatch, e);        
       });
   };
@@ -237,6 +238,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       <View style={styles.container}>
 
         <LoadingBar 
+          backButtonDisabled={true}
           ref={loadingBarRef}
         />
         

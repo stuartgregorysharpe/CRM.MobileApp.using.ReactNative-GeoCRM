@@ -57,6 +57,7 @@ import AccessCRMCheckInView from './components/AccessCRMCheckInView';
 import { generateKey } from '../../../../constants/Utils';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import LoadingBar from '../../../../components/LoadingView/loading_bar';
 
 var outcomeVal = false;
 var isCheckinTypes = false;
@@ -102,6 +103,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const isCheckin = useSelector(state => state.location.checkIn);
   const [isUpdateImage, setIsUpdateImage] = useState(false);
   const [isCallFeedback, setIsCallFeedback] = useState(false); 
+  const loadingBarRef = useRef();
 
   useImperativeHandle(
     ref,
@@ -250,13 +252,16 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     };
 
     if(!isUpdateImage){
-
-      setIsUpdateImage(true)      
-      PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency , dispatch ).then((res) => {      
+      
+      setIsUpdateImage(true);
+      loadingBarRef.current.showModal();
+      PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency , null ).then((res) => {      
+        loadingBarRef.current.hideModal();
         setMessage(res.message);
         setIsSuccess(true);
-        setIsUpdateImage(false);        
+        setIsUpdateImage(false);
       }).catch((error) => {        
+        loadingBarRef.current.hideModal();
         expireToken(dispatch, error);
         setIsUpdateImage(false);        
       })    
@@ -545,9 +550,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     <View style={[styles.container, {flex: 1}]}>
       
       {showFeedbackDropDownModal()}
-      
-      {/* <Notification /> */}
-      {/* <LoadingProgressBar/>       */}
+            
 
       <AlertDialog
         visible={isSuccess}
@@ -555,6 +558,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         onModalClose={() => {
           setIsSuccess(false);
         }}
+      />
+
+      <LoadingBar 
+        backButtonDisabled={true}
+        ref={loadingBarRef}
       />
 
       {locationInfo != undefined && (
