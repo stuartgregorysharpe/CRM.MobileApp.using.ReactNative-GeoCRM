@@ -9,7 +9,7 @@ import CheckinLinkButton from '../../../../../components/common/DynamicButtons/C
 
 const AccessCRMCheckInView = (props) => {
 
-    const { features , location_id , canCheckin } = props;
+    const { features , location_id , locationInfo,  canCheckin } = props;
     if( location_id == undefined ) return null;
             
     console.log("canCheckin" ,canCheckin)
@@ -38,7 +38,24 @@ const AccessCRMCheckInView = (props) => {
             {features && features.includes('checkin') && (
                 <CheckinLinkButton
                   title="Check In"
-                  locationId={location_id}        
+                  locationInfo={locationInfo}
+                  locationId={location_id}                  
+                  showConfirmModal={(message) => {            
+                    if(props.showConfirmModal){
+                      props.showConfirmModal(message);
+                    }
+                  }}
+                  onStart={() => {
+                    if(props.showLoadingBar){
+                      props.showLoadingBar();
+                    }
+                  }}
+                  onEnd={() => {
+                    if(props.hideLoadingBar){
+                      props.hideLoadingBar();
+                    }
+                  }}    
+
                   onCallback={() => {
                     if(props.onCheckIn){
                       console.log("triger on callback");

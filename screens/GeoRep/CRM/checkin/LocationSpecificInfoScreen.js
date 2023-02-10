@@ -88,6 +88,7 @@ const LocationSpecificInfoScreen = props => {
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
   const isDisposition = features.includes('disposition_fields');
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
   let isMout = true;
 
   useEffect(() => {
@@ -129,7 +130,7 @@ const LocationSpecificInfoScreen = props => {
   }, [navigation]);
 
   const getCheckInLocation = async () => {
-    
+
     var location = await getJsonData('@checkin_location');
     console.log("location id ===>", location_id );
     if (location != null) {
@@ -300,6 +301,8 @@ const LocationSpecificInfoScreen = props => {
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
 
   const getFormLists = async locationId => {
+    if(isLoadingForm) return;
+    setIsLoadingForm(true);
     var param = {
       location_id: locationId,
     };
@@ -312,12 +315,16 @@ const LocationSpecificInfoScreen = props => {
       if (checkin_reason_id && checkin_reason_id != '') {
         param.checkin_reason_id = checkin_reason_id;
       }
-    }
+    }    
     GetRequestFormListsDAO.find(param)
       .then(res => {
+        console.log("form lists ====>", res.forms);
         getCompulsoryForm(res.forms);
+        setIsLoadingForm(false);
       })
-      .catch(e => {});
+      .catch(e => {
+        setIsLoadingForm(false);
+      });
   };
 
   const getCompulsoryForm = async lists => {

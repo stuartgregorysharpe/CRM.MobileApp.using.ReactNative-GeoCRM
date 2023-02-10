@@ -84,8 +84,9 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const locationInfoRef = useRef();
   const [filePath, setFilePath] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
+  const [confirmModalType, setConfirmModalType] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isFeedbackModal, setIsFeedback] = useState(false);
@@ -258,7 +259,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency , null ).then((res) => {      
         loadingBarRef.current.hideModal();
         setMessage(res.message);
-        setIsSuccess(true);
+        setConfirmModalType('location-image');
+        setIsConfirmModal(true);
         setIsUpdateImage(false);
       }).catch((error) => {        
         loadingBarRef.current.hideModal();
@@ -553,10 +555,13 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             
 
       <AlertDialog
-        visible={isSuccess}
+        visible={isConfirmModal}
         message={message}
         onModalClose={() => {
-          setIsSuccess(false);
+          setIsConfirmModal(false);
+          if(confirmModalType != 'location-image'){
+            openSpecificInfoPage();
+          }
         }}
       />
 
@@ -754,7 +759,25 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
             <AccessCRMCheckInView 
               features={features}
               location_id={locationInfo?.location_id}
-              canCheckin={_canGoNextPrev}
+              locationInfo={locationInfo}
+              canCheckin={_canGoNextPrev}              
+              showConfirmModal={(message) => {
+                setMessage(message);
+                setConfirmModalType('already-checkin')
+                setIsConfirmModal(true);
+              }}
+              showLoadingBar={() => {
+                if(loadingBarRef.current)
+                  loadingBarRef.current.showModal();
+              }}
+              hideLoadingBar={()=> {
+                if(loadingBarRef.current)
+                  loadingBarRef.current.hideModal();
+                  setMessage(Strings.PostRequestResponse.Successfully_Checkin);
+                  setConfirmModalType('checkin-success')
+                  setIsConfirmModal(true);
+              }}
+
               onAccessCRM={() => {
                   clickedAction = 'access_crm';
                   if (_canGoNextPrev()) {

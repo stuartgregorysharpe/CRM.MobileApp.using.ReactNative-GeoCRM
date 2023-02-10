@@ -96,7 +96,7 @@ const MainPage = forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log("hello notifications main");
-    loadPage();
+    //loadPage();
     if (!isCheckin) {
       cleanLocationId();
     }
