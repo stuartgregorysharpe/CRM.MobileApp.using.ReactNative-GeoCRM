@@ -60,16 +60,13 @@ export default function AddContactModalContainer(props) {
                 loadingBarRef.current.hideModal();  
                 setIsLoading(false);                
                 expireToken(dispatch, e);
-            })
- 
-        }
-            
+            }) 
+        }            
     }
 
+    
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
-
-
             <AlertDialog 
                 visible={isConfirmModal}
                 message={message}
