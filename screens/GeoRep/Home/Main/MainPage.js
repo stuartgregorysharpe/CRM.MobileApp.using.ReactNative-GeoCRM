@@ -541,8 +541,12 @@ const MainPage = forwardRef((props, ref) => {
   };
 
   const onCaptureAction = async ({ type, value }) => {
-    setMessage(value);
-    setIsConfirmModal(true);
+    if(type == Constants.actionType.ACTION_DONE){
+      setTimeout(() => {
+        setMessage(value);
+        setIsConfirmModal(true);
+      }, 300);      
+    }    
   };
 
   const renderCards = (item, index) => {
