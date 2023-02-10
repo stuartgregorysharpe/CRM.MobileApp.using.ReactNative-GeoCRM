@@ -214,6 +214,7 @@ export default function StockSignatureView(props) {
     )
   }
 
+  
   return (
     <View style={styles.container}>
       <CTextInput
@@ -237,6 +238,8 @@ export default function StockSignatureView(props) {
         }}
         style={{marginTop: 15}}
       />
+
+
 
       {props.item.stock_type != Constants.stockType.RETURN &&
         isMSISDN &&

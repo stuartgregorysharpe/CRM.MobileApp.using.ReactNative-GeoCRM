@@ -25,6 +25,7 @@ import {getLocationInfo} from '../../../actions/location.action';
 import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
 import AlertDialog from '../../modal/AlertDialog';
+import { getLocationInfoFromLocal } from '../../../sqlite/DBHelper';
 
 var checkin_indempotency = '';
 var checkin_type_id = '';
@@ -194,15 +195,18 @@ const CheckinLinkButton = props => {
         );
         await storeLocalValue('@checkin_type_id', checkin_type_id);
         await storeLocalValue('@checkin_reason_id', reason_id);
-
+        
+        let checkInDetails = locationInfo;  
         if(locationInfo != null && locationInfo != undefined){
-          let checkInDetails = locationInfo;
-          checkInDetails.current_call = {
-            "checkin_time": postData.checkin_time,
-            "location_name": checkInDetails.location_name.value
-          };
-          await storeJsonData('@checkin_location', checkInDetails);
+          checkInDetails = locationInfo;  
+        }else{
+          checkInDetails = await getLocationInfoFromLocal(locationId);          
         }
+        checkInDetails.current_call = {
+          "checkin_time": postData.checkin_time,
+          "location_name": checkInDetails.location_name.value
+        };          
+        await storeJsonData('@checkin_location', checkInDetails);
                 
         checkin_type_id = '';
         reason_id = '';

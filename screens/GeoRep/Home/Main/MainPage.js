@@ -433,16 +433,13 @@ const MainPage = forwardRef((props, ref) => {
           let checkInStatus = await getLocalData('@checkin');
           dispatch({ type: CHECKIN, payload: checkInStatus==='1'?true:false });
           if(checkInStatus === '1'){
-            var location = await getJsonData('@checkin_location');
-            await storeLocalValue(
-              '@specific_location_id',
-              location.location_id,
-            );
+            var location = await getJsonData('@checkin_location');       
+            console.log("location dd=>",location)     
             if (location != null) {
               setCurrentCall(location.current_call);
             }
           }
-          
+                    
         }
       });
 

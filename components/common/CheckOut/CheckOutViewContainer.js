@@ -111,8 +111,7 @@ export default function CheckOutViewContainer(props) {
       )
         .then(async res => {
           console.log('RES : ', res);
-          if(loadingBarRef.current)
-            loadingBarRef.current.hideModal();
+          
 
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
@@ -139,6 +138,9 @@ export default function CheckOutViewContainer(props) {
           }
           
           setIsLoading(false);
+          if(loadingBarRef.current)
+            loadingBarRef.current.hideModal();
+            
           
         })
         .catch(e => {
