@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import React, { useEffect, useState , useRef } from 'react';
 import AddStockView from '../components/AddStockView';
 import {Constants, Strings} from '../../../../../constants';
@@ -83,7 +83,7 @@ export default function AddStockContainer(props) {
       null      
     )
       .then(res => {
-        setIsLoading(false);
+       
         loadingBarRef.current.hideModal();
         console.log("add stock response =>", res);
         var message = '';
@@ -92,9 +92,17 @@ export default function AddStockContainer(props) {
         }else{
           message = res.errors;
         }
-        setMessageType(res.status);
-        setIsConfirmModal(true);
+        setMessageType(res.status);        
         setMessage(message);
+        if(Platform.OS == 'android') {
+          setIsLoading(false);
+          setIsConfirmModal(true);
+        }else{
+          setTimeout(() => {
+            setIsLoading(false);
+            setIsConfirmModal(true);
+          }, 300);
+        }        
       })
       .catch(e => {
         setIsLoading(false);

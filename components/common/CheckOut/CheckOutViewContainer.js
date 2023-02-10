@@ -123,15 +123,13 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@checkin_location', null);
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-          
-
-          if(isMount){
-            if (type == 'specificInfo' || type == 'calendar') {
-              if (props.goBack) {
-                props.goBack(res);
-              }
+                  
+          if (type == 'specificInfo' || type == 'calendar') {
+            if (props.goBack) {
+              props.goBack(res);
             }
           }
+          
                               
           if(props.onCallback){
             props.onCallback();
@@ -147,8 +145,7 @@ export default function CheckOutViewContainer(props) {
           console.log('checkout error:', e);
           if(loadingBarRef.current)
             loadingBarRef.current.hideModal();
-          setIsLoading(false);
-          
+          setIsLoading(false);          
           expireToken(dispatch, e);
         });
     }

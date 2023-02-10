@@ -239,8 +239,11 @@ export default function CalendarScreen(props) {
               setIsConfirmModal(true);
             }}
             showLoadingBar={() => {
-              if(loadingBarRef.current)
+              if(loadingBarRef.current){
+                console.log("start checkin ")
                 loadingBarRef.current.showModal();
+              }
+                
             }}
             hideLoadingBar={()=> {
               if(loadingBarRef.current)
@@ -304,9 +307,9 @@ export default function CalendarScreen(props) {
                 page: 'checkin',
             });
           }}
-        />              
+        />
         
-        <LoadingBar 
+        <LoadingBar        
           ref={loadingBarRef}
         />
 

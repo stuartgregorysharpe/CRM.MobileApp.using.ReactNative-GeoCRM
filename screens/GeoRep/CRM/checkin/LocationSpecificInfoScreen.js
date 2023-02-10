@@ -107,13 +107,13 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     isMout = true;
-    if (isCheckin == false && pageType != 'access_crm') {
-      if (props.navigation.canGoBack()) {
-        if (isMout) {
-          props.navigation.goBack();
-        }
-      }
-    }
+    // if (isCheckin == false && pageType != 'access_crm') {
+    //   if (props.navigation.canGoBack()) {
+    //     if (isMout) {
+    //       props.navigation.goBack();
+    //     }
+    //   }
+    // }
     if (isCheckin) {
       getCheckInLocation();
     }
@@ -499,6 +499,7 @@ const LocationSpecificInfoScreen = props => {
               <CheckOutViewContainer
                 type="specificInfo"
                 goBack={async res => {
+                  
                   dispatch(
                     showNotification({
                       type: 'success',
@@ -510,6 +511,7 @@ const LocationSpecificInfoScreen = props => {
                       },
                     }),
                   );
+
                 }}
               />
             )}

@@ -181,9 +181,9 @@ const CheckinLinkButton = props => {
       null
     )
       .then(async res => {
-        
-        checkin_indempotency = generateKey();
-        setIsFeedback(false);
+
+        setIsFeedback(false);        
+        checkin_indempotency = generateKey();        
         setFeedbackOptions(originFeedbackData);
         setModalType('feedback');
         dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
@@ -231,9 +231,7 @@ const CheckinLinkButton = props => {
         });        
         setIsLoading(false);
        
-        if(props.onEnd){
-          props.onEnd();
-        }
+
 
         if(props.onCallback){          
           props.onCallback();
@@ -275,6 +273,10 @@ const CheckinLinkButton = props => {
 
 
         }       
+        if(props.onEnd){
+          props.onEnd();
+        }
+        
       })
       .catch(e => {
         if(props.onEnd){
