@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect , useRef } from 'react';
 import {
   SafeAreaView,
   Text,
@@ -36,6 +36,9 @@ import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 import { clearLoadingBar, showLoadingBar } from '../../../actions/notification.action';
+import LoadingBar from '../../../components/LoadingView/loading_bar';
+import AlertDialog from '../../../components/modal/AlertDialog';
+import { Strings } from '../../../constants';
 
 var selectedIndex = 2;
 let isMount = true;
@@ -53,6 +56,9 @@ export default function CalendarScreen(props) {
   const [isAdd, setIsAdd] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const loadingBarRef = useRef(null);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -187,15 +193,15 @@ export default function CalendarScreen(props) {
 
     if(!isUpdating && !isLoading){
       setIsUpdating(true);
-      dispatch(showLoadingBar({'type' : 'loading'}));
+      loadingBarRef.current.showModal();
       updateCalendar(postData)
         .then(res => {
           setIsUpdating(false);
-          dispatch(clearLoadingBar());
+          loadingBarRef.current.hideModal();
         })
         .catch(e => {
           setIsUpdating(false);
-          dispatch(clearLoadingBar());
+          loadingBarRef.current.hideModal();
           expireToken(dispatch, e);
       });
     }    
@@ -228,6 +234,20 @@ export default function CalendarScreen(props) {
             {backgroundColor: isActive ? '#eee' : Colors.bgColor},
           ]}>
           <CalendarItem
+            showConfirmModal={(message) => {
+              setMessage(message);
+              setIsConfirmModal(true);
+            }}
+            showLoadingBar={() => {
+              if(loadingBarRef.current)
+                loadingBarRef.current.showModal();
+            }}
+            hideLoadingBar={()=> {
+              if(loadingBarRef.current)
+                loadingBarRef.current.hideModal();
+                setMessage(Strings.PostRequestResponse.Successfully_Checkin);
+                setIsConfirmModal(true);
+            }}
             onItemSelected={() => {
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
@@ -273,8 +293,23 @@ export default function CalendarScreen(props) {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <Notification></Notification>
-        <LoadingProgressBar/>
+
+        <AlertDialog 
+          visible={isConfirmModal}
+          message={message}
+          buttonText={'Continue'}
+          onModalClose={() => {
+            setIsConfirmModal(false);
+            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+                page: 'checkin',
+            });
+          }}
+        />              
+        
+        <LoadingBar 
+          ref={loadingBarRef}
+        />
+
         <View style={[styles.tabContainer, boxShadow]}>
           <TouchableOpacity
             style={styles.tabItem}

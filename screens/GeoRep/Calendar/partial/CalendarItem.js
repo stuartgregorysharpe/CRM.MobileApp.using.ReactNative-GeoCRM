@@ -20,6 +20,8 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import {Strings} from '../../../../constants';
+import ProductSales from '../../Sales/ProductSales';
+
 let isCheckIn = '0';
 
 export function CalendarItem(props) {
@@ -118,6 +120,21 @@ export function CalendarItem(props) {
           title="Check In"
           locationId={item.location_id}
           scheduleId={item.schedule_id}
+          showConfirmModal={(message) => {            
+            if(props.showConfirmModal){
+              props.showConfirmModal(message);
+            }
+          }}
+          onStart={() => {
+            if(props.showLoadingBar){
+              props.showLoadingBar();
+            }
+          }}
+          onEnd={() => {
+            if(props.hideLoadingBar){
+              props.hideLoadingBar();
+            }
+          }}    
           renderSubmitButton={onCheckIn => {
             return (
               <TouchableOpacity
