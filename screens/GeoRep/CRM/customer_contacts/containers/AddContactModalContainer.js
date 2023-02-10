@@ -63,8 +63,8 @@ export default function AddContactModalContainer(props) {
             }) 
         }            
     }
-
     
+
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
             <AlertDialog 

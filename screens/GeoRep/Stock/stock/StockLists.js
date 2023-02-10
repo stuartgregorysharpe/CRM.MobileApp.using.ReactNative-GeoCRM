@@ -101,11 +101,9 @@ const StockLists = props => {
 
   const callStockLists = () => {
     GetRequestStockListsDAO.find({})
-      .then(res => {     
-        if(isMount){
-          const _items = getItemsFromStockItems(res.stock_items);
-          setItems(_items);        
-        }           
+      .then(res => {             
+        const _items = getItemsFromStockItems(res.stock_items);
+        setItems(_items);                           
       })
       .catch(e => {
         expireToken(dispatch, e);

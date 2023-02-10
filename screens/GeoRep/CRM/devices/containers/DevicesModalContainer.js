@@ -19,7 +19,7 @@ export default function DevicesModalContainer(props) {
     const dispatch = useDispatch()
     
     useEffect(() => {
-        
+        isMount = true;
         getDeviceLists();
         return () =>{
             isMount = false;

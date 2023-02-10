@@ -1,5 +1,5 @@
 import {View} from 'react-native';
-import React, { useEffect,  useState} from 'react';
+import React, { useEffect,  useState , useRef } from 'react';
 import StockSignatureView from '../components/StockSignatureView';
 import {postApiRequestMultipart} from '../../../../../actions/api.action';
 import {useSelector} from 'react-redux';
@@ -18,6 +18,8 @@ import {expireToken} from '../../../../../constants/Helper';
 import { generateKey } from '../../../../../constants/Utils';
 import { PostRequestDAO } from '../../../../../DAO';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+import AlertDialog from '../../../../../components/modal/AlertDialog';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 var sell_to_trader_indempotency = '';
 var return_to_warehouse_indempotency = '';
@@ -28,6 +30,11 @@ export default function StockSignatureContainer(props) {
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+  const [message, setMessage] = useState('')
+  const [confirmModalType, setConfirmModalType] = useState('');
+  const loadingBarRef = useRef(null)
+
   const dispatch = useDispatch();
 
   var msisdn = '';
@@ -105,34 +112,29 @@ export default function StockSignatureContainer(props) {
                 });
               }
               var networks = selectedCodes.map(item => item.network).join(',');
+              loadingBarRef.current.showModal();
+              setTimeout(() => {
 
-              PostRequestDAO.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
-              item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , sell_to_trader_indempotency , dispatch ).then((res) => {
-                setIsLoading(false);
-                dispatch(
-                  showNotification({
-                    type: Strings.Success,
-                    message: res.message,
-                    buttonText: 'Ok',
-                    buttonAction: async () => {
-                      props.onButtonAction({
-                        type: Constants.actionType.ACTION_CLOSE,
-                      });
-                      dispatch(clearNotification());
-                    },
-                  }),
-                );
-              }).catch((e) => {
-                setIsLoading(false);
-                expireToken(dispatch, e);
-                dispatch(
-                  showNotification({
-                    type: Strings.Success,
-                    message: 'Error',
-                    buttonText: Strings.Ok,
-                  }),
-                );
-              });
+                PostRequestDAO.find(0, postJsonData, "sell_to_trader", "stockmodule/sell-to-trader" , 
+                item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , sell_to_trader_indempotency , null ).then((res) => {
+                  loadingBarRef.current.hideModal();
+                  setIsLoading(false);
+                  setMessage(res.message);
+                  setConfirmModalType('success');
+                  setIsConfirmModal(true);                
+                }).catch((e) => {
+                  loadingBarRef.current.hideModal();
+                  setIsLoading(false);                  
+                  expireToken(dispatch, e);
+                  setMessage('Try Again');
+                  setConfirmModalType('failed');
+                  setIsConfirmModal(true);
+
+                });
+
+              }, 800);
+
+              
 
             } else if (item.stock_type == Constants.stockType.RETURN) {
 
@@ -241,8 +243,24 @@ export default function StockSignatureContainer(props) {
         
         {...props}
       />
-      <Notification />
-      <LoadingProgressBar />
+
+      <AlertDialog 
+        visible={isConfirmModal}
+        message={message}
+        onModalClose={() =>{
+          setIsConfirmModal(false);
+          if(confirmModalType == 'success'){
+            props.onButtonAction({
+              type: Constants.actionType.ACTION_CLOSE,
+            });
+          }
+        }}
+      />
+      
+      <LoadingBar 
+        ref={loadingBarRef}
+      />
+
     </View>
   );
 }
