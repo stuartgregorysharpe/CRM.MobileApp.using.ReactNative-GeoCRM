@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback , useRef} from 'react';
 import {expireToken, getPostParameter} from '../../../constants/Helper';
 import {getDateTime} from '../../../helpers/formatHelpers';
 import {useSelector, useDispatch} from 'react-redux';
@@ -26,24 +26,26 @@ import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/partial/CalendarCheckOutButton';
 import { generateKey } from '../../../constants/Utils';
+import LoadingBar from '../../LoadingView/loading_bar';
 
 var specificLocationId;
 var check_out_indempotency = '';
 let isMount = true;
 
 export default function CheckOutViewContainer(props) {
-  const {type, currentCall} = props;
+
+  const {type, currentCall , isLoadingForm } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationCheckOutCompulsory = useSelector(
     state => state.rep.locationCheckOutCompulsory,
   );
   const [isLoading, setIsLoading] = useState(false);
-
+  const loadingBarRef = useRef(null);
   const navigationMain = useNavigation();
   
-
   useEffect(() => {
+    isMount = true;
     initData();
     return () => {
       isMount = false;
@@ -55,37 +57,46 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory]);
 
   const initData = async () => {
-    specificLocationId = await getLocalData('@specific_location_id');
+    specificLocationId = await getLocalData('@specific_location_id');    
     check_out_indempotency = generateKey();
   };
 
-  const checkOutLocation = useCallback(() => {
-    _callCheckOut();
-  }, [locationCheckOutCompulsory]);
+  const checkOutLocation = useCallback(() => {    
+    if(!isLoadingForm){
+      _callCheckOut();
+    }    
+  }, [locationCheckOutCompulsory, isLoadingForm]);
 
   const _callCheckOut = () => {
 
     if (isLoading) {
       return;
     }
+
     if (locationCheckOutCompulsory) {
-      dispatch(
-        showNotification({
-          type: Strings.Success,
-          message: Strings.CRM.Complete_Compulsory_Form,
-          buttonText: Strings.Ok,
-          buttonAction: async () => {            
-            const location = await getJsonData('@checkin_location');
-            navigationMain.navigate('DeeplinkRepForms', {
-              locationInfo: location,
-            });
-            dispatch(clearNotification());
-          },
-        }),
-      );
+      if(props.showConfirmModal){
+        props.showConfirmModal(Strings.CRM.Complete_Compulsory_Form);        
+      }
+      // dispatch(
+      //   showNotification({
+      //     type: Strings.Success,
+      //     message: Strings.CRM.Complete_Compulsory_Form,
+      //     buttonText: Strings.Ok,
+      //     buttonAction: async () => {
+      //       const location = await getJsonData('@checkin_location');            
+      //       if(location != null && location != undefined){
+      //         navigationMain.navigate('DeeplinkRepForms', {
+      //           locationInfo: location,
+      //         });
+      //       }            
+      //       dispatch(clearNotification());
+      //     },
+      //   }),
+      // );
     } else {
 
-      setIsLoading(true);      
+      setIsLoading(true); 
+      loadingBarRef.current.showModal();  
 
       var userParam = getPostParameter(currentLocation);
       var currentTime = getDateTime();
@@ -104,36 +115,44 @@ export default function CheckOutViewContainer(props) {
         '',
         '',
         check_out_indempotency,
-        dispatch
+        null
       )
         .then(async res => {
           console.log('RES : ', res);
-          setIsLoading(false);        
+          
+
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
           await storeLocalValue('@specific_location_id', '');
           await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
           await storeJsonData('@form_ids', []);
-          await storeJsonData('@setup', null);                   
+          await storeJsonData('@setup', null);
+          await storeJsonData('@checkin_location', null);
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-          
-          if(isMount){
-            if (type == 'specificInfo' || type == 'calendar') {
-              if (props.goBack) {
-                props.goBack(res);
-              }
-            }
-          }
-                    
+                                      
+          setIsLoading(false);
+          if(loadingBarRef.current)
+            loadingBarRef.current.hideModal();
+
+          // if (type == 'specificInfo' || type == 'calendar') {
+          //   if (props.goBack) {
+          //     props.goBack(res);
+          //   }
+          // }
+                                        
           if(props.onCallback){
-            props.onCallback();
+            props.onCallback(res);
           }
+            
           
         })
         .catch(e => {
-          console.log('checkout error:', e);          
+          console.log('checkout error:', e);
+          if(loadingBarRef.current)
+            loadingBarRef.current.hideModal();
+          setIsLoading(false);          
           expireToken(dispatch, e);
         });
     }
@@ -155,6 +174,10 @@ export default function CheckOutViewContainer(props) {
       {type == 'calendar' && (
         <CalendarCheckOutButton _callCheckOut={checkOutLocation} />
       )}
+
+      <LoadingBar 
+        ref={loadingBarRef}
+      />
     </View>
   );
 }

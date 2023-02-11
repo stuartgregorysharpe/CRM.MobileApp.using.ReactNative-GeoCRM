@@ -219,8 +219,7 @@ const StagingView = props => {
         onItemAction={onListViewItemAction}
       />
 
-      <Notification />
-      <LoadingProgressBar />
+      <Notification />      
 
     </View>
   );

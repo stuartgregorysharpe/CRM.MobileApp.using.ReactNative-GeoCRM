@@ -43,7 +43,8 @@ export function find(postData){
 
                     let data = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , user_id);
                     let lists = await fetchDataFromDB(client_id, business_unit_id , postData, data.excludeFormIds, data.limitFormIds );
-                    let response = await getData(lists);                    
+                    var isLocationId = hasLocationId(postData);
+                    let response = await getData(lists , isLocationId);                    
                     resolve(response);
 
                 }else{
@@ -64,10 +65,7 @@ export function find(postData){
 const getExcludeFormIds = (assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , userId ) => {
 
     var excludeFormIds = [];
-    var limitFormIds = [];      
-    
-    //console.log("assignmentsData :" , JSON.stringify(assignmentsData))
-    //console.log("locationCoreMasterData",locationCoreMasterData)
+    var limitFormIds = [];              
 
     assignmentsData.forEach((element, index) => {                                                
         for(let key of Object.keys(element)){
@@ -251,14 +249,13 @@ const fetchData = async(query) => {
 
 const fetchDataFromDB = async(client_id, business_unit_id , postData, excludeFormIds , limitFormIds ) => {    
     const query = generateListQuery(postData, excludeFormIds , limitFormIds)    
-    const res = await ExecuteQuery(query, [client_id, business_unit_id]);
+    const res = await ExecuteQuery(query, [client_id, business_unit_id]);    
     return res.rows ? res.rows : [];    
 }
 
 const fetchUserTypeIdFromDB = async( user_type ) => {
     const query = generateUserTypeId()
-    const res = await ExecuteQuery(query, [user_type]);
-    console.log("res",res)
+    const res = await ExecuteQuery(query, [user_type]);    
     return res.rows ? res.rows : [];    
 }
 
@@ -310,28 +307,29 @@ const generateListQuery = (postData , excludeFormIds , limitFormIds) => {
         `WHERE ` + 
             `f.client_id = ? ` + 
         `AND ` + 
-            `f.business_unit_id = ? ` +           
+            `f.business_unit_id = ? ` +   
         `AND ` + 
           `f.delete_status = 0 ` + 
         `AND  ` + 
           `f.status = 'active' `;
           
         
-          if(hasHomeTypeId(postData)){
-              query = query + ` AND ft.form_type_id = ` + hasHomeTypeId(postData);
-          }
-          
-          if(hasAddLead(postData) && hasAddLead(postData) == 1){
+        if(hasHomeTypeId(postData)){
+            query = query + ` AND ft.form_type_id = ` + hasHomeTypeId(postData);
+        }
+        
+        if(hasAddLead(postData) && hasAddLead(postData) == 1){
             query = query + ` AND f.include_add_lead = 1`;
-          }
+        }
 
-          if(excludeFormIds.length > 0){
+        if(excludeFormIds.length > 0){
             query = query + ` AND f.form_id NOT IN (` + excludeFormIds.toString() + `)`;
-          }
-          if(hasLocationId(postData)){
+        }
+        if(hasLocationId(postData)){
             query = query + ` AND f.form_id IN (` + limitFormIds.toString() + `)`;
-          }
-          query = query + ` ORDER BY f.form_name`;
+        }
+
+        query = query + ` ORDER BY f.form_name`;
 
     return query;          
 }
@@ -346,12 +344,12 @@ const generateUserTypeId = () => {
     return query;
 }
 
-const getData = async(lists) => {
+const getData = async(lists , isLocationId) => {
     var tmp = [];
     
     for(var i = 0; i < lists.length; i++){
 
-        var element = lists.item(i);
+        var element = lists.item(i);        
         var guideInfoPath = '';
         let guideInfoData = [];
         if(element.guide_info_image || element.guide_info_title || element.guide_info_text){
@@ -366,7 +364,7 @@ const getData = async(lists) => {
 
         var query = generateCountQuery(element.form_id);
         var countRes = await fetchData(query);
-
+        
         tmp.push(
             {
                 form_id: element.form_id.toString(),
@@ -375,7 +373,7 @@ const getData = async(lists) => {
                 form_type_id: element.form_type_id.toString(),
                 guide_info: guideInfoData,
                 question_count: countRes && countRes.length > 0 ? countRes.item(0).cnt.toString() : "0",
-                compulsory: element.compulsory.toString(),
+                compulsory: isLocationId ? element.compulsory.toString() : '0',
                 location_required: element.location_required.toString()
             }
         );            

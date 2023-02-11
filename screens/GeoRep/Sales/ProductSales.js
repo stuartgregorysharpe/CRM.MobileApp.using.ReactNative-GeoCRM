@@ -93,7 +93,8 @@ export default function ProductSales(props) {
   }
 
   const getProductLists = async (data, search_text = '', pageNumber) => {
-    console.log("call get product list api");
+    console.log("call get product list api" , pageNumber);
+    setPage(pageNumber);
     if( pageNumber != undefined && pageNumber == 0){
       setIsEndPage(false);
     }
@@ -117,6 +118,7 @@ export default function ProductSales(props) {
   const getApiData = async (search_text, pageNumber) => {
    
     console.log("getApiData", isLoading, isEndPage , search_text , pageNumber);
+    setPage(pageNumber);
     if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
       
       var paramData = await getJsonData('@sale_product_parameter');

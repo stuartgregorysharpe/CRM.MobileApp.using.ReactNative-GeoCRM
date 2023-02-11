@@ -145,18 +145,17 @@ export default function HomeScreen(props) {
       if (sync) {
         // start sync when online
         var isOnline = await getLocalData('@online');
-        if (mainPageRef.current) {
-          console.log('onlineSyncTable', isOnline);
+        if (mainPageRef.current) {          
           if (isOnline === '1') {
             mainPageRef.current.onlineSyncTable();
           }
-        } else {
+        } else {          
           if (isOnline === '1') {
             setTabIndex('Main');
             setSelectedTab(0);
-            mainPageRef.current.onlineSyncTable();
-          }
-          console.log('onlineSyncTable no');
+            if(mainPageRef.current)
+              mainPageRef.current.onlineSyncTable();
+          }          
         }
       }
     }

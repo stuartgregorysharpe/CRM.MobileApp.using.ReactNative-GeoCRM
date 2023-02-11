@@ -68,7 +68,10 @@ export default function Contacts(props) {
 
 
   const addContactModalClosed = ({type, value}) => {
+
+    console.log("triggerdddd", type, value)
     if(type === Constants.actionType.ACTION_CLOSE){      
+
       updateContacts();
       if(addContactModalRef.current){
         addContactModalRef.current.hideModal();

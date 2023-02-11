@@ -6,7 +6,8 @@ export function getFormData(contactInfo) {
         contact_surname:  contactInfo != undefined ? contactInfo.contact_surname :'',
         contact_email:  contactInfo != undefined ? contactInfo.contact_email :'',
         contact_cell: contactInfo != undefined ? contactInfo.contact_cell :'',
-        additional_number: contactInfo != undefined ? contactInfo.additional_number : ''        
+        additional_number: contactInfo != undefined ? contactInfo.additional_number : '',
+        primary_contact :  contactInfo != undefined ? contactInfo.primary_contact : '0'
     };
 }
 
@@ -59,9 +60,29 @@ export function getFormStructureData() {
             field_name: 'additional_number',
             initial_value: '',
             editable: "1",
-            is_required: true,
+            is_required: false,
             field_label: 'Additional Number',
             value: ''
+        },
+        {
+            key:6,
+            field_type: 'multiple',
+            field_name: 'primary_contact',
+            initial_value: '',
+            editable: "1",
+            is_required: true,
+            field_label: 'Primary/Additional',
+            value: '',
+            items: [
+                {
+                    label: 'Primary',
+                    value: '1'
+                },
+                {
+                    label: 'Additional',
+                    value: '0'
+                }
+            ]
         }
         
     ];

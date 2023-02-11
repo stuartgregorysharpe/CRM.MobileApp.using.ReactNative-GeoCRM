@@ -4,7 +4,7 @@ import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 
-const AlertDialog = ({visible, onModalClose, message }) => {
+const AlertDialog = ({visible, onModalClose, message, buttonText }) => {
 
     return (
         <Modal 
@@ -20,7 +20,7 @@ const AlertDialog = ({visible, onModalClose, message }) => {
                         <TouchableHighlight 
                         underlayColor="#DDDDDD"
                         style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => onModalClose() }>
-                            <Text style={styles.button} >Okay</Text>
+                            <Text style={styles.button} >{ buttonText ? buttonText : 'Okay'}</Text>
                         </TouchableHighlight>
                     </View>
                 </View>

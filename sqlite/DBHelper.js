@@ -322,20 +322,25 @@ export async function getLocationInfoFromLocal (locationId) {
       var res = await ExecuteQuery(query, [locationId]);
       if( res != null && res != undefined  && res.rows.length > 0){
           location_name = res.rows.item(0).location_name;
-          address = getFullAddress(res.rows.item(0));
+          address = getFullAddress(res.rows.item(0));          
+          console.log("Adsf", address);
       }else{
           const checkinLocation =  await getJsonData("@checkin_location");
           if(checkinLocation != null){
-            return {name: checkinLocation.location_name.value, address: checkinLocation.address, location_id: locationId};
+            return {name: checkinLocation.location_name.value, address: checkinLocation.address, location_id: locationId , type: 'from_local'};
           }            
       }      
     }catch(e){
       console.log(" excute error :", e);
+      return {name: location_name , address:  address , location_id: locationId , type:'from_table'};
     }
     
-    return {name: location_name , address:  address};
+    return {name: location_name , address:  address , location_id: locationId , type:'from_table'};
 
+  }else{
+    console.log("BBB")
   }
+
 }
 
 export function getFullAddress (element){

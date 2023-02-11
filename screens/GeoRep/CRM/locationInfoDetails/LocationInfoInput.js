@@ -10,6 +10,7 @@ import {
   View,
   TouchableOpacity,
   Keyboard,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -85,10 +86,12 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   const [selectedOutcomes, setSelectedOutcomes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);  
   const [options, setOptions] = useState([]);
+  const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [message,setMessage] = useState('');
+  
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
-
   const isDisposition = features.includes('disposition_fields')  
   
   useImperativeHandle(
@@ -203,15 +206,18 @@ export const LocationInfoInput = forwardRef((props, ref) => {
       });
 
       setIsLoading(true);
+
       PostRequestDAO.find(0, postData, 'update-disposition-fields', 'location-info/updateDispositionFields', '', '', disposition_fields_idempotency , dispatch).then((res) => {        
         if(res.status == Strings.Success){
           disposition_fields_idempotency = generateKey();
-          dispatch(showNotification({type: Strings.Success , message: res.message, buttonText: Strings.Ok }));
+          setMessage(res.message);
+          setIsConfirmModal(true);          
         }
         setIsLoading(false);
-      }).catch((e) => {        
-        dispatch(showNotification({type: Strings.Success , message: e.response, buttonText: Strings.Ok}));
+      }).catch((e) => {
         setIsLoading(false);
+        setMessage(e.response);
+        setIsConfirmModal(true);        
         expireToken(dispatch, e);
       });
     }
@@ -438,7 +444,15 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   return (
     <View style={styles.container}>
    
-      <LoadingProgressBar />
+      <AlertDialog 
+        visible={isConfirmModal}
+        message={message}
+        onModalClose={() => {
+          setIsConfirmModal(false)
+        }}
+      />
+
+      
 
       {locationInfo !== undefined && locationInfo.address !== '' && isDisposition && (
         <View style={styles.refreshBox}>

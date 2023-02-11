@@ -1,6 +1,6 @@
 
 import { View } from 'react-native'
-import React , { useState , useEffect } from 'react'
+import React , { useState , useEffect , useRef , Keyboard } from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import AddContactModalView from '../components/AddContactModalView';
 import { expireToken, getPostParameter } from '../../../../../constants/Helper';
@@ -9,6 +9,8 @@ import { useDispatch } from 'react-redux';
 import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../../actions/notification.action';
 import { PostRequestDAO } from '../../../../../DAO';
 import { generateKey } from '../../../../../constants/Utils';
+import AlertDialog from '../../../../../components/modal/AlertDialog';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 var add_edit_indempotency = '';
 
@@ -16,8 +18,12 @@ export default function AddContactModalContainer(props) {
     
     const { locationId , pageType , contactInfo } = props;
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
+    const [isConfirmModal, setIsConfirmModal] = useState(false);
+    const [message, setMessage] = useState('');
+    const loadingBarRef = useRef(null);
 
+    const dispatch = useDispatch();
+    
     const currentLocation = useSelector(state => state.rep.currentLocation);    
 
     useEffect(() => {
@@ -31,6 +37,8 @@ export default function AddContactModalContainer(props) {
     
     const handleSubmit = (formData) => {
         
+        //Keyboard.dismiss();
+
         if(!isLoading){
             setIsLoading(true);
             
@@ -38,31 +46,48 @@ export default function AddContactModalContainer(props) {
             var postData = {...formData , location_id: locationId, user_local_data: userParam.user_local_data};
             if (pageType === 'update' && contactInfo != undefined) {            
                 postData = {...postData , contact_id: contactInfo.contact_id};
-            }
-            console.log("post data" ,postData);
+            }            
+            
+            loadingBarRef.current.showModal();
+            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {
 
-            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , dispatch).then((res) => {
-                
-                setIsLoading(false);                
+                loadingBarRef.current.hideModal();
+                setIsLoading(false);
                 if(res.status == Strings.Success){
-                    dispatch(showNotification({type:'success' ,message: res.message, buttonText:'Ok' }));
-                    if(props.onButtonAction){
-                        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: null});
-                    }                
+                    setMessage(res.message);
+                    setIsConfirmModal(true);
                 }
+
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
-                setIsLoading(false);                
+                loadingBarRef.current.hideModal();  
+                setIsLoading(false);
                 expireToken(dispatch, e);
-            })
- 
-        }
-            
+            }) 
+        }            
     }
+    
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
-            <AddContactModalView                
+
+            <AlertDialog 
+                visible={isConfirmModal}
+                message={message}
+                onModalClose={() => {
+                    setIsConfirmModal(false);
+                    setIsLoading(false);
+                    if(props.onButtonAction){
+                        props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
+                    }
+                }}
+            />
+
+            <LoadingBar 
+                ref={loadingBarRef}
+            />
+
+            <AddContactModalView
                 onButtonAction={addData}
                 handleSubmit={handleSubmit}     
                 {...props}

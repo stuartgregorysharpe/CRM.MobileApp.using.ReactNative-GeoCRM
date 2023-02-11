@@ -42,7 +42,7 @@ const  SetupFieldContainer = (props) => {
             }
         }else{
             const location_id = await getLocalData("@specific_location_id");            
-            callSetupFieldOptions( location_id , 'load');
+            callSetupFieldOptions( location_id , 'change');
         }
     }
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect , useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,7 +8,6 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
-import {TextInput} from 'react-native-paper';
 import {
   getApiRequest,
   postApiRequestMultipart,
@@ -23,11 +22,9 @@ import {whiteLabel} from '../../../../../constants/Colors';
 import * as ImagePicker from 'react-native-image-picker';
 import PhotoCameraPickerDialog from '../../../../../components/modal/PhotoCameraPickerDialog';
 import * as RNLocalize from 'react-native-localize';
-import {Notification} from '../../../../../components/modal/Notification';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../../../constants/Helper';
-import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
-import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
@@ -42,6 +39,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const [isStartRequired, setIsStartRequired] = useState(false);
   const [isEndRequired, setIsEndRequired] = useState(false);
   const [isSubmit , setIsSubmit] = useState(false);
+  const loadingBarRef = useRef(null)
 
   const dispatch = useDispatch();
 
@@ -131,24 +129,26 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
     }
 
     setIsSubmit(true);
-    dispatch(showLoadingBar({'type' :  'loading'}));
+    loadingBarRef.current.showModal();    
 
     postApiRequestMultipart('home/odometer', postData)
       .then(res => {
+        loadingBarRef.current.hideModal();
+        setIsSubmit(false);
         if (res.status === Strings.Success) {
+          xxx
           setImage(null);
           onButtonAction({
             type: Constants.actionType.ACTION_DONE,
             value: res.message,
           });
         }
-        setIsSubmit(false);
-        dispatch(clearLoadingBar());
+        
       })
       .catch(error => {
         console.log('home/odometer post api error:', error);
-        setIsSubmit(false);
-        dispatch(clearLoadingBar());
+        loadingBarRef.current.hideModal();
+        setIsSubmit(false);      
         expireToken(dispatch, e);        
       });
   };
@@ -237,8 +237,12 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       }}
       {...props}>
       <View style={styles.container}>
-        <Notification></Notification>
-        <LoadingProgressBar/>
+
+        <LoadingBar 
+          backButtonDisabled={true}
+          ref={loadingBarRef}
+        />
+        
         <View style={styles.inputContainer}>
           <CTextInput
             label={Strings.Home.Start_Reading}

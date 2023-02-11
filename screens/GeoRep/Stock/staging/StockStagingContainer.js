@@ -1,23 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect , useRef } from 'react';
+import { View } from 'react-native';
 import StagingView from './StagingView';
 import {getItemsFromShipments} from './helper';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
 import {Strings} from '../../../../constants';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import { PostRequestDAO } from '../../../../DAO';
-
+import LoadingBar from '../../../../components/LoadingView/loading_bar';
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
 const StockStagingContainer = props => {
 
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+  const [message, setMessage] = useState('');
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
+  const loadingBarRef = useRef(null);
   let isMount = true;
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const StockStagingContainer = props => {
   const onAccept = items => {    
     
     if(isLoading) return;
+    loadingBarRef.current.showModal();
     const userParam = getPostParameter(currentLocation);
     setIsLoading(true);
 
@@ -58,37 +60,44 @@ const StockStagingContainer = props => {
       user_local_data: userParam.user_local_data,
     };
 
-    PostRequestDAO.find(0, postData , 'staging-accept' , 'stockmodule/staging-accept' , '' , '', null, dispatch ).then((res) => {
+    PostRequestDAO.find(0, postData , 'staging-accept' , 'stockmodule/staging-accept' , '' , '', null, null ).then((res) => {
       setIsLoading(false);
+      loadingBarRef.current.hideModal();
       var message = '';
       if (res.status === Strings.Success) {
         message = 'Sim items moved to current stock successfully';        
       } else {
         message = res.errors;        
       }
-      dispatch(
-        showNotification({
-          type: Strings.Success,
-          message: message,
-          buttonText: Strings.Ok,
-          buttonAction: () => {
-            if (res.status === Strings.Success) {
-              onLoad();
-            }            
-            dispatch(clearNotification());
-          },
-        }),
-      );
+
+      setIsConfirmModal(true);
+      setMessage(message);
+                  
     }).catch((e) => {
       setIsLoading(false);      
       expireToken(dispatch,e)
-    });
-
-
-   
+    });   
   };
+
+
   return (
-    <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
+    <View style={{alignSelf: 'stretch', flex:1}}>
+
+      <LoadingBar 
+        ref={loadingBarRef}
+      />      
+
+      <AlertDialog 
+        visible={isConfirmModal}
+        message={message}
+        onModalClose={() => {
+          setIsConfirmModal(false);
+          onLoad();
+        }}
+      />
+      
+      <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
+    </View>
   );
 };   
 

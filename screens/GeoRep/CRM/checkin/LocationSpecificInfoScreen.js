@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef , useCallback} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -32,19 +32,13 @@ import {
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import {getLocationInfo} from '../../../../actions/location.action';
-import {Notification} from '../../../../components/modal/Notification';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/modal/DevicesModal';
 import {Constants, Strings} from '../../../../constants';
-import {
-  CHECKIN,
+import {  
   LOCATION_CHECK_OUT_COMPULSORY,
 } from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
@@ -52,9 +46,9 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
 import {GetRequestFormListsDAO} from '../../../../DAO';
-import {cos} from 'react-native-reanimated';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
 import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import AlertDialog from '../../../../components/modal/AlertDialog';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -88,59 +82,86 @@ const LocationSpecificInfoScreen = props => {
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
   const isDisposition = features.includes('disposition_fields');
-  let isMout = true;
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [confirmModalType, setConfirmModalType] = useState('');
+  const [message, setMessage] = useState('');
+  const locationCheckOutCompulsory = useSelector(
+    state => state.rep.locationCheckOutCompulsory,
+  );
 
-  useEffect(() => {}, []);
+
+  let isMout = true;
 
   useEffect(() => {
     isMout = true;
-    refreshHeader();
-    initData();
     return () => {
       isMout = false;
     };
+  }, []);
+
+  useEffect(() => {
+    
+    refreshHeader();
+    initData();
+    
   }, [location_id]);
 
   useEffect(() => {
+    
     isMout = true;
-    if (isCheckin == false && pageType != 'access_crm') {
-      if (props.navigation.canGoBack()) {
-        if (isMout) {
-          props.navigation.goBack();
-        }
-      }
-    }
+    checkOnlineStatus();
+
     if (isCheckin) {
-      //getCheckInLocation();
+      getCheckInLocation();
     }
+
     return () => {
       isMout = false;
     };
   }, [isCheckin]);
 
+
+
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
-      getCheckInLocation();
+    const unsubscribe = navigation.addListener('focus', () => {         
+      getCheckInLocation();      
     });
     return unsubscribe;
   }, [navigation]);
 
+  const checkOnlineStatus = useCallback(
+    async () => {
+      var specific_location_id  = await getLocalData("@specific_location_id");
+      if(specific_location_id == '' && pageType == 'checkin'){
+        goBack(); 
+      }      
+    },
+    [isCheckin],
+  )
+
   const getCheckInLocation = async () => {
-    
+
     var location = await getJsonData('@checkin_location');
-    if (location != null) {
+    console.log("location id ===>", location_id );
+    if (location != null && location?.location_name?.value != undefined) {
       if (
         locationInfoRef.current != undefined &&
         locationInfoRef.current != null
       ) {
         locationInfoRef.current.updateDispositionData(location);
       }
+
       setLocationIfo(location);
       getFormLists(location.location_id);
     } else {
-      if (location_id !== undefined) {
-        openLocationInfo(location_id);
-        getFormLists(location_id);
+      var locId = location_id;
+      if(location_id == '' || location_id == undefined){
+        locId  = await getLocalData("@specific_location_id");
+      }
+      if (locId !== undefined) {        
+        openLocationInfo(locId);
+        getFormLists(locId);
       }
     }
   };
@@ -167,16 +188,19 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const openLocationInfo = async location_id => {
+
     setIsLoading(true);
     getLocationInfo(Number(location_id), currentLocation)
       .then(res => {
-        if (isMout) {
+        console.log("isMout",isMout)
+        if (true) {
           if (
             locationInfoRef.current != undefined &&
             locationInfoRef.current != null
           ) {
             locationInfoRef.current.updateDispositionData(res);
           }
+          
           setLocationIfo(res);
           setIsLoading(false);
         }
@@ -288,6 +312,8 @@ const LocationSpecificInfoScreen = props => {
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
 
   const getFormLists = async locationId => {
+    if(isLoadingForm) return;
+    setIsLoadingForm(true);
     var param = {
       location_id: locationId,
     };
@@ -300,12 +326,16 @@ const LocationSpecificInfoScreen = props => {
       if (checkin_reason_id && checkin_reason_id != '') {
         param.checkin_reason_id = checkin_reason_id;
       }
-    }
+    }    
     GetRequestFormListsDAO.find(param)
       .then(res => {
+        console.log("form lists ====>", res.forms);
         getCompulsoryForm(res.forms);
+        setIsLoadingForm(false);
       })
-      .catch(e => {});
+      .catch(e => {
+        setIsLoadingForm(false);
+      });
   };
 
   const getCompulsoryForm = async lists => {
@@ -328,6 +358,7 @@ const LocationSpecificInfoScreen = props => {
 
   return (
     <SafeAreaView style={{}}>
+
       {isShowCustomNavigationHeader && (
         <NavigationHeader
           showIcon={true}
@@ -337,10 +368,28 @@ const LocationSpecificInfoScreen = props => {
           }}
         />
       )}
-      
-      <Notification />
-      <LoadingProgressBar />
 
+      <AlertDialog 
+        visible={isConfirmModal}
+        message={message}
+        onModalClose={ async() => {
+          setIsConfirmModal(false);
+          if(confirmModalType == 'go_back'){
+            goBack();
+          }else if(confirmModalType == 'have_compulsory_form'){
+            navigationMain.navigate('DeeplinkRepForms', {
+              locationInfo: locationInfo,
+            });
+
+            // const location = await getJsonData('@checkin_location');            
+            // if(location != null && location != undefined){             
+            // }
+            
+          }
+          
+        }}
+      />
+      
       {locationInfo != undefined && (
         <ActivityComments
           locationId={locationInfo.location_id}
@@ -479,18 +528,16 @@ const LocationSpecificInfoScreen = props => {
             {isCheckin && (
               <CheckOutViewContainer
                 type="specificInfo"
-                goBack={async res => {
-                  dispatch(
-                    showNotification({
-                      type: 'success',
-                      message: res.message,
-                      buttonText: Strings.Ok,
-                      buttonAction: async () => {                                                
-                        dispatch(clearNotification());
-                        goBack();
-                      },
-                    }),
-                  );
+                isLoadingForm={isLoadingForm}
+                showConfirmModal={(message) => {                  
+                  setMessage(message);
+                  setConfirmModalType('have_compulsory_form');
+                  setIsConfirmModal(true);
+                }}
+                onCallback={async res => {
+                  setMessage(res.message);
+                  setConfirmModalType('go_back');
+                  setIsConfirmModal(true);
                 }}
               />
             )}
@@ -523,7 +570,7 @@ const LocationSpecificInfoScreen = props => {
         </View>
 
         <FeaturedCardLists
-          isFormCompulsory={isFormCompulsory}
+          isFormCompulsory={locationCheckOutCompulsory}
           onItemClicked={onFeatureItemClicked}></FeaturedCardLists>
         <View style={{height: 60}}></View>
       </ScrollView>

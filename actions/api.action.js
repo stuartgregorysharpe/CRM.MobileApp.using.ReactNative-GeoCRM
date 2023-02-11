@@ -174,7 +174,7 @@ export const postApiRequestMultipart = async (
         resolve(0);
       })
       .catch(err => {
-        //console.log('api error: ', JSON.stringify(err));        
+        console.log('api error: ', JSON.stringify(err));        
         const error = err.response;
         if (
           error != undefined &&

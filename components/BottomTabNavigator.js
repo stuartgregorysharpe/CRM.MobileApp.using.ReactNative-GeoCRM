@@ -90,7 +90,7 @@ export default function RepBottomTabNavigator({navigation}) {
   }, [visibleMore]);
 
   const getHeaderHeight = () => {
-    console.log('StatusBar.currentHeight', StatusBar.currentHeight);
+    //console.log('StatusBar.currentHeight', StatusBar.currentHeight);
 
     var currentHeight = 0;
     if (Platform.OS == 'ios') {

@@ -18,6 +18,7 @@ import LoadingProgressBar from '../../../../../components/modal/LoadingProgressB
 var vodacom = [];
 
 export default function AddStockView(props) {
+  
   const {deviceTypeLists, stockTypes} = props;
 
   const [deviceType, setDeviceType] = useState('');

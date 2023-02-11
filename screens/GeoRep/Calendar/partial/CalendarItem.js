@@ -20,7 +20,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import {Strings} from '../../../../constants';
-let isCheckIn = '0';
+
 
 export function CalendarItem(props) {
   const {navigation, tabIndex, onItemSelected} = props;
@@ -41,7 +41,7 @@ export function CalendarItem(props) {
   }, []);
 
   const initData = async () => {
-    isCheckIn = await getLocalData('@checkin');
+    
   };
 
   const checkOpenReplaceCheckin = () => {
@@ -80,7 +80,13 @@ export function CalendarItem(props) {
     return (
       <CheckOutViewContainer
         type="calendar"
-        goBack={async res => {
+        isLoadingForm={false}
+        showConfirmModal={(message) => {                  
+          if(props.showConfirmModalForCheckout){
+            props.showConfirmModalForCheckout(message)
+          }
+        }}                  
+        onCallback={async res => {
           if (props.onRefresh) {
             props.onRefresh();
           }
@@ -90,15 +96,15 @@ export function CalendarItem(props) {
               message: res.message,
               buttonText: Strings.Ok,
               buttonAction: async () => {
-                dispatch({
-                  type: CHECKIN,
-                  payload: false,
-                  scheduleId: false,
-                });
-                dispatch({
-                  type: LOCATION_CHECK_OUT_COMPULSORY,
-                  payload: true,
-                });
+                // dispatch({
+                //   type: CHECKIN,
+                //   payload: false,
+                //   scheduleId: false,
+                // });
+                // dispatch({
+                //   type: LOCATION_CHECK_OUT_COMPULSORY,
+                //   payload: true,
+                // });
                 dispatch(clearNotification());
               },
             }),
@@ -118,6 +124,21 @@ export function CalendarItem(props) {
           title="Check In"
           locationId={item.location_id}
           scheduleId={item.schedule_id}
+          showConfirmModal={(message) => {            
+            if(props.showConfirmModal){
+              props.showConfirmModal(message);
+            }
+          }}
+          onStart={() => {
+            if(props.showLoadingBar){
+              props.showLoadingBar();
+            }
+          }}
+          onEnd={() => {
+            if(props.hideLoadingBar){
+              props.hideLoadingBar();
+            }
+          }}    
           renderSubmitButton={onCheckIn => {
             return (
               <TouchableOpacity

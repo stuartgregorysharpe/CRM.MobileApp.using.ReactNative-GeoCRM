@@ -32,6 +32,8 @@ export const SetupFieldView = forwardRef((props, ref) => {
 
 	useImperativeHandle(ref, () => ({
 		updateSetupData(type) {
+
+			console.log("updateSetupData", type)
 			if(type == 'load'){
 				initializeSetupDataFromStorage();
 			}else{
@@ -93,7 +95,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
 			// get location info from online api call.
 			getLocationInfo(locationId).then( async(res) => {
 				console.log(" location info api =>" , res)
-				await storeJsonData("@checkin_location", res);
+				//await storeJsonData("@checkin_location", res);
 				var location = {name: res.location_name.value , address: res.address , location_id: locationId};
 				setSelectedLocation(location);
 			}).catch((e) => {
@@ -130,6 +132,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
 	}
 
 	const intializeSetupDataFromApi = async(currency, warehouse,   transaction_types) => {
+		console.log("cur", currency);
 		if(currency != null && warehouse != null &&   transaction_types != null){
 			if(transaction_types != null && transaction_types.default_type != ''){				
 				const transactionType = transaction_types.options.find(item => item.type === transaction_types.default_type);			
