@@ -68,6 +68,7 @@ const MainPage = forwardRef((props, ref) => {
   const [isFeedImageVisible, setImageVisible] = useState(false);
   const [feedData, setFeedData] = useState(null);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
  
   useEffect(() => {
@@ -427,8 +428,8 @@ const MainPage = forwardRef((props, ref) => {
           let checkInStatus = await getLocalData('@checkin');
           dispatch({ type: CHECKIN, payload: checkInStatus==='1'?true:false });
           if(checkInStatus === '1'){
-            var location = await getJsonData('@checkin_location');       
-            console.log("location dd=>",location)     
+            var location = await getJsonData('@checkin_location');
+            console.log("location dd=>",location)
             if (location != null) {
               setCurrentCall(location.current_call);
             }
@@ -711,8 +712,16 @@ const MainPage = forwardRef((props, ref) => {
       <AlertDialog 
         visible={isConfirmModal}
         message={message}
-        onModalClose={() => {
-          setIsConfirmModal(false);          
+        onModalClose={ async () => {
+          setIsConfirmModal(false);     
+          if(confirmModalType == 'have_compulsory_form'){            
+            const location = await getJsonData('@checkin_location');            
+            if(location != null && location != undefined){     
+              navigation.navigate('DeeplinkRepForms', {
+                locationInfo: location,
+              });        
+            }
+          }
         }}
       />
 
@@ -735,6 +744,11 @@ const MainPage = forwardRef((props, ref) => {
           type="home"
           isLoadingForm={isLoading}
           checkinStatus={checkinStatus}
+          showConfirmModal={(message) => {                  
+            setMessage(message);
+            setConfirmModalType('have_compulsory_form');
+            setIsConfirmModal(true);
+          }}          
           currentCall={currentCall}></CheckOutViewContainer>
       )}
 

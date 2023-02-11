@@ -58,6 +58,7 @@ export default function CalendarScreen(props) {
   const [isUpdating, setIsUpdating] = useState(false);
   const loadingBarRef = useRef(null);
   const [isConfirmModal, setIsConfirmModal] = useState(false);
+  const [confirmModalType, setConfirmModalType] = useState('');  
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -234,9 +235,14 @@ export default function CalendarScreen(props) {
             {backgroundColor: isActive ? '#eee' : Colors.bgColor},
           ]}>
           <CalendarItem
+            showConfirmModalForCheckout={(message) => {
+              setMessage(message);
+              setConfirmModalType('have_compulsory_form');
+              setIsConfirmModal(true);
+            }}
             showConfirmModal={(message) => {
               setMessage(message);
-              setIsConfirmModal(true);
+              setIsConfirmModal(true);                            
             }}
             showLoadingBar={() => {
               if(loadingBarRef.current){
@@ -301,11 +307,21 @@ export default function CalendarScreen(props) {
           visible={isConfirmModal}
           message={message}
           buttonText={'Continue'}
-          onModalClose={() => {
+          onModalClose={ async () => {
             setIsConfirmModal(false);
-            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
-                page: 'checkin',
-            });
+            if(confirmModalType == 'have_compulsory_form'){
+              const location = await getJsonData('@checkin_location');            
+              if(location != null && location != undefined){     
+                navigation.navigate('DeeplinkRepForms', {
+                  locationInfo: location,
+                });        
+              }
+            }else{
+              navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+                  page: 'checkin',
+              });  
+            }
+
           }}
         />
         

@@ -61,7 +61,7 @@ export default function CheckOutViewContainer(props) {
     check_out_indempotency = generateKey();
   };
 
-  const checkOutLocation = useCallback(() => {
+  const checkOutLocation = useCallback(() => {    
     if(!isLoadingForm){
       _callCheckOut();
     }    
@@ -74,23 +74,25 @@ export default function CheckOutViewContainer(props) {
     }
 
     if (locationCheckOutCompulsory) {
-      dispatch(
-        showNotification({
-          type: Strings.Success,
-          message: Strings.CRM.Complete_Compulsory_Form,
-          buttonText: Strings.Ok,
-          buttonAction: async () => {
-            const location = await getJsonData('@checkin_location');            
-            console.log("checkout location", location);
-            if(location != null && location != undefined){
-              navigationMain.navigate('DeeplinkRepForms', {
-                locationInfo: location,
-              });
-            }            
-            dispatch(clearNotification());
-          },
-        }),
-      );
+      if(props.showConfirmModal){
+        props.showConfirmModal(Strings.CRM.Complete_Compulsory_Form);        
+      }
+      // dispatch(
+      //   showNotification({
+      //     type: Strings.Success,
+      //     message: Strings.CRM.Complete_Compulsory_Form,
+      //     buttonText: Strings.Ok,
+      //     buttonAction: async () => {
+      //       const location = await getJsonData('@checkin_location');            
+      //       if(location != null && location != undefined){
+      //         navigationMain.navigate('DeeplinkRepForms', {
+      //           locationInfo: location,
+      //         });
+      //       }            
+      //       dispatch(clearNotification());
+      //     },
+      //   }),
+      // );
     } else {
 
       setIsLoading(true); 

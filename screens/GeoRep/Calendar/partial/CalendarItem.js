@@ -81,6 +81,11 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         isLoadingForm={false}
+        showConfirmModal={(message) => {                  
+          if(props.showConfirmModalForCheckout){
+            props.showConfirmModalForCheckout(message)
+          }
+        }}                  
         onCallback={async res => {
           if (props.onRefresh) {
             props.onRefresh();

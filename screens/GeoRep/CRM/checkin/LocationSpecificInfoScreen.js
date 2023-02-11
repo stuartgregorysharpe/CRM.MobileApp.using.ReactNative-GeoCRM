@@ -84,6 +84,7 @@ const LocationSpecificInfoScreen = props => {
   const isDisposition = features.includes('disposition_fields');
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
   const locationCheckOutCompulsory = useSelector(
     state => state.rep.locationCheckOutCompulsory,
@@ -107,8 +108,10 @@ const LocationSpecificInfoScreen = props => {
   }, [location_id]);
 
   useEffect(() => {
+    
     isMout = true;
     checkOnlineStatus();
+
     if (isCheckin) {
       getCheckInLocation();
     }
@@ -369,9 +372,21 @@ const LocationSpecificInfoScreen = props => {
       <AlertDialog 
         visible={isConfirmModal}
         message={message}
-        onModalClose={() => {
+        onModalClose={ async() => {
           setIsConfirmModal(false);
-          goBack();
+          if(confirmModalType == 'go_back'){
+            goBack();
+          }else if(confirmModalType == 'have_compulsory_form'){
+            navigationMain.navigate('DeeplinkRepForms', {
+              locationInfo: locationInfo,
+            });
+
+            // const location = await getJsonData('@checkin_location');            
+            // if(location != null && location != undefined){             
+            // }
+            
+          }
+          
         }}
       />
       
@@ -514,11 +529,15 @@ const LocationSpecificInfoScreen = props => {
               <CheckOutViewContainer
                 type="specificInfo"
                 isLoadingForm={isLoadingForm}
+                showConfirmModal={(message) => {                  
+                  setMessage(message);
+                  setConfirmModalType('have_compulsory_form');
+                  setIsConfirmModal(true);
+                }}
                 onCallback={async res => {
-
                   setMessage(res.message);
-                  setIsConfirmModal(true);                 
-
+                  setConfirmModalType('go_back');
+                  setIsConfirmModal(true);
                 }}
               />
             )}

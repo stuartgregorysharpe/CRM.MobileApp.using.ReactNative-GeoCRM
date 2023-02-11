@@ -8,6 +8,16 @@ import { AppText } from '../../../../components/common/AppText'
 export default function CheckOut(props) {
 
   const { currentCall } = props;    
+
+  const getLocationName = () => {
+    if(currentCall?.location_name?.value != undefined){
+      return currentCall?.location_name?.value;
+    }else if(currentCall?.location_name != undefined){
+      return currentCall?.location_name;
+    }else {
+      return 'Spar Century City Cape town'
+    }
+  }
   
   return (
     <View style={{backgroundColor:whiteLabel().actionFullButtonBackground, borderRadius:7}}>
@@ -31,7 +41,7 @@ export default function CheckOut(props) {
             <SvgIcon icon="Location_Arrow" width='15px' height='15px' />
         </View>
         <View style={{flex:1, marginTop:10 , marginBottom:10 , paddingTop:7, paddingBottom:7}}>
-          <AppText title={currentCall != "" ? currentCall?.location_name : 'Spar Century City Cape town df'}           
+          <AppText title={getLocationName()}           
             size="medium" type="secondaryBold" color={whiteLabel().mainText} ></AppText>
                     
         </View>
