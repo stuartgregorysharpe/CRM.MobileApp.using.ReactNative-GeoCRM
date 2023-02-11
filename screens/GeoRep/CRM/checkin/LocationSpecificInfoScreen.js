@@ -123,7 +123,14 @@ const LocationSpecificInfoScreen = props => {
   }, [isCheckin]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
+    const unsubscribe = navigation.addListener('focus', () => {   
+      if (isCheckin == false && pageType != 'access_crm') {
+        if (props.navigation.canGoBack()) {
+          if (isMout) {
+            props.navigation.goBack();
+          }
+        }
+      }   
       getCheckInLocation();
     });
     return unsubscribe;
