@@ -124,13 +124,11 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {   
-      if (isCheckin == false && pageType != 'access_crm') {
+      if (isCheckin == false) {
         if (props.navigation.canGoBack()) {
-          if (isMout) {
-            props.navigation.goBack();
-          }
+          props.navigation.goBack();
         }
-      }   
+      }      
       getCheckInLocation();
     });
     return unsubscribe;
@@ -505,6 +503,7 @@ const LocationSpecificInfoScreen = props => {
             {isCheckin && (
               <CheckOutViewContainer
                 type="specificInfo"
+                isLoadingForm={isLoadingForm}
                 goBack={async res => {
                   
                   dispatch(

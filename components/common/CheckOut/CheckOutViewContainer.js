@@ -33,7 +33,7 @@ var check_out_indempotency = '';
 let isMount = true;
 
 export default function CheckOutViewContainer(props) {
-  const {type, currentCall} = props;
+  const {type, currentCall , isLoadingForm } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationCheckOutCompulsory = useSelector(
@@ -61,8 +61,10 @@ export default function CheckOutViewContainer(props) {
   };
 
   const checkOutLocation = useCallback(() => {
-    _callCheckOut();
-  }, [locationCheckOutCompulsory]);
+    if(!isLoadingForm){
+      _callCheckOut();
+    }    
+  }, [locationCheckOutCompulsory, isLoadingForm]);
 
   const _callCheckOut = () => {
 
@@ -76,11 +78,13 @@ export default function CheckOutViewContainer(props) {
           type: Strings.Success,
           message: Strings.CRM.Complete_Compulsory_Form,
           buttonText: Strings.Ok,
-          buttonAction: async () => {            
-            const location = await getJsonData('@checkin_location');
-            navigationMain.navigate('DeeplinkRepForms', {
-              locationInfo: location,
-            });
+          buttonAction: async () => {
+            const location = await getJsonData('@checkin_location');            
+            if(location != null && location != undefined){
+              navigationMain.navigate('DeeplinkRepForms', {
+                locationInfo: location,
+              });
+            }            
             dispatch(clearNotification());
           },
         }),

@@ -114,20 +114,24 @@ export const FormsScreen = props => {
   };
 
   const getCompulsoryForm = async lists => {
-    var formLists = [...lists];
-    const formIds = await getJsonData('@form_ids');
-    var flag = false;
-    console.log(' formIds in form screen ', JSON.stringify(formIds));
-    formLists.forEach(element => {
-      if (
-        element.compulsory === '1' &&
-        (formIds == null ||
-          (formIds != null && !formIds.includes(element.form_id)))
-      ) {
-        flag = true;
-      }
-    });
-    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
+
+    if(locationIdSpecific != null){
+      var formLists = [...lists];
+      const formIds = await getJsonData('@form_ids');
+      var flag = false;
+      console.log(' formIds in form screen ', JSON.stringify(formIds));
+      formLists.forEach(element => {
+        if (
+          element.compulsory === '1' &&
+          (formIds == null ||
+            (formIds != null && !formIds.includes(element.form_id)))
+        ) {
+          flag = true;
+        }
+      });
+      dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
+    }
+        
   };
 
   const initFilter = async () => {
