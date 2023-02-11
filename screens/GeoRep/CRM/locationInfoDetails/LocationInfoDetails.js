@@ -360,11 +360,11 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
         type: Constants.actionType.ACTION_CLOSE,
         value: page_type,
       });
-    }                    
-    props.navigation.navigate('LocationSpecificInfo', {
-      data: locationInfo,
-      page: page_type,
-    });
+    }
+    // props.navigation.navigate('LocationSpecificInfo', {
+    //   data: locationInfo,
+    //   page: page_type,
+    // });
 
   }
 

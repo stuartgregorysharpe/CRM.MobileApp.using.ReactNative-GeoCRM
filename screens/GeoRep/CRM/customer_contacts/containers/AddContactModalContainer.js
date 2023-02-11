@@ -49,21 +49,19 @@ export default function AddContactModalContainer(props) {
             }            
             
             loadingBarRef.current.showModal();
-            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {                
+            PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {
+
                 loadingBarRef.current.hideModal();
-                
-                if(res.status == Strings.Success){                   
-                    setTimeout(() => {                        
-                        setMessage(res.message);
-                        setIsConfirmModal(true);
-                    }, 300)
-                }else{
-                    setIsLoading(false);
-                }    
+                setIsLoading(false);
+                if(res.status == Strings.Success){
+                    setMessage(res.message);
+                    setIsConfirmModal(true);
+                }
+
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
                 loadingBarRef.current.hideModal();  
-                setIsLoading(false);                
+                setIsLoading(false);
                 expireToken(dispatch, e);
             }) 
         }            
@@ -72,6 +70,7 @@ export default function AddContactModalContainer(props) {
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
+
             <AlertDialog 
                 visible={isConfirmModal}
                 message={message}

@@ -95,7 +95,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
 			// get location info from online api call.
 			getLocationInfo(locationId).then( async(res) => {
 				console.log(" location info api =>" , res)
-				await storeJsonData("@checkin_location", res);
+				//await storeJsonData("@checkin_location", res);
 				var location = {name: res.location_name.value , address: res.address , location_id: locationId};
 				setSelectedLocation(location);
 			}).catch((e) => {

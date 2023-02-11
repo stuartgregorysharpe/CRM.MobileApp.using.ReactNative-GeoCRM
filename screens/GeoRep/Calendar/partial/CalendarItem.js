@@ -20,9 +20,7 @@ import {
   showNotification,
 } from '../../../../actions/notification.action';
 import {Strings} from '../../../../constants';
-import ProductSales from '../../Sales/ProductSales';
 
-let isCheckIn = '0';
 
 export function CalendarItem(props) {
   const {navigation, tabIndex, onItemSelected} = props;
@@ -43,7 +41,7 @@ export function CalendarItem(props) {
   }, []);
 
   const initData = async () => {
-    isCheckIn = await getLocalData('@checkin');
+    
   };
 
   const checkOpenReplaceCheckin = () => {
@@ -83,7 +81,7 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         isLoadingForm={false}
-        goBack={async res => {
+        onCallback={async res => {
           if (props.onRefresh) {
             props.onRefresh();
           }
@@ -93,15 +91,15 @@ export function CalendarItem(props) {
               message: res.message,
               buttonText: Strings.Ok,
               buttonAction: async () => {
-                dispatch({
-                  type: CHECKIN,
-                  payload: false,
-                  scheduleId: false,
-                });
-                dispatch({
-                  type: LOCATION_CHECK_OUT_COMPULSORY,
-                  payload: true,
-                });
+                // dispatch({
+                //   type: CHECKIN,
+                //   payload: false,
+                //   scheduleId: false,
+                // });
+                // dispatch({
+                //   type: LOCATION_CHECK_OUT_COMPULSORY,
+                //   payload: true,
+                // });
                 dispatch(clearNotification());
               },
             }),

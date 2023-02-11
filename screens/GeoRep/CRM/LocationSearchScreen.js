@@ -430,7 +430,7 @@ export default function LocationSearchScreen(props) {
   
     if (type == Constants.actionType.ACTION_CLOSE) {
       locationInfoModalRef.current.hideModal();
-      if (value === 'access_crm') {
+      if (value === 'access_crm' || value == 'checkin') {
         navigation.navigate('LocationSpecificInfo', {
           //locationId:locationInfo.location_id,
           data: locationInfo,

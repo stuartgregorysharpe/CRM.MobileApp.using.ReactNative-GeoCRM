@@ -323,6 +323,7 @@ export async function getLocationInfoFromLocal (locationId) {
       if( res != null && res != undefined  && res.rows.length > 0){
           location_name = res.rows.item(0).location_name;
           address = getFullAddress(res.rows.item(0));          
+          console.log("Adsf", address);
       }else{
           const checkinLocation =  await getJsonData("@checkin_location");
           if(checkinLocation != null){
@@ -331,11 +332,15 @@ export async function getLocationInfoFromLocal (locationId) {
       }      
     }catch(e){
       console.log(" excute error :", e);
+      return {name: location_name , address:  address , location_id: locationId , type:'from_table'};
     }
     
     return {name: location_name , address:  address , location_id: locationId , type:'from_table'};
 
+  }else{
+    console.log("BBB")
   }
+
 }
 
 export function getFullAddress (element){

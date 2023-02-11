@@ -33,6 +33,7 @@ var check_out_indempotency = '';
 let isMount = true;
 
 export default function CheckOutViewContainer(props) {
+
   const {type, currentCall , isLoadingForm } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -56,8 +57,7 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory]);
 
   const initData = async () => {
-    specificLocationId = await getLocalData('@specific_location_id');
-    console.log("adsfasdfasdfasdfs", specificLocationId);
+    specificLocationId = await getLocalData('@specific_location_id');    
     check_out_indempotency = generateKey();
   };
 
@@ -81,6 +81,7 @@ export default function CheckOutViewContainer(props) {
           buttonText: Strings.Ok,
           buttonAction: async () => {
             const location = await getJsonData('@checkin_location');            
+            console.log("checkout location", location);
             if(location != null && location != undefined){
               navigationMain.navigate('DeeplinkRepForms', {
                 locationInfo: location,
@@ -124,25 +125,24 @@ export default function CheckOutViewContainer(props) {
           await storeLocalValue('@specific_location_id', '');
           await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
           await storeJsonData('@form_ids', []);
-          await storeJsonData('@setup', null);               
+          await storeJsonData('@setup', null);
           await storeJsonData('@checkin_location', null);
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-                  
-          if (type == 'specificInfo' || type == 'calendar') {
-            if (props.goBack) {
-              props.goBack(res);
-            }
-          }
-          
-                              
-          if(props.onCallback){
-            props.onCallback();
-          }
-          
+                                      
           setIsLoading(false);
           if(loadingBarRef.current)
             loadingBarRef.current.hideModal();
+
+          // if (type == 'specificInfo' || type == 'calendar') {
+          //   if (props.goBack) {
+          //     props.goBack(res);
+          //   }
+          // }
+                                        
+          if(props.onCallback){
+            props.onCallback(res);
+          }
             
           
         })

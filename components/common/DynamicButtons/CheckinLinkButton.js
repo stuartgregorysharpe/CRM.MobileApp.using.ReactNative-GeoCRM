@@ -182,11 +182,11 @@ const CheckinLinkButton = props => {
     )
       .then(async res => {
 
+        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
         setIsFeedback(false);        
         checkin_indempotency = generateKey();        
         setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');
-        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
+        setModalType('feedback');      
         await storeLocalValue('@checkin', '1');
         await storeLocalValue('@specific_location_id', locationId);
         await storeLocalValue(
@@ -200,12 +200,14 @@ const CheckinLinkButton = props => {
         if(locationInfo != null && locationInfo != undefined){
           checkInDetails = locationInfo;  
         }else{
+          console.log("checkInDetails loation1", locationId);
           checkInDetails = await getLocationInfoFromLocal(locationId);          
-        }
+        }        
         checkInDetails.current_call = {
           "checkin_time": postData.checkin_time,
-          "location_name": checkInDetails.location_name.value
-        };          
+          "location_name": checkInDetails?.location_name != undefined ? checkInDetails?.location_name : checkInDetails?.location_name?.value
+        };
+        console.log("checkInDetails loation", checkInDetails);
         await storeJsonData('@checkin_location', checkInDetails);
                 
         checkin_type_id = '';
@@ -229,54 +231,20 @@ const CheckinLinkButton = props => {
             );
           }
         });        
-        setIsLoading(false);
-       
-
-
+        
+        setIsLoading(false);       
+        
         if(props.onCallback){          
           props.onCallback();
         }else{
-          onFinishProcess();
-          
-          // navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          //   locationId: locationId,
-          //   page: 'checkin',
-          // });              
-          // onFinishProcess();
-
-          // getLocationInfo(locationId, currentLocation).then(
-          //   async locationInfo => {
-          //     await storeJsonData('@checkin_location', locationInfo);
-          //     navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          //       locationId: locationId,
-          //       page: 'checkin',
-          //     });              
-          //     onFinishProcess();
-          //   },
-          // );
-
-          // getLocationInfo(locationId, currentLocation).then(
-          //   async locationInfo => {
-          //   let checkInDetails = locationInfo;
-          //   checkInDetails.current_call = {
-          //     "checkin_time": postData.checkin_time,
-          //     "location_name": checkInDetails.location_name.value
-          //   };
-          //     await storeJsonData('@checkin_location', checkInDetails);
-          //     navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
-          //       locationId: locationId,
-          //       page: 'checkin',
-          //     });              
-          //     onFinishProcess();
-          //   },
-          // );
-
-
+          onFinishProcess();                    
         }       
         if(props.onEnd){
           props.onEnd();
         }
         
+        
+
       })
       .catch(e => {
         if(props.onEnd){
