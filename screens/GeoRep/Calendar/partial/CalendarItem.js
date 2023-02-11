@@ -82,6 +82,7 @@ export function CalendarItem(props) {
     return (
       <CheckOutViewContainer
         type="calendar"
+        isLoadingForm={false}
         goBack={async res => {
           if (props.onRefresh) {
             props.onRefresh();

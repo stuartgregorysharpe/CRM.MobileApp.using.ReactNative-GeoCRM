@@ -97,10 +97,7 @@ const MainPage = forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log("hello notifications main");
-    loadPage();
-    if (!isCheckin) {
-      cleanLocationId();
-    }
+    loadPage();    
   }, [isCheckin]);
 
   useEffect(() => {
@@ -369,9 +366,6 @@ const MainPage = forwardRef((props, ref) => {
     }
   }, [offlineStatus]);
 
-  const cleanLocationId = async () => {
-    await storeLocalValue('@specific_location_id', '');
-  };
 
   const loadPage = () => {
 
@@ -739,6 +733,7 @@ const MainPage = forwardRef((props, ref) => {
       {isCheckin && (
         <CheckOutViewContainer
           type="home"
+          isLoadingForm={isLoading}
           checkinStatus={checkinStatus}
           currentCall={currentCall}></CheckOutViewContainer>
       )}

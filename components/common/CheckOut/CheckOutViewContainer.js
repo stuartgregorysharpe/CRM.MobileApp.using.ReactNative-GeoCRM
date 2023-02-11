@@ -57,6 +57,7 @@ export default function CheckOutViewContainer(props) {
 
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');
+    console.log("adsfasdfasdfasdfs", specificLocationId);
     check_out_indempotency = generateKey();
   };
 
