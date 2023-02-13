@@ -102,7 +102,7 @@ export function getPageNameByLinker(selectedProject, linker) {
     case 'product_sales':
       return {
         linker: linker,
-        name: 'ProductSales',
+        name: 'Sales',
         router: ProductSalesNavigator,
         activeIcon: 'Sale',
         inActiveIcon: 'Sale_Gray',
