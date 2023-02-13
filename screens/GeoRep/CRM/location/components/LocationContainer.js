@@ -256,6 +256,20 @@ const LocationContainer = props => {
       openLocationInfoDetails(Number(item.location_id));
     }
   };
+
+  const detailModalClosed = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      locationInfoModalRef.current.hideModal();      
+      if (value === 'access_crm' || value == 'checkin') {
+        navigation.navigate('LocationSpecificInfo', {          
+          data: locationInfo,
+          page: 'access_crm',
+        });
+      }
+    }
+
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <LocationWatcher />
@@ -339,6 +353,7 @@ const LocationContainer = props => {
         locInfo={locationInfo}
         navigation={navigation}
         pageType={{name: 'search-lists'}}
+        onButtonAction={detailModalClosed}
       />
     </View>
   );

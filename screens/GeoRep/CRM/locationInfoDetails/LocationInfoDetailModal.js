@@ -6,10 +6,9 @@ import {Constants, Values} from '../../../../constants';
 import {LocationInfoDetails} from './LocationInfoDetails';
 
 const LocationInfoDetailModal = React.forwardRef((props, ref) => {
-  const onButtonAction = data => {
 
-    console.log("modal closed " , data)
 
+  const onButtonAction = data => {    
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
