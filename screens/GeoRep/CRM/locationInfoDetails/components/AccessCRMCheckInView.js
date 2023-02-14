@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
         paddingLeft: DeviceInfo.isTablet() ? 20 : 15,
         paddingRight: DeviceInfo.isTablet() ? 20 : 15,
         width: Dimensions.get('screen').width,
-        paddingBottom: Platform.OS == 'android' ? 0 : 30,
-        borderColor: 'rgba(0, 0, 0, 0.2)',
+        paddingBottom: Platform.OS == 'android' ? 20 : 30,
+        borderColor: 'rgba(0, 0, 0, 0.2)',        
         borderTopWidth: 0.5,
     },
 
