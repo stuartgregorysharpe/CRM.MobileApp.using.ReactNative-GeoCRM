@@ -10,7 +10,8 @@ import {RotationAnimation} from '../../../../components/common/RotationAnimation
 import {getBascketLastSyncTableData} from '../../../../sqlite/BascketLastSyncsHelper';
 import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { showOfflineDialog } from '../../../../constants/Helper';
 
 export const SyncAll = forwardRef((props, ref) => {
 
@@ -20,6 +21,8 @@ export const SyncAll = forwardRef((props, ref) => {
   const basketRef = useRef();
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const [isManual, setIsManual] = useState(true); // expland it manually or automatically(offline change)
+
+  const dispatch = useDispatch();
 
   const updateLoading = loading => {
     setIsLoading(loading);
@@ -110,6 +113,10 @@ export const SyncAll = forwardRef((props, ref) => {
         {!isLoading && (
           <TouchableOpacity
             onPress={() => {
+              if(offlineStatus){
+                showOfflineDialog(dispatch);
+                return;
+              }
               if (basketRef.current && basketRef.current.startSync) {
                 startTableSync();
               } else {
