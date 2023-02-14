@@ -433,7 +433,7 @@ export default function LocationSearchScreen(props) {
       if (value === 'access_crm' || value == 'checkin') {
         navigation.navigate('LocationSpecificInfo', {          
           data: locationInfo,
-          page: 'access_crm',
+          page: value,
         });
       }
     }
