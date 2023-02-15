@@ -19,7 +19,7 @@ import CrmContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
-import RepSalesPipelineScreen from '../screens/GeoRep/pipeline/SalesPipelineScreen';
+import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
 import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
 import AccessScreen from '../screens/GeoLife/AccessScreen';
