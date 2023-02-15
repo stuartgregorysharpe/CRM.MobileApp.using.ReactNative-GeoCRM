@@ -14,7 +14,6 @@ import { getLocationInfo } from '../../../../actions/location.action'
 import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
 import { onCheckProductSetupChanged } from '../helpers'
 
-//const SetupFieldView = (props) => {
 export const SetupFieldView = forwardRef((props, ref) => {	
 
 	const { isClear, isLoading,  transaction_types, currency, warehouse ,apiCallType} = props;
@@ -220,17 +219,21 @@ export const SetupFieldView = forwardRef((props, ref) => {
 		
 	}
 
-	const onWarehouseItemSelected = (item , isChecked) => {		
-		if(item.id === 0){
-			if(isChecked){
-				setSelectedWarehouse([])
-			}else{
+	const onWarehouseItemSelected = (item , isChecked) => {	
+		if(item.id === 0){ // All Warehouse		
+			if(isChecked){				
+				//setSelectedWarehouse([])
+			}else{				
 				setSelectedWarehouse([{id:0, label: 'all'} , ...warehouse.options]);
 			}
 		}else{
 			if(isChecked){
 				const tmp = selectedWarehouse.filter(element => element.id != item.id && element.id != 0);
-				setSelectedWarehouse(tmp)				
+				if(tmp.length != 0){
+					setSelectedWarehouse(tmp);
+				}else if(tmp.length == 0){
+					setSelectedWarehouse([{id:0, label: 'all'} , ...warehouse.options]);
+				}				
 			}else{
 				setSelectedWarehouse([...selectedWarehouse , item]);	
 			}
