@@ -27,8 +27,7 @@ import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputT
 import Images from '../../../../constants/Images';
 import {
   getJsonData,
-  getLocalData,
-  storeLocalValue,
+  getLocalData,  
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import {getLocationInfo} from '../../../../actions/location.action';
@@ -47,8 +46,9 @@ import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
 import {GetRequestFormListsDAO} from '../../../../DAO';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 import AlertDialog from '../../../../components/modal/AlertDialog';
+import { showNotification } from '../../../../actions/notification.action';
+import { Notification } from '../../../../components/modal/Notification';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -68,14 +68,13 @@ const LocationSpecificInfoScreen = props => {
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isActionItems, setIsActionItems] = useState(false);
-  const [isFormCompulsory, setIsFormCompulsory] = useState(true);
+  const [isActionItems, setIsActionItems] = useState(false);  
   const [isDanOneSales, setIsDanOneSales] = useState(false);
   const navigationMain = useNavigation();
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
   const isCheckin = useSelector(state => state.location.checkIn);
-  const locationId = locationInfo ? locationInfo.location_id : location_id;
+  const locationId = locationInfo ? locationInfo.location_id : location_id; // access_crm location id
   const customerContactModalRef = useRef(null);
   const customerSaleHistoryModalRef = useRef(null);
   const features = useSelector(
@@ -90,7 +89,6 @@ const LocationSpecificInfoScreen = props => {
     state => state.rep.locationCheckOutCompulsory,
   );
 
-
   let isMout = true;
 
   useEffect(() => {
@@ -103,7 +101,7 @@ const LocationSpecificInfoScreen = props => {
   useEffect(() => {
     
     refreshHeader();
-    initData();
+    //initData();
     
   }, [location_id]);
 
@@ -115,7 +113,7 @@ const LocationSpecificInfoScreen = props => {
     if (isCheckin) {
       getCheckInLocation();
     }
-
+    
     return () => {
       isMout = false;
     };
@@ -133,51 +131,79 @@ const LocationSpecificInfoScreen = props => {
   const checkOnlineStatus = useCallback(
     async () => {
       var specific_location_id  = await getLocalData("@specific_location_id");
-      if(specific_location_id == '' && pageType == 'checkin'){
-        goBack(); 
-      }      
+      console.log("Triggered", specific_location_id , pageType);
+      if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){
+        goBack();
+      }
     },
     [isCheckin],
   )
 
+  
   const getCheckInLocation = async () => {
 
-    var location = await getJsonData('@checkin_location');
-    console.log("location id ===>", location_id );
-    if (location != null && location?.location_name?.value != undefined) {
-      if (
-        locationInfoRef.current != undefined &&
-        locationInfoRef.current != null
-      ) {
-        locationInfoRef.current.updateDispositionData(location);
+    console.log("page type =>", pageType , location_id, locationId)
+    if(pageType == 'checkin'){
+      var location = await getJsonData('@checkin_location');      
+      if (location != null && location?.location_name?.value != undefined) {
+        if (
+          locationInfoRef.current != undefined &&
+          locationInfoRef.current != null
+        ) {
+          locationInfoRef.current.updateDispositionData(location);
+        }  
+        setLocationIfo(location);
+        getFormLists(location.location_id);
+      } else {
+        var locId  = await getLocalData("@specific_location_id");        
+        if (locId !== undefined) {        
+          openLocationInfo(locId);
+          getFormLists(locId);
+        }
       }
-
-      setLocationIfo(location);
-      getFormLists(location.location_id);
-    } else {
-      var locId = location_id;
-      if(location_id == '' || location_id == undefined){
-        locId  = await getLocalData("@specific_location_id");
+    }else if(pageType == 'access_crm'){
+      if(locationId != undefined && locationInfo){
+        locationInfoRef.current.updateDispositionData(locationInfo);
+        getFormLists(locationId);
       }
-      if (locId !== undefined) {        
-        openLocationInfo(locId);
-        getFormLists(locId);
+    }else{
+      if(locationId != undefined && locationInfo){
+        locationInfoRef.current.updateDispositionData(locationInfo);
+        getFormLists(locationId);
       }
     }
+
+    // var location = await getJsonData('@checkin_location');
+    // console.log("location id ===>", location_id , location );
+    // if (location != null && location?.location_name?.value != undefined) {
+    //   if (
+    //     locationInfoRef.current != undefined &&
+    //     locationInfoRef.current != null
+    //   ) {
+    //     locationInfoRef.current.updateDispositionData(location);
+    //   }
+
+    //   setLocationIfo(location);
+    //   getFormLists(location.location_id);
+    // } else {
+    //   var locId = location_id;
+    //   if( isCheckin && (location_id == '' || location_id == undefined) ){
+    //     locId  = await getLocalData("@specific_location_id");
+    //   }else if(locId == undefined) {
+    //     locId = locationId;
+    //   }      
+    //   if (locId !== undefined) {        
+    //     openLocationInfo(locId);
+    //     getFormLists(locId);
+    //   }
+    // }
   };
 
   const initData = async () => {
     if (pageType === 'checkin') {
-      await storeLocalValue('@checkin', '1');
-      if (locationInfo !== undefined && locationInfo.location_id != undefined) {
-        await storeLocalValue(
-          '@specific_location_id',
-          locationInfo.location_id,
-        );
-      }
+
     } else if (pageType === 'access_crm') {
-      openLocationInfo(location_id != undefined ? location_id : locationId);
-      //getFormLists(location_id != undefined ? location_id : locationId);
+      openLocationInfo(location_id != undefined ? location_id : locationId);      
     }
   };
 
@@ -351,8 +377,7 @@ const LocationSpecificInfoScreen = props => {
       ) {
         flag = true;
       }
-    });
-    setIsFormCompulsory(flag);
+    });    
     dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
   };
 
@@ -369,6 +394,7 @@ const LocationSpecificInfoScreen = props => {
         />
       )}
 
+      <Notification />
       <AlertDialog 
         visible={isConfirmModal}
         message={message}
@@ -535,9 +561,10 @@ const LocationSpecificInfoScreen = props => {
                   setIsConfirmModal(true);
                 }}
                 onCallback={async res => {
-                  setMessage(res.message);
-                  setConfirmModalType('go_back');
-                  setIsConfirmModal(true);
+                  // setMessage(res.message);
+                  // setConfirmModalType('go_back');
+                  // setIsConfirmModal(true);
+                  dispatch(showNotification({type: Strings.Success , message : res.message , buttonText: 'Ok'}));
                 }}
               />
             )}
