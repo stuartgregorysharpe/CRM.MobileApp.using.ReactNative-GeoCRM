@@ -12,7 +12,6 @@ import {getConfigFromRegret} from './helpers';
 import BackButtonHeader from '../../../components/Header/BackButtonHeader';
 
 export default function ProductSales(props) {
-  
   const navigation = props.navigation;
 
   const [settings, setSettings] = useState(null);
@@ -21,12 +20,13 @@ export default function ProductSales(props) {
   const [page, setPage] = useState(0);
   const [isEndPage, setIsEndPage] = useState(false);
 
-  const regret_item = useSelector(state => state.sales.regret);
+  const regret_item = props.route.params?.regret_item;
   const productSaleContainerRef = useRef(null);
   const dispatch = useDispatch();
   let isMount = true;
 
   useEffect(() => {
+    isMount = true;
     refreshHeader();
     return () => {
       isMount = false;
@@ -73,7 +73,7 @@ export default function ProductSales(props) {
 
   const getParamData = data => {
     if (data != null && data != undefined) {
-      var postParam = {
+      const postParam = {
         page_no: 0,
         transaction_type: data.transaction_type.type,
         currency_id: data.currency_id ? data.currency_id.id : '',
@@ -82,31 +82,46 @@ export default function ProductSales(props) {
           : '',
         filters: '',
       };
+
+      if (data.location?.location_id) {
+        postParam.location_id = data.location?.location_id;
+      }
       return postParam;
     }
     return {};
   };
 
-  const clearProducts = () => {      
-    if(productSaleContainerRef)
-      productSaleContainerRef.current.showPlaceHolder();    
-  }
+  const clearProducts = () => {
+    if (productSaleContainerRef)
+      productSaleContainerRef.current.showPlaceHolder();
+  };
 
   const getProductLists = async (data, search_text = '', pageNumber) => {
-    console.log("call get product list api" , pageNumber);
+    console.log('call get product list api', search_text, pageNumber);
+    let searchText = search_text;
     setPage(pageNumber);
-    if( pageNumber != undefined && pageNumber == 0){
+    if (pageNumber != undefined && pageNumber == 0) {
       setIsEndPage(false);
     }
-    if (data != undefined  && data != null) {
-      storeJsonData('@setup', data);
+    if (data != undefined && data != null) {
       const param = getParamData(data);
+      const previousParameterData = await getJsonData(
+        '@sale_product_parameter',
+      );
+      if (
+        (previousParameterData.search_text != undefined,
+        previousParameterData.search_text != '')
+      ) {
+        searchText = previousParameterData.search_text;
+        param.search_text = searchText;
+      }
       await storeJsonData('@sale_product_parameter', param);
     }
-    getApiData(search_text, 0);
+    getApiData(searchText, 0);
   };
 
   const getProductListsByFilter = async data => {
+    console.log('getProductListsByFilter');
     var paramData = await getJsonData('@sale_product_parameter');
     if (paramData != null) {
       paramData['filters'] = data;
@@ -116,65 +131,63 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
-   
-    console.log("getApiData", isLoading, isEndPage , search_text , pageNumber);
+    console.log('getApiData', isLoading, isEndPage, search_text, pageNumber);
     setPage(pageNumber);
-    if( ( !isLoading || search_text != '' ) && ( !isEndPage || pageNumber == 0) ){      
-      
+    if ((!isLoading || search_text != '') && (!isEndPage || pageNumber == 0)) {
       var paramData = await getJsonData('@sale_product_parameter');
       if (paramData != null) {
-        if(pageNumber == 0){
+        if (pageNumber == 0) {
           setIsEndPage(false);
           clearProducts();
         }
-        setIsLoading(true);        
-        console.log("is loading ... true");
+        setIsLoading(true);
+        console.log('is loading ... true');
         paramData['page_no'] = pageNumber;
         if (search_text != undefined) {
           paramData['search_text'] = search_text;
         }
         storeJsonData('@sale_product_parameter', paramData);
-        console.log("product list param => ", paramData);
-        
+        console.log('product list param => ', paramData);
+
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);
-            console.log("is loading => ", false);
-            if (isMount) {
-              if (res.status == Strings.Success) {
-                console.log("Product Lists => ", res.items.length)
-                setSettings(res.settings);
-                dispatch(setSalesSetting(res.settings));
-                productSaleContainerRef.current.updateProductList(res.items, pageNumber);
-                if(res.items.length == 0){
-                  setIsEndPage(true);
-                }
-                if (pageNumber == 0) {
-                  //setItems(getNewList(res.items));
-                  //setItems(res.items);
-                } else {
-                  //setItems(res.items);
-                  //setItems([...items, getNewList(res.items)]);
-                }
-                setPage(pageNumber + 1);
+            console.log('is loading => ', false);
+
+            if (res.status == Strings.Success) {
+              console.log('Product Lists => ', res.items.length);
+              setSettings(res.settings);
+              dispatch(setSalesSetting(res.settings));
+              productSaleContainerRef.current.updateProductList(
+                res.items,
+                pageNumber,
+              );
+              if (res.items.length == 0) {
+                setIsEndPage(true);
               }
+              if (pageNumber == 0) {
+                //setItems(getNewList(res.items));
+                //setItems(res.items);
+              } else {
+                //setItems(res.items);
+                //setItems([...items, getNewList(res.items)]);
+              }
+              setPage(pageNumber + 1);
             }
           })
           .catch(e => {
             setIsLoading(false);
             expireToken(dispatch, e);
-        });
-
-      }else{
-        console.log("paramData",paramData);
+          });
+      } else {
+        console.log('paramData', paramData);
         clearProducts();
       }
-    }else{
-      console.log("api not called");
+    } else {
+      console.log('api not called');
     }
-    
   };
-  
+
   // const getNewList = (items) => {
   //   var newLists = [];
   //   items.forEach((element) => {
@@ -184,7 +197,7 @@ export default function ProductSales(props) {
   //       qty: 0,
   //     });
   //   });
-  //   return newLists;        
+  //   return newLists;
   // }
 
   return (
@@ -199,7 +212,6 @@ export default function ProductSales(props) {
         settings={settings}
         page={page}
         isLoading={isLoading}
-        isEndPage={isEndPage}
         loadMoreData={(pageNumber, searchText) => {
           getApiData(searchText, pageNumber);
         }}

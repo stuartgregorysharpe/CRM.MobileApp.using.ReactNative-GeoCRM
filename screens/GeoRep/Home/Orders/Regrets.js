@@ -4,7 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {SHOW_MORE_COMPONENT} from '../../../../actions/actionTypes';
 import {getApiRequest} from '../../../../actions/api.action';
-import {setRegret} from '../../../../actions/sales.action';
+import {setRegret, setSalesSearchText} from '../../../../actions/sales.action';
 import {storeLocalValue} from '../../../../constants/Storage';
 import RegretsList from './components/RegretsList';
 import regretDummyData from './regretDummyData.json';
@@ -25,6 +25,7 @@ const Regrets = props => {
     console.log('dashorders/regrets', params);
     getApiRequest('dashorders/regrets', params)
       .then(async res => {
+        console.log('res', res);
         if (_page == 0) {
           setRegrets(res.regrets);
         } else {
@@ -39,9 +40,16 @@ const Regrets = props => {
   };
   const onItemAction = async item => {
     dispatch(setRegret(item));
+    if (item?.search_text) {
+      dispatch(setSalesSearchText(item.search_text));
+    }
+
     await storeLocalValue('@regret', item.regret_id);
-    navigation.navigate('More');
-    dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
+    navigation.navigate('More', {
+      screen: 'ProductSales',
+      params: {screen: 'Root', params: {regret_item: item}},
+    });
+    //dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
   };
   useEffect(() => {
     onLoadRegrets(0);
