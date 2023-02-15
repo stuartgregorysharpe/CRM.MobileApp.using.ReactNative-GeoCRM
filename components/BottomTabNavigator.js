@@ -1,28 +1,29 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StatusBar} from 'react-native';
-import React, {Fragment, useState, useEffect} from 'react';
-import {View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StatusBar } from 'react-native';
+import React, { Fragment, useState, useEffect } from 'react';
+import { View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import MoreNavigator from './MoreNavigator';
 import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
-import {whiteLabel} from '../constants/Colors';
+import { whiteLabel } from '../constants/Colors';
 import {
   SLIDE_STATUS,
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
+  SET_CONTENT_FEED_DATA,
 } from '../actions/actionTypes';
 
-import {StyleSheet, Dimensions, TouchableOpacity, Platform} from 'react-native';
+import { StyleSheet, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import HeaderRightView from './Header/HeaderRightView';
-import {style} from '../constants/Styles';
-import {Constants} from '../constants';
-import {getPageNameByLinker} from '../constants/Helper';
-import {getBottomTabs} from './helper';
+import { style } from '../constants/Styles';
+import { Constants } from '../constants';
+import { getPageNameByLinker } from '../constants/Helper';
+import { getBottomTabs } from './helper';
 
 const BottomTab = createBottomTabNavigator();
 
-export default function RepBottomTabNavigator({navigation}) {
+export default function RepBottomTabNavigator({ navigation }) {
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
@@ -76,13 +77,13 @@ export default function RepBottomTabNavigator({navigation}) {
     var tmp = getBottomTabs(payload, selectProject);
     setBottomTabs(tmp);
     if (selectProject === Constants.projectType.GEO_LIFE) {
-      navigation.navigate('Root', {screen: 'Sales'});
+      navigation.navigate('Root', { screen: 'Sales' });
     }
   };
 
   useEffect(() => {
     if (visibleMore != '') {
-      navigation.navigate('More', {screen: visibleMore});
+      navigation.navigate('More', { screen: visibleMore });
       setTimeout(() => {
         //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
       });
@@ -171,7 +172,7 @@ export default function RepBottomTabNavigator({navigation}) {
               title: element.name,
               tabBarLabel: element.name,
 
-              tabBarIcon: ({focused}) => (
+              tabBarIcon: ({ focused }) => (
                 <Fragment>
                   <SvgIcon
                     icon={focused ? element.activeIcon : element.inActiveIcon}
@@ -182,7 +183,7 @@ export default function RepBottomTabNavigator({navigation}) {
               ),
               headerStyle: {
                 height: getHeaderHeight(), // Specify the height of your custom header
-                backgroundColor:whiteLabel().headerBackground
+                backgroundColor: whiteLabel().headerBackground
               },
               headerRight: () => <HeaderRightView navigation={navigation} />,
               tabBarLabelStyle: {
@@ -191,14 +192,14 @@ export default function RepBottomTabNavigator({navigation}) {
               },
               tabBarActiveTintColor: whiteLabel().activeIcon,
             }}
-            listeners={({navigation}) => ({
+            listeners={({ navigation }) => ({
               tabPress: e => {
                 if (element.name === 'More') {
                   e.preventDefault();
 
                   //dispatch({type: SLIDE_STATUS, payload: false});
                   console.log('revisible mo', visibleMore);
-                  dispatch({type: CHANGE_MORE_STATUS, payload: 0});
+                  dispatch({ type: CHANGE_MORE_STATUS, payload: 0 });
 
                   // if (visibleMore != '') {
                   //   //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
@@ -206,8 +207,11 @@ export default function RepBottomTabNavigator({navigation}) {
                   //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
                   // }
                 } else {
-                  console.log('bottom tab clicked');
-                  dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  console.log('bottom tab clicked', element.name);
+                  dispatch({ type: SHOW_MORE_COMPONENT, payload: '' });
+                  if (element.name === "Home") {
+                    dispatch({ type: SET_CONTENT_FEED_DATA, payload: true })
+                  }
                 }
               },
             })}
