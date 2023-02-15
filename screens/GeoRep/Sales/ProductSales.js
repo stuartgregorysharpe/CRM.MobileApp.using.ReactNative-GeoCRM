@@ -8,7 +8,6 @@ import {expireToken} from '../../../constants/Helper';
 import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
 import {setSalesSetting} from '../../../actions/sales.action';
-import {getConfigFromRegret} from './helpers';
 import BackButtonHeader from '../../../components/Header/BackButtonHeader';
 
 export default function ProductSales(props) {
