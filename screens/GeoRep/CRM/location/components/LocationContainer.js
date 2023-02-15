@@ -203,7 +203,7 @@ const LocationContainer = props => {
     const specificLocationId = await getLocalData('@specific_location_id');
     navigation.navigate('LocationSpecificInfo', {
       locationId: specificLocationId,
-      page: 'map',
+      page: 'checkin',
     });
   };
   const onFinishDrawing = selectedMarkers => {
@@ -263,7 +263,7 @@ const LocationContainer = props => {
       if (value === 'access_crm' || value == 'checkin') {
         navigation.navigate('LocationSpecificInfo', {          
           data: locationInfo,
-          page: 'access_crm',
+          page: value,
         });
       }
     }
