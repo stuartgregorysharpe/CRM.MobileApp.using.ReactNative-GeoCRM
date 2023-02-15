@@ -189,6 +189,7 @@ const CartContainer = props => {
   };
 
   const openSetup = () => {
+    setOutSideTouch(false);
     setupFieldModalRef.current.showModal();
   };
   const onProductGroupModalClosed = ({type, value}) => {

@@ -194,7 +194,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const checkAndOpenSetup = async () => {
     const regretId = await getLocalData('@regret');    
     if (!props.regret_item && !regretId && regretId != '') {
-      setupFieldModalRef.current.showModal();
+      openSetup();
     }
   };
   useEffect(() => {
@@ -518,6 +518,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const openSetup = () => {
+    setOutsideTouch(false);
     setupFieldModalRef.current.showModal();
   };
 
