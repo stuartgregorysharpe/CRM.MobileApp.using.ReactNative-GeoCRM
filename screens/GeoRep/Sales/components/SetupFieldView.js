@@ -12,11 +12,11 @@ import { AppText } from '../../../../components/common/AppText'
 import { Colors, Fonts, Strings, Values } from '../../../../constants'
 import { getLocationInfo } from '../../../../actions/location.action'
 import { getLocationInfoFromLocal } from '../../../../sqlite/DBHelper'
-import { onCheckProductSetupChanged } from '../helpers'
+import { getReconfigFromRegret, onCheckProductSetupChanged } from '../helpers'
 
 export const SetupFieldView = forwardRef((props, ref) => {	
 
-	const { isClear, isLoading,  transaction_types, currency, warehouse ,apiCallType} = props;
+	const { isClear, isLoading, setupField,  transaction_types, currency, warehouse ,apiCallType} = props;
 	const features = useSelector(
 		state => state.selection.payload.user_scopes.geo_rep.features,
 	);
@@ -115,15 +115,26 @@ export const SetupFieldView = forwardRef((props, ref) => {
 	}
 
 	const initializeSetupDataFromStorage = async() => {
+
 		var data = await getJsonData("@setup");
-		if(data != null){				
+		if(data != null){
+
 			setSelectedSaleType(data.transaction_type);
-			setSelectedCurrency(data.currency_id);	
+			setSelectedCurrency(data.currency_id);
 			setSelectedLocation(data.location);
+
+			if(data?.currency_id?.abbreviation != undefined && data?.currency_id?.abbreviation != ''){
+				setSelectedCurrency(data.currency_id);
+			}else if(data?.currency_id?.id != undefined) {
+				const config = getReconfigFromRegret(data , setupField);
+				setSelectedCurrency(config.currency_id);
+				storeJsonData("@setup", config);
+			}
 			
 			if(data.transaction_type != ''){
 				onWarehouseRequired(data.transaction_type.warehouse_required);
 			}
+			
 			if(data.warehouse_id != ''){							
 				setSelectedWarehouse(data.warehouse_id);
 			}	
@@ -382,8 +393,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
 				//style={ styles.bgColor}
 				//style={[isSearchStart ? styles.bgColor : {}]} 
 			{...props} />
-			
-			{/* <View style={{height:55}}></View> */}
+						
 
 			{
 				selectedLocation  != null && !isSearchStart &&

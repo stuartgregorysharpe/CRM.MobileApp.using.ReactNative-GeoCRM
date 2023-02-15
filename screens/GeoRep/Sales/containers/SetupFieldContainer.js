@@ -15,6 +15,7 @@ const  SetupFieldContainer = (props) => {
     const [transaction_types , setTransactinTypes] = useState(null);
     const [warehouse , setWarehouse] = useState(null);
     const [currency , setCurrency] = useState(null);
+    const [setupField, setSetupField] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [bottomTabs, setBottomTabs] = useState([]);
     const [apiCallType, setApiCallType] = useState('load');
@@ -54,13 +55,15 @@ const  SetupFieldContainer = (props) => {
                 param = {
                     location_id: location_id
                 }
-            }  
-            console.log("setup-fields param =>", param)
+            }
+            
             GetRequestSetupFieldDAO.find(param).then((res) => {
                 console.log("res.warehouse", res.warehouse);
                 setTransactinTypes(res.transaction_types);
                 setWarehouse(res.warehouse);
                 setCurrency(res.currency);
+                setSetupField(res);
+
                 if(setupFieldViewRef.current)
                     setupFieldViewRef.current.updateSetupData(type);
                 setIsLoading(false)
@@ -114,6 +117,7 @@ const  SetupFieldContainer = (props) => {
            
             <SetupFieldView 
                 ref={setupFieldViewRef}
+                setupField={setupField}
                 transaction_types={transaction_types} 
                 currency={currency}
                 warehouse={warehouse}
