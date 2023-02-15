@@ -33,7 +33,7 @@ import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
 import { useDispatch } from 'react-redux';
-import { SalesPipelineScreen } from '../screens/GeoRep/pipeline/SalesPipelineScreen';
+import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 const Stack = createNativeStackNavigator();
 
 export default function RepMoreScreen(props) {
