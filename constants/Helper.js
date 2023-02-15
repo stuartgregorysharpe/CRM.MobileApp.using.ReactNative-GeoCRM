@@ -19,7 +19,7 @@ import CrmContentLibraryScreen from '../screens/GeoCRM/ContentLibraryScreen';
 import NotificationsScreen from '../screens/GeoRep/NotificationsScreen';
 import RepMessagesScreen from '../screens/GeoRep/MessagesScreen';
 import RecordedSalesScreen from '../screens/GeoRep/RecordedSalesScreen';
-import RepSalesPipelineScreen from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import RepSalesPipelineScreen from '../screens/GeoRep/pipeline/SalesPipelineScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
 import HomeLifeScreen from '../screens/GeoLife/HomeLifeScreen';
 import AccessScreen from '../screens/GeoLife/AccessScreen';
@@ -124,7 +124,7 @@ export function getPageNameByLinker(selectedProject, linker) {
         router: RepMessagesScreen,
         activeIcon: 'Pipeline',
         inActiveIcon: 'Pipeline_Gray',
-      };    
+      };
     case 'recorded_sales':
       return {
         linker: linker,
@@ -316,8 +316,8 @@ export function expireToken(dispatch, e) {
   var message = '';
   if (e === 'expired') {
     console.log('token EXPIRED !!!!!');
-    message = 'Access has expired, please login again';    
-  } else if(e === 'timeout'){
+    message = 'Access has expired, please login again';
+  } else if (e === 'timeout') {
     message = 'Submission timed out, Please try again or contact support';
   }
   if (e === 'expired' || e == 'timeout') {
@@ -329,14 +329,14 @@ export function expireToken(dispatch, e) {
         buttonAction: () => {
           if (e === 'expired') {
             setToken(null);
-            dispatch({type: CHANGE_LOGIN_STATUS, payload: 'logout'});
+            dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
           }
           dispatch(clearNotification());
         },
       }),
     );
-  }  
-  
+  }
+
 }
 
 export function showOfflineDialog(dispatch) {
@@ -430,7 +430,7 @@ export function getFileFormatList(paths) {
   var names = [];
   paths.forEach((path) => {
     const words = path.split('/');
-    const ext = words[words.length - 1].split('.');    
+    const ext = words[words.length - 1].split('.');
     uris.push(path);
     types.push('image/' + ext[1]);
     names.push(words[words.length - 1]);
