@@ -153,6 +153,8 @@ const CartContainer = props => {
     }
   };
   const onSetupFieldModalClosed = async ({type, value}) => {
+    
+    setOutSideTouch(false);
     if (type === Constants.actionType.ACTION_CLOSE) {
       if(value != null){        
         onCheckProductSetupChanged(value, async type => {
@@ -187,6 +189,7 @@ const CartContainer = props => {
   };
 
   const openSetup = () => {
+    setOutSideTouch(false);
     setupFieldModalRef.current.showModal();
   };
   const onProductGroupModalClosed = ({type, value}) => {
