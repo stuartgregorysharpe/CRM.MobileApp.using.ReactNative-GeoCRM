@@ -371,7 +371,13 @@ export function checkRuleCharactersFormQuestion(formQuestionItem) {
   return errorMessage;
 }
 export function checkYesNoValidate(item) {
+
   if (!item) return false;
+
+  if(item.rule_compulsory == '0' || item.rule_compulsory == 0  || item.rule_compulsory == false){
+    return true;
+  }
+
   if (item.value === null || item.value === '' || item.value === undefined)
     return false;
 
