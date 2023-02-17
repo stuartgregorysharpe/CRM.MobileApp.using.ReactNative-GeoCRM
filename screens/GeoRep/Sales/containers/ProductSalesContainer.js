@@ -186,7 +186,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [showMoreScreen, visibleMore]);
   const checkIsRegret = async () => {
     const regretId = await getLocalData('@regret');
-    return props.regret_item || regretId || regretId != '';
+    return props.regret_item && regretId && regretId != '';
   };
   const onInitialize = async () => {
     const isRegret = await checkIsRegret();
@@ -208,15 +208,15 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [productPriceLists]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', async () => {
       console.log('called focus');
-      if (props.regret_item && !isInitialized) {
+      const isRegret = await checkIsRegret();
+      if (isRegret && !isInitialized) {
         console.log('onfocus: setupDefineSetupFromRegret');
         setupDefineSetupFromRegret();
         isInitialized = true;
       } else {
-        console.log('onfocus: refreshList', props.regret_item?.search_text);
-        refreshList(props.regret_item?.search_text);
+        refreshList();
       }
     });
     return unsubscribe;
@@ -271,7 +271,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
   const setupDefineSetupFromRegret = async () => {
     console.log('setupDefineSetupFromRegret');
-    if (props.regret_item) {
+    const isRegret = await checkIsRegret();
+    if (isRegret) {
       console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
       const config = getConfigFromRegret(props.regret_item);
       await storeJsonData('@product_price', []);

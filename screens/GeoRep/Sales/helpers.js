@@ -131,32 +131,36 @@ export function filterProducts(productList, params) {
 
 export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 
-
 export const onCheckProductSetupChanged = async (value, callBack) => {
-
-  var setupData = await getJsonData('@setup');    
-  if (value != null && setupData != null && setupData != undefined && setupData.location && setupData.transaction_type && setupData.warehouse_id && setupData.currency_id) {    
+  var setupData = await getJsonData('@setup');
+  if (
+    value != null &&
+    setupData != null &&
+    setupData != undefined &&
+    setupData.location &&
+    setupData.transaction_type &&
+    setupData.warehouse_id &&
+    setupData.currency_id
+  ) {
     // console.log("setup data", setupData);
     // console.log("selected value" , value);
     if (
       setupData.location.name != value.location.name ||
-      setupData.transaction_type.type != value.transaction_type.type       
-    ) {      
+      setupData.transaction_type.type != value.transaction_type.type
+    ) {
       callBack('primary_changed');
-    }else if(
-      setupData.currency_id.id != value.currency_id.id || 
+    } else if (
+      setupData.currency_id.id != value.currency_id.id ||
       setupData.warehouse_id.length != value.warehouse_id.length
-    ){
+    ) {
       callBack('content_changed');
-    }else {      
+    } else {
       callBack('continue');
     }
-  } else {    
+  } else {
     callBack('changed');
   }
-
-}
-
+};
 
 export const getConfigFromRegret = regret => {
   return {

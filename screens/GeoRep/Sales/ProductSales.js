@@ -108,11 +108,13 @@ export default function ProductSales(props) {
       const previousParameterData = await getJsonData(
         '@sale_product_parameter',
       );
+      console.log('previousParameter', previousParameterData);
       if (
-        (previousParameterData.search_text != undefined,
-        previousParameterData.search_text != '')
+        previousParameterData?.search_text != undefined &&
+        previousParameterData?.search_text != ''
       ) {
-        searchText = previousParameterData.search_text;
+        console.log('previousParameter search text', previousParameterData);
+        searchText = previousParameterData?.search_text;
         param.search_text = searchText;
       }
       await storeJsonData('@sale_product_parameter', param);

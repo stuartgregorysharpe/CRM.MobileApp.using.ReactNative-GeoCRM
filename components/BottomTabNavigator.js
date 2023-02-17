@@ -83,9 +83,6 @@ export default function RepBottomTabNavigator({navigation}) {
   useEffect(() => {
     if (visibleMore != '') {
       navigation.navigate('More', {screen: visibleMore});
-      setTimeout(() => {
-        //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-      });
     }
   }, [visibleMore]);
 
@@ -182,7 +179,7 @@ export default function RepBottomTabNavigator({navigation}) {
               ),
               headerStyle: {
                 height: getHeaderHeight(), // Specify the height of your custom header
-                backgroundColor:whiteLabel().headerBackground
+                backgroundColor: whiteLabel().headerBackground,
               },
               headerRight: () => <HeaderRightView navigation={navigation} />,
               tabBarLabelStyle: {
