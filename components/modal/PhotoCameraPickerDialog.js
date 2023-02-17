@@ -12,11 +12,13 @@ import {
 import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
+import ImageResizer from 'react-native-image-resizer';
+import RNFS from 'react-native-fs';
 
 //const PhotoCameraPickerDialog = props => {
 const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
 
-  const { visible, message, onGallery, onCamera, onModalClose } = props;
+  const { visible, isOptimize,  message, onGallery, onCamera, onModalClose } = props;
 
   useImperativeHandle(ref, () => ({
     openCamera: () => {
@@ -86,8 +88,9 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         alert(response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          updateImageData(response.assets[0].uri);
-          onPickImage(response.assets[0]);
+          optimizeImage(response.assets[0].uri, 100, 0);
+          // updateImageData(response.assets[0].uri);
+          // onPickImage(response.assets[0]);
         }
       }
     });
@@ -110,12 +113,59 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          updateImageData(response.assets[0].uri);
-          onPickImage(response.assets[0]);
+          optimizeImage(response.assets[0].uri, 100, 0);
+          // updateImageData(response.assets[0].uri);
+          // onPickImage(response.assets[0]);
         }
       }
     });
   };
+
+
+  const optimizeImage = (filePath, quality, index) => {
+    var outputPath =
+      Platform.OS === 'ios'
+        ? `${RNFS.DocumentDirectoryPath}`
+        : `${RNFS.ExternalDirectoryPath}`;
+    var width_height = 800;
+    if (isOptimize) {
+      width_height = 500;
+    }
+    ImageResizer.createResizedImage(
+      filePath,
+      width_height,
+      width_height,
+      'JPEG',
+      quality,
+      0,
+      outputPath,
+    )
+      .then(res => {     
+        console.log("file size multipe => ", res.size);   
+        if (isOptimize) {
+          if (res.size < 1024 * 200 || index >= 2) {
+            updateImageData(res.uri);
+            onPickImage(res);
+          } else {
+            var newQuality = (1024 * 200 * 100) / res.size;
+            optimizeImage(res.uri, newQuality, index + 1);
+          }
+        } else {
+          if (res.size < 1024 * 500 || index >= 2) {
+            updateImageData(res.uri);
+            onPickImage(res);
+          } else {
+            var newQuality = (1024 * 500 * 100) / res.size;
+            optimizeImage(res.uri, newQuality, index + 1);
+          }
+        }
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
+  };
+
+
 
   return (
     <TouchableWithoutFeedback onPress={onModalClose}>

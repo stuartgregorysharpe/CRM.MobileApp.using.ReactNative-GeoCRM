@@ -19,7 +19,7 @@ export default function MutiSelectPhotoView(props) {
   const image_gallery = item.image_gallery;
   const image_capture = item.image_capture;
   const photoCameraPickDialogRef = useRef(null);
-  
+  const isOptimize = item.optimize && item.optimize == '1' ? true : false;  
 
   useEffect(() => {
     if (item.value != null && item.value != '') {
@@ -136,6 +136,7 @@ export default function MutiSelectPhotoView(props) {
         ref={photoCameraPickDialogRef}
         visible={isPicker}
         message={'Choose Image'}
+        isOptimize={isOptimize}
         updateImageData={path => {
           console.log("updated ddd", path)
           updateList(path);
