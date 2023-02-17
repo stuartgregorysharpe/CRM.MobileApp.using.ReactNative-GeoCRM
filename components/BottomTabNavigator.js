@@ -82,7 +82,14 @@ export default function RepBottomTabNavigator({navigation}) {
 
   useEffect(() => {
     if (visibleMore != '') {
-      navigation.navigate('More', {screen: visibleMore});
+      if (visibleMore === 'ProductSales') {
+        navigation.navigate('More', {
+          screen: 'ProductSales',
+          params: {screen: 'Root', params: {regret_item: null}},
+        });
+      } else {
+        navigation.navigate('More', {screen: visibleMore});
+      }
     }
   }, [visibleMore]);
 
