@@ -16,7 +16,7 @@ import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import ImageResizer from 'react-native-image-resizer';
 import { useDispatch } from 'react-redux';
-import { max } from 'moment';
+
 
 const TakePhotoView = props => {
 
@@ -32,6 +32,7 @@ const TakePhotoView = props => {
   };
 
   const updateImageData = path => {    
+    console.log("optimized path", path)
     setIsPicker(false);
     if (photos && photos !== null) {
       onUpdatePhotos([...photos, path]);
@@ -89,6 +90,7 @@ const TakePhotoView = props => {
       outputPath,
     )
       .then(res => {
+        console.log("file size => ", res.size)
         if (isOptimize) {
           if (res.size < 1024 * 200 || index >= 2) {
             updateImageData(res.uri);

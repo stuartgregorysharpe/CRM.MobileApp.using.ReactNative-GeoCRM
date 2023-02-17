@@ -20,6 +20,8 @@ import {Button} from '../../Button';
 
 const TouchpointItem = props => {
   const {isSelected, value} = props;
+
+
   return (
     <Button
       style={styles.buttonStyle}
@@ -36,6 +38,7 @@ const TouchpointItem = props => {
 };
 const TouchpointFlowList = props => {
   const {items, selectedItem, onPressItem} = props;
+  
   if (!items) return null;
   return items.map((item, index) => (
     <TouchpointItem
@@ -48,7 +51,7 @@ const TouchpointFlowList = props => {
 };
 
 const POSItemView = props => {
-  const {formData, errors} = props;
+  const { isOptimize , formData, errors} = props;
   if (!formData) return null;
   const {product_type, touchpoint, area, qty, product_name} = formData;
 
@@ -112,6 +115,7 @@ const POSItemView = props => {
             keyboardType={'number-pad'}
           />
           <ImagePickerButton
+            isOptimize={isOptimize}
             onPickImage={asset => {
               if (asset?.uri) {
                 onUpdateFormData({image: asset?.uri});
@@ -126,7 +130,7 @@ const POSItemView = props => {
 
 const TouchpointView = props => {
   const {formData, touchpointList} = props;
-
+  console.log("formData" ,formData ,touchpointList)
   if (!formData) return null;
   return (
     <View style={[styles.container, props.style]}>
@@ -219,7 +223,7 @@ const PlacementView = props => {
   );
 };
 const PointOfSaleFormView = props => {
-  const {formData, areaList, placementTypeList, touchpointList, errors} = props;
+  const { isOptimize , formData, areaList, placementTypeList, touchpointList, errors} = props;
   const onUpdateFormData = data => {
     if (props.onUpdateFormData) {
       props.onUpdateFormData(data);
@@ -234,6 +238,7 @@ const PointOfSaleFormView = props => {
         props.style,
       ]}>
       <POSItemView
+        isOptimize={isOptimize}
         formData={formData}
         onUpdateFormData={onUpdateFormData}
         errors={errors}
