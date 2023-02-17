@@ -28,6 +28,7 @@ import AddProductModal from '../modal/AddProductModal';
 import {
   setProductPriceLists,
   setRegret,
+  setSalesSearchText,
 } from '../../../../actions/sales.action';
 import {showNotification} from '../../../../actions/notification.action';
 import {getConfigFromRegret, onCheckProductSetupChanged} from '../helpers';
@@ -55,7 +56,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const [lists, setLists] = useState([]);
 
   const dispatch = useDispatch();
-  var isInitialized = false;
   useImperativeHandle(ref, () => ({
     updateProductList(items, page) {
       var newList = [];
@@ -171,9 +171,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
   useEffect(() => {
     onInitialize();
-    return () => {
-      isInitialized = false;
-    };
   }, []);
 
   useEffect(() => {
@@ -184,19 +181,18 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       //checkAndOpenSetup();
     }
   }, [showMoreScreen, visibleMore]);
-  const checkIsRegret = async () => {
-    const regretId = await getLocalData('@regret');
-    return props.regret_item && regretId && regretId != '';
+  const checkIsRegret = () => {
+    return props.regret_item != undefined && props.regret_item != null;
   };
-  const onInitialize = async () => {
-    const isRegret = await checkIsRegret();
+  const onInitialize = () => {
+    const isRegret = checkIsRegret();
     if (!isRegret) {
       checkAndOpenSetup();
       initializeProductLists();
     }
   };
   const checkAndOpenSetup = async () => {
-    const isRegret = await checkIsRegret();
+    const isRegret = checkIsRegret();
     if (!isRegret) {
       setupFieldModalRef.current.showModal();
     }
@@ -210,11 +206,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       console.log('called focus');
-      const isRegret = await checkIsRegret();
-      if (isRegret && !isInitialized) {
+      const isRegret = checkIsRegret();
+      const isRegretInitialize = await getLocalData('@regret_sales_initialize');
+      if (isRegret && isRegretInitialize) {
         console.log('onfocus: setupDefineSetupFromRegret');
         setupDefineSetupFromRegret();
-        isInitialized = true;
+        storeLocalValue('@regret_sales_initialize', false);
       } else {
         refreshList();
       }
@@ -271,7 +268,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
   const setupDefineSetupFromRegret = async () => {
     console.log('setupDefineSetupFromRegret');
-    const isRegret = await checkIsRegret();
+    const isRegret = checkIsRegret();
     if (isRegret) {
       console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
       const config = getConfigFromRegret(props.regret_item);
@@ -289,6 +286,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setSelectedLocation(config.location.name);
       onCheckProductSetupChanged(config, type => {
         if (type.includes('changed')) {
+          dispatch(setSalesSearchText(''));
           storeJsonData('@setup', config);
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
@@ -308,7 +306,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setupFieldModalRef.current.hideModal();
       if (value != null) {
         setupFromConfig(value);
-        storeLocalValue('@regret', '');
         dispatch(setRegret(null));
       }
     } else if (type == Constants.actionType.ACTION_DONE) {

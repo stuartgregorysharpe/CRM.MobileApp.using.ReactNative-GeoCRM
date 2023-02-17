@@ -20,7 +20,7 @@ export default function ProductSales(props) {
   const [isEndPage, setIsEndPage] = useState(false);
 
   const regret_item = props.route.params?.regret_item;
-  console.log('regret_item', regret_item);
+
   const productSaleContainerRef = useRef(null);
   const dispatch = useDispatch();
   let isMount = true;
