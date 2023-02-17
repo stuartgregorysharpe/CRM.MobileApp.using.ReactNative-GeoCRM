@@ -56,7 +56,7 @@ const MainPage = forwardRef((props, ref) => {
   const [isScrollable, setIsScrollable] = useState(true);
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
-  const [haveFilter, setHaveFilter] = useState(false);  
+  const [haveFilter, setHaveFilter] = useState(false);
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
   const [lindtdash_mobility, setMobilityCard] = useState(false);
@@ -67,10 +67,10 @@ const MainPage = forwardRef((props, ref) => {
   const dataUpdated = useSelector(state => state.feed.content_feed_data);
   const [isFeedImageVisible, setImageVisible] = useState(false);
   const [feedData, setFeedData] = useState(null);
-  const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
- 
+
   useEffect(() => {
     if (dataUpdated) {
       loadContentFeedData();
@@ -95,10 +95,8 @@ const MainPage = forwardRef((props, ref) => {
   //   });
   //   return unsubscribe;
   // }, [navigation]);  
-
   useEffect(() => {
-    console.log("hello notifications main");
-    loadPage();    
+    loadPage();
   }, [isCheckin]);
 
   useEffect(() => {
@@ -324,7 +322,6 @@ const MainPage = forwardRef((props, ref) => {
             huntValue: responseJson[i].hunt
           })
         }
-        console.log("modifired data", modifiedList.length);
         setContentFeedData(modifiedList);
       }
     }).catch((error) => {
@@ -384,7 +381,7 @@ const MainPage = forwardRef((props, ref) => {
       setIsLoading(true);
 
 
-      checkConnectivity().then(async(isConnected) => {
+      checkConnectivity().then(async (isConnected) => {
         if (isConnected) {
 
           getApiRequest('home/main-dashboard', param)
@@ -426,15 +423,15 @@ const MainPage = forwardRef((props, ref) => {
         } else {
           setIsLoading(false);
           let checkInStatus = await getLocalData('@checkin');
-          dispatch({ type: CHECKIN, payload: checkInStatus==='1'?true:false });
-          if(checkInStatus === '1'){
+          dispatch({ type: CHECKIN, payload: checkInStatus === '1' ? true : false });
+          if (checkInStatus === '1') {
             var location = await getJsonData('@checkin_location');
-            console.log("location dd=>",location)
+            console.log("location dd=>", location)
             if (location != null) {
               setCurrentCall(location.current_call);
             }
           }
-                    
+
         }
       });
 
@@ -510,16 +507,16 @@ const MainPage = forwardRef((props, ref) => {
           : { time_zone: '', latitude: 0, longitude: 0 },
     };
 
-    if(!isLoading){
+    if (!isLoading) {
       setIsLoading(true)
-      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {        
-        if(res.status == Strings.Success){
+      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null, dispatch).then(async (res) => {
+        if (res.status == Strings.Success) {
           setStartEndDayId(res.startEndDay_id);
           await storeLocalValue('start_my_day', isStart ? '0' : '1');
           setIsStart(!isStart);
-          if(features.includes('odometer_reading')) {
+          if (features.includes('odometer_reading')) {
             odometerReadingModalRef.current.showModal();
-          }else if (res.status == "NOIMPLEMENT") {
+          } else if (res.status == "NOIMPLEMENT") {
             showOfflineDialog(dispatch);
           }
         }
@@ -529,17 +526,17 @@ const MainPage = forwardRef((props, ref) => {
         expireToken(dispatch, e);
       });
 
-    }    
+    }
 
   };
 
   const onCaptureAction = async ({ type, value }) => {
-    if(type == Constants.actionType.ACTION_DONE){
+    if (type == Constants.actionType.ACTION_DONE) {
       setTimeout(() => {
         setMessage(value);
         setIsConfirmModal(true);
-      }, 300);      
-    }    
+      }, 300);
+    }
   };
 
   const renderCards = (item, index) => {
@@ -709,17 +706,17 @@ const MainPage = forwardRef((props, ref) => {
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
 
-      <AlertDialog 
+      <AlertDialog
         visible={isConfirmModal}
         message={message}
-        onModalClose={ async () => {
-          setIsConfirmModal(false);     
-          if(confirmModalType == 'have_compulsory_form'){            
-            const location = await getJsonData('@checkin_location');            
-            if(location != null && location != undefined){     
+        onModalClose={async () => {
+          setIsConfirmModal(false);
+          if (confirmModalType == 'have_compulsory_form') {
+            const location = await getJsonData('@checkin_location');
+            if (location != null && location != undefined) {
               navigation.navigate('DeeplinkRepForms', {
                 locationInfo: location,
-              });        
+              });
             }
           }
         }}
@@ -744,11 +741,11 @@ const MainPage = forwardRef((props, ref) => {
           type="home"
           isLoadingForm={isLoading}
           checkinStatus={checkinStatus}
-          showConfirmModal={(message) => {                  
+          showConfirmModal={(message) => {
             setMessage(message);
             setConfirmModalType('have_compulsory_form');
             setIsConfirmModal(true);
-          }}          
+          }}
           currentCall={currentCall}></CheckOutViewContainer>
       )}
 

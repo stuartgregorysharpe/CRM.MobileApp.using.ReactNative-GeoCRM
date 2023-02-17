@@ -11,6 +11,7 @@ import {
   SLIDE_STATUS,
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
+  SET_CONTENT_FEED_DATA,
 } from '../actions/actionTypes';
 
 import {StyleSheet, Dimensions, TouchableOpacity, Platform} from 'react-native';
@@ -210,8 +211,11 @@ export default function RepBottomTabNavigator({navigation}) {
                   //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
                   // }
                 } else {
-                  console.log('bottom tab clicked');
+                  console.log('bottom tab clicked', element.name);
                   dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  if (element.name === 'Home') {
+                    dispatch({type: SET_CONTENT_FEED_DATA, payload: true});
+                  }
                 }
               },
             })}

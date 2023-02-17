@@ -55,10 +55,9 @@ export default function App() {
   const getAppStatus = () => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (nextAppState === 'active') {
-        console.log('App has come to the foreground!');
+        store.dispatch({ type: SET_CONTENT_FEED_DATA, payload: true })
       }
       appState.current = nextAppState;
-      console.log('AppState', appState.current);
       clearAllNotifications();
 
     });

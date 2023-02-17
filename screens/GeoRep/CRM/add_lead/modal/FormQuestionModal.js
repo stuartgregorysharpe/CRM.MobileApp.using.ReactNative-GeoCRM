@@ -1,4 +1,5 @@
 import React from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import CModal from '../../../../../components/common/CModal';
 import {Constants} from '../../../../../constants';
 import FormQuestionContainer from '../containers/FormQuestionContainer';
@@ -25,11 +26,13 @@ const FormQuestionModal = React.forwardRef((props, ref) => {
       ref={ref}
       modalType={Constants.modalType.MODAL_TYPE_FULL}
       {...props}>
-      <FormQuestionContainer
-        {...props}
-        style={{marginTop: 14}}
-        onButtonAction={onButtonAction}
-      />
+      <SafeAreaView style={{flex: 1}}>
+        <FormQuestionContainer
+          {...props}
+          style={{marginTop: 14}}
+          onButtonAction={onButtonAction}
+        />
+      </SafeAreaView>
     </CModal>
   );
 });

@@ -22,13 +22,13 @@ import {AppText} from '../../../../components/common/AppText';
 import {Colors, Fonts, Strings, Values} from '../../../../constants';
 import {getLocationInfo} from '../../../../actions/location.action';
 import {getLocationInfoFromLocal} from '../../../../sqlite/DBHelper';
-import {onCheckProductSetupChanged} from '../helpers';
+import {getReconfigFromRegret, onCheckProductSetupChanged} from '../helpers';
 
-//const SetupFieldView = (props) => {
 export const SetupFieldView = forwardRef((props, ref) => {
   const {
     isClear,
     isLoading,
+    setupField,
     transaction_types,
     currency,
     warehouse,
@@ -143,9 +143,21 @@ export const SetupFieldView = forwardRef((props, ref) => {
       setSelectedCurrency(data.currency_id);
       setSelectedLocation(data.location);
 
+      if (
+        data?.currency_id?.abbreviation != undefined &&
+        data?.currency_id?.abbreviation != ''
+      ) {
+        setSelectedCurrency(data.currency_id);
+      } else if (data?.currency_id?.id != undefined) {
+        const config = getReconfigFromRegret(data, setupField);
+        setSelectedCurrency(config.currency_id);
+        storeJsonData('@setup', config);
+      }
+
       if (data.transaction_type != '') {
         onWarehouseRequired(data.transaction_type.warehouse_required);
       }
+
       if (data.warehouse_id != '') {
         setSelectedWarehouse(data.warehouse_id);
       }
@@ -257,8 +269,9 @@ export const SetupFieldView = forwardRef((props, ref) => {
 
   const onWarehouseItemSelected = (item, isChecked) => {
     if (item.id === 0) {
+      // All Warehouse
       if (isChecked) {
-        setSelectedWarehouse([]);
+        //setSelectedWarehouse([])
       } else {
         setSelectedWarehouse([{id: 0, label: 'all'}, ...warehouse.options]);
       }
@@ -267,7 +280,11 @@ export const SetupFieldView = forwardRef((props, ref) => {
         const tmp = selectedWarehouse.filter(
           element => element.id != item.id && element.id != 0,
         );
-        setSelectedWarehouse(tmp);
+        if (tmp.length != 0) {
+          setSelectedWarehouse(tmp);
+        } else if (tmp.length == 0) {
+          setSelectedWarehouse([{id: 0, label: 'all'}, ...warehouse.options]);
+        }
       } else {
         setSelectedWarehouse([...selectedWarehouse, item]);
       }
@@ -300,7 +317,6 @@ export const SetupFieldView = forwardRef((props, ref) => {
   };
 
   const renderCurrencyTitle = () => {
-    console.log('selectedCurrency', selectedCurrency);
     if (currency && currency?.options?.length > 0) {
       return selectedCurrency != null
         ? selectedCurrency.abbreviation + '(' + selectedCurrency.symbol + ')'
@@ -414,8 +430,6 @@ export const SetupFieldView = forwardRef((props, ref) => {
         //style={[isSearchStart ? styles.bgColor : {}]}
         {...props}
       />
-
-      {/* <View style={{height:55}}></View> */}
 
       {selectedLocation != null && !isSearchStart && (
         <LocationInfo

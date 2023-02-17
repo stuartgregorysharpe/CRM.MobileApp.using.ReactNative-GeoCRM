@@ -129,6 +129,7 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@form_ids', []);
           await storeJsonData('@setup', null);
           await storeJsonData('@checkin_location', null);
+          
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
                                       

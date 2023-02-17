@@ -147,6 +147,15 @@ const CheckinLinkButton = props => {
       });
   };
 
+  const getLocationName = (checkInDetails , offlineLocation, flag) =>{
+    if(flag){
+      return checkInDetails?.location_name != undefined ? checkInDetails?.location_name : checkInDetails?.location_name?.value
+    }else{
+      return offlineLocation.name;
+    }
+    
+  }
+
   const _callCheckedIn = async () => {
 
     if (isLoading) {     
@@ -196,18 +205,26 @@ const CheckinLinkButton = props => {
         await storeLocalValue('@checkin_type_id', checkin_type_id);
         await storeLocalValue('@checkin_reason_id', reason_id);
         
-        let checkInDetails = locationInfo;  
-        if(locationInfo != null && locationInfo != undefined){
-          checkInDetails = locationInfo;  
-        }else{
-          console.log("checkInDetails loation1", locationId);
-          checkInDetails = await getLocationInfoFromLocal(locationId);          
-        }        
+        let checkInDetails = locationInfo;
+        let offlineLocationInfo = null;
+        var isLocationInfo = true;
+        if(locationInfo === null || locationInfo === undefined){
+          isLocationInfo = false;
+          offlineLocationInfo = await getLocationInfoFromLocal(locationId);          
+        }   
+
+        if(checkInDetails == undefined || checkInDetails == null){
+          checkInDetails = {
+            location_id : offlineLocationInfo.location_id,
+            location_name : offlineLocationInfo.name,
+            address: offlineLocationInfo.address
+          }
+        }
         checkInDetails.current_call = {
           "checkin_time": postData.checkin_time,
-          "location_name": checkInDetails?.location_name != undefined ? checkInDetails?.location_name : checkInDetails?.location_name?.value
+          "location_name": getLocationName(checkInDetails , offlineLocationInfo , isLocationInfo)
         };
-        console.log("checkInDetails loation", checkInDetails);
+        console.log("checkInDetails loation =>", checkInDetails);
         await storeJsonData('@checkin_location', checkInDetails);
                 
         checkin_type_id = '';

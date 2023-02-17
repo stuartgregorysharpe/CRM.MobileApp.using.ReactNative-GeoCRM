@@ -43,6 +43,7 @@ const PointOfSaleFormContainer = props => {
       image_index: '',
       image: null,
     };
+    
     setFormData(posFormData);
     setErrors({
       placement_type: false,
@@ -113,6 +114,7 @@ const PointOfSaleFormContainer = props => {
   return (
     <View style={[styles.container, props.style]}>
       <PointOfSaleFormView
+        isOptimize={item.optimize}
         formData={formData}
         product={product}
         placementTypeList={placementTypeList}

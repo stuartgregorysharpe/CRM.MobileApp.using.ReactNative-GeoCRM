@@ -162,12 +162,37 @@ export const onCheckProductSetupChanged = async (value, callBack) => {
   }
 };
 
+export const getReconfigFromRegret = (config , setupField) => {
+
+  const currency_id = config.currency_id.id;
+  if(currency_id != undefined && setupField != undefined){
+
+    const currency = setupField.currency;
+    if(currency){
+      const defaultCurrency = currency.options.find(item =>  parseInt(item.id) === parseInt(currency_id));
+      if(defaultCurrency != undefined){
+        config.currency_id = {
+            abbreviation: defaultCurrency?.abbreviation,
+            exchange_rate: defaultCurrency?.exchange_rate,
+            symbol: defaultCurrency?.symbol,
+            tax_rate: defaultCurrency.tax_rate,
+            id: defaultCurrency.id
+        }
+      }        
+      return config;
+    }
+
+  }
+
+  return config;
+}
+
 export const getConfigFromRegret = regret => {
   return {
     currency_id: {
-      abbreviation: regret.abbreviation,
-      exchange_rate: regret.exchange_rate,
-      symbol: regret.symbol,
+      abbreviation: regret?.abbreviation,
+      exchange_rate: regret?.exchange_rate,
+      symbol: regret?.symbol,
       tax_rate: regret.tax_rate,
       id: regret.currency_id,
     },

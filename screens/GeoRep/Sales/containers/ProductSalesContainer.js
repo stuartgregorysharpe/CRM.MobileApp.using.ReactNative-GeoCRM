@@ -302,6 +302,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
   };
   const onSetupFieldModalClosed = ({type, value}) => {
+    setOutsideTouch(false);
     if (type === Constants.actionType.ACTION_CLOSE) {
       setupFieldModalRef.current.hideModal();
       if (value != null) {
@@ -310,7 +311,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         dispatch(setRegret(null));
       }
     } else if (type == Constants.actionType.ACTION_DONE) {
-      console.log('action done =----', visibleMore);
       setupFieldModalRef.current.hideModal();
       if (value?.name === 'More') {
         dispatch({type: CHANGE_MORE_STATUS, payload: 0});
@@ -525,6 +525,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const openSetup = () => {
+    setOutsideTouch(false);
     setupFieldModalRef.current.showModal();
   };
 
