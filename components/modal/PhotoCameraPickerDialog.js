@@ -128,7 +128,7 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         ? `${RNFS.DocumentDirectoryPath}`
         : `${RNFS.ExternalDirectoryPath}`;
     var width_height = 800;
-    if (isOptimize) {
+    if (isOptimize != undefined && isOptimize) {
       width_height = 500;
     }
     ImageResizer.createResizedImage(
@@ -142,7 +142,7 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
     )
       .then(res => {     
         console.log("file size multipe => ", res.size);   
-        if (isOptimize) {
+        if (isOptimize != undefined && isOptimize) {
           if (res.size < 1024 * 200 || index >= 2) {
             updateImageData(res.uri);
             onPickImage(res);
