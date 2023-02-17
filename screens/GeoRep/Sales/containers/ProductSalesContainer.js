@@ -289,6 +289,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       setSelectedLocation(config.location.name);
       onCheckProductSetupChanged(config, type => {
         if (type.includes('changed')) {
+          storeJsonData('@setup', config);
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
