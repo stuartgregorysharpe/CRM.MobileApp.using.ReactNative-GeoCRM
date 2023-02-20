@@ -44,7 +44,7 @@ const Regrets = props => {
       dispatch(setSalesSearchText(item.search_text));
     }
 
-    await storeLocalValue('@regret_sales_initialize', true);
+    await storeLocalValue('@regret_sales_initialize', '1');
 
     navigation.navigate('More', {
       screen: 'ProductSales',

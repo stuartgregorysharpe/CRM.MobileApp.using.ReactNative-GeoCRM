@@ -205,13 +205,13 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
-      console.log('called focus');
+      
       const isRegret = checkIsRegret();
-      const isRegretInitialize = await getLocalData('@regret_sales_initialize');
-      if (isRegret && isRegretInitialize) {
+      const isRegretInitialize = await getLocalData('@regret_sales_initialize');      
+      if (isRegret && isRegretInitialize == '1') {
         console.log('onfocus: setupDefineSetupFromRegret');
-        setupDefineSetupFromRegret();
-        storeLocalValue('@regret_sales_initialize', false);
+        storeLocalValue('@regret_sales_initialize', '0');
+        setupDefineSetupFromRegret();        
       } else {
         refreshList();
       }
@@ -219,7 +219,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     return unsubscribe;
   }, [navigation]);
 
-  const refreshList = async (search_text = '') => {
+  const refreshList = async (search_text = undefined) => {
     var storedProductPriceList = await getJsonData('@product_price');
     var storedAddProductList = await getJsonData('@add_product');
     var defineSetup = await getJsonData('@setup');
@@ -227,7 +227,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       (storedProductPriceList == null || storedProductPriceList.length == 0) &&
       (storedAddProductList == null || storedAddProductList.length == 0)
     ) {
-      props.getProductLists(defineSetup, search_text || '', 0);
+      props.getProductLists(defineSetup, search_text , 0);
       console.log('trigger product list');
     }
     if (defineSetup == null) {
@@ -266,8 +266,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     setCartCount(count);
   }, [productPriceLists]);
 
-  const setupDefineSetupFromRegret = async () => {
-    console.log('setupDefineSetupFromRegret');
+  const setupDefineSetupFromRegret = async () => {    
     const isRegret = checkIsRegret();
     if (isRegret) {
       console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);

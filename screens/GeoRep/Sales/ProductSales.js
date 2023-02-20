@@ -116,7 +116,7 @@ export default function ProductSales(props) {
     if (paramData != null) {
       paramData['filters'] = data;
       await storeJsonData('@sale_product_parameter', paramData);
-      getApiData('', 0);
+      getApiData(undefined, 0);
     }
   };
 
