@@ -86,9 +86,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
   }, [selectedSaleType, selectedCurrency, selectedWarehouse, selectedLocation]);
 
   const clearSetup = async () => {
-    //storeJsonData("@setup", null);
-    //storeJsonData("@sale_product_parameter" , null);
-    //initializeSetupData(null, null, null);
+    
     if (isCheckin) {
       getCheckinLocationInfo();
     } else {
@@ -148,10 +146,12 @@ export const SetupFieldView = forwardRef((props, ref) => {
         data?.currency_id?.abbreviation != ''
       ) {
         setSelectedCurrency(data.currency_id);
-      } else if (data?.currency_id?.id != undefined) {
+      } else if (data?.currency_id?.id != undefined && data?.currency_id?.abbreviation === undefined) {        
         const config = getReconfigFromRegret(data, setupField);
         setSelectedCurrency(config.currency_id);
-        storeJsonData('@setup', config);
+        if(config?.location?.location_id != undefined){
+          storeJsonData('@setup', config);
+        }        
       }
 
       if (data.transaction_type != '') {

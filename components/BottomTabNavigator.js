@@ -86,7 +86,7 @@ export default function RepBottomTabNavigator({navigation}) {
       if (visibleMore === 'ProductSales') {
         navigation.navigate('More', {
           screen: 'ProductSales',
-          params: {screen: 'Root', params: {regret_item: null}},
+          params: {screen: 'Root', params: {regret_item: ''}},
         });
       } else {
         navigation.navigate('More', {screen: visibleMore});

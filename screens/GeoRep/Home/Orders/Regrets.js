@@ -2,20 +2,22 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {SHOW_MORE_COMPONENT} from '../../../../actions/actionTypes';
 import {getApiRequest} from '../../../../actions/api.action';
 import {setRegret, setSalesSearchText} from '../../../../actions/sales.action';
 import {storeLocalValue} from '../../../../constants/Storage';
 import RegretsList from './components/RegretsList';
 import regretDummyData from './regretDummyData.json';
 const PAGE_SIZE = 20;
+
 const Regrets = props => {
   const {navigation} = props;
+
   const [regrets, setRegrets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [lastPageSize, setLastPageSize] = useState(0);
   const dispatch = useDispatch();
+
   const onLoadRegrets = _page => {
     if (isLoading) return false;
     setIsLoading(true);
@@ -39,18 +41,17 @@ const Regrets = props => {
       });
   };
   const onItemAction = async item => {
+
+    setIsLoading(true);
     dispatch(setRegret(item));
-    if (item?.search_text) {
-      dispatch(setSalesSearchText(item.search_text));
+    await storeLocalValue('@regret_sales_initialize', '1');    
+    if(item?.regret_id != undefined && item?.location_name != undefined){
+      navigation.navigate('More', {
+        screen: 'ProductSales',
+        params: {screen: 'Root', params: {regret_item: item}},
+      });
     }
-
-    await storeLocalValue('@regret_sales_initialize', '1');
-
-    navigation.navigate('More', {
-      screen: 'ProductSales',
-      params: {screen: 'Root', params: {regret_item: item}},
-    });
-    //dispatch({type: SHOW_MORE_COMPONENT, payload: 'ProductSales'});
+    setIsLoading(false);
   };
   useEffect(() => {
     onLoadRegrets(0);

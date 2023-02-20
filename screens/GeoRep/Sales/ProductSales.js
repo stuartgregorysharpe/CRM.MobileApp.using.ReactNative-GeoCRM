@@ -18,8 +18,8 @@ export default function ProductSales(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [isEndPage, setIsEndPage] = useState(false);
-
-  const regret_item = props.route.params?.regret_item;
+  const regret_item = props.route.params?.regret_item;  
+  
 
   const productSaleContainerRef = useRef(null);
   const dispatch = useDispatch();
@@ -85,10 +85,11 @@ export default function ProductSales(props) {
 
       if (data.location?.location_id) {
         postParam.location_id = data.location?.location_id;
+        return postParam;
       }
-      return postParam;
+      
     }
-    return {};
+    return null;
   };
 
   const clearProducts = () => {
@@ -96,7 +97,7 @@ export default function ProductSales(props) {
       productSaleContainerRef.current.showPlaceHolder();
   };
 
-  const getProductLists = async (data, search_text = '', pageNumber) => {
+  const getProductLists = async (data, search_text = undefined , pageNumber) => {
     console.log('call get product list api', search_text, pageNumber);
     let searchText = search_text;
     setPage(pageNumber);
@@ -105,8 +106,14 @@ export default function ProductSales(props) {
     }
     if (data != undefined && data != null) {
       const param = getParamData(data);
-      await storeJsonData('@sale_product_parameter', param);
-    }
+      if(param != null){
+        var sale_product_parameter = await getJsonData("@sale_product_parameter");
+        if(sale_product_parameter != null){
+          param['search_text'] = sale_product_parameter.search_text;
+        }
+        await storeJsonData('@sale_product_parameter', param);
+      }
+    }    
     getApiData(searchText, 0);
   };
 
@@ -203,6 +210,7 @@ export default function ProductSales(props) {
         page={page}
         isLoading={isLoading}
         loadMoreData={(pageNumber, searchText) => {
+          console.log('load more api call');
           getApiData(searchText, pageNumber);
         }}
         {...props}

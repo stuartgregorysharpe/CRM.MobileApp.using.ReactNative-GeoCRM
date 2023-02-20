@@ -34,13 +34,15 @@ const ProductSalesView = props => {
     isEndPage,
     cartCount,
     isUpdatingProductPrice,
+    initVal
   } = props;
 
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const [isEndPageLoading, setIsEndPageLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
-  const searchText = useSelector(state => state.sales.searchText);
+  //const searchText = useSelector(state => state.sales.searchText);
+  const [searchText, setSearchText] = useState('');
   const [isInitializeView, setIsInitializeView] = useState(true);
   const barcodeScanModalRef = useRef(null);
   const dispatch = useDispatch();
@@ -57,16 +59,19 @@ const ProductSalesView = props => {
   }, [lists]);
 
   useEffect(() => {
-    if (!isLoading && searchText != currentSearchKey) {
+    console.log("Search key", searchText);
+    console.log("currnt Search key", currentSearchKey , isLoading);
+    if (!isLoading && searchText != currentSearchKey ) {
       loadMoreData(0, searchText);
     }
   }, [searchText, isLoading]);
 
   const configPlaceholder = async (isLoading, selectedLocation) => {
-    const setupData = await getJsonData('@setup');
-    if (setupData == null || selectedLocation == null) {
+    const setupData = await getJsonData('@setup');    
+    if (setupData === null || selectedLocation === null) {
       setIsInitializeView(true);
     } else {
+      console.log("triger false");
       setIsInitializeView(false);
     }
   };
@@ -134,7 +139,7 @@ const ProductSalesView = props => {
       console.log('isLoading', isLoading);
       if (isEndPageLoading === false && isLoading === false) {
         if (props.loadMoreData) {
-          currentSearchKey = searchKey;
+          currentSearchKey = searchKey != undefined ? searchKey : '';
           props.loadMoreData(pageNumber, searchKey);
         }
       }
@@ -146,7 +151,8 @@ const ProductSalesView = props => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
         //const capturedItem = captureDeviceStockItem(items, value);
-        dispatch({type: SALES_SET_SEARCH_TEXT, payload: value});
+        //dispatch({type: SALES_SET_SEARCH_TEXT, payload: value});
+        setSearchText(value);
         loadMoreData(0, value);
       }
     }
@@ -155,7 +161,7 @@ const ProductSalesView = props => {
   renderFooter = () => {
     if (!isEndPageLoading && isLoading) {
       if (page == 0 && pageNumber == 0) {
-        return <ProductSalesPlaceholder />;
+       return <ProductSalesPlaceholder />;
       } else {
         return (
           <View style={styles.footer}>
@@ -181,7 +187,8 @@ const ProductSalesView = props => {
           isScan
           onSearch={searchText => {
             if (!isInitializeView) {
-              dispatch({type: SALES_SET_SEARCH_TEXT, payload: searchText});
+              //dispatch({type: SALES_SET_SEARCH_TEXT, payload: searchText});
+              setSearchText(searchText);
               console.log('search text ', searchText);
               if ((searchText != '', searchText.length >= 2)) {
                 loadMoreData(0, searchText);
@@ -198,7 +205,7 @@ const ProductSalesView = props => {
           onScan={() => {
             if (!isInitializeView) barcodeScanModalRef.current.showModal();
           }}
-          initVal={searchText}
+          initVal={initVal}
           isLoading={isInitializeView}
         />
 
@@ -217,9 +224,8 @@ const ProductSalesView = props => {
         renderItem={({item, index}) => renderItem(item, index)}
         keyExtractor={(item, index) => index.toString()}
         extraData={this.props}
-        onEndReached={() => {
-          console.log('onEndReached');
-          loadMoreData(pageNumber, searchText);
+        onEndReached={() => {          
+          loadMoreData(pageNumber, undefined);
         }}
         onEndReachedThreshold={0.5}
         removeClippedSubviews={false}
@@ -295,8 +301,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 100,
   },
-  placeholderStyle: {
-    width: Dimensions.get('screen').width,
-    height: 450,
-  },
+  
 });

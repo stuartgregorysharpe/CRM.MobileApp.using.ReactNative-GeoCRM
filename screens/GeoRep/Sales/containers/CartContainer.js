@@ -23,7 +23,7 @@ import ProductGroupModal from '../modal/ProductGroupModal';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import TransactionSubmitModal from '../modal/TransactionSubmitModal';
 import {useDispatch} from 'react-redux';
-import {setProductPriceLists} from '../../../../actions/sales.action';
+import {setProductPriceLists, setSalesSearchText} from '../../../../actions/sales.action';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import {useCallback} from 'react';
 import AddProductModal from '../modal/AddProductModal';
@@ -83,11 +83,6 @@ const CartContainer = props => {
     };
   }, []);
 
-  useEffect(() => {
-    if (regret_item) {
-      setupDefineSetupFromRegret();
-    }
-  }, [regret_item]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -96,32 +91,7 @@ const CartContainer = props => {
     return unsubscribe;
   }, [navigation]);
 
-  const setupDefineSetupFromRegret = async () => {
-    if (regret_item) {
-      const config = getConfigFromRegret(regret_item);
-      await storeJsonData('@product_price', []);
-      await removeLocalData('@add_product');
-      dispatch(setProductPriceLists([]));
-      await storeJsonData('@setup', config);
-      setDefineSetup(config);
-      setupFromConfig(config, regret_item?.search_text);
-    }
-  };
 
-  const setupFromConfig = (config, searchText) => {
-    //setSelectedLocation(config.location.name);
-    // onCheckProductSetupChanged(config, type => {
-    //   if (type.includes('changed')) {
-    //     storeJsonData('@product_price', []);
-    //     removeLocalData('@add_product');
-    //     dispatch(setProductPriceLists([]));
-    //   }
-    // });
-    // configAddProductCount();
-    // if (config != undefined) {
-    //   setOutsideTouch(true);
-    // }
-  };
 
   const refreshList = async () => {
     var defineSetup = await getJsonData('@setup');
@@ -150,14 +120,18 @@ const CartContainer = props => {
       setDefineSetup(defineData);
     }
   };
+
   const onSetupFieldModalClosed = async ({type, value}) => {
     setOutSideTouch(false);
     console.log('onSetupFieldModalClosed', type, value);
     if (type === Constants.actionType.ACTION_CLOSE) {
       if (value != null) {
         onCheckProductSetupChanged(value, async type => {
-          storeJsonData('@setup', value);
+          if(value?.location?.location_id != undefined){
+            storeJsonData('@setup', value);
+          }          
           if (type.includes('changed')) {
+            //dispatch(setSalesSearchText(''));
             await storeJsonData('@product_price', []);
             await removeLocalData('@add_product');
             dispatch(setProductPriceLists([]));
@@ -460,6 +434,7 @@ const CartContainer = props => {
 
   return (
     <View style={[styles.container, props.style]}>
+      
       <CartView
         defineSetup={defineSetup}
         cartStatistics={cartStatistics}

@@ -22,6 +22,7 @@ import {setToken, storeLocalValue} from '../constants/Storage';
 import {setRegret, setSalesSearchText} from '../actions/sales.action';
 import {useNavigation} from '@react-navigation/native';
 import {deviceTokenPostApi} from '../actions/auth.action';
+import { clearSearchKey } from '../screens/GeoRep/Sales/helpers';
 
 const lists = {
   0: [
@@ -340,7 +341,8 @@ export default function More() {
                     onPress={async () => {
                       if (list.navigator == 'ProductSales') {
                         dispatch(setRegret(null));
-                        dispatch(setSalesSearchText(''));
+                        //dispatch(setSalesSearchText(''));
+                        clearSearchKey();
                         await storeLocalValue('@regret', '');
                       }
                       dispatch({type: CHANGE_MORE_STATUS, payload: 1});
