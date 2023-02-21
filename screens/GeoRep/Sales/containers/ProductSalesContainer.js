@@ -197,7 +197,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const checkAndOpenSetup = async () => {    
     const isRegretInitialize = await getLocalData('@regret_sales_initialize');    
     if (isRegretInitialize === '0' || isRegretInitialize === undefined ) {
-      setupFieldModalRef.current.showModal();
+      openSetup();
     }
   };
   useEffect(() => {
