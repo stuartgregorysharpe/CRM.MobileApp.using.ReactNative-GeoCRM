@@ -46,6 +46,11 @@ const ProductSalesView = props => {
   const [isInitializeView, setIsInitializeView] = useState(true);
   const barcodeScanModalRef = useRef(null);
   const dispatch = useDispatch();
+  
+  useEffect(() => {    
+    setSearchText(initVal);
+  }, [initVal]);
+
   useEffect(() => {
     setPageNumber(page);
   }, [page]);
@@ -61,10 +66,13 @@ const ProductSalesView = props => {
   useEffect(() => {
     console.log("Search key", searchText);
     console.log("currnt Search key", currentSearchKey , isLoading);
-    if (!isLoading && searchText != currentSearchKey ) {
-      loadMoreData(0, searchText);
-    }
-  }, [searchText, isLoading]);
+    //!isLoading && 
+    if (currentSearchKey != undefined && (searchText != currentSearchKey || searchText == currentSearchKey) ) {
+      if(searchText !=undefined){
+        loadMoreData(0, searchText);
+      }      
+    }    
+  }, [searchText]); //isLoading
 
   const configPlaceholder = async (isLoading, selectedLocation) => {
     const setupData = await getJsonData('@setup');    
@@ -139,7 +147,7 @@ const ProductSalesView = props => {
       console.log('isLoading', isLoading);
       if (isEndPageLoading === false && isLoading === false) {
         if (props.loadMoreData) {
-          currentSearchKey = searchKey != undefined ? searchKey : '';
+          currentSearchKey = searchKey;
           props.loadMoreData(pageNumber, searchKey);
         }
       }
@@ -188,13 +196,16 @@ const ProductSalesView = props => {
           onSearch={searchText => {
             if (!isInitializeView) {
               //dispatch({type: SALES_SET_SEARCH_TEXT, payload: searchText});
+              if(currentSearchKey === undefined){
+                currentSearchKey = searchText;
+              }
               setSearchText(searchText);
               console.log('search text ', searchText);
-              if ((searchText != '', searchText.length >= 2)) {
-                loadMoreData(0, searchText);
-              } else if (searchText == '') {
-                loadMoreData(0, searchText);
-              }
+              // if ((searchText != '', searchText.length >= 2)) {
+              //   loadMoreData(0, searchText);
+              // } else if (searchText == '') {
+              //   loadMoreData(0, searchText);
+              // }
             }
           }}
           onSuffixButtonPress={() => {

@@ -4,7 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {getApiRequest} from '../../../../actions/api.action';
 import {setRegret, setSalesSearchText} from '../../../../actions/sales.action';
-import {storeLocalValue} from '../../../../constants/Storage';
+import {storeJsonData, storeLocalValue} from '../../../../constants/Storage';
 import RegretsList from './components/RegretsList';
 import regretDummyData from './regretDummyData.json';
 const PAGE_SIZE = 20;
@@ -44,7 +44,10 @@ const Regrets = props => {
 
     setIsLoading(true);
     dispatch(setRegret(item));
-    await storeLocalValue('@regret_sales_initialize', '1');    
+    
+    await storeJsonData('@regret' , item);
+    await storeLocalValue('@regret_sales_initialize', '1');
+
     if(item?.regret_id != undefined && item?.location_name != undefined){
       navigation.navigate('More', {
         screen: 'ProductSales',

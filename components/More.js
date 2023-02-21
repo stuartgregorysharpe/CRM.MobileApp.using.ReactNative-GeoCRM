@@ -18,7 +18,7 @@ import {
   CHANGE_LIBRARY_CHILD_STATUS,
   CHANGE_LOGIN_STATUS,
 } from '../actions/actionTypes';
-import {setToken, storeLocalValue} from '../constants/Storage';
+import {setToken, storeJsonData, storeLocalValue} from '../constants/Storage';
 import {setRegret, setSalesSearchText} from '../actions/sales.action';
 import {useNavigation} from '@react-navigation/native';
 import {deviceTokenPostApi} from '../actions/auth.action';
@@ -343,7 +343,7 @@ export default function More() {
                         dispatch(setRegret(null));
                         //dispatch(setSalesSearchText(''));
                         clearSearchKey();
-                        await storeLocalValue('@regret', '');
+                        await storeJsonData('@regret', null);
                       }
                       dispatch({type: CHANGE_MORE_STATUS, payload: 1});
                       dispatch({

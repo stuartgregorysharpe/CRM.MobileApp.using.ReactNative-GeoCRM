@@ -79,7 +79,9 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       if (page == 0) {
         setLists(newList);
       } else {
-        setLists([...lists, ...newList]);
+        if(newList.length != 0){
+          setLists([...lists, ...newList]);
+        }      
       }
     },
 
@@ -208,9 +210,11 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     const unsubscribe = navigation.addListener('focus', async () => {            
       const isRegretInitialize = await getLocalData('@regret_sales_initialize');      
       if (isRegretInitialize === '1') {        
-        setTimeout(() => {          
-          setupDefineSetupFromRegret(regret_item);          
-        }, 500);
+        const regret = await getJsonData('@regret');
+        console.log("focus", isRegretInitialize, regret);
+        if(regret != undefined && regret != null){
+          setupDefineSetupFromRegret(regret);  
+        }        
       } else {
         refreshList();
       }
@@ -218,12 +222,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {    
-    if(checkIsRegret()){            
-      setupDefineSetupFromRegret(regret_item);
-      setSearchInitVal(regret_item?.search_text);
-    }
-  }, [regret_item]);
+  // useEffect(() => {    
+  //   if(checkIsRegret()){            
+  //     setupDefineSetupFromRegret(regret_item);
+  //     setSearchInitVal(regret_item?.search_text);
+  //   }
+  // }, [regret_item]);
 
   const refreshList = async (search_text = undefined) => {
     var storedProductPriceList = await getJsonData('@product_price');
@@ -237,7 +241,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       props.getProductLists(defineSetup, search_text , 0);      
     }
 
-    var searchKey = await getSearchKey();      
+    var searchKey = await getSearchKey();
     setSearchInitVal(searchKey);
 
     console.log("defineSetup", defineSetup);
@@ -278,44 +282,50 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [productPriceLists]);
 
   const setupDefineSetupFromRegret = async (regret_item) => {    
-    const isRegret = checkIsRegret();
     const isRegretInitialize = await getLocalData('@regret_sales_initialize');    
-    if (isRegret && isRegretInitialize === '1') {
+    if (regret_item && isRegretInitialize === '1') {
       storeLocalValue('@regret_sales_initialize', '0');
       console.log('setupDefineSetupFromRegret: regret_item', regret_item);
-      const config = getConfigFromRegret(regret_item); 
-      console.log("new config = ", config , regret_item);     
+      const config = getConfigFromRegret(regret_item);      
       await storeJsonData('@product_price', []);
       await removeLocalData('@add_product');
-      dispatch(setProductPriceLists([]));      
+      dispatch(setProductPriceLists([]));
       setCartCount(0);
-      if(config?.location?.location_id != undefined){
-        setupFromConfig(config, regret_item?.search_text);
-      }      
+      if(config?.location?.location_id != undefined){                        
+        setupFromConfig(config, regret_item?.search_text , 'regret');
+      }
     }
-
   };
 
+  const setupFromConfig = (config, searchText, regretType) => {
 
-
-  const setupFromConfig = (config, searchText) => {
     if (props.getProductLists) {      
+
       if(config?.location?.name != undefined){
-        setSelectedLocation(config?.location?.name);  
+        setSelectedLocation(config?.location?.name);
       }
       
+      setSearchInitVal('');
+
       onCheckProductSetupChanged(config, type => {
         if (type.includes('changed')) {          
           storeJsonData('@setup', config);
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
-          props.getProductLists(config, searchText, 0);          
+          console.log("changed", searchText)
+          setSearchInitVal(searchText);
+          props.getProductLists(config, searchText, 0);
+        }else{
+          if(regretType === 'regret'){
+            console.log("no changed", searchText)
+            setSearchInitVal(searchText);
+            props.getProductLists(config, searchText, 0);
+          }
         }
       });
 
-      configAddProductCount();
-      
+      configAddProductCount();      
       if (config != undefined) {
         setOutsideTouch(true);
       }
@@ -326,7 +336,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     if (type === Constants.actionType.ACTION_CLOSE) {
       setupFieldModalRef.current.hideModal();
       if (value != null) {
-        setupFromConfig(value, '');
+        setupFromConfig(value, '' , '');
         dispatch(setRegret(null));
       }
     } else if (type == Constants.actionType.ACTION_DONE) {

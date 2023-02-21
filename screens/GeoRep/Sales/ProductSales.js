@@ -11,6 +11,7 @@ import {setSalesSetting} from '../../../actions/sales.action';
 import BackButtonHeader from '../../../components/Header/BackButtonHeader';
 
 export default function ProductSales(props) {
+
   const navigation = props.navigation;
 
   const [settings, setSettings] = useState(null);
@@ -19,10 +20,10 @@ export default function ProductSales(props) {
   const [page, setPage] = useState(0);
   const [isEndPage, setIsEndPage] = useState(false);
   const regret_item = props.route.params?.regret_item;  
-  
-
   const productSaleContainerRef = useRef(null);
   const dispatch = useDispatch();
+  const PAGE_SIZE = 10;
+
   let isMount = true;
 
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function ProductSales(props) {
   };
 
   const getApiData = async (search_text, pageNumber) => {
-    console.log('getApiData', isLoading, isEndPage, search_text, pageNumber);
+    
     setPage(pageNumber);
     if ((!isLoading || search_text != '') && (!isEndPage || pageNumber == 0)) {
       var paramData = await getJsonData('@sale_product_parameter');
@@ -137,37 +138,26 @@ export default function ProductSales(props) {
           setIsEndPage(false);
           clearProducts();
         }
-        setIsLoading(true);
-        console.log('is loading ... true');
+        setIsLoading(true);        
         paramData['page_no'] = pageNumber;
         if (search_text != undefined) {
           paramData['search_text'] = search_text;
         }
         storeJsonData('@sale_product_parameter', paramData);
         console.log('product list param => ', paramData);
-
         GetRequestProductsList.find(paramData)
           .then(res => {
             setIsLoading(false);
-            console.log('is loading => ', false);
-
             if (res.status == Strings.Success) {
-              console.log('Product Lists => ', res.items.length);
               setSettings(res.settings);
               dispatch(setSalesSetting(res.settings));
-              productSaleContainerRef.current.updateProductList(
-                res.items,
-                pageNumber,
-              );
-              if (res.items.length == 0) {
+              if (res.items.length == 0 ) { //< PAGE_SIZE
                 setIsEndPage(true);
-              }
-              if (pageNumber == 0) {
-                //setItems(getNewList(res.items));
-                //setItems(res.items);
-              } else {
-                //setItems(res.items);
-                //setItems([...items, getNewList(res.items)]);
+              }else{
+                productSaleContainerRef.current.updateProductList(
+                  res.items,
+                  pageNumber,
+                );
               }
               setPage(pageNumber + 1);
             }
@@ -183,6 +173,7 @@ export default function ProductSales(props) {
     } else {
       console.log('api not called');
     }
+
   };
 
   // const getNewList = (items) => {
