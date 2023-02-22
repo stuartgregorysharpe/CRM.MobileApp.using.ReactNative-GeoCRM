@@ -55,12 +55,12 @@ const LocationScreen = props => {
           }}></TouchableOpacity>
       ),
 
-      tabBarStyle: {
-        position: 'absolute',
-        height: 50,
-        paddingBottom: Platform.OS == 'android' ? 5 : 0,
-        backgroundColor: Colors.whiteColor,
-      },
+      // tabBarStyle: {
+      //   position: 'absolute',
+      //   height: 50,
+      //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
+      //   backgroundColor: Colors.whiteColor,
+      // },
     });
   };
   return (

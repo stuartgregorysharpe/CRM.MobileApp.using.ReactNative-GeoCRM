@@ -3,6 +3,7 @@ import {
   SALES_SETTING,
   SALES_SETUP,
   SALES_SET_REGRET,
+  SALES_SET_SEARCH_TEXT,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
   salesSetting: null,
   salesSetUp: null,
   regret: null,
+  searchText: '',
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -38,7 +40,12 @@ export default (state = initialState, action) => {
         regret: action.payload,
       };
     }
-
+    case SALES_SET_SEARCH_TEXT: {
+      return {
+        ...state,
+        searchText: action.payload,
+      };
+    }
     default:
       return state;
   }

@@ -198,6 +198,7 @@ const CheckinLinkButton = props => {
         setModalType('feedback');      
         await storeLocalValue('@checkin', '1');
         await storeLocalValue('@specific_location_id', locationId);
+        await storeJsonData('@setup', null);
         await storeLocalValue(
           Constants.storageKey.CHECKIN_SCHEDULE_ID,
           scheduleId,

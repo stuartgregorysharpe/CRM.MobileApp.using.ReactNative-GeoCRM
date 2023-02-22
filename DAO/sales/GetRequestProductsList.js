@@ -7,10 +7,8 @@ export function find(postData){
   
   return new Promise(function(resolve, reject) {
     
-        GetRequest.call("sales/products-list",  postData).then( async(res) => {
-            
+        GetRequest.call("sales/products-list",  postData).then( async(res) => {            
             if(res.status == Strings.Success && res.isConnected){
-
                 resolve(res.data);
             }else if(res.status == Strings.Success && !res.isConnected){
                 
@@ -19,9 +17,11 @@ export function find(postData){
                 const user_id = res.data.user_id;
                 resolve({status: Strings.Success});      
 
+            }else{
+                resolve({status : Strings.Failed});
             }
         }).catch((e) => {
-            reject();
+            reject(e);
         });        
   });
 }

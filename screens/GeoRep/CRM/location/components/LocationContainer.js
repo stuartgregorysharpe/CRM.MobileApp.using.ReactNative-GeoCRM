@@ -361,18 +361,17 @@ const LocationContainer = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 50,
   },
   pinKeyButton: {
     position: 'absolute',
     right: 9,
-    bottom: 80,
+    bottom: 30,
     padding: 5,
   },
   plusButton: {
     position: 'absolute',
     right: 20,
-    bottom: 120,
+    bottom: 70,
   },
 });
 

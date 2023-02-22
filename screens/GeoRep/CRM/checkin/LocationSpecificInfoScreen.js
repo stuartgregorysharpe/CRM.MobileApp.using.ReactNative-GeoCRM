@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef , useCallback} from 'react';
+import React, {useEffect, useState, useRef , useCallback } from 'react';
 import {
   SafeAreaView,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  StyleSheet
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -14,6 +15,7 @@ import {
   setWidthBreakpoints,
   parse,
 } from 'react-native-extended-stylesheet-breakpoints';
+
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
@@ -318,12 +320,12 @@ const LocationSpecificInfoScreen = props => {
               setShowItem(0);
             }}></TouchableOpacity>
         ),
-        tabBarStyle: {
-          position: 'absolute',
-          height: 50,
-          paddingBottom: Platform.OS == 'android' ? 5 : 0,
-          backgroundColor: Colors.whiteColor,
-        },
+        // tabBarStyle: {
+        //   position: 'absolute',
+        //   height: 50,
+        //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
+        //   backgroundColor: Colors.whiteColor,
+        // },
       });
     }
   };
@@ -382,7 +384,7 @@ const LocationSpecificInfoScreen = props => {
   };
 
   return (
-    <SafeAreaView style={{}}>
+    <SafeAreaView style={{flex:1}}>
 
       {isShowCustomNavigationHeader && (
         <NavigationHeader
@@ -613,79 +615,78 @@ const LocationSpecificInfoScreen = props => {
   );
 };
 
-const perWidth = setWidthBreakpoints(breakPoint);
+//const perWidth = setWidthBreakpoints(breakPoint);
 
-const styles = EStyleSheet.create(
-  parse({
-    container: {
-      padding: 10,
-    },
-    headerBox: {
-      backgroundColor: whiteLabel().headerBackground,
-      padding: 10,
-      paddingBottom: 0,
-      marginBottom: 8,
-    },
-    headerTitleBox: {
-      flexDirection: perWidth('row', 'column'),
-      alignItems: 'flex-start',
-      marginBottom: 8,
-    },
-    subtitleBox: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 20,
-      marginBottom: 8,
-      marginRight: 8,
-    },
-    subtitle: {
-      fontSize: 12,
-      color: whiteLabel().headerText,
-      textAlign: 'left',
-      fontFamily: Fonts.secondaryMedium,
-    },
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+  headerBox: {
+    backgroundColor: whiteLabel().headerBackground,
+    padding: 10,
+    paddingBottom: 0,
+    marginBottom: 8,
+  },
+  headerTitleBox: {
+    //flexDirection: perWidth('row', 'column'),
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  subtitleBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
+    marginBottom: 8,
+    marginRight: 8,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: whiteLabel().headerText,
+    textAlign: 'left',
+    fontFamily: Fonts.secondaryMedium,
+  },
 
-    dateText: {
-      color: '#0AD10A',
-      fontFamily: Fonts.secondaryMedium,
-    },
+  dateText: {
+    color: '#0AD10A',
+    fontFamily: Fonts.secondaryMedium,
+  },
 
-    title: {
-      fontSize: 14,
-      color: whiteLabel().headerText,
-      fontFamily: Fonts.secondaryBold,
-      lineHeight: 22,
-      maxWidth: 300,
-    },
-    headerIcon: {
-      marginRight: 8,
-    },
-    innerContainer: {
-      justifyContent: 'space-between',
-      flexDirection: perWidth('row-reverse', 'column'),
-    },
+  title: {
+    fontSize: 14,
+    color: whiteLabel().headerText,
+    fontFamily: Fonts.secondaryBold,
+    lineHeight: 22,
+    maxWidth: 300,
+  },
+  headerIcon: {
+    marginRight: 8,
+  },
+  innerContainer: {
+    justifyContent: 'space-between',
+    //flexDirection: perWidth('row-reverse', 'column'),
+  },
 
-    cardBox: {
-      //display: perWidth('flex', 'flex'),
-      width: '100%',
-      marginBottom: 8,
-    },
+  cardBox: {
+    //display: perWidth('flex', 'flex'),
+    width: '100%',
+    marginBottom: 8,
+  },
 
-    filterButton: {
-      display: perWidth('none', 'flex'),
-    },
+  filterButton: {
+    //display: perWidth('none', 'flex'),
+  },
 
-    transitionView: {
-      position: 'absolute',
-      bottom: 50,
-      left: 0,
-      right: 0,
-      backgroundColor: Colors.bgColor,
-      elevation: 2,
-      zIndex: 2,
-      padding: 10,
-    },
-  }),
-);
+  transitionView: {
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.bgColor,
+    elevation: 2,
+    zIndex: 2,
+    padding: 10,
+  },
+})
+
 
 export default LocationSpecificInfoScreen;
