@@ -18,17 +18,19 @@ import CTextInput from '../../../../../components/common/CTextInput';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants, Strings} from '../../../../../constants';
-import {whiteLabel} from '../../../../../constants/Colors';
+import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import * as ImagePicker from 'react-native-image-picker';
 import PhotoCameraPickerDialog from '../../../../../components/modal/PhotoCameraPickerDialog';
 import * as RNLocalize from 'react-native-localize';
 import { useDispatch } from 'react-redux';
-import { expireToken } from '../../../../../constants/Helper';
+import { expireToken, getPostParameter } from '../../../../../constants/Helper';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
+import { PostRequestDAO } from '../../../../../DAO';
+import { storeLocalValue } from '../../../../../constants/Storage';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
-  const {title, isStart, startEndDayId, currentLocation} = props;
+  const {title, isStart, currentLocation} = props;
 
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
@@ -36,9 +38,11 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const [isPicker, setIsPicker] = useState(false);
   const [distanceMeasure, setDistanceMeasure] = useState('km');
   const [imageRequired, setImageRequired] = useState(false);
+  const [isImageError, setIsImageError] = useState(false);
   const [isStartRequired, setIsStartRequired] = useState(false);
   const [isEndRequired, setIsEndRequired] = useState(false);
   const [isSubmit , setIsSubmit] = useState(false);
+  const alertModalRef = useRef(null)
   const loadingBarRef = useRef(null)
 
   const dispatch = useDispatch();
@@ -66,33 +70,41 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         expireToken(dispatch, e);
       });
   };
-
-  const _callOdometer = () => {
-   
-    let hasError = false;
-    if (imageRequired && image === null) {
-      message = Strings.Please_Take_Photo;
-      hasError = true;
+  const _callMyDay = (isStart, currentLocation) => {
+    if(isSubmit){
+      return ;
     }
+    setIsSubmit(true);
+    loadingBarRef.current.showModal();
+    var userParam = getPostParameter(currentLocation);
+    var postData = {
+      startEndDay_type: isStart
+        ? Constants.homeStartEndType.START_MY_DAY
+        : Constants.homeStartEndType.END_MY_DAY,
+      user_local_data:
+        userParam.user_local_data != undefined
+          ? userParam.user_local_data
+          : { time_zone: '', latitude: 0, longitude: 0 },
+    };
 
-    if (isStart && (end == '' || end == undefined)) {
-      message = Strings.Home.Input_End_Reading;
-      hasError = true;
-      setIsEndRequired(true);
-     
-      return;
-    }
+    PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null, dispatch).then(async (res) => {
+      console.log("OdometerReadingModal->PostRequestDAO api response:", res)
+      if (res.status == Strings.Success) {
+        await storeLocalValue('start_my_day', isStart ? '0' : '1');
+        _callSubmitOdometer(res.startEndDay_id, isStart, currentLocation)
+      } else {
+        loadingBarRef.current.hideModal();
+        setIsSubmit(false);
+      }
+    }).catch((e) => {
+      console.log("OdometerReadingModal->PostRequestDAO api call: error", e)
+      loadingBarRef.current.hideModal();
+      setIsSubmit(false);      
+      expireToken(dispatch, e);
+    });
 
-    if (!isStart && (start == '' || start == undefined)) {
-      message = Strings.Home.Input_Start_Reading;
-      hasError = true;
-      setIsStartRequired(true);
-    
-      return;
-    }
-
-    if (hasError) return;
-    
+  };
+  const _callSubmitOdometer = (startEndDayId, isStart, currentLocation) => {
     var postData = new FormData();
     postData.append('startEndDay_id', startEndDayId);
     postData.append('reading_type', isStart ? 'end_reading' : 'start_reading');
@@ -123,20 +135,11 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         ? currentLocation.longitude
         : '0',
     );
-  
-    if(isSubmit){
-      return ;
-    }
-
-    setIsSubmit(true);
-    loadingBarRef.current.showModal();    
-
-    postApiRequestMultipart('home/odometer', postData)
+     postApiRequestMultipart('home/odometer', postData)
       .then(res => {
         loadingBarRef.current.hideModal();
         setIsSubmit(false);
         if (res.status === Strings.Success) {
-          xxx
           setImage(null);
           onButtonAction({
             type: Constants.actionType.ACTION_DONE,
@@ -151,6 +154,40 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         setIsSubmit(false);      
         expireToken(dispatch, e);        
       });
+  }
+
+  const onPressSubmit = () => {
+   
+    let hasError = false;
+    if (imageRequired && image === null) {
+      message = Strings.Please_Take_Photo;
+      hasError = true;
+      setIsImageError(true);
+    }
+
+    if (isStart && (end == '' || end == undefined)) {
+      message = Strings.Home.Input_End_Reading;
+      hasError = true;
+      setIsEndRequired(true);
+     
+      return;
+    }
+
+    if (!isStart && (start == '' || start == undefined)) {
+      message = Strings.Home.Input_Start_Reading;
+      hasError = true;
+      setIsStartRequired(true);
+    
+      return;
+    }
+
+    if (hasError) return;
+
+    setIsEndRequired(false);
+    setIsStartRequired(false);
+    setIsImageError(false);
+
+    _callMyDay(isStart, currentLocation)
   };
 
   const requestCameraPermission = async () => {
@@ -194,6 +231,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       } else {
         if (response.assets != null && response.assets.length > 0) {
           setImage(response.assets[0]);
+          setIsImageError(false)
         }
       }
     });
@@ -252,14 +290,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
             returnKeyType={'done'}
             hasError={!isStart && isStartRequired}
             add_suffix={isStartRequired ? '' : distanceMeasure}     
-            // right={
-            //   isStartRequired ? null : (
-            //     <TextInput.Affix
-            //       textStyle={{marginTop: 8}}
-            //       text={distanceMeasure}
-            //     />
-            //   )
-            // }
             isRequired={true}
             onChangeText={text => {
               setStart(text);
@@ -278,15 +308,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
               style={{marginTop: 10}}
               hasError={ isEndRequired }
               add_suffix={ isEndRequired ? '' : distanceMeasure }
-              // right={
-              //   isEndRequired ? null : (
-              //     <TextInput.Affix
-              //       textStyle={{marginTop: 8}}
-              //       text={distanceMeasure}
-              //     />
-              //   )
-              // }
-              //isRequired={true}
               onChangeText={text => {
                 setEnd(text);
                 setIsEndRequired(false);
@@ -298,7 +319,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         {imageRequired && (
           <View
             style={{
-              margsinBottom: 10,
+              marginBottom: 10,
               marginTop: 10,
               flexDirection: 'row',
               alignItems: 'center',
@@ -326,6 +347,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
                 style={[
                   styles.imageContainer,
                   {marginLeft: 10, marginRight: 20},
+                  isImageError && {borderColor: Colors.redColor}
                 ]}
                 onPress={() => {
                   setIsPicker(true);
@@ -339,11 +361,8 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         <SubmitButton
           style={{marginTop: 10}}
           title="Submit"
-          onSubmit={() => {
-            _callOdometer();
-          }}
+          onSubmit={onPressSubmit}
         />
-
         <PhotoCameraPickerDialog
           visible={isPicker}
           message={'Choose Image'}
