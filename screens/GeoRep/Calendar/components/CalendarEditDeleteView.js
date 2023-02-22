@@ -4,7 +4,7 @@ import React from 'react'
 const CalendarEditDeleteView = () => {
   return (
     <View>
-      <Text>CalendarEditDeleteView</Text>
+      
     </View>
   )
 }

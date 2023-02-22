@@ -11,10 +11,9 @@ import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
 import Fonts from '../../../constants/Fonts';
-import {checkFeatureIncludeParam} from '../../../constants/Storage';
 import {updateCalendar} from '../../../actions/calendar.action';
-import {useSelector, useDispatch, connect} from 'react-redux';
-import {CalendarItem} from './partial/CalendarItem';
+import {useSelector, useDispatch } from 'react-redux';
+import {CalendarItem} from './components/CalendarItem';
 import DraggableFlatList, {
   ScaleDecorator,
   useOnCellActiveAnimation,
@@ -30,15 +29,13 @@ import {
   getPostParameter,
   showOfflineDialog,
 } from '../../../constants/Helper';
-import {Notification} from '../../../components/modal/Notification';
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
-import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
-import { clearLoadingBar, showLoadingBar } from '../../../actions/notification.action';
 import LoadingBar from '../../../components/LoadingView/loading_bar';
 import AlertDialog from '../../../components/modal/AlertDialog';
 import { Strings } from '../../../constants';
+import CalendarEditDeleteModal from './modal/CalendarEditDeleteModal';
 
 var selectedIndex = 2;
 let isMount = true;
@@ -46,8 +43,8 @@ let isMount = true;
 export default function CalendarScreen(props) {
   
   const dispatch = useDispatch();
-  const navigation = props.navigation;
-  const currentLocation = useSelector(state => state.rep.currentLocation);
+  const navigation = props.navigation;  
+  
   const isFocused = useIsFocused();
   const [tabIndex, setTabIndex] = useState(2);
   const [lists, setLists] = useState([]);
@@ -55,11 +52,19 @@ export default function CalendarScreen(props) {
   const [isOptimize, setIsOptimize] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const loadingBarRef = useRef(null);
+  const [isUpdating, setIsUpdating] = useState(false);  
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');  
   const [message, setMessage] = useState("");
+
+  const currentLocation = useSelector(state => state.rep.currentLocation);
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
+  const isEditable = features.includes('calendar_edit');
+
+  const loadingBarRef = useRef(null);
+  const calendarEditDeleteModalRef = useRef(null);
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -80,6 +85,7 @@ export default function CalendarScreen(props) {
       });
     }
   });
+
   useEffect(() => {
     isMount = true;
     return () => {
@@ -88,7 +94,7 @@ export default function CalendarScreen(props) {
   }, []);
 
   useEffect(() => {
-    onRefresh();
+    //onRefresh();
   }, [isFocused]);
 
   const onRefresh = () => {
@@ -119,17 +125,13 @@ export default function CalendarScreen(props) {
   }, [navigation]);
   
 
-
   const loadList = async (type, isOptimize = false) => {
 
     if(isLoading) return;
     
-    setIsLoading(true);
-    
-    setIsOptimize(await checkFeatureIncludeParam('calendar_optimize'));
-    setIsAdd(await checkFeatureIncludeParam('calendar_add'));
-
-    
+    setIsLoading(true);    
+    setIsOptimize( features.includes('calendar_optimize') );
+    setIsAdd( features.includes('calendar_add'));
     const param = {period: type};
     if (type == 'today' && isOptimize) {
       param.optimize = 1;
@@ -138,8 +140,6 @@ export default function CalendarScreen(props) {
       param.user_coordinates_longitude = currentLocation.longitude;
     }
 
-    console.log('GetRequestCalendarScheduleList: param', param);
-    
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
         if(isMount){
@@ -283,6 +283,7 @@ export default function CalendarScreen(props) {
     }
     loadList(weekName);
   };
+
   const onOptimize = () => {
     loadList('today', true);
   };
@@ -299,6 +300,14 @@ export default function CalendarScreen(props) {
     });
   };
 
+  const openEditDeletePopup = () => {
+    if(isEditable){
+
+    }
+  }
+  
+  
+  
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -321,12 +330,15 @@ export default function CalendarScreen(props) {
                   page: 'checkin',
               });  
             }
-
           }}
         />
         
         <LoadingBar        
           ref={loadingBarRef}
+        />
+
+        <CalendarEditDeleteModal 
+          ref={calendarEditDeleteModalRef}
         />
 
         <View style={[styles.tabContainer, boxShadow]}>
@@ -426,6 +438,8 @@ export default function CalendarScreen(props) {
           )}
         </View>
       </View>
+
+
 
       <View style={styles.plusButtonContainer}>
         {isOptimize && tabIndex == 2 && (
