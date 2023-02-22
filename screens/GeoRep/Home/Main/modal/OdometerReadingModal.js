@@ -169,7 +169,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       message = Strings.Home.Input_End_Reading;
       hasError = true;
       setIsEndRequired(true);
-     
       return;
     }
 
