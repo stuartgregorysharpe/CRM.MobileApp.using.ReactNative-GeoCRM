@@ -34,8 +34,8 @@ export const loginWithEmail = async (email, password) => {
           console.log("login resonse success", res.data);
           setToken(res.data.success.access_token);
           storeUserData(res.data.success.user);
-          var data = jwt_decode(res.data.success.access_token);
-          console.log("Data", JSON.stringify(data));
+          //var data = jwt_decode(res.data.success.access_token);
+          //console.log("Data", JSON.stringify(data));
           resolve(res.data);
 
         }

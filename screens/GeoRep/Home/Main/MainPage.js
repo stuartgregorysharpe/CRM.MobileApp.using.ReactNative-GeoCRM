@@ -442,7 +442,7 @@ const MainPage = forwardRef((props, ref) => {
 
   const initData = async () => {
     var startMyDay = await getLocalData('start_my_day');
-    setIsStart(startMyDay === null || startMyDay === '1' ? true : false);
+    setIsStart((startMyDay === undefined || startMyDay === null || startMyDay === '1') ? true : false);
 
   };
 
