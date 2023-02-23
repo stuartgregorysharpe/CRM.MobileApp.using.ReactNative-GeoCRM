@@ -85,9 +85,9 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
           ? userParam.user_local_data
           : { time_zone: '', latitude: 0, longitude: 0 },
     };
-
+    console.log("home/startEndDay->Postdata :", postData)
     PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null, dispatch).then(async (res) => {
-      console.log("OdometerReadingModal->PostRequestDAO api response:", res)
+
       if (res.status == Strings.Success) {
         await storeLocalValue('start_my_day', isStart ? '0' : '1');
         _callSubmitOdometer(res.startEndDay_id, isStart, currentLocation)
@@ -134,6 +134,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         ? currentLocation.longitude
         : '0',
     );
+    console.log("home/odometer->Postdata :", postData)
      postApiRequestMultipart('home/odometer', postData)
       .then(res => {
         loadingBarRef.current.hideModal();
@@ -164,14 +165,14 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       setIsImageError(true);
     }
 
-    if (isStart && (end == '' || end == undefined)) {
+    if (!isStart && (end == '' || end == undefined)) {
       message = Strings.Home.Input_End_Reading;
       hasError = true;
       setIsEndRequired(true);
       return;
     }
 
-    if (!isStart && (start == '' || start == undefined)) {
+    if (isStart && (start == '' || start == undefined)) {
       message = Strings.Home.Input_Start_Reading;
       hasError = true;
       setIsStartRequired(true);
@@ -286,11 +287,11 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
         <View style={styles.inputContainer}>
           <CTextInput
             label={Strings.Home.Start_Reading}
-            disabled={isStart}
+            disabled={!isStart}
             value={start}
             keyboardType={'number-pad'}
             returnKeyType={'done'}
-            hasError={!isStart && isStartRequired}
+            hasError={isStart && isStartRequired}
             add_suffix={isStartRequired ? '' : distanceMeasure}     
             isRequired={true}
             onChangeText={text => {
@@ -300,7 +301,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
           />
         </View>
 
-        {isStart && (
+        {!isStart && (
           <View style={styles.inputContainer}>
             <CTextInput
               label="End Reading"
