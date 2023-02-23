@@ -210,6 +210,10 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       console.warn(err);
     }
   };
+  const onRemoveImage = () => {
+    setImage(null)
+    setIsImageError(false)
+  }
 
   const launchImageLibrary = () => {
     let options = {
@@ -339,6 +343,11 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
                   style={styles.imageContainer}
                   source={{uri: image.uri}}
                 />
+                <TouchableOpacity
+                  style={styles.closeButtonStyle}
+                  onPress={onRemoveImage}>
+                  <SvgIcon icon="Close" width="20px" height="20px" />
+                </TouchableOpacity>
               </TouchableOpacity>
             )}
             {image === null && (
@@ -398,6 +407,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     justifyContent: 'center',
+  },
+  closeButtonStyle: {
+    position: 'absolute',
+    right: 0,
+    top: 3,
   },
   
 });
