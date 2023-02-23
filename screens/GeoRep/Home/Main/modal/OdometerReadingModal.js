@@ -30,8 +30,8 @@ import { storeLocalValue } from '../../../../../constants/Storage';
 
 const OdometerReadingModal = React.forwardRef((props, ref) => {
 
-  const {title, isStart, currentLocation} = props;
-
+  const {title, currentLocation, isStart} = props;
+  
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [image, setImage] = useState(null);
@@ -42,7 +42,6 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const [isStartRequired, setIsStartRequired] = useState(false);
   const [isEndRequired, setIsEndRequired] = useState(false);
   const [isSubmit , setIsSubmit] = useState(false);
-  const alertModalRef = useRef(null)
   const loadingBarRef = useRef(null)
 
   const dispatch = useDispatch();
@@ -107,8 +106,8 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const _callSubmitOdometer = (startEndDayId, isStart, currentLocation) => {
     var postData = new FormData();
     postData.append('startEndDay_id', startEndDayId);
-    postData.append('reading_type', isStart ? 'end_reading' : 'start_reading');
-    postData.append('reading', isStart ? end : start);
+    postData.append('reading_type', isStart ? 'start_reading': 'end_reading');
+    postData.append('reading', isStart ? start : end);
     if (image) {
       postData.append('image_included', '1');
       postData.append('File[odometer_image]', {

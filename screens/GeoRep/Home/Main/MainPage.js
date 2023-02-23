@@ -400,6 +400,7 @@ const MainPage = forwardRef((props, ref) => {
               } else {
                 await storeLocalValue('@checkin', '0');
               }
+              console.log("res.items.startEndDay_state", res.items.startEndDay_state)
               setIsStart(
                 res.items.startEndDay_state ===
                   Constants.homeStartEndType.START_MY_DAY
@@ -776,7 +777,7 @@ const MainPage = forwardRef((props, ref) => {
       <OdometerReadingModal
         ref={odometerReadingModalRef}
         title={Strings.Home.Odometer_Reading}
-        isStart={!isStart}
+        isStart={isStart}
         currentLocation={currentLocation}
         onButtonAction={onSubmitOdometerReading}
       />
