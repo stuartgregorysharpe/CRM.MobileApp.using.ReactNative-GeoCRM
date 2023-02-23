@@ -305,6 +305,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
               returnKeyType={'done'}
               style={{marginTop: 10}}
               hasError={ isEndRequired }
+              isRequired={true}
               add_suffix={ isEndRequired ? '' : distanceMeasure }
               onChangeText={text => {
                 setEnd(text);

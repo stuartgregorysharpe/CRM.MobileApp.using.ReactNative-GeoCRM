@@ -97,17 +97,18 @@ const CTextInput = props => {
 
 
         {props.hasError && props.isRequired && (add_suffix == undefined || add_suffix == '') && (
-          <View style={{position: 'absolute', right: 0, top: 15}}>
+          <View style={{position: 'absolute', right: 0, top: 8}}>
             <Text
               style={[
                 {
                   color: whiteLabel().endDayBackground,
                   marginHorizontal: 10,
                   fontFamily: Fonts.primaryRegular,
+                  fontSize: 14,
                 },
                 props.errorTextStyle,
               ]}>
-              (required)
+              {"required"}
             </Text>
           </View>
         )}
