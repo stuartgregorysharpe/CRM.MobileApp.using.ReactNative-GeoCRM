@@ -1,4 +1,4 @@
-import React, {useState, useEffect , useRef } from 'react';
+import React, {useState, useEffect , useRef, useImperativeHandle } from 'react';
 import {
   View,
   StyleSheet,
@@ -43,12 +43,22 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
   const [isEndRequired, setIsEndRequired] = useState(false);
   const [isSubmit , setIsSubmit] = useState(false);
   const loadingBarRef = useRef(null)
+  const modalRef= useRef(null)
 
   const dispatch = useDispatch();
+  useImperativeHandle(ref, () => ({
 
-  useEffect(() => {
-    _callGetOdometer();
-  }, []);
+    showModal: () => {
+      clearData()
+      _callGetOdometer()
+      modalRef.current.showModal()
+    },
+
+    hideModal: () => {
+      modalRef.current.hideModal()
+    },
+  }));
+
 
   const onButtonAction = data => {
     if (props.onButtonAction) {
@@ -58,12 +68,24 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
       ref.current.hideModal();
     }
   };
+  const clearData = () => {
+    setStart("")
+    setEnd("")
+  }
 
   const _callGetOdometer = () => {    
+  
     getApiRequest('home/odometer', {})
-      .then(res => {        
+      .then(res => {      
+        console.log("_callGetOdometer", res)  
         setDistanceMeasure(res.distance_measure);
         setImageRequired(res.image_required === '1' ? true : false);
+        if(res.start_reading !== undefined) {
+          setStart(res.start_reading)
+        }
+        if(res.end_reading !== undefined) {
+          setEnd(res.end_reading)
+        }
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -267,7 +289,7 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
 
   return (
     <CModal
-      ref={ref}
+      ref={modalRef}
       title={title}
       closableWithOutsideTouch
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
