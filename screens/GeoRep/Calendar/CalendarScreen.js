@@ -374,7 +374,7 @@ export default function CalendarScreen(props) {
         />
 
         <CalendarEditDeleteModal
-          title="Edit schhedule item"
+          title="Edit schedule item"
           location={location}
           closableWithOutsideTouch
           ref={calendarEditDeleteModalRef}
