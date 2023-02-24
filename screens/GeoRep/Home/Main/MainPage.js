@@ -701,12 +701,19 @@ const MainPage = forwardRef((props, ref) => {
     }
   };
   const onPressStartEndDay = () => {
-    const isOdometerReading = features.includes('odometer_reading')
-    if (isOdometerReading) {
-      odometerReadingModalRef.current.showModal();
-    } else {
-      _callMyDay();
-    }
+    checkConnectivity().then(isConnected => {
+      if(isConnected) {
+        const isOdometerReading = features.includes('odometer_reading')
+        if (isOdometerReading) {
+          odometerReadingModalRef.current.showModal();
+        } else {
+          _callMyDay();
+        }
+      } else {
+        showOfflineDialog(dispatch)
+      }
+    })
+
   }
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
