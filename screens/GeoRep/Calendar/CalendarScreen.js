@@ -57,7 +57,7 @@ export default function CalendarScreen(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);  
   const [isConfirmModal, setIsConfirmModal] = useState(false);
-  const [confirmModalType, setConfirmModalType] = useState('');  
+  const [confirmModalType, setConfirmModalType] = useState('no_have_complsory');  
   const [message, setMessage] = useState("");
   const [location, setLocation] = useState(null);
 
@@ -316,14 +316,24 @@ export default function CalendarScreen(props) {
     });
   };
 
-  const openEditDeletePopup = (item) => {    
+  const openEditDeletePopup = (item) => {
     if(isEditable){
-      if(calendarEditDeleteModalRef.current){      
-        setLocation(item);
+      if(calendarEditDeleteModalRef.current){              
         if(item.schedule_date >= getCurrentDate()){
-          calendarEditDeleteModalRef.current.showModal();
+          checkConnectivity().then((isConnected) => {
+            if(isConnected){
+              setLocation(item);
+              calendarEditDeleteModalRef.current.showModal();
+            }else{
+              setConfirmModalType('calendar_edit_delete');
+              setMessage(Strings.This_Function_Not_Available);
+              setIsConfirmModal(true);
+            }            
+          }).catch(e => {
+
+          })          
         }        
-      }
+      }      
     }
   }
 
@@ -349,9 +359,9 @@ export default function CalendarScreen(props) {
               if(location != null && location != undefined){     
                 navigation.navigate('DeeplinkRepForms', {
                   locationInfo: location,
-                });        
+                });
               }
-            }else{
+            }else if(confirmModalType == 'no_have_complsory') {
               navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
                   page: 'checkin',
               });  
