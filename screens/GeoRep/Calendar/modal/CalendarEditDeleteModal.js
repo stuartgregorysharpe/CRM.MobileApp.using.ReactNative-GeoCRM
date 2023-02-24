@@ -28,9 +28,9 @@ const CalendarEditDeleteModal = React.forwardRef((props, ref) => {
       modalType={Constants.modalType.MODAL_TYPE_BOTTOM}
       {...props}>
       <CalendarEditDeleteModalContainer
-        {...props}
-        style={{marginTop: 14}}
-        onButtonAction={onButtonAction}
+          {...props}
+          style={{marginTop: 14}}
+          onButtonAction={onButtonAction}
       />
     </CModal>
         

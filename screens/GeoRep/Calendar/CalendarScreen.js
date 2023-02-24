@@ -34,8 +34,9 @@ import {checkConnectivity} from '../../../DAO/helper';
 import GetRequestCalendarScheduleList from '../../../DAO/GetRequestCalendarScheduleList';
 import LoadingBar from '../../../components/LoadingView/loading_bar';
 import AlertDialog from '../../../components/modal/AlertDialog';
-import { Strings } from '../../../constants';
+import { Constants, Strings } from '../../../constants';
 import CalendarEditDeleteModal from './modal/CalendarEditDeleteModal';
+import { getCurrentDate } from '../../../helpers/formatHelpers';
 
 var selectedIndex = 2;
 let isMount = true;
@@ -47,7 +48,9 @@ export default function CalendarScreen(props) {
   
   const isFocused = useIsFocused();
   const [tabIndex, setTabIndex] = useState(2);
-  const [lists, setLists] = useState([]);
+  
+  const [lastWeekList, setLastWeekList] = useState([]);
+  const [weekAheadList, setWeekAheadList] = useState([]);
   const [todayList, setTodayList] = useState([]);
   const [isOptimize, setIsOptimize] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
@@ -56,6 +59,7 @@ export default function CalendarScreen(props) {
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');  
   const [message, setMessage] = useState("");
+  const [location, setLocation] = useState(null);
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const features = useSelector(
@@ -99,7 +103,7 @@ export default function CalendarScreen(props) {
 
   const onRefresh = () => {
     if (selectedIndex === 1) {
-      if (lists.length === 0) {
+      if (lastWeekList.length === 0) {
         loadList('last_week');
       }
     } else if (selectedIndex === 2 || selectedIndex === 0) {
@@ -108,7 +112,7 @@ export default function CalendarScreen(props) {
         loadList('today');
       }
     } else if (selectedIndex === 3) {
-      if (lists.length === 0) {
+      if (weekAheadList.length === 0) {
         loadList('week_ahead');
       }
     }
@@ -129,6 +133,10 @@ export default function CalendarScreen(props) {
 
     if(isLoading) return;
     
+    // setLastWeekList([]);
+    // setTodayList([]);
+    // setWeekAheadList([]);
+
     setIsLoading(true);    
     setIsOptimize( features.includes('calendar_optimize') );
     setIsAdd( features.includes('calendar_add'));
@@ -142,14 +150,13 @@ export default function CalendarScreen(props) {
 
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
-        if(isMount){
-          if (selectedIndex == 2 || selectedIndex == 0) {
-            setTodayList(res.items);
-          } else {
-            updateListForWeek(res.items);
-          }
-          setIsLoading(false);
-        }                
+        console.log("res", res.items.length)
+        setIsLoading(false);
+        if (selectedIndex == 2 || selectedIndex == 0) {
+          setTodayList(res.items);
+        } else {
+          updateListForWeek(res.items);
+        }        
       })
       .catch(e => {
         setLists([]);
@@ -180,8 +187,12 @@ export default function CalendarScreen(props) {
         data: data,
       });
     });
-
-    setLists(sectionList);
+    if(selectedIndex == 1 ){
+      setLastWeekList(sectionList);
+    }else if(selectedIndex == 3){
+      setWeekAheadList(sectionList);
+    }
+    
   };
 
   const updateTodayLocationLists = async data => {
@@ -210,7 +221,9 @@ export default function CalendarScreen(props) {
 
   const renderCalendarItem = (item, index, tabIndex) => {
     return (
-      <View style={{marginTop: 10}}>
+      <TouchableOpacity 
+        onPress={() => openEditDeletePopup(item)}
+        style={{marginTop: 10}} >
         <CalendarItem
           key={index}
           navigation={props.navigation}
@@ -218,8 +231,8 @@ export default function CalendarScreen(props) {
           current={currentLocation}
           tabIndex={tabIndex}
           onRefresh={onRefresh}
-          onItemSelected={() => {}}></CalendarItem>
-      </View>
+          onItemSelected={() => {} }></CalendarItem>
+      </TouchableOpacity>
     );
   };
 
@@ -228,6 +241,7 @@ export default function CalendarScreen(props) {
     return (
       <ScaleDecorator>
         <TouchableOpacity
+          onPress={() => openEditDeletePopup(item)}
           onLongPress={drag}
           disabled={isActive}
           style={[
@@ -245,8 +259,7 @@ export default function CalendarScreen(props) {
               setIsConfirmModal(true);                            
             }}
             showLoadingBar={() => {
-              if(loadingBarRef.current){
-                console.log("start checkin ")
+              if(loadingBarRef.current){                
                 loadingBarRef.current.showModal();
               }
                 
@@ -257,7 +270,7 @@ export default function CalendarScreen(props) {
                 setMessage(Strings.PostRequestResponse.Successfully_Checkin);
                 setIsConfirmModal(true);
             }}
-            onItemSelected={() => {
+            onItemSelected={() => {              
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
             key={item.schedule_id}
@@ -272,16 +285,19 @@ export default function CalendarScreen(props) {
     );
   };
 
-  const onTabChanged = tabIndex => {
-    setTabIndex(tabIndex);
-    selectedIndex = tabIndex;
+  const onTabChanged = index => {
+
+    setTabIndex(index);
+    selectedIndex = index;
     var weekName = 'last_week';
-    if (tabIndex == 2) {
+    if (index == 2) {
       weekName = 'today';
-    } else if (tabIndex == 3) {
+    } else if (index == 3) {        
       weekName = 'week_ahead';
     }
     loadList(weekName);
+    
+    
   };
 
   const onOptimize = () => {
@@ -300,14 +316,24 @@ export default function CalendarScreen(props) {
     });
   };
 
-  const openEditDeletePopup = () => {
+  const openEditDeletePopup = (item) => {    
     if(isEditable){
-
+      if(calendarEditDeleteModalRef.current){      
+        setLocation(item);
+        if(item.schedule_date >= getCurrentDate()){
+          calendarEditDeleteModalRef.current.showModal();
+        }        
+      }
     }
   }
-  
-  
-  
+
+  const onCalendarEditDeleteModalClosed = ({type , value}) => {   
+    console.log("closed modal", type) 
+    if(type == Constants.actionType.ACTION_DONE){
+      onTabChanged(tabIndex);
+    }
+  }
+      
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -333,18 +359,23 @@ export default function CalendarScreen(props) {
           }}
         />
         
-        <LoadingBar        
+        <LoadingBar
           ref={loadingBarRef}
         />
 
-        <CalendarEditDeleteModal 
+        <CalendarEditDeleteModal
+          title="Edit schhedule item"
+          location={location}
+          closableWithOutsideTouch
           ref={calendarEditDeleteModalRef}
+          clearText='Close'
+          onButtonAction={onCalendarEditDeleteModalClosed}
         />
 
         <View style={[styles.tabContainer, boxShadow]}>
           <TouchableOpacity
             style={styles.tabItem}
-            onPress={() => {
+            onPress={() => {              
               onTabChanged(1);
             }}>
             <Text
@@ -390,13 +421,12 @@ export default function CalendarScreen(props) {
           {(tabIndex == 1 || tabIndex == 3) && (
             <SectionList
               keyExtractor={(item, index) => index.toString()}
-              sections={lists}
+              sections={tabIndex == 1 ? lastWeekList : weekAheadList}
               renderItem={({item, index}) => {
                 return renderCalendarItem(item, index, tabIndex);
               }}
               refreshing={isLoading}
-              renderSectionHeader={({section}) => {
-                console.log(section);
+              renderSectionHeader={({section}) => {                
                 return (
                   <Text
                     style={[
@@ -409,6 +439,7 @@ export default function CalendarScreen(props) {
               }}
             />
           )}
+
           {tabIndex == 2 && (
             <GestureHandlerRootView>
               <DraggableFlatList
@@ -436,6 +467,8 @@ export default function CalendarScreen(props) {
               />
             </GestureHandlerRootView>
           )}
+    
+
         </View>
       </View>
 

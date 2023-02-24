@@ -20,7 +20,7 @@ import {Strings} from '../../../../constants';
 
 export function CalendarItem(props) {
 
-  const {navigation, tabIndex, onItemSelected} = props;
+  const {navigation, tabIndex, onItemSelected } = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -192,6 +192,7 @@ export function CalendarItem(props) {
     );
   };
 
+  
   if (item != undefined && item.coordinates != undefined) {
     return (
       <View style={[styles.itemContainer, style.card]}>
