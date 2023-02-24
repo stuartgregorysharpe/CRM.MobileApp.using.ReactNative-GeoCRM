@@ -1,5 +1,5 @@
 
-import { View, Text } from 'react-native'
+import { View, Text, Dimensions } from 'react-native'
 import React , { useState , useRef } from 'react'
 import CalendarEditDeleteView from '../components/CalendarEditDeleteView'
 import { expireToken, getPostParameter } from '../../../../constants/Helper';
@@ -8,6 +8,7 @@ import { PostRequestDAO } from '../../../../DAO';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import ConfirmDialog from '../../../../components/modal/ConfirmDialog';
 import { Constants } from '../../../../constants';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CalendarEditDeleteModalContainer = (props) => {
 
@@ -91,7 +92,7 @@ const CalendarEditDeleteModalContainer = (props) => {
 
 
   return (
-    <View style={{alignSelf:'stretch'}}>
+    <ScrollView style={{alignSelf:'stretch' , maxHeight:Dimensions.get('screen').height * 0.8 }}>
         <CalendarEditDeleteView 
           location={location} 
           onEdit={(data) => {
@@ -118,7 +119,7 @@ const CalendarEditDeleteModalContainer = (props) => {
           }}
         />
 
-    </View>
+    </ScrollView>
   )
    
 }
