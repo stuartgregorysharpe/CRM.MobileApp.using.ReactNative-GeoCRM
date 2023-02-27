@@ -36,7 +36,6 @@ const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
-  const [startEndDayId, setStartEndDayId] = useState(0);
   const [pages, setPages] = useState([{ card: 'visits', index: 0 }, { card: 'activity', index: 1 }]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activityCard, setActivityCard] = useState(null);
@@ -401,6 +400,7 @@ const MainPage = forwardRef((props, ref) => {
               } else {
                 await storeLocalValue('@checkin', '0');
               }
+              console.log("res.items.startEndDay_state", res.items.startEndDay_state)
               setIsStart(
                 res.items.startEndDay_state ===
                   Constants.homeStartEndType.START_MY_DAY
@@ -442,7 +442,7 @@ const MainPage = forwardRef((props, ref) => {
 
   const initData = async () => {
     var startMyDay = await getLocalData('start_my_day');
-    setIsStart(startMyDay === null || startMyDay === '1' ? true : false);
+    setIsStart((startMyDay === undefined || startMyDay === null || startMyDay === '1') ? true : false);
 
   };
 
@@ -495,7 +495,6 @@ const MainPage = forwardRef((props, ref) => {
   }
 
   const _callMyDay = () => {
-
     var userParam = getPostParameter(currentLocation);
     var postData = {
       startEndDay_type: isStart
@@ -511,12 +510,10 @@ const MainPage = forwardRef((props, ref) => {
       setIsLoading(true)
       PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null, dispatch).then(async (res) => {
         if (res.status == Strings.Success) {
-          setStartEndDayId(res.startEndDay_id);
+          //setStartEndDayId(res.startEndDay_id);
           await storeLocalValue('start_my_day', isStart ? '0' : '1');
           setIsStart(!isStart);
-          if (features.includes('odometer_reading')) {
-            odometerReadingModalRef.current.showModal();
-          } else if (res.status == "NOIMPLEMENT") {
+          if(res.status == "NOIMPLEMENT") {
             showOfflineDialog(dispatch);
           }
         }
@@ -530,8 +527,9 @@ const MainPage = forwardRef((props, ref) => {
 
   };
 
-  const onCaptureAction = async ({ type, value }) => {
+  const onSubmitOdometerReading = async ({ type, value }) => {
     if (type == Constants.actionType.ACTION_DONE) {
+      setIsStart(!isStart);
       setTimeout(() => {
         setMessage(value);
         setIsConfirmModal(true);
@@ -702,7 +700,21 @@ const MainPage = forwardRef((props, ref) => {
       );
     }
   };
+  const onPressStartEndDay = () => {
+    checkConnectivity().then(isConnected => {
+      if(isConnected) {
+        const isOdometerReading = features.includes('odometer_reading')
+        if (isOdometerReading) {
+          odometerReadingModalRef.current.showModal();
+        } else {
+          _callMyDay();
+        }
+      } else {
+        showOfflineDialog(dispatch)
+      }
+    })
 
+  }
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
 
@@ -729,9 +741,7 @@ const MainPage = forwardRef((props, ref) => {
             borderRadius: 3,
           }}
           title={isStart ? Strings.Start_My_Day : Strings.End_My_Day}
-          onSubmit={() => {
-            _callMyDay();
-          }}></SubmitButton>
+          onSubmit={onPressStartEndDay}></SubmitButton>
       </View>
 
       <SyncAll ref={syncAllViewRef} ></SyncAll>
@@ -775,9 +785,8 @@ const MainPage = forwardRef((props, ref) => {
         ref={odometerReadingModalRef}
         title={Strings.Home.Odometer_Reading}
         isStart={isStart}
-        startEndDayId={startEndDayId}
         currentLocation={currentLocation}
-        onButtonAction={onCaptureAction}
+        onButtonAction={onSubmitOdometerReading}
       />
       <CardsFilterModal ref={cardsFilterModal}
         onButtonAction={(data) => {

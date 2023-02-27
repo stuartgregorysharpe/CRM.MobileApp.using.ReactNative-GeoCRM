@@ -129,7 +129,6 @@ export default function SignIn() {
           var filters = await getFilterData('@filter');
           getDynamicPins(res.success.access_token)
             .then(async mapPins => {
-              console.log("respnose", mapPins)
               await storeJsonData('@map_pin_key', mapPins);
               dispatch({ type: MAP_FILTERS, payload: filters });
               dispatch({ type: CHANGE_USER_INFO, payload: res.success.user });
