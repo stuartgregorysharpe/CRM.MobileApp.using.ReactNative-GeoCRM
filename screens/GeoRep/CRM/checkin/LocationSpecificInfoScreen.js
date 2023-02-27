@@ -174,41 +174,9 @@ const LocationSpecificInfoScreen = props => {
         getFormLists(locationId);
       }
     }
-
-    // var location = await getJsonData('@checkin_location');
-    // console.log("location id ===>", location_id , location );
-    // if (location != null && location?.location_name?.value != undefined) {
-    //   if (
-    //     locationInfoRef.current != undefined &&
-    //     locationInfoRef.current != null
-    //   ) {
-    //     locationInfoRef.current.updateDispositionData(location);
-    //   }
-
-    //   setLocationIfo(location);
-    //   getFormLists(location.location_id);
-    // } else {
-    //   var locId = location_id;
-    //   if( isCheckin && (location_id == '' || location_id == undefined) ){
-    //     locId  = await getLocalData("@specific_location_id");
-    //   }else if(locId == undefined) {
-    //     locId = locationId;
-    //   }      
-    //   if (locId !== undefined) {        
-    //     openLocationInfo(locId);
-    //     getFormLists(locId);
-    //   }
-    // }
   };
 
-  const initData = async () => {
-    if (pageType === 'checkin') {
-
-    } else if (pageType === 'access_crm') {
-      openLocationInfo(location_id != undefined ? location_id : locationId);      
-    }
-  };
-
+  
   const goBack = () => {
     if (props.navigation.canGoBack()) {
       props.navigation.popToTop();
@@ -319,13 +287,7 @@ const LocationSpecificInfoScreen = props => {
             onPress={() => {
               setShowItem(0);
             }}></TouchableOpacity>
-        ),
-        // tabBarStyle: {
-        //   position: 'absolute',
-        //   height: 50,
-        //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
-        //   backgroundColor: Colors.whiteColor,
-        // },
+        ),        
       });
     }
   };
@@ -397,6 +359,7 @@ const LocationSpecificInfoScreen = props => {
       )}
 
       <Notification />
+      
       <AlertDialog 
         visible={isConfirmModal}
         message={message}
@@ -407,12 +370,7 @@ const LocationSpecificInfoScreen = props => {
           }else if(confirmModalType == 'have_compulsory_form'){
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
-            });
-
-            // const location = await getJsonData('@checkin_location');            
-            // if(location != null && location != undefined){             
-            // }
-            
+            });            
           }
           
         }}
