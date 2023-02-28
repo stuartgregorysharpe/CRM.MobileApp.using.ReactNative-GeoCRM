@@ -20,8 +20,7 @@ export default function TakePhotoForm({item, onPress, onTouchStart , submissionT
   const image_capture = item.image_capture ;
   const image_gallery = item.image_gallery ;
   const image_timestamp = item.image_timestamp;
-
-  console.log("photo item => " , item)
+  
   return (
     <View
       style={[

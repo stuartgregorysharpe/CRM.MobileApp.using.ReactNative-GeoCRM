@@ -27,10 +27,12 @@ const TakePhotoView = props => {
   
   // Combine image and text
   useEffect(() => {
+    console.log("update photos",photos ,image_timestamp)
     if(photos != undefined && photos.length > 0 && image_timestamp == '1'){
       photos.forEach( (element, index) => {
-
+        console.log("image type1", imageType, element, fileInfo);
         if(!element.includes('RNPM') && RNPhotoManipulator != null && fileInfo != null){
+          console.log("image type", imageType);
           if(imageType[index] != undefined && imageType[index] == 'camera'){
             const texts = [       
               { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: 18, color: "#FFFFFF", thickness: 0 }
