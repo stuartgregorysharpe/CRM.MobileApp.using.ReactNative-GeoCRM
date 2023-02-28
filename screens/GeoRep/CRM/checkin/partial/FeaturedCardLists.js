@@ -164,6 +164,19 @@ export default function FeaturedCardLists(props) {
       });
     }
 
+
+    if(features && features.includes('sims_report')){
+      featureCards.push({
+        title: `Sim Card Report`,
+        icon: 'Sim_Card',
+        action: 'View  Sim Allocations',
+        link: 'sim_card_report',
+        isOffline: false,
+        isFormCompulsory: false
+      });
+    }
+
+
     setFeatureCards([...featureCards]);
   };
 

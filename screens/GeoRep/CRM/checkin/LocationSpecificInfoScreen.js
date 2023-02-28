@@ -10,17 +10,10 @@ import {
   StyleSheet
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse,
-} from 'react-native-extended-stylesheet-breakpoints';
-
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
-import {breakPoint} from '../../../../constants/Breakpoint';
 import Fonts from '../../../../constants/Fonts';
 import {grayBackground} from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
@@ -51,6 +44,7 @@ import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { showNotification } from '../../../../actions/notification.action';
 import { Notification } from '../../../../components/modal/Notification';
+import SimCardReportModal from '../sim_card';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -66,6 +60,8 @@ const LocationSpecificInfoScreen = props => {
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
   const customerContactsRef = useRef();
+  const simCardReportModalRef =  useRef();
+
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] =
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
@@ -282,6 +278,12 @@ const LocationSpecificInfoScreen = props => {
     if (item.link === 'danone_sales') {
       setIsDanOneSales(true);
     }
+
+    if(item.link === 'sim_card_report'){
+      if(simCardReportModalRef.current)
+        simCardReportModalRef.current.showModal()
+    }
+
   };
 
   const refreshHeader = () => {
@@ -338,6 +340,7 @@ const LocationSpecificInfoScreen = props => {
 
   const onCustomerContactModalClosed = ({type, value}) => {};
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
+  const onSimCardReportModalClosed = ({type , value}) => {};
 
   const getFormLists = async locationId => {
     if(isLoadingForm) return;
@@ -407,17 +410,23 @@ const LocationSpecificInfoScreen = props => {
           }else if(confirmModalType == 'have_compulsory_form'){
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
-            });
-
-            // const location = await getJsonData('@checkin_location');            
-            // if(location != null && location != undefined){             
-            // }
-            
-          }
-          
+            }); 
+          }          
         }}
       />
       
+      {
+        locationInfo != undefined && (
+          <SimCardReportModal 
+            ref={simCardReportModalRef}
+            locationId={locationId}
+            title="Sim Card Report"
+            clearText='Close'
+            onButtonAction={onSimCardReportModalClosed}
+          />
+        )
+      }
+
       {locationInfo != undefined && (
         <ActivityComments
           locationId={locationInfo.location_id}
