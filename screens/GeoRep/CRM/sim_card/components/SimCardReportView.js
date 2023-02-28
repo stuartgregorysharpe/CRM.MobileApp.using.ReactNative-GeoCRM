@@ -3,7 +3,8 @@ import React , { useState } from 'react'
 import Carousel from 'react-native-reanimated-carousel';
 import {
 	BaseButton,
-	GestureHandlerRootView
+	GestureHandlerRootView,
+	ScrollView
   } from 'react-native-gesture-handler';
 import NetworkItem from './NetworkItem';
 import TableView from './TableView';
@@ -30,10 +31,35 @@ const SimCardReportView = (props) => {
 	return (
 		<View>
 			<View style={{flexDirection:'row', alignItems:'center'}}>
-				<GestureHandlerRootView>      
+				<ScrollView 
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{
+						marginTop:12,
+						flexGrow: 1,
+						//justifyContent: 'center',
+						//width: Dimensions.get("screen").width - 40,
+					}}
+					horizontal={true} >
+
+					{
+						networks.map((item, index) => {
+							return (
+								<NetworkItem 
+									key={index}
+									onItemSelected={(index) => {
+										setSelectedIndex(index);
+									}}
+									item={item} index={index} selectedIndex={selectedIndex} />		
+							)
+						})
+					}
+
+				</ScrollView>
+
+				{/* <GestureHandlerRootView>      
 					<Carousel
 						{ ...baseOptions }
-						loop					
+						loop={false}			
 						data={networks}					
 						onSnapToItem={(index) => {						
 						}}
@@ -46,7 +72,7 @@ const SimCardReportView = (props) => {
 								item={networks[index]} index={index} selectedIndex={selectedIndex} />						
 						)}
 					/>						
-				</GestureHandlerRootView>
+				</GestureHandlerRootView> */}
 				<SvgIcon icon="Angle_Left_form" width='15' height='15' style={{marginLeft:5, marginRight:5}} />
 			</View>
 

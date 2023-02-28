@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, Platform } from 'react-native'
+import { Dimensions, StyleSheet, Text, Platform, View } from 'react-native'
 import React , { useEffect , useState } from 'react'
 import SimCardReportView from '../components/SimCardReportView'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -36,8 +36,8 @@ const SimCardReportContainer = (props) => {
 	}
 	
 	return (
-		<ScrollView 
-			style={{maxHeight: Dimensions.get('screen').height * 0.8 ,marginBottom: Platform.OS == 'android' ? 20 : 35 }}>
+		<View 
+			style={styles.container}>
 			{
 				data != null && 
 				<SimCardReportView
@@ -47,11 +47,17 @@ const SimCardReportContainer = (props) => {
 				/>
 			}
 			
-		</ScrollView>
+		</View>
 	)
 
 }
 
 export default SimCardReportContainer
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+	container : {						
+		alignSelf:'stretch',
+		marginHorizontal:10,			
+		marginBottom: Platform.OS == 'android' ? 50 : 75
+	}
+})

@@ -16,13 +16,13 @@ const NetworkItem = (props) => {
     return (
         <View
             style={{
-                flex:1,						
+                // flex:1,					                	
                 justifyContent: 'center',
             }}
         >
             <TouchableOpacity 
                 onPress={onItemSelected}
-                style={[styles.container , {height: index == selectedIndex ? 40 : 30 }]}>
+                style={[styles.container , {height: index == selectedIndex ? 40 : 30 , width: index == selectedIndex ? 100 : 90 }]}>
                 <FastImage
                     style={[styles.imageContainer, { height: '100%' }]}
                     source={{ uri: logo }}
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     },
     imageContainer :{
         flex:1,
+        borderRadius:3,
         //width: (Dimensions.get('screen').width - 40 ) / 4
     }
 })

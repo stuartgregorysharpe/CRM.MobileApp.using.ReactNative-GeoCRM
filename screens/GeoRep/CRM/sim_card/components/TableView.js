@@ -1,7 +1,7 @@
 import { Platform, StyleSheet, Text, View  } from 'react-native'
 import React , { useEffect, useState} from 'react'
 import { AppText } from '../../../../../components/common/AppText';
-import { whiteLabel } from '../../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../../constants/Colors';
 
 const TableView = (props) => {
 
@@ -49,8 +49,7 @@ const TableView = (props) => {
     },[networks, selectedIndex]);
 
     useEffect(() => {
-        if(name != null && data != null){
-            console.log("name ", name , data[name]) 
+        if(name != null && data != null){            
             setTableData(data[name]);
         }
         
@@ -60,38 +59,48 @@ const TableView = (props) => {
         <View style={styles.container}>
             
             <View style={styles.rowContainer}>
-                <AppText title='Data' style={{flex:3}} size="big" type="secondaryMedium" />
+                <AppText title='Data' style={[styles.headerStyle, {flex:3, textAlign:'left'}]}  type="secondaryMedium" />
                 {
-                    monthLabels.map((item) => {
-                        return <AppText title={item} size="big" type="secondaryMedium" style={styles.headerStyle} />;
+                    monthLabels.map((item , index) => {
+                        return <View style={{flex:2}}>
+                                <AppText key={'title' + index} title={item} size="big" type="secondaryMedium" style={styles.headerStyle} />
+                            </View>
                     })
                 }
             </View>
 
-            <View style={{height:1, width:'100%', backgroundColor:whiteLabel().actionOutlineButtonBorder}}></View>
+
+            <View style={{height:2, width:'100%', backgroundColor:whiteLabel().actionOutlineButtonBorder, marginVertical:7,}}></View>
 
             {
                 dataTypes.map((dataItem , index) => {
                     
                     if(tableData != null && tableData[dataItem.slug] != undefined){
                         return (
-                            <View style={styles.rowContainer} key={'table' + index}>
-                                <AppText title={dataItem.title} style={{flex:3}} size="medium" type="secondaryRegular" />
+                            <View  key={'table' + index}>
+                                <View style={styles.rowContainer}>
+                                    <AppText title={dataItem.title} style={{flex:3 , marginTop:1, fontSize:13}} size="medium" type="secondaryRegular" />
+                                    {
+                                        monthLabels.map((item , index) => {
+                                            return <View style={{flex:2}} key={index}> 
+                                                <AppText title={tableData[dataItem.slug][item]?.value} 
+                                                    size="medium" 
+                                                    type="secondaryRegular" 
+                                                    style={[styles.textStyle , {color: tableData[dataItem.slug][item]?.color , marginTop:1 }]} 
+                                                />
+                                            </View>;
+                                        })
+                                    }                                
+                                </View>
                                 {
-                                    monthLabels.map((item , index) => {
-                                        return <View style={{flex:2}} key={index}> 
-                                            <AppText title={tableData[dataItem.slug][item]?.value} 
-                                                size="medium" 
-                                                type="secondaryRegular" 
-                                                style={[styles.textStyle , {color: tableData[dataItem.slug][item]?.color }]} 
-                                            />
-                                        </View>;
-                                    })
-                                }                                
+                                    dataTypes.length - 1  != index &&
+                                    <View style={{height:1, width:'100%', backgroundColor:Colors.graph_grey, marginVertical:7,}}></View> 
+                                }
+                                
                             </View>
                         )
                     }else{
-                        return <View></View>;
+                        return <View key={'table' + index}></View>;
                     }
                     
                 })
@@ -107,21 +116,23 @@ export default TableView
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 5,
-        borderWidth:1,
-        padding:5,
+        marginTop: 12,
+        borderWidth:2,
+        borderRadius:3,
+        paddingHorizontal: 7,
+        paddingVertical : 8,
         borderColor: whiteLabel().actionOutlineButtonBorder,        
     },
     rowContainer: {
         flexDirection:'row'
     },
-    headerStyle :{
-        flex:2,          
-        textAlign:'center',                
+
+    headerStyle :{        
+        textAlign:'center',         
+        fontSize:15,     
     },
-    textStyle :{
-        flex:2,            
-        paddingLeft:10
-        //textAlign:'left'
+    textStyle :{        
+        textAlign:'center',        
+        fontSize:13,
     }
 })
