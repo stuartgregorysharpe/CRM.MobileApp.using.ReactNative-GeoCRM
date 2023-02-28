@@ -124,13 +124,16 @@ export const FormQuestions = props => {
       param.location_id = location_id;
     }
 
+    console.log(param)
     GetRequestFormQuestionsDAO.find(param)
       .then(res => {
-        if (isMount) {
+        console.log("res.questions",res.questions)
+        //if (isMount) {
           groupByQuestions(res.questions);
-        }
+        //}
       })
       .catch(e => {
+        console.log("e",e);
         expireToken(dispatch, e);
       });
   };

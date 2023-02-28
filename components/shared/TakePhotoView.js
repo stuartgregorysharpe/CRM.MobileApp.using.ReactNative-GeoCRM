@@ -1,4 +1,4 @@
-import React, {useState, useEffect , useRef} from 'react';
+import React, {useState, useEffect , useRef ,useCallback} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -12,18 +12,39 @@ import {
 import {whiteLabel} from '../../constants/Colors';
 import SvgIcon from '../SvgIcon';
 import * as ImagePicker from 'react-native-image-picker';
-import RNFS from 'react-native-fs';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
-import ImageResizer from 'react-native-image-resizer';
-import { useDispatch } from 'react-redux';
-
+import { getDateTime } from '../../helpers/formatHelpers';
+import RNPhotoManipulator from 'react-native-photo-manipulator';
+import { optimizeImage } from '../../helpers/imageHelper';
 
 const TakePhotoView = props => {
 
-  const {photos, isOptimize , submissionType , maxSize , hasError, image_capture , image_gallery } = props;
+  const {photos, isOptimize ,  maxSize , hasError, image_capture , image_gallery  ,image_timestamp } = props;  
 
-  const dispatch = useDispatch()
-  const [isPicker, setIsPicker] = useState(false);  
+  const [isPicker, setIsPicker] = useState(false);
+  const [fileInfo, setFileInfo] = useState(null);
+  const [imageType, setImageType] = useState([]);
+  
+  // Combine image and text
+  useEffect(() => {
+    if(photos != undefined && photos.length > 0 && image_timestamp == '1'){
+      photos.forEach( (element, index) => {
+
+        if(!element.includes('RNPM') && RNPhotoManipulator != null && fileInfo != null){
+          if(imageType[index] != undefined && imageType[index] == 'camera'){
+            const texts = [       
+              { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: 18, color: "#FFFFFF", thickness: 0 }
+            ];
+            RNPhotoManipulator.printText(element, texts).then(uri => {            
+                const tmp_photos = [...photos];
+                tmp_photos[index] = uri;
+                onUpdatePhotos(tmp_photos);
+            });
+          }          
+        }
+      });      
+    }
+  }, [photos]);
 
   const onUpdatePhotos = paths => {
     if (props.onUpdatePhotos) {
@@ -31,19 +52,19 @@ const TakePhotoView = props => {
     }
   };
 
-  const updateImageData = path => {    
-    console.log("optimized path", path)
+  const updateImageData = ( path, imageType) => {    
+    console.log("optimized path", path); 
     setIsPicker(false);
-    if (photos && photos !== null) {
+    if (photos && photos !== null) {  
       onUpdatePhotos([...photos, path]);
+      setImageType([...imageType, imageType]);
     } else {
       onUpdatePhotos([path]);
+      setImageType([imageType]);
     }
   };
   
   const showSelectionDialog = () => {
-
- 
     
     if( photos == '' || photos == undefined || maxSize == undefined || maxSize == -1  || photos.length < maxSize){
                   
@@ -66,50 +87,7 @@ const TakePhotoView = props => {
       if( (image_capture == undefined || image_capture != "1" ) && image_gallery != undefined && image_gallery == "1"){
         launchImageLibrary();
       }
-
     }
-
-  };
-
-  const optimizeImage = (filePath, quality, index) => {
-    var outputPath =
-      Platform.OS === 'ios'
-        ? `${RNFS.DocumentDirectoryPath}`
-        : `${RNFS.ExternalDirectoryPath}`;
-    var width_height = 800;
-    if (isOptimize) {
-      width_height = 500;
-    }
-    ImageResizer.createResizedImage(
-      filePath,
-      width_height,
-      width_height,
-      'JPEG',
-      quality,
-      0,
-      outputPath,
-    )
-      .then(res => {
-        console.log("file size => ", res.size)
-        if (isOptimize) {
-          if (res.size < 1024 * 200 || index >= 2) {
-            updateImageData(res.uri);
-          } else {
-            var newQuality = (1024 * 200 * 100) / res.size;
-            optimizeImage(res.uri, newQuality, index + 1);
-          }
-        } else {
-          if (res.size < 1024 * 500 || index >= 2) {
-            updateImageData(res.uri);
-          } else {
-            var newQuality = (1024 * 500 * 100) / res.size;
-            optimizeImage(res.uri, newQuality, index + 1);
-          }
-        }
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
   };
   
   const launchImageLibrary = () => {
@@ -129,7 +107,12 @@ const TakePhotoView = props => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          optimizeImage(response.assets[0].uri, 100, 0);
+          console.log("gallery file", response.assets[0].uri)
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
+            setFileInfo(res);
+            updateImageData(res.uri , 'gallery');
+          });
+          
         }
       }
     });
@@ -175,12 +158,18 @@ const TakePhotoView = props => {
         alert(response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          optimizeImage(response.assets[0].uri, 100, 0);
+          console.log("camera file", response.assets[0].uri);
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
+            setFileInfo(res);
+            updateImageData(res.uri , 'camera');
+          });
         }
       }
     });
 
   };
+
+
 
   return (
     <View style={[styles.container, props.style]}>
@@ -215,19 +204,22 @@ const TakePhotoView = props => {
             photos.map((photo, index) => {
 
               return (
-                <View key={'image' + index} style={styles.imageStyle}>
-                  <Image style={styles.imageContainer} source={{uri: photo}} />
-                  <TouchableOpacity
-                    style={[styles.closeButtonStyle]}
-                    onPress={() => {
-                      const filteredPhotos = photos.filter(
-                        element => element !== photo,
-                      );
-                      onUpdatePhotos(filteredPhotos);
-                    }}>
-                    <SvgIcon icon="Close" width="20px" height="20px" />
-                  </TouchableOpacity>
-                </View>
+                
+                    <View key={'image' + index} style={styles.imageStyle}>
+                      <Image style={styles.imageContainer} source={{ uri: photo}} />
+                      {/* <AppText title={getDateTime()} style={{position:'absolute' , right:10 , bottom:10 , color:'white' }} />                       */}
+                      <TouchableOpacity
+                            style={[styles.closeButtonStyle]}
+                            onPress={() => {
+                              const filteredPhotos = photos.filter(
+                                element => element !== photo,
+                              );
+                              onUpdatePhotos(filteredPhotos);
+                            }}>
+                            <SvgIcon icon="Close" width="20px" height="20px" />
+                      </TouchableOpacity>
+                      
+                    </View>                 
               );
 
             })}
@@ -237,8 +229,11 @@ const TakePhotoView = props => {
             (photos == undefined || maxSize == undefined || maxSize == -1  || photos != undefined && photos.length < maxSize) &&
             <TouchableOpacity
               style={[styles.imageContainer, {marginLeft: 10} ,  hasError != undefined && hasError ? { borderColor: whiteLabel().endDayBackground } :{} ]}
-              onPress={() => {
-                showSelectionDialog();            
+              onPress={() => {                
+                showSelectionDialog(); 
+                if(photos.length > 0){
+                  //captureViewShot(0);
+                }
               }}>
               <SvgIcon icon="Add_Image" />
             </TouchableOpacity>
