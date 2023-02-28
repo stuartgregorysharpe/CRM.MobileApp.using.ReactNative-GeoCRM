@@ -60,6 +60,11 @@ export default {
 
   Home: {
     Sync_All: 'Sync All',
+    Odometer_Reading: 'Odometer Reading',
+    Input_End_Reading: 'Input end reading',
+    Input_Start_Reading: 'Input start reading',
+    Take_Photo: 'Please take a photo of your vehicles starting odometer reading',
+    Start_Reading: 'Start Reading'
   },
 
   Home_Visit_Tabs: {
@@ -120,4 +125,5 @@ export default {
     Returns_value: 'Returns Value',
     Returns_tns: 'Returns (Tns)',
   },
+  Please_Take_Photo: 'Please take photo'
 };
