@@ -81,6 +81,11 @@ const MainPage = forwardRef((props, ref) => {
         syncAllViewRef.current.syncAllData();
       }
     },
+
+    reloadMainPage () {
+      loadPage();
+    },
+
   }));
 
   // useEffect(() => {
@@ -88,12 +93,12 @@ const MainPage = forwardRef((props, ref) => {
   // }, []);
 
   // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {      
-  //     console.log("focussfasdfasdfasdfsdf")
+  //   const unsubscribe = navigation.addListener('focus', () => {            
   //     loadPage();
   //   });
   //   return unsubscribe;
   // }, [navigation]);  
+
   useEffect(() => {
     loadPage();
   }, [isCheckin]);
@@ -376,10 +381,10 @@ const MainPage = forwardRef((props, ref) => {
       current_longitude:
         currentLocation.longitude != undefined ? currentLocation.longitude : 1,
     };
+
     if (isLoading == false) {
+
       setIsLoading(true);
-
-
       checkConnectivity().then(async (isConnected) => {
         if (isConnected) {
 
