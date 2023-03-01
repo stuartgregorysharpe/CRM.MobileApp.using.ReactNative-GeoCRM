@@ -51,7 +51,7 @@ const TouchpointFlowList = props => {
 };
 
 const POSItemView = props => {
-  const { isOptimize , formData, errors} = props;
+  const { isOptimize , image_timestamp, formData, errors} = props;
   if (!formData) return null;
   const {product_type, touchpoint, area, qty, product_name} = formData;
 
@@ -116,6 +116,7 @@ const POSItemView = props => {
           />
           <ImagePickerButton
             isOptimize={isOptimize}
+            image_timestamp={image_timestamp}
             onPickImage={asset => {
               if (asset?.uri) {
                 onUpdateFormData({image: asset?.uri});
@@ -223,7 +224,7 @@ const PlacementView = props => {
   );
 };
 const PointOfSaleFormView = props => {
-  const { isOptimize , formData, areaList, placementTypeList, touchpointList, errors} = props;
+  const { isOptimize , image_timestamp,  formData, areaList, placementTypeList, touchpointList, errors} = props;
   const onUpdateFormData = data => {
     if (props.onUpdateFormData) {
       props.onUpdateFormData(data);
@@ -239,6 +240,7 @@ const PointOfSaleFormView = props => {
       ]}>
       <POSItemView
         isOptimize={isOptimize}
+        image_timestamp={image_timestamp}
         formData={formData}
         onUpdateFormData={onUpdateFormData}
         errors={errors}

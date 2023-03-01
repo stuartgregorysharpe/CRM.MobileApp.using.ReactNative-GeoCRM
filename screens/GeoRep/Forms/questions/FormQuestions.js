@@ -281,8 +281,7 @@ export const FormQuestions = props => {
       dispatch
     )
       .then(async res => {
-        
-        console.log('respnose => ', res);
+                        
         // setTimeout(() => {
         //   console.log('called time out');
           dispatch(

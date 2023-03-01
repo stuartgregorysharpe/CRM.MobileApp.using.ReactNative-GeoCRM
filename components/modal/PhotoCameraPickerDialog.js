@@ -36,29 +36,40 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
     },
   }));
 
-  const updateImageData = (url , imgType) => {
+  const updateImageData = (url , imgType) => {    
     if (props.updateImageData) {
-      if(imgType == 'gallery' || image_timestamp != '1'){
-        props.updateImageData(url);
-      }else{
-        // convert and 
-        if(fileInfo != null && url != undefined && url != '' && !url.includes('RNPM') && RNPhotoManipulator != null){
-          const texts = [       
-            { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime() , textSize: 18, color: "#FFFFFF", thickness: 0 }
-          ];
-          RNPhotoManipulator.printText( url , texts).then(uri => {              
-            props.updateImageData(uri);      
-          });
-        }                
-      }
-      
+      addTextToImage(url, imgType , (uri) => {
+        props.updateImageData(uri);
+      });      
     }
   };
-  const onPickImage = asset => {
+
+  const onPickImage = (asset , imgType) => {
     if (props.onPickImage) {
-      props.onPickImage(asset);
+      addTextToImage(asset.uri, imgType , (uri) => {
+        asset.uri  = uri;
+        props.onPickImage(asset);
+        console.log("updated asset" , asset);
+      });
     }
   };
+
+  const addTextToImage = (url , imgType , onCallBack) => {
+    if(imgType == 'gallery' || image_timestamp != '1'){
+      onCallBack(url);
+    }else{
+      // convert and 
+      if(fileInfo != null && url != undefined && url != '' && !url.includes('RNPM') && RNPhotoManipulator != null){
+        const texts = [       
+          { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime() , textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
+        ];
+        console.log("texs", texts);
+        RNPhotoManipulator.printText( url , texts).then(uri => {
+          onCallBack(uri);
+        });
+      }                
+    }
+  }
 
   const requestCameraPermission = async () => {
     try {
@@ -108,7 +119,7 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
           optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
             setFileInfo(res);
             updateImageData(res.uri , 'camera');            
-            onPickImage(res);
+            onPickImage(res, 'camera');
           });              
 
         }
@@ -136,7 +147,7 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
           optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
             setFileInfo(res);
             updateImageData(res.uri , 'gallery');            
-            onPickImage(res);
+            onPickImage(res, 'gallery');
           });          
         }
       }

@@ -88,17 +88,15 @@ export default function MutiSelectPhotoView(props) {
   const isValidate = () => {
     var flag = true;
     console.log("checkedLists",checkedLists);
-    checkedLists.forEach(element => {
-      console.log('ee', element);
-      if (element.image === '' || element.image === undefined) {
-        console.log('false');
+    checkedLists.forEach(element => {      
+      if (element.image === '' || element.image === undefined) {        
         flag = false;
       }
     });
     return flag;
   };
   const onSubmit = () => {
-    console.log('sss', isValidate());
+    
     if (isValidate()) {
       props.onButtonAction({
         type: Constants.actionType.ACTION_FORM_SUBMIT,

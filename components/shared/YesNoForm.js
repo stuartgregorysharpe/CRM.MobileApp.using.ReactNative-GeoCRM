@@ -23,6 +23,8 @@ import { optimizeImage } from '../../helpers/imageHelper';
 import { getDateTime } from '../../helpers/formatHelpers';
 import RNPhotoManipulator from 'react-native-photo-manipulator';
 
+var imageType = '';
+
 export const YesNoForm = ({
   item,
   onTouchStart,
@@ -32,7 +34,7 @@ export const YesNoForm = ({
 }) => {
   const [isPicker, setIsPicker] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
-  const [imageType, setImageType] = useState([]);
+  
 
   const isOptimize = item.optimize && item.optimize == '1' ? true : false ;
   const isShowInfoIcon =
@@ -51,26 +53,26 @@ export const YesNoForm = ({
   const image_timestamp = item.image_timestamp;
 
   // Combine image and text
-  useEffect(() => {    
-    if(item != undefined && photos.length > 0 && image_timestamp == '1'){
-      if(fileInfo){        
+  useEffect(() => {        
+    if(item != undefined && image_timestamp == '1' && imageType == 'camera'){
+      if(fileInfo){   
         var path = null;
         if (isYes) {
           path = item.yes_image;
         } else {
           path =  item.no_image;
-        }
-        if(path != undefined && path != '' && !path.includes('RNPM') && RNPhotoManipulator != null){
+        }        
+        if(path != null && path.length > 0 && !path[0]?.includes('RNPM') && RNPhotoManipulator != null){
           const texts = [       
-            { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: 18, color: "#FFFFFF", thickness: 0 }
+            { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
           ];
-          RNPhotoManipulator.printText( path , texts).then(uri => {              
+          RNPhotoManipulator.printText( path[0] , texts).then(uri => {              
               onTakeImage([uri], item.value);
           });
-        }        
+        }
       }
     }
-  }, [item]);
+  }, [item.yes_image, item.no_image]);
 
   const showSelectionDialog = () => {
     if (submissionType == 'edit') {
@@ -84,10 +86,10 @@ export const YesNoForm = ({
     setIsPicker(false);
     if (item.value != null && item.value !== null) {
       onTakeImage([path], item.value);
-      setImageType(imgType);
+      imageType = imgType;
     } else {
       onTakeImage([path], item.value);
-      setImageType(imgType)
+      imageType = imgType;
     }
   };
 

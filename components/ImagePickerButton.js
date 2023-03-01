@@ -6,7 +6,7 @@ import {Notification} from './modal/Notification';
 import PhotoCameraPickerDialog from './modal/PhotoCameraPickerDialog';
 
 const ImagePickerButton = props => {
-  const { isOptimize } = props;
+  const { isOptimize , image_timestamp } = props;
   const [isPicker, setIsPicker] = useState(false);
   const onPickImage = image => {
     if (props.onPickImage) {
@@ -39,6 +39,7 @@ const ImagePickerButton = props => {
         message={'Choose Image'}
         onPickImage={onPickImage}
         isOptimize={isOptimize}
+        image_timestamp={image_timestamp}
         onModalClose={() => {
           setIsPicker(false);
         }}></PhotoCameraPickerDialog>

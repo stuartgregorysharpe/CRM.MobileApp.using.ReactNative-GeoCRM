@@ -17,13 +17,15 @@ import { getDateTime } from '../../helpers/formatHelpers';
 import RNPhotoManipulator from 'react-native-photo-manipulator';
 import { optimizeImage } from '../../helpers/imageHelper';
 
+var imageType =[];
+
 const TakePhotoView = props => {
 
   const {photos, isOptimize ,  maxSize , hasError, image_capture , image_gallery  ,image_timestamp } = props;  
 
   const [isPicker, setIsPicker] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
-  const [imageType, setImageType] = useState([]);
+  
   
   // Combine image and text
   useEffect(() => {
@@ -35,7 +37,7 @@ const TakePhotoView = props => {
           console.log("image type", imageType);
           if(imageType[index] != undefined && imageType[index] == 'camera'){
             const texts = [       
-              { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: 18, color: "#FFFFFF", thickness: 0 }
+              { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
             ];
             RNPhotoManipulator.printText(element, texts).then(uri => {            
                 const tmp_photos = [...photos];
@@ -54,15 +56,15 @@ const TakePhotoView = props => {
     }
   };
 
-  const updateImageData = ( path, imageType) => {    
+  const updateImageData = ( path, imgType) => {    
     console.log("optimized path", path); 
     setIsPicker(false);
     if (photos && photos !== null) {  
       onUpdatePhotos([...photos, path]);
-      setImageType([...imageType, imageType]);
+      imageType = [...imageType, imgType];
     } else {
       onUpdatePhotos([path]);
-      setImageType([imageType]);
+      imageType = [imgType];
     }
   };
   
