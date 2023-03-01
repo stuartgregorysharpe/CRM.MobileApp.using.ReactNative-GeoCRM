@@ -62,7 +62,9 @@ export const YesNoForm = ({
         } else {
           path =  item.no_image;
         }        
-        if(path != null && path.length > 0 && !path[0]?.includes('RNPM') && RNPhotoManipulator != null){
+        if(path != null && path.length > 0 && 
+          (Platform.OS == 'android' && !path[0]?.includes('RNPM') || Platform.OS == 'ios' && !path[0]?.includes('Library/Caches')) &&
+           RNPhotoManipulator != null){
           const texts = [       
             { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
           ];

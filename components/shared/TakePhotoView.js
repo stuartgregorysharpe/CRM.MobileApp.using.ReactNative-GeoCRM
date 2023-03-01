@@ -33,16 +33,19 @@ const TakePhotoView = props => {
     if(photos != undefined && photos.length > 0 && image_timestamp == '1'){
       photos.forEach( (element, index) => {
         console.log("image type1", imageType, element, fileInfo);
-        if(!element.includes('RNPM') && RNPhotoManipulator != null && fileInfo != null){
+        if( (Platform.OS == 'android' && !element.includes('RNPM') || Platform.OS == 'ios' && !element.includes('Library/Caches')) 
+            && RNPhotoManipulator != null && fileInfo != null){
           console.log("image type", imageType);
           if(imageType[index] != undefined && imageType[index] == 'camera'){
             const texts = [       
               { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
             ];
             RNPhotoManipulator.printText(element, texts).then(uri => {            
+                console.log("converted image", uri);
                 const tmp_photos = [...photos];
                 tmp_photos[index] = uri;
                 onUpdatePhotos(tmp_photos);
+                
             });
           }          
         }

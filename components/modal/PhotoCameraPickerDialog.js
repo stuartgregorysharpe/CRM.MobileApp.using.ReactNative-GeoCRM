@@ -59,11 +59,13 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
       onCallBack(url);
     }else{
       // convert and 
-      if(fileInfo != null && url != undefined && url != '' && !url.includes('RNPM') && RNPhotoManipulator != null){
+      if(        
+        fileInfo != null && url != undefined && url != '' &&
+        (Platform.OS == 'android' && !url.includes('RNPM') || Platform.OS == 'ios' && !url.includes('Library/Caches')) &&
+        RNPhotoManipulator != null ){
         const texts = [       
           { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime() , textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
-        ];
-        console.log("texs", texts);
+        ];        
         RNPhotoManipulator.printText( url , texts).then(uri => {
           onCallBack(uri);
         });
