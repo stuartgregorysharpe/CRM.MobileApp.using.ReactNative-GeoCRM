@@ -158,9 +158,7 @@ export default function CalendarScreen(props) {
           updateListForWeek(res.items);
         }        
       })
-      .catch(e => {
-        setLists([]);
-        setTodayList([]);
+      .catch(e => {        
         expireToken(dispatch, e);
         setIsLoading(false);
       });
@@ -247,7 +245,7 @@ export default function CalendarScreen(props) {
           disabled={isActive}
           style={[
             isActive ? {} : {marginTop: 10},
-            {backgroundColor: isActive ? '#eee' : Colors.bgColor, marginBottom :  todayList.length - 1 == index ? 80 : 0},
+            {backgroundColor: isActive ? '#eee' : Colors.bgColor, marginBottom :  todayList?.length - 1 == index ? 80 : 0},
           ]}>
           <CalendarItem
             showConfirmModalForCheckout={(message) => {
@@ -287,18 +285,17 @@ export default function CalendarScreen(props) {
   };
 
   const onTabChanged = index => {
-
-    setTabIndex(index);
-    selectedIndex = index;
-    var weekName = 'last_week';
-    if (index == 2) {
-      weekName = 'today';
-    } else if (index == 3) {        
-      weekName = 'week_ahead';
-    }
-    loadList(weekName);
-    
-    
+    if(!isLoading){
+      setTabIndex(index);
+      selectedIndex = index;
+      var weekName = 'last_week';
+      if (index == 2) {
+        weekName = 'today';
+      } else if (index == 3) {        
+        weekName = 'week_ahead';
+      }
+      loadList(weekName);
+    }            
   };
 
   const onOptimize = () => {
@@ -448,10 +445,9 @@ export default function CalendarScreen(props) {
                   </Text>
                 );
               }}
-              renderSectionFooter={(data) => {
-                console.log("se",JSON.stringify(data));
+              renderSectionFooter={(data) => {                
                 var height = 0;
-                if(data.section.index == lastWeekList.length - 1 && tabIndex == 1 || data.section.index == weekAheadList.length - 1 && tabIndex == 3){
+                if(data?.section?.index == lastWeekList?.length - 1 && tabIndex == 1 || data?.section?.index == weekAheadList?.length - 1 && tabIndex == 3){
                   height = 80;
                 }
                 return <View style={{height: height }} ></View>
