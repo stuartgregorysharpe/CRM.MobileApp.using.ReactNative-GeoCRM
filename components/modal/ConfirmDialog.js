@@ -5,12 +5,19 @@ import Fonts from '../../constants/Fonts';
 
 const ConfirmDialog = React.forwardRef((props, ref) => {
 
-    const { message, buttonText } = props;
+    const { buttonTextStyle, buttonText2Style } = props;
+    
     const [visible, setVisible] = useState(false);
+    const [message, setMessage] = useState('');
+    const [buttonText, setButtonText] = useState('');
+    const [buttonText2, setButtonText2] = useState('');
 
     useImperativeHandle(ref, () => ({
-        showModal: () => {
-          setVisible(true)
+        showModal: (msg , buttonText = 'Back', buttonText2 = 'Delete') => {
+            setButtonText(buttonText);
+            setButtonText2(buttonText2);
+            setMessage(msg);
+            setVisible(true);
         },
         hideModal: () => {
             setVisible(false);
@@ -47,8 +54,8 @@ const ConfirmDialog = React.forwardRef((props, ref) => {
                                         props.onBack();
                                     }
                                 }}>
-                                <Text style={[styles.button , { color: whiteLabel().mainText } ]}>
-                                    Back
+                                <Text style={[styles.button , { color: whiteLabel().mainText } , buttonTextStyle ]}>
+                                    {buttonText}
                                 </Text>
                             </TouchableHighlight>
 
@@ -64,7 +71,9 @@ const ConfirmDialog = React.forwardRef((props, ref) => {
                                         props.onDone()
                                     }
                                 }}>
-                                <Text style={[styles.button , { color: whiteLabel().endDayBackground }]}>{'Delete'}</Text>
+                                <Text style={[styles.button , { color: whiteLabel().endDayBackground } , buttonText2Style ]}>
+                                    {buttonText2}
+                                </Text>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -117,7 +126,7 @@ const styles = StyleSheet.create({
 
     button:{
         fontFamily:Fonts.secondaryMedium,
-        fontSize:18,        
+        fontSize:16,
         padding:10
     },
 
