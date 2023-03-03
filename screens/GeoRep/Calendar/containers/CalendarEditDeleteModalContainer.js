@@ -80,7 +80,7 @@ const CalendarEditDeleteModalContainer = (props) => {
 
   const showConfirmModal = () => {
     if(confirmModalRef.current){
-      confirmModalRef.current.showModal();
+      confirmModalRef.current.showModal('Are you sure you want to delete this scheduled visit');
     }
   }
 
@@ -107,8 +107,7 @@ const CalendarEditDeleteModalContainer = (props) => {
           ref={loadingBar}
         />
 
-        <ConfirmDialog
-          message='Are you sure you want to delete this scheduled visit' 
+        <ConfirmDialog          
           ref={confirmModalRef}
           onBack={() => {
             hideConfirmModal()

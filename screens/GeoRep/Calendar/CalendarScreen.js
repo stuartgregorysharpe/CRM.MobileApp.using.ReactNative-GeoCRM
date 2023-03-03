@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   SectionList,
 } from 'react-native';
-import SvgIcon from '../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
 import Fonts from '../../../constants/Fonts';
@@ -19,15 +18,13 @@ import DraggableFlatList, {
   useOnCellActiveAnimation,
 } from 'react-native-draggable-flatlist';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {
-  IS_CALENDAR_SELECTION,
+import {  
   LOCATION_LOOP_LISTS,
 } from '../../../actions/actionTypes';
 import moment from 'moment';
 import {
   expireToken,
-  getPostParameter,
-  showOfflineDialog,
+  getPostParameter,  
 } from '../../../constants/Helper';
 import {useIsFocused} from '@react-navigation/native';
 import {checkConnectivity} from '../../../DAO/helper';
@@ -37,9 +34,10 @@ import AlertDialog from '../../../components/modal/AlertDialog';
 import { Constants, Strings } from '../../../constants';
 import CalendarEditDeleteModal from './modal/CalendarEditDeleteModal';
 import { getCurrentDate } from '../../../helpers/formatHelpers';
+import OptimizePlusButtonContainer from './containers/OptimizePlusButtonContainer';
+import ConfirmDialog from '../../../components/modal/ConfirmDialog';
 
 var selectedIndex = 2;
-let isMount = true;
 
 export default function CalendarScreen(props) {
   
@@ -47,17 +45,15 @@ export default function CalendarScreen(props) {
   const navigation = props.navigation;  
   
   const isFocused = useIsFocused();
-  const [tabIndex, setTabIndex] = useState(2);
-  
+  const [tabIndex, setTabIndex] = useState(2);  
   const [lastWeekList, setLastWeekList] = useState([]);
   const [weekAheadList, setWeekAheadList] = useState([]);
-  const [todayList, setTodayList] = useState([]);
-  const [isOptimize, setIsOptimize] = useState(false);
-  const [isAdd, setIsAdd] = useState(false);
+  const [todayList, setTodayList] = useState([]);    
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);  
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('no_have_complsory');  
+  const [buttonText, setButtonText] = useState('Continue');
   const [message, setMessage] = useState("");
   const [location, setLocation] = useState(null);
 
@@ -66,9 +62,12 @@ export default function CalendarScreen(props) {
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
   const isEditable = features.includes('calendar_edit');
+  const isOptimize =  features.includes('calendar_optimize');
+  const isAdd =  features.includes('calendar_add');
 
   const loadingBarRef = useRef(null);
   const calendarEditDeleteModalRef = useRef(null);
+  const confirmDialogRef = useRef();
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -132,14 +131,9 @@ export default function CalendarScreen(props) {
   const loadList = async (type, isOptimize = false) => {
 
     if(isLoading) return;
-    
-    // setLastWeekList([]);
-    // setTodayList([]);
-    // setWeekAheadList([]);
-
+      
     setIsLoading(true);    
-    setIsOptimize( features.includes('calendar_optimize') );
-    setIsAdd( features.includes('calendar_add'));
+    
     const param = {period: type};
     if (type == 'today' && isOptimize) {
       param.optimize = 1;
@@ -148,21 +142,32 @@ export default function CalendarScreen(props) {
       param.user_coordinates_longitude = currentLocation.longitude;
     }
 
+    if(isOptimize){
+      showLoadingBar();
+    }
+
     GetRequestCalendarScheduleList.find(param)
       .then(res => {
-        console.log("res", res.items.length)
+        
         setIsLoading(false);
+        if(isOptimize){
+          hideLoadingBar();          
+          showConfirmModal( 'Route Optimized Successfully' , 'optimize', 'Ok');          
+        }
         if (selectedIndex == 2 || selectedIndex == 0) {
           setTodayList(res.items);
         } else {
           updateListForWeek(res.items);
         }        
       })
-      .catch(e => {
-        setLists([]);
-        setTodayList([]);
+      .catch(e => {        
         expireToken(dispatch, e);
         setIsLoading(false);
+        if(isOptimize){
+          hideLoadingBar();
+          if(e != 'expired')
+            confirmDialogRef.current.showModal('Route Optimization failed' , 'Cancel',  'Try again');
+        }
       });
   };
 
@@ -180,9 +185,10 @@ export default function CalendarScreen(props) {
       (a, b) => new Date(a) - new Date(b),
     );
     let sectionList = [];
-    sorted_schedule_dates.forEach(item => {
+    sorted_schedule_dates.forEach((item, index) => {
       let data = schedules.filter(schedule => schedule.schedule_date === item);
       sectionList.push({
+        index: index,
         title: item,
         data: data,
       });
@@ -205,25 +211,44 @@ export default function CalendarScreen(props) {
 
     if(!isUpdating && !isLoading){
       setIsUpdating(true);
-      loadingBarRef.current.showModal();
+      showLoadingBar();
       updateCalendar(postData)
         .then(res => {
           setIsUpdating(false);
-          loadingBarRef.current.hideModal();
+          hideLoadingBar();
         })
         .catch(e => {
           setIsUpdating(false);
-          loadingBarRef.current.hideModal();
+          hideLoadingBar();
           expireToken(dispatch, e);
       });
     }    
   };
 
+  const  showLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
+
+  const showConfirmModal = (message, type, buttonText) => {
+    setMessage(message);
+    setConfirmModalType(type);
+    setButtonText(buttonText);
+    setIsConfirmModal(true);
+  }
+
   const renderCalendarItem = (item, index, tabIndex) => {
     return (
       <TouchableOpacity 
         onPress={() => openEditDeletePopup(item)}
-        style={{marginTop: 10}} >
+        style={{marginTop: 10, }} >
         <CalendarItem
           key={index}
           navigation={props.navigation}
@@ -236,7 +261,7 @@ export default function CalendarScreen(props) {
     );
   };
 
-  const renderTodayItem = ({item, drag}) => {
+  const renderTodayItem = ({item, drag , index}) => {
     const {isActive} = useOnCellActiveAnimation();
     return (
       <ScaleDecorator>
@@ -246,17 +271,14 @@ export default function CalendarScreen(props) {
           disabled={isActive}
           style={[
             isActive ? {} : {marginTop: 10},
-            {backgroundColor: isActive ? '#eee' : Colors.bgColor},
+            {backgroundColor: isActive ? '#eee' : Colors.bgColor, marginBottom :  todayList?.length - 1 == index ? 80 : 0},
           ]}>
           <CalendarItem
-            showConfirmModalForCheckout={(message) => {
-              setMessage(message);
-              setConfirmModalType('have_compulsory_form');
-              setIsConfirmModal(true);
+            showConfirmModalForCheckout={(message) => {              
+              showConfirmModal(message, 'have_compulsory_form' , 'Continue');
             }}
-            showConfirmModal={(message) => {
-              setMessage(message);
-              setIsConfirmModal(true);                            
+            showConfirmModal={(message) => {                        
+              showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
             }}
             showLoadingBar={() => {
               if(loadingBarRef.current){                
@@ -266,9 +288,8 @@ export default function CalendarScreen(props) {
             }}
             hideLoadingBar={()=> {
               if(loadingBarRef.current)
-                loadingBarRef.current.hideModal();
-                setMessage(Strings.PostRequestResponse.Successfully_Checkin);
-                setIsConfirmModal(true);
+                loadingBarRef.current.hideModal();                                
+                showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
             }}
             onItemSelected={() => {              
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
@@ -286,35 +307,24 @@ export default function CalendarScreen(props) {
   };
 
   const onTabChanged = index => {
-
-    setTabIndex(index);
-    selectedIndex = index;
-    var weekName = 'last_week';
-    if (index == 2) {
-      weekName = 'today';
-    } else if (index == 3) {        
-      weekName = 'week_ahead';
-    }
-    loadList(weekName);
-    
-    
+    if(!isLoading){
+      setTabIndex(index);
+      selectedIndex = index;
+      var weekName = 'last_week';
+      if (index == 2) {
+        weekName = 'today';
+      } else if (index == 3) {        
+        weekName = 'week_ahead';
+      }
+      loadList(weekName);
+    }            
   };
 
   const onOptimize = () => {
     loadList('today', true);
   };
 
-  const addLocationToCalendar = () => {
-    dispatch({
-      type: IS_CALENDAR_SELECTION,
-      payload: true,
-    });
-
-    props.navigation.navigate('CRM', {
-      screen: 'LocationSearch',
-      params: {calendar_type: 'optimize'},
-    });
-  };
+  
 
   const openEditDeletePopup = (item) => {
     if(isEditable){
@@ -324,10 +334,8 @@ export default function CalendarScreen(props) {
             if(isConnected){
               setLocation(item);
               calendarEditDeleteModalRef.current.showModal();
-            }else{
-              setConfirmModalType('calendar_edit_delete');
-              setMessage(Strings.This_Function_Not_Available);
-              setIsConfirmModal(true);
+            }else{              
+              showConfirmModal(Strings.This_Function_Not_Available , 'calendar_edit_delete', 'Continue');
             }            
           }).catch(e => {
 
@@ -337,21 +345,21 @@ export default function CalendarScreen(props) {
     }
   }
 
-  const onCalendarEditDeleteModalClosed = ({type , value}) => {   
-    console.log("closed modal", type) 
+  const onCalendarEditDeleteModalClosed = ({type , value}) => {       
     if(type == Constants.actionType.ACTION_DONE){
       onTabChanged(tabIndex);
     }
   }
-      
+
   return (
     <SafeAreaView>
+
       <View style={styles.container}>
 
         <AlertDialog 
           visible={isConfirmModal}
           message={message}
-          buttonText={'Continue'}
+          buttonText={buttonText}
           onModalClose={ async () => {
             setIsConfirmModal(false);
             if(confirmModalType == 'have_compulsory_form'){
@@ -368,6 +376,19 @@ export default function CalendarScreen(props) {
             }
           }}
         />
+
+        <ConfirmDialog 
+          ref={confirmDialogRef}
+          buttonTextStyle={{color:whiteLabel().mainText}}
+          buttonText2Style={{color:whiteLabel().mainText}}
+          onBack={() => {
+            confirmDialogRef.current.hideModal();
+          }}
+          onDone={() => {
+            confirmDialogRef.current.hideModal();
+            onOptimize();
+          }}
+        />
         
         <LoadingBar
           ref={loadingBarRef}
@@ -381,6 +402,7 @@ export default function CalendarScreen(props) {
           clearText='Close'
           onButtonAction={onCalendarEditDeleteModalClosed}
         />
+        
 
         <View style={[styles.tabContainer, boxShadow]}>
           <TouchableOpacity
@@ -447,6 +469,13 @@ export default function CalendarScreen(props) {
                   </Text>
                 );
               }}
+              renderSectionFooter={(data) => {                
+                var height = 0;
+                if(data?.section?.index == lastWeekList?.length - 1 && tabIndex == 1 || data?.section?.index == weekAheadList?.length - 1 && tabIndex == 3){
+                  height = 80;
+                }
+                return <View style={{height: height }} ></View>
+              }}
             />
           )}
 
@@ -478,39 +507,18 @@ export default function CalendarScreen(props) {
             </GestureHandlerRootView>
           )}
     
-
         </View>
+
       </View>
+      
+      <OptimizePlusButtonContainer
+        navigation={navigation}
+        isOptimize={isOptimize}
+        isAdd={isAdd}
+        tabIndex={tabIndex}
+        onOptimize={onOptimize}
+      />
 
-
-
-      <View style={styles.plusButtonContainer}>
-        {isOptimize && tabIndex == 2 && (
-          <TouchableOpacity
-            style={style.innerPlusButton}
-            onPress={() => {              
-              onOptimize();
-            }}>
-            <SvgIcon icon="Calendar_Optimize" width="70px" height="70px" />
-          </TouchableOpacity>
-        )}
-
-        {isAdd && (
-          <TouchableOpacity
-            style={style.innerPlusButton}
-            onPress={() => {
-              checkConnectivity().then(isConnected => {
-                if (isConnected) {
-                  addLocationToCalendar();
-                } else {
-                  showOfflineDialog(dispatch);
-                }
-              });
-            }}>
-            <SvgIcon icon="Round_Btn_Default_Dark" width="70px" height="70px" />
-          </TouchableOpacity>
-        )}
-      </View>
     </SafeAreaView>
   );
 }
@@ -541,16 +549,7 @@ const styles = StyleSheet.create({
     borderBottomColor: whiteLabel().activeTabUnderline,
     borderBottomWidth: 2,
     paddingBottom: 2,
-  },
-  
-  plusButtonContainer: {
-    position: 'absolute',
-    flexDirection: 'row',
-    bottom: 20,
-    right: 20,
-    zIndex: 1,
-    elevation: 1,
-  },
+  },    
   itemTitle: {
     fontSize: 14,
     fontFamily: Fonts.secondaryMedium,

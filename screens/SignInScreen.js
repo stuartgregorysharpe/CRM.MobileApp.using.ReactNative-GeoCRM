@@ -165,12 +165,10 @@ export default function SignIn() {
   const getDeviceToken = async () => {
     let deviceToken = '';
     try {
-      deviceToken = await firebase.messaging().getToken();
-      console.log("Token222", token);
+      deviceToken = await firebase.messaging().getToken();      
     } catch (error) {
-      console.log("Fire Error", error);
-    }
-    console.log("Device token", JSON.stringify(deviceToken));
+      console.log("firebase get token error => ", error);
+    }    
     return deviceToken;
   }
 

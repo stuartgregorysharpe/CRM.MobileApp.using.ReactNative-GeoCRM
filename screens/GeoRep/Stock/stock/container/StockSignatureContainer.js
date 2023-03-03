@@ -23,6 +23,8 @@ import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 var sell_to_trader_indempotency = '';
 var return_to_warehouse_indempotency = '';
+var msisdn = '';
+var received = '';
 
 export default function StockSignatureContainer(props) {
 
@@ -35,10 +37,7 @@ export default function StockSignatureContainer(props) {
   const [confirmModalType, setConfirmModalType] = useState('');
   const loadingBarRef = useRef(null)
 
-  const dispatch = useDispatch();
-
-  var msisdn = '';
-  var received = '';
+  const dispatch = useDispatch();  
 
   useEffect(() => {
     sell_to_trader_indempotency = generateKey();
