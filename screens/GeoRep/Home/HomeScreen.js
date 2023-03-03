@@ -108,6 +108,9 @@ export default function HomeScreen(props) {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log('focus');
       refreshHeader();
+      if(mainPageRef != null && mainPageRef.current){
+        mainPageRef.current.reloadMainPage();
+      }
     });
     return unsubscribe;
   }, [navigation]);
