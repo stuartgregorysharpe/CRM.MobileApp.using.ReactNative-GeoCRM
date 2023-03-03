@@ -15,7 +15,8 @@ export function call( url, postData){
                 })
                 .catch(e => {        
                     console.log("get api call log", e);            
-                    resolve({status: e , isConnected: isConnected,  data: []});
+                    //resolve({ status : Strings.Failed ,  message: e , isConnected: isConnected,  data: []});
+                    reject(e);
                 });
 
             }else{                

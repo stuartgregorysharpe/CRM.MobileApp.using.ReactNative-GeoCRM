@@ -160,9 +160,7 @@ export default function CalendarScreen(props) {
           updateListForWeek(res.items);
         }        
       })
-      .catch(e => {
-        setLists([]);
-        setTodayList([]);
+      .catch(e => {        
         expireToken(dispatch, e);
         setIsLoading(false);
         if(isOptimize){
@@ -187,9 +185,10 @@ export default function CalendarScreen(props) {
       (a, b) => new Date(a) - new Date(b),
     );
     let sectionList = [];
-    sorted_schedule_dates.forEach(item => {
+    sorted_schedule_dates.forEach((item, index) => {
       let data = schedules.filter(schedule => schedule.schedule_date === item);
       sectionList.push({
+        index: index,
         title: item,
         data: data,
       });
@@ -249,7 +248,7 @@ export default function CalendarScreen(props) {
     return (
       <TouchableOpacity 
         onPress={() => openEditDeletePopup(item)}
-        style={{marginTop: 10}} >
+        style={{marginTop: 10, }} >
         <CalendarItem
           key={index}
           navigation={props.navigation}
@@ -262,7 +261,7 @@ export default function CalendarScreen(props) {
     );
   };
 
-  const renderTodayItem = ({item, drag}) => {
+  const renderTodayItem = ({item, drag , index}) => {
     const {isActive} = useOnCellActiveAnimation();
     return (
       <ScaleDecorator>
@@ -272,7 +271,7 @@ export default function CalendarScreen(props) {
           disabled={isActive}
           style={[
             isActive ? {} : {marginTop: 10},
-            {backgroundColor: isActive ? '#eee' : Colors.bgColor},
+            {backgroundColor: isActive ? '#eee' : Colors.bgColor, marginBottom :  todayList?.length - 1 == index ? 80 : 0},
           ]}>
           <CalendarItem
             showConfirmModalForCheckout={(message) => {              
@@ -308,18 +307,17 @@ export default function CalendarScreen(props) {
   };
 
   const onTabChanged = index => {
-
-    setTabIndex(index);
-    selectedIndex = index;
-    var weekName = 'last_week';
-    if (index == 2) {
-      weekName = 'today';
-    } else if (index == 3) {        
-      weekName = 'week_ahead';
-    }
-    loadList(weekName);
-    
-    
+    if(!isLoading){
+      setTabIndex(index);
+      selectedIndex = index;
+      var weekName = 'last_week';
+      if (index == 2) {
+        weekName = 'today';
+      } else if (index == 3) {        
+        weekName = 'week_ahead';
+      }
+      loadList(weekName);
+    }            
   };
 
   const onOptimize = () => {
@@ -470,6 +468,13 @@ export default function CalendarScreen(props) {
                     {moment(section.title).format('dddd DD MMM YYYY')}
                   </Text>
                 );
+              }}
+              renderSectionFooter={(data) => {                
+                var height = 0;
+                if(data?.section?.index == lastWeekList?.length - 1 && tabIndex == 1 || data?.section?.index == weekAheadList?.length - 1 && tabIndex == 3){
+                  height = 80;
+                }
+                return <View style={{height: height }} ></View>
               }}
             />
           )}
