@@ -42,7 +42,7 @@ import {expireToken} from '../../../../constants/Helper';
 import {GetRequestFormListsDAO} from '../../../../DAO';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
 import AlertDialog from '../../../../components/modal/AlertDialog';
-import { showNotification } from '../../../../actions/notification.action';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import { Notification } from '../../../../components/modal/Notification';
 import SimCardReportModal from '../sim_card';
 
@@ -131,6 +131,7 @@ const LocationSpecificInfoScreen = props => {
       var specific_location_id  = await getLocalData("@specific_location_id");
       console.log("Triggered", specific_location_id , pageType);
       if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){
+        dispatch(clearNotification());
         goBack();
       }
     },

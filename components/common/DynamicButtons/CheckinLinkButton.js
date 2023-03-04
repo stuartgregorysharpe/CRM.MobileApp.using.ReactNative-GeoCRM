@@ -49,12 +49,20 @@ const CheckinLinkButton = props => {
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCallTrigger, setCallTriger] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
+
   
   useEffect(() => {
     initData();
   }, []);
+
+  useEffect(() => {
+    if(isCallTrigger){
+      _callCheckedIn();
+    }    
+  }, [isCallTrigger]);
 
   const initData = () => {
     checkin_indempotency = generateKey();
@@ -70,8 +78,7 @@ const CheckinLinkButton = props => {
         value={[]}
         visible={isFeedbackModal}
         options={feedbackOptions}
-        onModalClose={() => {
-          console.log('modalType', modalType);
+        onModalClose={() => {          
           if (modalType === 'checkin_reason') {
             var options = [];
             checkinTypes.forEach((item, index) => {
@@ -85,14 +92,13 @@ const CheckinLinkButton = props => {
         }}
         onValueChanged={(item, index) => {
           if (modalType === 'feedback') {
-            _callLocationFeedback(item);
+            //_callLocationFeedback(item);
             setIsFeedback(false);
           } else if (modalType === 'checkin_type') {
 
             var checkinType = checkinTypes.find(
               element => element.checkin_type === item,
-            );
-            console.log("checkinType",checkinType , item)
+            );            
             if (
               checkinType != undefined &&
               checkinType.checkin_reasons.length > 0
@@ -108,8 +114,9 @@ const CheckinLinkButton = props => {
               setCheckInReason(checkinType.checkin_reasons);
             } else {
               checkin_type_id = checkinType.checkin_type_id;
+              setCallTriger(true);
               setIsFeedback(false);
-              _callCheckedIn();
+              //_callCheckedIn();
             }
           } else if (modalType === 'checkin_reason') {
             var chk = checkinReason.find(element => element.reason === item);
@@ -117,7 +124,9 @@ const CheckinLinkButton = props => {
               reason_id = checkinReason.find(
                 element => element.reason === item,
               ).reason_id;
-              _callCheckedIn();
+              setIsFeedback(false);
+              setCallTriger(true);
+              //_callCheckedIn();
             } else {
               setModalType('feedback');
             }
@@ -127,14 +136,14 @@ const CheckinLinkButton = props => {
   };
 
   const _callCheckInTypes = async () => {
+
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
 
     LocationCheckinTypeDAO.find(features)
-      .then(res => {
-        console.log('res', res);
+      .then(res => {        
         var options = [];
         res.forEach((item, index) => {
           options.push(item.checkin_type);
@@ -178,7 +187,6 @@ const CheckinLinkButton = props => {
       props.onStart();
     }
     
-
     PostRequestDAO.find(
       locationId,
       postData,
@@ -191,11 +199,11 @@ const CheckinLinkButton = props => {
     )
       .then(async res => {
 
-        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
-        setIsFeedback(false);        
-        checkin_indempotency = generateKey();        
+        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});        
+        checkin_indempotency = generateKey(); 
+        setCallTriger(false);      
         setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');      
+        setModalType('feedback');
         await storeLocalValue('@checkin', '1');
         await storeLocalValue('@specific_location_id', locationId);
         await storeJsonData('@setup', null);
