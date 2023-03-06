@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import React , { useState  , useEffect , useRef } from 'react'
 import FilterButton from '../../../FilterButton';
 import { useSelector } from 'react-redux';
@@ -61,15 +61,13 @@ const AddToCalendarContainer = (props) => {
 
             PostRequestDAO.find(0, postData, 'calenderadd' , 'calenderadd' , ''  , '' , indempotencyKey , null).then((res) => {
                 hideLoadingBar();
-                setIsLoading(false);            
-                setMessage(Strings.Calendar.Added_Calendar_Successfully);
-                setIsConfirmModal(true);
+                setIsLoading(false);                       
+                showConfirmModal(Strings.Calendar.Added_Calendar_Successfully);
             }).catch(( error ) => {
                 hideLoadingBar();
                 setIsLoading(false);
-                expireToken(dispatch, error);
-                setMessage(error.toString());
-                setIsConfirmModal(true);                
+                expireToken(dispatch, error);                
+                showConfirmModal(error.toString());
             });
         }
     };
@@ -82,6 +80,17 @@ const AddToCalendarContainer = (props) => {
     const hideLoadingBar = () => {
       if(loadingBarRef.current)
       loadingBarRef.current.hideModal();
+    }
+
+    const showConfirmModal = (message) => {
+      setMessage(message);
+      if(Platform.OS == 'android'){
+        setIsConfirmModal(true);
+      }else{
+        setTimeout(() => {
+          setIsConfirmModal(true);
+        }, 500);
+      }
     }
 
   return (
@@ -158,7 +167,14 @@ const AddToCalendarContainer = (props) => {
             item.schedule_time = startTime;
             item.schedule_end_time = endTime;
           });
-          callApi(selectedItems);
+          if(Platform.OS == 'android'){
+            callApi(selectedItems);
+          }else{
+            setTimeout(() => {
+              callApi(selectedItems);
+            }, 500);
+          }
+          
         }}></DateStartEndTimePickerView>
         
 

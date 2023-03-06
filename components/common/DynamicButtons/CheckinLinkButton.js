@@ -60,7 +60,14 @@ const CheckinLinkButton = props => {
 
   useEffect(() => {
     if(isCallTrigger){
-      _callCheckedIn();
+      if(Platform.OS == 'android'){
+        _callCheckedIn();
+      }else{
+        setTimeout(() => {
+          _callCheckedIn();
+        }, 300);
+      }
+      
     }    
   }, [isCallTrigger]);
 
@@ -169,7 +176,7 @@ const CheckinLinkButton = props => {
 
     if (isLoading) {     
       return false;
-    }        
+    }
 
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
@@ -184,15 +191,9 @@ const CheckinLinkButton = props => {
     console.log("post data =>" , postData);
     setIsLoading(true);
     if(props.onStart){
-      if(Platform.OS == 'android'){
-        props.onStart();
-      }else{
-        setTimeout(() => {
-          props.onStart();
-        }, 500);
-      }
+      props.onStart();      
     }
-    
+
     PostRequestDAO.find(
       locationId,
       postData,
@@ -261,6 +262,7 @@ const CheckinLinkButton = props => {
               Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
               offlineScheduleCheckins,
             );
+            
           }
         });        
         
@@ -272,9 +274,9 @@ const CheckinLinkButton = props => {
           onFinishProcess();                    
         }
 
-        if(props.onEnd){          
-          props.onEnd();          
-        }                
+        if(props.onEnd){
+          props.onEnd();
+        }
 
       })
       .catch(e => {

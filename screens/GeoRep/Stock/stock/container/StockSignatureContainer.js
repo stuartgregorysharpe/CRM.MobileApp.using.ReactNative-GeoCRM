@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import React, { useEffect,  useState , useRef } from 'react';
 import StockSignatureView from '../components/StockSignatureView';
 import {postApiRequestMultipart} from '../../../../../actions/api.action';
@@ -118,17 +118,12 @@ export default function StockSignatureContainer(props) {
                 item.stock_type , item.stock_type == Constants.stockType.DEVICE ? props.item.description: networks , sell_to_trader_indempotency , null ).then((res) => {
                   loadingBarRef.current.hideModal();
                   setIsLoading(false);
-                  setMessage(res.message);
-                  setConfirmModalType('success');
-                  setIsConfirmModal(true);                
+                  showConfirmModal(res.message , 'success');
                 }).catch((e) => {
                   loadingBarRef.current.hideModal();
                   setIsLoading(false);                  
                   expireToken(dispatch, e);
-                  setMessage('Try Again');
-                  setConfirmModalType('failed');
-                  setIsConfirmModal(true);
-
+                  showConfirmModal('Try Again' , 'failed');
                 });
 
               }, 800);
@@ -225,6 +220,20 @@ export default function StockSignatureContainer(props) {
   };
 
   const onClose = () => {};
+
+  const showConfirmModal = (message, type) => {
+    setMessage(message);
+    setConfirmModalType(type);
+    
+    if(Platform.OS == 'android'){
+      setIsConfirmModal(true);
+    }else {
+      setTimeout(() => {
+        setIsConfirmModal(true);
+      }, 500);
+    }
+
+  }
 
   return (
     <View style={{alignSelf: 'stretch'}}>
