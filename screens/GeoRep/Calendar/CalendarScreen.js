@@ -274,8 +274,7 @@ export default function CalendarScreen(props) {
             showLoadingBar();
           }}
           hideLoadingBar={()=> {
-            hideLoadingBar();
-            console.log("hde loading bar");
+            hideLoadingBar();            
             showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
           }}
           navigation={props.navigation}
@@ -315,8 +314,7 @@ export default function CalendarScreen(props) {
               showLoadingBar();
             }}
             hideLoadingBar={()=> {
-              hideLoadingBar();
-              console.log("hde loading bar");
+              hideLoadingBar();              
               showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
             }}
             

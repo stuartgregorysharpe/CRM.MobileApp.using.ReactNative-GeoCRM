@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect , useRef } from 'react';
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   checkFeatureIncludeParamFromSession,
@@ -113,9 +113,9 @@ const CheckinLinkButton = props => {
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
             } else {
-              checkin_type_id = checkinType.checkin_type_id;
-              setCallTriger(true);
+              checkin_type_id = checkinType.checkin_type_id;              
               setIsFeedback(false);
+              setCallTriger(true);
               //_callCheckedIn();
             }
           } else if (modalType === 'checkin_reason') {
@@ -184,7 +184,13 @@ const CheckinLinkButton = props => {
     console.log("post data =>" , postData);
     setIsLoading(true);
     if(props.onStart){
-      props.onStart();
+      if(Platform.OS == 'android'){
+        props.onStart();
+      }else{
+        setTimeout(() => {
+          props.onStart();
+        }, 500);
+      }
     }
     
     PostRequestDAO.find(
@@ -264,12 +270,11 @@ const CheckinLinkButton = props => {
           props.onCallback();
         }else{
           onFinishProcess();                    
-        }       
-        if(props.onEnd){
-          props.onEnd();
         }
-        
-        
+
+        if(props.onEnd){          
+          props.onEnd();          
+        }                
 
       })
       .catch(e => {
