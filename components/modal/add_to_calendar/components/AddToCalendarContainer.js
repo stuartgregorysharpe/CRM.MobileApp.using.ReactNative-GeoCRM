@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React , { useState  , useEffect } from 'react'
+import React , { useState  , useEffect , useRef } from 'react'
 import FilterButton from '../../../FilterButton';
 import { useSelector } from 'react-redux';
 import { DateStartEndTimePickerView } from '../../../DateStartEndTimePickerView';
@@ -13,6 +13,7 @@ import { PostRequestDAO } from '../../../../DAO';
 import { Notification } from '../../Notification';
 import AlertDialog from '../../AlertDialog';
 import LoadingProgressBar from '../../LoadingProgressBar';
+import LoadingBar from '../../../LoadingView/loading_bar';
 
 var indempotencyKey = '';
 
@@ -29,6 +30,7 @@ const AddToCalendarContainer = (props) => {
     const [isConfirmModal, setIsConfirmModal] = useState(false);
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false); 
+    const loadingBarRef = useRef()
         
     useEffect(() => {
         indempotencyKey = generateKey();
@@ -44,36 +46,50 @@ const AddToCalendarContainer = (props) => {
         callApi(selectedItems);
         }
     };
-
     
     const callApi = (schedules) => {
         
         if(!isLoading){
             
-            setIsLoading(true);                 
+            setIsLoading(true);                             
+            showLoadingBar();
             var userParam = getPostParameter(currentLocation);
             let postData = {
                 schedules: schedules,
                 user_local_data: userParam.user_local_data,
             };
 
-            PostRequestDAO.find(0, postData, 'calenderadd' , 'calenderadd' , ''  , '' , indempotencyKey , dispatch).then((res) => {              
-                setIsLoading(false);                
+            PostRequestDAO.find(0, postData, 'calenderadd' , 'calenderadd' , ''  , '' , indempotencyKey , null).then((res) => {
+                hideLoadingBar();
+                setIsLoading(false);            
                 setMessage(Strings.Calendar.Added_Calendar_Successfully);
                 setIsConfirmModal(true);
-            }).catch(( error ) => {     
+            }).catch(( error ) => {
+                hideLoadingBar();
+                setIsLoading(false);
                 expireToken(dispatch, error);
                 setMessage(error.toString());
-                setIsConfirmModal(true);
-                setIsLoading(false);
-            });                          
+                setIsConfirmModal(true);                
+            });
         }
     };
+
+    const showLoadingBar = () => {
+      if(loadingBarRef.current)
+      loadingBarRef.current.showModal();
+    }
+
+    const hideLoadingBar = () => {
+      if(loadingBarRef.current)
+      loadingBarRef.current.hideModal();
+    }
 
   return (
     <View style={styles.refreshSliderContainer}>
         
-        <LoadingProgressBar/>
+        <LoadingBar 
+          ref={loadingBarRef}          
+        />
         
         <AlertDialog
           visible={isConfirmModal}
@@ -94,11 +110,11 @@ const AddToCalendarContainer = (props) => {
                 setStartEndTimePicker(true);
             } else {
                 if (selectedItems != undefined) {
-                selectedItems.forEach((item, index) => {
-                    item.schedule_order = (index + 1).toString();
-                    item.schedule_date = 'Today';
-                });              
-                callApi(selectedItems);
+                  selectedItems.forEach((item, index) => {
+                      item.schedule_order = (index + 1).toString();
+                      item.schedule_date = 'Today';
+                  });              
+                  callApi(selectedItems);
                 }
             }
             }}
