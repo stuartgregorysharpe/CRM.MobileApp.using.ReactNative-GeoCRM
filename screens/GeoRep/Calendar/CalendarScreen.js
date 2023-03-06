@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SectionList,
+  Platform,
 } from 'react-native';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
@@ -347,7 +348,13 @@ export default function CalendarScreen(props) {
 
   const onCalendarEditDeleteModalClosed = ({type , value}) => {       
     if(type == Constants.actionType.ACTION_DONE){
-      onTabChanged(tabIndex);
+      if(Platform.OS == 'android'){
+        onTabChanged(tabIndex);
+      }else{
+        setTimeout(() => {
+          onTabChanged(tabIndex);
+        }, 500)
+      }
     }
   }
 
