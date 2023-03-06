@@ -16,12 +16,9 @@ import { optimizeImage } from '../../helpers/imageHelper';
 import RNPhotoManipulator from 'react-native-photo-manipulator';
 import { getDateTime } from '../../helpers/formatHelpers';
 
-//const PhotoCameraPickerDialog = props => {
 const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
 
   const { visible, isOptimize,  message, onGallery, onCamera, onModalClose , image_timestamp } = props;
-
-  const [fileInfo, setFileInfo] = useState(null);
 
   useImperativeHandle(ref, () => ({
     openCamera: () => {
@@ -36,29 +33,27 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
     },
   }));
 
-  const updateImageData = (url , imgType) => {    
+  const updateImageData = (url , imgType , fileInfo) => {    
     if (props.updateImageData) {
-      addTextToImage(url, imgType , (uri) => {
+      addTextToImage(url, imgType , fileInfo , (uri) => {
         props.updateImageData(uri);
       });      
     }
   };
 
-  const onPickImage = (asset , imgType) => {
+  const onPickImage = (asset , imgType , fileInfo) => {
     if (props.onPickImage) {
-      addTextToImage(asset.uri, imgType , (uri) => {
+      addTextToImage(asset.uri, imgType , fileInfo, (uri) => {
         asset.uri  = uri;
-        props.onPickImage(asset);
-        console.log("updated asset" , asset);
+        props.onPickImage(asset);        
       });
     }
   };
 
-  const addTextToImage = (url , imgType , onCallBack) => {
+  const addTextToImage = (url , imgType , fileInfo, onCallBack) => {
     if(imgType == 'gallery' || image_timestamp != '1'){
       onCallBack(url);
-    }else{
-      // convert and 
+    }else{      
       if(        
         fileInfo != null && url != undefined && url != '' &&
         (Platform.OS == 'android' && !url.includes('RNPM') || Platform.OS == 'ios' && !url.includes('Library/Caches')) &&
@@ -69,7 +64,9 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         RNPhotoManipulator.printText( url , texts).then(uri => {
           onCallBack(uri);
         });
-      }                
+      }else{
+        alert(fileInfo);
+      }  
     }
   }
 
@@ -118,10 +115,9 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
       } else {
         if (response.assets != null && response.assets.length > 0) {
 
-          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
-            setFileInfo(res);
-            updateImageData(res.uri , 'camera');            
-            onPickImage(res, 'camera');
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {            
+            updateImageData(res.uri , 'camera' , res);  
+            onPickImage(res, 'camera' , res);
           });              
 
         }
@@ -146,10 +142,9 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
-            setFileInfo(res);
-            updateImageData(res.uri , 'gallery');            
-            onPickImage(res, 'gallery');
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {            
+            updateImageData(res.uri , 'gallery' , res);  
+            onPickImage(res, 'gallery' , res);
           });          
         }
       }
@@ -158,8 +153,7 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
 
   return (
     <TouchableWithoutFeedback onPress={onModalClose}>
-      <Modal
-        // animationType="slide"
+      <Modal        
         transparent={true}
         visible={visible}
         onRequestClose={onModalClose}>
