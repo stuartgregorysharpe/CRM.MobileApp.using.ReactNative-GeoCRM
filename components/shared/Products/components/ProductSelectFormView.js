@@ -104,22 +104,21 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
     }
   };
 
-  const filterProduct = () => {
-    console.log('origin length', item.products.length);
-    var tmp = item.products.filter(item => {
+  const filterProduct = () => {    
+    var tmp = item.products.filter(element => {
       var flag = true;
-      if (brand != '' && item.brand != brand) {
+      if (brand != '' && element.brand != brand) {
         flag = false;
       }
-      if (type != '' && item.product_type != type) {
+      if (type != '' && element.product_type != type) {
         flag = false;
       }
       if (
         searchKey != '' &&
-        !item.label.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.barcode.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.product_code.toLowerCase().includes(searchKey.toLowerCase()) &&
-        !item.product_type.toLowerCase().includes(searchKey.toLowerCase())
+        !element?.label?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !element?.barcode?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !element?.product_code?.toLowerCase().includes(searchKey.toLowerCase()) &&
+        !element?.product_type?.toLowerCase().includes(searchKey.toLowerCase())
       ) {
         flag = false;
       }
