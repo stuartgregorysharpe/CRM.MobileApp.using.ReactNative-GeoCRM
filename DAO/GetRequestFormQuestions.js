@@ -151,7 +151,8 @@ const generateQuery = () => {
     `fqq.question_type as 'trigger_question_type', ` +
     `fq.question_tag, ` +
     `fq.image_capture, ` +
-    `fq.image_gallery ` +
+    `fq.image_gallery, ` +
+    `fq.image_timestamp ` +
     `FROM form_questions as fq ` +
     `LEFT JOIN form_question_groups as fqg ` +
     `ON fqg.question_group_id = fq.question_group_id ` +
@@ -351,7 +352,8 @@ const getFormQuestions = async (
         question_tag: element.question_tag,
         options: optionsData,
         image_gallery: element.image_gallery.toString(),
-        image_capture: element.image_capture.toString()
+        image_capture: element.image_capture.toString(),
+        image_timestamp : element.image_timestamp.toString()
       });
     } else if (questionType == 'email_pdf') {
       tmp.push({...bodyRes});
@@ -427,11 +429,11 @@ const getFormQuestions = async (
         question_tag: element.question_tag,
         options: optionsData,
         image_gallery: element.image_gallery.toString(),
-        image_capture: element.image_capture.toString()
+        image_capture: element.image_capture.toString(),
+        image_timestamp : element.image_timestamp.toString()
       });
     }
   }
-
   return tmp;
 };
 
