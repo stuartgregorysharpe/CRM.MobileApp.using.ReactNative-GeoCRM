@@ -101,7 +101,7 @@ export default function AddStockContainer(props) {
           setTimeout(() => {
             setIsLoading(false);
             setIsConfirmModal(true);
-          }, 300);
+          }, 500);
         }        
       })
       .catch(e => {

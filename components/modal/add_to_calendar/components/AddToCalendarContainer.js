@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View } from 'react-native'
 import React , { useState  , useEffect , useRef } from 'react'
 import FilterButton from '../../../FilterButton';
 import { useSelector } from 'react-redux';
@@ -7,12 +7,9 @@ import { DatetimePickerView } from '../../../DatetimePickerView';
 import { useDispatch } from 'react-redux';
 import { generateKey } from '../../../../constants/Utils';
 import { Colors, Constants, Strings } from '../../../../constants';
-import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../actions/notification.action';
 import { expireToken, getPostParameter } from '../../../../constants/Helper';
 import { PostRequestDAO } from '../../../../DAO';
-import { Notification } from '../../Notification';
 import AlertDialog from '../../AlertDialog';
-import LoadingProgressBar from '../../LoadingProgressBar';
 import LoadingBar from '../../../LoadingView/loading_bar';
 
 var indempotencyKey = '';
@@ -59,18 +56,17 @@ const AddToCalendarContainer = (props) => {
                 user_local_data: userParam.user_local_data,
             };
 
-            PostRequestDAO.find(0, postData, 'calenderadd' , 'calenderadd' , ''  , '' , indempotencyKey , null).then((res) => {              
-                setIsLoading(false);
+            PostRequestDAO.find(0, postData, 'calenderadd' , 'calenderadd' , ''  , '' , indempotencyKey , null).then((res) => {
                 hideLoadingBar();
-                setMessage(Strings.Calendar.Added_Calendar_Successfully);
-                setIsConfirmModal(true);
-            }).catch(( error ) => {     
+                setIsLoading(false);                       
+                showConfirmModal(Strings.Calendar.Added_Calendar_Successfully);
+            }).catch(( error ) => {
                 hideLoadingBar();
-                expireToken(dispatch, error);
-                setMessage(error.toString());
-                setIsConfirmModal(true);
+
                 setIsLoading(false);
-            });                          
+                expireToken(dispatch, error);                
+                showConfirmModal(error.toString());
+            });
         }
     };
 
@@ -82,6 +78,17 @@ const AddToCalendarContainer = (props) => {
     const hideLoadingBar = () => {
       if(loadingBarRef.current)
       loadingBarRef.current.hideModal();
+    }
+
+    const showConfirmModal = (message) => {
+      setMessage(message);
+      if(Platform.OS == 'android'){
+        setIsConfirmModal(true);
+      }else{
+        setTimeout(() => {
+          setIsConfirmModal(true);
+        }, 500);
+      }
     }
 
   return (
@@ -158,7 +165,14 @@ const AddToCalendarContainer = (props) => {
             item.schedule_time = startTime;
             item.schedule_end_time = endTime;
           });
-          callApi(selectedItems);
+          if(Platform.OS == 'android'){
+            callApi(selectedItems);
+          }else{
+            setTimeout(() => {
+              callApi(selectedItems);
+            }, 500);
+          }
+          
         }}></DateStartEndTimePickerView>
         
 

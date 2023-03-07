@@ -57,6 +57,7 @@ export default function CalendarScreen(props) {
   const [buttonText, setButtonText] = useState('Continue');
   const [message, setMessage] = useState("");
   const [location, setLocation] = useState(null);
+  const [isModalActive, setIsModalActive] = useState(false);
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const features = useSelector(
@@ -95,7 +96,7 @@ export default function CalendarScreen(props) {
     return () => {
       isMount = false;
     }
-  }, []);
+  }, [isModalActive]);
 
   useEffect(() => {
     //onRefresh();
@@ -148,11 +149,10 @@ export default function CalendarScreen(props) {
     }
 
     GetRequestCalendarScheduleList.find(param)
-      .then(res => {
-        
+      .then(res => {        
         setIsLoading(false);
         if(isOptimize){
-          hideLoadingBar();          
+          hideLoadingBar();   
           showConfirmModal( 'Route Optimized Successfully' , 'optimize', 'Ok');          
         }
         if (selectedIndex == 2 || selectedIndex == 0) {
@@ -238,11 +238,19 @@ export default function CalendarScreen(props) {
     }
   }
 
+
   const showConfirmModal = (message, type, buttonText) => {
+    console.log("mess", message , type,buttonText)
     setMessage(message);
     setConfirmModalType(type);
     setButtonText(buttonText);
-    setIsConfirmModal(true);
+    if(Platform.OS == 'android'){
+      setIsConfirmModal(true);
+    }else{
+      setTimeout(() => {
+        setIsConfirmModal(true);
+      }, 500);
+    }
   }
 
   const renderCalendarItem = (item, index, tabIndex) => {
@@ -252,6 +260,23 @@ export default function CalendarScreen(props) {
         style={{marginTop: 10, }} >
         <CalendarItem
           key={index}
+          showConfirmModalForCheckout={(message) => {              
+            showConfirmModal(message, 'have_compulsory_form' , 'Continue');
+          }}
+          showConfirmModal={(message , type) => {           
+            if(type == 'checkin'){
+              showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
+            }else{
+              showConfirmModal(message, 'checkout' , 'Ok');
+            }            
+          }}
+          showLoadingBar={() => {
+            showLoadingBar();
+          }}
+          hideLoadingBar={()=> {
+            hideLoadingBar();            
+            showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
+          }}
           navigation={props.navigation}
           item={item}
           current={currentLocation}
@@ -278,23 +303,25 @@ export default function CalendarScreen(props) {
             showConfirmModalForCheckout={(message) => {              
               showConfirmModal(message, 'have_compulsory_form' , 'Continue');
             }}
-            showConfirmModal={(message) => {                        
-              showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
+            showConfirmModal={(message , type ) => {
+              if(type == 'checkin'){
+                showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
+              }else{
+                showConfirmModal(message, 'checkout' , 'Ok');
+              }              
             }}
             showLoadingBar={() => {
-              if(loadingBarRef.current){                
-                loadingBarRef.current.showModal();
-              }
-                
+              showLoadingBar();
             }}
             hideLoadingBar={()=> {
-              if(loadingBarRef.current)
-                loadingBarRef.current.hideModal();                                
-                showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
+              hideLoadingBar();              
+              showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
             }}
+            
             onItemSelected={() => {              
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
+
             key={item.schedule_id}
             navigation={props.navigation}
             item={item}

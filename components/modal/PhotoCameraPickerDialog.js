@@ -1,4 +1,4 @@
-import React, { useImperativeHandle } from 'react';
+import React, { useImperativeHandle ,useState } from 'react';
 import {
   View,
   Modal,
@@ -12,13 +12,13 @@ import {
 import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import * as ImagePicker from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
-import RNFS from 'react-native-fs';
+import { optimizeImage } from '../../helpers/imageHelper';
+import RNPhotoManipulator from 'react-native-photo-manipulator';
+import { getDateTime } from '../../helpers/formatHelpers';
 
-//const PhotoCameraPickerDialog = props => {
 const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
 
-  const { visible, isOptimize,  message, onGallery, onCamera, onModalClose } = props;
+  const { visible, isOptimize,  message, onGallery, onCamera, onModalClose , image_timestamp } = props;
 
   useImperativeHandle(ref, () => ({
     openCamera: () => {
@@ -27,23 +27,49 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
       } else {
         launchCamera();
       }
-
     },
     openGallery: () => {
       launchImageLibrary();
     },
   }));
 
-  const updateImageData = url => {
+  const updateImageData = (url , imgType , fileInfo) => {    
     if (props.updateImageData) {
-      props.updateImageData(url);
+      addTextToImage(url, imgType , fileInfo , (uri) => {
+        props.updateImageData(uri);
+      });      
     }
   };
-  const onPickImage = asset => {
+
+  const onPickImage = (asset , imgType , fileInfo) => {
     if (props.onPickImage) {
-      props.onPickImage(asset);
+      addTextToImage(asset.uri, imgType , fileInfo, (uri) => {
+        asset.uri  = uri;
+        props.onPickImage(asset);        
+      });
     }
   };
+
+  const addTextToImage = (url , imgType , fileInfo, onCallBack) => {
+    if(imgType == 'gallery' || image_timestamp != '1'){
+      onCallBack(url);
+    }else{      
+      if(        
+        fileInfo != null && url != undefined && url != '' &&
+        (Platform.OS == 'android' && !url.includes('RNPM') || Platform.OS == 'ios' && !url.includes('Library/Caches')) &&
+        RNPhotoManipulator != null ){
+        const texts = [       
+          { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime() , textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
+        ];        
+        RNPhotoManipulator.printText( url , texts).then(uri => {
+          onCallBack(uri);
+        });
+      }else{
+        alert(fileInfo);
+      }  
+    }
+  }
+
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -88,9 +114,12 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         alert(response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          optimizeImage(response.assets[0].uri, 100, 0);
-          // updateImageData(response.assets[0].uri);
-          // onPickImage(response.assets[0]);
+
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {            
+            updateImageData(res.uri , 'camera' , res);  
+            onPickImage(res, 'camera' , res);
+          });              
+
         }
       }
     });
@@ -113,64 +142,18 @@ const PhotoCameraPickerDialog = React.forwardRef((props, ref) => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          optimizeImage(response.assets[0].uri, 100, 0);
-          // updateImageData(response.assets[0].uri);
-          // onPickImage(response.assets[0]);
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {            
+            updateImageData(res.uri , 'gallery' , res);  
+            onPickImage(res, 'gallery' , res);
+          });          
         }
       }
     });
   };
 
-
-  const optimizeImage = (filePath, quality, index) => {
-    var outputPath =
-      Platform.OS === 'ios'
-        ? `${RNFS.DocumentDirectoryPath}`
-        : `${RNFS.ExternalDirectoryPath}`;
-    var width_height = 800;
-    if (isOptimize != undefined && isOptimize) {
-      width_height = 500;
-    }
-    ImageResizer.createResizedImage(
-      filePath,
-      width_height,
-      width_height,
-      'JPEG',
-      quality,
-      0,
-      outputPath,
-    )
-      .then(res => {     
-        console.log("file size multipe => ", res.size);   
-        if (isOptimize != undefined && isOptimize) {
-          if (res.size < 1024 * 200 || index >= 2) {
-            updateImageData(res.uri);
-            onPickImage(res);
-          } else {
-            var newQuality = (1024 * 200 * 100) / res.size;
-            optimizeImage(res.uri, newQuality, index + 1);
-          }
-        } else {
-          if (res.size < 1024 * 500 || index >= 2) {
-            updateImageData(res.uri);
-            onPickImage(res);
-          } else {
-            var newQuality = (1024 * 500 * 100) / res.size;
-            optimizeImage(res.uri, newQuality, index + 1);
-          }
-        }
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-  };
-
-
-
   return (
     <TouchableWithoutFeedback onPress={onModalClose}>
-      <Modal
-        // animationType="slide"
+      <Modal        
         transparent={true}
         visible={visible}
         onRequestClose={onModalClose}>

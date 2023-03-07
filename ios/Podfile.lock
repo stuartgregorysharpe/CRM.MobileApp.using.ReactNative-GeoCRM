@@ -442,6 +442,9 @@ PODS:
     - React-Core
   - react-native-pager-view (5.4.25):
     - React-Core
+  - react-native-photo-manipulator (1.2.7):
+    - React
+    - WCPhotoManipulator (~> 2.0.4)
   - react-native-progress-view (1.4.0):
     - React-Core
   - react-native-safe-area-context (3.4.1):
@@ -603,6 +606,7 @@ PODS:
     - React
     - React-callinvoker
     - React-Core
+  - WCPhotoManipulator (2.0.4)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -664,6 +668,7 @@ DEPENDENCIES:
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
+  - react-native-photo-manipulator (from `../node_modules/react-native-photo-manipulator`)
   - "react-native-progress-view (from `../node_modules/@react-native-community/progress-view`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-sqlite-storage (from `../node_modules/react-native-sqlite-storage`)
@@ -744,6 +749,7 @@ SPEC REPOS:
     - Protobuf
     - SDWebImage
     - SDWebImageWebPCoder
+    - WCPhotoManipulator
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -803,6 +809,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
+  react-native-photo-manipulator:
+    :path: "../node_modules/react-native-photo-manipulator"
   react-native-progress-view:
     :path: "../node_modules/@react-native-community/progress-view"
   react-native-safe-area-context:
@@ -946,6 +954,7 @@ SPEC CHECKSUMS:
   react-native-maps: a421fe6aeb74279597c4ea9598f25796108e2d89
   react-native-netinfo: 2517ad504b3d303e90d7a431b0fcaef76d207983
   react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
+  react-native-photo-manipulator: dce015c4d602abb529931a40d9d34c277ee478b8
   react-native-progress-view: 8d054e49a5e8ba27e4d838de2188ae46257e288d
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-sqlite-storage: f6d515e1c446d1e6d026aa5352908a25d4de3261
@@ -985,9 +994,10 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   vision-camera-code-scanner: dda884a7f3ec8243a2a6d6489b91860648371bca
   VisionCamera: cdc88c12d856644956e180a7648409be4d10e8a5
+  WCPhotoManipulator: 45b7be19b75c9edf6d2b44f2f61dbc3673862a8f
   Yoga: 9b6696970c3289e8dea34b3eda93f23e61fb8121
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 7fcc9c7c4c5e9dbed9ae82adbc216e1ca69f3a0c
+PODFILE CHECKSUM: 65a24156c2fe48076d98846a87bddda84ee06931
 
 COCOAPODS: 1.11.2
