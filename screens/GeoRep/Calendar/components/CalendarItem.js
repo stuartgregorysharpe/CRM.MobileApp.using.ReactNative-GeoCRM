@@ -79,16 +79,21 @@ export function CalendarItem(props) {
           if (props.onRefresh) {
             props.onRefresh();
           }
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.message,
-              buttonText: Strings.Ok,
-              buttonAction: async () => {                
-                dispatch(clearNotification());
-              },
-            }),
-          );
+          if(props.showConfirmModal){
+            props.showConfirmModal(res.message, 'checkout');
+          }
+
+          // dispatch(
+          //   showNotification({
+          //     type: Strings.Success,
+          //     message: res.message,
+          //     buttonText: Strings.Ok,
+          //     buttonAction: async () => {                
+          //       dispatch(clearNotification());
+          //     },
+          //   }),
+          // );
+
         }}
       />
     );
@@ -106,7 +111,7 @@ export function CalendarItem(props) {
           scheduleId={item.schedule_id}
           showConfirmModal={(message) => {            
             if(props.showConfirmModal){
-              props.showConfirmModal(message);
+              props.showConfirmModal(message , 'checkin');
             }
           }}
           onStart={() => {

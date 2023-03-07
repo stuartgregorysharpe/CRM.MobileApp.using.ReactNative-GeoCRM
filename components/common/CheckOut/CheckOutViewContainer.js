@@ -118,9 +118,8 @@ export default function CheckOutViewContainer(props) {
         null
       )
         .then(async res => {
-          console.log('RES : ', res);
-          
 
+          console.log('RES : ', res);          
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -136,13 +135,7 @@ export default function CheckOutViewContainer(props) {
           setIsLoading(false);
           if(loadingBarRef.current)
             loadingBarRef.current.hideModal();
-
-          // if (type == 'specificInfo' || type == 'calendar') {
-          //   if (props.goBack) {
-          //     props.goBack(res);
-          //   }
-          // }
-                                        
+                                                  
           if(props.onCallback){
             props.onCallback(res);
           }
