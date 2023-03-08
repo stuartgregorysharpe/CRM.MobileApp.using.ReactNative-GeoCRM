@@ -1,5 +1,5 @@
 
-import { View, Text, Dimensions } from 'react-native'
+import { View, Text, Dimensions, Platform } from 'react-native'
 import React , { useState , useRef } from 'react'
 import CalendarEditDeleteView from '../components/CalendarEditDeleteView'
 import { expireToken, getPostParameter } from '../../../../constants/Helper';
@@ -43,8 +43,8 @@ const CalendarEditDeleteModalContainer = (props) => {
     }
   }
 
-  const  onDelete = () => {        
-    console.log(location.schedule_id);
+  const onDelete = () => {
+
     if(location.schedule_id && !isLoading){
       var userParam = getPostParameter(currentLocation);
       const postData = {
@@ -114,7 +114,13 @@ const CalendarEditDeleteModalContainer = (props) => {
           }}
           onDone={() => {
             hideConfirmModal();
-            onDelete();
+            if(Platform.OS == 'android'){
+              onDelete();
+            }else{
+              setTimeout(() => {
+                onDelete();
+              },500);
+            }
           }}
         />
 

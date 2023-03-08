@@ -375,7 +375,13 @@ export default function CalendarScreen(props) {
 
   const onCalendarEditDeleteModalClosed = ({type , value}) => {       
     if(type == Constants.actionType.ACTION_DONE){
-      onTabChanged(tabIndex);
+      if(Platform.OS == 'android'){
+        onTabChanged(tabIndex);
+      }else{
+        setTimeout(() => {
+          onTabChanged(tabIndex);
+        }, 500)
+      }
     }
   }
 
@@ -507,29 +513,31 @@ export default function CalendarScreen(props) {
             />
           )}
 
-          {tabIndex == 2 && (
+          {tabIndex == 2 && todayList != undefined && todayList.length > 0 &&  (
             <GestureHandlerRootView>
               <DraggableFlatList
                 data={todayList}
                 onDragEnd={({data}) => {
-                  var tmp = [];
-                  var newlists = [];
-                  data.forEach((item, index) => {
-                    item.schedule_order = (index + 1).toString();
-                    newlists.push(item);
-                    tmp.push({
-                      schedule_order: (index + 1).toString(),
-                      location_id: item.location_id,
-                      schedule_id: item.schedule_id,
-                      schedule_date: item.schedule_date,
-                      schedule_time: item.schedule_time,
+                  if(data != undefined && data !=  null && data.length > 0){
+                    var tmp = [];
+                    var newlists = [];
+                    data.forEach((item, index) => {
+                      item.schedule_order = (index + 1).toString();
+                      newlists.push(item);
+                      tmp.push({
+                        schedule_order: (index + 1).toString(),
+                        location_id: item.location_id,
+                        schedule_id: item.schedule_id,
+                        schedule_date: item.schedule_date,
+                        schedule_time: item.schedule_time,
+                      });
                     });
-                  });
-                  setTodayList(newlists);
-                  updateTodayLocationLists(tmp);
+                    setTodayList(newlists);
+                    updateTodayLocationLists(tmp);
+                  }                  
                 }}
-                refreshing={isLoading}
-                keyExtractor={item => item.schedule_id}
+                //refreshing={isLoading}
+                keyExtractor={item => item?.schedule_id}
                 renderItem={renderTodayItem}
               />
             </GestureHandlerRootView>

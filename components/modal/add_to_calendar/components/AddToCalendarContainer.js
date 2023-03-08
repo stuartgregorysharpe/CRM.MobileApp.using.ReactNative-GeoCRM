@@ -7,12 +7,9 @@ import { DatetimePickerView } from '../../../DatetimePickerView';
 import { useDispatch } from 'react-redux';
 import { generateKey } from '../../../../constants/Utils';
 import { Colors, Constants, Strings } from '../../../../constants';
-import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../actions/notification.action';
 import { expireToken, getPostParameter } from '../../../../constants/Helper';
 import { PostRequestDAO } from '../../../../DAO';
-import { Notification } from '../../Notification';
 import AlertDialog from '../../AlertDialog';
-import LoadingProgressBar from '../../LoadingProgressBar';
 import LoadingBar from '../../../LoadingView/loading_bar';
 
 var indempotencyKey = '';
@@ -65,6 +62,7 @@ const AddToCalendarContainer = (props) => {
                 showConfirmModal(Strings.Calendar.Added_Calendar_Successfully);
             }).catch(( error ) => {
                 hideLoadingBar();
+
                 setIsLoading(false);
                 expireToken(dispatch, error);                
                 showConfirmModal(error.toString());
