@@ -129,6 +129,7 @@ async function getFormQuestionData(
     touchpoints,
     placement_areas: pleacementAreas,
     products: productsResult,
+    image_timestamp : questionBody.image_timestamp.toString()
   };
 }
 
