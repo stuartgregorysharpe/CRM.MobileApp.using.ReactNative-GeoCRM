@@ -17,7 +17,7 @@ const AlertModal=  React.forwardRef((props, ref) => {
       setVisible(true)
     },
     hideModal: () => {
-      setVisible(false)
+      setVisible(false);
     },
   }))
     return (

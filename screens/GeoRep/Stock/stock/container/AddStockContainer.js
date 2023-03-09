@@ -21,7 +21,6 @@ export default function AddStockContainer(props) {
   const [messageType, setMessageType] = useState('success');
   const loadingBarRef = useRef(null);
   
-
   let isMount = true;
 
   useEffect(() => {
@@ -59,8 +58,7 @@ export default function AddStockContainer(props) {
   const callAddStock = (type, data) => {
     if(isLoading) return;
     setIsLoading(true);
-    loadingBarRef.current.showModal();
-
+    showLoadingBar()
     var userParam = getPostParameter(currentLocation);
     data['user_local_data'] = userParam.user_local_data;
     var subTitle = type;
@@ -84,7 +82,7 @@ export default function AddStockContainer(props) {
     )
       .then(res => {
        
-        loadingBarRef.current.hideModal();
+        hideLoadingBar()
         console.log("add stock response =>", res);
         var message = '';
         if (res.status === Strings.Success) {
@@ -106,10 +104,20 @@ export default function AddStockContainer(props) {
       })
       .catch(e => {
         setIsLoading(false);
-        loadingBarRef.current.hideModal();
+        hideLoadingBar();
         expireToken(dispatch, e);
       });
   };
+
+  const showLoadingBar = () => {
+    if(loadingBarRef.current)
+      loadingBarRef.current.showModal();
+  }
+
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current)
+      loadingBarRef.current.hideModal()
+  }
 
   return (
     <View style={{alignSelf: 'stretch'}}>
@@ -124,11 +132,11 @@ export default function AddStockContainer(props) {
       <LoadingBar 
         backButtonDisabled={true}
         ref={loadingBarRef} />
-
+      
       <AlertDialog
         visible={isConfirmModal}
         onModalClose={() => {
-          setIsConfirmModal(false);     
+          setIsConfirmModal(false);
           if(messageType == Strings.Success){
             props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
           }
