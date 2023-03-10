@@ -188,6 +188,12 @@ export const getBasketDateTime = () => {
   var currentTime = moment().format('DD MMM YYYY HH:mm');
   return currentTime;
 };
+
+export const getCurrentDate = () => {
+  var currentTime = moment().format('YYYY-MM-DD');
+  return currentTime;
+};
+
 export const getDateTime = () => {
   var currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
   return currentTime;

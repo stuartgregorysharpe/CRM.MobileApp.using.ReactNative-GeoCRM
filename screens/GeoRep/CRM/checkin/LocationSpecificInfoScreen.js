@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef , useCallback} from 'react';
+import React, {useEffect, useState, useRef , useCallback } from 'react';
 import {
   SafeAreaView,
   Text,
@@ -7,18 +7,13 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  StyleSheet
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  setWidthBreakpoints,
-  parse,
-} from 'react-native-extended-stylesheet-breakpoints';
 import RefreshSlider from '../../../../components/modal/RefreshSlider';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
-import {breakPoint} from '../../../../constants/Breakpoint';
 import Fonts from '../../../../constants/Fonts';
 import {grayBackground} from '../../../../constants/Styles';
 import DeviceInfo from 'react-native-device-info';
@@ -27,8 +22,7 @@ import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputT
 import Images from '../../../../constants/Images';
 import {
   getJsonData,
-  getLocalData,
-  storeLocalValue,
+  getLocalData,  
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
 import {getLocationInfo} from '../../../../actions/location.action';
@@ -47,8 +41,10 @@ import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
 import {GetRequestFormListsDAO} from '../../../../DAO';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 import AlertDialog from '../../../../components/modal/AlertDialog';
+import { clearNotification, showNotification } from '../../../../actions/notification.action';
+import { Notification } from '../../../../components/modal/Notification';
+import SimCardReportModal from '../sim_card';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -64,18 +60,19 @@ const LocationSpecificInfoScreen = props => {
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
   const customerContactsRef = useRef();
+  const simCardReportModalRef =  useRef();
+
   const [canShowCustomerContactsScreen, setCanShowCustomerContactsScreen] =
     useState(false);
   const [isActivityComment, setIsActivityComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isActionItems, setIsActionItems] = useState(false);
-  const [isFormCompulsory, setIsFormCompulsory] = useState(true);
+  const [isActionItems, setIsActionItems] = useState(false);  
   const [isDanOneSales, setIsDanOneSales] = useState(false);
   const navigationMain = useNavigation();
   const showLoopSlider = () => {};
   const isShowCustomNavigationHeader = !props.screenProps;
   const isCheckin = useSelector(state => state.location.checkIn);
-  const locationId = locationInfo ? locationInfo.location_id : location_id;
+  const locationId = locationInfo ? locationInfo.location_id : location_id; // access_crm location id
   const customerContactModalRef = useRef(null);
   const customerSaleHistoryModalRef = useRef(null);
   const features = useSelector(
@@ -90,7 +87,6 @@ const LocationSpecificInfoScreen = props => {
     state => state.rep.locationCheckOutCompulsory,
   );
 
-
   let isMout = true;
 
   useEffect(() => {
@@ -103,7 +99,7 @@ const LocationSpecificInfoScreen = props => {
   useEffect(() => {
     
     refreshHeader();
-    initData();
+    //initData();
     
   }, [location_id]);
 
@@ -115,7 +111,7 @@ const LocationSpecificInfoScreen = props => {
     if (isCheckin) {
       getCheckInLocation();
     }
-
+    
     return () => {
       isMout = false;
     };
@@ -133,54 +129,51 @@ const LocationSpecificInfoScreen = props => {
   const checkOnlineStatus = useCallback(
     async () => {
       var specific_location_id  = await getLocalData("@specific_location_id");
-      if(specific_location_id == '' && pageType == 'checkin'){
-        goBack(); 
-      }      
+      console.log("Triggered", specific_location_id , pageType);
+      if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){
+        dispatch(clearNotification());
+        goBack();
+      }
     },
     [isCheckin],
   )
 
+  
   const getCheckInLocation = async () => {
 
-    var location = await getJsonData('@checkin_location');
-    console.log("location id ===>", location_id );
-    if (location != null && location?.location_name?.value != undefined) {
-      if (
-        locationInfoRef.current != undefined &&
-        locationInfoRef.current != null
-      ) {
-        locationInfoRef.current.updateDispositionData(location);
+    console.log("page type =>", pageType , location_id, locationId)
+    if(pageType == 'checkin'){
+      var location = await getJsonData('@checkin_location');      
+      if (location != null && location?.location_name?.value != undefined) {
+        if (
+          locationInfoRef.current != undefined &&
+          locationInfoRef.current != null
+        ) {
+          locationInfoRef.current.updateDispositionData(location);
+        }  
+        setLocationIfo(location);
+        getFormLists(location.location_id);
+      } else {
+        var locId  = await getLocalData("@specific_location_id");        
+        if (locId !== undefined) {        
+          openLocationInfo(locId);
+          getFormLists(locId);
+        }
       }
-
-      setLocationIfo(location);
-      getFormLists(location.location_id);
-    } else {
-      var locId = location_id;
-      if(location_id == '' || location_id == undefined){
-        locId  = await getLocalData("@specific_location_id");
+    }else if(pageType == 'access_crm'){
+      if(locationId != undefined && locationInfo){
+        locationInfoRef.current.updateDispositionData(locationInfo);
+        getFormLists(locationId);
       }
-      if (locId !== undefined) {        
-        openLocationInfo(locId);
-        getFormLists(locId);
+    }else{
+      if(locationId != undefined && locationInfo){
+        locationInfoRef.current.updateDispositionData(locationInfo);
+        getFormLists(locationId);
       }
     }
   };
 
-  const initData = async () => {
-    if (pageType === 'checkin') {
-      await storeLocalValue('@checkin', '1');
-      if (locationInfo !== undefined && locationInfo.location_id != undefined) {
-        await storeLocalValue(
-          '@specific_location_id',
-          locationInfo.location_id,
-        );
-      }
-    } else if (pageType === 'access_crm') {
-      openLocationInfo(location_id != undefined ? location_id : locationId);
-      //getFormLists(location_id != undefined ? location_id : locationId);
-    }
-  };
-
+  
   const goBack = () => {
     if (props.navigation.canGoBack()) {
       props.navigation.popToTop();
@@ -254,6 +247,12 @@ const LocationSpecificInfoScreen = props => {
     if (item.link === 'danone_sales') {
       setIsDanOneSales(true);
     }
+
+    if(item.link === 'sim_card_report'){
+      if(simCardReportModalRef.current)
+        simCardReportModalRef.current.showModal()
+    }
+
   };
 
   const refreshHeader = () => {
@@ -291,13 +290,7 @@ const LocationSpecificInfoScreen = props => {
             onPress={() => {
               setShowItem(0);
             }}></TouchableOpacity>
-        ),
-        tabBarStyle: {
-          position: 'absolute',
-          height: 50,
-          paddingBottom: Platform.OS == 'android' ? 5 : 0,
-          backgroundColor: Colors.whiteColor,
-        },
+        ),        
       });
     }
   };
@@ -310,6 +303,7 @@ const LocationSpecificInfoScreen = props => {
 
   const onCustomerContactModalClosed = ({type, value}) => {};
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
+  const onSimCardReportModalClosed = ({type , value}) => {};
 
   const getFormLists = async locationId => {
     if(isLoadingForm) return;
@@ -351,13 +345,12 @@ const LocationSpecificInfoScreen = props => {
       ) {
         flag = true;
       }
-    });
-    setIsFormCompulsory(flag);
+    });    
     dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
   };
 
   return (
-    <SafeAreaView style={{}}>
+    <SafeAreaView style={{flex:1}}>
 
       {isShowCustomNavigationHeader && (
         <NavigationHeader
@@ -369,6 +362,8 @@ const LocationSpecificInfoScreen = props => {
         />
       )}
 
+      <Notification />
+      
       <AlertDialog 
         visible={isConfirmModal}
         message={message}
@@ -379,17 +374,23 @@ const LocationSpecificInfoScreen = props => {
           }else if(confirmModalType == 'have_compulsory_form'){
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
-            });
-
-            // const location = await getJsonData('@checkin_location');            
-            // if(location != null && location != undefined){             
-            // }
-            
+            }); 
           }
-          
         }}
       />
       
+      {
+        locationInfo != undefined && (
+          <SimCardReportModal 
+            ref={simCardReportModalRef}
+            locationId={locationId}
+            title="Sim Card Report"
+            clearText='Close'
+            onButtonAction={onSimCardReportModalClosed}
+          />
+        )
+      }
+
       {locationInfo != undefined && (
         <ActivityComments
           locationId={locationInfo.location_id}
@@ -535,9 +536,10 @@ const LocationSpecificInfoScreen = props => {
                   setIsConfirmModal(true);
                 }}
                 onCallback={async res => {
-                  setMessage(res.message);
-                  setConfirmModalType('go_back');
-                  setIsConfirmModal(true);
+                  // setMessage(res.message);
+                  // setConfirmModalType('go_back');
+                  // setIsConfirmModal(true);
+                  dispatch(showNotification({type: Strings.Success , message : res.message , buttonText: 'Ok'}));
                 }}
               />
             )}
@@ -586,79 +588,78 @@ const LocationSpecificInfoScreen = props => {
   );
 };
 
-const perWidth = setWidthBreakpoints(breakPoint);
+//const perWidth = setWidthBreakpoints(breakPoint);
 
-const styles = EStyleSheet.create(
-  parse({
-    container: {
-      padding: 10,
-    },
-    headerBox: {
-      backgroundColor: whiteLabel().headerBackground,
-      padding: 10,
-      paddingBottom: 0,
-      marginBottom: 8,
-    },
-    headerTitleBox: {
-      flexDirection: perWidth('row', 'column'),
-      alignItems: 'flex-start',
-      marginBottom: 8,
-    },
-    subtitleBox: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 20,
-      marginBottom: 8,
-      marginRight: 8,
-    },
-    subtitle: {
-      fontSize: 12,
-      color: whiteLabel().headerText,
-      textAlign: 'left',
-      fontFamily: Fonts.secondaryMedium,
-    },
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+  headerBox: {
+    backgroundColor: whiteLabel().headerBackground,
+    padding: 10,
+    paddingBottom: 0,
+    marginBottom: 8,
+  },
+  headerTitleBox: {
+    //flexDirection: perWidth('row', 'column'),
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  subtitleBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
+    marginBottom: 8,
+    marginRight: 8,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: whiteLabel().headerText,
+    textAlign: 'left',
+    fontFamily: Fonts.secondaryMedium,
+  },
 
-    dateText: {
-      color: '#0AD10A',
-      fontFamily: Fonts.secondaryMedium,
-    },
+  dateText: {
+    color: '#0AD10A',
+    fontFamily: Fonts.secondaryMedium,
+  },
 
-    title: {
-      fontSize: 14,
-      color: whiteLabel().headerText,
-      fontFamily: Fonts.secondaryBold,
-      lineHeight: 22,
-      maxWidth: 300,
-    },
-    headerIcon: {
-      marginRight: 8,
-    },
-    innerContainer: {
-      justifyContent: 'space-between',
-      flexDirection: perWidth('row-reverse', 'column'),
-    },
+  title: {
+    fontSize: 14,
+    color: whiteLabel().headerText,
+    fontFamily: Fonts.secondaryBold,
+    lineHeight: 22,
+    maxWidth: 300,
+  },
+  headerIcon: {
+    marginRight: 8,
+  },
+  innerContainer: {
+    justifyContent: 'space-between',
+    //flexDirection: perWidth('row-reverse', 'column'),
+  },
 
-    cardBox: {
-      //display: perWidth('flex', 'flex'),
-      width: '100%',
-      marginBottom: 8,
-    },
+  cardBox: {
+    //display: perWidth('flex', 'flex'),
+    width: '100%',
+    marginBottom: 8,
+  },
 
-    filterButton: {
-      display: perWidth('none', 'flex'),
-    },
+  filterButton: {
+    //display: perWidth('none', 'flex'),
+  },
 
-    transitionView: {
-      position: 'absolute',
-      bottom: 50,
-      left: 0,
-      right: 0,
-      backgroundColor: Colors.bgColor,
-      elevation: 2,
-      zIndex: 2,
-      padding: 10,
-    },
-  }),
-);
+  transitionView: {
+    position: 'absolute',
+    bottom: 50,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.bgColor,
+    elevation: 2,
+    zIndex: 2,
+    padding: 10,
+  },
+})
+
 
 export default LocationSpecificInfoScreen;

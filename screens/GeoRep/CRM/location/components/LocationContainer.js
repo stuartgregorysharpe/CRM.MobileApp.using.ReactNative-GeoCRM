@@ -13,7 +13,7 @@ import {
   getLocationFilters,
   getLocationInfo,
 } from '../../../../../actions/location.action';
-import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
+import AddToCalendarModal from '../../../../../components/modal/add_to_calendar';
 import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
@@ -203,7 +203,7 @@ const LocationContainer = props => {
     const specificLocationId = await getLocalData('@specific_location_id');
     navigation.navigate('LocationSpecificInfo', {
       locationId: specificLocationId,
-      page: 'map',
+      page: 'checkin',
     });
   };
   const onFinishDrawing = selectedMarkers => {
@@ -263,7 +263,7 @@ const LocationContainer = props => {
       if (value === 'access_crm' || value == 'checkin') {
         navigation.navigate('LocationSpecificInfo', {          
           data: locationInfo,
-          page: 'access_crm',
+          page: value,
         });
       }
     }
@@ -361,18 +361,17 @@ const LocationContainer = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 50,
   },
   pinKeyButton: {
     position: 'absolute',
     right: 9,
-    bottom: 80,
+    bottom: 30,
     padding: 5,
   },
   plusButton: {
     position: 'absolute',
     right: 20,
-    bottom: 120,
+    bottom: 70,
   },
 });
 

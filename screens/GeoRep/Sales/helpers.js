@@ -1,4 +1,4 @@
-import {getJsonData} from '../../../constants/Storage';
+import {getJsonData, storeJsonData} from '../../../constants/Storage';
 
 export function getTotalCartProductList(
   productPriceList,
@@ -131,39 +131,88 @@ export function filterProducts(productList, params) {
 
 export function updateProductPrice(dispatch, productPriceList, product, qty) {}
 
+export const clearSearchKey = async () => {
+  var api_param = await getJsonData("@sale_product_parameter");
+  if(api_param != null){
+    api_param['search_text'] = '';
+    storeJsonData("@sale_product_parameter", api_param)
+  }
+}
+
+export const getSearchKey = async () => {
+  var api_param = await getJsonData("@sale_product_parameter");
+  if(api_param != null){
+    return  api_param['search_text'];    
+  }
+  return '';
+  
+}
 
 export const onCheckProductSetupChanged = async (value, callBack) => {
-
-  var setupData = await getJsonData('@setup');    
-  if (value != null && setupData != null && setupData != undefined && setupData.location && setupData.transaction_type && setupData.warehouse_id && setupData.currency_id) {    
+  var setupData = await getJsonData('@setup');
+  if (
+    value != null &&
+    setupData != null &&
+    setupData != undefined &&
+    setupData.location &&
+    setupData.transaction_type &&
+    setupData.warehouse_id &&
+    setupData.currency_id
+  ) {
     // console.log("setup data", setupData);
     // console.log("selected value" , value);
     if (
       setupData.location.name != value.location.name ||
-      setupData.transaction_type.type != value.transaction_type.type       
-    ) {      
+      setupData.transaction_type.type != value.transaction_type.type
+    ) {
+      clearSearchKey();
       callBack('primary_changed');
-    }else if(
-      setupData.currency_id.id != value.currency_id.id || 
+    } else if (
+      setupData.currency_id.id != value.currency_id.id ||
       setupData.warehouse_id.length != value.warehouse_id.length
-    ){
+    ) {
+      clearSearchKey();
       callBack('content_changed');
-    }else {      
+    } else {
       callBack('continue');
     }
-  } else {    
+  } else {
+    clearSearchKey();
     callBack('changed');
   }
+};
 
+export const getReconfigFromRegret = (config , setupField) => {
+
+  const currency_id = config.currency_id.id;
+  if(currency_id != undefined && setupField != undefined){
+
+    const currency = setupField.currency;
+    if(currency){
+      const defaultCurrency = currency.options.find(item =>  parseInt(item.id) === parseInt(currency_id));
+      if(defaultCurrency != undefined){
+        config.currency_id = {
+            abbreviation: defaultCurrency?.abbreviation,
+            exchange_rate: defaultCurrency?.exchange_rate,
+            symbol: defaultCurrency?.symbol,
+            tax_rate: defaultCurrency.tax_rate,
+            id: defaultCurrency.id
+        }
+      }        
+      return config;
+    }
+
+  }
+
+  return config;
 }
-
 
 export const getConfigFromRegret = regret => {
   return {
     currency_id: {
-      abbreviation: regret.abbreviation,
-      exchange_rate: regret.exchange_rate,
-      symbol: regret.symbol,
+      abbreviation: regret?.abbreviation,
+      exchange_rate: regret?.exchange_rate,
+      symbol: regret?.symbol,
       tax_rate: regret.tax_rate,
       id: regret.currency_id,
     },

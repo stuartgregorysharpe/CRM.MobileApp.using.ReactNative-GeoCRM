@@ -29,7 +29,7 @@ export const TimePicker = props => {
       style={[
         style.card,
         boxShadow,
-        {flex: 1, marginRight: 5, paddingTop: 3, paddingBottom: 3},
+        {flex: 1, marginRight: 0, paddingTop: 3, paddingBottom: 3},
       ]}>
       <Text style={styles.timeTitleStyle}>{title}</Text>
       <View
@@ -45,6 +45,18 @@ export const TimePicker = props => {
           autoCorrect={false}
           underlineColorAndroid="rgba(0,0,0,0)"
           value={initHour}
+          blurOnSubmit={true}
+          multiline={false}
+          onBlur={() => {
+            if(props.onChangedHour){
+              props.onChangedHour(initHour , initMin);
+            }    
+          }}
+          onSubmitEditing={(e) => {            
+            if(props.onChangedHour){
+              props.onChangedHour(initHour , initMin);
+            }            
+          }}
           onChangeText={value => {
             if (value.length <= 2) {
               setHour(value);
@@ -63,14 +75,30 @@ export const TimePicker = props => {
           autoCorrect={false}
           underlineColorAndroid="rgba(0,0,0,0)"
           value={initMin}
-          onChangeText={value => {
+          blurOnSubmit={true}
+          multiline={false}
+          onBlur={() => {
+            if(props.onChangedMin){
+              props.onChangedMin(initHour , initMin);
+            }            
+          }}
+          onSubmitEditing={(e) => {
+            if(props.onChangedMin){
+              props.onChangedMin(initHour , initMin);
+            }            
+          }}
+
+          onChangeText={v => {
+            //console.log("dd",value , value.trim().length)
+            const value = v.trim();
             if (value.length <= 2) {
-              setMin(value);
+              setMin(value);              
               onChanged(initHour, value, ap);
             } else if (value.length == 0) {
               //hourRef.current.focus();
             }
           }}
+
           keyboardType={'numeric'}
           returnKeyType={'done'}
           style={styles.textInput}></TextInput>
@@ -99,12 +127,13 @@ export const TimePicker = props => {
             }}
             onPress={() => {
               if (parseInt(initMin) + 15 < 60) {
-                onChanged(initHour, getTwoDigit(parseInt(initMin) + 15), ap);
+                onChanged(initHour, getTwoDigit(parseInt(initMin) + 15), ap , 'arrow');
               } else {
                 onChanged(
                   getTwoDigit(parseInt(initHour) + 1),
                   getTwoDigit(parseInt(initMin) + 15 - 60),
                   ap,
+                  'arrow'
                 );
               }
             }}>
@@ -119,12 +148,13 @@ export const TimePicker = props => {
             }}
             onPress={() => {
               if (parseInt(initMin) - 15 >= 0) {
-                onChanged(initHour, getTwoDigit(parseInt(initMin) - 15), ap);
+                onChanged(initHour, getTwoDigit(parseInt(initMin) - 15), ap , 'arrow');
               } else {
                 onChanged(
                   getTwoDigit(parseInt(initHour) - 1),
                   getTwoDigit(60 + parseInt(initMin) - 15),
                   ap,
+                  'arrow'
                 );
               }
             }}>

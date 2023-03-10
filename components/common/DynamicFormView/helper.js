@@ -79,9 +79,9 @@ export function getFormStructureData (renderForms , page) {
             value: value,
             isHidden: false,
             field_name : field.field_id,
-            rule_characters: '<,10',
-            add_prefix: 'R',
-            add_suffix : '%',
+            rule_characters: '<,10',            
+            add_prefix: field?.add_prefix != undefined ? field.add_prefix : 'R',
+            add_suffix : field?.add_suffix != undefined ? field.add_suffix : '%',
             isClickable: isClickable
           };
         }       

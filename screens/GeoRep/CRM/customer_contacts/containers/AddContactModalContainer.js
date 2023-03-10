@@ -1,5 +1,5 @@
 
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import React , { useState , useEffect , useRef , Keyboard } from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import AddContactModalView from '../components/AddContactModalView';
@@ -50,23 +50,37 @@ export default function AddContactModalContainer(props) {
             
             loadingBarRef.current.showModal();
             PostRequestDAO.find(0, postData , 'add-edit-contacts' , 'locations/add-edit-contacts' , '' , '' , add_edit_indempotency , null).then((res) => {
-
-                loadingBarRef.current.hideModal();
+                hideLoadingBar();                
                 setIsLoading(false);
                 if(res.status == Strings.Success){
-                    setMessage(res.message);
-                    setIsConfirmModal(true);
+                    showConfirmModal(res.message);                    
                 }
 
             }).catch((e) => {
                 console.log(Strings.Log.Post_Api_Error, e);
-                loadingBarRef.current.hideModal();  
+                hideLoadingBar();
                 setIsLoading(false);
                 expireToken(dispatch, e);
             }) 
         }            
     }
+
+    const hideLoadingBar = () => {
+        if(loadingBarRef.current){
+            loadingBarRef.current.hideModal();
+        }
+    }
     
+    const showConfirmModal = (message) =>{
+        setMessage(message);
+        if(Platform.OS == 'android'){
+            setIsConfirmModal(true)
+        }else{
+            setTimeout(() => {
+                setIsConfirmModal(true);
+            }, 500)
+        }
+    }
 
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>

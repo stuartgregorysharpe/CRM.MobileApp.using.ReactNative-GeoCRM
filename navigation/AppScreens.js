@@ -210,7 +210,7 @@ export default function AppScreens() {
           options={{ header: () => false }}>
           {props => <Stock {...props} isDeeplink={true} />}
         </Stack.Screen>
-        
+
       </Stack.Navigator>
     </SafeAreaView>
   );

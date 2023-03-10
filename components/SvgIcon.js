@@ -1520,6 +1520,12 @@ const Product_Sales_Item = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink=
 </g>
 </svg>
 `;
+
+const Sim_Card = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
+<path id="sim_card_FILL1_wght400_GRAD0_opsz48_1_" data-name="sim_card_FILL1_wght400_GRAD0_opsz48 (1)" d="M13.7,38.35h3v-3h-3Zm0-7.8h3v-8.3h-3Zm8.7,7.8h3v-8.5h-3Zm0-13.1h3v-3h-3Zm9.1,13.1h3v-3h-3Zm0-7.8h3v-8.3h-3ZM11,44a2.878,2.878,0,0,1-2.1-.9A2.878,2.878,0,0,1,8,41V15.95L19.95,4H37a2.878,2.878,0,0,1,2.1.9A2.878,2.878,0,0,1,40,7V41a3.076,3.076,0,0,1-3,3Z" transform="translate(-8 -4)" fill="${actionIconBackground}"/>
+</svg>
+`;
+
 const svgMap = {
   Round_Btn_Default_Dark: Round_Btn_Default_Dark,
   Round_Btn_Default_Dark_Gray: Round_Btn_Default_Dark_Gray,
@@ -1677,7 +1683,8 @@ const svgMap = {
   Sales: Sales,
   Shield_Fail: Shield_Fail,
   Star: Star,
-  Survey: Survey
+  Survey: Survey,
+  Sim_Card : Sim_Card
 }
 
 export default ({

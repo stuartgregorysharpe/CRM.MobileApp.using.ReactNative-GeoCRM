@@ -11,6 +11,7 @@ import {
   SLIDE_STATUS,
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
+  SET_CONTENT_FEED_DATA,
 } from '../actions/actionTypes';
 
 import {StyleSheet, Dimensions, TouchableOpacity, Platform} from 'react-native';
@@ -29,16 +30,8 @@ export default function RepBottomTabNavigator({navigation}) {
   const visibleMore = useSelector(state => state.rep.visibleMore);
 
   const [bottomTabs, setBottomTabs] = useState([]);
-  const [isSamsung, setIsSamsung] = useState(false);
+  
 
-  useEffect(() => {
-    DeviceInfo.getDeviceName().then(deviceName => {
-      if (deviceName.toLowerCase().includes('samsung')) {
-        setIsSamsung(true);
-      }
-      console.log('deviceName ==== ', deviceName);
-    });
-  }, []);
 
   useEffect(() => {
     initBottomTab();
@@ -82,10 +75,14 @@ export default function RepBottomTabNavigator({navigation}) {
 
   useEffect(() => {
     if (visibleMore != '') {
-      navigation.navigate('More', {screen: visibleMore});
-      setTimeout(() => {
-        //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-      });
+      if (visibleMore === 'ProductSales') {
+        navigation.navigate('More', {
+          screen: 'ProductSales',
+          params: {screen: 'Root', params: {regret_item: ''}},
+        });
+      } else {
+        navigation.navigate('More', {screen: visibleMore});
+      }
     }
   }, [visibleMore]);
 
@@ -106,11 +103,7 @@ export default function RepBottomTabNavigator({navigation}) {
       } else {
         return 62;
       }
-    } else {
-      if (isSamsung) {
-        return 60;
-      }
-
+    } else {      
       if (DeviceInfo.isTablet()) {
         return currentHeight + 62;
       } else {
@@ -182,7 +175,7 @@ export default function RepBottomTabNavigator({navigation}) {
               ),
               headerStyle: {
                 height: getHeaderHeight(), // Specify the height of your custom header
-                backgroundColor:whiteLabel().headerBackground
+                backgroundColor: whiteLabel().headerBackground,
               },
               headerRight: () => <HeaderRightView navigation={navigation} />,
               tabBarLabelStyle: {
@@ -206,8 +199,11 @@ export default function RepBottomTabNavigator({navigation}) {
                   //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
                   // }
                 } else {
-                  console.log('bottom tab clicked');
+                  console.log('bottom tab clicked', element.name);
                   dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  if (element.name === 'Home') {
+                    dispatch({type: SET_CONTENT_FEED_DATA, payload: true});
+                  }
                 }
               },
             })}

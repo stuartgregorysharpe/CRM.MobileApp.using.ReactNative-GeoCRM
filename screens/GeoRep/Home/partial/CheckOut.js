@@ -15,7 +15,7 @@ export default function CheckOut(props) {
     }else if(currentCall?.location_name != undefined){
       return currentCall?.location_name;
     }else {
-      return 'Spar Century City Cape town'
+      return 'Please wait'
     }
   }
   
@@ -31,7 +31,7 @@ export default function CheckOut(props) {
         </View>
         <View style={{flexDirection:'row' , alignItems:'center' , }}>
           <SvgIcon icon="Hour_Glass" width='15' height='15' style={{marginRight:5}} />   
-          <AppText title={currentCall != "" ? currentCall?.checkin_time : "1h 23min 23sec"}  color="white"></AppText>          
+          <AppText title={currentCall != "" ? currentCall?.checkin_time : "-"}  color="white"></AppText>          
           <SvgIcon icon="Bottom_Arrow" width='20px' height='20px' />
         </View>
       </View>

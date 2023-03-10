@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   Dimensions,
+  Platform
 } from 'react-native';
 import Colors, {whiteLabel} from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
@@ -16,6 +17,13 @@ import SvgIcon from '../SvgIcon';
 import PhotoCameraPickerDialog from '../modal/PhotoCameraPickerDialog';
 import * as ImagePicker from 'react-native-image-picker';
 import {checkYesNoValidate} from '../../screens/GeoRep/Forms/questions/helper';
+import ImageResizer from 'react-native-image-resizer';
+import RNFS from 'react-native-fs';
+import { optimizeImage } from '../../helpers/imageHelper';
+import { getDateTime } from '../../helpers/formatHelpers';
+import RNPhotoManipulator from 'react-native-photo-manipulator';
+
+var imageType = '';
 
 export const YesNoForm = ({
   item,
@@ -25,6 +33,10 @@ export const YesNoForm = ({
   submissionType,
 }) => {
   const [isPicker, setIsPicker] = useState(false);
+  const [fileInfo, setFileInfo] = useState(null);
+  
+
+  const isOptimize = item.optimize && item.optimize == '1' ? true : false ;
   const isShowInfoIcon =
     item.guide_info !== undefined && item.guide_info.length != 0;
   const isYes =
@@ -38,6 +50,32 @@ export const YesNoForm = ({
     item.value !== '' &&
     item.value.toLowerCase() == 'no';
 
+  const image_timestamp = item.image_timestamp;
+
+  // Combine image and text
+  useEffect(() => {        
+    if(item != undefined && image_timestamp == '1' && imageType == 'camera'){
+      if(fileInfo){   
+        var path = null;
+        if (isYes) {
+          path = item.yes_image;
+        } else {
+          path =  item.no_image;
+        }        
+        if(path != null && path.length > 0 && 
+          (Platform.OS == 'android' && !path[0]?.includes('RNPM') || Platform.OS == 'ios' && !path[0]?.includes('Library/Caches')) &&
+           RNPhotoManipulator != null){
+          const texts = [       
+            { position: { x: fileInfo.width/2 , y: fileInfo.height - 40 }, text: getDateTime(), textSize: parseInt(fileInfo.width * 0.045) , color: "#FFFFFF", thickness: 0 }
+          ];
+          RNPhotoManipulator.printText( path[0] , texts).then(uri => {              
+              onTakeImage([uri], item.value);
+          });
+        }
+      }
+    }
+  }, [item.yes_image, item.no_image]);
+
   const showSelectionDialog = () => {
     if (submissionType == 'edit') {
       setIsPicker(true);
@@ -46,12 +84,14 @@ export const YesNoForm = ({
     }
   };
 
-  const updateImageData = async path => {
+  const updateImageData = async (path , imgType) => {
     setIsPicker(false);
     if (item.value != null && item.value !== null) {
       onTakeImage([path], item.value);
+      imageType = imgType;
     } else {
       onTakeImage([path], item.value);
+      imageType = imgType;
     }
   };
 
@@ -72,7 +112,12 @@ export const YesNoForm = ({
         console.log('User tapped custom button: ', response.customButton);
       } else {
         if (response.assets != null && response.assets.length > 0) {
-          updateImageData(response.assets[0].uri);
+
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
+            setFileInfo(res);
+            updateImageData(res.uri , 'gallery');            
+          });    
+
         }
       }
     });
@@ -95,8 +140,11 @@ export const YesNoForm = ({
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        if (response.assets != null && response.assets.length > 0) {
-          updateImageData(response.assets[0].uri);
+        if (response.assets != null && response.assets.length > 0) {          
+          optimizeImage(response.assets[0].uri, 100, 0 , isOptimize , async (res) => {
+            setFileInfo(res);
+            updateImageData(res.uri , 'camera'); 
+          });              
         }
       }
     });
@@ -154,6 +202,8 @@ export const YesNoForm = ({
     }
     return 0;
   };
+
+
 
   return (
     <View
@@ -227,8 +277,8 @@ export const YesNoForm = ({
           {isIncludeImage(isYes ? 'Yes' : 'No') &&
             haveImage() &&
             getImagePath() != undefined &&
-            getImagePath().map((subItem, index) => {
-              if (subItem.includes('png') || subItem.includes('jpg')) {
+            getImagePath().map((subItem, index) => {              
+              if (subItem.toLowerCase().includes('png') || subItem.toLowerCase().includes('jpg') || subItem.toLowerCase().includes('jpeg') ) {
                 return (
                   <TouchableOpacity
                     key={index}
@@ -276,6 +326,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.secondaryMedium,
   },
   imageContainer: {
+    marginTop:10,
     padding: 5,
     borderWidth: 1,
     borderColor: whiteLabel().fieldBorder,

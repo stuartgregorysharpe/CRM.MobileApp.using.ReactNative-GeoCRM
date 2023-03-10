@@ -19,7 +19,8 @@ export default function MutiSelectPhotoView(props) {
   const image_gallery = item.image_gallery;
   const image_capture = item.image_capture;
   const photoCameraPickDialogRef = useRef(null);
-  
+  const isOptimize = item.optimize && item.optimize == '1' ? true : false;  
+  const image_timestamp = item.image_timestamp;
 
   useEffect(() => {
     if (item.value != null && item.value != '') {
@@ -87,17 +88,15 @@ export default function MutiSelectPhotoView(props) {
   const isValidate = () => {
     var flag = true;
     console.log("checkedLists",checkedLists);
-    checkedLists.forEach(element => {
-      console.log('ee', element);
-      if (element.image === '' || element.image === undefined) {
-        console.log('false');
+    checkedLists.forEach(element => {      
+      if (element.image === '' || element.image === undefined) {        
         flag = false;
       }
     });
     return flag;
   };
   const onSubmit = () => {
-    console.log('sss', isValidate());
+    
     if (isValidate()) {
       props.onButtonAction({
         type: Constants.actionType.ACTION_FORM_SUBMIT,
@@ -136,6 +135,8 @@ export default function MutiSelectPhotoView(props) {
         ref={photoCameraPickDialogRef}
         visible={isPicker}
         message={'Choose Image'}
+        isOptimize={isOptimize}
+        image_timestamp={image_timestamp}
         updateImageData={path => {
           console.log("updated ddd", path)
           updateList(path);

@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSelector } from 'react-redux';
 import HomeScreen from '../screens/GeoRep/Home/HomeScreen';
 import CRMScreen from '../screens/GeoRep/CRM/CRMScreen';
 import CalendarScreen from '../screens/GeoRep/Calendar/CalendarScreen';
@@ -32,79 +32,79 @@ import ReportFraudScreen from '../screens/GeoLife/ReportFraudScreen';
 import LifeWebLinksScreen from '../screens/GeoLife/WebLinksScreen';
 import WellBeingScreen from '../screens/GeoLife/WellBeingScreen';
 import Stock from '../screens/GeoRep/Stock/Stock';
-import {useDispatch} from 'react-redux';
-import {SalesPipelineScreen} from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
+import { useDispatch } from 'react-redux';
+import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 const Stack = createNativeStackNavigator();
 
 export default function RepMoreScreen(props) {
-  const {navigation} = props;
+  const { navigation } = props;
 
   return (
     <Stack.Navigator>
       {/* rep More screen */}
 
-      <Stack.Screen name="Home" options={{header: () => null}}>
+      <Stack.Screen name="Home" options={{ header: () => null }}>
         {props => <HomeScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="CRM" options={{header: () => null}}>
+      <Stack.Screen name="CRM" options={{ header: () => null }}>
         {props => <CRMScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RepWebLinks" options={{header: () => null}}>
+      <Stack.Screen name="RepWebLinks" options={{ header: () => null }}>
         {props => <RepWebLinksScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Calendar" options={{header: () => null}}>
+      <Stack.Screen name="Calendar" options={{ header: () => null }}>
         {props => <CalendarScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RepForms" options={{header: () => null}}>
+      <Stack.Screen name="RepForms" options={{ header: () => null }}>
         {props => <RepFormsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RepContentLibrary" options={{header: () => null}}>
+      <Stack.Screen name="RepContentLibrary" options={{ header: () => null }}>
         {props => (
           <RepContentLibraryScreen {...props} screenProps={navigation} />
         )}
       </Stack.Screen>
-      <Stack.Screen name="ProductSales" options={{header: () => null}}>
+      <Stack.Screen name="ProductSales" options={{ header: () => null }}>
         {props => <ProductSalesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Notifications" options={{header: () => null}}>
+      <Stack.Screen name="Notifications" options={{ header: () => null }}>
         {props => <NotificationsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RepMessages" options={{header: () => null}}>
+      <Stack.Screen name="RepMessages" options={{ header: () => null }}>
         {props => <RepMessagesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RecordedSales" options={{header: () => null}}>
+      <Stack.Screen name="RecordedSales" options={{ header: () => null }}>
         {props => <RecordedSalesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RepSalesPipeline" options={{header: () => null}}>
+      <Stack.Screen name="RepSalesPipeline" options={{ header: () => null }}>
         {props => <SalesPipelineScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Stock" options={{header: () => null}}>
+      <Stack.Screen name="Stock" options={{ header: () => null }}>
         {props => <Stock {...props} screenProps={navigation} />}
       </Stack.Screen>
 
       {/* crm More Screen */}
 
-      <Stack.Screen name="CRMContentLibrary" options={{header: () => null}}>
+      <Stack.Screen name="CRMContentLibrary" options={{ header: () => null }}>
         {props => (
           <CRMContentLibraryScreen {...props} screenProps={navigation} />
         )}
       </Stack.Screen>
 
-      <Stack.Screen name="CRMLocations" options={{header: () => null}}>
+      <Stack.Screen name="CRMLocations" options={{ header: () => null }}>
         {props => <CRMLocationsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="CRMSalesPipeline" options={{header: () => null}}>
+      <Stack.Screen name="CRMSalesPipeline" options={{ header: () => null }}>
         {props => (
           <CRMSalesPipelineScreen {...props} screenProps={navigation} />
         )}
@@ -112,75 +112,75 @@ export default function RepMoreScreen(props) {
 
       {/* life More screen */}
 
-      <Stack.Screen name="HomeLife" options={{header: () => null}}>
+      <Stack.Screen name="HomeLife" options={{ header: () => null }}>
         {props => <HomeLifeScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="News" options={{header: () => null}}>
+      <Stack.Screen name="News" options={{ header: () => null }}>
         {props => <NewsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="LocationsLife" options={{header: () => null}}>
+      <Stack.Screen name="LocationsLife" options={{ header: () => null }}>
         {props => <LocationsLifeScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="CheckIn" options={{header: () => null}}>
+      <Stack.Screen name="CheckIn" options={{ header: () => null }}>
         {props => <CheckInScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Access" options={{header: () => null}}>
+      <Stack.Screen name="Access" options={{ header: () => null }}>
         {props => <AccessScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Club" options={{header: () => null}}>
+      <Stack.Screen name="Club" options={{ header: () => null }}>
         {props => <ClubScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="Flashbook" options={{header: () => null}}>
+      <Stack.Screen name="Flashbook" options={{ header: () => null }}>
         {props => <FlashbookScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="BusinessDirectory" options={{header: () => null}}>
+      <Stack.Screen name="BusinessDirectory" options={{ header: () => null }}>
         {props => (
           <BusinessDirectoryScreen {...props} screenProps={navigation} />
         )}
       </Stack.Screen>
 
-      <Stack.Screen name="LifeContentLibrary" options={{header: () => null}}>
+      <Stack.Screen name="LifeContentLibrary" options={{ header: () => null }}>
         {props => (
           <LifeContentLibraryScreen {...props} screenProps={navigation} />
         )}
       </Stack.Screen>
 
-      <Stack.Screen name="LifeForms" options={{header: () => null}}>
+      <Stack.Screen name="LifeForms" options={{ header: () => null }}>
         {props => <LifeFormsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="LoyaltyCards" options={{header: () => null}}>
+      <Stack.Screen name="LoyaltyCards" options={{ header: () => null }}>
         {props => <LoyaltyCardsScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="LunchOrders" options={{header: () => null}}>
+      <Stack.Screen name="LunchOrders" options={{ header: () => null }}>
         {props => <LunchOrdersScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="LifeMessages" options={{header: () => null}}>
+      <Stack.Screen name="LifeMessages" options={{ header: () => null }}>
         {props => <LifeMessagesScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="ReportFraud" options={{header: () => null}}>
+      <Stack.Screen name="ReportFraud" options={{ header: () => null }}>
         {props => <ReportFraudScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="LifeWebLinks" options={{header: () => null}}>
+      <Stack.Screen name="LifeWebLinks" options={{ header: () => null }}>
         {props => <LifeWebLinksScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="WellBeing" options={{header: () => null}}>
+      <Stack.Screen name="WellBeing" options={{ header: () => null }}>
         {props => <WellBeingScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
 
-      <Stack.Screen name="RepSupport" options={{header: () => null}}>
+      <Stack.Screen name="RepSupport" options={{ header: () => null }}>
         {props => <RepSupportScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
     </Stack.Navigator>

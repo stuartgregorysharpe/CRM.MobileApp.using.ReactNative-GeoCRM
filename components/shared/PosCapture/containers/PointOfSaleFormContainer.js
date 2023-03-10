@@ -20,6 +20,7 @@ const PointOfSaleFormContainer = props => {
   });
   const dispatch = useDispatch();
   const {product, item} = props;
+  console.log("xxxxxxxx " , item)
   const placementTypeList = useMemo(() => getPlacementTypes(item), [item]);
   const areaList = useMemo(
     () => getPlacementAreas(item, formData?.placement_type),
@@ -43,6 +44,7 @@ const PointOfSaleFormContainer = props => {
       image_index: '',
       image: null,
     };
+    
     setFormData(posFormData);
     setErrors({
       placement_type: false,
@@ -113,6 +115,8 @@ const PointOfSaleFormContainer = props => {
   return (
     <View style={[styles.container, props.style]}>
       <PointOfSaleFormView
+        isOptimize={item.optimize}
+        image_timestamp={item.image_timestamp}
         formData={formData}
         product={product}
         placementTypeList={placementTypeList}
