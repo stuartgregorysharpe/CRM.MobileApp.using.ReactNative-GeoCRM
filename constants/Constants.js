@@ -65,7 +65,7 @@ export default {
   },
 
   stockPrefix: {
-    DEVICE: 'IMEI: ',
+    DEVICE: 'MSN: ',
     CONSUMABLE: 'Qty: ',
     SIM: 'ICCID: ',
     MSISDN: 'MSISDN: ',
