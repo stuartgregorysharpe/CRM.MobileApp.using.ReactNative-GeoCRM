@@ -50,7 +50,7 @@ export default function DevicesModalView(props) {
 
                                 <AppText
                                     type="secondaryMedium"
-                                    title={"IMEI: " + item.imei}
+                                    title={Constants.stockPrefix.DEVICE + item.imei}
                                     color={whiteLabel().subText}
                                     style={{fontSize: 10.4}}></AppText>
                                 
