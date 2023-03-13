@@ -3,15 +3,14 @@ import React, {useState, useRef, useEffect , forwardRef,useImperativeHandle} fro
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {AppText} from '../../../../components/common/AppText';
 import {BasketListContainer} from './containers/BasketListContainer';
 import {RotationAnimation} from '../../../../components/common/RotationAnimation';
 import {getBascketLastSyncTableData} from '../../../../sqlite/BascketLastSyncsHelper';
 import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
-import { useDispatch, useSelector } from 'react-redux';
-import { showOfflineDialog } from '../../../../constants/Helper';
+import { useSelector } from 'react-redux';
+import AlertModal from '../../../../components/modal/AlertModal';
 
 export const SyncAll = forwardRef((props, ref) => {
 
@@ -22,7 +21,7 @@ export const SyncAll = forwardRef((props, ref) => {
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const [isManual, setIsManual] = useState(true); // expland it manually or automatically(offline change)
 
-  const dispatch = useDispatch();
+  const alertModalRef = useRef()
 
   const updateLoading = loading => {
     setIsLoading(loading);
@@ -109,12 +108,16 @@ export const SyncAll = forwardRef((props, ref) => {
           paddingBottom: 5,
         },
       ]}>
+      
+      <AlertModal ref={alertModalRef} />
       <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
         {!isLoading && (
           <TouchableOpacity
             onPress={() => {
               if(offlineStatus){
-                showOfflineDialog(dispatch);
+                if(alertModalRef.current){
+                  alertModalRef.current.alert(Strings.This_Function_Not_Available);
+                }
                 return;
               }
               if (basketRef.current && basketRef.current.startSync) {

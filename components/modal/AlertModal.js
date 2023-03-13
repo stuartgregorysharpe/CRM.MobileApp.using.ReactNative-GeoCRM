@@ -20,6 +20,11 @@ const AlertModal=  React.forwardRef((props, ref) => {
       setVisible(false)
     },
   }))
+
+  const onModalClose = () => {
+    setVisible(false);
+  }
+
     return (
         <Modal 
             animationType="fade"
