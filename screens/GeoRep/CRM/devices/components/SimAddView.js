@@ -37,6 +37,8 @@ const SimAddView = ( props ) => {
                     }
                     if ( validateMsisdn(text) ) {
                         setHasMsisdnError(false);
+                    }else{
+                        setHasMsisdnError(true);
                     }
                 }}
                 onBlur={() => {
