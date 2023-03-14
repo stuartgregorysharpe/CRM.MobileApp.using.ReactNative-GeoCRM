@@ -5,7 +5,7 @@ import Fonts from '../../constants/Fonts';
 
 const ConfirmDialog = React.forwardRef((props, ref) => {
 
-    const { buttonTextStyle, buttonText2Style } = props;
+    const { buttonTextStyle, buttonText2Style , outSideTouch = true } = props;
     
     const [visible, setVisible] = useState(false);
     const [message, setMessage] = useState('');
@@ -25,7 +25,7 @@ const ConfirmDialog = React.forwardRef((props, ref) => {
     }));
 
     const onModalClose = () => {
-
+        setVisible(false);
     }
 
     return (
@@ -33,8 +33,12 @@ const ConfirmDialog = React.forwardRef((props, ref) => {
             animationType="fade"
             transparent={true}
             visible={visible}
-            onRequestClose={onModalClose}>            
-            {/* <TouchableWithoutFeedback onPress={onModalClose}> */}
+            onRequestClose={onModalClose}>
+            <TouchableWithoutFeedback onPress={() => {
+                if(outSideTouch){
+                    onModalClose();
+                }                
+            }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
 
@@ -78,7 +82,7 @@ const ConfirmDialog = React.forwardRef((props, ref) => {
                         </View>
                     </View>
                 </View>
-            {/* </TouchableWithoutFeedback > */}
+            </TouchableWithoutFeedback >
         </Modal>
     )
 });
