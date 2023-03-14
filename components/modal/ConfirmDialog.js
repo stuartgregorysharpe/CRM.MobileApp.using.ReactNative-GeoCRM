@@ -5,7 +5,7 @@ import Fonts from '../../constants/Fonts';
 
 const ConfirmDialog = React.forwardRef((props, ref) => {
 
-    const { buttonTextStyle, buttonText2Style , outSideTouch = true } = props;
+    const { buttonTextStyle, buttonText2Style , outSideTouch } = props;
     
     const [visible, setVisible] = useState(false);
     const [message, setMessage] = useState('');

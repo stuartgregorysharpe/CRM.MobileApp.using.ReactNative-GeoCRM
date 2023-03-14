@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React , { useRef , useState } from 'react'
+import React , { useRef , useState , useEffect } from 'react'
 import SimAddView from '../components/SimAddView'
 import { PostRequestDAO } from '../../../../../DAO'
 import { expireToken, getPostParameter } from '../../../../../constants/Helper'

@@ -103,6 +103,7 @@ export default function DevicesModalContainer(props) {
                 buttonTextStyle={{color: whiteLabel().mainText  }}
                 buttonText2Style={{color : whiteLabel().mainText }}
                 ref={confirmDialogRef}
+                outSideTouch={true}
                 onBack={() => {
                     openAddSim()
                 }}
