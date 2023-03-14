@@ -8,6 +8,8 @@ import { style } from '../../../../../constants/Styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import Constants from '../../../../../constants/Constants';
 import DevicePriorityModal from '../modal/DevicePriorityModal';
+import ConfirmDialog from '../../../../../components/modal/ConfirmDialog';
+import { Strings } from '../../../../../constants';
 
 
 export default function DevicesModalView(props) {
@@ -15,14 +17,18 @@ export default function DevicesModalView(props) {
     const { lists ,openStockModule } = props;
 
     const devicePriorityModalRef = useRef(null);
+    const confirmDialogRef = useRef(null);
     const [device, setDevice] = useState(null)
 
     const renderItem = (item, index) => {
-        return (        
+
+        return (
             <TouchableOpacity key={index} onPress={() =>{
                  setDevice(item);
-                 if(devicePriorityModalRef.current)
-                 devicePriorityModalRef.current.showModal()
+                 if(devicePriorityModalRef.current){
+                    devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
+                 }
+                 
             }}>
                 <CardView style={{borderColor:whiteLabel().borderColor, borderWidth:1, marginVertical:5 , padding:5 }}>                
                         <View key={index} style={{ flex:1, flexDirection:'column'}}>            
@@ -77,28 +83,20 @@ export default function DevicesModalView(props) {
     return (
         <View style={styles.container}>
 
-            <DevicePriorityModal 
-                title="Device Priority"
-                ref={devicePriorityModalRef}
-                device={device}
-                onButtonAction={onDevicePrioriyModalClosed}
-
-            />
-
-                <ScrollView>      
+                <DevicePriorityModal 
+                    title="Device Priority"
+                    ref={devicePriorityModalRef}
+                    device={device}
+                    onButtonAction={onDevicePrioriyModalClosed}
+                />
+                
+                <ScrollView>
                     {
                         lists !=undefined && lists.length > 0 && lists.map((item, index) => {
                             return renderItem(item, index);
                         })
                     }
 
-                {/* <FlatList        
-                        data={lists}
-                        renderItem={({item, index}) => renderItem(item, index)}
-                        keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={{paddingHorizontal: 0, marginTop: 0}}
-                        ItemSeparatorComponent={renderSeparator}
-                    /> */}
                 </ScrollView>
 
                 {
@@ -106,7 +104,9 @@ export default function DevicesModalView(props) {
                         <TouchableOpacity
                             style={[style.plusButton, { marginBottom: 0}]}
                             onPress={() => { 
-                                openStockModule();       
+                                if(props.showConfirmModal){
+                                    props.showConfirmModal();
+                                }
                             }}>
                             <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
                         </TouchableOpacity>
@@ -117,14 +117,13 @@ export default function DevicesModalView(props) {
     )
 }
 
-
 const styles = StyleSheet.create({
     container: {        
         flexDirection:'column',
         marginTop:8,        
         marginHorizontal: 20,      
         paddingBottom:0,
-        height:Dimensions.get("window").height * 0.6
+        height:Dimensions.get("window").height * 0.85
     },  
   
 })

@@ -17,7 +17,8 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
         "staging-accept",
         "calenderadd",
         "update-single",
-        "delete-single"
+        "delete-single",
+        "add-update-unattached-device"
     ];
 
   return new Promise(function(resolve, reject) {

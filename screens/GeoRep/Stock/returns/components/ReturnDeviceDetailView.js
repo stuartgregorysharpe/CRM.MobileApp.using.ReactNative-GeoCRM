@@ -112,8 +112,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     paddingTop: 10,
     marginHorizontal: 20,
-    paddingBottom: 0,
-    //height:Dimensions.get("window").height * 0.6
+    paddingBottom: 0,    
   },
 
   imageContainer: {
