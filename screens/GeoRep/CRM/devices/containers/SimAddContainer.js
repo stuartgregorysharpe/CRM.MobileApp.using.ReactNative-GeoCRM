@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React , { useRef } from 'react'
+import React , { useRef , useState } from 'react'
 import SimAddView from '../components/SimAddView'
 import { PostRequestDAO } from '../../../../../DAO'
 import { expireToken, getPostParameter } from '../../../../../constants/Helper'
@@ -7,6 +7,9 @@ import { useDispatch , useSelector } from 'react-redux'
 import { Constants, Strings } from '../../../../../constants'
 import LoadingBar from '../../../../../components/LoadingView/loading_bar'
 import AlertModal from '../../../../../components/modal/AlertModal'
+import { generateKey } from '../../../../../constants/Utils'
+
+var indempotency = '';
 
 const SimAddContainer = (props) => {
 
@@ -15,9 +18,17 @@ const SimAddContainer = (props) => {
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const loadingBar = useRef();
   const alertModalRef = useRef();
+  const [isLoading, setIsLoading] =  useState(false);
+
+  useEffect(() => {
+    indempotency = generateKey();
+  }, [])
 
   const onAdd = (msisdn) => {
-    
+    if(isLoading || indempotency == ''){
+      return;
+    }
+    setIsLoading(true)
     showLoadingBar();
     var userParam = getPostParameter(currentLocation);
     const postData = {
@@ -28,8 +39,9 @@ const SimAddContainer = (props) => {
       user_local_data: userParam.user_local_data,
     }
 
-    PostRequestDAO.find(0, postData, 'add-update-unattached-device' ,'devices/add-update-unattached-device' , '','').then((res) => {
+    PostRequestDAO.find(0, postData, 'add-update-unattached-device' ,'devices/add-update-unattached-device' , '','' , indempotency ).then((res) => {
       console.log("add-update-unattached-device => ", res);
+      setIsLoading(false);
       hideLoadingBar();
       if(res.status == Strings.Success){
         if(props.onButtonAction){
@@ -37,6 +49,7 @@ const SimAddContainer = (props) => {
         }
       }
     }).catch((e) => {
+      setIsLoading(false);
       hideLoadingBar();
       expireToken(dispatch , e);
     })
