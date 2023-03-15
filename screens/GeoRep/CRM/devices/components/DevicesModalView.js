@@ -8,19 +8,19 @@ import { style } from '../../../../../constants/Styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import Constants from '../../../../../constants/Constants';
 import DevicePriorityModal from '../modal/DevicePriorityModal';
-import ConfirmDialog from '../../../../../components/modal/ConfirmDialog';
 import { Strings } from '../../../../../constants';
 
 
 export default function DevicesModalView(props) {
 
-    const { lists ,openStockModule } = props;
+    const { lists  } = props;
 
-    const devicePriorityModalRef = useRef(null);
-    const confirmDialogRef = useRef(null);
+    const devicePriorityModalRef = useRef(null);    
     const [device, setDevice] = useState(null)
 
     const renderItem = (item, index) => {
+
+        console.log("item local => ",item)
 
         return (
             <TouchableOpacity key={index} onPress={() =>{
@@ -39,27 +39,33 @@ export default function DevicesModalView(props) {
                                     title={item.description}
                                     style={{fontSize: 12.5 , flex:1}}></AppText>
                                 
-                                <AppText
-                                    size="big"
-                                    type="secondaryMedinu"
-                                    color={whiteLabel().mainText}
-                                    title={Constants.deviceType[parseInt(item.primary_device)]}
-                                    style={{fontSize: 12.5}}></AppText>                                
+                                {
+                                    item.unattached_device == '0' &&
+                                    <AppText
+                                        size="big"
+                                        type="secondaryMedinu"
+                                        color={whiteLabel().mainText}
+                                        title={Constants.deviceType[parseInt(item.primary_device)]}
+                                        style={{fontSize: 12.5}}></AppText>                                
+                                }
                             </View>
                             
                             <View style={{flex: 1, flexDirection:'row', marginRight:10}}>
+                                                                
                                 <AppText
                                     type="secondaryMedium"
                                     title={"MSISDN: " + item.msisdn}              
                                     color={whiteLabel().subText}
                                     style={{fontSize: 10.4 , flex:1 }}></AppText>
 
-                                <AppText
-                                    type="secondaryMedium"
-                                    title={Constants.stockPrefix.DEVICE + item.imei}
-                                    color={whiteLabel().subText}
-                                    style={{fontSize: 10.4}}></AppText>
-                                
+                                {
+                                    item.unattached_device == '0' &&
+                                    <AppText
+                                        type="secondaryMedium"
+                                        title={Constants.stockPrefix.DEVICE + item.msn}
+                                        color={whiteLabel().subText}
+                                        style={{fontSize: 10.4}}></AppText>
+                                }
                             </View>            
                         </View>
                         {/* <View style={{height:0.5, backgroundColor:Colors.greyColor, marginVertical:3 , marginRight:10}}></View> */}                
