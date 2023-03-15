@@ -10,7 +10,6 @@ import Constants from '../../../../../constants/Constants';
 import DevicePriorityModal from '../modal/DevicePriorityModal';
 import { Strings } from '../../../../../constants';
 
-
 export default function DevicesModalView(props) {
 
     const { lists  } = props;
@@ -19,9 +18,7 @@ export default function DevicesModalView(props) {
     const [device, setDevice] = useState(null)
 
     const renderItem = (item, index) => {
-
-        console.log("item local => ",item)
-
+        
         return (
             <TouchableOpacity key={index} onPress={() =>{
                  setDevice(item);

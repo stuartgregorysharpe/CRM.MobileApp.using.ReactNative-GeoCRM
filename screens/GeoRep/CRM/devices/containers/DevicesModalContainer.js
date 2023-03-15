@@ -97,6 +97,7 @@ export default function DevicesModalContainer(props) {
     }
 
     return (
+        
         <View style={{alignSelf:'stretch' , flex:1}}>
             
             <ConfirmDialog 

@@ -39,8 +39,7 @@ const SimAddContainer = (props) => {
       user_local_data: userParam.user_local_data,
     }
 
-    PostRequestDAO.find(0, postData, 'add-update-unattached-device' ,'devices/add-update-unattached-device' , '','' , indempotency ).then((res) => {
-      console.log("add-update-unattached-device => ", res);
+    PostRequestDAO.find(0, postData, 'stock_module' ,'devices/add-update-unattached-device' , 'Device Sim','Location Name for the location ' + location_id , indempotency ).then((res) => {      
       setIsLoading(false);
       hideLoadingBar();
       if(res.status == Strings.Success){
