@@ -13,7 +13,8 @@ var indempotency = '';
 
 const SimAddContainer = (props) => {
 
-  const { location_id } = props;
+  const { location_id , simModalType , location_device_id } = props;
+
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const loadingBar = useRef();
@@ -24,22 +25,33 @@ const SimAddContainer = (props) => {
     indempotency = generateKey();
   }, [])
 
-  const onAdd = (msisdn) => {
+  const onPost = ( type,  msisdn) => {
     if(isLoading || indempotency == ''){
       return;
     }
     setIsLoading(true)
     showLoadingBar();
     var userParam = getPostParameter(currentLocation);
-    const postData = {
+
+    var postData = {
       location_device_id : '' ,
       location_id : location_id ,
       msisdn : msisdn , 
       mode : 'online' ,
       user_local_data: userParam.user_local_data,
     }
+    var url = 'devices/add-update-unattached-device';
+    if(type == 'delete'){
+      postData = {
+        location_device_id : location_device_id,
+        mode: 'online'
+      }
+      url = 'devices/delete-unattached-device';
+    }else if( type == 'update'){
+      postData.location_device_id = location_device_id;
+    }
 
-    PostRequestDAO.find(0, postData, 'stock_module' ,'devices/add-update-unattached-device' , 'Device Sim','Location Name for the location ' + location_id , indempotency ).then((res) => {      
+    PostRequestDAO.find(0, postData, 'stock_module' , url , 'Device Sim','Location Name for the location ' + location_id , indempotency ).then((res) => {      
       setIsLoading(false);
       hideLoadingBar();
       if(res.status == Strings.Success){
@@ -53,6 +65,19 @@ const SimAddContainer = (props) => {
       expireToken(dispatch , e);
     })
   }
+
+  const onAdd = (msisdn) => {
+    onPost('add', msisdn);
+  }
+
+  const onDelete = () => {
+    onPost('delete' , '');
+  }
+
+  const onUpdate = (msisdn) => {        
+    onPost('update', msisdn);
+  }
+
 
   const showLoadingBar = () => {
     if(loadingBar.current){
@@ -71,12 +96,6 @@ const SimAddContainer = (props) => {
       alertModalRef.current.alert(Strings.Complete_Compulsory_Fields)
     }
   }
-
-  const hideAlertModal = () => {
-    if(alertModalRef.current){
-      alertModalRef.current.hideModal();
-    }
-  }
  
   return (
     <View style={styles.container}>
@@ -85,7 +104,10 @@ const SimAddContainer = (props) => {
         <AlertModal ref={alertModalRef}/>
         
         <SimAddView 
+          {...props}
           onAdd={onAdd}
+          onDelete={onDelete}
+          onUpdate={onUpdate}
           showAlertModal={showAlertModal}
         />    
     </View>

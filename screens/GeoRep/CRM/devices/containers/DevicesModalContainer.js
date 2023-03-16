@@ -18,6 +18,9 @@ export default function DevicesModalContainer(props) {
     if( !locationId) return null;
 
     const  [lists, setLists] = useState([]);
+    const [simModalType, setSimModalType] = useState('add');
+    const [sim, setSim] = useState('');
+
     const navigationMain = useNavigation();
     const dispatch = useDispatch()
     const confirmDialogRef = useRef()
@@ -96,6 +99,12 @@ export default function DevicesModalContainer(props) {
         }
     }
 
+    const openSimEditModal = (sim) => {
+        setSim(sim)
+        setSimModalType('edit');
+        showSimModal();
+    }
+
     return (
         
         <View style={{alignSelf:'stretch' , flex:1}}>
@@ -119,14 +128,19 @@ export default function DevicesModalContainer(props) {
                 clearText={'Close'}
                 ref={simAddModalRef}
                 location_id={locationId}
+                simModalType={simModalType}
+                initialValue={sim?.msisdn}
+                location_device_id={sim?.location_device_id}
                 onButtonAction={onSimAddModalClosed}
             />
 
-            <DevicesModalView                 
+
+            <DevicesModalView
                 onButtonAction={handleAction}              
                 lists= {lists}                  
                 onRefresh={onRefresh}
                 showConfirmModal={showConfirmModal}
+                openSimEditModal={openSimEditModal}
                 {...props}
             />
         </View>

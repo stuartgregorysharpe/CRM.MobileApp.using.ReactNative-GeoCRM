@@ -1,17 +1,47 @@
 import { Platform, StyleSheet, Text, View } from 'react-native'
-import React , { useState } from 'react'
+import React , { useState , useEffect } from 'react'
 import CTextInput from '../../../../../components/common/CTextInput'
 import { Constants, Strings } from '../../../../../constants';
 import { validateMsisdn } from '../../../../../helpers/validateHelper';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
+import DeleteUpdateBtnView from './DeleteUpdateBtnView';
 
 var previousText = Constants.msisdnPrefix;
 
 const SimAddView = ( props ) => {
 
+    const { initialValue , simModalType } = props;
+
     const [msisdn , setMsisdn] = useState();
     const [hasMsisdnError, setHasMsisdnError] = useState(false);
+
+    useEffect(() => {
+        setMsisdn(initialValue)        
+    }, [initialValue])
     
+    const onButotnPressed = (type) => {
+
+        if(validateMsisdn(msisdn)){
+            if(type == 'add'){
+                if(props.onAdd){
+                    props.onAdd(msisdn);
+                }
+            }else if(type == 'delete'){
+                if(props.onDelete){
+                    props.onDelete();
+                }
+            }else if( type == 'update'){
+                if(props.onUpdate){
+                    props.onUpdate(msisdn);
+                }
+            }            
+        }else{
+            if(props.showAlertModal){
+                props.showAlertModal();
+            }
+        }
+    }
+
     return (
         <View style={styles.container}>
 
@@ -49,21 +79,27 @@ const SimAddView = ( props ) => {
                 style={{marginTop: 10}}
             />
 
-            <SubmitButton 
-                style={{marginTop: 15}}
-                title={'Add'}
-                onSubmit={() => {
-                    if(validateMsisdn(msisdn)){
-                        if(props.onAdd){
-                            props.onAdd(msisdn);
-                        }
-                    }else{
-                        if(props.showAlertModal){
-                            props.showAlertModal();
-                        }
-                    }
-                }}
-            />
+            {
+                simModalType == "add" &&
+                <SubmitButton 
+                    style={{marginTop: 15}}
+                    title={'Add'}
+                    onSubmit={() => {
+                        onButotnPressed('add')
+                    }}
+                />
+            }            
+            {
+                simModalType != "add" &&
+                <DeleteUpdateBtnView 
+                    onDelete={() => {
+                        onButotnPressed('delete')
+                    }}
+                    onUpdate={() => {
+                        onButotnPressed('update')
+                    }}
+                />
+            }
 
         </View>
     )

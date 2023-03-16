@@ -21,10 +21,16 @@ export default function DevicesModalView(props) {
         
         return (
             <TouchableOpacity key={index} onPress={() =>{
-                 setDevice(item);
-                 if(devicePriorityModalRef.current){
-                    devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
-                 }
+                if(item.unattached_device == "1")
+                if(props.openSimEditModal){
+                    props.openSimEditModal(item);
+                }
+                console.log(item)
+                
+                //  setDevice(item);
+                //  if(devicePriorityModalRef.current){
+                //     devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
+                //  }
                  
             }}>
                 <CardView style={{borderColor:whiteLabel().borderColor, borderWidth:1, marginVertical:5 , padding:5 }}>                
@@ -104,15 +110,15 @@ export default function DevicesModalView(props) {
 
                 {
                     // lists.length > 0 &&
-                        <TouchableOpacity
-                            style={[style.plusButton, { marginBottom: 0}]}
-                            onPress={() => { 
-                                if(props.showConfirmModal){
-                                    props.showConfirmModal();
-                                }
-                            }}>
-                            <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-                        </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[style.plusButton, { marginBottom: 0}]}
+                        onPress={() => { 
+                            if(props.showConfirmModal){
+                                props.showConfirmModal();
+                            }
+                        }}>
+                        <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+                    </TouchableOpacity>
                 }         
 
         </View>
