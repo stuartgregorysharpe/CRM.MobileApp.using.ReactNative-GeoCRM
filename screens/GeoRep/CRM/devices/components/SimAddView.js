@@ -1,23 +1,23 @@
 import { Platform, StyleSheet, Text, View } from 'react-native'
 import React , { useState , useEffect } from 'react'
-import CTextInput from '../../../../../components/common/CTextInput'
-import { Constants, Strings } from '../../../../../constants';
 import { validateMsisdn } from '../../../../../helpers/validateHelper';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DeleteUpdateBtnView from './DeleteUpdateBtnView';
-
-var previousText = Constants.msisdnPrefix;
+import MsisdnInput from '../../../../../components/common/MsisdnInput';
 
 const SimAddView = ( props ) => {
 
     const { initialValue , simModalType } = props;
 
     const [msisdn , setMsisdn] = useState();
-    const [hasMsisdnError, setHasMsisdnError] = useState(false);
 
-    useEffect(() => {
-        setMsisdn(initialValue)        
-    }, [initialValue])
+    useEffect(() => {        
+        if(simModalType == 'add'){
+            setMsisdn('');
+        }else{
+            setMsisdn(initialValue)
+        }        
+    }, [initialValue , simModalType])
     
     const onButotnPressed = (type) => {
 
@@ -45,40 +45,14 @@ const SimAddView = ( props ) => {
     return (
         <View style={styles.container}>
 
-            <CTextInput
-                label={'MSISDN'}
-                value={msisdn}
-                returnKeyType={'done'}
-                keyboardType={'number-pad'}
-                isRequired={true}
-                maxLength={11}
-                hasError={hasMsisdnError}
-                errorText={Strings.MSISDN_Error_Message}
-                onChangeText={text => {
-                    if (text.length <= 2) {
-                        setMsisdn(Constants.msisdnPrefix);
-                    } else {
-                        if (text.startsWith(Constants.msisdnPrefix)) {
-                            setMsisdn(text);
-                            previousText = text;
-                        } else {
-                            setMsisdn(previousText);
-                        }
-                    }
-                    if ( validateMsisdn(text) ) {
-                        setHasMsisdnError(false);
-                    }else{
-                        setHasMsisdnError(true);
-                    }
+            <MsisdnInput 
+                initialValue={msisdn}
+                simModalType={simModalType}
+                onChangeText={(text) => {
+                    setMsisdn(text);
                 }}
-                onBlur={() => {
-                    if (!validateMsisdn(msisdn)) {
-                        setHasMsisdnError(true);
-                    }
-                }}
-                style={{marginTop: 10}}
             />
-
+            
             {
                 simModalType == "add" &&
                 <SubmitButton 

@@ -21,17 +21,17 @@ export default function DevicesModalView(props) {
         
         return (
             <TouchableOpacity key={index} onPress={() =>{
-                if(item.unattached_device == "1")
-                if(props.openSimEditModal){
-                    props.openSimEditModal(item);
-                }
-                console.log(item)
-                
-                //  setDevice(item);
-                //  if(devicePriorityModalRef.current){
-                //     devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
-                //  }
-                 
+                if(item.unattached_device == "1"){
+                    if(props.openSimEditModal){
+                        props.openSimEditModal(item);
+                    }
+                }else{
+                    console.log(item)                
+                    setDevice(item);
+                    if(devicePriorityModalRef.current){
+                        devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
+                    }
+                }                                                 
             }}>
                 <CardView style={{borderColor:whiteLabel().borderColor, borderWidth:1, marginVertical:5 , padding:5 }}>                
                         <View key={index} style={{ flex:1, flexDirection:'column'}}>            

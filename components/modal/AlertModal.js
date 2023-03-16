@@ -22,7 +22,10 @@ const AlertModal=  React.forwardRef((props, ref) => {
   }))
 
   const onModalClose = () => {
-    setVisible(false)
+    setVisible(false)    
+    if(props.onModalClose){
+      props.onModalClose();
+    }
   }
     return (
         <Modal 

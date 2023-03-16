@@ -18,7 +18,7 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
         "calenderadd",
         "update-single",
         "delete-single",       
-        "devices/delete-unattached-device",
+        "devices/delete-unattached-device",        
     ];
 
   return new Promise(function(resolve, reject) {

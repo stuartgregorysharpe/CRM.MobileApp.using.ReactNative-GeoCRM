@@ -77,6 +77,7 @@ export default function DevicesModalContainer(props) {
 
     const openAddSim = () => {
         hideConfirmModal();
+        setSimModalType('add');
         if(Platform.OS == 'android'){
             showSimModal()
         }else{
