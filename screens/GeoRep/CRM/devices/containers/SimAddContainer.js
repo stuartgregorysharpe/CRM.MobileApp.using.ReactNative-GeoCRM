@@ -13,7 +13,7 @@ var indempotency = '';
 
 const SimAddContainer = (props) => {
 
-  const { location_id , simModalType , location_device_id } = props;
+  const { location_id , location_device_id } = props;
 
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);

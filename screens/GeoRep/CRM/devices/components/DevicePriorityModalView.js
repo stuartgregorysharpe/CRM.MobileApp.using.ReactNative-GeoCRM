@@ -32,11 +32,12 @@ export default function DevicePriorityModalView(props) {
     }
 
     const onSubmit = () => {     
-        if(props.onSubmit)
-            props.onSubmit(updatedDevice);
+        if(props.onSubmit){
+            props.onSubmit(updatedDevice);            
+        }
+            
     }
   
-
     return (
         <View style={styles.container}>
 

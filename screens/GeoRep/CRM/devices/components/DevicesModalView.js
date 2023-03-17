@@ -25,8 +25,7 @@ export default function DevicesModalView(props) {
                     if(props.openSimEditModal){
                         props.openSimEditModal(item);
                     }
-                }else{
-                    console.log(item)                
+                }else{                    
                     setDevice(item);
                     if(devicePriorityModalRef.current){
                         devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
@@ -70,17 +69,14 @@ export default function DevicesModalView(props) {
                                         style={{fontSize: 10.4}}></AppText>
                                 }
                             </View>            
-                        </View>
-                        {/* <View style={{height:0.5, backgroundColor:Colors.greyColor, marginVertical:3 , marginRight:10}}></View> */}                
+                        </View>                        
                 </CardView>
                 
             </TouchableOpacity>        
         );
     };
 
-    const onDevicePrioriyModalClosed = ({type , value}) => {
-        console.log(type, value)
-
+    const onDevicePrioriyModalClosed = ({type , value}) => {        
         if(type === Constants.actionType.ACTION_CLOSE){
             devicePriorityModalRef.current.hideModal();
             if(props.onRefresh){
