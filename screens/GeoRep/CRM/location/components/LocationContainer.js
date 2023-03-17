@@ -13,7 +13,7 @@ import {
   getLocationFilters,
   getLocationInfo,
 } from '../../../../../actions/location.action';
-import AddToCalendarModal from '../../../../../components/modal/AddToCalendarModal';
+import AddToCalendarModal from '../../../../../components/modal/add_to_calendar';
 import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';

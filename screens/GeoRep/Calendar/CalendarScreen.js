@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SectionList,
+  Platform,
 } from 'react-native';
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
@@ -56,6 +57,7 @@ export default function CalendarScreen(props) {
   const [buttonText, setButtonText] = useState('Continue');
   const [message, setMessage] = useState("");
   const [location, setLocation] = useState(null);
+  const [isModalActive, setIsModalActive] = useState(false);
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const features = useSelector(
@@ -94,7 +96,7 @@ export default function CalendarScreen(props) {
     return () => {
       isMount = false;
     }
-  }, []);
+  }, [isModalActive]);
 
   useEffect(() => {
     //onRefresh();
@@ -147,11 +149,10 @@ export default function CalendarScreen(props) {
     }
 
     GetRequestCalendarScheduleList.find(param)
-      .then(res => {
-        
+      .then(res => {        
         setIsLoading(false);
         if(isOptimize){
-          hideLoadingBar();          
+          hideLoadingBar();   
           showConfirmModal( 'Route Optimized Successfully' , 'optimize', 'Ok');          
         }
         if (selectedIndex == 2 || selectedIndex == 0) {
@@ -237,11 +238,19 @@ export default function CalendarScreen(props) {
     }
   }
 
+
   const showConfirmModal = (message, type, buttonText) => {
+    console.log("mess", message , type,buttonText)
     setMessage(message);
     setConfirmModalType(type);
     setButtonText(buttonText);
-    setIsConfirmModal(true);
+    if(Platform.OS == 'android'){
+      setIsConfirmModal(true);
+    }else{
+      setTimeout(() => {
+        setIsConfirmModal(true);
+      }, 500);
+    }
   }
 
   const renderCalendarItem = (item, index, tabIndex) => {
@@ -251,6 +260,23 @@ export default function CalendarScreen(props) {
         style={{marginTop: 10, }} >
         <CalendarItem
           key={index}
+          showConfirmModalForCheckout={(message) => {              
+            showConfirmModal(message, 'have_compulsory_form' , 'Continue');
+          }}
+          showConfirmModal={(message , type) => {           
+            if(type == 'checkin'){
+              showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
+            }else{
+              showConfirmModal(message, 'checkout' , 'Ok');
+            }            
+          }}
+          showLoadingBar={() => {
+            showLoadingBar();
+          }}
+          hideLoadingBar={()=> {
+            hideLoadingBar();            
+            showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
+          }}
           navigation={props.navigation}
           item={item}
           current={currentLocation}
@@ -277,23 +303,25 @@ export default function CalendarScreen(props) {
             showConfirmModalForCheckout={(message) => {              
               showConfirmModal(message, 'have_compulsory_form' , 'Continue');
             }}
-            showConfirmModal={(message) => {                        
-              showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
+            showConfirmModal={(message , type ) => {
+              if(type == 'checkin'){
+                showConfirmModal(message, 'no_have_complsory' , 'Continue');                   
+              }else{
+                showConfirmModal(message, 'checkout' , 'Ok');
+              }              
             }}
             showLoadingBar={() => {
-              if(loadingBarRef.current){                
-                loadingBarRef.current.showModal();
-              }
-                
+              showLoadingBar();
             }}
             hideLoadingBar={()=> {
-              if(loadingBarRef.current)
-                loadingBarRef.current.hideModal();                                
-                showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
+              hideLoadingBar();              
+              showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
             }}
+            
             onItemSelected={() => {              
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
+
             key={item.schedule_id}
             navigation={props.navigation}
             item={item}
@@ -347,7 +375,13 @@ export default function CalendarScreen(props) {
 
   const onCalendarEditDeleteModalClosed = ({type , value}) => {       
     if(type == Constants.actionType.ACTION_DONE){
-      onTabChanged(tabIndex);
+      if(Platform.OS == 'android'){
+        onTabChanged(tabIndex);
+      }else{
+        setTimeout(() => {
+          onTabChanged(tabIndex);
+        }, 500)
+      }
     }
   }
 
@@ -378,16 +412,16 @@ export default function CalendarScreen(props) {
         />
 
         <ConfirmDialog 
-          ref={confirmDialogRef}
-          buttonTextStyle={{color:whiteLabel().mainText}}
-          buttonText2Style={{color:whiteLabel().mainText}}
-          onBack={() => {
-            confirmDialogRef.current.hideModal();
-          }}
-          onDone={() => {
-            confirmDialogRef.current.hideModal();
-            onOptimize();
-          }}
+            ref={confirmDialogRef}
+            buttonTextStyle={{color:whiteLabel().mainText}}
+            buttonText2Style={{color:whiteLabel().mainText}}
+            onBack={() => {
+              confirmDialogRef.current.hideModal();
+            }}
+            onDone={() => {
+              confirmDialogRef.current.hideModal();
+              onOptimize();
+            }}
         />
         
         <LoadingBar
@@ -479,29 +513,31 @@ export default function CalendarScreen(props) {
             />
           )}
 
-          {tabIndex == 2 && (
+          {tabIndex == 2 && todayList != undefined && todayList.length > 0 &&  (
             <GestureHandlerRootView>
               <DraggableFlatList
                 data={todayList}
                 onDragEnd={({data}) => {
-                  var tmp = [];
-                  var newlists = [];
-                  data.forEach((item, index) => {
-                    item.schedule_order = (index + 1).toString();
-                    newlists.push(item);
-                    tmp.push({
-                      schedule_order: (index + 1).toString(),
-                      location_id: item.location_id,
-                      schedule_id: item.schedule_id,
-                      schedule_date: item.schedule_date,
-                      schedule_time: item.schedule_time,
+                  if(data != undefined && data !=  null && data.length > 0){
+                    var tmp = [];
+                    var newlists = [];
+                    data.forEach((item, index) => {
+                      item.schedule_order = (index + 1).toString();
+                      newlists.push(item);
+                      tmp.push({
+                        schedule_order: (index + 1).toString(),
+                        location_id: item.location_id,
+                        schedule_id: item.schedule_id,
+                        schedule_date: item.schedule_date,
+                        schedule_time: item.schedule_time,
+                      });
                     });
-                  });
-                  setTodayList(newlists);
-                  updateTodayLocationLists(tmp);
+                    setTodayList(newlists);
+                    updateTodayLocationLists(tmp);
+                  }                  
                 }}
-                refreshing={isLoading}
-                keyExtractor={item => item.schedule_id}
+                //refreshing={isLoading}
+                keyExtractor={item => item?.schedule_id}
                 renderItem={renderTodayItem}
               />
             </GestureHandlerRootView>

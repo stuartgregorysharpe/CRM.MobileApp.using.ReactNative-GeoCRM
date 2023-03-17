@@ -17,9 +17,17 @@ const AlertModal=  React.forwardRef((props, ref) => {
       setVisible(true)
     },
     hideModal: () => {
-      setVisible(false)
+      setVisible(false);
     },
   }))
+
+  const onModalClose = () => {
+    setVisible(false)    
+    if(props.onModalClose){
+      props.onModalClose();
+    }
+  }
+
     return (
         <Modal 
             animationType="fade"

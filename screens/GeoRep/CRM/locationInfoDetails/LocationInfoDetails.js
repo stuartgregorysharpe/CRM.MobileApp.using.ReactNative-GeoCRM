@@ -252,25 +252,43 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
       user_local_data: userParam.user_local_data,
     };
 
-    if(!isUpdateImage){
-      
+    if(!isUpdateImage){      
       setIsUpdateImage(true);
-      loadingBarRef.current.showModal();
+      showLoadingBar();
       PostRequestDAO.find(0 , postData , 'location-image' , 'locations/location-image' , '' , '',  location_image_indempotency , null ).then((res) => {      
-        loadingBarRef.current.hideModal();
-        setMessage(res.message);
-        setConfirmModalType('location-image');
-        setIsConfirmModal(true);
+        hideLoadingBar();        
+        showConfirmDialog(res.message, 'location-image');
         setIsUpdateImage(false);
       }).catch((error) => {        
-        loadingBarRef.current.hideModal();
+        hideLoadingBar();
         expireToken(dispatch, error);
         setIsUpdateImage(false);        
       })    
-
-    }
-        
+    }        
   };
+
+  const showLoadingBar = () => {
+    if(loadingBarRef.current)
+      loadingBarRef.current.showModal();
+  }
+
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current)
+      loadingBarRef.current.hideModal();
+  }
+
+  const showConfirmDialog = (message, type) => {
+    setMessage(message);
+    setConfirmModalType(type);
+    if(Platform.OS == 'android'){
+      setIsConfirmModal(true);
+    }else{
+      setTimeout(() => {
+        setIsConfirmModal(true);
+      }, 500)
+    }
+    
+  }
 
   const openCustomerInfo = async () => {
     updateCustomerModalRef.current.showModal();
@@ -756,21 +774,15 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
               location_id={locationInfo?.location_id}
               locationInfo={locationInfo}
               canCheckin={_canGoNextPrev}              
-              showConfirmModal={(message) => {
-                setMessage(message);
-                setConfirmModalType('already-checkin')
-                setIsConfirmModal(true);
+              showConfirmModal={(message) => {                
+                showConfirmDialog(message, 'already-checkin');
               }}
               showLoadingBar={() => {
-                if(loadingBarRef.current)
-                  loadingBarRef.current.showModal();
+                showLoadingBar();
               }}
               hideLoadingBar={()=> {
-                if(loadingBarRef.current)
-                  loadingBarRef.current.hideModal();
-                  setMessage(Strings.PostRequestResponse.Successfully_Checkin);
-                  setConfirmModalType('checkin-success')
-                  setIsConfirmModal(true);
+                hideLoadingBar();
+                showConfirmDialog(Strings.PostRequestResponse.Successfully_Checkin, 'checkin-success');                
               }}
 
               onAccessCRM={() => {

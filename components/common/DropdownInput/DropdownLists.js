@@ -2,11 +2,13 @@ import { View, Text , FlatList, Dimensions, TouchableOpacity } from 'react-nativ
 import React from 'react'
 import { AppText } from '../AppText';
 import Colors , { whiteLabel } from '../../../constants/Colors';
+import { Constants } from '../../../constants';
 
 export default function DropdownLists(props) {
 
     const { lists ,onItemSelected } = props;
-    
+
+
     const renderItem = (item, index) => {
       return (
           <TouchableOpacity key={index} onPress={() =>{
@@ -23,7 +25,7 @@ export default function DropdownLists(props) {
                               style={{fontSize: 12.5}}></AppText>
                           <AppText
                               type="secondaryMedium"
-                              title={"IMEI: " + item.imei}
+                              title={Constants.stockPrefix.DEVICE + item.imei}
                               color={whiteLabel().subText}
                               style={{fontSize: 10.4}}></AppText>
                       </View>

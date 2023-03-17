@@ -502,31 +502,7 @@ export default function LocationSearchScreen(props) {
           ref={addToCalendarModalRef}                    
           onButtonAction={onAddToCalendarClosed}          
         />
-
-        {/* {showItem == 3 && (
-            <View
-              style={[
-                styles.transitionView,
-                showItem == 0
-                  ? {
-                      transform: [
-                        {translateY: Dimensions.get('window').height + 100},
-                      ],
-                    }
-                  : {transform: [{translateY: 0}]},
-              ]}>
-              <AddToCalendar
-                selectedItems={selectedLocationsForCalendar}
-                onClose={() => {
-                  dispatch({type: SLIDE_STATUS, payload: false});
-                  setShowItem(0);
-                  dispatch({type: IS_CALENDAR_SELECTION, payload: false});
-                  dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
-                  getSearchData(originLists, '', 'search');
-                }}></AddToCalendar>
-            </View>
-        )} */}
-
+        
         <AddLeadModal
           title="Add Lead"
           ref={addLeadModalRef}

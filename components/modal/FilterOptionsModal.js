@@ -241,7 +241,7 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
 const styles = StyleSheet.create({
 
   pickerContent: {
-    height: Dimensions.get("window").height * 0.7,
+    height: Dimensions.get("window").height * 0.85,
     margin: 20,
     backgroundColor: Colors.bgColor,
     paddingTop: 10,

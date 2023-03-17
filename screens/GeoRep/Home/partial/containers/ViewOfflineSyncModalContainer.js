@@ -111,6 +111,7 @@ const ViewOfflineSyncModalContainer = props => {
                 startSync={startSync}
                 syncBtnTitle={syncBtnTitle}
                 isActive={isActive}
+                offlineStatus={offlineStatus}
                 {...props}
             />
         </View>

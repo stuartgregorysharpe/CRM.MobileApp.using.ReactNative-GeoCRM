@@ -16,6 +16,11 @@ import {Notification} from '../../../../../components/modal/Notification';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 var vodacom = [];
+var details = '';
+var quantity = '';
+var gMsn = '';
+var gImei = '';
+var gAdditionalImei = '';
 
 export default function AddStockView(props) {
   
@@ -24,6 +29,7 @@ export default function AddStockView(props) {
   const [deviceType, setDeviceType] = useState('');
   const [device, setDevice] = useState('');
   const [productId, setProductId] = useState('');
+  const [additionalImei, setAdditionalImei] = useState('');
   const [deviceLists, setDeviceLists] = useState([]);
   const [codeLists, setCodeLists] = useState([]);
   const [enableAddStock, setEnableAddStock] = useState(false);
@@ -31,11 +37,17 @@ export default function AddStockView(props) {
   const [count, setCount] = useState(0);
   const [imei, setEmei] = useState('');
   const [errors, setErrors] = useState({});
-
-  var details = '';
-  var quantity = '';
-
+  
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    vodacom = [];
+    details = '';
+    quantity = '';
+    gMsn = '';
+    gImei = '';
+    gAdditionalImei = '';
+  },[]);
 
   useEffect(() => {
     if (codeLists.length > 0) {
@@ -43,11 +55,13 @@ export default function AddStockView(props) {
     }
   }, [codeLists]);
 
-  const onDataChangedDevice = (det, qua) => {
-    details = det;
-    quantity = qua;
-    setEmei(qua);
-    if (quantity != '') {
+
+  const onDataChangedDevice = (msn, imei , additional_imei) => {
+    gMsn = msn ;
+    gImei = imei ;    
+    gAdditionalImei = additional_imei;
+    console.log("data changed" , msn , imei , additional_imei);
+    if ( ( gMsn != '' && gImei != '' &&  gAdditionalImei != '' && additionalImei == '1' ) || (gMsn != '' && gImei != '' && additionalImei != '1') ) {
       setEnableAddStock(true);
     } else {
       setEnableAddStock(false);
@@ -110,14 +124,28 @@ export default function AddStockView(props) {
     }
     if (deviceType == Constants.stockType.DEVICE) {
       const _errors = {...errors};
-      if (imei == '') {
+      const type1 = additionalImei === '1' ? 'imei1' : 'imei';
+      const type2 = additionalImei === '1' ? 'imei2' : '';
+
+      if (gImei == '') {
         isAvailable = false;
-        _errors['imei'] = true;
+        _errors[type1] = true;
+      }
+
+      if (gAdditionalImei == '' && additionalImei == '1' ) {
+        isAvailable = false;
+        _errors['imei2'] = true;
+      }
+
+      if (gMsn == '') {
+        isAvailable = false;
+        _errors['msn'] = true;
       }
       if (device == '') {
         isAvailable = false;
         _errors['device'] = true;
       }
+      
       setErrors(_errors);
     } else if (deviceType == Constants.stockType.CONSUMABLE) {
       isAvailable = validateNumber(quantity);
@@ -145,14 +173,15 @@ export default function AddStockView(props) {
         details: details,
         quantity: quantity,
       };
-      console.log('D1', data);
+      console.log('D1', data); 
       if (deviceType == Constants.stockType.DEVICE) {
         data = {
           stock_type: deviceType,
           product_id: productId,
           description: device,
-          details: details,
-          device_serial: imei,
+          imei: gImei,
+          additional_imei : gAdditionalImei,
+          device_serial: gMsn,
         };
         console.log('D2', data);
       } else if (deviceType == Constants.stockType.CONSUMABLE) {
@@ -248,7 +277,7 @@ export default function AddStockView(props) {
           setErrors({...errors, stockType: false});
           var tmp = [];
           stockTypes[item.value].forEach(element => {
-            tmp.push({value: element.product_id, label: element.label});
+            tmp.push({value: element.product_id, label: element.label , additional_imei: element.additional_imei });
           });
           setDeviceLists(tmp);
         }}
@@ -264,15 +293,19 @@ export default function AddStockView(props) {
         hasError={errors['device']}
         disabled={false}
         onSelectItem={item => {
+          console.log("item",item)
           setDevice(item.label);
           setErrors({...errors, device: false});
           setProductId(item.value);
+          setAdditionalImei(item.additional_imei);
         }}
         containerStyle={{marginTop: 15}}
       />
 
       {deviceType === Constants.stockType.DEVICE && (
-        <DeviceView onDataChanged={onDataChangedDevice} errors={errors} />
+        <DeviceView 
+          additionalImei={additionalImei}
+          onDataChanged={onDataChangedDevice} errors={errors} />
       )}
 
       {deviceType === Constants.stockType.CONSUMABLE && (

@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 20,
       //marginBottom: 30,
       paddingBottom:0,      
-      height:Dimensions.get("window").height * 0.6
+      height:Dimensions.get("window").height * 0.85
   },
   title: {
     fontSize: 11,
