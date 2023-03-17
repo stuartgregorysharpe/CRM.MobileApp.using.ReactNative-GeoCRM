@@ -46,7 +46,8 @@ const generateQuery = () => {
     var query  = `SELECT ` + 
                         `product_id, ` + 
                         `product_name, ` + 
-                        `product_tag ` + 
+                        `product_tag, ` + 
+                        `additional_imei ` + 
                     `FROM ` + 
                         `products_core_master_data ` + 
                     `WHERE ` + 
@@ -73,7 +74,8 @@ const getData = (lists) => {
             if(element.product_tag == Constants.stockType.DEVICE){
                 const devicedata = {
                     label : element.product_name,
-                    product_id : element.product_id
+                    product_id : element.product_id,
+                    additional_imei : element.additional_imei.toString(),
                 }                        
                 stock_types = {                    
                     [Constants.stockType.DEVICE]: [...stock_types[Constants.stockType.DEVICE], devicedata],
@@ -97,8 +99,8 @@ const getData = (lists) => {
             if(element.product_tag == Constants.stockType.SIM){
                 const devicedata = {
                     label : element.product_name,
-                    product_id : element.product_id
-                }
+                    product_id : element.product_id,                 
+                }                
                 stock_types = {
                     [Constants.stockType.DEVICE] : stock_types[Constants.stockType.DEVICE],
                     [Constants.stockType.CONSUMABLE] : stock_types[Constants.stockType.CONSUMABLE],

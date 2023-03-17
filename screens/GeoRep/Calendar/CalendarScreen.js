@@ -412,16 +412,16 @@ export default function CalendarScreen(props) {
         />
 
         <ConfirmDialog 
-          ref={confirmDialogRef}
-          buttonTextStyle={{color:whiteLabel().mainText}}
-          buttonText2Style={{color:whiteLabel().mainText}}
-          onBack={() => {
-            confirmDialogRef.current.hideModal();
-          }}
-          onDone={() => {
-            confirmDialogRef.current.hideModal();
-            onOptimize();
-          }}
+            ref={confirmDialogRef}
+            buttonTextStyle={{color:whiteLabel().mainText}}
+            buttonText2Style={{color:whiteLabel().mainText}}
+            onBack={() => {
+              confirmDialogRef.current.hideModal();
+            }}
+            onDone={() => {
+              confirmDialogRef.current.hideModal();
+              onOptimize();
+            }}
         />
         
         <LoadingBar
