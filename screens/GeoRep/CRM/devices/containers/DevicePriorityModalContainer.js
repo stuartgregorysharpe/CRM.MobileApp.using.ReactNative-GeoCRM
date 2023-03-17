@@ -45,7 +45,8 @@ export default function DevicePriorityModalContainer(props) {
                 }
     
                 let primaryText = data?.primary_device == "1" ? "Primry" : "Additional";                         
-                   
+                                
+
                 PostRequestDAO.find(0, 
                         postData, 
                         "device_update", 

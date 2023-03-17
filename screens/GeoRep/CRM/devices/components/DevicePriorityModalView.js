@@ -10,7 +10,7 @@ export default function DevicePriorityModalView(props) {
 
     const { device } = props;
 
-    const isAdditionalImei = device?.additional_imei == "1";
+    const isAdditionalImei = device?.additional_imei_required == "1";
 
     const [isPrimary, setIsPrimary] = useState(false);
     const [updatedDevice, setUpdatedDevice] = useState(null);
@@ -82,13 +82,13 @@ export default function DevicePriorityModalView(props) {
                         isAdditionalImei &&
                         <CTextInput
                             style={{marginTop:10}}                    
-                            label={'IMEI ' + isAdditionalImei ? '2' : ''}
-                            value={updatedDevice?.addtional_imei}
+                            label={ isAdditionalImei ? 'IMEI 2' : ''}
+                            value={updatedDevice?.additional_imei}
                             keyboardType={'number-pad'}
                             returnKeyType={'done'}                    
                             onChangeText={(text) => {
                                 var tmp = { ...updatedDevice };
-                                tmp.addtional_imei = text;
+                                tmp.additional_imei = text;
                                 setUpdatedDevice(tmp)
                             }}
                         />

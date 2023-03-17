@@ -9,7 +9,7 @@ const MsisdnInput = (props) => {
 
     const { initialValue } = props;
 
-    const [msisdn , setMsisdn] = useState();
+    const [msisdn , setMsisdn] = useState(Constants.msisdnPrefix);
     const [hasMsisdnError, setHasMsisdnError] = useState(false);
 
     const onChangeText = (text) => {
@@ -19,7 +19,7 @@ const MsisdnInput = (props) => {
     }
 
     useEffect(() => {        
-        if(initialValue != undefined){
+        if(initialValue != undefined && initialValue != ''){
             setMsisdn(initialValue)
         }        
     }, [initialValue])
