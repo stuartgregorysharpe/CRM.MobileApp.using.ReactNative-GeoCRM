@@ -195,8 +195,7 @@ const generateOptionQuery = () => {
   return query;
 };
 
-const generateProductQuery = () => {
-  const deviceTypes = ['POS','Device','Consumbales','Sim'];
+const generateProductQuery = () => {  
   var query =
     `SELECT pcmd.product_id, pcmd.product_name, pt.product_type, pcmd.brand, pcmd.barcode, pcmd.sku_code ` +
     `FROM products_core_master_data as pcmd ` +
@@ -208,15 +207,14 @@ const generateProductQuery = () => {
     `pcmd.client_id = ? ` +
     `AND ` +
     `pcmd.delete_status = 0 ` + 
-    `AND pcmd.product_tag NOT IN ('POS','Device','Consumbales','Sim') ` + 
+    `AND pcmd.product_tag NOT IN ('POS','Device','Consumables','Sim') ` + 
     `ORDER by pcmd.product_name`;
 
     console.log("product query =>" , query)
   return query;
 };
 
-const generateReturnProductQuery = () => {
-  const deviceTypes = ['POS','Device','Consumbales','Sim'];
+const generateReturnProductQuery = () => {  
   var query = `SELECT
                 pcmd.product_id,
                 pcmd.product_name,
@@ -231,7 +229,7 @@ const generateReturnProductQuery = () => {
                     pcmd.business_unit_id = ?
                 AND pcmd.client_id = ?
                 AND pcmd.delete_status = 0
-                AND pcmd.product_tag NOT IN ('POS','Device','Consumbales','Sim') ` + 
+                AND pcmd.product_tag NOT IN ('POS','Device','Consumables','Sim') ` + 
                 `ORDER BY pcmd.product_name`;
     console.log("returnproduct query =>" , query)
   return query;
