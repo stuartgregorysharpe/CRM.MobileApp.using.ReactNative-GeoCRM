@@ -31,6 +31,7 @@ export const  OfflineBaskets = [
             'transfer',
             'return_device',
             'return_to_warehouse',
+            'stock_module'
         ]
     },
     {

@@ -5,12 +5,9 @@ import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import Fonts from '../../../../constants/Fonts';
 import {faCheckCircle} from '@fortawesome/free-regular-svg-icons';
-import {getLocalData} from '../../../../constants/Storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  CHECKIN,
-  LOCATION_ID_CHANGED,
-  LOCATION_CHECK_OUT_COMPULSORY,
+import {  
+  LOCATION_ID_CHANGED,  
 } from '../../../../actions/actionTypes';
 import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
@@ -21,9 +18,9 @@ import {
 } from '../../../../actions/notification.action';
 import {Strings} from '../../../../constants';
 
-
 export function CalendarItem(props) {
-  const {navigation, tabIndex, onItemSelected} = props;
+
+  const {navigation, tabIndex, onItemSelected } = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -35,14 +32,6 @@ export function CalendarItem(props) {
     item.checkin_state = 'checkin_current';
   }
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    initData();
-  }, []);
-
-  const initData = async () => {
-    
-  };
 
   const checkOpenReplaceCheckin = () => {
     return features != null && features.includes('open_replace_checkin');
@@ -90,25 +79,21 @@ export function CalendarItem(props) {
           if (props.onRefresh) {
             props.onRefresh();
           }
-          dispatch(
-            showNotification({
-              type: Strings.Success,
-              message: res.message,
-              buttonText: Strings.Ok,
-              buttonAction: async () => {
-                // dispatch({
-                //   type: CHECKIN,
-                //   payload: false,
-                //   scheduleId: false,
-                // });
-                // dispatch({
-                //   type: LOCATION_CHECK_OUT_COMPULSORY,
-                //   payload: true,
-                // });
-                dispatch(clearNotification());
-              },
-            }),
-          );
+          if(props.showConfirmModal){
+            props.showConfirmModal(res.message, 'checkout');
+          }
+
+          // dispatch(
+          //   showNotification({
+          //     type: Strings.Success,
+          //     message: res.message,
+          //     buttonText: Strings.Ok,
+          //     buttonAction: async () => {                
+          //       dispatch(clearNotification());
+          //     },
+          //   }),
+          // );
+
         }}
       />
     );
@@ -126,7 +111,7 @@ export function CalendarItem(props) {
           scheduleId={item.schedule_id}
           showConfirmModal={(message) => {            
             if(props.showConfirmModal){
-              props.showConfirmModal(message);
+              props.showConfirmModal(message , 'checkin');
             }
           }}
           onStart={() => {
@@ -212,6 +197,7 @@ export function CalendarItem(props) {
     );
   };
 
+  
   if (item != undefined && item.coordinates != undefined) {
     return (
       <View style={[styles.itemContainer, style.card]}>

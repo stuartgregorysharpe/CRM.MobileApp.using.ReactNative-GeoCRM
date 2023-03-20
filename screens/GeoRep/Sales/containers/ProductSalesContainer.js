@@ -1,5 +1,13 @@
 import {View} from 'react-native';
-import React, {useState, useEffect, useRef, useMemo, useCallback , useImperativeHandle , forwardRef} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import ProductSalesView from '../components/ProductSalesView';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import ProductGroupModal from '../modal/ProductGroupModal';
@@ -20,20 +28,19 @@ import AddProductModal from '../modal/AddProductModal';
 import {
   setProductPriceLists,
   setRegret,
+  setSalesSearchText,
 } from '../../../../actions/sales.action';
-import { showNotification} from '../../../../actions/notification.action';
-import { getConfigFromRegret, onCheckProductSetupChanged} from '../helpers';
-import {
-  CHANGE_MORE_STATUS,  
-} from '../../../../actions/actionTypes';
+import {showNotification} from '../../../../actions/notification.action';
+import {getConfigFromRegret, getSearchKey, onCheckProductSetupChanged} from '../helpers';
+import {CHANGE_MORE_STATUS} from '../../../../actions/actionTypes';
 
 export const ProductSalesContainer = forwardRef((props, ref) => {
-
-  const navigation = props.navigation;
+  
+  const { navigation , regret_item } = props;
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
   const visibleMore = useSelector(state => state.rep.visibleMore);
   const showMoreScreen = useSelector(state => state.rep.showMoreScreen);
-  const { page , items, settings} = props;
+  const {page, items, settings} = props;
   const [selectedGroupTitle, setSelectedGroupTitle] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [products, setProducts] = useState([]);
@@ -47,20 +54,18 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   const [cartCount, setCartCount] = useState(0);
   const [outsideTouch, setOutsideTouch] = useState(false);
   const [isUpdatingProductPrice, setIsUpdatingProductPrice] = useState(false);
-  const [lists , setLists] = useState([]);
+  const [lists, setLists] = useState([]);
+  const [searchInitVal, setSearchInitVal] = useState('');
 
   const dispatch = useDispatch();
-
   useImperativeHandle(ref, () => ({
     updateProductList(items, page) {
-
       var newList = [];
       if (
         items != undefined &&
         productPriceLists != undefined &&
         items.length > 0
       ) {
-        
         const tmp = [...items];
         tmp.forEach(item => {
           const newItem = {...item};
@@ -68,25 +73,25 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
           const products = getProducts(originProducts);
           newItem.products = [...products];
           newList.push(newItem);
-        });      
+        });
       }
-      console.log("page => ", page);
-      if(page == 0){
+      console.log("update lists", page , newList.length)
+      if (page == 0) {
         setLists(newList);
-      }else{
-        setLists([...lists , ...newList]);
-      }                
+      } else {
+        if(newList.length != 0){
+          setLists([...lists, ...newList]);
+        }      
+      }
     },
 
     showPlaceHolder() {
       setLists([]);
     },
-
   }));
 
-
   const getProducts = useCallback(
-    products => {      
+    products => {
       var list = [];
       if (products != undefined) {
         products.forEach(element => {
@@ -145,7 +150,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       productPriceLists != undefined &&
       lists.length > 0
     ) {
-      
       const tmp = [...lists];
       tmp.forEach(item => {
         const newItem = {...item};
@@ -153,7 +157,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         const products = getProducts(originProducts);
         newItem.products = [...products];
         newList.push(newItem);
-      });      
+      });
     }
     setLists(newList);
   }, [productPriceLists]);
@@ -171,30 +175,29 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
 
   useEffect(() => {
-    console.log('start: checkAndOpenSetup');
-    checkAndOpenSetup();
-    initializeProductLists();
+    onInitialize();
   }, []);
 
   useEffect(() => {
-    if (props.regret_item) {
-      setupDefineSetupFromRegret();
-    }
-  }, [props.regret_item]);
-
-  useEffect(() => {    
-    console.log("show more screen", showMoreScreen  , visibleMore)
-    //navigation.getState().routeNames[1] == 'CartScreen' &&
-    if(showMoreScreen === 1 &&  visibleMore == 'ProductSales'){   
+    console.log('show more screen', showMoreScreen, visibleMore);    
+    if (showMoreScreen === 1 && visibleMore == 'ProductSales') {
       refreshList();
-      //checkAndOpenSetup();
     }
-  }, [showMoreScreen , visibleMore]);
-
-  const checkAndOpenSetup = async () => {
-    const regretId = await getLocalData('@regret');    
-    if (!props.regret_item && !regretId && regretId != '') {
-      setupFieldModalRef.current.showModal();
+  }, [showMoreScreen, visibleMore]);
+  const checkIsRegret = () => {    
+    return regret_item != undefined && regret_item != null ? true : false;
+  };
+  const onInitialize = () => {
+    const isRegret = checkIsRegret();
+    if (!isRegret) {
+      checkAndOpenSetup();
+      initializeProductLists();
+    }
+  };
+  const checkAndOpenSetup = async () => {    
+    const isRegretInitialize = await getLocalData('@regret_sales_initialize');    
+    if (isRegretInitialize === '0' || isRegretInitialize === undefined ) {
+      openSetup();
     }
   };
   useEffect(() => {
@@ -204,34 +207,55 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   }, [productPriceLists]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
-      refreshList();      
+    const unsubscribe = navigation.addListener('focus', async () => {            
+      const isRegretInitialize = await getLocalData('@regret_sales_initialize');      
+      if (isRegretInitialize === '1') {        
+        const regret = await getJsonData('@regret');
+        console.log("focus", isRegretInitialize, regret);
+        if(regret != undefined && regret != null){
+          setupDefineSetupFromRegret(regret);  
+        }        
+      } else {
+        refreshList();
+      }
     });
     return unsubscribe;
   }, [navigation]);
 
-  const refreshList = async () => {
+  // useEffect(() => {    
+  //   if(checkIsRegret()){            
+  //     setupDefineSetupFromRegret(regret_item);
+  //     setSearchInitVal(regret_item?.search_text);
+  //   }
+  // }, [regret_item]);
+
+  const refreshList = async (search_text = undefined) => {
     var storedProductPriceList = await getJsonData('@product_price');
     var storedAddProductList = await getJsonData('@add_product');
     var defineSetup = await getJsonData('@setup');
     if (
       (storedProductPriceList == null || storedProductPriceList.length == 0) &&
-      (storedAddProductList == null || storedAddProductList.length == 0)
+      (storedAddProductList == null || storedAddProductList.length == 0) &&
+      defineSetup != null
     ) {
-      props.getProductLists(defineSetup , '' , 0);
-      console.log("trigger product list")
+      props.getProductLists(defineSetup, search_text , 0);      
     }
-    if (defineSetup == null) {
-      console.log('refreshList: checkAndOpenSetup');
-      checkAndOpenSetup();      
-    }else{      
-      setSelectedLocation(defineSetup.location.name);  
+
+    var searchKey = await getSearchKey();
+    setSearchInitVal(searchKey);
+
+    console.log("defineSetup", defineSetup);
+    if (defineSetup === null) {      
+      setSelectedLocation(null)
+      checkAndOpenSetup();
+    } else {
+      setSelectedLocation(defineSetup.location.name);      
     }
   };
-   
+
   const initializeProductLists = async () => {
     const storedProductPriceList = await getJsonData('@product_price');
-    console.log("storedProductPriceList ==",storedProductPriceList)
+    console.log('storedProductPriceList ==', storedProductPriceList);
     if (storedProductPriceList != null && storedProductPriceList.length > 0) {
       dispatch(setProductPriceLists(storedProductPriceList));
       setOutsideTouch(true);
@@ -241,7 +265,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const configAddProductCount = useCallback(async () => {
-    const addProductList = await getJsonData('@add_product');    
+    const addProductList = await getJsonData('@add_product');
     var count = 0;
     if (addProductList != null && addProductList != undefined) {
       count = addProductList.length;
@@ -257,60 +281,76 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     setCartCount(count);
   }, [productPriceLists]);
 
-  const setupDefineSetupFromRegret = async () => {
-    
-    console.log('setupDefineSetupFromRegret');
-    if (props.regret_item) {
-      console.log('setupDefineSetupFromRegret: regret_item', props.regret_item);
-      const config = getConfigFromRegret(props.regret_item);
+  const setupDefineSetupFromRegret = async (regret_item) => {    
+    const isRegretInitialize = await getLocalData('@regret_sales_initialize');    
+    if (regret_item && isRegretInitialize === '1') {
+      storeLocalValue('@regret_sales_initialize', '0');
+      console.log('setupDefineSetupFromRegret: regret_item', regret_item);
+      const config = getConfigFromRegret(regret_item);      
       await storeJsonData('@product_price', []);
       await removeLocalData('@add_product');
       dispatch(setProductPriceLists([]));
-      await storeJsonData('@setup', config);
       setCartCount(0);
-      setupFromConfig(config, props.regret_item?.search_text);
+      if(config?.location?.location_id != undefined){                        
+        setupFromConfig(config, regret_item?.search_text , 'regret');
+      }
     }
   };
 
-  const setupFromConfig = (config, searchText) => {    
+  const setupFromConfig = (config, searchText, regretType) => {
+
     if (props.getProductLists) {      
-      setSelectedLocation(config.location.name);      
+
+      if(config?.location?.name != undefined){
+        setSelectedLocation(config?.location?.name);
+      }
+      
+      setSearchInitVal('');
+
       onCheckProductSetupChanged(config, type => {
-        if (type.includes('changed')) {
+        if (type.includes('changed')) {          
+          storeJsonData('@setup', config);
           storeJsonData('@product_price', []);
           removeLocalData('@add_product');
           dispatch(setProductPriceLists([]));
+          console.log("changed", searchText)
+          setSearchInitVal(searchText);
+          props.getProductLists(config, searchText, 0);
+        }else{
+          if(regretType === 'regret'){
+            console.log("no changed", searchText)
+            setSearchInitVal(searchText);
+            props.getProductLists(config, searchText, 0);
+          }
         }
       });
-      configAddProductCount();
-      props.getProductLists(config, searchText , 0);
+
+      configAddProductCount();      
       if (config != undefined) {
         setOutsideTouch(true);
       }
     }
   };
   const onSetupFieldModalClosed = ({type, value}) => {
-    
-    if (type === Constants.actionType.ACTION_CLOSE) {      
+    setOutsideTouch(false);
+    if (type === Constants.actionType.ACTION_CLOSE) {
       setupFieldModalRef.current.hideModal();
-      if(value != null){
-        setupFromConfig(value);
-        storeLocalValue('@regret', '');
+      if (value != null) {
+        setupFromConfig(value, '' , '');
         dispatch(setRegret(null));
       }
     } else if (type == Constants.actionType.ACTION_DONE) {
-      console.log("action done =----", visibleMore)
       setupFieldModalRef.current.hideModal();
       if (value?.name === 'More') {
-        dispatch({type: CHANGE_MORE_STATUS, payload: 0});        
+        dispatch({type: CHANGE_MORE_STATUS, payload: 0});
       } else {
         navigation.navigate(value.name);
       }
-    }else if( type === Constants.actionType.ACTION_FORM_CLEAR){      
+    } else if (type === Constants.actionType.ACTION_FORM_CLEAR) {
       //setSelectedLocation(null);
       // if(props.clearProducts){
       //   props.clearProducts();
-      // }      
+      // }
     }
   };
 
@@ -409,22 +449,20 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     productGroupModalRef.current.showModal();
   };
 
-  const geProductPrice = async(product, qty) => {
-
+  const geProductPrice = async (product, qty) => {
     var defineSetup = await getJsonData('@setup');
     if (defineSetup != null) {
-      
       setIsUpdatingProductPrice(true);
       const param = {
         product_id: product.product_id,
         qty: qty,
-        location_id: defineSetup.location.location_id
+        location_id: defineSetup.location.location_id,
       };
-      
+
       GetRequestProductPriceDAO.find(param)
         .then(res => {
           if (res.status === Strings.Success) {
-            console.log("res => ", res);
+            console.log('res => ', res);
             const price = res.price;
             const special = res.special;
             var check = productPriceLists.find(
@@ -459,11 +497,9 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
           expireToken(dispatch, e);
           setIsUpdatingProductPrice(false);
         });
-              
-      }else{
-        console.log(" There is no Define Setup");
-      }
-      
+    } else {
+      console.log(' There is no Define Setup');
+    }
   };
 
   const updateProductPriceLists = useCallback(
@@ -518,6 +554,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const openSetup = () => {
+    setOutsideTouch(false);
     setupFieldModalRef.current.showModal();
   };
 
@@ -536,8 +573,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const updateOutSideTouchStatus = async flag => {
-    
-    var setup = await getJsonData('@setup');      
+    var setup = await getJsonData('@setup');
     if (setup == null) {
       setOutsideTouch(false);
     } else {
@@ -551,7 +587,6 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         alignSelf: 'stretch',
         flex: 1,
       }}>
-        
       <SetupFieldModal
         title="Define Setup"
         hideClear
@@ -569,7 +604,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         products={groupList}
         settings={settings}
         geProductPrice={geProductPrice}
-        openProductDetail={openProductDetail}        
+        openProductDetail={openProductDetail}
         closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         isUpdatingProductPrice={isUpdatingProductPrice}
@@ -610,9 +645,10 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         }}
         lists={lists}
         cartCount={cartCount}
-        regret_item={props.regret_item}
+        regret_item={regret_item}
         selectedLocation={selectedLocation}
         isUpdatingProductPrice={isUpdatingProductPrice}
+        initVal={searchInitVal}
         {...props}
       />
     </View>

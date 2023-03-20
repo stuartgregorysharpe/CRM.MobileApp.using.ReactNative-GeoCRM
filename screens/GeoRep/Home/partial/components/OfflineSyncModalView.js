@@ -1,18 +1,29 @@
 
 
 import { TouchableOpacity, View ,ActivityIndicator, Dimensions, ScrollView } from 'react-native'
-import React from 'react'
+import React , { useRef } from 'react'
 import OfflineSyncType from './offine_sync_modal_view/OfflineSyncType';
 import { AppText } from '../../../../../components/common/AppText';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
+import AlertDialog from '../../../../../components/modal/AlertDialog';
+import AlertModal from '../../../../../components/modal/AlertModal';
+import { Strings } from '../../../../../constants';
 
 const OfflineSyncModalView = props =>  {
 
-  const { typeLists, isSyncStart , processValue, totalValue , syncBtnTitle ,isActive} = props;
+  const { typeLists, isSyncStart , processValue, totalValue , syncBtnTitle , isActive , offlineStatus } = props;
+
+  const alertModalRef = useRef();
+
 
   return (
     <View>
         <ScrollView style={{marginHorizontal:10, paddingTop:5 , maxHeight: Dimensions.get('screen').height * 0.8}}>
+
+          <AlertModal 
+            ref={alertModalRef}            
+          />
+
           {
             typeLists.map((item, index) => {
               return <OfflineSyncType
@@ -29,7 +40,13 @@ const OfflineSyncModalView = props =>  {
           }
 
           <TouchableOpacity style={{alignItems:'center' , marginVertical:10}} onPress={() => {
-              if(props.startSync && isActive){ 
+              if(offlineStatus){
+                if(alertModalRef.current){
+                  alertModalRef.current.alert(Strings.This_Function_Not_Available);
+                }
+                return;
+              }
+              if(props.startSync && isActive){                
                 props.startSync();
               }
             }}>

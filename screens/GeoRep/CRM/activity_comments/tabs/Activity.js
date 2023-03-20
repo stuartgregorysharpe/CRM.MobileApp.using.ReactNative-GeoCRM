@@ -5,7 +5,8 @@ import {
   FlatList,
   TextInput,
   Dimensions,
-  ActivityIndicator,  
+  ActivityIndicator,
+  Platform,  
 } from 'react-native';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
@@ -88,24 +89,40 @@ export default function Activity(props) {
   
       postApiRequest('locations/location-add-comment', postData)
         .then(res => {
+          hideLoadingBar();
           if (res.status === Strings.Success) {
             setComment('');
-            setMessage("Success");
-            setIsConfirmModal(true);
+            showConfirmModal('Success')            
           }
           setIsSubmit(false);
-          loadHistory(0);                    
-          loadingBarRef.current.hideModal();
+          loadHistory(0);          
         })
         .catch(e => {
-          setIsSubmit(false);
-          loadingBarRef.current.hideModal();
+          hideLoadingBar();
+          setIsSubmit(false);          
           expireToken(dispatch ,e);
       });
 
     }        
   };
 
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
+
+  const showConfirmModal = (message) => {
+    setMessage(message);
+    if(Platform.OS == 'android'){
+      setIsConfirmModal(true);
+    }else{
+      setTimeout(() => {
+        setIsConfirmModal(true);
+      }, 500);
+    }
+  }
+ 
   const renderSeparator = () => (
     <View
       style={{

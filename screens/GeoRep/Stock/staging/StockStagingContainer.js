@@ -1,5 +1,5 @@
 import React, {useState, useEffect , useRef } from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import StagingView from './StagingView';
 import {getItemsFromShipments} from './helper';
 import {getApiRequest, postApiRequest} from '../../../../actions/api.action';
@@ -69,16 +69,23 @@ const StockStagingContainer = props => {
       } else {
         message = res.errors;        
       }
-
-      setIsConfirmModal(true);
-      setMessage(message);
-                  
+      showConfirmModal(message);                        
     }).catch((e) => {
       setIsLoading(false);      
       expireToken(dispatch,e)
     });   
   };
 
+  const showConfirmModal = (message) => {
+    setMessage(message);
+    if(Platform.OS == 'android'){
+      setIsConfirmModal(true);
+    }else{
+      setTimeout(() => {
+        setIsConfirmModal(true);
+      }, 500);
+    }
+  }
 
   return (
     <View style={{alignSelf: 'stretch', flex:1}}>

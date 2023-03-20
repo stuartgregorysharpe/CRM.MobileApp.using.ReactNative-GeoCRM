@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState, useEffect , useRef } from 'react';
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   checkFeatureIncludeParamFromSession,
@@ -49,12 +49,27 @@ const CheckinLinkButton = props => {
   const [originFeedbackData, setFeedback] = useState([]);
   const [checkinReason, setCheckInReason] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCallTrigger, setCallTriger] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
+
   
   useEffect(() => {
     initData();
   }, []);
+
+  useEffect(() => {
+    if(isCallTrigger){
+      if(Platform.OS == 'android'){
+        _callCheckedIn();
+      }else{
+        setTimeout(() => {
+          _callCheckedIn();
+        }, 300);
+      }
+      
+    }    
+  }, [isCallTrigger]);
 
   const initData = () => {
     checkin_indempotency = generateKey();
@@ -70,8 +85,7 @@ const CheckinLinkButton = props => {
         value={[]}
         visible={isFeedbackModal}
         options={feedbackOptions}
-        onModalClose={() => {
-          console.log('modalType', modalType);
+        onModalClose={() => {          
           if (modalType === 'checkin_reason') {
             var options = [];
             checkinTypes.forEach((item, index) => {
@@ -85,14 +99,13 @@ const CheckinLinkButton = props => {
         }}
         onValueChanged={(item, index) => {
           if (modalType === 'feedback') {
-            _callLocationFeedback(item);
+            //_callLocationFeedback(item);
             setIsFeedback(false);
           } else if (modalType === 'checkin_type') {
 
             var checkinType = checkinTypes.find(
               element => element.checkin_type === item,
-            );
-            console.log("checkinType",checkinType , item)
+            );            
             if (
               checkinType != undefined &&
               checkinType.checkin_reasons.length > 0
@@ -107,9 +120,10 @@ const CheckinLinkButton = props => {
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
             } else {
-              checkin_type_id = checkinType.checkin_type_id;
+              checkin_type_id = checkinType.checkin_type_id;              
               setIsFeedback(false);
-              _callCheckedIn();
+              setCallTriger(true);
+              //_callCheckedIn();
             }
           } else if (modalType === 'checkin_reason') {
             var chk = checkinReason.find(element => element.reason === item);
@@ -117,7 +131,9 @@ const CheckinLinkButton = props => {
               reason_id = checkinReason.find(
                 element => element.reason === item,
               ).reason_id;
-              _callCheckedIn();
+              setIsFeedback(false);
+              setCallTriger(true);
+              //_callCheckedIn();
             } else {
               setModalType('feedback');
             }
@@ -127,14 +143,14 @@ const CheckinLinkButton = props => {
   };
 
   const _callCheckInTypes = async () => {
+
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
 
     LocationCheckinTypeDAO.find(features)
-      .then(res => {
-        console.log('res', res);
+      .then(res => {        
         var options = [];
         res.forEach((item, index) => {
           options.push(item.checkin_type);
@@ -147,11 +163,20 @@ const CheckinLinkButton = props => {
       });
   };
 
+  const getLocationName = (checkInDetails , offlineLocation, flag) =>{
+    if(flag){
+      return checkInDetails?.location_name != undefined ? checkInDetails?.location_name : checkInDetails?.location_name?.value
+    }else{
+      return offlineLocation.name;
+    }
+    
+  }
+
   const _callCheckedIn = async () => {
 
     if (isLoading) {     
       return false;
-    }        
+    }
 
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
@@ -166,9 +191,8 @@ const CheckinLinkButton = props => {
     console.log("post data =>" , postData);
     setIsLoading(true);
     if(props.onStart){
-      props.onStart();
+      props.onStart();      
     }
-    
 
     PostRequestDAO.find(
       locationId,
@@ -182,13 +206,14 @@ const CheckinLinkButton = props => {
     )
       .then(async res => {
 
-        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});
-        setIsFeedback(false);        
-        checkin_indempotency = generateKey();        
+        dispatch({type: CHECKIN, payload: true, scheduleId: scheduleId});        
+        checkin_indempotency = generateKey(); 
+        setCallTriger(false);      
         setFeedbackOptions(originFeedbackData);
-        setModalType('feedback');      
+        setModalType('feedback');
         await storeLocalValue('@checkin', '1');
         await storeLocalValue('@specific_location_id', locationId);
+        await storeJsonData('@setup', null);
         await storeLocalValue(
           Constants.storageKey.CHECKIN_SCHEDULE_ID,
           scheduleId,
@@ -196,18 +221,26 @@ const CheckinLinkButton = props => {
         await storeLocalValue('@checkin_type_id', checkin_type_id);
         await storeLocalValue('@checkin_reason_id', reason_id);
         
-        let checkInDetails = locationInfo;  
-        if(locationInfo != null && locationInfo != undefined){
-          checkInDetails = locationInfo;  
-        }else{
-          console.log("checkInDetails loation1", locationId);
-          checkInDetails = await getLocationInfoFromLocal(locationId);          
-        }        
+        let checkInDetails = locationInfo;
+        let offlineLocationInfo = null;
+        var isLocationInfo = true;
+        if(locationInfo === null || locationInfo === undefined){
+          isLocationInfo = false;
+          offlineLocationInfo = await getLocationInfoFromLocal(locationId);          
+        }   
+
+        if(checkInDetails == undefined || checkInDetails == null){
+          checkInDetails = {
+            location_id : offlineLocationInfo.location_id,
+            location_name : offlineLocationInfo.name,
+            address: offlineLocationInfo.address
+          }
+        }
         checkInDetails.current_call = {
           "checkin_time": postData.checkin_time,
-          "location_name": checkInDetails?.location_name != undefined ? checkInDetails?.location_name : checkInDetails?.location_name?.value
+          "location_name": getLocationName(checkInDetails , offlineLocationInfo , isLocationInfo)
         };
-        console.log("checkInDetails loation", checkInDetails);
+        console.log("checkInDetails loation =>", checkInDetails);
         await storeJsonData('@checkin_location', checkInDetails);
                 
         checkin_type_id = '';
@@ -229,6 +262,7 @@ const CheckinLinkButton = props => {
               Constants.storageKey.OFFLINE_SCHEDULE_CHECKINS,
               offlineScheduleCheckins,
             );
+            
           }
         });        
         
@@ -238,12 +272,11 @@ const CheckinLinkButton = props => {
           props.onCallback();
         }else{
           onFinishProcess();                    
-        }       
+        }
+
         if(props.onEnd){
           props.onEnd();
         }
-        
-        
 
       })
       .catch(e => {

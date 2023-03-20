@@ -24,7 +24,7 @@ import {
 } from '../../../actions/notification.action';
 import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
-import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/partial/CalendarCheckOutButton';
+import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/components/CalendarCheckOutButton';
 import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
 
@@ -118,9 +118,8 @@ export default function CheckOutViewContainer(props) {
         null
       )
         .then(async res => {
-          console.log('RES : ', res);
-          
 
+          console.log('RES : ', res);          
           await storeLocalValue('@checkin', '0');
           await storeLocalValue('@checkin_type_id', '');
           await storeLocalValue('@checkin_reason_id', '');
@@ -129,19 +128,14 @@ export default function CheckOutViewContainer(props) {
           await storeJsonData('@form_ids', []);
           await storeJsonData('@setup', null);
           await storeJsonData('@checkin_location', null);
+          
           dispatch({type: CHECKIN, payload: false, scheduleId: 0});
           dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
                                       
           setIsLoading(false);
           if(loadingBarRef.current)
             loadingBarRef.current.hideModal();
-
-          // if (type == 'specificInfo' || type == 'calendar') {
-          //   if (props.goBack) {
-          //     props.goBack(res);
-          //   }
-          // }
-                                        
+                                                  
           if(props.onCallback){
             props.onCallback(res);
           }

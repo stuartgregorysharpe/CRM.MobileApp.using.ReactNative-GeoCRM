@@ -27,8 +27,10 @@ target 'GeoCRM' do
  
   permissions_path = '../node_modules/react-native-permissions/ios'
   #pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera/Permission-Camera.podspec"
-    
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera/Permission-Camera.podspec"    
+
+  pod 'react-native-photo-manipulator', :path => '../node_modules/react-native-photo-manipulator'
+
   target 'GeoCRMTests' do
     inherit! :complete
     # Pods for testing

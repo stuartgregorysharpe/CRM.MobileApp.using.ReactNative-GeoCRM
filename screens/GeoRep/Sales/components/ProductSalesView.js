@@ -11,7 +11,7 @@ import {
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import ProductItem from './items/ProductItem';
 import ProductGroupItem from './items/ProductGroupItem';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import SearchBar from '../../../../components/SearchBar';
 import {getJsonData} from '../../../../constants/Storage';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -21,6 +21,7 @@ import {style} from '../../../../constants/Styles';
 import {Colors, Constants, Images} from '../../../../constants';
 import QRScanModal from '../../../../components/common/QRScanModal';
 import ProductSalesPlaceholder from './ProductSalesPlaceholder';
+import {SALES_SET_SEARCH_TEXT} from '../../../../actions/actionTypes';
 var currentSearchKey = '';
 
 const ProductSalesView = props => {
@@ -33,49 +34,55 @@ const ProductSalesView = props => {
     isEndPage,
     cartCount,
     isUpdatingProductPrice,
+    initVal
   } = props;
 
   const productPriceLists = useSelector(state => state.sales.productPriceLists);
-  const [isEndPageLoading, setIsEndPageLoading] = useState(false);  
+  const [isEndPageLoading, setIsEndPageLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [haveFilter, setHaveFilter] = useState(false);
+  //const searchText = useSelector(state => state.sales.searchText);
   const [searchText, setSearchText] = useState('');
   const [isInitializeView, setIsInitializeView] = useState(true);
   const barcodeScanModalRef = useRef(null);
+  const dispatch = useDispatch();
   
+  useEffect(() => {    
+    setSearchText(initVal);
+  }, [initVal]);
 
-  
   useEffect(() => {
     setPageNumber(page);
   }, [page]);
 
-  useEffect(() => {    
-    configPlaceholder(isLoading , selectedLocation)
-  },[isLoading , selectedLocation]);
+  useEffect(() => {
+    configPlaceholder(isLoading, selectedLocation);
+  }, [isLoading, selectedLocation]);
 
   useEffect(() => {
     checkFilter();
   }, [lists]);
 
   useEffect(() => {
-    if (!isLoading && searchText != currentSearchKey) {
-      loadMoreData(0, searchText);
-    }
-  }, [searchText, isLoading]);
-  useEffect(() => {
-    if (props.regret_item) {
-      setSearchText(props.regret_item?.search_text);
-    }
-  }, [props.regret_item]);
+    console.log("Search key", searchText);
+    console.log("currnt Search key", currentSearchKey , isLoading);
+    //!isLoading && 
+    if (currentSearchKey != undefined && (searchText != currentSearchKey || searchText == currentSearchKey) ) {
+      if(searchText !=undefined){
+        loadMoreData(0, searchText);
+      }      
+    }    
+  }, [searchText]); //isLoading
 
-  const configPlaceholder = async(isLoading , selectedLocation) => {
-    const setupData = await getJsonData("@setup");
-    if(  setupData == null || selectedLocation == null){
+  const configPlaceholder = async (isLoading, selectedLocation) => {
+    const setupData = await getJsonData('@setup');    
+    if (setupData === null || selectedLocation === null) {
       setIsInitializeView(true);
-    }else{
+    } else {
+      console.log("triger false");
       setIsInitializeView(false);
     }
-  }
+  };
 
   const checkFilter = async () => {
     var param = await getJsonData('@sale_product_parameter');
@@ -137,7 +144,7 @@ const ProductSalesView = props => {
 
   const loadMoreData = useCallback(
     (pageNumber, searchKey) => {
-      console.log("isLoading", isLoading)
+      console.log('isLoading', isLoading);
       if (isEndPageLoading === false && isLoading === false) {
         if (props.loadMoreData) {
           currentSearchKey = searchKey;
@@ -152,6 +159,7 @@ const ProductSalesView = props => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
         //const capturedItem = captureDeviceStockItem(items, value);
+        //dispatch({type: SALES_SET_SEARCH_TEXT, payload: value});
         setSearchText(value);
         loadMoreData(0, value);
       }
@@ -159,11 +167,10 @@ const ProductSalesView = props => {
   };
 
   renderFooter = () => {
-    console.log("page", page, pageNumber);
     if (!isEndPageLoading && isLoading) {
-      if(page == 0 && pageNumber == 0){
-        return <ProductSalesPlaceholder />
-      }else{
+      if (page == 0 && pageNumber == 0) {
+       return <ProductSalesPlaceholder />;
+      } else {
         return (
           <View style={styles.footer}>
             <TouchableOpacity activeOpacity={0.9} style={styles.loadMoreBtn}>
@@ -174,29 +181,32 @@ const ProductSalesView = props => {
             </TouchableOpacity>
           </View>
         );
-      }    
+      }
     }
-    return <View style={{height:100}}></View>;
+    return <View style={{height: 100}}></View>;
   };
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
-      
-      <View style={{marginTop:-10}}>
-        <SearchBar            
+      <View style={{marginTop: -10}}>
+        <SearchBar
           isFilter
           haveFilter={haveFilter}
           isScan
           onSearch={searchText => {
-            if(!isInitializeView){
+            if (!isInitializeView) {
+              //dispatch({type: SALES_SET_SEARCH_TEXT, payload: searchText});
+              if(currentSearchKey === undefined){
+                currentSearchKey = searchText;
+              }
               setSearchText(searchText);
               console.log('search text ', searchText);
-              if ((searchText != '', searchText.length >= 2)) {
-                loadMoreData(0, searchText);
-              } else if (searchText == '') {
-                loadMoreData(0, searchText);
-              }
-            }            
+              // if ((searchText != '', searchText.length >= 2)) {
+              //   loadMoreData(0, searchText);
+              // } else if (searchText == '') {
+              //   loadMoreData(0, searchText);
+              // }
+            }
           }}
           onSuffixButtonPress={() => {
             if (props.openFilter && !isInitializeView) {
@@ -204,10 +214,9 @@ const ProductSalesView = props => {
             }
           }}
           onScan={() => {
-            if(!isInitializeView)
-              barcodeScanModalRef.current.showModal();
+            if (!isInitializeView) barcodeScanModalRef.current.showModal();
           }}
-          initVal={searchText}
+          initVal={initVal}
           isLoading={isInitializeView}
         />
 
@@ -215,53 +224,56 @@ const ProductSalesView = props => {
           openSetup={props.openSetup}
           openReorder={props.openReorder}
           selectedLocation={selectedLocation}
-		      isInitializeView={isInitializeView}
+          isInitializeView={isInitializeView}
         />
 
- 		{
-			isInitializeView &&
-      <ProductSalesPlaceholder />
-
-			// <Image 
-			// source={Images.productSalePlaceholder}
-			// style={styles.placeholderStyle}
-			// resizeMode="stretch"
-			// />
-		}
-
-		<FlatList
-          data={lists}
-          renderItem={({item, index}) => renderItem(item, index)}
-          keyExtractor={(item, index) => index.toString()}
-          extraData={this.props}
-          onEndReached={() => {
-            loadMoreData(pageNumber, searchText);
-          }}
-          onEndReachedThreshold={0.5}
-          removeClippedSubviews={false}
-          ListFooterComponent={renderFooter.bind(this)}
-        />       
+        {isInitializeView && <ProductSalesPlaceholder />}
       </View>
 
-      <View     
+      <FlatList
+        data={lists}
+        renderItem={({item, index}) => renderItem(item, index)}
+        keyExtractor={(item, index) => index.toString()}
+        extraData={this.props}
+        onEndReached={() => {          
+          loadMoreData(pageNumber, undefined);
+        }}
+        onEndReachedThreshold={0.5}
+        removeClippedSubviews={false}
+        ListFooterComponent={renderFooter.bind(this)}
+      />
+
+      <View
         style={{
           flexDirection: 'row',
           position: 'absolute',
           bottom: 20,
           right: 10,
         }}>
-
-        { (settings != undefined && settings?.allow_add_product === '1') || (isInitializeView && settings == null) && (
-          <TouchableOpacity onPress={props.openAddProductModal}>
-            <SvgIcon icon={isInitializeView ? 'Round_Btn_Default_Dark_Gray' : 'Round_Btn_Default_Dark' }  width="70px" height="70px" />
-          </TouchableOpacity>
-        )}
+        {(settings != undefined && settings?.allow_add_product === '1') ||
+          (isInitializeView && settings == null && (
+            <TouchableOpacity onPress={props.openAddProductModal}>
+              <SvgIcon
+                icon={
+                  isInitializeView
+                    ? 'Round_Btn_Default_Dark_Gray'
+                    : 'Round_Btn_Default_Dark'
+                }
+                width="70px"
+                height="70px"
+              />
+            </TouchableOpacity>
+          ))}
 
         {true && ( ///cartCount != undefined && cartCount != 0
           <TouchableOpacity
             onPress={props.openCart}
             style={{alignItems: 'center', justifyContent: 'center'}}>
-            <SvgIcon icon={isInitializeView ? 'Sales_Cart_Gray' : 'Sales_Cart' }   width="70px" height="70px" />
+            <SvgIcon
+              icon={isInitializeView ? 'Sales_Cart_Gray' : 'Sales_Cart'}
+              width="70px"
+              height="70px"
+            />
             <AppText
               title={cartCount}
               style={styles.cartNumberStyle}
@@ -270,7 +282,6 @@ const ProductSalesView = props => {
           </TouchableOpacity>
         )}
       </View>
-
 
       <QRScanModal
         ref={barcodeScanModalRef}
@@ -299,10 +310,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom:100
+    marginBottom: 100,
   },
-  placeholderStyle:{
-    width: Dimensions.get("screen").width,
-    height:  450
-  }
+  
 });

@@ -124,7 +124,7 @@ const SwopAtTraderView = props => {
             title={item != undefined ? item.description : ''}
             color={whiteLabel().mainText}></AppText>
           <AppText
-            title={item != undefined ? 'IMEI: ' + item.serial : 'IMEI: '}
+            title={item != undefined ? Constants.stockPrefix.DEVICE + item.serial : Constants.stockPrefix.DEVICE}
             color={whiteLabel().subText}></AppText>
         </View>
       </CardView>
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     marginHorizontal: 20,
     paddingBottom: 0,
-    height: Dimensions.get('window').height * 0.6,
+    height: Dimensions.get('window').height * 0.7,
   },
 
   imageContainer: {

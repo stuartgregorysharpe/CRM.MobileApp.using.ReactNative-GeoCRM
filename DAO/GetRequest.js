@@ -13,8 +13,10 @@ export function call( url, postData){
                 .then(async res => {                          
                     resolve({status: Strings.Success , isConnected:isConnected, data: res});
                 })
-                .catch(e => {                    
-                    resolve({status: e , isConnected: isConnected,  data: []});
+                .catch(e => {        
+                    console.log("get api call log", e);            
+                    //resolve({ status : Strings.Failed ,  message: e , isConnected: isConnected,  data: []});
+                    reject(e);
                 });
 
             }else{                

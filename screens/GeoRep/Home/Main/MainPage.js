@@ -36,7 +36,6 @@ const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
   const [isStart, setIsStart] = useState(true);
-  const [startEndDayId, setStartEndDayId] = useState(0);
   const [pages, setPages] = useState([{ card: 'visits', index: 0 }, { card: 'activity', index: 1 }]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [activityCard, setActivityCard] = useState(null);
@@ -56,7 +55,7 @@ const MainPage = forwardRef((props, ref) => {
   const [isScrollable, setIsScrollable] = useState(true);
   const syncAllViewRef = useRef(null);
   const cardsFilterModal = useRef(null);
-  const [haveFilter, setHaveFilter] = useState(false);  
+  const [haveFilter, setHaveFilter] = useState(false);
   const [lindtdash_sellin, setSellInCard] = useState(false);
   const [lindtdash_sellout, setSellOutCard] = useState(false);
   const [lindtdash_mobility, setMobilityCard] = useState(false);
@@ -67,10 +66,10 @@ const MainPage = forwardRef((props, ref) => {
   const dataUpdated = useSelector(state => state.feed.content_feed_data);
   const [isFeedImageVisible, setImageVisible] = useState(false);
   const [feedData, setFeedData] = useState(null);
-  const [isConfirmModal , setIsConfirmModal] = useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
- 
+
   useEffect(() => {
     if (dataUpdated) {
       loadContentFeedData();
@@ -82,6 +81,11 @@ const MainPage = forwardRef((props, ref) => {
         syncAllViewRef.current.syncAllData();
       }
     },
+
+    reloadMainPage () {
+      loadPage();
+    },
+
   }));
 
   // useEffect(() => {
@@ -89,16 +93,14 @@ const MainPage = forwardRef((props, ref) => {
   // }, []);
 
   // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {      
-  //     console.log("focussfasdfasdfasdfsdf")
+  //   const unsubscribe = navigation.addListener('focus', () => {            
   //     loadPage();
   //   });
   //   return unsubscribe;
   // }, [navigation]);  
 
   useEffect(() => {
-    console.log("hello notifications main");
-    loadPage();    
+    loadPage();
   }, [isCheckin]);
 
   useEffect(() => {
@@ -324,7 +326,6 @@ const MainPage = forwardRef((props, ref) => {
             huntValue: responseJson[i].hunt
           })
         }
-        console.log("modifired data", modifiedList.length);
         setContentFeedData(modifiedList);
       }
     }).catch((error) => {
@@ -380,11 +381,11 @@ const MainPage = forwardRef((props, ref) => {
       current_longitude:
         currentLocation.longitude != undefined ? currentLocation.longitude : 1,
     };
+
     if (isLoading == false) {
+
       setIsLoading(true);
-
-
-      checkConnectivity().then(async(isConnected) => {
+      checkConnectivity().then(async (isConnected) => {
         if (isConnected) {
 
           getApiRequest('home/main-dashboard', param)
@@ -404,6 +405,7 @@ const MainPage = forwardRef((props, ref) => {
               } else {
                 await storeLocalValue('@checkin', '0');
               }
+              console.log("res.items.startEndDay_state", res.items.startEndDay_state)
               setIsStart(
                 res.items.startEndDay_state ===
                   Constants.homeStartEndType.START_MY_DAY
@@ -426,15 +428,15 @@ const MainPage = forwardRef((props, ref) => {
         } else {
           setIsLoading(false);
           let checkInStatus = await getLocalData('@checkin');
-          dispatch({ type: CHECKIN, payload: checkInStatus==='1'?true:false });
-          if(checkInStatus === '1'){
+          dispatch({ type: CHECKIN, payload: checkInStatus === '1' ? true : false });
+          if (checkInStatus === '1') {
             var location = await getJsonData('@checkin_location');
-            console.log("location dd=>",location)
+            console.log("location dd=>", location)
             if (location != null) {
               setCurrentCall(location.current_call);
             }
           }
-                    
+
         }
       });
 
@@ -445,7 +447,7 @@ const MainPage = forwardRef((props, ref) => {
 
   const initData = async () => {
     var startMyDay = await getLocalData('start_my_day');
-    setIsStart(startMyDay === null || startMyDay === '1' ? true : false);
+    setIsStart((startMyDay === undefined || startMyDay === null || startMyDay === '1') ? true : false);
 
   };
 
@@ -498,7 +500,6 @@ const MainPage = forwardRef((props, ref) => {
   }
 
   const _callMyDay = () => {
-
     var userParam = getPostParameter(currentLocation);
     var postData = {
       startEndDay_type: isStart
@@ -510,16 +511,14 @@ const MainPage = forwardRef((props, ref) => {
           : { time_zone: '', latitude: 0, longitude: 0 },
     };
 
-    if(!isLoading){
+    if (!isLoading) {
       setIsLoading(true)
-      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null , dispatch ).then(async (res) => {        
-        if(res.status == Strings.Success){
-          setStartEndDayId(res.startEndDay_id);
+      PostRequestDAO.find(0, postData, "start_end_day", 'home/startEndDay', '', '', null, dispatch).then(async (res) => {
+        if (res.status == Strings.Success) {
+          //setStartEndDayId(res.startEndDay_id);
           await storeLocalValue('start_my_day', isStart ? '0' : '1');
           setIsStart(!isStart);
-          if(features.includes('odometer_reading')) {
-            odometerReadingModalRef.current.showModal();
-          }else if (res.status == "NOIMPLEMENT") {
+          if(res.status == "NOIMPLEMENT") {
             showOfflineDialog(dispatch);
           }
         }
@@ -529,17 +528,18 @@ const MainPage = forwardRef((props, ref) => {
         expireToken(dispatch, e);
       });
 
-    }    
+    }
 
   };
 
-  const onCaptureAction = async ({ type, value }) => {
-    if(type == Constants.actionType.ACTION_DONE){
+  const onSubmitOdometerReading = async ({ type, value }) => {
+    if (type == Constants.actionType.ACTION_DONE) {
+      setIsStart(!isStart);
       setTimeout(() => {
         setMessage(value);
         setIsConfirmModal(true);
-      }, 300);      
-    }    
+      }, 300);
+    }
   };
 
   const renderCards = (item, index) => {
@@ -705,21 +705,35 @@ const MainPage = forwardRef((props, ref) => {
       );
     }
   };
+  const onPressStartEndDay = () => {
+    checkConnectivity().then(isConnected => {
+      if(isConnected) {
+        const isOdometerReading = features.includes('odometer_reading')
+        if (isOdometerReading) {
+          odometerReadingModalRef.current.showModal();
+        } else {
+          _callMyDay();
+        }
+      } else {
+        showOfflineDialog(dispatch)
+      }
+    })
 
+  }
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
 
-      <AlertDialog 
+      <AlertDialog
         visible={isConfirmModal}
         message={message}
-        onModalClose={ async () => {
-          setIsConfirmModal(false);     
-          if(confirmModalType == 'have_compulsory_form'){            
-            const location = await getJsonData('@checkin_location');            
-            if(location != null && location != undefined){     
+        onModalClose={async () => {
+          setIsConfirmModal(false);
+          if (confirmModalType == 'have_compulsory_form') {
+            const location = await getJsonData('@checkin_location');
+            if (location != null && location != undefined) {
               navigation.navigate('DeeplinkRepForms', {
                 locationInfo: location,
-              });        
+              });
             }
           }
         }}
@@ -732,9 +746,7 @@ const MainPage = forwardRef((props, ref) => {
             borderRadius: 3,
           }}
           title={isStart ? Strings.Start_My_Day : Strings.End_My_Day}
-          onSubmit={() => {
-            _callMyDay();
-          }}></SubmitButton>
+          onSubmit={onPressStartEndDay}></SubmitButton>
       </View>
 
       <SyncAll ref={syncAllViewRef} ></SyncAll>
@@ -744,11 +756,11 @@ const MainPage = forwardRef((props, ref) => {
           type="home"
           isLoadingForm={isLoading}
           checkinStatus={checkinStatus}
-          showConfirmModal={(message) => {                  
+          showConfirmModal={(message) => {
             setMessage(message);
             setConfirmModalType('have_compulsory_form');
             setIsConfirmModal(true);
-          }}          
+          }}
           currentCall={currentCall}></CheckOutViewContainer>
       )}
 
@@ -778,9 +790,8 @@ const MainPage = forwardRef((props, ref) => {
         ref={odometerReadingModalRef}
         title={Strings.Home.Odometer_Reading}
         isStart={isStart}
-        startEndDayId={startEndDayId}
         currentLocation={currentLocation}
-        onButtonAction={onCaptureAction}
+        onButtonAction={onSubmitOdometerReading}
       />
       <CardsFilterModal ref={cardsFilterModal}
         onButtonAction={(data) => {

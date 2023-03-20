@@ -51,6 +51,7 @@ export default {
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
     Supplier_Compulsory: 'Supplier need to be filled',
+    Pleae_Select_Type : 'Please select type to add'
   },
 
   Log: {
@@ -60,6 +61,11 @@ export default {
 
   Home: {
     Sync_All: 'Sync All',
+    Odometer_Reading: 'Odometer Reading',
+    Input_End_Reading: 'Input end reading',
+    Input_Start_Reading: 'Input start reading',
+    Take_Photo: 'Please take a photo of your vehicles starting odometer reading',
+    Start_Reading: 'Start Reading'
   },
 
   Home_Visit_Tabs: {
@@ -120,4 +126,5 @@ export default {
     Returns_value: 'Returns Value',
     Returns_tns: 'Returns (Tns)',
   },
+  Please_Take_Photo: 'Please take photo'
 };

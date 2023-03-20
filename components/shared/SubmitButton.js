@@ -15,11 +15,13 @@ export const SubmitButton = ({
   title,
   onSubmit,
   style,
+  titleStyle = {},
   bgStyle,
   svgIcon,
   enabled,
   isLoading,
-  haveNextIcon = true
+  haveNextIcon = true,
+  theme = 'dark'
 }) => {
   return (
     <TouchableOpacity
@@ -31,7 +33,7 @@ export const SubmitButton = ({
           onSubmit();
         }
       }}>
-      <Text style={[styles.submitButtonText]}>{title}</Text>
+      <Text style={[styles.submitButtonText , titleStyle]}>{title}</Text>
 
       {!isLoading && svgIcon != undefined && (
         <SvgIcon
@@ -46,7 +48,7 @@ export const SubmitButton = ({
         <FontAwesomeIcon
           style={styles.submitButtonIcon}
           size={25}
-          color={whiteLabel().actionFullButtonIcon}
+          color={theme == 'light' ? whiteLabel().actionFullButtonBackground : whiteLabel().actionFullButtonIcon}
           icon={faAngleDoubleRight}
         />
       )}

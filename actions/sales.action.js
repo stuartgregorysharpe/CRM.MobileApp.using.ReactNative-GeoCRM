@@ -3,6 +3,7 @@ import {
   SALES_SETTING,
   SALES_SETUP,
   SALES_SET_REGRET,
+  SALES_SET_SEARCH_TEXT,
 } from './actionTypes';
 
 export const setProductPriceLists = productPriceLists => ({
@@ -24,7 +25,10 @@ export const setRegret = regretItem => ({
   type: SALES_SET_REGRET,
   payload: regretItem,
 });
-
+export const setSalesSearchText = searchText => ({
+  type: SALES_SET_SEARCH_TEXT,
+  payload: searchText,
+});
 // dispatch({type: CHECKIN, payload: false});
 
 export const clearProductPriceLists = () => ({

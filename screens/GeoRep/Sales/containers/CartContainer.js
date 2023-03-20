@@ -11,7 +11,7 @@ import {
 import {GetRequestProductPriceDAO} from '../../../../DAO';
 import CartView from '../components/CartView';
 import {
-  calculateCartStatistics,  
+  calculateCartStatistics,
   filterProducts,
   getConfigFromRegret,
   getProductItemDataForRender,
@@ -23,14 +23,17 @@ import ProductGroupModal from '../modal/ProductGroupModal';
 import SetupFieldModal from '../modal/SetupFieldModal';
 import TransactionSubmitModal from '../modal/TransactionSubmitModal';
 import {useDispatch} from 'react-redux';
-import {setProductPriceLists} from '../../../../actions/sales.action';
+import {setProductPriceLists, setSalesSearchText} from '../../../../actions/sales.action';
 import ProductDetailsModal from '../modal/ProductDetailsModal';
 import {useCallback} from 'react';
 import AddProductModal from '../modal/AddProductModal';
-import { CHANGE_MORE_STATUS, SHOW_MORE_COMPONENT, SLIDE_STATUS } from '../../../../actions/actionTypes';
+import {
+  CHANGE_MORE_STATUS,
+  SHOW_MORE_COMPONENT,
+  SLIDE_STATUS,
+} from '../../../../actions/actionTypes';
 
 const CartContainer = props => {
-
   const navigation = props.navigation;
   const transactionSubmitModalRef = useRef(null);
   const dispatch = useDispatch();
@@ -77,58 +80,23 @@ const CartContainer = props => {
     loadDefinedConfig();
     return () => {
       isMout = false;
-    }
+    };
   }, []);
 
-  useEffect(() => {
-    if (regret_item) {
-      setupDefineSetupFromRegret();
-    }
-  }, [regret_item]);
-
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {      
-      refreshList();      
+    const unsubscribe = navigation.addListener('focus', () => {
+      refreshList();
     });
     return unsubscribe;
   }, [navigation]);
 
 
-  const setupDefineSetupFromRegret = async () => {        
-    if (regret_item) {      
-      const config = getConfigFromRegret(regret_item);      
-      await storeJsonData('@product_price', []);
-      await removeLocalData('@add_product');
-      dispatch(setProductPriceLists([]));
-      await storeJsonData('@setup', config);
-      setDefineSetup(config);
-      setupFromConfig(config, regret_item?.search_text);
-    }
-  };
 
-
-  const setupFromConfig = (config, searchText) => {            
-      //setSelectedLocation(config.location.name);  
-      // onCheckProductSetupChanged(config, type => {
-      //   if (type.includes('changed')) {
-      //     storeJsonData('@product_price', []);
-      //     removeLocalData('@add_product');
-      //     dispatch(setProductPriceLists([]));
-      //   }
-      // });
-      // configAddProductCount();      
-      // if (config != undefined) {
-      //   setOutsideTouch(true);
-      // }
-    
-  };
-
-
-  const refreshList = async () => {  
+  const refreshList = async () => {
     var defineSetup = await getJsonData('@setup');
-    console.log("defineSetup",defineSetup)
-    if (defineSetup == null) {      
+    console.log('defineSetup', defineSetup);
+    if (defineSetup == null) {
       openSetup();
     }
   };
@@ -152,41 +120,48 @@ const CartContainer = props => {
       setDefineSetup(defineData);
     }
   };
+
   const onSetupFieldModalClosed = async ({type, value}) => {
+    setOutSideTouch(false);
+    console.log('onSetupFieldModalClosed', type, value);
     if (type === Constants.actionType.ACTION_CLOSE) {
-      if(value != null){        
+      if (value != null) {
         onCheckProductSetupChanged(value, async type => {
-          storeJsonData('@setup', value);
+          if(value?.location?.location_id != undefined){
+            storeJsonData('@setup', value);
+          }          
           if (type.includes('changed')) {
+            //dispatch(setSalesSearchText(''));
             await storeJsonData('@product_price', []);
             await removeLocalData('@add_product');
             dispatch(setProductPriceLists([]));
             setAddProductList([]);
             if (navigation.canGoBack()) {
               navigation.popToTop();
-            }          
+            }
           } else {
             loadDefinedConfig();
           }
         });
-      }      
+      }
       setupFieldModalRef.current.hideModal();
-    }else if(type == Constants.actionType.ACTION_DONE){
-		  setupFieldModalRef.current.hideModal();
-      if(value.name === 'More'){
-        dispatch({type: SLIDE_STATUS, payload: false});			
-        if (visibleMore != '') {			
+    } else if (type == Constants.actionType.ACTION_DONE) {
+      setupFieldModalRef.current.hideModal();
+      if (value.name === 'More') {
+        dispatch({type: SLIDE_STATUS, payload: false});
+        if (visibleMore != '') {
           dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
         } else {
           dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-              }
-      }else{			
+        }
+      } else {
         navigation.navigate(value.name);
       }
     }
   };
 
   const openSetup = () => {
+    setOutSideTouch(false);
     setupFieldModalRef.current.showModal();
   };
   const onProductGroupModalClosed = ({type, value}) => {
@@ -195,33 +170,32 @@ const CartContainer = props => {
     }
   };
 
-  const onTransactionSubmitModalClosed = ({type, value}) => {   
+  const onTransactionSubmitModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_DONE) {
       clearCart();
       setOutSideTouch(false);
-      transactionSubmitModalRef.current.hideModal();      
+      transactionSubmitModalRef.current.hideModal();
       openSetup();
       if (navigation.canGoBack()) {
         navigation.popToTop();
-      }      
-    }else if( type == Constants.actionType.ACTION_FORM_CLEAR){
+      }
+    } else if (type == Constants.actionType.ACTION_FORM_CLEAR) {
       transactionSubmitModalRef.current.hideModal();
     }
   };
 
-  const clearCart = async() => {
-    
+  const clearCart = async () => {
     setAddProductList([]);
     clearAddProductList();
 
     dispatch(setProductPriceLists([]));
-    
-    await storeJsonData('@product_price' , []);
-    await storeJsonData('@add_product' , []);
 
-    await storeJsonData("@setup", null);
+    await storeJsonData('@product_price', []);
+    await storeJsonData('@add_product', []);
+
+    await storeJsonData('@setup', null);
     setDefineSetup(null);
-  }
+  };
 
   const onWarehouseItemPress = item => {
     setProductListTitle(item.title);
@@ -233,17 +207,15 @@ const CartContainer = props => {
     setSelectedWarehouseId(null);
     productGroupModalRef.current.showModal();
   };
-  const updateCapturedProductPrice = async(product, qty) => {
-
+  const updateCapturedProductPrice = async (product, qty) => {
     var defineSetup = await getJsonData('@setup');
-    if (defineSetup != null) {     
-
+    if (defineSetup != null) {
       setIsUpdatingProductPrice(true);
       const param = {
         product_id: product.product_id,
         qty: qty,
-        location_id: defineSetup.location.location_id
-      };      
+        location_id: defineSetup.location.location_id,
+      };
       GetRequestProductPriceDAO.find(param)
         .then(res => {
           if (res.status === Strings.Success) {
@@ -282,8 +254,6 @@ const CartContainer = props => {
           setIsUpdatingProductPrice(false);
         });
     }
-
-
   };
 
   const updateProductPrice = (product, qty) => {
@@ -453,18 +423,18 @@ const CartContainer = props => {
     productGroupModalRef.current.hideModal();
   };
 
-  const updateOutSideTouchStatus = async flag => {    
+  const updateOutSideTouchStatus = async flag => {
     var setup = await getJsonData('@setup');
     if (setup == null) {
       setOutSideTouch(false);
     } else {
       setOutSideTouch(flag);
     }
-    
   };
 
   return (
     <View style={[styles.container, props.style]}>
+      
       <CartView
         defineSetup={defineSetup}
         cartStatistics={cartStatistics}
@@ -479,7 +449,7 @@ const CartContainer = props => {
       />
 
       <SetupFieldModal
-        title="Define Setup"        
+        title="Define Setup"
         hideClear
         backButtonDisabled={!outSideTouch}
         closableWithOutsideTouch={outSideTouch}
@@ -494,8 +464,8 @@ const CartContainer = props => {
         title={productListTitle}
         products={warehouseProductList}
         settings={settings}
-        getItemData={getProductItemDataForRender} 
-        geProductPrice={updateProductPrice}       
+        getItemData={getProductItemDataForRender}
+        geProductPrice={updateProductPrice}
         openProductDetail={openProductDetail}
         isUpdatingProductPrice={isUpdatingProductPrice}
         //backButtonDisabled={true}
