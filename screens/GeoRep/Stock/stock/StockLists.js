@@ -1,4 +1,4 @@
-import {View, FlatList, TouchableOpacity} from 'react-native';
+import {View, FlatList, TouchableOpacity, Platform} from 'react-native';
 import React, {useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import SearchBar from '../../../../components/SearchBar';
 import SvgIcon from '../../../../components/SvgIcon';
@@ -22,8 +22,7 @@ import {
   getItemsFromStockItems,
   getStockItemsFromItems,
 } from './helper';
-import {
-  clearNotification,
+import {  
   showNotification,
 } from '../../../../actions/notification.action';
 import {Notification} from '../../../../components/modal/Notification';
@@ -33,8 +32,8 @@ import {GetRequestStockListsDAO} from '../../../../DAO';
 import {getLocalData} from '../../../../constants/Storage';
 import {expireToken} from '../../../../constants/Helper';
 import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
-
-let isMount = true;
+import ConfirmDialog from '../../../../components/modal/ConfirmDialog';
+import { whiteLabel } from '../../../../constants/Colors';
 
 const StockLists = props => {
   const navigation = props.navigation;
@@ -48,6 +47,7 @@ const StockLists = props => {
   const traderModalRef = useRef(null);
   const stockConsumableModalRef = useRef(null);
   const consumableSellToTraderModalRef = useRef(null);
+  const confirmDialogRef = useRef();
 
   const simDetailsModalRef = useRef(null);
   const barcodeScanModalRef = useRef(null);
@@ -296,31 +296,33 @@ const StockLists = props => {
 
   const onCaptureSim = () => {
     setSelectedItems([]);
-    simDetailsModalRef.current.showModal();
-    dispatch(clearNotification());
+    simDetailsModalRef.current.showModal();    
   };
 
   const onCaptureDevice = () => {
-    barcodeScanModalRef.current.showModal();
-    dispatch(clearNotification());
+    barcodeScanModalRef.current.showModal();    
   };
 
   const onSelectStockTypeForCapture = () => {
-    dispatch(
-      showNotification({
-        type: Strings.Success,
-        message: Strings.Stock.Select_Scan_Type,
-        buttonText: 'Sim',
-        cancelButtonText: 'Device',
-        buttonAction: onCaptureSim,
-        cancelButtonAction: onCaptureDevice,
-        cancelable: true,
-      }),
-    );
+    showConfirmModal();    
   };
+
   const onPressFilter = () => {
     filterModalRef.current.showModal();
   };
+
+  const showConfirmModal = () => {
+      if(confirmDialogRef.current){
+          confirmDialogRef.current.showModal( Strings.Stock.Select_Scan_Type , 'Device' , 'Sim');
+      }
+  }
+
+  const hideConfirmModal = () => {
+      if(confirmDialogRef.current){
+          confirmDialogRef.current.hideModal()
+      }
+  }
+
 
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
@@ -450,6 +452,34 @@ const StockLists = props => {
 
       <Notification />
       <LoadingProgressBar />
+
+
+      <ConfirmDialog 
+          buttonTextStyle={{color: whiteLabel().mainText  }}
+          buttonText2Style={{color : whiteLabel().mainText }}
+          ref={confirmDialogRef}
+          outSideTouch={true}
+          onBack={() => {
+            hideConfirmModal();
+            if(Platform.OS == 'android'){
+              onCaptureDevice();
+            }else{
+              setTimeout(() => {
+                onCaptureDevice();
+              }, 500);
+            }
+          }}
+          onDone={() => {
+            hideConfirmModal();
+            if(Platform.OS == 'android'){
+              onCaptureSim();
+            }else{
+              setTimeout(() => {
+                onCaptureSim();
+              }, 500);
+            }            
+          }}
+      />
 
     </View>
   );
