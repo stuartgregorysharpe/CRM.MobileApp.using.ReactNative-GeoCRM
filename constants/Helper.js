@@ -318,7 +318,7 @@ export function expireToken(dispatch, e) {
     console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
-    message = 'Submission timed out, Please try again or contact support';
+    message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
   }
   if (e === 'expired' || e == 'timeout') {
     dispatch(
