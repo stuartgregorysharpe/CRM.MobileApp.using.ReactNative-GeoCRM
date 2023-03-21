@@ -9,6 +9,7 @@ import { getBottomTabs } from '../../../../components/helper';
 import BottomTabItem from '../../../../components/common/BottomTabItem';
 import { getJsonData, getLocalData } from '../../../../constants/Storage';
 import { SHOW_MORE_COMPONENT } from '../../../../actions/actionTypes';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const  SetupFieldContainer = (props) => {
     
@@ -97,15 +98,25 @@ const  SetupFieldContainer = (props) => {
             return 0;
         }else{
             const majorVersionIOS = parseInt(Platform.Version, 10);
+            console.log("majorVersionIOS => ",majorVersionIOS);
+            return 4;
             if(majorVersionIOS == 7){
                 return 25
             }else{
-                return 34;
+                return 28;
             }
         }
     }
 
     return (
+        <SafeAreaView >
+        
+        {
+            Platform.OS == 'ios' &&
+            <View style={{position:'absolute', backgroundColor:'white', height:35, width: '100%' , bottom : 0  }}>
+            </View>
+        }
+        
         <View style={{
             alignSelf:'stretch' , 
             flex:1 ,            
@@ -113,7 +124,7 @@ const  SetupFieldContainer = (props) => {
             alignItems:'center',
             justifyContent:'center',            
             minHeight:250
-        }}>               
+        }}>
            
             <SetupFieldView 
                 ref={setupFieldViewRef}
@@ -154,6 +165,8 @@ const  SetupFieldContainer = (props) => {
                 }                                            
             </View>
         </View>
+       
+        </SafeAreaView>
     )
 }
 
