@@ -4,25 +4,40 @@ import { useState,useImperativeHandle } from 'react';
 import { View, Modal, StyleSheet , TouchableHighlight,Text} from 'react-native';
 import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-
+import { useDispatch  } from 'react-redux';
+import { setToken } from '../../constants/Storage';
+import { CHANGE_LOGIN_STATUS } from '../../actions/actionTypes';
 
 const AlertModal=  React.forwardRef((props, ref) => {
+
   const [message, setMessage] = useState(props.message || '')
   const [visible, setVisible] = useState(false)
-  const [buttonText, setButtonText] = useState('Okay')
+  const [buttonText, setButtonText] = useState('Okay');
+  const [isExpire, setIsExpire] = useState(false);
+  const dispatch = useDispatch()
+
   useImperativeHandle(ref, () => ({
-    alert: (message = '', buttonText='Okay') => {
+    alert: (message = '', buttonText='Okay' , expire = false ) => {
       setMessage(message)
-      setButtonText(buttonText)
+      setButtonText(buttonText == '' ? 'Okay' : buttonText );
       setVisible(true)
+      setIsExpire(expire);
     },
     hideModal: () => {
-      setVisible(false);
+      setVisible(false);      
+      if(isExpire){
+        setToken(null);
+        dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
+      }
     },
   }))
-
+ 
   const onModalClose = () => {
     setVisible(false)    
+    if(isExpire){
+      setToken(null);
+      dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
+    }
     if(props.onModalClose){
       props.onModalClose();
     }
