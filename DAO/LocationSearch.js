@@ -17,7 +17,7 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                   page_nr: pageNumber,
                   search_text: searchKey,
                 };
-
+                console.log("api param => ", param)
                 getApiRequest("locations/location-search-list", param).then((res) => {
                     console.log("location-search-list Api result count => ", res.items.length);
                     if(res.status === Strings.Success){
