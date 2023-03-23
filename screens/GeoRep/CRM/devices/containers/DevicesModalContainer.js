@@ -20,7 +20,6 @@ export default function DevicesModalContainer(props) {
     const  [lists, setLists] = useState([]);
     const [simModalType, setSimModalType] = useState('add');
     const [sim, setSim] = useState('');
-
     const navigationMain = useNavigation();
     const dispatch = useDispatch()
     const confirmDialogRef = useRef()
@@ -39,8 +38,7 @@ export default function DevicesModalContainer(props) {
             location_id: locationId
         };                
                 
-        GetRequestLocationDevicesDAO.find(param).then((res) => {
-            console.log("res", res, isMount)
+        GetRequestLocationDevicesDAO.find(param).then((res) => {            
             if(isMount){                             
                 setLists(res.devices);
             }

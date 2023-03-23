@@ -1,7 +1,7 @@
 import { View, Text , FlatList, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import React , { useRef , useState } from 'react'
 import { AppText } from '../../../../../components/common/AppText';
-import  Colors, { whiteLabel } from '../../../../../constants/Colors';
+import { whiteLabel } from '../../../../../constants/Colors';
 import CardView from '../../../../../components/common/CardView';
 import SvgIcon from '../../../../../components/SvgIcon';
 import { style } from '../../../../../constants/Styles';
@@ -104,18 +104,17 @@ export default function DevicesModalView(props) {
 
                 </ScrollView>
 
-                {
-                    // lists.length > 0 &&
-                    <TouchableOpacity
-                        style={[style.plusButton, { marginBottom: 0}]}
-                        onPress={() => { 
-                            if(props.showConfirmModal){
-                                props.showConfirmModal();
-                            }
-                        }}>
-                        <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
-                    </TouchableOpacity>
-                }         
+                 
+                <TouchableOpacity
+                    style={[style.plusButton, { marginBottom: 0}]}
+                    onPress={() => { 
+                        if(props.showConfirmModal){
+                            props.showConfirmModal();
+                        }
+                    }}>
+                    <SvgIcon icon="Round_Btn_Default_Dark" width='70px' height='70px' />
+                </TouchableOpacity>
+                
 
         </View>
         

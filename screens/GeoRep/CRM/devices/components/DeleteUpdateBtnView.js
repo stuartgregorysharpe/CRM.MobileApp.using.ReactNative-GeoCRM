@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { SubmitButton } from '../../../../../components/shared/SubmitButton'
 import { whiteLabel } from '../../../../../constants/Colors'
@@ -21,11 +21,16 @@ const DeleteUpdateBtnView = (props) => {
         <View style={styles.container}>
             <SubmitButton 
                 onSubmit={() => { onDelete() }}
-                title="Delete" style={styles.deleteBtnStyle} titleStyle={styles.titleStyle} theme='light'/> 
-
+                title="Delete" 
+                style={styles.deleteBtnStyle} 
+                titleStyle={styles.titleStyle} 
+                theme='light'
+            /> 
             <SubmitButton 
                 onSubmit={() => { onUpdate() }}
-                title="Update" style={{flex:1, marginLeft:20}}/>
+                title="Update" 
+                style={{flex:1, marginLeft:20}}
+            />
         </View>
     )
 }
@@ -33,6 +38,7 @@ const DeleteUpdateBtnView = (props) => {
 export default DeleteUpdateBtnView
 
 const styles = StyleSheet.create({
+
     container : {
         marginTop: 20,
         marginBottom: 10,
@@ -50,7 +56,5 @@ const styles = StyleSheet.create({
     titleStyle:{
         color: whiteLabel().mainText  
     },
-
-
 
 })
