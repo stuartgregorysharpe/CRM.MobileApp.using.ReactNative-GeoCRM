@@ -39,9 +39,9 @@ import { getDynamicPins } from '../actions/pins.actions';
 import { Images } from '../constants';
 import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
 import { expireToken } from '../constants/Helper';
-import { postApiRequest } from '../actions/api.action';
 import { firebase } from '@react-native-firebase/messaging';
 import messaging from '@react-native-firebase/messaging';
+
 export default function SignIn() {
 
   const loginStatus = useSelector(state => state.auth.loginStatus);
