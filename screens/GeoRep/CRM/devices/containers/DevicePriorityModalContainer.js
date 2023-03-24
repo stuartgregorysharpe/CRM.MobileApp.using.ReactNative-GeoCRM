@@ -24,16 +24,19 @@ export default function DevicePriorityModalContainer(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [modalType, setModalType] = useState('update');
     const loadingBarRef = useRef();
-    const alertModalRef = useRef()
+    const alertModalRef = useRef();
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         device_update_indempotency = generateKey();
     }, []);
 
+
     const onSubmit = (data) => {
-                
-        if( validateMsisdn(data?.msisdn) ){
+
+        if( isValidate(data) && validateMsisdn(data?.msisdn) ){
             if(!isLoading){
+                console.log("submit data" , data);
                 if( !isDuplicateData(data) ){
 
                     setIsLoading(true);
@@ -46,7 +49,7 @@ export default function DevicePriorityModalContainer(props) {
                         user_local_data: userParam.user_local_data,
                     }    
                     let primaryText = data?.primary_device == "1" ? "Primry" : "Additional";                         
-                    console.log("param ->" , data);                     
+                                
                     PostRequestDAO.find(0, 
                             postData, 
                             "device_update", 
@@ -89,6 +92,31 @@ export default function DevicePriorityModalContainer(props) {
           }
         }
         return false;
+    }    
+
+    const isValidate = (data) => {
+
+        const _errors = {...errors};
+        const type1 = data?.additional_imei_required === '1' ? 'imei1' : 'imei';
+        const type2 = data?.additional_imei_required === '1' ? 'imei2' : '';
+        var isAvailable = true;
+        if (data?.imei == '' ) {
+          isAvailable = false;
+          _errors[type1] = true;
+        }
+  
+        if (data?.additional_imei == '' && data?.additional_imei_required == '1' ) {
+          isAvailable = false;
+          _errors['imei2'] = true;
+        }
+  
+        if (data?.msn == '') {
+          isAvailable = false;
+          _errors['msn'] = true;
+        }
+
+        setErrors(_errors);
+        return isAvailable;
     }
       
     const showLoadingBar = () => {
@@ -121,6 +149,7 @@ export default function DevicePriorityModalContainer(props) {
 
             <DevicePriorityModalView                 
                 onSubmit={onSubmit}                
+                errors={errors}
                 {...props}
             />
         </View>
