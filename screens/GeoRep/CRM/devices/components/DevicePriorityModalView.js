@@ -4,18 +4,15 @@ import { ScrollView } from 'react-native-gesture-handler';
 import DevicePriorityItem from '../../../../../components/items/DevicePriorityItem';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import MsisdnInput from '../../../../../components/common/MsisdnInput';
-import CTextInput from '../../../../../components/common/CTextInput';
 import ScanCodeInput from '../../../../../components/common/ScanCodeInput';
 
 export default function DevicePriorityModalView(props) {
 
-    const { device } = props;
+    const { device , errors } = props;
 
-    const isAdditionalImei = device?.additional_imei_required == "1";
-
+    const isAdditionalImei = device?.additional_imei_required == "1";    
     const [isPrimary, setIsPrimary] = useState(false);
-    const [updatedDevice, setUpdatedDevice] = useState(null);
-    const [errors, setErrors] = useState({});
+    const [updatedDevice, setUpdatedDevice] = useState(null);    
     const type1 = isAdditionalImei ? 'imei1' : 'imei';
     const type2 = isAdditionalImei ? 'imei2' : '';
     
@@ -63,22 +60,10 @@ export default function DevicePriorityModalView(props) {
                             onChangedData={(text) =>{
                                 var tmp = { ...updatedDevice };
                                 tmp.device_serial = text;
+                                tmp.msn = text;
                                 setUpdatedDevice(tmp)
                             }}
-                        />
-
-                    {/* <CTextInput
-                        style={{marginTop:10}}                    
-                        label={'MSN'}
-                        value={updatedDevice?.device_serial}
-                        keyboardType={'number-pad'}
-                        returnKeyType={'done'}                    
-                        onChangeText={(text) => {
-                            var tmp = { ...updatedDevice };
-                            tmp.device_serial = text;
-                            setUpdatedDevice(tmp)
-                        }}
-                    /> */}
+                        />                  
 
                     <ScanCodeInput 
                             placeholder={isAdditionalImei ? 'IMEI 1' : 'IMEI'}
@@ -92,20 +77,6 @@ export default function DevicePriorityModalView(props) {
                             }}
                         />
 
-                    {/* <CTextInput
-                        style={{marginTop:10}}                    
-                        label={isAdditionalImei ? 'IMEI 1' : 'IMEI'}
-                        value={updatedDevice?.imei}
-                        keyboardType={'number-pad'}
-                        returnKeyType={'done'}                    
-                        onChangeText={(text) => {
-                            var tmp = { ...updatedDevice };
-                            tmp.imei = text;
-                            setUpdatedDevice(tmp)
-                        }}
-                    /> */}
-
-
                     {
                         isAdditionalImei &&
                         <ScanCodeInput 
@@ -118,19 +89,7 @@ export default function DevicePriorityModalView(props) {
                                 tmp.additional_imei = text;
                                 setUpdatedDevice(tmp)
                             }}
-                        />
-                        // <CTextInput
-                        //     style={{marginTop:10}}                    
-                        //     label={ isAdditionalImei ? 'IMEI 2' : ''}
-                        //     value={updatedDevice?.additional_imei}
-                        //     keyboardType={'number-pad'}
-                        //     returnKeyType={'done'}                    
-                        //     onChangeText={(text) => {
-                        //         var tmp = { ...updatedDevice };
-                        //         tmp.additional_imei = text;
-                        //         setUpdatedDevice(tmp)
-                        //     }}
-                        // />
+                        />                        
                     }
                                             
                     <DevicePriorityItem title="Primary" isPrimary={isPrimary} onUpdate={onUpdate} style={{marginTop:10}} />
