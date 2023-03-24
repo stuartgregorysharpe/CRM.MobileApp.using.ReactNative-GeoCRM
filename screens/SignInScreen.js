@@ -39,9 +39,11 @@ import { getDynamicPins } from '../actions/pins.actions';
 import { Images } from '../constants';
 import { createOfflineSyncItemTable } from '../sqlite/OfflineSyncItemsHelper';
 import { expireToken } from '../constants/Helper';
-import { postApiRequest } from '../actions/api.action';
 import { firebase } from '@react-native-firebase/messaging';
 import messaging from '@react-native-firebase/messaging';
+import LocationService from '../services/LocationService';
+import { updateCurrentLocation } from '../actions/google.action';
+
 export default function SignIn() {
 
   const loginStatus = useSelector(state => state.auth.loginStatus);
@@ -63,15 +65,31 @@ export default function SignIn() {
   }, [loginStatus]);
 
   useEffect(() => {
-    requestNotificationPermission()
+    requestNotificationPermission();
+    requestPermissions();
   }, [])
   const requestNotificationPermission = async () => {
-    const authorizationStatus = await messaging().requestPermission();
-  
+    const authorizationStatus = await messaging().requestPermission();  
     if (authorizationStatus) {
       console.log('Permission status:', authorizationStatus);
     }
   }
+  async function requestPermissions() {
+    setTimeout(() => {
+      try{
+        LocationService.getLocationService().then(locationService => {
+          locationService.requestPermissions().then(granted => {
+            console.log('Permission status - location :', granted);
+            if (granted) {
+              dispatch(updateCurrentLocation());
+            }
+          });
+        });
+      }catch(e){
+      }      
+    },1000);    
+  }
+
   const initData = () => {
     createOfflineSyncItemTable();
   }
@@ -88,10 +106,11 @@ export default function SignIn() {
 
     var token = await getToken();
     var filters = await getFilterData('@filter');
+
     if (token != null) {
       var userData = await getUserData();
       dispatch({ type: MAP_FILTERS, payload: filters });
-      dispatch({ type: CHANGE_USER_INFO, payload: userData });
+      dispatch({ type: CHANGE_USER_INFO, payload: userData });  
       dispatch({ type: CHANGE_ACCESS_TOKEN, payload: token });
       dispatch({ type: CHANGE_PROJECT_PAYLOAD, payload: jwt_decode(token) });
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'success' });

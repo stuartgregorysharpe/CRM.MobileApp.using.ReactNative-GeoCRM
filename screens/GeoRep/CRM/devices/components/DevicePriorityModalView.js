@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import { ScrollView } from 'react-native-gesture-handler';
 import DevicePriorityItem from '../../../../../components/items/DevicePriorityItem';
@@ -24,18 +24,18 @@ export default function DevicePriorityModalView(props) {
             const tmp = { ...device };
             tmp.device_serial = device.msn;
             setUpdatedDevice(tmp);
-        }        
+        }       
         setIsPrimary(device.primary_device === "1" ? true: false);
     }, [device])    
 
-    const onUpdate = (priamry) => {    
+    const onUpdate = (priamry) => {
         const tmp = { ...updatedDevice };
         tmp.primary_device = priamry ? '1' : '0';    
         setUpdatedDevice(tmp);
         setIsPrimary(priamry);
     }
 
-    const onSubmit = () => {     
+    const onSubmit = () => {
         if(props.onSubmit){
             props.onSubmit(updatedDevice);            
         }            
@@ -44,7 +44,7 @@ export default function DevicePriorityModalView(props) {
     return (
         <View style={styles.container}>
 
-                <ScrollView>      
+                <ScrollView>                    
                     
                     <MsisdnInput 
                         initialValue={updatedDevice?.msisdn}                                            
@@ -142,7 +142,9 @@ export default function DevicePriorityModalView(props) {
                         onSubmit={() => {
                             onSubmit();
                         }}  
-                        style={{marginTop:10, marginBottom:20}}/>
+                        style={{marginTop:10, marginBottom:20}}
+                    />
+                    
                 </ScrollView>
 
         </View>
