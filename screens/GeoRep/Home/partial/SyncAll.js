@@ -31,13 +31,9 @@ export const SyncAll = forwardRef((props, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    syncAllData() {       
-      
-      //setExpanded(true);
-      //setIsLoading(true);
+    syncAllData() {                   
       setIsManual(false);
-      setExpanded(true);
-      //setIsLoading(true);
+      setExpanded(true);      
       
     },
     refreshView() {
@@ -97,6 +93,12 @@ export const SyncAll = forwardRef((props, ref) => {
     }
   }
 
+  const showNotAvailableModal = () => {
+    if(alertModalRef.current){
+      alertModalRef.current.alert(Strings.This_Function_Not_Available);
+    }
+  }
+
   return (
     <View
       style={[
@@ -110,14 +112,13 @@ export const SyncAll = forwardRef((props, ref) => {
       ]}>
       
       <AlertModal ref={alertModalRef} />
+
       <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
         {!isLoading && (
           <TouchableOpacity
             onPress={() => {
               if(offlineStatus){
-                if(alertModalRef.current){
-                  alertModalRef.current.alert(Strings.This_Function_Not_Available);
-                }
+                showNotAvailableModal();
                 return;
               }
               if (basketRef.current && basketRef.current.startSync) {
@@ -187,10 +188,15 @@ export const SyncAll = forwardRef((props, ref) => {
 
       {expanded && (
         <BasketListContainer 
-        changeIsManual={(flag) => {
-          setIsManual(flag);
-        }}
-        isManual={isManual} ref={basketRef} updateLoading={updateLoading} />
+
+          changeIsManual={(flag) => {
+            setIsManual(flag);
+          }}
+          isManual={isManual} 
+          ref={basketRef} 
+          updateLoading={updateLoading}
+          showNotAvailableModal={showNotAvailableModal}
+        />
       )}
 
       {expanded && (
