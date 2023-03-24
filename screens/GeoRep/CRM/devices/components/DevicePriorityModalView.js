@@ -5,6 +5,7 @@ import DevicePriorityItem from '../../../../../components/items/DevicePriorityIt
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import MsisdnInput from '../../../../../components/common/MsisdnInput';
 import CTextInput from '../../../../../components/common/CTextInput';
+import ScanCodeInput from '../../../../../components/common/ScanCodeInput';
 
 export default function DevicePriorityModalView(props) {
 
@@ -14,6 +15,9 @@ export default function DevicePriorityModalView(props) {
 
     const [isPrimary, setIsPrimary] = useState(false);
     const [updatedDevice, setUpdatedDevice] = useState(null);
+    const [errors, setErrors] = useState({});
+    const type1 = isAdditionalImei ? 'imei1' : 'imei';
+    const type2 = isAdditionalImei ? 'imei2' : '';
     
     useEffect(() => {
         if(updatedDevice == null){
@@ -43,7 +47,7 @@ export default function DevicePriorityModalView(props) {
                 <ScrollView>                    
                     
                     <MsisdnInput 
-                        initialValue={updatedDevice?.msisdn}                    
+                        initialValue={updatedDevice?.msisdn}                                            
                         onChangeText={(text) => {
                             var tmp = { ...updatedDevice };
                             tmp.msisdn = text;
@@ -51,7 +55,19 @@ export default function DevicePriorityModalView(props) {
                         }}
                     />
 
-                    <CTextInput
+                    <ScanCodeInput 
+                            placeholder={'MSN'}
+                            type={'msn'}     
+                            value={updatedDevice?.device_serial} 
+                            errors={errors}
+                            onChangedData={(text) =>{
+                                var tmp = { ...updatedDevice };
+                                tmp.device_serial = text;
+                                setUpdatedDevice(tmp)
+                            }}
+                        />
+
+                    {/* <CTextInput
                         style={{marginTop:10}}                    
                         label={'MSN'}
                         value={updatedDevice?.device_serial}
@@ -62,9 +78,21 @@ export default function DevicePriorityModalView(props) {
                             tmp.device_serial = text;
                             setUpdatedDevice(tmp)
                         }}
-                    />
+                    /> */}
 
-                    <CTextInput
+                    <ScanCodeInput 
+                            placeholder={isAdditionalImei ? 'IMEI 1' : 'IMEI'}
+                            type={type1} 
+                            value={updatedDevice?.imei}
+                            errors={errors}
+                            onChangedData={(text) =>{
+                                var tmp = { ...updatedDevice };
+                                tmp.imei = text;
+                                setUpdatedDevice(tmp)
+                            }}
+                        />
+
+                    {/* <CTextInput
                         style={{marginTop:10}}                    
                         label={isAdditionalImei ? 'IMEI 1' : 'IMEI'}
                         value={updatedDevice?.imei}
@@ -75,22 +103,34 @@ export default function DevicePriorityModalView(props) {
                             tmp.imei = text;
                             setUpdatedDevice(tmp)
                         }}
-                    />
+                    /> */}
+
 
                     {
                         isAdditionalImei &&
-                        <CTextInput
-                            style={{marginTop:10}}                    
-                            label={ isAdditionalImei ? 'IMEI 2' : ''}
-                            value={updatedDevice?.additional_imei}
-                            keyboardType={'number-pad'}
-                            returnKeyType={'done'}                    
-                            onChangeText={(text) => {
+                        <ScanCodeInput 
+                            placeholder={isAdditionalImei ? 'IMEI 2' : ''}
+                            type={type2} 
+                            value={updatedDevice?.additional_imei} 
+                            errors={errors}
+                            onChangedData={(text) =>{
                                 var tmp = { ...updatedDevice };
                                 tmp.additional_imei = text;
                                 setUpdatedDevice(tmp)
                             }}
                         />
+                        // <CTextInput
+                        //     style={{marginTop:10}}                    
+                        //     label={ isAdditionalImei ? 'IMEI 2' : ''}
+                        //     value={updatedDevice?.additional_imei}
+                        //     keyboardType={'number-pad'}
+                        //     returnKeyType={'done'}                    
+                        //     onChangeText={(text) => {
+                        //         var tmp = { ...updatedDevice };
+                        //         tmp.additional_imei = text;
+                        //         setUpdatedDevice(tmp)
+                        //     }}
+                        // />
                     }
                                             
                     <DevicePriorityItem title="Primary" isPrimary={isPrimary} onUpdate={onUpdate} style={{marginTop:10}} />
