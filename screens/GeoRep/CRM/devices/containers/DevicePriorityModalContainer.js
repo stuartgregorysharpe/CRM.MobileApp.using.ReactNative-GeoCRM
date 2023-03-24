@@ -1,5 +1,5 @@
 
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import React , {useEffect, useState , useRef } from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import { expireToken, getPostParameter } from '../../../../../constants/Helper';
@@ -34,42 +34,63 @@ export default function DevicePriorityModalContainer(props) {
                 
         if( validateMsisdn(data?.msisdn) ){
             if(!isLoading){
-                setIsLoading(true);
-                showLoadingBar();
-    
-                var userParam = getPostParameter(currentLocation);
-                var postData = {
-                    ...data ,
-                    mode : 'online',
-                    user_local_data: userParam.user_local_data,
-                }
-    
-                let primaryText = data?.primary_device == "1" ? "Primry" : "Additional";                         
-                                
+                if( !isDuplicateData(data) ){
 
-                PostRequestDAO.find(0, 
-                        postData, 
-                        "device_update", 
-                        "devices/update-device", 
-                        device.description, 
-                        device.msisdn + "("  + primaryText  +  ")" ,
-                        device_update_indempotency                    
-                        ).then((res) => {
-                            hideLoadingBar();                 
-                            setIsLoading(false);                            
-                            showAlertModal( "update", res.message);                        
-                }).catch((e) => {
-                    hideLoadingBar();
-                    setIsLoading(false);                
-                    expireToken(dispatch, e);
-                })   
-                
+                    setIsLoading(true);
+                    showLoadingBar();
+        
+                    var userParam = getPostParameter(currentLocation);
+                    var postData = {
+                        ...data ,
+                        mode : 'online',
+                        user_local_data: userParam.user_local_data,
+                    }    
+                    let primaryText = data?.primary_device == "1" ? "Primry" : "Additional";                         
+                    console.log("param ->" , data);                     
+                    PostRequestDAO.find(0, 
+                            postData, 
+                            "device_update", 
+                            "devices/update-device", 
+                            device.description, 
+                            device.msisdn + "("  + primaryText  +  ")" ,
+                            device_update_indempotency                    
+                            ).then((res) => {
+                                hideLoadingBar();                 
+                                setIsLoading(false);
+                                if(Platform.OS == 'android'){
+                                    showAlertModal( "update", res.message);
+                                }else{
+                                    setTimeout(() => {
+                                        showAlertModal( "update", res.message);
+                                    }, 500);
+                                }                            
+                    }).catch((e) => {
+                        hideLoadingBar();
+                        setIsLoading(false);                
+                        expireToken(dispatch, e);
+                    })   
+                }else{
+                    showAlertModal( "", Strings.Stock.Duplicate_Code);
+                }               
             }    
         }else{
             showAlertModal( "validation", Strings.Complete_Compulsory_Fields);
         }         
     }
 
+    const isDuplicateData = (data) => {
+        if(data?.additional_imei_required != '1'){
+          if(data?.msn === data?.imei){
+            return true;
+          }
+        }else{
+          if(data?.imei.trim() === data?.msn.trim() || data?.imei.trim() === data?.additional_imei.trim() || data?.msn.trim() === data?.additional_imei.trim() ){
+            return true;
+          }
+        }
+        return false;
+    }
+      
     const showLoadingBar = () => {
         if(loadingBarRef.current)
             loadingBarRef.current.showModal();
@@ -94,6 +115,7 @@ export default function DevicePriorityModalContainer(props) {
         
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
+
             <LoadingBar ref={loadingBarRef}/>
             <AlertModal ref={alertModalRef} onModalClose={onModalClose}/>
 

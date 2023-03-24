@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View , TouchableOpacity  } from 'react-native'
-import React , { useState , useRef} from 'react'
+import React , { useState , useRef , useEffect} from 'react'
 import CTextInput from '../CTextInput';
 import { SubmitButton } from '../../shared/SubmitButton';
 import QRScanModal from '../QRScanModal';
@@ -9,14 +9,20 @@ import { whiteLabel } from '../../../constants/Colors';
 
 const ScanCodeInput = (props) => {
     
-    const { type, errors , placeholder } = props;
+    const { value , type, errors , placeholder } = props;
 
+    
     const [codeDisabled, setCodeDisabled] = useState(true);
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState(value);
     const qrScanModalRef = useRef(null);
-    const confirmDialogRef = useRef();
+    const confirmDialogRef = useRef();    
 
-    console.log("typetypetype",type)
+    useEffect(() => {
+        if(value != undefined){
+            setCode(value);
+        }
+    },[value]);
+
     const popDialog = () => {
         if (codeDisabled) {
             showConfirmModal();

@@ -1,5 +1,5 @@
 import {View, StyleSheet} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect , useRef } from 'react';
 import CSingleSelectInput from '../../../../../components/common/SelectInput/CSingleSelectInput';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import DeviceView from './stock_types/DeviceView';
@@ -7,13 +7,8 @@ import ConsumableView from './stock_types/ConsumableView';
 import SimView from './stock_types/SimView';
 import {Constants, Strings} from '../../../../../constants';
 import {validateNumber} from '../../../../../helpers/validateHelper';
-import {useDispatch} from 'react-redux';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../../actions/notification.action';
-import {Notification} from '../../../../../components/modal/Notification';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+import AlertModal from '../../../../../components/modal/AlertModal';
 
 var vodacom = [];
 var details = '';
@@ -34,11 +29,9 @@ export default function AddStockView(props) {
   const [codeLists, setCodeLists] = useState([]);
   const [enableAddStock, setEnableAddStock] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
-  const [count, setCount] = useState(0);
-  const [imei, setEmei] = useState('');
+  const [count, setCount] = useState(0);  
   const [errors, setErrors] = useState({});
-  
-  const dispatch = useDispatch();
+  const alertModalRef = useRef()
 
   useEffect(() => {
     vodacom = [];
@@ -59,8 +52,7 @@ export default function AddStockView(props) {
   const onDataChangedDevice = (msn, imei , additional_imei) => {
     gMsn = msn ;
     gImei = imei ;    
-    gAdditionalImei = additional_imei;
-    console.log("data changed" , msn , imei , additional_imei);
+    gAdditionalImei = additional_imei;    
     if ( ( gMsn != '' && gImei != '' &&  gAdditionalImei != '' && additionalImei == '1' ) || (gMsn != '' && gImei != '' && additionalImei != '1') ) {
       setEnableAddStock(true);
     } else {
@@ -115,6 +107,19 @@ export default function AddStockView(props) {
     return '';
   };
 
+  const isDuplicateData = () =>{
+    if(additionalImei != '1'){
+      if(gImei === gMsn){
+        return true;
+      }      
+    }else{
+      if(gImei.trim() === gMsn.trim() || gImei.trim() === gAdditionalImei.trim() || gMsn.trim() === gAdditionalImei.trim() ){
+        return true;
+      }
+    }
+    return false;
+  }
+
   const isValidate = () => {
     var isAvailable = true;
 
@@ -127,7 +132,7 @@ export default function AddStockView(props) {
       const type1 = additionalImei === '1' ? 'imei1' : 'imei';
       const type2 = additionalImei === '1' ? 'imei2' : '';
 
-      if (gImei == '') {
+      if (gImei == '' ) {
         isAvailable = false;
         _errors[type1] = true;
       }
@@ -165,16 +170,19 @@ export default function AddStockView(props) {
   };
 
   const onSubmit = () => {
-    if (isValidate()) {
+    if ( isValidate() ) {
       setErrors({});
       var data = {
         stock_type: deviceType,
         device: device,
         details: details,
         quantity: quantity,
-      };
-      console.log('D1', data); 
+      };      
       if (deviceType == Constants.stockType.DEVICE) {
+        if(isDuplicateData()){
+          showAlertModal(Strings.Stock.Duplicate_Code)
+          return;
+        }
         data = {
           stock_type: deviceType,
           product_id: productId,
@@ -182,8 +190,7 @@ export default function AddStockView(props) {
           imei: gImei,
           additional_imei : gAdditionalImei,
           device_serial: gMsn,
-        };
-        console.log('D2', data);
+        };        
       } else if (deviceType == Constants.stockType.CONSUMABLE) {
         data = {
           stock_type: deviceType,
@@ -215,16 +222,7 @@ export default function AddStockView(props) {
       }
       props.callAddStock(deviceType, data);
     } else {
-      dispatch(
-        showNotification({
-          type: Strings.Success,
-          message: getModalMessage(),
-          buttonText: 'Ok',
-          buttonAction: () => {
-            dispatch(clearNotification());
-          },
-        }),
-      );
+      showAlertModal(getModalMessage());      
     }
   };
 
@@ -261,6 +259,11 @@ export default function AddStockView(props) {
     return simLists;
   };
 
+  const showAlertModal = (message) => {
+    if(alertModalRef.current)
+      alertModalRef.current.alert(message);
+  }
+
   return (
     <View style={styles.container}>
       <CSingleSelectInput
@@ -292,8 +295,7 @@ export default function AddStockView(props) {
         items={deviceLists}
         hasError={errors['device']}
         disabled={false}
-        onSelectItem={item => {
-          console.log("item",item)
+        onSelectItem={item => {          
           setDevice(item.label);
           setErrors({...errors, device: false});
           setProductId(item.value);
@@ -331,12 +333,13 @@ export default function AddStockView(props) {
       <SubmitButton
         onSubmit={() => {
           onSubmit();
-        }}        
+        }}
         title={Strings.Stock.Add_Stock}
-        style={{marginTop: 20}}></SubmitButton>
+        style={{marginTop: 20}}>
+      </SubmitButton>
 
-      <Notification />
       <LoadingProgressBar />
+      <AlertModal ref={alertModalRef} />
 
     </View>
   );
