@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, View } from 'react-native'
 import React , { useState , useEffect } from 'react'
 import { validateMsisdn } from '../../../../../helpers/validateHelper';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';

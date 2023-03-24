@@ -1,5 +1,5 @@
 
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import React , {useEffect, useState , useRef } from 'react'
 import { Constants, Strings } from '../../../../../constants';
 import { expireToken, getPostParameter } from '../../../../../constants/Helper';
@@ -42,11 +42,9 @@ export default function DevicePriorityModalContainer(props) {
                     ...data ,
                     mode : 'online',
                     user_local_data: userParam.user_local_data,
-                }
-    
+                }    
                 let primaryText = data?.primary_device == "1" ? "Primry" : "Additional";                         
                                 
-
                 PostRequestDAO.find(0, 
                         postData, 
                         "device_update", 
@@ -56,8 +54,14 @@ export default function DevicePriorityModalContainer(props) {
                         device_update_indempotency                    
                         ).then((res) => {
                             hideLoadingBar();                 
-                            setIsLoading(false);                            
-                            showAlertModal( "update", res.message);                        
+                            setIsLoading(false);
+                            if(Platform.OS == 'android'){
+                                showAlertModal( "update", res.message);
+                            }else{
+                                setTimeout(() => {
+                                    showAlertModal( "update", res.message);
+                                }, 500);
+                            }                            
                 }).catch((e) => {
                     hideLoadingBar();
                     setIsLoading(false);                
@@ -94,6 +98,7 @@ export default function DevicePriorityModalContainer(props) {
         
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
+
             <LoadingBar ref={loadingBarRef}/>
             <AlertModal ref={alertModalRef} onModalClose={onModalClose}/>
 
