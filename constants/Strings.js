@@ -79,6 +79,7 @@ export default {
 
   Stock: {
     Add_Stock: 'Add Stock',
+    Duplicate_Code: 'Duplicate code used, Please enter a unique code',
     ICCID_Not_Found: 'ICCID not found in stock',
     No_Stock_Item_Ids: 'No Stock Item IDS',
     No_Device_Found: 'No devices found',
@@ -96,6 +97,7 @@ export default {
     Successfully_Sell_To_Trader: 'Saved to Offline sync successfully',
     Primary_Additional: 'Primary/Additional',
     Submit: 'Submit',
+    
   },
 
   Forms: {

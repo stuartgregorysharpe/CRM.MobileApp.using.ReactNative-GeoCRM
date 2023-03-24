@@ -30,6 +30,7 @@ import {getPipelineFilters} from '../actions/pipeline.action';
 import {DatetimePickerView} from './DatetimePickerView';
 
 export default function FilterView({navigation, page, onClose, isModal}) {
+  
   const dispatch = useDispatch();
   const statusLocationFilters = useSelector(
     state => state.location.statusLocationFilters,
