@@ -37,6 +37,7 @@ import CalendarEditDeleteModal from './modal/CalendarEditDeleteModal';
 import { getCurrentDate } from '../../../helpers/formatHelpers';
 import OptimizePlusButtonContainer from './containers/OptimizePlusButtonContainer';
 import ConfirmDialog from '../../../components/modal/ConfirmDialog';
+import { getJsonData } from '../../../constants/Storage';
 
 var selectedIndex = 2;
 
@@ -44,9 +45,8 @@ export default function CalendarScreen(props) {
   
   const dispatch = useDispatch();
   const navigation = props.navigation;  
-  
   const isFocused = useIsFocused();
-  const [tabIndex, setTabIndex] = useState(2);  
+  const [tabIndex, setTabIndex] = useState(2);
   const [lastWeekList, setLastWeekList] = useState([]);
   const [weekAheadList, setWeekAheadList] = useState([]);
   const [todayList, setTodayList] = useState([]);    
@@ -57,7 +57,6 @@ export default function CalendarScreen(props) {
   const [buttonText, setButtonText] = useState('Continue');
   const [message, setMessage] = useState("");
   const [location, setLocation] = useState(null);
-  const [isModalActive, setIsModalActive] = useState(false);
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const features = useSelector(
@@ -96,24 +95,24 @@ export default function CalendarScreen(props) {
     return () => {
       isMount = false;
     }
-  }, [isModalActive]);
+  }, []);
 
   useEffect(() => {
     //onRefresh();
   }, [isFocused]);
 
-  const onRefresh = () => {
+  const onRefresh = (isRefresh = false) => {    
     if (selectedIndex === 1) {
-      if (lastWeekList.length === 0) {
+      if (lastWeekList.length === 0 || isRefresh) {
         loadList('last_week');
       }
     } else if (selectedIndex === 2 || selectedIndex === 0) {
-      if (todayList.length === 0) {
+      if (todayList.length === 0 || isRefresh ) {
         selectedIndex = 2;
         loadList('today');
       }
     } else if (selectedIndex === 3) {
-      if (weekAheadList.length === 0) {
+      if (weekAheadList.length === 0 || isRefresh) {
         loadList('week_ahead');
       }
     }
@@ -395,19 +394,24 @@ export default function CalendarScreen(props) {
           message={message}
           buttonText={buttonText}
           onModalClose={ async () => {
-            setIsConfirmModal(false);
-            if(confirmModalType == 'have_compulsory_form'){
-              const location = await getJsonData('@checkin_location');            
+            console.log("modal type", confirmModalType)         
+            setIsConfirmModal(false); 
+            
+            if(confirmModalType === 'have_compulsory_form'){
+              const location = await getJsonData('@checkin_location');
               if(location != null && location != undefined){     
                 navigation.navigate('DeeplinkRepForms', {
                   locationInfo: location,
                 });
               }
-            }else if(confirmModalType == 'no_have_complsory') {
+            }else if(confirmModalType === 'no_have_complsory') {
               navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
                   page: 'checkin',
               });  
+            }else {
+              onRefresh(true)
             }
+
           }}
         />
 
