@@ -55,7 +55,7 @@ export default function AddStockContainer(props) {
       });
   };
 
-  const callAddStock = (type, data) => {
+  const callAddStock = (type, data) => {    
     if(isLoading) return;
     setIsLoading(true);
     showLoadingBar()
@@ -80,8 +80,7 @@ export default function AddStockContainer(props) {
       subTitle,
       null      
     )
-      .then(res => {
-       
+      .then(res => {       
         hideLoadingBar()
         console.log("add stock response =>", res);
         var message = '';

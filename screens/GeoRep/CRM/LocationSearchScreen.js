@@ -227,11 +227,11 @@ export default function LocationSearchScreen(props) {
     } else {
       showBottomBar();
     }
+    
   };
 
   const hideBottomBar = () => {
     console.log('hide bottom bar', props.screenProps);
-
     props.screenProps.setOptions({
       tabBarStyle: {
         display: 'none',
@@ -495,6 +495,7 @@ export default function LocationSearchScreen(props) {
             />
           </View>
         )}
+
 
 
         <AddToCalendarModal 

@@ -318,7 +318,7 @@ export function expireToken(dispatch, e) {
     console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
-    message = 'Submission timed out, Please try again or contact support';
+    message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
   }
   if (e === 'expired' || e == 'timeout') {
     dispatch(
@@ -327,16 +327,29 @@ export function expireToken(dispatch, e) {
         message: message,
         buttonText: 'Ok',
         buttonAction: () => {
-          if (e === 'expired') {
-            setToken(null);
-            dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
+          if (e === 'expired') {            
+            goToLogin(dispatch);
           }
           dispatch(clearNotification());
         },
       }),
     );
   }
+}
 
+export function goToLogin( dispatch ) {
+  setToken(null);
+  dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
+}
+
+export function getErrorMessage (e) {
+  var message = '';
+  if (e === 'expired') {    
+    message = 'Access has expired, please login again';
+  } else if (e === 'timeout') {
+    message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
+  }
+  return message;
 }
 
 export function showOfflineDialog(dispatch) {

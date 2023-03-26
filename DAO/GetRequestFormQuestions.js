@@ -5,6 +5,7 @@ import {getTokenData} from '../constants/Storage';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import UrlResource from './UrlResource';
 import {getFormQuestionData} from './form-questions-db-helper';
+
 export function find(postData) {
   return new Promise(function (resolve, reject) {
     checkConnectivity()
@@ -194,7 +195,7 @@ const generateOptionQuery = () => {
   return query;
 };
 
-const generateProductQuery = () => {
+const generateProductQuery = () => {  
   var query =
     `SELECT pcmd.product_id, pcmd.product_name, pt.product_type, pcmd.brand, pcmd.barcode, pcmd.sku_code ` +
     `FROM products_core_master_data as pcmd ` +
@@ -204,13 +205,16 @@ const generateProductQuery = () => {
     `pcmd.business_unit_id = ? ` +
     `AND ` +
     `pcmd.client_id = ? ` +
-    `AND  ` +
-    `pcmd.delete_status = 0
-     ORDER by pcmd.product_name`;
+    `AND ` +
+    `pcmd.delete_status = 0 ` + 
+    `AND pcmd.product_tag NOT IN ('POS','Device','Consumables','Sim') ` + 
+    `ORDER by pcmd.product_name`;
+
+    console.log("product query =>" , query)
   return query;
 };
 
-const generateReturnProductQuery = () => {
+const generateReturnProductQuery = () => {  
   var query = `SELECT
                 pcmd.product_id,
                 pcmd.product_name,
@@ -225,7 +229,9 @@ const generateReturnProductQuery = () => {
                     pcmd.business_unit_id = ?
                 AND pcmd.client_id = ?
                 AND pcmd.delete_status = 0
-                ORDER BY pcmd.product_name`;
+                AND pcmd.product_tag NOT IN ('POS','Device','Consumables','Sim') ` + 
+                `ORDER BY pcmd.product_name`;
+    console.log("returnproduct query =>" , query)
   return query;
 };
 
@@ -406,8 +412,7 @@ const getFormQuestions = async (
         client_id,
         postData,
         element,
-      );
-      console.log("questionData => ",questionData)
+      );      
       tmp.push(questionData);
     } else if (
       questionType == 'product_issues' ||
@@ -443,7 +448,7 @@ const getFieldData = async (lists, postData) => {
   try {
     for (var i = 0; i < lists.length; i++) {
       var element = lists.item(i);
-      console.log('elementx => ', element);
+      
       if (element.core_field_name != null && element.core_field_name != '') {
         var coreFiledData = await fetchCoreFieldData(postData.location_id);
         value = getCoreFieldValue(

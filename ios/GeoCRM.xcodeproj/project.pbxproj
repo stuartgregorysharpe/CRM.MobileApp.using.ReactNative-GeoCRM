@@ -603,7 +603,7 @@
 				CODE_SIGN_ENTITLEMENTS = GeoCRM/GeoCRM.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 56;
 				DEVELOPMENT_TEAM = M6YHJDJ6US;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
@@ -613,7 +613,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.8;
+				MARKETING_VERSION = 2.0.15;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -640,7 +640,7 @@
 				CODE_SIGN_ENTITLEMENTS = GeoCRM/GeoCRM.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 56;
 				DEVELOPMENT_TEAM = M6YHJDJ6US;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Geo CRM";
@@ -649,7 +649,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.8;
+				MARKETING_VERSION = 2.0.15;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

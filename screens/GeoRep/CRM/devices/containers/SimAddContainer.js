@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React , { useRef , useState , useEffect } from 'react'
 import SimAddView from '../components/SimAddView'
 import { PostRequestDAO } from '../../../../../DAO'

@@ -1,13 +1,14 @@
 import {View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState , useRef } from 'react';
 import SearchLocationView from '../components/SearchLocationView';
 import {useDispatch} from 'react-redux';
 import {showNotification} from '../../../../../actions/notification.action';
 import {Constants, Strings} from '../../../../../constants';
 import {Notification} from '../../../../../components/modal/Notification';
-import {expireToken} from '../../../../../constants/Helper';
+import {expireToken, getErrorMessage} from '../../../../../constants/Helper';
 import { GetRequestCustomerSearchDAO, GetRequestLocationDevicesDAO } from '../../../../../DAO';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+import AlertModal from '../../../../../components/modal/AlertModal';
 
 const SearchLocationContainer = props => {
 
@@ -17,6 +18,9 @@ const SearchLocationContainer = props => {
   const [originLists, setOriginLists] = useState([]);
   const [locationId, setLocationId] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
+  const alertModalRef = useRef();
+
   var searchKey = '';
   var changedSearchKey = '';  
 
@@ -50,8 +54,7 @@ const SearchLocationContainer = props => {
       
     } else {
 
-      setLocationId(item.location_id);
-      
+      setLocationId(item.location_id);      
       let param = {
         location_id: item.location_id,
       };
@@ -61,9 +64,9 @@ const SearchLocationContainer = props => {
           props.onSubmit(stockType, item.location_id);
         } else {
         }
-      }).catch((e) => {          
+      }).catch((e) => {
           if (e === 'expired') {
-            expireToken(dispatch, e);
+            showErrorModal(e);
           } else {
             dispatch(
               showNotification({
@@ -73,9 +76,7 @@ const SearchLocationContainer = props => {
               }),
             );
           }
-
-      })
-            
+      })            
     }
   };
 
@@ -112,17 +113,22 @@ const SearchLocationContainer = props => {
       if(props.onStartSearch && res.items.length == 0  ){
         props.onStartSearch(false);
       }
-
       if (key == '') {
         setOriginLists(res.items);
       }
       setIsLoading(false);
     }).catch((e) => {
-      setIsLoading(false);
-      expireToken(dispatch, e);
+      setIsLoading(false);     
+      showErrorModal(e);
     })
      
   };
+
+  const showErrorModal = (e) => {
+    if(alertModalRef.current){
+      alertModalRef.current.alert( getErrorMessage(e) , '' ,  e === 'expired' ? true : false );
+    }
+  }
 
   return (
     <View style={[props.style ? props.style : {} , {alignSelf: 'stretch' }]}>
@@ -135,6 +141,9 @@ const SearchLocationContainer = props => {
       />
       <Notification />
       <LoadingProgressBar />
+      <AlertModal 
+        ref={alertModalRef} />
+
     </View>
   );
 };

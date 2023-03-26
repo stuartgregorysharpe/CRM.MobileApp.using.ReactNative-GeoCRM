@@ -14,7 +14,7 @@ import SvgIcon from '../../../../../components/SvgIcon'
 import { RotationAnimation } from '../../../../../components/common/RotationAnimation'
 import { getBasketDateTime, getDateTimeFromBasketTime } from '../../../../../helpers/formatHelpers'
 import { getBaskets } from './helper'
-import { useDispatch } from 'react-redux'
+import { useDispatch , useSelector} from 'react-redux'
 import { clearNotification, showNotification } from '../../../../../actions/notification.action'
 import { expireToken } from '../../../../../constants/Helper'
 import { CHANGE_SYNC_START } from '../../../../../actions/actionTypes'
@@ -33,6 +33,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
     const [currentBasket, setCurrentBasket] = useState("");
     const rotationAnimationRef = useRef();
     const [basketLists, setBasketLists] = useState(gBascketLists != undefined && gBascketLists.length > 0 ? basketLists : []);    
+    const offlineStatus = useSelector(state => state.auth.offlineStatus);
     var lists = getBaskets();
     const dispatch = useDispatch();
 
@@ -256,8 +257,15 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         !item.isLoading && item.lastSyncedDate != undefined && item.lastSyncedDate != '' &&
                         <TouchableOpacity onPress={() => {
                             if(!isLoading){
-                                isOneBasketSync = true;
-                                syncTable(index , '');
+                                if(offlineStatus){
+                                    if(props.showNotAvailableModal){
+                                        props.showNotAvailableModal()
+                                    }
+                                }else{
+                                    isOneBasketSync = true;
+                                    syncTable(index , '');
+                                }                            
+                                
                             }                            
                         }}>
                             <View style={{backgroundColor:whiteLabel().actionFullButtonBackground , borderRadius:5, marginLeft:5 }}>           
