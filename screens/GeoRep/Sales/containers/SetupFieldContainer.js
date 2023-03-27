@@ -152,11 +152,13 @@ const  SetupFieldContainer = (props) => {
                     bottomTabs.map((item, index) =>{
                         return (
                             <BottomTabItem  
-                                onItemPressed={() => {                 
-                                    if(item?.name != 'More') {
-                                        dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                                onItemPressed={() => {                                    
+                                    if(item?.name != 'Sales'){
+                                        if(item?.name != 'More') {
+                                            dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                                        }                                 
+                                        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
                                     }                                    
-                                    props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
                                 }}
                                 key={index} item={item} 
                             />

@@ -12,8 +12,8 @@ const BottomTabItem = ({item , onItemPressed}) => {
     <TouchableOpacity 
         onPress={onItemPressed}
         style={styles.container}>
-        <SvgIcon icon={item.inActiveIcon} width='20' height='20' />
-        <AppText title={item.name} color={Colors.textGeyColor} style={{marginTop: Platform.OS == 'android' ? 5 : 8 }} ></AppText>
+        <SvgIcon icon={item?.name == 'Sales' ? item.activeIcon : item.inActiveIcon} width='20' height='20' />
+        <AppText title={item.name} color={item?.name == 'Sales' ? whiteLabel().mainText : Colors.textGeyColor} style={{marginTop: Platform.OS == 'android' ? 5 : 8 }} ></AppText>
     </TouchableOpacity>
   )
 }

@@ -74,8 +74,9 @@ export default function RepBottomTabNavigator({navigation}) {
   };
 
   useEffect(() => {
-    if (visibleMore != '') {
-      if (visibleMore === 'ProductSales') {
+    
+    if (visibleMore != '' && visibleMore != 'Sales') { // Sales from bottom bar , ProductSales from right drawer menu
+      if (visibleMore === 'ProductSales') {        
         navigation.navigate('More', {
           screen: 'ProductSales',
           params: {screen: 'Root', params: {regret_item: ''}},
@@ -187,9 +188,8 @@ export default function RepBottomTabNavigator({navigation}) {
             listeners={({navigation}) => ({
               tabPress: e => {
                 if (element.name === 'More') {
-                  e.preventDefault();
 
-                  //dispatch({type: SLIDE_STATUS, payload: false});
+                  e.preventDefault();                  
                   console.log('revisible mo', visibleMore);
                   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
 
@@ -198,11 +198,17 @@ export default function RepBottomTabNavigator({navigation}) {
                   // } else {
                   //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
                   // }
+                  
                 } else {
                   console.log('bottom tab clicked', element.name);
-                  dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                   if (element.name === 'Home') {
                     dispatch({type: SET_CONTENT_FEED_DATA, payload: true});
+                  } else if(element.name === 'Sales'){
+                    dispatch({
+                      type: SHOW_MORE_COMPONENT,
+                      payload: 'Sales',
+                    });
                   }
                 }
               },
