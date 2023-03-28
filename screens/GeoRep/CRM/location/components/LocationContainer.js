@@ -54,6 +54,7 @@ const LocationContainer = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isZoomOut, setIsZoomOut] = useState(false);
   const [locationInfo, setLocationInfo] = useState();
+  const [isFinish, setIsFinish] = useState(false);
   const polygonData = useMemo(() => getPolygonData(polygons), [polygons]);
   const mapFilters = useSelector(state => state.selection.mapFilters);
   const markerModalRef = useRef(null);
@@ -143,8 +144,14 @@ const LocationContainer = props => {
 
   
   const onPressSearch = () => {
+    if(isCalendarSelection){      
+      if(isDrawMode){
+        setIsFinish(true);
+      }
+    }
     navigateToSearchLocation();
   };
+
   const onFilterPress = () => {
     dispatch(getLocationFilters());
     if (locationFilterModalRef && locationFilterModalRef.current) {
@@ -206,6 +213,7 @@ const LocationContainer = props => {
       page: 'checkin',
     });
   };
+
   const onFinishDrawing = selectedMarkers => {
     console.log('onFinishDrawing', selectedMarkers);
     setIsDrawMode(false);
@@ -224,6 +232,7 @@ const LocationContainer = props => {
       payload: selectedLocations,
     });
   };
+
   const onMarkerPressed = (item, key) => {
     const itemLocationId = item.location_id;
     if (isCalendarSelection) {
@@ -286,7 +295,9 @@ const LocationContainer = props => {
             setIsDrawMode(!isDrawMode);
           }}
           onClickCancel={() => {
+            setIsDrawMode(false);
             dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+            dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
             navigateToSearchLocation();
           }}
           onClickList={() => {
@@ -302,9 +313,11 @@ const LocationContainer = props => {
         currentLocation={currentLocation}
         selectedLocations={selectedLocationsForCalendar}
         isDrawMode={isDrawMode}
+        isFinish={isFinish}
         onMarkerPressed={onMarkerPressed}
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
+        onFinishUpdate={() => setIsFinish(false)}
       />
 
       {isShowZoomLabel && (

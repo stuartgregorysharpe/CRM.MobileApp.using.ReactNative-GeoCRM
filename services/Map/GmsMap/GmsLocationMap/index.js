@@ -17,7 +17,8 @@ const CURRENT_LOCATION_RADIUS = 200;
 
 
 const GmsLocationMap = props => {
-  const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
+
+  const { isFinish , isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -41,9 +42,19 @@ const GmsLocationMap = props => {
 
   useEffect(() => {
     if(!isCalendarSelection){
+      //onFinishDrawing();
       onResetDrawing();
     }
   }, [isCalendarSelection]);
+
+  useEffect(() =>{
+    if(isFinish){
+      onFinishDrawing();
+      if(props.onFinishUpdate){
+        props.onFinishUpdate();
+      }
+    }
+  }, [isFinish]);
 
   const initTransCode = async () => {
     const code = await getPolygonFillColorTransparency();
@@ -84,7 +95,7 @@ const GmsLocationMap = props => {
     });
   };
   const onFinishDrawing = () => {
-    if (props.onFinishDrawing) {
+    if (props.onFinishDrawing && polylineEditing != undefined) {
       const marksInDrawedPolygon = getMarksInDrawedPolygon(
         markers,
         polylineEditing.coordinates,

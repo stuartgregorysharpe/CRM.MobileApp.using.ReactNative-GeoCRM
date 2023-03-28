@@ -28,7 +28,7 @@ let polylineKey = 0;
 const CURRENT_LOCATION_RADIUS = 200;
 
 const HmsLocationMap = props => {
-  const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
+  const { isFinish , isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -63,6 +63,15 @@ const HmsLocationMap = props => {
       onResetDrawing();
     }    
   }, [isCalendarSelection]);
+
+  useEffect(() =>{
+    if(isFinish){
+      onFinishDrawing();
+      if(props.onFinishUpdate){
+        props.onFinishUpdate();
+      }
+    }
+  }, [isFinish]);
 
   const initTransCode = async () => {
     const code = await getPolygonFillColorTransparency();
