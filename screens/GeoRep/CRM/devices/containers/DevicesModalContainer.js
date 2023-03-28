@@ -63,7 +63,7 @@ export default function DevicesModalContainer(props) {
     
     const showConfirmModal = () => {
         if(confirmDialogRef.current){
-            confirmDialogRef.current.showModal( Strings.CRM.Pleae_Select_Type , 'Sim' , 'Device');
+            confirmDialogRef.current.showModal( Strings.CRM.Pleae_Select_Type , Strings.CRM.RICA_MSISDN , 'Device');
         }
     }
 
@@ -123,7 +123,7 @@ export default function DevicesModalContainer(props) {
             />
 
             <SimAddModal
-                title='Sim'
+                title={Strings.CRM.RICA_MSISDN}
                 clearText={'Close'}
                 ref={simAddModalRef}
                 location_id={locationId}
