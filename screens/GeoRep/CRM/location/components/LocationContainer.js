@@ -286,6 +286,7 @@ const LocationContainer = props => {
             setIsDrawMode(!isDrawMode);
           }}
           onClickCancel={() => {
+            dispatch({type: IS_CALENDAR_SELECTION, payload: false});
             navigateToSearchLocation();
           }}
           onClickList={() => {

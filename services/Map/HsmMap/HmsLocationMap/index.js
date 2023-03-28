@@ -22,6 +22,7 @@ import {
   calculateBBox,
   calculateBBoxFromHMS,
 } from '../../../../screens/GeoRep/CRM/components/helpers';
+import { useSelector  } from 'react-redux';
 import MarkerIconView from '../../components/MarkerIconView';
 let polylineKey = 0;
 const CURRENT_LOCATION_RADIUS = 200;
@@ -29,6 +30,9 @@ const CURRENT_LOCATION_RADIUS = 200;
 const HmsLocationMap = props => {
   const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
+  const isCalendarSelection = useSelector(
+    state => state.selection.isCalendarSelection,
+  );
   const [polylineEditing, setPolylineEditing] = useState(null);
   const [cameraPosition, setCameraPosition] = useState({
     target: {
@@ -53,6 +57,13 @@ const HmsLocationMap = props => {
   useEffect(() => {
     initTransCode();
   }, []);
+
+  useEffect(() => {
+    if(!isCalendarSelection){
+      onResetDrawing();
+    }    
+  }, [isCalendarSelection]);
+
   const initTransCode = async () => {
     const code = await getPolygonFillColorTransparency();
     setTransCode(code);

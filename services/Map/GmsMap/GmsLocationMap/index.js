@@ -10,12 +10,18 @@ import {
 } from '../../../../constants/Storage';
 import ClusteredMapView from '../../../../screens/GeoRep/CRM/components/ClusteredMapView';
 import MarkerIcon from '../../../../components/Marker';
+import { useSelector } from 'react-redux';
 import { isMarker } from '../../../../screens/GeoRep/CRM/components/helpers';
 let polylineKey = 0;
 const CURRENT_LOCATION_RADIUS = 200;
+
+
 const GmsLocationMap = props => {
   const {isDrawMode, currentLocation, polygonData, markers, selectedLocations} =
     props;
+  const isCalendarSelection = useSelector(
+    state => state.selection.isCalendarSelection,
+  );
   const [polylineEditing, setPolylineEditing] = useState(null);
   const [transCode, setTransCode] = useState('05');
   const mapRef = useRef(null);
@@ -27,9 +33,18 @@ const GmsLocationMap = props => {
     currentLocation != null &&
     currentLocation.longitude != undefined &&
     currentLocation.latitude != undefined;
+  
+  
   useEffect(() => {
     initTransCode();
   }, []);
+
+  useEffect(() => {
+    if(!isCalendarSelection){
+      onResetDrawing();
+    }
+  }, [isCalendarSelection]);
+
   const initTransCode = async () => {
     const code = await getPolygonFillColorTransparency();
     setTransCode(code);
@@ -78,6 +93,7 @@ const GmsLocationMap = props => {
     }
     onResetDrawing();
   };
+
   const onRegionChangeComplete = (region, markers, bBox, zoom) => {
     if (props.onRegionChangeComplete) {
       props.onRegionChangeComplete(region, markers, bBox, zoom);
