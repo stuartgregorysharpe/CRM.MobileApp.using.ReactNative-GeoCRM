@@ -175,12 +175,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   //    ------------------------    DEFINE SETUP MOMDAL   ----------------------------
 
   useEffect(() => {
-    onInitialize();
+    onInitialize();    
   }, []);
 
   useEffect(() => {
     console.log('show more screen', showMoreScreen, visibleMore);    
-    if (showMoreScreen === 1 && visibleMore == 'ProductSales') {
+    if (showMoreScreen === 1 && (visibleMore == 'ProductSales' || visibleMore == 'Sales') ) {      
       refreshList();
     }
   }, [showMoreScreen, visibleMore]);

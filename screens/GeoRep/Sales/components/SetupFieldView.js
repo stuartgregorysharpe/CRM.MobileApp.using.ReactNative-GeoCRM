@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {
   useState,
   useEffect,
@@ -565,7 +565,8 @@ const styles = StyleSheet.create({
     //maxHeight:400,
     padding: 10,
     borderRadius: 5,
-    alignSelf: 'stretch',
+    alignSelf: 'stretch',    
+    width: Dimensions.get("screen").width - 20
   },
   titleContainer: {
     flexDirection: 'row',
