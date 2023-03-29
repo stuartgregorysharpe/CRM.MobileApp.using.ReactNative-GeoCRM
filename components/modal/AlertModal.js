@@ -33,7 +33,7 @@ const AlertModal=  React.forwardRef((props, ref) => {
   }))
  
   const onModalClose = () => {
-    setVisible(false)    
+    setVisible(false);
     if(isExpire){
       setToken(null);
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });

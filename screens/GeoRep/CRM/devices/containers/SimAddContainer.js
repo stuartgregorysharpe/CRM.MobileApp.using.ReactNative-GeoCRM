@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { Platform, StyleSheet, View } from 'react-native'
 import React , { useRef , useState , useEffect } from 'react'
 import SimAddView from '../components/SimAddView'
 import { PostRequestDAO } from '../../../../../DAO'
@@ -20,6 +20,7 @@ const SimAddContainer = (props) => {
   const loadingBar = useRef();
   const alertModalRef = useRef();
   const [isLoading, setIsLoading] =  useState(false);
+  const [modalType, setModalType] = useState("");
 
   useEffect(() => {
     indempotency = generateKey();
@@ -54,10 +55,14 @@ const SimAddContainer = (props) => {
     PostRequestDAO.find(0, postData, 'stock_module' , url , 'Device Sim','Location Name for the location ' + location_id , indempotency ).then((res) => {      
       setIsLoading(false);
       hideLoadingBar();
-      if(res.status == Strings.Success){
-        if(props.onButtonAction){
-          props.onButtonAction( { type : Constants.actionType.ACTION_CLOSE , value : null} );
-        }
+      if(res.status == Strings.Success){      
+        if(Platform.OS === 'android'){
+          showAlertModal(res.message , type );
+        }else{
+          setTimeout(() => {
+            showAlertModal(res.message , type );
+          }, 500);
+        }                     
       }
     }).catch((e) => {
       setIsLoading(false);
@@ -91,9 +96,10 @@ const SimAddContainer = (props) => {
     }
   }
 
-  const showAlertModal = () => {
+  const showAlertModal = (message , type) => {
+    setModalType(type);
     if(alertModalRef.current){
-      alertModalRef.current.alert(Strings.Complete_Compulsory_Fields)
+      alertModalRef.current.alert(message)
     }
   }
  
@@ -101,7 +107,16 @@ const SimAddContainer = (props) => {
     <View style={styles.container}>
 
         <LoadingBar ref={loadingBar} />
-        <AlertModal ref={alertModalRef}/>
+        
+        <AlertModal
+          onModalClose={() => {
+            if(modalType === 'add' || modalType === 'delete' || modalType === 'update'){
+              if(props.onButtonAction){ 
+                props.onButtonAction( { type : Constants.actionType.ACTION_CLOSE , value : null} );
+              }
+            }
+          }}
+          ref={alertModalRef}/>
         
         <SimAddView 
           {...props}
