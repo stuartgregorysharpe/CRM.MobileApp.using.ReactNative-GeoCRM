@@ -87,9 +87,9 @@ export function filterProducts(products, keyword) {
   for (sectionName in _products) {
     _products[sectionName] = _products[sectionName].filter(
       product =>
-        product.label.includes(keyword) ||
-        product.barcode.includes(keyword) ||
-        product.product_code.includes(keyword),
+        product?.label?.toLowerCase().includes(keyword.toLowerCase()) ||
+        product?.barcode?.toLowerCase().includes(keyword.toLowerCase()) ||
+        product?.product_code?.toLowerCase().includes(keyword.toLowerCase()),
     );
   }
   return _products;
