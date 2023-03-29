@@ -51,7 +51,8 @@ export default {
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
     Supplier_Compulsory: 'Supplier need to be filled',
-    Pleae_Select_Type : 'Please select type to add'
+    Pleae_Select_Type : 'Please select type to add',
+    RICA_MSISDN : "RICA MSISDN"
   },
 
   Log: {
