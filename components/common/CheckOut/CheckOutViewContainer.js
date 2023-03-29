@@ -57,6 +57,7 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory]);
 
   const initData = async () => {
+
     specificLocationId = await getLocalData('@specific_location_id');    
     check_out_indempotency = generateKey();
   };
@@ -67,32 +68,29 @@ export default function CheckOutViewContainer(props) {
     }    
   }, [locationCheckOutCompulsory, isLoadingForm]);
 
-  const _callCheckOut = () => {
+  const _callCheckOut = async() => {
+
+    if(check_out_indempotency == undefined || check_out_indempotency == ''){
+      check_out_indempotency = generateKey();
+    }
+    if(specificLocationId === undefined || specificLocationId === ''){
+      specificLocationId = await getLocalData('@specific_location_id');    
+    }
 
     if (isLoading) {
       return;
     }
 
+    if(specificLocationId === undefined || specificLocationId === ''){
+      if(props.showConfirmModal){
+        props.showConfirmModal("Location Id was cleared. Can you sync all items in offline mode?");        
+      }
+    }
+
     if (locationCheckOutCompulsory) {
       if(props.showConfirmModal){
         props.showConfirmModal(Strings.CRM.Complete_Compulsory_Form);        
-      }
-      // dispatch(
-      //   showNotification({
-      //     type: Strings.Success,
-      //     message: Strings.CRM.Complete_Compulsory_Form,
-      //     buttonText: Strings.Ok,
-      //     buttonAction: async () => {
-      //       const location = await getJsonData('@checkin_location');            
-      //       if(location != null && location != undefined){
-      //         navigationMain.navigate('DeeplinkRepForms', {
-      //           locationInfo: location,
-      //         });
-      //       }            
-      //       dispatch(clearNotification());
-      //     },
-      //   }),
-      // );
+      }      
     } else {
 
       setIsLoading(true); 
@@ -120,26 +118,27 @@ export default function CheckOutViewContainer(props) {
         .then(async res => {
 
           console.log('RES : ', res);          
-          await storeLocalValue('@checkin', '0');
-          await storeLocalValue('@checkin_type_id', '');
-          await storeLocalValue('@checkin_reason_id', '');
-          await storeLocalValue('@specific_location_id', '');
-          await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
-          await storeJsonData('@form_ids', []);
-          await storeJsonData('@setup', null);
-          await storeJsonData('@checkin_location', null);
-          
-          dispatch({type: CHECKIN, payload: false, scheduleId: 0});
-          dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});
-                                      
+          if(res.status === Strings.Success){
+            await storeLocalValue('@checkin', '0');
+            await storeLocalValue('@checkin_type_id', '');
+            await storeLocalValue('@checkin_reason_id', '');
+            await storeLocalValue('@specific_location_id', '');
+            await storeLocalValue(Constants.storageKey.CHECKIN_SCHEDULE_ID, '');
+            await storeJsonData('@form_ids', []);
+            await storeJsonData('@setup', null);
+            await storeJsonData('@checkin_location', null);            
+            dispatch({type: CHECKIN, payload: false, scheduleId: 0});
+            dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});            
+          }
+                                       
           setIsLoading(false);
           if(loadingBarRef.current)
             loadingBarRef.current.hideModal();
-                                                  
+                    
           if(props.onCallback){
             props.onCallback(res);
           }
-            
+                    
           
         })
         .catch(e => {

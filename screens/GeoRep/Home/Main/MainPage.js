@@ -751,7 +751,7 @@ const MainPage = forwardRef((props, ref) => {
 
       <SyncAll ref={syncAllViewRef} ></SyncAll>
 
-      {isCheckin && (
+      {isCheckin && currentCall?.checkin_time != '' && currentCall?.location_name != '' && (
         <CheckOutViewContainer
           type="home"
           isLoadingForm={isLoading}
