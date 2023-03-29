@@ -69,6 +69,8 @@ const LocationContainer = props => {
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
+  
+
 
   const onLoadMarkers = (_currentLocation, boundBox) => {
     const isLoadable =
@@ -276,7 +278,16 @@ const LocationContainer = props => {
         });
       }
     }
+  }
 
+  const onAddToCalendarClosed = ({ type, value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      addToCalendarModalRef.current.hideModal();      
+    }else if(type == Constants.actionType.ACTION_DONE) {
+      addToCalendarModalRef.current.hideModal();            
+      dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+      dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
+    }
   }
 
   return (
@@ -351,10 +362,8 @@ const LocationContainer = props => {
       
       <AddToCalendarModal
         ref={addToCalendarModalRef}
-        onButtonAction={() => {
-          dispatch({type: IS_CALENDAR_SELECTION, payload: false});
-          dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
-        }}
+        selectedItems={selectedLocationsForCalendar}
+        onButtonAction={onAddToCalendarClosed}        
       />
       <AddLeadModal
         //title="Add Lead"
