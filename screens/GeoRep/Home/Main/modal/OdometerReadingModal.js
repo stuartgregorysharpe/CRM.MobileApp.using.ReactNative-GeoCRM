@@ -377,13 +377,12 @@ const OdometerReadingModal = React.forwardRef((props, ref) => {
               <TouchableOpacity
                 style={[
                   styles.imageContainer,
-                  {marginLeft: 10, marginRight: 20},
-                  isImageError && {borderColor: Colors.redColor}
+                  {marginLeft: 10, marginRight: 20}                  
                 ]}
                 onPress={() => {
                   setIsPicker(true);
                 }}>
-                <SvgIcon icon="Add_Image" />
+                <SvgIcon icon={isImageError ? "Add_Image_Compulsory" : "Add_Image" }  />
               </TouchableOpacity>
             )}
           </View>
@@ -422,8 +421,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     padding: 5,
-    borderWidth: 1,
-    borderColor: whiteLabel().fieldBorder,
+    // borderWidth: 1,
+    // borderColor: whiteLabel().fieldBorder,
     borderRadius: 5,
     width: Dimensions.get('screen').width / 4.5 + 7,
     height: Dimensions.get('screen').width / 4.5,
