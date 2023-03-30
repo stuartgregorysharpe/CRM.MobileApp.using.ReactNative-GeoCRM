@@ -47,6 +47,12 @@ const GmsLocationMap = props => {
     }
   }, [isCalendarSelection]);
 
+  useEffect(() => {
+    if(!isDrawMode){
+      onResetDrawing();
+    }
+  }, [isDrawMode]);
+
   useEffect(() =>{
     if(isFinish){
       onFinishDrawing();

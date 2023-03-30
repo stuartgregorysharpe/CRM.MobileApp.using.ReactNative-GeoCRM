@@ -302,7 +302,7 @@ const LocationContainer = props => {
       {isCalendarSelection && (
         <CrmCalendarSelection
           isDraw={isDrawMode}
-          onClickDraw={() => {
+          onClickDraw={() => {            
             setIsDrawMode(!isDrawMode);
           }}
           onClickCancel={() => {
