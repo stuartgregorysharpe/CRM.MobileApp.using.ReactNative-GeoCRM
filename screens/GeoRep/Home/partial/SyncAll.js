@@ -11,6 +11,7 @@ import {Strings, Values} from '../../../../constants';
 import ViewOfflineSyncItemContainer from './containers/ViewOfflineSyncItemContainer';
 import { useSelector } from 'react-redux';
 import AlertModal from '../../../../components/modal/AlertModal';
+import { initializeDB } from '../../../../services/SyncDatabaseService/SyncTable';
 
 export const SyncAll = forwardRef((props, ref) => {
 
@@ -31,10 +32,19 @@ export const SyncAll = forwardRef((props, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    syncAllData() {                   
-      setIsManual(false);
-      setExpanded(true);      
-      
+    syncAllData(syncType) {
+      if(syncType === 'bascket_and_offline_items'){
+        setIsManual(false);
+        setExpanded(true); 
+      }else{        
+        initializeDB().then((syncNotCompleted) => {
+          if(syncNotCompleted){
+            setExpanded(true);
+            setIsLoading(true);
+          }
+        }).catch((e) => {
+        });        
+      }                                                                                                                                          
     },
     refreshView() {
       initLastSyncAllDateTime();
@@ -55,6 +65,7 @@ export const SyncAll = forwardRef((props, ref) => {
 
   useEffect(() => {
     let isMount = true;
+    console.log("trigger => ", expanded , isLoading)
     if (isMount && expanded && isLoading) {
       startTableSync();
     } else if (isMount && expanded && !isLoading) {
@@ -188,7 +199,6 @@ export const SyncAll = forwardRef((props, ref) => {
 
       {expanded && (
         <BasketListContainer 
-
           changeIsManual={(flag) => {
             setIsManual(flag);
           }}
