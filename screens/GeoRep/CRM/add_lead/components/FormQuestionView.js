@@ -547,6 +547,9 @@ export const FormQuestionView = forwardRef((props, ref) => {
             if (type == Constants.actionType.ACTION_FORM_CLEAR) {
               onValueChangedSelectionView(key, index, null);
             }
+            if (type == Constants.actionType.ACTION_INFO) {
+              _onTouchStart(null, item.guide_info);
+            }
           }}
         />
       );
