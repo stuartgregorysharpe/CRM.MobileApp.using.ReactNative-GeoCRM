@@ -72,6 +72,7 @@ const FormFilterContainer = props => {
         marginHorizontal: 10,
         marginBottom: 10,
       }}>
+        
       <FormFilterModalView
         onButtonAction={addData}
         saveFilter={saveFilter}

@@ -4,7 +4,7 @@ import {getStatusBarHeight, getBottomSpace} from 'react-native-iphone-x-helper';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 const platform = Platform.OS;
-const modalHeight = Platform.OS == 'android' ?  Dimensions.get('window').height * 0.82  :  Dimensions.get('window').height * 0.85;
+const modalHeight = Platform.OS == 'android' ?  Dimensions.get('screen').height * 0.825  :  Dimensions.get('screen').height * 0.85;
 
 export default {
 

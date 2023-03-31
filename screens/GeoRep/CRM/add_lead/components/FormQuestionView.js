@@ -18,7 +18,6 @@ import Sign from '../../../Forms/questions/partial/Sign';
 import {SelectionView} from '../../../Forms/questions/partial/SelectionView';
 import UploadFileView from '../../../Forms/questions/partial/UploadFileView';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
-import {GuideInfoView} from '../../../Forms/partial/GuideInfoView';
 import FormSubmitFeedbackModal from '../../../../../components/shared/FormSubmitFeedback/modals/FormSubmitFeedbackModal';
 import {Colors, Constants, Fonts} from '../../../../../constants';
 import {TextForm} from '../../../../../components/shared/TextForm';
@@ -44,6 +43,7 @@ import BrandFacing from '../../../../../components/shared/BrandFacing';
 import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 import PosCapture from '../../../../../components/shared/PosCapture';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+import GuideInfoModal from '../../../Forms/modal/GuideInfoModal';
 
 //export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
@@ -73,6 +73,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [formSubmitFeedback, setFormSubmitFeedback] = useState(null);
   const formSubmitModalRef = useRef(null);
+  const guideInfoModalRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState(false);
   useImperativeHandle(
@@ -120,10 +121,23 @@ export const FormQuestionView = forwardRef((props, ref) => {
     updateFormQuestions(tmp);
   };
 
+  const showGuideInfoModal = () => {
+    if(guideInfoModalRef.current){
+      guideInfoModalRef.current.showModal();
+    }
+  }
+
+  const hideGuideInfoModal = () => {
+    if(guideInfoModalRef.current){
+      guideInfoModalRef.current.hideModal();
+    }
+  }
+
   const _onTouchStart = (e, info) => {
     setGuideInfo(info);
-    setIsInfo(true);
+    showGuideInfoModal()
   };
+
   const closeSignView = () => {
     setIsSign(false);
   };
@@ -671,10 +685,11 @@ export const FormQuestionView = forwardRef((props, ref) => {
         </View>
       </ScrollView>
 
-      <GuideInfoView
-        visible={isInfo}
-        info={guideInfo}
-        onModalClose={() => setIsInfo(false)}></GuideInfoView>
+      <GuideInfoModal
+        ref={guideInfoModalRef}
+        info={guideInfo}        
+        onModalClose={() => hideGuideInfoModal()}
+      />
 
       <FormSubmitFeedbackModal
         data={formSubmitFeedback}
