@@ -746,16 +746,37 @@ const Arrow_Right = `<svg xmlns="http://www.w3.org/2000/svg" width="41" height="
 </svg>
 `;
 
-const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="238" height="254.93" viewBox="0 0 238 254.93">
-<g id="Group_4817" data-name="Group 4817" transform="translate(-789.725 -193.833)">
-  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(808.525 193.833)">
-    <path id="Path_4180" data-name="Path 4180" d="M0,0H202.235V202.235H0Z" transform="translate(0 0)" fill=${actionIconFill}/>
-    <path id="Path_4181" data-name="Path 4181" d="M18.853,18.853H77.838V2H18.853A16.9,16.9,0,0,0,2,18.853V77.838H18.853ZM69.412,94.691,35.706,136.824H136.824l-25.279-33.706L94.438,125.953ZM128.4,56.772a12.64,12.64,0,1,0-12.64,12.64A12.623,12.623,0,0,0,128.4,56.772ZM153.676,2H94.691V18.853h58.985V77.838h16.853V18.853A16.9,16.9,0,0,0,153.676,2Zm0,151.677H94.691v16.853h58.985a16.9,16.9,0,0,0,16.853-16.853V94.691H153.676ZM18.853,94.691H2v58.985a16.9,16.9,0,0,0,16.853,16.853H77.838V153.677H18.853Z" transform="translate(14.853 14.853)" fill=${actionIconBackground}/>
+
+const Add_Image = `<svg xmlns="http://www.w3.org/2000/svg" width="222" height="222" viewBox="0 0 222 222">
+<g id="Group_5940" data-name="Group 5940" transform="translate(-265.146 -2090.146)">
+  <g id="Rectangle_2384" data-name="Rectangle 2384" transform="translate(265.146 2090.146)" fill="none" stroke=${actionIconBackground} stroke-width="5">
+    <rect width="222" height="222" rx="17" stroke="none"/>
+    <rect x="2.5" y="2.5" width="217" height="217" rx="14.5" fill="none"/>
   </g>
-  <text id="Checkout" transform="translate(908.725 436.764)" fill=${actionIconBackground} font-size="49" font-family="Product Sans" font-weight="500"><tspan x="-118" y="0">Add Image</tspan></text>
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(298.78 2102.007)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H154.736V154.736H0Z" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M14.895,14.895H60.026V2H14.895A12.933,12.933,0,0,0,2,14.895V60.026H14.895ZM53.579,72.921,27.789,105.158h77.368L85.816,79.368,72.727,96.84ZM98.71,43.908a9.671,9.671,0,1,0-9.671,9.671A9.658,9.658,0,0,0,98.71,43.908ZM118.052,2H72.921V14.895h45.131V60.026h12.895V14.895A12.933,12.933,0,0,0,118.052,2Zm0,116.052H72.921v12.895h45.131a12.933,12.933,0,0,0,12.895-12.895V72.921H118.052ZM14.895,72.921H2v45.131a12.933,12.933,0,0,0,12.895,12.895H60.026V118.052H14.895Z" transform="translate(10.895 10.895)" fill=${actionIconBackground}/>
+  </g>
+  <text id="Checkout" transform="translate(375.146 2287.146)" fill=${actionIconBackground} font-size="37" font-family="SegoeUI, Segoe UI"><tspan x="-89.627" y="0">Add Image</tspan></text>
 </g>
-</svg>
-`;
+</svg>`;
+
+const Add_Image_Compulsory = `<svg xmlns="http://www.w3.org/2000/svg" width="222" height="222" viewBox="0 0 222 222">
+<g id="Group_5940" data-name="Group 5940" transform="translate(-265.146 -2090.146)">
+  <g id="Rectangle_2384" data-name="Rectangle 2384" transform="translate(265.146 2090.146)" fill="none" stroke="#DC143C" stroke-width="5">
+    <rect width="222" height="222" rx="17" stroke="none"/>
+    <rect x="2.5" y="2.5" width="217" height="217" rx="14.5" fill="none"/>
+  </g>
+  <g id="wallpaper_black_24dp_1_" data-name="wallpaper_black_24dp (1)" transform="translate(298.78 2102.007)">
+    <path id="Path_4180" data-name="Path 4180" d="M0,0H154.736V154.736H0Z" fill="rgba(0,0,0,0)"/>
+    <path id="Path_4181" data-name="Path 4181" d="M14.895,14.895H60.026V2H14.895A12.933,12.933,0,0,0,2,14.895V60.026H14.895ZM53.579,72.921,27.789,105.158h77.368L85.816,79.368,72.727,96.84ZM98.71,43.908a9.671,9.671,0,1,0-9.671,9.671A9.658,9.658,0,0,0,98.71,43.908ZM118.052,2H72.921V14.895h45.131V60.026h12.895V14.895A12.933,12.933,0,0,0,118.052,2Zm0,116.052H72.921v12.895h45.131a12.933,12.933,0,0,0,12.895-12.895V72.921H118.052ZM14.895,72.921H2v45.131a12.933,12.933,0,0,0,12.895,12.895H60.026V118.052H14.895Z" transform="translate(10.895 10.895)" fill=${actionIconBackground}/>
+  </g>
+  <text id="Checkout" transform="translate(375.146 2287.146)" fill=${actionIconBackground} font-size="37" font-family="SegoeUI, Segoe UI"><tspan x="-89.627" y="0">Add Image</tspan></text>
+</g>
+</svg>`;
+
+
+
 const Arrow_Left = `<svg xmlns="http://www.w3.org/2000/svg" width="16.3" height="26.99" viewBox="0 0 16.3 26.99">
 <g id="Group_4283" data-name="Group 4283" transform="translate(22.737 37.649) rotate(180)">
   <path id="angle-down" d="M26.99,2.324a.9.9,0,0,1-.27.644L14.117,16.02a.832.832,0,0,1-1.244,0L.27,2.969a.9.9,0,0,1,0-1.289L1.622.28a.832.832,0,0,1,1.244,0L13.5,11.287,24.124.28a.832.832,0,0,1,1.244,0l1.352,1.4A.9.9,0,0,1,26.99,2.324Z" transform="translate(6.437 37.649) rotate(-90)" fill=${actionButtonIconFill}/>
@@ -1580,6 +1601,7 @@ const svgMap = {
   Calendar_Optimize: Calendar_Optimize,
   Arrow_Right: Arrow_Right,
   Add_Image: Add_Image,
+  Add_Image_Compulsory: Add_Image_Compulsory,
   Arrow_Left_Btn: Arrow_Left,
   Arrow_Left_Btn_alt:Arrow_Left_alt,
   Arrow_Right_Btn: Arrow_Right_Button,
