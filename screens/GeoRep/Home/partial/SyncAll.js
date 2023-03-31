@@ -26,9 +26,7 @@ export const SyncAll = forwardRef((props, ref) => {
 
   const updateLoading = loading => {
     setIsLoading(loading);
-    if (loading) {
-      initLastSyncAllDateTime();
-    }
+    initLastSyncAllDateTime();    
   };
 
   useImperativeHandle(ref, () => ({
