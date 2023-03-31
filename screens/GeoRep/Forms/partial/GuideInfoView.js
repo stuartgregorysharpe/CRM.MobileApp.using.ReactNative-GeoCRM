@@ -16,6 +16,7 @@ import Divider from '../../../../components/Divider';
 import { style } from '../../../../constants/Styles';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import FastImage from 'react-native-fast-image';
+import { Values } from '../../../../constants';
 
 export const GuideInfoView = ({ visible, info, onModalClose }) => {
   
@@ -34,8 +35,10 @@ export const GuideInfoView = ({ visible, info, onModalClose }) => {
     setIsLoading(true);
     Image.getSize(info.image, (width, height) => {
       const screenWidth = Dimensions.get('window').width * 0.8;
+      const screenHeight = Dimensions.get("window").height;
       const scaleFactor = width / screenWidth;
-      const requiredImageHeight = height / scaleFactor;
+      var requiredImageHeight = height / scaleFactor;      
+      requiredImageHeight = parseInt(requiredImageHeight) > screenHeight - 100 ? Values.modalHeight : parseInt(requiredImageHeight);      
       setImageHeight(requiredImageHeight);
       setIsLoading(false);
     }, (error) => {
@@ -66,10 +69,11 @@ export const GuideInfoView = ({ visible, info, onModalClose }) => {
             )}
 
             {!isLoading && isShowImage && (
-              <View style={{ alignItems: 'center' }}>
+              <View style={{ alignItems: 'center' , marginBottom: 5 }}>
                 <FastImage
-                  style={[styles.imageContainer, { height: imageHeight ? imageHeight : 300 }]}
+                  style={[styles.imageContainer, { height: imageHeight && imageHeight != undefined ? parseInt(imageHeight) : 300 }]}
                   source={{ uri: info.image }}
+                  resizeMode={FastImage.resizeMode.contain}
                 />
               </View>
             )}

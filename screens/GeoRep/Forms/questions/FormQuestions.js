@@ -126,8 +126,7 @@ export const FormQuestions = props => {
 
     console.log(param)
     GetRequestFormQuestionsDAO.find(param)
-      .then(res => {
-        console.log("res.questions",res.questions)
+      .then(res => {        
         //if (isMount) {
           groupByQuestions(res.questions);
         //}
