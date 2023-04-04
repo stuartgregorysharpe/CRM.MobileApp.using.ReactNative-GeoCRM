@@ -235,7 +235,7 @@ const TakePhotoView = props => {
           {
             (photos == undefined || maxSize == undefined || maxSize == -1  || photos != undefined && photos.length < maxSize) &&
             <TouchableOpacity
-              style={[styles.imageContainer, {marginLeft: 10} ,  hasError != undefined && hasError ? { borderColor: whiteLabel().endDayBackground } :{} ]}
+              style={[styles.imageContainer, {marginLeft: photos instanceof Array && photos.length > 0 ? 10 : 0} ,  hasError != undefined && hasError ? { borderColor: whiteLabel().endDayBackground } :{} ]}
               onPress={() => {                
                 showSelectionDialog(); 
                 if(photos.length > 0){

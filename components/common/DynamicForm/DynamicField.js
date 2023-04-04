@@ -370,8 +370,8 @@ const DynamicField = props => {
   };
   const renderTakePhotoView = () => {
     return (
-      <View style={{alignItems:'center', marginVertical:15}}>
-        <AppText title={field_label} size="medium"></AppText>
+      <View style={{alignItems:'center', marginVertical:15 }}>        
+        <AppText title={field_label?.trim()} size="medium" ></AppText>
         <TakePhotoView
           key={index}
           isOptimize={true}
