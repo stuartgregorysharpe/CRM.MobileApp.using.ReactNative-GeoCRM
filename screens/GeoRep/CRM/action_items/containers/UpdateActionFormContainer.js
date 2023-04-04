@@ -25,6 +25,7 @@ import {
 
 const UpdateActionFormContainer = props => {
   
+  const { actionName } = props;
   const navigation = useNavigation();
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
@@ -153,7 +154,7 @@ const UpdateActionFormContainer = props => {
           } else {
             props.onButtonAction({
               type: type,
-              value: item
+              value: {item : item , actionName : actionName}
             });
           }
         }}

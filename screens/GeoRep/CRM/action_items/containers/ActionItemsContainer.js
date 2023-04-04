@@ -26,27 +26,30 @@ const ActionItemsContainer = props => {
     {title: 'Completed', id: 3},
   ];
 
-  const onPressActionItem = item => {
+  const onPressActionItem = item => {    
     setSelectedActionItem(item);
     updateActionItemModalRef.current.showModal();
   };
 
   const onUpdateActionItemModalClosed = ({type, value}) => {
     if(type == Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK){  
-      if(value?.form_id != undefined){
+      if(value?.item != undefined && value?.actionName != undefined){        
         console.log("data => ", value);      
-        openFormPage();  
+        const data = {
+          form_id : value?.item?.form_id,
+          for_name : value?.actionName
+        }
+        openFormPage(data , value?.location_id); 
       }
     }
   }
 
-  const openFormPage = async() => {
-    const location = await getJsonData('@checkin_location');
-    if (location != null && location != undefined) {
-      navigation.navigate('DeeplinkRepForms', {
-        locationInfo: location,
-      });
-    }
+  const openFormPage = async(data , location_id) => {
+    var routeName = 'DeeplinkFormQuestionsScreen';        
+    navigation.navigate(routeName, {
+      data: data,
+      location_id: location_id,
+    });
   }
 
   return (
@@ -74,6 +77,7 @@ const ActionItemsContainer = props => {
         locationId={locationId}
         tabIndex={tabIndex}
         onPressActionItem={onPressActionItem}></Actions>
+
       {hasAdd && (
         <BubbleMenu
           items={[
@@ -103,6 +107,7 @@ const ActionItemsContainer = props => {
       <UpdateActionItemModal
         ref={updateActionItemModalRef}
         locationId={locationId}
+        actionName={selectedActionItem? selectedActionItem?.action_name : ''}
         actionItemId={
           selectedActionItem ? selectedActionItem.action_item_id : null
         }
