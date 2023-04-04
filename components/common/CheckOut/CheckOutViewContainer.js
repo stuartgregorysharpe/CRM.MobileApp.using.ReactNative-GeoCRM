@@ -83,7 +83,7 @@ export default function CheckOutViewContainer(props) {
 
     if(specificLocationId === undefined || specificLocationId === ''){
       if(props.showConfirmModal){
-        props.showConfirmModal("Location Id was cleared. Can you sync all items in offline mode?");        
+        props.showConfirmModal("Location ID error, please contact Support");        
       }
     }
 
