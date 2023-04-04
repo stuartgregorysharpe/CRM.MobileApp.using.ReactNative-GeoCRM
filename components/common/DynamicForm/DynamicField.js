@@ -3,6 +3,7 @@ import React from 'react';
 import {View , Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { Constants } from '../../../constants';
+import { whiteLabel } from '../../../constants/Colors';
 import DropdownText from '../../shared/DropdownText';
 import EmailPdf from '../../shared/EmailPdf';
 import EmailInputView from '../../shared/EmailPdf/EmailInputView';
@@ -371,7 +372,7 @@ const DynamicField = props => {
   const renderTakePhotoView = () => {
     return (
       <View style={{alignItems:'center', marginVertical:15 }}>        
-        <AppText title={field_label?.trim()} size="medium" ></AppText>
+        <AppText title={field_label?.trim()} size="medium" style={{fontWeight:'bold' , color : whiteLabel().mainText}} ></AppText>
         <TakePhotoView
           key={index}
           isOptimize={true}
