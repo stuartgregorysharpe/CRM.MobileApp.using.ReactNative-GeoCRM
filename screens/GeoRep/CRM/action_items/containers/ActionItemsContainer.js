@@ -7,8 +7,12 @@ import BubbleMenu from '../../../../../components/common/BubbleMenu';
 import {Constants} from '../../../../../constants';
 import AddActionItemModal from '../modals/AddActionItemModal';
 import UpdateActionItemModal from '../modals/UpdateActionItemModal';
+import { getJsonData } from '../../../../../constants/Storage';
+import { useNavigation } from '@react-navigation/native';
 
 const ActionItemsContainer = props => {
+  
+  const navigation = useNavigation();
   const {locationId, hasAdd} = props;
   const [tabIndex, setTabIndex] = useState(0);
   const addActionItemModalRef = useRef(null);
@@ -26,6 +30,25 @@ const ActionItemsContainer = props => {
     setSelectedActionItem(item);
     updateActionItemModalRef.current.showModal();
   };
+
+  const onUpdateActionItemModalClosed = ({type, value}) => {
+    if(type == Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK){  
+      if(value?.form_id != undefined){
+        console.log("data => ", value);      
+        openFormPage();  
+      }
+    }
+  }
+
+  const openFormPage = async() => {
+    const location = await getJsonData('@checkin_location');
+    if (location != null && location != undefined) {
+      navigation.navigate('DeeplinkRepForms', {
+        locationInfo: location,
+      });
+    }
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={{marginTop: 10, marginHorizontal: 10}}>
@@ -86,6 +109,7 @@ const ActionItemsContainer = props => {
         actionItemType={
           selectedActionItem ? selectedActionItem.action_item_type : null
         }
+        onButtonAction={onUpdateActionItemModalClosed}
       />
     </View>
   );

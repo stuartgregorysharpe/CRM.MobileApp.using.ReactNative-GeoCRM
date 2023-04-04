@@ -6,7 +6,7 @@ import CheckinLinkButton from './CheckinLinkButton';
 import FormLinkButton from './FormLinkButton';
 
 const DynamicButtons = props => {
-  const {buttons} = props;
+  const {buttons , showConfirmModal} = props;
   if (!buttons) return;
   const buttonViews = [];
   const onButtonAction = data => {
@@ -50,12 +50,21 @@ const DynamicButtons = props => {
         );
         buttonViews.push(buttonView);
       } else if (buttonType == Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK) {
+        
         const buttonView = (
           <CheckinLinkButton
             title={buttonData.button_label}
             key={buttonType}
             locationId={buttonData.location_id}
+            checkinTypeId={buttonData?.checkin_type_id}
+            checkinReasonId={buttonData?.checkin_reason_id}
+            formId={buttonData.form_id}
             style={{marginTop: 12}}
+            showConfirmModal={(message) => {
+              if(props.showConfirmModal){
+                props.showConfirmModal(message);
+              }
+            }}
             onFinishProcess={() => {
               onButtonAction({
                 type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,

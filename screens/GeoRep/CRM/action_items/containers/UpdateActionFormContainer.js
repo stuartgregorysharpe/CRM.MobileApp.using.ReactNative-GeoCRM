@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,6 +9,7 @@ import {
 import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
 import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
+import AlertModal from '../../../../../components/modal/AlertModal';
 import {Constants, Strings} from '../../../../../constants';
 import {
   expireToken,
@@ -23,6 +25,7 @@ import {
 
 const UpdateActionFormContainer = props => {
   
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({});
   const [formStructure, setFormStructure] = useState([]);
   const [buttons, setButtons] = useState([]);
@@ -30,6 +33,7 @@ const UpdateActionFormContainer = props => {
   const {locationId, actionItemId, actionItemType} = props;
   const [isLoading, setIsLoading] = useState(false);
   const actionFormRef = useRef(null);
+  const alertModalRef = useRef();
   const currentLocation = useSelector(state => state.rep.currentLocation);
 
   const load = () => {
@@ -38,6 +42,7 @@ const UpdateActionFormContainer = props => {
       action_item_id: actionItemId,
     })
       .then(data => {
+        console.log("respnose => ", data)
         if (props.updateModalInfo) {
           props.updateModalInfo({createdBy: data.created_by});
         }
@@ -107,8 +112,29 @@ const UpdateActionFormContainer = props => {
         expireToken(dispatch, e);
       });
   };
+
+  const showConfirmModal = (message) => {
+    if(alertModalRef.current){
+      alertModalRef.current.alert(message);
+    }
+  }
+  
+
   return (
     <View style={[styles.container, props.style]}>
+
+      <AlertModal  
+        ref={alertModalRef}
+        onModalClose={() => {
+          props.onButtonAction({
+            type: Constants.actionType.ACTION_CLOSE            
+          });
+          navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+            page: 'checkin',
+          });  
+        }}
+      />
+
       <DynamicForm
         ref={actionFormRef}
         formData={formData}
@@ -120,12 +146,14 @@ const UpdateActionFormContainer = props => {
       
       <DynamicButtons
         buttons={buttons}
+        showConfirmModal={showConfirmModal}
         onButtonAction={({type, item}) => {
           if (type == Constants.buttonType.BUTTON_TYPE_SUMBIT) {
             onSubmit();
           } else {
             props.onButtonAction({
               type: type,
+              value: item
             });
           }
         }}
