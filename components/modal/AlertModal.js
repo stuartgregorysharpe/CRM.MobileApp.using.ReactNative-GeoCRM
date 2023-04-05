@@ -14,14 +14,16 @@ const AlertModal=  React.forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
   const [buttonText, setButtonText] = useState('Okay');
   const [isExpire, setIsExpire] = useState(false);
+  const [response, setResponse] = useState('');
   const dispatch = useDispatch()
 
   useImperativeHandle(ref, () => ({
-    alert: (message = '', buttonText='Okay' , expire = false ) => {
+    alert: (message = '', buttonText='Okay' , expire = false , res ) => {
       setMessage(message)
       setButtonText(buttonText == '' ? 'Okay' : buttonText );
       setVisible(true)
       setIsExpire(expire);
+      setResponse(res);
     },
     hideModal: () => {
       setVisible(false);      
@@ -39,7 +41,7 @@ const AlertModal=  React.forwardRef((props, ref) => {
       dispatch({ type: CHANGE_LOGIN_STATUS, payload: 'logout' });
     }
     if(props.onModalClose){
-      props.onModalClose();
+      props.onModalClose(response);
     }
   }
 

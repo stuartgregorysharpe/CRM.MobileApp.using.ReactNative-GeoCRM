@@ -200,15 +200,17 @@ export default function RepBottomTabNavigator({navigation}) {
                   // }
                   
                 } else {
-                  console.log('bottom tab clicked', element.name);
-                  //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  console.log('bottom tab clicked', element.name);                  
                   if (element.name === 'Home') {
+                    dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                     dispatch({type: SET_CONTENT_FEED_DATA, payload: true});
                   } else if(element.name === 'Sales'){
                     dispatch({
                       type: SHOW_MORE_COMPONENT,
                       payload: 'Sales',
                     });
+                  }else{
+                    dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                   }
                 }
               },
