@@ -196,6 +196,7 @@ export default function AddLeadContainer(props) {
       customMasterFields,
       primaryData,
       selectedLists,
+      add_location_id,
     );
     const locationName = getAddLeadLocationName(leadForms, customMasterFields);
     const streetAddress = getAddLeadStreetAddress(
