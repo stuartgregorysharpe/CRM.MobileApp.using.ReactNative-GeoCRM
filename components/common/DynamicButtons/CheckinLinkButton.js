@@ -118,10 +118,12 @@ const CheckinLinkButton = props => {
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
             } else {
-              checkin_type_id = checkinType.checkin_type_id;              
-              setIsFeedback(false);
-              setCallTriger(true);
-              //_callCheckedIn();
+              if(checkinType != undefined){
+                checkin_type_id = checkinType.checkin_type_id;              
+                setIsFeedback(false);
+                setCallTriger(true);
+                //_callCheckedIn();
+              }              
             }
           } else if (modalType === 'checkin_reason') {
             var chk = checkinReason.find(element => element.reason === item);
