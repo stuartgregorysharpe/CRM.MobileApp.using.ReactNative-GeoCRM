@@ -22,8 +22,10 @@ import { Notification } from '../../../components/modal/Notification';
 import Orders from './Orders';
 import DanOneSales from './DanOneSales/DanOneSales';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
+import { getBascketLastSyncTableData } from '../../../sqlite/BascketLastSyncsHelper';
 
 export default function HomeScreen(props) {
+
   const { route, navigation } = props;
   const [tabIndex, setTabIndex] = useState('Main');
   const [tabs, setTabs] = useState([]);
@@ -118,7 +120,9 @@ export default function HomeScreen(props) {
   useEffect(() => {
     refreshHeader();
   }, [navigation]);
+
   const refreshHeader = () => {
+
     var screenProps = props.screenProps;
     if (screenProps === undefined) {
       screenProps = props.navigation;
@@ -137,31 +141,45 @@ export default function HomeScreen(props) {
         },
       });
     }
+
   };
+
+
   useEffect(() => {
     syncFun();
   }, [offlineStatus]);
 
-  const syncFun = async () => {
+  const syncFun = async () => {    
+    var flag = false;
+    var syncType = 'bascket_and_offline_items';
+    const isOnline = await getLocalData('@online');
     if (route.params != undefined) {
-      const { sync } = route.params;
+      const { sync } = route.params;          
       if (sync) {
-        // start sync when online
-        var isOnline = await getLocalData('@online');
-        if (mainPageRef.current) {          
-          if (isOnline === '1') {
-            mainPageRef.current.onlineSyncTable();
-          }
+        // start sync when online        
+        if (mainPageRef.current) {
+          flag = true;
         } else {          
           if (isOnline === '1') {
             setTabIndex('Main');
             setSelectedTab(0);
-            if(mainPageRef.current)
-              mainPageRef.current.onlineSyncTable();
+            flag = true;
           }          
         }
       }
+    }else{ // first install or first open
+      const res = await getBascketLastSyncTableData('sync_all');                            
+      if (res.length == 0) { // No synced yet        
+        flag = true;
+        syncType = 'bascket';
+      }
     }
+
+    if(flag && (isOnline === "1" || isOnline === undefined)){
+      if(mainPageRef.current)
+        mainPageRef.current.onlineSyncTable(syncType);
+    }
+
   };
 
   const showOfflineMessage = async () => {

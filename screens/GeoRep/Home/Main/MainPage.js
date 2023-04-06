@@ -30,8 +30,6 @@ import { getContentFeeds, updateContentFeed_post } from '../../../../actions/con
 import CustomImageDialog from '../../../../components/modal/content_type_modals/CustomImageDialog';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 
-//const MainPage = props => {
-
 const MainPage = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
@@ -75,10 +73,12 @@ const MainPage = forwardRef((props, ref) => {
       loadContentFeedData();
     }
   }, [dataUpdated]);
+
   useImperativeHandle(ref, () => ({
-    onlineSyncTable() {
+
+    onlineSyncTable(syncType) {
       if (syncAllViewRef.current) {
-        syncAllViewRef.current.syncAllData();
+        syncAllViewRef.current.syncAllData(syncType);
       }
     },
 
@@ -87,30 +87,21 @@ const MainPage = forwardRef((props, ref) => {
     },
 
   }));
-
-  // useEffect(() => {
-  //   loadPage();
-  // }, []);
-
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {            
-  //     loadPage();
-  //   });
-  //   return unsubscribe;
-  // }, [navigation]);  
-
+    
   useEffect(() => {
     loadPage();
   }, [isCheckin]);
 
   useEffect(() => {
-    initializeDB().then(res => {
-      console.log(' ----------------- initaliz db end ---------------- ');
-      dispatch({ type: CHANGE_SYNC_START, payload: false });
-      if (syncAllViewRef.current) {
-        syncAllViewRef.current.refreshView();
-      }
-    });
+    
+    // initializeDB().then(res => {
+    //   console.log(' ----------------- initaliz db end ---------------- ');
+    //   dispatch({ type: CHANGE_SYNC_START, payload: false });
+    //   if (syncAllViewRef.current) {
+    //     syncAllViewRef.current.refreshView();
+    //   }
+    // });
+
     checkConnectivity().then((isConnected) => {
       if (!isConnected) {
         setIsScrollable(false)
