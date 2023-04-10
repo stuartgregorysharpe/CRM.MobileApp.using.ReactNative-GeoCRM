@@ -5,10 +5,9 @@ import { style } from '../../../constants/Styles';
 import MainPage from './Main/MainPage';
 import { useSelector } from 'react-redux';
 import ActionItemsContainer from '../CRM/action_items/containers/ActionItemsContainer';
-import { generateTabs } from './helper';
+import { generateTabs, postGPSLocation } from './helper';
 import { getSpeedTest } from '../../../services/DownloadService/TrackNetSpeed';
 import BackgroundTimer from 'react-native-background-timer';
-
 import { CHANGE_OFFLINE_STATUS } from '../../../actions/actionTypes';
 import { useDispatch } from 'react-redux';
 import { getLocalData, storeLocalValue } from '../../../constants/Storage';
@@ -17,12 +16,13 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import { Strings } from '../../../constants';
-import { getTime } from '../../../helpers/formatHelpers';
+import { getCurrentDate, getDateTime, getTime } from '../../../helpers/formatHelpers';
 import { Notification } from '../../../components/modal/Notification';
 import Orders from './Orders';
 import DanOneSales from './DanOneSales/DanOneSales';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 import { getBascketLastSyncTableData } from '../../../sqlite/BascketLastSyncsHelper';
+import MyBackgroundTimer from './MyBackgroundTimer';
 
 export default function HomeScreen(props) {
 
@@ -36,17 +36,32 @@ export default function HomeScreen(props) {
   const speed_test = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.speed_test,
   );
+  const payload = useSelector(state => state.selection.payload);
+  const currentLocation = useSelector(state => state.rep.currentLocation);
+  
   const mainPageRef = useRef(null);
   const dispatch = useDispatch();
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const syncStart = useSelector(state => state.rep.syncStart);
 
   useEffect(() => {
-    setTabs(generateTabs(features));
+    setTabs(generateTabs(features));    
+    const data = payload.user_scopes.geo_rep.location_ping;
+    if( data?.enabled === "1" ) {      
+      const timer = MyBackgroundTimer.setInterval( () => {
+        const currentTime = getTime();                
+        if(data?.start_time < currentTime && currentTime < data?.end_time){                    
+          postGPSLocation(currentLocation);
+        }        
+      } , parseInt(data?.frequency) *  1000);      
+    }
+    // return () => {
+    //   MyBackgroundTimer.clearInterval(timer)
+    // }
   }, []);
 
   useEffect(() => {
-    BackgroundTimer.stopBackgroundTimer();
+    BackgroundTimer.stopBackgroundTimer();      
     BackgroundTimer.runBackgroundTimer(async () => {
       if (speed_test.enabled === '1' && !syncStart) {
         const manual = await getLocalData('@manual_online_offline');

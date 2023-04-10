@@ -1,3 +1,20 @@
+import { postApiRequest } from "../../../actions/api.action";
+import { getPostParameter } from "../../../constants/Helper";
+
+export const postGPSLocation = (currentLocation) => {
+
+  var userParam = getPostParameter(currentLocation);
+  var postData = {
+    user_local_data: userParam.user_local_data,
+  };
+
+  postApiRequest('user/location-ping' , postData ,  null).then((res) => {
+    console.log("response => ", res);
+  }).catch((e) => {
+
+  })
+}
+
 export const generateTabs = features => {
   var tabs = [];
   var allTabs = getAllTabs();
@@ -17,7 +34,7 @@ const getAllTabs = () => {
     },
     {
       title: 'Actions',
-      slug: 'actions_items',
+      slug: 'actions_items', 
     },
     {
       title: 'Leaderboard',
