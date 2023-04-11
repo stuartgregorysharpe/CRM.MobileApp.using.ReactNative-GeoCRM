@@ -1,18 +1,31 @@
 import { postApiRequest } from "../../../actions/api.action";
 import { getPostParameter } from "../../../constants/Helper";
+import { checkConnectivity } from "../../../DAO/helper";
 
 export const postGPSLocation = (currentLocation) => {
 
-  var userParam = getPostParameter(currentLocation);
-  var postData = {
-    user_local_data: userParam.user_local_data,
-  };
+  if(currentLocation != undefined && currentLocation.latitude != undefined && currentLocation.longitude != undefined){
 
-  postApiRequest('user/location-ping' , postData ,  null).then((res) => {
-    console.log("response => ", res);
-  }).catch((e) => {
+    var userParam = getPostParameter(currentLocation);
+    var postData = {
+      user_local_data: userParam.user_local_data,
+    };
+  
+    checkConnectivity().then((isConnected) => {
+      if(isConnected){
+        console.log("trigger api call" , postData);
+        postApiRequest('user/location-ping' , postData ,  null).then((res) => {
+          console.log("response => ", res);
+        }).catch((e) => {
+  
+        });
+      }
+    }).catch((e) => {
+  
+    });
 
-  })
+  }
+
 }
 
 export const generateTabs = features => {

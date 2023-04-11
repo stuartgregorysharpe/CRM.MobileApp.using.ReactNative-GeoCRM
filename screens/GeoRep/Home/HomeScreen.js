@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef , useCallback } from 'react';
 import ScrollTab from '../../../components/common/ScrollTab';
 import { style } from '../../../constants/Styles';
 import MainPage from './Main/MainPage';
@@ -24,6 +24,8 @@ import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 import { getBascketLastSyncTableData } from '../../../sqlite/BascketLastSyncsHelper';
 import MyBackgroundTimer from './MyBackgroundTimer';
 
+var timer = '';
+
 export default function HomeScreen(props) {
 
   const { route, navigation } = props;
@@ -45,25 +47,41 @@ export default function HomeScreen(props) {
   const syncStart = useSelector(state => state.rep.syncStart);
 
   useEffect(() => {
-    setTabs(generateTabs(features));    
-    const data = payload.user_scopes.geo_rep.location_ping;
-    if( data?.enabled === "1" ) {  
-      BackgroundTimer.stopBackgroundTimer();
-      const timer = MyBackgroundTimer.setInterval( () => {
-        const currentTime = getTime();                        
-        if(data?.start_time < currentTime && currentTime < data?.end_time){                              
-          postGPSLocation(currentLocation);
+    setTabs(generateTabs(features));        
+    if(timer != ''){
+      BackgroundTimer.clearInterval(timer);
+    }        
+    timer = BackgroundTimer.setInterval(async () => {
+      console.log("my background timer")
+      const data = payload.user_scopes.geo_rep.location_ping;
+      if( data?.enabled === "1" ) {        
+        const currentTime = getTime();        
+        if(data?.start_time < currentTime && currentTime < data?.end_time){
+          sendLocationData();
         }        
-      } , parseInt(data?.frequency) *  1000);     
+      }        
+    } , 5 *  1000); //parseInt(data?.frequency)
+    
+    return () => {
+      BackgroundTimer.clearInterval(timer);
     }
-    // return () => {
-    //   MyBackgroundTimer.clearInterval(timer)
-    // }
   }, []);
 
   useEffect(() => {
     BackgroundTimer.stopBackgroundTimer();
+    // BackgroundTimer.runBackgroundTimer(async () => {
+    //   console.log("frequency" , "oks");
+    //   const data = payload.user_scopes.geo_rep.location_ping;      
+    //   if( data?.enabled === "1" ) {   
+    //     const currentTime = getTime();        
+    //     if(data?.start_time < currentTime && currentTime < data?.end_time){                              
+    //       sendLocationData();
+    //     }
+    //   }
+    // }, 5 * 1000); //parseInt(data?.frequency)
+
     BackgroundTimer.runBackgroundTimer(async () => {
+      console.log("sync frexx" ,speed_test.frequency);
       if (speed_test.enabled === '1' && !syncStart) {
         const manual = await getLocalData('@manual_online_offline');
         if (manual != '1') {
@@ -120,7 +138,9 @@ export default function HomeScreen(props) {
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [syncStart]);
+  }, [syncStart ]);
+
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -214,6 +234,13 @@ export default function HomeScreen(props) {
       }),
     );
   };
+
+  const sendLocationData = useCallback(() => {
+    if(currentLocation != undefined && currentLocation.latitude != undefined){                        
+      postGPSLocation(currentLocation);
+    }
+  }, [ currentLocation ]);
+
 
   return (
     <View style={{ flex: 1, marginTop: 10 }}>
