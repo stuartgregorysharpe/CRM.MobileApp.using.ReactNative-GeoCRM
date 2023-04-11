@@ -47,13 +47,14 @@ export default function HomeScreen(props) {
   useEffect(() => {
     setTabs(generateTabs(features));    
     const data = payload.user_scopes.geo_rep.location_ping;
-    if( data?.enabled === "1" ) {      
+    if( data?.enabled === "1" ) {  
+      BackgroundTimer.stopBackgroundTimer();
       const timer = MyBackgroundTimer.setInterval( () => {
-        const currentTime = getTime();                
-        if(data?.start_time < currentTime && currentTime < data?.end_time){                    
+        const currentTime = getTime();                        
+        if(data?.start_time < currentTime && currentTime < data?.end_time){                              
           postGPSLocation(currentLocation);
         }        
-      } , parseInt(data?.frequency) *  1000);      
+      } , parseInt(data?.frequency) *  1000);     
     }
     // return () => {
     //   MyBackgroundTimer.clearInterval(timer)
@@ -61,7 +62,7 @@ export default function HomeScreen(props) {
   }, []);
 
   useEffect(() => {
-    BackgroundTimer.stopBackgroundTimer();      
+    BackgroundTimer.stopBackgroundTimer();
     BackgroundTimer.runBackgroundTimer(async () => {
       if (speed_test.enabled === '1' && !syncStart) {
         const manual = await getLocalData('@manual_online_offline');
