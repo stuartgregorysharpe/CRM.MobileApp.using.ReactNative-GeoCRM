@@ -60,9 +60,9 @@ export default function HomeScreen(props) {
       console.log("run backgrond timer");
       if( data != undefined && data?.enabled === "1" ) {        
         const currentTime = getTime();        
-        if(data?.start_time < currentTime && currentTime < data?.end_time){
+        //if(data?.start_time < currentTime && currentTime < data?.end_time){
           sendLocationData();
-        }
+        //}
       }        
     } , 5 *  1000); // parseInt(data?.frequency)
     
@@ -228,9 +228,9 @@ export default function HomeScreen(props) {
   };
 
   const sendLocationData = useCallback(() => {
-    if(currentLocation != undefined && currentLocation.latitude != undefined){                        
-      postGPSLocation(currentLocation);
-    }
+
+    postGPSLocation(currentLocation);
+    
   }, [ currentLocation ]);
 
 
