@@ -38,7 +38,7 @@ export default function HomeScreen(props) {
   const speed_test = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.speed_test,
   );
-  const payload = useSelector(state => state.selection.payload);
+  const payload = useSelector(state => state.selection.payload);  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   
   const mainPageRef = useRef(null);
@@ -48,40 +48,32 @@ export default function HomeScreen(props) {
 
   useEffect(() => {
     setTabs(generateTabs(features));        
+    
+  }, []);
+
+  useEffect(() => {
+    const data = payload.user_scopes.geo_rep.location_ping;
     if(timer != ''){
       BackgroundTimer.clearInterval(timer);
-    }        
-    timer = BackgroundTimer.setInterval(async () => {
-      console.log("my background timer")
-      const data = payload.user_scopes.geo_rep.location_ping;
-      if( data?.enabled === "1" ) {        
+    }     
+    timer = BackgroundTimer.setInterval(async () => {      
+      console.log("run backgrond timer");
+      if( data != undefined && data?.enabled === "1" ) {        
         const currentTime = getTime();        
         if(data?.start_time < currentTime && currentTime < data?.end_time){
           sendLocationData();
-        }        
+        }
       }        
-    } , 5 *  1000); //parseInt(data?.frequency)
+    } , 5 *  1000); // parseInt(data?.frequency)
     
     return () => {
       BackgroundTimer.clearInterval(timer);
     }
-  }, []);
+  }, [payload]);
 
   useEffect(() => {
-    BackgroundTimer.stopBackgroundTimer();
-    // BackgroundTimer.runBackgroundTimer(async () => {
-    //   console.log("frequency" , "oks");
-    //   const data = payload.user_scopes.geo_rep.location_ping;      
-    //   if( data?.enabled === "1" ) {   
-    //     const currentTime = getTime();        
-    //     if(data?.start_time < currentTime && currentTime < data?.end_time){                              
-    //       sendLocationData();
-    //     }
-    //   }
-    // }, 5 * 1000); //parseInt(data?.frequency)
-
-    BackgroundTimer.runBackgroundTimer(async () => {
-      console.log("sync frexx" ,speed_test.frequency);
+    BackgroundTimer.stopBackgroundTimer();    
+    BackgroundTimer.runBackgroundTimer(async () => {      
       if (speed_test.enabled === '1' && !syncStart) {
         const manual = await getLocalData('@manual_online_offline');
         if (manual != '1') {
