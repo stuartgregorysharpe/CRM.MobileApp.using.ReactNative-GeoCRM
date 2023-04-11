@@ -60,11 +60,11 @@ export default function HomeScreen(props) {
       console.log("run backgrond timer");
       if( data != undefined && data?.enabled === "1" ) {        
         const currentTime = getTime();        
-        //if(data?.start_time < currentTime && currentTime < data?.end_time){
+        if(data?.start_time < currentTime && currentTime < data?.end_time){
           sendLocationData();
-        //}
+        }
       }        
-    } , 5 *  1000); // parseInt(data?.frequency)
+    } , parseInt(data?.frequency) *  1000); 
     
     return () => {
       BackgroundTimer.clearInterval(timer);
