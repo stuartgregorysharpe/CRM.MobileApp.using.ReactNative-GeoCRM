@@ -153,7 +153,9 @@ const CSingleSelectInput = props => {
           if(mode == "multi"){
             selectModalRef.current.hideModal();
           }else{
-            props.onClear();
+            if(props.onClear){
+              props.onClear();
+            }            
             selectModalRef.current.hideModal();
           }
         }}
