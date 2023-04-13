@@ -1,20 +1,30 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import { View } from 'react-native';
 import AvailabilityService from '../AvailabilityService';
 import GmsLocationMap from './GmsMap/GmsLocationMap';
 import HmsLocationMap from './HsmMap/HmsLocationMap';
 const LocationMap = props => {
-  const [isHms, setIsHms] = useState(false);
 
-  useEffect(() => {
+  const [isHms, setIsHms] = useState('');
+
+  useEffect(() => {    
     AvailabilityService.isHMSService().then(isHms => {
-      setIsHms(isHms);
-    });
+      if(isHms){
+        setIsHms('hms');
+      }else{
+        setIsHms('gms');
+      }      
+    });        
   }, []);
-  if (isHms) {
+  
+  if (isHms === 'hms') {
     return <HmsLocationMap {...props} />;
+  }else if(isHms === 'gms'){
+    return <GmsLocationMap {...props} />;
+  }else {
+    return <View></View>
   }
-  return <GmsLocationMap {...props} />;
+
 };
 
 export default LocationMap;
