@@ -1,21 +1,21 @@
-import {StyleSheet, Image, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {AppText} from '../../../../../components/common/AppText';
-import {Colors, Strings} from '../../../../../constants';
-import {whiteLabel} from '../../../../../constants/Colors';
+import { AppText } from '../../../../../components/common/AppText';
+import { Colors } from '../../../../../constants';
+import { whiteLabel } from '../../../../../constants/Colors';
 import NumberCounter from '../../../../../components/shared/SKUCount/components/NumberCounter';
-import {style} from '../../../../../constants/Styles';
+import { style } from '../../../../../constants/Styles';
 import FastImage from 'react-native-fast-image';
-import {useSelector, useDispatch} from 'react-redux';
-import {formattedPrice, formattedPriceWithSpace} from '../../../../../helpers/formatHelpers';
+import { formattedPriceWithSpace} from '../../../../../helpers/formatHelpers';
 import SvgIcon from '../../../../../components/SvgIcon';
 
 const ProductItem = props => {
+
   const {item, settings, isLoading} = props;
-  if (!item) return null;
-  const dispatch = useDispatch();
+  if (!item) return null;  
 
   const [qty, setQty] = useState(item.qty != undefined ? item.qty : 0);
+
   useEffect(() => {
     setQty(item.qty);
   }, [item]);
@@ -37,6 +37,14 @@ const ProductItem = props => {
       return item.symbol + formattedPriceWithSpace(parseFloat(item.price));
     }
   };
+
+  const renderDiscount = () => {
+    if (item.discountPrice.includes("%") ) {
+      return "Discount " + item.discountPrice ;
+    }else{
+      return "Discount " + item.discountPrice + "%";
+    }    
+  }
 
   return (
     <View
@@ -82,8 +90,19 @@ const ProductItem = props => {
               color={whiteLabel().subText}></AppText>
           </View>
         )}
-        <View
-          style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
+
+        {
+          item.discountPrice != '' &&
+          <View style={{alignItems:'flex-end' , marginBottom: -5}}>
+            <AppText                
+                title={renderDiscount()}
+                color={Colors.redColor}
+                style={{fontSize:10}}></AppText>
+          </View>
+        }
+        
+        <View          
+          style={{flexDirection: 'row', alignItems: 'center' , marginTop: item.discountPrice != '' ? 0 : 5 }}>
           <AppText
             title="Qty"
             color={whiteLabel().subText}
@@ -143,7 +162,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-
   addContainer: {
     color: Colors.whiteColor,
     marginLeft: 0,
