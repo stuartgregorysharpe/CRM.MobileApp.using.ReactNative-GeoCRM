@@ -4,6 +4,7 @@ import { validateMsisdn } from '../../../../../helpers/validateHelper';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import DeleteUpdateBtnView from './DeleteUpdateBtnView';
 import MsisdnInput from '../../../../../components/common/MsisdnInput';
+import { Strings } from '../../../../../constants';
 
 const SimAddView = ( props ) => {
 
@@ -37,7 +38,7 @@ const SimAddView = ( props ) => {
             }            
         }else{
             if(props.showAlertModal){
-                props.showAlertModal();
+                props.showAlertModal(Strings.Complete_Compulsory_Fields , 'compulsory');
             }
         }
     }

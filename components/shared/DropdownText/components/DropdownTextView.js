@@ -85,7 +85,7 @@ const DropdownTextView = (props) => {
             <SingleSelectModal
                 items={presetOptions}
                 mode={'single'}
-                modalTitle={'Select d' + item.question_text}
+                modalTitle={'Select ' + item.question_text}
                 checkedValue={''}
                 onButtonAction={onButtonAction}
                 ref={selectModalRef}

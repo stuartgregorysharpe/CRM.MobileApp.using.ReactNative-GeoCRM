@@ -37,16 +37,10 @@ export default function Activity(props) {
   const [isConfirmModal, setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();  
 
-  let isMount = true;
-
-  useEffect(() => {
-    isMount = true;
-    loadHistory(page);
-    return () => {
-      isMount = false;
-    }
+  useEffect(() => {    
+    loadHistory(page);    
   }, []);
 
   const loadHistory = pageNumber => {
@@ -55,7 +49,7 @@ export default function Activity(props) {
       let param = {page: pageNumber, location_id: location_id};
       getApiRequest('locations/location-history', param)
         .then(res => {
-          if(isMount){
+          
             if(pageNumber == 0){
               setHistoryItems(res.history_items);
             }else{
@@ -64,13 +58,13 @@ export default function Activity(props) {
             setPage(pageNumber + 1);
             setIsLoading(false);
             setTitle(res.location_name);
-          }          
+                    
         })
         .catch(e => {
-          if(isMount){
+          
             setIsLoading(false);
             expireToken(dispatch, e);
-          }          
+                    
         });        
     }
   };
@@ -78,7 +72,7 @@ export default function Activity(props) {
   const submitComment = () => {
 
     if(!isLoading &&  !isSubmit){
-      setIsSubmit(true);      
+      setIsSubmit(true);
       loadingBarRef.current.showModal();
       var userParam = getPostParameter(currentLocation);
       let postData = {
@@ -92,7 +86,7 @@ export default function Activity(props) {
           hideLoadingBar();
           if (res.status === Strings.Success) {
             setComment('');
-            showConfirmModal('Success')            
+            showConfirmModal(res.message); 
           }
           setIsSubmit(false);
           loadHistory(0);          

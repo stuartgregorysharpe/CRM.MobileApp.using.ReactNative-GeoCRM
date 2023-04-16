@@ -54,6 +54,7 @@ const LocationContainer = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isZoomOut, setIsZoomOut] = useState(false);
   const [locationInfo, setLocationInfo] = useState();
+  const [isFinish, setIsFinish] = useState(false);
   const polygonData = useMemo(() => getPolygonData(polygons), [polygons]);
   const mapFilters = useSelector(state => state.selection.mapFilters);
   const markerModalRef = useRef(null);
@@ -68,6 +69,8 @@ const LocationContainer = props => {
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
+  
+
 
   const onLoadMarkers = (_currentLocation, boundBox) => {
     const isLoadable =
@@ -143,8 +146,14 @@ const LocationContainer = props => {
 
   
   const onPressSearch = () => {
+    if(isCalendarSelection){      
+      if(isDrawMode){
+        setIsFinish(true);
+      }
+    }
     navigateToSearchLocation();
   };
+
   const onFilterPress = () => {
     dispatch(getLocationFilters());
     if (locationFilterModalRef && locationFilterModalRef.current) {
@@ -206,6 +215,7 @@ const LocationContainer = props => {
       page: 'checkin',
     });
   };
+
   const onFinishDrawing = selectedMarkers => {
     console.log('onFinishDrawing', selectedMarkers);
     setIsDrawMode(false);
@@ -224,6 +234,7 @@ const LocationContainer = props => {
       payload: selectedLocations,
     });
   };
+
   const onMarkerPressed = (item, key) => {
     const itemLocationId = item.location_id;
     if (isCalendarSelection) {
@@ -267,7 +278,16 @@ const LocationContainer = props => {
         });
       }
     }
+  }
 
+  const onAddToCalendarClosed = ({ type, value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      addToCalendarModalRef.current.hideModal();      
+    }else if(type == Constants.actionType.ACTION_DONE) {
+      addToCalendarModalRef.current.hideModal();            
+      dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+      dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
+    }
   }
 
   return (
@@ -282,10 +302,13 @@ const LocationContainer = props => {
       {isCalendarSelection && (
         <CrmCalendarSelection
           isDraw={isDrawMode}
-          onClickDraw={() => {
+          onClickDraw={() => {            
             setIsDrawMode(!isDrawMode);
           }}
           onClickCancel={() => {
+            setIsDrawMode(false);
+            dispatch({type: IS_CALENDAR_SELECTION, payload: false});
+            dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
             navigateToSearchLocation();
           }}
           onClickList={() => {
@@ -301,9 +324,11 @@ const LocationContainer = props => {
         currentLocation={currentLocation}
         selectedLocations={selectedLocationsForCalendar}
         isDrawMode={isDrawMode}
+        isFinish={isFinish}
         onMarkerPressed={onMarkerPressed}
         onRegionChangeComplete={onRegionChanged}
         onFinishDrawing={onFinishDrawing}
+        onFinishUpdate={() => setIsFinish(false)}
       />
 
       {isShowZoomLabel && (
@@ -337,10 +362,8 @@ const LocationContainer = props => {
       
       <AddToCalendarModal
         ref={addToCalendarModalRef}
-        onButtonAction={() => {
-          dispatch({type: IS_CALENDAR_SELECTION, payload: false});
-          dispatch({type: SELECTED_LOCATIONS_FOR_CALENDAR, payload: []});
-        }}
+        selectedItems={selectedLocationsForCalendar}
+        onButtonAction={onAddToCalendarClosed}        
       />
       <AddLeadModal
         //title="Add Lead"

@@ -18,14 +18,14 @@ export default function DevicesModalView(props) {
     const [device, setDevice] = useState(null)
 
     const renderItem = (item, index) => {
-        
+                
         return (
             <TouchableOpacity key={index} onPress={() =>{
                 if(item.unattached_device == "1"){
                     if(props.openSimEditModal){
                         props.openSimEditModal(item);
                     }
-                }else{                    
+                }else{
                     setDevice(item);
                     if(devicePriorityModalRef.current){
                         devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);

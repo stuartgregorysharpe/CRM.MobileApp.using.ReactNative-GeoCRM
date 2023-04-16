@@ -9,25 +9,33 @@ import { getBascketLastSyncTableData, insertBascketLastSync } from "../../sqlite
 
 export const initializeDB = async() => {
     
-    var res = await getApiRequest("database/offline_database_structure", {offline_db_version: offlineDBVersion});
-
-    if(res.status === Strings.Success){
-        var offline_db_version = await getLocalData("@offline_db_version");
-        if(offline_db_version != res.offline_db_version){                               
-            var tables = res.tables;               
-            const db = await getDBConnection();
-            if(db != null){                    
-                await createTable(db ,tables);                                  
-                var check = await getBascketLastSyncTableData("sync_all");                
-                if(check.length == 0){
-                    await syncTable(0);
-                }
-                return "end";
-            }                  
-        }else{
-            console.log("offline version was not updated");
+    return new Promise( async function (resolve, reject) {
+        var res = await getApiRequest("database/offline_database_structure", {offline_db_version: offlineDBVersion});
+        if(res.status === Strings.Success){
+            var offline_db_version = await getLocalData("@offline_db_version");
+            if(offline_db_version != res.offline_db_version){                               
+                var tables = res.tables;               
+                const db = await getDBConnection();
+                if(db != null){                    
+                    await createTable(db ,tables);                                  
+                    var check = await getBascketLastSyncTableData("sync_all");                
+                    if(check.length == 0){
+                        //await syncTable(0);
+                        resolve(true);
+                    }else{
+                        resolve(false);
+                    }                    
+                }else{
+                    reject('no db connection');
+                }  
+            }else{
+                console.log("offline version was not updated");
+                reject('offline version was not updated');
+            }
         }
-    }
+    });
+
+    
 }
 
 
