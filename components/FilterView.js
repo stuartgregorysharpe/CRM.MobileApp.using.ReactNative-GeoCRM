@@ -43,7 +43,7 @@ export default function FilterView({navigation, page, onClose, isModal}) {
   const [options, setOptions] = useState([]);
   const [originOptions, setOriginOptions] = useState([]);
   const [selectedValues, setSelectedValues] = useState([]);
-  const [fieldType, setFieldType] = useState('');
+  
   const [filters, setFilters] = useState('');
   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
   const [selectedType, setSelectedType] = useState('');
@@ -58,6 +58,7 @@ export default function FilterView({navigation, page, onClose, isModal}) {
   const [opportunityId, setOpportunityId] = useState('');
   const [modalMode, setModalMode] = useState('single');
   const isShowDivider = isModal;
+
   useEffect(() => {
     console.log('opened ', page);
     loadFilterDataFromStorage();
@@ -189,33 +190,7 @@ export default function FilterView({navigation, page, onClose, isModal}) {
     }
   };
 
-  const initializeSelectedType = key => {
-    setOriginOptions(locationFilters[key].options);
-    setOptions(locationFilters[key].options);
-    setFieldType(locationFilters[key].field_type);
-
-    if (locationFilters[key].filter_label === 'Stage') {
-      setSelectedType('stage');
-    } else if (locationFilters[key].filter_label === 'Outcome') {
-      setSelectedType('outcome');
-    } else if (locationFilters[key].filter_label === 'Pipeline') {
-      setSelectedType('pipeline');
-    } else if (locationFilters[key].filter_label === 'Opportunity Status') {
-      setSelectedType('opportunity_status');
-    } else if (locationFilters[key].disposition_field_id !== undefined) {
-      setSelectedType('disposition');
-      setDispositionId(locationFilters[key].disposition_field_id);
-    } else if (locationFilters[key].opportunity_field_id !== undefined) {
-      setSelectedType('opportunity');
-      setOpportunityId(locationFilters[key].opportunity_field_id);
-    } else if (locationFilters[key].custom_field_id !== undefined) {
-      setSelectedType('custom');
-      setCustomId(locationFilters[key].custom_field_id);
-    } else {
-      setSelectedType(locationFilters[key].filter_label);
-    }
-  };
-
+ 
   const selectFilter = key => {
     setKey(key);
     if (filters.stage_id === undefined || filters.customs === undefined) {
@@ -235,183 +210,6 @@ export default function FilterView({navigation, page, onClose, isModal}) {
     setModalVisible(true);
   };
 
-  const saveFilter = async (value, isChecked) => {
-    if (selectedType == 'stage') {
-      var data = [...filters.stage_id];
-      var index = data.indexOf(value);
-      if (index !== -1) {
-        if (!isChecked) {
-          data.splice(index, 1);
-        }
-      } else {
-        if (isChecked) {
-          data.push(value);
-        }
-      }
-      filters.stage_id = data;
-    } else if (selectedType == 'outcome') {
-      var data = [...filters.outcome_id];
-      var index = data.indexOf(value);
-      if (index !== -1) {
-        if (!isChecked) {
-          data.splice(index, 1);
-        }
-      } else {
-        if (isChecked) {
-          data.push(value);
-        }
-      }
-      filters.outcome_id = data;
-    } else if (selectedType == 'pipeline') {
-      setModalVisible(false);
-      dispatch(getPipelineFilters(value));
-      filters.pipeline = value;
-    } else if (selectedType == 'custom') {
-      var data = [...filters.customs];
-      console.log('my custom data', data);
-      var flag = false;
-      var indexOfCustom = -1;
-      data.forEach((element, index) => {
-        if (element.custom_field_id === customId) {
-          flag = true;
-          indexOfCustom = index;
-          element.field_value = value;
-        }
-      });
-      if (!isChecked && flag) {
-        // remove
-        data.splice(indexOfCustom, 1);
-      }
-      if (isChecked && !flag) {
-        // add
-        if (fieldType == 'date') {
-          data.push({
-            custom_field_id: customId,
-            field_type: fieldType,
-            start_date: startDate,
-            end_date: endDate,
-          });
-        } else {
-          data.push({
-            custom_field_id: customId,
-            field_type: fieldType,
-            field_value: value,
-          });
-        }
-      }
-      filters.customs = data;
-    } else if (selectedType == 'disposition') {
-      var data = [...filters.dispositions];
-      var flag = false;
-      var indexOfDisposition = -1;
-      data.forEach((element, index) => {
-        if (element.disposition_field_id === dispositionId) {
-          flag = true;
-          indexOfDisposition = index;
-          element.field_value = value;
-        }
-      });
-      if (!isChecked && flag) {
-        // remove
-        data.splice(indexOfDisposition, 1);
-      }
-      if (isChecked && !flag) {
-        if (fieldType == 'date') {
-          data.push({
-            disposition_field_id: dispositionId,
-            field_type: fieldType,
-            start_date: startDate,
-            end_date: endDate,
-          });
-        } else {
-          data.push({
-            disposition_field_id: dispositionId,
-            field_type: fieldType,
-            field_value: value,
-          });
-        }
-        console.log('data', data);
-      } else {
-        if (fieldType == 'date') {
-          data.push({
-            disposition_field_id: dispositionId,
-            field_type: fieldType,
-            start_date: startDate,
-            end_date: endDate,
-          });
-        }
-      }
-
-      filters.dispositions = data;
-    } else if (selectedType == 'opportunity') {
-      var data = [...filters.opportunity_fields];
-      var flag = false;
-      var indexOfOpportunity = -1;
-      data.forEach((element, index) => {
-        if (element.opportunity_field_id === opportunityId) {
-          flag = true;
-          indexOfOpportunity = index;
-          element.field_value = value;
-        }
-      });
-      if (!isChecked && flag) {
-        // remove
-        data.splice(indexOfOpportunity, 1);
-      }
-      if (isChecked && !flag) {
-        if (fieldType == 'date') {
-          data.push({
-            opportunity_field_id: opportunityId,
-            field_type: fieldType,
-            start_date: startDate,
-            end_date: endDate,
-          });
-        } else {
-          data.push({
-            opportunity_field_id: opportunityId,
-            field_type: fieldType,
-            field_value: value,
-          });
-        }
-      }
-      filters.opportunity_fields = data;
-    } else if (selectedType == 'opportunity_status') {
-      var data = [...filters.opportunity_status_id];
-      var index = data.indexOf(value);
-      if (index !== -1) {
-        if (!isChecked) {
-          data.splice(index, 1);
-        }
-      } else {
-        if (isChecked) {
-          data.push(value);
-        }
-      }
-      filters.opportunity_status_id = data;
-    }
-
-    if (filters !== undefined) {
-      setFilters(filters);
-      if (page == 'pipeline') {
-        await storeFilterData('@pipeline_filter', filters);
-      } else {
-        await storeFilterData('@filter', filters);
-      }
-    }
-
-    if (
-      locationFilters[key] !== undefined &&
-      locationFilters[key].options !== undefined
-    ) {
-      setOptions([]);
-      setOriginOptions(locationFilters[key].options);
-      // var tmp = [];
-      // locationFilters[key].options.forEach((item, index) => {
-      //   tmp.push(item.name);
-      // });
-      setOptions(locationFilters[key].options);
-    }
-  };
 
   const handleScheduleDate = date => {
     let datetime = date;
