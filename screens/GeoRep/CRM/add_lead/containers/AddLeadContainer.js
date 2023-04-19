@@ -329,6 +329,7 @@ export default function AddLeadContainer(props) {
   const onSelectDeviceModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_VIEW) {
       setSelectedLists(value);
+      console.log("selected lists => ", value)
     }
     if (type == Constants.actionType.ACTION_NEXT) {
       setSelectDeviceCount(value);
