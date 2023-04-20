@@ -15,6 +15,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
     onChangedCustomMasterFields,
     onPrimaryContactFields,
     isValidOtherForms,
+    isValidateAllocateDevice,
   } = props;
 
   console.log("customMasterFields",leadForms )
@@ -72,6 +73,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
             showFormModal={props.showFormModal}
             showAllocateModal={props.showAllocateModal}
             isValidOtherForms={isValidOtherForms}
+            isValidateAllocateDevice={isValidateAllocateDevice}
           />
         </View>
       </View>

@@ -6,7 +6,7 @@ import SvgIcon from '../../../../../components/SvgIcon';
 import {useSelector} from 'react-redux';
 
 export default function AddLeadFormFields(props) {
-  const {showFormModal, showAllocateModal, isValidOtherForms} = props;
+  const {showFormModal, showAllocateModal, isValidOtherForms , isValidateAllocateDevice} = props;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -62,7 +62,11 @@ export default function AddLeadFormFields(props) {
 
       {isAllocateDevices && (
         <TouchableOpacity
-          style={[styles.btnStyles, {marginTop: 15}]}
+          style={[styles.btnStyles, 
+            !isValidateAllocateDevice && {
+              borderColor: Colors.redColor,
+            },
+            {marginTop: 15}]}
           onPress={() => {
             showAllocateModal();
           }}>

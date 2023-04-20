@@ -32,6 +32,7 @@ import {
 import {expireToken} from '../../../../../constants/Helper';
 
 export default function AddLeadContainer(props) {
+
   const currentLocation = useSelector(state => state.rep.currentLocation);
 
   const selectDeviceModalRef = useRef(null);
@@ -51,6 +52,8 @@ export default function AddLeadContainer(props) {
   const [form, setForm] = useState({});
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [compulsoryDevices, setCompulsoryDevices] = useState([]);
+  
 
   const validateFormList = lists => {    
     let isValid = true;
@@ -61,9 +64,31 @@ export default function AddLeadContainer(props) {
     });
     return isValid;
   };
+
   const isValidOtherForms = useMemo(() => {
     return validateFormList(formLists);
   }, [formLists]);
+
+  const isValidateAllocateDevice = useMemo(() => {
+    var flag = false;
+    compulsoryDevices.forEach(element => {
+      const custom_master_field_id = element.custom_master_field_id ;
+      const compusloryOptions = element.options;
+      const options = customMasterFields[custom_master_field_id];
+      if(options != undefined && options != ''){        
+        options.forEach(subElement => {          
+          if(compusloryOptions.includes(subElement)){            
+            flag = true;
+          }
+        });
+      }
+    });    
+    if(flag && selectedLists.length > 0 || !flag){
+      return true;
+    }
+    return false;
+  }, [customMasterFields , selectedLists]);
+
 
   useEffect(() => {
     updateFormLists(formLists);
@@ -94,6 +119,7 @@ export default function AddLeadContainer(props) {
           console.log("res.custom_master_fields => ", res.custom_master_fields)
           setLeadForms(res.custom_master_fields);      
           setAccuracyUnit(res.accuracy_distance_measure);
+          setCompulsoryDevices(res.compulsory_device);
         }
       })
       .catch(e => {
@@ -125,7 +151,8 @@ export default function AddLeadContainer(props) {
 
     GetRequestFormListsDAO.find(param)
       .then(res => {
-        updateFormLists(res.forms);        
+        console.log("res.forms => ", res.forms);
+        updateFormLists(res.forms); 
       })
       .catch(e => {
         console.log('formlists api error:', e);
@@ -155,16 +182,15 @@ export default function AddLeadContainer(props) {
       console.log("isValidForm",isValidForm)
       if (!isValidForm) isValid = false;
     }
-
     return isValid;
   };
 
   
   const onAdd = async () => {
     const isFormValid = await validateForm();
-    console.log("valiidate form", isFormValid);
+    console.log("valiidate form => ", isValidateAllocateDevice);
 
-    if (!isFormValid) {
+    if (!isFormValid || !isValidateAllocateDevice) {
       dispatch(
         showNotification({
           type: 'success',
@@ -184,6 +210,7 @@ export default function AddLeadContainer(props) {
       );
       return;
     }
+    
     
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
@@ -328,8 +355,7 @@ export default function AddLeadContainer(props) {
 
   const onSelectDeviceModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_VIEW) {
-      setSelectedLists(value);
-      console.log("selected lists => ", value)
+      setSelectedLists(value);      
     }
     if (type == Constants.actionType.ACTION_NEXT) {
       setSelectDeviceCount(value);
@@ -348,7 +374,7 @@ export default function AddLeadContainer(props) {
       const tmp = selectedLists.filter(
         item => item.stock_item_id != value.stock_item_id,
       );
-      setSelectedLists(tmp);
+      setSelectedLists(tmp);      
     }
   };
 
@@ -424,6 +450,7 @@ export default function AddLeadContainer(props) {
         showFormModal={showFormModal}
         showAllocateModal={showAllocateModal}
         isValidOtherForms={isValidOtherForms}
+        isValidateAllocateDevice={isValidateAllocateDevice}
         {...props}
       />
 
