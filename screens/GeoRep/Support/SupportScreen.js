@@ -43,6 +43,7 @@ export default function SupportScreen(props) {
   const refreshHeader = () => {
     if (props.screenProps) {
       setTimeout(() => {
+
         props.screenProps.setOptions({
           headerTitle: () => {
             return (
@@ -56,7 +57,7 @@ export default function SupportScreen(props) {
         });      
       }, 0)      
     }
-  }
+  }  
 
   const openWhatsApp = () => {
     Linking.openURL(WHATS_APP_LINK)
