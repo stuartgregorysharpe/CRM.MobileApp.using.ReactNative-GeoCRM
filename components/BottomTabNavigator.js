@@ -190,13 +190,9 @@ export default function RepBottomTabNavigator({navigation}) {
                   e.preventDefault();
                   console.log('revisible mo', visibleMore);
                   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-
-                  // if (visibleMore != '') {
-                  //   //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                  // } else {
-                  //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-                  // }
-                  
+                  if (visibleMore != '') {
+                    dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  }                                    
                 } else {
                   console.log('bottom tab clicked', element.name);                  
                   if (element.name === 'Home') {
