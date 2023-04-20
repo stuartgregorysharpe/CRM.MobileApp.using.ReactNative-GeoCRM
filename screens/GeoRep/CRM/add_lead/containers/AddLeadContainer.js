@@ -1,13 +1,10 @@
-import {View, TouchableOpacity, Platform} from 'react-native';
+import {View,  Platform} from 'react-native';
 import React, {useEffect, useState, useRef, useMemo} from 'react';
 import {Constants, Strings} from '../../../../../constants';
 import AddLeadView from '../components/AddLeadView';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 import AddLeadFormsModal from '../modal/AddLeadFormsModal';
 import SelectDevicesModal from '../modal/SelectDevicesModal';
-import CCircleButton from '../../../../../components/common/CCircleButton';
-import ViewListsModal from '../modal/ViewListsModal';
-import SvgIcon from '../../../../../components/SvgIcon';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {
@@ -35,8 +32,7 @@ export default function AddLeadContainer(props) {
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
 
-  const selectDeviceModalRef = useRef(null);
-  const viewListsModalRef = useRef(null);
+  const selectDeviceModalRef = useRef(null);  
   const formQuestionModalRef = useRef(null);
   const addLeadFormModalRef = useRef(null);
   const addLeadViewRef = useRef(null);
@@ -53,7 +49,7 @@ export default function AddLeadContainer(props) {
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [compulsoryDevices, setCompulsoryDevices] = useState([]);
-  
+  const [isViewList , setIsViewList] = useState(false);
 
   const validateFormList = lists => {    
     let isValid = true;
@@ -334,26 +330,22 @@ export default function AddLeadContainer(props) {
     addLeadFormModalRef.current.showModal();
   };
 
-  const showAllocateModal = () => {
-    if (selectDeviceModalRef.current) selectDeviceModalRef.current.showModal();
-  };
-
-  const renderViewLists = () => {
-    return (
-      <CCircleButton
-        onClick={() => viewLists()}
-        title="View List"
-        icon="Check_List_Active"></CCircleButton>
-    );
-  };
-  
-  const viewLists = () => {
-    if (viewListsModalRef) {
-      viewListsModalRef.current.showModal();
+  const showAllocateModal = () => {    
+    
+    if (selectDeviceModalRef.current) {
+      console.log(selectDeviceModalRef.current);
+      selectDeviceModalRef.current.showModal();
     }
   };
+   
 
   const onSelectDeviceModalClosed = ({type, value}) => {
+    if (type == Constants.actionType.ACTION_REMOVE) {
+      const tmp = selectedLists.filter(
+        item => item.stock_item_id != value.stock_item_id,
+      );
+      setSelectedLists(tmp);
+    }
     if (type == Constants.actionType.ACTION_VIEW) {
       setSelectedLists(value);      
     }
@@ -367,26 +359,6 @@ export default function AddLeadContainer(props) {
       });
       selectDeviceModalRef.current.hideModal();
     }
-  };
-
-  const onViewListsModal = ({type, value}) => {
-    if (type == Constants.actionType.ACTION_REMOVE) {
-      const tmp = selectedLists.filter(
-        item => item.stock_item_id != value.stock_item_id,
-      );
-      setSelectedLists(tmp);      
-    }
-  };
-
-  const renderRightPart = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          viewListsModalRef.current.hideModal();
-        }}>
-        <SvgIcon icon="Close" width="20" height="20" />
-      </TouchableOpacity>
-    );
   };
 
   const useGeoLocation = () => {
@@ -475,25 +447,9 @@ export default function AddLeadContainer(props) {
         closableWithOutsideTouch
         ref={selectDeviceModalRef}
         hideClear={true}
-        selLists={selectedLists}
-        customRightHeaderView={
-          selectDeviceCount > 0 || selectedLists.length > 0 ? (
-            renderViewLists()
-          ) : (
-            <></>
-          )
-        }
+        selLists={selectedLists}        
         title="Select Devices:"
         onButtonAction={onSelectDeviceModalClosed}
-      />
-
-      <ViewListsModal
-        ref={viewListsModalRef}
-        hideClear={true}
-        selectedLists={selectedLists}
-        customRightHeaderView={renderRightPart()}
-        title={'Allocated Devices: ' + selectedLists.length}
-        onButtonAction={onViewListsModal}
       />
 
       <FormQuestionModal
