@@ -7,7 +7,6 @@ import ConsumableView from './stock_types/ConsumableView';
 import SimView from './stock_types/SimView';
 import {Constants, Strings} from '../../../../../constants';
 import {validateNumber} from '../../../../../helpers/validateHelper';
-import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 import AlertModal from '../../../../../components/modal/AlertModal';
 
 var vodacom = [];
@@ -266,7 +265,11 @@ export default function AddStockView(props) {
 
   return (
     <View style={styles.container}>
+      
+      <AlertModal ref={alertModalRef} />
+
       <CSingleSelectInput
+        isKeyboardManager={false}
         key={'key'}
         description={'Stock Type'}
         placeholder={'Select Stock Type'}
@@ -288,6 +291,7 @@ export default function AddStockView(props) {
       />
 
       <CSingleSelectInput
+        isKeyboardManager={false}
         description={getLabel()}
         placeholder={'Select ' + getLabel()}
         checkedValue={productId}
@@ -338,8 +342,6 @@ export default function AddStockView(props) {
         style={{marginTop: 20}}>
       </SubmitButton>
 
-      <LoadingProgressBar />
-      <AlertModal ref={alertModalRef} />
 
     </View>
   );
