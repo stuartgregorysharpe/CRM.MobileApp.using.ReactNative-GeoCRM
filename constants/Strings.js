@@ -52,7 +52,8 @@ export default {
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
     Supplier_Compulsory: 'Supplier need to be filled',
     Pleae_Select_Type : 'Please select type to add',
-    RICA_MSISDN : "RICA MSISDN"
+    RICA_MSISDN : "RICA MSISDN",
+    Complete_RICA : "At least 1 RICA MSISDN must be allocated in order to submit"
   },
 
   Log: {

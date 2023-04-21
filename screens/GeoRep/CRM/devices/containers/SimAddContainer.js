@@ -13,7 +13,7 @@ var indempotency = '';
 
 const SimAddContainer = (props) => {
 
-  const { location_id , location_device_id } = props;
+  const { location_id , location_device_id  , type  } = props;
 
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -72,15 +72,25 @@ const SimAddContainer = (props) => {
   }
 
   const onAdd = (msisdn) => {
-    onPost('add', msisdn);
+    if(type == 'add_lead'){
+      props.onButtonAction( { type : Constants.actionType.ACTION_CLOSE , value : msisdn} );
+    }else{
+      onPost('add', msisdn);
+    }    
   }
 
   const onDelete = () => {
-    onPost('delete' , '');
+    if(type != 'add_lead'){
+      onPost('delete' , '');
+    }    
   }
 
   const onUpdate = (msisdn) => {        
-    onPost('update', msisdn);
+    if(type != 'add_lead'){
+      onPost('update', msisdn);
+    }
+
+    
   }
 
 

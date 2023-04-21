@@ -3,7 +3,7 @@ import React, {useImperativeHandle, useRef} from 'react';
 import AddLeadMap from './AddLeadMap';
 import PrimaryContactFields from './PrimaryContactFields';
 import CustomMasterFields from './CustomMasterFields';
-import AddLeadFormFields from './AddLeadFormFields';
+import AddLeadOtherSection from './AddLeadOtherSection';
 import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 
 const AddLeadView = React.forwardRef((props, ref) => {
@@ -16,6 +16,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
     onPrimaryContactFields,
     isValidOtherForms,
     isValidateAllocateDevice,
+    isValidateRICA,
   } = props;
 
   console.log("customMasterFields",leadForms )
@@ -69,11 +70,13 @@ const AddLeadView = React.forwardRef((props, ref) => {
             onPrimaryContactFields={onPrimaryContactFields}
           />
 
-          <AddLeadFormFields
+          <AddLeadOtherSection
             showFormModal={props.showFormModal}
             showAllocateModal={props.showAllocateModal}
+            showSimViewModal={props.showSimViewModal}
             isValidOtherForms={isValidOtherForms}
             isValidateAllocateDevice={isValidateAllocateDevice}
+            isValidateRICA={isValidateRICA}
           />
         </View>
       </View>

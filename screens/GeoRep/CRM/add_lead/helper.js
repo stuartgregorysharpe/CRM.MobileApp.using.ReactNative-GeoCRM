@@ -77,7 +77,7 @@ export function getAddLeadStreetAddress(leadForms , customMasterFields) {
 
 
 
-export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLocation , leadForms , customMasterFields , primaryData , selectedLists , add_location_id) {
+export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLocation , leadForms , customMasterFields , primaryData , selectedLists , simList , add_location_id) {
 
     try{        
         var lat = await getLocalData('@latitude');
@@ -176,7 +176,8 @@ export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLoca
 		});
                 
         if(selectedLists != undefined && selectedLists instanceof Array && selectedLists.length > 0){            
-            postDataJson = await getJsonWithFile(postDataJson , selectedLists);            
+            postDataJson = await getJsonWithFile(postDataJson , selectedLists);
+            postDataJson = await getJsonWithUnattachedDevices(postDataJson , simList);            
             return postDataJson;
 
         }else{
@@ -208,6 +209,23 @@ async function getJsonWithFile ( json, selectedLists) {
                     [`allocated_devices_signature[${item.stock_item_id}]`] : {uri: item.signature, type: 'image/png', name: 'sign.png'}
                 };	
             }
+        }
+    }
+    return postDataJson;    
+}
+
+
+
+async function getJsonWithUnattachedDevices ( json, simLists) {
+      
+    var postDataJson = {...json};
+    if(simLists != undefined && simLists instanceof Array && simLists.length > 0){
+        for( var index = 0; index < simLists.length ; index++){            
+            var item =  simLists[index];
+            postDataJson = {
+                ...postDataJson,
+                [`unattached_devices[${index}][assigned_msisdn]`] : item                
+            };	
         }
     }
     return postDataJson;    

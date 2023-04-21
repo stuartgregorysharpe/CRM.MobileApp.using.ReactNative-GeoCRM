@@ -27,6 +27,7 @@ import {
   getLeadFieldsPostJsonData,
 } from '../helper';
 import {expireToken} from '../../../../../constants/Helper';
+import SimListModal from '../modal/SimListModal';
 
 export default function AddLeadContainer(props) {
 
@@ -36,11 +37,13 @@ export default function AddLeadContainer(props) {
   const formQuestionModalRef = useRef(null);
   const addLeadFormModalRef = useRef(null);
   const addLeadViewRef = useRef(null);
+  const simListModalRef = useRef();
 
   const [leadForms, setLeadForms] = useState([]);
   const [accuracyUnit, setAccuracyUnit] = useState('m');
   const [formLists, setFormLists] = useState([]);
   const [selectedLists, setSelectedLists] = useState([]);
+  const [selectedRICAs, setSelectedRICAs]= useState([]);
   const [selectDeviceCount, setSelectDeviceCount] = useState(0);
   const [isCurrentLocation, setIsCurrentLocation] = useState('0');
   const [customMasterFields, setCustomMasterFields] = useState({});
@@ -49,6 +52,7 @@ export default function AddLeadContainer(props) {
   const [formSubmissions, setFormSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [compulsoryDevices, setCompulsoryDevices] = useState([]);
+  const [compulsoryUnattachedDevices, setCompulsoryUnattachedDevices] =  useState([]);
   const [isViewList , setIsViewList] = useState(false);
 
   const validateFormList = lists => {    
@@ -85,6 +89,25 @@ export default function AddLeadContainer(props) {
     return false;
   }, [customMasterFields , selectedLists]);
 
+  const isValidateRICA = useMemo(() => {
+    var flag = false;
+    compulsoryUnattachedDevices.forEach(element => {
+      const custom_master_field_id = element.custom_master_field_id ;
+      const compusloryOptions = element.options;
+      const options = customMasterFields[custom_master_field_id];
+      if(options != undefined && options != ''){        
+        options.forEach(subElement => {          
+          if(compusloryOptions.includes(subElement)){            
+            flag = true;
+          }
+        });
+      }
+    });    
+    if(flag && selectedRICAs.length > 0 || !flag){
+      return true;
+    }
+    return false;
+  }, [customMasterFields , selectedRICAs]);
 
   useEffect(() => {
     updateFormLists(formLists);
@@ -111,12 +134,11 @@ export default function AddLeadContainer(props) {
         if (props.changeTitle && res.component_title != undefined) {
           props.changeTitle(res.component_title);
         }
-        if (isMount) {
-          console.log("res.custom_master_fields => ", res.custom_master_fields)
-          setLeadForms(res.custom_master_fields);      
-          setAccuracyUnit(res.accuracy_distance_measure);
-          setCompulsoryDevices(res.compulsory_device);
-        }
+        console.log("res.custom_master_fieldsx => ", res.compulsory_unattached_device)
+        setLeadForms(res.custom_master_fields);      
+        setAccuracyUnit(res.accuracy_distance_measure);
+        setCompulsoryDevices(res.compulsory_device);
+        setCompulsoryUnattachedDevices(res.compulsory_unattached_device);
       })
       .catch(e => {
         console.log('leadfield api error', e);
@@ -184,30 +206,29 @@ export default function AddLeadContainer(props) {
   
   const onAdd = async () => {
     const isFormValid = await validateForm();
-    console.log("valiidate form => ", isValidateAllocateDevice);
 
+    var message = '';
     if (!isFormValid || !isValidateAllocateDevice) {
+      message = Strings.Complete_Required_Fields; 
+    }
+    if(!isValidateRICA){
+      message = Strings.CRM.Complete_RICA;
+    }
+    if(!isValidOtherForms){
+      message = Strings.Complete_Required_Forms;
+    }
+
+    if(message != ''){
       dispatch(
         showNotification({
           type: 'success',
-          message: Strings.Complete_Required_Fields,
+          message: message,
           buttonText: Strings.Ok,
         }),
       );
       return;
     }
-    if (!isValidOtherForms) {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: Strings.Complete_Required_Forms,
-          buttonText: Strings.Ok,
-        }),
-      );
-      return;
-    }
-    
-    
+            
     setIsLoading(true);
     var user_id = await getTokenData('user_id');
     var add_location_id = getTimeStamp() + user_id;
@@ -219,6 +240,7 @@ export default function AddLeadContainer(props) {
       customMasterFields,
       primaryData,
       selectedLists,
+      selectedRICAs,
       add_location_id,
     );
     const locationName = getAddLeadLocationName(leadForms, customMasterFields);
@@ -337,7 +359,12 @@ export default function AddLeadContainer(props) {
       selectDeviceModalRef.current.showModal();
     }
   };
-   
+
+  const showSimViewModal = () => {
+    if(simListModalRef.current){
+      simListModalRef.current.showModal();
+    }
+  }
 
   const onSelectDeviceModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_REMOVE) {
@@ -347,7 +374,7 @@ export default function AddLeadContainer(props) {
       setSelectedLists(tmp);
     }
     if (type == Constants.actionType.ACTION_VIEW) {
-      setSelectedLists(value);      
+      setSelectedLists(value);
     }
     if (type == Constants.actionType.ACTION_NEXT) {
       setSelectDeviceCount(value);
@@ -407,6 +434,17 @@ export default function AddLeadContainer(props) {
     }
   };
 
+  const onSimListModalClosed = ({ type , value}) => {
+    if (type == Constants.actionType.ACTION_CLOSE) {
+      simListModalRef.current.hideModal();
+    }
+    if(type == Constants.actionType.ACTION_DONE) {
+      console.log("allocated data", value)
+      setSelectedRICAs(value);
+      simListModalRef.current.hideModal();
+    }
+  }
+
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
       <Notification />
@@ -421,9 +459,22 @@ export default function AddLeadContainer(props) {
         onPrimaryContactFields={onPrimaryContactFields}
         showFormModal={showFormModal}
         showAllocateModal={showAllocateModal}
+        showSimViewModal={showSimViewModal}
         isValidOtherForms={isValidOtherForms}
         isValidateAllocateDevice={isValidateAllocateDevice}
+        isValidateRICA={isValidateRICA}
         {...props}
+      />
+
+      <SubmitButton
+        style={{
+          marginHorizontal: 10,
+          marginBottom: Platform.OS == 'android' ? 10 : 20,
+          marginTop: 10,
+        }}
+        title={'Add'}
+        isLoading={isLoading}
+        onSubmit={onAdd}
       />
 
       <AddLeadFormsModal
@@ -463,16 +514,14 @@ export default function AddLeadContainer(props) {
         onButtonAction={onFormQuestionModalClosed}
       />
 
-      <SubmitButton
-        style={{
-          marginHorizontal: 10,
-          marginBottom: Platform.OS == 'android' ? 10 : 20,
-          marginTop: 10,
-        }}
-        title={'Add'}
-        isLoading={isLoading}
-        onSubmit={onAdd}
+      <SimListModal
+        ref={simListModalRef}
+        hideClear
+        selectedRICAs={selectedRICAs}
+        title={Strings.CRM.RICA_MSISDN}
+        onButtonAction={onSimListModalClosed}
       />
+     
     </View>
   );
 }
