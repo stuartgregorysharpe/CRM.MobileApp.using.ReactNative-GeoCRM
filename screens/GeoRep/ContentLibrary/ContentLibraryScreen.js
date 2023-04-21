@@ -15,7 +15,6 @@ import Card from './partial/Card';
 import Colors from '../../../constants/Colors';
 import {CHANGE_LIBRARY_CHILD_STATUS} from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
-import {getBaseUrl, getToken} from '../../../constants/Storage';
 import {
   downloadPDF,  
 } from '../../../actions/contentLibrary.action';
@@ -25,6 +24,7 @@ import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {expireToken} from '../../../constants/Helper';
 import {GetRequestContentlibraryDAO} from '../../../DAO';
+import { Notification } from '../../../components/modal/Notification';
 
 export default function ContentLibraryScreen(props) {
   
@@ -262,6 +262,9 @@ export default function ContentLibraryScreen(props) {
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>
+
+        <Notification />
+
         <Searchbar
           initVal=""
           onSearch={text => {

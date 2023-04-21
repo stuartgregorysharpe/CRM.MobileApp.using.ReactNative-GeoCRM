@@ -9,6 +9,7 @@ export default function CheckOut(props) {
 
   const { currentCall } = props;    
 
+  
   const getLocationName = () => {
     if(currentCall?.location_name?.value != undefined){
       return currentCall?.location_name?.value;

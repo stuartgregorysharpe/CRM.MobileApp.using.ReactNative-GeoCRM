@@ -11,11 +11,7 @@ import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
-import {expireToken, getFileFormat} from '../../../../constants/Helper';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
+import {expireToken} from '../../../../constants/Helper';
 import {FormQuestionView} from '../../CRM/add_lead/components/FormQuestionView';
 import {
   filterTriggeredQuestions,
@@ -36,8 +32,7 @@ import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import {Constants, Strings} from '../../../../constants';
 import {GetRequestFormQuestionsDAO, PostRequestDAO} from '../../../../DAO';
 import {generateKey} from '../../../../constants/Utils';
-import {Notification} from '../../../../components/modal/Notification';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import AlertModal from '../../../../components/modal/AlertModal';
 var indempotencyKey;
 
 //export default function FormQuestions(props) {
@@ -51,6 +46,8 @@ export const FormQuestions = props => {
   const [isSign, setIsSign] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const formQuestionViewRef = useRef();
+  const loadingBarRef = useRef();
+  const alertModalRef = useRef();
   
   const dispatch = useDispatch();
   const isShowCustomNavigationHeader = !props.screenProps;
@@ -123,30 +120,25 @@ export const FormQuestions = props => {
     if (location_id) {
       param.location_id = location_id;
     }
-
-    console.log(param)
+        
     GetRequestFormQuestionsDAO.find(param)
-      .then(res => {        
-        //if (isMount) {
-          groupByQuestions(res.questions);
-        //}
+      .then(res => {
+        groupByQuestions(res.questions);
       })
-      .catch(e => {
-        console.log("e",e);
-        expireToken(dispatch, e);
+      .catch(e => {        
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
   const groupByQuestions = async data => {
     const savedQuestionValueMap = await loadFormValuesFromDB(form.form_id);
-    var newData = [];
-    console.log('savedQuestionValueMap', savedQuestionValueMap);
+    var newData = [];    
     data.forEach(_element => {
       let element = {..._element};
       if (savedQuestionValueMap[element.form_question_id]) {
         element.value = savedQuestionValueMap[element.form_question_id];
       }
-
+      
       // updated value for tired mutiple choice
       if (
         element.question_type ===
@@ -217,11 +209,31 @@ export const FormQuestions = props => {
   };
   const onOpenFormFeedbackModal = res => {
     if (res?.areas_form_improvement_feedback == '1') {
-      formQuestionViewRef.current.openModal(res);
+      if(formQuestionViewRef.current){
+        if(Platform.OS == 'android'){
+          formQuestionViewRef.current.openModal(res);
+        }else{
+          setTimeout(() => {
+            formQuestionViewRef.current.openModal(res);
+          }, 500)
+        }
+      }            
     } else {
       onBackPressed();
     }
   };
+
+  const showLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
 
   const _onSubmit = async () => {
     if (
@@ -234,21 +246,16 @@ export const FormQuestions = props => {
 
     if(isLoading) return;
     
-
-    saveDb(formQuestions, indempotencyKey);
     var error = true;
     error = validateFormQuestionData(formQuestions);
     if (error) {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: error,
-          buttonText: Strings.Ok,
-        }),
-      );
+      if(alertModalRef.current){
+        alertModalRef.current.alert(error , Strings.Ok);
+      }      
       return;
-    }
-    
+    }    
+    showLoadingBar();
+    saveDb(formQuestions, indempotencyKey);
 
     var form_answers = [];
     form_answers = getFormQuestionData(formQuestions);
@@ -277,48 +284,42 @@ export const FormQuestions = props => {
       form.form_name,
       '',
       null,
-      dispatch
+      null
     )
       .then(async res => {
-                        
-        // setTimeout(() => {
-        //   console.log('called time out');
-          dispatch(
-            showNotification({
-              type: 'success',
-              message: res.message,
-              buttonText: Strings.Ok,
-              buttonAction: async () => {
-                const db = await getDBConnection();
-                if (db != null) await deleteFormTable(db, form.form_id);
-                clearAll();
-                const formIds = await getJsonData('@form_ids');
-                var formIdLists = [];
-                if (formIds != null) {
-                  formIds.forEach(id => {
-                    formIdLists.push(id);
-                  });
-                  formIdLists.push(form.form_id);
-                  await storeJsonData('@form_ids', formIdLists);
-                } else {
-                  formIdLists.push(form.form_id);
-                  await storeJsonData('@form_ids', formIdLists);
-                }
-
-                dispatch(clearNotification());
-                onOpenFormFeedbackModal(res);
-              },
-            }),
-          );
-        //}, 700);
 
         setIsLoading(false);
+        hideLoadingBar();
+        if(alertModalRef.current){
+          alertModalRef.current.alert(res.message , Strings.Ok , false ,  res);
+        }                                
       })
       .catch(e => {
         setIsLoading(false);
-        expireToken(dispatch, e);
+        hideLoadingBar();
+        expireToken(dispatch, e , alertModalRef);
       });
   };
+
+  const onSubmitSuccess = async (res) => {
+      const db = await getDBConnection();
+      if (db != null) await deleteFormTable(db, form.form_id);
+      clearAll();
+      const formIds = await getJsonData('@form_ids');
+      var formIdLists = [];
+      if (formIds != null) {
+        formIds.forEach(id => {
+          formIdLists.push(id);
+        });
+        formIdLists.push(form.form_id);
+        await storeJsonData('@form_ids', formIdLists);
+      } else {
+        formIdLists.push(form.form_id);
+        await storeJsonData('@form_ids', formIdLists);
+      }      
+      onOpenFormFeedbackModal(res);
+      
+  }
 
   const updateFormQuestionsAndClearDB = value => {
     updateFormQuestions(value);
@@ -338,8 +339,15 @@ export const FormQuestions = props => {
 
   return (
     <View style={{flexDirection: 'column', alignSelf: 'stretch', flex: 1}}>
-      <Notification />
-      <LoadingProgressBar/>
+
+      <AlertModal ref={alertModalRef} 
+        onModalClose={(res) => {          
+          if(res && res != ''){
+            onSubmitSuccess(res);
+          }          
+        }}
+      />
+      <LoadingBar ref={loadingBarRef} />
 
       <FormQuestionView
         ref={formQuestionViewRef}

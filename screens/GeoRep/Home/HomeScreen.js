@@ -1,14 +1,13 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef , useCallback } from 'react';
 import ScrollTab from '../../../components/common/ScrollTab';
 import { style } from '../../../constants/Styles';
 import MainPage from './Main/MainPage';
 import { useSelector } from 'react-redux';
 import ActionItemsContainer from '../CRM/action_items/containers/ActionItemsContainer';
-import { generateTabs } from './helper';
+import { generateTabs, postGPSLocation } from './helper';
 import { getSpeedTest } from '../../../services/DownloadService/TrackNetSpeed';
 import BackgroundTimer from 'react-native-background-timer';
-
 import { CHANGE_OFFLINE_STATUS } from '../../../actions/actionTypes';
 import { useDispatch } from 'react-redux';
 import { getLocalData, storeLocalValue } from '../../../constants/Storage';
@@ -17,13 +16,18 @@ import {
   showNotification,
 } from '../../../actions/notification.action';
 import { Strings } from '../../../constants';
-import { getTime } from '../../../helpers/formatHelpers';
+import { getCurrentDate, getDateTime, getTime } from '../../../helpers/formatHelpers';
 import { Notification } from '../../../components/modal/Notification';
 import Orders from './Orders';
 import DanOneSales from './DanOneSales/DanOneSales';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
+import { getBascketLastSyncTableData } from '../../../sqlite/BascketLastSyncsHelper';
+import MyBackgroundTimer from './MyBackgroundTimer';
+
+var timer = '';
 
 export default function HomeScreen(props) {
+
   const { route, navigation } = props;
   const [tabIndex, setTabIndex] = useState('Main');
   const [tabs, setTabs] = useState([]);
@@ -34,18 +38,42 @@ export default function HomeScreen(props) {
   const speed_test = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.speed_test,
   );
+  const payload = useSelector(state => state.selection.payload);  
+  const currentLocation = useSelector(state => state.rep.currentLocation);
+  
   const mainPageRef = useRef(null);
   const dispatch = useDispatch();
   const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const syncStart = useSelector(state => state.rep.syncStart);
 
   useEffect(() => {
-    setTabs(generateTabs(features));
+    setTabs(generateTabs(features));        
+    
   }, []);
 
   useEffect(() => {
-    BackgroundTimer.stopBackgroundTimer();
-    BackgroundTimer.runBackgroundTimer(async () => {
+    const data = payload.user_scopes.geo_rep.location_ping;
+    if(timer != ''){
+      BackgroundTimer.clearInterval(timer);
+    }     
+    timer = BackgroundTimer.setInterval(async () => {      
+      console.log("run backgrond timer");
+      if( data != undefined && data?.enabled === "1" ) {        
+        const currentTime = getTime();        
+        if(data?.start_time < currentTime && currentTime < data?.end_time){
+          sendLocationData();
+        }
+      }        
+    } , parseInt(data?.frequency) *  1000); 
+    
+    return () => {
+      BackgroundTimer.clearInterval(timer);
+    }
+  }, [payload]);
+
+  useEffect(() => {
+    BackgroundTimer.stopBackgroundTimer();    
+    BackgroundTimer.runBackgroundTimer(async () => {      
       if (speed_test.enabled === '1' && !syncStart) {
         const manual = await getLocalData('@manual_online_offline');
         if (manual != '1') {
@@ -102,7 +130,9 @@ export default function HomeScreen(props) {
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [syncStart]);
+  }, [syncStart ]);
+
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -118,7 +148,9 @@ export default function HomeScreen(props) {
   useEffect(() => {
     refreshHeader();
   }, [navigation]);
+
   const refreshHeader = () => {
+
     var screenProps = props.screenProps;
     if (screenProps === undefined) {
       screenProps = props.navigation;
@@ -137,31 +169,45 @@ export default function HomeScreen(props) {
         },
       });
     }
+
   };
+
+
   useEffect(() => {
     syncFun();
   }, [offlineStatus]);
 
-  const syncFun = async () => {
+  const syncFun = async () => {    
+    var flag = false;
+    var syncType = 'bascket_and_offline_items';
+    const isOnline = await getLocalData('@online');
     if (route.params != undefined) {
-      const { sync } = route.params;
+      const { sync } = route.params;          
       if (sync) {
-        // start sync when online
-        var isOnline = await getLocalData('@online');
-        if (mainPageRef.current) {          
-          if (isOnline === '1') {
-            mainPageRef.current.onlineSyncTable();
-          }
+        // start sync when online        
+        if (mainPageRef.current) {
+          flag = true;
         } else {          
           if (isOnline === '1') {
             setTabIndex('Main');
             setSelectedTab(0);
-            if(mainPageRef.current)
-              mainPageRef.current.onlineSyncTable();
+            flag = true;
           }          
         }
       }
+    }else{ // first install or first open
+      const res = await getBascketLastSyncTableData('sync_all');                            
+      if (res.length == 0) { // No synced yet        
+        flag = true;
+        syncType = 'bascket';
+      }
     }
+
+    if(flag && (isOnline === "1" || isOnline === undefined)){
+      if(mainPageRef.current)
+        mainPageRef.current.onlineSyncTable(syncType);
+    }
+
   };
 
   const showOfflineMessage = async () => {
@@ -180,6 +226,13 @@ export default function HomeScreen(props) {
       }),
     );
   };
+
+  const sendLocationData = useCallback(() => {
+
+    postGPSLocation(currentLocation);
+    
+  }, [ currentLocation ]);
+
 
   return (
     <View style={{ flex: 1, marginTop: 10 }}>

@@ -23,6 +23,8 @@ import {setRegret, setSalesSearchText} from '../actions/sales.action';
 import {useNavigation} from '@react-navigation/native';
 import {deviceTokenPostApi} from '../actions/auth.action';
 import { clearSearchKey } from '../screens/GeoRep/Sales/helpers';
+import { Strings } from '../constants';
+import { showNotification } from '../actions/notification.action';
 
 const lists = {
   0: [
@@ -237,11 +239,13 @@ export default function More() {
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
   const userInfo = useSelector(state => state.auth.userInfo);
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
 
   const [componentListOne, setComponentListOne] = useState([]);
   const [componentListTwo, setComponentListTwo] = useState([]);
   const [componentListThree, setComponentListThree] = useState([]);
   const navigation = useNavigation();
+
 
   useEffect(() => {
     if (payload.user_scopes.geo_rep) {
@@ -339,27 +343,31 @@ export default function More() {
                   <TouchableOpacity
                     style={styles.selectButton}
                     onPress={async () => {
-                      if (list.navigator == 'ProductSales') {
-                        dispatch(setRegret(null));
-                        //dispatch(setSalesSearchText(''));
-                        clearSearchKey();
-                        await storeJsonData('@regret', null);
-                      }
+
+                      // hide more navigator
                       dispatch({type: CHANGE_MORE_STATUS, payload: 1});
-                      dispatch({
-                        type: CHANGE_LIBRARY_CHILD_STATUS,
-                        payload: false,
-                      });
-
-                      dispatch({
-                        type: SHOW_MORE_COMPONENT,
-                        payload: list.navigator,
-                      });
-
-                      console.log('clicked', list.navigator);
-
-                      //console.log("navigation",navigation)
-                      //navigation.navigate(list.navigator);
+                      console.log("navigator page" , list.navigator);
+                      if( !( list.navigator == 'ProductSales' && offlineStatus )){
+                                                
+                        if (list.navigator == 'ProductSales') {
+                          dispatch(setRegret(null));
+                          clearSearchKey();
+                          await storeJsonData('@regret', null);
+                        }
+                                              
+                        dispatch({
+                          type: CHANGE_LIBRARY_CHILD_STATUS,
+                          payload: false,
+                        });
+  
+                        dispatch({
+                          type: SHOW_MORE_COMPONENT,
+                          payload: list.navigator,
+                        });
+                      }else{
+                        dispatch(showNotification({type : Strings.Success , message: Strings.This_Function_Not_Available, buttonText: Strings.Ok}));
+                      }            
+                      
                     }}>
                     <SvgIcon
                       style={{marginRight: 8}}
