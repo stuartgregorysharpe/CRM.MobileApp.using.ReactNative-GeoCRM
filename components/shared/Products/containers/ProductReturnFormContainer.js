@@ -137,6 +137,7 @@ const ProductReturnFormContainer = React.forwardRef((props, ref) => {
         flex: 1,
         marginBottom: Platform.OS == 'android' ? 0 : 30,
       }}>
+        
       <ProductReturnFormView
         ref={productSelectionFormRef}
         {...props}

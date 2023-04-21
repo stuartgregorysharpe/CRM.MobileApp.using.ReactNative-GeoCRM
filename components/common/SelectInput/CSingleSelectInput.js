@@ -7,7 +7,7 @@ import SingleSelectModal from './modals/SingleSelectModal';
 
 const CSingleSelectInput = props => {
 
-  const { items, hideClear, mode} = props;
+  const { isKeyboardManager = true , items, hideClear, mode} = props;
   const selectModalRef = useRef(null);
   const contactEmailModalRef = useRef(null);
 
@@ -148,6 +148,7 @@ const CSingleSelectInput = props => {
         onButtonAction={onButtonAction}
         renderItem={renderDropdownItem}
         isPressOption={isPressOption}
+        isKeyboardManager={isKeyboardManager != undefined ? isKeyboardManager : true}
         ref={selectModalRef}
         onClear={() => {
           if(mode == "multi"){

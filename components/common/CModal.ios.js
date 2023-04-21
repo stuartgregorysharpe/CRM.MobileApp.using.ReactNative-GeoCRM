@@ -23,6 +23,7 @@ const CModal = React.forwardRef((props, ref) => {
     closableWithOutsideTouch,
     modalType,
     clearText,
+    isKeyboardManager = true,
   } = props;
 
   const _modalType = modalType || Constants.modalType.MODAL_TYPE_CENTER;
@@ -36,7 +37,8 @@ const CModal = React.forwardRef((props, ref) => {
     showModal: () => {
       setIsVisible(true);
 
-      KeyboardManager.setEnable(false);
+      if(isKeyboardManager)
+        KeyboardManager.setEnable(false);
 
       if (props.onShowModal) {
         props.onShowModal(true);
@@ -45,7 +47,8 @@ const CModal = React.forwardRef((props, ref) => {
 
     hideModal: () => {
       setIsVisible(false);
-      KeyboardManager.setEnable(true);
+      if(isKeyboardManager)
+        KeyboardManager.setEnable(true);
     },
   }));
 
@@ -54,7 +57,8 @@ const CModal = React.forwardRef((props, ref) => {
       props.onClose();
     }
     setIsVisible(false);
-    KeyboardManager.setEnable(true);
+    if(isKeyboardManager)
+      KeyboardManager.setEnable(true);
   };
 
   const onClear = () => {
@@ -62,7 +66,8 @@ const CModal = React.forwardRef((props, ref) => {
       props.onClear();
     }
     setIsVisible(false);
-    KeyboardManager.setEnable(true);
+    if(isKeyboardManager)
+      KeyboardManager.setEnable(true);
   };
 
   return (
