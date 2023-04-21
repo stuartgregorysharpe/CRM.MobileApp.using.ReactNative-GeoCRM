@@ -4,7 +4,7 @@ import { AppText } from '../../common/AppText'
 
 const Paragraph = ({ title }) => {
   return (
-    <View style={{alignItems:'center' , justifyContent:'center', marginHorizontal:0}}>
+    <View style={{alignItems:'center' , justifyContent:'center', marginHorizontal:0 , marginVertical:10}}>
         <AppText 
             size="medium" 
             title={title} 
