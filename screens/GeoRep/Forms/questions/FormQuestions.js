@@ -120,8 +120,7 @@ export const FormQuestions = props => {
     if (location_id) {
       param.location_id = location_id;
     }
-
-    console.log(param)
+        
     GetRequestFormQuestionsDAO.find(param)
       .then(res => {
         groupByQuestions(res.questions);

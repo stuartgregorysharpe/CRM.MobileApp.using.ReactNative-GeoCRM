@@ -18,7 +18,6 @@ import {
 } from '../../../constants/Storage';
 import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
-import {GuideInfoView} from './partial/GuideInfoView';
 import {expireToken} from '../../../constants/Helper';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import FormFilterModal from './modal/FormFilterModal';
@@ -27,22 +26,22 @@ import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
 import {LOCATION_CHECK_OUT_COMPULSORY} from '../../../actions/actionTypes';
 import {Notification} from '../../../components/modal/Notification';
+import GuideInfoModal from './modal/GuideInfoModal';
 
 export const FormsScreen = props => {
   
   const navigation = props.navigation;
   const [originalFormLists, setOriginalFormLists] = useState([]);
-  const [formLists, setFormLists] = useState([]);
-  const [isInfo, setIsInfo] = useState(false);
+  const [formLists, setFormLists] = useState([]);  
   const [bubbleText, setBubbleText] = useState({});
   const [options, setOptions] = useState([]);
   const [filters, setFilters] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const formFilterModalRef = useRef(null);
   const searchLocationModalRef = useRef(null);
+  const guideInfoModalRef = useRef();
   const isCheckin = useSelector(state => state.location.checkIn);
   const [formIds, setFormIds] = useState([]);
-
 
   const dispatch = useDispatch();
 
@@ -198,12 +197,10 @@ export const FormsScreen = props => {
     console.log("param ", param);
     
     GetRequestFormListsDAO.find(param)
-      .then(res => {
-        if (isMount) {
-          setFormLists(res.forms);
-          setOriginalFormLists(res.forms);
-          getCompulsoryForm(res.forms);
-        }
+      .then(res => {        
+        setFormLists(res.forms);
+        setOriginalFormLists(res.forms);
+        getCompulsoryForm(res.forms);        
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -216,7 +213,7 @@ export const FormsScreen = props => {
 
   const _onTouchStart = (e, text) => {
     setBubbleText(text);
-    setIsInfo(true);
+	showGuideInfoModal();    
   };
 
   const onFormFilterModalClosed = ({type, value}) => {
@@ -272,6 +269,18 @@ export const FormsScreen = props => {
       }
     }
   };
+
+  const showGuideInfoModal = () => {
+	if(guideInfoModalRef.current){
+		guideInfoModalRef.current.showModal();
+	}
+  }
+
+  const hideGuideInfoModal = () => {
+	  if(guideInfoModalRef.current){
+		  guideInfoModalRef.current.hideModal();
+	  }
+  }
 
   const renderItems = (item, index) => {
     return (
@@ -329,18 +338,19 @@ export const FormsScreen = props => {
         <FlatList
           style={{marginHorizontal: 10, marginTop: 0, marginBottom: 0}}
           removeClippedSubviews={false}
-          maxToRenderPerBatch={10}
-          initialNumToRender={10}
+          //maxToRenderPerBatch={10}
+          initialNumToRender={formLists.length}
           data={formLists}
           renderItem={({item, index}) => renderItems(item, index)}
           keyExtractor={(item, index) => index.toString()}
         />
-
-        <GuideInfoView
-          visible={isInfo}
-          info={bubbleText}
-          onModalClose={() => setIsInfo(false)}></GuideInfoView>
-
+		
+		<GuideInfoModal
+			ref={guideInfoModalRef}
+			info={bubbleText}        
+			onModalClose={() => hideGuideInfoModal()}
+		/>
+		        
         <SearchLocationModal
           ref={searchLocationModalRef}
           title={Strings.Search_Location}

@@ -3,35 +3,31 @@ import {StatusBar} from 'react-native';
 import React, {Fragment, useState, useEffect} from 'react';
 import {View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import MoreNavigator from './MoreNavigator';
 import DeviceInfo from 'react-native-device-info';
 import SvgIcon from './SvgIcon';
 import {whiteLabel} from '../constants/Colors';
-import {
-  SLIDE_STATUS,
+import {  
   CHANGE_MORE_STATUS,
   SHOW_MORE_COMPONENT,
   SET_CONTENT_FEED_DATA,
 } from '../actions/actionTypes';
-
 import {StyleSheet, Dimensions, TouchableOpacity, Platform} from 'react-native';
 import HeaderRightView from './Header/HeaderRightView';
 import {style} from '../constants/Styles';
-import {Constants} from '../constants';
-import {getPageNameByLinker} from '../constants/Helper';
+import {Constants, Strings} from '../constants';
 import {getBottomTabs} from './helper';
+import { showNotification } from '../actions/notification.action';
 
 const BottomTab = createBottomTabNavigator();
 
 export default function RepBottomTabNavigator({navigation}) {
+
   const dispatch = useDispatch();
   const payload = useSelector(state => state.selection.payload);
   const selectProject = useSelector(state => state.selection.selectProject);
   const visibleMore = useSelector(state => state.rep.visibleMore);
-
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
   const [bottomTabs, setBottomTabs] = useState([]);
-  
-
 
   useEffect(() => {
     initBottomTab();
@@ -155,6 +151,7 @@ export default function RepBottomTabNavigator({navigation}) {
           paddingBottom: Platform.OS == 'android' ? 4 : 0,
         },
       }}>
+        
       {bottomTabs.map((element, index) => {
         return (
           <BottomTab.Screen
@@ -187,28 +184,31 @@ export default function RepBottomTabNavigator({navigation}) {
             }}
             listeners={({navigation}) => ({
               tabPress: e => {
+                
                 if (element.name === 'More') {
 
-                  e.preventDefault();                  
+                  e.preventDefault();
                   console.log('revisible mo', visibleMore);
                   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-
-                  // if (visibleMore != '') {
-                  //   //dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                  // } else {
-                  //   dispatch({type: CHANGE_MORE_STATUS, payload: 0});
-                  // }
-                  
+                  if (visibleMore != '') {
+                    dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                  }                                    
                 } else {
                   console.log('bottom tab clicked', element.name);                  
                   if (element.name === 'Home') {
                     dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                     dispatch({type: SET_CONTENT_FEED_DATA, payload: true});
-                  } else if(element.name === 'Sales'){
-                    dispatch({
-                      type: SHOW_MORE_COMPONENT,
-                      payload: 'Sales',
-                    });
+                  } else if(element.name === 'Sales'){                    
+                    if(!offlineStatus){
+                      dispatch({
+                        type: SHOW_MORE_COMPONENT,
+                        payload: 'Sales',
+                      });
+                    }else{
+                      e.preventDefault();
+                      dispatch(showNotification({type : Strings.Success , message: Strings.This_Function_Not_Available, buttonText: Strings.Ok}));
+                    }
+
                   }else{
                     dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
                   }

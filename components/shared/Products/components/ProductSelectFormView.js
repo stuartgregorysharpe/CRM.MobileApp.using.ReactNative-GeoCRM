@@ -1,9 +1,6 @@
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Keyboard,
+  View,  
+  StyleSheet,  
   ToastAndroid,
   Platform,
   Alert,
@@ -19,9 +16,8 @@ import SectionList from './SectionList';
 import {Constants, Images, Strings, Values} from '../../../../constants';
 import {AppText} from '../../../common/AppText';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../actions/notification.action';
+import AlertModal from '../../../modal/AlertModal';
 
-//export default function ProductSelectFormView(props) {
 const ProductSelectFormView = React.forwardRef((props, ref) => {
   const {
     questionType,
@@ -32,6 +28,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
     selectedLists,
   } = props;
   const skuCaptureModalRef = useRef(null);
+  const alertModalRef = useRef();
   const [formData, setFormData] = useState(null);
   const [brand, setBrand] = useState('');
   const [type, setType] = useState('');
@@ -42,6 +39,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
 
   var previousCode = '';
+
   useImperativeHandle(
     ref,
     () => ({
@@ -67,14 +65,8 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
       if (
         questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES &&
         productIssue == ''
-      ) {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: Strings.Choose_Reason,
-            buttonText: 'Ok',
-          }),
-        );
+      ) {                        
+        showAlertModal(Strings.Choose_Reason);        
       } else {
         var tmp = item.products.find(element => element.barcode == value);
         if (tmp != null && tmp != undefined) {
@@ -133,13 +125,7 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
         questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES &&
         productIssue == ''
       ) {
-        dispatch(
-          showNotification({
-            type: Images.Success,
-            message: Images.Choose_Reason,
-            buttonText: 'Ok',
-          }),
-        );
+        showAlertModal(Strings.Choose_Reason);        
       } else {
         if (questionType == Constants.questionType.FORM_TYPE_PRODUCT_ISSUES) {
           item = {...item, productIssue};
@@ -158,8 +144,17 @@ const ProductSelectFormView = React.forwardRef((props, ref) => {
     }
   };
 
+  const showAlertModal = (message) => {
+    if(alertModalRef.current){
+      alertModalRef.current.alert(message, Strings.Ok);
+    }
+  }
+
   return (
     <View style={styles.container}>
+
+      <AlertModal ref={alertModalRef} />
+
       <SearchBar
         isFilter
         onSearch={onSearch}

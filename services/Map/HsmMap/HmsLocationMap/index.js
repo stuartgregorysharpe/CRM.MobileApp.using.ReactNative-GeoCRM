@@ -274,6 +274,7 @@ const HmsLocationMap = props => {
           onCameraIdle={onRegionChangeComplete}
           compassEnabled={true}
           onMapClick={onPressMap}
+          onMapLongClick={onPressMap}
           camera={cameraPosition}
           currentLocation={currentLocation}
           useAnimation={true}

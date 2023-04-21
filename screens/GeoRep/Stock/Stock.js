@@ -41,11 +41,9 @@ const Stock = props => {
 
   useEffect(() => {
     var screenProps = props.screenProps;    
-    if (screenProps === undefined) {      
+    if (screenProps === undefined) {
       screenProps = props.navigation;
     }
-
-
     if (screenProps) {
       screenProps.setOptions({
         headerTitle: () => {
@@ -59,7 +57,7 @@ const Stock = props => {
         },
       });
     }
-  });
+  }, []);
 
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
@@ -103,12 +101,12 @@ const Stock = props => {
 
       {/* marginBottom:50 */}
       <View style={{flex: 1 }}>
-
         {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
         {selectedTabIndex === 2 && <Movements></Movements>}
         {selectedTabIndex === 3 && <Returns></Returns>}
       </View>
+
     </View>
   );
 };

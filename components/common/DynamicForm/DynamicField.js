@@ -3,6 +3,7 @@ import React from 'react';
 import {View , Text, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { Constants } from '../../../constants';
+import { whiteLabel } from '../../../constants/Colors';
 import DropdownText from '../../shared/DropdownText';
 import EmailPdf from '../../shared/EmailPdf';
 import EmailInputView from '../../shared/EmailPdf/EmailInputView';
@@ -11,6 +12,7 @@ import SignatureSignView from '../../shared/SignatureSignView';
 import TakePhotoView from '../../shared/TakePhotoView';
 import { TextForm } from '../../shared/TextForm';
 import {YesNoForm} from '../../shared/YesNoForm';
+import { AppText } from '../AppText';
 import CTextInput from '../CTextInput';
 import CDateTimePickerInput from '../SelectInput/CDateTimePickerInput';
 import CSingleSelectInput from '../SelectInput/CSingleSelectInput';
@@ -351,6 +353,7 @@ const DynamicField = props => {
   };
 
   const renderDatePicker = () => {
+
     return (
       <CDateTimePickerInput
         key={index}
@@ -368,19 +371,22 @@ const DynamicField = props => {
   };
   const renderTakePhotoView = () => {
     return (
-      <TakePhotoView
-        key={index}
-        isOptimize={true}
-        hasError={hasError}
-        isRequired={is_required}
-        maxSize={props.maxSize != undefined ? props.maxSize : -1}
-        onUpdatePhotos={photos => {
-          updateFormData(field_name, photos);
-        }}
-        disabled={disabled}
-        photos={value}
-        style={{marginVertical: 24}}
-      />
+      <View style={{alignItems:'center', marginVertical:15 }}>                
+        <AppText title={field_label?.trim()} size="medium" type="secondaryBold" style={{fontWeight:'bold' , color : whiteLabel().mainText}} ></AppText>
+        <TakePhotoView
+          key={index}
+          isOptimize={true}
+          hasError={hasError}
+          isRequired={is_required}
+          maxSize={props.maxSize != undefined ? props.maxSize : -1}
+          onUpdatePhotos={photos => {
+            updateFormData(field_name, photos);
+          }}
+          disabled={disabled}
+          photos={value}
+          style={{marginVertical: 0}}
+        />  
+      </View>      
     );
   };
 
