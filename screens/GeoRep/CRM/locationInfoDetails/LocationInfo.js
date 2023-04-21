@@ -46,9 +46,7 @@ const LocationInfo = props => {
         style={{
           width: 100,
           paddingTop: 3,
-          paddingBottom: 3,
-          borderWidth: 1.5,
-          borderColor: whiteLabel().fieldBorder,
+          paddingBottom: 3,          
           borderRadius: 5,
         }}>
         <SvgIcon

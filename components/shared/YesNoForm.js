@@ -328,8 +328,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     marginTop:10,
     padding: 5,
-    borderWidth: 1,
-    borderColor: whiteLabel().fieldBorder,
+    // borderWidth: 1,
+    // borderColor: whiteLabel().fieldBorder,
     borderRadius: 5,
     width: Dimensions.get('screen').width / 4.5,
     height: Dimensions.get('screen').width / 4.5,

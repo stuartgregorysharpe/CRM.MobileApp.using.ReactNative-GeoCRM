@@ -140,13 +140,12 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         dispatch({type: CHANGE_SYNC_START , payload: false });
                         if(props.changeIsManual){
                             props.changeIsManual(true)
-                        }
-                        updateBasket(basket);                        
-                        saveSyncedStatusTable("sync_all");
-                        if(props.updateLoading){                                               
+                        }                                                
+                        await saveSyncedStatusTable("sync_all");
+                        updateBasket(basket);
+                        if(props.updateLoading){
                             props.updateLoading(false)
                         }
-
                         if(message != '' && message != null){
                             dispatch(showNotification({type:Strings.Success , message: message, buttonText: Strings.Ok , buttonAction: () => {
                                 dispatch(clearNotification());
@@ -154,7 +153,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
                         }
 
                     }
-                }                
+                }
               }
             }).catch((e) => {
                 console.log("error" , e);

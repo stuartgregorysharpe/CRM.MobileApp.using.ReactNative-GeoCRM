@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 
 import { View, Modal, StyleSheet, TouchableWithoutFeedback, Dimensions, Platform , TouchableOpacity} from 'react-native';
 import Activity from './tabs/Activity';
@@ -14,8 +14,7 @@ export default function ActivityComments(props) {
     const {visible , onModalClosed , locationId} =  props;
     const [tabIndex , setTabIndex] = useState(0);
     const headers = ["History", "Forms"];
-    const refPagerView = useRef();
-    const screenMargin = Platform.OS === "ios" ? 100 : 115;
+    const refPagerView = useRef();    
 
     const changePage = (nativeEvent) => {    
         setTabIndex(nativeEvent.position);
@@ -23,11 +22,11 @@ export default function ActivityComments(props) {
     
     return (
         <Modal                      
-        animationType="fade"        
-        transparent={true}
-        visible={visible}
-        onRequestClose={onModalClosed}
-        onModalClosed={onModalClosed}>
+            animationType="fade"        
+            transparent={true}
+            visible={visible}
+            onRequestClose={onModalClosed}
+            onModalClosed={onModalClosed}>
 
             <View style={[style.centeredView]}>
                 
@@ -36,7 +35,7 @@ export default function ActivityComments(props) {
                   <View style={styles.topContainer}></View>
                 </TouchableWithoutFeedback>
                 
-                <View style={[style.modalView,  styles.modalContainer , {height: Dimensions.get("screen").height -  screenMargin }]}>
+                <View style={[style.modalView,  styles.modalContainer , { height: 20 + Dimensions.get("screen").height * 0.825 }]}>
                   
                     <TouchableOpacity onPress={() =>{onModalClosed()}}>
                         <Divider></Divider>
@@ -75,14 +74,15 @@ const styles = StyleSheet.create({
         paddingLeft:0, 
         paddingRight:0, 
         paddingTop:10, 
-        
+        borderTopRightRadius:8,
+        borderTopLeftRadius:8
     },
     topContainer:{
         width:Dimensions.get("screen").width,        
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height:Dimensions.get("screen").height,        
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height:Dimensions.get("screen").height, 
     },
 });

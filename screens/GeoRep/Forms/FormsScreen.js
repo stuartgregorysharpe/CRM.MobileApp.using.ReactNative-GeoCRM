@@ -198,12 +198,10 @@ export const FormsScreen = props => {
     console.log("param ", param);
     
     GetRequestFormListsDAO.find(param)
-      .then(res => {
-        if (isMount) {
-          setFormLists(res.forms);
-          setOriginalFormLists(res.forms);
-          getCompulsoryForm(res.forms);
-        }
+      .then(res => {        
+        setFormLists(res.forms);
+        setOriginalFormLists(res.forms);
+        getCompulsoryForm(res.forms);        
       })
       .catch(e => {
         expireToken(dispatch, e);
@@ -329,8 +327,8 @@ export const FormsScreen = props => {
         <FlatList
           style={{marginHorizontal: 10, marginTop: 0, marginBottom: 0}}
           removeClippedSubviews={false}
-          maxToRenderPerBatch={10}
-          initialNumToRender={10}
+          //maxToRenderPerBatch={10}
+          initialNumToRender={formLists.length}
           data={formLists}
           renderItem={({item, index}) => renderItems(item, index)}
           keyExtractor={(item, index) => index.toString()}

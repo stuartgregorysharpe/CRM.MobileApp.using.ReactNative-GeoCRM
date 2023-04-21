@@ -35,7 +35,7 @@ const CheckinLinkButton = props => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const {locationId, title, scheduleId , locationInfo} = props;
+  const {locationId, title, scheduleId , locationInfo , checkinTypeId , checkinReasonId } = props;
   if (!locationId) return null;
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -52,7 +52,6 @@ const CheckinLinkButton = props => {
   const [isCallTrigger, setCallTriger] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
   const [message, setMessage] = useState('');
-
   
   useEffect(() => {
     initData();
@@ -65,9 +64,8 @@ const CheckinLinkButton = props => {
       }else{
         setTimeout(() => {
           _callCheckedIn();
-        }, 300);
-      }
-      
+        }, 500);
+      }      
     }    
   }, [isCallTrigger]);
 
@@ -120,10 +118,12 @@ const CheckinLinkButton = props => {
               setFeedbackOptions(options);
               setCheckInReason(checkinType.checkin_reasons);
             } else {
-              checkin_type_id = checkinType.checkin_type_id;              
-              setIsFeedback(false);
-              setCallTriger(true);
-              //_callCheckedIn();
+              if(checkinType != undefined){
+                checkin_type_id = checkinType.checkin_type_id;              
+                setIsFeedback(false);
+                setCallTriger(true);
+                //_callCheckedIn();
+              }              
             }
           } else if (modalType === 'checkin_reason') {
             var chk = checkinReason.find(element => element.reason === item);
@@ -308,8 +308,15 @@ const CheckinLinkButton = props => {
       );
       console.log('isCheckinTypes', isCheckinTypes);
 
-      if (isCheckinTypes) {
-        _callCheckInTypes();
+      if (isCheckinTypes ) {
+        if(checkinTypeId != undefined && checkinTypeId != ''){
+          checkin_type_id = checkinTypeId;
+          reason_id = checkinReasonId;
+          console.log("checkin type id & reason id", checkin_type_id , reason_id);
+          setCallTriger(true);
+        }else{
+          _callCheckInTypes();
+        }        
       } else {
         _callCheckedIn();
       }

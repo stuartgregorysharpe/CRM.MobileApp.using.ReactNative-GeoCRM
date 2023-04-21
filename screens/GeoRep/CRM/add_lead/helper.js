@@ -77,7 +77,7 @@ export function getAddLeadStreetAddress(leadForms , customMasterFields) {
 
 
 
-export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLocation , leadForms , customMasterFields , primaryData , selectedLists) {
+export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLocation , leadForms , customMasterFields , primaryData , selectedLists , add_location_id) {
 
     try{        
         var lat = await getLocalData('@latitude');
@@ -87,10 +87,7 @@ export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLoca
         try {
           time_zone = RNLocalize.getTimeZone();
         } catch (e) {}
-  
-        var user_id = await getTokenData("user_id");
-		var add_location_id = getTimeStamp() + user_id;
-
+          
         var postDataJson = {          
             'add_location_id':add_location_id,
             'use_current_geo_location': isCurrentLocation,

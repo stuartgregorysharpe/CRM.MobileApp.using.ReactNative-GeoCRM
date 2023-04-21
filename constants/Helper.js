@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 import { CHANGE_LOGIN_STATUS } from '../actions/actionTypes';
 import {
@@ -312,15 +312,31 @@ export function isInsidePoly(lat, lon, multiPolycoords) {
   return inside;
 }
 
-export function expireToken(dispatch, e) {
+export function expireToken(dispatch, e , alertModalRef) {
   var message = '';
   if (e === 'expired') {
     console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
     message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
+  }else{
+    message = e;
   }
-  if (e === 'expired' || e == 'timeout') {
+  
+  if(Platform.OS === 'android'){
+    showModal(dispatch , e , message , alertModalRef);
+  }else{
+    setTimeout(() => {
+      showModal(dispatch , e , message , alertModalRef);
+    }, 500)
+  }
+
+}
+
+export function showModal (dispatch , e , message,  alertModalRef) {
+  if(alertModalRef && alertModalRef.current){      
+    alertModalRef.current.alert(message, Strings.Ok , e === 'expired' ? true : false );
+  }else{
     dispatch(
       showNotification({
         type: 'success',
@@ -335,6 +351,7 @@ export function expireToken(dispatch, e) {
       }),
     );
   }
+
 }
 
 export function goToLogin( dispatch ) {

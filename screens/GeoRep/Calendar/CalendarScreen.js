@@ -38,6 +38,7 @@ import { getCurrentDate } from '../../../helpers/formatHelpers';
 import OptimizePlusButtonContainer from './containers/OptimizePlusButtonContainer';
 import ConfirmDialog from '../../../components/modal/ConfirmDialog';
 import { getJsonData } from '../../../constants/Storage';
+import { Notification } from '../../../components/modal/Notification';
 
 var selectedIndex = 2;
 
@@ -388,6 +389,8 @@ export default function CalendarScreen(props) {
     <SafeAreaView>
 
       <View style={styles.container}>
+
+        <Notification />
 
         <AlertDialog 
           visible={isConfirmModal}
