@@ -1,16 +1,17 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {View, Text} from 'react-native';
+import React from 'react';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import {Fonts, Strings} from '../../../../../constants';
 import {useSelector} from 'react-redux';
 import AddLeadButton from './AddLeadButton';
 
 export default function AddLeadOtherSection(props) {
+
   const {showFormModal, showAllocateModal, showSimViewModal, isValidOtherForms , isValidateAllocateDevice , isValidateRICA} = props;
+
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
-  );
-  
+  );  
   const isAllocateDevices = features.includes('location_specific_devices');
     
   return (
@@ -33,7 +34,7 @@ export default function AddLeadOtherSection(props) {
       <AddLeadButton 
         onPress={showFormModal}
         hasData={isValidOtherForms}
-        title='Complete Forms' />
+        title={Strings.CRM.Complete_Forms} />
 
       {
         isAllocateDevices && 
@@ -50,23 +51,9 @@ export default function AddLeadOtherSection(props) {
           onPress={showSimViewModal}
           style={{marginTop:10}}
           hasData={isValidateRICA}
-          title={'Allocate RICA MSISDN'} />      
+          title={Strings.CRM.Allocate_RICA} />      
       }
 
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  btnStyles: {
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: whiteLabel().fieldBorder,
-    borderRadius: 5,
-    flexDirection: 'row',
-    backgroundColor: Colors.whiteColor,
-    paddingHorizontal: 10,
-  },
-});

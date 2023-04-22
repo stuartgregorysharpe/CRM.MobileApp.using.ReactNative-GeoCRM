@@ -53,7 +53,6 @@ export default function AddLeadContainer(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [compulsoryDevices, setCompulsoryDevices] = useState([]);
   const [compulsoryUnattachedDevices, setCompulsoryUnattachedDevices] =  useState([]);
-  const [isViewList , setIsViewList] = useState(false);
 
   const validateFormList = lists => {    
     let isValid = true;
@@ -499,7 +498,7 @@ export default function AddLeadContainer(props) {
         ref={selectDeviceModalRef}
         hideClear={true}
         selLists={selectedLists}        
-        title="Select Devices:"
+        title={Strings.CRM.Select_Devices}
         onButtonAction={onSelectDeviceModalClosed}
       />
 

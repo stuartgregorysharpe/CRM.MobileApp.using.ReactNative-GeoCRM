@@ -1,15 +1,8 @@
 
 import { View , StyleSheet} from 'react-native'
 import React , {useEffect, useState , useRef ,useImperativeHandle} from 'react'
-import SelectDevicesView from '../components/SelectDevicesView';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
-import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
 import { Constants, Strings } from '../../../../../constants';
-import { GetRequestStockListsDAO } from '../../../../../sDAO';
-import { expireToken } from '../../../../../constants/Helper';
-import { useDispatch } from 'react-redux';
-import ViewListsModal from '../modal/ViewListsModal';
-import SvgIcon from '../../../../../components/SvgIcon';
 import SimListView from '../components/SimListView';
 import SimAddModal from '../../devices/modal/SimAddModal';
 import { whiteLabel } from '../../../../../constants/Colors';
@@ -45,7 +38,6 @@ const SimListContainer = React.forwardRef((props, ref) => {
         }
     }
     
-
     const onAllocate = () => {
         if(props.onButtonAction){
             props.onButtonAction({type: Constants.actionType.ACTION_DONE , value: simList});
@@ -69,9 +61,7 @@ const SimListContainer = React.forwardRef((props, ref) => {
                 onItemSelected={(item) =>onItemSelected(item)}
                 removeSim={removeSim}
                 {...props}
-            />
-
-            {/* <SubmitButton style={{marginHorizontal:10}} title={Strings.Stock.Allocate_Device} onSubmit={allocateSims}/> */}
+            />            
 
             <View style={styles.container}>
                 <SubmitButton 
@@ -118,10 +108,7 @@ const styles = StyleSheet.create({
     },
 
     deleteBtnStyle : {
-        flex:1,
-        // backgroundColor : 'white',
-        // borderWidth:1,
-        // borderColor: whiteLabel().fieldBorder,
+        flex:1,        
     },
 
     titleStyle:{

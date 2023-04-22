@@ -4,9 +4,9 @@ import AddLeadMap from './AddLeadMap';
 import PrimaryContactFields from './PrimaryContactFields';
 import CustomMasterFields from './CustomMasterFields';
 import AddLeadOtherSection from './AddLeadOtherSection';
-import {SubmitButton} from '../../../../../components/shared/SubmitButton';
 
 const AddLeadView = React.forwardRef((props, ref) => {
+
   const {
     leadForms,
     customMasterFields,
@@ -18,10 +18,10 @@ const AddLeadView = React.forwardRef((props, ref) => {
     isValidateAllocateDevice,
     isValidateRICA,
   } = props;
-
-  console.log("customMasterFields",leadForms )
+  
   const customMasterFieldsFormRef = useRef(null);
   const primaryContactFieldsRef = useRef(null);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -31,6 +31,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
   const _validateForm = async () => {
     let isValid = true;
     if (customMasterFieldsFormRef) {
@@ -38,8 +39,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
         isValid = false;
       }
     }
-    if (primaryContactFieldsRef) {
-      console.log('primaryContactFieldsRef');
+    if (primaryContactFieldsRef) {      
       const isPrimaryValid =
         await primaryContactFieldsRef.current.validateForm();
       console.log('primaryContactFieldsRef Valid', isPrimaryValid);
@@ -49,11 +49,14 @@ const AddLeadView = React.forwardRef((props, ref) => {
     }
     return isValid;
   };
+  
   return (
     <ScrollView
       style={{height: Dimensions.get('screen').height * 0.7, marginTop: 10}}>
+
       <View style={{}}>
         <AddLeadMap />
+        
         <View style={{padding: 5}}>
           
           <CustomMasterFields
