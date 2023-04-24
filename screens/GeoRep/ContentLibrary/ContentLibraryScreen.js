@@ -31,8 +31,7 @@ export default function ContentLibraryScreen(props) {
   const dispatch = useDispatch();
   const [childList, setChildList] = useState({});
   const [libraryLists, setLibraryLists] = useState([]);
-  const [searchLibraryLists, setSearchLibraryLists] = useState([]);
-  const FileOpener = require('react-native-file-opener');
+  const [searchLibraryLists, setSearchLibraryLists] = useState([]);  
   const [isBack, setIsBack] = useState(
     props.route.params && props.route.params.isBack
       ? props.route.params.isBack
@@ -151,6 +150,12 @@ export default function ContentLibraryScreen(props) {
       ) {
         return 'video/' + ext;
       }
+      if(
+        title.toLowerCase().includes('.csv') ||
+        title.toLowerCase().includes('.xlsx')
+      ){
+        return 'application/xls';
+      }
       return 'application/' + ext;
     } else {
       if (
@@ -171,29 +176,21 @@ export default function ContentLibraryScreen(props) {
     }
   };
 
-  openFile = (path, type) => {
-    console.log(type);
-    if (Platform.OS == 'android') {
-      FileOpener.open(path, type).then(
-        msg => {
-          console.log('success!!');
-        },
-        e => {
-          console.log('error!!', e);
-        },
-      );
-    } else {
-      const paths = FileViewer.open(path)
-        .then(() => {})
-        .catch(error => {});
-    }
+  const openFile = (path, type) => {       
+    const paths = FileViewer.open(path)
+        .then(() => {
+          console.log("success");
+        })
+        .catch(error => {
+          console.log("failed => ", error.toString());
+        });
   };
 
   if (isBack) {
     return (
       <SafeAreaView>
         <ScrollView style={styles.container}>
-          <View style={styles.innerContainer}>
+          <View style={styles.innerContainer}>  
             <Text
               style={{
                 fontSize: 18,
@@ -225,9 +222,11 @@ export default function ContentLibraryScreen(props) {
                       .then(res => {
                         if (res) {
                           console.log('file exist', path);
+                          console.log('ext', ext , getMineType(item.filename, ext));
                           openFile(path, getMineType(item.filename, ext));
                         } else {
                           console.log('no file exist', item.file_path);
+                          console.log("ext", ext);
                           downloadPDF(item.file_path, fileName, ext)
                             .then(res => {
                               console.log(res);
