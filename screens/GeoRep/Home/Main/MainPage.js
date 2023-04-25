@@ -7,7 +7,7 @@ import Visits from '../partial/cards/Visits';
 import { connect, useSelector } from 'react-redux';
 import { getApiRequest, postApiRequest } from '../../../../actions/api.action';
 import ActivityCard from '../partial/cards/ActivityCard';
-import { getJsonData, getLocalData, getUserData, getUserId, storeLocalValue } from '../../../../constants/Storage';
+import { getJsonData, getLocalData, getUserData, getUserId, storeJsonData, storeLocalValue } from '../../../../constants/Storage';
 import { expireToken, getPostParameter, showOfflineDialog } from '../../../../constants/Helper';
 import { Constants, Strings } from '../../../../constants';
 import OdometerReadingModal from './modal/OdometerReadingModal';
@@ -386,7 +386,11 @@ const MainPage = forwardRef((props, ref) => {
               setActivityCard(res.items.activity_card);
               setCurrentCall(res.items.current_call);
               setCheckinStatus(res.items.checkin_state);
-              if (res.items.checkin_state != '') {
+              if (res.items.checkin_state != '' && res.items.checkin_state != undefined ) {
+                var locId  = await getLocalData("@specific_location_id");
+                if(locId != undefined && locId != res.items.checkin_state){
+                  await storeJsonData('@checkin_location', null);
+                }
                 await storeLocalValue('@checkin', '1');
                 await storeLocalValue(
                   '@specific_location_id',
@@ -395,8 +399,9 @@ const MainPage = forwardRef((props, ref) => {
                 dispatch({ type: CHECKIN, payload: true });
               } else {
                 await storeLocalValue('@checkin', '0');
+                dispatch({ type: CHECKIN, payload: false });
               }
-              console.log("res.items.startEndDay_state", res.items.startEndDay_state)
+              console.log("res.items.checkin_state => ", res.items.checkin_state )
               setIsStart(
                 res.items.startEndDay_state ===
                   Constants.homeStartEndType.START_MY_DAY
