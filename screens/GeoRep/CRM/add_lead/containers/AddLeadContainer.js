@@ -514,6 +514,7 @@ export default function AddLeadContainer(props) {
       />
 
       <SimListModal
+        closableWithOutsideTouch
         ref={simListModalRef}
         hideClear
         selectedRICAs={selectedRICAs}
