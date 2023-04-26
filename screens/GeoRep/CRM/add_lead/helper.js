@@ -175,14 +175,16 @@ export async function getLeadFieldsPostJsonData ( isCurrentLocation, currentLoca
 			}
 		});
                 
-        if(selectedLists != undefined && selectedLists instanceof Array && selectedLists.length > 0){            
-            postDataJson = await getJsonWithFile(postDataJson , selectedLists);
-            postDataJson = await getJsonWithUnattachedDevices(postDataJson , simList);            
-            return postDataJson;
-
-        }else{
-            return postDataJson;
+        if(selectedLists != undefined && selectedLists instanceof Array && selectedLists.length > 0){  
+            postDataJson = await getJsonWithFile(postDataJson , selectedLists);            
         }
+
+        if(simList != undefined && simList instanceof Array && simList.length > 0){  
+            postDataJson = await getJsonWithUnattachedDevices(postDataJson , simList);                    
+        }
+
+        return postDataJson;
+        
                                 
     }catch(e) {
       console.log("json err" , e)
@@ -219,6 +221,7 @@ async function getJsonWithFile ( json, selectedLists) {
 async function getJsonWithUnattachedDevices ( json, simLists) {
       
     var postDataJson = {...json};
+    console.log("simLists",simLists)
     if(simLists != undefined && simLists instanceof Array && simLists.length > 0){
         for( var index = 0; index < simLists.length ; index++){            
             var item =  simLists[index];
