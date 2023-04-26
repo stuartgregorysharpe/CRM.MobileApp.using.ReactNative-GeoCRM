@@ -142,7 +142,7 @@ const FilterYourSearchView = (props) => {
 				color: whiteLabel().actionFullButtonText,
 				}}
 				onPress={() => {
-					console.log('apply filters', filters);
+					console.log('apply filter list', filters);
 					var cloneFilters = {...filters};
 					if (page == 'map') {
 						dispatch({type: MAP_FILTERS, payload: cloneFilters});

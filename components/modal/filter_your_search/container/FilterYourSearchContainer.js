@@ -2,24 +2,31 @@ import { StyleSheet, View } from 'react-native'
 import React , { useState, useEffect , useImperativeHandle} from 'react'
 import FilterYourSearchView from '../components/FilterYourSearchView'
 import { getFilterData, storeFilterData } from '../../../../constants/Storage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Constants } from '../../../../constants';
+import { getPipelineFilters } from '../../../../actions/pipeline.action';
 
 const FilterYourSearchContainer = React.forwardRef((props, ref) => {
 
     const { page } = props;
+
+    const dispatch = useDispatch()
+
     const [filters, setFilters] = useState('');
     const [options, setOptions] = useState([]);
     const [originOptions, setOriginOptions] = useState([]);
     const [fieldType, setFieldType] = useState('');
     const [locationFilters, setLocationFilters] = useState([]);
     const [selectedType, setSelectedType] = useState('');
-    const [customId, setCustomId] = useState('');
+    const [customId, setCustomId] = useState('');    
+    const [dispositionId, setDispositionId] = useState('');
+
     const [key, setKey] = useState(0);
     const [isStartEndDateSelection, setIsStartEndDateSelection] = useState(false);
     const [startDate, setStartDate] = useState('');
-	const [endDate, setEndDate] = useState('');
+	  const [endDate, setEndDate] = useState('');
     const [modaVisible, setModalVisible] = useState(false);	
+    const [opportunityId, setOpportunityId] = useState('');
 
     const originaLocationlFilterData = useSelector(
 		state => state.location.locationFilters,

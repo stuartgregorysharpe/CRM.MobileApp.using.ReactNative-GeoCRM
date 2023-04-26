@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   Text,
   View,
@@ -27,7 +27,7 @@ import {Provider} from 'react-native-paper';
 import {boxShadow, grayBackground, style} from '../../../constants/Styles';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import {SLIDE_STATUS, SUB_SLIDE_STATUS} from '../../../actions/actionTypes';
-import FilterView from '../../../components/FilterView';
+
 import SearchBar from '../../../components/SearchBar';
 import AddSalesPipeline from './AddSalesPipeline';
 import Skeleton from '../../../components/Skeleton';
@@ -40,6 +40,7 @@ import {updateCurrentLocation} from '../../../actions/google.action';
 import NavigationHeader from '../../../components/Header/NavigationHeader';
 import LocationService from '../../../services/LocationService';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
+import FilterYourSearchModal from '../../../components/modal/filter_your_search';
 
 //export default function SalesPipelineScreen(props) {
 export const SalesPipelineScreen = props => {
@@ -60,11 +61,13 @@ export const SalesPipelineScreen = props => {
   const [pageType, setPageType] = useState('add');
   const [selectedOpportunityId, setSelectedOpportunityId] = useState('');
   const [locationName, setLocationName] = useState('');
+  const locationFilterModalRef = useRef();
   const locationIdSpecific = props.route.params
     ? props.route.params.locationInfo
     : null;
 
   const isShowCustomNavigationHeader = props.isDeeplink != undefined;
+
 
   useEffect(() => {
     var screenProps = props.screenProps;
@@ -245,13 +248,16 @@ export const SalesPipelineScreen = props => {
   };
 
   const animation = name => {
-    dispatch({type: SLIDE_STATUS, payload: true});
+    
     switch (name) {
       case 'filter':
         dispatch(getPipelineFilters());
-        setShowItem(1);
+        if(locationFilterModalRef.current) {
+          locationFilterModalRef.current.showModal();
+        }
         return;
       case 'add_pipeline':
+        dispatch({type: SLIDE_STATUS, payload: true});
         setShowItem(2);
       default:
         return;
@@ -402,40 +408,12 @@ export const SalesPipelineScreen = props => {
             opportunity_id={selectedOpportunityId}
           />
         )}
-
-        {crmStatus && showItem == 1 && (
-          <TouchableOpacity
-            activeOpacity={1}
-            style={grayBackground}
-            onPress={() => {
-              dispatch({type: SUB_SLIDE_STATUS, payload: false});
-              dispatch({type: SLIDE_STATUS, payload: false});
-              setShowItem(0);
-            }}></TouchableOpacity>
-        )}
-
-        {crmStatus && showItem == 1 && (
-          <View
-            style={[
-              styles.transitionView,
-              showItem == 0
-                ? {
-                    transform: [
-                      {translateY: Dimensions.get('window').height + 100},
-                    ],
-                  }
-                : {transform: [{translateY: 0}]},
-            ]}>
-            <FilterView
-              navigation={navigation}
-              page={'pipeline'}
-              onClose={() => {
-                dispatch({type: SLIDE_STATUS, payload: false});
-                setShowItem(0);
-              }}
-            />
-          </View>
-        )}
+        
+        <FilterYourSearchModal
+            title='Filter Your Search'
+            ref={locationFilterModalRef}
+            page={'pipeline'}
+        />      
 
         <View style={styles.container}>
           <View
