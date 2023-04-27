@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState , useRef} from 'react';
 import {
   SafeAreaView,
   View,
@@ -16,7 +16,7 @@ import Colors from '../../../constants/Colors';
 import {CHANGE_LIBRARY_CHILD_STATUS} from '../../../actions/actionTypes';
 import Fonts from '../../../constants/Fonts';
 import {
-  downloadPDF,  
+  downloadPDF,
 } from '../../../actions/contentLibrary.action';
 import RNFS from 'react-native-fs';
 import FileViewer from 'react-native-file-viewer';
@@ -24,7 +24,8 @@ import {style} from '../../../constants/Styles';
 import Images from '../../../constants/Images';
 import {expireToken} from '../../../constants/Helper';
 import {GetRequestContentlibraryDAO} from '../../../DAO';
-import { Notification } from '../../../components/modal/Notification';
+import AlertModal from '../../../components/modal/AlertModal';
+
 
 export default function ContentLibraryScreen(props) {
   
@@ -38,13 +39,13 @@ export default function ContentLibraryScreen(props) {
       : false,
   );
   const [title, setTitle] = useState('Content Library');
+  const alertModalRef = useRef();
 
-  useEffect(() => {
+  useEffect(() => {    
     var screenProps = props.screenProps;
     if (screenProps === undefined) {
       screenProps = props.navigation;
-    }
-    console.log('screenPropsscreenProps', screenProps);
+    }    
     if (screenProps) {
       renderHeader(screenProps);
     }
@@ -63,8 +64,6 @@ export default function ContentLibraryScreen(props) {
   }, []);
 
   const renderHeader = screenProps => {
-    console.log('is back', isBack);
-
     screenProps.setOptions({
       headerTitle: props => {
         return (
@@ -86,13 +85,6 @@ export default function ContentLibraryScreen(props) {
           </TouchableOpacity>
         );
       },
-
-      // tabBarStyle: {
-      //   position: 'absolute',
-      //   height: 50,
-      //   paddingBottom: Platform.OS == "android" ? 5 : 0,
-      //   backgroundColor: "#fff",
-      //},
     });
   };
 
@@ -116,6 +108,7 @@ export default function ContentLibraryScreen(props) {
     setIsBack(true);
     setTitle(searchLibraryLists[index].folder_name);
   };
+
   const getResourceIcon = title => {
     if (
       title.toLowerCase().includes('.png') ||
@@ -134,136 +127,67 @@ export default function ContentLibraryScreen(props) {
     return 'Description';
   };
 
-  const getMineType = (title, ext) => {
-    if (Platform.OS == 'android') {
-      if (
-        title.toLowerCase().includes('.png') ||
-        title.toLowerCase().includes('.jpg') ||
-        title.toLowerCase().includes('.jpeg')
-      ) {
-        return 'image/*'; // + ext;
-      }
-      if (
-        title.toLowerCase().includes('.mp4') ||
-        title.toLowerCase().includes('.mov') ||
-        title.toLowerCase().includes('.flv')
-      ) {
-        return 'video/' + ext;
-      }
-      if(
-        title.toLowerCase().includes('.csv') ||
-        title.toLowerCase().includes('.xlsx')
-      ){
-        return 'application/xls';
-      }
-      return 'application/' + ext;
-    } else {
-      if (
-        title.toLowerCase().includes('.png') ||
-        title.toLowerCase().includes('.jpg') ||
-        title.toLowerCase().includes('.jpeg')
-      ) {
-        return 'public.image';
-      }
-      if (
-        title.toLowerCase().includes('.mp4') ||
-        title.toLowerCase().includes('.mov') ||
-        title.toLowerCase().includes('.flv')
-      ) {
-        return 'public.movie';
-      }
-      return 'public.data';
-    }
-  };
-
   const openFile = (path, type) => {       
-    const paths = FileViewer.open(path)
+    const paths = FileViewer.open(path , { showOpenWithDialog: true } )
         .then(() => {
           console.log("success");
         })
         .catch(error => {
           console.log("failed => ", error.toString());
+          if(alertModalRef.current){
+            alertModalRef.current.alert(error.toString());
+          }
         });
   };
 
-  if (isBack) {
-    return (
-      <SafeAreaView>
-        <ScrollView style={styles.container}>
-          <View style={styles.innerContainer}>  
-            <Text
-              style={{
-                fontSize: 18,
-                color: '#000',
-                fontFamily: Fonts.secondaryBold,
-                marginBottom: 10,
-              }}>
-              {childList.folder_name}
-            </Text>
-            {childList.files.map((item, index) => (
-              <Card
-                icon={getResourceIcon(item.filename)}
-                title={item.filename}
-                subtitle={item.file_size + ' Modified on ' + item.modified_date}
-                key={index}
-                onPress={() => {
-                  var ext = '';
-                  var fileName = '';
-                  var tmp = item.filename.split('.');
+  const onFilePressed = (item) => {
+    
+    var ext = '';
+    var fileName = '';
+    var tmp = item.filename.split('.');
 
-                  if (tmp.length == 2) {
-                    fileName = tmp[0];
-                    ext = tmp[1];
-                    const path =
-                      Platform.OS === 'ios'
-                        ? `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}`
-                        : `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
-                    RNFS.exists(path)
-                      .then(res => {
-                        if (res) {
-                          console.log('file exist', path);
-                          console.log('ext', ext , getMineType(item.filename, ext));
-                          openFile(path, getMineType(item.filename, ext));
-                        } else {
-                          console.log('no file exist', item.file_path);
-                          console.log("ext", ext);
-                          downloadPDF(item.file_path, fileName, ext)
-                            .then(res => {
-                              console.log(res);
-                              if (
-                                res &&
-                                res.statusCode === 200 &&
-                                res.bytesWritten > 0
-                              ) {
-                                openFile(path, getMineType(item.filename, ext));
-                              } else {
-                                console.log(res);
-                              }
-                            })
-                            .catch(error => {
-                              console.log(error);
-                            });
-                        }
-                      })
-                      .catch(error => {
-                        console.log('error', error);
-                      });
-                  }
-                }}
-              />
-            ))}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
+    if (tmp.length == 2) {
+      fileName = tmp[0];
+      ext = tmp[1];
+      const path =
+        Platform.OS === 'ios'
+          ? `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}`
+          : `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
+      RNFS.exists(path)
+        .then(res => {
+          if (res) {
+            console.log('file exist', path);                          
+            openFile(path, '');
+          } else {
+            console.log('no file exist', item.file_path);
+            console.log("ext", ext);
+            downloadPDF(item.file_path, fileName, ext)
+              .then(res => {
+                console.log(res);
+                if (
+                  res &&
+                  res.statusCode === 200 &&
+                  res.bytesWritten > 0
+                ) {
+                  openFile(path, '');
+                } else {
+                  console.log(res);
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
+        })
+        .catch(error => {
+          console.log('error', error);
+        });
+    }
   }
 
-  return (
-    <SafeAreaView>
-      <ScrollView style={styles.container}>
-
-        <Notification />
-
+  const renderMainPage = () => {
+    return (
+      <View>
         <Searchbar
           initVal=""
           onSearch={text => {
@@ -299,6 +223,43 @@ export default function ContentLibraryScreen(props) {
             />
           ))}
         </View>
+
+      </View>
+    )
+  }
+
+  const renderDetailsPage = () => {
+    return (
+      <View style={styles.innerContainer}>  
+            <Text
+              style={{
+                fontSize: 18,
+                color: '#000',
+                fontFamily: Fonts.secondaryBold,
+                marginBottom: 10,
+              }}>
+              {childList.folder_name}
+            </Text>
+            {childList.files.map((item, index) => (
+              <Card
+                icon={getResourceIcon(item.filename)}
+                title={item.filename}
+                subtitle={item.file_size + ' Modified on ' + item.modified_date}
+                key={index}
+                onPress={() => {
+                  onFilePressed(item);                 
+                }}
+              />
+            ))}
+      </View>
+    )
+  }
+
+  return (
+    <SafeAreaView>
+      <ScrollView style={styles.container}>        
+        <AlertModal ref={alertModalRef} />
+        {isBack ? renderDetailsPage() : renderMainPage()}                
       </ScrollView>
     </SafeAreaView>
   );
