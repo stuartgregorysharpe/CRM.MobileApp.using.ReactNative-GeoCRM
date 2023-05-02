@@ -203,9 +203,13 @@ export default function HomeScreen(props) {
       }
     }
 
-    if(flag && (isOnline === "1" || isOnline === undefined)){
-      if(mainPageRef.current)
-        mainPageRef.current.onlineSyncTable(syncType);
+    console.log("sync table start => ", flag, isOnline);
+    if( isOnline === "1" || isOnline === undefined ){
+      if(mainPageRef.current){
+        console.log("sync table start => ", flag, isOnline);
+        mainPageRef.current.onlineSyncTable(syncType , flag );
+      }
+        
     }
 
   };
