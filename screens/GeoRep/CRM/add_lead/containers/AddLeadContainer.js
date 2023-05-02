@@ -32,6 +32,10 @@ import SimListModal from '../modal/SimListModal';
 export default function AddLeadContainer(props) {
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );  
+  const isAllocateDevices = features.includes('location_specific_devices');
 
   const selectDeviceModalRef = useRef(null);  
   const formQuestionModalRef = useRef(null);
@@ -207,13 +211,16 @@ export default function AddLeadContainer(props) {
     const isFormValid = await validateForm();
 
     var message = '';
-    if (!isFormValid || !isValidateAllocateDevice) {
+    if (!isFormValid ) {      
       message = Strings.Complete_Required_Fields; 
     }
-    if(!isValidateRICA){
+    if( isAllocateDevices && !isValidateAllocateDevice ){      
+      message = Strings.Complete_Required_Fields; 
+    }
+    if( isAllocateDevices && !isValidateRICA){      
       message = Strings.CRM.Complete_RICA;
     }
-    if(!isValidOtherForms){
+    if(!isValidOtherForms){      
       message = Strings.Complete_Required_Forms;
     }
 
