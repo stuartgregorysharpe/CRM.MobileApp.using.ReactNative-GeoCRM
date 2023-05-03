@@ -111,6 +111,12 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
           if(err?.response != undefined){
             const error = err.response;
             if (
+              error != undefined &&
+              error.status != undefined &&
+              error.status === 400
+            ) {
+              reject(error?.data?.error);          
+            }else if (
               error.status === 401 &&
               error.config &&
               !error.config.__isRetryRequest
@@ -121,7 +127,7 @@ export const postApiRequest = async (route, postData, indempotencyKey) => {
             } else if(err?.message?.includes('timeout')) {
               reject('timeout');
             }else{
-              reject(err);
+              reject(err?.message);
             }            
           }else{            
             reject('timeout');
@@ -241,7 +247,7 @@ export const postHmsMapRequest = async (route, postData, key) => {
         } else if(err?.message?.includes('timeout')) {
           reject('timeout');
         } else {
-          reject(err);
+          reject(err?.message);
         }
       });
   });
