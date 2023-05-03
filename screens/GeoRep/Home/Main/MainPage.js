@@ -726,7 +726,13 @@ const MainPage = forwardRef((props, ref) => {
                 locationInfo: location,
               });
             }
+          }else if(confirmModalType == 'compulsoryDevice'){
+            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+              page: 'checkin',
+              openModal:'devices'
+          });  
           }
+          
         }}
       />
 
@@ -746,10 +752,11 @@ const MainPage = forwardRef((props, ref) => {
         <CheckOutViewContainer
           type="home"
           isLoadingForm={isLoading}
+          loadCompulsoryInfo={true}
           checkinStatus={checkinStatus}
-          showConfirmModal={(message) => {
+          showConfirmModal={(message , type) => {
             setMessage(message);
-            setConfirmModalType('have_compulsory_form');
+            setConfirmModalType(type);
             setIsConfirmModal(true);
           }}
           currentCall={currentCall}></CheckOutViewContainer>

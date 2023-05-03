@@ -37,7 +37,6 @@ export default function DevicesModalContainer(props) {
         let param = {
             location_id: locationId
         };                
-                
         GetRequestLocationDevicesDAO.find(param).then((res) => {            
             if(isMount){                             
                 setLists(res.devices);
@@ -132,7 +131,6 @@ export default function DevicesModalContainer(props) {
                 location_device_id={sim?.location_device_id}
                 onButtonAction={onSimAddModalClosed}
             />
-
 
             <DevicesModalView
                 onButtonAction={handleAction}              

@@ -16,6 +16,8 @@ export default function DevicePriorityModalView(props) {
     const type1 = isAdditionalImei ? 'imei1' : 'imei';
     const type2 = isAdditionalImei ? 'imei2' : '';
     
+    const hasError = device?.msisdn == undefined || device?.msisdn == ''
+    
     useEffect(() => {
         if(updatedDevice == null){
             const tmp = { ...device };
@@ -44,6 +46,7 @@ export default function DevicePriorityModalView(props) {
                 <ScrollView>                    
                     
                     <MsisdnInput 
+                        hasError={hasError}
                         initialValue={updatedDevice?.msisdn}                                            
                         onChangeText={(text) => {
                             var tmp = { ...updatedDevice };

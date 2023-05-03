@@ -28,7 +28,8 @@ export default function DevicePriorityModalContainer(props) {
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        device_update_indempotency = generateKey();
+        device_update_indempotency = generateKey();        
+        isValidate(device);
     }, []);
 
 
@@ -100,17 +101,17 @@ export default function DevicePriorityModalContainer(props) {
         const type1 = data?.additional_imei_required === '1' ? 'imei1' : 'imei';
         const type2 = data?.additional_imei_required === '1' ? 'imei2' : '';
         var isAvailable = true;
-        if (data?.imei == '' ) {
+        if (data?.imei == '' || data?.imei == undefined) {
           isAvailable = false;
           _errors[type1] = true;
         }
   
-        if (data?.additional_imei == '' && data?.additional_imei_required == '1' ) {
+        if ( (data?.additional_imei == '' || data?.additional_imei == undefined) && data?.additional_imei_required == '1' ) {
           isAvailable = false;
           _errors['imei2'] = true;
         }
   
-        if (data?.msn == '') {
+        if (data?.msn == '' || data?.msn == undefined) {
           isAvailable = false;
           _errors['msn'] = true;
         }

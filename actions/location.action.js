@@ -3,7 +3,9 @@ import axios from 'axios';
 import {
   CHANGE_LOGIN_STATUS,  
   STATUS_LOCATION_FILTERS,    
-  CHANGE_LOCATION_FILTERS,  
+  CHANGE_LOCATION_FILTERS,
+  LOCATION_CHECK_OUT_COMPULSORY_DEVICE,
+  LOCATION_CHECK_OUT_COMPULSORY,  
 } from './actionTypes';
 import uuid from 'react-native-uuid';
 import {
@@ -15,6 +17,17 @@ import {
 } from '../constants/Storage';
 import { generateKey } from '../constants/Utils';
 import { GetRequestLocationInfoDAO } from '../DAO';
+
+
+export const setCompulsoryDevice = compulsoryDevice => ({
+  type: LOCATION_CHECK_OUT_COMPULSORY_DEVICE,
+  payload: compulsoryDevice,
+});
+
+export const setCompulsoryForm = compulsoryForm => ({
+  type: LOCATION_CHECK_OUT_COMPULSORY,
+  payload: compulsoryForm,
+});
 
 export const getLocationFilters = () => (dispatch, getState) => {
   dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
