@@ -49,3 +49,16 @@ export const getBascketLastSyncTableData = async ( sync_basket ) => {
         });
     });
 };
+
+
+export const getTableRecords = async ( table ) => {
+    var db = await getDBConnection();
+    return new Promise(async function (resolve, reject) {
+        await db.transaction(async(tx) => {            
+            const query = `SELECT * FROM ${table}`;
+            await tx.executeSql(query, [] , (tx, results) => {                
+                resolve(results.rows);
+            });
+        });
+    });
+};

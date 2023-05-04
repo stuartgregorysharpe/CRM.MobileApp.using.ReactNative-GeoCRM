@@ -8,7 +8,7 @@ import { deleteRecords, handleRecords } from '../../../../../sqlite/DBHelper'
 import { offlineDBVersion, Strings } from '../../../../../constants'
 import { AppText } from '../../../../../components/common/AppText'
 import Colors, { whiteLabel } from '../../../../../constants/Colors'
-import { getBascketLastSyncTableData, insertBascketLastSync } from '../../../../../sqlite/BascketLastSyncsHelper'
+import { getBascketLastSyncTableData, getTableRecords, insertBascketLastSync } from '../../../../../sqlite/BascketLastSyncsHelper'
 import * as RNLocalize from 'react-native-localize';
 import SvgIcon from '../../../../../components/SvgIcon'
 import { RotationAnimation } from '../../../../../components/common/RotationAnimation'
@@ -171,7 +171,7 @@ export const BasketListContainer = forwardRef((props, ref) => {
         var tableName = tables[key];  
         if(tableName != undefined){
 
-            var lastSyncedParam = await getTimeStampAndTimeZone(basket);
+            var lastSyncedParam = await getTimeStampAndTimeZone(basket , tableName);
             await getApiRequest(`database/sync-table-data?offline_db_version=${offlineDBVersion}&table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
                 
                 console.log("Table Record Length", res.records.length);
@@ -218,18 +218,24 @@ export const BasketListContainer = forwardRef((props, ref) => {
         await insertBascketLastSync(basket, currentTime, time_zone );
     }
 
-    const getTimeStampAndTimeZone = async(basket) =>{                                  
-        var check = await getBascketLastSyncTableData(basket);
-        if(check.length == 0 ){
-            return "";
+    const getTimeStampAndTimeZone = async(basket , tableName) =>{
+
+        var tableRecords = await getTableRecords(tableName);
+        if(tableRecords.length == 0 ){
+            return '';
         }else{
-            if(check.length > 0){                
-                var timestamp =  check.item(0).timestamp;
-                var timezone = check.item(0).timezone;                
-                var convertedTime = getDateTimeFromBasketTime(timestamp);
-                return `&timestamp=${convertedTime}&timezone=${timezone}`;
-            }                  
-        }
+            var check = await getBascketLastSyncTableData(basket);
+            if(check.length == 0 ){
+                return '';
+            }else{
+                if(check.length > 0){                
+                    var timestamp =  check.item(0).timestamp;
+                    var timezone = check.item(0).timezone;                
+                    var convertedTime = getDateTimeFromBasketTime(timestamp);
+                    return `&timestamp=${convertedTime}&timezone=${timezone}`;
+                }                  
+            }
+        }                
     }    
     
     const renderSyncData = (item, index) => {
