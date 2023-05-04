@@ -60,6 +60,7 @@ export const checkCompulsoryDevice = async ( locationId ) => {
         GetRequestLocationDevicesDAO.find(param).then((res) => {            
             const deviceList = [...res.devices];
             var flag = false;
+            
             deviceList.forEach(element => {
                 if(element.unattached_device == '0'){
                     if( 
@@ -75,7 +76,7 @@ export const checkCompulsoryDevice = async ( locationId ) => {
                     }
                 }                
             });
-            resolve(true);
+            resolve(flag);
         }).catch((e) => {
             resolve([]);
         })

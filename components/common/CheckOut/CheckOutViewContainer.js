@@ -10,18 +10,11 @@ import {
   storeLocalValue,
 } from '../../../constants/Storage';
 import {
-  CHECKIN,
-  LOCATION_CHECK_OUT_COMPULSORY,
+  CHECKIN,  
 } from '../../../actions/actionTypes';
 import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/CheckoutButton';
 import { PostRequestDAO } from '../../../DAO';
-import {
-  clearLoadingBar,
-  clearNotification,
-  showLoadingBar,
-  showNotification,
-} from '../../../actions/notification.action';
 import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/components/CalendarCheckOutButton';
@@ -98,10 +91,10 @@ export default function CheckOutViewContainer(props) {
   }
 
   const checkOutLocation = useCallback(() => {    
-    if(!isLoadingForm){
+    if(!isLoadingForm && !isDataLoading){
       _callCheckOut();
     }    
-  }, [locationCheckOutCompulsory, isLoadingForm]);
+  }, [locationCheckOutCompulsory, compulsoryDevice, isLoadingForm , isDataLoading]);
   
   const _callCheckOut = async() => {
 

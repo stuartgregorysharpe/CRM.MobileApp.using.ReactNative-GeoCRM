@@ -1,5 +1,5 @@
 import { postApiRequest, postApiRequestMultipart } from "../actions/api.action";
-import { checkConnectivity, getResponseMessage, saveOfflineSyncItems } from "./helper";
+import { checkConnectivity, getResponseMessage, saveOfflineSyncItems, updateDevice } from "./helper";
 import { Strings } from "../constants";
 import { jsonToFormData, jsonToFormDataWithSubKey } from "../helpers/jsonHelper";
 import { showOfflineDialog } from "../constants/Helper";
@@ -79,7 +79,11 @@ export function find(locationId, postData , type, url , itemLabel , itemSubLabel
                 if(nonImplementedApis.includes(type)){                                   
                     resolve({status: "NOIMPLEMENT"});
                 }else{                    
-                    var res = await insertToLocalDB(locationId, postData, type, url , itemLabel , itemSubLabel);                
+                    
+                    var res = await insertToLocalDB(locationId, postData, type, url , itemLabel , itemSubLabel);         
+                    if(type == 'device_update'){                                                
+                        updateDevice(postData.imei , postData.msisdn , postData.msn , postData.additional_imei , postData.location_device_id);
+                    }
                     var message = getResponseMessage(type , url);
                     resolve({status: Strings.Success , message: message });
                 }                

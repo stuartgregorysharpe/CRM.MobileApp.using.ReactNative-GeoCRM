@@ -109,14 +109,14 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {         
-      getCheckInLocation();      
+      getCheckInLocation();
     });
     return unsubscribe;
   }, [navigation]);
 
   const checkOnlineStatus = useCallback(
     async () => {
-      var specific_location_id  = await getLocalData("@specific_location_id");
+      var specific_location_id  = await getLocalData("@specific_location_id");      
       console.log("Triggered", specific_location_id , pageType);
       if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){
         dispatch(clearNotification());
@@ -284,8 +284,9 @@ const LocationSpecificInfoScreen = props => {
     }
   };
 
-  const onDevicesModalClosed = ({type, value}) => {
-    if (type == Constants.actionType.ACTION_CLOSE) {
+  const onDevicesModalClosed = async({type, value}) => {
+    
+    if (type == Constants.actionType.ACTION_CLOSE) {            
       devicesModalRef.current.hideModal();
     }
   };
@@ -310,7 +311,7 @@ const LocationSpecificInfoScreen = props => {
     if(!devices_compulsory_validation) return;
     if(isLoadingDevice) return;
     setIsLoadingDevice(true);  
-    checkCompulsoryDevice(locationId).then((res) => {
+    checkCompulsoryDevice(locationId).then((res) => {      
       dispatch(setCompulsoryDevice(res));
       setIsLoadingDevice(false);      
     }).catch((e) =>{  
@@ -344,10 +345,12 @@ const LocationSpecificInfoScreen = props => {
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
             }); 
+          }else if(confirmModalType == 'compulsoryDevice'){
+            devicesModalRef.current.showModal();
           }
         }}
       />
-      
+
       {
         locationInfo != undefined && (
           <SimCardReportModal 
@@ -394,6 +397,15 @@ const LocationSpecificInfoScreen = props => {
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
+        onClose={() => {
+          const locId = location_id != undefined
+          ? location_id
+          : locationInfo != undefined
+          ? locationInfo.location_id
+          : 0;
+          console.log(locId)
+          getDeviceList(locId);
+        }}
         locationId={
           location_id != undefined
             ? location_id

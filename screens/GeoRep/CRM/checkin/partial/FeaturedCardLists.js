@@ -22,7 +22,7 @@ export default function FeaturedCardLists(props) {
 
   useEffect(() => {
     loadFeatureCards();
-  }, [isFormCompulsory]);
+  }, [isFormCompulsory , isDeviceCompulsory]);
 
   const loadFeatureCards = async () => {
     const customer_and_contacts = features.includes('customer_and_contacts')
