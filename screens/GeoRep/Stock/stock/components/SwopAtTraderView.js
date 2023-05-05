@@ -124,7 +124,7 @@ const SwopAtTraderView = props => {
             title={item != undefined ? item.description : ''}
             color={whiteLabel().mainText}></AppText>
           <AppText
-            title={item != undefined ? Constants.stockPrefix.DEVICE + item.serial : Constants.stockPrefix.DEVICE}
+            title={item != undefined ? Constants.stockPrefix.MSN_IMEI + item.serial : Constants.stockPrefix.DEVICE}
             color={whiteLabel().subText}></AppText>
         </View>
       </CardView>

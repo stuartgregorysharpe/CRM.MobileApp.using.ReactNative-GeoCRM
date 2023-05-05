@@ -79,7 +79,7 @@ export default function DevicesModalView(props) {
                                     item.unattached_device == '0' && 
                                     <AppText
                                         type="secondaryMedium"
-                                        title={ item.msn_required == '1' ? Constants.stockPrefix.DEVICE + item.msn : Constants.stockPrefix.IMEI + item.imei}
+                                        title={ item.msn_required == '1' ? Constants.stockPrefix.MSN + item.msn : Constants.stockPrefix.IMEI + item.imei}
                                         color={whiteLabel().subText}
                                         style={{fontSize: 10.4}}></AppText>
                                 }
