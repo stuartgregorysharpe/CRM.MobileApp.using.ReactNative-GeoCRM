@@ -111,9 +111,11 @@ export default function DevicePriorityModalContainer(props) {
           _errors['imei2'] = true;
         }
   
-        if (data?.msn == '' || data?.msn == undefined) {
-          isAvailable = false;
-          _errors['msn'] = true;
+        if ( data?.msn == '' || data?.msn == undefined ) {
+            if(data?.msn_required == '1'){
+                isAvailable = false;
+                _errors['msn'] = true;
+            }          
         }
 
         setErrors(_errors);

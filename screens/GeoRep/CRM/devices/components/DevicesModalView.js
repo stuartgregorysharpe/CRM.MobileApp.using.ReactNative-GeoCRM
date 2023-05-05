@@ -28,8 +28,8 @@ export default function DevicesModalView(props) {
                 item.imei == '' || 
                 item.msisdn == null || 
                 item.msisdn == '' || 
-                item.msn == null || 
-                item.msn == '' ) {
+                ( item.msn_required == '1' && item.msn == null) || 
+                ( item.msn_required == '1' && item.msn == '' ) ) {
                     isCompulsory = true;
             }
         }
@@ -76,10 +76,10 @@ export default function DevicesModalView(props) {
                                     style={{fontSize: 10.4 , flex:1 }}></AppText>
 
                                 {
-                                    item.unattached_device == '0' &&
+                                    item.unattached_device == '0' && 
                                     <AppText
                                         type="secondaryMedium"
-                                        title={Constants.stockPrefix.DEVICE + item.msn}
+                                        title={ item.msn_required == '1' ? Constants.stockPrefix.DEVICE + item.msn : Constants.stockPrefix.IMEI + item.imei}
                                         color={whiteLabel().subText}
                                         style={{fontSize: 10.4}}></AppText>
                                 }

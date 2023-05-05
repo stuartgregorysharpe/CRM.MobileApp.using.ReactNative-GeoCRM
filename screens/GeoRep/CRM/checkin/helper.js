@@ -70,8 +70,8 @@ export const checkCompulsoryDevice = async ( locationId ) => {
                         element.imei == '' || 
                         element.msisdn == null || 
                         element.msisdn == '' || 
-                        element.msn == null || 
-                        element.msn == '' ) {
+                        (element.msn_reuired == '1' && element.msn == null) || 
+                        (element.msn_reuired == '1' && element.msn == '') ) {
                             flag = true;
                     }
                 }                

@@ -45,6 +45,7 @@ const generateQuery = () => {
                             `ld.unattached_device, ` +
                             `ld.device_msn, ` +
                             `ld.device_additional_imei, ` +
+                            `msn_required, ` +
                             `pcmd.additional_imei ` +
                         `FROM location_devices as ld ` +
                         `LEFT JOIN stock_module_items AS smi  ON ld.stock_item_id = smi.stock_module_item_id ` + 
@@ -73,7 +74,8 @@ const getDeviceLists = (lists) => {
                 msisdn: element.device_msisdn,
                 primary_device: element.primary_device?.toString(),
                 unattached_device : element.unattached_device?.toString(),
-                additional_imei_required : element.additional_imei?.toString()
+                additional_imei_required : element.additional_imei?.toString(),
+                msn_required: element.msn_required?.toString()
             })
         }catch(e){
             console.log("getDeviceList error =>" , e.toString());

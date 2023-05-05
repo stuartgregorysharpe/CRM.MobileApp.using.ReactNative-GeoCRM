@@ -69,6 +69,7 @@ export default {
     CONSUMABLE: 'Qty: ',
     SIM: 'ICCID: ',
     MSISDN: 'MSISDN: ',
+    IMEI: 'IMEI: '
   },
 
   stockType: {
