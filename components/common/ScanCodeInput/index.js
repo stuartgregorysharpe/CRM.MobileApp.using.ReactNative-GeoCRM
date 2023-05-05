@@ -38,7 +38,7 @@ const ScanCodeInput = (props) => {
     };
 
     const validateError = () => {
-        console.log('validate error', errors , errors[type] , type);
+        console.log('validate errorr', errors , errors[type] , type);
         if (errors != undefined && errors[type] != undefined ) {//&& !codeDisabled
             console.log("trigger");
           return errors[type];
