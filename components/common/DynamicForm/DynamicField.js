@@ -271,8 +271,11 @@ const DynamicField = props => {
             }
           }
         }}
+        onClear={() => {          
+          updateFormData(field_name, '');
+        }}
         onSelectItem={ item => {
-
+          
           if(mode == "contact_email" || mode == "contact_select"){            
             onContactItemSelected(item , mode);
           }else if (mode === 'single') {
@@ -287,20 +290,21 @@ const DynamicField = props => {
             } else {
               isData = false;
             }
-
+ 
             if (isData) {
               updateFormData(
                 field_name,
-                value.filter(element => element != item.value),
+                value.filter(element => element != item. value),
               );
             } else {
               if(value != undefined && value != ''){
                 updateFormData(field_name, [...value, item.value]);
               }else{
                 updateFormData(field_name, [item.value]);
-              }              
+              } 
             }
           }
+
         }}
         containerStyle={{marginTop: isFirst ? 4 : 10}}
         
@@ -309,6 +313,7 @@ const DynamicField = props => {
   };
 
   const renderDropdownInput = () => {
+    
     return (
       <View>
         <CSingleSelectInput
@@ -326,13 +331,16 @@ const DynamicField = props => {
               props.onPress();
             }
           }}
+          onClear={() => {
+            updateSecondFormData(field_name, null, null);
+          }}
           onSelectItem={item => {
             updateSecondFormData(field_name, item.value, value.secondValue);
           }}
           containerStyle={{marginTop: isFirst ? 0 : 10}}
         />
 
-        {value != '' && (
+        {value != '' && value.value != null && (
           <CTextInput
             label={field_label + ' Number & Details'}
             key={'dropdown_input' + index}
