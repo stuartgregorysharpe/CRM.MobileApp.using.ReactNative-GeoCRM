@@ -248,7 +248,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
-            setMode('multiple');
+            setMode('multiple');            
             setOptions(item.options);
             setSelectedOptions(item.value);
             setKey(key);
@@ -624,6 +624,10 @@ export const FormQuestionView = forwardRef((props, ref) => {
           onValueChangedSelectionView(key, index, value);
         }}
         onClose={() => {
+          onCloseSelectionView(key, index);
+        }}
+        onClear={() => {
+          onValueChangedSelectionView(key, index, '');
           onCloseSelectionView(key, index);
         }}
         onSave={() => {
