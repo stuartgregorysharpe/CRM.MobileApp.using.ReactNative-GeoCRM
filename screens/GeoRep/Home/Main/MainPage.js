@@ -76,9 +76,9 @@ const MainPage = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
 
-    onlineSyncTable(syncType) {
+    onlineSyncTable(syncType , flag) {
       if (syncAllViewRef.current) {
-        syncAllViewRef.current.syncAllData(syncType);
+        syncAllViewRef.current.syncAllData(syncType , flag);
       }
     },
 
