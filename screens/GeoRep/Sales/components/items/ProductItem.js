@@ -39,10 +39,12 @@ const ProductItem = props => {
   };
 
   const renderDiscount = () => {
-    if (item.discountPrice.includes("%") ) {
-      return "Discount " + item.discountPrice ;
-    }else{
-      return "Discount " + item.discountPrice + "%";
+    if(item?.discountPrice != undefined){
+      if (item?.discountPrice?.includes("%") ) {
+        return "Discount " + item.discountPrice ;
+      }else{
+        return "Discount " + item.discountPrice + "%";
+      }    
     }    
   }
 
