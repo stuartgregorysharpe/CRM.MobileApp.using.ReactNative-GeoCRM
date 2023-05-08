@@ -11,7 +11,6 @@ import {
 import Colors, {whiteLabel} from '../../../constants/Colors';
 import {boxShadow, style} from '../../../constants/Styles';
 import Fonts from '../../../constants/Fonts';
-import {updateCalendar} from '../../../actions/calendar.action';
 import {useSelector, useDispatch } from 'react-redux';
 import {CalendarItem} from './components/CalendarItem';
 import DraggableFlatList, {
@@ -39,6 +38,7 @@ import OptimizePlusButtonContainer from './containers/OptimizePlusButtonContaine
 import ConfirmDialog from '../../../components/modal/ConfirmDialog';
 import { getJsonData } from '../../../constants/Storage';
 import { Notification } from '../../../components/modal/Notification';
+import { postApiRequest } from '../../../actions/api.action';
 
 var selectedIndex = 2;
 
@@ -213,16 +213,16 @@ export default function CalendarScreen(props) {
     if(!isUpdating && !isLoading){
       setIsUpdating(true);
       showLoadingBar();
-      updateCalendar(postData)
-        .then(res => {
-          setIsUpdating(false);
-          hideLoadingBar();
-        })
-        .catch(e => {
-          setIsUpdating(false);
-          hideLoadingBar();
-          expireToken(dispatch, e);
-      });
+
+      postApiRequest('calenderupdate', postData).then((res) => {
+        setIsUpdating(false);
+        hideLoadingBar();
+      }).catch((e) => {
+        setIsUpdating(false);
+        hideLoadingBar();
+        expireToken(dispatch, e);
+      })
+
     }    
   };
 

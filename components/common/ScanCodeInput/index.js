@@ -96,7 +96,7 @@ const ScanCodeInput = (props) => {
                     <CTextInput
                         label={placeholder}
                         value={code}
-                        keyboardType={'number-pad'}
+                        keyboardType={ type == 'msn' ? 'default' : 'number-pad'}
                         returnKeyType={'done'}
                         isRequired={true}
                         disabled={codeDisabled}
