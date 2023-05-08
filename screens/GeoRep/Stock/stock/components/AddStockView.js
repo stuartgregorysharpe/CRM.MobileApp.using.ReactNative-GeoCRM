@@ -223,7 +223,7 @@ export default function AddStockView(props) {
       }
       props.callAddStock(deviceType, data);
     } else {
-      showAlertModal(getModalMessage());
+      showAlertModal(getModalMessage(deviceType));
     }
   };
 

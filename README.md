@@ -75,7 +75,7 @@ matthew@georep.com / Geo2022#
 
 #  Touch point app test account
 clinton@dan-edge.co.za / Test2021#
-
+testadmin@georep.com / Test2021#
 
 # Upgrade react-native-paper version 
 "react-native-paper": "^4.10.1",
