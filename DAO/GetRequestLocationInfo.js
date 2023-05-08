@@ -1,8 +1,8 @@
 import {baseURL, Strings} from '../constants';
 import {ExecuteQuery} from '../sqlite/DBHelper';
-import UrlResource from './UrlResource';
 import GetRequest from './GetRequest';
 import {parseDateFromString} from '../helpers/formatHelpers';
+
 
 export function find(postData) {
   return new Promise(function (resolve, reject) {
@@ -163,24 +163,29 @@ const getLocationData = async (lists, contactsLists, msisdn) => {
 
     var lastVisit = parseDateFromString(element.last_visit);
 
+    var address = '';
+    if(element.location_unit_type != ''){
+      address = element.location_unit_type + ", " ;
+    }
+    if(element.location_unit != ''){
+      address = element.location_unit + ", " ;
+    }
+    if(element.street_address != ''){
+      address =  element.street_address + ", " +      
+      element.suburb +
+      ', ' +
+      element.city +
+      ', ' +
+      element.pincode;
+    }
+
     tmp = {
       location_id: element.location_id,
       location_name: locationName,
       last_interaction:
         lastVisit != null && lastVisit.length > 0 ? lastVisit[0] : '',
       last_visit: element.last_visit,
-      address:
-        element.location_unit_type +
-        ',' +
-        element.location_unit +
-        ',' +
-        element.street_address +
-        ',' +
-        element.suburb +
-        ',' +
-        element.city +
-        ',' +
-        element.pincode,
+      address: address,
       coordinates: coordinate,
       current_stage_id: '',
       current_outcome_id: '',
