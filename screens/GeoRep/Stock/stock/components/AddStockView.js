@@ -63,6 +63,7 @@ export default function AddStockView(props) {
     } else {
       setEnableAddStock(false);
     }
+    isValidate();
   };
 
   const onDataChangedConsumable = (det, qua) => {
@@ -142,15 +143,15 @@ export default function AddStockView(props) {
         if(msnRequired == '1'){
           isAvailable = false;
           _errors['msn'] = true;
-        }else{
-          isAvailable = true;
-          _errors['msn'] = false;
         }
+      }else{
+        isAvailable = true;
+        _errors['msn'] = false;
       }
       if (device == '') {
         isAvailable = false;
         _errors['device'] = true;
-      }          
+      }                
       setErrors(_errors);
     } else if (deviceType == Constants.stockType.CONSUMABLE) {
       isAvailable = validateNumber(quantity);
