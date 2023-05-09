@@ -99,7 +99,7 @@ export const Notification = ({}) => {
             <Text style={styles.title}>{notification.title}</Text>
           )}
 
-          <Text style={styles.message}>{notification.message}</Text>
+          <Text style={styles.message}>{notification?.message}</Text>
           <View style={styles.divider}></View>
 
           {!notification.cancelButtonText && (
