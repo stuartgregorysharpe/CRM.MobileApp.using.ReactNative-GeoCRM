@@ -56,7 +56,7 @@ export default function FeaturedCardLists(props) {
         icon: 'Person_Sharp_feature_card',
         action: 'View all information',
         link: 'customer_contacts',
-        isOffline: false,
+        isOffline: true,
         isFormCompulsory: false,
       });
     }
