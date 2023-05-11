@@ -16,6 +16,7 @@ import {expireToken, getPostParameter} from '../../../../../constants/Helper';
 import {Notification} from '../../../../../components/modal/Notification';
 import LoadingBarContainer from '../../../../../components/LoadingView/loading_bar/container/LoadingBarContainer';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
+import { GetRequestLocationInfoUpdateDAO } from '../../../../../DAO';
 
 export default function UpdateCustomerContainer(props) {
 
@@ -35,6 +36,7 @@ export default function UpdateCustomerContainer(props) {
   var isMount = true;
   
   useEffect(() => {
+    isMount = true;
     getCustomMasterFields();
     return () => {
       isMount = false;
@@ -42,19 +44,23 @@ export default function UpdateCustomerContainer(props) {
   }, []);
 
   const getCustomMasterFields = () => {
-    getApiRequest('locations/location_info_update_fields_v2', {
-      location_id: locationId,
-    })
-      .then(res => {
-        if (isMount) {
-          setLeadForms(res.custom_master_fields);
-          setOriginCustomMasterFields(res.custom_master_fields);
-          setAccuracyUnit(res.accuracy_distance_measure);
-        }
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-      });
+
+    var postData = {
+      location_id : locationId
+    }
+    
+    GetRequestLocationInfoUpdateDAO.find(postData).then((res) => {
+      if (isMount) {
+        console.log("repsonse", res.custom_master_fields);
+        setLeadForms(res.custom_master_fields);
+        setOriginCustomMasterFields(res.custom_master_fields);
+        setAccuracyUnit(res.accuracy_distance_measure);
+      }
+    }).catch((e) => {
+      console.log("e",e);
+      expireToken(dispatch, e);
+    });
+
   };
 
   const onAdd = () => {
