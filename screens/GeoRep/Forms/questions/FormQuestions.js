@@ -361,6 +361,7 @@ export const FormQuestions = props => {
           }          
         }}
       />
+      
       <LoadingBar ref={loadingBarRef} />
 
       <FormQuestionView
