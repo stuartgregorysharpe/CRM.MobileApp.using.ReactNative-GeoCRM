@@ -160,13 +160,17 @@ const getDataValueCore = async ( field,  locationId ) => {
         + field + 
         ` FROM locations_core_master_data
         WHERE location_id = ?`    
-    const lists = await fetchDataFromDB(query , [locationId]);
-
+    const lists = await fetchDataFromDB(query , [locationId]);        
     var datavalue = '';
     for(var i = 0; i < lists.length; i++){
         try{
-            var element = lists.item(i);
-            datavalue = element[field];            
+            var element = lists.item(i);            
+            if(field.includes('[group]')){
+                datavalue = element.group;
+            }else{
+                datavalue = element[field];
+            }
+            
         }catch(e){
             console.log("getDataValueCore error ", element, e.toString());
         }        
@@ -221,7 +225,7 @@ const getDropdownTextDataValue = async(field , locationId) => {
     const lists = await fetchDataFromDB(query , [ field.custom_master_field_id , locationId]);    
     var dataValue = [];    
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
+        var element = lists.item(i);        
         dataValue.push({option : element.dropdown_option , input: element.input_text});    
     }
     return dataValue;    
@@ -272,7 +276,7 @@ const getCustomMasterFields = async(lists , locationId) => {
         // Fetch preset options for dropdown_text field
         if(field.field_type == 'dropdown_text') {
             preset_options = await getDropdownTextPresetOptions(field);
-            dataValue =  await getDropdownTextDataValue(field);                                                                                                                        
+            dataValue =  await getDropdownTextDataValue(field , locationId);                                                                                                                        
         }
         
         if(field.field_type == 'multi_select') {     

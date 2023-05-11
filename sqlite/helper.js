@@ -7,7 +7,8 @@ export const  OfflineBaskets = [
             'location_info_feedback',
             'stage_outcome_update',
             'disposition_update',
-            'location_image'               
+            'location_image',
+            'location_info_update'
         ]
     },
     {

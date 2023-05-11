@@ -61,7 +61,7 @@ const getItemSubLabel = (locationName, address, subLabel, type) => {
   if (subLabel != null && subLabel != '') {
     return subLabel;
   }
-  if (type == 'form_submission' || type == 'leadfields') {
+  if (type == 'form_submission' || type == 'leadfields' || type == 'location_info_update' ) {
     return locationName;
   }
   return address;
@@ -147,6 +147,8 @@ export function getResponseMessage (type , url) {
       return Strings.Stock.Successfully_Sell_To_Trader
   }else if(type == "device_update"){
       return Strings.PostRequestResponse.Successfully_Device_Update;
+  }else if(type == "location_info_update"){
+    return Strings.PostRequestResponse.Successfully_Field_Updated;
   }
   return Strings.PostRequestResponse.Successfully_Checkin;    
 }

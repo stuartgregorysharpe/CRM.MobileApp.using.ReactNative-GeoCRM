@@ -1,14 +1,15 @@
-import { View, ScrollView , StyleSheet} from 'react-native'
+import { View, ScrollView , StyleSheet, Platform} from 'react-native'
 import React , {useRef , useState , useEffect} from 'react'
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import { expireToken, getPostParameter } from '../../../../../constants/Helper';
 import { postApiRequest } from '../../../../../actions/api.action';
 import {useSelector, useDispatch} from 'react-redux';
-import AlertDialog from '../../../../../components/modal/AlertDialog';
 import UpdateCustomerModal from '../../update_customer';
 import { Constants, Strings } from '../../../../../constants';
-import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../../actions/notification.action';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
+import AlertModal from '../../../../../components/modal/AlertModal';
+import { PostRequestDAO } from '../../../../../DAO';
 
 export default function Customer(props) {
 
@@ -17,11 +18,11 @@ export default function Customer(props) {
     const [formData, setFormData] = useState({});
     const [formStructure, setFormStructure] = useState([]);
     const currentLocation = useSelector(state => state.rep.currentLocation);
-    const dispatch = useDispatch();
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [message, setMessage] = useState("")
+    const dispatch = useDispatch();    
+    const [isLoading, setIsLoading] = useState(false);    
     const updateCustomerModalRef = useRef(null);
+    const loadingBarRef = useRef();
+    const alertModalRef = useRef();
         
     useEffect(() => {        
         initData(locationFields);
@@ -99,20 +100,14 @@ export default function Customer(props) {
                 
         if (actionFormRef) {
           if (!actionFormRef.current.validateForm()) {
-            dispatch(
-              showNotification({
-                type: 'success',
-                message: Strings.Complete_Required_Fields,
-                buttonText: Strings.Ok,
-              }),
-            );
+            showMessage(Strings.Complete_Required_Fields , Strings.Ok);            
             return;
           }
         }
 
 
         setIsLoading(true);
-        dispatch(showLoadingBar({'type' : 'loading'}));
+        showLoadingBar();
 
         var userParam = getPostParameter(currentLocation);
         let postData = {
@@ -121,18 +116,23 @@ export default function Customer(props) {
             user_local_data: userParam.user_local_data,
         };
 
-        postApiRequest("locations/location-fields", postData).then((res) => {                   
-            
-            setMessage(res.message);
-            setIsSuccess(true);
-            setIsLoading(false);
-            dispatch(clearLoadingBar());
-            
-        }).catch((e)=> {
-            expireToken(dispatch, e);
-            setIsLoading(false);
-            dispatch(clearLoadingBar());
+        PostRequestDAO.find( locationId , postData , 'location_info_update' , 'locations/location-fields' , 'location_info_update' , '').then((res) => {
+          console.log("location-fields response => " , res);
+          hideLoadingBar();
+          setIsLoading(false);
+          showMessage(res.message);
+
+        }).catch((e) => {
+          expireToken(dispatch , e, alertModalRef);
         })
+        
+        // postApiRequest("locations/location-fields", postData).then((res) => {    
+        // }).catch((e)=> {
+        //     expireToken(dispatch, e);
+        //     hideLoadingBar();
+        //     setIsLoading(false);            
+        // })
+
     }
 
     const disableField = field => {
@@ -158,15 +158,42 @@ export default function Customer(props) {
       }
     }
 
+    const showLoadingBar = () => {
+      if(loadingBarRef.current){
+        loadingBarRef.current.showModal();
+      }
+    }
+
+    const hideLoadingBar = () => {
+      if(loadingBarRef.current){
+        loadingBarRef.current.hideModal();
+      }
+    }
+
+    const showMessage = (message) => {
+      var delay = 0;
+      if(Platform.OS == 'ios'){
+        delay = 500;
+      }
+      setTimeout(() => {
+        if(alertModalRef.current){
+          alertModalRef.current.alert(message);
+        }
+      }, delay);
+      
+    }
+
     return (        
         <ScrollView>
             <View style={{marginBottom:60}}>
-                                 
+                
+                <LoadingBar ref={loadingBarRef}/>
+                <AlertModal ref={alertModalRef} />
+
                 <DynamicForm
                     ref={actionFormRef}
                     formData={formData}
-                    formStructureData={formStructure}
-                    //isClickable={true}
+                    formStructureData={formStructure}                    
                     onPress={(item) =>{                      
                       if( item != undefined && item.editable == "0"){
                         updateCustomerModalRef.current.showModal();
@@ -177,14 +204,7 @@ export default function Customer(props) {
                     }}
                     style={{marginTop:5}}
                 />
-                
-                <AlertDialog
-                    visible={isSuccess}
-                    message={message}
-                    onModalClose={() => {
-                      setIsSuccess(false);                      
-                    }}></AlertDialog>
-
+                                
                 <UpdateCustomerModal 
                   ref={updateCustomerModalRef}
                   locationId={locationId}
