@@ -61,6 +61,7 @@ export const checkCompulsoryDevice = async ( locationId ) => {
             const deviceList = [...res.devices];
             var flag = false;
             
+            console.log("xx",res.devices)
             deviceList.forEach(element => {
                 if(element.unattached_device == '0'){
                     if( 
@@ -70,8 +71,8 @@ export const checkCompulsoryDevice = async ( locationId ) => {
                         element.imei == '' || 
                         element.msisdn == null || 
                         element.msisdn == '' || 
-                        (element.msn_reuired == '1' && element.msn == null) || 
-                        (element.msn_reuired == '1' && element.msn == '') ) {
+                        (element.msn_required == '1' && element.msn == null) || 
+                        (element.msn_required == '1' && element.msn == '') ) {
                             flag = true;
                     }
                 }                
