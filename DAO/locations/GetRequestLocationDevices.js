@@ -45,17 +45,16 @@ const generateQuery = () => {
                             `ld.unattached_device, ` +
                             `ld.device_msn, ` +
                             `ld.device_additional_imei, ` +
-                            `msn_required, ` +
+                            `pcmd.msn_required, ` +
                             `pcmd.additional_imei ` +
-                        `FROM location_devices as ld ` +
-                        `LEFT JOIN stock_module_items AS smi  ON ld.stock_item_id = smi.stock_module_item_id ` + 
-                        `LEFT JOIN products_core_master_data AS pcmd  ON smi.product_id = pcmd.product_id ` + 
+                        `FROM location_devices as ld ` +                        
+                        `LEFT JOIN products_core_master_data AS pcmd  ON ld.device_type = pcmd.product_name ` + 
                         `WHERE ` +
                             `ld.client_id = ? ` +
                         `AND ld.business_unit_id = ? ` +
                         `AND ld.delete_status = 0 ` +
-                        `AND ld.location_id = ? ` +
-                        `ORDER BY ld.primary_device DESC , ld.unattached_device ASC`;
+                        `AND ld.location_id = ? ` + 
+                        `ORDER BY ld.primary_device DESC , ld.unattached_device ASC `;
     return query;
 }
 
@@ -63,10 +62,11 @@ const getDeviceLists = (lists) => {
       
     var deviceLists  = [];
     for(var i = 0; i < lists.length; i++){
-        var element = lists.item(i);
+        var element = lists.item(i);        
         try{
+
             deviceLists.push({
-                location_device_id: element.location_device_id,
+                location_device_id: element.location_device_id.toString(),
                 description: element.device_type,
                 msn : element.device_msn,            
                 imei : element.device_imei,
