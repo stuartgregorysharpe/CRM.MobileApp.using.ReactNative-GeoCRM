@@ -1,10 +1,8 @@
 
-import React , { useState , useEffect, useRef} from 'react'
+import React , { useState , useEffect, useRef } from 'react'
 import CModal from '../../../../../components/common/CModal';
 import { Constants } from '../../../../../constants';
 import DevicePriorityModalContainer from '../containers/DevicePriorityModalContainer';
-import DevicesModalContainer from '../containers/DevicesModalContainer';
-
 
 const DevicePriorityModal = React.forwardRef((props, ref) => {
 
@@ -18,7 +16,6 @@ const DevicePriorityModal = React.forwardRef((props, ref) => {
     };
 
     return (        
-                        
         <CModal
             ref={ref}
             hideClear={true}            

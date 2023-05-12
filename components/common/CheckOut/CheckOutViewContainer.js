@@ -10,23 +10,18 @@ import {
   storeLocalValue,
 } from '../../../constants/Storage';
 import {
-  CHECKIN,
-  LOCATION_CHECK_OUT_COMPULSORY,
+  CHECKIN,  
 } from '../../../actions/actionTypes';
 import HomeCheckOut from '../../../screens/GeoRep/Home/partial/CheckOut';
 import SpecificCheckOut from '../../../screens/GeoRep/CRM/checkin/partial/CheckoutButton';
 import { PostRequestDAO } from '../../../DAO';
-import {
-  clearLoadingBar,
-  clearNotification,
-  showLoadingBar,
-  showNotification,
-} from '../../../actions/notification.action';
 import {Constants, Strings} from '../../../constants';
 import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/components/CalendarCheckOutButton';
 import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
+import { setCompulsoryDevice, setCompulsoryForm } from '../../../actions/location.action';
+import { checkCompulsoryDevice, checkCompulsoryForm } from '../../../screens/GeoRep/CRM/checkin/helper';
 
 var specificLocationId;
 var check_out_indempotency = '';
@@ -34,19 +29,27 @@ let isMount = true;
 
 export default function CheckOutViewContainer(props) {
 
-  const {type, currentCall , isLoadingForm } = props;
+  const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationCheckOutCompulsory = useSelector(
-    state => state.rep.locationCheckOutCompulsory,
+    state => state.location.compulsoryForm,
   );
+  const compulsoryDevice = useSelector(state => state.location.compulsoryDevice);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(false);
   const loadingBarRef = useRef(null);
   const navigationMain = useNavigation();
+  const features = useSelector(
+    state => state.selection.payload.user_scopes.geo_rep.features,
+  );
+  const devices_compulsory_validation = features.includes("devices_compulsory_validation");  
+  const location_specific_devices = features.includes("location_specific_devices");
   
   useEffect(() => {
     isMount = true;
     initData();
+    loadData();
     return () => {
       isMount = false;
     }
@@ -54,20 +57,45 @@ export default function CheckOutViewContainer(props) {
 
   useEffect(() => {
     console.log('updated location com', locationCheckOutCompulsory);
-  }, [locationCheckOutCompulsory]);
+    setIsDataLoading(false);
+  }, [locationCheckOutCompulsory , compulsoryDevice]);
 
   const initData = async () => {
-
     specificLocationId = await getLocalData('@specific_location_id');    
     check_out_indempotency = generateKey();
   };
 
+  const loadData = async () => {
+    
+    if(loadCompulsoryInfo){
+      if(specificLocationId == undefined){
+        specificLocationId = await getLocalData('@specific_location_id');
+      }
+      setIsDataLoading(true);
+      checkCompulsoryForm(true, specificLocationId).then((res) => {      
+        dispatch(setCompulsoryForm(res));
+        if(devices_compulsory_validation && location_specific_devices){
+          checkCompulsoryDevice(specificLocationId).then((res) => {            
+            setIsDataLoading(false);
+            dispatch(setCompulsoryDevice(res));
+          }).catch((e) => {
+            setIsDataLoading(false);    
+          })
+        }else{
+          setIsDataLoading(false);
+        }        
+      }).catch((e) => {
+        setIsDataLoading(false);
+      });    
+    }    
+  }
+
   const checkOutLocation = useCallback(() => {    
-    if(!isLoadingForm){
+    if(!isLoadingForm && !isDataLoading){
       _callCheckOut();
     }    
-  }, [locationCheckOutCompulsory, isLoadingForm]);
-
+  }, [locationCheckOutCompulsory, compulsoryDevice, isLoadingForm , isDataLoading]);
+  
   const _callCheckOut = async() => {
 
     if(check_out_indempotency == undefined || check_out_indempotency == ''){
@@ -77,19 +105,29 @@ export default function CheckOutViewContainer(props) {
       specificLocationId = await getLocalData('@specific_location_id');    
     }
 
-    if (isLoading) {
+    console.log("loading", isLoading, isDataLoading)
+    if (isLoading || isDataLoading) {
       return;
     }
 
+    var message = '';
+    var type = '';
     if(specificLocationId === undefined || specificLocationId === ''){
-      if(props.showConfirmModal){
-        props.showConfirmModal("Location ID error, please contact Support");        
-      }
+      message = "Location ID error, please contact Support";      
+      type = 'locationId';
+    }
+    if ( locationCheckOutCompulsory ) {
+      message = Strings.CRM.Complete_Compulsory_Form;
+      type = 'have_compulsory_form';
+    }
+    if( compulsoryDevice  &&  devices_compulsory_validation && location_specific_devices ) { 
+      message = Strings.CRM.Complete_Compulsory_Device;
+      type = 'compulsoryDevice';
     }
 
-    if (locationCheckOutCompulsory) {
+    if (message != '') {
       if(props.showConfirmModal){
-        props.showConfirmModal(Strings.CRM.Complete_Compulsory_Form);        
+        props.showConfirmModal( message , type );        
       }      
     } else {
 
@@ -117,7 +155,7 @@ export default function CheckOutViewContainer(props) {
       )
         .then(async res => {
 
-          console.log('RES : ', res);          
+          console.log('RES : ', res);     
           if(res.status === Strings.Success){
             await storeLocalValue('@checkin', '0');
             await storeLocalValue('@checkin_type_id', '');
@@ -128,7 +166,8 @@ export default function CheckOutViewContainer(props) {
             await storeJsonData('@setup', null);
             await storeJsonData('@checkin_location', null);            
             dispatch({type: CHECKIN, payload: false, scheduleId: 0});
-            dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: true});            
+            dispatch(setCompulsoryForm(true));
+            dispatch(setCompulsoryDevice(true));            
           }
                                        
           setIsLoading(false);

@@ -11,10 +11,13 @@ export default function DevicePriorityModalView(props) {
     const { device , errors } = props;
 
     const isAdditionalImei = device?.additional_imei_required == "1";    
+    const isMsnRequired = device?.msn_required == '1';
     const [isPrimary, setIsPrimary] = useState(false);
     const [updatedDevice, setUpdatedDevice] = useState(null);    
     const type1 = isAdditionalImei ? 'imei1' : 'imei';
     const type2 = isAdditionalImei ? 'imei2' : '';
+    
+    const hasError = device?.msisdn == undefined || device?.msisdn == ''
     
     useEffect(() => {
         if(updatedDevice == null){
@@ -44,6 +47,7 @@ export default function DevicePriorityModalView(props) {
                 <ScrollView>                    
                     
                     <MsisdnInput 
+                        hasError={hasError}
                         initialValue={updatedDevice?.msisdn}                                            
                         onChangeText={(text) => {
                             var tmp = { ...updatedDevice };
@@ -52,7 +56,9 @@ export default function DevicePriorityModalView(props) {
                         }}
                     />
 
-                    <ScanCodeInput 
+                    {
+                        isMsnRequired && 
+                        <ScanCodeInput 
                             placeholder={'MSN'}
                             type={'msn'}     
                             value={updatedDevice?.device_serial} 
@@ -63,7 +69,9 @@ export default function DevicePriorityModalView(props) {
                                 tmp.msn = text;
                                 setUpdatedDevice(tmp)
                             }}
-                        />                  
+                        />
+                    }
+                             
 
                     <ScanCodeInput 
                             placeholder={isAdditionalImei ? 'IMEI 1' : 'IMEI'}

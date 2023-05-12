@@ -8,7 +8,8 @@ import {showOfflineDialog} from '../../../../../constants/Helper';
 import {useDispatch} from 'react-redux';
 
 export default function FeaturedCardLists(props) {
-  const {onItemClicked, isFormCompulsory} = props;
+
+  const {onItemClicked, isFormCompulsory , isDeviceCompulsory} = props;
   const [featureCards, setFeatureCards] = useState([]);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -21,7 +22,7 @@ export default function FeaturedCardLists(props) {
 
   useEffect(() => {
     loadFeatureCards();
-  }, [isFormCompulsory]);
+  }, [isFormCompulsory , isDeviceCompulsory]);
 
   const loadFeatureCards = async () => {
     const customer_and_contacts = features.includes('customer_and_contacts')
@@ -112,7 +113,7 @@ export default function FeaturedCardLists(props) {
         action: 'View allocated devices',
         link: 'devices',
         isOffline: true,
-        isFormCompulsory: false,
+        isFormCompulsory: isDeviceCompulsory,
       });
     }
 

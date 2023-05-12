@@ -5,18 +5,15 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  Image,
-  Dimensions,
+  Image,  
   StyleSheet
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import RefreshSlider from '../../../../components/modal/RefreshSlider';
-import Colors, {whiteLabel} from '../../../../constants/Colors';
+import Colors, { whiteLabel } from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
 import Fonts from '../../../../constants/Fonts';
-import {grayBackground} from '../../../../constants/Styles';
-import DeviceInfo from 'react-native-device-info';
+import DeviceInfo, { getDevice } from 'react-native-device-info';
 import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
 import Images from '../../../../constants/Images';
@@ -25,38 +22,34 @@ import {
   getLocalData,  
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
-import {getLocationInfo} from '../../../../actions/location.action';
+import {getLocationInfo, setCompulsoryDevice, setCompulsoryForm} from '../../../../actions/location.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHeader from '../../../../components/Header/NavigationHeader';
 import DevicesModal from '../devices/modal/DevicesModal';
 import {Constants, Strings} from '../../../../constants';
-import {  
-  LOCATION_CHECK_OUT_COMPULSORY,
-} from '../../../../actions/actionTypes';
 import CustomerContactModal from '../customer_contacts';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
 import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
-import {GetRequestFormListsDAO} from '../../../../DAO';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
 import AlertDialog from '../../../../components/modal/AlertDialog';
 import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import { Notification } from '../../../../components/modal/Notification';
 import SimCardReportModal from '../sim_card';
+import { checkCompulsoryDevice, checkCompulsoryForm } from './helper';
 
 const LocationSpecificInfoScreen = props => {
 
   const navigation = props.navigation;
+  const openModal = props.route?.params?.openModal;  
   const dispatch = useDispatch();
   const devicesModalRef = useRef(null);
   const [locationInfo, setLocationIfo] = useState(props.route.params.data);
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const [pageType, setPageType] = useState(props.route.params.page);
-  const location_id = props.route.params.locationId;
-  const subSlideStatus = useSelector(state => state.rep.subSlideStatus);
-  const [showItem, setShowItem] = useState(0);
+  const [pageType, setPageType] = useState(props.route.params.page);  
+  const location_id = props.route.params.locationId;    
   const [statusSubmit, setStatusSubmit] = useState(true);
   const locationInfoRef = useRef();
   const customerContactsRef = useRef();
@@ -79,13 +72,16 @@ const LocationSpecificInfoScreen = props => {
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
   const isDisposition = features.includes('disposition_fields');
+  const devices_compulsory_validation = features.includes('devices_compulsory_validation');
   const [isLoadingForm, setIsLoadingForm] = useState(false);
+  const [isLoadingDevice, setIsLoadingDevice] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
   const locationCheckOutCompulsory = useSelector(
-    state => state.rep.locationCheckOutCompulsory,
+    state => state.location.compulsoryForm,
   );
+  const compulsoryDevice= useSelector( state => state.location.compulsoryDevice );
 
   let isMout = true;
 
@@ -96,39 +92,31 @@ const LocationSpecificInfoScreen = props => {
     };
   }, []);
 
-  useEffect(() => {
-    
-    refreshHeader();
-    //initData();
-    
+  useEffect(() => {    
+    refreshHeader();        
   }, [location_id]);
 
-  useEffect(() => {
-    
+  useEffect(() => {    
     isMout = true;
     checkOnlineStatus();
-
     if (isCheckin) {
       getCheckInLocation();
-    }
-    
+    }    
     return () => {
       isMout = false;
     };
   }, [isCheckin]);
 
-
-
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {         
-      getCheckInLocation();      
+      getCheckInLocation();
     });
     return unsubscribe;
   }, [navigation]);
 
   const checkOnlineStatus = useCallback(
     async () => {
-      var specific_location_id  = await getLocalData("@specific_location_id");
+      var specific_location_id  = await getLocalData("@specific_location_id");      
       console.log("Triggered", specific_location_id , pageType);
       if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){
         dispatch(clearNotification());
@@ -137,11 +125,8 @@ const LocationSpecificInfoScreen = props => {
     },
     [isCheckin],
   )
-
   
-  const getCheckInLocation = async () => {
-
-    console.log("page type =>", pageType , location_id, locationId)
+  const getCheckInLocation = async () => {    
     if(pageType == 'checkin'){
       var location = await getJsonData('@checkin_location');      
       if (location != null && location?.location_name?.value != undefined) {
@@ -153,26 +138,32 @@ const LocationSpecificInfoScreen = props => {
         }  
         setLocationIfo(location);
         getFormLists(location.location_id);
+        getDeviceList(location.location_id);
       } else {
         var locId  = await getLocalData("@specific_location_id");        
         if (locId !== undefined) {        
           openLocationInfo(locId);
           getFormLists(locId);
+          getDeviceList(locId);
         }
+      }
+      if(openModal == 'devices'){
+        devicesModalRef.current.showModal();
       }
     }else if(pageType == 'access_crm'){
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
         getFormLists(locationId);
+        getDeviceList(locationId);
       }
     }else{
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
         getFormLists(locationId);
+        getDeviceList(locationId);
       }
     }
   };
-
   
   const goBack = () => {
     if (props.navigation.canGoBack()) {
@@ -184,8 +175,7 @@ const LocationSpecificInfoScreen = props => {
 
     setIsLoading(true);
     getLocationInfo(Number(location_id), currentLocation)
-      .then(res => {
-        console.log("isMout",isMout)
+      .then(res => {        
         if (true) {
           if (
             locationInfoRef.current != undefined &&
@@ -287,16 +277,16 @@ const LocationSpecificInfoScreen = props => {
           <TouchableOpacity
             style={style.headerLeftStyle}
             activeOpacity={1}
-            onPress={() => {
-              setShowItem(0);
+            onPress={() => {              
             }}></TouchableOpacity>
         ),        
       });
     }
   };
 
-  const onDevicesModalClosed = ({type, value}) => {
-    if (type == Constants.actionType.ACTION_CLOSE) {
+  const onDevicesModalClosed = async({type, value}) => {
+    
+    if (type == Constants.actionType.ACTION_CLOSE) {            
       devicesModalRef.current.hideModal();
     }
   };
@@ -305,49 +295,29 @@ const LocationSpecificInfoScreen = props => {
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
   const onSimCardReportModalClosed = ({type , value}) => {};
 
-  const getFormLists = async locationId => {
+  const getFormLists = async locationId => {    
     if(isLoadingForm) return;
     setIsLoadingForm(true);
-    var param = {
-      location_id: locationId,
-    };
-    if (isCheckin) {
-      const checkin_type_id = await getLocalData('@checkin_type_id');
-      const checkin_reason_id = await getLocalData('@checkin_reason_id');
-      if (checkin_type_id && checkin_reason_id != '') {
-        param.checkin_type_id = checkin_type_id;
-      }
-      if (checkin_reason_id && checkin_reason_id != '') {
-        param.checkin_reason_id = checkin_reason_id;
-      }
-    }    
-    GetRequestFormListsDAO.find(param)
-      .then(res => {
-        console.log("form lists ====>", res.forms);
-        getCompulsoryForm(res.forms);
-        setIsLoadingForm(false);
-      })
-      .catch(e => {
-        setIsLoadingForm(false);
-      });
+    checkCompulsoryForm(isCheckin, locationId).then((res) => {          
+      console.log("check compulsory form => ", res)
+      dispatch(setCompulsoryForm(res));
+      setIsLoadingForm(false);
+    }).catch((e) => {
+      setIsLoadingForm(false);
+    });
   };
 
-  const getCompulsoryForm = async lists => {
-    var formLists = [...lists];
-    const formIds = await getJsonData('@form_ids');
-    var flag = false;
-
-    formLists.forEach(element => {
-      if (
-        element.compulsory === '1' &&
-        (formIds == null ||
-          (formIds != null && !formIds.includes(element.form_id)))
-      ) {
-        flag = true;
-      }
-    });    
-    dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
-  };
+  const getDeviceList = async (locationId) => {
+    if(!devices_compulsory_validation) return;
+    if(isLoadingDevice) return;
+    setIsLoadingDevice(true);  
+    checkCompulsoryDevice(locationId).then((res) => {      
+      dispatch(setCompulsoryDevice(res));
+      setIsLoadingDevice(false);      
+    }).catch((e) =>{  
+      setIsLoadingDevice(false);
+    })
+  }
 
   return (
     <SafeAreaView style={{flex:1}}>
@@ -375,10 +345,12 @@ const LocationSpecificInfoScreen = props => {
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
             }); 
+          }else if(confirmModalType == 'compulsoryDevice'){
+            devicesModalRef.current.showModal();
           }
         }}
       />
-      
+
       {
         locationInfo != undefined && (
           <SimCardReportModal 
@@ -425,6 +397,15 @@ const LocationSpecificInfoScreen = props => {
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
+        onClose={() => {
+          const locId = location_id != undefined
+          ? location_id
+          : locationInfo != undefined
+          ? locationInfo.location_id
+          : 0;
+          console.log(locId)
+          getDeviceList(locId);
+        }}
         locationId={
           location_id != undefined
             ? location_id
@@ -441,35 +422,7 @@ const LocationSpecificInfoScreen = props => {
           locationId={locationInfo.location_id}
           onModalClosed={() => setIsDanOneSales(false)}></DanOneSalesModal>
       )}
-
-      {locationInfo && subSlideStatus && (
-        <TouchableOpacity
-          activeOpacity={1}
-          style={grayBackground}
-          onPress={() => {}}></TouchableOpacity>
-      )}
-      {subSlideStatus && (
-        <View
-          style={[
-            styles.transitionView,
-            showItem == 0
-              ? {
-                  transform: [
-                    {translateY: Dimensions.get('window').height + 100},
-                  ],
-                }
-              : {transform: [{translateY: 0}]},
-          ]}>
-          <RefreshSlider location_id={locationInfo.location_id} />
-        </View>
-      )}
-
-      {/* {isLoading && (
-        <View style={{marginTop: 100}}>
-          <ActivityIndicator />
-        </View>
-      )} */}
-
+                
       <ScrollView style={styles.container}>
         {locationInfo != undefined && (
           <View style={styles.headerBox}>
@@ -530,25 +483,19 @@ const LocationSpecificInfoScreen = props => {
               <CheckOutViewContainer
                 type="specificInfo"
                 isLoadingForm={isLoadingForm}
-                showConfirmModal={(message) => {                  
+                showConfirmModal={(message , type) => {
                   setMessage(message);
-                  setConfirmModalType('have_compulsory_form');
+                  setConfirmModalType(type);
                   setIsConfirmModal(true);
                 }}
-                onCallback={async res => {
-                  // setMessage(res.message);
-                  // setConfirmModalType('go_back');
-                  // setIsConfirmModal(true);
+                onCallback={async res => {                  
                   dispatch(showNotification({type: Strings.Success , message : res.message , buttonText: 'Ok'}));
                 }}
               />
-            )}
-            {/* <View style={styles.filterButton}>
-                  <FilterButton text="Contact: Jack Reacher" />
-                </View> */}
+            )}            
           </View>
         )}
-
+        
         <View style={[styles.innerContainer, {marginBottom: -14}]}>
           <View style={[styles.cardBox]}>
             {locationInfo !== undefined &&
@@ -573,6 +520,7 @@ const LocationSpecificInfoScreen = props => {
 
         <FeaturedCardLists
           isFormCompulsory={locationCheckOutCompulsory}
+          isDeviceCompulsory={compulsoryDevice}
           onItemClicked={onFeatureItemClicked}></FeaturedCardLists>
         <View style={{height: 60}}></View>
       </ScrollView>
@@ -588,23 +536,23 @@ const LocationSpecificInfoScreen = props => {
   );
 };
 
-//const perWidth = setWidthBreakpoints(breakPoint);
-
 const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+  
   headerBox: {
     backgroundColor: whiteLabel().headerBackground,
     padding: 10,
     paddingBottom: 0,
     marginBottom: 8,
   },
-  headerTitleBox: {
-    //flexDirection: perWidth('row', 'column'),
+  
+  headerTitleBox: {    
     alignItems: 'flex-start',
     marginBottom: 8,
   },
+  
   subtitleBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -612,15 +560,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginRight: 8,
   },
+
   subtitle: {
     fontSize: 12,
     color: whiteLabel().headerText,
     textAlign: 'left',
-    fontFamily: Fonts.secondaryMedium,
-  },
-
-  dateText: {
-    color: '#0AD10A',
     fontFamily: Fonts.secondaryMedium,
   },
 
@@ -631,35 +575,17 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     maxWidth: 300,
   },
+
   headerIcon: {
     marginRight: 8,
   },
   innerContainer: {
-    justifyContent: 'space-between',
-    //flexDirection: perWidth('row-reverse', 'column'),
+    justifyContent: 'space-between',    
   },
-
   cardBox: {
-    //display: perWidth('flex', 'flex'),
     width: '100%',
     marginBottom: 8,
-  },
-
-  filterButton: {
-    //display: perWidth('none', 'flex'),
-  },
-
-  transitionView: {
-    position: 'absolute',
-    bottom: 50,
-    left: 0,
-    right: 0,
-    backgroundColor: Colors.bgColor,
-    elevation: 2,
-    zIndex: 2,
-    padding: 10,
-  },
+  },  
 })
-
 
 export default LocationSpecificInfoScreen;

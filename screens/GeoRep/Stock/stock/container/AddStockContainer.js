@@ -45,7 +45,7 @@ export default function AddStockContainer(props) {
               types.push({value: value, label: value});
             }
             types = types.filter(x => x.value != 'Sim');
-            setDevicetypeLists(types);
+            setDevicetypeLists(types);            
           }
         }
       })
