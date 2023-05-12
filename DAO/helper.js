@@ -132,6 +132,15 @@ export function saveOfflineSyncItems(
   });              
 }
 
+export async function updateDevice ( device_imei ,device_msisdn , device_msn , device_additional_imei , location_device_id) {
+  
+  var query = `UPDATE location_devices SET device_imei = ? , device_msisdn = ?,  device_msn = ? , device_additional_imei = ? WHERE location_device_id = ?`;
+  console.log("Query", query);
+  var res = await ExecuteQuery(query, [ device_imei, device_msisdn , device_msn , device_additional_imei , location_device_id]);
+  console.log("Save Result", res);
+  
+}
+
 export function getResponseMessage (type , url) {
   if(type ==  'checkin'){
       return Strings.PostRequestResponse.Successfully_Checkin;

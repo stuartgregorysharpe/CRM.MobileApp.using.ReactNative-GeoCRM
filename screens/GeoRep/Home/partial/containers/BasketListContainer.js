@@ -116,7 +116,9 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 console.log("All tables", tables)                
                 if(tables != null && tables.length > 0){
                     setTotalTableCount(tables.length);
-                    await syncTableData(tables, 0 , 0, basket);
+                    const tName = tables[0];
+                    var lastSynced = await getTimeStampAndTimeZone( basket , tName);
+                    await syncTableData(tables, 0 , 0, basket , lastSynced);
                 }else{
                     await saveSyncedStatusTable(basket);                    
                     if(isOneBasketSync){
@@ -166,12 +168,11 @@ export const BasketListContainer = forwardRef((props, ref) => {
         }        
     }
 
-    const syncTableData = async (tables , key , pageNumber, basket) => {    
+    const syncTableData = async (tables , key , pageNumber, basket , lastSyncedParam ) => {    
 
         var tableName = tables[key];  
         if(tableName != undefined){
-
-            var lastSyncedParam = await getTimeStampAndTimeZone(basket , tableName);
+            
             await getApiRequest(`database/sync-table-data?offline_db_version=${offlineDBVersion}&table=${tableName}&page=${pageNumber}${lastSyncedParam}`  , {}).then( async(res) => {                          
                 
                 console.log("Table Record Length", res.records.length);
@@ -188,13 +189,15 @@ export const BasketListContainer = forwardRef((props, ref) => {
                 setTotalRecords(res.total_records);            
                 gSyncedRecords = gSyncedRecords + res.records.length;
                 setSyncedRecords( gSyncedRecords );
-                if(pageNumber + 1 < res.total_pages){
-                    await syncTableData(tables , key, pageNumber + 1, basket);
+                if(pageNumber + 1 < res.total_pages){                    
+                    await syncTableData(tables , key, pageNumber + 1, basket , lastSyncedParam);
                 }else{
                     if(key + 1 < tables.length){
+                        const tName = tables[key + 1];
+                        const lastSynced = await getTimeStampAndTimeZone( basket , tName);
                         setSyncedTableCount(key + 1);
                         gSyncedRecords = 0;                    
-                        await syncTableData(tables , key + 1 , 0 , basket );
+                        await syncTableData(tables , key + 1 , 0 , basket , lastSynced );
                     }else{
                         setSyncedTableCount(key + 1);
                         setSyncedRecords(totalRecords);                        

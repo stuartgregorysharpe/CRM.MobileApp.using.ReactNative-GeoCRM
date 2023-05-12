@@ -47,7 +47,8 @@ const generateQuery = () => {
                         `product_id, ` + 
                         `product_name, ` + 
                         `product_tag, ` + 
-                        `additional_imei ` + 
+                        `additional_imei, ` + 
+                        `msn_required ` + 
                     `FROM ` + 
                         `products_core_master_data ` + 
                     `WHERE ` + 
@@ -76,6 +77,7 @@ const getData = (lists) => {
                     label : element.product_name,
                     product_id : element.product_id,
                     additional_imei : element.additional_imei.toString(),
+                    msn_required : element.msn_required.toString(),
                 }                        
                 stock_types = {                    
                     [Constants.stockType.DEVICE]: [...stock_types[Constants.stockType.DEVICE], devicedata],

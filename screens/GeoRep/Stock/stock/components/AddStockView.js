@@ -8,6 +8,7 @@ import SimView from './stock_types/SimView';
 import {Constants, Strings} from '../../../../../constants';
 import {validateNumber} from '../../../../../helpers/validateHelper';
 import AlertModal from '../../../../../components/modal/AlertModal';
+import { getLabel, getModalMessage } from './helper';
 
 var vodacom = [];
 var details = '';
@@ -24,6 +25,7 @@ export default function AddStockView(props) {
   const [device, setDevice] = useState('');
   const [productId, setProductId] = useState('');
   const [additionalImei, setAdditionalImei] = useState('');
+  const [msnRequired, setMsnRequired] = useState('0');
   const [deviceLists, setDeviceLists] = useState([]);
   const [codeLists, setCodeLists] = useState([]);
   const [enableAddStock, setEnableAddStock] = useState(false);
@@ -50,13 +52,18 @@ export default function AddStockView(props) {
 
   const onDataChangedDevice = (msn, imei , additional_imei) => {
     gMsn = msn ;
-    gImei = imei ;    
-    gAdditionalImei = additional_imei;    
-    if ( ( gMsn != '' && gImei != '' &&  gAdditionalImei != '' && additionalImei == '1' ) || (gMsn != '' && gImei != '' && additionalImei != '1') ) {
+    gImei = imei ;        
+    gAdditionalImei = additional_imei;
+    if ( ( msnRequired == '1' && gMsn != '' && gImei != '' &&  gAdditionalImei != '' && additionalImei == '1' ) 
+      || ( msnRequired == '1' && gMsn != '' && gImei != '' && additionalImei != '1') 
+      || ( msnRequired != '1' && gImei != '' &&  gAdditionalImei != '' && additionalImei == '1' ) 
+      || ( msnRequired != '1' && gImei != '' && additionalImei != '1') 
+      ) {
       setEnableAddStock(true);
     } else {
       setEnableAddStock(false);
     }
+    isValidate();
   };
 
   const onDataChangedConsumable = (det, qua) => {
@@ -78,7 +85,6 @@ export default function AddStockView(props) {
       setCodeLists([...codeLists, tmp]);
       flag = true;
     }
-
     if (flag) {
       setIsAdded(true);
       setEnableAddStock(true);
@@ -91,19 +97,6 @@ export default function AddStockView(props) {
     let filteredArray = codeLists.filter(item => item.code !== value.code);
     vodacom = vodacom.filter(item => item.code !== value.code);
     setCodeLists(filteredArray);
-  };
-
-  const getLabel = () => {
-    if (deviceType === Constants.stockType.DEVICE) {
-      return 'Device';
-    }
-    if (deviceType === Constants.stockType.CONSUMABLE) {
-      return 'Product';
-    }
-    if (deviceType === Constants.stockType.SIM) {
-      return 'Network';
-    }
-    return '';
   };
 
   const isDuplicateData = () =>{
@@ -121,7 +114,6 @@ export default function AddStockView(props) {
 
   const isValidate = () => {
     var isAvailable = true;
-
     if (deviceType == '') {
       setErrors({stockType: true});
       return false;
@@ -134,22 +126,32 @@ export default function AddStockView(props) {
       if (gImei == '' ) {
         isAvailable = false;
         _errors[type1] = true;
+      }else{
+        isAvailable = true;
+        _errors[type1] = false;
       }
 
       if (gAdditionalImei == '' && additionalImei == '1' ) {
         isAvailable = false;
         _errors['imei2'] = true;
+      }else{
+        isAvailable = true;
+        _errors['imei2'] = false;
       }
 
       if (gMsn == '') {
-        isAvailable = false;
-        _errors['msn'] = true;
+        if(msnRequired == '1'){
+          isAvailable = false;
+          _errors['msn'] = true;
+        }
+      }else{
+        isAvailable = true;
+        _errors['msn'] = false;
       }
       if (device == '') {
         isAvailable = false;
         _errors['device'] = true;
-      }
-      
+      }                
       setErrors(_errors);
     } else if (deviceType == Constants.stockType.CONSUMABLE) {
       isAvailable = validateNumber(quantity);
@@ -170,6 +172,7 @@ export default function AddStockView(props) {
 
   const onSubmit = () => {
     if ( isValidate() ) {
+
       setErrors({});
       var data = {
         stock_type: deviceType,
@@ -221,21 +224,7 @@ export default function AddStockView(props) {
       }
       props.callAddStock(deviceType, data);
     } else {
-      showAlertModal(getModalMessage());      
-    }
-  };
-
-  const getModalMessage = () => {
-    if (deviceType == '') {
-      return 'Please complete compulsory fields.';
-    }
-    if (
-      deviceType == Constants.stockType.DEVICE ||
-      deviceType == Constants.stockType.CONSUMABLE
-    ) {
-      return 'Please complete compulsory fields.';
-    } else {
-      return 'No sims scanned/selected.';
+      showAlertModal(getModalMessage(deviceType));
     }
   };
 
@@ -283,7 +272,7 @@ export default function AddStockView(props) {
           setErrors({...errors, stockType: false});
           var tmp = [];
           stockTypes[item.value].forEach(element => {
-            tmp.push({value: element.product_id, label: element.label , additional_imei: element.additional_imei });
+            tmp.push({value: element.product_id, label: element.label , additional_imei: element.additional_imei , msn_required: element.msn_required });
           });
           setDeviceLists(tmp);
         }}
@@ -292,8 +281,8 @@ export default function AddStockView(props) {
 
       <CSingleSelectInput
         isKeyboardManager={false}
-        description={getLabel()}
-        placeholder={'Select ' + getLabel()}
+        description={getLabel(deviceType)}
+        placeholder={'Select ' + getLabel(deviceType)}
         checkedValue={productId}
         mode="single"
         items={deviceLists}
@@ -304,6 +293,7 @@ export default function AddStockView(props) {
           setErrors({...errors, device: false});
           setProductId(item.value);
           setAdditionalImei(item.additional_imei);
+          setMsnRequired(item.msn_required);          
         }}
         containerStyle={{marginTop: 15}}
       />
@@ -311,7 +301,9 @@ export default function AddStockView(props) {
       {deviceType === Constants.stockType.DEVICE && (
         <DeviceView 
           additionalImei={additionalImei}
-          onDataChanged={onDataChangedDevice} errors={errors} />
+          msnRequired={msnRequired}
+          onDataChanged={onDataChangedDevice} 
+          errors={errors} />
       )}
 
       {deviceType === Constants.stockType.CONSUMABLE && (

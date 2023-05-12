@@ -7,21 +7,21 @@ import { validateMsisdn } from '../../../helpers/validateHelper';
 
 const MsisdnInput = (props) => {
 
-    const { initialValue } = props;
+    const { initialValue , hasError } = props;
 
     const [msisdn , setMsisdn] = useState(Constants.msisdnPrefix);
-    const [hasMsisdnError, setHasMsisdnError] = useState(false);
-
+    const [hasMsisdnError, setHasMsisdnError] = useState( hasError ? true : false);
+ 
     const onChangeText = (text) => {
         if(props.onChangeText){
             props.onChangeText(text);
         }
     }
 
-    useEffect(() => {        
+    useEffect(() => {                
         if(initialValue != undefined && initialValue != ''){
-            setMsisdn(initialValue)
-        }        
+            setMsisdn(initialValue);               
+        }
     }, [initialValue])
 
 

@@ -50,6 +50,7 @@ export default {
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
+    Complete_Compulsory_Device: 'Please complete missing device fields',
     Supplier_Compulsory: 'Supplier need to be filled',
     Pleae_Select_Type : 'Please select type to add',
     Select_Devices: 'Select Devices:',

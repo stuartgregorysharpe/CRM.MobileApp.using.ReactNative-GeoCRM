@@ -8,11 +8,12 @@ var mAdditionalImei = '';
 
 export default function DeviceView(props) {
 
-  const { additionalImei } = props;
+  const { additionalImei , msnRequired } = props;
   const placeholder1 = additionalImei == '1' ? 'Input IMEI1' : 'Input IMEI';
   const placeholder2 = additionalImei == '1' ? 'Input IMEI2' : '';
   const type1 = additionalImei == '1' ? 'imei1' : 'imei';
   const type2 = additionalImei == '1' ? 'imei2' : '';
+  
 
   useEffect(() => {
     mMsn = '';
@@ -41,14 +42,16 @@ export default function DeviceView(props) {
   return (
     <View style={{alignSelf: 'stretch'}}>
 
-
-      <ScanCodeInput 
-        placeholder={'Input MSN'}
-        type={'msn'}
-        {...props}
-        onChangedData={onMsnChanged}
-      />
-
+      {
+        msnRequired == '1' && 
+        <ScanCodeInput 
+          placeholder={'Input MSN'}
+          type={'msn'}
+          {...props}
+          onChangedData={onMsnChanged}
+        />
+      }
+      
       <ScanCodeInput 
         placeholder={placeholder1}
         type={type1}

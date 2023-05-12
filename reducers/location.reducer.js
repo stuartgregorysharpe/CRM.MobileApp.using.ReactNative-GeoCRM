@@ -13,6 +13,8 @@ import {
   LOCATION_LOOP_LISTS,
   CHANGE_POLYGONS,
   CHECKIN,
+  LOCATION_CHECK_OUT_COMPULSORY_DEVICE,
+  LOCATION_CHECK_OUT_COMPULSORY,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -34,6 +36,8 @@ const initialState = {
   loopLists: [],
   checkIn: false,
   checkinScheduleId: 0,
+  compulsoryDevice : false,
+  compulsoryForm: false
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -113,6 +117,19 @@ export default (state = initialState, action) => {
         ...state,
         statusLocationInfoUpdate: action.payload,
       };
+
+    case LOCATION_CHECK_OUT_COMPULSORY: 
+      return {
+        ...state,
+        compulsoryForm: action.payload
+      }
+
+    case LOCATION_CHECK_OUT_COMPULSORY_DEVICE:
+      return {
+        ...state,
+        compulsoryDevice: action.payload,
+      };
+
 
     default:
       return state;
