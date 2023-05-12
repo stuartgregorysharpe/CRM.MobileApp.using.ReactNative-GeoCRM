@@ -121,7 +121,8 @@ export default {
     Successfully_Form_Submit: 'Form  Submitted successfully!',
     Successfully_Device_Update:
       'Device update added to offline sync menu successfully',
-    Successfully_Field_Updated : 'Fields updated successfully'
+    Successfully_Field_Updated : 'Fields updated successfully',
+    Successfully_Location_Updated: 'Location-info Update created successfully'
   },
 
   DanOnesSales: {

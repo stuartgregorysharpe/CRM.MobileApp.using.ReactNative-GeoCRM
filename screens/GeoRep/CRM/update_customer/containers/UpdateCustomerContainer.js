@@ -1,34 +1,30 @@
-import {Platform, View} from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
-import {Constants} from '../../../../../constants';
+import { Platform, View } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { Constants } from '../../../../../constants';
 import UpdateCustomerView from '../components/UpdateCustomerView';
-import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
-import {SubmitButton} from '../../../../../components/shared/SubmitButton';
-import {useSelector} from 'react-redux';
-import {useDispatch} from 'react-redux';
-import {
-  clearLoadingBar,
-  clearNotification,
-  showLoadingBar,
-  showNotification,
-} from '../../../../../actions/notification.action';
-import {expireToken, getPostParameter} from '../../../../../constants/Helper';
-import {Notification} from '../../../../../components/modal/Notification';
-import LoadingBarContainer from '../../../../../components/LoadingView/loading_bar/container/LoadingBarContainer';
-import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
-import { GetRequestLocationInfoUpdateDAO } from '../../../../../DAO';
+import { SubmitButton } from '../../../../../components/shared/SubmitButton';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { expireToken, getPostParameter } from '../../../../../constants/Helper';
+import { GetRequestLocationInfoUpdateDAO, PostRequestDAO } from '../../../../../DAO';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
+import AlertModal from '../../../../../components/modal/AlertModal';
 
 export default function UpdateCustomerContainer(props) {
 
   const {locationId} = props;
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [leadForms, setLeadForms] = useState([]);
-  const [accuracyUnit, setAccuracyUnit] = useState('m');
-  const selectDeviceModalRef = useRef(null);
+  const [accuracyUnit, setAccuracyUnit] = useState('m');  
   const [isCurrentLocation, setIsCurrentLocation] = useState('0');
   const [customMasterFields, setCustomMasterFields] = useState({});
   const [originCustomMasterFields, setOriginCustomMasterFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const selectDeviceModalRef = useRef(null);
+  const alertModalRef = useRef()
+  const loadingBarRef =  useRef()
+
   const dispatch = useDispatch();
 
   var location_name_updated = '0';
@@ -44,23 +40,19 @@ export default function UpdateCustomerContainer(props) {
   }, []);
 
   const getCustomMasterFields = () => {
-
     var postData = {
       location_id : locationId
-    }
-    
+    }    
     GetRequestLocationInfoUpdateDAO.find(postData).then((res) => {
-      if (isMount) {
-        console.log("repsonse", res.custom_master_fields);
+      if (isMount) { 
+        console.log("res.custom_master_fields",res.custom_master_fields)       
         setLeadForms(res.custom_master_fields);
         setOriginCustomMasterFields(res.custom_master_fields);
         setAccuracyUnit(res.accuracy_distance_measure);
       }
-    }).catch((e) => {
-      console.log("e",e);
+    }).catch((e) => {      
       expireToken(dispatch, e);
     });
-
   };
 
   const onAdd = () => {
@@ -68,7 +60,7 @@ export default function UpdateCustomerContainer(props) {
       return false;
     }
     setIsLoading(true);
-    dispatch(showLoadingBar({'type': 'loading'}));
+    showLoadingBar();
     checkChangedStatus();
     var userParam = getPostParameter(currentLocation);
     var custom_master_post_data = [];
@@ -84,17 +76,18 @@ export default function UpdateCustomerContainer(props) {
           field_name: item.field_name,
           field_type: item.field_type,
         };
-        if (item.field_type === 'dropdown_input') {
+        if (item.field_type === 'dropdown_input') {          
           custom_master_post_data.push({
             ...tmp,
-            dropdown_value: value.value,
-            value: value.secondValue,
+            dropdown_value: value.value == null ? '' : value.value,
+            value: value.secondValue == null ? '' : value.secondValue,
           });
         } else {
           custom_master_post_data.push({...tmp, value: value});
         }
       }
     }
+
     let postData = {
       location_id: locationId,
       coordinates: {
@@ -111,31 +104,17 @@ export default function UpdateCustomerContainer(props) {
       custom_master_fields: custom_master_post_data,
       user_local_data: userParam.user_local_data,
     };
-
-    console.log('post data', JSON.stringify(postData));
-    postApiRequest('locations-info/location-info-update', postData)
-      .then(res => {
-        console.log('locations-info/location-info-update: success', res);
-        setIsLoading(false);
-        dispatch(clearLoadingBar());
-        dispatch(
-          showNotification({
-            type: 'success', 
-            message: res.message,
-            buttonText: 'Ok',
-            buttonAction: () => {
-              dispatch(clearNotification());
-              props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-            },
-          }),
-        );
-      })
-      .catch(e => {
-        expireToken(dispatch, e);
-        setIsLoading(false);
-        dispatch(clearLoadingBar());
-    });
-
+        
+    PostRequestDAO.find(locationId, postData , 'location_address_update' , 'locations-info/location-info-update' , 'location_address_update' , '').then((res) => {
+      console.log('locations-info/location-info-update: success', res);
+      setIsLoading(false);
+      hideLoadingBar();
+      showMessage(res.message);
+    }).catch((e) => {
+      setIsLoading(false);
+      hideLoadingBar();
+      expireToken(dispatch, e , alertModalRef);
+    })
   };
 
   const checkChangedStatus = () => {
@@ -174,16 +153,43 @@ export default function UpdateCustomerContainer(props) {
   const useGeoLocation = () => {
     setIsCurrentLocation('1');
   };
-  const onChangedCustomMasterFields = value => {
-    console.log('onChangedCustomMasterFields--', value);
+  const onChangedCustomMasterFields = value => {    
     setCustomMasterFields(value);
   };
+
+  const showLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
+
+  const showMessage = (message ) => {
+    var delay = 0;
+    if(Platform.OS == 'ios'){
+      delay = 500;
+    }
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message , 'OK');
+      }
+    }, delay);
+  }
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
       
-      <Notification />
-      <LoadingProgressBar />
+      <LoadingBar ref={loadingBarRef}/>
+      <AlertModal 
+        onModalClose={(res) => {
+          props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
+        }}
+        ref={alertModalRef}/>
 
       <UpdateCustomerView
         onButtonAction={onButtonAction}
@@ -194,6 +200,7 @@ export default function UpdateCustomerContainer(props) {
         showAllocateModal={showAllocateModal}
         {...props}
       />
+
       <SubmitButton
         style={{
           marginHorizontal: 10,
@@ -203,6 +210,7 @@ export default function UpdateCustomerContainer(props) {
         title={'Update'}
         onSubmit={onAdd}        
       />
+
     </View>
   );
 }

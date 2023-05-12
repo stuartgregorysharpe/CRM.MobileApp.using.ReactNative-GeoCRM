@@ -149,6 +149,8 @@ export function getResponseMessage (type , url) {
       return Strings.PostRequestResponse.Successfully_Device_Update;
   }else if(type == "location_info_update"){
     return Strings.PostRequestResponse.Successfully_Field_Updated;
+  }else if(type == 'location_address_update'){
+    return Strings.PostRequestResponse.Successfully_Location_Updated
   }
   return Strings.PostRequestResponse.Successfully_Checkin;    
 }
