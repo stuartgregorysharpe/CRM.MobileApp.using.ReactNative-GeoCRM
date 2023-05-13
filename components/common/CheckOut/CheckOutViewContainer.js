@@ -63,7 +63,7 @@ export default function CheckOutViewContainer(props) {
   }, [locationCheckOutCompulsory , compulsoryDevice]);
 
   useEffect(() => {
-    setIsLocationFieldDataLoading(true)
+    setIsLocationFieldDataLoading(false)
   }, [compulsoryLocationField]);  
 
   const initData = async () => {
