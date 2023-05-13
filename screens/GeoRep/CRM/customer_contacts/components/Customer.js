@@ -126,12 +126,7 @@ export default function Customer(props) {
           expireToken(dispatch , e, alertModalRef);
         })
         
-        // postApiRequest("locations/location-fields", postData).then((res) => {    
-        // }).catch((e)=> {
-        //     expireToken(dispatch, e);
-        //     hideLoadingBar();
-        //     setIsLoading(false);            
-        // })
+ 
 
     }
 

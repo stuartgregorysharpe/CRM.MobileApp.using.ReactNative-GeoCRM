@@ -5,7 +5,8 @@ import {
   STATUS_LOCATION_FILTERS,    
   CHANGE_LOCATION_FILTERS,
   LOCATION_CHECK_OUT_COMPULSORY_DEVICE,
-  LOCATION_CHECK_OUT_COMPULSORY,  
+  LOCATION_CHECK_OUT_COMPULSORY,
+  LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD,  
 } from './actionTypes';
 import uuid from 'react-native-uuid';
 import {
@@ -18,6 +19,11 @@ import {
 import { generateKey } from '../constants/Utils';
 import { GetRequestLocationInfoDAO } from '../DAO';
 
+
+export const setCompulsoryLocationField = locationField => ({
+  type: LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD,
+  payload: locationField,
+});
 
 export const setCompulsoryDevice = compulsoryDevice => ({
   type: LOCATION_CHECK_OUT_COMPULSORY_DEVICE,

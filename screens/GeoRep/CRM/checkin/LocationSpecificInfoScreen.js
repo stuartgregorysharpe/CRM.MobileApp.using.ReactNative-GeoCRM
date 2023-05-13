@@ -22,7 +22,7 @@ import {
   getLocalData,  
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
-import {getLocationInfo, setCompulsoryDevice, setCompulsoryForm} from '../../../../actions/location.action';
+import {getLocationInfo, setCompulsoryDevice, setCompulsoryForm, setCompulsoryLocationField} from '../../../../actions/location.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import {useNavigation} from '@react-navigation/native';
@@ -38,7 +38,7 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import { Notification } from '../../../../components/modal/Notification';
 import SimCardReportModal from '../sim_card';
-import { checkCompulsoryDevice, checkCompulsoryForm } from './helper';
+import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from './helper';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -73,15 +73,18 @@ const LocationSpecificInfoScreen = props => {
   );
   const isDisposition = features.includes('disposition_fields');
   const devices_compulsory_validation = features.includes('devices_compulsory_validation');
+  const validate_crm_fields = features.includes('validate_crm_fields');
+  
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingDevice, setIsLoadingDevice] = useState(false);
+  const [isLoadingLocationField, setIsLoadingLocationField] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
-  const locationCheckOutCompulsory = useSelector(
-    state => state.location.compulsoryForm,
-  );
+  const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm );
   const compulsoryDevice= useSelector( state => state.location.compulsoryDevice );
+  const compulsoryLocationField= useSelector( state => state.location.compulsoryLocationField );
+  
 
   let isMout = true;
 
@@ -137,30 +140,32 @@ const LocationSpecificInfoScreen = props => {
           locationInfoRef.current.updateDispositionData(location);
         }  
         setLocationIfo(location);
-        getFormLists(location.location_id);
-        getDeviceList(location.location_id);
+        checkCheckoutCompulsory(location.location_id);
+        
       } else {
         var locId  = await getLocalData("@specific_location_id");        
         if (locId !== undefined) {        
           openLocationInfo(locId);
-          getFormLists(locId);
-          getDeviceList(locId);
+          checkCheckoutCompulsory(locId);
         }
       }
       if(openModal == 'devices'){
         devicesModalRef.current.showModal();
+      }else if(openModal == 'cusotmer_contact'){
+        customerContactModalRef.current.showModal();
       }
+      
     }else if(pageType == 'access_crm'){
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
-        getFormLists(locationId);
-        getDeviceList(locationId);
+        checkCheckoutCompulsory(locationId);
+      
       }
     }else{
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
-        getFormLists(locationId);
-        getDeviceList(locationId);
+        checkCheckoutCompulsory(locationId);
+        
       }
     }
   };
@@ -291,9 +296,17 @@ const LocationSpecificInfoScreen = props => {
     }
   };
 
-  const onCustomerContactModalClosed = ({type, value}) => {};
+  const onCustomerContactModalClosed = ({type, value}) => {    
+    getLocationFields(locationInfo.location_id);
+  };
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
   const onSimCardReportModalClosed = ({type , value}) => {};
+
+  const checkCheckoutCompulsory = async (locationId) => {
+    await getFormLists(locationId);
+    await getDeviceList(locationId);
+    await getLocationFields(locationId);
+  }
 
   const getFormLists = async locationId => {    
     if(isLoadingForm) return;
@@ -312,10 +325,24 @@ const LocationSpecificInfoScreen = props => {
     if(isLoadingDevice) return;
     setIsLoadingDevice(true);  
     checkCompulsoryDevice(locationId).then((res) => {      
+      console.log("check compulsory device => ", res)
       dispatch(setCompulsoryDevice(res));
       setIsLoadingDevice(false);      
     }).catch((e) =>{  
       setIsLoadingDevice(false);
+    })
+  }
+
+  const getLocationFields = async(locationId) => {    
+    if(!validate_crm_fields) return;
+    if(isLoadingLocationField) return;
+    setIsLoadingDevice(true);  
+    checkCompulsoryLocationFields(locationId).then((res) => {      
+      console.log("check location fields device => ", res)
+      dispatch(setCompulsoryLocationField(res));
+      setIsLoadingLocationField(false);      
+    }).catch((e) =>{  
+      setIsLoadingLocationField(false);
     })
   }
 
@@ -347,6 +374,8 @@ const LocationSpecificInfoScreen = props => {
             }); 
           }else if(confirmModalType == 'compulsoryDevice'){
             devicesModalRef.current.showModal();
+          }else if(confirmModalType == 'compulsoryLocationField'){
+            customerContactModalRef.current.showModal();
           }
         }}
       />
@@ -521,6 +550,7 @@ const LocationSpecificInfoScreen = props => {
         <FeaturedCardLists
           isFormCompulsory={locationCheckOutCompulsory}
           isDeviceCompulsory={compulsoryDevice}
+          isLocationFieldCompulsory={compulsoryLocationField}
           onItemClicked={onFeatureItemClicked}></FeaturedCardLists>
         <View style={{height: 60}}></View>
       </ScrollView>

@@ -20,8 +20,8 @@ import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/components/CalendarCheckOutButton';
 import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
-import { setCompulsoryDevice, setCompulsoryForm } from '../../../actions/location.action';
-import { checkCompulsoryDevice, checkCompulsoryForm } from '../../../screens/GeoRep/CRM/checkin/helper';
+import { setCompulsoryDevice, setCompulsoryForm, setCompulsoryLocationField } from '../../../actions/location.action';
+import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from '../../../screens/GeoRep/CRM/checkin/helper';
 
 var specificLocationId;
 var check_out_indempotency = '';
@@ -32,12 +32,13 @@ export default function CheckOutViewContainer(props) {
   const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const locationCheckOutCompulsory = useSelector(
-    state => state.location.compulsoryForm,
-  );
+  const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm);
   const compulsoryDevice = useSelector(state => state.location.compulsoryDevice);
+  const compulsoryLocationField = useSelector( state => state.location.compulsoryLocationField );
+
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [isLocationFieldDataLoading, setIsLocationFieldDataLoading] = useState(false);
   const loadingBarRef = useRef(null);
   const navigationMain = useNavigation();
   const features = useSelector(
@@ -45,6 +46,7 @@ export default function CheckOutViewContainer(props) {
   );
   const devices_compulsory_validation = features.includes("devices_compulsory_validation");  
   const location_specific_devices = features.includes("location_specific_devices");
+  const validate_crm_fields = features.includes('validate_crm_fields');
   
   useEffect(() => {
     isMount = true;
@@ -57,8 +59,12 @@ export default function CheckOutViewContainer(props) {
 
   useEffect(() => {
     console.log('updated location com', locationCheckOutCompulsory);
-    setIsDataLoading(false);
+    setIsDataLoading(false);  
   }, [locationCheckOutCompulsory , compulsoryDevice]);
+
+  useEffect(() => {
+    setIsLocationFieldDataLoading(true)
+  }, [compulsoryLocationField]);  
 
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');    
@@ -73,7 +79,7 @@ export default function CheckOutViewContainer(props) {
       }
       setIsDataLoading(true);
       checkCompulsoryForm(true, specificLocationId).then((res) => {      
-        dispatch(setCompulsoryForm(res));
+        dispatch(setCompulsoryForm(res));                
         if(devices_compulsory_validation && location_specific_devices){
           checkCompulsoryDevice(specificLocationId).then((res) => {            
             setIsDataLoading(false);
@@ -87,14 +93,26 @@ export default function CheckOutViewContainer(props) {
       }).catch((e) => {
         setIsDataLoading(false);
       });    
+
+      if(validate_crm_fields){
+        setIsLocationFieldDataLoading(true)
+        checkCompulsoryLocationFields(specificLocationId).then((res) => {
+          dispatch(setCompulsoryLocationField(res));
+          setIsLocationFieldDataLoading(false);
+        }).catch(e => {
+          setIsLocationFieldDataLoading(false);
+        })
+      }
+
     }    
   }
 
-  const checkOutLocation = useCallback(() => {    
-    if(!isLoadingForm && !isDataLoading){
+  const checkOutLocation = useCallback(() => {   
+    console.log("isLoadingForm" , isLoadingForm , isDataLoading , isLocationFieldDataLoading) 
+    if(!isLoadingForm && !isDataLoading && !isLocationFieldDataLoading){
       _callCheckOut();
     }    
-  }, [locationCheckOutCompulsory, compulsoryDevice, isLoadingForm , isDataLoading]);
+  }, [locationCheckOutCompulsory, compulsoryDevice, isLoadingForm , isDataLoading , isLocationFieldDataLoading]);
   
   const _callCheckOut = async() => {
 
@@ -123,6 +141,11 @@ export default function CheckOutViewContainer(props) {
     if( compulsoryDevice  &&  devices_compulsory_validation && location_specific_devices ) { 
       message = Strings.CRM.Complete_Compulsory_Device;
       type = 'compulsoryDevice';
+    }
+
+    if( compulsoryLocationField ) {
+      message = Strings.CRM.Complete_Compulsory_Location_Field;
+      type = 'compulsoryLocationField';
     }
 
     if (message != '') {

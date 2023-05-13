@@ -733,9 +733,14 @@ const MainPage = forwardRef((props, ref) => {
             }
           }else if(confirmModalType == 'compulsoryDevice'){
             navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+                page: 'checkin',
+                openModal:'devices'
+            });  
+          }else if(confirmModalType == 'compulsoryLocationField'){
+            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
               page: 'checkin',
-              openModal:'devices'
-          });  
+              openModal:'cusotmer_contact'
+            });  
           }
           
         }}

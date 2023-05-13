@@ -51,6 +51,7 @@ export default {
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
     Complete_Compulsory_Device: 'Please complete missing device fields',
+    Complete_Compulsory_Location_Field : 'Please complete empty compulsory fields',
     Supplier_Compulsory: 'Supplier need to be filled',
     Pleae_Select_Type : 'Please select type to add',
     Select_Devices: 'Select Devices:',

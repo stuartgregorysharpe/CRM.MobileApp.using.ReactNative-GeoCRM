@@ -15,6 +15,7 @@ import {
   CHECKIN,
   LOCATION_CHECK_OUT_COMPULSORY_DEVICE,
   LOCATION_CHECK_OUT_COMPULSORY,
+  LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD,
 } from '../actions/actionTypes';
 
 const initialState = {
@@ -37,7 +38,8 @@ const initialState = {
   checkIn: false,
   checkinScheduleId: 0,
   compulsoryDevice : false,
-  compulsoryForm: false
+  compulsoryForm: false , 
+  compulsoryLocationField: false
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -129,6 +131,13 @@ export default (state = initialState, action) => {
         ...state,
         compulsoryDevice: action.payload,
       };
+
+    case LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD:
+      return {
+        ...state,
+        compulsoryLocationField: action.payload,
+      };
+      
 
 
     default:

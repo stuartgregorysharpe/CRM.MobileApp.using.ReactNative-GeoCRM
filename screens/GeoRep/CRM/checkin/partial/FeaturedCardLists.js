@@ -9,7 +9,7 @@ import {useDispatch} from 'react-redux';
 
 export default function FeaturedCardLists(props) {
 
-  const {onItemClicked, isFormCompulsory , isDeviceCompulsory} = props;
+  const {onItemClicked, isFormCompulsory , isLocationFieldCompulsory , isDeviceCompulsory} = props;
   const [featureCards, setFeatureCards] = useState([]);
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
@@ -22,7 +22,7 @@ export default function FeaturedCardLists(props) {
 
   useEffect(() => {
     loadFeatureCards();
-  }, [isFormCompulsory , isDeviceCompulsory]);
+  }, [isFormCompulsory , isDeviceCompulsory , isLocationFieldCompulsory]);
 
   const loadFeatureCards = async () => {
     const customer_and_contacts = features.includes('customer_and_contacts')
@@ -58,7 +58,7 @@ export default function FeaturedCardLists(props) {
         action: 'View all information',
         link: 'customer_contacts',
         isOffline: true,
-        isFormCompulsory: false,
+        isFormCompulsory: isLocationFieldCompulsory,
       });
     }
 
