@@ -22,14 +22,16 @@ import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
 import { setCompulsoryDevice, setCompulsoryForm, setCompulsoryLocationField } from '../../../actions/location.action';
 import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from '../../../screens/GeoRep/CRM/checkin/helper';
+import { checkConnectivity } from '../../../DAO/helper';
+import { haveLocationFieldPost } from './helper';
 
-var specificLocationId;
+var specificLocationId; 
 var check_out_indempotency = '';
 let isMount = true;
 
 export default function CheckOutViewContainer(props) {
 
-  const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false } = props;
+  const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false  } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm);
@@ -62,10 +64,11 @@ export default function CheckOutViewContainer(props) {
     setIsDataLoading(false);  
   }, [locationCheckOutCompulsory , compulsoryDevice]);
 
-  useEffect(() => {
-    setIsLocationFieldDataLoading(false)
-  }, [compulsoryLocationField]);  
-
+  // useEffect(() => {
+  //   console.log('updated compulsoryLocationField', compulsoryLocationField);
+  //   setIsLocationFieldDataLoading(false)
+  // }, [compulsoryLocationField]);
+  
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');    
     check_out_indempotency = generateKey();
@@ -74,6 +77,7 @@ export default function CheckOutViewContainer(props) {
   const loadData = async () => {
     
     if(loadCompulsoryInfo){
+      console.log("checkout view container load data")
       if(specificLocationId == undefined){
         specificLocationId = await getLocalData('@specific_location_id');
       }
@@ -92,19 +96,36 @@ export default function CheckOutViewContainer(props) {
         }        
       }).catch((e) => {
         setIsDataLoading(false);
-      });    
+      });
+      loadLocationFormCompulsory();
+    }    
+  }
 
-      if(validate_crm_fields){
-        setIsLocationFieldDataLoading(true)
-        checkCompulsoryLocationFields(specificLocationId).then((res) => {
+  const loadLocationFormCompulsory = () => {
+    if(validate_crm_fields){
+      setIsLocationFieldDataLoading(true);
+      checkCompulsoryLocationFields(specificLocationId).then((res) => {
+        if(res){
+          checkConnectivity().then(async(isConnected) => {
+            if(isConnected){
+              dispatch(setCompulsoryLocationField(res));                    
+            }else{
+              const flag = await haveLocationFieldPost(specificLocationId);            
+              dispatch(setCompulsoryLocationField(!flag));
+            }
+            setIsLocationFieldDataLoading(false);
+          }).catch((e) => {
+            setIsLocationFieldDataLoading(false);
+          });
+        }else{
           dispatch(setCompulsoryLocationField(res));
           setIsLocationFieldDataLoading(false);
-        }).catch(e => {
-          setIsLocationFieldDataLoading(false);
-        })
-      }
+        }              
+      }).catch(e => {
+        setIsLocationFieldDataLoading(false);
+      });                       
+    }
 
-    }    
   }
 
   const checkOutLocation = useCallback(() => {   
@@ -112,7 +133,7 @@ export default function CheckOutViewContainer(props) {
     if(!isLoadingForm && !isDataLoading && !isLocationFieldDataLoading){
       _callCheckOut();
     }    
-  }, [locationCheckOutCompulsory, compulsoryDevice, isLoadingForm , isDataLoading , isLocationFieldDataLoading]);
+  }, [locationCheckOutCompulsory, compulsoryDevice, compulsoryLocationField , isLoadingForm , isDataLoading , isLocationFieldDataLoading]);
   
   const _callCheckOut = async() => {
 
@@ -138,11 +159,15 @@ export default function CheckOutViewContainer(props) {
       message = Strings.CRM.Complete_Compulsory_Form;
       type = 'have_compulsory_form';
     }
+
+    console.log("compulsoryDevice", compulsoryDevice, devices_compulsory_validation , location_specific_devices);
+ 
     if( compulsoryDevice  &&  devices_compulsory_validation && location_specific_devices ) { 
       message = Strings.CRM.Complete_Compulsory_Device;
       type = 'compulsoryDevice';
     }
 
+    console.log("compulsoryLocationField",compulsoryLocationField)
     if( compulsoryLocationField ) {
       message = Strings.CRM.Complete_Compulsory_Location_Field;
       type = 'compulsoryLocationField';

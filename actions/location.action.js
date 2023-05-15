@@ -20,9 +20,9 @@ import { generateKey } from '../constants/Utils';
 import { GetRequestLocationInfoDAO } from '../DAO';
 
 
-export const setCompulsoryLocationField = locationField => ({
+export const setCompulsoryLocationField = compulsoryLocationField => ({
   type: LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD,
-  payload: locationField,
+  payload: compulsoryLocationField,
 });
 
 export const setCompulsoryDevice = compulsoryDevice => ({

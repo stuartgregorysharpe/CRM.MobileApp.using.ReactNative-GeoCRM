@@ -124,7 +124,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         compulsoryForm: action.payload
-      }
+      };
 
     case LOCATION_CHECK_OUT_COMPULSORY_DEVICE:
       return {
@@ -138,8 +138,6 @@ export default (state = initialState, action) => {
         compulsoryLocationField: action.payload,
       };
       
-
-
     default:
       return state;
   }

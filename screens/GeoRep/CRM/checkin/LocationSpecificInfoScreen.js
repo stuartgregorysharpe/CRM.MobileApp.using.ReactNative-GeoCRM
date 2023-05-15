@@ -39,6 +39,8 @@ import { clearNotification, showNotification } from '../../../../actions/notific
 import { Notification } from '../../../../components/modal/Notification';
 import SimCardReportModal from '../sim_card';
 import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from './helper';
+import { checkConnectivity } from '../../../../DAO/helper';
+import { haveLocationFieldPost } from '../../../../components/common/CheckOut/helper';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -82,7 +84,7 @@ const LocationSpecificInfoScreen = props => {
   const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
   const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm );
-  const compulsoryDevice= useSelector( state => state.location.compulsoryDevice );
+  const compulsoryDevice = useSelector( state => state.location.compulsoryDevice );
   const compulsoryLocationField= useSelector( state => state.location.compulsoryLocationField );
   
 
@@ -116,6 +118,8 @@ const LocationSpecificInfoScreen = props => {
     });
     return unsubscribe;
   }, [navigation]);
+
+
 
   const checkOnlineStatus = useCallback(
     async () => {
@@ -303,9 +307,9 @@ const LocationSpecificInfoScreen = props => {
   const onSimCardReportModalClosed = ({type , value}) => {};
 
   const checkCheckoutCompulsory = async (locationId) => {
-    await getFormLists(locationId);
-    await getDeviceList(locationId);
-    await getLocationFields(locationId);
+    // await getFormLists(locationId);
+    // await getDeviceList(locationId);
+    // await getLocationFields(locationId);
   }
 
   const getFormLists = async locationId => {    
@@ -321,6 +325,7 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const getDeviceList = async (locationId) => {
+    console.log("isLoadingDevice" , isLoadingDevice , devices_compulsory_validation)
     if(!devices_compulsory_validation) return;
     if(isLoadingDevice) return;
     setIsLoadingDevice(true);  
@@ -333,18 +338,33 @@ const LocationSpecificInfoScreen = props => {
     })
   }
 
-  const getLocationFields = async(locationId) => {    
-    console.log("get location fields ", locationId);
+  const getLocationFields = async(locationId) => {
+
     if(!validate_crm_fields) return;
-    if(isLoadingLocationField) return;
-    setIsLoadingDevice(true);  
-    checkCompulsoryLocationFields(locationId).then((res) => {      
-      console.log("check location fields device => ", res)
-      dispatch(setCompulsoryLocationField(res));
-      setIsLoadingLocationField(false);      
-    }).catch((e) =>{  
-      setIsLoadingLocationField(false);
-    })
+    if(isLoadingLocationField) return;    
+    setIsLoadingLocationField(true);  
+      checkCompulsoryLocationFields(locationId).then((res) => {
+        if(res){
+          checkConnectivity().then(async(isConnected) => {
+            if(isConnected){
+              dispatch(setCompulsoryLocationField(res));        
+            }else{
+              const flag = await haveLocationFieldPost(locationId);            
+              dispatch(setCompulsoryLocationField(!flag));
+            }
+            setIsLoadingLocationField(false);
+          }).catch((e) => {
+            setIsLoadingLocationField(false);
+          });        
+        }else{          
+          dispatch(setCompulsoryLocationField(false));
+          //dispatch(setCompulsoryDevice(true));
+          setIsLoadingLocationField(false);
+        }
+        
+      }).catch((e) =>{
+        setIsLoadingLocationField(false);
+      })            
   }
 
   return (
@@ -516,6 +536,7 @@ const LocationSpecificInfoScreen = props => {
               <CheckOutViewContainer
                 type="specificInfo"
                 isLoadingForm={isLoadingForm}
+                loadCompulsoryInfo={true}                
                 showConfirmModal={(message , type) => {
                   setMessage(message);
                   setConfirmModalType(type);

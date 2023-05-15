@@ -10,6 +10,7 @@ import { Constants, Strings } from '../../../../../constants';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 import AlertModal from '../../../../../components/modal/AlertModal';
 import { PostRequestDAO } from '../../../../../DAO';
+import { setCompulsoryLocationField } from '../../../../../actions/location.action';
 
 export default function Customer(props) {
 
@@ -118,6 +119,7 @@ export default function Customer(props) {
 
         PostRequestDAO.find( locationId , postData , 'location_info_update' , 'locations/location-fields' , 'location_info_update' , '').then((res) => {
           console.log("location-fields response => " , res);
+          dispatch(setCompulsoryLocationField(false));
           hideLoadingBar();
           setIsLoading(false);
           showMessage(res.message);
@@ -125,9 +127,7 @@ export default function Customer(props) {
         }).catch((e) => {
           expireToken(dispatch , e, alertModalRef);
         })
-        
- 
-
+       
     }
 
     const disableField = field => {
