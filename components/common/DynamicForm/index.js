@@ -68,8 +68,8 @@ const DynamicForm = React.forwardRef((props, ref) => {
 
     fieldNames.forEach(fieldName => {
       if (fieldName) {
-        if(typeof(data[fieldName]) != 'string'){ // Object
-          const objData = data[fieldName];
+        const objData = data[fieldName];
+        if(typeof(data[fieldName]) != 'string' && objData != undefined && objData.secondValue != undefined){ // Object          
           if(objData.secondValue != undefined && objData.secondValue != '' && objData.secondValue != null 
           && objData.value != undefined && objData.value != '' && objData.value != null) {            
           }else{
