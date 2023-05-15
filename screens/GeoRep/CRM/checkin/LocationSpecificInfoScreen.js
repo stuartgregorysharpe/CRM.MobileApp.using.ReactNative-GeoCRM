@@ -297,8 +297,8 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const onCustomerContactModalClosed = ({type, value}) => {    
-    getLocationFields(locationInfo.location_id);
   };
+  
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
   const onSimCardReportModalClosed = ({type , value}) => {};
 
@@ -334,6 +334,7 @@ const LocationSpecificInfoScreen = props => {
   }
 
   const getLocationFields = async(locationId) => {    
+    console.log("get location fields ", locationId);
     if(!validate_crm_fields) return;
     if(isLoadingLocationField) return;
     setIsLoadingDevice(true);  
@@ -419,6 +420,9 @@ const LocationSpecificInfoScreen = props => {
         <CustomerContactModal
           ref={customerContactModalRef}
           locationId={locationInfo.location_id}
+          onClose={() => {
+            getLocationFields(locationInfo.location_id);
+          }}
           onButtonAction={onCustomerContactModalClosed}
         />
       )}
