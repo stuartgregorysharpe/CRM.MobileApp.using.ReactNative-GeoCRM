@@ -100,7 +100,7 @@ const Stock = props => {
       <LoadingProgressBar />
 
       {/* marginBottom:50 */}
-      <View style={{flex: 1 ,marginBottom: 50 }}>
+      <View style={{flex: 1 }}>
 
         {selectedTabIndex === 0 && <StockLists {...props} ></StockLists>}
         {selectedTabIndex === 1 && <StockStagingContainer />}
