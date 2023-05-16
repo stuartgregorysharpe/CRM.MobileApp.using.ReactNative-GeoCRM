@@ -20,7 +20,7 @@ const PointOfSaleFormContainer = props => {
   });
   const dispatch = useDispatch();
   const {product, item} = props;
-  console.log("xxxxxxxx " , item)
+  
   const placementTypeList = useMemo(() => getPlacementTypes(item), [item]);
   const areaList = useMemo(
     () => getPlacementAreas(item, formData?.placement_type),

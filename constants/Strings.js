@@ -51,6 +51,7 @@ export default {
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
     Complete_Compulsory_Device: 'Please complete missing device fields',
+    Complete_Compulsory_Location_Field : 'Please complete empty compulsory fields',
     Supplier_Compulsory: 'Supplier need to be filled',
     Pleae_Select_Type : 'Please select type to add',
     Select_Devices: 'Select Devices:',
@@ -122,6 +123,8 @@ export default {
     Successfully_Form_Submit: 'Form  Submitted successfully!',
     Successfully_Device_Update:
       'Device update added to offline sync menu successfully',
+    Successfully_Field_Updated : 'Fields updated successfully',
+    Successfully_Location_Updated: 'Location-info Update created successfully'
   },
 
   DanOnesSales: {

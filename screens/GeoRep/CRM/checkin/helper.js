@@ -1,5 +1,5 @@
 import { getJsonData, getLocalData } from "../../../../constants/Storage";
-import { GetRequestFormListsDAO, GetRequestLocationDevicesDAO } from "../../../../DAO";
+import { GetRequestFormListsDAO, GetRequestLocationDevicesDAO, GetRequestLocationFieldsDAO } from "../../../../DAO";
 
 export const checkCompulsoryForm = async ( isCheckin , locationId ) => {
 
@@ -60,8 +60,7 @@ export const checkCompulsoryDevice = async ( locationId ) => {
         GetRequestLocationDevicesDAO.find(param).then((res) => {            
             const deviceList = [...res.devices];
             var flag = false;
-            
-            console.log("xx",res.devices)
+                        
             deviceList.forEach(element => {
                 if(element.unattached_device == '0'){
                     if( 
@@ -82,6 +81,31 @@ export const checkCompulsoryDevice = async ( locationId ) => {
             resolve([]);
         })
         
+    });
+
+}
+
+
+export const checkCompulsoryLocationFields = async ( locationId ) => {
+    
+    return new Promise( async function(resolve, reject) {    
+
+        var params = {location_id: locationId};
+
+        GetRequestLocationFieldsDAO.find(params).then((res) => {            
+            var flag = false;
+            const customMasterFields = [...res.custom_master_fields];
+            customMasterFields.forEach(element => {
+                if(element.rule_compulsory == '1' && ( element.value == '' || element.value == null) ){
+                    flag = true;
+                }
+            });
+            console.log("checkCompulsoryLocationFields" , flag)
+            resolve(flag);
+        }).catch((e) => {
+            resolve(false);
+        });
+
     });
 
 }

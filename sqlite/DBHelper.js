@@ -5,8 +5,7 @@ import { getJsonData } from '../constants/Storage';
 var db = null;
 export const getDBConnection = async () => {
     try{
-      if(db && db != null) {
-          console.log("alread created db")
+      if(db && db != null) {          
           return db
       }
       db = await openDatabase(

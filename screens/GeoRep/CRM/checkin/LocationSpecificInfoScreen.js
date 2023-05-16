@@ -22,7 +22,7 @@ import {
   getLocalData,  
 } from '../../../../constants/Storage';
 import ActivityComments from '../activity_comments/ActivityComments';
-import {getLocationInfo, setCompulsoryDevice, setCompulsoryForm} from '../../../../actions/location.action';
+import {getLocationInfo, setCompulsoryDevice, setCompulsoryForm, setCompulsoryLocationField} from '../../../../actions/location.action';
 import FeaturedCardLists from './partial/FeaturedCardLists';
 import ActionItemsModal from '../action_items/modals/ActionItemsModal';
 import {useNavigation} from '@react-navigation/native';
@@ -38,7 +38,9 @@ import AlertDialog from '../../../../components/modal/AlertDialog';
 import { clearNotification, showNotification } from '../../../../actions/notification.action';
 import { Notification } from '../../../../components/modal/Notification';
 import SimCardReportModal from '../sim_card';
-import { checkCompulsoryDevice, checkCompulsoryForm } from './helper';
+import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from './helper';
+import { checkConnectivity } from '../../../../DAO/helper';
+import { haveLocationFieldPost } from '../../../../components/common/CheckOut/helper';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -73,15 +75,18 @@ const LocationSpecificInfoScreen = props => {
   );
   const isDisposition = features.includes('disposition_fields');
   const devices_compulsory_validation = features.includes('devices_compulsory_validation');
+  const validate_crm_fields = features.includes('validate_crm_fields');
+  
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingDevice, setIsLoadingDevice] = useState(false);
+  const [isLoadingLocationField, setIsLoadingLocationField] = useState(false);
   const [isConfirmModal , setIsConfirmModal] = useState(false);
   const [confirmModalType, setConfirmModalType] = useState('');
   const [message, setMessage] = useState('');
-  const locationCheckOutCompulsory = useSelector(
-    state => state.location.compulsoryForm,
-  );
-  const compulsoryDevice= useSelector( state => state.location.compulsoryDevice );
+  const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm );
+  const compulsoryDevice = useSelector( state => state.location.compulsoryDevice );
+  const compulsoryLocationField= useSelector( state => state.location.compulsoryLocationField );
+  
 
   let isMout = true;
 
@@ -100,7 +105,7 @@ const LocationSpecificInfoScreen = props => {
     isMout = true;
     checkOnlineStatus();
     if (isCheckin) {
-      getCheckInLocation();
+      getCheckInLocation(true);
     }    
     return () => {
       isMout = false;
@@ -109,10 +114,12 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {         
-      getCheckInLocation();
+      getCheckInLocation(false);
     });
     return unsubscribe;
   }, [navigation]);
+
+
 
   const checkOnlineStatus = useCallback(
     async () => {
@@ -126,7 +133,7 @@ const LocationSpecificInfoScreen = props => {
     [isCheckin],
   )
   
-  const getCheckInLocation = async () => {    
+  const getCheckInLocation = async ( isOpenModal ) => {    
     if(pageType == 'checkin'){
       var location = await getJsonData('@checkin_location');      
       if (location != null && location?.location_name?.value != undefined) {
@@ -137,30 +144,36 @@ const LocationSpecificInfoScreen = props => {
           locationInfoRef.current.updateDispositionData(location);
         }  
         setLocationIfo(location);
-        getFormLists(location.location_id);
-        getDeviceList(location.location_id);
+        checkCheckoutCompulsory(location.location_id);
+        
       } else {
         var locId  = await getLocalData("@specific_location_id");        
         if (locId !== undefined) {        
           openLocationInfo(locId);
-          getFormLists(locId);
-          getDeviceList(locId);
+          checkCheckoutCompulsory(locId);
         }
       }
-      if(openModal == 'devices'){
-        devicesModalRef.current.showModal();
-      }
+      if(isOpenModal){
+        if(openModal == 'devices'){
+          if(devicesModalRef.current)
+            devicesModalRef.current.showModal();
+        }else if(openModal == 'cusotmer_contact'){
+          console.log("cusotmer_contact" , customerContactModalRef)
+          if(customerContactModalRef.current)
+            customerContactModalRef.current.showModal();
+        }
+      }            
     }else if(pageType == 'access_crm'){
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
-        getFormLists(locationId);
-        getDeviceList(locationId);
+        checkCheckoutCompulsory(locationId);
+      
       }
     }else{
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
-        getFormLists(locationId);
-        getDeviceList(locationId);
+        checkCheckoutCompulsory(locationId);
+        
       }
     }
   };
@@ -291,9 +304,17 @@ const LocationSpecificInfoScreen = props => {
     }
   };
 
-  const onCustomerContactModalClosed = ({type, value}) => {};
+  const onCustomerContactModalClosed = ({type, value}) => {    
+  };
+  
   const onCustomerSaleHistoryModalClosed = ({type, value}) => {};
   const onSimCardReportModalClosed = ({type , value}) => {};
+
+  const checkCheckoutCompulsory = async (locationId) => {
+    // await getFormLists(locationId);
+    // await getDeviceList(locationId);
+    // await getLocationFields(locationId);
+  }
 
   const getFormLists = async locationId => {    
     if(isLoadingForm) return;
@@ -308,15 +329,46 @@ const LocationSpecificInfoScreen = props => {
   };
 
   const getDeviceList = async (locationId) => {
+    console.log("isLoadingDevice" , isLoadingDevice , devices_compulsory_validation)
     if(!devices_compulsory_validation) return;
     if(isLoadingDevice) return;
     setIsLoadingDevice(true);  
     checkCompulsoryDevice(locationId).then((res) => {      
+      console.log("check compulsory device => ", res)
       dispatch(setCompulsoryDevice(res));
       setIsLoadingDevice(false);      
     }).catch((e) =>{  
       setIsLoadingDevice(false);
     })
+  }
+
+  const getLocationFields = async(locationId) => {
+
+    if(!validate_crm_fields) return;
+    if(isLoadingLocationField) return;    
+    setIsLoadingLocationField(true);  
+      checkCompulsoryLocationFields(locationId).then((res) => {
+        if(res){
+          checkConnectivity().then(async(isConnected) => {
+            if(isConnected){
+              dispatch(setCompulsoryLocationField(res));        
+            }else{
+              const flag = await haveLocationFieldPost(locationId);            
+              dispatch(setCompulsoryLocationField(!flag));
+            }
+            setIsLoadingLocationField(false);
+          }).catch((e) => {
+            setIsLoadingLocationField(false);
+          });        
+        }else{          
+          dispatch(setCompulsoryLocationField(false));
+          //dispatch(setCompulsoryDevice(true));
+          setIsLoadingLocationField(false);
+        }
+        
+      }).catch((e) =>{
+        setIsLoadingLocationField(false);
+      })            
   }
 
   return (
@@ -341,12 +393,14 @@ const LocationSpecificInfoScreen = props => {
           setIsConfirmModal(false);
           if(confirmModalType == 'go_back'){
             goBack();
-          }else if(confirmModalType == 'have_compulsory_form'){
+          }else if(confirmModalType == 'compulsoryForm'){
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
             }); 
           }else if(confirmModalType == 'compulsoryDevice'){
             devicesModalRef.current.showModal();
+          }else if(confirmModalType == 'compulsoryLocationField'){
+            customerContactModalRef.current.showModal();
           }
         }}
       />
@@ -386,14 +440,27 @@ const LocationSpecificInfoScreen = props => {
           }></CustomerSaleHistoryModal>
       )}
 
-      {locationInfo != undefined && (
-        <CustomerContactModal
-          ref={customerContactModalRef}
-          locationId={locationInfo.location_id}
-          onButtonAction={onCustomerContactModalClosed}
-        />
-      )}
-
+      
+      <CustomerContactModal
+        ref={customerContactModalRef}
+        locationId={
+          location_id != undefined
+            ? location_id
+            : locationInfo != undefined
+            ? locationInfo.location_id
+            : 0
+        }
+        onClose={() => {
+          const locId = location_id != undefined
+          ? location_id
+          : locationInfo != undefined
+          ? locationInfo.location_id
+          : 0;
+          getLocationFields(locId);
+        }}
+        onButtonAction={onCustomerContactModalClosed}
+      />
+            
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
@@ -483,6 +550,7 @@ const LocationSpecificInfoScreen = props => {
               <CheckOutViewContainer
                 type="specificInfo"
                 isLoadingForm={isLoadingForm}
+                loadCompulsoryInfo={true}                
                 showConfirmModal={(message , type) => {
                   setMessage(message);
                   setConfirmModalType(type);
@@ -521,6 +589,7 @@ const LocationSpecificInfoScreen = props => {
         <FeaturedCardLists
           isFormCompulsory={locationCheckOutCompulsory}
           isDeviceCompulsory={compulsoryDevice}
+          isLocationFieldCompulsory={compulsoryLocationField}
           onItemClicked={onFeatureItemClicked}></FeaturedCardLists>
         <View style={{height: 60}}></View>
       </ScrollView>

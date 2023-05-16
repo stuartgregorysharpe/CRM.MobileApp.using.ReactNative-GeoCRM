@@ -137,7 +137,7 @@ export default function AddLeadContainer(props) {
         if (props.changeTitle && res.component_title != undefined) {
           props.changeTitle(res.component_title);
         }
-        console.log("res.custom_master_fieldsx => ", res.compulsory_unattached_device)
+        
         setLeadForms(res.custom_master_fields);      
         setAccuracyUnit(res.accuracy_distance_measure);
         setCompulsoryDevices(res.compulsory_device);

@@ -20,24 +20,27 @@ import {useNavigation} from '@react-navigation/native';
 import CalendarCheckOutButton from '../../../screens/GeoRep/Calendar/components/CalendarCheckOutButton';
 import { generateKey } from '../../../constants/Utils';
 import LoadingBar from '../../LoadingView/loading_bar';
-import { setCompulsoryDevice, setCompulsoryForm } from '../../../actions/location.action';
-import { checkCompulsoryDevice, checkCompulsoryForm } from '../../../screens/GeoRep/CRM/checkin/helper';
+import { setCompulsoryDevice, setCompulsoryForm, setCompulsoryLocationField } from '../../../actions/location.action';
+import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from '../../../screens/GeoRep/CRM/checkin/helper';
+import { checkConnectivity } from '../../../DAO/helper';
+import { haveLocationFieldPost } from './helper';
 
-var specificLocationId;
+var specificLocationId; 
 var check_out_indempotency = '';
 let isMount = true;
 
 export default function CheckOutViewContainer(props) {
 
-  const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false } = props;
+  const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false  } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const locationCheckOutCompulsory = useSelector(
-    state => state.location.compulsoryForm,
-  );
+  const compulsoryForm = useSelector( state => state.location.compulsoryForm);
   const compulsoryDevice = useSelector(state => state.location.compulsoryDevice);
+  const compulsoryLocationField = useSelector( state => state.location.compulsoryLocationField );
+
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [isLocationFieldDataLoading, setIsLocationFieldDataLoading] = useState(false);
   const loadingBarRef = useRef(null);
   const navigationMain = useNavigation();
   const features = useSelector(
@@ -45,6 +48,7 @@ export default function CheckOutViewContainer(props) {
   );
   const devices_compulsory_validation = features.includes("devices_compulsory_validation");  
   const location_specific_devices = features.includes("location_specific_devices");
+  const validate_crm_fields = features.includes('validate_crm_fields');
   
   useEffect(() => {
     isMount = true;
@@ -55,10 +59,9 @@ export default function CheckOutViewContainer(props) {
     }
   }, []);
 
-  useEffect(() => {
-    console.log('updated location com', locationCheckOutCompulsory);
-    setIsDataLoading(false);
-  }, [locationCheckOutCompulsory , compulsoryDevice]);
+  useEffect(() => {    
+    setIsDataLoading(false);  
+  }, [compulsoryForm , compulsoryDevice]);
 
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');    
@@ -68,12 +71,13 @@ export default function CheckOutViewContainer(props) {
   const loadData = async () => {
     
     if(loadCompulsoryInfo){
+      console.log("checkout view container load data")
       if(specificLocationId == undefined){
         specificLocationId = await getLocalData('@specific_location_id');
       }
       setIsDataLoading(true);
       checkCompulsoryForm(true, specificLocationId).then((res) => {      
-        dispatch(setCompulsoryForm(res));
+        dispatch(setCompulsoryForm(res));                
         if(devices_compulsory_validation && location_specific_devices){
           checkCompulsoryDevice(specificLocationId).then((res) => {            
             setIsDataLoading(false);
@@ -86,15 +90,43 @@ export default function CheckOutViewContainer(props) {
         }        
       }).catch((e) => {
         setIsDataLoading(false);
-      });    
+      });
+      loadLocationFormCompulsory();
     }    
   }
 
+  const loadLocationFormCompulsory = () => {
+    if(validate_crm_fields){
+      setIsLocationFieldDataLoading(true);
+      checkCompulsoryLocationFields(specificLocationId).then((res) => {
+        if(res){
+          checkConnectivity().then(async(isConnected) => {
+            if(isConnected){
+              dispatch(setCompulsoryLocationField(res));                    
+            }else{
+              const flag = await haveLocationFieldPost(specificLocationId);            
+              dispatch(setCompulsoryLocationField(!flag));
+            }
+            setIsLocationFieldDataLoading(false);
+          }).catch((e) => {
+            setIsLocationFieldDataLoading(false);
+          });
+        }else{
+          dispatch(setCompulsoryLocationField(res));
+          setIsLocationFieldDataLoading(false);
+        }              
+      }).catch(e => {
+        setIsLocationFieldDataLoading(false);
+      });                       
+    }
+
+  }
+
   const checkOutLocation = useCallback(() => {    
-    if(!isLoadingForm && !isDataLoading){
+    if(!isLoadingForm && !isDataLoading && !isLocationFieldDataLoading){
       _callCheckOut();
     }    
-  }, [locationCheckOutCompulsory, compulsoryDevice, isLoadingForm , isDataLoading]);
+  }, [compulsoryForm, compulsoryDevice, compulsoryLocationField , isLoadingForm , isDataLoading , isLocationFieldDataLoading]);
   
   const _callCheckOut = async() => {
 
@@ -116,13 +148,20 @@ export default function CheckOutViewContainer(props) {
       message = "Location ID error, please contact Support";      
       type = 'locationId';
     }
-    if ( locationCheckOutCompulsory ) {
+    if ( compulsoryForm ) {
       message = Strings.CRM.Complete_Compulsory_Form;
-      type = 'have_compulsory_form';
+      type = 'compulsoryForm';
     }
+   
     if( compulsoryDevice  &&  devices_compulsory_validation && location_specific_devices ) { 
       message = Strings.CRM.Complete_Compulsory_Device;
       type = 'compulsoryDevice';
+    }
+
+    console.log("compulsoryLocationField",compulsoryLocationField)
+    if( compulsoryLocationField ) {
+      message = Strings.CRM.Complete_Compulsory_Location_Field;
+      type = 'compulsoryLocationField';
     }
 
     if (message != '') {

@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   Platform,  
+  StyleSheet
 } from 'react-native';
 import {
   parse,
@@ -104,20 +105,13 @@ export const SalesPipelineScreen = props => {
             </TouchableOpacity>
           );
         },
-        tabBarStyle: {
-          position: 'absolute',
-          height: 50,
-          paddingBottom: Platform.OS == 'android' ? 5 : 0,
-          backgroundColor: Colors.whiteColor,
-        },
-      });
-      if (crmStatus) {
-        screenProps.setOptions({
-          tabBarStyle: {
-            display: 'none',
-          },
-        });
-      }
+        // tabBarStyle: {
+        //   position: 'absolute',
+        //   height: 50,
+        //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
+        //   backgroundColor: Colors.whiteColor,
+        // },
+      });    
     }
 
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
@@ -257,7 +251,7 @@ export const SalesPipelineScreen = props => {
         }
         return;
       case 'add_pipeline':
-        dispatch({type: SLIDE_STATUS, payload: true});
+        //dispatch({type: SLIDE_STATUS, payload: true});
         setShowItem(2);
       default:
         return;
@@ -472,8 +466,7 @@ export const SalesPipelineScreen = props => {
               style={[
                 styles.plusButtonContainer,
                 {
-                  marginBottom:
-                    DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
+                  marginBottom: DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
                 },
               ]}>
               <TouchableOpacity
@@ -497,11 +490,12 @@ export const SalesPipelineScreen = props => {
   );
 }
 
-const styles = EStyleSheet.create(
-  parse({
+const styles = StyleSheet.create(
+  {
     container: {
       padding: 10,      
       backgroundColor: Colors.bgColor,
+      flex:1,      
     },
 
     tabText: {
@@ -537,9 +531,8 @@ const styles = EStyleSheet.create(
 
     plusButtonContainer: {
       position: 'absolute',
-      flexDirection: 'row',
-      bottom: 20,
-      //bottom: Dimensions.get('window').height * 0,
+      //flexDirection: 'row',
+      bottom: 20,      
       right: 20,
       zIndex: 1,
       elevation: 1,
@@ -588,5 +581,5 @@ const styles = EStyleSheet.create(
       zIndex: 2,
       padding: 0,
     },
-  }),
+  },
 );

@@ -171,7 +171,7 @@ export const NextPrev = forwardRef((props, ref) => {
         };
         new_lists = [...savedLocationLoops, currentLoc];
       }
-      console.log('new_lists2', new_lists);
+      
       setCurrentLoopList(new_lists);
       currentPosition = new_lists.length - 1;
       await storeLocationLoop(new_lists);      
