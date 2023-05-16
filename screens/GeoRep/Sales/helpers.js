@@ -14,7 +14,7 @@ export function getTotalCartProductList(
       totalCartProductList.push({
         price: item.price.value,
         product_id: item.add_product_id,
-        qty: item.quantity,
+        qty: item.quantity,        
         product: {
           ...item,
           product_images: item.product_image,
@@ -22,7 +22,7 @@ export function getTotalCartProductList(
           price: item.price.value,
           qty: item.quantity,
           qty_increments: 1,
-          symbol: symbol,
+          symbol: symbol,          
         },
         isAddProduct: true,
       });
@@ -33,6 +33,7 @@ export function getTotalCartProductList(
 }
 export function getProductItemDataForRender(productItem) {
   let finalPrice = 0;
+  let discountPrice = '';
   let price = productItem.product.price;
   if (
     productItem.finalPrice != undefined &&
@@ -40,6 +41,7 @@ export function getProductItemDataForRender(productItem) {
     productItem.finalPrice.final_price != undefined
   ) {
     finalPrice = productItem.finalPrice.final_price;
+    discountPrice = productItem.finalPrice.discountPrice;
   }
   if (
     productItem.price != undefined &&
@@ -52,6 +54,7 @@ export function getProductItemDataForRender(productItem) {
     ...productItem.product,
     price,
     finalPrice,
+    discountPrice,
     qty: productItem.qty,
     special: productItem.special,
     isAddProduct: productItem.isAddProduct,

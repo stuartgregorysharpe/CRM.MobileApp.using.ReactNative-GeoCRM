@@ -16,7 +16,9 @@ export function find(postData) {
           if (client_id && business_unit_id) {
             let commonTitle = await getCommonTitle(client_id, business_unit_id);
             let lists = await fetchDataFromDB(client_id, business_unit_id);
-            let response = await getData(lists, commonTitle);
+            let compulsoryDevices = await getCompulsoryDevices();
+            let compulsoryUnattachedDevice = await getCompulsoryUnattachedDevices();
+            let response = await getData(lists, commonTitle , compulsoryDevices , compulsoryUnattachedDevice );
             resolve(response);
           } else {
             reject();
@@ -51,7 +53,13 @@ const fetchDataFromDB = async (client_id, business_unit_id) => {
   return lists;
 };
 
-const getData = async (lists, commonTitle) => {
+const fetchDeviceDataFromDB = async(query) => {  
+  const res = await ExecuteQuery(query, []);
+  var _lists = res.rows ? res.rows : []; 
+  return _lists;
+}
+
+const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnattachedDevice) => {
   var tmp = [];
   for (var i = 0; i < lists.length; i++) {
     var element = lists.item(i);
@@ -116,14 +124,15 @@ const getData = async (lists, commonTitle) => {
     } catch (e) {
       console.log(e);
     }
-  }
-  console.log('GetRequestLeaffield', tmp);
+  }  
 
   return {
     status: String.Success,
     accuracy_distance_measure: 'm',
     component_title: commonTitle,
     custom_master_fields: tmp,
+    compulsory_device : compulsoryDevices,
+    compulsory_unattached_device : compulsoryUnattachedDevice
   };
 };
 
@@ -206,6 +215,30 @@ const getTriggerFieldQuery = trigger_field_id => {
   return sql;
 };
 
+const getDeviceQuery = () => {
+  var sql = `SELECT 
+  custom_master_field_id,
+  field_data
+FROM add_lead_compulsory_device_settings
+WHERE
+  delete_status = 0
+AND
+  type = "device"`;
+  return sql;
+}
+
+const getUnattachedDeviceQuery = () => {
+    var sql = `SELECT 
+    custom_master_field_id,
+    field_data
+  FROM add_lead_compulsory_device_settings
+  WHERE
+    delete_status = 0
+  AND
+    type = "unattached_device"`;
+    return sql;
+}
+
 const getPresetOptionData = lists => {
   var tmp = [];
   for (var i = 0; i < lists.length; i++) {
@@ -250,10 +283,7 @@ const getTriggerFieldData = (lists, element) => {
       subElement.field_type == 'multiple' ||
       subElement.field_type == 'multi_select'
     ) {
-      console.log(
-        'subElement.trigger_field_answer',
-        element.trigger_field_answer,
-      );
+      
       tmp = {
         type: 'dropdown',
         trigger_field_id: element.trigger_field_id,
@@ -265,6 +295,72 @@ const getTriggerFieldData = (lists, element) => {
   }
   return tmp;
 };
+
+
+const getCompulsoryDevices = async() => {
+  var query = getDeviceQuery();
+  let lists = await fetchDeviceDataFromDB(query);
+  var custom_master_field_id = '';
+  var options = [];
+  var result = [];
+  for (var i = 0; i < lists.length; i++) {
+    const subElement = lists.item(i);
+    if(custom_master_field_id != subElement.custom_master_field_id){
+      if(options.length != 0){
+        result.push({
+          custom_master_field_id : custom_master_field_id.toString(),
+          options : options
+        });
+      }
+      options = [];
+      options.push(subElement.field_data);
+    }else{
+      options.push(subElement.field_data);
+      if(i == lists.length - 1){
+        result.push({
+          custom_master_field_id : subElement.custom_master_field_id.toString(),
+          options : options
+        });
+      }      
+    }
+    custom_master_field_id = subElement.custom_master_field_id;    
+  }  
+  console.log("result1 => " , result);
+  return result;
+}
+
+const getCompulsoryUnattachedDevices = async() => {
+  var query = getUnattachedDeviceQuery();
+  let lists = await fetchDeviceDataFromDB(query);
+  
+  var custom_master_field_id = '';
+  var options = [];
+  var result = [];
+  for (var i = 0; i < lists.length; i++) {
+    const subElement = lists.item(i);
+    if(custom_master_field_id != subElement.custom_master_field_id){
+      if(options.length != 0){
+        result.push({
+          custom_master_field_id : custom_master_field_id.toString(),
+          options : options
+        });
+      }
+      options = [];
+      options.push(subElement.field_data);
+    }else{
+      options.push(subElement.field_data);
+      if(i == lists.length - 1){
+        result.push({
+          custom_master_field_id : subElement.custom_master_field_id.toString(),
+          options : options
+        });
+      }      
+    }
+    custom_master_field_id = subElement.custom_master_field_id;    
+  }  
+  console.log("result2 => " , result);
+  return result;
+}
 
 export default {
   find,

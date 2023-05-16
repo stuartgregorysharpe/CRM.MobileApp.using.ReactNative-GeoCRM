@@ -50,7 +50,7 @@ export const getApiRequest = async (route, param) => {
         }
       })
       .catch(err => {
-        console.log('get api request error => ', err);        
+        console.log('get api request error => ', err?.message);        
         if(err != undefined){
           const error = err.response;          
           if (            

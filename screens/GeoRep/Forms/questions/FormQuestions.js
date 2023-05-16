@@ -230,9 +230,26 @@ export const FormQuestions = props => {
   }
 
   const hideLoadingBar = () => {
-    if(loadingBarRef.current){
-      loadingBarRef.current.hideModal();
+    var period = 0;
+    if(Platform.OS == 'ios'){
+      period = 500;
     }
+    setTimeout(() => {
+      if(loadingBarRef.current){
+        loadingBarRef.current.hideModal();
+      }
+    }, 500)
+  }
+  const showConfirmModal = (res) => {
+    var period = 0;
+    if(Platform.OS == 'ios'){
+      period = 500;
+    }
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(res.message , Strings.Ok , false ,  res);
+      }                         
+    }, period);        
   }
 
   const _onSubmit = async () => {
@@ -287,12 +304,9 @@ export const FormQuestions = props => {
       null
     )
       .then(async res => {
-
         setIsLoading(false);
         hideLoadingBar();
-        if(alertModalRef.current){
-          alertModalRef.current.alert(res.message , Strings.Ok , false ,  res);
-        }                                
+        showConfirmModal(res);
       })
       .catch(e => {
         setIsLoading(false);
@@ -347,6 +361,7 @@ export const FormQuestions = props => {
           }          
         }}
       />
+      
       <LoadingBar ref={loadingBarRef} />
 
       <FormQuestionView

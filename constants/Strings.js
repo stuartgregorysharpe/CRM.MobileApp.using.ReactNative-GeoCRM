@@ -50,9 +50,15 @@ export default {
     Submisison_ID: 'Submission ID: ',
     Form_Activity_For: 'Form Activity for ',
     Complete_Compulsory_Form: 'Please complete the compulsory forms',
+    Complete_Compulsory_Device: 'Please complete missing device fields',
+    Complete_Compulsory_Location_Field : 'Please complete empty compulsory fields',
     Supplier_Compulsory: 'Supplier need to be filled',
     Pleae_Select_Type : 'Please select type to add',
-    RICA_MSISDN : "RICA MSISDN"
+    Select_Devices: 'Select Devices:',
+    Complete_Forms: 'Complete Forms',
+    Allocate_RICA: 'Allocate RICA MSISDN',
+    RICA_MSISDN : "RICA MSISDN",
+    Complete_RICA : "At least 1 RICA MSISDN must be allocated in order to submit"
   },
 
   Log: {
@@ -117,6 +123,8 @@ export default {
     Successfully_Form_Submit: 'Form  Submitted successfully!',
     Successfully_Device_Update:
       'Device update added to offline sync menu successfully',
+    Successfully_Field_Updated : 'Fields updated successfully',
+    Successfully_Location_Updated: 'Location-info Update created successfully'
   },
 
   DanOnesSales: {

@@ -1,6 +1,6 @@
 
-import { View } from 'react-native'
-import React , {useEffect, useState , useRef} from 'react'
+import { View , TouchableOpacity} from 'react-native'
+import React , {useEffect, useState , useRef ,useImperativeHandle} from 'react'
 import SelectDevicesView from '../components/SelectDevicesView';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import StockSignatureModal from '../../../Stock/stock/modal/device/StockSignatureModal';
@@ -8,6 +8,9 @@ import { Constants, Strings } from '../../../../../constants';
 import { GetRequestStockListsDAO } from '../../../../../DAO';
 import { expireToken } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
+import ViewListsModal from '../modal/ViewListsModal';
+import SvgIcon from '../../../../../components/SvgIcon';
+var isMount = true;
 
 const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
@@ -15,13 +18,25 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     const [stockItems, setStockItems] = useState([]);
     const stockSignatureModalRef = useRef(null);
+    const viewListsModalRef = useRef();
     const [stockItem, setStockItem] = useState();
     const [selectedLists, setSelectedLists] = useState([]);
     const [showStockItems, setShowStockItems] = useState([]);
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch(); 
 
-    var isMount = true;
+    useImperativeHandle(
+        ref,
+        () => ({
+          showViewLists() {          
+            if(viewListsModalRef.current){
+                viewListsModalRef.current.showModal();
+            }        
+          },
+          
+        }),
+        [],
+    );
 
     useEffect(() => {
         setSelectedLists(selLists);        
@@ -35,17 +50,16 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
         var postData = {
             stock_type : 'Device'
         }
-        GetRequestStockListsDAO.find(postData).then((res) => {
-            if(isMount){
-                setStockItems(res.stock_items);
-                updateLists( res.stock_items, selLists);
-            }           
+        GetRequestStockListsDAO.find(postData).then((res) => {            
+            setStockItems(res.stock_items);
+            updateLists( res.stock_items, selLists);                       
         }).catch((e) => {
             expireToken(dispatch , e);
         })        
     }
 
     const allocateDevices = () => {        
+        console.log("selected lists" , selectedLists);
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE , value: selectedLists});
     }
 
@@ -88,6 +102,24 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
 
     }
 
+    const renderRightPart = () => {
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              viewListsModalRef.current.hideModal();
+            }}>
+            <SvgIcon icon="Close" width="20" height="20" />
+          </TouchableOpacity>
+        );
+    };
+
+    const onViewListsModal = ({type, value}) => {
+        if (type == Constants.actionType.ACTION_REMOVE) {
+            props.onButtonAction({type: Constants.actionType.ACTION_REMOVE , value: value });            
+        }
+    };
+
+
     return (
         <View style={{alignSelf:'stretch' , flex:1}}>
 
@@ -100,6 +132,7 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
             <SubmitButton style={{marginHorizontal:10}} title={Strings.Stock.Allocate_Device} onSubmit={allocateDevices}/>
             
             <StockSignatureModal
+                isKeyboardManager={false}            
                 ref={stockSignatureModalRef}
                 title={Strings.Stock.Please_Sign}
                 locationId={0}
@@ -108,6 +141,17 @@ const SelectDevicesContainer = React.forwardRef((props, ref) => {
                 selectedCodes={[]}                
                 onButtonAction={onStockSignature}
             />
+
+            <ViewListsModal
+                ref={viewListsModalRef}
+                hideClear={true}
+                selectedLists={selectedLists}
+                customRightHeaderView={renderRightPart()}
+                allocateDevices={allocateDevices}
+                title={'Allocated Devices: ' + selectedLists.length}
+                onButtonAction={onViewListsModal}
+            />
+                
 
         </View>
     )

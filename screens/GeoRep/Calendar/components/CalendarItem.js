@@ -70,30 +70,19 @@ export function CalendarItem(props) {
       <CheckOutViewContainer
         type="calendar"
         isLoadingForm={false}
-        showConfirmModal={(message) => {                  
+        showConfirmModal={(message , type) => {                  
           if(props.showConfirmModalForCheckout){
-            props.showConfirmModalForCheckout(message)
+            props.showConfirmModalForCheckout(message , type)
           }
-        }}                  
+        }}
+        
         onCallback={async res => {
           if (props.onRefresh) {
             props.onRefresh();
           }
           if(props.showConfirmModal){
             props.showConfirmModal(res.message, 'checkout');
-          }
-
-          // dispatch(
-          //   showNotification({
-          //     type: Strings.Success,
-          //     message: res.message,
-          //     buttonText: Strings.Ok,
-          //     buttonAction: async () => {                
-          //       dispatch(clearNotification());
-          //     },
-          //   }),
-          // );
-
+          }          
         }}
       />
     );

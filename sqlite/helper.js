@@ -7,7 +7,7 @@ export const  OfflineBaskets = [
             'location_info_feedback',
             'stage_outcome_update',
             'disposition_update',
-            'location_image'               
+            'location_image',            
         ]
     },
     {
@@ -39,7 +39,9 @@ export const  OfflineBaskets = [
         itemTypes:[
             'location-feedback',
             'other',            
-            'device_update'
+            'device_update',
+            'location_info_update',
+            'location_address_update'
         ]
     }
 ]

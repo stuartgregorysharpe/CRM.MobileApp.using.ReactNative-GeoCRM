@@ -7,7 +7,7 @@ import { boxShadow, style } from '../../../../../constants/Styles';
 import { SubmitButton } from '../../../../../components/shared/SubmitButton';
 import SvgIcon from '../../../../../components/SvgIcon';
 
-export const SelectionView = ({ visible, options , mode,  selectedVals, onClose , onSave , onValueChanged}) => {    
+export const SelectionView = ({ visible, options , mode,  selectedVals, onClose , onClear, onSave , onValueChanged}) => {    
     const [localSelectedVals, setSelectedVal] = useState(selectedVals !== null && selectedVals !== undefined ? selectedVals : [] );
             
     useEffect(() => { 
@@ -79,8 +79,7 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
                     
                     <TouchableWithoutFeedback 
                         onPress={()=>{
-                           // setSelectedVal([]);
-                            
+                           // setSelectedVal([]);                        
                             onClose();
                         }}>
                       <View style={styles.topContainer}></View>
@@ -93,7 +92,7 @@ export const SelectionView = ({ visible, options , mode,  selectedVals, onClose 
 
                         <View style={styles.sliderHeader}>                
                             <Text style={{fontSize:16,fontFamily:Fonts.primaryBold , color:Colors.blackColor, fontSize:16, flex:1 }} >Select the correct answer from the list:</Text>
-                            <TouchableOpacity style={styles.closeModal} onPress={() => { onClose() }}>
+                            <TouchableOpacity style={styles.closeModal} onPress={() => { onClear() }}>
                                 <Text style={{ fontSize: 13, fontFamily: Fonts.secondaryRegular ,  color:Colors.selectedRedColor}}>Clear</Text>
                             </TouchableOpacity>
                         </View>

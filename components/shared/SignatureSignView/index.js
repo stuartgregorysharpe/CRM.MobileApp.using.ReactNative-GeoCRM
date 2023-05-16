@@ -82,7 +82,7 @@ const SignatureSignView = (props) => {
 
             <View style={{flexDirection:'row', justifyContent:'center', marginBottom:5}}>
 
-                    <AppText title="Please Sign below: " size="medium" color={whiteLabel().mainText} />
+                    <AppText title="Please Sign below: xxx" size="medium" color={whiteLabel().mainText} />
 
                     <TouchableOpacity
                       style={styles.clearButtonContainer}

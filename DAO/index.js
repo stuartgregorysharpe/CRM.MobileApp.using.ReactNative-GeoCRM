@@ -21,6 +21,8 @@ import GetRequestProductPriceDAO from './sales/GetRequestProductPrice';
 import GetRequestProductsFiltersDAO from './sales/GetRequestProductsFilters';
 import GetRequestAddProductFieldsDAO from './sales/GetRequestAddProductFields';
 import GetRequestTransactionSubmitFieldsDAO from './sales/GetRequestTransactionSubmitFields';
+import GetRequestLocationFieldsDAO from './locations/GetRequestLocationFields';
+import GetRequestLocationInfoUpdateDAO from './locations/GetRequestLocationInfoUpdate';
 
 export {
     LocationMapDAO, 
@@ -45,6 +47,8 @@ export {
     GetRequestProductPriceDAO,
     GetRequestProductsFiltersDAO,
     GetRequestAddProductFieldsDAO,
-    GetRequestTransactionSubmitFieldsDAO
+    GetRequestTransactionSubmitFieldsDAO,
+    GetRequestLocationFieldsDAO,
+    GetRequestLocationInfoUpdateDAO
 }
 

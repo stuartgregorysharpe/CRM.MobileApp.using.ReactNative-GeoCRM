@@ -326,6 +326,7 @@ const StockLists = props => {
 
   return (
     <View style={{flexDirection: 'column', flex: 1}}>
+      
       <SearchBar
         onSearch={text => {
           setSearchKeyword(text);

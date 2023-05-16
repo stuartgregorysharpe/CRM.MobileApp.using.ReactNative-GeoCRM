@@ -237,6 +237,7 @@ export default function StockSignatureContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch'}}>
+      
       <StockSignatureView
         onSubmit={(path,deviceType) => {
           onSubmit(path, deviceType)

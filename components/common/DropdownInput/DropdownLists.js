@@ -25,7 +25,7 @@ export default function DropdownLists(props) {
                               style={{fontSize: 12.5}}></AppText>
                           <AppText
                               type="secondaryMedium"
-                              title={Constants.stockPrefix.DEVICE + item.imei}
+                              title={Constants.stockPrefix.MSN_IMEI + item.imei}
                               color={whiteLabel().subText}
                               style={{fontSize: 10.4}}></AppText>
                       </View>

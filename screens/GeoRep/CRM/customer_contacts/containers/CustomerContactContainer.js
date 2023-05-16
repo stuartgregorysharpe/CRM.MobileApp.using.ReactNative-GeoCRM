@@ -8,6 +8,7 @@ import Contacts from '../components/Contacts';
 import { getApiRequest } from '../../../../../actions/api.action';
 import { useDispatch } from 'react-redux';
 import { expireToken } from '../../../../../constants/Helper';
+import { GetRequestLocationFieldsDAO } from '../../../../../DAO';
 
 export default function CustomerContactContainer(props) {
       
@@ -28,13 +29,18 @@ export default function CustomerContactContainer(props) {
     }, [tabIndex]);
 
     const getCustomerInfo = () => {
-        var params = {location_id: locationId}; //
-        getApiRequest("locations/location-fields", params).then((res) =>{            
-            console.log('res.custom_master_fields' , res.custom_master_fields)
-            setLocationFields(res.custom_master_fields);              
-        }).catch((e) =>{
+
+        var params = {location_id: locationId};
+
+        GetRequestLocationFieldsDAO.find(params).then((res) => {
+            console.log("res.custom_master_fields " , res.custom_master_fields);
+            setLocationFields(res.custom_master_fields);
+        }).catch((e) => {
+            console.log("e",e)
             expireToken(dispatch , e);
-        })
+        });
+              
+
     }
 
     const getContactsInfo = () => {
