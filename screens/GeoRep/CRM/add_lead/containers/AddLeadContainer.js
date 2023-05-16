@@ -215,7 +215,7 @@ export default function AddLeadContainer(props) {
       message = Strings.Complete_Required_Fields; 
     }
     if( isAllocateDevices && !isValidateAllocateDevice ){      
-      message = Strings.Complete_Required_Fields; 
+      message = Strings.CRM.Complete_Device; 
     }
     if( isAllocateDevices && !isValidateRICA){      
       message = Strings.CRM.Complete_RICA;
