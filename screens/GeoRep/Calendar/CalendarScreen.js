@@ -98,10 +98,6 @@ export default function CalendarScreen(props) {
     }
   }, []);
 
-  useEffect(() => {
-    //onRefresh();
-  }, [isFocused]);
-
   const onRefresh = (isRefresh = false) => {    
     if (selectedIndex === 1) {
       if (lastWeekList.length === 0 || isRefresh) {
@@ -240,7 +236,7 @@ export default function CalendarScreen(props) {
 
 
   const showConfirmModal = (message, type, buttonText) => {
-    console.log("mess", message , type,buttonText)
+    console.log("mess", message , type, buttonText)
     setMessage(message);
     setConfirmModalType(type);
     setButtonText(buttonText);
@@ -260,8 +256,8 @@ export default function CalendarScreen(props) {
         style={{marginTop: 10, }} >
         <CalendarItem
           key={index}
-          showConfirmModalForCheckout={(message) => {              
-            showConfirmModal(message, 'have_compulsory_form' , 'Continue');
+          showConfirmModalForCheckout={(message, type) => {
+            showConfirmModal(message, type , 'Continue');
           }}
           showConfirmModal={(message , type) => {           
             if(type == 'checkin'){
@@ -300,8 +296,8 @@ export default function CalendarScreen(props) {
             {backgroundColor: isActive ? '#eee' : Colors.bgColor, marginBottom :  todayList?.length - 1 == index ? 80 : 0},
           ]}>
           <CalendarItem
-            showConfirmModalForCheckout={(message) => {              
-              showConfirmModal(message, 'have_compulsory_form' , 'Continue');
+            showConfirmModalForCheckout={(message , type) => {              
+              showConfirmModal(message, type , 'Continue');
             }}
             showConfirmModal={(message , type ) => {
               if(type == 'checkin'){
@@ -385,6 +381,22 @@ export default function CalendarScreen(props) {
     }
   }
 
+  const openSpecificInfo = (location, openModal) => {
+    navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+      page: 'checkin',
+      openModal:openModal,
+      data: location
+    });
+  }
+
+  const openFormQuestion = (location) => {
+    if(location != null && location != undefined){     
+      navigation.navigate('DeeplinkRepForms', {
+        locationInfo: location,
+      });
+    }
+  }
+
   return (
     <SafeAreaView>
 
@@ -399,18 +411,15 @@ export default function CalendarScreen(props) {
           onModalClose={ async () => {
             console.log("modal type", confirmModalType)         
             setIsConfirmModal(false); 
-            
-            if(confirmModalType === 'have_compulsory_form'){
-              const location = await getJsonData('@checkin_location');
-              if(location != null && location != undefined){     
-                navigation.navigate('DeeplinkRepForms', {
-                  locationInfo: location,
-                });
-              }
+            const location = await getJsonData('@checkin_location');
+            if(confirmModalType == 'compulsoryDevice'){
+              openSpecificInfo(location , 'devices');
+            }else if(confirmModalType == 'compulsoryLocationField'){
+              openSpecificInfo(location , 'cusotmer_contact');              
+            }else if(confirmModalType === 'have_compulsory_form'){              
+              openFormQuestion(location);
             }else if(confirmModalType === 'no_have_complsory') {
-              navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
-                  page: 'checkin',
-              });  
+              openSpecificInfo(location , '');              
             }else {
               onRefresh(true)
             }

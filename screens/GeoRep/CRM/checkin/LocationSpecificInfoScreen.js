@@ -154,9 +154,12 @@ const LocationSpecificInfoScreen = props => {
         }
       }
       if(openModal == 'devices'){
-        devicesModalRef.current.showModal();
+        if(devicesModalRef.current)
+          devicesModalRef.current.showModal();
       }else if(openModal == 'cusotmer_contact'){
-        customerContactModalRef.current.showModal();
+        console.log("cusotmer_contact" , customerContactModalRef)
+        if(customerContactModalRef.current)
+          customerContactModalRef.current.showModal();
       }
       
     }else if(pageType == 'access_crm'){
@@ -436,17 +439,27 @@ const LocationSpecificInfoScreen = props => {
           }></CustomerSaleHistoryModal>
       )}
 
-      {locationInfo != undefined && (
-        <CustomerContactModal
-          ref={customerContactModalRef}
-          locationId={locationInfo.location_id}
-          onClose={() => {
-            getLocationFields(locationInfo.location_id);
-          }}
-          onButtonAction={onCustomerContactModalClosed}
-        />
-      )}
-
+      
+      <CustomerContactModal
+        ref={customerContactModalRef}
+        locationId={
+          location_id != undefined
+            ? location_id
+            : locationInfo != undefined
+            ? locationInfo.location_id
+            : 0
+        }
+        onClose={() => {
+          const locId = location_id != undefined
+          ? location_id
+          : locationInfo != undefined
+          ? locationInfo.location_id
+          : 0;
+          getLocationFields(locId);
+        }}
+        onButtonAction={onCustomerContactModalClosed}
+      />
+            
       <DevicesModal
         ref={devicesModalRef}
         title="Devices"
