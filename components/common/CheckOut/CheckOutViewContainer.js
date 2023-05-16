@@ -34,7 +34,7 @@ export default function CheckOutViewContainer(props) {
   const {type, currentCall , isLoadingForm , loadCompulsoryInfo = false  } = props;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
-  const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm);
+  const compulsoryForm = useSelector( state => state.location.compulsoryForm);
   const compulsoryDevice = useSelector(state => state.location.compulsoryDevice);
   const compulsoryLocationField = useSelector( state => state.location.compulsoryLocationField );
 
@@ -59,16 +59,10 @@ export default function CheckOutViewContainer(props) {
     }
   }, []);
 
-  useEffect(() => {
-    console.log('updated location com', locationCheckOutCompulsory);
+  useEffect(() => {    
     setIsDataLoading(false);  
-  }, [locationCheckOutCompulsory , compulsoryDevice]);
+  }, [compulsoryForm , compulsoryDevice]);
 
-  // useEffect(() => {
-  //   console.log('updated compulsoryLocationField', compulsoryLocationField);
-  //   setIsLocationFieldDataLoading(false)
-  // }, [compulsoryLocationField]);
-  
   const initData = async () => {
     specificLocationId = await getLocalData('@specific_location_id');    
     check_out_indempotency = generateKey();
@@ -128,12 +122,11 @@ export default function CheckOutViewContainer(props) {
 
   }
 
-  const checkOutLocation = useCallback(() => {   
-    console.log("isLoadingForm" , isLoadingForm , isDataLoading , isLocationFieldDataLoading) 
+  const checkOutLocation = useCallback(() => {    
     if(!isLoadingForm && !isDataLoading && !isLocationFieldDataLoading){
       _callCheckOut();
     }    
-  }, [locationCheckOutCompulsory, compulsoryDevice, compulsoryLocationField , isLoadingForm , isDataLoading , isLocationFieldDataLoading]);
+  }, [compulsoryForm, compulsoryDevice, compulsoryLocationField , isLoadingForm , isDataLoading , isLocationFieldDataLoading]);
   
   const _callCheckOut = async() => {
 
@@ -155,13 +148,11 @@ export default function CheckOutViewContainer(props) {
       message = "Location ID error, please contact Support";      
       type = 'locationId';
     }
-    if ( locationCheckOutCompulsory ) {
+    if ( compulsoryForm ) {
       message = Strings.CRM.Complete_Compulsory_Form;
-      type = 'have_compulsory_form';
+      type = 'compulsoryForm';
     }
-
-    console.log("compulsoryDevice", compulsoryDevice, devices_compulsory_validation , location_specific_devices);
- 
+   
     if( compulsoryDevice  &&  devices_compulsory_validation && location_specific_devices ) { 
       message = Strings.CRM.Complete_Compulsory_Device;
       type = 'compulsoryDevice';

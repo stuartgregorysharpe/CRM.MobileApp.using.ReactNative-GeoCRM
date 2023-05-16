@@ -714,8 +714,24 @@ const MainPage = forwardRef((props, ref) => {
         showOfflineDialog(dispatch)
       }
     })
-
   }
+
+  const openLocationSpecificInfo = ( location, openModal) => {
+    navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
+      page: 'checkin',
+      openModal:openModal,
+      data : location
+    }); 
+  }
+
+  const openFormQuestion = (location) => {
+    if (location != null && location != undefined) {
+      navigation.navigate('DeeplinkRepForms', {
+        locationInfo: location,
+      });
+    }
+  }
+
   return (
     <ScrollView style={{ flex: 1, marginHorizontal: 10 }}>
 
@@ -724,23 +740,13 @@ const MainPage = forwardRef((props, ref) => {
         message={message}
         onModalClose={async () => {
           setIsConfirmModal(false);
-          if (confirmModalType == 'have_compulsory_form') {
-            const location = await getJsonData('@checkin_location');
-            if (location != null && location != undefined) {
-              navigation.navigate('DeeplinkRepForms', {
-                locationInfo: location,
-              });
-            }
+          const location = await getJsonData('@checkin_location');
+          if (confirmModalType == 'compulsoryForm') {                
+            openFormQuestion(location);      
           }else if(confirmModalType == 'compulsoryDevice'){
-            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
-                page: 'checkin',
-                openModal:'devices'
-            });  
+            openLocationSpecificInfo(location , 'devices');            
           }else if(confirmModalType == 'compulsoryLocationField'){
-            navigation.navigate('DeeplinkLocationSpecificInfoScreen', {              
-              page: 'checkin',
-              openModal:'cusotmer_contact'
-            });  
+            openLocationSpecificInfo(location , 'cusotmer_contact');            
           }
           
         }}

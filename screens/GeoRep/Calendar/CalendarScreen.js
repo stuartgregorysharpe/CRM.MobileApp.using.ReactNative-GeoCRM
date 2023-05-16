@@ -416,7 +416,7 @@ export default function CalendarScreen(props) {
               openSpecificInfo(location , 'devices');
             }else if(confirmModalType == 'compulsoryLocationField'){
               openSpecificInfo(location , 'cusotmer_contact');              
-            }else if(confirmModalType === 'have_compulsory_form'){              
+            }else if(confirmModalType === 'compulsoryForm'){              
               openFormQuestion(location);
             }else if(confirmModalType === 'no_have_complsory') {
               openSpecificInfo(location , '');              

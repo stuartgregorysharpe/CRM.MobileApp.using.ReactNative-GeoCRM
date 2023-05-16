@@ -105,7 +105,7 @@ const LocationSpecificInfoScreen = props => {
     isMout = true;
     checkOnlineStatus();
     if (isCheckin) {
-      getCheckInLocation();
+      getCheckInLocation(true);
     }    
     return () => {
       isMout = false;
@@ -114,7 +114,7 @@ const LocationSpecificInfoScreen = props => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {         
-      getCheckInLocation();
+      getCheckInLocation(false);
     });
     return unsubscribe;
   }, [navigation]);
@@ -133,7 +133,7 @@ const LocationSpecificInfoScreen = props => {
     [isCheckin],
   )
   
-  const getCheckInLocation = async () => {    
+  const getCheckInLocation = async ( isOpenModal ) => {    
     if(pageType == 'checkin'){
       var location = await getJsonData('@checkin_location');      
       if (location != null && location?.location_name?.value != undefined) {
@@ -153,15 +153,16 @@ const LocationSpecificInfoScreen = props => {
           checkCheckoutCompulsory(locId);
         }
       }
-      if(openModal == 'devices'){
-        if(devicesModalRef.current)
-          devicesModalRef.current.showModal();
-      }else if(openModal == 'cusotmer_contact'){
-        console.log("cusotmer_contact" , customerContactModalRef)
-        if(customerContactModalRef.current)
-          customerContactModalRef.current.showModal();
-      }
-      
+      if(isOpenModal){
+        if(openModal == 'devices'){
+          if(devicesModalRef.current)
+            devicesModalRef.current.showModal();
+        }else if(openModal == 'cusotmer_contact'){
+          console.log("cusotmer_contact" , customerContactModalRef)
+          if(customerContactModalRef.current)
+            customerContactModalRef.current.showModal();
+        }
+      }            
     }else if(pageType == 'access_crm'){
       if(locationId != undefined && locationInfo){
         locationInfoRef.current.updateDispositionData(locationInfo);
@@ -392,7 +393,7 @@ const LocationSpecificInfoScreen = props => {
           setIsConfirmModal(false);
           if(confirmModalType == 'go_back'){
             goBack();
-          }else if(confirmModalType == 'have_compulsory_form'){
+          }else if(confirmModalType == 'compulsoryForm'){
             navigationMain.navigate('DeeplinkRepForms', {
               locationInfo: locationInfo,
             }); 
