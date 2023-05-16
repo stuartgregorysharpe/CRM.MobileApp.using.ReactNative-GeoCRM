@@ -472,8 +472,7 @@ export const SalesPipelineScreen = props => {
               style={[
                 styles.plusButtonContainer,
                 {
-                  marginBottom:
-                    DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
+                  marginBottom: DeviceInfo.getSystemVersion() === '11' ? 70 : 40,
                 },
               ]}>
               <TouchableOpacity
@@ -502,6 +501,7 @@ const styles = EStyleSheet.create(
     container: {
       padding: 10,      
       backgroundColor: Colors.bgColor,
+      flex:1,      
     },
 
     tabText: {
@@ -537,9 +537,8 @@ const styles = EStyleSheet.create(
 
     plusButtonContainer: {
       position: 'absolute',
-      flexDirection: 'row',
-      bottom: 20,
-      //bottom: Dimensions.get('window').height * 0,
+      //flexDirection: 'row',
+      bottom: 20,      
       right: 20,
       zIndex: 1,
       elevation: 1,
