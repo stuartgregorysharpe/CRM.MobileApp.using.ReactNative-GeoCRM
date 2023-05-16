@@ -3,17 +3,14 @@ import {
   SafeAreaView,
   View,
   Text,
-  TouchableOpacity,
-  Dimensions,
+  TouchableOpacity,  
   StyleSheet,
   FlatList,
-  Image,
-  Platform,
+  Image,  
   ActivityIndicator,
 } from 'react-native';
 import {Provider} from 'react-native-paper';
 import {useSelector, useDispatch} from 'react-redux';
-import FilterView from '../../../components/FilterView';
 import SearchBar from '../../../components/SearchBar';
 import Colors from '../../../constants/Colors';
 import {
@@ -33,7 +30,6 @@ import {grayBackground, style} from '../../../constants/Styles';
 import {expireToken} from '../../../constants/Helper';
 import {LocationItem} from './partial/LocationItem';
 import AlertDialog from '../../../components/modal/AlertDialog';
-import AddToCalendar from '../../../components/modal/AddToCalendar';
 import SvgIcon from '../../../components/SvgIcon';
 import {getFilterData, getLocalData} from '../../../constants/Storage';
 import LocationSearchScreenPlaceholder from './LocationSearchScreenPlaceholder';
@@ -45,9 +41,8 @@ import {LocationSearchDAO} from '../../../DAO';
 import LocationInfoDetailModal from './locationInfoDetails/LocationInfoDetailModal';
 import SelectLocationView from './partial/SelectLocationView';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
-import AddToCalendarContainer from '../../../components/modal/add_to_calendar/components/AddToCalendarContainer';
 import AddToCalendarModal from '../../../components/modal/add_to_calendar';
-import { showNotification } from '../../../actions/notification.action';
+import FilterYourSearchModal from '../../../components/modal/filter_your_search';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -56,6 +51,7 @@ var savedShowItem = 0;
 var specificLocationId = 0;
 
 export default function LocationSearchScreen(props) {
+
   const navigation = props.navigation;
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
@@ -64,19 +60,19 @@ export default function LocationSearchScreen(props) {
   );
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
-  );
-  
-  const [orderLists, setOrderLists] = useState([]);
-  const [originLists, setOriginLists] = useState([]);
-  const [showItem, setShowItem] = useState(savedShowItem);
-  const [locationInfo, setLocationInfo] = useState();
-  const [searchKeyword, setSearchKeyword] = useState('');
+  );    
   const locationId = useSelector(state => state.location.locationId.value);
   const tabType = useSelector(state => state.location.locationId.type);
   const isSelected = useSelector(state => state.selection.isCalendarSelection);
   const selectedLocationsForCalendar = useSelector(
     state => state.selection.selectedLocationsForCalendar,
   );
+
+  const [orderLists, setOrderLists] = useState([]);
+  const [originLists, setOriginLists] = useState([]);
+  const [showItem, setShowItem] = useState(savedShowItem);
+  const [locationInfo, setLocationInfo] = useState();
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [isCreated, setIsCreated] = useState(false);
   const [message, setMessage] = useState('');
   const [calendarType, setCalendarType] = useState(
@@ -85,7 +81,6 @@ export default function LocationSearchScreen(props) {
       ? props.route.params.calendar_type
       : '',
   );
-
   const [pageType, setPageType] = useState({name: 'search-lists'});
   const [isLoading, setIsLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -95,6 +90,7 @@ export default function LocationSearchScreen(props) {
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
   const addToCalendarModalRef = useRef(null);
+  const filterYourSearchModalRef = useRef();
 
   useEffect(() => {
     initData();
@@ -117,10 +113,8 @@ export default function LocationSearchScreen(props) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log('location search focussed' , savedShowItem);
-      if (savedShowItem == 2) {
-        console.log('showItem cc', savedShowItem);
-        refreshHeader();
-        hideBottomBar();
+      if (savedShowItem == 2) {        
+        refreshHeader();        
       }
       initData();
     });
@@ -220,35 +214,7 @@ export default function LocationSearchScreen(props) {
             });
           }}></TouchableOpacity>
       ),
-    });
-
-    if (showItem != 0) {
-      hideBottomBar();
-    } else {
-      showBottomBar();
-    }
-    
-  };
-
-  const hideBottomBar = () => {
-    console.log('hide bottom bar', props.screenProps);
-    props.screenProps.setOptions({
-      tabBarStyle: {
-        display: 'none',
-      },
-    });
-
-  };
-
-  const showBottomBar = () => {
-    props.screenProps.setOptions({
-      tabBarStyle: {
-        position: 'absolute',
-        height: 50,
-        paddingBottom: Platform.OS == 'android' ? 5 : 0,
-        backgroundColor: Colors.whiteColor,
-      },
-    });
+    });    
   };
 
   const loadData = async searchKey => {
@@ -289,8 +255,7 @@ export default function LocationSearchScreen(props) {
       dispatch({type: SLIDE_STATUS, payload: false});
       dispatch({type: LOCATION_ID_CHANGED, payload: {value: 0, type: 0}});
     } else {
-      animation('search-page');
-      showBottomBar();
+      animation('search-page');      
     }
   };
 
@@ -313,9 +278,8 @@ export default function LocationSearchScreen(props) {
         savedShowItem = 0;
         return;
       case 'filter':
-        dispatch(getLocationFilters());
-        setShowItem(1);
-        savedShowItem = 1;
+        dispatch(getLocationFilters());                
+        filterYourSearchModalRef.current.showModal();
         return;
       case 'locationInfo':
         if (locationInfoModalRef.current) {
@@ -328,8 +292,7 @@ export default function LocationSearchScreen(props) {
       case 'addtocalendar':        
         if(addToCalendarModalRef.current){
           addToCalendarModalRef.current.showModal();
-        }
-        //setShowItem(3);
+        }        
         savedShowItem = 3;
         return;
       default:
@@ -413,7 +376,7 @@ export default function LocationSearchScreen(props) {
           </TouchableOpacity>
         </View>
       );
-    }
+    } 
     return <View></View>;
   };
 
@@ -457,12 +420,13 @@ export default function LocationSearchScreen(props) {
       <SafeAreaView style={{flex: 1}}>
         <Notification />
         <LoadingProgressBar/>
+
         <AlertDialog
           visible={isCreated}
           message={message}
           onModalClose={() => setIsCreated(false)}></AlertDialog>
 
-        {(showItem == 3 || showItem == 1) && (
+        {(showItem == 3 ) && (
           <TouchableOpacity
             activeOpacity={1}
             style={grayBackground}
@@ -473,30 +437,11 @@ export default function LocationSearchScreen(props) {
             }}></TouchableOpacity>
         )}
 
-        {showItem == 1 && (
-          <View
-            style={[
-              styles.transitionView,
-              showItem == 0
-                ? {
-                    transform: [
-                      {translateY: Dimensions.get('window').height + 100},
-                    ],
-                  }
-                : {transform: [{translateY: 0}]},
-            ]}>
-            <FilterView
-              navigation={navigation}
-              page={'search'}
-              onClose={() => {
-                dispatch({type: SLIDE_STATUS, payload: false});
-                setShowItem(0);
-              }}
-            />
-          </View>
-        )}
-
-
+        <FilterYourSearchModal 
+          title='Filter Your Search'
+          ref={filterYourSearchModalRef}
+          page={'search'}
+        />
 
         <AddToCalendarModal 
           selectedItems={selectedLocationsForCalendar}
@@ -513,7 +458,7 @@ export default function LocationSearchScreen(props) {
         <LocationInfoDetailModal
           ref={locationInfoModalRef}
           locInfo={locationInfo}
-          navigation={navigation}
+          navigation={navigation} 
           pageType={{name: 'search-lists'}}
           refreshLocationInfo={id => {
             openLocationInfo(id);
@@ -620,27 +565,9 @@ export default function LocationSearchScreen(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bgColor,
-    flex: 1,
-    marginBottom: 50,
+    flex: 1,    
     paddingBottom: 0,
-  },
-
-  transitionView: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: Colors.bgColor,
-    elevation: 2,
-    zIndex: 2,
-    padding: 0,
-  },
-
-  separator: {
-    height: 0.5,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-
+  },    
   footer: {
     padding: 10,
     justifyContent: 'center',

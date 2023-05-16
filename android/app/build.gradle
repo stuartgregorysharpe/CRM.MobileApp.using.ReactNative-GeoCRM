@@ -232,8 +232,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-
-    implementation project(':react-native-file-opener')
+    
     implementation project(':react-native-hms-availability')
     implementation project(":react-native-hms-location")
     implementation project(':react-native-hms-map')

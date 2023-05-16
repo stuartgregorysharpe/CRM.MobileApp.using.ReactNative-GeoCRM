@@ -6,7 +6,8 @@ import {
   TextInput,
   Dimensions,
   ActivityIndicator,
-  Platform,  
+  Platform,
+  Keyboard,  
 } from 'react-native';
 import {getApiRequest, postApiRequest} from '../../../../../actions/api.action';
 import {AppText} from '../../../../../components/common/AppText';
@@ -209,7 +210,16 @@ export default function Activity(props) {
             }}>
             <SubmitButton
               onSubmit={() => {
-                submitComment();
+                
+                Keyboard.dismiss();
+                var time = 0;
+                if(Platform.OS == 'ios'){
+                  time = 500;
+                }
+                setTimeout(() => {
+                  submitComment();
+                }, time);
+
               }}
               title="Add comment"></SubmitButton>
           </View>
