@@ -12,12 +12,10 @@ export function find(postData) {
       .then(async isConnected => {
         if (isConnected) {
           getApiRequest(UrlResource.Form.FormQuestions, postData)
-            .then(async res => {
-              console.log(res)
+            .then(async res => {            
               resolve(res);
             })
-            .catch(e => {
-              console.log('Error', e);
+            .catch(e => {              
               reject(e);
             });
         } else {
@@ -41,8 +39,7 @@ export function find(postData) {
 
 const fetchDataFromDB = async postData => {
   const query = generateQuery();  
-  const res = await ExecuteQuery(query, [postData.form_id]);
-  console.log('res =>', res);
+  const res = await ExecuteQuery(query, [postData.form_id]);  
   return res.rows ? res.rows : [];
 };
 
@@ -61,10 +58,8 @@ const fetchFieldDetailsFromDB = async (
 };
 
 const fetchFieldValueFromDB = async (custom_master_field_id, location_id) => {
-  const query = generateFieldValueQuery();
-  console.log('custom query', query, custom_master_field_id, location_id);
-  const res = await ExecuteQuery(query, [custom_master_field_id, location_id]);
-  console.log('custom queryres', res);
+  const query = generateFieldValueQuery();  
+  const res = await ExecuteQuery(query, [custom_master_field_id, location_id]);  
   return res.rows ? res.rows : [];
 };
 
@@ -93,8 +88,7 @@ const fetchPrimaryDeviceFromDB = async location_id => {
 };
 
 const fetchCoreFieldData = async location_id => {
-  const query = generateCoreFieldDataQuery();
-  console.log('ddd', query);
+  const query = generateCoreFieldDataQuery();  
   const res = await ExecuteQuery(query, [location_id]);
   return res.rows ? res.rows : [];
 };
@@ -209,29 +203,27 @@ const generateProductQuery = () => {
     `pcmd.delete_status = 0 ` + 
     `AND pcmd.product_tag NOT IN ('POS','Device','Consumables','Sim') ` + 
     `ORDER by pcmd.product_name`;
-
-    console.log("product query =>" , query)
+    
   return query;
 };
 
 const generateReturnProductQuery = () => {  
+
   var query = `SELECT
-                pcmd.product_id,
-                pcmd.product_name,
-                pt.product_type,
-                pcmd.brand,
-                pcmd.barcode,
-                pcmd.sku_code
-                FROM products_core_master_data as pcmd
-                LEFT JOIN product_type as pt
-                ON pt.product_type_id = pcmd.product_type_id
-                WHERE
-                    pcmd.business_unit_id = ?
-                AND pcmd.client_id = ?
-                AND pcmd.delete_status = 0
-                AND pcmd.product_tag NOT IN ('POS','Device','Consumables','Sim') ` + 
-                `ORDER BY pcmd.product_name`;
-    console.log("returnproduct query =>" , query)
+                            pcmd.product_id,
+                            pcmd.product_name,
+                            pt.product_type,
+                            pcmd.brand,
+                            pcmd.barcode,
+                            pcmd.sku_code
+                          FROM products_core_master_data as pcmd
+                          LEFT JOIN product_type as pt
+                          ON pt.product_type_id = pcmd.product_type_id
+                          WHERE pcmd.delete_status = 0
+                          AND pcmd.product_tag NOT IN ('POS','format_price','Device','Consumables','Sim')
+                          GROUP BY pcmd.product_name
+                          ORDER BY pcmd.returns_sort_order ASC,pcmd.product_name ASC`;
+
   return query;
 };
 
@@ -255,9 +247,7 @@ const getFormQuestions = async (
   var tmp = [];
 
   for (var i = 0; i < lists.length; i++) {
-    var element = lists.item(i);
-    //console.log('main elements =>', element);
-
+    var element = lists.item(i);  
     const question_tag = element.question_tag;
     var fieldData = '';
     if (postData.location_id != undefined) {
@@ -402,10 +392,7 @@ const getFormQuestions = async (
       questionType == 'sku_select' ||
       questionType == 'pos_capture' ||
       questionType == 'fsu_campaign'
-    ) {
-      
-      console.log("Question Type ===> "  , questionType);
-
+    ) {      
       const questionData = await getFormQuestionData(
         bodyRes,
         business_unit_id,
@@ -537,6 +524,7 @@ const getReasonData = lists => {
 };
 
 const getProductsData = lists => {
+  
   var productRes = [];
   var product_types = [];
   var brands = [];
