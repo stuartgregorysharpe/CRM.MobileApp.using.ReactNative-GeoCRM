@@ -20,8 +20,8 @@ export function find(postData) {
             });
         } else {
           var client_id = await getTokenData('client_id');
-          var business_unit_id = await getTokenData('business_unit_id');
-          var lists = await fetchDataFromDB(postData);
+          var business_unit_id = await getTokenData('business_unit_id');          
+          var lists = await fetchDataFromDB(postData);          
           var questionsLists = await getFormQuestions(
             lists,
             client_id,
@@ -76,9 +76,10 @@ const fetchProductsFromDB = async (business_unit_id, client_id) => {
 };
 
 const fetchReturnProductsFromDB = async (business_unit_id, client_id) => {
-  const query = generateReturnProductQuery();
-  const res = await ExecuteQuery(query, [business_unit_id, client_id]);
+  const query = generateReturnProductQuery();  
+  const res = await ExecuteQuery(query, []);  
   return res.rows ? res.rows : [];
+  
 };
 
 const fetchPrimaryDeviceFromDB = async location_id => {
@@ -210,19 +211,19 @@ const generateProductQuery = () => {
 const generateReturnProductQuery = () => {  
 
   var query = `SELECT
-                            pcmd.product_id,
-                            pcmd.product_name,
-                            pt.product_type,
-                            pcmd.brand,
-                            pcmd.barcode,
-                            pcmd.sku_code
-                          FROM products_core_master_data as pcmd
-                          LEFT JOIN product_type as pt
-                          ON pt.product_type_id = pcmd.product_type_id
-                          WHERE pcmd.delete_status = 0
-                          AND pcmd.product_tag NOT IN ('POS','format_price','Device','Consumables','Sim')
-                          GROUP BY pcmd.product_name
-                          ORDER BY pcmd.returns_sort_order ASC,pcmd.product_name ASC`;
+                  pcmd.product_id,
+                  pcmd.product_name,
+                  pt.product_type,
+                  pcmd.brand,
+                  pcmd.barcode,
+                  pcmd.sku_code
+                FROM products_core_master_data as pcmd
+                LEFT JOIN product_type as pt
+                ON pt.product_type_id = pcmd.product_type_id
+                WHERE pcmd.delete_status = 0
+                AND pcmd.product_tag NOT IN ('POS','format_price','Device','Consumables','Sim')
+                GROUP BY pcmd.product_name
+                ORDER BY pcmd.returns_sort_order ASC,pcmd.product_name ASC`;
 
   return query;
 };
@@ -290,7 +291,7 @@ const getFormQuestions = async (
     // Get Options
     var optionLists = await fetchOptionsFromDB(element.form_question_id);
     var optionsData = getOptionData(optionLists);
-
+    
     // Trigger Data
     var trigger = [];
     if (element.trigger_question_type != '') {
@@ -369,14 +370,14 @@ const getFormQuestions = async (
       const returnProductLists = await fetchReturnProductsFromDB(
         business_unit_id,
         client_id,
-      );
-      const returnProductsResults = getProductsData(returnProductLists);
+      );      
+      const returnProductsResults = getProductsData(returnProductLists);      
       const reasonList = await fetchReasonsFromDB(
         business_unit_id,
         client_id,
         element.form_question_id,
       );
-      const reasons = getReasonData(reasonList);
+      const reasons = getReasonData(reasonList);      
       if (returnProductsResults.length == 3) {
         tmp.push({
           ...bodyRes,
@@ -426,6 +427,7 @@ const getFormQuestions = async (
       });
     }
   }
+
   return tmp;
 };
 

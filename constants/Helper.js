@@ -314,7 +314,10 @@ export function isInsidePoly(lat, lon, multiPolycoords) {
 
 export function expireToken(dispatch, e , alertModalRef) {
   var message = '';
-  if (e === 'expired') {
+
+  if(typeof e === 'object'){
+    message = 'Error. Please Contact the Support';
+  }else if (e === 'expired') {
     console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
@@ -334,8 +337,13 @@ export function expireToken(dispatch, e , alertModalRef) {
 }
 
 export function showModal (dispatch , e , message,  alertModalRef) {
-  if(alertModalRef && alertModalRef.current){      
-    alertModalRef.current.alert(message, Strings.Ok , e === 'expired' ? true : false );
+  if(alertModalRef && alertModalRef.current){    
+    var type = e;
+    if(typeof e === 'object'){
+      type = 'error';
+    }
+    console.log("message  ==>", type)
+    alertModalRef.current.alert(message, Strings.Ok , type === 'expired' ? true : false );
   }else{
     dispatch(
       showNotification({
