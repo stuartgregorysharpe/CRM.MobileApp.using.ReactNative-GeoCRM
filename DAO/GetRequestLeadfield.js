@@ -314,6 +314,12 @@ const getCompulsoryDevices = async() => {
       }
       options = [];
       options.push(subElement.field_data);
+      if(i == lists.length - 1){
+        result.push({
+          custom_master_field_id : subElement.custom_master_field_id.toString(),
+          options : options
+        });
+      }
     }else{
       options.push(subElement.field_data);
       if(i == lists.length - 1){
