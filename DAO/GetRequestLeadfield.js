@@ -333,6 +333,7 @@ const getCompulsoryUnattachedDevices = async() => {
   var query = getUnattachedDeviceQuery();
   let lists = await fetchDeviceDataFromDB(query);
   
+
   var custom_master_field_id = '';
   var options = [];
   var result = [];
@@ -347,9 +348,15 @@ const getCompulsoryUnattachedDevices = async() => {
       }
       options = [];
       options.push(subElement.field_data);
+      if(i == lists.length - 1){
+        result.push({
+          custom_master_field_id : subElement.custom_master_field_id.toString(),
+          options : options
+        });
+      }
     }else{
       options.push(subElement.field_data);
-      if(i == lists.length - 1){
+      if(i == lists.length - 1){        
         result.push({
           custom_master_field_id : subElement.custom_master_field_id.toString(),
           options : options
