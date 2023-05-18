@@ -77,13 +77,19 @@ export default function AddLeadContainer(props) {
     compulsoryDevices.forEach(element => {
       const custom_master_field_id = element.custom_master_field_id ;
       const compusloryOptions = element.options;
-      const options = customMasterFields[custom_master_field_id];
-      if(options != undefined && options != ''){        
-        options.forEach(subElement => {          
-          if(compusloryOptions.includes(subElement)){            
+      const options = customMasterFields[custom_master_field_id];      
+      if(options != undefined && options != '' ){ 
+        if(Array.isArray(options)){
+          options.forEach(subElement => {          
+            if(compusloryOptions.includes(subElement)){            
+              flag = true;
+            }
+          });
+        }else{
+          if(compusloryOptions.includes(options)){            
             flag = true;
           }
-        });
+        }
       }
     });    
     if(flag && selectedLists.length > 0 || !flag){
@@ -99,11 +105,17 @@ export default function AddLeadContainer(props) {
       const compusloryOptions = element.options;
       const options = customMasterFields[custom_master_field_id];
       if(options != undefined && options != ''){        
-        options.forEach(subElement => {          
-          if(compusloryOptions.includes(subElement)){            
+        if(Array.isArray(options)){
+          options.forEach(subElement => {          
+            if(compusloryOptions.includes(subElement)){            
+              flag = true;
+            }
+          });
+        }else{
+          if(compusloryOptions.includes(options)){
             flag = true;
           }
-        });
+        }
       }
     });    
     if(flag && selectedRICAs.length > 0 || !flag){
