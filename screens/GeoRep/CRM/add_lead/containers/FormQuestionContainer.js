@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {FormQuestionView} from '../components/FormQuestionView';
 import {expireToken} from '../../../../../constants/Helper';
@@ -49,7 +49,11 @@ export default function FormQuestionContainer(props) {
       })
       .catch(e => {
         hideLoadingBar();
-        expireToken(dispatch, e, alertModalRef);
+        var delay = Platform.OS == 'android' ? 0 : 500;
+        setTimeout(() => {
+          expireToken(dispatch, e, alertModalRef);
+        }, delay);
+        
       });
   };
 
@@ -75,9 +79,12 @@ export default function FormQuestionContainer(props) {
   };
 
   const hideLoadingBar = () => {
-    if(loadingBarRef.current){
-      loadingBarRef.current.hideModal();
-    }          
+    var delay = Platform.OS == 'ios' ? 500 : 0;    
+    setTimeout(() => {
+      if(loadingBarRef.current){
+        loadingBarRef.current.hideModal();
+      }
+    }, delay);
   }
 
   const groupByQuestions = data => {
@@ -92,7 +99,6 @@ export default function FormQuestionContainer(props) {
             element.value,
           );
         }
-
         // updated value for tired mutiple choice
         if (
           element.question_type ===
