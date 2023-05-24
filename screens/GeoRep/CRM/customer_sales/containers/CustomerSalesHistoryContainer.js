@@ -1,18 +1,19 @@
-import {ScrollView, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { View} from 'react-native';
+import React, { useRef , useEffect, useState } from 'react';
 import CustomerSalesHistoryView from '../components/CustomerSalesHistoryView';
-import {Constants, Values} from '../../../../../constants';
-import {getApiRequest} from '../../../../../actions/api.action';
-import {useDispatch} from 'react-redux';
-import {expireToken} from '../../../../../constants/Helper';
-import {Notification} from '../../../../../components/modal/Notification';
-import {showNotification} from '../../../../../actions/notification.action';
+import { Constants, Values} from '../../../../../constants';
+import { getApiRequest} from '../../../../../actions/api.action';
+import { useDispatch} from 'react-redux';
+import { expireToken} from '../../../../../constants/Helper';
+import AlertModal from '../../../../../components/modal/AlertModal';
 
 export default function CustomerSalesHistoryContainer(props) {
+
   const {locationId} = props;
+  const alertModalRef = useRef(null);
   const [sections, setSections] = useState([]);
   const [totalTurnOver, setTotalTurnOver] = useState(null);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();  
 
   useEffect(() => {
     onLoad();
@@ -27,24 +28,12 @@ export default function CustomerSalesHistoryContainer(props) {
         setSections(res.sections);
         setTotalTurnOver(res.total_turnover);
       })
-      .catch(e => {
-        console.log('customer-sales-history-v2 error: ', e);
-        if (e == 'error') {
-          if (props.onButtonAction) {
-            props.onButtonAction({
-              type: Constants.actionType.ACTION_CLOSE,
-            });
-          }
-          dispatch(
-            showNotification({
-              type: 'success',
-              message:
-                'No Device allocated, please allocate a device to view sales history',
-              buttonText: 'Ok',
-            }),
-          );
+      .catch(e => {        
+        if (e == 'error') {                    
+          if(alertModalRef.current)
+            alertModalRef.current.alert('No Turnover History Found');          
         } else {
-          expireToken(dispatch, e);
+          expireToken(dispatch, e , alertModalRef);
         }
       });
   };
@@ -52,14 +41,26 @@ export default function CustomerSalesHistoryContainer(props) {
   return (
     <View
       style={[{alignSelf: 'stretch', flex: 1, marginBottom: 30}, props.style]}>
-      <ScrollView style={{maxHeight: Values.deviceHeight * 0.8}}>
+
+      <AlertModal 
+          onModalClose={(res) => {
+            if (props.onButtonAction) {
+              props.onButtonAction({
+                type: Constants.actionType.ACTION_CLOSE,
+              });
+            }
+          }}
+      ref={alertModalRef} />
+      
+
+      <View style={{maxHeight: Values.deviceHeight * 0.8}}>       
         <CustomerSalesHistoryView
           sections={sections}
           totalTurnOver={totalTurnOver}
           {...props}
         />
-      </ScrollView>
-      <Notification />
+      </View>
+                  
     </View>
   );
 }

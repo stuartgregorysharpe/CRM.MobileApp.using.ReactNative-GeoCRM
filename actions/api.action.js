@@ -64,7 +64,7 @@ export const getApiRequest = async (route, param) => {
           } else if(err?.message?.includes('timeout')) {
             reject('timeout');
           }else{
-            reject('err');
+            reject('error');
           }
         }else{
           reject('timeout');
