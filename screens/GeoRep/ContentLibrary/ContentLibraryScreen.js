@@ -165,20 +165,22 @@ export default function ContentLibraryScreen(props) {
             showLoadingBar();
             downloadPDF(item.file_path, fileName, ext)
               .then(res => {
-                hideLoadingBar();
+                
                 if (
                   res &&
                   res.statusCode === 200 &&
                   res.bytesWritten > 0
                 ) {
-                  openFile(path, '');
+                  hideLoadingBar(path);
+                  
                 } else {
                   console.log(res);
+                  hideLoadingBar('');
                 }
               })
               .catch(error => {
                 console.log(error);
-                hideLoadingBar();
+                hideLoadingBar('');
               });
           }
         })
@@ -193,13 +195,18 @@ export default function ContentLibraryScreen(props) {
       loadingBarRef.current.showModal();
     }
   }
-  const hideLoadingBar = () => {
+  const hideLoadingBar = ( path = '') => {
     const delay = Platform.OS == 'ios' ? 500 : 0;
     setTimeout(() => {
       if(loadingBarRef.current){
         loadingBarRef.current.hideModal();
+        if(path != ''){
+          setTimeout(() => {
+            openFile(path, '');
+          }, delay)          
+        }
       }
-    }, delay);    
+    }, 300);    
   }
 
   const renderMainPage = () => {
