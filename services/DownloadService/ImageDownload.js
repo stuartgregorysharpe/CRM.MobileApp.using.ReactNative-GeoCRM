@@ -90,7 +90,7 @@ export async function downloadFormQuestionImages (formQuestionGroups) {
 
     for (let i = 0; i < questions.length; i++) {
       var item = questions[i];
-      console.log("item.question_type => ", item.question_type)
+      
       if (
         item.question_type === 'upload_file' ||
         item.question_type === 'take_photo' ||
