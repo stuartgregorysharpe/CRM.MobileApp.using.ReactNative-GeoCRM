@@ -36,10 +36,12 @@ export default function FormQuestionContainer(props) {
     if (form.form_id != undefined) {
       param = {
         form_id: form.form_id,
+        location_id : form?.location_id
       };
     } else if (form.submission_id != undefined) {
       param = {
         submission_id: form.submission_id,
+        location_id : form?.location_id
       };
     }    
     
