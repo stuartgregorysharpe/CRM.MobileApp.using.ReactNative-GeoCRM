@@ -96,7 +96,7 @@ export default function ContentLibraryScreen(props) {
         setSearchLibraryLists(res.folders);
       })
       .catch(error => {
-        expireToken(dispatch, error);
+        expireToken(dispatch, error , alertModalRef);
         setLibraryLists([]);
         setSearchLibraryLists([]);
       });
