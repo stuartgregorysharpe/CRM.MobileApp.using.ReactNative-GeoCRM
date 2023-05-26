@@ -29,7 +29,7 @@ export default function CustomerSalesHistoryContainer(props) {
         setTotalTurnOver(res.total_turnover);
       })
       .catch(e => {        
-        if (e == 'error') {                    
+        if (e == 'error_400') {                    
           if(alertModalRef.current)
             alertModalRef.current.alert('No Turnover History Found');          
         } else {

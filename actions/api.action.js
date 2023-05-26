@@ -59,6 +59,8 @@ export const getApiRequest = async (route, param) => {
             !error?.config?.__isRetryRequest
           ) {
             reject('expired');
+          } else if(error?.status === 400){
+            reject('error_400')
           } else if(err?.message?.includes('Network Error')) {
             reject('network_error');
           } else if(err?.message?.includes('timeout')) {
