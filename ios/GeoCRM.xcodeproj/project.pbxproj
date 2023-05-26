@@ -25,7 +25,6 @@
 		96696E10278E1B5D00221194 /* Gilroy-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E07278E1B5D00221194 /* Gilroy-Heavy.ttf */; };
 		96696E11278E1B5D00221194 /* Gilroy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96696E08278E1B5D00221194 /* Gilroy-Regular.ttf */; };
 		967CBE30279AE73F005262DB /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 967CBE2E279AE73F005262DB /* BootSplash.storyboard */; };
-		96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EFB4A6278F40940032ECB1 /* libRNFileOpener.a */; };
 		D7D42A13298944BE00BD87B7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7D42A11298944BE00BD87B7 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -96,7 +95,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96EFB4A9278F51DB0032ECB1 /* libRNFileOpener.a in Frameworks */,
 				6D630192CB8208AB432390C7 /* libPods-GeoCRM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -603,7 +601,7 @@
 				CODE_SIGN_ENTITLEMENTS = GeoCRM/GeoCRM.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 56;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6YHJDJ6US;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
@@ -613,7 +611,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.15;
+				MARKETING_VERSION = 2.0.19;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -640,7 +638,7 @@
 				CODE_SIGN_ENTITLEMENTS = GeoCRM/GeoCRM.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 56;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6YHJDJ6US;
 				INFOPLIST_FILE = GeoCRM/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Geo CRM";
@@ -649,7 +647,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.15;
+				MARKETING_VERSION = 2.0.19;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",

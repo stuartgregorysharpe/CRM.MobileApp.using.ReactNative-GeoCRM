@@ -14,12 +14,14 @@ import {showNotification} from '../../../../../actions/notification.action';
 import {GetRequestFormQuestionsDAO} from '../../../../../DAO';
 import {downloadFormQuestionImages} from '../../../../../services/DownloadService/ImageDownload';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
+import AlertModal from '../../../../../components/modal/AlertModal';
 
 export default function FormQuestionContainer(props) {
   const {form, leadForms, customMasterFields, selectedLists} = props;
 
   const [formQuestions, setQuestions] = useState([]);
   const loadingBarRef = useRef(null);
+  const alertModalRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,23 +29,29 @@ export default function FormQuestionContainer(props) {
   }, [form]);
 
   const _callFormQuestions = () => {
+
+    loadingBarRef.current.showModal();
+    
     let param = {};
     if (form.form_id != undefined) {
       param = {
         form_id: form.form_id,
+        location_id : form?.location_id
       };
     } else if (form.submission_id != undefined) {
       param = {
         submission_id: form.submission_id,
+        location_id : form?.location_id
       };
-    }
-    console.log('PIST  param', param);
+    }    
+    
     GetRequestFormQuestionsDAO.find(param)
       .then(res => {
         groupByQuestions(res.questions);
       })
       .catch(e => {
-        expireToken(dispatch, e);
+        hideLoadingBar();
+        expireToken(dispatch, e, alertModalRef);
       });
   };
 
@@ -68,53 +76,66 @@ export default function FormQuestionContainer(props) {
     return value;
   };
 
-  const groupByQuestions = data => {
-    var newData = [];
-    data.forEach(element => {
-      // initialize the value with question_tag
-      if (element.question_tag != undefined && element.question_tag != '') {
-        element.value = getQuestionTagValue(
-          element.question_tag,
-          element.value,
-        );
-      }
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }          
+  }
 
-      // updated value for tired mutiple choice
-      if (
-        element.question_type ===
-        Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE
-      ) {
-        if (element.value != null && element.value != undefined) {
-          var dropdownLists = '';
-          if (typeof element.value === 'object') {
-            for (let key of Object.keys(element.value)) {
-              if (dropdownLists == '') {
-                dropdownLists = element.value[key];
-              } else {
-                dropdownLists = dropdownLists + ' - ' + element.value[key];
+  const groupByQuestions = data => {
+
+    try{
+      var newData = [];
+      data.forEach(element => {
+        // initialize the value with question_tag
+        if (element.question_tag != undefined && element.question_tag != '') {
+          element.value = getQuestionTagValue(
+            element.question_tag,
+            element.value,
+          );
+        }
+
+        // updated value for tired mutiple choice
+        if (
+          element.question_type ===
+          Constants.questionType.FORM_TYPE_TIERED_MULTIPLE_CHOICE
+        ) {
+          if (element.value != null && element.value != undefined) {
+            var dropdownLists = '';
+            if (typeof element.value === 'object') {
+              for (let key of Object.keys(element.value)) {
+                if (dropdownLists == '') {
+                  dropdownLists = element.value[key];
+                } else {
+                  dropdownLists = dropdownLists + ' - ' + element.value[key];
+                }
               }
             }
+            element.value = dropdownLists; // Updated Value in Tired Multiple Choice
           }
-          element.value = dropdownLists; // Updated Value in Tired Multiple Choice
         }
-      }
 
-      if (!isInNewData(newData, element)) {
-        var ques = [element];
-        newData.push({
-          question_group_id: element.question_group_id,
-          question_group: element.question_group,
-          questions: ques,
-        });
-      } else {
-        var tmp = newData.find(
-          item => item.question_group_id === element.question_group_id,
-        );
-        var newTmp = [...tmp.questions, element];
-        tmp.questions = [...newTmp];
-      }
-    });
-    updateFormQuestionsForDownloading(newData);
+        if (!isInNewData(newData, element)) {
+          var ques = [element];
+          newData.push({
+            question_group_id: element.question_group_id,
+            question_group: element.question_group,
+            questions: ques,
+          });
+        } else {
+          var tmp = newData.find(
+            item => item.question_group_id === element.question_group_id,
+          );
+          var newTmp = [...tmp.questions, element];
+          tmp.questions = [...newTmp];
+        }
+      });
+      updateFormQuestionsForDownloading(newData);
+      
+    }catch(e) {
+      hideLoadingBar();
+    }
+    
   };
 
   const isInNewData = (data, value) => {
@@ -127,16 +148,14 @@ export default function FormQuestionContainer(props) {
     var res = filterTriggeredQuestions(formQuestions);
     if (res != undefined) {
       // start downlod service
-      console.log('newData == ', JSON.stringify(res));
-      loadingBarRef.current.showModal();
+      console.log('newData == ', JSON.stringify(res));      
       var newFormQuestions = await downloadFormQuestionImages(res);
-      setTimeout(() => {
-        loadingBarRef.current.hideModal();
-      }, 500);
-
       if (newFormQuestions != undefined) {
         setQuestions(newFormQuestions);
       }
+      hideLoadingBar();      
+    }else{
+      hideLoadingBar();      
     }
   };
 
@@ -176,11 +195,14 @@ export default function FormQuestionContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1, marginBottom: 0}}>
+
       <LoadingBar
         backButtonDisabled={true}
         ref={loadingBarRef}
         description={Strings.Download_Image}
       />
+
+      <AlertModal ref={alertModalRef} />      
 
       <FormQuestionView
         formQuestions={formQuestions}

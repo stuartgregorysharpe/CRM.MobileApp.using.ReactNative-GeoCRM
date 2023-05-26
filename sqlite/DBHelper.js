@@ -5,8 +5,7 @@ import { getJsonData } from '../constants/Storage';
 var db = null;
 export const getDBConnection = async () => {
     try{
-      if(db && db != null) {
-          console.log("alread created db")
+      if(db && db != null) {          
           return db
       }
       db = await openDatabase(
@@ -45,13 +44,15 @@ export const createTable = async (db , tables ) => {
   }
 };
 
-const handleTable = async (table) => {
+export const handleTable = async (table) => {
 
   var tableName = table.table_name;
   var query0 = `PRAGMA table_info(${tableName});`;
-  var res = await ExecuteQuery(query0,[]);
+  var res = await ExecuteQuery(query0,[]);  
 
-  if(res.rows.length != table.fields.length){ // table was updated.
+  if(res?.rows?.length != table?.fields?.length){ // table was updated.
+
+    console.log("res.rows.length" , res?.rows?.length, table?.fields?.length)
 
       if(res.rows.length != 0){
         try{          

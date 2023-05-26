@@ -24,9 +24,9 @@ import FormFilterModal from './modal/FormFilterModal';
 import {Constants, Strings} from '../../../constants';
 import {GetRequestFormListsDAO} from '../../../DAO';
 import SearchLocationModal from '../Stock/stock/modal/SearchLocationModal';
-import {LOCATION_CHECK_OUT_COMPULSORY} from '../../../actions/actionTypes';
 import {Notification} from '../../../components/modal/Notification';
 import GuideInfoModal from './modal/GuideInfoModal';
+import { setCompulsoryForm } from '../../../actions/location.action';
 
 export const FormsScreen = props => {
   
@@ -117,8 +117,7 @@ export const FormsScreen = props => {
     if(locationIdSpecific != null){
       var formLists = [...lists];
       const formIds = await getJsonData('@form_ids');
-      var flag = false;
-      console.log(' formIds in form screen ', JSON.stringify(formIds));
+      var flag = false;      
       formLists.forEach(element => {
         if (
           element.compulsory === '1' &&
@@ -128,7 +127,8 @@ export const FormsScreen = props => {
           flag = true;
         }
       });
-      dispatch({type: LOCATION_CHECK_OUT_COMPULSORY, payload: flag});
+      dispatch(setCompulsoryForm(flag));
+
     }
         
   };

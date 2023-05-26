@@ -129,11 +129,19 @@ const getScheduleList = (
     }
 
     //Concat address fields (Only non-empty fields) with a comma separator
-    address =
-      schedule.street_address +
-      schedule.suburb +
-      schedule.city +
-      schedule.pincode;
+    var address = '';
+    if(schedule.street_address && schedule.street_address != ''){
+      address = schedule.street_address;
+    }
+    if(schedule.suburb && schedule.suburb != ''){
+      address = address != '' ? address + ", " + schedule.suburb : schedule.suburb;
+    }
+    if(schedule.city && schedule.city != ''){
+      address = address + ", " + schedule.city;
+    }
+    if(schedule.pincode && schedule.pincode != ''){
+      address = address + ", " + schedule.pincode;
+    }      
     item.address = address;
 
     //Check if location currently checked-in to this schedule_id or if they checked-in already (While in offline mode)

@@ -30,19 +30,25 @@ export const SyncAll = forwardRef((props, ref) => {
   };
 
   useImperativeHandle(ref, () => ({
-    syncAllData(syncType) {
-      if(syncType === 'bascket_and_offline_items'){
-        setIsManual(false);
-        setExpanded(true); 
-      }else{        
-        initializeDB().then((syncNotCompleted) => {
-          if(syncNotCompleted){
+    syncAllData(syncType , flag) {
+      initializeDB().then((syncNotCompleted) => {
+        console.log("Syn done", syncNotCompleted, syncType , flag);
+        if(syncType === 'bascket_and_offline_items'){
+          if(flag){
+            setIsManual(false);
+            setExpanded(true); 
+          }        
+        }else{        
+          if(syncNotCompleted && flag){
             setExpanded(true);
             setIsLoading(true);
-          }
-        }).catch((e) => {
-        });        
-      }                                                                                                                                          
+          }  
+        }                                                    
+      }).catch((e) => {
+        console.log("initailizeDB"  , e.toString());
+      });        
+
+                                                                                                    
     },
     refreshView() {
       initLastSyncAllDateTime();

@@ -53,7 +53,7 @@ https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
 # install guide
 1. go to the project folder, and run 'npm install' command in terminal.
 2. need to add the node_modules manually
-   node_module's name: 'react-native-file-opener', 'react-native-mordern-datepicker', 'react-native-signature-canvas'
+   node_module's name: 'react-native-mordern-datepicker', 'react-native-signature-canvas'
    we need to copy above libraries and replace it in node_modules folder.
    for HMS app, we need to add "@hmscore" library in node_module folder. 
    and for HMS app, we need to add 'agconnect-services.json' file under android/app folder.
@@ -69,12 +69,6 @@ https://sqliteviewer.app/#/maindb.db/table/locations_custom_master_field_data/
 
    assembleRelease command will generate apk file in android/app/release(android/app/build) folder.
    and bundleRelease will generate aab file in android/app/release(android/app/build) folder.
-
-mat test account
-matthew@georep.com / Geo2022#
-
-#  Touch point app test account
-clinton@dan-edge.co.za / Test2021#
 
 
 # Upgrade react-native-paper version 

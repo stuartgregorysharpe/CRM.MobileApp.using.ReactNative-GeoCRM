@@ -14,7 +14,7 @@ import {
   getLocationInfo,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/add_to_calendar';
-import LocationFilterModal from '../../../../../components/modal/LocationFilterModal';
+import FilterYourSearchModal from '../../../../../components/modal/filter_your_search';
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
 import {Constants} from '../../../../../constants';
@@ -358,7 +358,11 @@ const LocationContainer = props => {
 
       <MarkerViewModal ref={markerModalRef} />
 
-      <LocationFilterModal ref={locationFilterModalRef} page={'map'} />
+      <FilterYourSearchModal
+          title='Filter Your Search'
+          ref={locationFilterModalRef}
+          page={'map'}
+      />      
       
       <AddToCalendarModal
         ref={addToCalendarModalRef}

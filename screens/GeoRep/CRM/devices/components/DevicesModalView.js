@@ -1,7 +1,7 @@
-import { View, Text , FlatList, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 import React , { useRef , useState } from 'react'
 import { AppText } from '../../../../../components/common/AppText';
-import { whiteLabel } from '../../../../../constants/Colors';
+import Colors , { whiteLabel } from '../../../../../constants/Colors';
 import CardView from '../../../../../components/common/CardView';
 import SvgIcon from '../../../../../components/SvgIcon';
 import { style } from '../../../../../constants/Styles';
@@ -18,7 +18,22 @@ export default function DevicesModalView(props) {
     const [device, setDevice] = useState(null)
 
     const renderItem = (item, index) => {
-                
+
+        var isCompulsory = false;
+        if(item.unattached_device == '0'){
+            if( 
+                item.additional_imei_required == '1' && item.additional_imei == null ||
+                item.additional_imei_required == '1' && item.additional_imei == '' ||
+                item.imei == null || 
+                item.imei == '' || 
+                item.msisdn == null || 
+                item.msisdn == '' || 
+                ( item.msn_required == '1' && item.msn == null) || 
+                ( item.msn_required == '1' && item.msn == '' ) ) {
+                    isCompulsory = true;
+            }
+        }
+
         return (
             <TouchableOpacity key={index} onPress={() =>{
                 if(item.unattached_device == "1"){
@@ -26,13 +41,13 @@ export default function DevicesModalView(props) {
                         props.openSimEditModal(item);
                     }
                 }else{
-                    setDevice(item);
+                    setDevice(item); //
                     if(devicePriorityModalRef.current){
                         devicePriorityModalRef.current.showModal(Strings.CRM.Pleae_Select_Type);
                     }
-                }                                                 
+                }
             }}>
-                <CardView style={{borderColor:whiteLabel().borderColor, borderWidth:1, marginVertical:5 , padding:5 }}>                
+                <CardView style={{borderColor: isCompulsory ? Colors.redColor : whiteLabel().borderColor, borderWidth:1, marginVertical:5 , padding:5 }}>                
                         <View key={index} style={{ flex:1, flexDirection:'column'}}>            
                             <View style={{flex: 1 , flexDirection:'row' ,marginRight:10}}>
                                 <AppText                            
@@ -61,10 +76,10 @@ export default function DevicesModalView(props) {
                                     style={{fontSize: 10.4 , flex:1 }}></AppText>
 
                                 {
-                                    item.unattached_device == '0' &&
+                                    item.unattached_device == '0' && 
                                     <AppText
                                         type="secondaryMedium"
-                                        title={Constants.stockPrefix.DEVICE + item.msn}
+                                        title={ item.msn_required == '1' ? Constants.stockPrefix.MSN + item.msn : Constants.stockPrefix.IMEI + item.imei}
                                         color={whiteLabel().subText}
                                         style={{fontSize: 10.4}}></AppText>
                                 }
@@ -129,7 +144,7 @@ const styles = StyleSheet.create({
         paddingBottom:0,
         height:Dimensions.get("window").height * 0.85
     },  
-  
+    
 })
 
   

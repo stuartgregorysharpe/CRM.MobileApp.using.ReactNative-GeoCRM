@@ -27,8 +27,7 @@ import ProductDetailsModal from '../modal/ProductDetailsModal';
 import AddProductModal from '../modal/AddProductModal';
 import {
   setProductPriceLists,
-  setRegret,
-  setSalesSearchText,
+  setRegret,  
 } from '../../../../actions/sales.action';
 import {showNotification} from '../../../../actions/notification.action';
 import {getConfigFromRegret, getSearchKey, onCheckProductSetupChanged} from '../helpers';
@@ -107,12 +106,14 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
           var price = element.price;
           if (product != undefined) {
             var finalPrice = 0;
+            var discountPrice = 0;
             if (
               product.finalPrice != undefined &&
               product.finalPrice != '' &&
               product.finalPrice.final_price != undefined
             ) {
               finalPrice = product.finalPrice.final_price;
+              discountPrice = product.finalPrice.discountPrice;
             }
             if (
               product.price != undefined &&
@@ -126,6 +127,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
               ...newElement,
               price: price,
               finalPrice: finalPrice,
+              discountPrice : discountPrice,
               special: product.special,
               qty: product.qty,
             });
@@ -133,6 +135,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
             list.push({
               ...newElement,
               finalPrice: 0,
+              discountPrice : '',
               qty: 0,
             });
           }

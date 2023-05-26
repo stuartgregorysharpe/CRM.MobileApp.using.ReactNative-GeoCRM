@@ -26,6 +26,7 @@ export default function StockListItem({onItemPressed, item}) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
+
           <View style={{flex: 3}}>
             <AppText
               size="big"
@@ -38,18 +39,21 @@ export default function StockListItem({onItemPressed, item}) {
               color={whiteLabel().subText}
               style={{fontSize: 10.4}}></AppText>
           </View>
+
           <View style={{flex: 2}}>
             <AppText
               type="secondaryMedium"
               title={stock_type}
               style={{fontSize: 10.4}}></AppText>
           </View>
+
           <View style={{flex: 2, alignItems: 'flex-end'}}>
             <AppText
               type="secondaryMedium"
               title={addedDate}
               style={{fontSize: 10.4}}></AppText>
           </View>
+          
         </View>
         <View style={{height: 1, backgroundColor: Colors.greyColor}}></View>
       </View>

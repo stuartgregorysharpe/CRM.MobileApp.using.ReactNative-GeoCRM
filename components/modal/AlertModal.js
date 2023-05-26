@@ -18,7 +18,7 @@ const AlertModal=  React.forwardRef((props, ref) => {
   const dispatch = useDispatch()
 
   useImperativeHandle(ref, () => ({
-    alert: (message = '', buttonText='Okay' , expire = false , res ) => {
+    alert: (message = '', buttonText='Okay' , expire = false , res = '' ) => {
       setMessage(message)
       setButtonText(buttonText == '' ? 'Okay' : buttonText );
       setVisible(true)
