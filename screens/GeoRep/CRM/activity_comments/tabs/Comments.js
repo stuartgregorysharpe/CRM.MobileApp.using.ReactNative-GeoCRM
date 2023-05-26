@@ -107,7 +107,7 @@ export default function Comments(props) {
 			<View key={index}>
 				<FormSubmissionListItem
 					onItemPress={(item) => {				
-						setForm({submission_id: item.submission_id, form_name: item.form_name});
+						setForm({submission_id: item.submission_id, form_name: item.form_name , location_id: location_id});
 						if(formQuestionModalRef.current){
 							formQuestionModalRef.current.showModal();
 						}
