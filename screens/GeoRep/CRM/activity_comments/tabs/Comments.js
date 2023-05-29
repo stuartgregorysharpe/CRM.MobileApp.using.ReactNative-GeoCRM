@@ -79,17 +79,19 @@ export default function Comments(props) {
 
 	const editFormQuestion = async (form_answers, files) => {			
 		showLoadingBar();
-		const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
-		PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' 
-		, form.form_name , '' , null , null ).then( async(res) => {									
-			hideLoadingBar();
-			if(res.status === Strings.Success){								
-				showMessage(res.message, 'Ok');
-			}
-		}).catch((e) => {
-			hideLoadingBar();
-			expireToken(dispatch, e , alertModalRef);
-		})
+		setTimeout(async() => {
+			const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
+			PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' 
+			, form.form_name , '' , null , null ).then( async(res) => {									
+				hideLoadingBar();
+				if(res.status === Strings.Success){								
+					showMessage(res.message, 'Ok');
+				}
+			}).catch((e) => {
+				hideLoadingBar();
+				expireToken(dispatch, e , alertModalRef);
+			});
+		}, 800);		
 	}
 
   	const onFormQuestionModalClosed = ({type, value}) => {
@@ -97,9 +99,12 @@ export default function Comments(props) {
 			formQuestionModalRef.current.hideModal();
 		}
 		if (type == Constants.actionType.ACTION_DONE) {
-			if (value.form_answers != undefined && value.files != undefined) {		
-				editFormQuestion(value.form_answers, value.files);			
+			if (value.form_answers != undefined && value.files != undefined) {						
 				formQuestionModalRef.current.hideModal();
+				
+				editFormQuestion(value.form_answers, value.files);
+				
+								
 			}
 		}
 	};
