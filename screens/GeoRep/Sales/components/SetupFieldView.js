@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {
   useState,
   useEffect,
@@ -421,131 +421,137 @@ export const SetupFieldView = forwardRef((props, ref) => {
         )}
       </View>
 
-      <SearchLocationContainer
-        type="setup"
-        onSubmit={onSearch}
-        onStartSearch={onStartSearch}
-        isSkipLocationIdCheck
-        //style={ styles.bgColor}
-        //style={[isSearchStart ? styles.bgColor : {}]}
-        {...props}
-      />
-
-      {selectedLocation != null && !isSearchStart && (
-        <LocationInfo
-          onClose={() => {
-            setSelectedLocation(null);
-          }}
-          location={selectedLocation}
-        />
-      )}
-
-      {!isSearchStart && (
-        <View style={{alignSelf: 'stretch'}}>
-          <SaleType
-            transaction_types={transaction_types}
-            selectedSaleType={selectedSaleType}
-            onSelectedSaleType={onSelectedSaleType}
-            onWarehouseRequired={onWarehouseRequired}
-          />
-
-          <DropdownSelection
-            title="Currency Type"
-            selectedItem={renderCurrencyTitle()}
-            selectedCurrency={selectedCurrency}
-            items={currency ? currency.options : []}>
-            <CurrencyType
-              selectedItem={selectedCurrency}
-              onItemSelected={onCurrencyItemSelected}
-              lists={currency ? currency.options : []}></CurrencyType>
-          </DropdownSelection>
-
-          {warehouseRequired && (
-            <DropdownSelection
-              title="Warehouse"
-              selectedItem={renderWarehouseTitle()}
-              items={warehouse ? warehouse.options : []}>
-              <Warehouse
-                selectedItem={selectedWarehouse}
-                onItemSelected={onWarehouseItemSelected}
-                warehouse={warehouse}
+      <ScrollView style={{maxHeight:350}}>
+          <View>
+            <SearchLocationContainer
+                type="setup"
+                onSubmit={onSearch}
+                onStartSearch={onStartSearch}
+                isSkipLocationIdCheck
+                //style={ styles.bgColor}
+                //style={[isSearchStart ? styles.bgColor : {}]}
+                {...props}
               />
-            </DropdownSelection>
-          )}
 
-          {isDiscard && (
-            <AppText
-              title={Strings.ProductSales.Click_Update}
-              color={Colors.redColor}
-              style={{textAlign: 'center', marginHorizontal: 20}}></AppText>
-          )}
+              {selectedLocation != null && !isSearchStart && (
+                <LocationInfo
+                  onClose={() => {
+                    setSelectedLocation(null);
+                  }}
+                  location={selectedLocation}
+                />
+              )}
 
-          <View
-            style={{
-              height: 1,
-              backgroundColor: Colors.greyColor,
-              marginHorizontal: -10,
-              marginTop: 10,
-              marginBottom: 10,
-            }}></View>
+              {!isSearchStart && (
+                <View style={{alignSelf: 'stretch'}}>
+                  <SaleType
+                    transaction_types={transaction_types}
+                    selectedSaleType={selectedSaleType}
+                    onSelectedSaleType={onSelectedSaleType}
+                    onWarehouseRequired={onWarehouseRequired}
+                  />
 
-          {!isDiscard && (
-            <View style={{alignItems: 'center', paddingVertical: 5}}>
-              <TouchableOpacity
-                style={{alignSelf: 'stretch', alignItems: 'center'}}
-                disabled={!isValidate()}
-                onPress={() => onContinue()}>
-                <AppText
-                  title="Continue"
-                  size="big"
-                  color={
-                    !isValidate() ? Colors.disabledColor : Colors.primaryColor
-                  }></AppText>
-              </TouchableOpacity>
-            </View>
-          )}
+                  <DropdownSelection
+                    title="Currency Type"
+                    selectedItem={renderCurrencyTitle()}
+                    selectedCurrency={selectedCurrency}
+                    items={currency ? currency.options : []}>
+                    <CurrencyType
+                      selectedItem={selectedCurrency}
+                      onItemSelected={onCurrencyItemSelected}
+                      lists={currency ? currency.options : []}></CurrencyType>
+                  </DropdownSelection>
 
-          {isDiscard && (
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <TouchableOpacity
-                style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
-                onPress={() => {
-                  if (props.onClose) {
-                    props.onClose();
-                  }
-                }}>
-                <AppText
-                  title="Discard"
-                  size="big"
-                  color={Colors.redColor}></AppText>
-              </TouchableOpacity>
-              <View
-                style={{
-                  backgroundColor: Colors.greyColor,
-                  width: 1,
-                  marginVertical: -10,
-                  alignSelf: 'stretch',
-                }}></View>
-              <TouchableOpacity
-                style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
-                disabled={!isValidate()}
-                onPress={() => onContinue()}>
-                <AppText
-                  title="Update"
-                  size="big"
-                  color={
-                    !isValidate() ? Colors.disabledColor : Colors.primaryColor
-                  }></AppText>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      )}
+                  {warehouseRequired && (
+                    <DropdownSelection
+                      title="Warehouse"
+                      selectedItem={renderWarehouseTitle()}
+                      items={warehouse ? warehouse.options : []}>
+                      <Warehouse
+                        selectedItem={selectedWarehouse}
+                        onItemSelected={onWarehouseItemSelected}
+                        warehouse={warehouse}
+                      />
+                    </DropdownSelection>
+                  )}
+
+                  {isDiscard && (
+                    <AppText
+                      title={Strings.ProductSales.Click_Update}
+                      color={Colors.redColor}
+                      style={{textAlign: 'center', marginHorizontal: 20}}></AppText>
+                  )}
+
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: Colors.greyColor,
+                      marginHorizontal: -10,
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}></View>
+
+                  {!isDiscard && (
+                    <View style={{alignItems: 'center', paddingVertical: 5}}>
+                      <TouchableOpacity
+                        style={{alignSelf: 'stretch', alignItems: 'center'}}
+                        disabled={!isValidate()}
+                        onPress={() => onContinue()}>
+                        <AppText
+                          title="Continue"
+                          size="big"
+                          color={
+                            !isValidate() ? Colors.disabledColor : Colors.primaryColor
+                          }></AppText>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
+                  {isDiscard && (
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                      }}>
+                      <TouchableOpacity
+                        style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
+                        onPress={() => {
+                          if (props.onClose) {
+                            props.onClose();
+                          }
+                        }}>
+                        <AppText
+                          title="Discard"
+                          size="big"
+                          color={Colors.redColor}></AppText>
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          backgroundColor: Colors.greyColor,
+                          width: 1,
+                          marginVertical: -10,
+                          alignSelf: 'stretch',
+                        }}></View>
+                      <TouchableOpacity
+                        style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
+                        disabled={!isValidate()}
+                        onPress={() => onContinue()}>
+                        <AppText
+                          title="Update"
+                          size="big"
+                          color={
+                            !isValidate() ? Colors.disabledColor : Colors.primaryColor
+                          }></AppText>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )}
+          </View>
+      </ScrollView>
+      
+
     </View>
   );
 });
