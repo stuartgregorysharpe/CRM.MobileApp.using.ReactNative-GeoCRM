@@ -79,8 +79,8 @@ export default function Comments(props) {
 
 	const editFormQuestion = async (form_answers, files) => {			
 		showLoadingBar();
-		setTimeout(async() => {
-			const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );									
+		const postDataJson = await getFormSubmissionPostJsonData(form.submission_id, location_id , currentLocation, form_answers, files , "edit" );
+		setTimeout(() => {			
 			PostRequestDAO.find(location_id, postDataJson , 'form_submission', 'forms/forms-submission' 
 			, form.form_name , '' , null , null ).then( async(res) => {									
 				hideLoadingBar();
@@ -91,7 +91,7 @@ export default function Comments(props) {
 				hideLoadingBar();
 				expireToken(dispatch, e , alertModalRef);
 			});
-		}, 800);		
+		}, 1000);
 	}
 
   	const onFormQuestionModalClosed = ({type, value}) => {
