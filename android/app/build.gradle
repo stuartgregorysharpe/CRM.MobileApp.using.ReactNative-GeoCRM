@@ -137,7 +137,6 @@ HMS Version
 versionCode 1
 versionName "1.0"
 package name : com.geoverse.georep
-
 */
 
 android {
@@ -147,8 +146,8 @@ android {
         applicationId "com.geoverse_app_rn"
         minSdkVersion rootProject.ext.minSdkVersion 
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 60
-        versionName "2.0.19"
+        versionCode 62
+        versionName "2.1.1"
     }
 
     splits {
