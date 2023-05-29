@@ -86,7 +86,7 @@ const  SetupFieldContainer = (props) => {
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
 
-    const onClose = () => {
+    const onClose = () => {        
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
     }
 
@@ -116,71 +116,75 @@ const  SetupFieldContainer = (props) => {
         {
             Platform.OS == 'ios' && <View style={{position:'absolute', backgroundColor:'white', height:35, width: '100%' , bottom : 0  }}></View>
         }
-        
-        {closableWithOutsideTouch && (
-            <TouchableOpacity
+               
+        <TouchableOpacity
               activeOpacity={1}
-              onPress={onClose}
-              style={{
-                position: 'absolute',
+              onPress={() => {                    
+                  if(closableWithOutsideTouch){
+                    onClose();
+                  }                                
+              }}
+              style={{                
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
               }}
-            />
-        )}
-
-        <View style={{
-            alignSelf:'stretch' , 
-            flex:1 ,            
-            flexDirection:'column',            
-            alignItems:'center',
-            justifyContent:'center',            
-            minHeight:250
-        }}>
-           
-            <SetupFieldView 
-                ref={setupFieldViewRef}
-                setupField={setupField}
-                transaction_types={transaction_types} 
-                currency={currency}
-                warehouse={warehouse}
-                isLoading={isLoading}
-                apiCallType={apiCallType}
-                onContinue={onContinue}
-                onClose={onClose}
-                onChangeLocation={onChangeLocation}
-                {...props} />
-            
+        >
             <View style={{
-                    backgroundColor:'white', 
-                    position:'absolute' ,
-                    bottom:0, 
-                    width:'100%', 
-                    flexDirection:'row' , 
-                    paddingBottom: getPadding()
-                }}>
+                alignSelf:'stretch' , 
+                flex:1 ,            
+                flexDirection:'column',            
+                alignItems:'center',
+                justifyContent:'center',            
+                minHeight:250
+            }}>
+            
+                <SetupFieldView 
+                    ref={setupFieldViewRef}
+                    setupField={setupField}
+                    transaction_types={transaction_types} 
+                    currency={currency}
+                    warehouse={warehouse}
+                    isLoading={isLoading}
+                    apiCallType={apiCallType}
+                    onContinue={onContinue}
+                    onClose={onClose}
+                    onChangeLocation={onChangeLocation}
+                    {...props} />
+                
+                <View style={{
+                        backgroundColor:'white', 
+                        position:'absolute' ,
+                        bottom:0, 
+                        width:'100%', 
+                        flexDirection:'row' , 
+                        paddingBottom: getPadding()
+                    }}>
 
-                {
-                    bottomTabs.map((item, index) =>{
-                        return (
-                            <BottomTabItem  
-                                onItemPressed={() => {                                    
-                                    if(item?.name != 'Sales'){
-                                        if(item?.name != 'More') {
-                                            dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                                        }                                 
-                                        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
-                                    }                                    
-                                }}
-                                key={index} item={item} 
-                            />
-                        )
-                    })
-                }                                            
+                    {
+                        bottomTabs.map((item, index) =>{
+                            return (
+                                <BottomTabItem  
+                                    onItemPressed={() => {                                    
+                                        if(item?.name != 'Sales'){
+                                            if(item?.name != 'More') {
+                                                dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                                            }                                 
+                                            props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
+                                        }                                    
+                                    }}
+                                    key={index} item={item} 
+                                />
+                            )
+                        })
+                    }                                            
+                </View>
             </View>
-        </View>
+       
+        </TouchableOpacity>
+
+
        
         </SafeAreaView>
     )
