@@ -18,7 +18,7 @@ import Divider from './Divider';
 import {breakPoint} from '../constants/Breakpoint';
 import {SLIDE_STATUS} from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
-import Colors from '../../constants/Colors';
+import Colors, { whiteLabel } from '../../constants/Colors';
 import MapView from '../../services/Map';
 
 export default function AddLead({screenProps}) {
@@ -82,6 +82,7 @@ export default function AddLead({screenProps}) {
         onPress={() => customerNameRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder:  whiteLabel().disabledColor } }}
             ref={customerNameRef}
             style={styles.textInput}
             label="Customer Name"
@@ -102,6 +103,7 @@ export default function AddLead({screenProps}) {
         onPress={() => addressRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             ref={addressRef}
             style={styles.textInput}
             label="Address"
@@ -118,6 +120,7 @@ export default function AddLead({screenProps}) {
         onPress={() => contactPersonRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             ref={contactPersonRef}
             style={styles.textInput}
             label="Primary Contact Person"
@@ -134,6 +137,7 @@ export default function AddLead({screenProps}) {
         onPress={() => contactEmailRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}  
             ref={contactEmailRef}
             style={styles.textInput}
             label="Primary Contact Email"
@@ -150,6 +154,7 @@ export default function AddLead({screenProps}) {
         onPress={() => contactMobileRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             ref={contactMobileRef}
             style={styles.textInput}
             label="Primary Contact Mobile"
@@ -166,6 +171,7 @@ export default function AddLead({screenProps}) {
         onPress={() => locationTypeRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             ref={locationTypeRef}
             style={styles.textInput}
             label="Location Type"
@@ -182,6 +188,7 @@ export default function AddLead({screenProps}) {
         onPress={() => groupRef.current.focus()}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             ref={groupRef}
             style={styles.textInput}
             label="Group"

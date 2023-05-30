@@ -5,22 +5,20 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View,  StyleSheet, TouchableOpacity, Text} from 'react-native';
 import Fonts from '../../../../constants/Fonts';
-import {TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {getBaseUrl, getToken, getUserData} from '../../../../constants/Storage';
 import {
   getSupportIssues,  
 } from '../../../../actions/support.action';
-
 import * as ImagePicker from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import {
   expireToken,
-  getPostParameter,
-  notifyMessage,
+  getPostParameter,  
 } from '../../../../constants/Helper';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
 import {Notification} from '../../../../components/modal/Notification';
@@ -173,6 +171,8 @@ export const Ticket = forwardRef((props, ref) => {
           <TextInput
             ref={emailRef}
             style={styles.textInput}
+            textColor={'black'}
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             label="Email"
             mode="outlined"
             outlineColor={whiteLabel().fieldBorder}
@@ -189,6 +189,7 @@ export const Ticket = forwardRef((props, ref) => {
         onPress={() => setModalVisible(true)}>
         <View pointerEvents="none">
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             style={styles.textInput}
             label={issue == '' ? 'Select Issue' : issue}
             mode="outlined"
@@ -205,6 +206,7 @@ export const Ticket = forwardRef((props, ref) => {
       </TouchableOpacity>
 
       <TextInput
+        theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
         style={styles.textArea}
         mode="outlined"
         outlineColor={whiteLabel().fieldBorder}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Modal,TouchableHighlight, TouchableWithoutFeedback, Dimensions } from 'react-native';
-import { Button, Title,  Portal, TextInput } from 'react-native-paper';
+import { Button, Title } from 'react-native-paper';
 import Colors, { whiteLabel } from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 import Divider from './Divider';
@@ -18,6 +18,7 @@ export const DatetimePickerView = ({ visible , onModalClose, onClear, close , va
     const [startHour, setStartHour] = useState("00");
     const [startMin, setStartMin] = useState("00");
     const [startTime, setStartTime] = useState("");
+    
     return (
         // <TouchableWithoutFeedback onPress={onModalClose}>
         <Modal 

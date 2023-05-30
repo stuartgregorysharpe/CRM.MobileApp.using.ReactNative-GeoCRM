@@ -748,6 +748,7 @@ export default function AddSalesPipeline({
           >
             <View>
               <TextInput
+                theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
                 type={field.field_type}
                 ref={element => {
                   dispositionRef.current[key] = element;
@@ -896,6 +897,7 @@ export default function AddSalesPipeline({
       <TouchableOpacity activeOpacity={1}>
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             style={styles.textInput}
             // multiline={true}
             label={
@@ -1112,6 +1114,7 @@ export default function AddSalesPipeline({
           >
             <View style={{flex: 1}}>
               <TextInput
+                theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
                 style={styles.textInput}
                 label={
                   <Text style={{backgroundColor: Colors.bgColor}}>

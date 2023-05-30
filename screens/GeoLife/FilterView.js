@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
+import { Button, Title, Modal, Portal } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import Divider from './Divider';
 import FilterButton from './FilterButton';
@@ -10,8 +10,11 @@ import { SLIDE_STATUS } from '../actions/actionTypes';
 import Fonts from '../constants/Fonts';
 import Colors from '../../constants/Colors';
 
+
 export default function FilterView({navigation}) {
+
   const dispatch = useDispatch();
+
   const statusLocationFilters = useSelector(state => state.location.statusLocationFilters);
   const locationFilters = useSelector(state => state.location.locationFilters);
 
