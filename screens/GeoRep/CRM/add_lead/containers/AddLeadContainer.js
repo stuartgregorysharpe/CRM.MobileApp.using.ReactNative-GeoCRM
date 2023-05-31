@@ -161,7 +161,7 @@ export default function AddLeadContainer(props) {
       })
       .catch(e => {
         console.log('leadfield api error', e);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e, alertModalRef);
       });
   };
 
@@ -193,7 +193,7 @@ export default function AddLeadContainer(props) {
       })
       .catch(e => {
         console.log('formlists api error:', e);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 

@@ -43,6 +43,7 @@ import SelectLocationView from './partial/SelectLocationView';
 import LoadingProgressBar from '../../../components/modal/LoadingProgressBar';
 import AddToCalendarModal from '../../../components/modal/add_to_calendar';
 import FilterYourSearchModal from '../../../components/modal/filter_your_search';
+import AlertModal from '../../../components/modal/AlertModal';
 
 var isEndPageLoading = false;
 var searchKey = '';
@@ -91,6 +92,7 @@ export default function LocationSearchScreen(props) {
   const locationInfoModalRef = useRef(null);
   const addToCalendarModalRef = useRef(null);
   const filterYourSearchModalRef = useRef();
+  const alertModalRef = useRef();
 
   useEffect(() => {
     initData();
@@ -278,7 +280,7 @@ export default function LocationSearchScreen(props) {
         savedShowItem = 0;
         return;
       case 'filter':
-        dispatch(getLocationFilters());                
+        getLocationFilters(dispatch , alertModalRef)
         filterYourSearchModalRef.current.showModal();
         return;
       case 'locationInfo':
@@ -420,6 +422,8 @@ export default function LocationSearchScreen(props) {
       <SafeAreaView style={{flex: 1}}>
         <Notification />
         <LoadingProgressBar/>
+
+        <AlertModal ref={alertModalRef} />
 
         <AlertDialog
           visible={isCreated}

@@ -14,6 +14,7 @@ import {
   getLocationInfo,
 } from '../../../../../actions/location.action';
 import AddToCalendarModal from '../../../../../components/modal/add_to_calendar';
+import AlertModal from '../../../../../components/modal/AlertModal';
 import FilterYourSearchModal from '../../../../../components/modal/filter_your_search';
 import SearchBar from '../../../../../components/SearchBar';
 import SvgIcon from '../../../../../components/SvgIcon';
@@ -62,6 +63,8 @@ const LocationContainer = props => {
   const addToCalendarModalRef = useRef(null);
   const addLeadModalRef = useRef(null);
   const locationInfoModalRef = useRef(null);
+  const alertModalRef = useRef();
+
   const isShowZoomLabel = isZoomOut || isLoading;
   const isCalendarSelection = useSelector(
     state => state.selection.isCalendarSelection,
@@ -155,7 +158,7 @@ const LocationContainer = props => {
   };
 
   const onFilterPress = () => {
-    dispatch(getLocationFilters());
+    getLocationFilters(dispatch , alertModalRef);
     if (locationFilterModalRef && locationFilterModalRef.current) {
       locationFilterModalRef.current.showModal();
     }
@@ -293,6 +296,7 @@ const LocationContainer = props => {
   return (
     <View style={[styles.container, props.style]}>
       <LocationWatcher />
+      <AlertModal ref={alertModalRef} />
       <SearchBar
         isFilter
         onSearchBoxPress={onPressSearch}
