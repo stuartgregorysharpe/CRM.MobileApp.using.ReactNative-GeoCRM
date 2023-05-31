@@ -7,12 +7,7 @@ import AddLeadFormsModal from '../modal/AddLeadFormsModal';
 import SelectDevicesModal from '../modal/SelectDevicesModal';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../../actions/notification.action';
 import FormQuestionModal from '../modal/FormQuestionModal';
-import {Notification} from '../../../../../components/modal/Notification';
 import {
   GetRequestFormListsDAO,
   GetRequestLeadfieldDAO,
@@ -28,10 +23,12 @@ import {
 } from '../helper';
 import {expireToken} from '../../../../../constants/Helper';
 import SimListModal from '../modal/SimListModal';
+import AlertModal from '../../../../../components/modal/AlertModal';
 
 export default function AddLeadContainer(props) {
 
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const payload = useSelector(state => state.selection.payload);  
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );  
@@ -42,6 +39,7 @@ export default function AddLeadContainer(props) {
   const addLeadFormModalRef = useRef(null);
   const addLeadViewRef = useRef(null);
   const simListModalRef = useRef();
+  const alertModalRef = useRef();
 
   const [leadForms, setLeadForms] = useState([]);
   const [accuracyUnit, setAccuracyUnit] = useState('m');
@@ -57,6 +55,7 @@ export default function AddLeadContainer(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [compulsoryDevices, setCompulsoryDevices] = useState([]);
   const [compulsoryUnattachedDevices, setCompulsoryUnattachedDevices] =  useState([]);
+  const [fieldOptionFilters, setFieldOptionFilters] = useState([]);
 
   const validateFormList = lists => {    
     let isValid = true;
@@ -140,20 +139,25 @@ export default function AddLeadContainer(props) {
   }, []);
 
   useEffect(() => {
-    getFormLists();
+    if(leadForms.length > 0){
+      getFormLists();
+    }    
   }, [leadForms]);
 
   const getCustomMasterFields = () => {
-    GetRequestLeadfieldDAO.find({})
+    var param = {
+      role: payload.user_scopes.geo_rep.role
+    };
+    GetRequestLeadfieldDAO.find(param)
       .then(res => {
         if (props.changeTitle && res.component_title != undefined) {
           props.changeTitle(res.component_title);
-        }
-        
-        setLeadForms(res.custom_master_fields);      
+        }        
+        setFieldOptionFilters(res.field_option_filters);
+        setLeadForms(res.custom_master_fields);
         setAccuracyUnit(res.accuracy_distance_measure);
         setCompulsoryDevices(res.compulsory_device);
-        setCompulsoryUnattachedDevices(res.compulsory_unattached_device);
+        setCompulsoryUnattachedDevices(res.compulsory_unattached_device);                
       })
       .catch(e => {
         console.log('leadfield api error', e);
@@ -237,13 +241,9 @@ export default function AddLeadContainer(props) {
     }
 
     if(message != ''){
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: message,
-          buttonText: Strings.Ok,
-        }),
-      );
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message);
+      }      
       return;
     }
             
@@ -291,7 +291,7 @@ export default function AddLeadContainer(props) {
       })
       .catch(e => {
         setIsLoading(false);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e, alertModalRef);
       });
   };
 
@@ -337,24 +337,13 @@ export default function AddLeadContainer(props) {
         .catch(e => {
           console.log(e);
           setIsLoading(false);
-          expireToken(dispatch, e);
+          expireToken(dispatch, e , alertModalRef);
         });
     } else {
       setIsLoading(false);
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: apiRes.message,
-          buttonText: 'Ok',
-          buttonAction: () => {
-            dispatch(clearNotification());
-            props.onButtonAction({
-              type: Constants.actionType.ACTION_DONE,
-              value: location_id,
-            });
-          },
-        }),
-      );
+      if(alertModalRef.current){
+        alertModalRef.current.alert(apiRes.message, Strings.Ok , false , 'done');
+      }      
     }
   };
 
@@ -465,12 +454,23 @@ export default function AddLeadContainer(props) {
 
   return (
     <View style={{alignSelf: 'stretch', flex: 1}}>
-      <Notification />
+      
+      <AlertModal 
+        onModalClose={(response) => {
+          if(response == 'done'){
+            props.onButtonAction({
+              type: Constants.actionType.ACTION_DONE,
+              value: location_id,
+            });
+          }
+        }}
+        ref={alertModalRef} />
 
       <AddLeadView
         ref={addLeadViewRef}
         onButtonAction={onButtonAction}
         leadForms={leadForms}
+        fieldOptionFilters={fieldOptionFilters}
         accuracyUnit={accuracyUnit}
         useGeoLocation={useGeoLocation}
         onChangedCustomMasterFields={onChangedCustomMasterFields}
