@@ -26,6 +26,7 @@ import AccessScreen from '../screens/GeoLife/AccessScreen';
 import BusinessDirectoryScreen from '../screens/GeoLife/BusinessDirectoryScreen';
 import ProductSales from '../screens/GeoRep/Sales/ProductSales';
 import ProductSalesNavigator from '../screens/GeoRep/Sales/ProductSalesNavigator';
+import LearningScreen from '../screens/GeoRep/Learning/Learning'
 
 export const WHATS_APP_LINK =
   'https://wa.me/27608477174?text=Hi!%20I%20have%20a%20support%20request';
@@ -189,6 +190,14 @@ export function getPageNameByLinker(selectedProject, linker) {
         activeIcon: 'Pipeline',
         inActiveIcon: 'Pipeline_Gray',
       };
+    case 'learning':
+      return {
+        linker: linker,
+        name: 'Learning',
+        router: LearningScreen,
+        activeIcon: 'Learning',
+        inActiveIcon: 'Learning_Gray',
+      }
   }
 }
 

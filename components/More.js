@@ -101,6 +101,12 @@ const lists = {
       navigator: 'Stock',
       navOrder: 'stock_module',
     },
+    {
+      icon: 'Learning',
+      name: 'Learning',
+      navigator: 'Learning',
+      navOrder: 'learning',
+    },
     // {
     //   icon: "Support_Agent",
     //   name: "Support",
