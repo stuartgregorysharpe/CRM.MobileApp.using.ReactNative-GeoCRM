@@ -12,6 +12,7 @@ const LearningGradientView = props =>{
           borderRadius: 10,
           padding: 15,
           paddingBottom: 60,
+          marginBottom: 60
         }}>
         <AppText type="" color={whiteLabel().headerText} size="big" title="Learning Courses"
           style = {{

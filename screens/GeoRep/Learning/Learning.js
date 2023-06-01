@@ -1,10 +1,11 @@
-import {View, Text, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions, ScrollView, SafeAreaView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import LearningGradientView from './components/LearningGradientView';
 import { AppText } from "../../../components/common/AppText";
 import { whiteLabel } from '../../../constants/Colors';  
 import SvgIcon from '../../../components/SvgIcon';
 import CourseCardItemView from './components/CourseCardItemView';
+import LearningContainer from './containers/LearningContainer';
 const Learning = props =>{
   const [courseList, setCourseList] = useState([]);
   useEffect(() => {
@@ -72,82 +73,85 @@ const Learning = props =>{
     ])
 }, []);
   return (
-    <ScrollView
-      style= {{
-        padding: 15
-      }}
-    >
-      <LearningGradientView/>
-      {/* Course to complete */}
-      <View style={{
-          backgroundColor: 'white',
-          padding: 15,
-          borderRadius: 10,
-          marginTop: 70
-      }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <SvgIcon
-              icon={'Learning'}
-              width="20px"
-              height="20px"
-            />
-              <AppText type="" color={whiteLabel().mainText} size="big" title="Courses to Complete"
-                style = {{
-                  fontSize: 14,
-                  marginLeft: 10
-                }}
-              ></AppText>
-          </View>
-        </View>
-        {
-          courseList.map((course, index) => {
-            return <View key={index.toString()} >
-                <TouchableOpacity onPress={() => {}}>
-                    <CourseCardItemView item={course}/>
-                </TouchableOpacity>
-                {index < courseList.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}
-            </View>
-          })
-        }
+    <SafeAreaView>
+      <LearningContainer/>
+    </SafeAreaView>
+    // <ScrollView
+    //   style= {{
+    //     padding: 15
+    //   }}
+    // >
+    //   <LearningGradientView/>
+    //   {/* Course to complete */}
+    //   <View style={{
+    //       backgroundColor: 'white',
+    //       padding: 15,
+    //       borderRadius: 10,
+    //       marginTop: 70
+    //   }}>
+    //     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    //       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    //         <SvgIcon
+    //           icon={'Learning'}
+    //           width="20px"
+    //           height="20px"
+    //         />
+    //           <AppText type="" color={whiteLabel().mainText} size="big" title="Courses to Complete"
+    //             style = {{
+    //               fontSize: 14,
+    //               marginLeft: 10
+    //             }}
+    //           ></AppText>
+    //       </View>
+    //     </View>
+    //     {
+    //       courseList.map((course, index) => {
+    //         return <View key={index.toString()} >
+    //             <TouchableOpacity onPress={() => {}}>
+    //                 <CourseCardItemView item={course}/>
+    //             </TouchableOpacity>
+    //             {index < courseList.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}
+    //         </View>
+    //       })
+    //     }
           
-      </View>
+    //   </View>
 
-      {/* Completed Course */}
-      <View style={{
-          backgroundColor: 'white',
-          padding: 15,
-          borderRadius: 10,
-          marginTop: 70
-      }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <SvgIcon
-              icon={'Verified'}
-              width="20px"
-              height="20px"
-            />
-              <AppText type="" color={whiteLabel().mainText} size="big" title="Completed Courses"
-                style = {{
-                  fontSize: 14,
-                  marginLeft: 10
-                }}
-              ></AppText>
-          </View>
-        </View>
-        {
-          courseList.map((course, index) => {
-            return <View key={index.toString()} >
-                <TouchableOpacity onPress={() => {}}>
-                    <CourseCardItemView item={course}/>
-                </TouchableOpacity>
-                {index < courseList.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}
-            </View>
-          })
-        }
+    //   {/* Completed Course */}
+    //   <View style={{
+    //       backgroundColor: 'white',
+    //       padding: 15,
+    //       borderRadius: 10,
+    //       marginTop: 70
+    //   }}>
+    //     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    //       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    //         <SvgIcon
+    //           icon={'Verified'}
+    //           width="20px"
+    //           height="20px"
+    //         />
+    //           <AppText type="" color={whiteLabel().mainText} size="big" title="Completed Courses"
+    //             style = {{
+    //               fontSize: 14,
+    //               marginLeft: 10
+    //             }}
+    //           ></AppText>
+    //       </View>
+    //     </View>
+    //     {
+    //       courseList.map((course, index) => {
+    //         return <View key={index.toString()} >
+    //             <TouchableOpacity onPress={() => {}}>
+    //                 <CourseCardItemView item={course}/>
+    //             </TouchableOpacity>
+    //             {index < courseList.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}
+    //         </View>
+    //       })
+    //     }
           
-      </View>
-    </ScrollView>
+    //   </View>
+    // </ScrollView>
   );
 }
 
