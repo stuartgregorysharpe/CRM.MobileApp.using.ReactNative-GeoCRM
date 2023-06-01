@@ -1553,6 +1553,15 @@ const Learning_Gray = `<?xml version="1.0" encoding="UTF-8"?>
   <path d="m13.29,33.06l-4.77-2.62c-2.32-1.27-3.76-3.71-3.76-6.35v-5.02c0-.39.42-.64.77-.45l10.9,5.3c2.07,1.14,4.59,1.14,6.66,0l11.04-5.08c.34-.19.77.06.77.45l-.13,4.8c0,2.64-1.44,5.08-3.76,6.35l-4.77,2.62c-4.03,2.21-8.9,2.21-12.93,0Z" style="fill: #a2a5ae;"/>
   <path d="m18.82,21.28L1.04,12.53c-1.39-.76-1.39-2.76,0-3.52L18.82.25c.6-.33,1.32-.33,1.92,0l17.86,8.76c1.39.76,1.39,2.77,0,3.53l-17.86,8.76c-.6.33-1.32.33-1.92,0Z" style="fill: #a2a5ae;"/>
 </svg>`;
+
+const Verified = `<svg xmlns="http://www.w3.org/2000/svg" width="46.095" height="44" viewBox="0 0 46.095 44">
+  <path id="verified_FILL1_wght400_GRAD0_opsz48" d="M18.029,47l-3.981-6.81-7.91-1.624.89-7.7L2,25l5.029-5.814-.89-7.7,7.91-1.624L18.029,3l7.019,3.248L32.067,3,36.1,9.862l7.857,1.624-.89,7.7L48.1,25l-5.029,5.867.89,7.7L36.1,40.19,32.067,47l-7.019-3.248ZM22.8,31.967l11.89-11.786-2.357-2.148L22.8,27.462l-4.976-5.186-2.41,2.357Z" transform="translate(-2 -3)" style="fill: ${actionIconBackground};"/>
+</svg>
+`;
+const Verified_Grey = `<svg xmlns="http://www.w3.org/2000/svg" width="46.095" height="44" viewBox="0 0 46.095 44">
+<path id="verified_FILL1_wght400_GRAD0_opsz48" d="M18.029,47l-3.981-6.81-7.91-1.624.89-7.7L2,25l5.029-5.814-.89-7.7,7.91-1.624L18.029,3l7.019,3.248L32.067,3,36.1,9.862l7.857,1.624-.89,7.7L48.1,25l-5.029,5.867.89,7.7L36.1,40.19,32.067,47l-7.019-3.248ZM22.8,31.967l11.89-11.786-2.357-2.148L22.8,27.462l-4.976-5.186-2.41,2.357Z" transform="translate(-2 -3)" style="fill: #a2a5ae;"/>
+</svg>
+`;
 const svgMap = {
   Round_Btn_Default_Dark: Round_Btn_Default_Dark,
   Round_Btn_Default_Dark_Gray: Round_Btn_Default_Dark_Gray,
@@ -1714,7 +1723,9 @@ const svgMap = {
   Survey: Survey,
   Sim_Card : Sim_Card,
   Learning: Learning,
-  Learning_Gray: Learning_Gray
+  Learning_Gray: Learning_Gray,
+  Verified: Verified,
+  Verified_Grey:Verified_Grey 
 }
 
 export default ({
