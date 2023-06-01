@@ -3,6 +3,7 @@ import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  CHANGE_LOCATION_FILTERS,
   CHANGE_PIN_KEY,
   CHANGE_POLYGONS,
   IS_CALENDAR_SELECTION,
@@ -158,10 +159,18 @@ const LocationContainer = props => {
   };
 
   const onFilterPress = () => {
-    getLocationFilters(dispatch , alertModalRef);
     if (locationFilterModalRef && locationFilterModalRef.current) {
       locationFilterModalRef.current.showModal();
     }
+    getLocationFilters( (type, respnose) => {
+      if(type == 'success'){
+        dispatch({type: CHANGE_LOCATION_FILTERS, payload: respnose});
+      }else if(type == 'failed'){
+        locationFilterModalRef.current.hideModal();
+        expireToken(dispatch, respnose, alertModalRef);
+      }
+    });
+    
   };
 
   const onOpenMarkerModal = () => {

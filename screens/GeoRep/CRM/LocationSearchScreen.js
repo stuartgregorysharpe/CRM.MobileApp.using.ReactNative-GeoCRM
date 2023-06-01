@@ -14,6 +14,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import SearchBar from '../../../components/SearchBar';
 import Colors from '../../../constants/Colors';
 import {
+  CHANGE_LOCATION_FILTERS,
   IS_CALENDAR_SELECTION,
   LOCATION_ID_CHANGED,
   SELECTED_LOCATIONS_FOR_CALENDAR,
@@ -280,8 +281,15 @@ export default function LocationSearchScreen(props) {
         savedShowItem = 0;
         return;
       case 'filter':
-        getLocationFilters(dispatch , alertModalRef)
         filterYourSearchModalRef.current.showModal();
+        getLocationFilters( (type, respnose) => {
+          if(type == 'success'){
+            dispatch({type: CHANGE_LOCATION_FILTERS, payload: respnose});
+          }else if(type == 'failed'){
+            filterYourSearchModalRef.current.hideModal();
+            expireToken(dispatch, respnose, alertModalRef);
+          }
+        });        
         return;
       case 'locationInfo':
         if (locationInfoModalRef.current) {

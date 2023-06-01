@@ -2,6 +2,7 @@ import {Strings} from '../constants';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import UrlResource from './UrlResource';
 import GetRequest from './GetRequest';
+import { getFieldOptionFilters } from './helper';
 
 export function find(postData) {
   return new Promise(function (resolve, reject) {
@@ -377,28 +378,6 @@ const getCompulsoryUnattachedDevices = async() => {
   return result;
 }
 
-const getFieldOptionFilters = async (role) => {
-  
-  var query = `SELECT custom_field_id , value FROM location_custom_field_role_filtering WHERE delete_status = 0 AND role = ?`;
-  const res = await ExecuteQuery(query, [role]);
-  var lists = res.rows ? res.rows : [];  
-  var fieldOption = {};  
-  for (var i = 0; i < lists.length; i++) {    
-    const subElement = lists.item(i);    
-    if(fieldOption[subElement.custom_field_id] != undefined){
-      fieldOption = {
-        ...fieldOption,
-        [subElement.custom_field_id] : [ ...fieldOption[subElement.custom_field_id], subElement.value ]
-      }
-    }else{
-      fieldOption = {
-        ...fieldOption,
-        [subElement.custom_field_id] : [ subElement.value ]
-      }
-    }    
-  }    
-  return fieldOption;
-}
 
 export default {
   find,

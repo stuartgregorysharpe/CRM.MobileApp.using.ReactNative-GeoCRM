@@ -49,7 +49,7 @@ const getFieldOption =  (fieldOptionFilters, field_id) => {
 };
 
   
-export const getLocationFilters = async (dispatch, alertModalRef) => { 
+export const getLocationFilters = async (onCompleted) => { 
 
   var user_id = await getTokenData("user_id");
   const postData = {
@@ -57,7 +57,7 @@ export const getLocationFilters = async (dispatch, alertModalRef) => {
   };
   
   GetRequestLocationFiltersDAO.find(postData).then((res) => {
-    console.log("DDDDD", JSON.stringify(res));
+    
     if(res.status){
       const fieldOptionFilters = res.field_option_filters;
       const items = res.items;
@@ -72,11 +72,12 @@ export const getLocationFilters = async (dispatch, alertModalRef) => {
             filteredItems.push(element);
           }
       });
-      dispatch({type: CHANGE_LOCATION_FILTERS, payload: filteredItems});
+      onCompleted('success' , filteredItems);
+      
     }
   }).catch((e) => {
-    console.log("error occured", e);
-    expireToken(dispatch, e , alertModalRef);
+    onCompleted('failed' , e);
+    
   });
 
 };
