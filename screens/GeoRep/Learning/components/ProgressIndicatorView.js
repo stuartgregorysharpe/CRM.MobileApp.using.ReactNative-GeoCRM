@@ -7,7 +7,6 @@ const ProgressIndicatorView = ({ total = 5, style, progressbarColor = whiteLabel
         let listViews = [];
 
         for (let index = 0; index < total; index++) {
-            console.log('push:', total, completed)
             listViews.push(<View key={index.toString()}
                 style={{
                     height: 5,
