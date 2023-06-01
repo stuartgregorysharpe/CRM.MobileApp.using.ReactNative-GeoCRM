@@ -4,6 +4,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { AppText } from "../../../../components/common/AppText";
 import { whiteLabel } from '../../../../constants/Colors';  
 const LearningGradientView = props =>{
+  const { total_points, courses } = props
   return (
     <View>
       <LinearGradient
@@ -41,7 +42,7 @@ const LearningGradientView = props =>{
             right: 10,
         }}>
           <View style={{ alignItems: 'center' }}>
-            <AppText type="" color='black' size="big" title="12"
+            <AppText type="" color='black' size="big" title={total_points}
               style = {{
                 fontSize: 20,
                 fontWeight: '900'
@@ -56,7 +57,7 @@ const LearningGradientView = props =>{
           </View>
           <View style={{ width: 2, height: '100%', backgroundColor: '#133C8B' }}></View>
           <View style={{ alignItems: 'center' }}>
-          <AppText type="" color='black' size="big" title="1/11"
+          <AppText type="" color='black' size="big" title={`${courses.completed}/${courses.total}`}
               style = {{
                 fontSize: 20,
                 fontWeight: '900'
