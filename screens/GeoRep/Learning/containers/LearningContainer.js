@@ -5,6 +5,7 @@ import CourseListCardView from '../components/CourseListCardView';
 
 const LearningContainer = props => {
     const [courseList, setCourseList] = useState([]);
+    const [userSummary, setUserSummary] = useState({});
     useEffect(() => {
       setCourseList([
         {
@@ -75,11 +76,11 @@ const LearningContainer = props => {
                 padding: 15
             }}
         >
-            <LearningGradientView/>
+            <LearningGradientView total_points = {userSummary.total_points} courses = {userSummary.courses}/>
             {/* Course to complete */}
-            <CourseListCardView icon_name = "Learning" section_title = "Course to complete" course_list = {courseList}/>
+            <CourseListCardView icon_name = "Learning" section_title = "Course to complete" course_list = {courseList.filter(element => element.status != 'completed')}/>
             {/* Completed Course */}
-            <CourseListCardView icon_name = "Verified" section_title = "Completed Courses" course_list = {courseList}/>
+            <CourseListCardView icon_name = "Verified" section_title = "Completed Courses" course_list = {courseList.filter(element => element.status == 'completed')}/>
         </ScrollView>
     );
 }
