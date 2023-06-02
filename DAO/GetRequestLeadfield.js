@@ -280,6 +280,7 @@ const getTriggerFieldData = (lists, element) => {
     }
 
     if (
+      subElement.field_type == 'dropdown' ||
       subElement.field_type == 'multiple' ||
       subElement.field_type == 'multi_select'
     ) {
