@@ -1,19 +1,22 @@
 import {View, Text, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import LearningGradientView from '../components/LearningGradientView';
 import CourseListCardView from '../components/CourseListCardView';
 import { getApiRequest } from '../../../../actions/api.action';
+import LoadingBar from '../../../../components/LoadingView/loading_bar';
 
 const LearningContainer = props => {
     const [courseList, setCourseList] = useState([]);
     const [userSummary, setUserSummary] = useState({});
+    const loadingBarRef = useRef(null);
     useEffect(() => {
       getLearningDashboard()
     }, []);
 
     const getLearningDashboard = () =>{
-        // getApiRequest('index.php/v2/user/dashboard', {}).then(res =>{
-            // console.log('Learning Dashboard Api result', res)
+        loadingBarRef.current.showModal();
+        getApiRequest('v2/user/dashboard', {}, true).then(response =>{
+            console.log('Learning Dashboard Api result', response)
             let res = {
                 "status": "success",
                 "user_summary": {
@@ -102,8 +105,12 @@ const LearningContainer = props => {
 
             setCourseList(res.assigned_courses)
             setUserSummary(res.user_summary)
+            loadingBarRef.current.hideModal();
 
-        // })
+        }).catch(error =>{
+            console.log("API for Learning Dashboard Error:", error)
+            loadingBarRef.current.hideModal()
+        })
     }
     return (
         <ScrollView
@@ -116,6 +123,8 @@ const LearningContainer = props => {
             <CourseListCardView icon_name = "Learning" section_title = "Course to complete" course_list = {courseList.filter(element => element.status != 'completed')}/>
             {/* Completed Course */}
             <CourseListCardView icon_name = "Verified" section_title = "Completed Courses" course_list = {courseList.filter(element => element.status == 'completed')}/>
+            {/* Loading Bar */}
+            <LoadingBar ref={loadingBarRef}/>
         </ScrollView>
     );
 }
