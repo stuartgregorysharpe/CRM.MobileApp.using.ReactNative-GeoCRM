@@ -112,7 +112,7 @@ const LocationContainer = props => {
         .catch(e => {
           console.log('location map api error : ', e);
           setIsLoading(false);
-          expireToken(dispatch, e);
+          expireToken(dispatch, e, alertModalRef);
         });
     }
   };
@@ -185,7 +185,7 @@ const LocationContainer = props => {
       })
       .catch(e => {
         console.log('locaiton pin key api error: ', e);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
@@ -216,7 +216,7 @@ const LocationContainer = props => {
           setLocationInfo(res);
         })
         .catch(e => {
-          expireToken(dispatch, e);
+          expireToken(dispatch, e , alertModalRef);
         });
     }
   };

@@ -1,5 +1,5 @@
-import LocationSearchDAO from './LocationSearch';
-import LocationMapDAO from './LocationMap';
+import LocationSearchDAO from './locations/LocationSearch';
+import LocationMapDAO from './locations/LocationMap';
 import LocationPinKeyDAO from './LocationPinKey';
 import LocationCheckinTypeDAO from './LocationCheckinType';
 import PostRequestDAO from './PostRequest';

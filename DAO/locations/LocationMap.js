@@ -1,51 +1,52 @@
-import { getApiRequest } from "../actions/api.action";
-import { Strings } from "../constants";
-import { getFilterData, getTokenData, getUserId } from "../constants/Storage";
-import { ExecuteQuery } from "../sqlite/DBHelper";
-import { checkConnectivity } from "./helper";
+import { getApiRequest } from "../../actions/api.action";
+import { Strings } from "../../constants";
+import { getFilterData, getTokenData, getUserId } from "../../constants/Storage";
+import { ExecuteQuery } from "../../sqlite/DBHelper";
+import GetRequest from "../GetRequest";
+import { checkConnectivity } from "../helper";
+import { getRoleFieldFilters, getRoleFilterWhere } from "./helper";
 
 export function find(currentLocation, box ,features){
   
-  return new Promise(function(resolve, reject) {
+  return new Promise( async function(resolve, reject) {
 
-        checkConnectivity().then( async (isConnected) => { 
+        var user_id = await getUserId();
+        var filters = await getFilterData('@filter');
+        var zoom_bounds = box.map(item => item).join(',');                
 
-            if(isConnected){
-                var user_id = await getUserId();
-                var filters = await getFilterData('@filter');
-                var zoom_bounds = box.map(item => item).join(',');                
+        var postData = {
+            user_id: user_id,
+            filters: filters,
+            current_latitude: currentLocation.latitude,
+            current_longitude: currentLocation.longitude,
+            zoom_bounds: zoom_bounds,
+        };
+        
+        GetRequest.call("locations/location-map",  postData).then( async(res) => {
 
-                var params = {
-                    user_id: user_id,
-                    filters: filters,
-                    current_latitude: currentLocation.latitude,
-                    current_longitude: currentLocation.longitude,
-                    zoom_bounds: zoom_bounds,
-                };
+            if(res.status == Strings.Success && res.isConnected){
+                resolve(res.data);        
+            }else if(res.status == Strings.Success && !res.isConnected){
                 
-                getApiRequest("locations/location-map" , params).then((res) => {                    
-                    if (res.status == Strings.Success) {
-                        resolve(res);                        
-                    } else {
-                        reject()
-                    }
-                }).catch( e => {
-                    console.log("error", e)            
-                    reject(e)
-                });      
-            }else{
-
-                var client_id = await getTokenData("client_id");
-                var business_unit_id = await getTokenData("business_unit_id");                   
-                var locationName = await getLocationName(client_id, business_unit_id);                
-                var locations = await getLocations(client_id, business_unit_id, box ,features);
-            
-                resolve(getResponse( locationName, locations));
-
+                const client_id = res.data.client_id;
+                const business_unit_id = res.data.business_unit_id;
+                const user_id = res.data.user_id;
+                const role = res.data.role;
+                console.log("client_id : busi: role", client_id, business_unit_id , role)
+                if(client_id && business_unit_id ){                                        
+                    var locationName = await getLocationName(client_id, business_unit_id);                
+                    var locations = await getLocations(client_id, business_unit_id, box ,features , role);
+                    resolve(getResponse( locationName, locations));                    
+                }else{
+                    reject('No Cilent  ID');
+                }
             }
-        }).catch(e => {
+        }).catch((e) => {
             reject(e);
-        });
+        });   
+        
+
+        
   });
 
 }
@@ -61,7 +62,7 @@ const getLocationName = async (client_id, business_unit_id) => {
     return '';
 }
 
-const getLocations = async (client_id, business_unit_id, box ,features) => {
+const getLocations = async (client_id, business_unit_id, box ,features , role) => {
         
     var where = ``;
     if(box != undefined){
@@ -77,7 +78,14 @@ const getLocations = async (client_id, business_unit_id, box ,features) => {
         }        
     }
 
-    const query = generateQuery(features , where);    
+    const roleFieldFilters = await getRoleFieldFilters(role);
+    
+    const roleFilterWhere = getRoleFilterWhere(roleFieldFilters);
+
+    const query = generateQuery(features , roleFilterWhere ,  where);    
+
+    console.log("query", query);
+
     try{
         var res;
         if(features.includes("disposition_fields")){
@@ -98,14 +106,14 @@ const getLocations = async (client_id, business_unit_id, box ,features) => {
 }
 
 
-const generateQuery = (features , where) => {
+const generateQuery = (features , roleFilterWhere , where) => {
     var query = ``;
     if(features.includes("disposition_fields")){
 
         const query0 = `SELECT crm_campaign_id FROM crm_campaigns WHERE business_unit_id = ? AND client_id = ?`;    
         query = `SELECT cdl.location_id, lcmd.location_name, lcmd.latitude,lcmd.longitude, ldp.png_file, ldp.pin_name, ldp.dynamic_pin_id ` +
                     `FROM crm_disposition_locations AS cdl LEFT JOIN locations_core_master_data AS lcmd ON lcmd.location_id = cdl.location_id LEFT JOIN locations_dynamic_pins AS ldp ON ldp.dynamic_pin_id = cdl.dynamic_pin_id ` + 
-                    `WHERE ${where} lcmd.delete_status = 0 AND cdl.campaign_id IN (${query0}) ` + 
+                    `WHERE ${roleFilterWhere} ${where} lcmd.delete_status = 0 AND cdl.campaign_id IN (${query0}) ` + 
                     `ORDER BY lcmd.location_id DESC`;
                             
     }else{
@@ -125,7 +133,7 @@ const generateQuery = (features , where) => {
                           `ON lcmd.location_status = ldp.location_status  ` + 
                              `AND ldp.business_unit_id = ? ` + 
                              `AND ldp.client_id = ? ` + 
-                          `WHERE ${where} ` + 
+                          `WHERE ${roleFilterWhere} ${where} ` + 
                             `lcmd.delete_status = 0 ` + 
                           `AND lcmd.client_id = ? ` + 
                           `AND lcmd.business_unit_id = ? `;
@@ -136,6 +144,9 @@ const generateQuery = (features , where) => {
     }
     return query;
 }
+
+
+
 
 
 const getResponse = (locationName, locations) => {

@@ -221,7 +221,7 @@ export default function LocationSearchScreen(props) {
   };
 
   const loadData = async searchKey => {
-    var filterData = await getFilterData('@filter');
+    var filterData = await getFilterData('@filter');    
     LocationSearchDAO.find(
       currentLocation,
       filterData,
@@ -248,7 +248,7 @@ export default function LocationSearchScreen(props) {
         }
       })
       .catch(e => {
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
@@ -319,7 +319,7 @@ export default function LocationSearchScreen(props) {
         setLocationInfo(res);        
       })
       .catch(e => {        
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });        
 
   };
