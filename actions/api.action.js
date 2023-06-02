@@ -1,7 +1,7 @@
 import axios from 'axios';
 import uuid from 'react-native-uuid';
 import { Strings } from '../constants';
-import { getBaseUrl, getToken } from '../constants/Storage';
+import { getBaseUrl, getToken, getLmsUrl } from '../constants/Storage';
 import { generateKey } from '../constants/Utils';
 import { convertStringToByteArray } from '../services/DownloadService/TrackNetSpeed';
 
@@ -15,9 +15,9 @@ export const dummyApiRequest = async (route, param, response) => {
 
 axios.defaults.timeout = 15000;
 
-export const getApiRequest = async (route, param) => {
+export const getApiRequest = async (route, param, isLms = false) => {
   var token = await getToken();
-  var baseUrl = await getBaseUrl();
+  var baseUrl = isLms ? await getLmsUrl() : await getBaseUrl();
 
   var url = `${baseUrl}/${route}`;
   console.log('API Call Log', url);
@@ -74,10 +74,10 @@ export const getApiRequest = async (route, param) => {
   });
 };
 
-export const postApiRequest = async (route, postData, indempotencyKey) => {
+export const postApiRequest = async (route, postData, indempotencyKey , isLms = false) => {
 
   var token = await getToken();
-  var baseUrl = await getBaseUrl();
+  var baseUrl = isLms ? await getLmsUrl() : await getBaseUrl();
   
   var url = `${baseUrl}/${route}`;
   if (route.includes('local_api_old')) {

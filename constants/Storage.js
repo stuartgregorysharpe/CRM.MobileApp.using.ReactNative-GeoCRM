@@ -98,6 +98,18 @@ export const getBaseUrl = async () => {
   }
 };
 
+export const getLmsUrl = async () => {
+  try {
+    var token = await getToken();
+    var data = token != null ? jwt_decode(token) : null;
+    var lms_url = data.user_scopes.geo_rep.lms_url;
+    return lms_url;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
 export const getUserId = async () => {
   try {
     var token = await getToken();
