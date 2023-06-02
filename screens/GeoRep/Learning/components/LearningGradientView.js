@@ -42,7 +42,7 @@ const LearningGradientView = props =>{
             right: 10,
         }}>
           <View style={{ alignItems: 'center' }}>
-            <AppText type="" color='black' size="big" title={total_points}
+            <AppText type="" color='black' size="big" title={total_points ?? 0}
               style = {{
                 fontSize: 20,
                 fontWeight: '900'
@@ -57,7 +57,7 @@ const LearningGradientView = props =>{
           </View>
           <View style={{ width: 2, height: '100%', backgroundColor: '#133C8B' }}></View>
           <View style={{ alignItems: 'center' }}>
-          <AppText type="" color='black' size="big" title={`${courses?.completed}/${courses?.total}`}
+          <AppText type="" color='black' size="big" title={`${courses?.completed ?? 0}/${courses?.total ?? 0}`}
               style = {{
                 fontSize: 20,
                 fontWeight: '900'
