@@ -222,13 +222,6 @@ function checkDropdownTriggerCondition(
   valueList,
   formType,
 ) {
-  // console.log('checkDropdownTriggerCondition -condition', condition);
-  // console.log('checkDropdownTriggerCondition -answer', answerList);
-  // console.log('checkDropdownTriggerCondition -value', valueList);
-
-  if (formType == 'form') {
-    return checkTextTriggerCondition(condition, answerList, valueList);
-  }
 
   if (
     condition != 'ANY' &&

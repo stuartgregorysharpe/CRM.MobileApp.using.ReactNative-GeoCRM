@@ -59,11 +59,15 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
   }, [leadForms]);
 
   const initData = (leadForms, type) => {
-    var renderForms = leadForms.filter((item, index) => index != 0);
+
+    var renderForms = [];
     if (type == 'first') {
       renderForms = leadForms.filter((item, index) => index == 0);
-    }
+    }else if( type == 'second'){
+      renderForms = leadForms.filter((item, index) => index != 0);
+    }    
     const tmpFormData = {};
+
     renderForms.forEach(field => {
       var value = field.value;
       if (field.field_type === 'dropdown_input') {
@@ -91,7 +95,9 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
     } else {
       setFormData2(tmpFormData);      
     }
+
     onChangedCustomMasterFields({...formData1, ...formData2, ...tmpFormData});
+
     const dynamicFields = renderForms.map((field, index) => {
       var value = field.value;
       if (
@@ -126,8 +132,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
         field_name: field.custom_master_field_id,
         initial_value: field.value,
         editable: field.rule_editable,
-        is_required:
-          field.rule_compulsory === '1' || field.rule_compulsory === 1,
+        is_required: field.rule_compulsory === '1' || field.rule_compulsory === 1,
         field_label: field.field_name,
         value: value,
       };
@@ -137,7 +142,8 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
       setFormStructure1(dynamicFields);
     } else {
       addValue(formData2, dynamicFields);
-      filterTriggerForm(dynamicFields);
+      let filterTriggerFields = filterTriggerForm(dynamicFields);
+      setFormStructure2(filterTriggerFields);
     }
   };
 
@@ -178,7 +184,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
       formStructure2[i].isHidden = !isShow;
       formStructure.push(formStructure2[i]);
     }
-    setFormStructure2(formStructure);
+    return formStructure;    
   };
 
   const renderUseCurrentLocation = key => {
@@ -257,7 +263,8 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
         updateFormData={formData => {
           setFormData2(formData);
           addValue(formData, formStructure2);
-          filterTriggerForm(formStructure2);
+          let filterTriggerFields = filterTriggerForm(formStructure2);
+          setFormStructure2(filterTriggerFields);
           onChangedCustomMasterFields({...formData1, ...formData});
         }}
         updateSecondFormData={formData => {
