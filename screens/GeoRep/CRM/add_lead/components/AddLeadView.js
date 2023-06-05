@@ -5,10 +5,11 @@ import PrimaryContactFields from './PrimaryContactFields';
 import CustomMasterFields from './CustomMasterFields';
 import AddLeadOtherSection from './AddLeadOtherSection';
 
-const AddLeadView = React.forwardRef((props, ref) => {
+const AddLeadView = React.forwardRef((props, ref) => {        
 
   const {
     leadForms,
+    fieldOptionFilters,
     customMasterFields,
     accuracyUnit,
     useGeoLocation,
@@ -62,6 +63,7 @@ const AddLeadView = React.forwardRef((props, ref) => {
           <CustomMasterFields
             ref={customMasterFieldsFormRef}
             leadForms={leadForms}
+            fieldOptionFilters={fieldOptionFilters}
             customMasterFields={customMasterFields}
             accuracyUnit={accuracyUnit}
             useGeoLocation={useGeoLocation}

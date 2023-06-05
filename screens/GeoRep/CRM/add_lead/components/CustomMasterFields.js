@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import React, {useRef, useState, useEffect, useImperativeHandle} from 'react';
+import React, {useRef, useState, useEffect, useCallback,  useImperativeHandle} from 'react';
 import Colors, {whiteLabel} from '../../../../../constants/Colors';
 import {Fonts} from '../../../../../constants';
 import {useSelector} from 'react-redux';
@@ -8,8 +8,10 @@ import {reverseGeocoding} from '../../../../../actions/google.action';
 import {checkIfQuestionIsTrigger} from '../../../Forms/questions/helper';
 
 const CustomMasterFields = React.forwardRef((props, ref) => {
+  
   const {
     leadForms,
+    fieldOptionFilters,
     customMasterFields,
     accuracyUnit,
     useGeoLocation,
@@ -34,6 +36,7 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
   const _validateForm = () => {
     let isValid = true;
     if (actionFormRef) {
@@ -103,11 +106,19 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
           field.field_type == 'multi_select') &&
         field.preset_options != undefined
       ) {
+        
         var items = [];
-        if (field.preset_options != undefined && field.preset_options != '') {
-          field.preset_options.forEach(element => {
+        var fieldOptions = getFieldOption(field.custom_master_field_id);
+        if(fieldOptions != null){
+          fieldOptions.forEach(element => {
             items.push({label: element, value: element});
           });
+        }else{
+          if (field.preset_options != undefined && field.preset_options != '') {
+            field.preset_options.forEach(element => {
+              items.push({label: element, value: element});
+            });
+          }
         }
         field = {
           ...field,
@@ -136,6 +147,21 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
     }
   };
 
+    
+  const getFieldOption = useCallback(
+    (field_id) => {      
+      if(fieldOptionFilters != undefined && fieldOptionFilters != ''){        
+        for(let key of Object.keys(fieldOptionFilters)){
+          if(field_id == key){
+            return fieldOptionFilters[key];
+          }
+        }    
+      }    
+      return null;
+    },
+    [fieldOptionFilters],
+  );
+  
   const addValue = (formData, formStructure2) => {
     for (let key of Object.keys(formData)) {
       formStructure2.map(element => {

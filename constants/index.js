@@ -5,7 +5,7 @@ import Colors from './Colors';
 import Values from './Values';
 import Strings from './Strings';
 
-export const offlineDBVersion = '1.9';
+export const offlineDBVersion = '2.1';
 
 export const GOOGLE_API_KEY = 'AIzaSyBtgcNrNTOftpHM44Qk9BVzhUdKIZEfvJw';
 export const GOOGLE_MAPS_APIKEY = 'AIzaSyA36_9T7faYSK-w84OhxTe9CIbx4THru3o';
