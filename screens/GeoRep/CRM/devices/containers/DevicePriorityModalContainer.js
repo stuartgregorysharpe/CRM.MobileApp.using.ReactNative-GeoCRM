@@ -83,14 +83,20 @@ export default function DevicePriorityModalContainer(props) {
     }
 
     const isDuplicateData = (data) => {
-        if(data?.additional_imei_required != '1'){
+        if( data?.msn_required == '1' && data?.additional_imei_required != '1'){
           if(data?.msn === data?.imei){
             return true;
           }
-        }else{
-          if(data?.imei.trim() === data?.msn.trim() || data?.imei.trim() === data?.additional_imei.trim() || data?.msn.trim() === data?.additional_imei.trim() ){
-            return true;
-          }
+        }else{ 
+            if(data?.msn_required == '1') {
+                if(data?.imei.trim() === data?.msn.trim() || data?.imei.trim() === data?.additional_imei.trim() || data?.msn.trim() === data?.additional_imei.trim() ){
+                    return true;
+                }
+            }else{
+                if(data?.imei.trim() === data?.additional_imei.trim()){
+                    return true;
+                }
+            }          
         }
         return false;
     }    
