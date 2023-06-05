@@ -341,7 +341,7 @@ export default function AddLeadContainer(props) {
     } else {
       setIsLoading(false);
       if(alertModalRef.current){
-        alertModalRef.current.alert(apiRes.message, Strings.Ok , false , 'done');
+        alertModalRef.current.alert(apiRes.message, Strings.Ok , false , location_id);
       }      
     }
   };
@@ -456,10 +456,10 @@ export default function AddLeadContainer(props) {
       
       <AlertModal 
         onModalClose={(response) => {
-          if(response == 'done'){
+          if(response != ''){
             props.onButtonAction({
               type: Constants.actionType.ACTION_DONE,
-              value: location_id,
+              value: response,
             });
           }
         }}
