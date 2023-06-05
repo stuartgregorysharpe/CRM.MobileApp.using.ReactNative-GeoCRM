@@ -14,8 +14,7 @@ export function call( url, postData){
                     resolve({status: Strings.Success , isConnected:isConnected, data: res});
                 })
                 .catch(e => {        
-                    console.log("get api call log", e);            
-                    //resolve({ status : Strings.Failed ,  message: e , isConnected: isConnected,  data: []});
+                    console.log("get api call log", e);                                
                     reject(e);
                 });
 
@@ -24,9 +23,10 @@ export function call( url, postData){
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
                 var user_id = await getTokenData("user_id");
+                var role = await getTokenData("role");
                 
                 console.log("Offline Api : " , url);
-                resolve({status: Strings.Success , isConnected: isConnected, data:{client_id:client_id, business_unit_id:business_unit_id , user_id: user_id } });
+                resolve({status: Strings.Success , isConnected: isConnected, data:{client_id:client_id, business_unit_id:business_unit_id , user_id: user_id , role: role } });
             }
         }).catch(e => {
             reject(e);

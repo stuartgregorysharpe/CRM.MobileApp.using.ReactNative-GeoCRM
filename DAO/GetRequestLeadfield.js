@@ -2,6 +2,7 @@ import {Strings} from '../constants';
 import {ExecuteQuery} from '../sqlite/DBHelper';
 import UrlResource from './UrlResource';
 import GetRequest from './GetRequest';
+import { getFieldOptionFilters } from './helper';
 
 export function find(postData) {
   return new Promise(function (resolve, reject) {
@@ -18,7 +19,8 @@ export function find(postData) {
             let lists = await fetchDataFromDB(client_id, business_unit_id);
             let compulsoryDevices = await getCompulsoryDevices();
             let compulsoryUnattachedDevice = await getCompulsoryUnattachedDevices();
-            let response = await getData(lists, commonTitle , compulsoryDevices , compulsoryUnattachedDevice );
+            let fieldOptionFilters = await getFieldOptionFilters(postData.role);
+            let response = await getData(lists, commonTitle , compulsoryDevices , compulsoryUnattachedDevice , fieldOptionFilters);
             resolve(response);
           } else {
             reject();
@@ -59,7 +61,8 @@ const fetchDeviceDataFromDB = async(query) => {
   return _lists;
 }
 
-const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnattachedDevice) => {
+
+const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnattachedDevice ,fieldOptionFilters ) => {
   var tmp = [];
   for (var i = 0; i < lists.length; i++) {
     var element = lists.item(i);
@@ -132,7 +135,8 @@ const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnatta
     component_title: commonTitle,
     custom_master_fields: tmp,
     compulsory_device : compulsoryDevices,
-    compulsory_unattached_device : compulsoryUnattachedDevice
+    compulsory_unattached_device : compulsoryUnattachedDevice ,
+    field_option_filters: fieldOptionFilters
   };
 };
 
@@ -339,7 +343,6 @@ const getCompulsoryUnattachedDevices = async() => {
   var query = getUnattachedDeviceQuery();
   let lists = await fetchDeviceDataFromDB(query);
   
-
   var custom_master_field_id = '';
   var options = [];
   var result = [];
@@ -374,6 +377,7 @@ const getCompulsoryUnattachedDevices = async() => {
   console.log("result2 => " , result);
   return result;
 }
+
 
 export default {
   find,
