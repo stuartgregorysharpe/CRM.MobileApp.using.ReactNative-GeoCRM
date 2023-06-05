@@ -94,18 +94,18 @@ const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnatta
       var triggerData = [];
       if (element.trigger_field_id != 0) {
         const query = getTriggerFieldQuery(element.trigger_field_id);
-        console.log('TRIGER API : ', query);
+        console.log('TRIGER API : ', query , element.custom_master_field_id);
         const res = await ExecuteQuery(query, []);
         var _lists = res.rows ? res.rows : [];
         triggerData = getTriggerFieldData(_lists, element);
       }
-
+      
       if (element.field_type == 'dropdown_input') {
         presetOptions = locationUnitOptions;
       }
 
       tmp.push({
-        custom_master_field_id: element.custom_master_field_id,
+        custom_master_field_id: element.custom_master_field_id.toString(),
         field_type: element.field_type,
         field_name: element.custom_field_name,
         core_field_name: element.core_field_name,
@@ -115,7 +115,7 @@ const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnatta
         rule_compulsory: element.rule_compulsory + '',
         add_prefix: element.add_prefix,
         add_suffix: element.add_suffix,
-        preset_field: element.preset_field,
+        preset_field: element.preset_field.toString(),
         preset_options: presetOptions,
         trigger: triggerData,
         input_label: element.dropdown_input_label,
@@ -127,7 +127,7 @@ const getData = async (lists, commonTitle , compulsoryDevices , compulsoryUnatta
   }  
 
   return {
-    status: String.Success,
+    status: Strings.Success,
     accuracy_distance_measure: 'm',
     component_title: commonTitle,
     custom_master_fields: tmp,
@@ -183,7 +183,7 @@ const generateQuery = () => {
     `client_id = ? AND ` +
     `business_unit_id = ? AND ` +
     `delete_status = 0 AND ` +
-    `status = "active" `;
+    `status = "active" AND include_in_add_lead = 1`;
   return sql;
 };
 
@@ -287,9 +287,9 @@ const getTriggerFieldData = (lists, element) => {
       
       tmp = {
         type: 'dropdown',
-        trigger_field_id: element.trigger_field_id,
+        trigger_field_id: element.trigger_field_id.toString(),
         trigger_condition: element.trigger_field_condition,
-        answer: element.trigger_field_answer,
+        answer: element.trigger_field_answer.split(","),
       };
     }
     break;

@@ -183,8 +183,7 @@ export default function AddLeadContainer(props) {
     };
 
     GetRequestFormListsDAO.find(param)
-      .then(res => {
-        console.log("res.forms => ", res.forms);
+      .then(res => {        
         updateFormLists(res.forms); 
       })
       .catch(e => {
