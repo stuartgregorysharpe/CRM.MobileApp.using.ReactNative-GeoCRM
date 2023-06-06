@@ -6,8 +6,14 @@ import { whiteLabel } from '../../../constants/Colors';
 import SvgIcon from '../../../components/SvgIcon';
 import CourseCardItemView from './components/CourseCardItemView';
 import LearningContainer from './containers/LearningContainer';
-const Learning = props =>{
-
+const Learning = ({screenProps}) =>{
+  useEffect(() => {
+    if (screenProps) {
+      screenProps.setOptions({
+        title: "Learning"
+      });
+    }
+  });
   return (
     <SafeAreaView>
       <LearningContainer/>
