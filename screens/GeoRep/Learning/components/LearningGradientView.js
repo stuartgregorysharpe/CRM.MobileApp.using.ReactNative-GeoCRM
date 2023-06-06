@@ -6,14 +6,17 @@ import { whiteLabel } from '../../../../constants/Colors';
 const LearningGradientView = props =>{
   const { total_points, courses } = props
   return (
-    <View>
+    <View
+      style = {{
+        marginBottom: 50
+      }}
+    >
       <LinearGradient
         colors={['#286DC9', '#0037A2']}
         style={{
           borderRadius: 10,
           padding: 15,
           paddingBottom: 60,
-          marginBottom: 60
         }}>
         <AppText type="" color={whiteLabel().headerText} size="big" title="Learning Courses"
           style = {{
@@ -29,7 +32,9 @@ const LearningGradientView = props =>{
           }}
         ></AppText>
 
-        <View style={{
+       
+      </LinearGradient>
+      <View style={{
             flexDirection: 'row',
             backgroundColor: 'white',
             borderRadius: 10,
@@ -71,8 +76,6 @@ const LearningGradientView = props =>{
             ></AppText>
           </View>
         </View>
-      </LinearGradient>
-      
     </View>
   )
 }
