@@ -219,9 +219,16 @@ function checkTriggerCondition(
 function checkDropdownTriggerCondition(
   condition,
   answerList,
-  valueList,
+  vList,
   formType,
 ) {
+
+  var valueList = [];
+  if(!Array.isArray(vList) && vList != '' && vList != null){
+    valueList = [vList];
+  }else{
+    valueList = [...vList];
+  }
 
   if (
     condition != 'ANY' &&
