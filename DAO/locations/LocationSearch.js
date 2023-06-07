@@ -1,8 +1,9 @@
-import { getApiRequest } from "../actions/api.action";
-import { Strings } from "../constants";
-import { getTokenData } from "../constants/Storage";
-import { checkConnectivity, getFullAddress } from "./helper";
-import { ExecuteQuery } from "../sqlite/DBHelper";
+import { getApiRequest } from "../../actions/api.action";
+import { Strings } from "../../constants";
+import { getTokenData } from "../../constants/Storage";
+import { checkConnectivity, getFullAddress } from "../helper";
+import { ExecuteQuery } from "../../sqlite/DBHelper";
+import { getRoleFieldFilters, getRoleFilterWhere } from "./helper";
 export function find(currentLocation , filters, pageNumber, searchKey , features){
     
     return new Promise(function(resolve, reject) {
@@ -24,7 +25,7 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                         resolve(res.items);
                     }else{
                         resolve([]);
-                    }                    
+                    }
                 }).catch((e) => {
                     console.log("error",e)
                     reject(e);
@@ -34,9 +35,11 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                               
                 var client_id = await getTokenData("client_id");
                 var business_unit_id = await getTokenData("business_unit_id");
+                var role = await getTokenData("role");
                 
-                var query = '';                
-                query = generateQuery(currentLocation.latitude, currentLocation.longitude, searchKey, pageNumber , features);                
+                var query = await generateQuery(currentLocation.latitude, currentLocation.longitude, searchKey, pageNumber , features , role);
+                console.log("query", query);
+                
                 var locations;
                 if(features.includes("disposition_fields")){
                   locations = await fetchDataFromDB(query, null , null);
@@ -45,7 +48,7 @@ export function find(currentLocation , filters, pageNumber, searchKey , features
                 }
                 
                 resolve(getResponse(locations));
-
+                
             }
         }).catch(e => {
             reject(e);
@@ -101,7 +104,7 @@ const getResponse = (locations) => {
 
 
 
-const generateQuery = (latitude, longitude , searchText , pageNumber, features) => {
+const generateQuery = async(latitude, longitude , searchText , pageNumber, features , role) => {
   
   var distance = '';
   var distanceOrder = '';
@@ -115,6 +118,10 @@ const generateQuery = (latitude, longitude , searchText , pageNumber, features) 
     distanceOrder = `ORDER BY distance DESC`;
   }   
   
+  const roleFieldFilters = await getRoleFieldFilters(role);
+    
+  const roleFilterWhere = getRoleFilterWhere(roleFieldFilters);
+
   
   var searchWhere = ``;
   if(searchText != null &&  searchText != undefined &&  searchText != ''){
@@ -156,7 +163,7 @@ const generateQuery = (latitude, longitude , searchText , pageNumber, features) 
                   `ON cdl.outcome_id = cdo.disposition_outcome_id ` + 
                   `LEFT JOIN crm_disposition_stages AS cds ` + 
                   `ON cdl.stage_id = cds.disposition_stage_id ` +                   
-                  `WHERE lcmd.delete_status = 0 ${searchWhere} ${distanceOrder} LIMIT 50 OFFSET ${offset}`;
+                  `WHERE ${roleFilterWhere} lcmd.delete_status = 0 ${searchWhere} ${distanceOrder} LIMIT 50 OFFSET ${offset}`;
 
   }else{
 
@@ -176,7 +183,7 @@ const generateQuery = (latitude, longitude , searchText , pageNumber, features) 
                     `FROM locations_core_master_data AS lcmd ` + 
                     `LEFT JOIN locations_dynamic_pins as ldp ` + 
                     `ON lcmd.location_status = ldp.location_status ` + 
-                    `WHERE  ` + 
+                    `WHERE  ${roleFilterWhere} ` + 
                       `lcmd.delete_status = 0 ` + 
                     `AND lcmd.client_id = ? ` + 
                     `AND lcmd.business_unit_id = ? ` + 
