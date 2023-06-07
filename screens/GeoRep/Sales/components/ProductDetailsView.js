@@ -59,7 +59,7 @@ const ProductDetailsView = props => {
     const prodictPriceList = await getJsonData('@product_price');
     if (prodictPriceList != null) {
       const data = prodictPriceList.find(
-        item => item.product_id === product.product_id,
+        item => item.product_id === product.product_id && item.warehouse_id === product.warehouse_id
       );
       if (data != undefined && data.finalPrice != undefined) {
         setAdjustedPrice(data.finalPrice.adjustedPrice);
@@ -74,6 +74,7 @@ const ProductDetailsView = props => {
       
       props.onSaveProduct({
         product_id: product.product_id,
+        warehouse_id  : product.warehouse_id,
         price: product.price,
         finalPrice: {          
           adjustedPrice : adjustedPrice != null && adjustedPrice != undefined ? adjustedPrice.replace(product?.symbol, '') : '',

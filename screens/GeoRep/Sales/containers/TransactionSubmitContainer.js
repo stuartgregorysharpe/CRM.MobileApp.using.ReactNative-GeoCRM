@@ -1,5 +1,5 @@
-import {Dimensions, View} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import { Dimensions, Platform, View} from 'react-native';
+import React, { useState, useRef , useEffect } from 'react';
 import {
   GetRequestTransactionSubmitFieldsDAO,
   PostRequestDAO,
@@ -14,29 +14,31 @@ import { getJsonData } from '../../../../constants/Storage';
 import DynamicFormView from '../../../../components/common/DynamicFormView';
 import {useSelector} from 'react-redux';
 import * as RNLocalize from 'react-native-localize';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
-import {Notification} from '../../../../components/modal/Notification';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import AlertModal from '../../../../components/modal/AlertModal';
+import LoadingBar from '../../../../components/LoadingView/loading_bar';
 
 const TransactionSubmitContainer = props => {
+
   const {cartStatistics, productPriceList, addProductList} = props;
   const dispatch = useDispatch();
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const currentLocation = useSelector(state => state.rep.currentLocation);
+  const alertModalRef = useRef(null);
+  const loadingBarRef = useRef(null);
+
   let isMount = true;
 
   useEffect(() => {
     getTransactinSubmit();
+    isMount = true;
     return () => {
       isMount = false;
     };
   }, []);
 
   const getTransactinSubmit = async () => {
+
     var setup = await getJsonData('@setup');
     var param = {};
     if (setup != null && setup.location && setup.transaction_type) {
@@ -57,23 +59,37 @@ const TransactionSubmitContainer = props => {
           }
         })
         .catch(e => {
-          expireToken(dispatch, e);
+          expireToken(dispatch, e , alertModalRef);
         });
     }
   };
 
-
   const onAdd = async data => {        
-    var res = await generatePostParam(data);
+    if (isLoading) return;
+    showLoadingBar();
+    setIsLoading(true);    
+    var postData = await generatePostParam(data);
+    if(postData){
+        PostRequestDAO.find( 0, postData, 'transaction-submit', 'sales/transaction-submission', '', '', null )
+            .then(res => {
+              setIsLoading(false);
+              hideLoadingBar();
+              showMessage(res.message, 'done');              
+            })
+            .catch(e => {
+              setIsLoading(false);
+              hideLoadingBar();
+              expireToken(dispatch, e , alertModalRef);
+        });
+    }    
   };
 
   const generatePostParam = async data => {
-    if (isLoading) return;
-
+    
     try {
       var transactionFields = [];
       var files = getAllFiles(addProductList, data);
-      console.log('post data=>', data);
+      
       Object.keys(data).forEach(key => {
         const field = fields.find(item => item.field_id == key);
         if (field != undefined) {
@@ -89,7 +105,8 @@ const TransactionSubmitContainer = props => {
           }
         }
       });
-      var items = generateProductPricePostData(productPriceList);
+
+      var items = generateProductPricePostData(productPriceList);      
       var added_products = generateAddProductPostData(addProductList);
       const setupData = await getJsonData('@setup');
       var time_zone = RNLocalize.getTimeZone();
@@ -141,44 +158,10 @@ const TransactionSubmitContainer = props => {
             [item.key]: getFileFormat(item.value),
           };
         }
-      });
-
-      
-      if(!isLoading){
-        setIsLoading(true);
-        PostRequestDAO.find(
-          0,
-          postJsonData,
-          'transaction-submit',
-          'sales/transaction-submission',
-          '',
-          '',
-          null,
-          dispatch
-        )
-          .then(res => {
-            setIsLoading(false);
-            dispatch(
-              showNotification({
-                type: Strings.Success,
-                message: res.message,
-                buttonText: 'Ok',
-                buttonAction: () => {
-                  dispatch(clearNotification());
-                  props.onButtonAction({type: Constants.actionType.ACTION_DONE});
-                },
-              }),
-            );
-          })
-          .catch(e => {
-            setIsLoading(false);
-            expireToken(dispatch, e);
-          });
-      }
-      
-
+      });                                    
     } catch (e) {
       console.log(e);
+      return null;
     }
     return postJsonData;
   };
@@ -212,8 +195,10 @@ const TransactionSubmitContainer = props => {
   const generateProductPricePostData = productPriceList => {
     var tmpList = [];
     productPriceList.forEach(item => {
+      console.log("product price list item => ", item);
       tmpList.push({
         product_id: item.product_id,
+        warehouse_id : item.warehouse_id,
         add_product_id: '',
         price:
           parseFloat(item.product.finalPrice) != 0
@@ -240,6 +225,27 @@ const TransactionSubmitContainer = props => {
     return tmpList;
   };
 
+  const showLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
+
+  const showMessage = (message , type) => {
+    const delay = Platform.OS == 'ios' ? 500 : 0;
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message , Strings.Ok , false , type);
+      }
+    } , delay);    
+  }
+
   return (
     <View
       style={{
@@ -250,8 +256,6 @@ const TransactionSubmitContainer = props => {
         paddingTop: 0,
         maxHeight: Dimensions.get('screen').height * 0.8,
       }}>
-
-      <LoadingProgressBar/>
 
       <DynamicFormView
         page="transaction_submit"
@@ -267,8 +271,15 @@ const TransactionSubmitContainer = props => {
         style={{marginTop:5}}
         {...props}        
       />
-      <Notification />
-      <LoadingProgressBar />
+
+      <AlertModal 
+        onModalClose={(res) => {
+          if(res == 'done'){
+            props.onButtonAction({type: Constants.actionType.ACTION_DONE});
+          }          
+        }}
+        ref={alertModalRef} />
+      <LoadingBar ref={loadingBarRef} />
       
     </View>
   );

@@ -1,10 +1,17 @@
 import {View, Keyboard} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useRef , useState, useEffect} from 'react';
 import {Constants, Values} from '../../../../constants';
 import ProductGroupView from '../components/ProductGroupView';
+import ProductDetailsModal from '../modal/ProductDetailsModal';
 
 const ProductGroupContainer = props => {
   
+  const { settings } = props;
+  
+  const productDetailsModalRef = useRef();
+  const [product, setProduct] = useState();
+  const [ productDetailTitle , setProductDetailTitle] = useState();
+
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
@@ -43,7 +50,30 @@ const ProductGroupContainer = props => {
           ? Values.deviceHeight * 0.5
           : Values.deviceHeight * 0.8,
       }}>
-      <ProductGroupView onSaveProduct={onSaveProduct} {...props} />
+      <ProductGroupView 
+        openProductDetail={(item) => {
+          console.log("open" ,item)
+          setProductDetailTitle(item.product_name);
+          setProduct(item);
+          if (productDetailsModalRef.current)
+            productDetailsModalRef.current.showModal();
+        }}
+        onSaveProduct={onSaveProduct} {...props} />
+
+      <ProductDetailsModal
+        title={productDetailTitle}
+        product={product}
+        settings={settings}
+        onButtonAction={({type, value}) => {          
+          if (type === Constants.actionType.ACTION_DONE && productDetailsModalRef.current)
+            productDetailsModalRef.current.hideModal();
+          if(props.onProductDetailsModalClosed){
+            props.onProductDetailsModalClosed({type, value});
+          }
+        }}
+        ref={productDetailsModalRef}
+      />
+
     </View>
   );
 };

@@ -40,7 +40,7 @@ const CartView = props => {
   };
   return (
     <View style={{flex: 1}}>
-      <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 1}}>
+      <ScrollView style={{flex: 1 }} >
         <CartSettingsView
           customerName={location?.name}
           address={location?.address}
