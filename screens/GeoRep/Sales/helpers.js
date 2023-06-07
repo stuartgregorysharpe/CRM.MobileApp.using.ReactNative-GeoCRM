@@ -60,15 +60,19 @@ export function getProductItemDataForRender(productItem) {
     isAddProduct: productItem.isAddProduct,
   };
 }
+
 export function calculateDiscountAmount(productItem) {
-  let discountPrice = 0;
+  let discountPrice = 0;  
   if (productItem && productItem.finalPrice && productItem.finalPrice != '') {
-    discountPrice =
-      Number(productItem.finalPrice.adjustedPrice) -
-      Number(productItem.finalPrice.final_price);
+    if(productItem.finalPrice.adjustedPrice != ''){
+      discountPrice = (Number(productItem.finalPrice.adjustedPrice) - Number(productItem.finalPrice.final_price)) * Number(productItem.qty);
+    }else{
+      discountPrice = (Number(productItem.price) - Number(productItem.finalPrice.final_price)) * Number(productItem.qty);
+    }    
   }
   return discountPrice;
 }
+
 export function calculatePrice(productItem) {
   if (!productItem) return 0;
   let price = productItem?.price;
@@ -79,6 +83,7 @@ export function calculatePrice(productItem) {
   return Number(price);
 }
 export function calculateCartStatistics(productList, taxRate = 0) {
+
   let totalUnitCount = 0;
   let totalDiscount = 0;
   let subTotal = 0;
@@ -91,6 +96,7 @@ export function calculateCartStatistics(productList, taxRate = 0) {
     const price = calculatePrice(product);
     subTotal += price * quantity;
   });
+  
   tax = subTotal * (taxRate / 100);
   const total = tax + subTotal;
   const cartStatistics = {
