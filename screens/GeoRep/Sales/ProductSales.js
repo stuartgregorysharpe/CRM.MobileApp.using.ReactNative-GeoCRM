@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, Platform} from 'react-native';
-import React, {useEffect, useRef, useState, useCallback} from 'react';
+import React, {useEffect, useRef, useState } from 'react';
 import {style} from '../../../constants/Styles';
 import {Colors, Strings} from '../../../constants';
 import GetRequestProductsList from '../../../DAO/sales/GetRequestProductsList';
@@ -9,6 +9,7 @@ import ProductSalesContainer from './containers/ProductSalesContainer';
 import {getJsonData, storeJsonData} from '../../../constants/Storage';
 import {setSalesSetting} from '../../../actions/sales.action';
 import BackButtonHeader from '../../../components/Header/BackButtonHeader';
+import AlertModal from '../../../components/modal/AlertModal';
 
 export default function ProductSales(props) {
 
@@ -21,6 +22,7 @@ export default function ProductSales(props) {
   const [isEndPage, setIsEndPage] = useState(false);
   const regret_item = props.route.params?.regret_item;  
   const productSaleContainerRef = useRef(null);
+  const alertModalRef = useRef();
   const dispatch = useDispatch();
   const PAGE_SIZE = 10;
 
@@ -164,10 +166,9 @@ export default function ProductSales(props) {
           })
           .catch(e => {
             setIsLoading(false);
-            expireToken(dispatch, e);
+            expireToken(dispatch, e, alertModalRef);
           });
-      } else {
-        console.log('paramData', paramData);
+      } else {        
         clearProducts();
       }
     } else {
@@ -175,21 +176,12 @@ export default function ProductSales(props) {
     }
 
   };
-
-  // const getNewList = (items) => {
-  //   var newLists = [];
-  //   items.forEach((element) => {
-  //     newLists.push({
-  //       ...element,
-  //       finalPrice: 0,
-  //       qty: 0,
-  //     });
-  //   });
-  //   return newLists;
-  // }
-
+  
   return (
     <View style={{paddingTop: 20, alignSelf: 'stretch', flex: 1}}>
+
+      <AlertModal ref={alertModalRef} />
+
       <ProductSalesContainer
         ref={productSaleContainerRef}
         clearProducts={clearProducts}
@@ -200,8 +192,7 @@ export default function ProductSales(props) {
         settings={settings}
         page={page}
         isLoading={isLoading}
-        loadMoreData={(pageNumber, searchText) => {
-          console.log('load more api call');
+        loadMoreData={(pageNumber, searchText) => {          
           getApiData(searchText, pageNumber);
         }}
         {...props}

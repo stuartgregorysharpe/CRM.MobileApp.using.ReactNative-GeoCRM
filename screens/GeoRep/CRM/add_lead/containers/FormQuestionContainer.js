@@ -51,7 +51,7 @@ export default function FormQuestionContainer(props) {
       })
       .catch(e => {
         hideLoadingBar();
-        var delay = Platform.OS == 'android' ? 0 : 500;
+        var delay = Platform.OS == 'android' ? 0 : 800;
         setTimeout(() => {
           expireToken(dispatch, e, alertModalRef);
         }, delay);
@@ -81,7 +81,7 @@ export default function FormQuestionContainer(props) {
   };
 
   const hideLoadingBar = () => {
-    var delay = Platform.OS == 'ios' ? 500 : 0;    
+    var delay = Platform.OS == 'ios' ? 800 : 0;    
     setTimeout(() => {
       if(loadingBarRef.current){
         loadingBarRef.current.hideModal();
