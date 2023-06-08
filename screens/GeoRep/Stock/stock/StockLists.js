@@ -161,14 +161,14 @@ const StockLists = props => {
   };
 
   const onScanAction = ({type, value}) => {
-    if (type == Constants.actionType.ACTINo_Device_Found_In_StockON_CAPTURE) {
+    if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
         const capturedItem = captureDeviceStockItem(items, value);
         if (capturedItem) {
           setStockItem(capturedItem);
           stockDetailsModalRef.current.showModal();
         } else {
-          showMessage(Strings.Stock.No_Device_Found_In_Stock);          
+          showMessage( 'Barcode ' + value + " " +  Strings.Stock.No_Device_Found_In_Stock);          
         }
       }
     }
