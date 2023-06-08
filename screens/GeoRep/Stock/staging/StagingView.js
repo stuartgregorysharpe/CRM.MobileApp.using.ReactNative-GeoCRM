@@ -15,6 +15,7 @@ import {
 } from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
 import {useDispatch} from 'react-redux';
+import AlertModal from '../../../../components/modal/AlertModal';
 
 const StagingView = props => {
   
@@ -25,6 +26,7 @@ const StagingView = props => {
   const captureModalRef = useRef(null);
   const scanningListViewModalRef = useRef(null);
   const captureScanningListViewModalRef = useRef(null);  
+  const alertModalRef = useRef();
 
   const items = useMemo(
     () => filterItems(props.items, keyword),
@@ -58,20 +60,19 @@ const StagingView = props => {
           }
         });
         setSelectedItems(_selectedItems);
-      } else {
-        if(props.showMessage){
-          props.showMessage('Barcode ' + value + ' not found in staging' , '');        
-        }        
+      } else {        
+        showMessage('Barcode ' + value + ' not found in staging');
       }
       setLastScannedQrCode(value);
     }
   };
-  const onCloseScanModal = () => {
-    console.log('onClose');
+
+  const onCloseScanModal = () => {    
     setSelectedItems([]);
     setLastScannedQrCode('');
     captureModalRef.current.hideModal();
   };
+
   const onSearch = keyword => {
     setKeyword(keyword);
   };
@@ -129,6 +130,12 @@ const StagingView = props => {
     captureModalRef.current.hideModal();
   };
 
+  const showMessage = (message) => {
+    if(alertModalRef.current){
+      alertModalRef.current.alert(message);
+    }
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar
@@ -174,6 +181,7 @@ const StagingView = props => {
               onAccept={onAccept}
               onItemAction={onCaptureViewListItemAction}
             />,
+            <AlertModal ref={alertModalRef} />
           ];
         }}
       />

@@ -33,6 +33,7 @@ import AlertModal from '../../../../components/modal/AlertModal';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 
 const StockLists = props => {
+
   const navigation = props.navigation;
 
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -66,10 +67,11 @@ const StockLists = props => {
     [filteredItems],
   );
   const [selectedItems, setSelectedItems] = useState([]);
-  const selectedCodes = useMemo(
-    () => selectedItems.map(x => x.iccid),
-    selectedItems,
-  );
+
+  // const selectedCodes = useMemo(
+  //   () => selectedItems.map(x => x.iccid),
+  //   selectedItems,
+  // );
 
   const dispatch = useDispatch();
   
@@ -164,9 +166,9 @@ const StockLists = props => {
     if (type == Constants.actionType.ACTION_CAPTURE) {
       if (value) {
         const capturedItem = captureDeviceStockItem(items, value);
-        if (capturedItem) {
+        if (capturedItem) {        
           setStockItem(capturedItem);
-          stockDetailsModalRef.current.showModal();
+          stockDetailsModalRef.current.showModal();          
         } else {
           showMessage( 'Barcode ' + value + " " +  Strings.Stock.No_Device_Found_In_Stock);          
         }
@@ -267,7 +269,8 @@ const StockLists = props => {
         });
         setSelectedItems(_selectedItems);
       } else {
-        showMessage('Barcode ' + value + ' not found in stock');
+        // if(simDetailsModalRef.current)
+        //   simDetailsModalRef.current.showMessage('Barcode ' + value + ' not found in stock');
       }
       setLastScannedQrCode(value);
     } else if (type == Constants.actionType.ACTION_REMOVE) {
@@ -284,7 +287,9 @@ const StockLists = props => {
 
   const onCaptureSim = () => {
     setSelectedItems([]);
-    simDetailsModalRef.current.showModal();    
+    if(simDetailsModalRef.current){
+      simDetailsModalRef.current.showModal();    
+    }    
   };
 
   const onCaptureDevice = () => {
@@ -428,19 +433,28 @@ const StockLists = props => {
       <SimDetailsModal
         ref={simDetailsModalRef}
         items={selectedItems}
+        stockList={items}
         lastScanedQrCode={lastScanedQrCode}
         onButtonAction={onSimDetailAction}
         onClose={onCloseScanModal}
       />
+
       <QRScanModal
         ref={barcodeScanModalRef}
         isPartialDetect={true}
         onButtonAction={onScanAction}
+        isNotCloseAfterCapture
         showClose={true}
         onClose={() => {
           barcodeScanModalRef.current.hideModal();
+        }}        
+        renderLastScanResultView={() => {
+          return [
+            <AlertModal ref={alertModalRef} />
+          ];
         }}
       />
+      
       <StockListFilterModal
         ref={filterModalRef}
         filters={filters}
@@ -453,9 +467,7 @@ const StockLists = props => {
         }}
       />
 
-      <AlertModal 
-        onModalClose={(res) => {}}
-        ref={alertModalRef}/>
+
       <LoadingBar ref={loadingBarRef} />
       
 
