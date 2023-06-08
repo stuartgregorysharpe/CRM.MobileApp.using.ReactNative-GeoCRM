@@ -227,7 +227,11 @@ function checkDropdownTriggerCondition(
   if(!Array.isArray(vList) && vList != '' && vList != null){
     valueList = [vList];
   }else{
-    valueList = [...vList];
+    if(vList != null){
+      valueList = [...vList];
+    }else{
+      valueList = [];
+    }    
   }
 
   if (
