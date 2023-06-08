@@ -11,8 +11,9 @@ import Fonts from '../constants/Fonts';
 import Colors from '../../constants/Colors';
 
 export default function FilterView({navigation}) {
+  
   const dispatch = useDispatch();
-  const statusLocationFilters = useSelector(state => state.location.statusLocationFilters);
+
   const locationFilters = useSelector(state => state.location.locationFilters);
 
   const [modaVisible, setModalVisible] = useState(false);
@@ -39,19 +40,7 @@ export default function FilterView({navigation}) {
     setModalVisible(true);
     setShowFilter(locationFilters[key].options);
   }
-
-  if (statusLocationFilters == "request") {
-    return (
-      <ScrollView style={styles.container}>
-        <View style={{padding: 10, justifyContent: 'center'}}>
-          {Array.from(Array(6)).map((_, key) => (
-            <Skeleton key={key} />  
-          ))}
-        </View>
-      </ScrollView>
-    )
-  }
-
+  
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity style={{ padding: 6 }} onPress={() => dispatch({type: SLIDE_STATUS, payload: false})}>

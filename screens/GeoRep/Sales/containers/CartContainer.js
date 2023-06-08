@@ -207,6 +207,7 @@ const CartContainer = props => {
     setSelectedWarehouseId(null);
     productGroupModalRef.current.showModal();
   };
+  
   const updateCapturedProductPrice = async (product, qty) => {
     var defineSetup = await getJsonData('@setup');
     if (defineSetup != null) {
@@ -240,6 +241,7 @@ const CartContainer = props => {
             };
             updateProductPriceLists(
               product.product_id,
+              product.warehouse_id,
               price,
               qty,
               special,
@@ -285,16 +287,14 @@ const CartContainer = props => {
     setAddProductList(newAddProductList);
     storeJsonData('@add_product', newAddProductList);
   };
-  const updateProductPriceLists = useCallback(
-    async (product_id, price, qty, special, finalPrice, product) => {
-      const lists = [...productPriceList];
-      var tmpList = lists.filter(
-        item => parseInt(item.product_id) != parseInt(product_id),
-      );
 
-      var check = lists.find(
-        item => parseInt(item.product_id) == parseInt(product_id),
-      );
+  const updateProductPriceLists = useCallback(
+    async (product_id, warehouse_id, price, qty, special, finalPrice, product) => {
+      const lists = [...productPriceList];
+
+      var tmpList = lists.filter(item => !(parseInt(item.product_id) == parseInt(product_id) && parseInt(item.warehouse_id) == parseInt(warehouse_id)) );
+      var check = lists.find( item => parseInt(item.product_id) == parseInt(product_id) && parseInt(item.warehouse_id) == parseInt(warehouse_id)  );
+
       if (parseInt(qty) > 0) {
         if (check != undefined) {
           var tmpFinalPrice =
@@ -303,6 +303,7 @@ const CartContainer = props => {
               : check.finalPrice;
           tmpList.push({
             product_id: product_id,
+            warehouse_id : warehouse_id,
             price: price,
             qty: qty,
             special: special,
@@ -312,6 +313,7 @@ const CartContainer = props => {
         } else {
           tmpList.push({
             product_id: product_id,
+            warehouse_id : warehouse_id,
             price: price,
             qty: qty,
             special: special,
@@ -368,6 +370,7 @@ const CartContainer = props => {
     setAddProductList(newAddProductList);
     storeJsonData('@add_product', newAddProductList);
   };
+
   const openProductDetail = item => {
     if (item.isAddProduct) {
       openAddedProductDetail(item);
@@ -407,6 +410,7 @@ const CartContainer = props => {
     }
     updateProductPriceLists(
       value.product_id,
+      value.warehouse_id,
       value.price,
       value.qty,
       value.special,

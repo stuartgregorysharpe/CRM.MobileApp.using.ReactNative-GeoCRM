@@ -27,6 +27,7 @@ export const loginWithEmail = async (email, password) => {
     axios
       .post(`${baseURL}/authentication_api/Auth/login`, postData, {})
       .then(async (res) => {
+        console.log("res",res)
         if (res.data.status === "failed") {
           console.log("login resonse", res.data);
           resolve(res.data);
@@ -34,14 +35,11 @@ export const loginWithEmail = async (email, password) => {
           console.log("login resonse success", res.data);
           setToken(res.data.success.access_token);
           storeUserData(res.data.success.user);
-          //var data = jwt_decode(res.data.success.access_token);
-          //console.log("Data", JSON.stringify(data));
           resolve(res.data);
-
         }
       })
       .catch((err) => {
-        console.log("err", err)
+        console.log("err", err);
       })
 
   });

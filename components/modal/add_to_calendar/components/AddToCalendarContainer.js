@@ -64,7 +64,7 @@ const AddToCalendarContainer = (props) => {
                 hideLoadingBar();
 
                 setIsLoading(false);
-                expireToken(dispatch, error);                
+                expireToken(dispatch, error);          
                 showConfirmModal(error.toString());
             });
         }

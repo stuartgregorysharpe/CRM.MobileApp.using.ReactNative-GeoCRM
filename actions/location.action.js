@@ -1,23 +1,23 @@
 import LocationService from '../services/LocationService';
 import axios from 'axios';
-import {
-  CHANGE_LOGIN_STATUS,  
-  STATUS_LOCATION_FILTERS,    
-  CHANGE_LOCATION_FILTERS,
+import {  
   LOCATION_CHECK_OUT_COMPULSORY_DEVICE,
   LOCATION_CHECK_OUT_COMPULSORY,
-  LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD,  
+  LOCATION_CHECK_OUT_COMPULSORY_LOCATION_FIELD,
+  CHANGE_LOCATION_FILTERS,  
 } from './actionTypes';
 import uuid from 'react-native-uuid';
 import {
   getBaseUrl,  
   getLocationLoop,
   getToken,  
+  getTokenData,  
   getUserId,
   setToken,
 } from '../constants/Storage';
 import { generateKey } from '../constants/Utils';
-import { GetRequestLocationInfoDAO } from '../DAO';
+import { GetRequestLocationFiltersDAO, GetRequestLocationInfoDAO } from '../DAO';
+import { expireToken } from '../constants/Helper';
 
 
 export const setCompulsoryLocationField = compulsoryLocationField => ({
@@ -35,36 +35,51 @@ export const setCompulsoryForm = compulsoryForm => ({
   payload: compulsoryForm,
 });
 
-export const getLocationFilters = () => (dispatch, getState) => {
-  dispatch({type: STATUS_LOCATION_FILTERS, payload: 'request'});
-  axios
-    .get(
-      `${
-        getState().selection.payload.user_scopes.geo_rep.base_url
-      }/locations/location-filters`,
-      {
-        params: {
-          user_id: getState().selection.payload.user_scopes.geo_rep.user_id,
-        },
-        headers: {
-          Authorization: 'Bearer ' + getState().selection.token,
-        },
-      },
-    )
-    .then(res => {
-      if (res.data == undefined) {
-        dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});
-        return;
-      }
 
-      if (res.data.status == 'success') {
-        dispatch({type: STATUS_LOCATION_FILTERS, payload: 'success'});
-        dispatch({type: CHANGE_LOCATION_FILTERS, payload: res.data.items});
-      }
-    })
-    .catch(err => {
-      dispatch({type: CHANGE_LOGIN_STATUS, payload: 'failure'});      
-    });
+const getFieldOption =  (fieldOptionFilters, field_id) => {   
+
+    if(fieldOptionFilters != undefined && fieldOptionFilters != ''){        
+      for(let key of Object.keys(fieldOptionFilters)){
+        if(field_id == key){
+          return fieldOptionFilters[key];
+        }
+      }    
+    }    
+    return null;
+};
+
+  
+export const getLocationFilters = async (onCompleted) => { 
+
+  var user_id = await getTokenData("user_id");
+  const postData = {
+    user_id: user_id,
+  };
+  
+  GetRequestLocationFiltersDAO.find(postData).then((res) => {
+    
+    if(res.status){
+      const fieldOptionFilters = res.field_option_filters;
+      const items = res.items;
+      var filteredItems = [];
+      items.forEach(element => {          
+          const fieldOptions = getFieldOption(fieldOptionFilters , element.custom_field_id);
+          if(fieldOptions != null){
+            const newElmenet = { ...element };
+            newElmenet.options = fieldOptions;
+            filteredItems.push(newElmenet);
+          }else{
+            filteredItems.push(element);
+          }
+      });
+      onCompleted('success' , filteredItems);
+      
+    }
+  }).catch((e) => {
+    onCompleted('failed' , e);
+    
+  });
+
 };
 
 

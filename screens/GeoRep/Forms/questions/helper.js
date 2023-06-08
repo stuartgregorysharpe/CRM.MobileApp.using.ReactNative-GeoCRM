@@ -219,15 +219,19 @@ function checkTriggerCondition(
 function checkDropdownTriggerCondition(
   condition,
   answerList,
-  valueList,
+  vList,
   formType,
 ) {
-  // console.log('checkDropdownTriggerCondition -condition', condition);
-  // console.log('checkDropdownTriggerCondition -answer', answerList);
-  // console.log('checkDropdownTriggerCondition -value', valueList);
 
-  if (formType == 'form') {
-    return checkTextTriggerCondition(condition, answerList, valueList);
+  var valueList = [];
+  if(!Array.isArray(vList) && vList != '' && vList != null){
+    valueList = [vList];
+  }else{
+    if(vList != null){
+      valueList = [...vList];
+    }else{
+      valueList = [];
+    }    
   }
 
   if (
