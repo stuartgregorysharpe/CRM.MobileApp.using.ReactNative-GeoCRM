@@ -25,15 +25,16 @@ import {getLocationInfoFromLocal} from '../../../../sqlite/DBHelper';
 import {getReconfigFromRegret, onCheckProductSetupChanged} from '../helpers';
 
 export const SetupFieldView = forwardRef((props, ref) => {
+
   const {
     isClear,
     isLoading,
     setupField,
     transaction_types,
     currency,
-    warehouse,
-    apiCallType,
+    warehouse,  
   } = props;
+
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -47,8 +48,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
   const isCheckin = useSelector(state => state.location.checkIn);
 
   useImperativeHandle(ref, () => ({
-    updateSetupData(type) {
-      console.log('updateSetupData', type);
+    updateSetupData(type) {      
       if (type == 'load') {
         initializeSetupDataFromStorage();
       } else {
@@ -92,7 +92,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
     } else {
       setSelectedLocation(null);
     }
-    //initializeLocation();
+    
     if (props.onChangeLocation) {
       const locationId = await getLocalData('@specific_location_id');
       const locInfo = await getLocationInfoFromLocal(locationId);
@@ -109,9 +109,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
     } else {
       // get location info from online api call.
       getLocationInfo(locationId)
-        .then(async res => {
-          console.log(' location info api =>', res);
-          //await storeJsonData("@checkin_location", res);
+        .then(async res => {          
           var location = {
             name: res.location_name.value,
             address: res.address,
@@ -200,56 +198,6 @@ export const SetupFieldView = forwardRef((props, ref) => {
     }
   };
 
-  const initializeSetupData = async (
-    currency,
-    warehouse,
-    transaction_types,
-  ) => {
-    var data = await getJsonData('@setup');
-    if (data != null) {
-      setSelectedSaleType(data.transaction_type);
-      setSelectedCurrency(data.currency_id);
-      setSelectedLocation(data.location);
-
-      if (data.transaction_type != '') {
-        onWarehouseRequired(data.transaction_type.warehouse_required);
-      }
-      if (data.warehouse_id != '') {
-        console.log('warhouse from local');
-        setSelectedWarehouse(data.warehouse_id);
-      }
-    } else {
-      if (currency != null && warehouse != null && transaction_types != null) {
-        if (transaction_types != null && transaction_types.default_type != '') {
-          const transactionType = transaction_types.options.find(
-            item => item.type === transaction_types.default_type,
-          );
-          setSelectedSaleType(transactionType);
-          if (transactionType != undefined) {
-            onWarehouseRequired(transactionType.warehouse_required);
-          }
-        }
-        if (currency != undefined && currency.default_currency) {
-          const defaultCurrency = currency.options.find(
-            item => item.id === currency.default_currency,
-          );
-          setSelectedCurrency(defaultCurrency);
-        }
-
-        if (warehouse != undefined && warehouse.default_warehouse) {
-          const options = warehouse.options ? warehouse.options : [];
-          const items = options.filter(element =>
-            warehouse.default_warehouse.includes(element.id),
-          );
-          if (items != undefined) {
-            console.log('warhouse froma api');
-            setSelectedWarehouse(items);
-          }
-        }
-      } else {
-      }
-    }
-  };
 
   const onSearch = (location, locationId) => {
     setIsSearchStart(false);
@@ -341,12 +289,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
         !warehouseRequired)
     ) {
       flag = true;
-    }
-
-    // if(props.updateOutSideTouchStatus) {
-    // 	props.updateOutSideTouchStatus(flag);
-    // }
-
+    }    
     return flag;
   };
 
@@ -378,9 +321,7 @@ export const SetupFieldView = forwardRef((props, ref) => {
       };
 
       onCheckProductSetupChanged(value, async type => {
-        if (props.updateOutSideTouchStatus) {
-          console.log('changed status', type);
-
+        if (props.updateOutSideTouchStatus) {          
           if (type.includes('changed')) {
             props.updateOutSideTouchStatus(false);
             setIsDiscard(true);
@@ -421,8 +362,9 @@ export const SetupFieldView = forwardRef((props, ref) => {
         )}
       </View>
 
-      <ScrollView style={{maxHeight:350}}>
-          <View>
+      <View style={{maxHeight: Values.modalHeight - 160  }}>
+
+          <ScrollView style={{ flexDirection:'column'}}>
             <SearchLocationContainer
                 type="setup"
                 onSubmit={onSearch}
@@ -480,18 +422,15 @@ export const SetupFieldView = forwardRef((props, ref) => {
                       title={Strings.ProductSales.Click_Update}
                       color={Colors.redColor}
                       style={{textAlign: 'center', marginHorizontal: 20}}></AppText>
-                  )}
+                  )}                                    
+                </View>
+              )}
+          </ScrollView>
 
-                  <View
-                    style={{
-                      height: 1,
-                      backgroundColor: Colors.greyColor,
-                      marginHorizontal: -10,
-                      marginTop: 10,
-                      marginBottom: 10,
-                    }}></View>
-
-                  {!isDiscard && (
+          {!isSearchStart &&
+            <View >            
+                <View style={styles.divider}></View>
+                {!isDiscard && (
                     <View style={{alignItems: 'center', paddingVertical: 5}}>
                       <TouchableOpacity
                         style={{alignSelf: 'stretch', alignItems: 'center'}}
@@ -505,51 +444,42 @@ export const SetupFieldView = forwardRef((props, ref) => {
                           }></AppText>
                       </TouchableOpacity>
                     </View>
-                  )}
+                )}
 
-                  {isDiscard && (
-                    <View
-                      style={{
-                        alignItems: 'center',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
+                {isDiscard && (
+                  <View style={styles.updateBtnContainer}>
+                    <TouchableOpacity
+                      style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
+                      onPress={() => {
+                        if (props.onClose) {
+                          props.onClose();
+                        }
                       }}>
-                      <TouchableOpacity
-                        style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
-                        onPress={() => {
-                          if (props.onClose) {
-                            props.onClose();
-                          }
-                        }}>
-                        <AppText
-                          title="Discard"
-                          size="big"
-                          color={Colors.redColor}></AppText>
-                      </TouchableOpacity>
-                      <View
-                        style={{
-                          backgroundColor: Colors.greyColor,
-                          width: 1,
-                          marginVertical: -10,
-                          alignSelf: 'stretch',
-                        }}></View>
-                      <TouchableOpacity
-                        style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
-                        disabled={!isValidate()}
-                        onPress={() => onContinue()}>
-                        <AppText
-                          title="Update"
-                          size="big"
-                          color={
-                            !isValidate() ? Colors.disabledColor : Colors.primaryColor
-                          }></AppText>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
-              )}
-          </View>
-      </ScrollView>
+                      <AppText
+                        title="Discard"
+                        size="big"
+                        color={Colors.redColor}></AppText>
+                    </TouchableOpacity>
+
+                    <View style={styles.updateBtnDivider}></View>
+
+                    <TouchableOpacity
+                      style={{alignSelf: 'stretch', alignItems: 'center', flex: 1}}
+                      disabled={!isValidate()}
+                      onPress={() => onContinue()}>
+                      <AppText
+                        title="Update"
+                        size="big"
+                        color={
+                          !isValidate() ? Colors.disabledColor : Colors.primaryColor
+                        }></AppText>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+            </View>
+          }
+      </View>
       
 
     </View>
@@ -563,17 +493,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.whiteColor,
     borderRadius: 5,
   },
+
   container: {
     marginHorizontal: 10,
     marginTop: 10,
     backgroundColor: 'white',
-    minHeight: 250,
-    //maxHeight:400,
+    minHeight: 250,  
     padding: 10,
     borderRadius: 5,
     alignSelf: 'stretch',    
     width: Dimensions.get("screen").width - 20
   },
+
   titleContainer: {
     flexDirection: 'row',
     alignSelf: 'stretch',
@@ -583,14 +514,35 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 15,
   },
-  titleIcon: {
-    width: 16,
-    height: 16,
-    marginRight: 8,
-  },
+  
   clearText: {
     fontSize: Values.fontSize.small,
     fontFamily: Fonts.secondaryRegular,
     color: Colors.redColor,
   },
+
+  divider: {
+    height: 1,
+    backgroundColor: Colors.greyColor,
+    marginHorizontal: -10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  updateBtnContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+
+  updateBtnDivider : {
+      backgroundColor: Colors.greyColor,
+      width: 1,
+      marginVertical: -10,
+      alignSelf: 'stretch',
+  }
+
+
+
+
 });
