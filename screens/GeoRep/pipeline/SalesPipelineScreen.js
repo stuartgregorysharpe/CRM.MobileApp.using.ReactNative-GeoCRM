@@ -389,7 +389,7 @@ export const SalesPipelineScreen = props => {
 
         <Notification></Notification>
         <LoadingProgressBar />
-        
+
         {canAddPipeline && (
           <AddSalesPipeline
             props={props}

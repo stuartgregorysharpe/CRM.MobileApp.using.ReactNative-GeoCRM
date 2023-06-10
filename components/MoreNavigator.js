@@ -35,6 +35,8 @@ import Stock from '../screens/GeoRep/Stock/Stock';
 import { useDispatch } from 'react-redux';
 import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScreen';
 import LearningScreen from '../screens/GeoRep/Learning/Learning';
+import CourseDashboardScreen from '../screens/GeoRep/Learning/CourseDashboard';
+
 const Stack = createNativeStackNavigator();
 
 export default function RepMoreScreen(props) {
@@ -190,6 +192,13 @@ export default function RepMoreScreen(props) {
       <Stack.Screen name="RepSupport" options={{ header: () => null }}>
         {props => <RepSupportScreen {...props} screenProps={navigation} />}
       </Stack.Screen>
+
+      <Stack.Screen name = "CourseDashboard" options={{ header: () => null }}>
+        {
+          props => <CourseDashboardScreen {...props} screenProps={navigation}/>
+        }
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }
+

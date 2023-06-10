@@ -568,6 +568,10 @@ const Angle_Left_form = `
   </svg>
 `;
 
+const Angle_Left_form_blue = `<svg xmlns="http://www.w3.org/2000/svg" width="86.703" height="86.703" viewBox="0 0 86.703 86.703">
+<path id="expand_circle_down_FILL1_wght400_GRAD0_opsz48" d="M47.351,61.332,66.1,42.583l-4.66-4.552L47.351,52.12,33.262,38.031,28.6,42.583Zm0,29.371a41.947,41.947,0,0,1-16.8-3.414A43.677,43.677,0,0,1,7.414,64.15,41.946,41.946,0,0,1,4,47.351,42.213,42.213,0,0,1,7.414,30.444,43.325,43.325,0,0,1,16.734,16.68,44.439,44.439,0,0,1,30.553,7.414,41.946,41.946,0,0,1,47.351,4,42.214,42.214,0,0,1,64.258,7.414a43.284,43.284,0,0,1,23.03,23.03A42.214,42.214,0,0,1,90.7,47.351a41.947,41.947,0,0,1-3.414,16.8,44.44,44.44,0,0,1-9.266,13.818,43.325,43.325,0,0,1-13.764,9.321A42.214,42.214,0,0,1,47.351,90.7Z" transform="translate(-4 90.703) rotate(-90)" fill="#133c8b"/>
+</svg>`;
+
 const Logout = `
 <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill=${actionButtonIconFill}><g><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/></g></svg>
 `;
@@ -1562,6 +1566,13 @@ const Verified_Grey = `<svg xmlns="http://www.w3.org/2000/svg" width="46.095" he
 <path id="verified_FILL1_wght400_GRAD0_opsz48" d="M18.029,47l-3.981-6.81-7.91-1.624.89-7.7L2,25l5.029-5.814-.89-7.7,7.91-1.624L18.029,3l7.019,3.248L32.067,3,36.1,9.862l7.857,1.624-.89,7.7L48.1,25l-5.029,5.867.89,7.7L36.1,40.19,32.067,47l-7.019-3.248ZM22.8,31.967l11.89-11.786-2.357-2.148L22.8,27.462l-4.976-5.186-2.41,2.357Z" transform="translate(-2 -3)" style="fill: #a2a5ae;"/>
 </svg>
 `;
+
+const Pass_Key = `
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
+  <path id="lock_FILL1_wght400_GRAD0_opsz48" d="M11,44a2.988,2.988,0,0,1-3-3V19.3a2.988,2.988,0,0,1,3-3h3.5V11.5a9.159,9.159,0,0,1,2.775-6.725A9.159,9.159,0,0,1,24,2a9.159,9.159,0,0,1,6.725,2.775A9.159,9.159,0,0,1,33.5,11.5v4.8H37a2.988,2.988,0,0,1,3,3V41a2.988,2.988,0,0,1-3,3ZM24,34a3.754,3.754,0,0,0,2.725-1.1,3.572,3.572,0,0,0,1.125-2.65,3.936,3.936,0,0,0-1.125-2.725,3.643,3.643,0,0,0-5.45,0A3.936,3.936,0,0,0,20.15,30.25a3.572,3.572,0,0,0,1.125,2.65A3.754,3.754,0,0,0,24,34ZM17.5,16.3h13V11.5a6.265,6.265,0,0,0-1.9-4.6,6.518,6.518,0,0,0-9.2,0,6.265,6.265,0,0,0-1.9,4.6Z"  transform="translate(-2 -3)" style="fill: #000000;"/>
+</svg>
+`;
+
 const svgMap = {
   Round_Btn_Default_Dark: Round_Btn_Default_Dark,
   Round_Btn_Default_Dark_Gray: Round_Btn_Default_Dark_Gray,
@@ -1725,7 +1736,9 @@ const svgMap = {
   Learning: Learning,
   Learning_Gray: Learning_Gray,
   Verified: Verified,
-  Verified_Grey:Verified_Grey 
+  Verified_Grey:Verified_Grey,
+  Angle_Left_form_blue: Angle_Left_form_blue,
+  Pass_Key: Pass_Key,
 }
 
 export default ({

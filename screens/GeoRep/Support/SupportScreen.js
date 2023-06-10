@@ -21,7 +21,7 @@ import {useDispatch} from 'react-redux';
 import { Colors } from '../../../constants';
 
 
-export default function SupportScreen(props) {
+export default function SupportScreen(props, {screenProps}) {
 
   const navigation = props.navigation;
   const headers = ['Ticket', 'FAQ', 'WhatsApp'];  
@@ -32,6 +32,14 @@ export default function SupportScreen(props) {
   useEffect(() => {
     refreshHeader();
   }, []);
+
+  useEffect(() => {
+    if (screenProps) {
+       screenProps.setOptions({
+        title: 'Support'
+      });
+    }
+  },[]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
