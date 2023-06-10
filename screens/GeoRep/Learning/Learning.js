@@ -1,24 +1,28 @@
-import {View, Text, TouchableOpacity, Dimensions, ScrollView, SafeAreaView} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import LearningGradientView from './components/LearningGradientView';
-import { AppText } from "../../../components/common/AppText";
-import { whiteLabel } from '../../../constants/Colors';  
-import SvgIcon from '../../../components/SvgIcon';
-import CourseCardItemView from './components/CourseCardItemView';
+import React, { useEffect } from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import LearningContainer from './containers/LearningContainer';
-const Learning = ({screenProps}) =>{
+import { style } from '../../../constants/Styles';
+
+export default function Learning({ screenProps }) {
+
   useEffect(() => {
     if (screenProps) {
       screenProps.setOptions({
-        title: "Learning"
+        headerTitle: () => (
+          <TouchableOpacity>
+            <View style={style.headerTitleContainerStyle}>
+              <Text style={style.headerTitle}>Learning</Text>
+            </View>
+          </TouchableOpacity>
+        ),
       });
     }
   });
+
   return (
     <SafeAreaView>
-      <LearningContainer/>
+      <LearningContainer />
     </SafeAreaView>
   );
 }
 
-export default Learning;

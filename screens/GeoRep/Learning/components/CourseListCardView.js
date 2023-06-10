@@ -1,11 +1,30 @@
 import {View, Text, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState, useRef} from 'react';
 import SvgIcon from '../../../../components/SvgIcon';
 import { AppText } from '../../../../components/common/AppText';
 import { whiteLabel } from '../../../../constants/Colors';
 import CourseCardItemView from './CourseCardItemView';
+import { useNavigation } from '@react-navigation/native';
+
 const CourseListCardView = props => {
+    const navigation = useNavigation();
+    
     const {course_list} = props
+
+    const loadingBarRef = useRef(null);
+    const alertModalRef = useRef(null);
+
+    const showLoadingBar = () => {
+        if(loadingBarRef.current)
+        loadingBarRef.current.showModal();
+    }
+
+    const hideLoadingBar = () => {
+        if(loadingBarRef.current)
+        loadingBarRef.current.hideModal();
+    }
+
     return (
         <View style={{
             backgroundColor: 'white',
@@ -31,7 +50,12 @@ const CourseListCardView = props => {
             {
                 course_list.map((course, index) => {
                     return <View key={index.toString()} >
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity  onPress={async() => {
+                            // await AsyncStorage.setItem("course_id", course.course_id);
+                            navigation.navigate('CourseDashboard', {
+                                'course_id' : course.course_id
+                            });
+                            }}>
                             <CourseCardItemView item={course}/>
                         </TouchableOpacity>
                         {index < course_list.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}

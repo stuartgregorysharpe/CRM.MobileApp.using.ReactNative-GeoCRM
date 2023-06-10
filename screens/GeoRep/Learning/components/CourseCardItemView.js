@@ -2,7 +2,6 @@ import React from "react";
 import { Dimensions, Platform, Text, View, ScrollView, Image } from "react-native";
 import ProgressIndicatorView from "./ProgressIndicatorView";
 import { whiteLabel } from "../../../../constants/Colors";
-import SvgIcon from "../../../../components/SvgIcon";
 const CourseCardItemView = props => {
   const { item } = props;
 
@@ -45,7 +44,8 @@ const CourseCardItemView = props => {
               style={{
                 flexDirection: 'row',
                 marginVertical: 5,
-                flex: 1
+                flex: 1,
+                height: 5,
             }}/>
           </View>
       </View>
