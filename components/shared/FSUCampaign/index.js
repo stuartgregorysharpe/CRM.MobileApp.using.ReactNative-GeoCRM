@@ -9,10 +9,14 @@ const FSUCampaign = props => {
   const {item, questionType, formIndex} = props;
   if (!item) return null;
   const modalRef = useRef(null);
-  const questionButtonType =
-    item.value != null && item.value != ''
-      ? Constants.questionButtonType.QUESTION_BUTTON_DONE
-      : '';
+      
+  const getQuestionButtonType = () => {
+    if(item.campaigns.length == 0){
+      return Constants.questionButtonType.QUESTION_BUTTON_DISABLED;
+    }else{
+      return item.value != null && item.value != '' ? Constants.questionButtonType.QUESTION_BUTTON_DONE : '';
+    }
+  }
 
   const onOpenModal = () => {
     if (modalRef && modalRef.current) {
@@ -23,9 +27,13 @@ const FSUCampaign = props => {
   const renderContent = () => {
     return (
       <QuestionButton
-        questionButtonType={questionButtonType}
+        questionButtonType={getQuestionButtonType()}
         title={Strings.Fsu_Campaign}
-        onPress={onOpenModal}
+        onPress={() => {
+          if(item.campaigns.length > 0){
+            onOpenModal();
+          }          
+        }}
       />
     );
   };
@@ -33,6 +41,7 @@ const FSUCampaign = props => {
   return (
     <BaseForm
       item={item}
+      questionButtonType={getQuestionButtonType()}
       style={[styles.container, props.style]}
       onItemAction={props.onFormAction}>
       {renderContent()}
