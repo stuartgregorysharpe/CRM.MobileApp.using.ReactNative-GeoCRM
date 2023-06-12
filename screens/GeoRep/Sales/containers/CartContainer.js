@@ -216,7 +216,9 @@ const CartContainer = props => {
         product_id: product.product_id,
         qty: qty,
         location_id: defineSetup.location.location_id,
-      };
+        warehouse_id : product.warehouse_id
+      };      
+
       GetRequestProductPriceDAO.find(param)
         .then(res => {
           if (res.status === Strings.Success) {
