@@ -63,7 +63,7 @@ export const getOfflineSyncItem = async ( item_type ) => {
     var db = await getDBConnection();
     return new Promise(async function (resolve, reject) {
         await db.transaction(async(tx) =>{            
-            const query = `SELECT * FROM ${tableName} WHERE item_type=?`;
+            const query = `SELECT * FROM ${tableName} WHERE item_type=? ORDER BY id`;            
             await tx.executeSql(query, [item_type] , (tx, results) => {                
                 resolve(results.rows);
             });
@@ -102,27 +102,16 @@ export const getOfflineSyncItemsInBasket = async(basketName) => {
     var basket = OfflineBaskets.find((item) => item.basketName == basketName);
     if(basket != undefined){
         var lists = [];
-        var res = await getOfflineSyncItemByItemType(basket.itemTypes, 0 , lists);        
-        return res;
-    }
-}
-
-const getOfflineSyncItemByItemType = async(itemLists, index , lists) => {    
-    var itemType = itemLists[index];
-    
-    if(itemType != undefined){
-        const offlineSyncItems = await getOfflineSyncItem(itemType);
-        if(offlineSyncItems.length > 0){                
-            for(var i = 0; i < offlineSyncItems.length; i++){
-                const item = offlineSyncItems.item(i);
+        var offlineSyncItemsInBascket = await getOfflineSyncItems(basket.itemTypes);
+        if(offlineSyncItemsInBascket.length > 0){                
+            for(var i = 0; i < offlineSyncItemsInBascket.length; i++){
+                const item = offlineSyncItemsInBascket.item(i);
                 lists.push({label:item.item_label , subLabel: item.item_sub_text, itemType: item.item_type,  time: getConvertedDateTime(item.added_time) } );                
-            }                
-        }
-        if(index < itemLists.length - 1){
-            return await getOfflineSyncItemByItemType(itemLists, index + 1 ,lists);
-        }else{
-            return lists;
-        }
+            }
+        }        
+        return lists;
+    }else{
+        return [];
     }
-
+    
 }
