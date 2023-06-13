@@ -1,27 +1,27 @@
 import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
-import CourseContentGradientView from '../components/CourseContentGradientView';
-import LessonListCardView from '../components/LessonListCardView';
+import TermsToKnowGradientView from '../components/TermsToKnowGradientView.js';
+import TermsCardView from '../components/TermsCardView.js';
 import { getApiRequest } from '../../../../actions/api.action';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 import AlertModal from '../../../../components/modal/AlertModal';
 import { expireToken } from '../../../../constants/Helper';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 
-const CourseDashboardContainer = props => {
+const TermsToKnowContainer = props => {
 
     const loadingBarRef = useRef(null);
     const alertModalRef = useRef(null);
-    const [course_content, setcourse_content] = useState({});
-    const { course_id } = props
+    const [terms_content, setterms_content] = useState({});
+    const { course_id, course_title, course_description } = props
 
     useEffect(async () => {
 
         function handlecourse() {
             showLoadingBar();
-            getApiRequest('v2/user/course-dashboard', { course_id: course_id }, true).then(response => {
-                console.log("course dashboard response is same as :: ", response)
-                setcourse_content(response);
+            getApiRequest('v2/user/course-terms-to-know', { course_id: course_id }, true).then(response => {
+                console.log("Terms To Know :: ", response)
+                setterms_content(response);
                 hideLoadingBar();
             }).catch(error => {
                 hideLoadingBar();
@@ -47,9 +47,8 @@ const CourseDashboardContainer = props => {
                 padding: 15
             }}
         >
-            <CourseContentGradientView content={course_content} />
-
-            <LessonListCardView icon_name="Learning" section_title="Course Lessons" course_id ={course_id} course_title = {course_content.course_title} course_description = {course_content.course_description} lesson_list={course_content?.lessons} quiz={course_content?.quiz} />
+            <TermsToKnowGradientView course_title = {course_title} course_description = {course_description} />
+            <TermsCardView icon_name="Question" section_title="Terms To Know" content = {terms_content?.terms} />
             <View style={styles.height10}></View>
             <SubmitButton
                 style={{ marginHorizontal: 10 }}
@@ -62,7 +61,7 @@ const CourseDashboardContainer = props => {
     );
 }
 
-export default CourseDashboardContainer
+export default TermsToKnowContainer
 
 const styles = StyleSheet.create({
     height10:{

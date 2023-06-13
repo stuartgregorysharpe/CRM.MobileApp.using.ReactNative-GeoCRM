@@ -12,10 +12,10 @@ import AlertModal from '../../../../components/modal/AlertModal';
 import { expireToken } from '../../../../constants/Helper';
 import { useNavigation } from '@react-navigation/native';
 
-const LessonListCardView = props => {
+const TermsCardView = props => {
     const navigation = useNavigation();
 
-    const { lesson_list, quiz, course_id, course_title, course_description } = props
+    const { content } = props
 
 
     const loadingBarRef = useRef(null);
@@ -36,7 +36,7 @@ const LessonListCardView = props => {
             backgroundColor: 'white',
             padding: 15,
             borderRadius: 10,
-            marginTop: 20
+            marginTop: -30
         }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -52,35 +52,38 @@ const LessonListCardView = props => {
                         }}
                     />
                 </View>
-                <View style={{ backgroundColor: 'red', borderRadius: 8, paddingHorizontal: 7 }}>
-                    <TouchableOpacity onPress={() => {
-                        navigation.navigate('TermsToKnow', {
-                            "course_id" : course_id,
-                            "course_title": course_title,
-                            "course_description": course_description
-                        });
-                    }}>
-                        <Text style={{ color: "white" }}>Terms To Know</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
-            {
-                lesson_list?.map((tp, idx) => {
-                    return <View key={tp?.lesson_id?.toString()} >
-                        <TouchableOpacity onPress={() => {
 
-                        }}>
-                            <LessonCardItemView item={tp} idx={idx} />
+            {
+                content?.map((tp, idx) => {
+                    return <View key={idx} >
+                        <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />
+                        <TouchableOpacity onPress={() => { }}>
+                            <View style={{ marginHorizontal: 2, flex: 1 }}>
+                                <Text style={{
+                                    fontWeight: '900',
+                                    fontSize: 16,
+                                    color: 'black',
+                                    fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
+                                }}>{tp.term}</Text>
+
+                                <Text style={{
+                                    fontWeight: '600',
+                                    fontSize: 13,
+                                    color: 'black',
+                                    paddingVertical: 5,
+                                    fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
+                                }}>{tp.description}</Text>
+                            </View>
                         </TouchableOpacity>
-                        {idx < lesson_list.length - 1 && <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />}
+
                     </View>
                 })
             }
-            <View style={{ backgroundColor: '#EAEDF2', height: 2, marginVertical: 5 }} />
-            <QuizCardItemView item={quiz} />
-
         </View>
     );
 }
 
-export default LessonListCardView
+export default TermsCardView
+
+
