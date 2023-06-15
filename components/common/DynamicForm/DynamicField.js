@@ -462,6 +462,7 @@ const DynamicField = props => {
     return (
       <SignatureSignView 
         hasError={hasError}
+        title={field_label}
         isRequired={is_required}
         setScrollEnabled={(flag) => {
           if(props.setScrollEnabled){
