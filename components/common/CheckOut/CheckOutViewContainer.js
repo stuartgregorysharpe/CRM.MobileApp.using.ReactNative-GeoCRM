@@ -92,6 +92,7 @@ export default function CheckOutViewContainer(props) {
       }).catch((e) => {
         setIsDataLoading(false);
       });
+      
       loadLocationFormCompulsory();
     }    
   }
@@ -183,6 +184,10 @@ export default function CheckOutViewContainer(props) {
         checkout_time: currentTime,
         user_local_data: userParam.user_local_data,
       };
+
+      if(props.onStart) {
+        props.onStart();
+      }
 
       PostRequestDAO.find(
         specificLocationId,
