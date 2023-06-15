@@ -1,4 +1,4 @@
-import { View , Platform , TouchableOpacity } from 'react-native'
+import { View , Platform ,StyleSheet } from 'react-native'
 import React , { useState , useEffect , useRef } from 'react'
 import SetupFieldView from '../components/SetupFieldView';
 import { GetRequestSetupFieldDAO } from '../../../../DAO';
@@ -10,6 +10,7 @@ import BottomTabItem from '../../../../components/common/BottomTabItem';
 import { getJsonData, getLocalData } from '../../../../constants/Storage';
 import { SHOW_MORE_COMPONENT } from '../../../../actions/actionTypes';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AlertModal from '../../../../components/modal/AlertModal';
 
 const  SetupFieldContainer = (props) => {
 
@@ -26,6 +27,7 @@ const  SetupFieldContainer = (props) => {
     const payload = useSelector(state => state.selection.payload);
     const selectProject = useSelector(state => state.selection.selectProject);
     const setupFieldViewRef = useRef(null);
+    const alertModalRef = useRef();
     
     const dispatch = useDispatch()
     let isMount = true;
@@ -61,7 +63,7 @@ const  SetupFieldContainer = (props) => {
             }
             
             GetRequestSetupFieldDAO.find(param).then((res) => {
-                console.log("res.warehouse", res.warehouse);
+                
                 setTransactinTypes(res.transaction_types);
                 setWarehouse(res.warehouse);
                 setCurrency(res.currency);
@@ -71,7 +73,7 @@ const  SetupFieldContainer = (props) => {
                     setupFieldViewRef.current.updateSetupData(type);
                 setIsLoading(false)
             }).catch((e) => {
-                expireToken(dispatch, e);
+                expireToken(dispatch, e , alertModalRef);
                 setIsLoading(false)
             });
         }        
@@ -98,15 +100,8 @@ const  SetupFieldContainer = (props) => {
     const getPadding = () => {
         if(Platform.OS == 'android'){
             return 0;
-        }else{
-            const majorVersionIOS = parseInt(Platform.Version, 10);
-            console.log("majorVersionIOS => ",majorVersionIOS);
-            return 4;
-            if(majorVersionIOS == 7){
-                return 25
-            }else{
-                return 28;
-            }
+        }else{                        
+            return 4;            
         }
     }
 
@@ -114,80 +109,70 @@ const  SetupFieldContainer = (props) => {
         <SafeAreaView >
         
         {
-            Platform.OS == 'ios' && <View style={{position:'absolute', backgroundColor:'white', height:35, width: '100%' , bottom : 0  }}></View>
+            Platform.OS == 'ios' &&
+                <View style={{position:'absolute', backgroundColor:'white', height:35, width: '100%' , bottom : 0  }}>
+            </View>
         }
-               
-        <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => {                    
-                  if(closableWithOutsideTouch){
-                    onClose();
-                  }                                
-              }}
-              style={{                
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-        >
-            <View style={{
-                alignSelf:'stretch' , 
-                flex:1 ,            
-                flexDirection:'column',            
-                alignItems:'center',
-                justifyContent:'center',            
-                minHeight:250
-            }}>
+        
+        <View style={styles.container}>
+           
+            <AlertModal ref={alertModalRef} />
+            <SetupFieldView 
+                ref={setupFieldViewRef}
+                setupField={setupField}
+                transaction_types={transaction_types} 
+                currency={currency}
+                warehouse={warehouse}
+                isLoading={isLoading}
+                apiCallType={apiCallType}
+                onContinue={onContinue}
+                onClose={onClose}
+                onChangeLocation={onChangeLocation}
+                {...props} />
             
-                <SetupFieldView 
-                    ref={setupFieldViewRef}
-                    setupField={setupField}
-                    transaction_types={transaction_types} 
-                    currency={currency}
-                    warehouse={warehouse}
-                    isLoading={isLoading}
-                    apiCallType={apiCallType}
-                    onContinue={onContinue}
-                    onClose={onClose}
-                    onChangeLocation={onChangeLocation}
-                    {...props} />
-                
-                <View style={{
-                        backgroundColor:'white', 
-                        position:'absolute' ,
-                        bottom:0, 
-                        width:'100%', 
-                        flexDirection:'row' , 
-                        paddingBottom: getPadding()
-                    }}>
-
-                    {
-                        bottomTabs.map((item, index) =>{
-                            return (
-                                <BottomTabItem  
-                                    onItemPressed={() => {                                    
-                                        if(item?.name != 'Sales'){
-                                            if(item?.name != 'More') {
-                                                dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
-                                            }                                 
-                                            props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
-                                        }                                    
-                                    }}
-                                    key={index} item={item} 
-                                />
-                            )
-                        })
-                    }                                            
-                </View>
+            <View style={[styles.bottomBarContainer , { paddingBottom: getPadding() }]}>
+                {
+                    bottomTabs.map((item, index) =>{
+                        return (
+                            <BottomTabItem  
+                                onItemPressed={() => {                                    
+                                    if(item?.name != 'Sales'){
+                                        if(item?.name != 'More') {
+                                            dispatch({type: SHOW_MORE_COMPONENT, payload: ''});
+                                        }                                 
+                                        props.onButtonAction({type: Constants.actionType.ACTION_DONE, value: item});                                    
+                                    }                                    
+                                }}
+                                key={index} item={item} 
+                            />
+                        )
+                    })
+                }                                            
             </View>
        
-        </TouchableOpacity>
+        </View>
 
-
-       
+    
         </SafeAreaView>
     )
 }
 
 export default SetupFieldContainer;
+
+const styles = StyleSheet.create({
+    container : {
+        alignSelf:'stretch' , 
+        flex:1 ,            
+        flexDirection:'column',            
+        alignItems:'center',
+        justifyContent:'center',            
+        minHeight:250
+    },
+    bottomBarContainer : {
+        backgroundColor:'white', 
+        position:'absolute' ,
+        bottom:0, 
+        width:'100%', 
+        flexDirection:'row'        
+    }
+})
