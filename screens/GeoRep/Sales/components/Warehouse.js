@@ -59,14 +59,15 @@ const Warehouse = (props) => {
     }
     
     return (
-        <ScrollView         
-            style={{alignSelf:'stretch',  maxHeight:updatedLists.length <= 3 ? 120 : 180}}>                    
+        // maxHeight:updatedLists.length <= 3 ? 120 : 180
+        <View         
+            style={{alignSelf:'stretch' }}>                    
             {
                 updatedLists.map((item , index) => {
                     return renderItem(item, index);
                 })
             }
-        </ScrollView>
+        </View>
 
         // <View style={{maxHeight:180}}>
         //     <FlatList            
