@@ -15,21 +15,19 @@ import {
 } from './helper';
 import ScanningListViewModal from './modals/ScanningListViewModal';
 import {useDispatch} from 'react-redux';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
-import {Notification} from '../../../../components/modal/Notification';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
+import AlertModal from '../../../../components/modal/AlertModal';
 
 const StagingView = props => {
+  
   const [keyword, setKeyword] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
   const [viewListItems, setViewListItems] = useState([]);
   const [lastScanedQrCode, setLastScannedQrCode] = useState('');
   const captureModalRef = useRef(null);
   const scanningListViewModalRef = useRef(null);
-  const captureScanningListViewModalRef = useRef(null);
+  const captureScanningListViewModalRef = useRef(null);  
+  const alertModalRef = useRef();
+
   const items = useMemo(
     () => filterItems(props.items, keyword),
     [props.items, keyword],
@@ -62,27 +60,19 @@ const StagingView = props => {
           }
         });
         setSelectedItems(_selectedItems);
-      } else {
-        dispatch(
-          showNotification({
-            type: Strings.Success,
-            message: 'Barcode not found in staging',
-            buttonText: 'Ok',
-            buttonAction: () => {
-              dispatch(clearNotification());
-            },
-          }),
-        );
+      } else {        
+        showMessage('Barcode ' + value + ' not found in staging');
       }
       setLastScannedQrCode(value);
     }
   };
-  const onCloseScanModal = () => {
-    console.log('onClose');
+
+  const onCloseScanModal = () => {    
     setSelectedItems([]);
     setLastScannedQrCode('');
     captureModalRef.current.hideModal();
   };
+
   const onSearch = keyword => {
     setKeyword(keyword);
   };
@@ -140,6 +130,12 @@ const StagingView = props => {
     captureModalRef.current.hideModal();
   };
 
+  const showMessage = (message) => {
+    if(alertModalRef.current){
+      alertModalRef.current.alert(message);
+    }
+  }
+
   return (
     <View style={[styles.container, props.style]}>
       <SearchBar
@@ -185,6 +181,7 @@ const StagingView = props => {
               onAccept={onAccept}
               onItemAction={onCaptureViewListItemAction}
             />,
+            <AlertModal ref={alertModalRef} />
           ];
         }}
       />
@@ -218,8 +215,6 @@ const StagingView = props => {
         onAccept={onAccept}
         onItemAction={onListViewItemAction}
       />
-
-      <Notification />      
 
     </View>
   );
