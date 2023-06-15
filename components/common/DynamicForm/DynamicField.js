@@ -1,11 +1,9 @@
 import {RuleTester} from 'eslint';
 import React from 'react';
 import {View , Text, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-paper';
 import { Constants } from '../../../constants';
 import { whiteLabel } from '../../../constants/Colors';
 import DropdownText from '../../shared/DropdownText';
-import EmailPdf from '../../shared/EmailPdf';
 import EmailInputView from '../../shared/EmailPdf/EmailInputView';
 import Paragraph from '../../shared/Paragraph';
 import SignatureSignView from '../../shared/SignatureSignView';

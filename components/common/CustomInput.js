@@ -9,7 +9,8 @@ export default function CustomInput(props) {
     return (
         <View>
         
-        <TextInput                
+        <TextInput         
+                theme={{ colors: { text: 'black'  , placeholder:  whiteLabel().disabledColor } }}       
                 keyboardType={keyboardType ? keyboardType : 'default'}
                 returnKeyType={'done'}
                 style={[styles.textInput, style]}

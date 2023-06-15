@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import {Button, Title, Portal, TextInput} from 'react-native-paper';
+import {Button, Title } from 'react-native-paper';
 import Colors, {whiteLabel} from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 import Divider from './Divider';

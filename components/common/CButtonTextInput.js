@@ -9,6 +9,7 @@ const CButtonTextInput = props => {
   return (
     <View style={[{alignSelf: 'stretch'}, props.style]}>
       <TextInput
+        theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
         disabled={props.disabled != undefined ? props.disabled : false}
         mode="outlined"
         outlineColor={

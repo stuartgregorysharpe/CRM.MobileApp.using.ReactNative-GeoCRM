@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
-import { Button, Title, Modal, Portal, TextInput } from 'react-native-paper';
+import { Button, Title } from 'react-native-paper';
 import Colors, { whiteLabel } from '../../../../../constants/Colors';
 import Fonts from '../../../../../constants/Fonts';
 import Divider from '../../../../../components/Divider';
