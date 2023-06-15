@@ -20,8 +20,7 @@ const SetupFieldModal = React.forwardRef((props, ref) => {
 
     return (        
         <CModal
-            ref={ref}                        
-            closableWithOutsideTouch             
+            ref={ref}                                    
             {...props}>
             <SetupFieldContainer 
                 isClear={isClear}                

@@ -134,8 +134,7 @@ const DynamicForm = React.forwardRef((props, ref) => {
     const requiredFields = [];    
     formStructureData.forEach(fieldStructure => {
       const isAlowedField = checkAllowedFieldType(fieldStructure.field_type);
-
-      console.log("ok" , fieldStructure.is_required, fieldStructure.isHidden , isAlowedField , fieldStructure.rule_compulsory)
+      
       if (
         (fieldStructure.rule_compulsory == undefined || (fieldStructure.rule_compulsory != undefined && fieldStructure.rule_compulsory == '1') )  &&
         fieldStructure.is_required &&

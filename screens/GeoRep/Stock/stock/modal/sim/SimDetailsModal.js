@@ -1,10 +1,18 @@
-import React from 'react';
+import React , { useRef, useImperativeHandle } from 'react';
 import CModal from '../../../../../../components/common/CModal';
 import QRScanModal from '../../../../../../components/common/QRScanModal';
+import AlertModal from '../../../../../../components/modal/AlertModal';
 import {Constants} from '../../../../../../constants';
+import { filterItemsByBarcode } from '../../../staging/helper';
 import SimDetailsContainer from '../../container/sim/SimDetailsContainer';
 
 const SimDetailsModal = React.forwardRef((props, ref) => {
+
+  const { stockList } = props;
+
+  const alertModalRef = useRef();
+
+
   const onButtonAction = data => {
     /*if (
       data.type == Constants.actionType.ACTION_DONE ||
@@ -17,6 +25,15 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
+    const type = data.type;
+    const value = data.value;
+    if(type == Constants.actionType.ACTION_CAPTURE){
+      const capturedItems = filterItemsByBarcode(stockList, value);      
+      if (!(capturedItems && capturedItems.length > 0)) {
+        alertModalRef.current.alert('Barcode ' + value + ' not found in stock');
+      }
+    }
+
   };
 
   const openSignature = value => {
@@ -33,12 +50,15 @@ const SimDetailsModal = React.forwardRef((props, ref) => {
       showClose={true}
       renderLastScanResultView={() => {
         return (
+          <>
           <SimDetailsContainer
             {...props}
             openSignature={openSignature}
             onButtonAction={onButtonAction}
           />
-        );
+          <AlertModal ref={alertModalRef} />
+          </>
+        );            
       }}
     />
   );

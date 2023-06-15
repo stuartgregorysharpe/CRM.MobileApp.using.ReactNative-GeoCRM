@@ -94,10 +94,12 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       var list = [];
       if (products != undefined) {
         products.forEach(element => {
+
           const product = productPriceLists.find(
             item =>
               item != undefined &&
-              parseInt(item.product_id) == parseInt(element.product_id),
+              parseInt(item.product_id) == parseInt(element.product_id) &&
+              parseInt(item.warehouse_id) == parseInt(element.warehouse_id) 
           );
 
           var newElement = {
@@ -117,8 +119,8 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
             }
             if (
               product.price != undefined &&
-              product.price != '' &&
-              product.price != 0
+              product.price != '' 
+              //product.price != 0
             ) {
               price = product.price;
             }
@@ -389,12 +391,21 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
   };
 
+  const onProductDetailsModalClosedFromGroupModal = ({type, value}) => {
+    if (type === Constants.actionType.ACTION_DONE) {
+      saveFinalPrice(value, 'done');      
+    }
+    if (type === Constants.actionType.ACTION_FORM_CLEAR) {
+      saveFinalPrice(value, 'clear');
+    }
+  };
+
   const onAddProductModalClosed = ({type, value}) => {
     if (type == Constants.actionType.ACTION_DONE) {
       addProductModalRef.current.hideModal();
       saveProducts(value);
     }
-  };
+  };  
 
   const clearFilter = async () => {
     var param = await getJsonData('@sale_product_parameter');
@@ -424,6 +435,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
     }
     updateProductPriceLists(
       value.product_id,
+      value.warehouse_id,
       value.price,
       value.qty,
       value.special,
@@ -460,7 +472,9 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         product_id: product.product_id,
         qty: qty,
         location_id: defineSetup.location.location_id,
+        warehouse_id : product.warehouse_id
       };
+      
 
       GetRequestProductPriceDAO.find(param)
         .then(res => {
@@ -484,9 +498,11 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
               price: price,
               special: special,
               finalPrice: finalPrice,
-            };
+            };          
+
             updateProductPriceLists(
               product.product_id,
+              product.warehouse_id,
               price,
               qty,
               finalPrice == 0 ? special : '0',
@@ -506,15 +522,14 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
   };
 
   const updateProductPriceLists = useCallback(
-    async (product_id, price, qty, special, finalPrice, product) => {
-      const lists = [...productPriceLists];
-      var tmpList = lists.filter(
-        item => parseInt(item.product_id) != parseInt(product_id),
-      );
+    async (product_id, warehouse_id , price, qty, special, finalPrice, product) => {
 
-      var check = lists.find(
-        item => parseInt(item.product_id) == parseInt(product_id),
-      );
+      const lists = [...productPriceLists];
+      var tmpList = lists.filter(item => !(parseInt(item.product_id) == parseInt(product_id) && parseInt(item.warehouse_id) == parseInt(warehouse_id)) );
+      var check = lists.find( item => parseInt(item.product_id) == parseInt(product_id) && parseInt(item.warehouse_id) == parseInt(warehouse_id)  );
+      
+      console.log("update price", price)
+
       if (check != undefined) {
         var tmpFinalPrice =
           finalPrice != '' && finalPrice != 'clear'
@@ -522,6 +537,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
             : check.finalPrice;
         tmpList.push({
           product_id: product_id,
+          warehouse_id : warehouse_id,
           price: price,
           qty: qty,
           special: special,
@@ -531,6 +547,7 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
       } else {
         tmpList.push({
           product_id: product_id,
+          warehouse_id : warehouse_id,
           price: price,
           qty: qty,
           special: special,
@@ -607,11 +624,13 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         products={groupList}
         settings={settings}
         geProductPrice={geProductPrice}
-        openProductDetail={openProductDetail}
+        //openProductDetail={openProductDetail}
         closableWithOutsideTouch={true}
         ref={productGroupModalRef}
         isUpdatingProductPrice={isUpdatingProductPrice}
         onButtonAction={onProductGroupModalClosed}
+        onProductDetailsModalClosed={onProductDetailsModalClosedFromGroupModal}
+
       />
 
       <ProductFilterModal

@@ -316,12 +316,15 @@ export function expireToken(dispatch, e , alertModalRef) {
   var message = '';
 
   if(typeof e === 'object'){
+    console.log("object error", JSON.stringify(e));
     message = 'Error. Please Contact the Support';
   }else if (e === 'expired') {
     console.log('token EXPIRED !!!!!');
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
     message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
+  } else if (e === 'error_400' ){
+    message = 'Request 400 Error';
   }else{
     message = e;
   }

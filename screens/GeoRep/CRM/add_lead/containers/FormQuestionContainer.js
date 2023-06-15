@@ -10,13 +10,15 @@ import {
   validateFormQuestionData,
 } from '../../../Forms/questions/helper';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../../actions/notification.action';
 import {GetRequestFormQuestionsDAO} from '../../../../../DAO';
 import {downloadFormQuestionImages} from '../../../../../services/DownloadService/ImageDownload';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 import AlertModal from '../../../../../components/modal/AlertModal';
 
+
+
 export default function FormQuestionContainer(props) {
+
   const {form, leadForms, customMasterFields, selectedLists} = props;
 
   const [formQuestions, setQuestions] = useState([]);
@@ -51,7 +53,7 @@ export default function FormQuestionContainer(props) {
       })
       .catch(e => {
         hideLoadingBar();
-        var delay = Platform.OS == 'android' ? 0 : 500;
+        var delay = Platform.OS == 'android' ? 0 : 800;
         setTimeout(() => {
           expireToken(dispatch, e, alertModalRef);
         }, delay);
@@ -81,7 +83,7 @@ export default function FormQuestionContainer(props) {
   };
 
   const hideLoadingBar = () => {
-    var delay = Platform.OS == 'ios' ? 500 : 0;    
+    var delay = Platform.OS == 'ios' ? 800 : 0;    
     setTimeout(() => {
       if(loadingBarRef.current){
         loadingBarRef.current.hideModal();
@@ -137,7 +139,7 @@ export default function FormQuestionContainer(props) {
         }
       });
       updateFormQuestionsForDownloading(newData);
-      
+
     }catch(e) {
       hideLoadingBar();
     }
@@ -179,13 +181,9 @@ export default function FormQuestionContainer(props) {
   const onSave = () => {
     var error = validateFormQuestionData(formQuestions);
     if (error) {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: error,
-          buttonText: Strings.Ok,
-        }),
-      );
+      if(alertModalRef.current){
+        alertModalRef.current.alert(error);
+      }      
       return;
     } else {
       var form_answers = [];

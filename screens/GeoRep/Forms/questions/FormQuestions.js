@@ -316,20 +316,24 @@ export const FormQuestions = props => {
   };
 
   const onSubmitSuccess = async (res) => {
-      const db = await getDBConnection();
-      if (db != null) await deleteFormTable(db, form.form_id);
-      clearAll();
-      const formIds = await getJsonData('@form_ids');
-      var formIdLists = [];
-      if (formIds != null) {
-        formIds.forEach(id => {
-          formIdLists.push(id);
-        });
-        formIdLists.push(form.form_id);
-        await storeJsonData('@form_ids', formIdLists);
-      } else {
-        formIdLists.push(form.form_id);
-        await storeJsonData('@form_ids', formIdLists);
+      try{
+        const db = await getDBConnection();
+        if (db != null) await deleteFormTable(db, form.form_id);
+        clearAll();
+        const formIds = await getJsonData('@form_ids');
+        var formIdLists = [];
+        if (formIds != null) {
+          formIds.forEach(id => {
+            formIdLists.push(id);
+          });
+          formIdLists.push(form.form_id);
+          await storeJsonData('@form_ids', formIdLists);
+        } else {
+          formIdLists.push(form.form_id);
+          await storeJsonData('@form_ids', formIdLists);
+        }      
+      }catch(e) {
+        console.log("error in form question clean after form post => ", e);
       }      
       onOpenFormFeedbackModal(res);
       

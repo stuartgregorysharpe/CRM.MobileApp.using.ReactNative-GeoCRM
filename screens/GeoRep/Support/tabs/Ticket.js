@@ -4,10 +4,11 @@ import React, {
   useEffect,
   forwardRef,
   useImperativeHandle,
+  useCallback,
 } from 'react';
-import {View,  StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
 import Fonts from '../../../../constants/Fonts';
-import { TextInput } from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
 import {getBaseUrl, getToken, getUserData} from '../../../../constants/Storage';
@@ -20,14 +21,14 @@ import {
   expireToken,
   getPostParameter,  
 } from '../../../../constants/Helper';
-import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import {Notification} from '../../../../components/modal/Notification';
 import {useDispatch, useSelector} from 'react-redux';
 import {generateKey} from '../../../../constants/Utils';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 import { PostRequestDAO } from '../../../../DAO';
-import { clearLoadingBar, showLoadingBar, showNotification } from '../../../../actions/notification.action';
 import { Strings } from '../../../../constants';
+import { AppText } from '../../../../components/common/AppText';
+import CSingleSelectInput from '../../../../components/common/SelectInput/CSingleSelectInput';
+import AlertModal from '../../../../components/modal/AlertModal';
+import LoadingBar from '../../../../components/LoadingView/loading_bar';
 
 var ticket_indempotency = '';
 
@@ -36,16 +37,18 @@ export const Ticket = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const emailRef = useRef();
+  const alertModalRef = useRef();
+  const loadingBarRef = useRef();
   const [email, setEmail] = useState('');
   const [universalUserId, setUniversalUserId] = useState('');
   const [universalClientId, setUniversalClientId] = useState('');
-  const [userName, setUserName] = useState('');
-  const [modaVisible, setModalVisible] = useState(false);
+  const [userName, setUserName] = useState('');  
   const [supportIssues, setSupportIssues] = useState([]);
   const [issue, setIssue] = useState('');
   const [issueDetails, setIssueDetails] = useState('');
   const [issueImage, setIssueImage] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useImperativeHandle(ref, () => ({
     callPostSupport() {
@@ -70,13 +73,22 @@ export const Ticket = forwardRef((props, ref) => {
   };
 
   const loadSupportItems = async () => {
+
     var base_url = await getBaseUrl();
     var token = await getToken();
     if (base_url != null && token != null) {
       let params = {};
+
       getSupportIssues(base_url, token, params)
         .then(res => {
-          setSupportIssues(res);
+          console.log("resss", res)
+          if(res != undefined){
+            var issues = [];
+            res.forEach(element => {
+              issues.push({label: element, value: element});              
+            });
+            setSupportIssues(issues);
+          }
         })
         .catch(error => {
           expireToken(dispatch, error);
@@ -84,42 +96,66 @@ export const Ticket = forwardRef((props, ref) => {
     }
   };
 
+
+  const isValidate = useCallback((issue, issueDetails) => {
+      var e = {}
+      var flag = true;
+      if(issue == '' || issue == null){
+        e = { issue : true };
+        flag = false;
+      }
+      if(issueDetails == '' || issueDetails == null){
+        e = {
+          ...e,
+          issueDetails : true
+        }
+        flag = false;
+      }
+      console.log("changed e", e)
+      setErrors(e);
+      return flag;      
+    }, [issue , issueDetails]); 
+
   const postdata = async () => {
-    
+
     if(isSubmit){
       return;
-    }
+    }    
 
-    console.log("issue", issue, issueDetails)
-    if (issue != '' && issueDetails != '') {
-      var userParam = getPostParameter(currentLocation);
-      let params = {
-        indempotency_key: generateKey(),
-        user_email: email,
-        user_name: userName,
-        user_cell: '+27 0811231234',
-        app_version: '1.1.2',
-        device_model: 'Galaxy A32',
-        universal_user_id: universalUserId,
-        universal_client_id: universalClientId,
-        selected_issue: issue,
-        issue_details: issueDetails,
-        issue_image: issueImage,
-        user_local_data: userParam.user_local_data,
-      };
-
-      setIsSubmit(true);
+    if(isValidate(issue, issueDetails)){
       
-
-      PostRequestDAO.find(0 , params, 'supportmail' , 'supportmail', '' , '' , ticket_indempotency  , dispatch ).then((res) => {                        
-        dispatch(showNotification({type : Strings.Success , message: res.message , buttonText: Strings.Ok}));
-        setIsSubmit(false);
-      }).catch((e) => {
-        setIsSubmit(false);        
-        expireToken(dispatch, e);
-      });
+        showLoadingBar();
+        var userParam = getPostParameter(currentLocation);
+        let params = {
+          indempotency_key: generateKey(),
+          user_email: email,
+          user_name: userName,
+          user_cell: '+27 0811231234',
+          app_version: '1.1.2',
+          device_model: 'Galaxy A32',
+          universal_user_id: universalUserId,
+          universal_client_id: universalClientId,
+          selected_issue: issue,
+          issue_details: issueDetails,
+          issue_image: issueImage,
+          user_local_data: userParam.user_local_data,
+        };
   
-    }
+        setIsSubmit(true);
+        
+        PostRequestDAO.find(0 , params, 'supportmail' , 'supportmail', '' , '' , ticket_indempotency  , null ).then((res) => {
+          setIssue('');
+          setIssueDetails('');
+          setIsSubmit(false);
+          hideLoadingBar();
+          showMessage(res.message);
+        }).catch((e) => {
+          setIsSubmit(false);       
+          hideLoadingBar();
+          expireToken(dispatch, e , alertModalRef);
+        });  
+      
+    }      
   };
 
   const launchImageLibrary = index => {
@@ -153,16 +189,32 @@ export const Ticket = forwardRef((props, ref) => {
     setIssueImage(data);
   };
 
+  const showLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal();
+    }
+  }
+  const showMessage = (message) => {
+    const delay = Platform.OS == 'ios' ? 500 : 0;
+    setTimeout(() => {
+      alertModalRef.current.alert(message);
+    }, delay);
+  }
+
   return (
     <View>
       
-      <Notification></Notification>
-      <LoadingProgressBar />
+      <AlertModal ref={alertModalRef}/>
 
-      <Text style={styles.description}>
-        Please fill in the above fields and upload any relevant screenshots that
-        could help identify the problem your experiencing.
-      </Text>
+      <LoadingBar ref={loadingBarRef}/>
+
+      <AppText style={styles.description} title={Strings.Ticket_Description}></AppText>
+
       <TouchableOpacity
         style={{width: '100%'}}
         activeOpacity={1}
@@ -171,8 +223,6 @@ export const Ticket = forwardRef((props, ref) => {
           <TextInput
             ref={emailRef}
             style={styles.textInput}
-            textColor={'black'}
-            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             label="Email"
             mode="outlined"
             outlineColor={whiteLabel().fieldBorder}
@@ -183,39 +233,38 @@ export const Ticket = forwardRef((props, ref) => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{width: '100%'}}
-        activeOpacity={1}
-        onPress={() => setModalVisible(true)}>
-        <View pointerEvents="none">
-          <TextInput
-            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
-            style={styles.textInput}
-            label={issue == '' ? 'Select Issue' : issue}
-            mode="outlined"
-            outlineColor={whiteLabel().fieldBorder}
-            activeOutlineColor={Colors.disabledColor}
-          />
-          <SvgIcon
-            style={styles.pickerIcon}
-            icon="Drop_Down"
-            width="23px"
-            height="23px"
-          />
-        </View>
-      </TouchableOpacity>
-
+      <CSingleSelectInput        
+        description={'Issue'}
+        placeholder={'Select Issue'}
+        checkedValue={issue}
+        items={supportIssues}
+        hasError={errors?.issue}
+        mode={'single'}
+        onPress={() => {          
+        }}
+        onClear={() => {                    
+          setIssue('');
+        }}
+        onSelectItem={ item => {            
+          setIssue(item.value);
+          isValidate(item.value, issueDetails);
+        }}
+        containerStyle={{marginBottom: 3}}        
+      />
+     
       <TextInput
-        theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
         style={styles.textArea}
         mode="outlined"
-        outlineColor={whiteLabel().fieldBorder}
+        outlineColor={ errors?.issueDetails ? Colors.redColor : whiteLabel().fieldBorder}
         activeOutlineColor={Colors.disabledColor}
         placeholder="Issue details can be entered here..."
         multiline={true}
         value={issueDetails}
         returnKeyType="done"
-        onChangeText={text => setIssueDetails(text)}
+        onChangeText={text => {
+          setIssueDetails(text);
+          isValidate(issue, text);
+        }}
         numberOfLines={4}
       />
 
@@ -227,42 +276,31 @@ export const Ticket = forwardRef((props, ref) => {
         <Text style={styles.downloadText}>Upload Image</Text>
         <SvgIcon icon="File_Download" width="18px" height="18px" />
       </TouchableOpacity>
-
-      <SelectionPicker
-        title="Please select an option"
-        clearTitle={'Close'}
-        mode={'single'}
-        value={issue}
-        visible={modaVisible}
-        options={supportIssues}
-        onModalClose={() => {
-          setModalVisible(false);
-        }}
-        onValueChanged={(item, index) => {
-          setIssue(item);
-          setModalVisible(false);
-        }}></SelectionPicker>      
+     
     </View>
   );
 });
 
 const styles = StyleSheet.create({
+
   description: {
     fontSize: 16,
-    fontFamily: Fonts.primaryBold,
-    color: '#000',
-    paddingTop: 12,
+    fontFamily: Fonts.primaryBold,    
+    paddingTop: 10,
     marginBottom: 20,
   },
+
   textInput: {
-    height: 40,
+    height: 38,
     fontSize: 14,
+    paddingLeft:0,
     lineHeight: 30,
     backgroundColor: Colors.bgColor,
     fontFamily: Fonts.secondaryMedium,
     marginBottom: 8,
   },
-  textArea: {
+
+  textArea: {    
     fontSize: 14,
     lineHeight: 30,
     backgroundColor: Colors.bgColor,
@@ -289,24 +327,5 @@ const styles = StyleSheet.create({
     color: whiteLabel().actionOutlineButtonText,
   },
 
-  pickerIcon: {
-    position: 'absolute',
-    top: 15,
-    right: 8,
-  },
-
-  pickerItemBox: {
-    backgroundColor: Colors.bgColor,
-    padding: 10,
-  },
-
-  pickerItem: {
-    padding: 10,
-    borderRadius: 7,
-    marginBottom: 8,
-  },
-  pickerItemText: {
-    fontSize: 16,
-    fontFamily: Fonts.secondaryMedium,
-  },
+  
 });
