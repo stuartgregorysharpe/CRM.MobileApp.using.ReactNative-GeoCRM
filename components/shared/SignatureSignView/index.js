@@ -9,18 +9,15 @@ import { generateKey } from '../../../constants/Utils';
 
 const SignatureSignView = (props) => {
 
-    const { hasError, signature } = props;
+    const { hasError, signature , title } = props;
     const imgWidth = 300;
     const imgHeight = 180;
-
-    //const map_style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
-
+    
     const map_style = `.m-signature-pad {box-shadow: none; border: none; } 
               .m-signature-pad--body {border: none;}
               .m-signature-pad--footer {display: none; margin: 0px;}`;
 
     const ref = useRef();
-
     
     const handleOK = (signature) => {                
         saveImage(signature);        
@@ -49,8 +46,7 @@ const SignatureSignView = (props) => {
         }        
     }
 
-    const handleEnd = async () => {
-        console.log("hande data end");        
+    const handleEnd = async () => {        
         var signature = ref.current.readSignature();      
         saveImage(signature);                   
     }
@@ -82,7 +78,7 @@ const SignatureSignView = (props) => {
 
             <View style={{flexDirection:'row', justifyContent:'center', marginBottom:5}}>
 
-                    <AppText title="Please Sign below: xxx" size="medium" color={whiteLabel().mainText} />
+                    <AppText title={title != undefined ? title + " " : 'Please Sign below:'} style={{fontSize:15}} color={whiteLabel().mainText} />
 
                     <TouchableOpacity
                       style={styles.clearButtonContainer}

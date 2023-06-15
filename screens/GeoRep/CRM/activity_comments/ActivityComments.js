@@ -16,12 +16,12 @@ export default function ActivityComments(props) {
     const headers = ["History", "Forms"];
     const refPagerView = useRef();    
 
-    const changePage = (nativeEvent) => {    
+    const changePage = (nativeEvent) => {
         setTabIndex(nativeEvent.position);
     }
     
     return (
-        <Modal                      
+        <Modal
             animationType="fade"        
             transparent={true}
             visible={visible}

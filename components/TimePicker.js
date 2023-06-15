@@ -10,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
-import {Button, Title, Portal, TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 import Colors, {whiteLabel} from '../constants/Colors';
 import {getTwoDigit} from '../constants/Helper';
 import {boxShadow, style} from '../constants/Styles';
@@ -40,6 +40,7 @@ export const TimePicker = props => {
           justifyContent: 'flex-end',
         }}>
         <TextInput
+          theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor} }}
           ref={hourRef}
           spellCheck={false}
           autoCorrect={false}
@@ -68,8 +69,11 @@ export const TimePicker = props => {
           keyboardType={'numeric'}
           returnKeyType={'done'}
           style={styles.textInput}></TextInput>
+
         <Text style={{marginRight: 5}}>:</Text>
+        
         <TextInput
+          theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
           ref={minRef}
           spellCheck={false}
           autoCorrect={false}

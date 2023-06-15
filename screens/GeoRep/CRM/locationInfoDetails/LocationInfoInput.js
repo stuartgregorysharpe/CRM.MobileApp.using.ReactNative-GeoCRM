@@ -536,6 +536,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
               }}>
               <View>
                 <TextInput
+                  theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
                   type={field.field_type}
                   ref={element => {
                     dispositionRef.current[key] = element;

@@ -6,7 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,  
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
@@ -34,13 +35,11 @@ import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckO
 import CustomerSaleHistoryModal from '../customer_sales';
 import {expireToken} from '../../../../constants/Helper';
 import DanOneSalesModal from '../danone_sales/modals/DanOneSalesModal';
-import AlertDialog from '../../../../components/modal/AlertDialog';
-import { clearNotification, showNotification } from '../../../../actions/notification.action';
-import { Notification } from '../../../../components/modal/Notification';
 import SimCardReportModal from '../sim_card';
 import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFields } from './helper';
 import { checkConnectivity } from '../../../../DAO/helper';
 import { haveLocationFieldPost } from '../../../../components/common/CheckOut/helper';
+import AlertModal from '../../../../components/modal/AlertModal';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -70,6 +69,8 @@ const LocationSpecificInfoScreen = props => {
   const locationId = locationInfo ? locationInfo.location_id : location_id; // access_crm location id
   const customerContactModalRef = useRef(null);
   const customerSaleHistoryModalRef = useRef(null);
+  const alertModalRef = useRef();
+
   const features = useSelector(
     state => state.selection.payload.user_scopes.geo_rep.features,
   );
@@ -79,10 +80,7 @@ const LocationSpecificInfoScreen = props => {
   
   const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [isLoadingDevice, setIsLoadingDevice] = useState(false);
-  const [isLoadingLocationField, setIsLoadingLocationField] = useState(false);
-  const [isConfirmModal , setIsConfirmModal] = useState(false);
-  const [confirmModalType, setConfirmModalType] = useState('');
-  const [message, setMessage] = useState('');
+  const [isLoadingLocationField, setIsLoadingLocationField] = useState(false);  
   const locationCheckOutCompulsory = useSelector( state => state.location.compulsoryForm );
   const compulsoryDevice = useSelector( state => state.location.compulsoryDevice );
   const compulsoryLocationField= useSelector( state => state.location.compulsoryLocationField );
@@ -124,9 +122,7 @@ const LocationSpecificInfoScreen = props => {
   const checkOnlineStatus = useCallback(
     async () => {
       var specific_location_id  = await getLocalData("@specific_location_id");      
-      console.log("Triggered", specific_location_id , pageType);
-      if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){
-        dispatch(clearNotification());
+      if( (specific_location_id == '' || specific_location_id == undefined )  && pageType == 'checkin'){        
         goBack();
       }
     },
@@ -195,8 +191,7 @@ const LocationSpecificInfoScreen = props => {
             locationInfoRef.current != null
           ) {
             locationInfoRef.current.updateDispositionData(res);
-          }
-          
+          }          
           setLocationIfo(res);
           setIsLoading(false);
         }
@@ -205,15 +200,10 @@ const LocationSpecificInfoScreen = props => {
         if (isMout) {
           setIsLoading(false);
         }
-
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
-
-  const onCloseCustomerContactsScreen = () => {
-    setCanShowCustomerContactsScreen(false);
-  };
-
+  
   const onFeatureItemClicked = item => {
     if (item.title === 'Forms') {
       navigationMain.navigate('DeeplinkRepForms', {locationInfo: locationInfo});
@@ -371,6 +361,16 @@ const LocationSpecificInfoScreen = props => {
       })            
   }
 
+  const showMessage = (message, type) => {
+    const delay = Platform.OS == 'ios' ? 500 : 0;    
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message , Strings.Ok , false, type);
+      }
+    }, delay);
+    
+  }
+
   return (
     <SafeAreaView style={{flex:1}}>
 
@@ -383,14 +383,10 @@ const LocationSpecificInfoScreen = props => {
           }}
         />
       )}
-
-      <Notification />
       
-      <AlertDialog 
-        visible={isConfirmModal}
-        message={message}
-        onModalClose={ async() => {
-          setIsConfirmModal(false);
+      <AlertModal 
+        ref={alertModalRef}        
+        onModalClose={ async(confirmModalType) => {          
           if(confirmModalType == 'go_back'){
             goBack();
           }else if(confirmModalType == 'compulsoryForm'){
@@ -551,13 +547,14 @@ const LocationSpecificInfoScreen = props => {
                 type="specificInfo"
                 isLoadingForm={isLoadingForm}
                 loadCompulsoryInfo={true}                
-                showConfirmModal={(message , type) => {
-                  setMessage(message);
-                  setConfirmModalType(type);
-                  setIsConfirmModal(true);
+                showConfirmModal={(message , type) => {                  
+                  showMessage(message, type);
                 }}
-                onCallback={async res => {                  
-                  dispatch(showNotification({type: Strings.Success , message : res?.message , buttonText: 'Ok'}));
+                onStart={() => {
+                  setPageType('crm_map');
+                }}
+                onCallback={async res => {
+                  showMessage(res?.message , 'go_back');
                 }}
               />
             )}            

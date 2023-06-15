@@ -329,6 +329,8 @@ export function expireToken(dispatch, e , alertModalRef) {
     message = 'Access has expired, please login again';
   } else if (e === 'timeout') {
     message = 'Submission timed out due to limited connectivity. Please try again with stronger connectivity, or switch to Offline mode. Contact support if you have further questions.';
+  } else if (e === 'error_400' ){
+    message = 'Request 400 Error';
   }else{
     message = e;
   }

@@ -474,6 +474,7 @@ export const LocationInfoInputTablet = forwardRef((props, ref) => {
                   onPress={() => {}}>
                   <View>
                     <TextInput
+                      theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
                       key={key}
                       type={field.field_type}
                       ref={element => {
