@@ -47,7 +47,7 @@ const SelectInputView = props => {
       ) : (
         <Text
           mode="outlined"
-          style={[{flex: 1, color: Colors.placeholder}, props.placeholderStyle]}
+          style={[{flex: 1, color: Colors.placeholder}, props.placeholderStyle,{marginBottom:3}]}
           outlineColor={
             hasError ? whiteLabel().endDayBackground : whiteLabel().fieldBorder
           }>
