@@ -2,7 +2,7 @@ import { postApiRequest, postApiRequestMultipart } from "../../actions/api.actio
 import { Strings } from "../../constants";
 import { jsonToFormData } from "../../helpers/jsonHelper";
 import { OfflineBaskets } from "../../sqlite/helper"
-import { deleteOfflineSyncItem, getOfflineSyncItem, getOfflineSyncItems } from "../../sqlite/OfflineSyncItemsHelper";
+import { deleteOfflineSyncItem, getOfflineSyncItem, getOfflineSyncItems, getOfflineSyncItemsInBasket } from "../../sqlite/OfflineSyncItemsHelper";
 
 export const syncPostData = (basketName, callBack) => {
 
@@ -13,29 +13,35 @@ export const syncPostData = (basketName, callBack) => {
             var offlineItems = await getOfflineSyncItems(basket.itemTypes);       
             const totalValue = offlineItems.length;
             callBack(0, totalValue , '');
-            var res  = await syncBasketItemType( basket.itemTypes, 0 , callBack , totalValue); 
+            var res  = await syncBasketItemType( basket, 0 , callBack , totalValue); 
             resolve(res);
-        }        
+        }
         resolve({});        
     });
 }
 
-const syncBasketItemType = async(itemTypes, index , callBack , totalValue) => {
-    const itemType = itemTypes[index];
+const syncBasketItemType = async(bascket, index , callBack , totalValue) => {
+
+    var res = await syncItemLists(bascket , callBack ,totalValue);
+    return res;
+    // const itemType = itemTypes[index];
     
-    if(itemType != undefined){
-        console.log("Item ", itemType);
-        var res = await syncItemLists(itemType , callBack ,totalValue);
-        if(index < itemTypes.length - 1){
-            return await syncBasketItemType(itemTypes, index + 1 , callBack  , totalValue);            
-        }else{
-            return res;
-        }
-    }        
+    // if(itemType != undefined){
+    //     console.log("Item ", itemType);
+    //     var res = await syncItemLists(itemType , callBack ,totalValue);
+    //     if(index < itemTypes.length - 1){
+    //         return await syncBasketItemType(itemTypes, index + 1 , callBack  , totalValue);            
+    //     }else{
+    //         return res;
+    //     }
+    // }        
 }
 
-const syncItemLists = async(itemType , callBack , totalValue) => {
-    const items = await getOfflineSyncItem(itemType);
+const syncItemLists = async(backet , callBack , totalValue) => {
+    
+    const items = await getOfflineSyncItems(backet.itemTypes);
+    console.log("items",items);
+    //const items = await getOfflineSyncItem(itemType);
     if(items.length > 0){        
         var res =  await syncItemTypeApi(items, 0 , callBack , totalValue);           
         return res;
