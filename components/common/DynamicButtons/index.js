@@ -56,6 +56,7 @@ const DynamicButtons = props => {
             title={buttonData.button_label}
             key={buttonType}
             locationId={buttonData.location_id}
+            coordinates={{latitude: buttonData?.latitude , longitude : buttonData?.longitude}}
             checkinTypeId={buttonData?.checkin_type_id}
             checkinReasonId={buttonData?.checkin_reason_id}
             formId={buttonData.form_id}

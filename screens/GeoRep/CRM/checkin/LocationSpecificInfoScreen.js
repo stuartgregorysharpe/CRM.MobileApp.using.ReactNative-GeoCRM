@@ -557,7 +557,7 @@ const LocationSpecificInfoScreen = props => {
                   setIsConfirmModal(true);
                 }}
                 onCallback={async res => {                  
-                  dispatch(showNotification({type: Strings.Success , message : res.message , buttonText: 'Ok'}));
+                  dispatch(showNotification({type: Strings.Success , message : res?.message , buttonText: 'Ok'}));
                 }}
               />
             )}            
@@ -567,7 +567,8 @@ const LocationSpecificInfoScreen = props => {
         <View style={[styles.innerContainer, {marginBottom: -14}]}>
           <View style={[styles.cardBox]}>
             {locationInfo !== undefined &&
-            locationInfo.address !== '' &&
+            locationInfo?.address != '' &&
+            locationInfo?.address != undefined &&
             DeviceInfo.isTablet() ? (
               <LocationInfoInputTablet
                 ref={locationInfoRef}

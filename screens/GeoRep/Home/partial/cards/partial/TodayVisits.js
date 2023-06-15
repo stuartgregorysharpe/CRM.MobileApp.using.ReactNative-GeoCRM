@@ -1,20 +1,25 @@
 import {View, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef} from 'react';
 import ProgressBar from '../../ProgressBar';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {whiteLabel} from '../../../../../../constants/Colors';
 import {AppText} from '../../../../../../components/common/AppText';
 import VisitCheckinItem from '../components/VisitCheckinItem';
 import Legend from '../../../../../../components/common/Legend';
+import LoadingBar from '../../../../../../components/LoadingView/loading_bar';
+
 
 const TodayVisits = props => {
+
   const {today} = props;
+  const loadingBarRef = useRef();
 
   const barTypes = [
     {color: whiteLabel().graphs.primary, name: 'Completed'},
     {color: whiteLabel().graphs.color_1, name: 'Additional'},
     {color: whiteLabel().graphs.color_3, name: 'Remaining'},
   ];
+
   const colors = [
     whiteLabel().graphs.primary,
     whiteLabel().graphs.color_1,
@@ -22,11 +27,29 @@ const TodayVisits = props => {
   ];
 
   const renderCheckin = (item, index) => {
-    return <VisitCheckinItem item={item} key={index}></VisitCheckinItem>;
+    return <VisitCheckinItem 
+      showLoadingBar={showLoadingBar}
+      hideLoadingBar={hideLoadingBar}
+      item={item} key={index}></VisitCheckinItem>;
   };
+
+  const showLoadingBar = ()=> {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal()
+    }
+  }
+
+  const hideLoadingBar = ()=> {
+    if(loadingBarRef.current){
+      loadingBarRef.current.hideModal()
+    }
+  }
 
   return (
     <View style={{flexDirection: 'column'}}>
+
+      <LoadingBar ref={loadingBarRef} />
+
       <View
         style={{
           flexDirection: 'row',

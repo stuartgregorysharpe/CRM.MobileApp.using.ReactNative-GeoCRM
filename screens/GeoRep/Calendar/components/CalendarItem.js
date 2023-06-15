@@ -28,6 +28,8 @@ export function CalendarItem(props) {
     state => state.location.checkinScheduleId,
   );
   const item = {...props.item};
+
+  console.log("Calendar item" , item)
   if (checkinScheduleId == item.schedule_id) {
     item.checkin_state = 'checkin_current';
   }
@@ -39,7 +41,7 @@ export function CalendarItem(props) {
 
   const getButtonColor = checkin_state => {
     if (checkOpenReplaceCheckin()) {
-      return whiteLabel().actionFullButtonBackground;
+      return whiteLabel().actionFullButtonBackground;       
     } else {
       if (checkin_state === 'checkin_required') {
         return whiteLabel().actionFullButtonBackground;
@@ -97,6 +99,7 @@ export function CalendarItem(props) {
         <CheckinLinkButton
           title="Check In"
           locationId={item.location_id}
+          coordinates={item.coordinates}
           scheduleId={item.schedule_id}
           showConfirmModal={(message) => {            
             if(props.showConfirmModal){

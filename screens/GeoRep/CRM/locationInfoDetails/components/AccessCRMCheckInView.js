@@ -39,7 +39,8 @@ const AccessCRMCheckInView = (props) => {
                 <CheckinLinkButton
                   title="Check In"
                   locationInfo={locationInfo}
-                  locationId={location_id}                  
+                  locationId={location_id}         
+                  coordinates={locationInfo.coordinates}
                   showConfirmModal={(message) => {            
                     if(props.showConfirmModal){
                       props.showConfirmModal(message);

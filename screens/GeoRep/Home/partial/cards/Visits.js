@@ -24,12 +24,11 @@ const Visits = ({ visitCard, pageCount, pageIndex }) => {
     Strings.Home_Visit_Tabs.Weekly,
   ];
 
+  
   return (
     <View style={{ marginTop: 10, flex: 1, flexDirection: 'column' }}>
 
-      <LoadingProgressBar/>
-
-      
+      <LoadingProgressBar/>      
       <View style={[style.scrollTabCard, { flexDirection: 'column' }]}>
         <View
           style={{ flexDirection: 'row', marginLeft: 10, alignItems: 'center' }}>

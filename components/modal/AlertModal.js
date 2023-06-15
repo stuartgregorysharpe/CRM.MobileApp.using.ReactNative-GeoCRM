@@ -1,12 +1,12 @@
 import React from 'react';
 import { useState,useImperativeHandle } from 'react';
-
 import { View, Modal, StyleSheet , TouchableHighlight,Text} from 'react-native';
 import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { useDispatch  } from 'react-redux';
 import { setToken } from '../../constants/Storage';
 import { CHANGE_LOGIN_STATUS } from '../../actions/actionTypes';
+import { style } from '../../constants/Styles';
 
 const AlertModal=  React.forwardRef((props, ref) => {
 
@@ -53,11 +53,11 @@ const AlertModal=  React.forwardRef((props, ref) => {
           <View style={styles.centeredView}>
               <View style={styles.modalView}>
                   <Text style={styles.title} >{message}</Text>
-                  <View style={styles.divider}></View>
+                  <View style={style.divider}></View>
                   <TouchableHighlight 
                   underlayColor="#DDDDDD"
                   style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => onModalClose() }>
-                      <Text style={styles.button} >{ buttonText }</Text>
+                      <Text style={style.buttonText} >{ buttonText }</Text>
                   </TouchableHighlight>
               </View>
           </View>
@@ -98,20 +98,7 @@ const styles = StyleSheet.create({
         fontSize:16,
         color:"#000",        
         padding:13
-
-    },
-
-    button:{
-        fontFamily:Fonts.secondaryBold,
-        fontSize:18,
-        color:whiteLabel().mainText,        
-        padding:10
-    },
-    divider:{
-        height:1,
-        backgroundColor:'#eee',        
-    }
-
+    },    
 })
 
 

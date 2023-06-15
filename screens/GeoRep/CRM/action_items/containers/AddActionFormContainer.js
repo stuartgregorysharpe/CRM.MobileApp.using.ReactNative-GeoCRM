@@ -26,15 +26,20 @@ const AddActionFormContainer = props => {
     getApiRequest('actionsitems/action-item-details', {
       action_item_type: 'action',
     })
-      .then(data => {        
+      .then(data => {
+
+        console.log("RESSSSS" , data);
+
         const {formData, formStructure} = constructAddActionFormStructure(data);
         setFormData(formData);
         setFormStructure(formStructure);
         setIsLoading(false);
+
       })
       .catch(e => {
+        console.log("DDD")
         setIsLoading(false);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e );
       });      
   };
   

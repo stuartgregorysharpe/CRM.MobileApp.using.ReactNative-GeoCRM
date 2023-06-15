@@ -39,6 +39,7 @@ const UpdateActionFormContainer = props => {
 
   const load = () => {
     setIsLoading(true);
+    console.log("actionItemId",actionItemId)
     getApiRequest('actionsitems/action-item-details', {
       action_item_id: actionItemId,
     })
@@ -60,6 +61,7 @@ const UpdateActionFormContainer = props => {
         });
       })
       .catch(e => {
+        console.log("update action form details error => ", e);
         setIsLoading(false);
         expireToken(dispatch, e);
       });

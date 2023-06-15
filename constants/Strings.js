@@ -1,5 +1,6 @@
 export default {
   Ok: 'Okay',
+  Cancel : 'Cancel',
   Complete_Compulsory_Fields: 'Please complete the compulsory fields.',
   Complete_Required_Fields: 'Please complete the required fields.',
   Complete_Required_Forms: 'Please complete the required forms.',
@@ -44,6 +45,9 @@ export default {
     'Connectivity has been restored and all services have automatically switched back to Online mode.',
   No_Sims_Selected: 'No SIMs selected',
   Not_Enough_Stock: 'Not enough stock',
+  Out_Of_Ring_Fence : 'Out of Ring-Fence',
+  Update_Geo_Coordinates: 'Update Geo-Coordinates',
+  Continue_With_Checkin : 'Continue with Check-in',
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',

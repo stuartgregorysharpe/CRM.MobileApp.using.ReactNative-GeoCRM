@@ -265,6 +265,9 @@ export function checkFeatureIncludeParamFromSession(features, param) {
 }
 
 export function getDistance(prelatlng, currentlatlng) {
+
+
+
   if (prelatlng.latitude === '' || prelatlng.longitude === '') {
     return 0;
   }
@@ -272,9 +275,12 @@ export function getDistance(prelatlng, currentlatlng) {
   const prevLongInRad = toRad(Number(prelatlng.longitude));
   const latInRad = toRad(currentlatlng.latitude);
   const longInRad = toRad(currentlatlng.longitude);
+  
+  const earthRadius = 6378137; // 3963 in mile
+
   return (
     // In mile
-    3963 *
+    earthRadius *
     Math.acos(
       Math.sin(prevLatInRad) * Math.sin(latInRad) +
       Math.cos(prevLatInRad) *
