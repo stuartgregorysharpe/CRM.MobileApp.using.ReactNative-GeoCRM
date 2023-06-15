@@ -13,6 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AlertModal from '../../../../components/modal/AlertModal';
 
 const  SetupFieldContainer = (props) => {
+
+    const { closableWithOutsideTouch } = props;
     
     const [transaction_types , setTransactinTypes] = useState(null);
     const [warehouse , setWarehouse] = useState(null);
@@ -86,7 +88,7 @@ const  SetupFieldContainer = (props) => {
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: data});
     }
 
-    const onClose = () => {
+    const onClose = () => {        
         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE, value: null});
     }
 
@@ -147,8 +149,10 @@ const  SetupFieldContainer = (props) => {
                     })
                 }                                            
             </View>
-        </View>
        
+        </View>
+
+    
         </SafeAreaView>
     )
 }

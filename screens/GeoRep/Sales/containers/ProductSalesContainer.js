@@ -472,7 +472,9 @@ export const ProductSalesContainer = forwardRef((props, ref) => {
         product_id: product.product_id,
         qty: qty,
         location_id: defineSetup.location.location_id,
+        warehouse_id : product.warehouse_id
       };
+      
 
       GetRequestProductPriceDAO.find(param)
         .then(res => {

@@ -33,10 +33,10 @@ const OfflineSyncType = props => {
     }    
   }, [processValue]);
  
-  const initLists = async() => {    
-    var res = await getOfflineSyncItemsInBasket(label);
-    if(res != undefined){      
-      setLists(res);
+  const initLists = async() => {        
+    const list = await getOfflineSyncItemsInBasket(label);
+    if(list != undefined){      
+      setLists(list);
     }    
   }
 

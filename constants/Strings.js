@@ -44,6 +44,8 @@ export default {
     'Connectivity has been restored and all services have automatically switched back to Online mode.',
   No_Sims_Selected: 'No SIMs selected',
   Not_Enough_Stock: 'Not enough stock',
+  Ticket_Description: 'Please fill in the above fields and upload any relevant screenshots that could help identify the problem your experiencing.',
+  Please_Select_Option : 'Please select an option',
   CRM: {
     Access_CRM: 'Access CRM',
     Check_In: 'Check In',
@@ -92,7 +94,7 @@ export default {
     ICCID_Not_Found: 'ICCID not found in stock',
     No_Stock_Item_Ids: 'No Stock Item IDS',
     No_Device_Found: 'No devices found',
-    No_Device_Found_In_Stock: 'No device found in stock. Please try scan again',
+    No_Device_Found_In_Stock: 'not found in stock. Please try scan again',
     Barcode_Not_Found: 'Barcode not found in stock',
     Allocate_Device: 'Allocate Device',
     Have_You_Tried: 'Have you tried scanning first?',
