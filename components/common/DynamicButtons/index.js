@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Constants} from '../../../constants';
 import {SubmitButton} from '../../shared/SubmitButton';
@@ -6,14 +6,17 @@ import CheckinLinkButton from './CheckinLinkButton';
 import FormLinkButton from './FormLinkButton';
 
 const DynamicButtons = props => {
-  const {buttons , showConfirmModal} = props;
+
+  const { buttons } = props;
   if (!buttons) return;
+
   const buttonViews = [];
   const onButtonAction = data => {
     if (props.onButtonAction) {
       props.onButtonAction(data);
     }
   };
+
   for (const buttonType in buttons) {
     const buttonData = buttons[buttonType];
     if (buttonData.button_label != '' && buttonData.active != '0') {
@@ -66,17 +69,23 @@ const DynamicButtons = props => {
                 props.showConfirmModal(message);
               }
             }}
+            onStart={() => {
+              if(props.showLoadingBar){
+                props.showLoadingBar();
+              }
+            }}
+            onEnd={() => {
+              if(props.hideLoadingBar){
+                props.hideLoadingBar();
+              }
+            }}    
             onFinishProcess={() => {
               onButtonAction({
                 type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,
                 item: buttonData,
               });
             }}
-            onPress={() => {
-              /*onButtonAction({
-                type: Constants.buttonType.BUTTON_TYPE_CHECKIN_LINK,
-                item: buttonData,
-              });*/
+            onPress={() => {              
             }}
           />
         );

@@ -11,13 +11,11 @@ const AccessCRMCheckInView = (props) => {
 
     const { features , location_id , locationInfo,  canCheckin } = props;
     if( location_id == undefined ) return null;
-            
-    console.log("canCheckin" ,canCheckin)
-
-  return (    
-      <View style={styles.nextButtonBar}>
+                
+    return (
+        <View style={styles.nextButtonBar}>
             {features && features.includes('access_crm') && (
-              <TouchableOpacity
+            <TouchableOpacity
                 style={[styles.nextButton, styles.accessButton]}
                 onPress={async () => {
                     if(props.onAccessCRM) {
@@ -25,81 +23,79 @@ const AccessCRMCheckInView = (props) => {
                     }                
                 }}>
                 <Text style={styles.nextButtonText}>                    
-                  {Strings.CRM.Access_CRM}
+                    {Strings.CRM.Access_CRM}
                 </Text>
                 <FontAwesomeIcon
-                  size={22}
-                  color={whiteLabel().actionOutlineButtonText}
-                  icon={faAngleDoubleRight}
+                    size={22}
+                    color={whiteLabel().actionOutlineButtonText}
+                    icon={faAngleDoubleRight}
                 />
-              </TouchableOpacity>
+            </TouchableOpacity>
             )}
 
             {features && features.includes('checkin') && (
                 <CheckinLinkButton
-                  title="Check In"
-                  locationInfo={locationInfo}
-                  locationId={location_id}         
-                  coordinates={locationInfo.coordinates}
-                  showConfirmModal={(message) => {            
-                    if(props.showConfirmModal){
-                      props.showConfirmModal(message);
-                    }
-                  }}
-                  onStart={() => {
-                    if(props.showLoadingBar){
-                      props.showLoadingBar();
-                    }
-                  }}
-                  onEnd={() => {
-                    if(props.hideLoadingBar){
-                      props.hideLoadingBar();
-                    }
-                  }}    
+                    title="Check In"
+                    locationInfo={locationInfo}
+                    locationId={location_id}         
+                    coordinates={locationInfo.coordinates}
+                    showConfirmModal={(message) => {            
+                        if(props.showConfirmModal){
+                            props.showConfirmModal(message);
+                        }
+                    }}
+                    onStart={() => {
+                        if(props.showLoadingBar){
+                            props.showLoadingBar();
+                        }
+                    }}
+                    onEnd={() => {
+                        if(props.hideLoadingBar){
+                            props.hideLoadingBar();
+                        }
+                    }}    
 
-                  onCallback={() => {
-                    if(props.onCheckIn){
-                      console.log("triger on callback");
-                        props.onCheckIn();
-                    }
-                  }}
-                  onFinishProcess={() => {
-                    if(props.onFinishProcess){
-                      props.onFinishProcess();
-                    }
-                  }}
-                  renderSubmitButton={onCheckIn => {
-                    return (
-                      <TouchableOpacity
-                        style={[styles.checkInButton]}
-                        onPress={async () => {
-                            if(canCheckin()){
-                              onCheckIn();
-                            }                            
-                        }}>
-                        <Text style={[styles.checkInButtonText]}>
-                          {Strings.CRM.Check_In}
-                        </Text>
-                        <FontAwesomeIcon
-                          size={22}
-                          color={whiteLabel().actionFullButtonIcon}
-                          icon={faAngleDoubleRight}
-                        />
-                      </TouchableOpacity>
-                    );
-                  }}
-                />
-                
-              
+                    onCallback={() => {
+                        if(props.onCheckIn){                    
+                            props.onCheckIn();
+                        }
+                    }}
+                    onFinishProcess={() => {
+                        if(props.onFinishProcess){
+                            props.onFinishProcess();
+                        }
+                    }}
+                    renderSubmitButton={onCheckIn => {
+                        return (
+                        <TouchableOpacity
+                            style={[styles.checkInButton]}
+                            onPress={async () => {
+                                if(canCheckin()){
+                                    onCheckIn();
+                                }                            
+                            }}>
+                            <Text style={[styles.checkInButtonText]}>
+                                {Strings.CRM.Check_In}
+                            </Text>
+                            <FontAwesomeIcon
+                                size={22}
+                                color={whiteLabel().actionFullButtonIcon}
+                                icon={faAngleDoubleRight}
+                            />
+                        </TouchableOpacity>
+                        );
+                    }}
+                />                            
             )}
         </View>
-    
-  )
+        
+    )
 }
 
 export default AccessCRMCheckInView
 
 const styles = StyleSheet.create({
+
     nextButtonBar: {
         position: 'absolute',
         bottom: Platform.OS == 'android' ? 0 : 0,
@@ -145,12 +141,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 7,
         backgroundColor: whiteLabel().actionFullButtonBackground,
-      },
+    },
     
-      checkInButtonText: {
+    checkInButtonText: {
         color: whiteLabel().actionFullButtonText,
         fontSize: 15,
         fontFamily: Fonts.secondaryBold,
-      },
+    },
 
 })

@@ -8,6 +8,7 @@ import Colors, {whiteLabel} from '../../../../../../constants/Colors';
 import CheckinLinkButton from '../../../../../../components/common/DynamicButtons/CheckinLinkButton';
 
 export default function VisitCheckinItem(props) {
+  
   const { item } = props;
 
   return (

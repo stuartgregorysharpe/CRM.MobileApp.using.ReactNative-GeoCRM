@@ -1,9 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { AppText } from '../../../common/AppText'
 import { style } from '../../../../constants/Styles'
 import Strings from '../../../../constants/Strings'
-import { whiteLabel } from '../../../../constants/Colors'
+import Colors, { whiteLabel } from '../../../../constants/Colors'
 
 const CheckinRingFenceView = (props) => {
 
@@ -42,9 +42,9 @@ const CheckinRingFenceView = (props) => {
 
         <View style={style.divider}></View>
         <TouchableOpacity onPress={onCancel}>
-            <AppText title={Strings.Cancel} style={style.buttonText}></AppText>
+            <AppText title={Strings.Cancel} style={[style.buttonText , {color: Colors.disabledColor}]}></AppText>
         </TouchableOpacity>
-                                
+
     </View>
   )
 }
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 14,
-        textAlign:'center',
+        textAlign:'center',        
         marginHorizontal:20,
         marginTop:10,
         marginBottom:10

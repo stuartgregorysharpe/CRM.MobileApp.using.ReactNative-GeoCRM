@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import CheckinRingFenceView from '../components/CheckinRingFenceView'
 import { Constants } from '../../../../constants'
-
 
 const CheckinRingFenceContainer = (props) => {
 
@@ -23,11 +22,11 @@ const CheckinRingFenceContainer = (props) => {
     
     return (
         <View>
-        <CheckinRingFenceView 
-            onContinue={onContinue}
-            onUpdate={onUpdate}
-            onCancel={onCancel}
-        {...props}/>
+            <CheckinRingFenceView 
+                onContinue={onContinue}
+                onUpdate={onUpdate}
+                onCancel={onCancel}
+            {...props}/>
         </View>
     )
 

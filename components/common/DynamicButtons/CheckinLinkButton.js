@@ -146,12 +146,10 @@ const CheckinLinkButton = props => {
   };
 
   const _callCheckInTypes = async () => {
-
     setIsFeedback(true);
     setModalTitle('Check In Types');
     setModalType('checkin_type');
     setFeedbackOptions([]);
-
     LocationCheckinTypeDAO.find(features)
       .then(res => {        
         var options = [];
@@ -174,13 +172,10 @@ const CheckinLinkButton = props => {
     }    
   }
 
-
   const _callCheckedIn = async () => {
-
     if (isLoading) {     
       return false;
     }
-
     var currentTime = getDateTime();
     var userParam = getPostParameter(currentLocation);
     let postData = {
@@ -351,10 +346,11 @@ const CheckinLinkButton = props => {
   const onCheckinRingFenceModalClosed = ({type , value}) => {
     checkRingFenceModalRef.current.hideModal();
     if(type == Constants.actionType.ACTION_CLOSE){
-      
+
     }else if(type ==  Constants.actionType.ACTION_NEXT){      
-      if(updateCustomerModalRef.current)
+      if(updateCustomerModalRef.current){
         updateCustomerModalRef.current.showModal();
+      }        
     }else if(type == Constants.actionType.ACTION_APPLY){
       handleCheckIn();
     }
@@ -362,7 +358,10 @@ const CheckinLinkButton = props => {
 
   const onUpdateCustomerModalClosed = ({type , value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {      
-      updateCustomerModalRef.current.hideModal();
+      if(updateCustomerModalRef.current){
+        updateCustomerModalRef.current.hideModal();
+      }
+        
     }
   }
 
@@ -384,6 +383,7 @@ const CheckinLinkButton = props => {
     );
   };
   
+
   return (
     <>
       {showFeedbackDropDownModal()}
@@ -401,8 +401,7 @@ const CheckinLinkButton = props => {
         title="Update"
         onButtonAction={onUpdateCustomerModalClosed}
       />
-
-
+      
     </>
   );
 };

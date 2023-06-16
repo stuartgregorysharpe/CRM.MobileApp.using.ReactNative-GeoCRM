@@ -1,5 +1,5 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import SvgIcon from '../../../../components/SvgIcon';
 import Colors, {whiteLabel} from '../../../../constants/Colors';
@@ -12,11 +12,6 @@ import {
 import {style} from '../../../../constants/Styles';
 import CheckinLinkButton from '../../../../components/common/DynamicButtons/CheckinLinkButton';
 import CheckOutViewContainer from '../../../../components/common/CheckOut/CheckOutViewContainer';
-import {
-  clearNotification,
-  showNotification,
-} from '../../../../actions/notification.action';
-import {Strings} from '../../../../constants';
 
 export function CalendarItem(props) {
 
@@ -27,9 +22,7 @@ export function CalendarItem(props) {
   const checkinScheduleId = useSelector(
     state => state.location.checkinScheduleId,
   );
-  const item = {...props.item};
-
-  console.log("Calendar item" , item)
+  const item = {...props.item};    
   if (checkinScheduleId == item.schedule_id) {
     item.checkin_state = 'checkin_current';
   }
@@ -76,8 +69,7 @@ export function CalendarItem(props) {
           if(props.showConfirmModalForCheckout){
             props.showConfirmModalForCheckout(message , type)
           }
-        }}
-        
+        }}        
         onCallback={async res => {
           if (props.onRefresh) {
             props.onRefresh();
