@@ -24,6 +24,7 @@ import { getLocationInfoFromLocal } from '../../../sqlite/DBHelper';
 import { getDistance } from 'geolib';
 import CheckinRingFenceModal from '../../modal/checkin_ring_fence';
 import UpdateCustomerModal from '../../../screens/GeoRep/CRM/update_customer';
+import { getOfflineSyncItem } from '../../../sqlite/OfflineSyncItemsHelper';
 
 var checkin_indempotency = '';
 var checkin_type_id = '';
@@ -41,7 +42,8 @@ const CheckinLinkButton = props => {
   const user_settings = useSelector(
     state => state.selection.payload.user_settings,
   );
-
+  const offlineStatus = useSelector(state => state.auth.offlineStatus);
+  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const [isFeedbackModal, setIsFeedback] = useState(false);
   const [feedbackOptions, setFeedbackOptions] = useState([]);
@@ -293,18 +295,36 @@ const CheckinLinkButton = props => {
 
   const onCheckIn = async () => {
     var isCheckin = await getLocalData('@checkin');  
+    console.log("ischeckin", isCheckin)
     if (isCheckin === '1') {
       if(props.showConfirmModal){
         props.showConfirmModal(Strings.You_Are_Currenly_Checkedin);
-      }      
+      }
     } else {
-      if(isInRingFence()){
+      if( !offlineStatus && isInRingFence()){        
+        handleCheckIn();
+      } else if( offlineStatus && await haveAddressUpdate() ){      
         handleCheckIn();
       }else{
         showRingFenceModal();
       }      
     }
   };
+
+  const haveAddressUpdate = async() =>{
+    var offlineItems = await getOfflineSyncItem('location_address_update');
+    var flag = false;
+    for(var i = 0; i < offlineItems.length; i++){
+      var element = offlineItems.item(i);
+      const body =  JSON.parse(element.post_body);
+      const location_id = body.location_id;
+      if(locationId == location_id){
+        console.log("orign", locationId , location_id)
+        flag = true;
+      } 
+    }
+    return flag;
+  }
 
   const isInRingFence = () => {
     if(features.includes('checkin_ringfence_check')){
@@ -314,6 +334,8 @@ const CheckinLinkButton = props => {
       if(unit == 'ft'){
         ring_fence_radius = 3.2808399 * ring_fence_radius;
       }      
+      console.log("is ling fence" , currentLocation, coordinates, user_settings, distance , ring_fence_radius);
+
       if(distance > ring_fence_radius){
         setDistance(distance);
         return false;         
@@ -358,10 +380,12 @@ const CheckinLinkButton = props => {
 
   const onUpdateCustomerModalClosed = ({type , value}) => {
     if (type == Constants.actionType.ACTION_CLOSE) {      
+      if(props.onReloadLocationData){        
+        props.onReloadLocationData()
+      }
       if(updateCustomerModalRef.current){
         updateCustomerModalRef.current.hideModal();
-      }
-        
+      }      
     }
   }
 

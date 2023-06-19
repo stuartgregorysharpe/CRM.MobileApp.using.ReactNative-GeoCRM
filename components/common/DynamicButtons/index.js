@@ -87,6 +87,11 @@ const DynamicButtons = props => {
             }}
             onPress={() => {              
             }}
+            onReloadLocationData={() => {
+              if(props.onReloadLocationData){
+                props.onReloadLocationData();
+              }
+            }}
           />
         );
         buttonViews.push(buttonView);

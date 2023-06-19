@@ -21,6 +21,7 @@ export default function VisitCheckinItem(props) {
           alignItems: 'center',
           marginBottom: 5,
         }}>
+          
         <View style={{flex: 1, flexDirection: 'row'}}>
           <SvgIcon icon="Location_Arrow" width="15px" height="15px" />
           <View style={{marginLeft: 5}}>
@@ -44,6 +45,11 @@ export default function VisitCheckinItem(props) {
               props.hideLoadingBar();
             }
           }}    
+          onReloadLocationData={() => {
+            if(props.onReloadLocationData){
+              props.onReloadLocationData();
+            }
+          }}
           renderSubmitButton={onCheckIn => {
             return (
               <TouchableOpacity

@@ -131,6 +131,11 @@ const UpdateActionFormContainer = props => {
       loadingBarRef.current.hideModal();
   }
 
+  const onReloadLocationData = () => {
+    console.log("load data again");
+    load();
+  }
+
   return (
     <View style={[styles.container, props.style]}>
 
@@ -162,6 +167,7 @@ const UpdateActionFormContainer = props => {
         showConfirmModal={showConfirmModal}
         showLoadingBar={showLoadingBar}
         hideLoadingBar={hideLoadingBar}
+        onReloadLocationData={onReloadLocationData}
         onButtonAction={({type, item}) => {
           if (type == Constants.buttonType.BUTTON_TYPE_SUMBIT) {
             onSubmit();

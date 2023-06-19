@@ -56,7 +56,6 @@ import LocationInfo from './LocationInfo';
 import AccessCRMCheckInView from './components/AccessCRMCheckInView';
 import { generateKey } from '../../../../constants/Utils';
 import SelectionPicker from '../../../../components/modal/SelectionPicker';
-import LoadingProgressBar from '../../../../components/modal/LoadingProgressBar';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
 
 var outcomeVal = false;
@@ -381,6 +380,16 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     }    
   }
 
+  const onReloadLocationData = () => {
+    if (props.onButtonAction) {
+      props.onButtonAction({
+        type: Constants.actionType.ACTION_REFRESH,
+        value: locationInfo.location_id,
+      });
+    }    
+  }
+
+
   const showFeedbackDropDownModal = () => {
     return (
       
@@ -447,110 +456,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
     );
   };
 
-  // const _callCheckInTypes = async () => {
-  //   setIsFeedback(true);
-  //   setModalTitle('Check In Types');
-  //   setModalType('checkin_type');
-  //   setFeedbackOptions([]);
-
-  //   LocationCheckinTypeDAO.find(features)
-  //     .then(res => {
-  //       var options = [];
-  //       res.forEach((item, index) => {
-  //         options.push(item.checkin_type);
-  //       });
-  //       setFeedbackOptions(options);
-  //       setCheckInTypes(res);
-  //       console.log('check type', res);
-  //     })
-  //     .catch(e => {
-  //       expireToken(dispatch, e);
-  //     });
-  // };
-
-  // const _callCheckedIn = async () => {
-  //   if (isCheckingIn) {
-  //     return;
-  //   }
-  //   setIsCheckingIn(true);
-  //   var currentTime = getDateTime();
-  //   var userParam = getPostParameter(currentLocation);
-  //   let postData = {
-  //     location_id: locationInfo.location_id,
-  //     checkin_time: currentTime,
-  //     checkin_type_id: checkin_type_id, //Selected checkin_type_id, if was requested
-  //     reason_id: reason_id, //Selected reason_id, if was requested
-  //     user_local_data: userParam.user_local_data,
-  //   };
-
-  //   PostRequestDAO.find(
-  //     locationInfo.location_id,
-  //     postData,
-  //     'checkin',
-  //     'location-info/check-in',
-  //     '',
-  //     '',
-  //   )
-  //     .then(async res => {
-  //       if (props.onButtonAction) {
-  //         props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-  //       }
-  //       setIsFeedback(false);
-  //       setFeedbackOptions(originFeedbackData);
-  //       setModalType('feedback');
-  //       dispatch({type: CHECKIN, payload: true});
-  //       await storeLocalValue('@checkin', '1');
-  //       await storeLocalValue(
-  //         '@specific_location_id',
-  //         locationInfo.location_id,
-  //       );
-  //       await storeJsonData('@checkin_location', locationInfo);
-  //       setIsCheckingIn(false);
-  //       props.navigation.navigate('LocationSpecificInfo', {
-  //         data: locationInfo,
-  //         page: 'checkin',
-  //       });
-  //     })
-  //     .catch(e => {
-  //       expireToken(dispatch, e);
-  //       setIsCheckingIn(false);
-  //     });
-  // };
-
-  // const onClickCheckIn = async () => {
-  //   //var isCheckin = await getLocalData('@checkin');
-  //   if (isCheckin) {
-  //     dispatch(
-  //       showNotification({
-  //         type: Strings.Success,
-  //         message: Strings.You_Are_Currenly_Checkedin,
-  //         buttonText: 'Continue',
-  //         buttonAction: async () => {
-  //           dispatch(clearNotification());
-  //           if (props.onButtonAction) {
-  //             props.onButtonAction({type: Constants.actionType.ACTION_CLOSE});
-  //           }
-
-  //           var specificLocationId = await getLocalData(
-  //             '@specific_location_id',
-  //           );
-
-  //           console.log('specificLocationId =>', specificLocationId);
-  //           props.navigation.navigate('LocationSpecificInfo', {
-  //             locationId: specificLocationId,
-  //             page: 'checkin',
-  //           });
-  //         },
-  //       }),
-  //     );
-  //   } else {
-  //     if (isCheckinTypes) {
-  //       _callCheckInTypes();
-  //     } else {
-  //       _callCheckedIn();
-  //     }
-  //   }
-  // };
+  
 
   const onUpdateCustomerModalClosed = ({ type, value }) => {
     if (type == Constants.actionType.ACTION_CLOSE) {
@@ -807,6 +713,8 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
                 }
               }}
               
+              onReloadLocationData={onReloadLocationData}
+
             />
 
         )}

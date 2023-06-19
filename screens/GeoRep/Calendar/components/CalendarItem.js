@@ -145,6 +145,11 @@ export function CalendarItem(props) {
               </TouchableOpacity>
             );
           }}
+          onReloadLocationData={() => {
+            if(props.onReloadLocationData){
+              props.onReloadLocationData();
+            }
+          }}
         />
       );
     }

@@ -30,6 +30,7 @@ const TodayVisits = props => {
     return <VisitCheckinItem 
       showLoadingBar={showLoadingBar}
       hideLoadingBar={hideLoadingBar}
+      onReloadLocationData={onReloadLocationData}
       item={item} key={index}></VisitCheckinItem>;
   };
 
@@ -42,6 +43,12 @@ const TodayVisits = props => {
   const hideLoadingBar = ()=> {
     if(loadingBarRef.current){
       loadingBarRef.current.hideModal()
+    }
+  }
+
+  const onReloadLocationData = () => {
+    if(props.onReloadLocationData){
+      props.onReloadLocationData()
     }
   }
 

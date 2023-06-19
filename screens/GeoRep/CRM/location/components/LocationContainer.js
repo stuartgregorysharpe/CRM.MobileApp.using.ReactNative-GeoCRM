@@ -284,11 +284,14 @@ const LocationContainer = props => {
     if (type == Constants.actionType.ACTION_CLOSE) {
       locationInfoModalRef.current.hideModal();      
       if (value === 'access_crm' || value == 'checkin') {
-        navigation.navigate('LocationSpecificInfo', {          
+        navigation.navigate('LocationSpecificInfo', {
           data: locationInfo,
           page: value,
         });
       }
+    }else if(type == Constants.actionType.ACTION_REFRESH){
+      if(value != undefined)
+        openLocationInfoDetails(Number(value));      
     }
   }
 

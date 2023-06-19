@@ -85,6 +85,12 @@ const AccessCRMCheckInView = (props) => {
                         </TouchableOpacity>
                         );
                     }}
+                    onReloadLocationData={() => {
+                        if(props.onReloadLocationData){
+                          props.onReloadLocationData();
+                        }
+                    }}
+
                 />                            
             )}
         </View>

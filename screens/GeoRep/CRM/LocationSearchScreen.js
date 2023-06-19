@@ -409,6 +409,9 @@ export default function LocationSearchScreen(props) {
           page: value,
         });
       }
+    }else if(type == Constants.actionType.ACTION_REFRESH){      
+      if(value != undefined)
+        openLocationInfo(value);
     }
   };
 

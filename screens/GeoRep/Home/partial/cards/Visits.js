@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import React, { useState } from 'react';
 import { style } from '../../../../../constants/Styles';
 import SvgIcon from '../../../../../components/SvgIcon';
@@ -11,11 +11,11 @@ import { checkConnectivity } from '../../../../../DAO/helper';
 import { showOfflineDialog } from '../../../../../constants/Helper';
 import { useDispatch } from 'react-redux';
 import IndicatorDotScroller from '../../../../../components/common/IndicatorDotScroller';
-import { useEffect } from 'react';
-import TwoRowContent from '../../../../../components/modal/content_type_modals/TwoRowContentFeed';
 import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
-const Visits = ({ visitCard, pageCount, pageIndex }) => {
+const Visits = ( props ) => {
+  
+  const { visitCard, pageCount, pageIndex } = props;
   const [tabIndex, setTabIndex] = useState(0);
   const dispatch = useDispatch();
 
@@ -24,6 +24,11 @@ const Visits = ({ visitCard, pageCount, pageIndex }) => {
     Strings.Home_Visit_Tabs.Weekly,
   ];
 
+  const onReloadLocationData = () => {
+    if(props.onReloadLocationData){
+      props.onReloadLocationData()
+    }
+  }  
   
   return (
     <View style={{ marginTop: 10, flex: 1, flexDirection: 'column' }}>
@@ -56,7 +61,9 @@ const Visits = ({ visitCard, pageCount, pageIndex }) => {
           }}></TopTab>
 
         {tabIndex === 0 && visitCard && (
-          <TodayVisits today={visitCard.today}></TodayVisits>
+          <TodayVisits 
+            onReloadLocationData={onReloadLocationData}          
+            today={visitCard.today}></TodayVisits>
         )}
 
         {tabIndex === 1 && visitCard && (
