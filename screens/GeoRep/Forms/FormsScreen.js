@@ -53,7 +53,31 @@ export const FormsScreen = props => {
   let isMount = true;
 
   useEffect(() => {
-    if (props.screenProps) {
+    refreshHeader();
+  });
+
+  useEffect(() => {
+    isMount = true;
+    //_callFormLists(null);
+    initFilter();
+    initializeFormIds();
+    refreshHeader();
+    return () => {
+      isMount = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      _callFormLists(null);
+      initializeFormIds();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const refreshHeader = () => {
+    console.log("render refresh header ////");
+    if (props.screenProps) {      
       props.screenProps.setOptions({
         headerTitle: () => {
           return (
@@ -81,25 +105,7 @@ export const FormsScreen = props => {
         },
       });
     }
-  });
-
-  useEffect(() => {
-    isMount = true;
-    //_callFormLists(null);
-    initFilter();
-    initializeFormIds();
-    return () => {
-      isMount = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      _callFormLists(null);
-      initializeFormIds();
-    });
-    return unsubscribe;
-  }, [navigation]);
+  }
 
   const initializeFormIds = async () => {
     var formIds = await getJsonData('@form_ids');

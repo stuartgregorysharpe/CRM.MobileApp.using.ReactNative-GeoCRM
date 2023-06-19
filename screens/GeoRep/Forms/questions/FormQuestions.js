@@ -7,7 +7,6 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import Colors from '../../../../constants/Colors';
 import Images from '../../../../constants/Images';
 import {style} from '../../../../constants/Styles';
 import {useSelector, useDispatch} from 'react-redux';
@@ -37,6 +36,8 @@ var indempotencyKey;
 
 //export default function FormQuestions(props) {
 export const FormQuestions = props => {
+
+  const navigation = props.navigation;
   const form = props.route.params.data;
   const location_id = props.route.params.location_id;
   const pageType = props.route.params.pageType;
@@ -61,6 +62,15 @@ export const FormQuestions = props => {
       isMount = false;
     };
   }, [form]);
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setTimeout(() => {
+        refreshHeader();
+      }, 500);
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const loadFromDB = async formId => {
     _callFormQuestions();
@@ -73,6 +83,7 @@ export const FormQuestions = props => {
   };
 
   const refreshHeader = () => {
+    console.log("render header ==============> ");
     if (props.screenProps) {
       props.screenProps.setOptions({
         headerTitle: () => {
@@ -104,11 +115,11 @@ export const FormQuestions = props => {
             </TouchableOpacity>
           );
         },
-        tabBarStyle: {
-          height: 50,
-          paddingBottom: Platform.OS == 'android' ? 5 : 0,
-          backgroundColor: Colors.whiteColor,
-        },
+        // tabBarStyle: {
+        //   height: 50,
+        //   paddingBottom: Platform.OS == 'android' ? 5 : 0,
+        //   backgroundColor: Colors.whiteColor,
+        // },
       });
     }
   };
