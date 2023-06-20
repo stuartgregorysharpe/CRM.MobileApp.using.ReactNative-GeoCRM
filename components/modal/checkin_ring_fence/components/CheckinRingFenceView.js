@@ -5,6 +5,7 @@ import { style } from '../../../../constants/Styles'
 import Strings from '../../../../constants/Strings'
 import Colors, { whiteLabel } from '../../../../constants/Colors'
 
+
 const CheckinRingFenceView = (props) => {
 
   const { distance } = props;
@@ -27,8 +28,8 @@ const CheckinRingFenceView = (props) => {
   return (
     <View style={styles.container}>
         <AppText title={Strings.Out_Of_Ring_Fence} type="secondaryBold" style={styles.titleStyle}></AppText>        
-        <AppText title={'You are ' + Math.round(distance/10) / 100  + 'km away from the geo-coordinates stored for this location'} style={styles.description}></AppText>
-
+        <AppText title={'You are ' + distance + ' away from the geo-coordinates stored for this location'} style={styles.description}></AppText>
+        {/* Math.round(distance/10) / 100 */}
         <View style={[style.divider]}></View>
         <TouchableOpacity onPress={onContinue}>
             <AppText title={Strings.Continue_With_Checkin} style={style.buttonText}></AppText>

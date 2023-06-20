@@ -15,16 +15,15 @@ import SelectionPicker from '../../modal/SelectionPicker';
 import {SubmitButton} from '../../shared/SubmitButton';
 import {updateCurrentLocation} from '../../../actions/google.action';
 import {Constants, Strings} from '../../../constants';
-import {getDateTime} from '../../../helpers/formatHelpers';
+import {formattedNumber, getDateTime} from '../../../helpers/formatHelpers';
 import {LocationCheckinTypeDAO, PostRequestDAO} from '../../../DAO';
 import {CHECKIN} from '../../../actions/actionTypes';
 import {checkConnectivity} from '../../../DAO/helper';
 import { generateKey } from '../../../constants/Utils';
 import { getLocationInfoFromLocal } from '../../../sqlite/DBHelper';
-import { getDistance } from 'geolib';
 import CheckinRingFenceModal from '../../modal/checkin_ring_fence';
 import UpdateCustomerModal from '../../../screens/GeoRep/CRM/update_customer';
-import { getOfflineSyncItem } from '../../../sqlite/OfflineSyncItemsHelper';
+import { getDistanceBwtCurrentAndLocation, haveAddressUpdate } from './helper';
 
 var checkin_indempotency = '';
 var checkin_type_id = '';
@@ -301,9 +300,9 @@ const CheckinLinkButton = props => {
         props.showConfirmModal(Strings.You_Are_Currenly_Checkedin);
       }
     } else {
-      if( !offlineStatus && isInRingFence()){        
+      if( !offlineStatus && await isInRingFence()){        
         handleCheckIn();
-      } else if( offlineStatus && await haveAddressUpdate() ){      
+      } else if( offlineStatus && (await isInRingFence() || await haveAddressUpdate(locationId) ) ){      
         handleCheckIn();
       }else{
         showRingFenceModal();
@@ -311,37 +310,10 @@ const CheckinLinkButton = props => {
     }
   };
 
-  const haveAddressUpdate = async() =>{
-    var offlineItems = await getOfflineSyncItem('location_address_update');
-    var flag = false;
-    for(var i = 0; i < offlineItems.length; i++){
-      var element = offlineItems.item(i);
-      const body =  JSON.parse(element.post_body);
-      const location_id = body.location_id;
-      if(locationId == location_id){
-        console.log("orign", locationId , location_id)
-        flag = true;
-      } 
-    }
-    return flag;
-  }
-
-  const isInRingFence = () => {
-    if(features.includes('checkin_ringfence_check')){
-      const distance = getDistance(currentLocation , coordinates);
-      const unit = user_settings.small_distance_metric;
-      var ring_fence_radius = user_settings.ring_fence_radius;
-      if(unit == 'ft'){
-        ring_fence_radius = 3.2808399 * ring_fence_radius;
-      }      
-      console.log("is ling fence" , currentLocation, coordinates, user_settings, distance , ring_fence_radius);
-
-      if(distance > ring_fence_radius){
-        setDistance(distance);
-        return false;         
-      }
-    }
-    return true;    
+  const isInRingFence = async () => {
+    const response = await getDistanceBwtCurrentAndLocation(currentLocation, coordinates , user_settings , features);     
+    setDistance(response.formattedDistance);
+    return response.isInRingFence;
   }
 
   const handleCheckIn = () => {
