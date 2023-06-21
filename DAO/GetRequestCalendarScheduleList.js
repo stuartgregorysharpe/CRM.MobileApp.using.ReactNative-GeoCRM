@@ -83,7 +83,8 @@ const fetchDataFromDB = async (
                 LEFT JOIN schedules_activities AS ua 
                 ON s.schedule_id = ua.schedule_id
                 WHERE s.user_id = ${user_id}
-                AND s.client_id = ${client_id}`;
+                AND s.client_id = ${client_id}
+                AND s.delete_status = 0`;
   if (postData['period'].toLowerCase() == 'today') {
     query += ` AND s.schedule_date = date('now')`;
   }
