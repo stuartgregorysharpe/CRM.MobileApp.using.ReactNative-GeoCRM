@@ -13,7 +13,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import Colors, { whiteLabel } from '../../../../constants/Colors';
 import {style} from '../../../../constants/Styles';
 import SvgIcon from '../../../../components/SvgIcon';
-import Fonts from '../../../../constants/Fonts';
 import DeviceInfo, { getDevice } from 'react-native-device-info';
 import {LocationInfoInput} from '../locationInfoDetails/LocationInfoInput';
 import {LocationInfoInputTablet} from '../locationInfoDetails/LocationInfoInputTablet';
@@ -40,6 +39,7 @@ import { checkCompulsoryDevice, checkCompulsoryForm, checkCompulsoryLocationFiel
 import { checkConnectivity } from '../../../../DAO/helper';
 import { haveLocationFieldPost } from '../../../../components/common/CheckOut/helper';
 import AlertModal from '../../../../components/modal/AlertModal';
+import LocationDetailsView from './components/LocationDetailsView';
 
 const LocationSpecificInfoScreen = props => {
 
@@ -489,58 +489,8 @@ const LocationSpecificInfoScreen = props => {
       <ScrollView style={styles.container}>
         {locationInfo != undefined && (
           <View style={styles.headerBox}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-              }}>
-              <View style={styles.headerTitleBox}>
-                <View style={styles.subtitleBox}>
-                  <SvgIcon
-                    style={styles.headerIcon}
-                    icon="Person_Sharp_White"
-                    width="14px"
-                    height="14px"
-                  />
-                  <Text style={styles.subtitle}>
-                    {locationInfo.location_name != undefined &&
-                    locationInfo.location_name.custom_field_name != undefined
-                      ? locationInfo.location_name.custom_field_name
-                      : ''}
-                  </Text>
-                </View>
-                <Text style={styles.title}>
-                  {locationInfo.location_name != undefined
-                    ? locationInfo.location_name.value
-                    : ''}
-                </Text>
-              </View>
-              <View style={styles.subtitleBox}>
-                <SvgIcon
-                  style={styles.headerIcon}
-                  icon="Insert_Invitation"
-                  width="16px"
-                  height="16px"
-                />
-                <Text style={styles.subtitle}>
-                  Last Interaction: {locationInfo.last_interaction}
-                </Text>
-              </View>
-            </View>
 
-            <View style={styles.headerTitleBox}>
-              <View style={styles.subtitleBox}>
-                <SvgIcon
-                  style={styles.headerIcon}
-                  icon="Location_Arrow_White"
-                  width="14px"
-                  height="14px"
-                />
-                <Text style={styles.subtitle}>Address:</Text>
-              </View>
-              <Text style={styles.title}>{locationInfo.address}</Text>
-            </View>
+            <LocationDetailsView locationInfo={locationInfo} />
 
             {isCheckin && (
               <CheckOutViewContainer
@@ -613,38 +563,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     marginBottom: 8,
   },
-  
-  headerTitleBox: {    
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  
-  subtitleBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 20,
-    marginBottom: 8,
-    marginRight: 8,
-  },
-
-  subtitle: {
-    fontSize: 12,
-    color: whiteLabel().headerText,
-    textAlign: 'left',
-    fontFamily: Fonts.secondaryMedium,
-  },
-
-  title: {
-    fontSize: 14,
-    color: whiteLabel().headerText,
-    fontFamily: Fonts.secondaryBold,
-    lineHeight: 22,
-    maxWidth: 300,
-  },
-
-  headerIcon: {
-    marginRight: 8,
-  },
+      
   innerContainer: {
     justifyContent: 'space-between',    
   },
