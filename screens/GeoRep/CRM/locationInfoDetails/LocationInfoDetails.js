@@ -126,7 +126,7 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
           props.goPreviousPage();
         }
       },
-      updateView(res) {
+      updateView(res) {        
         updateLocationInfo(res);
       },
     }),
@@ -220,11 +220,15 @@ export const LocationInfoDetails = forwardRef((props, ref) => {
   };
 
   const _canGoNextPrev = () => {
-    if (isFeedbackLocInfoOutcome && !outcomeVal) {
-      setIsFeedback(true);
+    if(locationInfo != undefined){
+      if ( isFeedbackLocInfoOutcome && !outcomeVal ) {
+        setIsFeedback(true);
+        return false;
+      } else {
+        return true;
+      }
+    }else{
       return false;
-    } else {
-      return true;
     }
   };
 

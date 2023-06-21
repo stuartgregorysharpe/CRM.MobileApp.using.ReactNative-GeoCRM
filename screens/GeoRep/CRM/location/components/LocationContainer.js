@@ -211,6 +211,7 @@ const LocationContainer = props => {
       locationInfoModalRef.current.showModal();
     }
     if (currentLocation && currentLocation.latitude !== undefined) {
+      setLocationInfo(undefined);
       getLocationInfo(locationId, currentLocation)
         .then(res => {
           setLocationInfo(res);
