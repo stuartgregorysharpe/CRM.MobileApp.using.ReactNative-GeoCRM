@@ -51,8 +51,27 @@ export const FormsScreen = props => {
 
   const isShowCustomNavigationHeader = props.isDeeplink;
   let isMount = true;
+  
+  useEffect(() => {
+    isMount = true;
+    //_callFormLists(null);
+    initFilter();
+    initializeFormIds();
+    return () => {
+      isMount = false;
+    };
+  }, []);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      renderHeaderTitle();
+      _callFormLists(null);
+      initializeFormIds();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const renderHeaderTitle = () => {
     if (props.screenProps) {
       props.screenProps.setOptions({
         headerTitle: () => {
@@ -81,25 +100,7 @@ export const FormsScreen = props => {
         },
       });
     }
-  });
-
-  useEffect(() => {
-    isMount = true;
-    //_callFormLists(null);
-    initFilter();
-    initializeFormIds();
-    return () => {
-      isMount = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      _callFormLists(null);
-      initializeFormIds();
-    });
-    return unsubscribe;
-  }, [navigation]);
+  }
 
   const initializeFormIds = async () => {
     var formIds = await getJsonData('@form_ids');
@@ -128,9 +129,7 @@ export const FormsScreen = props => {
         }
       });
       dispatch(setCompulsoryForm(flag));
-
-    }
-        
+    }        
   };
 
   const initFilter = async () => {
