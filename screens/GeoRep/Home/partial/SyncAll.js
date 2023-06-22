@@ -40,7 +40,7 @@ export const SyncAll = forwardRef((props, ref) => {
           }        
         }else{        
           if(syncNotCompleted && flag){
-            setExpanded(true);
+            setExpanded(true);            
             setIsLoading(true);
           }  
         }                                                    
@@ -210,6 +210,10 @@ export const SyncAll = forwardRef((props, ref) => {
           ref={basketRef} 
           updateLoading={updateLoading}
           showNotAvailableModal={showNotAvailableModal}
+          onClosed={() => {
+            setExpanded(false);
+            setIsLoading(false);
+          }}
         />
       )}
 
