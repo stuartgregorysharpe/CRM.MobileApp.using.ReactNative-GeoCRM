@@ -26,12 +26,7 @@ const LocationDetailsView = (props) => {
                             : ''}
                         </Text>                        
                     </View>
-
-                    <Text style={styles.title}>
-                        {locationInfo.location_name != undefined
-                            ? locationInfo.location_name.value 
-                            : ''}
-                    </Text>
+                
                 </View>
 
                 <View style={styles.dateContainer}>                    
@@ -44,9 +39,14 @@ const LocationDetailsView = (props) => {
                     <Text style={styles.subtitle}>
                         Last Interaction: {locationInfo.last_interaction}
                     </Text>
-                </View>
+                </View>                
             </View>
 
+            <Text style={styles.title}>
+                {locationInfo.location_name != undefined
+                    ? locationInfo.location_name.value 
+                    : ''}
+            </Text>
 
             <View style={styles.addressContainer}>
                 <View style={styles.subtitleBox}>
