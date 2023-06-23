@@ -44,7 +44,8 @@ export function AppText(props){
 const styles = StyleSheet.create({    
     textStyle: {        
         fontSize: 14,
-        color:Colors.textColor,        
+        color:Colors.textColor,
+        fontFamily: Fonts.secondaryRegular
         //fontWeight:'700'
         //textAlign:'center'
     },

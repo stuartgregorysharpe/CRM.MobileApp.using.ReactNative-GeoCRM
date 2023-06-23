@@ -273,6 +273,7 @@ export default function CalendarScreen(props) {
             hideLoadingBar();            
             showConfirmModal(Strings.PostRequestResponse.Successfully_Checkin, 'no_have_complsory' , 'Continue');
           }}
+          onReloadLocationData={onReloadLocationData}
           navigation={props.navigation}
           item={item}
           current={currentLocation}
@@ -282,6 +283,10 @@ export default function CalendarScreen(props) {
       </TouchableOpacity>
     );
   };
+
+  const onReloadLocationData = () => {
+    onRefresh(true);
+  }
 
   const renderTodayItem = ({item, drag , index}) => {
     const {isActive} = useOnCellActiveAnimation();
@@ -317,7 +322,7 @@ export default function CalendarScreen(props) {
             onItemSelected={() => {              
               dispatch({type: LOCATION_LOOP_LISTS, payload: todayList});
             }}
-
+            onReloadLocationData={onReloadLocationData}
             key={item.schedule_id}
             navigation={props.navigation}
             item={item}

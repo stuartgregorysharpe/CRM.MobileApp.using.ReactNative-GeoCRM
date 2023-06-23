@@ -6,7 +6,6 @@ import {
   getApiRequest,  
   postApiRequestMultipart,
 } from '../../../../../actions/api.action';
-import { clearLoadingBar, showLoadingBar } from '../../../../../actions/notification.action';
 import DynamicButtons from '../../../../../components/common/DynamicButtons';
 import DynamicForm from '../../../../../components/common/DynamicForm';
 import AlertModal from '../../../../../components/modal/AlertModal';
@@ -22,6 +21,7 @@ import {
   constructUpdateActionFormStructure,
   getUpdateActionItemPostValue,
 } from '../helper';
+import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 
 const UpdateActionFormContainer = props => {
   
@@ -35,10 +35,12 @@ const UpdateActionFormContainer = props => {
   const [isLoading, setIsLoading] = useState(false);
   const actionFormRef = useRef(null);
   const alertModalRef = useRef();
+  const loadingBarRef = useRef();
   const currentLocation = useSelector(state => state.rep.currentLocation);
 
   const load = () => {
     setIsLoading(true);
+    console.log("actionItemId",actionItemId)
     getApiRequest('actionsitems/action-item-details', {
       action_item_id: actionItemId,
     })
@@ -60,8 +62,9 @@ const UpdateActionFormContainer = props => {
         });
       })
       .catch(e => {
+        console.log("update action form details error => ", e);
         setIsLoading(false);
-        expireToken(dispatch, e);
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
@@ -72,7 +75,7 @@ const UpdateActionFormContainer = props => {
   const onSubmit = () => {
     if (!actionFormRef.current.validateForm()) return;
     if (isLoading) return;
-    
+    showLoadingBar();
     setIsLoading(true);
     
     const submitValueData = getUpdateActionItemPostValue(
@@ -91,15 +94,14 @@ const UpdateActionFormContainer = props => {
         const file = getFileFormat(path);
         submitFormData.append(`action_image[${index}]`, file);
       });
-    }
-    dispatch(showLoadingBar({'type' : 'loading'}));
+    }    
     postApiRequestMultipart('actionsitems/action-item-details', submitFormData)
       .then(res => {
         if (res.status === Strings.Success) {
           notifyMsg(dispatch, 'Action Item Updated Successfully');
         }
         setIsLoading(false);
-        dispatch(clearLoadingBar());
+        hideLoadingBar()        
         if (props.onButtonAction) {
           props.onButtonAction({
             type: Constants.actionType.ACTION_FORM_SUBMIT,
@@ -109,8 +111,8 @@ const UpdateActionFormContainer = props => {
       })
       .catch(e => {
         setIsLoading(false);
-        dispatch(clearLoadingBar());
-        expireToken(dispatch, e);
+        hideLoadingBar()
+        expireToken(dispatch, e , alertModalRef);
       });
   };
 
@@ -120,6 +122,19 @@ const UpdateActionFormContainer = props => {
     }
   }
   
+  const showLoadingBar = () =>{ 
+    if(loadingBarRef.current)
+      loadingBarRef.current.showModal();
+  }
+  const hideLoadingBar = () => {
+    if(loadingBarRef.current)
+      loadingBarRef.current.hideModal();
+  }
+
+  const onReloadLocationData = () => {
+    console.log("load data again");
+    load();
+  }
 
   return (
     <View style={[styles.container, props.style]}>
@@ -136,6 +151,8 @@ const UpdateActionFormContainer = props => {
         }}
       />
 
+      <LoadingBar ref={loadingBarRef} />
+
       <DynamicForm
         ref={actionFormRef}
         formData={formData}
@@ -148,6 +165,9 @@ const UpdateActionFormContainer = props => {
       <DynamicButtons
         buttons={buttons}
         showConfirmModal={showConfirmModal}
+        showLoadingBar={showLoadingBar}
+        hideLoadingBar={hideLoadingBar}
+        onReloadLocationData={onReloadLocationData}
         onButtonAction={({type, item}) => {
           if (type == Constants.buttonType.BUTTON_TYPE_SUMBIT) {
             onSubmit();
@@ -163,7 +183,6 @@ const UpdateActionFormContainer = props => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

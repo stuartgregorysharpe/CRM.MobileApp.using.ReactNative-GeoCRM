@@ -51,33 +51,28 @@ export const FormsScreen = props => {
 
   const isShowCustomNavigationHeader = props.isDeeplink;
   let isMount = true;
-
-  useEffect(() => {
-    refreshHeader();
-  });
-
+  
   useEffect(() => {
     isMount = true;
     //_callFormLists(null);
     initFilter();
     initializeFormIds();
-    refreshHeader();
     return () => {
       isMount = false;
     };
   }, []);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener('focus', () => {      
+      renderHeaderTitle();
       _callFormLists(null);
       initializeFormIds();
     });
     return unsubscribe;
   }, [navigation]);
 
-  const refreshHeader = () => {
-    console.log("render refresh header ////");
-    if (props.screenProps) {      
+  const renderHeaderTitle = () => {
+    if (props.screenProps) {
       props.screenProps.setOptions({
         headerTitle: () => {
           return (
@@ -134,9 +129,7 @@ export const FormsScreen = props => {
         }
       });
       dispatch(setCompulsoryForm(flag));
-
-    }
-        
+    }        
   };
 
   const initFilter = async () => {
