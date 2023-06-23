@@ -155,7 +155,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
     setModalVisible(false);
   };
   const onSaveSelectionView = () => {
-    setModalVisible(false);
+    setSelectedOptions([]);
+    setModalVisible(false);    
   };
   const onValueChangedSelectionView = async (key, index, value) => {
     let _formQuestions = [...formQuestions];
@@ -247,6 +248,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
+            console.log("dddd", item.options , item.value);
+            
             setMode('multiple');            
             setOptions(item.options);
             setSelectedOptions(item.value);
