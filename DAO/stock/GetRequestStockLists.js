@@ -20,7 +20,7 @@ export function find(postData){
 
                 if(client_id && business_unit_id && user_id){                    
                     var lists = await fetchDataFromDB(business_unit_id, client_id, user_id  , postData);                                   
-                    var offlineItems = await getOfflineSyncItem('sell_to_trader');                    
+                    var offlineItems = await getOfflineSyncItem('sell_to_trader');
                     resolve({status: Strings.Success , stock_items: getData(lists , offlineItems)});                                                       
                 }else{
                     reject();

@@ -554,7 +554,7 @@ const LocationSpecificInfoScreen = props => {
                   setPageType('crm_map');
                 }}
                 onCallback={async res => {
-                  showMessage(res.message , 'go_back');
+                  showMessage(res?.message , 'go_back');
                 }}
               />
             )}            
@@ -564,7 +564,8 @@ const LocationSpecificInfoScreen = props => {
         <View style={[styles.innerContainer, {marginBottom: -14}]}>
           <View style={[styles.cardBox]}>
             {locationInfo !== undefined &&
-            locationInfo.address !== '' &&
+            locationInfo?.address != '' &&
+            locationInfo?.address != undefined &&
             DeviceInfo.isTablet() ? (
               <LocationInfoInputTablet
                 ref={locationInfoRef}
