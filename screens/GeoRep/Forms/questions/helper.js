@@ -412,7 +412,10 @@ export function validateFormQuestionData(formQuestions) {
         item.rule_compulsory === '1' &&
         (item.value === null || item.value === '' || item.value === undefined)
       ) {
-        error = Strings.Complete_Compulsory_Questions;
+        if( !(item.question_type == Constants.questionType.FORM_TYPE_FSU_CAMPAIGN && item.campaigns.length == 0) ){
+          error = Strings.Complete_Compulsory_Questions;
+        }
+        
       } else if (
         item.question_type === 'yes_no' &&
         item.isHidden == false &&
@@ -420,7 +423,7 @@ export function validateFormQuestionData(formQuestions) {
       ) {
         if (!checkYesNoValidate(item)) {
           error = Strings.Complete_Compulsory_Questions;
-        }
+        }            
       } else {
         if (
           item.isHidden == false &&
