@@ -1,4 +1,4 @@
-import {View, Dimensions} from 'react-native';
+import {View, Dimensions, Platform} from 'react-native';
 import React, {useRef} from 'react';
 import ProgressBar from '../../ProgressBar';
 import CircularProgress from 'react-native-circular-progress-indicator';
@@ -7,12 +7,17 @@ import {AppText} from '../../../../../../components/common/AppText';
 import VisitCheckinItem from '../components/VisitCheckinItem';
 import Legend from '../../../../../../components/common/Legend';
 import LoadingBar from '../../../../../../components/LoadingView/loading_bar';
-
+import AlertModal from '../../../../../../components/modal/AlertModal';
+import { Strings } from '../../../../../../constants';
+import {useNavigation} from '@react-navigation/native';
 
 const TodayVisits = props => {
 
+  const navigation = useNavigation();
   const {today} = props;
+
   const loadingBarRef = useRef();
+  const alertModalRef = useRef();
 
   const barTypes = [
     {color: whiteLabel().graphs.primary, name: 'Completed'},
@@ -44,6 +49,7 @@ const TodayVisits = props => {
     if(loadingBarRef.current){
       loadingBarRef.current.hideModal()
     }
+    showMessage(Strings.PostRequestResponse.Successfully_Checkin);
   }
 
   const onReloadLocationData = () => {
@@ -52,10 +58,26 @@ const TodayVisits = props => {
     }
   }
 
+  const showMessage = (message)  => {
+    const timeout = Platform.OS == 'ios' ? 500 : 0;
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message);
+      }
+    }, timeout);    
+  }
+
   return (
     <View style={{flexDirection: 'column'}}>
 
       <LoadingBar ref={loadingBarRef} />
+      <AlertModal 
+        onModalClose={(res) => {          
+          navigation.navigate('DeeplinkLocationSpecificInfoScreen', {
+            page: 'checkin',            
+          });
+        }}
+        ref={alertModalRef} />
 
       <View
         style={{
