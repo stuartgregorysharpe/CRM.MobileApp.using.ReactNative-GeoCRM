@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Modal, TouchableWithoutFeedback, StyleSheet , TouchableHighlight,Text} from 'react-native';
+import { View, Modal, StyleSheet , TouchableHighlight,Text} from 'react-native';
 import { whiteLabel } from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
-
+import { style } from '../../constants/Styles';
 
 const AlertDialog = ({visible, onModalClose, message, buttonText }) => {
 
@@ -16,11 +16,11 @@ const AlertDialog = ({visible, onModalClose, message, buttonText }) => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.title} >{message}</Text>
-                        <View style={styles.divider}></View>
+                        <View style={style.divider}></View>
                         <TouchableHighlight 
                         underlayColor="#DDDDDD"
                         style={{alignItems:'center', borderBottomEndRadius:7, borderBottomLeftRadius:7}} onPress={() => onModalClose() }>
-                            <Text style={styles.button} >{ buttonText ? buttonText : 'Okay'}</Text>
+                            <Text style={style.buttonText} >{ buttonText ? buttonText : 'Okay'}</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
@@ -28,11 +28,6 @@ const AlertDialog = ({visible, onModalClose, message, buttonText }) => {
         </Modal>
     )
 }
-
-
-//export const CustomAlert: AlertDialog;
-// export default AlertDialog;
-
 
 const styles = StyleSheet.create({        
     
@@ -49,8 +44,7 @@ const styles = StyleSheet.create({
         width: '90%',
         backgroundColor: "white",
         borderRadius: 7,
-        padding: 0,
-        // alignItems: "center",
+        padding: 0,        
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -68,19 +62,7 @@ const styles = StyleSheet.create({
         color:"#000",        
         padding:13
 
-    },
-
-    button:{
-        fontFamily:Fonts.secondaryBold,
-        fontSize:18,
-        color:whiteLabel().mainText,        
-        padding:10
-    },
-    divider:{
-        height:1,
-        backgroundColor:'#eee',        
-    }
-
+    },   
 })
 
 

@@ -538,12 +538,18 @@ const MainPage = forwardRef((props, ref) => {
     }
   };
 
+  const onReloadLocationData = () => {
+    loadPage();
+  }
+
   const renderCards = (item, index) => {
     if (item.card === 'visits') {
       return (
         <View collapsable={false} key={index} style={{ marginRight: 1, width: pageWidth }}>
           <View>
-            <Visits {...props} visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
+            <Visits {...props} 
+              onReloadLocationData={onReloadLocationData}
+              visitCard={visitCard} pageCount={pages.length} pageIndex={item.index} />
             <View>{contentFeedData.map((item, index) => (<TwoRowContent key={index.toString()}
               item={item}
               onImageClick={() => {

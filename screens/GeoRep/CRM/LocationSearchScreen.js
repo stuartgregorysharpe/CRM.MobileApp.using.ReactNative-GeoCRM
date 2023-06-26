@@ -314,6 +314,7 @@ export default function LocationSearchScreen(props) {
 
   const openLocationInfo = async location_id => {
       animation('locationInfo');      
+      setLocationInfo(undefined);
       getLocationInfo(Number(location_id), currentLocation)
       .then(res => {        
         setLocationInfo(res);        
@@ -409,6 +410,9 @@ export default function LocationSearchScreen(props) {
           page: value,
         });
       }
+    }else if(type == Constants.actionType.ACTION_REFRESH){      
+      if(value != undefined)
+        openLocationInfo(value);
     }
   };
 

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, Platform , TextInput} from 'react-native';
-//import {TextInput} from 'react-native-paper';
 import {Colors, Fonts} from '../../constants';
 import {whiteLabel} from '../../constants/Colors';
 

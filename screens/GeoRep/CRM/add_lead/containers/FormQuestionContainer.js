@@ -10,13 +10,15 @@ import {
   validateFormQuestionData,
 } from '../../../Forms/questions/helper';
 import {useDispatch} from 'react-redux';
-import {showNotification} from '../../../../../actions/notification.action';
 import {GetRequestFormQuestionsDAO} from '../../../../../DAO';
 import {downloadFormQuestionImages} from '../../../../../services/DownloadService/ImageDownload';
 import LoadingBar from '../../../../../components/LoadingView/loading_bar';
 import AlertModal from '../../../../../components/modal/AlertModal';
 
+
+
 export default function FormQuestionContainer(props) {
+
   const {form, leadForms, customMasterFields, selectedLists} = props;
 
   const [formQuestions, setQuestions] = useState([]);
@@ -137,7 +139,7 @@ export default function FormQuestionContainer(props) {
         }
       });
       updateFormQuestionsForDownloading(newData);
-      
+
     }catch(e) {
       hideLoadingBar();
     }
@@ -179,13 +181,9 @@ export default function FormQuestionContainer(props) {
   const onSave = () => {
     var error = validateFormQuestionData(formQuestions);
     if (error) {
-      dispatch(
-        showNotification({
-          type: 'success',
-          message: error,
-          buttonText: Strings.Ok,
-        }),
-      );
+      if(alertModalRef.current){
+        alertModalRef.current.alert(error);
+      }      
       return;
     } else {
       var form_answers = [];

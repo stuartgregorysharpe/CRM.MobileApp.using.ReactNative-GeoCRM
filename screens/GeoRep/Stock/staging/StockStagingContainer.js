@@ -8,17 +8,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {expireToken, getPostParameter} from '../../../../constants/Helper';
 import { PostRequestDAO } from '../../../../DAO';
 import LoadingBar from '../../../../components/LoadingView/loading_bar';
-import AlertDialog from '../../../../components/modal/AlertDialog';
+import AlertModal from '../../../../components/modal/AlertModal';
 
 const StockStagingContainer = props => {
 
   const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isConfirmModal, setIsConfirmModal] = useState(false);
-  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  
   const currentLocation = useSelector(state => state.rep.currentLocation);
   const dispatch = useDispatch();
   const loadingBarRef = useRef(null);
+  const alertModalRef =  useRef();
+
   let isMount = true;
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const StockStagingContainer = props => {
       .catch(e => {
         if(isMount){
           setIsLoading(false);
-          expireToken(dispatch , e);
+          expireToken(dispatch , e, alertModalRef);
         }        
       });
   };
@@ -69,41 +69,37 @@ const StockStagingContainer = props => {
       } else {
         message = res.errors;        
       }
-      showConfirmModal(message);                        
+      showMessage(message , 'onLoad');  
     }).catch((e) => {
       setIsLoading(false);      
-      expireToken(dispatch,e)
+      expireToken(dispatch,e , alertModalRef)
     });   
   };
 
-  const showConfirmModal = (message) => {
-    setMessage(message);
-    if(Platform.OS == 'android'){
-      setIsConfirmModal(true);
-    }else{
-      setTimeout(() => {
-        setIsConfirmModal(true);
-      }, 500);
-    }
+  const showMessage = (message , response) => {
+    const delay = Platform.OS == 'ios' ? 500 :  0;
+    setTimeout(() => {
+      if(alertModalRef.current){
+        alertModalRef.current.alert(message, Strings.Ok , false, response);
+      }
+    }, delay);    
   }
 
   return (
     <View style={{alignSelf: 'stretch', flex:1}}>
 
-      <LoadingBar 
-        ref={loadingBarRef}
-      />      
-
-      <AlertDialog 
-        visible={isConfirmModal}
-        message={message}
-        onModalClose={() => {
-          setIsConfirmModal(false);
-          onLoad();
+      <LoadingBar  ref={loadingBarRef} />      
+      <AlertModal 
+        onModalClose={(res) => {
+          if(res == 'onLoad'){
+            onLoad();
+          }
         }}
-      />
-      
-      <StagingView items={items} isLoading={isLoading} onAccept={onAccept} />
+        ref={alertModalRef} />           
+        
+      <StagingView 
+        showMessage={showMessage}
+        items={items} isLoading={isLoading} onAccept={onAccept} />
     </View>
   );
 };   

@@ -6,8 +6,6 @@ import CButtonTextInput from '../../../../../components/common/CButtonTextInput'
 import {Colors, Strings} from '../../../../../constants';
 import CCircleButton from '../../../../../components/common/CCircleButton';
 import Divider from '../../../../../components/Divider';
-import {Notification} from '../../../../../components/modal/Notification';
-import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 
 export default function ShipmentScanResultView(props) {
   const {items, title} = props;
@@ -98,10 +96,7 @@ export default function ShipmentScanResultView(props) {
         }}
         style={{marginTop: 20, marginBottom: 20}}
       />
-      
-      <Notification />
-      <LoadingProgressBar />
-
+                  
       {renderActionButtons()}
     </View>
   );

@@ -35,8 +35,8 @@ import {generateKey} from '../../../../constants/Utils';
 import AlertModal from '../../../../components/modal/AlertModal';
 var indempotencyKey;
 
-//export default function FormQuestions(props) {
 export const FormQuestions = props => {
+  const navigation = props.navigation;
   const form = props.route.params.data;
   const location_id = props.route.params.location_id;
   const pageType = props.route.params.pageType;
@@ -61,6 +61,15 @@ export const FormQuestions = props => {
       isMount = false;
     };
   }, [form]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log("forms question screen focussed");
+      refreshHeader();      
+    });
+    return unsubscribe;
+  }, [navigation]);
+
 
   const loadFromDB = async formId => {
     _callFormQuestions();

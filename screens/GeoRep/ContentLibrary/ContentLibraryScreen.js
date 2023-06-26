@@ -25,7 +25,7 @@ import Images from '../../../constants/Images';
 import {expireToken} from '../../../constants/Helper';
 import {GetRequestContentlibraryDAO} from '../../../DAO';
 import AlertModal from '../../../components/modal/AlertModal';
-
+import LoadingBar from '../../../components/LoadingView/loading_bar';
 
 export default function ContentLibraryScreen(props) {
   
@@ -40,6 +40,7 @@ export default function ContentLibraryScreen(props) {
   );
   const [title, setTitle] = useState('Content Library');
   const alertModalRef = useRef();
+  const loadingBarRef = useRef();
 
   useEffect(() => {    
     var screenProps = props.screenProps;
@@ -95,7 +96,7 @@ export default function ContentLibraryScreen(props) {
         setSearchLibraryLists(res.folders);
       })
       .catch(error => {
-        expireToken(dispatch, error);
+        expireToken(dispatch, error , alertModalRef);
         setLibraryLists([]);
         setSearchLibraryLists([]);
       });
@@ -147,35 +148,39 @@ export default function ContentLibraryScreen(props) {
     var tmp = item.filename.split('.');
 
     if (tmp.length == 2) {
+
       fileName = tmp[0];
       ext = tmp[1];
       const path =
         Platform.OS === 'ios'
           ? `${RNFS.DocumentDirectoryPath}/${fileName}.${ext}`
           : `${RNFS.ExternalDirectoryPath}/${fileName}.${ext}`;
+          
       RNFS.exists(path)
         .then(res => {
-          if (res) {
-            console.log('file exist', path);                          
+          if (res) {            
             openFile(path, '');
           } else {
-            console.log('no file exist', item.file_path);
-            console.log("ext", ext);
+            console.log('no file exist', item.file_path);            
+            showLoadingBar();
             downloadPDF(item.file_path, fileName, ext)
               .then(res => {
-                console.log(res);
+                
                 if (
                   res &&
                   res.statusCode === 200 &&
                   res.bytesWritten > 0
                 ) {
-                  openFile(path, '');
+                  hideLoadingBar(path);
+                  
                 } else {
                   console.log(res);
+                  hideLoadingBar('');
                 }
               })
               .catch(error => {
                 console.log(error);
+                hideLoadingBar('');
               });
           }
         })
@@ -183,6 +188,25 @@ export default function ContentLibraryScreen(props) {
           console.log('error', error);
         });
     }
+  }
+
+  const showLoadingBar = () => {
+    if(loadingBarRef.current){
+      loadingBarRef.current.showModal();
+    }
+  }
+  const hideLoadingBar = ( path = '') => {
+    const delay = Platform.OS == 'ios' ? 500 : 0;
+    setTimeout(() => {
+      if(loadingBarRef.current){
+        loadingBarRef.current.hideModal();
+        if(path != ''){
+          setTimeout(() => {
+            openFile(path, '');
+          }, delay)          
+        }
+      }
+    }, 300);    
   }
 
   const renderMainPage = () => {
@@ -258,7 +282,11 @@ export default function ContentLibraryScreen(props) {
   return (
     <SafeAreaView>
       <ScrollView style={styles.container}>        
+        
         <AlertModal ref={alertModalRef} />
+
+        <LoadingBar ref={loadingBarRef}/>
+
         {isBack ? renderDetailsPage() : renderMainPage()}                
       </ScrollView>
     </SafeAreaView>

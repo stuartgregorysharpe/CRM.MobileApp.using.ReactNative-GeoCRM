@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import React, {
   useState,
@@ -42,10 +43,8 @@ import TieredMultipleChoice from '../../../../../components/shared/TieredMultipl
 import BrandFacing from '../../../../../components/shared/BrandFacing';
 import FSUCampaign from '../../../../../components/shared/FSUCampaign';
 import PosCapture from '../../../../../components/shared/PosCapture';
-import LoadingProgressBar from '../../../../../components/modal/LoadingProgressBar';
 import GuideInfoModal from '../../../Forms/modal/GuideInfoModal';
 
-//export default function FormQuestionView(props) {
 export const FormQuestionView = forwardRef((props, ref) => {
   const {
     submissionType,
@@ -75,7 +74,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
   const formSubmitModalRef = useRef(null);
   const guideInfoModalRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState(false);
+  
   useImperativeHandle(
     ref,
     () => ({
@@ -156,7 +155,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
     setModalVisible(false);
   };
   const onSaveSelectionView = () => {
-    setModalVisible(false);
+    setSelectedOptions([]);
+    setModalVisible(false);    
   };
   const onValueChangedSelectionView = async (key, index, value) => {
     let _formQuestions = [...formQuestions];
@@ -248,6 +248,8 @@ export const FormQuestionView = forwardRef((props, ref) => {
             _onTouchStart(e, text);
           }}
           onPress={item => {
+            console.log("dddd", item.options , item.value);
+            
             setMode('multiple');            
             setOptions(item.options);
             setSelectedOptions(item.value);
@@ -572,6 +574,7 @@ export const FormQuestionView = forwardRef((props, ref) => {
     return <View key={'question' + index}></View>;
   };
 
+
   return (
     <View style={styles.container}>
       {isShowCustomNavigationHeader && (
@@ -581,12 +584,11 @@ export const FormQuestionView = forwardRef((props, ref) => {
           onBackPressed={() => {
             onBackPressed();
           }}
-          style={{marginTop: props.isModal || Platform.OS == 'ios' ? 0 : 20}}
+          style={{marginTop: props.isModal || Platform.OS == 'ios' ? 0 : StatusBar.currentHeight}}
         />
       )}
 
-      <Notification></Notification>
-      <LoadingProgressBar/>
+      <Notification></Notification>      
 
       <DatetimePickerView
         visible={isDateTimeView}

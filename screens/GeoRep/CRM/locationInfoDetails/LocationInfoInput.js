@@ -63,7 +63,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   const [stageModalVisible, setStageModalVisible] = useState(false);
   const [outComeModalVisible, setOutComeModalVisible] = useState(false);
   var outcomes =
-    locationInfo !== undefined && locationInfo.outcomes
+    locationInfo !== undefined && locationInfo != null && locationInfo.outcomes
       ? locationInfo.outcomes.find(
           xx =>
             xx.outcome_id != null &&
@@ -75,7 +75,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
     outcomes ? outcomes.outcome_id : 0,
   );
   var stages =
-    locationInfo !== undefined && locationInfo.stages
+    locationInfo !== undefined && locationInfo  != null  && locationInfo.stages
       ? locationInfo.stages.find(
           stage => stage.stage_id == locationInfo.current_stage_id,
         )
@@ -131,7 +131,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
   }, []);
 
   useEffect(() => {
-    if (locationInfo !== undefined) {
+    if (locationInfo !== undefined && locationInfo) {
       if (!locationInfo.disposition_fields) return;
       let items = [];
       locationInfo.disposition_fields.forEach(element => {
@@ -451,10 +451,8 @@ export const LocationInfoInput = forwardRef((props, ref) => {
           setIsConfirmModal(false)
         }}
       />
-
       
-
-      {locationInfo !== undefined && locationInfo.address !== '' && isDisposition && (
+      {locationInfo !== undefined && locationInfo != null && locationInfo.address !== '' && isDisposition && (
         <View style={styles.refreshBox}>
           <TouchableOpacity
             style={styles.shadowBox}
@@ -486,7 +484,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         </View>
       )}
 
-      {locationInfo !== undefined && locationInfo.address !== '' && isDisposition && (
+      {locationInfo !== undefined && locationInfo && locationInfo.address !== '' && isDisposition && (
         <View style={styles.refreshBox}>
           <TouchableOpacity
             style={styles.shadowBox}
@@ -519,7 +517,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         </View>
       )}
 
-      {locationInfo !== undefined && locationInfo.disposition_fields && (
+      {locationInfo !== undefined && locationInfo && locationInfo.disposition_fields && (
         <View style={styles.inputBox}>
           {locationInfo.disposition_fields.map((field, key) => (
             <TouchableOpacity
@@ -538,6 +536,7 @@ export const LocationInfoInput = forwardRef((props, ref) => {
               }}>
               <View>
                 <TextInput
+                  theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
                   type={field.field_type}
                   ref={element => {
                     dispositionRef.current[key] = element;
@@ -604,9 +603,9 @@ export const LocationInfoInput = forwardRef((props, ref) => {
         onCancel={() => setDateTimePickerVisibility(false)}
       />
 
-      {locationInfo !== undefined && locationInfo.stages && stagesModal()}
+      {locationInfo !== undefined && locationInfo && locationInfo.stages && stagesModal()}
 
-      {locationInfo !== undefined && locationInfo.outcomes && outComesModal()}
+      {locationInfo !== undefined && locationInfo && locationInfo.outcomes && outComesModal()}
       {confirmModal()}
 
     </View>

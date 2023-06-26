@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { SafeAreaView, View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
-import { Modal, Portal, Provider, TextInput } from 'react-native-paper';
+import { Modal , Portal , Provider , TextInput } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 import SvgIcon from '../../components/SvgIcon';
 import { boxShadow } from '../../constants/Styles';
 import Fonts from '../../constants/Fonts';
-import Colors from '../constants/Colors';
+import Colors, { whiteLabel } from '../constants/Colors';
 
 const Ticket = () => {
   const emailRef = useRef();
@@ -32,6 +32,7 @@ const Ticket = () => {
       >
         <View>
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor} }}
             ref = {emailRef}
             style={styles.textInput}
             label="Email"
@@ -50,6 +51,7 @@ const Ticket = () => {
       >
         <View pointerEvents="none">
           <TextInput
+            theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor } }}
             style={styles.textInput}
             label={picker == '' ? "Select Issue" : picker}
             mode="outlined"
@@ -59,7 +61,10 @@ const Ticket = () => {
           <SvgIcon style={styles.pickerIcon} icon="Drop_Down" width='23px' height='23px' />
         </View>
       </TouchableOpacity>
+
+
       <TextInput
+        theme={{ colors: { text: 'black'  , placeholder: whiteLabel().disabledColor} }}
         style={styles.textArea}
         mode="outlined"
         outlineColor={Colors.primaryColor}
@@ -68,6 +73,7 @@ const Ticket = () => {
         multiline={true}
         numberOfLines={4}
       />
+      
       <TouchableOpacity style={styles.downloadButton}>
         <Text style={styles.downloadText}>Upload Image</Text>
         <SvgIcon icon="File_Download" width='18px' height='18px' />
