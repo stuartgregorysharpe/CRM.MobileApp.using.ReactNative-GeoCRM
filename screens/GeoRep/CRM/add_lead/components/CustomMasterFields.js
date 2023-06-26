@@ -260,12 +260,12 @@ const CustomMasterFields = React.forwardRef((props, ref) => {
         formData={formData2}
         isShowRequiredFromBegining={true}
         formStructureData={formStructure2}
-        updateFormData={formData => {
+        updateFormData={ (formData , fieldName) => {
           setFormData2(formData);
           addValue(formData, formStructure2);
           let filterTriggerFields = filterTriggerForm(formStructure2);
           setFormStructure2(filterTriggerFields);
-          onChangedCustomMasterFields({...formData1, ...formData});
+          onChangedCustomMasterFields({...formData1, ...formData} , fieldName);
         }}
         updateSecondFormData={formData => {
           setFormData2(formData);
