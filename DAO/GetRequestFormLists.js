@@ -44,7 +44,7 @@ export function find(postData){
                     let data = getExcludeFormIds( assignmentsData , postData , locationCoreMasterData, customFieldsData , userTypeId, role , user_id);
                     let lists = await fetchDataFromDB(client_id, business_unit_id , postData, data.excludeFormIds, data.limitFormIds );
                     var isLocationId = hasLocationId(postData);
-                    let response = await getData(lists , isLocationId);                    
+                    let response = await getData(lists );                    
                     resolve(response);
 
                 }else{
@@ -344,7 +344,7 @@ const generateUserTypeId = () => {
     return query;
 }
 
-const getData = async(lists , isLocationId) => {
+const getData = async(lists) => {
     var tmp = [];
     
     for(var i = 0; i < lists.length; i++){
@@ -373,7 +373,7 @@ const getData = async(lists , isLocationId) => {
                 form_type_id: element.form_type_id.toString(),
                 guide_info: guideInfoData,
                 question_count: countRes && countRes.length > 0 ? countRes.item(0).cnt.toString() : "0",
-                compulsory: isLocationId ? element.compulsory.toString() : '0',
+                compulsory:  element.compulsory ? element.compulsory.toString() : '0',
                 location_required: element.location_required.toString()
             }
         );            
