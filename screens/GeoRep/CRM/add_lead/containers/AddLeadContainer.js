@@ -125,8 +125,7 @@ export default function AddLeadContainer(props) {
 
   useEffect(() => {
     updateFormLists(formLists);
-  }, [formSubmissions]);
-  console.log('isValidOtherForms', isValidOtherForms);
+  }, [formSubmissions]);  
   const dispatch = useDispatch();
 
   var isMount = true;
@@ -140,7 +139,7 @@ export default function AddLeadContainer(props) {
 
   useEffect(() => {
     if(leadForms.length > 0){
-      getFormLists();
+      getFormLists(customMasterFields);
     }    
   }, [leadForms]);
 
@@ -165,7 +164,7 @@ export default function AddLeadContainer(props) {
       });
   };
 
-  const getFormLists = async () => {
+  const getFormLists = async (customMasterFields) => {
     var locationTypeItem = leadForms.find(
       item => item.core_field_name == 'location_type',
     );
@@ -175,17 +174,17 @@ export default function AddLeadContainer(props) {
     );
     var param = {
       add_lead: 1,
-      location_type: locationTypeItem
+      location_type: locationTypeItem && customMasterFields[locationTypeItem.custom_master_field_id] != undefined
         ? customMasterFields[locationTypeItem.custom_master_field_id]
         : '',
-      group: groupItem
+      group: groupItem && customMasterFields[groupItem.custom_master_field_id] != undefined
         ? customMasterFields[groupItem.custom_master_field_id]
         : '',
-      group_split: groupSplitItem
+      group_split: groupSplitItem && customMasterFields[groupSplitItem.custom_master_field_id] != undefined
         ? customMasterFields[groupSplitItem.custom_master_field_id]
         : '',
     };
-
+    
     GetRequestFormListsDAO.find(param)
       .then(res => {        
         updateFormLists(res.forms); 
@@ -206,7 +205,7 @@ export default function AddLeadContainer(props) {
         element.compulsory = '0';
       }
       return element;
-    });
+    });    
     setFormLists(tmp);
   };
 
@@ -354,7 +353,7 @@ export default function AddLeadContainer(props) {
   };
 
   const showFormModal = () => {
-    getFormLists();
+    getFormLists(customMasterFields);
     addLeadFormModalRef.current.showModal();
   };
 
@@ -398,8 +397,14 @@ export default function AddLeadContainer(props) {
     setIsCurrentLocation('1');
   };
 
-  const onChangedCustomMasterFields = value => {
-    setCustomMasterFields(value);
+  const onChangedCustomMasterFields = (formMasterFields , fieldId) => {    
+    setCustomMasterFields(formMasterFields);
+    if(fieldId != undefined){
+      const item = leadForms.find(element => element.custom_master_field_id == fieldId);      
+      if(item.core_field_name == 'location_type' || item.core_field_name == 'group' || item.core_field_name == 'group_split' ){
+        getFormLists(formMasterFields);
+      }
+    }
   };
 
   const onPrimaryContactFields = value => {
