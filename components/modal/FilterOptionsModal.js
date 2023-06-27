@@ -6,7 +6,7 @@ import { boxShadow, style } from '../../constants/Styles';
 import Divider from '../Divider';
 import SvgIcon from '../SvgIcon';
 
-const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedType, fieldType, onValueChanged , title, clearTitle }) => {
+const FilterOptionsModal = ({ modaVisible,customFieldId, onClose, filters, options, selectedType, fieldType, onValueChanged , title, clearTitle }) => {
   
   const getCheckedStatus = (id) => {
     if(selectedType === "form_type"){
@@ -103,7 +103,8 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
       var flag = false;
       filters.customs.forEach(element => {
         if (fieldType == "dropdown") {
-          if (element.field_value === id) {
+          console.log("XXXDD", element);
+          if (element.field_value === id && element.custom_field_id == customFieldId) {
             flag = true;
           }
         } else if (fieldType == "date") {
@@ -143,20 +144,23 @@ const FilterOptionsModal = ({ modaVisible, onClose, filters, options, selectedTy
                       </View>
                       <ScrollView style={{maxHeight:400}}>
                       {
-                          options.map((item, index) => (
+                          options.map((item, index) => (                              
                               <TouchableOpacity  key={index}
-                                  onPress={() => {                                                                                  
-                                      var value = getCheckedStatus(item.id ? item.id : item);
-                                      onValueChanged(item.id ? item.id : item , !value);                                      
+                                  onPress={() => {            
+                                      if(item){
+                                        var value = getCheckedStatus(item.id ? item.id : item);
+                                        onValueChanged(item.id ? item.id : item , !value);     
+                                      }                                                                       
                                   }}>
                                 <View style={[style.card , Platform.OS === 'android' ? boxShadow : {}, {paddingHorizontal:20}]} key={index}>                                        
-                                    <Text style={styles.pickerItemText}>{item.name ? item.name : item}</Text>
+                                    <Text style={styles.pickerItemText}>{ item && item.name ? item.name : item}</Text>
                                     <TouchableOpacity onPress={() => {
-                                      var value = getCheckedStatus(item.id ? item.id : item);                                          
-                                      onValueChanged(item.id ? item.id : item , !value);
-                                      
-                                    } }>
-                                            <View style={[styles.checkBoxStyle , getCheckedStatus(item.id ? item.id : item)? {} : {backgroundColor:'white'}]}>
+                                        if(item){
+                                          var value = getCheckedStatus(item.id ? item.id : item);                                          
+                                          onValueChanged(item.id ? item.id : item , !value);                                      
+                                        }                                      
+                                      } }>
+                                            <View style={[styles.checkBoxStyle , getCheckedStatus( item && item.id ? item.id : item)? {} : {backgroundColor:'white'}]}>
                                             <SvgIcon icon="Yes_No_Button_Check" width='15px' height='15px' />
                                         </View>
                                     </TouchableOpacity>                                                                        

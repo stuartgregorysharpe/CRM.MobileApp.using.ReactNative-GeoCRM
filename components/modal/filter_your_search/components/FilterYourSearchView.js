@@ -13,7 +13,7 @@ import { MAP_FILTERS, PIPELINE_SEARCH_FILTERS, SEARCH_FILTERS } from '../../../.
 
 const FilterYourSearchView = (props) => {
 
-	const { page , filters, options  , fieldType , locationFilters , selectedType , isStartEndDateSelection , startDate, endDate ,modaVisible } = props;
+	const { page , customFieldId , filters, options  , fieldType , locationFilters , selectedType , isStartEndDateSelection , startDate, endDate ,modaVisible } = props;
 
 	const dispatch = useDispatch();		
 	const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);	
@@ -117,8 +117,11 @@ const FilterYourSearchView = (props) => {
 						if (locationFilter.field_type === 'dropdown') {
 							if(props.initializeSelectedType)
 								props.initializeSelectedType(key);
-							if(props.selectFilter)
-								props.selectFilter(key);
+							if(props.selectFilter){
+								console.log("select filter", locationFilter, key)
+								props.selectFilter(key , locationFilter.custom_field_id);
+							}
+								
 						} else {
 							if(props.initializeSelectedType){
 								props.initializeSelectedType(key);
@@ -166,6 +169,7 @@ const FilterYourSearchView = (props) => {
 				filters={filters}
 				selectedType={selectedType}
 				fieldType={fieldType}
+				customFieldId={customFieldId}
 				onClose={() => {
 					if(props.hideFilterOptionModal){
 						//setModalVisible(false);
