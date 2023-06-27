@@ -307,21 +307,21 @@ const FilterYourSearchContainer = React.forwardRef((props, ref) => {
         }
       };
 
-    const selectFilter = key => {
+    const selectFilter = (key , custom_field_id) => {
         setKey(key);
         if (filters.stage_id === undefined || filters.customs === undefined) {
-        let value = {
-            stage_id: [],
-            outcome_id: [],
-            dispositions: [],
-            customs: [],
-        };
-        if (page == 'pipeline') {
-            value.opportunity_status_id = [];
-            value.opportunity_fields = [];
-            value.campaign_id = '';
-        }
-        setFilters(value);
+          let value = {
+              stage_id: [],
+              outcome_id: [],
+              dispositions: [],
+              customs: [],
+          };
+          if (page == 'pipeline') {
+              value.opportunity_status_id = [];
+              value.opportunity_fields = [];
+              value.campaign_id = '';
+          }
+          setFilters(value);
         }
         setModalVisible(true);
     };
@@ -341,6 +341,7 @@ const FilterYourSearchContainer = React.forwardRef((props, ref) => {
                 filters={filters}
                 options={options}
                 fieldType={fieldType}
+                customFieldId={customId}
                 locationFilters={locationFilters}
                 selectedType={selectedType}
                 isStartEndDateSelection={isStartEndDateSelection}
