@@ -37,6 +37,7 @@ import { SalesPipelineScreen } from '../screens/GeoRep/Pipeline/SalesPipelineScr
 import LearningScreen from '../screens/GeoRep/Learning/Learning';
 import CourseDashboardScreen from '../screens/GeoRep/Learning/CourseDashboard';
 import TermsToKnowScreen from '../screens/GeoRep/Learning/TermsToKnow';
+import LessonStepsScreen from '../screens/GeoRep/Learning/LessonSteps';
 
 const Stack = createNativeStackNavigator();
 
@@ -202,6 +203,11 @@ export default function RepMoreScreen(props) {
       <Stack.Screen name = "TermsToKnow" options={{header: ()=>null}}>
         {
           props => <TermsToKnowScreen {...props} screenProps={navigation}/>
+        }
+      </Stack.Screen>
+      <Stack.Screen name = "LessonSteps" options={{header: ()=>null}}>
+        {
+          props => <LessonStepsScreen {...props} screenProps={navigation}/>
         }
       </Stack.Screen>
     </Stack.Navigator>

@@ -2,7 +2,7 @@ import React from "react";
 import { View } from 'react-native';
 import { whiteLabel } from "../../../../constants/Colors";
 
-const ProgressIndicatorView = ({ total = 5, style,height, progressbarColor = whiteLabel().mainText, completed = 0 }) => {
+const ProgressIndicatorView = ({ total, style,height, progressbarColor = whiteLabel().mainText, completed }) => {
     const courseProgressIndicatorView = () => {
         let listViews = [];
 

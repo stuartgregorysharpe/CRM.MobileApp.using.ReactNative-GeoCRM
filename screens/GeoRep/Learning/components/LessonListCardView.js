@@ -31,6 +31,18 @@ const LessonListCardView = props => {
             loadingBarRef.current.hideModal();
     }
 
+    function handlelessonstart() {
+        showLoadingBar();
+        getApiRequest('v2/user/course-dashboard', { course_id: course_id }, true).then(response => {
+            console.log("course dashboard response is same as :: ", response)
+            setcourse_content(response);
+            hideLoadingBar();
+        }).catch(error => {
+            hideLoadingBar();
+            expireToken(dispatch, error, alertModalRef);
+        })
+    }
+
     return (
         <View style={{
             backgroundColor: 'white',
@@ -55,7 +67,7 @@ const LessonListCardView = props => {
                 <View style={{ backgroundColor: 'red', borderRadius: 8, paddingHorizontal: 7 }}>
                     <TouchableOpacity onPress={() => {
                         navigation.navigate('TermsToKnow', {
-                            "course_id" : course_id,
+                            "course_id": course_id,
                             "course_title": course_title,
                             "course_description": course_description
                         });
@@ -67,8 +79,10 @@ const LessonListCardView = props => {
             {
                 lesson_list?.map((tp, idx) => {
                     return <View key={tp?.lesson_id?.toString()} >
-                        <TouchableOpacity onPress={() => {
-
+                        <TouchableOpacity onPress={async () => {
+                            navigation.navigate('LessonSteps', {
+                                'lesson_id': tp?.lesson_id
+                            });
                         }}>
                             <LessonCardItemView item={tp} idx={idx} />
                         </TouchableOpacity>
