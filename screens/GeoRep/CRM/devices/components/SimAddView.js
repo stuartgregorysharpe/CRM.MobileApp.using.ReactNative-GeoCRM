@@ -21,26 +21,28 @@ const SimAddView = ( props ) => {
     }, [initialValue , simModalType])
     
     const onButotnPressed = (type) => {
-
-        if(validateMsisdn(msisdn)){
-            if(type == 'add'){
-                if(props.onAdd){
-                    props.onAdd(msisdn);
-                }
-            }else if(type == 'delete'){
-                if(props.onDelete){
-                    props.onDelete();
-                }
-            }else if( type == 'update'){
-                if(props.onUpdate){
-                    props.onUpdate(msisdn);
-                }
-            }            
-        }else{
-            if(props.showAlertModal){
-                props.showAlertModal(Strings.Complete_Compulsory_Fields , 'compulsory');
+        
+        if(type == 'delete'){
+            if(props.onDelete){
+                props.onDelete();
             }
-        }
+        }else {
+            if(validateMsisdn(msisdn)){
+                if(type == 'add'){
+                    if(props.onAdd){
+                        props.onAdd(msisdn);
+                    }                                 
+                }else if( type == 'update'){
+                    if(props.onUpdate){
+                        props.onUpdate(msisdn);
+                    }
+                }            
+            }else{
+                if(props.showAlertModal){
+                    props.showAlertModal(Strings.Complete_Compulsory_Fields , 'compulsory');
+                }
+            }
+        }        
     }
 
     return (
