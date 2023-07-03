@@ -1577,6 +1577,19 @@ const Question = `<svg xmlns="http://www.w3.org/2000/svg" width="41.928" height=
 <path id="help_center_FILL1_wght700_GRAD0_opsz48" d="M25.36,38.416a2.4,2.4,0,0,0,1.74-.761,2.455,2.455,0,0,0,.761-1.795,2.308,2.308,0,0,0-.761-1.713,2.5,2.5,0,0,0-1.795-.734,2.348,2.348,0,0,0-1.713.734,2.409,2.409,0,0,0-.734,1.767,2.438,2.438,0,0,0,.734,1.74,2.367,2.367,0,0,0,1.767.761Zm-2.23-8.048h3.915a6.626,6.626,0,0,1,.489-2.583A8.021,8.021,0,0,1,29.548,25.2a12.344,12.344,0,0,0,2.094-2.828,6.741,6.741,0,0,0,.734-3.154,5.973,5.973,0,0,0-1.958-4.786,7.314,7.314,0,0,0-4.949-1.686,7.909,7.909,0,0,0-5.057,1.631A9.764,9.764,0,0,0,17.366,18.4l3.752,1.523a9.344,9.344,0,0,1,1.74-2.2,3.634,3.634,0,0,1,2.556-.9,2.943,2.943,0,0,1,2.175.761,2.582,2.582,0,0,1,.761,1.9,3.332,3.332,0,0,1-.6,1.876,11.669,11.669,0,0,1-1.468,1.767,11.037,11.037,0,0,0-2.665,3.426,11.38,11.38,0,0,0-.489,3.807ZM9.862,46.628a4.926,4.926,0,0,1-3.616-1.5,4.926,4.926,0,0,1-1.5-3.616V9.866a5.017,5.017,0,0,1,1.5-3.644A4.883,4.883,0,0,1,9.862,4.7h31.65a4.971,4.971,0,0,1,3.644,1.523,4.971,4.971,0,0,1,1.523,3.644v31.65a4.883,4.883,0,0,1-1.523,3.616,5.017,5.017,0,0,1-3.644,1.5Z" transform="translate(-4.75 -4.7)" fill="#133c8b"/>
 </svg>`;
 
+const CheckSelectedBox = `<svg xmlns="http://www.w3.org/2000/svg" width="68" height="68" viewBox="0 0 68 68">
+<g id="Group_5307" data-name="Group 5307" transform="translate(67.832 68.444) rotate(180)">
+  <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-0.168 0.444)" fill="none" stroke="#000" stroke-width="4">
+    <circle cx="34" cy="34" r="34" stroke="none"/>
+    <circle cx="34" cy="34" r="32" fill="none"/>
+  </g>
+</g>
+</svg>`;
+
+const CheckBox = `<svg id="check_circle_black_24dp_3_" data-name="check_circle_black_24dp (3)" xmlns="http://www.w3.org/2000/svg" width="81.475" height="81.475" viewBox="0 0 81.475 81.475">
+<path id="Path_4189" data-name="Path 4189" d="M0,0H81.475V81.475H0Z" fill="none"/>
+<path id="Path_4190" data-name="Path 4190" d="M35.948,2A33.948,33.948,0,1,0,69.9,35.948,33.96,33.96,0,0,0,35.948,2Zm-6.79,50.922L12.184,35.948l4.787-4.787L29.158,43.315,54.925,17.548l4.787,4.821Z" transform="translate(4.79 4.79)" fill="#133c8b"/>
+</svg>`;
 
 const svgMap = {
   Round_Btn_Default_Dark: Round_Btn_Default_Dark,
@@ -1745,6 +1758,8 @@ const svgMap = {
   Angle_Left_form_blue: Angle_Left_form_blue,
   Pass_Key: Pass_Key,
   Question: Question,
+  CheckSelectedBox: CheckSelectedBox,
+  CheckBox: CheckBox,
 }
 
 export default ({

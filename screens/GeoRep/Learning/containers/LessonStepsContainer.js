@@ -7,8 +7,13 @@ import { expireToken } from '../../../../constants/Helper';
 import { SubmitButton } from '../../../../components/shared/SubmitButton';
 import { BackButton } from '../../../../components/shared/BackButton';
 import { useNavigation } from '@react-navigation/native';
-import ParagraphStepView from '../components/lessonSteps/ParagraphStepView';
 import ProgressIndicatorView from '../components/ProgressIndicatorView';
+import ParagraphStepView from '../components/lessonSteps/ParagraphStepView';
+import HeadingStepView from '../components/lessonSteps/HeadingStepView.js';
+import CheckBoxStepView from '../components/lessonSteps/CheckBoxStepView.js';
+import BulletStepView from '../components/lessonSteps/BulletStepView.js';
+import GuidanceStepView from '../components/lessonSteps/GuidanceStepView.js';
+
 
 const LessonStepsContainer = props => {
 
@@ -80,11 +85,38 @@ const LessonStepsContainer = props => {
             }}
         >
             {/* start content */}
+
             {lessonStepData?.components?.map((tp, idx) => {
                 if (tp?.component_type === "paragraph") {
                     return <ParagraphStepView value={tp?.value} />
                 }
             })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "heading") {
+                    return <HeadingStepView value={tp?.value} />
+                }
+            })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "checkbox") {
+                    return <CheckBoxStepView value={tp?.value} />
+                }
+            })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "bullet_points") {
+                    return <BulletStepView value={tp?.value} icon = {tp.bullet_icon} />
+                }
+            })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "guidance") {
+                    return <GuidanceStepView value={tp?.value} prefix_icon = {tp.prefix_icon} suffix_icon={tp?.suffix_icon} background_color= {tp?.background_color}/>
+                }
+            })}
+
+
             {/* end content */}
 
             <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
