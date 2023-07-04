@@ -13,6 +13,8 @@ import HeadingStepView from '../components/lessonSteps/HeadingStepView.js';
 import CheckBoxStepView from '../components/lessonSteps/CheckBoxStepView.js';
 import BulletStepView from '../components/lessonSteps/BulletStepView.js';
 import GuidanceStepView from '../components/lessonSteps/GuidanceStepView.js';
+import ImageShowCaseStepView from '../components/lessonSteps/ImageShowCaseStepView.js';
+import ImageCrousalStepView from '../components/lessonSteps/ImageCrousalStepView.js';
 
 
 const LessonStepsContainer = props => {
@@ -74,9 +76,9 @@ const LessonStepsContainer = props => {
         }
     }
 
-    console.log(lessonStepData?.components, "components");
+    console.log(lessonStepData?.course_name, "components");
 
-    if (!lessonStepData) return null;  // if data is not loaded yet, return null or a loading indicator
+    if (!lessonStepData) { return null; }  // if data is not loaded yet, return null or a loading indicator
 
     return (
         <ScrollView
@@ -84,6 +86,15 @@ const LessonStepsContainer = props => {
                 padding: 15
             }}
         >
+            <View style={styles.container}>
+                <Text style={styles.textCourse}>{lessonStepData?.course_name}</Text>
+            </View>
+            <View style={styles.container}>
+                <Text style={styles.textOrder}>Lesson {lessonStepData?.lesson_order}: {lessonStepData?.lesson_name}</Text>
+            </View>
+            <View style={styles.container}>
+                <Text style={styles.textTopic}>{lessonStepData?.topic_name}</Text>
+            </View>
             {/* start content */}
 
             {lessonStepData?.components?.map((tp, idx) => {
@@ -106,13 +117,25 @@ const LessonStepsContainer = props => {
 
             {lessonStepData?.components?.map((tp, idx) => {
                 if (tp?.component_type === "bullet_points") {
-                    return <BulletStepView value={tp?.value} icon = {tp.bullet_icon} />
+                    return <BulletStepView value={tp?.value} icon={tp.bullet_icon} />
                 }
             })}
 
             {lessonStepData?.components?.map((tp, idx) => {
                 if (tp?.component_type === "guidance") {
-                    return <GuidanceStepView value={tp?.value} prefix_icon = {tp.prefix_icon} suffix_icon={tp?.suffix_icon} background_color= {tp?.background_color}/>
+                    return <GuidanceStepView value={tp?.value} prefix_icon={tp.prefix_icon} suffix_icon={tp?.suffix_icon} background_color={tp?.background_color} />
+                }
+            })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "image_showcase") {
+                    return <ImageShowCaseStepView value={tp?.value} />
+                }
+            })}
+
+            {lessonStepData?.components?.map((tp, idx) => {
+                if (tp?.component_type === "image_carousel") {
+                    return <ImageCrousalStepView value={tp?.value} />
                 }
             })}
 
@@ -161,5 +184,34 @@ const styles = StyleSheet.create({
     },
     height30: {
         height: 30
-    }
+    },
+    container: {
+        flexDirection: 'row',
+        marginVertical: 5,
+        alignItems: 'center',
+    },
+    textCourse: {
+        marginHorizontal: 2,
+        flex: 1,
+        fontWeight: '100',
+        fontSize: 16,
+        color: 'gray',
+        fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
+    },
+    textOrder: {
+        marginHorizontal: 2,
+        flex: 1,
+        fontWeight: '100',
+        fontSize: 16,
+        color: 'red',
+        fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
+    },
+    textTopic: {
+        marginHorizontal: 2,
+        flex: 1,
+        fontWeight: '900',
+        fontSize: 30,
+        color: 'black',
+        fontFamily: (Platform.OS === 'ios') ? "Gilroy-SemiBold" : "Radomir Tinkov - Gilroy-SemiBold",
+    },
 });

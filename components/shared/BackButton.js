@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
     },
     submitButtonText: {
-        color: whiteLabel().actionFullButtonText,
+        color: "white",
         fontSize: 15,
         fontFamily: Fonts.secondaryBold,
         marginRight: 15,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         borderRadius: 7,
-        backgroundColor: whiteLabel().actionFullButtonBackground,
+        backgroundColor: "black",
     },
 
     submitButtonIcon: {
